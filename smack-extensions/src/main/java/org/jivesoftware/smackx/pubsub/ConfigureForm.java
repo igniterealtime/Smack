@@ -65,9 +65,9 @@ public class ConfigureForm extends Form
 	 * using the resulting form to create a answer form.  See {@link #ConfigureForm(Form)}.
 	 * @param formType
 	 */
-	public ConfigureForm(FormType formType)
+	public ConfigureForm(DataForm.Type formType)
 	{
-		super(formType.toString());
+		super(formType);
 	}
 	
 	/**

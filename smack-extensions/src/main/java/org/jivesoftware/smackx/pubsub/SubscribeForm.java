@@ -50,9 +50,9 @@ public class SubscribeForm extends Form
 		super(subscribeOptionsForm.getDataFormToSend());
 	}
 	
-	public SubscribeForm(FormType formType)
+	public SubscribeForm(DataForm.Type formType)
 	{
-		super(formType.toString());
+		super(formType);
 	}
 	
 	/**

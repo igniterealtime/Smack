@@ -44,7 +44,8 @@ public class DataFormProvider extends PacketExtensionProvider<DataForm> {
     @Override
     public DataForm parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
                     SmackException {
-        DataForm dataForm = new DataForm(parser.getAttributeValue("", "type"));
+        DataForm.Type dataFormType = DataForm.Type.fromString(parser.getAttributeValue("", "type"));
+        DataForm dataForm = new DataForm(dataFormType);
         outerloop: while (true) {
             int eventType = parser.next();
             switch (eventType) {

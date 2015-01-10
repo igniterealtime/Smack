@@ -26,6 +26,7 @@ import org.jivesoftware.smackx.xdata.FormField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Represents a form that could be use for gathering data as well as for reporting data
@@ -38,7 +39,34 @@ public class DataForm implements PacketExtension {
     public static final String NAMESPACE = "jabber:x:data";
     public static final String ELEMENT = "x";
 
-    private String type;
+    public enum Type {
+        /**
+         * This packet contains a form to fill out. Display it to the user (if your program can).
+         */
+        form,
+
+        /**
+         * The form is filled out, and this is the data that is being returned from the form.
+         */
+        submit,
+
+        /**
+         * The form was cancelled. Tell the asker that piece of information.
+         */
+        cancel,
+
+        /**
+         * Data results being returned from a search, or some other query.
+         */
+        result,
+        ;
+
+        public static Type fromString(String string) {
+            return Type.valueOf(string.toLowerCase(Locale.US));
+        }
+    }
+
+    private Type type;
     private String title;
     private List<String> instructions = new ArrayList<String>();
     private ReportedData reportedData;
@@ -46,27 +74,17 @@ public class DataForm implements PacketExtension {
     private final List<FormField> fields = new ArrayList<FormField>();
     private final List<Element> extensionElements = new ArrayList<Element>();
     
-    public DataForm(String type) {
+    public DataForm(Type type) {
         this.type = type;
     }
     
     /**
      * Returns the meaning of the data within the context. The data could be part of a form
-     * to fill out, a form submission or data results.<p>
-     * 
-     * Possible form types are:
-     * <ul>
-     *  <li>form -> This packet contains a form to fill out. Display it to the user (if your 
-     * program can).</li>
-     *  <li>submit -> The form is filled out, and this is the data that is being returned from 
-     * the form.</li>
-     *  <li>cancel -> The form was cancelled. Tell the asker that piece of information.</li>
-     *  <li>result -> Data results being returned from a search, or some other query.</li>
-     * </ul>
+     * to fill out, a form submission or data results.
      * 
      * @return the form's type.
      */
-    public String getType() {
+    public Type getType() {
         return type; 
     }
     

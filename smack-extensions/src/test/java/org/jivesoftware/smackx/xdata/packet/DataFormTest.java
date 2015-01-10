@@ -44,14 +44,14 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  */
 public class DataFormTest {
-    private static final String TEST_OUTPUT_1 = "<x xmlns='jabber:x:data' type='SUBMIT'><instructions>InstructionTest1</instructions><field var='testField1'></field></x>";
-    private static final String TEST_OUTPUT_2 = "<x xmlns='jabber:x:data' type='SUBMIT'><instructions>InstructionTest1</instructions><field var='testField1'></field><page xmlns='http://jabber.org/protocol/xdata-layout' label='Label'><fieldref var='testField1'/><section label='section Label'><text>SectionText</text></section><text>PageText</text></page></x>";
-    private static final String TEST_OUTPUT_3 = "<x xmlns='jabber:x:data' type='SUBMIT'><instructions>InstructionTest1</instructions><field var='testField1'><validate xmlns='http://jabber.org/protocol/xdata-validate' datatype='xs:integer'><range min='1111' max='9999'/></validate></field></x>";
+    private static final String TEST_OUTPUT_1 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'></field></x>";
+    private static final String TEST_OUTPUT_2 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'></field><page xmlns='http://jabber.org/protocol/xdata-layout' label='Label'><fieldref var='testField1'/><section label='section Label'><text>SectionText</text></section><text>PageText</text></page></x>";
+    private static final String TEST_OUTPUT_3 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'><validate xmlns='http://jabber.org/protocol/xdata-validate' datatype='xs:integer'><range min='1111' max='9999'/></validate></field></x>";
 
     @Test
     public void test() throws XmlPullParserException, IOException, SmackException {
         //Build a Form
-        DataForm df = new DataForm("SUBMIT");
+        DataForm df = new DataForm(DataForm.Type.submit);
         String instruction = "InstructionTest1";
         df.addInstruction(instruction);
         FormField field = new FormField("testField1");
@@ -80,7 +80,7 @@ public class DataFormTest {
     @Test
     public void testLayout() throws XmlPullParserException, IOException, SmackException {
         //Build a Form
-        DataForm df = new DataForm("SUBMIT");
+        DataForm df = new DataForm(DataForm.Type.submit);
         String instruction = "InstructionTest1";
         df.addInstruction(instruction);
         FormField field = new FormField("testField1");
@@ -124,7 +124,7 @@ public class DataFormTest {
     @Test
     public void testValidation() throws XmlPullParserException, IOException, SmackException {
         //Build a Form
-        DataForm df = new DataForm("SUBMIT");
+        DataForm df = new DataForm(DataForm.Type.submit);
         String instruction = "InstructionTest1";
         df.addInstruction(instruction);
         FormField field = new FormField("testField1");

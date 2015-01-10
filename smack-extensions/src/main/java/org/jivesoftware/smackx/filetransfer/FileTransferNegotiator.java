@@ -40,7 +40,6 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.filetransfer.FileTransferException.NoAcceptableTransferMechanisms;
 import org.jivesoftware.smackx.filetransfer.FileTransferException.NoStreamMethodsOfferedException;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
-import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -367,7 +366,7 @@ public class FileTransferNegotiator extends Manager {
     }
 
     private DataForm createDefaultInitiationForm() {
-        DataForm form = new DataForm(Form.TYPE_FORM);
+        DataForm form = new DataForm(DataForm.Type.form);
         FormField field = new FormField(STREAM_DATA_FIELD_NAME);
         field.setType(FormField.Type.list_single);
         if (!IBB_ONLY) {

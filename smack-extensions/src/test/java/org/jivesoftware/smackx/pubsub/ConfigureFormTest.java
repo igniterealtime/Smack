@@ -30,6 +30,7 @@ import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,7 +44,7 @@ public class ConfigureFormTest
 	@Test
 	public void checkChildrenAssocPolicy()
 	{
-		ConfigureForm form = new ConfigureForm(FormType.submit);
+		ConfigureForm form = new ConfigureForm(DataForm.Type.submit);
 		form.setChildrenAssociationPolicy(ChildrenAssociationPolicy.owners);
 		assertEquals(ChildrenAssociationPolicy.owners, form.getChildrenAssociationPolicy());
 	}

@@ -28,7 +28,7 @@ import org.junit.Test;
 public class RoomInfoTest {
     @Test
     public void validateRoomWithEmptyForm() {
-        DataForm dataForm = new DataForm("result");
+        DataForm dataForm = new DataForm(DataForm.Type.result);
 
         DiscoverInfo discoInfo = new DiscoverInfo();
         discoInfo.addExtension(dataForm);
@@ -40,7 +40,7 @@ public class RoomInfoTest {
 
     @Test
     public void validateRoomWithForm() {
-        DataForm dataForm = new DataForm("result");
+        DataForm dataForm = new DataForm(DataForm.Type.result);
 
         FormField desc = new FormField("muc#roominfo_description");
         desc.addValue("The place for all good witches!");

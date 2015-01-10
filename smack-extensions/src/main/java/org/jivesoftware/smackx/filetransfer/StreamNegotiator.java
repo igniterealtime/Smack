@@ -27,7 +27,6 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
-import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -61,7 +60,7 @@ public abstract class StreamNegotiator {
         response.setType(IQ.Type.result);
         response.setPacketID(streamInitiationOffer.getPacketID());
 
-        DataForm form = new DataForm(Form.TYPE_SUBMIT);
+        DataForm form = new DataForm(DataForm.Type.submit);
         FormField field = new FormField(
                 FileTransferNegotiator.STREAM_DATA_FIELD_NAME);
         for (String namespace : namespaces) {

@@ -382,7 +382,7 @@ public class Workgroup {
         }
 
         // Build dataform from metadata
-        Form form = new Form(Form.TYPE_SUBMIT);
+        Form form = new Form(DataForm.Type.submit);
         Iterator<String> iter = metadata.keySet().iterator();
         while (iter.hasNext()) {
             String name = iter.next();

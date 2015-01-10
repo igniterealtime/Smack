@@ -116,7 +116,7 @@ public class EntityCapsManagerTest extends InitExtensions {
         di.addFeature("http://jabber.org/protocol/muc");
         di.addFeature("http://jabber.org/protocol/disco#info");
 
-        DataForm df = new DataForm("result");
+        DataForm df = new DataForm(DataForm.Type.result);
 
         FormField ff = new FormField("os");
         ff.addValue("Mac");
@@ -173,7 +173,7 @@ public class EntityCapsManagerTest extends InitExtensions {
         // Failure 2: Duplicate features
         di.addFeature("http://jabber.org/protocol/disco#info");
 
-        DataForm df = new DataForm("result");
+        DataForm df = new DataForm(DataForm.Type.result);
 
         FormField ff = new FormField("os");
         ff.addValue("Mac");
@@ -205,7 +205,7 @@ public class EntityCapsManagerTest extends InitExtensions {
 
         // Failure 3: Another service discovery information form with the same
         // FORM_TYPE
-        df = new DataForm("result");
+        df = new DataForm(DataForm.Type.result);
 
         ff = new FormField("FORM_TYPE");
         ff.setType(FormField.Type.hidden);

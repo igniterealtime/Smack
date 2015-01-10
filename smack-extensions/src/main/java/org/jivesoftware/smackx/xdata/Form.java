@@ -43,11 +43,6 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
  */
 public class Form {
 
-    public static final String TYPE_FORM = "form";
-    public static final String TYPE_SUBMIT = "submit";
-    public static final String TYPE_CANCEL = "cancel";
-    public static final String TYPE_RESULT = "result";
-
     private DataForm dataForm;
 
     /**
@@ -80,20 +75,11 @@ public class Form {
     }
     
     /**
-     * Creates a new Form of a given type from scratch.<p>
-     *  
-     * Possible form types are:
-     * <ul>
-     *  <li>form -> Indicates a form to fill out.</li>
-     *  <li>submit -> The form is filled out, and this is the data that is being returned from 
-     * the form.</li>
-     *  <li>cancel -> The form was cancelled. Tell the asker that piece of information.</li>
-     *  <li>result -> Data results being returned from a search, or some other query.</li>
-     * </ul>
-     * 
+     * Creates a new Form of a given type from scratch.
+     *
      * @param type the form's type (e.g. form, submit,cancel,result).
      */
-    public Form(String type) {
+    public Form(DataForm.Type type) {
         this.dataForm = new DataForm(type);
     }
     
@@ -408,20 +394,11 @@ public class Form {
 
     /**
      * Returns the meaning of the data within the context. The data could be part of a form
-     * to fill out, a form submission or data results.<p>
-     * 
-     * Possible form types are:
-     * <ul>
-     *  <li>form -> Indicates a form to fill out.</li>
-     *  <li>submit -> The form is filled out, and this is the data that is being returned from 
-     * the form.</li>
-     *  <li>cancel -> The form was cancelled. Tell the asker that piece of information.</li>
-     *  <li>result -> Data results being returned from a search, or some other query.</li>
-     * </ul>
+     * to fill out, a form submission or data results.
      * 
      * @return the form's type.
      */
-    public String getType() {
+    public DataForm.Type getType() {
         return dataForm.getType(); 
     }
     
@@ -481,7 +458,7 @@ public class Form {
      * @return if the form is a form to fill out.
      */
     private boolean isFormType() {
-        return TYPE_FORM.equals(dataForm.getType());
+        return DataForm.Type.form == dataForm.getType();
     }
     
     /**
@@ -490,7 +467,7 @@ public class Form {
      * @return if the form is a form to submit.
      */
     private boolean isSubmitType() {
-        return TYPE_SUBMIT.equals(dataForm.getType());
+        return DataForm.Type.submit == dataForm.getType();
     }
 
     /**
@@ -512,7 +489,7 @@ public class Form {
             throw new IllegalStateException("Only forms of type \"form\" could be answered");
         }
         // Create a new Form
-        Form form = new Form(TYPE_SUBMIT);
+        Form form = new Form(DataForm.Type.submit);
         for (FormField field : getFields()) {
             // Add to the new form any type of field that includes a variable.
             // Note: The fields of type FIXED are the only ones that don't specify a variable

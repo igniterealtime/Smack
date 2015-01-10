@@ -160,7 +160,7 @@ public class UserSearch extends SimpleIQ {
     private static void buildDataForm(SimpleUserSearch search,
                     String instructions, XmlPullParser parser)
                     throws XmlPullParserException, IOException, SmackException {
-        DataForm dataForm = new DataForm(Form.TYPE_FORM);
+        DataForm dataForm = new DataForm(DataForm.Type.form);
         boolean done = false;
         dataForm.setTitle("User Search");
         dataForm.addInstruction(instructions);
