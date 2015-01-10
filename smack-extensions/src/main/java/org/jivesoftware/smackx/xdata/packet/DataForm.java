@@ -125,6 +125,24 @@ public class DataForm implements PacketExtension {
         }
     }
 
+    /**
+     * Return the form field with the given variable name or null.
+     *
+     * @param variableName
+     * @return the form field or null.
+     * @since 4.1
+     */
+    public FormField getField(String variableName) {
+        synchronized (fields) {
+            for (FormField field : fields) {
+                if (variableName.equals(field.getVariable())) {
+                    return field;
+                }
+            }
+        }
+        return null;
+    }
+
     public String getElementName() {
         return ELEMENT;
     }
@@ -169,6 +187,11 @@ public class DataForm implements PacketExtension {
      * @param field the field to add to the form.
      */
     public void addField(FormField field) {
+        String fieldVariableName = field.getVariable();
+        if (fieldVariableName != null && getField(fieldVariableName) != null) {
+            throw new IllegalArgumentException("This data form already contains a form field with the variable name '"
+                            + fieldVariableName + "'");
+        }
         synchronized (fields) {
             fields.add(field);
         }
@@ -207,18 +230,27 @@ public class DataForm implements PacketExtension {
     }
 
     /**
+     * Returns the hidden FORM_TYPE field or null if this data form has none.
+     *
+     * @return the hidden FORM_TYPE field or null.
+     * @since 4.1
+     */
+    public FormField getHiddenFormTypeField() {
+        FormField field = getField(FormField.FORM_TYPE);
+        if (field != null && field.getType() == FormField.Type.hidden) {
+            return field;
+        }
+        return null;
+    }
+
+    /**
      * Returns true if this DataForm has at least one FORM_TYPE field which is
      * hidden. This method is used for sanity checks.
      *
      * @return true if there is at least one field which is hidden.
      */
     public boolean hasHiddenFormTypeField() {
-        for (FormField f : fields) {
-            if (f.getVariable().equals("FORM_TYPE") && f.getType() == FormField.Type.hidden) {
-                return true;
-            }
-        }
-        return false;
+        return getHiddenFormTypeField() != null;
     }
 
     @Override

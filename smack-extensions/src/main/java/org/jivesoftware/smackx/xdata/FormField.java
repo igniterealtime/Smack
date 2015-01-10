@@ -36,6 +36,11 @@ public class FormField {
     public static final String ELEMENT = "field";
 
     /**
+     * The constant String "FORM_TYPE"
+     */
+    public static final String FORM_TYPE = "FORM_TYPE";
+
+    /**
      * Form Field Types as defined in XEP-4 § 3.3.
      * 
      * @see <a href="http://xmpp.org/extensions/xep-0004.html#protocol-fieldtypes">XEP-4 § 3.3 Field Types</a>
@@ -118,10 +123,11 @@ public class FormField {
         }
     }
 
+    private final String variable;
+
     private String description;
     private boolean required = false;
     private String label;
-    private String variable;
     private Type type;
     private final List<Option> options = new ArrayList<Option>();
     private final List<String> values = new ArrayList<String>();
@@ -142,6 +148,7 @@ public class FormField {
      * name.
      */
     public FormField() {
+        this(null);
         this.type = Type.fixed;
     }
 
@@ -214,7 +221,12 @@ public class FormField {
 
     /**
      * Returns the variable name that the question is filling out.
-     *
+     * <p>
+     * According to XEP-4 § 3.2 the variable name (the 'var' attribute)
+     * "uniquely identifies the field in the context of the form" (if the field is not of type 'fixed', in which case
+     * the field "MAY possess a 'var' attribute")
+     * </p>
+     * 
      * @return the variable name of the question.
      */
     public String getVariable() {
@@ -270,11 +282,19 @@ public class FormField {
 
     /**
      * Sets an indicative of the format for the data to answer.
+     * <p>
+     * This method will throw an IllegalArgumentException if type is 'fixed'. To create FormFields of type 'fixed' use
+     * {@link #FormField()} instead.
+     * </p>
      *
      * @param type an indicative of the format for the data to answer.
      * @see Type
+     * @throws IllegalArgumentException if type is 'fixed'.
      */
     public void setType(Type type) {
+        if (type == Type.fixed) {
+            throw new IllegalArgumentException("Can not set type to fixed, use FormField constructor without arguments instead.");
+        }
         this.type = type;
     }
 
