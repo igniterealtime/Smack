@@ -93,6 +93,8 @@ public abstract class ConnectionConfiguration {
     // Holds the proxy information (such as proxyhost, proxyport, username, password etc)
     protected final ProxyInfo proxy;
 
+    protected final boolean allowNullOrEmptyUsername;
+
     protected ConnectionConfiguration(Builder<?,?> builder) {
         if (builder.username != null) {
             // Do partial version of nameprep on the username.
@@ -136,6 +138,7 @@ public abstract class ConnectionConfiguration {
         legacySessionDisabled = builder.legacySessionDisabled;
         rosterStore = builder.rosterStore;
         debuggerEnabled = builder.debuggerEnabled;
+        allowNullOrEmptyUsername = builder.allowEmptyOrNullUsername;
     }
 
     /**
@@ -405,6 +408,7 @@ public abstract class ConnectionConfiguration {
         private String serviceName;
         private String host;
         private int port = 5222;
+        private boolean allowEmptyOrNullUsername = false;
 
         protected Builder() {
         }
@@ -644,6 +648,19 @@ public abstract class ConnectionConfiguration {
          */
         public B setSocketFactory(SocketFactory socketFactory) {
             this.socketFactory = socketFactory;
+            return getThis();
+        }
+
+        /**
+         * Allow <code>null</code> or the empty String as username.
+         *
+         * Some SASL mechanisms (e.g. SASL External) may also signal the username (as "authorization identity"), in
+         * which case Smack should not throw an IllegalArgumentException when the username is not set.
+         * 
+         * @return a reference to this builder.
+         */
+        public B allowEmptyOrNullUsernames() {
+            allowEmptyOrNullUsername = true;
             return getThis();
         }
 

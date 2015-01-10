@@ -91,7 +91,10 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     protected XMPPConnection connection;
 
     /**
-     * authcid
+     * authcid, i.e. the username (localpart) of the XMPP connection trying to authenticated.
+     * <p>
+     * Not to be confused with the authzid.
+     * </p>
      */
     protected String authenticationId;
 

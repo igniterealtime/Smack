@@ -158,7 +158,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected final Map<String, PacketExtension> streamFeatures = new HashMap<String, PacketExtension>();
 
     /**
-     * The full JID of the authenticated user.
+     * The full JID of the authenticated user, as returned by the resource binding response of the server.
+     * <p>
+     * It is important that we don't infer the user from the login() arguments and the configurations service name, as,
+     * for example, when SASL External is used, the username is not given to login but taken from the 'external'
+     * certificate.
+     * </p>
      */
     protected String user;
 
@@ -431,7 +436,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     public void login(String username, String password, String resource) throws XMPPException,
                     SmackException, IOException {
-        if (StringUtils.isNullOrEmpty(username)) {
+        if (!config.allowNullOrEmptyUsername && StringUtils.isNullOrEmpty(username)) {
             throw new IllegalArgumentException("Username must not be null or empty");
         }
         usedUsername = username;
@@ -482,6 +487,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         Bind bindResource = Bind.newSet(resource);
         PacketCollector packetCollector = createPacketCollectorAndSend(new PacketIDFilter(bindResource), bindResource);
         Bind response = packetCollector.nextResultOrThrow();
+        // Set the connections user to the result of resource binding. It is important that we don't infer the user
+        // from the login() arguments and the configurations service name, as, for example, when SASL External is used,
+        // the username is not given to login but taken from the 'external' certificate.
         user = response.getJid();
         serviceName = XmppStringUtils.parseDomain(user);
 
