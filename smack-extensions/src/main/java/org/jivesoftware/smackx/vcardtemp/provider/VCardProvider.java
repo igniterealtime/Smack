@@ -60,7 +60,7 @@ public class VCardProvider extends IQProvider<VCard> {
         try {
             documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         } catch (ParserConfigurationException e) {
-            LOGGER.log(Level.FINER, "Could not disallow doctype decl", e);
+            LOGGER.finer("Could not disallow doctype decl: " + e.getMessage());
             // If we can't disable DTDs, then at least try the following
             // Xerces 1 - http://xerces.apache.org/xerces-j/features.html#external-general-entities
             // Xerces 2 - http://xerces.apache.org/xerces2-j/features.html#external-general-entities
@@ -68,7 +68,7 @@ public class VCardProvider extends IQProvider<VCard> {
                 documentBuilderFactory.setFeature( "http://xml.org/sax/features/external-general-entities", false);
                 documentBuilderFactory.setFeature( "http://xml.org/sax/features/external-parameter-entities", false);
             } catch (ParserConfigurationException e1) {
-                LOGGER.log(Level.FINER, "Could not disallow external entities for xerces parser", e1);
+                LOGGER.finer("Could not disallow external entities for xerces parser: " + e1.getMessage());
             }
         }
         // Android throws an UnsupportedOperationException when calling setXIncludeAware() and for some dumb reason also
@@ -93,7 +93,7 @@ public class VCardProvider extends IQProvider<VCard> {
         try {
             documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         } catch (ParserConfigurationException e) {
-            LOGGER.log(Level.INFO, "Could not enable secure processing parsing feature", e);
+            LOGGER.info("Could not enable secure processing parsing feature: " + e.getMessage());
         }
 
         DOCUMENT_BUILDER_FACTORY = documentBuilderFactory;
