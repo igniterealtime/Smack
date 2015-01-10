@@ -92,9 +92,7 @@ public class DummyConnection extends AbstractXMPPConnection {
         roster = null;
         authenticated = false;
         
-        for (ConnectionListener listener : getConnectionListeners()) {
-            listener.connectionClosed();
-        }
+        callConnectionClosedListener();
         reconnect = true;
     }
 

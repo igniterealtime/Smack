@@ -679,15 +679,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         connectionListeners.remove(connectionListener);
     }
 
-    /**
-     * Get the collection of listeners that are interested in connection events.
-     * 
-     * @return a collection of listeners interested on connection events.
-     */
-    protected Collection<ConnectionListener> getConnectionListeners() {
-        return connectionListeners;
-    }
-
     @Override
     public PacketCollector createPacketCollectorAndSend(IQ packet) throws NotConnectedException {
         PacketFilter packetFilter = new IQReplyFilter(packet, this);
@@ -1116,13 +1107,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected void callConnectionConnectedListener() {
-        for (ConnectionListener listener : getConnectionListeners()) {
+        for (ConnectionListener listener : connectionListeners) {
             listener.connected(this);
         }
     }
 
     protected void callConnectionAuthenticatedListener(boolean resumed) {
-        for (ConnectionListener listener : getConnectionListeners()) {
+        for (ConnectionListener listener : connectionListeners) {
             try {
                 listener.authenticated(this, resumed);
             } catch (Exception e) {
@@ -1134,7 +1125,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     void callConnectionClosedListener() {
-        for (ConnectionListener listener : getConnectionListeners()) {
+        for (ConnectionListener listener : connectionListeners) {
             try {
                 listener.connectionClosed();
             }
@@ -1148,7 +1139,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     protected void callConnectionClosedOnErrorListener(Exception e) {
         LOGGER.log(Level.WARNING, "Connection closed with error", e);
-        for (ConnectionListener listener : getConnectionListeners()) {
+        for (ConnectionListener listener : connectionListeners) {
             try {
                 listener.connectionClosedOnError(e);
             }
@@ -1165,7 +1156,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected void notifyReconnection() {
         // Notify connection listeners of the reconnection.
-        for (ConnectionListener listener : getConnectionListeners()) {
+        for (ConnectionListener listener : connectionListeners) {
             try {
                 listener.reconnectionSuccessful();
             }

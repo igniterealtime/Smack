@@ -29,20 +29,26 @@ package org.jivesoftware.smack;
 public interface ConnectionListener {
 
     /**
-     * TODO
-     * @param connection
+     * Notification that the connection has been successfully connected to the remote endpoint (e.g. the XMPP server).
+     * <p>
+     * Note that the connection is likely not yet authenticated and therefore only limited operations like registering
+     * an account may be possible.
+     * </p>
+     *
+     * @param connection the XMPPConnection which successfully connected to its endpoint.
      */
     public void connected(XMPPConnection connection);
 
     /**
-     * TODO
-     * @param connection
+     * Notification that the connection has been authenticated.
+     *
+     * @param connection the XMPPConnection which successfully authenticated.
+     * @param resumed true if a previous XMPP session's stream was resumed.
      */
     public void authenticated(XMPPConnection connection, boolean resumed);
 
     /**
-     * Notification that the connection was closed normally or that the reconnection
-     * process has been aborted.
+     * Notification that the connection was closed normally.
      */
     public void connectionClosed();
 
@@ -54,23 +60,33 @@ public interface ConnectionListener {
      * @param e the exception.
      */
     public void connectionClosedOnError(Exception e);
-    
-    /**
-     * The connection will retry to reconnect in the specified number of seconds.
-     * 
-     * @param seconds remaining seconds before attempting a reconnection.
-     */
-    public void reconnectingIn(int seconds);
-    
+
     /**
      * The connection has reconnected successfully to the server. Connections will
      * reconnect to the server when the previous socket connection was abruptly closed.
      */
     public void reconnectionSuccessful();
-    
+
+    // The next two methods *must* only be invoked by ReconnectionManager
+
     /**
-     * An attempt to connect to the server has failed. The connection will keep trying
-     * reconnecting to the server in a moment.
+     * The connection will retry to reconnect in the specified number of seconds.
+     * <p>
+     * Note: This method is only called if {@link ReconnectionManager#isAutomaticReconnectEnabled()} returns true, i.e.
+     * only when the reconnection manager is enabled for the connection.
+     * </p>
+     * 
+     * @param seconds remaining seconds before attempting a reconnection.
+     */
+    public void reconnectingIn(int seconds);
+
+    /**
+     * An attempt to connect to the server has failed. The connection will keep trying reconnecting to the server in a
+     * moment.
+     * <p>
+     * Note: This method is only called if {@link ReconnectionManager#isAutomaticReconnectEnabled()} returns true, i.e.
+     * only when the reconnection manager is enabled for the connection.
+     * </p>
      *
      * @param e the exception that caused the reconnection to fail.
      */

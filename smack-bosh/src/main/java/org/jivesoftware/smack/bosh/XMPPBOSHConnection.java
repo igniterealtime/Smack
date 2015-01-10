@@ -34,7 +34,6 @@ import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Element;
@@ -475,17 +474,15 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                         }
                     }
                     else {
-                        try {
                             if (wasAuthenticated) {
-                                login();
+                                try {
+                                    login();
+                                }
+                                catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
                             notifyReconnection();
-                        }
-                        catch (Exception e) {
-                            for (ConnectionListener listener : getConnectionListeners()) {
-                                listener.reconnectionFailed(e);
-                           }
-                        }
                     }
                 }
                 else {
