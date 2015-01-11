@@ -948,7 +948,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         final String name = parser.getName();
                         switch (name) {
                         case Message.ELEMENT:
-                        case IQ.ELEMENT:
+                        case IQ.IQ_ELEMENT:
                         case Presence.ELEMENT:
                             try {
                                 parseAndProcessStanza(parser);

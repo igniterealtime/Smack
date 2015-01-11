@@ -17,14 +17,11 @@
 package org.jivesoftware.smackx.filetransfer;
 
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.IQTypeFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
+import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jxmpp.util.XmppStringUtils;
@@ -73,15 +70,18 @@ public class FileTransferManager extends Manager {
 		super(connection);
 		this.fileTransferNegotiator = FileTransferNegotiator
 				.getInstanceFor(connection);
-        connection.addAsyncPacketListener(new PacketListener() {
-            public void processPacket(Packet packet) {
+        connection.registerIQRequestHandler(new AbstractIqRequestHandler(StreamInitiation.ELEMENT,
+                        StreamInitiation.NAMESPACE, IQ.Type.set, Mode.async) {
+            @Override
+            public IQ handleIQRequest(IQ packet) {
                 StreamInitiation si = (StreamInitiation) packet;
                 final FileTransferRequest request = new FileTransferRequest(FileTransferManager.this, si);
                 for (final FileTransferListener listener : listeners) {
                             listener.fileTransferRequest(request);
                 }
+                return null;
             }
-        }, new AndFilter(new PacketTypeFilter(StreamInitiation.class), IQTypeFilter.SET));
+        });
 	}
 
 	/**

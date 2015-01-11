@@ -30,6 +30,9 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @author Alexander Wenckus
  */
 public class Bytestream extends IQ {
+
+    public static final String ELEMENT = QUERY_ELEMENT;
+
     /**
      * The XMPP namespace of the SOCKS5 Bytestream
      */
@@ -49,7 +52,7 @@ public class Bytestream extends IQ {
      * The default constructor
      */
     public Bytestream() {
-        super(QUERY_ELEMENT, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**

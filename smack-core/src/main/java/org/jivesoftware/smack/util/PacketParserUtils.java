@@ -149,7 +149,7 @@ public class PacketParserUtils {
         switch (name) {
         case Message.ELEMENT:
             return parseMessage(parser);
-        case IQ.ELEMENT:
+        case IQ.IQ_ELEMENT:
             return parseIQ(parser);
         case Presence.ELEMENT:
             return parsePresence(parser);

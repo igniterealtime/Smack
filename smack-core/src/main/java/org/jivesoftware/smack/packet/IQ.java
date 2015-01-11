@@ -40,7 +40,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  */
 public abstract class IQ extends Packet {
 
-    public static final String ELEMENT = "iq";
+    // Don't name this field 'ELEMENT'. When it comes to IQ, ELEMENT is the child element!
+    public static final String IQ_ELEMENT = "iq";
     public static final String QUERY_ELEMENT = "query";
 
     private final String childElementName;
@@ -98,7 +99,7 @@ public abstract class IQ extends Packet {
     @Override
     public final XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
-        buf.halfOpenElement(ELEMENT);
+        buf.halfOpenElement(IQ_ELEMENT);
         addCommonAttributes(buf);
         if (type == null) {
             buf.attribute("type", "get");
@@ -108,7 +109,7 @@ public abstract class IQ extends Packet {
         }
         buf.rightAngleBracket();
         buf.append(getChildElementXML());
-        buf.closeElement(ELEMENT);
+        buf.closeElement(IQ_ELEMENT);
         return buf;
     }
 
