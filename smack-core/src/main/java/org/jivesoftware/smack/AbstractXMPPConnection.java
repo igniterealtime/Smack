@@ -532,7 +532,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public final boolean isAnonymous() {
-        return config.getUsername() == null && usedUsername == null;
+        return config.getUsername() == null && usedUsername == null
+                        && !config.allowNullOrEmptyUsername;
     }
 
     private String serviceName;

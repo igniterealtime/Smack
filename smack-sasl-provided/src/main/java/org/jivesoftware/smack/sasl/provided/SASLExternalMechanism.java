@@ -34,7 +34,8 @@ public class SASLExternalMechanism extends SASLMechanism {
 
     @Override
     protected void authenticateInternal(CallbackHandler cbh) throws SmackException {
-        throw new UnsupportedOperationException("CallbackHandler not (yet) supported");
+        // Do nothing. Auth will be done external to Smack and which will receive the localpart
+        // after the resource binding
     }
 
     @Override
