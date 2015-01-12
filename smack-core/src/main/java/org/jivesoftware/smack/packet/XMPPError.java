@@ -269,7 +269,7 @@ public class XMPPError extends AbstractError {
             try {
                 condition = Condition.valueOf(string);
             } catch (Exception e) {
-                throw new IllegalStateException("Could not transform string '" + string + "' to XMPPErrorConditoin", e);
+                throw new IllegalStateException("Could not transform string '" + string + "' to XMPPErrorCondition", e);
             }
             return condition;
         }
