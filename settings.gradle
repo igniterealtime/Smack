@@ -15,4 +15,5 @@ include 'smack-core',
 		'smack-bosh',
 		'smack-android',
 		'smack-android-extensions',
-		'smack-java7'
+		'smack-java7',
+		'smack-serverless'

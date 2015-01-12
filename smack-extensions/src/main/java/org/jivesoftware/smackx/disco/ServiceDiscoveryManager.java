@@ -74,7 +74,7 @@ public class ServiceDiscoveryManager extends Manager {
     private Set<DiscoverInfo.Identity> identities = new HashSet<DiscoverInfo.Identity>();
     private DiscoverInfo.Identity identity = defaultIdentity;
 
-    private EntityCapsManager capsManager;
+    protected EntityCapsManager capsManager;
 
     private static Map<XMPPConnection, ServiceDiscoveryManager> instances = new WeakHashMap<>();
 
@@ -109,7 +109,7 @@ public class ServiceDiscoveryManager extends Manager {
      * 
      * @param connection the connection to which a ServiceDiscoveryManager is going to be created.
      */
-    private ServiceDiscoveryManager(XMPPConnection connection) {
+    protected ServiceDiscoveryManager(XMPPConnection connection) {
         super(connection);
 
         addFeature(DiscoverInfo.NAMESPACE);
@@ -767,7 +767,7 @@ public class ServiceDiscoveryManager extends Manager {
     /**
      * Updates the Entity Capabilities Verification String if EntityCaps is enabled.
      */
-    private void renewEntityCapsVersion() {
+    protected void renewEntityCapsVersion() {
         if (capsManager != null && capsManager.entityCapsEnabled())
             capsManager.updateLocalEntityCaps();
     }
