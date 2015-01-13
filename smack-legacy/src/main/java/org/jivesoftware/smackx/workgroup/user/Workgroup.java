@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.workgroup.user;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -76,8 +76,8 @@ public class Workgroup {
     private String workgroupJID;
     private XMPPConnection connection;
     private boolean inQueue;
-    private List<WorkgroupInvitationListener> invitationListeners;
-    private List<QueueListener> queueListeners;
+    private CopyOnWriteArraySet<WorkgroupInvitationListener> invitationListeners;
+    private CopyOnWriteArraySet<QueueListener> queueListeners;
 
     private int queuePosition = -1;
     private int queueRemainingTime = -1;
@@ -101,8 +101,8 @@ public class Workgroup {
         this.workgroupJID = workgroupJID;
         this.connection = connection;
         inQueue = false;
-        invitationListeners = new ArrayList<WorkgroupInvitationListener>();
-        queueListeners = new ArrayList<QueueListener>();
+        invitationListeners = new CopyOnWriteArraySet<>();
+        queueListeners = new CopyOnWriteArraySet<>();
 
         // Register as a queue listener for internal usage by this instance.
         addQueueListener(new QueueListener() {
@@ -429,11 +429,7 @@ public class Workgroup {
      * @param queueListener the queue listener.
      */
     public void addQueueListener(QueueListener queueListener) {
-        synchronized (queueListeners) {
-            if (!queueListeners.contains(queueListener)) {
-                queueListeners.add(queueListener);
-            }
-        }
+        queueListeners.add(queueListener);
     }
 
     /**
@@ -442,9 +438,7 @@ public class Workgroup {
      * @param queueListener the queue listener.
      */
     public void removeQueueListener(QueueListener queueListener) {
-        synchronized (queueListeners) {
-            queueListeners.remove(queueListener);
-        }
+        queueListeners.remove(queueListener);
     }
 
     /**
@@ -454,11 +448,7 @@ public class Workgroup {
      * @param invitationListener the invitation listener.
      */
     public void addInvitationListener(WorkgroupInvitationListener invitationListener) {
-        synchronized (invitationListeners) {
-            if (!invitationListeners.contains(invitationListener)) {
-                invitationListeners.add(invitationListener);
-            }
-        }
+        invitationListeners.add(invitationListener);
     }
 
     /**
@@ -467,53 +457,36 @@ public class Workgroup {
      * @param invitationListener the invitation listener.
      */
     public void removeQueueListener(WorkgroupInvitationListener invitationListener) {
-        synchronized (invitationListeners) {
-            invitationListeners.remove(invitationListener);
-        }
+        invitationListeners.remove(invitationListener);
     }
 
     private void fireInvitationEvent(WorkgroupInvitation invitation) {
-        synchronized (invitationListeners) {
-            for (Iterator<WorkgroupInvitationListener> i = invitationListeners.iterator(); i.hasNext();) {
-                WorkgroupInvitationListener listener = i.next();
-                listener.invitationReceived(invitation);
-            }
+        for (WorkgroupInvitationListener listener : invitationListeners ){
+    	    listener.invitationReceived(invitation);
         }
     }
 
     private void fireQueueJoinedEvent() {
-        synchronized (queueListeners) {
-            for (Iterator<QueueListener> i = queueListeners.iterator(); i.hasNext();) {
-                QueueListener listener = i.next();
-                listener.joinedQueue();
-            }
+        for (QueueListener listener : queueListeners){
+    	    listener.joinedQueue();
         }
     }
 
     private void fireQueueDepartedEvent() {
-        synchronized (queueListeners) {
-            for (Iterator<QueueListener> i = queueListeners.iterator(); i.hasNext();) {
-                QueueListener listener = i.next();
-                listener.departedQueue();
-            }
+        for (QueueListener listener : queueListeners) {
+            listener.departedQueue();
         }
     }
 
     private void fireQueuePositionEvent(int currentPosition) {
-        synchronized (queueListeners) {
-            for (Iterator<QueueListener> i = queueListeners.iterator(); i.hasNext();) {
-                QueueListener listener = i.next();
-                listener.queuePositionUpdated(currentPosition);
-            }
+        for (QueueListener listener : queueListeners) {
+            listener.queuePositionUpdated(currentPosition);
         }
     }
 
     private void fireQueueTimeEvent(int secondsRemaining) {
-        synchronized (queueListeners) {
-            for (Iterator<QueueListener> i = queueListeners.iterator(); i.hasNext();) {
-                QueueListener listener = i.next();
-                listener.queueWaitTimeUpdated(secondsRemaining);
-            }
+        for (QueueListener listener : queueListeners) {
+            listener.queueWaitTimeUpdated(secondsRemaining);
         }
     }
 
