@@ -1630,17 +1630,24 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             ackedStanzas.add(ackedStanza);
         }
 
-        boolean atLeastOneStanzaIdAcknowledgedListener = false;
-        for (Packet ackedStanza : ackedStanzas) {
-            String id = ackedStanza.getPacketID();
-            if (id != null && stanzaAcknowledgedListeners.contains(id)) {
-                atLeastOneStanzaIdAcknowledgedListener = true;
-                break;
+        boolean atLeastOneStanzaAcknowledgedListener = false;
+        if (!stanzaAcknowledgedListeners.isEmpty()) {
+            // If stanzaAcknowledgedListeners is not empty, the we have at least one
+            atLeastOneStanzaAcknowledgedListener = true;
+        }
+        else {
+            // Otherwise we look for a matching id in the stanza *id* acknowledged listeners
+            for (Packet ackedStanza : ackedStanzas) {
+                String id = ackedStanza.getPacketID();
+                if (id != null && stanzaIdAcknowledgedListeners.containsKey(id)) {
+                    atLeastOneStanzaAcknowledgedListener = true;
+                    break;
+                }
             }
         }
 
         // Only spawn a new thread if there is a chance that some listener is invoked
-        if (atLeastOneStanzaIdAcknowledgedListener || !stanzaAcknowledgedListeners.isEmpty()) {
+        if (atLeastOneStanzaAcknowledgedListener) {
             asyncGo(new Runnable() {
                 @Override
                 public void run() {
