@@ -643,10 +643,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * the XMPP server. The XMPPConnection can still be used for connecting to the server
      * again.
      *
-     * @throws NotConnectedException 
      */
-    public void disconnect() throws NotConnectedException {
-        disconnect(new Presence(Presence.Type.unavailable));
+    public void disconnect() {
+        try {
+            disconnect(new Presence(Presence.Type.unavailable));
+        }
+        catch (NotConnectedException e) {
+            LOGGER.log(Level.FINEST, "Connection is already disconnected", e);
+        }
     }
 
     /**
@@ -661,10 +665,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws NotConnectedException 
      */
     public synchronized void disconnect(Presence unavailablePresence) throws NotConnectedException {
-        if (!isConnected()) {
-            throw new NotConnectedException();
-        }
-
         sendPacket(unavailablePresence);
         shutdown();
         callConnectionClosedListener();
