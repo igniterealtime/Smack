@@ -1651,22 +1651,28 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             asyncGo(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        for (Packet ackedStanza : ackedStanzas) {
-                            for (PacketListener listener : stanzaAcknowledgedListeners) {
+                    for (Packet ackedStanza : ackedStanzas) {
+                        for (PacketListener listener : stanzaAcknowledgedListeners) {
+                            try {
                                 listener.processPacket(ackedStanza);
                             }
-                            String id = ackedStanza.getPacketID();
-                            if (id != null) {
-                                PacketListener listener = stanzaIdAcknowledgedListeners.remove(id);
-                                if (listener != null) {
-                                    listener.processPacket(ackedStanza);
-                                }
+                            catch (NotConnectedException e) {
+                                LOGGER.log(Level.FINER, "Received not connected exception", e);
                             }
                         }
-                    }
-                    catch (NotConnectedException e) {
-                        LOGGER.log(Level.FINER, "Received not connected exception, aborting", e);
+                        String id = ackedStanza.getPacketID();
+                        if (StringUtils.isNotEmpty(id)) {
+                            return;
+                        }
+                        PacketListener listener = stanzaIdAcknowledgedListeners.remove(id);
+                        if (listener != null) {
+                            try {
+                                listener.processPacket(ackedStanza);
+                            }
+                            catch (NotConnectedException e) {
+                                LOGGER.log(Level.FINER, "Received not connected exception", e);
+                            }
+                        }
                     }
                 }
             });
