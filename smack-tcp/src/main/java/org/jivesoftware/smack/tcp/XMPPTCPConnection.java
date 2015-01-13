@@ -1494,13 +1494,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * </p>
      * 
      * @param listener the listener to add.
-     * @throws StreamManagementNotEnabledException if Stream Management is not enabled.
      */
-    public void addStanzaAcknowledgedListener(PacketListener listener) throws StreamManagementNotEnabledException {
-        // Prevent users from adding callbacks that will never get removed
-        if (!smWasEnabledAtLeastOnce) {
-            throw new StreamManagementException.StreamManagementNotEnabledException();
-        }
+    public void addStanzaAcknowledgedListener(PacketListener listener) {
         stanzaAcknowledgedListeners.add(listener);
     }
 
