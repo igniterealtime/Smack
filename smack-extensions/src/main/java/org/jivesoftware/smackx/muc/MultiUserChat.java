@@ -67,6 +67,8 @@ import org.jivesoftware.smackx.muc.packet.MUCOwner;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.muc.packet.MUCUser.Status;
 import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
  * A MultiUserChat is a conversation that takes place among many users in a virtual
@@ -918,6 +920,29 @@ public class MultiUserChat {
      */
     public void kickParticipant(String nickname, String reason) throws XMPPErrorException, NoResponseException, NotConnectedException {
         changeRole(nickname, MUCRole.none, reason);
+    }
+
+    /**
+     * Sends a voice request to the MUC. The room moderators usually need to approve this request.
+     *
+     * @throws NotConnectedException
+     * @see <a href="http://xmpp.org/extensions/xep-0045.html#requestvoice">XEP-45 § 7.13 Requesting
+     *      Voice</a>
+     * @since 4.1
+     */
+    public void requestVoice() throws NotConnectedException {
+        DataForm form = new DataForm(DataForm.Type.submit);
+        FormField formTypeField = new FormField(FormField.FORM_TYPE);
+        formTypeField.addValue(MUCInitialPresence.NAMESPACE + "#request");
+        form.addField(formTypeField);
+        FormField requestVoiceField = new FormField("muc#role");
+        requestVoiceField.setType(FormField.Type.text_single);
+        requestVoiceField.setLabel("Requested role");
+        requestVoiceField.addValue("participant");
+        form.addField(requestVoiceField);
+        Message message = new Message(room);
+        message.addExtension(form);
+        connection.sendPacket(message);
     }
 
     /**
