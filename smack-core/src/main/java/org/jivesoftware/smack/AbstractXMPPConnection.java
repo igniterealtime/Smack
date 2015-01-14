@@ -726,11 +726,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
+    @Deprecated
     public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
         addAsyncPacketListener(packetListener, packetFilter);
     }
 
     @Override
+    @Deprecated
     public boolean removePacketListener(PacketListener packetListener) {
         return removeAsyncPacketListener(packetListener);
     }
