@@ -139,6 +139,7 @@ public class PacketCollector {
      */
     @SuppressWarnings("unchecked")
     public <P extends Packet> P nextResultBlockForever() {
+        throwIfCancelled();
         P res = null;
         while (res == null) {
             try {
@@ -171,6 +172,7 @@ public class PacketCollector {
      */
     @SuppressWarnings("unchecked")
     public <P extends Packet> P nextResult(long timeout) {
+        throwIfCancelled();
         P res = null;
         long remainingWait = timeout;
         final long waitStart = System.currentTimeMillis();
@@ -241,6 +243,12 @@ public class PacketCollector {
         		// Since we know the queue is full, this poll should never actually block.
         		resultQueue.poll();
         	}
+        }
+    }
+
+    private final void throwIfCancelled() {
+        if (cancelled) {
+            throw new IllegalStateException("Packet collector already cancelled");
         }
     }
 }
