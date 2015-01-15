@@ -69,6 +69,7 @@ import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.StreamManagementFea
 import org.jivesoftware.smack.tcp.sm.predicates.Predicate;
 import org.jivesoftware.smack.tcp.sm.provider.ParseStreamManagement;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
+import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
@@ -910,8 +911,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     protected class PacketReader {
 
-        private Thread readerThread;
-
         XmlPullParser parser;
 
         private volatile boolean done;
@@ -925,14 +924,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         void init() throws SmackException {
             done = false;
 
-            readerThread = new Thread() {
+            Async.go(new Runnable() {
                 public void run() {
                     parsePackets();
                 }
-            };
-            readerThread.setName("Smack Packet Reader (" + getConnectionCounter() + ")");
-            readerThread.setDaemon(true);
-            readerThread.start();
+            }, "Smack Packet Reader (" + getConnectionCounter() + ")");
          }
 
         /**
