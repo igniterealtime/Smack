@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -297,6 +297,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected AbstractXMPPConnection(ConnectionConfiguration configuration) {
         config = configuration;
+        removeCallbacksService.setKeepAliveTime(30, TimeUnit.SECONDS);
     }
 
     protected ConnectionConfiguration getConfiguration() {
@@ -1376,7 +1377,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         streamFeatures.put(key, feature);
     }
 
-    private final ScheduledExecutorService removeCallbacksService = new ScheduledThreadPoolExecutor(1,
+    private final ScheduledThreadPoolExecutor removeCallbacksService = new ScheduledThreadPoolExecutor(1,
                     new SmackExecutorThreadFactory(connectionCounterValue, "Remove Callbacks"));
 
     @Override
@@ -1550,4 +1551,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         cachedExecutorService.execute(runnable);
     }
 
+    protected final ScheduledFuture<?> schedule(Runnable runnable, long delay, TimeUnit unit) {
+        return removeCallbacksService.schedule(runnable, delay, unit);
+    }
 }
