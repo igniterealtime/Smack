@@ -147,8 +147,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private boolean disconnectedButResumeable = false;
 
-    // socketClosed is used concurrent
-    // by XMPPTCPConnection, PacketReader, PacketWriter
+    /**
+     * Flag to indicate if the socket was closed intentionally by Smack.
+     * <p>
+     * This boolean flag is used concurrently, therefore it is marked volatile.
+     * </p>
+     */
     private volatile boolean socketClosed = false;
 
     private boolean usingTLS = false;
@@ -209,6 +213,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private boolean useSm = useSmDefault;
     private boolean useSmResumption = useSmResumptionDefault;
+
+    /**
+     * The counter that the server sends the client about it's current height. For example, if the server sends
+     * {@code <a h='42'/>}, then this will be set to 42 (while also handling the {@link #unacknowledgedStanzas} queue).
+     */
     private long serverHandledStanzasCount = 0;
 
     /**
@@ -221,6 +230,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * </p>
      */
     private long clientHandledStanzasCount = 0;
+
     private BlockingQueue<Packet> unacknowledgedStanzas;
 
     /**
@@ -1043,7 +1053,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 }
                                 smServerMaxResumptimTime = enabled.getMaxResumptionTime();
                             } else {
-                                // Mark this a aon-resumable stream by setting smSessionId to null
+                                // Mark this a non-resumable stream by setting smSessionId to null
                                 smSessionId = null;
                             }
                             clientHandledStanzasCount = 0;
