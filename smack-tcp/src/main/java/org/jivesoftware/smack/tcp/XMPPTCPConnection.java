@@ -1613,14 +1613,23 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // See if resumption time is over
         long current = System.currentTimeMillis();
-        int clientResumptionTime = smClientMaxResumptionTime > 0 ? smClientMaxResumptionTime : Integer.MAX_VALUE;
-        int serverResumptionTime = smServerMaxResumptimTime > 0 ? smServerMaxResumptimTime : Integer.MAX_VALUE;
-        long maxResumptionMillies = Math.max(clientResumptionTime, serverResumptionTime) * 1000;
+        long maxResumptionMillies = getMaxSmResumptionTime() * 1000;
         if (shutdownTimestamp + maxResumptionMillies > current) {
             return false;
         } else {
             return true;
         }
+    }
+
+    /**
+     * Get the maximum resumption time in seconds after which a managed stream can be resumed.
+     *
+     * @return the maximum resumption time in seconds.
+     */
+    public int getMaxSmResumptionTime() {
+        int clientResumptionTime = smClientMaxResumptionTime > 0 ? smClientMaxResumptionTime : Integer.MAX_VALUE;
+        int serverResumptionTime = smServerMaxResumptimTime > 0 ? smServerMaxResumptimTime : Integer.MAX_VALUE;
+        return Math.min(clientResumptionTime, serverResumptionTime);
     }
 
     private void processHandledCount(long handledCount) throws NotConnectedException {
