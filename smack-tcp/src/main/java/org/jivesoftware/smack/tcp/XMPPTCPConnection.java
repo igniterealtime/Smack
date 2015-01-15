@@ -362,7 +362,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         if (isSmAvailable() && useSm) {
             // Remove what is maybe left from previously stream managed sessions
             unacknowledgedStanzas = new ArrayBlockingQueue<Packet>(QUEUE_SIZE);
-            clientHandledStanzasCount = 0;
             serverHandledStanzasCount = 0;
             // XEP-198 3. Enabling Stream Management. If the server response to 'Enable' is 'Failed'
             // then this is a non recoverable error and we therefore throw an exception.
@@ -1047,6 +1046,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 // Mark this a aon-resumable stream by setting smSessionId to null
                                 smSessionId = null;
                             }
+                            clientHandledStanzasCount = 0;
                             smWasEnabledAtLeastOnce = true;
                             smEnabledSyncPoint.reportSuccess();
                             LOGGER.fine("Stream Management (XEP-198): succesfully enabled");
