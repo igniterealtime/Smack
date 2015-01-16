@@ -25,18 +25,64 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 public class StreamOpen extends FullStreamElement {
 
     public static final String ELEMENT = "stream:stream";
-    public static final String NAMESPACE = "jabber:client";
+
+    public static final String CLIENT_NAMESPACE = "jabber:client";
+    public static final String SERVER_NAMESPACE = "jabber:server";
+
+    /**
+     * RFC 6120 § 4.7.5
+     */
     public static final String VERSION = "1.0";
 
-    private final String service;
+    /**
+     * RFC 6120 § 4.7.1
+     */
+    private final String from;
 
-    public StreamOpen(String service) {
-       this.service = service;
+    /**
+     * RFC 6120 § 4.7.2
+     */
+    private final String to;
+
+    /**
+     * RFC 6120 § 4.7.3
+     */
+    private final String id;
+
+    /**
+     * RFC 6120 § 4.7.4
+     */
+    private final String lang;
+
+    /**
+     * RFC 6120 § 4.8.2
+     */
+    private final String contentNamespace;
+
+    public StreamOpen(String to) {
+       this(to, null, null, null, StreamContentNamespace.client);
+    }
+
+    public StreamOpen(String to, String from, String id, String lang, StreamContentNamespace ns) {
+        this.to = to;
+        this.from = from;
+        this.id = id;
+        this.lang = lang;
+        switch (ns) {
+        case client:
+            this.contentNamespace = CLIENT_NAMESPACE;
+            break;
+        case server:
+            this.contentNamespace = SERVER_NAMESPACE;
+            break;
+        default:
+            throw new IllegalStateException();
+        }
     }
 
     @Override
     public String getNamespace() {
-        return NAMESPACE;
+        return contentNamespace;
     }
 
     @Override
@@ -47,11 +93,18 @@ public class StreamOpen extends FullStreamElement {
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.attribute("to", service);
+        xml.attribute("to", to);
         xml.attribute("xmlns:stream", "http://etherx.jabber.org/streams");
         xml.attribute("version", VERSION);
+        xml.optAttribute("from", from);
+        xml.optAttribute("id", id);
+        xml.xmllangAttribute(lang);
         xml.rightAngleBracket();
         return xml;
     }
 
+    public enum StreamContentNamespace {
+        client,
+        server;
+    }
 }
