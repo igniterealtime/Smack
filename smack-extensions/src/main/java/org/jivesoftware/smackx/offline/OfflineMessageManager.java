@@ -61,7 +61,7 @@ public class OfflineMessageManager {
     private final XMPPConnection connection;
 
     private static final PacketFilter PACKET_FILTER = new AndFilter(new PacketExtensionFilter(
-                    new OfflineMessageInfo()), new PacketTypeFilter(Message.class));
+                    new OfflineMessageInfo()), PacketTypeFilter.MESSAGE);
 
     public OfflineMessageManager(XMPPConnection connection) {
         this.connection = connection;
@@ -182,36 +182,30 @@ public class OfflineMessageManager {
      * @throws NotConnectedException 
      */
     public List<Message> getMessages() throws NoResponseException, XMPPErrorException, NotConnectedException {
-        List<Message> messages = new ArrayList<Message>();
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setFetch(true);
 
-        PacketCollector messageCollector = connection.createPacketCollector(PACKET_FILTER);
         PacketCollector resultCollector = connection.createPacketCollectorAndSend(request);
+        PacketCollector.Configuration messageCollectorConfiguration = PacketCollector.newConfiguration().setPacketFilter(PACKET_FILTER).setCollectorToReset(resultCollector);
+        PacketCollector messageCollector = connection.createPacketCollector(messageCollectorConfiguration);
 
+        List<Message> messages = null;
         try {
-            // Collect the received offline messages
-            Message message = messageCollector.nextResult();
-            while (message != null) {
-                messages.add(message);
-                // It is important that we query the resultCollector before the messageCollector
-                Packet result = resultCollector.pollResultOrThrow();
-                message = messageCollector.pollResult();
-                if (message == null && result != null) {
-                    // No new messages, but we have a non-error IQ response, we are done
-                    return messages;
-                } else if (message != null) {
-                    // We have received a message without waiting, great, continue to add this message and proceed with
-                    // the loop
-                    continue;
-                }
-                message = messageCollector.nextResult();
-            }
             resultCollector.nextResultOrThrow();
+            // Be extra safe, cancel the message collector right here so that it does not collector
+            // other messages that eventually match (although I've no idea how this could happen in
+            // case of XEP-13).
+            messageCollector.cancel();
+            messages = new ArrayList<>(messageCollector.getCollectedCount());
+            Message message;
+            while ((message = messageCollector.pollResult()) != null) {
+                messages.add(message);
+            }
         }
         finally {
+            // Ensure that the message collector is canceled even if nextResultOrThrow threw. It
+            // doesn't matter if we cancel the message collector twice
             messageCollector.cancel();
-            resultCollector.cancel();
         }
         return messages;
     }

@@ -189,7 +189,7 @@ public class PacketCollectorTest
 	{
 		protected TestPacketCollector(XMPPConnection conection, PacketFilter packetFilter, int size)
 		{
-			super(conection, packetFilter, size);
+			super(conection, PacketCollector.newConfiguration().setPacketFilter(packetFilter).setSize(size));
 		}
 	}
 

@@ -240,6 +240,19 @@ public interface XMPPConnection {
     public PacketCollector createPacketCollector(PacketFilter packetFilter);
 
     /**
+     * Create a new packet collector with the given packet collector configuration.
+     * <p>
+     * Please make sure to cancel the collector when it is no longer required. See also
+     * {@link #createPacketCollector(PacketFilter)}.
+     * </p>
+     * 
+     * @param configuration the packet collector configuration.
+     * @return a new packet collector.
+     * @since 4.1
+     */
+    public PacketCollector createPacketCollector(PacketCollector.Configuration configuration);
+
+    /**
      * Remove a packet collector of this connection.
      * 
      * @param collector a packet collectors which was created for this connection.

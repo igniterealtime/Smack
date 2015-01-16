@@ -715,7 +715,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public PacketCollector createPacketCollector(PacketFilter packetFilter) {
-        PacketCollector collector = new PacketCollector(this, packetFilter);
+        PacketCollector.Configuration configuration = PacketCollector.newConfiguration().setPacketFilter(packetFilter);
+        return createPacketCollector(configuration);
+    }
+
+    @Override
+    public PacketCollector createPacketCollector(PacketCollector.Configuration configuration) {
+        PacketCollector collector = new PacketCollector(this, configuration);
         // Add the collector to the list of active collectors.
         collectors.add(collector);
         return collector;

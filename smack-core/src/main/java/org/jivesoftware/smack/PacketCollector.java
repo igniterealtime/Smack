@@ -47,6 +47,12 @@ public class PacketCollector {
 
     private final PacketFilter packetFilter;
     private final ArrayBlockingQueue<Packet> resultQueue;
+
+    /**
+     * The packet collector which timeout for the next result will get reset once this collector collects a stanza.
+     */
+    private final PacketCollector collectorToReset;
+
     private final XMPPConnection connection;
 
     private boolean cancelled = false;
@@ -56,24 +62,13 @@ public class PacketCollector {
      * all packets will match this collector.
      *
      * @param connection the connection the collector is tied to.
-     * @param packetFilter determines which packets will be returned by this collector.
+     * @param configuration the configuration used to construct this collector
      */
-    protected PacketCollector(XMPPConnection connection, PacketFilter packetFilter) {
-        this(connection, packetFilter, SmackConfiguration.getPacketCollectorSize());
-    }
-
-    /**
-     * Creates a new packet collector. If the packet filter is <tt>null</tt>, then
-     * all packets will match this collector.
-     *
-     * @param connection the connection the collector is tied to.
-     * @param packetFilter determines which packets will be returned by this collector.
-     * @param maxSize the maximum number of packets that will be stored in the collector.
-     */
-    protected PacketCollector(XMPPConnection connection, PacketFilter packetFilter, int maxSize) {
+    protected PacketCollector(XMPPConnection connection, Configuration configuration) {
         this.connection = connection;
-        this.packetFilter = packetFilter;
-        this.resultQueue = new ArrayBlockingQueue<Packet>(maxSize);
+        this.packetFilter = configuration.packetFilter;
+        this.resultQueue = new ArrayBlockingQueue<>(configuration.size);
+        this.collectorToReset = configuration.collectorToReset;
     }
 
     /**
@@ -156,11 +151,13 @@ public class PacketCollector {
      * Returns the next available packet. The method call will block until the connection's default
      * timeout has elapsed.
      * 
-     * @return the next availabe packet.
+     * @return the next available packet.
      */
     public <P extends Packet> P nextResult() {
         return nextResult(connection.getPacketReplyTimeout());
     }
+
+    private volatile long waitStart;
 
     /**
      * Returns the next available packet. The method call will block (not return)
@@ -175,16 +172,20 @@ public class PacketCollector {
         throwIfCancelled();
         P res = null;
         long remainingWait = timeout;
-        final long waitStart = System.currentTimeMillis();
-        while (res == null && remainingWait > 0) {
+        waitStart = System.currentTimeMillis();
+        do {
             try {
                 res = (P) resultQueue.poll(remainingWait, TimeUnit.MILLISECONDS);
-                remainingWait = timeout - (System.currentTimeMillis() - waitStart);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 LOGGER.log(Level.FINE, "nextResult was interrupted", e);
             }
-        }
-        return res;
+            if (res != null) {
+                return res;
+            }
+            remainingWait = timeout - (System.currentTimeMillis() - waitStart);
+        } while (remainingWait > 0);
+        return null;
     }
 
     /**
@@ -243,12 +244,69 @@ public class PacketCollector {
         		// Since we know the queue is full, this poll should never actually block.
         		resultQueue.poll();
         	}
+            if (collectorToReset != null) {
+                collectorToReset.waitStart = System.currentTimeMillis();
+            }
         }
     }
 
     private final void throwIfCancelled() {
         if (cancelled) {
             throw new IllegalStateException("Packet collector already cancelled");
+        }
+    }
+
+    /**
+     * Get a new packet collector configuration instance.
+     * 
+     * @return a new packet collector configuration.
+     */
+    public static Configuration newConfiguration() {
+        return new Configuration();
+    }
+
+    public static class Configuration {
+        private PacketFilter packetFilter;
+        private int size = SmackConfiguration.getPacketCollectorSize();
+        private PacketCollector collectorToReset;
+
+        private Configuration() {
+        }
+
+        /**
+         * Set the packet filter used by this collector. If <code>null</code>, then all packets will
+         * get collected by this collector.
+         * 
+         * @param packetFilter
+         * @return a reference to this configuration.
+         */
+        public Configuration setPacketFilter(PacketFilter packetFilter) {
+            this.packetFilter = packetFilter;
+            return this;
+        }
+
+        /**
+         * Set the maximum size of this collector, i.e. how many stanzas this collector will collect
+         * before dropping old ones.
+         * 
+         * @param size
+         * @return a reference to this configuration.
+         */
+        public Configuration setSize(int size) {
+            this.size = size;
+            return this;
+        }
+
+        /**
+         * Set the collector which timeout for the next result is reset once this collector collects
+         * a packet.
+         * 
+         * @param collector
+         * @return a reference to this configuration.
+         */
+        public Configuration setCollectorToReset(PacketCollector collector) {
+            this.collectorToReset = collector;
+            return this;
         }
     }
 }
