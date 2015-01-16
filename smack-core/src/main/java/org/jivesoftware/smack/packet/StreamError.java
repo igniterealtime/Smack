@@ -149,7 +149,7 @@ public class StreamError extends AbstractError implements PlainStreamElement {
     }
 
     /**
-     * The defined stream error condtions, see RFC 6120 § 4.9.3
+     * The defined stream error conditions, see RFC 6120 § 4.9.3
      *
      */
     public enum Condition {
@@ -190,7 +190,8 @@ public class StreamError extends AbstractError implements PlainStreamElement {
             try {
                 condition = Condition.valueOf(string);
             } catch (Exception e) {
-                throw new IllegalStateException("Could not transform string '" + string + "' to XMPPErrorConditoin", e);
+                throw new IllegalStateException("Could not transform string '" + string
+                                + "' to XMPPErrorCondition", e);
             }
             return condition;
         }
