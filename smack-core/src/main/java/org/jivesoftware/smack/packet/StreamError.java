@@ -158,7 +158,7 @@ public class StreamError extends AbstractError implements PlainStreamElement {
         conflict,
         connection_timeout,
         host_gone,
-        host_unkown,
+        host_unknown,
         improper_addressing,
         internal_server_error,
         invalid_from,
