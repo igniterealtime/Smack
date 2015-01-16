@@ -49,7 +49,6 @@ public class WaitForPacketListener implements PacketListener {
             }
         }
         catch (InterruptedException e) {
-            // TODO better handling of spurious interrupts
             throw new IllegalStateException(e);
         }
     }

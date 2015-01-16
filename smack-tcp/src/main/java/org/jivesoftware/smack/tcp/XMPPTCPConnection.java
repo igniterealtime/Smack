@@ -1216,9 +1216,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
                 catch (InterruptedException e) {
                     throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
-                    // If the method above did not throw, we have a spurious interrupt and we should try to enqueue the
-                    // element again
-                    LOGGER.log(Level.FINE, "Spurious interrupt", e);
+                    // If the method above did not throw, then the sending thread was interrupted
+                    // TODO in a later version of Smack the InterruptedException should be thrown to
+                    // allow users to interrupt a sending thread that is currently blocking because
+                    // the queue is full.
+                    LOGGER.log(Level.WARNING, "Sending thread was interrupted", e);
                 }
             }
         }
@@ -1253,7 +1255,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
             catch (InterruptedException e) {
                 if (!queue.isShutdown()) {
-                    LOGGER.log(Level.FINER, "Spurious interrupt", e);
+                    // Users shouldn't try to interrupt the packet writer thread
+                    LOGGER.log(Level.WARNING, "Packet writer thread was interrupted. Don't do that. Use disconnect() instead.", e);
                 }
             }
             return packet;

@@ -201,7 +201,6 @@ public class DummyConnection extends AbstractXMPPConnection {
             return (P) queue.poll(wait, TimeUnit.SECONDS);
         }
         catch (InterruptedException e) {
-            // TODO handle spurious interrupts
             throw new IllegalStateException(e);
         }
     }

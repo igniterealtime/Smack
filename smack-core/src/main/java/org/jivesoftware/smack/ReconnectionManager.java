@@ -156,11 +156,13 @@ public class ReconnectionManager {
                             }
                         }
                         catch (InterruptedException e) {
-                            // We don't need to handle spurious interrupts, in the worst case, this will cause to
-                            // reconnect a few seconds earlier, depending on how many (spurious) interrupts arrive while
-                            // sleep() is called.
-                            LOGGER.log(Level.FINE, "Supurious interrupt", e);
+                            LOGGER.log(Level.FINE, "waiting for reconnection interrupted", e);
+                            break;
                         }
+                    }
+
+                    for (ConnectionListener listener : connection.connectionListeners) {
+                        listener.reconnectingIn(0);
                     }
 
                     // Makes a reconnection attempt

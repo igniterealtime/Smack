@@ -248,7 +248,8 @@ public class Roster {
                 }
             }
             catch (InterruptedException e) {
-                LOGGER.log(Level.FINE, "spurious interrupt", e);
+                LOGGER.log(Level.FINE, "interrupted", e);
+                break;
             }
             long now = System.currentTimeMillis();
             waitTime -= now - start;
