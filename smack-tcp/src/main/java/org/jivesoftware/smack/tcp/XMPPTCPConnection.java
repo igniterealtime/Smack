@@ -1688,7 +1688,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             }
                         }
                         String id = ackedStanza.getPacketID();
-                        if (StringUtils.isNotEmpty(id)) {
+                        if (StringUtils.isNullOrEmpty(id)) {
                             return;
                         }
                         PacketListener listener = stanzaIdAcknowledgedListeners.remove(id);
