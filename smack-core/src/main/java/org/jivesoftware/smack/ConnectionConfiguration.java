@@ -258,7 +258,10 @@ public abstract class ConnectionConfiguration {
      * even mention this part of the protocol.
      *
      * @return true if a session has to be requested when logging in.
+     * @deprecated Smack processes the 'optional' element of the session stream feature.
+     * @see Builder#setLegacySessionDisabled(boolean)
      */
+    @Deprecated
     public boolean isLegacySessionDisabled() {
         return legacySessionDisabled;
     }
@@ -581,10 +584,18 @@ public abstract class ConnectionConfiguration {
          * Sets if a {@link Session} will be requested on login if the server supports
          * it. Although this was mandatory on RFC 3921, RFC 6120/6121 don't even
          * mention this part of the protocol.
+         * <p>
+         * Deprecation notice: This setting is no longer required in most cases because Smack processes the 'optional'
+         * element eventually found in the session stream feature. See also <a
+         * href="https://tools.ietf.org/html/draft-cridland-xmpp-session-01">Here Lies Extensible Messaging and Presence
+         * Protocol (XMPP) Session Establishment</a>
+         * </p>
          *
          * @param legacySessionDisabled if a session has to be requested when logging in.
          * @return a reference to this builder.
+         * @deprecated Smack processes the 'optional' element of the session stream feature.
          */
+        @Deprecated
         public B setLegacySessionDisabled(boolean legacySessionDisabled) {
             this.legacySessionDisabled = legacySessionDisabled;
             return getThis();

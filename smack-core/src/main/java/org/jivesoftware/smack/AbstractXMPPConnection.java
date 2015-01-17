@@ -466,6 +466,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return user;
     }
 
+    // TODO remove this suppression once "disable legacy session" code has been removed from Smack
+    @SuppressWarnings("deprecation")
     protected void bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
                     IOException, SmackException {
 
