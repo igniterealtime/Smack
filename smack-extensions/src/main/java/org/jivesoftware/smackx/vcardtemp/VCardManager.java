@@ -16,25 +16,49 @@
  */
 package org.jivesoftware.smackx.vcardtemp;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
-public class VCardManager {
-    public static final String NAMESPACE = "vcard-temp";
-    public static final String ELEMENT = "vCard";
+public class VCardManager extends Manager {
+    public static final String NAMESPACE = VCard.NAMESPACE;
+    public static final String ELEMENT = VCard.ELEMENT;
+
+    private static final Map<XMPPConnection, VCardManager> INSTANCES = new WeakHashMap<>();
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
             public void connectionCreated(XMPPConnection connection) {
-                ServiceDiscoveryManager.getInstanceFor(connection).addFeature(NAMESPACE);
+                getInstanceFor(connection);
             }
         });
+    }
+
+    /**
+     * Retrieves a {@link VCardManager} for the specified {@link XMPPConnection}, creating one if it doesn't already
+     * exist.
+     * 
+     * @param connection the connection the manager is attached to.
+     * @return The new or existing manager.
+     */
+    public static synchronized VCardManager getInstanceFor(XMPPConnection connection) {
+        VCardManager vcardManager = INSTANCES.get(connection);
+        if (vcardManager == null) {
+            vcardManager = new VCardManager(connection);
+            INSTANCES.put(connection, vcardManager);
+        }
+        return vcardManager;
     }
 
     /**
@@ -45,9 +69,67 @@ public class VCardManager {
      * @return true if the given entity understands the vCard-XML format and exchange.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws NotConnectedException
+     * @deprecated use {@link #isSupported(String)} instead.
+     */
+    @Deprecated
+    public static boolean isSupported(String jid, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+        return VCardManager.getInstanceFor(connection).isSupported(jid);
+    }
+
+    private VCardManager(XMPPConnection connection) {
+        super(connection);
+        ServiceDiscoveryManager.getInstanceFor(connection).addFeature(NAMESPACE);
+    }
+
+    /**
+     * Save this vCard for the user connected by 'connection'. XMPPConnection should be authenticated
+     * and not anonymous.
+     *
+     * @throws XMPPErrorException thrown if there was an issue setting the VCard in the server.
+     * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public static boolean isSupported(String jid, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException  {
-        return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(jid, NAMESPACE);
+    public void saveVCard(VCard vcard) throws NoResponseException, XMPPErrorException, NotConnectedException {
+        vcard.setType(IQ.Type.set);
+        connection().createPacketCollectorAndSend(vcard).nextResultOrThrow();
+    }
+
+    /**
+     * Load the VCard of the current user.
+     *
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
+     * @throws NotConnectedException 
+     */
+    public VCard loadVCard() throws NoResponseException, XMPPErrorException, NotConnectedException {
+        return loadVCard(null);
+    }
+
+    /**
+     * Load VCard information for a given user.
+     *
+     * @throws XMPPErrorException 
+     * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
+     */
+    public VCard loadVCard(String bareJid) throws NoResponseException, XMPPErrorException, NotConnectedException {
+        VCard vcardRequest = new VCard();
+        vcardRequest.setTo(bareJid);
+        VCard result = connection().createPacketCollectorAndSend(vcardRequest).nextResultOrThrow();
+        return result;
+    }
+
+    /**
+     * Returns true if the given entity understands the vCard-XML format and allows the exchange of such.
+     * 
+     * @param jid
+     * @return true if the given entity understands the vCard-XML format and exchange.
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
+     * @throws NotConnectedException 
+     */
+    public boolean isSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException {
+        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, NAMESPACE);
     }
 }
