@@ -18,6 +18,21 @@ package org.jivesoftware.smack.tcp;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 
+/**
+ * A connection configuration for XMPP connections over TCP (the common case).
+ * <p>
+ * You can get an instance of the configuration builder with {@link #builder()} and build the final immutable connection
+ * configuration with {@link Builder#build()}.
+ * </p>
+ * <pre>
+ * {@code
+ * XMPPTCPConnectionConfiguration conf = XMPPConnectionConfiguration.builder()
+ *     .setServiceName("example.org").setUsernameAndPassword("user", "password")
+ *     .setCompressionEnabled(false).build();
+ * XMPPTCPConnection connection = new XMPPTCPConnection(conf);
+ * }
+ * </pre>
+ */
 public class XMPPTCPConnectionConfiguration extends ConnectionConfiguration {
 
     /**
@@ -65,6 +80,10 @@ public class XMPPTCPConnectionConfiguration extends ConnectionConfiguration {
         return new Builder();
     }
 
+    /**
+     * A configuration builder for XMPP connections over TCP. Use {@link XMPPTCPConnectionConfiguration#builder()} to
+     * obtain a new instance and {@link #build} to build the configuration.
+     */
     public static class Builder extends ConnectionConfiguration.Builder<Builder, XMPPTCPConnectionConfiguration> {
         private boolean compressionEnabled = false;
         private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
