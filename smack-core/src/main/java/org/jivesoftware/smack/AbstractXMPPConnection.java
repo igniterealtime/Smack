@@ -393,9 +393,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws IOException 
      */
     public void login() throws XMPPException, SmackException, IOException {
-        throwNotConnectedExceptionIfAppropriate();
-        throwAlreadyLoggedInExceptionIfAppropriate();
         if (isAnonymous()) {
+            throwNotConnectedExceptionIfAppropriate();
+            throwAlreadyLoggedInExceptionIfAppropriate();
             loginAnonymously();
         } else {
             // The previously used username, password and resource take over precedence over the
@@ -440,6 +440,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         if (!config.allowNullOrEmptyUsername && StringUtils.isNullOrEmpty(username)) {
             throw new IllegalArgumentException("Username must not be null or empty");
         }
+        throwNotConnectedExceptionIfAppropriate();
+        throwAlreadyLoggedInExceptionIfAppropriate();
         usedUsername = username;
         usedPassword = password;
         usedResource = resource;

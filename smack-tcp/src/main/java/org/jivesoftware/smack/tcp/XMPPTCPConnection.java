@@ -306,6 +306,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     @Override
     protected void throwNotConnectedExceptionIfAppropriate() throws NotConnectedException {
+        if (packetWriter == null) {
+            throw new NotConnectedException();
+        }
         packetWriter.throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
     }
 
