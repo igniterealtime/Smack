@@ -424,8 +424,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * Login with the given username. You may omit the password if a callback handler is used. If
-     * resource is null, then the server will generate one.
+     * Login with the given username (authorization identity). You may omit the password if a callback handler is used.
+     * If resource is null, then the server will generate one.
      * 
      * @param username
      * @param password

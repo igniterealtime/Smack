@@ -419,11 +419,12 @@ public abstract class ConnectionConfiguration {
         /**
          * Set the XMPP entities username and password.
          * <p>
-         * The username is the localpart of the entities JID, e.g. <code>localpart@example.org</code>.
+         * The username is usually the localpart of the clients JID. But some SASL mechanisms or services may require a different
+         * format (e.g. the full JID) as used authorization identity.
          * </p>
          *
-         * @param username
-         * @param password
+         * @param username the username or authorization identity
+         * @param password the password or token used to authenticate
          * @return a reference to this builder.
          */
         public B setUsernameAndPassword(String username, String password) {

@@ -91,9 +91,12 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     protected XMPPConnection connection;
 
     /**
-     * authcid, i.e. the username (localpart) of the XMPP connection trying to authenticated.
+     * Then authentication identity (authcid). RFC 6120 § 6.3.7 informs us that some SASL mechanisms use this as a
+     * "simple user name". But the exact form is a matter of the mechanism and that it does not necessarily map to an
+     * localpart. But it usually is the localpart of the client JID, although sometimes other formats are used (e.g. the
+     * full JID).
      * <p>
-     * Not to be confused with the authzid.
+     * Not to be confused with the authzid (see RFC 6120 § 6.3.8).
      * </p>
      */
     protected String authenticationId;
