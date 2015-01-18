@@ -172,7 +172,7 @@ public class SynchronizationPoint<E extends Exception> {
                     break;
                 }
             } catch (InterruptedException e) {
-                LOGGER.log(Level.FINE, "Spurious interrupt while waiting for condition or timeout", e);
+                LOGGER.log(Level.WARNING, "Thread interrupt while waiting for condition or timeout ignored", e);
             }
         }
     }
