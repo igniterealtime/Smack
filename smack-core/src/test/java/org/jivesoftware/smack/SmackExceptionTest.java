@@ -41,7 +41,7 @@ public class SmackExceptionTest {
 
         ConnectionException connectionException = ConnectionException.from(failedAddresses);
         String message = connectionException.getMessage();
-        assertEquals("The following addresses failed: foo.bar.example:1234 Exception: Failed for some reason, barz.example:5678 Exception: Failed for some other reason",
+        assertEquals("The following addresses failed: 'foo.bar.example:1234' failed because java.lang.Exception: Failed for some reason, 'barz.example:5678' failed because java.lang.Exception: Failed for some other reason",
                         message);
     }
 

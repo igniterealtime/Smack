@@ -109,13 +109,9 @@ public class HostAddress {
     }
 
     public String getErrorMessage() {
-        String error;
         if (exception == null) {
-            error = "No error logged";
+            return "No error logged";
         }
-        else {
-            error = exception.getMessage();
-        }
-        return toString() + " Exception: " + error;
+        return "'" + toString() + "' failed because " + exception.toString();
     }
 }
