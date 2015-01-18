@@ -51,23 +51,23 @@ import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Challenge;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
+import org.jivesoftware.smack.sm.SMUtils;
+import org.jivesoftware.smack.sm.StreamManagementException;
+import org.jivesoftware.smack.sm.StreamManagementException.StreamIdDoesNotMatchException;
+import org.jivesoftware.smack.sm.StreamManagementException.StreamManagementNotEnabledException;
+import org.jivesoftware.smack.sm.packet.StreamManagement;
+import org.jivesoftware.smack.sm.packet.StreamManagement.AckAnswer;
+import org.jivesoftware.smack.sm.packet.StreamManagement.AckRequest;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Enable;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Enabled;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Failed;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Resume;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Resumed;
+import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature;
+import org.jivesoftware.smack.sm.predicates.Predicate;
+import org.jivesoftware.smack.sm.provider.ParseStreamManagement;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.tcp.sm.SMUtils;
-import org.jivesoftware.smack.tcp.sm.StreamManagementException;
-import org.jivesoftware.smack.tcp.sm.StreamManagementException.StreamManagementNotEnabledException;
-import org.jivesoftware.smack.tcp.sm.StreamManagementException.StreamIdDoesNotMatchException;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.AckAnswer;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.AckRequest;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.Enable;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.Enabled;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.Failed;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.Resume;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.Resumed;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.StreamManagementFeature;
-import org.jivesoftware.smack.tcp.sm.predicates.Predicate;
-import org.jivesoftware.smack.tcp.sm.provider.ParseStreamManagement;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -1424,7 +1424,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * Add a predicate for Stream Management acknowledgment requests.
      * <p>
      * Those predicates are used to determine when a Stream Management acknowledgement request is send to the server.
-     * Some pre-defined predicates are found in the <code>org.jivesoftware.smack.tcp.sm.predicates</code> package.
+     * Some pre-defined predicates are found in the <code>org.jivesoftware.smack.sm.predicates</code> package.
      * </p>
      * <p>
      * If not predicate is configured, the {@link Predicate#forMessagesOrAfter5Stanzas()} will be used.

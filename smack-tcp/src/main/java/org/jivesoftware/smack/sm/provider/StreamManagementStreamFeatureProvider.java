@@ -14,25 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.tcp.sm.predicates;
+package org.jivesoftware.smack.sm.provider;
 
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature;
+import org.xmlpull.v1.XmlPullParser;
 
-public class ForEveryMessage implements PacketFilter {
-
-    public static final ForEveryMessage INSTANCE = new ForEveryMessage();
-
-    private ForEveryMessage() {
-    }
+public class StreamManagementStreamFeatureProvider extends PacketExtensionProvider<StreamManagementFeature> {
 
     @Override
-    public boolean accept(Packet packet) {
-        if (packet instanceof Message) {
-            return true;
-        }
-        return false;
+    public StreamManagementFeature parse(XmlPullParser parser,
+                    int initialDepth) {
+        return StreamManagementFeature.INSTANCE;
     }
 
 }

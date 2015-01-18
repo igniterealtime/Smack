@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright 2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.tcp.sm.provider;
+package org.jivesoftware.smack.tcp;
 
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.StreamManagementFeature;
-import org.xmlpull.v1.XmlPullParser;
+import static org.junit.Assert.assertTrue;
 
-public class StreamManagementStreamFeatureProvider extends PacketExtensionProvider<StreamManagementFeature> {
+import java.util.List;
 
-    @Override
-    public StreamManagementFeature parse(XmlPullParser parser,
-                    int initialDepth) {
-        return StreamManagementFeature.INSTANCE;
+import org.junit.Test;
+
+public class TcpInitializerTest {
+
+    @Test
+    public void testExtensionInitializer() {
+        TCPInitializer initializer = new TCPInitializer();
+        List<Exception> exceptions = initializer.initialize();
+        assertTrue(exceptions.size() == 0);
     }
 
 }

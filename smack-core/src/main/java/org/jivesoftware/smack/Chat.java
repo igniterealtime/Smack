@@ -89,10 +89,9 @@ public class Chat {
      * </pre>
      *
      * @param text the text to send.
-     * @throws XMPPException if sending the message fails.
      * @throws NotConnectedException 
      */
-    public void sendMessage(String text) throws XMPPException, NotConnectedException {
+    public void sendMessage(String text) throws NotConnectedException {
         Message message = new Message();
         message.setBody(text);
         sendMessage(message);

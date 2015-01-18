@@ -14,32 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.tcp.sm.predicates;
+package org.jivesoftware.smack.sm.predicates;
 
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Packet;
 
-public class AfterXStanzas implements PacketFilter {
+public class ForMatchingPredicateOrAfterXStanzas implements PacketFilter {
 
-    final int count;
-    int currentCount;
+    private final PacketFilter predicate;
+    private final AfterXStanzas afterXStanzas;
 
-    public AfterXStanzas(int count) {
-        this.count = count;
-        currentCount = 0;
+    public ForMatchingPredicateOrAfterXStanzas(PacketFilter predicate, int count) {
+        this.predicate = predicate;
+        this.afterXStanzas = new AfterXStanzas(count);
     }
 
     @Override
-    public synchronized boolean accept(Packet packet) {
-        currentCount++;
-        if (currentCount == count) {
-            resetCounter();
+    public boolean accept(Packet packet) {
+        if (predicate.accept(packet)) {
+            afterXStanzas.resetCounter();
             return true;
         }
-        return false;
-    }
-
-    public synchronized void resetCounter() {
-        currentCount = 0;
+        return afterXStanzas.accept(packet);
     }
 }

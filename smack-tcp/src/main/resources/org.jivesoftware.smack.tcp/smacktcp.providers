@@ -5,7 +5,7 @@
     <streamFeatureProvider>
         <elementName>sm</elementName>
         <namespace>urn:xmpp:sm:3</namespace>
-        <className>org.jivesoftware.smack.tcp.sm.provider.StreamManagementStreamFeatureProvider</className>
+        <className>org.jivesoftware.smack.sm.provider.StreamManagementStreamFeatureProvider</className>
     </streamFeatureProvider>
 
 </smackProviders>

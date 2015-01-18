@@ -14,16 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.tcp.sm.provider;
+package org.jivesoftware.smack.sm.provider;
 
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.AckAnswer;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.AckRequest;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.Enabled;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.Failed;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement.Resumed;
+import org.jivesoftware.smack.sm.packet.StreamManagement.AckAnswer;
+import org.jivesoftware.smack.sm.packet.StreamManagement.AckRequest;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Enabled;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Failed;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Resumed;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

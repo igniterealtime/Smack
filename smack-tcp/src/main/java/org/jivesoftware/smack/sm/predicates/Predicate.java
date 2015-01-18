@@ -14,21 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.tcp.sm.predicates;
+package org.jivesoftware.smack.sm.predicates;
 
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.packet.Packet;
 
-public class ForEveryStanza implements PacketFilter {
+public class Predicate {
 
-    public static final ForEveryStanza INSTANCE = new ForEveryStanza();
-
-    private ForEveryStanza() {
+    public static PacketFilter forMessagesOrAfter5Stanzas() {
+        return new ForMatchingPredicateOrAfterXStanzas(ForEveryMessage.INSTANCE, 5);
     }
 
-    @Override
-    public boolean accept(Packet packet) {
-        return true;
+    public static AfterXStanzas after5Stanzas() {
+        return new AfterXStanzas(5);
     }
-
 }

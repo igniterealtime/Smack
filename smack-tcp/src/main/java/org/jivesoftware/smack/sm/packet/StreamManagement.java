@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.tcp.sm.packet;
+package org.jivesoftware.smack.sm.packet;
 
 import org.jivesoftware.smack.packet.FullStreamElement;
 import org.jivesoftware.smack.packet.PacketExtension;

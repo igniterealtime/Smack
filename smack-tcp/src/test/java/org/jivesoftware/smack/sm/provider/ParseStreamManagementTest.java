@@ -16,12 +16,12 @@
  */
 
 
-package org.jivesoftware.smack.tcp.sm.provider;
+package org.jivesoftware.smack.sm.provider;
 
 import com.jamesmurty.utils.XMLBuilder;
 
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.tcp.sm.packet.StreamManagement;
+import org.jivesoftware.smack.sm.packet.StreamManagement;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
