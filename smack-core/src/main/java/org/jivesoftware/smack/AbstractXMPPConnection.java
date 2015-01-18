@@ -370,15 +370,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private String usedUsername, usedPassword, usedResource;
 
     /**
-     * Logs in to the server using the strongest authentication mode supported by
-     * the server, then sets presence to available. If the server supports SASL authentication 
-     * then the user will be authenticated using SASL if not Non-SASL authentication will 
-     * be tried. If more than five seconds (default timeout) elapses in each step of the 
-     * authentication process without a response from the server, or if an error occurs, a 
-     * XMPPException will be thrown.<p>
-     * 
-     * Before logging in (i.e. authenticate) to the server the connection must be connected.
-     * 
+     * Logs in to the server using the strongest SASL mechanism supported by
+     * the server. If more than the connection's default packet timeout elapses in each step of the 
+     * authentication process without a response from the server, a
+     * {@link SmackException.NoResponseException} will be thrown.
+     * <p>
+     * Before logging in (i.e. authenticate) to the server the connection must be connected
+     * by calling {@link #connect}.
+     * </p>
+     * <p>
      * It is possible to log in without sending an initial available presence by using
      * {@link ConnectionConfiguration.Builder#setSendPresence(boolean)}. If this connection is
      * not interested in loading its roster upon login then use
@@ -387,10 +387,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * while using SASL then you may be interested in using
      * {@link ConnectionConfiguration.Builder#setCallbackHandler(javax.security.auth.callback.CallbackHandler)}.
      * For more advanced login settings see {@link ConnectionConfiguration}.
+     * </p>
      * 
      * @throws XMPPException if an error occurs on the XMPP protocol level.
-     * @throws SmackException if an error occurs somehwere else besides XMPP protocol level.
-     * @throws IOException 
+     * @throws SmackException if an error occurs somewhere else besides XMPP protocol level.
+     * @throws IOException if an I/O error occurs during login.
      */
     public synchronized void login() throws XMPPException, SmackException, IOException {
         if (isAnonymous()) {
