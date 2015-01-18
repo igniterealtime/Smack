@@ -348,7 +348,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws IOException 
      * @throws ConnectionException with detailed information about the failed connection.
      */
-    public void connect() throws SmackException, IOException, XMPPException {
+    public synchronized void connect() throws SmackException, IOException, XMPPException {
         throwAlreadyConnectedExceptionIfAppropriate();
         saslAuthentication.init();
         saslFeatureReceived.init();
@@ -392,7 +392,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws SmackException if an error occurs somehwere else besides XMPP protocol level.
      * @throws IOException 
      */
-    public void login() throws XMPPException, SmackException, IOException {
+    public synchronized void login() throws XMPPException, SmackException, IOException {
         if (isAnonymous()) {
             throwNotConnectedExceptionIfAppropriate();
             throwAlreadyLoggedInExceptionIfAppropriate();
@@ -418,7 +418,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws IOException
      * @see #login
      */
-    public void login(String username, String password) throws XMPPException, SmackException,
+    public synchronized void login(String username, String password) throws XMPPException, SmackException,
                     IOException {
         login(username, password, config.getResource());
     }
@@ -435,7 +435,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws IOException
      * @see #login
      */
-    public void login(String username, String password, String resource) throws XMPPException,
+    public synchronized void login(String username, String password, String resource) throws XMPPException,
                     SmackException, IOException {
         if (!config.allowNullOrEmptyUsername && StringUtils.isNullOrEmpty(username)) {
             throw new IllegalArgumentException("Username must not be null or empty");
