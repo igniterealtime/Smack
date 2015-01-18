@@ -32,7 +32,7 @@ public class FileTransferNegotiatorTest {
     @Before
     public void setUp() throws Exception {
         // Uncomment this to enable debug output
-        // XMPPConnection.DEBUG_ENABLED = true;
+        // SmackConfiguration.DEBUG = true;
 
         connection = new DummyConnection();
         connection.connect();

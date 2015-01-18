@@ -35,7 +35,7 @@ public abstract class ConnectionConfiguration {
 
     static {
         // Ensure that Smack is initialized when ConnectionConfiguration is used, or otherwise e.g.
-        // SmackConfiguration.DEBUG_ENABLED may not be initialized yet.
+        // SmackConfiguration.DEBUG may not be initialized yet.
         SmackConfiguration.getVersion();
     }
 
@@ -226,7 +226,7 @@ public abstract class ConnectionConfiguration {
 
     /**
      * Returns true if the new connection about to be establish is going to be debugged. By
-     * default the value of {@link SmackConfiguration#DEBUG_ENABLED} is used.
+     * default the value of {@link SmackConfiguration#DEBUG} is used.
      *
      * @return true if the new connection about to be establish is going to be debugged.
      */
@@ -399,7 +399,7 @@ public abstract class ConnectionConfiguration {
         private RosterStore rosterStore;
         private ProxyInfo proxy;
         private CallbackHandler callbackHandler;
-        private boolean debuggerEnabled = SmackConfiguration.DEBUG_ENABLED;
+        private boolean debuggerEnabled = SmackConfiguration.DEBUG;
         private SocketFactory socketFactory;
         private String serviceName;
         private String host;
@@ -634,7 +634,7 @@ public abstract class ConnectionConfiguration {
 
         /**
          * Sets if the new connection about to be establish is going to be debugged. By
-         * default the value of {@link SmackConfiguration#DEBUG_ENABLED} is used.
+         * default the value of {@link SmackConfiguration#DEBUG} is used.
          *
          * @param debuggerEnabled if the new connection about to be establish is going to be debugged.
          * @return a reference to this builder.

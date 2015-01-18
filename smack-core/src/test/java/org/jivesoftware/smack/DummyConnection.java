@@ -153,7 +153,7 @@ public class DummyConnection extends AbstractXMPPConnection {
 
     @Override
     public void send(PlainStreamElement element) {
-        if (SmackConfiguration.DEBUG_ENABLED) {
+        if (SmackConfiguration.DEBUG) {
             System.out.println("[SEND]: " + element.toXML());
         }
         queue.add(element);
@@ -161,7 +161,7 @@ public class DummyConnection extends AbstractXMPPConnection {
 
     @Override
     protected void sendPacketInternal(Packet packet) {
-        if (SmackConfiguration.DEBUG_ENABLED) {
+        if (SmackConfiguration.DEBUG) {
             System.out.println("[SEND]: " + packet.toXML());
         }
         queue.add(packet);
@@ -213,7 +213,7 @@ public class DummyConnection extends AbstractXMPPConnection {
      * @param packet the packet to process.
      */
     public void processPacket(Packet packet) {
-        if (SmackConfiguration.DEBUG_ENABLED) {
+        if (SmackConfiguration.DEBUG) {
             System.out.println("[RECV]: " + packet.toXML());
         }
 

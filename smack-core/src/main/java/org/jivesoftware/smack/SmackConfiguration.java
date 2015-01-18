@@ -77,7 +77,7 @@ public final class SmackConfiguration {
      * property <tt>smack.debugEnabled</tt> to true. The system property can be set on the
      * command line such as "java SomeApp -Dsmack.debugEnabled=true".
      */
-    public static boolean DEBUG_ENABLED = false;
+    public static boolean DEBUG = false;
 
     /**
      * The default parsing exception callback is {@link ExceptionThrowingCallback} which will

@@ -1797,7 +1797,7 @@ public class MultiUserChatTest extends SmackTestCase {
     }
 
     protected void setUp() throws Exception {
-        //TCPConnection.DEBUG_ENABLED = false;
+        //SmackConfiguration.DEBUG = false;
         super.setUp();
         room = "fruta124@" + getMUCDomain();
         try {

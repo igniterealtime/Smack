@@ -43,7 +43,7 @@ public class ItemValidationTest extends InitExtensions {
 	public void setUp() throws Exception
 	{
 		// Uncomment this to enable debug output
-		// XMPPConnection.DEBUG_ENABLED = true;
+		// SmackConfiguration.DEBUG = true;
 
 		connection = new ThreadedDummyConnection();
 		connection.connect();

@@ -63,7 +63,7 @@ public class RosterTest {
     @Before
     public void setUp() throws Exception {
         // Uncomment this to enable debug output
-        //XMPPConnection.DEBUG_ENABLED = true;
+        //SmackConfiguration.DEBUG = true;
 
         connection = new DummyConnection();
         connection.connect();
@@ -708,7 +708,7 @@ public class RosterTest {
 
         public synchronized void entriesAdded(Collection<String> addresses) {
             addressesAdded.addAll(addresses);
-            if (SmackConfiguration.DEBUG_ENABLED) {
+            if (SmackConfiguration.DEBUG) {
                 for (String address : addresses) {
                     System.out.println("Roster entry for " + address + " added.");
                 }
@@ -718,7 +718,7 @@ public class RosterTest {
 
         public synchronized void entriesDeleted(Collection<String> addresses) {
             addressesDeleted.addAll(addresses);
-            if (SmackConfiguration.DEBUG_ENABLED) {
+            if (SmackConfiguration.DEBUG) {
                 for (String address : addresses) {
                     System.out.println("Roster entry for " + address + " deleted.");
                 }
@@ -728,7 +728,7 @@ public class RosterTest {
 
         public synchronized void entriesUpdated(Collection<String> addresses) {
             addressesUpdated.addAll(addresses);
-            if (SmackConfiguration.DEBUG_ENABLED) {
+            if (SmackConfiguration.DEBUG) {
                 for (String address : addresses) {
                     System.out.println("Roster entry for " + address + " updated.");
                 }
@@ -737,7 +737,7 @@ public class RosterTest {
         }
 
         public void presenceChanged(Presence presence) {
-            if (SmackConfiguration.DEBUG_ENABLED) {
+            if (SmackConfiguration.DEBUG) {
                 System.out.println("Roster presence changed: " + presence.toXML());
             }
             reportInvoked();

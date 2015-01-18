@@ -212,7 +212,7 @@ public class JingleMediaTest extends SmackTestCase {
 
         try {
 
-            //TCPConnection.DEBUG_ENABLED = true;
+            //SmackConfiguration.DEBUG = true;
 
             XMPPTCPConnection x0 = getConnection(0);
             XMPPTCPConnection x1 = getConnection(1);
@@ -399,7 +399,7 @@ public class JingleMediaTest extends SmackTestCase {
     public void testCompleteWithBridgeB() {
         try {
 
-            //TCPConnection.DEBUG_ENABLED = true;
+            //SmackConfiguration.DEBUG = true;
 
             XMPPTCPConnection x0 = getConnection(0);
             XMPPTCPConnection x1 = getConnection(1);

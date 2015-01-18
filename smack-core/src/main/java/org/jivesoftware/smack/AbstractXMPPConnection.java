@@ -515,7 +515,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         // If debugging is enabled, change the the debug window title to include the
         // name we are now logged-in as.
-        // If DEBUG_ENABLED was set to true AFTER the connection was created the debugger
+        // If DEBUG was set to true AFTER the connection was created the debugger
         // will be null
         if (config.isDebuggerEnabled() && debugger != null) {
             debugger.userHasLogged(user);

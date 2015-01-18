@@ -11,7 +11,7 @@ Debugging mode can be enabled in two different ways:
 
   1. Add the following line of code **before** creating new connections:
 
-`XMPPConnection.DEBUG_ENABLED = true;`
+`SmackConfiguration.DEBUG = true;`
 
   2. Set the Java system property `smack.debugEnabled` to true. The system property can be set on the command line such as:
 
@@ -21,7 +21,7 @@ If you wish to explicitly disable debug mode in your application, including
 using the command-line parameter, add the following line to your application
 before opening new connections:
 
-`XMPPConnection.DEBUG_ENABLED = false;`
+`SmackConfiguration.DEBUG = false;`
 
 Smack uses the following logic to decide the debugger console to use:
 

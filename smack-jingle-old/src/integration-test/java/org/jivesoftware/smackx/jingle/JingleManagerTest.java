@@ -685,7 +685,7 @@ public class JingleManagerTest extends SmackTestCase {
         XMPPTCPConnection x0 = getConnection(0);
         XMPPTCPConnection x1 = getConnection(1);
 
-        XMPPTCPConnection.DEBUG_ENABLED = true;
+        XMPPSmackConfiguration.DEBUG = true;
 
         FixedResolver tr0 = new FixedResolver("127.0.0.1", 20080);
         FixedTransportManager ftm0 = new FixedTransportManager(tr0);
