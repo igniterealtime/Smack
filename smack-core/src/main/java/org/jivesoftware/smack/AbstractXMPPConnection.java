@@ -400,7 +400,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         } else {
             // The previously used username, password and resource take over precedence over the
             // ones from the connection configuration
-            String username = usedUsername != null ? usedUsername : config.getUsername();
+            CharSequence username = usedUsername != null ? usedUsername : config.getUsername();
             String password = usedPassword != null ? usedPassword : config.getPassword();
             String resource = usedResource != null ? usedResource : config.getResource();
             login(username, password, resource);
@@ -408,7 +408,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * Same as {@link #login(String, String, String)}, but takes the resource from the connection
+     * Same as {@link #login(CharSequence, String, String)}, but takes the resource from the connection
      * configuration.
      * 
      * @param username
@@ -418,7 +418,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws IOException
      * @see #login
      */
-    public synchronized void login(String username, String password) throws XMPPException, SmackException,
+    public synchronized void login(CharSequence username, String password) throws XMPPException, SmackException,
                     IOException {
         login(username, password, config.getResource());
     }
@@ -435,17 +435,17 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws IOException
      * @see #login
      */
-    public synchronized void login(String username, String password, String resource) throws XMPPException,
+    public synchronized void login(CharSequence username, String password, String resource) throws XMPPException,
                     SmackException, IOException {
         if (!config.allowNullOrEmptyUsername && StringUtils.isNullOrEmpty(username)) {
             throw new IllegalArgumentException("Username must not be null or empty");
         }
         throwNotConnectedExceptionIfAppropriate();
         throwAlreadyLoggedInExceptionIfAppropriate();
-        usedUsername = username;
+        usedUsername = username != null ? username.toString() : null;
         usedPassword = password;
         usedResource = resource;
-        loginNonAnonymously(username, password, resource);
+        loginNonAnonymously(usedUsername, usedPassword, usedResource);
     }
 
     protected abstract void loginNonAnonymously(String username, String password, String resource)

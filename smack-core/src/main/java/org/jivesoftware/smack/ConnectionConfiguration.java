@@ -17,8 +17,6 @@
 
 package org.jivesoftware.smack;
 
-import java.util.Locale;
-
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.rosterstore.RosterStore;
@@ -65,7 +63,7 @@ public abstract class ConnectionConfiguration {
     // Holds the socket factory that is used to generate the socket in the connection
     private final SocketFactory socketFactory;
 
-    private final String username;
+    private final CharSequence username;
     private final String password;
     private final String resource;
     private final boolean sendPresence;
@@ -96,12 +94,7 @@ public abstract class ConnectionConfiguration {
     protected final boolean allowNullOrEmptyUsername;
 
     protected ConnectionConfiguration(Builder<?,?> builder) {
-        if (builder.username != null) {
-            // Do partial version of nameprep on the username.
-            username = builder.username.toLowerCase(Locale.US).trim();
-        } else {
-            username = null;
-        }
+        username = builder.username;
         password = builder.password;
         callbackHandler = builder.callbackHandler;
 
@@ -329,7 +322,7 @@ public abstract class ConnectionConfiguration {
      *
      * @return the username to use when trying to reconnect to the server.
      */
-    public String getUsername() {
+    public CharSequence getUsername() {
         return this.username;
     }
 
@@ -397,7 +390,7 @@ public abstract class ConnectionConfiguration {
         private String[] enabledSSLProtocols;
         private String[] enabledSSLCiphers;
         private HostnameVerifier hostnameVerifier;
-        private String username;
+        private CharSequence username;
         private String password;
         private String resource = "Smack";
         private boolean sendPresence = true;
@@ -427,7 +420,7 @@ public abstract class ConnectionConfiguration {
          * @param password the password or token used to authenticate
          * @return a reference to this builder.
          */
-        public B setUsernameAndPassword(String username, String password) {
+        public B setUsernameAndPassword(CharSequence username, String password) {
             this.username = username;
             this.password = password;
             return getThis();
