@@ -22,11 +22,11 @@ entity.
 **Usage**
 
 In order to create a Form to fill out use the _**Form**_'s constructor passing
-the constant **Form.TYPE_FORM** as the parameter. The next step is to create
+the constant **DataForm.type.form** as the parameter. The next step is to create
 the form fields and add them to the form. In order to create and customize a
 _**FormField**_ use the _**FormField**_'s constructor specifying the variable
 name of the field as the parameter. Then use **setType(String type)** to set
-the field's type (e.g. FormField.TYPE_HIDDEN, FormField.TYPE_TEXT_SINGLE).
+the field's type (e.g. FormField.type.hidden, FormField.type.text_single).
 Once we have the _**Form**_ instance and the _**FormFields**_ the last step is
 to send **addField(FormField field)** for each field that we want to add to
 the form.
@@ -41,12 +41,12 @@ In this example we can see how to create and send a form to fill out:
 
 ```
 // Create a new form to gather data
-Form formToSend = new Form(Form.TYPE_FORM);
+Form formToSend = new Form(DataForm.type.form);
 formToSend.setInstructions(Fill out this form to report your case.\nThe case will be created automatically.");
 formToSend.setTitle("Case configurations");
 // Add a hidden variable to the form
 FormField field = new FormField("hidden_var");
-field.setType(FormField.TYPE_HIDDEN);
+field.setType(FormField.type.hidden);
 field.addValue("Some value for the hidden variable");
 formToSend.addField(field);
 // Add a fixed variable to the form
@@ -56,12 +56,12 @@ formToSend.addField(field);
 // Add a text-single variable to the form
 field = new FormField("name");
 field.setLabel("Enter a name for the case");
-field.setType(FormField.TYPE_TEXT_SINGLE);
+field.setType(FormField.type.text_single);
 formToSend.addField(field);
 // Add a text-multi variable to the form
 field = new FormField("description");
 field.setLabel("Enter a description");
-field.setType(FormField.TYPE_TEXT_MULTI);
+field.setType(FormField.type.text_multi);
 formToSend.addField(field);
 // Create a chat with "user2@host.com"
 Chat chat = conn1.createChat("user2@host.com" );

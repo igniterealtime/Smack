@@ -59,7 +59,7 @@ muc.create("testbot");
 
 // Send an empty room configuration form which indicates that we want
 // an instant room
-muc.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
+muc.sendConfigurationForm(new Form(DataForm.Type.submit));
 ```
 
 In this example we can see how to create a reserved room. The form is
@@ -82,7 +82,7 @@ Form submitForm = form.createAnswerForm();
 // Add default answers to the form to submit
 for (Iterator fields = form.getFields(); fields.hasNext();) {
 	FormField field = (FormField) fields.next();
-	if (!FormField.TYPE_HIDDEN.equals(field.getType()) && field.getVariable() != null) {
+	if (!FormField.type.hidden.equals(field.getType()) && field.getVariable() != null) {
 		// Sets the default value as the answer
 		submitForm.setDefaultAnswer(field.getVariable());
 }
