@@ -227,7 +227,7 @@ public abstract class Packet implements TopLevelStreamElement {
      * @return the packet extension with the given namespace.
      */
     public PacketExtension getExtension(String namespace) {
-        return PacketUtil.packetExtensionfromCollection(getExtensions(), null, namespace);
+        return PacketUtil.extensionElementFrom(getExtensions(), null, namespace);
     }
 
     /**

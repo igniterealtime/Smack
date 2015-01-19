@@ -46,7 +46,7 @@ public class RSMManager {
         if (additionalExtensions == null) {
             additionalExtensions = new LinkedList<PacketExtension>();
         }
-        RSMSet resultRsmSet = PacketUtil.packetExtensionfromCollection(returnedExtensions, RSMSet.ELEMENT, RSMSet.NAMESPACE);
+        RSMSet resultRsmSet = PacketUtil.extensionElementFrom(returnedExtensions, RSMSet.ELEMENT, RSMSet.NAMESPACE);
         if (resultRsmSet == null) {
             throw new IllegalArgumentException("returnedExtensions did not contain a RSMset");
         }

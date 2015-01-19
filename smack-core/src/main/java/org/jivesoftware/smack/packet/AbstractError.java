@@ -92,7 +92,7 @@ public class AbstractError {
      * @return the extension, or <tt>null</tt> if it doesn't exist.
      */
     public <PE extends PacketExtension> PE getExtension(String elementName, String namespace) {
-        return PacketUtil.packetExtensionfromCollection(extensions, elementName, namespace);
+        return PacketUtil.extensionElementFrom(extensions, elementName, namespace);
     }
 
     protected void addDescriptiveTextsAndExtensions(XmlStringBuilder xml) {

@@ -22,10 +22,33 @@ import org.jivesoftware.smack.packet.PacketExtension;
 
 public class PacketUtil {
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Get a extension element from a collection
+     *
+     * @param collection
+     * @param element
+     * @param namespace
+     * @return the extension element
+     * @deprecated use {@link #extensionElementFrom(Collection, String, String)} instead
+     */
+    @Deprecated
     public static <PE extends PacketExtension> PE packetExtensionfromCollection(
                     Collection<PacketExtension> collection, String element,
                     String namespace) {
+        return extensionElementFrom(collection, element, namespace);
+    }
+
+    /**
+     * Get a extension element from a collection
+     *
+     * @param collection
+     * @param element
+     * @param namespace
+     * @return the extension element
+     */
+    @SuppressWarnings("unchecked")
+    public static <PE extends PacketExtension> PE extensionElementFrom(Collection<PacketExtension> collection,
+                    String element, String namespace) {
         for (PacketExtension packetExtension : collection) {
             if ((element == null || packetExtension.getElementName().equals(
                             element))
