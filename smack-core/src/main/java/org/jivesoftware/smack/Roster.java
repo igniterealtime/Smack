@@ -698,6 +698,32 @@ public class Roster {
     }
 
     /**
+     * Check if the given JID is subscribed to the user's presence.
+     * <p>
+     * If the JID is subscribed to the user's presence then it is allowed to see the presence and
+     * will get notified about presence changes.
+     * </p>
+     * Note that if the roster is not loaded, then this method will always return false.
+     * 
+     * @param jid
+     * @return true if the given JID is allowed to see the users presence.
+     * @since 4.1
+     */
+    public boolean isSubscribedToMyPresence(String jid) {
+        RosterEntry entry = getEntry(jid);
+        if (entry == null) {
+            return false;
+        }
+        switch (entry.getType()) {
+        case from:
+        case both:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    /**
      * Returns the key to use in the presenceMap for a fully qualified XMPP ID.
      * The roster can contain any valid address format such us "domain/resource",
      * "user@domain" or "user@domain/resource". If the roster contains an entry
