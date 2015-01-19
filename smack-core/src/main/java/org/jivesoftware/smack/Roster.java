@@ -448,7 +448,7 @@ public class Roster {
         if (user == null) {
             return null;
         }
-        String key = getPresenceMapKey(user);
+        String key = getMapKey(user);
         return entries.get(key);
     }
 
@@ -522,7 +522,7 @@ public class Roster {
      *         or if no presence information is available..
      */
     public Presence getPresence(String user) {
-        String key = getPresenceMapKey(XmppStringUtils.parseBareJid(user));
+        String key = getMapKey(XmppStringUtils.parseBareJid(user));
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
@@ -589,7 +589,7 @@ public class Roster {
      *         or if no presence information is available.
      */
     public Presence getPresenceResource(String userWithResource) {
-        String key = getPresenceMapKey(userWithResource);
+        String key = getMapKey(userWithResource);
         String resource = XmppStringUtils.parseResource(userWithResource);
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
@@ -619,7 +619,7 @@ public class Roster {
      *         presence information is available.
      */
     public List<Presence> getAllPresences(String bareJid) {
-        Map<String, Presence> userPresences = presenceMap.get(getPresenceMapKey(bareJid));
+        Map<String, Presence> userPresences = presenceMap.get(getMapKey(bareJid));
         List<Presence> res;
         if (userPresences == null) {
             // Create an unavailable presence if none was found
@@ -663,7 +663,7 @@ public class Roster {
      */
     public List<Presence> getPresences(String user) {
         List<Presence> res;
-        String key = getPresenceMapKey(user);
+        String key = getMapKey(user);
         Map<String, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
@@ -724,7 +724,7 @@ public class Roster {
     }
 
     /**
-     * Returns the key to use in the presenceMap for a fully qualified XMPP ID.
+     * Returns the key to use in the presenceMap and entries Map for a fully qualified XMPP ID.
      * The roster can contain any valid address format such us "domain/resource",
      * "user@domain" or "user@domain/resource". If the roster contains an entry
      * associated with the fully qualified XMPP ID then use the fully qualified XMPP
@@ -734,16 +734,16 @@ public class Roster {
      *
      * @param user the bare or fully qualified XMPP ID, e.g. jdoe@example.com or
      *             jdoe@example.com/Work.
-     * @return the key to use in the presenceMap for the fully qualified XMPP ID.
+     * @return the key to use in the presenceMap and entries Map for the fully qualified XMPP ID.
      */
-    private String getPresenceMapKey(String user) {
+    private String getMapKey(String user) {
         if (user == null) {
             return null;
         }
-        String key = user;
-        if (!entries.containsKey(user)) {
-            key = XmppStringUtils.parseBareJid(user);
+        if (entries.containsKey(user)) {
+            return user;
         }
+        String key = XmppStringUtils.parseBareJid(user);
         return key.toLowerCase(Locale.US);
     }
 
@@ -975,7 +975,7 @@ public class Roster {
         public void processPacket(Packet packet) throws NotConnectedException {
             Presence presence = (Presence) packet;
             String from = presence.getFrom();
-            String key = getPresenceMapKey(from);
+            String key = getMapKey(from);
             Map<String, Presence> userPresences;
             Presence response = null;
 
