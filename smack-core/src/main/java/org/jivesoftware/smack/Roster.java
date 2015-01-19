@@ -448,7 +448,8 @@ public class Roster {
         if (user == null) {
             return null;
         }
-        return entries.get(user.toLowerCase(Locale.US));
+        String key = getPresenceMapKey(user);
+        return entries.get(key);
     }
 
     /**
@@ -714,7 +715,7 @@ public class Roster {
             return null;
         }
         String key = user;
-        if (!contains(user)) {
+        if (!entries.containsKey(user)) {
             key = XmppStringUtils.parseBareJid(user);
         }
         return key.toLowerCase(Locale.US);
