@@ -234,9 +234,9 @@ public class Roster {
     }
 
     protected boolean waitUntilLoaded() {
-        long waitTime = connection.getPacketReplyTimeout();
-        long start = System.currentTimeMillis();
         while (!loaded) {
+            long waitTime = connection.getPacketReplyTimeout();
+            long start = System.currentTimeMillis();
             if (waitTime <= 0) {
                 break;
             }
