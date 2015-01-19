@@ -71,15 +71,18 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
+ * A MultiUserChat room (XEP-45), created with {@link MultiUserChatManager#getMultiUserChat(String)}.
+ * <p>
  * A MultiUserChat is a conversation that takes place among many users in a virtual
  * room. A room could have many occupants with different affiliation and roles.
  * Possible affiliations are "owner", "admin", "member", and "outcast". Possible roles
  * are "moderator", "participant", and "visitor". Each role and affiliation guarantees
  * different privileges (e.g. Send messages to all occupants, Kick participants and visitors,
  * Grant voice, Edit member list, etc.).
+ * </p>
  * <p>
- * <b>Note:</b> Make sure to leave the MUC ({@link #leave()}) before you drop the reference to
- * it, or otherwise you may leak the instance.
+ * <b>Note:</b> Make sure to leave the MUC ({@link #leave()}) when you don't need it anymore or
+ * otherwise you may leak the instance.
  * </p>
  *
  * @author Gaston Dombiak, Larry Kirschner
