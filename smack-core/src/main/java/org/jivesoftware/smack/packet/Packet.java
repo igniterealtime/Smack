@@ -102,10 +102,9 @@ public abstract class Packet implements TopLevelStreamElement {
     }
 
     /**
-     * Returns the unique ID of the packet. The returned value could be <tt>null</tt> when
-     * ID_NOT_AVAILABLE was set as the packet's id.
+     * Returns the unique ID of the packet. The returned value could be <code>null</code>.
      *
-     * @return the packet's unique ID or <tt>null</tt> if the packet's id is not available.
+     * @return the packet's unique ID or <code>null</code> if the packet's id is not available.
      */
     public String getPacketID() {
         return packetID;
@@ -113,7 +112,7 @@ public abstract class Packet implements TopLevelStreamElement {
 
     /**
      * Sets the unique ID of the packet. To indicate that a packet has no id
-     * pass the constant ID_NOT_AVAILABLE as the packet's id value.
+     * pass <code>null</code> as the packet's id value.
      *
      * @param packetID the unique ID for the packet.
      */
