@@ -17,8 +17,8 @@
 
 package org.jivesoftware.smack.packet;
 
+import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.jivesoftware.smack.util.PacketUtil;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.util.XmppStringUtils;
 
@@ -29,7 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Base class for XMPP Stanzas, which are called packets in Smack.
@@ -51,17 +50,6 @@ public abstract class Packet implements TopLevelStreamElement {
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase(Locale.US);
 
-    /**
-     * A prefix helps to make sure that ID's are unique across multiple instances.
-     */
-    private static final String prefix = StringUtils.randomString(5) + "-";
-
-    /**
-     * Keeps track of the current increment, which is appended to the prefix to
-     * forum a unique ID.
-     */
-    private static final AtomicLong id = new AtomicLong();
-
     private final Map<String, PacketExtension> packetExtensions = new LinkedHashMap<String, PacketExtension>(12);
 
     private String packetID = null;
@@ -82,7 +70,7 @@ public abstract class Packet implements TopLevelStreamElement {
     protected String language;
 
     public Packet() {
-        this(prefix + Long.toString(id.incrementAndGet()));
+        this(StanzaIdUtil.newStanzaId());
     }
 
     public Packet(String packetID) {
