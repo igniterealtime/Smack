@@ -313,22 +313,27 @@ public class RosterPacket extends IQ {
     public static enum ItemType {
 
         /**
-         * The user and subscriber have no interest in each other's presence.
+         * The user does not have a subscription to the contact's presence, and the contact does not
+         * have a subscription to the user's presence; this is the default value, so if the
+         * subscription attribute is not included then the state is to be understood as "none".
          */
         none,
 
         /**
-         * The user is interested in receiving presence updates from the subscriber.
+         * The user has a subscription to the contact's presence, but the contact does not have a
+         * subscription to the user's presence.
          */
         to,
 
         /**
-         * The subscriber is interested in receiving presence updates from the user.
+         * The contact has a subscription to the user's presence, but the user does not have a
+         * subscription to the contact's presence.
          */
         from,
 
         /**
-         * The user and subscriber have a mutual interest in each other's presence.
+         * The user and the contact have subscriptions to each other's presence (also called a
+         * "mutual subscription").
          */
         both,
 
