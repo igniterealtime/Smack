@@ -29,6 +29,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.test.util.WaitForPacketListener;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
+import org.jivesoftware.smackx.receipts.DeliveryReceiptManager.AutoReceiptMode;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -101,8 +102,8 @@ public class DeliveryReceiptTest extends InitExtensions {
         c.connect();
         DeliveryReceiptManager drm = DeliveryReceiptManager.getInstanceFor(c);
 
-        drm.enableAutoReceipts();
-        assertTrue(drm.getAutoReceiptsEnabled());
+        drm.setAutoReceiptMode(AutoReceiptMode.always);
+        assertEquals(AutoReceiptMode.always, drm.getAutoReceiptMode());
 
         // test auto-receipts
         Message m = new Message("julia@capulet.com", Message.Type.normal);

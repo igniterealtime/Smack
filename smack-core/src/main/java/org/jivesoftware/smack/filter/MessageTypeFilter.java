@@ -35,6 +35,8 @@ public class MessageTypeFilter extends FlexiblePacketTypeFilter<Message> {
     public static final PacketFilter HEADLINE = new MessageTypeFilter(Type.headline);
     public static final PacketFilter ERROR = new MessageTypeFilter(Type.error);
     public static final PacketFilter NORMAL_OR_CHAT = new OrFilter(NORMAL, CHAT);
+    public static final PacketFilter NORMAL_OR_CHAT_OR_HEADLINE = new OrFilter(NORMAL_OR_CHAT,
+                    HEADLINE);
 
     private final Message.Type type;
 

@@ -21,6 +21,7 @@ import java.io.IOException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -82,6 +83,9 @@ public class DeliveryReceiptRequest implements PacketExtension
      * @return the Message ID which will be used as receipt ID
      */
     public static String addTo(Message message) {
+        if (message.getPacketID() == null) {
+            message.setPacketID(StanzaIdUtil.newStanzaId());
+        }
         message.addExtension(new DeliveryReceiptRequest());
         return message.getPacketID();
     }

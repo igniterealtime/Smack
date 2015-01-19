@@ -22,6 +22,7 @@ import java.util.Map;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents a <b>message delivery receipt</b> entry as specified by
@@ -34,7 +35,10 @@ public class DeliveryReceipt implements PacketExtension
     public static final String NAMESPACE = "urn:xmpp:receipts";
     public static final String ELEMENT = "received";
 
-    private String id; /// original ID of the delivered message
+    /**
+     * original ID of the delivered message
+     */
+    private final String id;
 
     public DeliveryReceipt(String id)
     {
@@ -59,9 +63,12 @@ public class DeliveryReceipt implements PacketExtension
     }
 
     @Override
-    public String toXML()
+    public XmlStringBuilder toXML()
     {
-        return "<received xmlns='" + NAMESPACE + "' id='" + id + "'/>";
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.attribute("id", id);
+        xml.closeEmptyElement();
+        return xml;
     }
 
     /**

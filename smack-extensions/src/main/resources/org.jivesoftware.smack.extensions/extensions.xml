@@ -15,5 +15,6 @@
         <className>org.jivesoftware.smackx.xdata.XDataManager</className>
         <className>org.jivesoftware.smackx.xdatalayout.XDataLayoutManager</className>
         <className>org.jivesoftware.smackx.xdatavalidation.XDataValidationManager</className>
+		<className>org.jivesoftware.smackx.receipts.DeliveryReceiptManager</className>
     </startupClasses>
 </smack>

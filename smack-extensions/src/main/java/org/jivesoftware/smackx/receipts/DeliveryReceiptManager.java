@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Georg Lukas
+ * Copyright 2013-2014 Georg Lukas, 2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -41,6 +42,24 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  * Manager for XEP-0184: Message Delivery Receipts. This class implements
  * the manager for {@link DeliveryReceipt} support, enabling and disabling of
  * automatic DeliveryReceipt transmission.
+ *
+ * <p>
+ * You can send delivery receipt requests and listen for incoming delivery receipts as shown in this example:
+ * </p>
+ * <pre>
+ * deliveryReceiptManager.addReceiptReceivedListener(new ReceiptReceivedListener() {
+ *   void onReceiptReceived(String fromJid, String toJid, String receiptId, Packet receipt) {
+ *     // If the receiving entity does not support delivery receipts,
+ *     // then the receipt received listener may not get invoked.
+ *   }
+ * });
+ * Message message = …
+ * DeliveryReceiptRequest.addTo(message);
+ * connection.sendPacket(message);
+ * </pre>
+ *
+ * DeliveryReceiptManager can be configured to automatically add delivery receipt requests to every
+ * message with {@link #autoAddDeliveryReceiptRequests()}.
  *
  * @author Georg Lukas
  * @see <a href="http://xmpp.org/extensions/xep-0184.html">XEP-0184: Message Delivery Receipts</a>
@@ -62,7 +81,43 @@ public class DeliveryReceiptManager extends Manager {
         });
     }
 
-    private boolean auto_receipts_enabled = false;
+    /**
+     * Specifies when incoming message delivery receipt requests should be automatically
+     * acknowledged with an receipt.
+     */
+    public enum AutoReceiptMode {
+
+        /**
+         * Never send deliver receipts
+         */
+        disabled,
+
+        /**
+         * Only send delivery receipts if the requester is subscribed to our presence.
+         */
+        ifIsSubscribed,
+
+        /**
+         * Always send delivery receipts. <b>Warning:</b> this may causes presence leaks. See <a
+         * href="http://xmpp.org/extensions/xep-0184.html#security">XEP-0184: Message Delivery
+         * Receipts § 8. Security Considerations</a>
+         */
+        always,
+    }
+
+    private static AutoReceiptMode defaultAutoReceiptMode = AutoReceiptMode.ifIsSubscribed;
+
+    /**
+     * Set the default automatic receipt mode for new connections.
+     * 
+     * @param autoReceiptMode the default automatic receipt mode.
+     */
+    public static void setDefaultAutoReceiptMode(AutoReceiptMode autoReceiptMode) {
+        defaultAutoReceiptMode = autoReceiptMode;
+    }
+
+    private AutoReceiptMode autoReceiptMode = defaultAutoReceiptMode;
+
     private final Set<ReceiptReceivedListener> receiptReceivedListeners = new CopyOnWriteArraySet<ReceiptReceivedListener>();
 
     private DeliveryReceiptManager(XMPPConnection connection) {
@@ -86,13 +141,23 @@ public class DeliveryReceiptManager extends Manager {
         connection.addAsyncPacketListener(new PacketListener() {
             @Override
             public void processPacket(Packet packet) throws NotConnectedException {
-                // if enabled, automatically send a receipt
-                if (!auto_receipts_enabled) {
+                final String from = packet.getFrom();
+                final XMPPConnection connection = connection();
+                switch (autoReceiptMode) {
+                case disabled:
                     return;
+                case ifIsSubscribed:
+                    if (!connection.getRoster().isSubscribedToMyPresence(from)) {
+                        return;
+                    }
+                    break;
+                case always:
+                    break;
                 }
-                Message ack = new Message(packet.getFrom(), Message.Type.normal);
+
+                Message ack = new Message(from, Message.Type.normal);
                 ack.addExtension(new DeliveryReceipt(packet.getPacketID()));
-                connection().sendPacket(ack);
+                connection.sendPacket(ack);
             }
         }, MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST);
     }
@@ -130,34 +195,22 @@ public class DeliveryReceiptManager extends Manager {
 
     /**
      * Configure whether the {@link DeliveryReceiptManager} should automatically
-     * reply to incoming {@link DeliveryReceipt}s. By default, this feature is off.
+     * reply to incoming {@link DeliveryReceipt}s.
      *
-     * @param new_state whether automatic transmission of
-     *                  DeliveryReceipts should be enabled or disabled
+     * @param autoReceiptMode the new auto receipt mode.
+     * @see AutoReceiptMode
      */
-    public void setAutoReceiptsEnabled(boolean new_state) {
-        auto_receipts_enabled = new_state;
+    public void setAutoReceiptMode(AutoReceiptMode autoReceiptMode) {
+        this.autoReceiptMode = autoReceiptMode;
     }
 
     /**
-     * Helper method to enable automatic DeliveryReceipt transmission.
+     * Get the currently active auto receipt mode.
+     * 
+     * @return the currently active auto receipt mode.
      */
-    public void enableAutoReceipts() {
-        setAutoReceiptsEnabled(true);
-    }
-
-    /**
-     * Helper method to disable automatic DeliveryReceipt transmission.
-     */
-    public void disableAutoReceipts() {
-        setAutoReceiptsEnabled(false);
-    }
-
-    /**
-     * Check if AutoReceipts are enabled on this connection.
-     */
-    public boolean getAutoReceiptsEnabled() {
-        return this.auto_receipts_enabled;
+    public AutoReceiptMode getAutoReceiptMode() {
+        return autoReceiptMode;
     }
 
     /**
@@ -176,6 +229,35 @@ public class DeliveryReceiptManager extends Manager {
      */
     public void removeReceiptReceivedListener(ReceiptReceivedListener listener) {
         receiptReceivedListeners.remove(listener);
+    }
+
+    private static final PacketListener AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER = new PacketListener() {
+        @Override
+        public void processPacket(Packet packet) throws NotConnectedException {
+            Message message = (Message) packet;
+            DeliveryReceiptRequest.addTo(message);
+        }
+    };
+
+    /**
+     * Enables automatic requests of delivery receipts for outgoing messages of type 'normal', 'chat' or 'headline.
+     * 
+     * @since 4.1
+     * @see #dontAutoAddDeliveryReceiptRequests()
+     */
+    public void autoAddDeliveryReceiptRequests() {
+        connection().addPacketSendingListener(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER,
+                        MessageTypeFilter.NORMAL_OR_CHAT_OR_HEADLINE);
+    }
+
+    /**
+     * Disables automatically requests of delivery receipts for outgoing messages.
+     * 
+     * @since 4.1
+     * @see #autoAddDeliveryReceiptRequests()
+     */
+    public void dontAutoAddDeliveryReceiptRequests() {
+        connection().removePacketSendingListener(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER);
     }
 
     /**
