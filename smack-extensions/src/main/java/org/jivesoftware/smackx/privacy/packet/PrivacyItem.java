@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.privacy.packet;
 
+import org.jivesoftware.smack.util.NumberUtil;
+
 /**
  * A privacy item acts a rule that when matched defines if a packet should be blocked or not.
  *
@@ -40,8 +42,11 @@ public class PrivacyItem {
 
     /** allow is the action associated with the item, it can allow or deny the communication. */
     private final boolean allow;
-    /** order is a non-negative integer that is unique among all items in the list. */
-    private final int order;
+
+    /**
+     * order is a unsigned 32-bit integer that is unique among all items in the list.
+     **/
+    private final long order;
 
     /**
      * Type defines if the rule is based on JIDs, roster groups or presence subscription types.
@@ -75,7 +80,7 @@ public class PrivacyItem {
      * @param allow true if this is an allow item
      * @param order the order of this privacy item
      */
-    public PrivacyItem(boolean allow, int order) {
+    public PrivacyItem(boolean allow, long order) {
         this(null, null, allow, order);
     }
 
@@ -93,7 +98,8 @@ public class PrivacyItem {
      * @param allow true if this is an allow item
      * @param order the order of this privacy item
      */
-    public PrivacyItem(Type type, String value, boolean allow, int order) {
+    public PrivacyItem(Type type, String value, boolean allow, long order) {
+        NumberUtil.checkIfInUInt32Range(order);
         this.type = type;
         this.value = value;
         this.allow = allow;
@@ -191,7 +197,7 @@ public class PrivacyItem {
      *
      * @return the order number.
      */
-    public int getOrder() {
+    public long getOrder() {
 		return order;
 	}
 

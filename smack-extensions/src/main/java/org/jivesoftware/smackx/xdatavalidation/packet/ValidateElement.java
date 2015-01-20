@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.xdatavalidation.packet;
 
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.util.NumberUtil;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -313,18 +314,18 @@ public abstract class ValidateElement implements PacketExtension {
 
         /**
          * The 'max' attribute specifies the maximum allowable number of selected/entered values. The 'min' attribute
-         * specifies the minimum allowable number of selected/entered values. Both attributes are optional and must be a
-         * positive integer.
+         * specifies the minimum allowable number of selected/entered values. Both attributes are optional, but at
+         * least one must bet set, and the value must be within the range of a unsigned 32-bit integer.
          * 
          * @param min
          * @param max
          */
         public ListRange(Long min, Long max) {
-            if (min != null && min < 0) {
-                throw new IllegalArgumentException("min must not be negative");
+            if (min != null) {
+                NumberUtil.checkIfInUInt32Range(min);
             }
-            if (max != null && max < 0) {
-                throw new IllegalArgumentException("max must not be negative");
+            if (max != null) {
+                NumberUtil.checkIfInUInt32Range(max);
             }
             if (max == null && min == null) {
                 throw new IllegalArgumentException("Either min or max must be given");

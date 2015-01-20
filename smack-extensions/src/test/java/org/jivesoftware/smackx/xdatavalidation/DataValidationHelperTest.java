@@ -54,7 +54,7 @@ public class DataValidationHelperTest {
             fail("No correct check on consistency");
         }
         catch (IllegalArgumentException e) {
-            assertEquals("min must not be negative", e.getMessage());
+            assertEquals("unsigned 32-bit integers can't be negative", e.getMessage());
         }
         
         element.setListRange(new ListRange(10L, 100L));
