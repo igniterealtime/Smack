@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.initializer.SmackInitializer;
+import org.jivesoftware.smack.util.DNSUtil;
+import org.jivesoftware.smack.util.StringTransformer;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smack.util.stringencoder.Base64UrlSafeEncoder;
 import org.jivesoftware.smack.util.stringencoder.java7.Java7Base64Encoder;
@@ -32,6 +34,12 @@ public class Java7SmackInitializer implements SmackInitializer {
         SmackConfiguration.setDefaultHostnameVerifier(new Java7HostnameVerifier());
         Base64.setEncoder(Java7Base64Encoder.getInstance());
         Base64UrlSafeEncoder.setEncoder(Java7Base64UrlSafeEncoder.getInstance());
+        DNSUtil.setIdnaTransformer(new StringTransformer() {
+            @Override
+            public String transform(String string) {
+                return java.net.IDN.toASCII(string);
+            }
+        });
         return null;
     }
 
