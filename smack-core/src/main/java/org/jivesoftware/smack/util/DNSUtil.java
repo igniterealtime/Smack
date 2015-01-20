@@ -76,7 +76,7 @@ public class DNSUtil {
 
 
     /**
-     * Set the IDNA (Internatiionalizing Domain Names in Applications, RFC 3490) transformer.
+     * Set the IDNA (Internationalizing Domain Names in Applications, RFC 3490) transformer.
      * <p>
      * You usually want to wrap 'java.net.IDN.toASCII()' into a StringTransformer here.
      * </p>
