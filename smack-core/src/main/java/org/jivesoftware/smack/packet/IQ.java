@@ -76,16 +76,18 @@ public abstract class IQ extends Packet {
 
     /**
      * Sets the type of the IQ packet.
+     * <p>
+     * Since the type of an IQ must present, an IllegalArgmentException will be thrown when type is
+     * <code>null</code>.
+     * </p>
      *
      * @param type the type of the IQ packet.
      */
     public void setType(Type type) {
         if (type == null) {
-            this.type = Type.get;
+            throw new IllegalArgumentException("type must not be null");
         }
-        else {
-            this.type = type;
-        }
+        this.type = type;
     }
 
     public final String getChildElementName() {
