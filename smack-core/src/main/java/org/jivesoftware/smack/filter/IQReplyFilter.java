@@ -81,6 +81,9 @@ public class IQReplyFilter implements PacketFilter {
      * @param iqPacket An IQ request. Filter for replies to this packet.
      */
     public IQReplyFilter(IQ iqPacket, XMPPConnection conn) {
+        if (!iqPacket.isRequestIQ()) {
+            throw new IllegalArgumentException("IQ must be a request IQ, i.e. of type 'get' or 'set'.");
+        }
         if (iqPacket.getTo() != null) {
             to = iqPacket.getTo().toLowerCase(Locale.US);
         } else {

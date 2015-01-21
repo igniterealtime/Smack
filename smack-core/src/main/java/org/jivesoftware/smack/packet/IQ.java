@@ -90,6 +90,22 @@ public abstract class IQ extends Packet {
         this.type = type;
     }
 
+    /**
+     * Return true if this IQ is a request IQ, i.e. an IQ of type {@link Type#get} or {@link Type#set}.
+     *
+     * @return true if IQ type is 'get' or 'set', false otherwise.
+     * @since 4.1
+     */
+    public boolean isRequestIQ() {
+        switch (type) {
+        case get:
+        case set:
+            return true;
+        default:
+            return false;
+        }
+    }
+
     public final String getChildElementName() {
         return childElementName;
     }
