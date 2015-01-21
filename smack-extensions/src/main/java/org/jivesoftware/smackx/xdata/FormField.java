@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 
@@ -31,7 +32,7 @@ import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
  *
  * @author Gaston Dombiak
  */
-public class FormField {
+public class FormField implements NamedElement {
 
     public static final String ELEMENT = "field";
 
@@ -343,9 +344,13 @@ public class FormField {
         }
     }
 
+    @Override
+    public String getElementName() {
+        return ELEMENT;
+    }
+
     public XmlStringBuilder toXML() {
-        XmlStringBuilder buf = new XmlStringBuilder();
-        buf.halfOpenElement(ELEMENT);
+        XmlStringBuilder buf = new XmlStringBuilder(this);
         // Add attributes
         buf.optAttribute("label", getLabel());
         buf.optAttribute("var", getVariable());
@@ -363,7 +368,7 @@ public class FormField {
             buf.append(option.toXML());
         }
         buf.optElement(validateElement);
-        buf.closeElement(ELEMENT);
+        buf.closeElement(this);
         return buf;
     }
 
@@ -391,7 +396,7 @@ public class FormField {
      *
      * @author Gaston Dombiak
      */
-    public static class Option {
+    public static class Option implements NamedElement {
 
         public static final String ELEMENT = "option";
 
@@ -430,9 +435,13 @@ public class FormField {
             return getLabel();
         }
 
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
+
         public XmlStringBuilder toXML() {
-            XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(ELEMENT);
+            XmlStringBuilder xml = new XmlStringBuilder(this);
             // Add attribute
             xml.optAttribute("label", getLabel());
             xml.rightAngleBracket();
@@ -440,7 +449,7 @@ public class FormField {
             // Add element
             xml.element("value", getValue());
 
-            xml.closeElement(ELEMENT);
+            xml.closeElement(this);
             return xml;
         }
 
