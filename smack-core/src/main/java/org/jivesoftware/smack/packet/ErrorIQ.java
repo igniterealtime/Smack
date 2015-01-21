@@ -32,7 +32,7 @@ public class ErrorIQ extends SimpleIQ {
         if (xmppError == null) {
             throw new IllegalArgumentException("XMPPError must not be null");
         }
-        type = IQ.Type.error;
+        setType(IQ.Type.error);
         setError(xmppError);
     }
 

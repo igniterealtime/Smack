@@ -47,7 +47,7 @@ public abstract class IQ extends Packet {
     private final String childElementName;
     private final String childElementNamespace;
 
-    protected Type type = Type.get;
+    private Type type = Type.get;
 
     public IQ(IQ iq) {
         super(iq);

@@ -20,7 +20,7 @@ public class EmptyResultIQ extends IQ {
 
     public EmptyResultIQ() {
         super(null, null);
-        type = IQ.Type.result;
+        setType(IQ.Type.result);
     }
 
     public EmptyResultIQ(IQ request) {

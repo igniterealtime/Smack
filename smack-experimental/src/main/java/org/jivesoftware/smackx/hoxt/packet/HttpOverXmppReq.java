@@ -33,7 +33,7 @@ public class HttpOverXmppReq extends AbstractHttpOverXmpp {
         super(ELEMENT);
         this.method = method;
         this.resource = resource;
-        type = Type.set;
+        setType(Type.set);
     }
 
     private HttpMethod method;
