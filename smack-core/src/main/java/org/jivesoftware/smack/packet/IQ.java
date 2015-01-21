@@ -256,21 +256,30 @@ public abstract class IQ extends Packet {
     }
 
     /**
-     * A enum to represent the type of the IQ packet. The types are:
-     *
-     * <ul>
-     *      <li>IQ.Type.get
-     *      <li>IQ.Type.set
-     *      <li>IQ.Type.result
-     *      <li>IQ.Type.error
-     * </ul>
+     * A enum to represent the type of the IQ stanza.
      */
     public enum Type {
 
+        /**
+         * The IQ stanza requests information, inquires about what data is needed in order to complete further operations, etc.
+         */
         get,
+
+        /**
+         * The IQ stanza provides data that is needed for an operation to be completed, sets new values, replaces existing values, etc.
+         */
         set,
+
+        /**
+         * The IQ stanza is a response to a successful get or set request.
+         */
         result,
-        error;
+
+        /**
+         * The IQ stanza reports an error that has occurred regarding processing or delivery of a get or set request.
+         */
+        error,
+        ;
 
         /**
          * Converts a String into the corresponding types. Valid String values
