@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jivesoftware.smack.im;
 
-package org.jivesoftware.smack;
+public class InitSmackIm {
 
-import org.jivesoftware.smack.packet.Message;
+    static {
+        (new SmackImInitializer()).initialize();
+    }
 
-/**
- *
- */
-public interface ChatMessageListener {
-    void processMessage(Chat chat, Message message);
 }

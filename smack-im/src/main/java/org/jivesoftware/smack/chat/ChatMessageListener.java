@@ -15,23 +15,13 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.chatstates;
+package org.jivesoftware.smack.chat;
 
-import org.jivesoftware.smack.chat.Chat;
-import org.jivesoftware.smack.chat.ChatMessageListener;
+import org.jivesoftware.smack.packet.Message;
 
 /**
- * Events for when the state of a user in a chat changes.
  *
- * @author Alexander Wenckus
  */
-public interface ChatStateListener extends ChatMessageListener {
-
-    /**
-     * Fired when the state of a chat with another user changes.
-     *
-     * @param chat the chat in which the state has changed.
-     * @param state the new state of the participant.
-     */
-    void stateChanged(Chat chat, ChatState state);
+public interface ChatMessageListener {
+    void processMessage(Chat chat, Message message);
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.roster;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -23,11 +23,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.RosterPacket;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jxmpp.util.XmppStringUtils;
 
 /**

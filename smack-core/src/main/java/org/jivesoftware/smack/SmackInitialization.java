@@ -30,10 +30,8 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.compression.Java7ZlibInputOutputStream;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.packet.Bind;
-import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.provider.BindIQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smack.provider.RosterPacketProvider;
 import org.jivesoftware.smack.sasl.core.SASLXOauth2Mechanism;
 import org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism;
 import org.jivesoftware.smack.util.FileUtils;
@@ -140,7 +138,6 @@ public final class SmackInitialization {
         SASLAuthentication.registerSASLMechanism(new SCRAMSHA1Mechanism());
         SASLAuthentication.registerSASLMechanism(new SASLXOauth2Mechanism());
 
-        ProviderManager.addIQProvider(RosterPacket.ELEMENT, RosterPacket.NAMESPACE, RosterPacketProvider.INSTANCE);
         ProviderManager.addIQProvider(Bind.ELEMENT, Bind.NAMESPACE, new BindIQProvider());
 
         SmackConfiguration.smackInitialized = true;

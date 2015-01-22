@@ -19,7 +19,6 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
-import org.jivesoftware.smack.rosterstore.RosterStore;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
@@ -66,8 +65,13 @@ public abstract class ConnectionConfiguration {
     private final CharSequence username;
     private final String password;
     private final String resource;
+
+    /**
+     * Initial presence as of RFC 6121 § 4.2
+     * @see <a href="http://xmpp.org/rfcs/rfc6121.html#presence-initial">RFC 6121 § 4.2 Initial Presence</a>
+     */
     private final boolean sendPresence;
-    private final boolean rosterLoadedAtLogin;
+
     private final boolean legacySessionDisabled;
     private final SecurityMode securityMode;
 
@@ -82,11 +86,6 @@ public abstract class ConnectionConfiguration {
     private final String[] enabledSSLCiphers;
 
     private final HostnameVerifier hostnameVerifier;
-
-    /**
-     * Permanent store for the Roster, needed for roster versioning
-     */
-    private final RosterStore rosterStore;
 
     // Holds the proxy information (such as proxyhost, proxyport, username, password etc)
     protected final ProxyInfo proxy;
@@ -127,9 +126,7 @@ public abstract class ConnectionConfiguration {
         enabledSSLCiphers = builder.enabledSSLCiphers;
         hostnameVerifier = builder.hostnameVerifier;
         sendPresence = builder.sendPresence;
-        rosterLoadedAtLogin = builder.rosterLoadedAtLogin;
         legacySessionDisabled = builder.legacySessionDisabled;
-        rosterStore = builder.rosterStore;
         debuggerEnabled = builder.debuggerEnabled;
         allowNullOrEmptyUsername = builder.allowEmptyOrNullUsername;
     }
@@ -235,17 +232,6 @@ public abstract class ConnectionConfiguration {
     }
 
     /**
-     * Returns true if the roster will be loaded from the server when logging in. This
-     * is the common behaviour for clients but sometimes clients may want to differ this
-     * or just never do it if not interested in rosters.
-     *
-     * @return true if the roster will be loaded from the server when logging in.
-     */
-    public boolean isRosterLoadedAtLogin() {
-        return rosterLoadedAtLogin;
-    }
-
-    /**
      * Returns true if a {@link Session} will be requested on login if the server
      * supports it. Although this was mandatory on RFC 3921, RFC 6120/6121 don't
      * even mention this part of the protocol.
@@ -281,14 +267,6 @@ public abstract class ConnectionConfiguration {
     public SocketFactory getSocketFactory() {
         return this.socketFactory;
     }
-
-    /**
-     * Get the permanent roster store
-     */
-    public RosterStore getRosterStore() {
-        return rosterStore;
-    }
-
 
     /**
      * An enumeration for TLS security modes that are available when making a connection
@@ -394,9 +372,7 @@ public abstract class ConnectionConfiguration {
         private String password;
         private String resource = "Smack";
         private boolean sendPresence = true;
-        private boolean rosterLoadedAtLogin = true;
         private boolean legacySessionDisabled = false;
-        private RosterStore rosterStore;
         private ProxyInfo proxy;
         private CallbackHandler callbackHandler;
         private boolean debuggerEnabled = SmackConfiguration.DEBUG;
@@ -596,19 +572,6 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
-         * Sets if the roster will be loaded from the server when logging in. This
-         * is the common behaviour for clients but sometimes clients may want to differ this
-         * or just never do it if not interested in rosters.
-         *
-         * @param rosterLoadedAtLogin if the roster will be loaded from the server when logging in.
-         * @return a reference to this builder.
-         */
-        public B setRosterLoadedAtLogin(boolean rosterLoadedAtLogin) {
-            this.rosterLoadedAtLogin = rosterLoadedAtLogin;
-            return getThis();
-        }
-
-        /**
          * Sets if an initial available presence will be sent to the server. By default
          * an available presence will be sent to the server indicating that this presence
          * is not online and available to receive messages. If you want to log in without
@@ -619,16 +582,6 @@ public abstract class ConnectionConfiguration {
          */
         public B setSendPresence(boolean sendPresence) {
             this.sendPresence = sendPresence;
-            return getThis();
-        }
-
-        /**
-         * Set the permanent roster store.
-         * 
-         * @return a reference to this builder.
-         */
-        public B setRosterStore(RosterStore store) {
-            rosterStore = store;
             return getThis();
         }
 

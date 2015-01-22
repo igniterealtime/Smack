@@ -52,7 +52,6 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * the user's current presence status. Second, they are used to subscribe and
  * unsubscribe users from the roster.
  *
- * @see RosterPacket
  * @author Matt Tucker
  */
 public final class Presence extends Packet {

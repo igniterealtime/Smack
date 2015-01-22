@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.chat;
 
+import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;

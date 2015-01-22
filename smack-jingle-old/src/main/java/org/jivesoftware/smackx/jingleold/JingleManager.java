@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
@@ -33,6 +32,8 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.jingleold.listeners.CreatedJingleSessionListener;
 import org.jivesoftware.smackx.jingleold.listeners.JingleListener;
@@ -213,7 +214,7 @@ public class JingleManager implements JingleSessionListener {
         this.connection = connection;
         this.jingleMediaManagers = jingleMediaManagers;
 
-        connection.getRoster().addRosterListener(new RosterListener() {
+        Roster.getInstanceFor(connection).addRosterListener(new RosterListener() {
 
             public void entriesAdded(Collection<String> addresses) {
             }

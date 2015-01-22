@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.roster;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -30,15 +30,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.jivesoftware.smack.DummyConnection;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.im.InitSmackIm;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.packet.IQ.Type;
-import org.jivesoftware.smack.packet.RosterPacket.Item;
-import org.jivesoftware.smack.packet.RosterPacket.ItemType;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
+import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.test.util.WaitForPacketListener;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -54,7 +59,7 @@ import org.xmlpull.v1.XmlPullParser;
  * @see <a href="http://xmpp.org/rfcs/rfc3921.html#roster">Roster Management</a>
  * @author Guenther Niess
  */
-public class RosterTest {
+public class RosterTest extends InitSmackIm {
 
     private DummyConnection connection;
     private Roster roster;
@@ -62,14 +67,11 @@ public class RosterTest {
 
     @Before
     public void setUp() throws Exception {
-        // Uncomment this to enable debug output
-        //SmackConfiguration.DEBUG = true;
-
         connection = new DummyConnection();
         connection.connect();
         connection.login();
         rosterListener = new TestRosterListener();
-        roster = connection.getRoster();
+        roster = Roster.getInstanceFor(connection);
         roster.addRosterListener(rosterListener);
         connection.setPacketReplyTimeout(1000 * 60 * 5);
     }
@@ -77,8 +79,8 @@ public class RosterTest {
     @After
     public void tearDown() throws Exception {
         if (connection != null) {
-            if (rosterListener != null && connection.getRoster() != null) {
-                connection.getRoster().removeRosterListener(rosterListener);
+            if (rosterListener != null) {
+                roster.removeRosterListener(rosterListener);
                 rosterListener = null;
             }
             connection.disconnect();
@@ -381,7 +383,7 @@ public class RosterTest {
         assertEquals(requestId, errorIQ.getPacketID());
         assertEquals(Condition.service_unavailable, errorIQ.getError().getCondition());
 
-        assertNull("Contact was added to roster", connection.getRoster().getEntry("spam@example.com"));
+        assertNull("Contact was added to roster", Roster.getInstanceFor(connection).getEntry("spam@example.com"));
     }
 
     /**

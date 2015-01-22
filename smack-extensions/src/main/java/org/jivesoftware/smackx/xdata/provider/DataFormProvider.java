@@ -18,9 +18,9 @@
 package org.jivesoftware.smackx.xdata.provider;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.RosterPacket;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.jivesoftware.smack.provider.RosterPacketProvider;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jivesoftware.smack.roster.provider.RosterPacketProvider;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout;

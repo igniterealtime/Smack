@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.rosterstore;
+package org.jivesoftware.smack.roster.rosterstore;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,10 +25,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.RosterPacket;
-import org.jivesoftware.smack.packet.RosterPacket.Item;
-import org.jivesoftware.smack.packet.RosterPacket.ItemStatus;
-import org.jivesoftware.smack.packet.RosterPacket.ItemType;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
+import org.jivesoftware.smack.roster.packet.RosterPacket.ItemStatus;
+import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;

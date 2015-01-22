@@ -66,7 +66,6 @@ import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.RosterVer;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.PlainStreamElement;
@@ -75,7 +74,6 @@ import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.UnparsablePacket;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smack.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -264,8 +262,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private final ExecutorService singleThreadedExecutorService = Executors.newSingleThreadExecutor(new SmackExecutorThreadFactory(
                     getConnectionCounter(), "Single Threaded Executor"));
 
-    private Roster roster;
-
     /**
      * The used host to establish the connection to
      */
@@ -380,9 +376,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * </p>
      * <p>
      * It is possible to log in without sending an initial available presence by using
-     * {@link ConnectionConfiguration.Builder#setSendPresence(boolean)}. If this connection is
-     * not interested in loading its roster upon login then use
-     * {@link ConnectionConfiguration.Builder#setRosterLoadedAtLogin(boolean)}.
+     * {@link ConnectionConfiguration.Builder#setSendPresence(boolean)}.
      * Finally, if you want to not pass a password and instead use a more advanced mechanism
      * while using SASL then you may be interested in using
      * {@link ConnectionConfiguration.Builder#setCallbackHandler(javax.security.auth.callback.CallbackHandler)}.
@@ -527,11 +521,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // eventually load the roster. And we should load the roster before we
         // send the initial presence.
         if (config.isSendPresence() && !resumed) {
-            if (!isAnonymous()) {
-                // Make sure that the roster has setup its listeners prior sending the initial presence by calling
-                // getRoster()
-                getRoster();
-            }
             sendPacket(new Presence(Presence.Type.available));
         }
     }
@@ -601,36 +590,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // the content of the packet.
         firePacketInterceptors(packet);
         sendPacketInternal(packet);
-    }
-
-    @Override
-    public Roster getRoster() {
-        if (isAnonymous()) {
-            throw new IllegalStateException("Anonymous users can't have a roster");
-        }
-        // synchronize against login()
-        synchronized(this) {
-            if (roster == null) {
-                roster = new Roster(this);
-            }
-            if (!isAuthenticated()) {
-                return roster;
-            }
-        }
-
-        // If this is the first time the user has asked for the roster after calling
-        // login, we want to wait for the server to send back the user's roster. This
-        // behavior shields API users from having to worry about the fact that roster
-        // operations are asynchronous, although they'll still have to listen for
-        // changes to the roster. Note: because of this waiting logic, internal
-        // Smack code should be wary about calling the getRoster method, and may need to
-        // access the roster object directly.
-        // Also only check for rosterIsLoaded is isRosterLoadedAtLogin is set, otherwise the user
-        // has to manually call Roster.reload() before he can expect a initialized roster.
-        if (!roster.isLoaded() && config.isRosterLoadedAtLogin()) {
-            roster.waitUntilLoaded();
-        }
-        return roster;
     }
 
     /**
@@ -1284,16 +1243,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
-    @Override
-    public RosterStore getRosterStore() {
-        return config.getRosterStore();
-    }
-
-    @Override
-    public boolean isRosterLoadedAtLogin() {
-        return config.isRosterLoadedAtLogin();
-    }
-
     protected final void parseFeatures(XmlPullParser parser) throws XmlPullParserException,
                     IOException, SmackException {
         streamFeatures.clear();
@@ -1317,16 +1266,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     break;
                 case Session.ELEMENT:
                     streamFeature = PacketParserUtils.parseSessionFeature(parser);
-                    break;
-                case RosterVer.ELEMENT:
-                    if(namespace.equals(RosterVer.NAMESPACE)) {
-                        streamFeature = RosterVer.INSTANCE;
-                    }
-                    else {
-                        LOGGER.severe("Unknown Roster Versioning Namespace: "
-                                        + namespace
-                                        + ". Roster versioning not enabled");
-                    }
                     break;
                 case Compress.Feature.ELEMENT:
                     streamFeature = PacketParserUtils.parseCompressionFeature(parser);

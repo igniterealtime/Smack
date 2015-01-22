@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2003-2007 Jive Software, 2014 Florian Schmaus
+ * Copyright © 2003-2007 Jive Software, 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.provider;
+package org.jivesoftware.smack.roster.provider;
 
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.RosterPacket;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 public class RosterPacketProvider extends IQProvider<RosterPacket> {
 
     public static final RosterPacketProvider INSTANCE = new RosterPacketProvider();
-
-    private RosterPacketProvider() {
-    }
 
     @Override
     public RosterPacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,

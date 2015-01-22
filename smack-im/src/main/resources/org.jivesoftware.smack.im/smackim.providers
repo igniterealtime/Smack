@@ -1,0 +1,16 @@
+<?xml version="1.0"?> 
+<smackProviders>
+
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>jabber:iq:roster</namespace>
+        <className>org.jivesoftware.smack.roster.provider.RosterPacketProvider</className>
+    </iqProvider>
+
+    <streamFeatureProvider>
+        <elementName>ver</elementName>
+        <namespace>urn:xmpp:features:rosterver</namespace>
+        <className>org.jivesoftware.smack.roster.provider.RosterVerStreamFeatureProvider</className>
+    </streamFeatureProvider>
+
+</smackProviders>

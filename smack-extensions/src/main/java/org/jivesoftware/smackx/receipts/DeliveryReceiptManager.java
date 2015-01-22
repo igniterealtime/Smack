@@ -36,6 +36,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 /**
@@ -147,7 +148,7 @@ public class DeliveryReceiptManager extends Manager {
                 case disabled:
                     return;
                 case ifIsSubscribed:
-                    if (!connection.getRoster().isSubscribedToMyPresence(from)) {
+                    if (!Roster.getInstanceFor(connection).isSubscribedToMyPresence(from)) {
                         return;
                     }
                     break;

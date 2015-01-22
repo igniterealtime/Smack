@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.roster;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -26,16 +26,19 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.jivesoftware.smack.DummyConnection;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.ConnectionConfiguration.Builder;
-import org.jivesoftware.smack.RosterTest.TestRosterListener;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.RosterPacket;
-import org.jivesoftware.smack.packet.RosterPacket.Item;
-import org.jivesoftware.smack.packet.RosterPacket.ItemType;
-import org.jivesoftware.smack.rosterstore.DirectoryRosterStore;
-import org.jivesoftware.smack.rosterstore.RosterStore;
+import org.jivesoftware.smack.roster.RosterTest.TestRosterListener;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
+import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
+import org.jivesoftware.smack.roster.rosterstore.DirectoryRosterStore;
+import org.jivesoftware.smack.roster.rosterstore.RosterStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -66,12 +69,12 @@ public class RosterVersioningTest {
         populateStore(store);
 
         Builder<?, ?> builder = DummyConnection.getDummyConfigurationBuilder();
-        builder.setRosterStore(store);
         connection = new DummyConnection(builder.build());
         connection.connect();
         connection.login();
         rosterListener = new TestRosterListener();
-        roster = connection.getRoster();
+        roster = Roster.getInstanceFor(connection);
+        roster.setRosterStore(store);
         roster.addRosterListener(rosterListener);
         roster.reload();
     }
@@ -152,13 +155,13 @@ public class RosterVersioningTest {
             assertTrue("Expected to get a RosterPacket ", false);
         }
 
-        Roster roster = connection.getRoster();
+        Roster roster = Roster.getInstanceFor(connection);
         assertEquals("Size of roster", 1, roster.getEntries().size());
         RosterEntry entry = roster.getEntry(vaglafItem.getUser());
         assertNotNull("Roster contains vaglaf entry", entry);
         assertEquals("vaglaf entry in roster equals the sent entry", vaglafItem, RosterEntry.toRosterItem(entry));
 
-        RosterStore store = connection.getConfiguration().getRosterStore();
+        RosterStore store = roster.getRosterStore();
         assertEquals("Size of store", 1, store.getEntries().size());
         Item item = store.getEntry(vaglafItem.getUser());
         assertNotNull("Store contains vaglaf entry");
@@ -173,7 +176,7 @@ public class RosterVersioningTest {
         answerWithEmptyRosterResult();
         rosterListener.waitAndReset();
 
-        RosterStore store = connection.getConfiguration().getRosterStore();
+        RosterStore store = roster.getRosterStore();
 
         // Simulate a roster push adding vaglaf
         {

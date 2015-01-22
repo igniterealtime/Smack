@@ -49,7 +49,6 @@ public class DummyConnection extends AbstractXMPPConnection {
     private boolean reconnect = false;
 
     private String connectionID;
-    private Roster roster;
 
     private final BlockingQueue<TopLevelStreamElement> queue = new LinkedBlockingQueue<TopLevelStreamElement>();
 
@@ -89,7 +88,6 @@ public class DummyConnection extends AbstractXMPPConnection {
     protected void shutdown() {
         user = null;
         connectionID = null;
-        roster = null;
         authenticated = false;
         
         callConnectionClosedListener();
@@ -105,17 +103,6 @@ public class DummyConnection extends AbstractXMPPConnection {
             connectionID = "dummy-" + new Random(new Date().getTime()).nextInt();
         }
         return connectionID;
-    }
-
-    @Override
-    public Roster getRoster() {
-        if (isAnonymous()) {
-            return null;
-        }
-        if (roster == null) {
-            roster = new Roster(this);
-        }
-        return roster;
     }
 
     @Override
@@ -136,7 +123,6 @@ public class DummyConnection extends AbstractXMPPConnection {
                 + config.getServiceName()
                 + "/" 
                 + (resource != null ? resource : "Test");
-        roster = new Roster(this);
         authenticated = true;
     }
 

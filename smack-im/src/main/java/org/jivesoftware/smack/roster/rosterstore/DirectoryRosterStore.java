@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.rosterstore;
+package org.jivesoftware.smack.roster.rosterstore;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.RosterPacket;
-import org.jivesoftware.smack.packet.RosterPacket.Item;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
 import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base32;

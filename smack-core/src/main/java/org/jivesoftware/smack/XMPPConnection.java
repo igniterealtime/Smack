@@ -26,7 +26,6 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.PlainStreamElement;
-import org.jivesoftware.smack.rosterstore.RosterStore;
 
 /**
  * The abstract XMPPConnection class provides an interface for connections to a XMPP server and
@@ -166,20 +165,6 @@ public interface XMPPConnection {
      * @throws NotConnectedException
      */
     public void send(PlainStreamElement element) throws NotConnectedException;
-
-    /**
-     * Returns the roster for the user.
-     * <p>
-     * This method will never return <code>null</code>, instead if the user has not yet logged into
-     * the server or is logged in anonymously all modifying methods of the returned roster object
-     * like {@link Roster#createEntry(String, String, String[])},
-     * {@link Roster#removeEntry(RosterEntry)} , etc. except adding or removing
-     * {@link RosterListener}s will throw an IllegalStateException.
-     * 
-     * @return the user's roster.
-     * @throws IllegalStateException if the connection is anonymous
-     */
-    public Roster getRoster();
 
     /**
      * Adds a connection listener to this connection that will be notified when
@@ -437,22 +422,6 @@ public interface XMPPConnection {
      * @return the currently active {@link FromMode}
      */
     public FromMode getFromMode();
-
-    /**
-     * Get the permanent roster store.
-     * @return the permanent roster store or null
-     */
-    public RosterStore getRosterStore();
-
-    /**
-     * Returns true if the roster will be loaded from the server when logging in. This
-     * is the common behavior for clients but sometimes clients may want to differ this
-     * or just never do it if not interested in rosters.
-     *
-     * @return true if the roster will be loaded from the server when logging in.
-     * @see <a href="http://xmpp.org/rfcs/rfc6121.html#roster-login">RFC 6121 2.2 - Retrieving the Roster on Login</a>
-     */
-    public boolean isRosterLoadedAtLogin();
 
     /**
      * Get the feature packet extensions for a given stream feature of the

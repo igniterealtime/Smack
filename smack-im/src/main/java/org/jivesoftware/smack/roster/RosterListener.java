@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.roster;
 
 import org.jivesoftware.smack.packet.Presence;
 

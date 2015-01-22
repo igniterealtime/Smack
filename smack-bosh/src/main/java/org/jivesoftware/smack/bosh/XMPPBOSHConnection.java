@@ -34,7 +34,6 @@ import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IQ;
@@ -295,8 +294,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      * Closes the connection by setting presence to unavailable and closing the 
      * HTTP client. The shutdown logic will be used during a planned disconnection or when
      * dealing with an unexpected disconnection. Unlike {@link #disconnect()} the connection's
-     * BOSH packet reader and {@link Roster} will not be removed; thus
-     * connection's state is kept.
+     * BOSH packet reader will not be removed; thus connection's state is kept.
      *
      */
     @Override

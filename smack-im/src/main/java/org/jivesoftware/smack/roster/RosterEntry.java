@@ -15,16 +15,17 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.roster;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.RosterPacket;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
 
 
 /**

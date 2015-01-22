@@ -7,5 +7,8 @@ Classes and methods that implement support for the various XMPP XEPs
 // sourceSet.test of the core subproject
 dependencies {
 	compile project(':smack-core')
+	// Some implementations need APIs provided by smack-im,
+	// e.g. message delivery receipts the roster
+	compile project(':smack-im')
 	testCompile project(':smack-core').sourceSets.test.runtimeClasspath
 }

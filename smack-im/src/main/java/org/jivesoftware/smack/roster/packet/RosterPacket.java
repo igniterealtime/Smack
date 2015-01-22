@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack.packet;
+package org.jivesoftware.smack.roster.packet;
 
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.ArrayList;

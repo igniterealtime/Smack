@@ -39,7 +39,7 @@ XMPPConnection conn1 = …
 // Create a new roster exchange manager on conn1
 RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
 // Send user1's roster to user2
-rosterExchangeManager.send(conn1.getRoster(), user2);
+rosterExchangeManager.send(Roster.getInstanceFor(conn1), user2);
 ```
 
 Send a roster group
@@ -67,7 +67,7 @@ XMPPConnection conn1 = …
 // Create a new roster exchange manager on conn1
 RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
 // Send user1's RosterGroups to user2
-for (Iterator it = conn1.getRoster().getGroups(); it.hasNext(); )
+for (Iterator it = Roster.getInstanceFor(conn1).getGroups(); it.hasNext(); )
 rosterExchangeManager.send((RosterGroup)it.next(), user2);
 ```
 
@@ -96,7 +96,7 @@ XMPPConnection conn1 = …
 // Create a new roster exchange manager on conn1
 RosterExchangeManager rosterExchangeManager = new RosterExchangeManager(conn1);
 // Send a roster entry (any) to user2
-rosterExchangeManager1.send((RosterEntry)conn1.getRoster().getEntries().next(), user2);
+rosterExchangeManager1.send((RosterEntry)Roster.getInstanceFor(conn1).getEntries().next(), user2);
 ```
 
 Receive roster entries
@@ -124,7 +124,7 @@ adds the received entries to his roster.
 XMPPConnection conn1 = …
 XMPPConnection conn2 = …
 
-final Roster user2_roster = conn2.getRoster();
+final Roster user2_roster = Roster.getInstanceFor(conn2);
 
 // Create a RosterExchangeManager that will help user2 to listen and accept
 the entries received
@@ -156,5 +156,5 @@ rosterExchangeManager2.addRosterListener(rosterExchangeListener);
 // Create a RosterExchangeManager that will help user1 to send his roster
 RosterExchangeManager rosterExchangeManager1 = new RosterExchangeManager(conn1);
 // Send user1's roster to user2
-rosterExchangeManager1.send(conn1.getRoster(), user2);
+rosterExchangeManager1.send(Roster.getInstanceFor(conn1), user2);
 ```

@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.tcp;
+package org.jivesoftware.smack.roster;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import org.jivesoftware.smack.Roster;
+import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.junit.Before;
@@ -32,16 +32,16 @@ import org.junit.Test;
  */
 public class RosterOfflineTest {
 
-    XMPPTCPConnection connection;
+    DummyConnection connection;
 
     Roster roster;
 
     @Before
     public void setup() throws XMPPException, SmackException {
-        this.connection = new XMPPTCPConnection("user", "pass", "example.org");
+        this.connection = new DummyConnection();
         assertFalse(connection.isConnected());
 
-        roster = connection.getRoster();
+        roster = Roster.getInstanceFor(connection);
         assertNotNull(roster);
     }
 

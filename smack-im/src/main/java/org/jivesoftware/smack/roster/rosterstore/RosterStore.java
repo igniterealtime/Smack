@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.rosterstore;
+package org.jivesoftware.smack.roster.rosterstore;
 
 import java.util.Collection;
 
-import org.jivesoftware.smack.packet.RosterPacket;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
 
 /**
  * This is an interface for persistent roster store needed to implement
@@ -29,13 +29,13 @@ public interface RosterStore {
 
     /**
      * This method returns a collection of all roster items contained in this store.
-     * @return List of {@link org.jivesoftware.smack.RosterEntry}
+     * @return List of {@link org.jivesoftware.smack.roster.RosterEntry}
      */
     public Collection<RosterPacket.Item> getEntries();
     /**
      * This method returns the roster item in this store for the given JID.
      * @param bareJid The bare JID of the RosterEntry
-     * @return The {@link org.jivesoftware.smack.RosterEntry} which belongs to that user
+     * @return The {@link org.jivesoftware.smack.roster.RosterEntry} which belongs to that user
      */
     public RosterPacket.Item getEntry(String bareJid);
     /**

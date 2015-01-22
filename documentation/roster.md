@@ -8,7 +8,7 @@ users. A roster also allows you to organize users into groups such as
 "Friends" and "Co-workers". Other IM systems refer to the roster as the buddy
 list, contact list, etc.
 
-A `Roster` instance is obtained using the `XMPPConnection.getRoster()` method.
+A `Roster` instance is obtained using the `Roster.getInstanceFor(XMPPConnection)` method.
 
 Roster Entries
 --------------
@@ -20,7 +20,7 @@ Every user in a roster is represented by a RosterEntry, which consists of:
   * The list of groups in the roster that the entry belongs to. If the roster entry belongs to no groups, it's called an "unfiled entry".  The following code snippet prints all entries in the roster: 
 
 ```
-Roster roster = connection.getRoster();
+Roster roster = Roster.getInstanceFor(connection);
 Collection<RosterEntry> entries = roster.getEntries();
 for (RosterEntry entry : entries) {
 	System.out.println(entry);
@@ -63,7 +63,7 @@ out. A normal client would use similar code to update the roster UI with the
 changing information.
 
 ```
-Roster roster = con.getRoster();
+Roster roster = Roster.getInstanceFor(con);
 roster.addRosterListener(new RosterListener() {
 	// Ignored events public void entriesAdded(Collection<String> addresses) {}
 	public void entriesDeleted(Collection<String> addresses) {}

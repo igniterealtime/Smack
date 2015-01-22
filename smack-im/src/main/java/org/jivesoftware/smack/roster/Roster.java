@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.roster;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,14 +27,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.AbstractConnectionClosedListener;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.ExceptionCallback;
+import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
@@ -43,12 +52,12 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.RosterPacket;
-import org.jivesoftware.smack.packet.RosterVer;
-import org.jivesoftware.smack.packet.RosterPacket.Item;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
-import org.jivesoftware.smack.rosterstore.RosterStore;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jivesoftware.smack.roster.packet.RosterVer;
+import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
+import org.jivesoftware.smack.roster.rosterstore.RosterStore;
 import org.jxmpp.util.XmppStringUtils;
 
 /**
@@ -63,13 +72,47 @@ import org.jxmpp.util.XmppStringUtils;
  * </ul>
  *
  * @author Matt Tucker
- * @see XMPPConnection#getRoster()
+ * @see #getInstanceFor(XMPPConnection)
  */
-public class Roster {
+public class Roster extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(Roster.class.getName());
 
+    static {
+        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
+            public void connectionCreated(XMPPConnection connection) {
+                getInstanceFor(connection);
+            }
+        });
+    }
+
+    private static final Map<XMPPConnection, Roster> INSTANCES = new WeakHashMap<>();
+
+    /**
+     * Returns the roster for the user.
+     * <p>
+     * This method will never return <code>null</code>, instead if the user has not yet logged into
+     * the server or is logged in anonymously all modifying methods of the returned roster object
+     * like {@link Roster#createEntry(String, String, String[])},
+     * {@link Roster#removeEntry(RosterEntry)} , etc. except adding or removing
+     * {@link RosterListener}s will throw an IllegalStateException.
+     * 
+     * @return the user's roster.
+     * @throws IllegalStateException if the connection is anonymous
+     */
+    public static synchronized Roster getInstanceFor(XMPPConnection connection) {
+        Roster roster = INSTANCES.get(connection);
+        if (roster == null) {
+            roster = new Roster(connection);
+            INSTANCES.put(connection, roster);
+        }
+        return roster;
+    }
+
     private static final PacketFilter PRESENCE_PACKET_FILTER = new PacketTypeFilter(Presence.class);
+
+    private static boolean rosterLoadedAtLoginDefault = true;
 
     /**
      * The default subscription processing mode to use when a Roster is created. By default
@@ -77,8 +120,7 @@ public class Roster {
      */
     private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.accept_all;
 
-    private final XMPPConnection connection;
-    private final RosterStore rosterStore;
+    private RosterStore rosterStore;
     private final Map<String, RosterGroup> groups = new ConcurrentHashMap<String, RosterGroup>();
     private final Map<String,RosterEntry> entries = new ConcurrentHashMap<String,RosterEntry>();
     private final List<RosterEntry> unfiledEntries = new CopyOnWriteArrayList<RosterEntry>();
@@ -90,6 +132,11 @@ public class Roster {
     private boolean loaded = false;
 
     private final PresencePacketListener presencePacketListener = new PresencePacketListener();
+
+    /**
+     * 
+     */
+    private boolean rosterLoadedAtLogin = rosterLoadedAtLoginDefault;
 
     private SubscriptionMode subscriptionMode = getDefaultSubscriptionMode();
 
@@ -122,9 +169,8 @@ public class Roster {
      *
      * @param connection an XMPP connection.
      */
-    Roster(final XMPPConnection connection) {
-        this.connection = connection;
-        rosterStore = connection.getRosterStore();
+    private Roster(final XMPPConnection connection) {
+        super(connection);
 
         // Note that we use sync packet listeners because RosterListeners should be invoked in the same order as the
         // roster stanzas arrive.
@@ -143,7 +189,7 @@ public class Roster {
                 // again if it's an anonymous connection.
                 if (connection.isAnonymous())
                     return;
-                if (!connection.isRosterLoadedAtLogin())
+                if (!isRosterLoadedAtLogin())
                     return;
                 // We are done here if the connection was resumed
                 if (resumed) {
@@ -214,6 +260,7 @@ public class Roster {
      * @throws NotConnectedException 
      */
     public void reload() throws NotLoggedInException, NotConnectedException{
+        final XMPPConnection connection = connection();
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
         }
@@ -233,7 +280,25 @@ public class Roster {
         });
     }
 
+    public void reloadAndWait() throws NotLoggedInException, NotConnectedException {
+        reload();
+        waitUntilLoaded();
+    }
+ 
+    public boolean setRosterStore(RosterStore rosterStore) {
+        this.rosterStore = rosterStore;
+        try {
+            reload();
+        }
+        catch (NotLoggedInException | NotConnectedException e) {
+            LOGGER.log(Level.FINER, "Could not reload roster", e);
+            return false;
+        }
+        return true;
+    }
+
     protected boolean waitUntilLoaded() {
+        final XMPPConnection connection = connection();
         while (!loaded) {
             long waitTime = connection.getPacketReplyTimeout();
             long start = System.currentTimeMillis();
@@ -301,6 +366,7 @@ public class Roster {
      * @throws IllegalStateException if logged in anonymously
      */
     public RosterGroup createGroup(String name) {
+        final XMPPConnection connection = connection();
         if (connection.isAnonymous()) {
             throw new IllegalStateException("Anonymous users can't have a roster.");
         }
@@ -327,6 +393,7 @@ public class Roster {
      * @throws NotConnectedException 
      */
     public void createEntry(String user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException {
+        final XMPPConnection connection = connection();
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
         }
@@ -368,6 +435,7 @@ public class Roster {
      * @throws IllegalStateException if connection is not logged in or logged in anonymously
      */
     public void removeEntry(RosterEntry entry) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException {
+        final XMPPConnection connection = connection();
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
         }
@@ -724,6 +792,33 @@ public class Roster {
     }
 
     /**
+     * Sets if the roster will be loaded from the server when logging in. This
+     * is the common behaviour for clients but sometimes clients may want to differ this
+     * or just never do it if not interested in rosters.
+     *
+     * @param rosterLoadedAtLogin if the roster will be loaded from the server when logging in.
+     */
+    public void setRosterLoadedAtLogin(boolean rosterLoadedAtLogin) {
+        this.rosterLoadedAtLogin = rosterLoadedAtLogin;
+    }
+
+    /**
+     * Returns true if the roster will be loaded from the server when logging in. This
+     * is the common behavior for clients but sometimes clients may want to differ this
+     * or just never do it if not interested in rosters.
+     *
+     * @return true if the roster will be loaded from the server when logging in.
+     * @see <a href="http://xmpp.org/rfcs/rfc6121.html#roster-login">RFC 6121 2.2 - Retrieving the Roster on Login</a>
+     */
+    public boolean isRosterLoadedAtLogin() {
+        return rosterLoadedAtLogin;
+    }
+
+    RosterStore getRosterStore() {
+        return rosterStore;
+    }
+
+    /**
      * Returns the key to use in the presenceMap and entries Map for a fully qualified XMPP ID.
      * The roster can contain any valid address format such us "domain/resource",
      * "user@domain" or "user@domain/resource". If the roster contains an entry
@@ -921,7 +1016,7 @@ public class Roster {
     }
 
     private boolean isRosterVersioningSupported() {
-        return connection.hasFeature(RosterVer.ELEMENT, RosterVer.NAMESPACE);
+        return connection().hasFeature(RosterVer.ELEMENT, RosterVer.NAMESPACE);
     }
 
     /**
@@ -973,6 +1068,7 @@ public class Roster {
         }
 
         public void processPacket(Packet packet) throws NotConnectedException {
+            final XMPPConnection connection = connection();
             Presence presence = (Presence) packet;
             String from = presence.getFrom();
             String key = getMapKey(from);
@@ -1078,6 +1174,7 @@ public class Roster {
 
         @Override
         public void processPacket(Packet packet) {
+            final XMPPConnection connection = connection();
             LOGGER.fine("RosterResultListener received stanza");
             Collection<String> addedEntries = new ArrayList<String>();
             Collection<String> updatedEntries = new ArrayList<String>();
@@ -1153,6 +1250,7 @@ public class Roster {
 
         @Override
         public IQ handleIQRequest(IQ iqRequest) {
+            final XMPPConnection connection = connection();
             RosterPacket rosterPacket = (RosterPacket) iqRequest;
 
             // Roster push (RFC 6121, 2.1.6)
