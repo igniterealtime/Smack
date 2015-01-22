@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -124,7 +124,7 @@ public class Roster extends Manager {
     private RosterStore rosterStore;
     private final Map<String, RosterGroup> groups = new ConcurrentHashMap<String, RosterGroup>();
     private final Map<String,RosterEntry> entries = new ConcurrentHashMap<String,RosterEntry>();
-    private final List<RosterEntry> unfiledEntries = new CopyOnWriteArrayList<RosterEntry>();
+    private final Set<RosterEntry> unfiledEntries = new CopyOnWriteArraySet<>();
     private final Set<RosterListener> rosterListeners = new LinkedHashSet<>();
     private final Map<String, Map<String, Presence>> presenceMap = new ConcurrentHashMap<String, Map<String, Presence>>();
 
@@ -496,13 +496,13 @@ public class Roster extends Manager {
     }
 
     /**
-     * Returns an unmodifiable collection for the unfiled roster entries. An unfiled entry is
+     * Returns an unmodifiable set for the unfiled roster entries. An unfiled entry is
      * an entry that doesn't belong to any groups.
      *
      * @return the unfiled roster entries.
      */
-    public List<RosterEntry> getUnfiledEntries() {
-        return Collections.unmodifiableList(unfiledEntries);
+    public Set<RosterEntry> getUnfiledEntries() {
+        return Collections.unmodifiableSet(unfiledEntries);
     }
 
     /**
@@ -924,7 +924,6 @@ public class Roster extends Manager {
 
         // Mark the entry as unfiled if it does not belong to any groups.
         if (item.getGroupNames().isEmpty()) {
-            unfiledEntries.remove(entry);
             unfiledEntries.add(entry);
         }
         else {
