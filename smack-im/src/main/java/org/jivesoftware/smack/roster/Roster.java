@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -124,7 +125,7 @@ public class Roster extends Manager {
     private final Map<String, RosterGroup> groups = new ConcurrentHashMap<String, RosterGroup>();
     private final Map<String,RosterEntry> entries = new ConcurrentHashMap<String,RosterEntry>();
     private final List<RosterEntry> unfiledEntries = new CopyOnWriteArrayList<RosterEntry>();
-    private final List<RosterListener> rosterListeners = new CopyOnWriteArrayList<RosterListener>();
+    private final Set<RosterListener> rosterListeners = new LinkedHashSet<>();
     private final Map<String, Map<String, Presence>> presenceMap = new ConcurrentHashMap<String, Map<String, Presence>>();
 
     // The roster is marked as initialized when at least a single roster packet
@@ -338,11 +339,10 @@ public class Roster extends Manager {
      * changes to the roster are pushed from the server.
      *
      * @param rosterListener a roster listener.
+     * @return true if the listener was not already added.
      */
-    public void addRosterListener(RosterListener rosterListener) {
-        if (!rosterListeners.contains(rosterListener)) {
-            rosterListeners.add(rosterListener);
-        }
+    public boolean addRosterListener(RosterListener rosterListener) {
+         return rosterListeners.add(rosterListener);
     }
 
     /**
@@ -350,9 +350,10 @@ public class Roster extends Manager {
      * changes to the roster are pushed from the server.
      *
      * @param rosterListener a roster listener.
+     * @return true if the listener was active and got removed.
      */
-    public void removeRosterListener(RosterListener rosterListener) {
-        rosterListeners.remove(rosterListener);
+    public boolean removeRosterListener(RosterListener rosterListener) {
+        return rosterListeners.remove(rosterListener);
     }
 
     /**
