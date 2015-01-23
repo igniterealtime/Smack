@@ -285,7 +285,7 @@ public interface XMPPConnection {
      *
      * @param packetListener the packet listener to notify of new received packets.
      * @param packetFilter the packet filter to use.
-     * @see {@link #addPacketInterceptor(PacketListener, PacketFilter)} for a similar callback for outgoing stanzas.
+     * @see #addPacketInterceptor(PacketListener, PacketFilter)
      * @since 4.1
      */
     public void addSyncPacketListener(PacketListener packetListener, PacketFilter packetFilter);
@@ -311,7 +311,7 @@ public interface XMPPConnection {
      * 
      * @param packetListener the packet listener to notify of new received packets.
      * @param packetFilter the packet filter to use.
-     * @see {@link #addPacketInterceptor(PacketListener, PacketFilter)} for a similar callback for outgoing stanzas.
+     * @see #addPacketInterceptor(PacketListener, PacketFilter)
      * @since 4.1
     */
     public void addAsyncPacketListener(PacketListener packetListener, PacketFilter packetFilter);
