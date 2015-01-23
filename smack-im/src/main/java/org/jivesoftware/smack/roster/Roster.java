@@ -1067,6 +1067,7 @@ public class Roster extends Manager {
             return userPresences;
         }
 
+        @Override
         public void processPacket(Packet packet) throws NotConnectedException {
             final XMPPConnection connection = connection();
             Presence presence = (Presence) packet;
