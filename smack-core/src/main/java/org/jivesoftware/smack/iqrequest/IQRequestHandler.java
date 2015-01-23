@@ -18,6 +18,12 @@ package org.jivesoftware.smack.iqrequest;
 
 import org.jivesoftware.smack.packet.IQ;
 
+/**
+ * IQ request handler are responsible for handling incoming IQ requests. They can be registered with
+ * {@link org.jivesoftware.smack.XMPPConnection#registerIQRequestHandler(IQRequestHandler)}.
+ *
+ * @see AbstractIqRequestHandler
+ */
 public interface IQRequestHandler {
 
     public enum Mode {

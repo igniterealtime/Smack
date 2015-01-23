@@ -19,6 +19,9 @@ package org.jivesoftware.smack.iqrequest;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 
+/**
+ * Convenience class to create IQ requests handlers.
+ */
 public abstract class AbstractIqRequestHandler implements IQRequestHandler {
 
     private final String element;

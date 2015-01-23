@@ -881,6 +881,32 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         packetReplyTimeout = timeout;
     }
 
+    private static boolean replyToUnknownIqDefault = true;
+
+    /**
+     * Set the default value used to determine if new connection will reply to unknown IQ requests. The pre-configured
+     * default is 'true'.
+     *
+     * @param replyToUnkownIqDefault
+     * @see #setReplyToUnknownIq(boolean)
+     */
+    public static void setReplyToUnknownIqDefault(boolean replyToUnkownIqDefault) {
+        AbstractXMPPConnection.replyToUnknownIqDefault = replyToUnkownIqDefault;
+    }
+
+    private boolean replyToUnkownIq = replyToUnknownIqDefault;
+
+    /**
+     * Set if Smack will automatically send
+     * {@link org.jivesoftware.smack.packet.XMPPError.Condition#feature_not_implemented} when a request IQ without a
+     * registered {@link IQRequestHandler} is received.
+     *
+     * @param replyToUnknownIq
+     */
+    public void setReplyToUnknownIq(boolean replyToUnknownIq) {
+        this.replyToUnkownIq = replyToUnknownIq;
+    }
+
     protected void parseAndProcessStanza(XmlPullParser parser) throws Exception {
         ParserUtils.assertAtStartTag(parser);
         int parserDepth = parser.getDepth();
@@ -933,7 +959,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
-
     /**
      * Invoke {@link PacketCollector#processPacket(Packet)} for every
      * PacketCollector with the given packet. Also notify the receive listeners with a matching packet filter about the packet.
@@ -964,6 +989,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     throw new IllegalStateException("Should only encounter IQ type 'get' or 'set'");
                 }
                 if (iqRequestHandler == null) {
+                    if (!replyToUnkownIq) {
+                        return;
+                    }
                     // If the IQ stanza is of type "get" or "set" with no registered IQ request handler, then answer an
                     // IQ of type "error" with code 501 ("feature-not-implemented")
                     ErrorIQ errorIQ = IQ.createErrorResponse(iq, new XMPPError(
@@ -992,10 +1020,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                             if (response == null) {
                                 // It is not ideal if the IQ request handler does not return an IQ response, because RFC
                                 // 6120 § 8.1.2 does specify that a response is mandatory. But some APIs, mostly the
-                                // file transfer one, does not always return a result, so we need to handle this case
-                                // gracefully for now
-                                // TODO Add a warning if response is null once all APIs using handleIQRequest return an
-                                // IQ response. Later consider throwing an IllegalStateException
+                                // file transfer one, does not always return a result, so we need to handle this case.
+                                // Also sometimes a request handler may decide that it's better to not send a response,
+                                // e.g. to avoid presence leaks.
                                 return;
                             }
                             try {
