@@ -57,6 +57,7 @@ Smack Extensions and currently supported XEPs by Smack (smack-extensions)
 | Entity Time                                 | [XEP-0202](http://xmpp.org/extensions/xep-0202.html) | Allows entities to communicate their local time |
 | Delayed Delivery                            | [XEP-0203](http://xmpp.org/extensions/xep-0203.html) | Extension for communicating the fact that an XML stanza has been delivered with a delay. |
 | XMPP Over BOSH                              | [XEP-0206](http://xmpp.org/extensions/xep-0206.html) | Use Bidirectional-streams Over Synchronous HTTP (BOSH) to transport XMPP stanzas. |
+| Attention                                   | [XEP-0224](http://xmpp.org/extensions/xep-0224.html) | Getting attention of another user. |
 | [Group Chat Invitations](invitation.html)   | n/a                                                      | Send invitations to other users to join a group chat room. |
 | [Jive Properties](properties.html)          | n/a                                                      | TODO |
 
