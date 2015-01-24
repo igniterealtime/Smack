@@ -236,6 +236,40 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     new ArrayBlockingQueue<Runnable>(100), new SmackExecutorThreadFactory(connectionCounterValue, "Incoming Processor"));
 
     /**
+     * This scheduled thread pool executor is used to remove pending callbacks.
+     */
+    private final ScheduledThreadPoolExecutor removeCallbacksService = new ScheduledThreadPoolExecutor(1,
+                    new SmackExecutorThreadFactory(connectionCounterValue, "Remove Callbacks"));
+
+    private static int concurrencyLevel = Runtime.getRuntime().availableProcessors() + 1;
+
+    /**
+     * Set the concurrency level used by newly created connections.
+     * <p>
+     * The concurrency level determines the maximum pool size of the executor service that is used to e.g. invoke
+     * callbacks and IQ request handlers.
+     * </p>
+     * <p>
+     * The default value is <code>Runtime.getRuntime().availableProcessors() + 1</code>. Note that the number of
+     * available processors may change at runtime. So you may need to adjust it to your enviornment, although in most
+     * cases this should not be necessary.
+     * </p>
+     *
+     * @param concurrencyLevel the concurrency level used by new connections.
+     */
+    public static void setConcurrencyLevel(int concurrencyLevel) {
+        if (concurrencyLevel < 1) {
+            throw new IllegalArgumentException("concurrencyLevel must be greater than zero");
+        }
+        AbstractXMPPConnection.concurrencyLevel = concurrencyLevel;
+    }
+
+    /**
+     * The constant long '120'.
+     */
+    private static final long THREAD_KEEP_ALIVE_SECONDS = 60L * 2;
+
+    /**
      * Creates an executor service just as {@link Executors#newCachedThreadPool()} would do, but with a keep alive time
      * of 2 minutes instead of 60 seconds. And a custom thread factory to set meaningful names on the threads and set
      * them 'daemon'.
@@ -243,8 +277,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private final ExecutorService cachedExecutorService = new ThreadPoolExecutor(
                     // @formatter:off
                     0,                                 // corePoolSize
-                    Integer.MAX_VALUE,                 // maximumPoolSize
-                    60L * 2,                           // keepAliveTime
+                    concurrencyLevel,                  // maximumPoolSize
+                    THREAD_KEEP_ALIVE_SECONDS,         // keepAliveTime
                     TimeUnit.SECONDS,                  // keepAliveTime unit, note that MINUTES is Android API 9
                     new SynchronousQueue<Runnable>(),  // workQueue
                     new SmackExecutorThreadFactory(    // threadFactory
@@ -293,7 +327,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected AbstractXMPPConnection(ConnectionConfiguration configuration) {
         config = configuration;
-        removeCallbacksService.setKeepAliveTime(30, TimeUnit.SECONDS);
+        removeCallbacksService.setMaximumPoolSize(concurrencyLevel);
+        removeCallbacksService.setKeepAliveTime(THREAD_KEEP_ALIVE_SECONDS, TimeUnit.SECONDS);
     }
 
     protected ConnectionConfiguration getConfiguration() {
@@ -1353,9 +1388,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         String key = XmppStringUtils.generateKey(feature.getElementName(), feature.getNamespace());
         streamFeatures.put(key, feature);
     }
-
-    private final ScheduledThreadPoolExecutor removeCallbacksService = new ScheduledThreadPoolExecutor(1,
-                    new SmackExecutorThreadFactory(connectionCounterValue, "Remove Callbacks"));
 
     @Override
     public void sendStanzaWithResponseCallback(Packet stanza, PacketFilter replyFilter,
