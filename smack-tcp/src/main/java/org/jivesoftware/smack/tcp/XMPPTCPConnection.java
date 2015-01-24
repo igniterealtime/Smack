@@ -99,6 +99,7 @@ import java.lang.reflect.Constructor;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -516,25 +517,24 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     private void connectUsingConfiguration(XMPPTCPConnectionConfiguration config) throws SmackException, IOException {
-        try {
-            populateHostAddresses();
-        }
-        catch (Exception e) {
-            throw new SmackException(e);
-        }
-        Iterator<HostAddress> it = hostAddresses.iterator();
+        populateHostAddresses();
+
         List<HostAddress> failedAddresses = new LinkedList<HostAddress>();
         SocketFactory socketFactory = config.getSocketFactory();
         if (socketFactory == null) {
             socketFactory = SocketFactory.getDefault();
         }
-        outerloop: while (it.hasNext()) {
-            HostAddress hostAddress = it.next();
+        for (HostAddress hostAddress : hostAddresses) {
             String host = hostAddress.getFQDN();
             int port = hostAddress.getPort();
             socket = socketFactory.createSocket();
             try {
                 Iterator<InetAddress> inetAddresses = Arrays.asList(InetAddress.getAllByName(host)).iterator();
+                if (!inetAddresses.hasNext()) {
+                    // This should not happen
+                    LOGGER.warning("InetAddress.getAllByName() returned empty result array.");
+                    throw new UnknownHostException(host);
+                }
                 innerloop: while (inetAddresses.hasNext()) {
                     final InetAddress inetAddress = inetAddresses.next();
                     final String inetAddressAndPort = inetAddress + "at port " + port;
@@ -549,25 +549,21 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         }
                     }
                     LOGGER.finer("Established TCP connection to " + inetAddressAndPort);
-                    // We found a host to connect to, break here
+                    // We found a host to connect to, return here
                     this.host = host;
                     this.port = port;
-                    break outerloop;
+                    return;
                 }
             }
             catch (Exception e) {
                 hostAddress.setException(e);
                 failedAddresses.add(hostAddress);
-                if (!it.hasNext()) {
-                    // There are no more host addresses to try
-                    // throw an exception and report all tried
-                    // HostAddresses in the exception
-                    throw ConnectionException.from(failedAddresses);
-                }
             }
         }
-        socketClosed = false;
-        initConnection();
+        // There are no more host addresses to try
+        // throw an exception and report all tried
+        // HostAddresses in the exception
+        throw ConnectionException.from(failedAddresses);
     }
 
     /**
@@ -822,6 +818,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         throwAlreadyConnectedExceptionIfAppropriate();
         // Establishes the connection, readers and writers
         connectUsingConfiguration(config);
+        socketClosed = false;
+        initConnection();
 
         // Wait with SASL auth until the SASL mechanisms have been received
         saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
