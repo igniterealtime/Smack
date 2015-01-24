@@ -516,7 +516,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
     }
 
-    private void connectUsingConfiguration(XMPPTCPConnectionConfiguration config) throws SmackException, IOException {
+    private void connectUsingConfiguration() throws IOException, ConnectionException {
         populateHostAddresses();
 
         List<HostAddress> failedAddresses = new LinkedList<HostAddress>();
@@ -574,70 +574,50 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws SmackException if the server failes to respond back or if there is anther error.
      * @throws IOException 
      */
-    private void initConnection() throws SmackException, IOException {
+    private void initConnection() throws IOException {
         boolean isFirstInitialization = packetReader == null || packetWriter == null;
         compressionHandler = null;
 
         // Set the reader and writer instance variables
         initReaderAndWriter();
 
-        try {
-            if (isFirstInitialization) {
-                packetWriter = new PacketWriter();
-                packetReader = new PacketReader();
+        if (isFirstInitialization) {
+            packetWriter = new PacketWriter();
+            packetReader = new PacketReader();
 
-                // If debugging is enabled, we should start the thread that will listen for
-                // all packets and then log them.
-                if (config.isDebuggerEnabled()) {
-                    addAsyncPacketListener(debugger.getReaderListener(), null);
-                    if (debugger.getWriterListener() != null) {
-                        addPacketSendingListener(debugger.getWriterListener(), null);
-                    }
+            // If debugging is enabled, we should start the thread that will listen for
+            // all packets and then log them.
+            if (config.isDebuggerEnabled()) {
+                addAsyncPacketListener(debugger.getReaderListener(), null);
+                if (debugger.getWriterListener() != null) {
+                    addPacketSendingListener(debugger.getWriterListener(), null);
                 }
             }
-            // Start the packet writer. This will open a XMPP stream to the server
-            packetWriter.init();
-            // Start the packet reader. The startup() method will block until we
-            // get an opening stream packet back from server
-            packetReader.init();
-
-            if (isFirstInitialization) {
-                // Notify listeners that a new connection has been established
-                for (ConnectionCreationListener listener : getConnectionCreationListeners()) {
-                    listener.connectionCreated(this);
-                }
-            }
-
         }
-        catch (SmackException ex) {
-            // An exception occurred in setting up the connection. Note that
-            // it's important here that we do an instant shutdown here, as this
-            // will not send a closing stream element, which will destroy
-            // Stream Management state on the server, which is not what we want.
-            instantShutdown();
-            // Everything stopped. Now throw the exception.
-            throw ex;
+        // Start the packet writer. This will open a XMPP stream to the server
+        packetWriter.init();
+        // Start the packet reader. The startup() method will block until we
+        // get an opening stream packet back from server
+        packetReader.init();
+
+        if (isFirstInitialization) {
+            // Notify listeners that a new connection has been established
+            for (ConnectionCreationListener listener : getConnectionCreationListeners()) {
+                listener.connectionCreated(this);
+            }
         }
     }
 
-    private void initReaderAndWriter() throws IOException, SmackException {
-        try {
-            InputStream is = socket.getInputStream();
-            OutputStream os = socket.getOutputStream();
-            if (compressionHandler != null) {
-                is = compressionHandler.getInputStream(is);
-                os =  compressionHandler.getOutputStream(os);
-            }
-            // OutputStreamWriter is already buffered, no need to wrap it into a BufferedWriter
-            writer = new OutputStreamWriter(os, "UTF-8");
-            reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+    private void initReaderAndWriter() throws IOException {
+        InputStream is = socket.getInputStream();
+        OutputStream os = socket.getOutputStream();
+        if (compressionHandler != null) {
+            is = compressionHandler.getInputStream(is);
+            os = compressionHandler.getOutputStream(os);
         }
-        catch (IOException e) {
-            throw e;
-        }
-        catch (Exception e) {
-            throw new SmackException(e);
-        }
+        // OutputStreamWriter is already buffered, no need to wrap it into a BufferedWriter
+        writer = new OutputStreamWriter(os, "UTF-8");
+        reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
         // If debugging is enabled, we open a window and write out all network traffic.
         initDebugger();
@@ -817,7 +797,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     protected void connectInternal() throws SmackException, IOException, XMPPException {
         throwAlreadyConnectedExceptionIfAppropriate();
         // Establishes the connection, readers and writers
-        connectUsingConfiguration(config);
+        connectUsingConfiguration();
         socketClosed = false;
         initConnection();
 
@@ -920,10 +900,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         /**
          * Initializes the reader in order to be used. The reader is initialized during the
          * first connection and when reconnecting due to an abruptly disconnection.
-         *
-         * @throws SmackException if the parser could not be reset.
          */
-        void init() throws SmackException {
+        void init() {
             done = false;
 
             Async.go(new Runnable() {
@@ -1148,8 +1126,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         private final ArrayBlockingQueueWithShutdown<Element> queue = new ArrayBlockingQueueWithShutdown<Element>(
                         QUEUE_SIZE, true);
 
-        private Thread writerThread;
-
         /**
          * Needs to be protected for unit testing purposes.
          */
@@ -1179,14 +1155,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
 
             queue.start();
-            writerThread = new Thread() {
+            Async.go(new Runnable() {
+                @Override
                 public void run() {
                     writePackets();
                 }
-            };
-            writerThread.setName("Smack Packet Writer (" + getConnectionCounter() + ")");
-            writerThread.setDaemon(true);
-            writerThread.start();
+            }, "Smack Packet Writer (" + getConnectionCounter() + ")");
         }
 
         private boolean done() {
