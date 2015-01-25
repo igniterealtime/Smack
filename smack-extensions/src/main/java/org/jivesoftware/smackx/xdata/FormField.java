@@ -113,7 +113,16 @@ public class FormField implements NamedElement {
             }
         }
 
+        /**
+         * Get a form field type from the given string. If <code>string</code> is null, then null will be returned.
+         *
+         * @param string the string to transform or null.
+         * @return the type or null.
+         */
         public static Type fromString(String string) {
+            if (string == null) {
+                return null;
+            }
             switch (string) {
             case "boolean":
                 return bool;

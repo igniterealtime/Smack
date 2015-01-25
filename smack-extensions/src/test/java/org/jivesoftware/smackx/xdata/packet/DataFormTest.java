@@ -25,6 +25,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.FormField.Type;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Fieldref;
@@ -32,7 +33,6 @@ import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Section;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Text;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
-
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -48,6 +48,8 @@ public class DataFormTest {
     private static final String TEST_OUTPUT_2 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'></field><page xmlns='http://jabber.org/protocol/xdata-layout' label='Label'><fieldref var='testField1'/><section label='section Label'><text>SectionText</text></section><text>PageText</text></page></x>";
     private static final String TEST_OUTPUT_3 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'><validate xmlns='http://jabber.org/protocol/xdata-validate' datatype='xs:integer'><range min='1111' max='9999'/></validate></field></x>";
 
+    DataFormProvider pr = new DataFormProvider();
+
     @Test
     public void test() throws XmlPullParserException, IOException, SmackException {
         //Build a Form
@@ -60,8 +62,6 @@ public class DataFormTest {
         assertNotNull( df.toXML());
         String output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_1, output);
-        
-        DataFormProvider pr = new DataFormProvider();
         
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
         
@@ -101,8 +101,6 @@ public class DataFormTest {
         String output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_2, output);
         
-        DataFormProvider pr = new DataFormProvider();
-        
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
         
         df = pr.parse(parser);
@@ -137,8 +135,6 @@ public class DataFormTest {
         String output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_3, output);
         
-        DataFormProvider pr = new DataFormProvider();
-        
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
         
         df = pr.parse(parser);
@@ -155,5 +151,12 @@ public class DataFormTest {
         assertNotNull( df.toXML());
         output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_3, output);
+    }
+
+    @Test
+    public void testFixedField() throws XmlPullParserException, IOException, SmackException {
+        final String formWithFixedField = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field type='fixed'></field></x>";
+        DataForm df = pr.parse(PacketParserUtils.getParserFor(formWithFixedField));
+        assertEquals(Type.fixed, df.getFields().get(0).getType());
     }
 }
