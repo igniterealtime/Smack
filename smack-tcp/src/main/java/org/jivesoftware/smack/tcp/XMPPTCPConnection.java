@@ -793,9 +793,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     @Override
     protected void connectInternal() throws SmackException, IOException, XMPPException {
-        throwAlreadyConnectedExceptionIfAppropriate();
-        // Establishes the connection, readers and writers
+        // Establishes the TCP connection to the server and does setup the reader and writer. Throws an exception if
+        // there is an error establishing the connection
         connectUsingConfiguration();
+
+        // We connected successfully to the servers TCP port
         socketClosed = false;
         initConnection();
 
