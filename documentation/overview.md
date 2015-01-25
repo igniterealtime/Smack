@@ -13,8 +13,8 @@ Smack Key Advantages
 
     ```java
     AbstractXMPPConnection connection = new XMPPTCPConnection("mtucker", "password", "jabber.org");
-    connection.connect();
-    connection.login();
+    connection.connect().login();
+
     Chat chat = ChatManager.getInstanceFor(connection)
         .createChat("jsmith@jivesoftware.com", new MessageListener() {
 

@@ -378,13 +378,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws SmackException if an error occurs somewhere else besides XMPP protocol level.
      * @throws IOException 
      * @throws ConnectionException with detailed information about the failed connection.
+     * @return a reference to this object, to chain <code>connect()</code> with <code>login()</code>.
      */
-    public synchronized void connect() throws SmackException, IOException, XMPPException {
+    public synchronized AbstractXMPPConnection connect() throws SmackException, IOException, XMPPException {
         throwAlreadyConnectedExceptionIfAppropriate();
         saslAuthentication.init();
         saslFeatureReceived.init();
         lastFeaturesReceived.init();
         connectInternal();
+        return this;
     }
 
     /**
