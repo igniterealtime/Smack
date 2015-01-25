@@ -517,9 +517,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     private void connectUsingConfiguration() throws IOException, ConnectionException {
-        populateHostAddresses();
-
-        List<HostAddress> failedAddresses = new LinkedList<HostAddress>();
+        List<HostAddress> failedAddresses = populateHostAddresses();
         SocketFactory socketFactory = config.getSocketFactory();
         if (socketFactory == null) {
             socketFactory = SocketFactory.getDefault();

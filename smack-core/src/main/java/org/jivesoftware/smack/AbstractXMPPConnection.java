@@ -573,8 +573,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * Populates {@link #hostAddresses} with at least one host address.
      *
+     * @return a list of host addresses where DNS (SRV) RR resolution failed.
      */
-    protected void populateHostAddresses() {
+    protected List<HostAddress> populateHostAddresses() {
+        List<HostAddress> failedAddresses = new LinkedList<>();
         // N.B.: Important to use config.serviceName and not AbstractXMPPConnection.serviceName
         if (config.host != null) {
             hostAddresses = new ArrayList<HostAddress>(1);
@@ -582,11 +584,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             hostAddress = new HostAddress(config.host, config.port);
             hostAddresses.add(hostAddress);
         } else {
-            hostAddresses = DNSUtil.resolveXMPPDomain(config.serviceName);
+            hostAddresses = DNSUtil.resolveXMPPDomain(config.serviceName, failedAddresses);
         }
         // If we reach this, then hostAddresses *must not* be empty, i.e. there is at least one host added, either the
         // config.host one or the host representing the service name by DNSUtil
         assert(!hostAddresses.isEmpty());
+        return failedAddresses;
     }
 
     protected Lock getConnectionLock() {

@@ -105,10 +105,11 @@ public class DNSUtil {
      * </p>
      *
      * @param domain the domain.
+     * @param failedAddresses on optional list that will be populated with host addresses that failed to resolve.
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
      */
-    public static List<HostAddress> resolveXMPPDomain(String domain) {
+    public static List<HostAddress> resolveXMPPDomain(String domain, List<HostAddress> failedAddresses) {
         domain = idnaTransformer.transform(domain);
         if (dnsResolver == null) {
             LOGGER.warning("No DNS Resolver active in Smack, will be unable to perform DNS SRV lookups");
@@ -116,7 +117,7 @@ public class DNSUtil {
             addresses.add(new HostAddress(domain, 5222));
             return addresses;
         }
-        return resolveDomain(domain, DomainType.Client);
+        return resolveDomain(domain, DomainType.Client, failedAddresses);
     }
 
     /**
@@ -129,10 +130,11 @@ public class DNSUtil {
      * </p>
      *
      * @param domain the domain.
+     * @param failedAddresses on optional list that will be populated with host addresses that failed to resolve.
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
      */
-    public static List<HostAddress> resolveXMPPServerDomain(String domain) {
+    public static List<HostAddress> resolveXMPPServerDomain(String domain, List<HostAddress> failedAddresses) {
         domain = idnaTransformer.transform(domain);
         if (dnsResolver == null) {
             LOGGER.warning("No DNS Resolver active in Smack, will be unable to perform DNS SRV lookups");
@@ -140,10 +142,17 @@ public class DNSUtil {
             addresses.add(new HostAddress(domain, 5269));
             return addresses;
         }
-        return resolveDomain(domain, DomainType.Server);
+        return resolveDomain(domain, DomainType.Server, failedAddresses);
     }
 
-    private static List<HostAddress> resolveDomain(String domain, DomainType domainType) {
+    /**
+     * 
+     * @param domain the domain.
+     * @param domainType the XMPP domain type, server or client.
+     * @param failedAddresses on optional list that will be populated with host addresses that failed to resolve.
+     * @return a list of resolver host addresses for this domain.
+     */
+    private static List<HostAddress> resolveDomain(String domain, DomainType domainType, List<HostAddress> failedAddresses) {
         List<HostAddress> addresses = new ArrayList<HostAddress>();
 
         // Step one: Do SRV lookups
@@ -172,6 +181,11 @@ public class DNSUtil {
         catch (Exception e) {
             LOGGER.log(Level.WARNING, "Exception while resovling SRV records for " + domain
                             + ". Consider adding '_xmpp-(server|client)._tcp' DNS SRV Records", e);
+            if (failedAddresses != null) {
+                HostAddress failedHostAddress = new HostAddress(srvDomain);
+                failedHostAddress.setException(e);
+                failedAddresses.add(failedHostAddress);
+            }
         }
 
         // Step two: Add the hostname to the end of the list
