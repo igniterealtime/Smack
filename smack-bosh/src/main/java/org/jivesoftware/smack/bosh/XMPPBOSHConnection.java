@@ -25,8 +25,6 @@ import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.security.sasl.SaslException;
-
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -239,7 +237,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                 saslAuthentication.authenticate(resource, config.getCallbackHandler());
             }
         } else {
-            throw new SaslException("No non-anonymous SASL authentication mechanism available");
+            throw new SmackException("No non-anonymous SASL authentication mechanism available");
         }
 
         bindResourceAndEstablishSession(resource);
@@ -257,7 +255,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         }
         else {
             // Authenticate using Non-SASL
-            throw new SaslException("No anonymous SASL authentication mechanism available");
+            throw new SmackException("No anonymous SASL authentication mechanism available");
         }
 
         bindResourceAndEstablishSession(null);

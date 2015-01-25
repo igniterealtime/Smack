@@ -33,7 +33,16 @@ allprojects {
 		// build, causing unnecessary rebuilds.
 		builtDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 		oneLineDesc = 'An Open Source XMPP (Jabber) client library'
-		androidProjects = [':smack-tcp', ':smack-core', ':smack-im', ':smack-resolver-minidns', ':smack-sasl-provided', ':smack-extensions', ':smack-experimental'].collect{ project(it) }
+		androidProjects = [
+			':smack-tcp',
+			':smack-bosh',
+			':smack-core',
+			':smack-im',
+			':smack-resolver-minidns',
+			':smack-sasl-provided',
+			':smack-extensions',
+			':smack-experimental',
+		].collect{ project(it) }
 		androidBootClasspath = getAndroidRuntimeJar()
 		androidJavadocOffline = getAndroidJavadocOffline()
 	}
