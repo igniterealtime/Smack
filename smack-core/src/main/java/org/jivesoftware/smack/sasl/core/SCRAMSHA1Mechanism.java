@@ -167,9 +167,6 @@ public class SCRAMSHA1Mechanism extends SASLMechanism {
                 // ServerKey := HMAC(SaltedPassword, "Server Key")
                 serverKey = hmac(saltedPassword, SERVER_KEY_BYTES);
 
-                // ServerSignature := HMAC(ServerKey, AuthMessage)
-                serverSignature = hmac(serverKey, authMessage);
-
                 // ClientKey := HMAC(SaltedPassword, "Client Key")
                 clientKey = hmac(saltedPassword, CLIENT_KEY_BYTES);
 
@@ -181,6 +178,8 @@ public class SCRAMSHA1Mechanism extends SASLMechanism {
                 clientKey = keys.clientKey;
             }
 
+            // ServerSignature := HMAC(ServerKey, AuthMessage)
+            serverSignature = hmac(serverKey, authMessage);
 
             // StoredKey := H(ClientKey)
             byte[] storedKey = SHA1.bytes(clientKey);
