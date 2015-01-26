@@ -22,8 +22,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 
@@ -36,7 +38,11 @@ import org.jivesoftware.smack.roster.packet.RosterPacket;
  */
 public class RosterEntry {
 
-    private String user;
+    /**
+     * The JID of the entity/user.
+     */
+    private final String user;
+
     private String name;
     private RosterPacket.ItemType type;
     private RosterPacket.ItemStatus status;
@@ -85,17 +91,22 @@ public class RosterEntry {
      *
      * @param name the name.
      * @throws NotConnectedException 
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public void setName(String name) throws NotConnectedException {
+    public void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException {
         // Do nothing if the name hasn't changed.
         if (name != null && name.equals(this.name)) {
             return;
         }
-        this.name = name;
+
         RosterPacket packet = new RosterPacket();
         packet.setType(IQ.Type.set);
         packet.addRosterItem(toRosterItem(this));
-        connection.sendPacket(packet);
+        connection.createPacketCollectorAndSend(packet).nextResultOrThrow();
+
+        // We have received a result response to the IQ set, the name was successfully changed
+        this.name = name;
     }
 
     /**

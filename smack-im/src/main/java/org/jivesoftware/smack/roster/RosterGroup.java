@@ -40,8 +40,8 @@ import org.jxmpp.util.XmppStringUtils;
  */
 public class RosterGroup {
 
-    private String name;
-    private XMPPConnection connection;
+    private final String name;
+    private final XMPPConnection connection;
     private final Set<RosterEntry> entries;
 
     /**
@@ -73,8 +73,10 @@ public class RosterGroup {
      *
      * @param name the name of the group.
      * @throws NotConnectedException 
+     * @throws XMPPErrorException 
+     * @throws NoResponseException 
      */
-    public void setName(String name) throws NotConnectedException {
+    public void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException {
         synchronized (entries) {
             for (RosterEntry entry : entries) {
                 RosterPacket packet = new RosterPacket();
@@ -83,7 +85,7 @@ public class RosterGroup {
                 item.removeGroupName(this.name);
                 item.addGroupName(name);
                 packet.addRosterItem(item);
-                connection.sendPacket(packet);
+                connection.createPacketCollectorAndSend(packet).nextResultOrThrow();
             }
         }
     }

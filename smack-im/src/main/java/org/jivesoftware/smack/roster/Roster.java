@@ -944,9 +944,7 @@ public class Roster extends Manager {
             unfiledEntries.remove(entry);
         }
 
-        // Add the user to the new groups
-
-        // Add the entry to the groups
+        // Add the entry/user to the groups
         List<String> newGroupNames = new ArrayList<String>();
         for (String groupName : item.getGroupNames()) {
             // Add the group name to the list.
