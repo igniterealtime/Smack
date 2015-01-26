@@ -69,12 +69,6 @@ public class MessageTest {
         assertXMLEqual(control, messageTypeSet.toXML().toString());
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void setMessageTypeNullTest() {
-        Message message = getNewMessage();
-        message.setType(null);
-    }
-
     @Test(expected=NullPointerException.class)
     public void setNullMessageBodyTest() {
         Message message = getNewMessage();

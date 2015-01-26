@@ -55,7 +55,7 @@ public final class Message extends Packet {
     public static final String ELEMENT = "message";
     public static final String BODY = "body";
 
-    private Type type = Type.normal;
+    private Type type;
     private String thread = null;
 
     private final Set<Subject> subjects = new HashSet<Subject>();
@@ -105,6 +105,9 @@ public final class Message extends Packet {
      * @return the type of the message.
      */
     public Type getType() {
+        if (type == null) {
+            return Type.normal;
+        }
         return type;
     }
 
@@ -112,12 +115,8 @@ public final class Message extends Packet {
      * Sets the type of the message.
      *
      * @param type the type of the message.
-     * @throws IllegalArgumentException if null is passed in as the type
      */
     public void setType(Type type) {
-        if (type == null) {
-            throw new IllegalArgumentException("Type cannot be null.");
-        }
         this.type = type;
     }
 
@@ -404,9 +403,7 @@ public final class Message extends Packet {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(ELEMENT);
         addCommonAttributes(buf);
-        if (type != Type.normal) {
-            buf.attribute("type", type);
-        }
+        buf.optAttribute("type", type);
         buf.rightAngleBracket();
 
         // Add the subject in the default language
