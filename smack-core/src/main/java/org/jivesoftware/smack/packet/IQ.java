@@ -19,6 +19,7 @@ package org.jivesoftware.smack.packet;
 
 import java.util.Locale;
 
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -84,10 +85,7 @@ public abstract class IQ extends Packet {
      * @param type the type of the IQ packet.
      */
     public void setType(Type type) {
-        if (type == null) {
-            throw new IllegalArgumentException("type must not be null");
-        }
-        this.type = type;
+        this.type = Objects.requireNonNull(type, "type must not be null");
     }
 
     /**

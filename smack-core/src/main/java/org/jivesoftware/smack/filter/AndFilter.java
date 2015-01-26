@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.util.Objects;
 
 /**
  * Implements the logical AND operation over two or more packet filters.
@@ -50,13 +51,9 @@ public class AndFilter implements PacketFilter {
      * @param filters the filters to add.
      */
     public AndFilter(PacketFilter... filters) {
-        if (filters == null) {
-            throw new IllegalArgumentException("Parameter must not be null.");
-        }
+        Objects.requireNonNull(filters, "Parameter must not be null.");
         for(PacketFilter filter : filters) {
-            if(filter == null) {
-                throw new IllegalArgumentException("Parameter must not be null.");
-            }
+            Objects.requireNonNull(filter, "Parameter must not be null.");
         }
         this.filters = new ArrayList<PacketFilter>(Arrays.asList(filters));
     }
@@ -68,9 +65,7 @@ public class AndFilter implements PacketFilter {
      * @param filter a filter to add to the filter list.
      */
     public void addFilter(PacketFilter filter) {
-        if (filter == null) {
-            throw new IllegalArgumentException("Parameter must not be null.");
-        }
+        Objects.requireNonNull(filter, "Parameter must not be null.");
         filters.add(filter);
     }
 

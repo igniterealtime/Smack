@@ -40,9 +40,8 @@ public class PacketExtensionFilter implements PacketFilter {
      * @param namespace the XML namespace of the packet extension.
      */
     public PacketExtensionFilter(String elementName, String namespace) {
-        if (StringUtils.isNullOrEmpty(namespace)) {
-            throw new IllegalArgumentException("namespace must not be null or empty");
-        }
+        StringUtils.requireNotNullOrEmpty(namespace, "namespace must not be null or empty");
+
         this.elementName = elementName;
         this.namespace = namespace;
     }

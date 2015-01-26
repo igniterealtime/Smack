@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.util.dns;
 
 import org.jivesoftware.smack.SmackException.ConnectionException;
+import org.jivesoftware.smack.util.Objects;
 
 public class HostAddress {
     private final String fqdn;
@@ -42,8 +43,7 @@ public class HostAddress {
      * @throws IllegalArgumentException If the fqdn is null or port is out of valid range (0 - 65535).
      */
     public HostAddress(String fqdn, int port) {
-        if (fqdn == null)
-            throw new IllegalArgumentException("FQDN is null");
+        Objects.requireNonNull(fqdn, "FQDN is null");
         if (port < 0 || port > 65535)
             throw new IllegalArgumentException(
                     "Port must be a 16-bit unsiged integer (i.e. between 0-65535. Port was: " + port);

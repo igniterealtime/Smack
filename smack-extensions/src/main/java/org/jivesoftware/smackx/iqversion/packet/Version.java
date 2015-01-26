@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.iqversion.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * A Version IQ packet, which is used by XMPP clients to discover version information
@@ -85,16 +86,9 @@ public class Version extends IQ {
      */
     public Version(String name, String version, String os) {
         super(ELEMENT, NAMESPACE);
-        if (name == null)
-        {
-            throw new IllegalArgumentException("name must not be null");
-        }
-        if (version == null) {
-            throw new IllegalArgumentException("version must not be null");
-        }
         this.setType(IQ.Type.result);
-        this.name = name;
-        this.version = version;
+        this.name = StringUtils.requireNotNullOrEmpty(name, "name must not be null");
+        this.version = StringUtils.requireNotNullOrEmpty(version, "version must not be null");
         this.os = os;
     }
 

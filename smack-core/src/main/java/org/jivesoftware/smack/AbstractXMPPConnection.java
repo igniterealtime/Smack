@@ -75,6 +75,7 @@ import org.jivesoftware.smack.parsing.UnparsablePacket;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.DNSUtil;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
@@ -469,8 +470,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     public synchronized void login(CharSequence username, String password, String resource) throws XMPPException,
                     SmackException, IOException {
-        if (!config.allowNullOrEmptyUsername && StringUtils.isNullOrEmpty(username)) {
-            throw new IllegalArgumentException("Username must not be null or empty");
+        if (!config.allowNullOrEmptyUsername) {
+            StringUtils.requireNotNullOrEmpty(username, "Username must not be null or empty");
         }
         throwNotConnectedExceptionIfAppropriate();
         throwAlreadyLoggedInExceptionIfAppropriate();
@@ -618,9 +619,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public void sendPacket(Packet packet) throws NotConnectedException {
-        if (packet == null) {
-            throw new IllegalArgumentException("Packet must not be null");
-        }
+        Objects.requireNonNull(packet, "Packet must not be null");
+
         throwNotConnectedExceptionIfAppropriate();
         switch (fromMode) {
         case OMITTED:
@@ -1419,17 +1419,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     public void sendStanzaWithResponseCallback(Packet stanza, PacketFilter replyFilter,
                     final PacketListener callback, final ExceptionCallback exceptionCallback,
                     long timeout) throws NotConnectedException {
-        if (stanza == null) {
-            throw new IllegalArgumentException("stanza must not be null");
-        }
-        if (replyFilter == null) {
-            // While Smack allows to add PacketListeners with a PacketFilter value of 'null', we
-            // disallow it here in the async API as it makes no sense
-            throw new IllegalArgumentException("replyFilter must not be null");
-        }
-        if (callback == null) {
-            throw new IllegalArgumentException("callback must not be null");
-        }
+        Objects.requireNonNull(stanza, "stanza must not be null");
+        // While Smack allows to add PacketListeners with a PacketFilter value of 'null', we
+        // disallow it here in the async API as it makes no sense
+        Objects.requireNonNull(replyFilter, "replyFilter must not be null");
+        Objects.requireNonNull(callback, "callback must not be null");
+
         final PacketListener packetListener = new PacketListener() {
             @Override
             public void processPacket(Packet packet) throws NotConnectedException {

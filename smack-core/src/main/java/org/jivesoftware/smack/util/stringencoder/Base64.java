@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jivesoftware.smack.util.stringencoder;
 
 import java.io.UnsupportedEncodingException;
 
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 
 public class Base64 {
@@ -25,9 +26,7 @@ public class Base64 {
     private static Base64.Encoder base64encoder;
 
     public static void setEncoder(Base64.Encoder encoder) {
-        if (encoder == null) {
-            throw new IllegalArgumentException("encoder must no be null");
-        }
+        Objects.requireNonNull(encoder, "encoder must no be null");
         base64encoder = encoder;
     }
 

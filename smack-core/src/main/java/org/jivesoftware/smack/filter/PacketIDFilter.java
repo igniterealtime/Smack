@@ -44,9 +44,7 @@ public class PacketIDFilter implements PacketFilter {
      * @param packetID the packet ID to filter for.
      */
     public PacketIDFilter(String packetID) {
-        if (StringUtils.isNullOrEmpty(packetID)) {
-            throw new IllegalArgumentException("Packet ID must not be null or empty.");
-        }
+        StringUtils.requireNotNullOrEmpty(packetID, "Packet ID must not be null or empty.");
         this.packetID = packetID;
     }
 

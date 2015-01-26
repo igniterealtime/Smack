@@ -257,4 +257,11 @@ public class StringUtils {
         }
         return csOne.toString().compareTo(csTwo.toString());
     }
+
+    public static <CS extends CharSequence> CS requireNotNullOrEmpty(CS cs, String message) {
+        if (isNullOrEmpty(cs)) {
+            throw new IllegalArgumentException(message);
+        }
+        return cs;
+    }
 }

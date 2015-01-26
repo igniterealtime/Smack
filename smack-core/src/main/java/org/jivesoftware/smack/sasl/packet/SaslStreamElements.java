@@ -21,6 +21,7 @@ import java.util.Map;
 import org.jivesoftware.smack.packet.AbstractError;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.sasl.SASLError;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -37,14 +38,9 @@ public class SaslStreamElements {
         private final String authenticationText;
 
         public AuthMechanism(String mechanism, String authenticationText) {
-            if (mechanism == null) {
-                throw new NullPointerException("SASL mechanism shouldn't be null.");
-            }
-            if (StringUtils.isNullOrEmpty(authenticationText)) {
-                throw new IllegalArgumentException("SASL authenticationText must not be null or empty (RFC6120 6.4.2)");
-            }
-            this.mechanism = mechanism;
-            this.authenticationText = authenticationText;
+            this.mechanism = Objects.requireNonNull(mechanism, "SASL mechanism shouldn't be null.");
+            this.authenticationText = StringUtils.requireNotNullOrEmpty(authenticationText,
+                            "SASL authenticationText must not be null or empty (RFC6120 6.4.2)");
         }
 
         @Override

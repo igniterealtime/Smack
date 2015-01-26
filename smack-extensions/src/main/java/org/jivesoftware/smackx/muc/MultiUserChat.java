@@ -274,9 +274,7 @@ public class MultiUserChat {
     private Presence enter(String nickname, String password, DiscussionHistory history,
                     long timeout) throws NotConnectedException, NoResponseException,
                     XMPPErrorException {
-        if (StringUtils.isNullOrEmpty(nickname)) {
-            throw new IllegalArgumentException("Nickname must not be null or blank.");
-        }
+        StringUtils.requireNotNullOrEmpty(nickname, "Nickname must not be null or blank.");
         // We enter a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
         Presence joinPresence = new Presence(Presence.Type.available);
@@ -844,9 +842,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void changeNickname(String nickname) throws NoResponseException, XMPPErrorException, NotConnectedException  {
-        if (StringUtils.isNullOrEmpty(nickname)) {
-            throw new IllegalArgumentException("Nickname must not be null or blank.");
-        }
+        StringUtils.requireNotNullOrEmpty(nickname, "Nickname must not be null or blank.");
         // Check that we already have joined the room before attempting to change the
         // nickname.
         if (!joined) {
@@ -881,9 +877,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      */
     public void changeAvailabilityStatus(String status, Presence.Mode mode) throws NotConnectedException {
-        if (StringUtils.isNullOrEmpty(nickname)) {
-            throw new IllegalArgumentException("Nickname must not be null or blank.");
-        }
+        StringUtils.requireNotNullOrEmpty(nickname, "Nickname must not be null or blank.");
         // Check that we already have joined the room before attempting to change the
         // availability status.
         if (!joined) {

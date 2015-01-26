@@ -36,9 +36,7 @@ public class ThreadFilter implements PacketFilter {
      * @param thread the thread value to filter for.
      */
     public ThreadFilter(String thread) {
-        if (StringUtils.isNullOrEmpty(thread)) {
-            throw new IllegalArgumentException("Thread must not be null or empty.");
-        }
+        StringUtils.requireNotNullOrEmpty(thread, "Thread must not be null or empty.");
         this.thread = thread;
     }
 

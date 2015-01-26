@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
  */
 package org.jivesoftware.smack.util.stringencoder;
 
+import org.jivesoftware.smack.util.Objects;
+
 
 public class Base64UrlSafeEncoder {
     private static StringEncoder base64UrlSafeEncoder;
 
     public static void setEncoder(StringEncoder encoder) {
-        if (encoder == null) {
-            throw new IllegalArgumentException("encoder must no be null");
-        }
+        Objects.requireNonNull(encoder, "encoder must no be null");
         base64UrlSafeEncoder = encoder;
     }
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.util;
 
-import java.lang.ref.WeakReference;
+public class Objects {
 
-import org.jivesoftware.smack.util.Objects;
-
-public abstract class Manager {
-
-    final WeakReference<XMPPConnection> weakConnection;
-
-    public Manager(XMPPConnection connection) {
-        Objects.requireNonNull(connection, "XMPPConnection must not be null");
-
-        weakConnection = new WeakReference<XMPPConnection>(connection);
-    }
-
-    protected final XMPPConnection connection() {
-        return weakConnection.get();
+    public static <T> T requireNonNull(T obj, String message) {
+        if (obj == null) {
+            throw new IllegalArgumentException(message);
+        }
+        return obj;
     }
 }

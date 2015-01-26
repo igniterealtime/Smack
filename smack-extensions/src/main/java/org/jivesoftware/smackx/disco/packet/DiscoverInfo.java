@@ -316,14 +316,8 @@ public class DiscoverInfo extends IQ implements Cloneable {
          * @param lang the entity's lang.
          */
         public Identity(String category, String type, String name, String lang) {
-            if (StringUtils.isNullOrEmpty(category)) {
-                throw new IllegalArgumentException("category cannot be null");
-            }
-            if (StringUtils.isNullOrEmpty(type)) {
-                throw new IllegalArgumentException("type cannot be null");
-            }
-            this.category = category;
-            this.type = type;
+            this.category = StringUtils.requireNotNullOrEmpty(category, "category cannot be null");
+            this.type = StringUtils.requireNotNullOrEmpty(type, "type cannot be null");
             this.key = XmppStringUtils.generateKey(category, type);
             this.name = name;
             this.lang = lang;
@@ -493,9 +487,7 @@ public class DiscoverInfo extends IQ implements Cloneable {
          * @param variable the feature's variable.
          */
         public Feature(String variable) {
-            if (variable == null)
-                throw new IllegalArgumentException("variable cannot be null");
-            this.variable = variable;
+            this.variable = StringUtils.requireNotNullOrEmpty(variable, "variable cannot be null");
         }
 
         /**
