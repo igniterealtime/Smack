@@ -59,6 +59,7 @@ import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.packet.RosterVer;
 import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
 import org.jivesoftware.smack.roster.rosterstore.RosterStore;
+import org.jivesoftware.smack.util.Objects;
 import org.jxmpp.util.XmppStringUtils;
 
 /**
@@ -123,10 +124,21 @@ public class Roster extends Manager {
 
     private RosterStore rosterStore;
     private final Map<String, RosterGroup> groups = new ConcurrentHashMap<String, RosterGroup>();
+
+    /**
+     * Concurrent hash map from JID to its roster entry.
+     */
     private final Map<String,RosterEntry> entries = new ConcurrentHashMap<String,RosterEntry>();
+
     private final Set<RosterEntry> unfiledEntries = new CopyOnWriteArraySet<>();
     private final Set<RosterListener> rosterListeners = new LinkedHashSet<>();
     private final Map<String, Map<String, Presence>> presenceMap = new ConcurrentHashMap<String, Map<String, Presence>>();
+
+    /**
+     * Mutually exclude roster listener invocation and changing the {@link entries} map. Also used
+     * to synchronize access to either the roster listeners or the entries map.
+     */
+    private final Object rosterListenersAndEntriesLock = new Object();
 
     // The roster is marked as initialized when at least a single roster packet
     // has been received and processed.
@@ -354,9 +366,12 @@ public class Roster extends Manager {
      *
      * @param rosterListener a roster listener.
      * @return true if the listener was not already added.
+     * @see #getEntriesAndAddListener(RosterListener, RosterEntries)
      */
     public boolean addRosterListener(RosterListener rosterListener) {
-         return rosterListeners.add(rosterListener);
+        synchronized (rosterListenersAndEntriesLock) {
+            return rosterListeners.add(rosterListener);
+        }
     }
 
     /**
@@ -367,7 +382,9 @@ public class Roster extends Manager {
      * @return true if the listener was active and got removed.
      */
     public boolean removeRosterListener(RosterListener rosterListener) {
-        return rosterListeners.remove(rosterListener);
+        synchronized (rosterListenersAndEntriesLock) {
+            return rosterListeners.remove(rosterListener);
+        }
     }
 
     /**
@@ -482,20 +499,46 @@ public class Roster extends Manager {
     }
 
     /**
+     * Add a roster listener and invoke the roster entries with all entries of the roster.
+     * <p>
+     * The method guarantees that the listener is only invoked after
+     * {@link RosterEntries#rosterEntires(Collection)} has been invoked, and that all roster events
+     * that happen while <code>rosterEntires(Collection) </code> is called are queued until the
+     * method returns.
+     * </p>
+     * <p>
+     * This guarantee makes this the ideal method to e.g. populate a UI element with the roster while
+     * installing a {@link RosterListener} to listen for subsequent roster events.
+     * </p>
+     *
+     * @param rosterListener the listener to install
+     * @param rosterEntries the roster entries callback interface
+     * @since 4.1
+     */
+    public void getEntriesAndAddListener(RosterListener rosterListener, RosterEntries rosterEntries) {
+        Objects.requireNonNull(rosterListener, "listener must not be null");
+        Objects.requireNonNull(rosterEntries, "rosterEntries must not be null");
+
+        synchronized (rosterListenersAndEntriesLock) {
+            rosterEntries.rosterEntires(entries.values());
+            addRosterListener(rosterListener);
+        }
+    }
+
+    /**
      * Returns a set of all entries in the roster, including entries
      * that don't belong to any groups.
      *
      * @return all entries in the roster.
      */
     public Set<RosterEntry> getEntries() {
-        Set<RosterEntry> allEntries = new HashSet<RosterEntry>();
-        // Loop through all roster groups and add their entries to the answer
-        for (RosterGroup rosterGroup : getGroups()) {
-            allEntries.addAll(rosterGroup.getEntries());
+        Set<RosterEntry> allEntries;
+        synchronized (rosterListenersAndEntriesLock) {
+            allEntries = new HashSet<>(entries.size());
+            for (RosterEntry entry : entries.values()) {
+                allEntries.add(entry);
+            }
         }
-        // Add the roster unfiled entries to the answer
-        allEntries.addAll(unfiledEntries);
-
         return allEntries;
     }
 
@@ -896,15 +939,17 @@ public class Roster extends Manager {
      */
     private void fireRosterChangedEvent(final Collection<String> addedEntries, final Collection<String> updatedEntries,
                     final Collection<String> deletedEntries) {
-        for (RosterListener listener : rosterListeners) {
-            if (!addedEntries.isEmpty()) {
-                listener.entriesAdded(addedEntries);
-            }
-            if (!updatedEntries.isEmpty()) {
-                listener.entriesUpdated(updatedEntries);
-            }
-            if (!deletedEntries.isEmpty()) {
-                listener.entriesDeleted(deletedEntries);
+        synchronized (rosterListenersAndEntriesLock) {
+            for (RosterListener listener : rosterListeners) {
+                if (!addedEntries.isEmpty()) {
+                    listener.entriesAdded(addedEntries);
+                }
+                if (!updatedEntries.isEmpty()) {
+                    listener.entriesUpdated(updatedEntries);
+                }
+                if (!deletedEntries.isEmpty()) {
+                    listener.entriesDeleted(deletedEntries);
+                }
             }
         }
     }
@@ -915,14 +960,19 @@ public class Roster extends Manager {
      * @param presence the presence change.
      */
     private void fireRosterPresenceEvent(final Presence presence) {
-        for (RosterListener listener : rosterListeners) {
-            listener.presenceChanged(presence);
+        synchronized (rosterListenersAndEntriesLock) {
+            for (RosterListener listener : rosterListeners) {
+                listener.presenceChanged(presence);
+            }
         }
     }
 
     private void addUpdateEntry(Collection<String> addedEntries, Collection<String> updatedEntries,
                     Collection<String> unchangedEntries, RosterPacket.Item item, RosterEntry entry) {
-        RosterEntry oldEntry = entries.put(item.getUser(), entry);
+        RosterEntry oldEntry;
+        synchronized (rosterListenersAndEntriesLock) {
+            oldEntry = entries.put(item.getUser(), entry);
+        }
         if (oldEntry == null) {
             addedEntries.add(item.getUser());
         }
