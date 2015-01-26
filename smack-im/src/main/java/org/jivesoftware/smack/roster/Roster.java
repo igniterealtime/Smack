@@ -1077,7 +1077,12 @@ public class Roster extends Manager {
         }
     }
 
-    private boolean isRosterVersioningSupported() {
+    /**
+     * Check if the server supports roster versioning.
+     *
+     * @return true if the server supports roster versioning, false otherwise.
+     */
+    public boolean isRosterVersioningSupported() {
         return connection().hasFeature(RosterVer.ELEMENT, RosterVer.NAMESPACE);
     }
 
