@@ -281,11 +281,25 @@ public class Roster extends Manager {
         });
     }
 
+    /**
+     * Reload the roster and block until it is reloaded.
+     *
+     * @throws NotLoggedInException
+     * @throws NotConnectedException
+     * @since 4.1
+     */
     public void reloadAndWait() throws NotLoggedInException, NotConnectedException {
         reload();
         waitUntilLoaded();
     }
  
+    /**
+     * Set the roster store, may cause a roster reload
+     *
+     * @param rosterStore
+     * @return true if the roster reload was initiated, false otherwise.
+     * @since 4.1
+     */
     public boolean setRosterStore(RosterStore rosterStore) {
         this.rosterStore = rosterStore;
         try {
