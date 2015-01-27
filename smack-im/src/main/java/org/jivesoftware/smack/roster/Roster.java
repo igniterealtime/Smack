@@ -827,7 +827,9 @@ public class Roster extends Manager {
      * Check if the given JID is subscribed to the user's presence.
      * <p>
      * If the JID is subscribed to the user's presence then it is allowed to see the presence and
-     * will get notified about presence changes.
+     * will get notified about presence changes. Also returns true, if the JID is the service
+     * name of the XMPP connection (the "XMPP domain"), i.e. the XMPP service is treated like
+     * having an implicit subscription to the users presence.
      * </p>
      * Note that if the roster is not loaded, then this method will always return false.
      * 
@@ -836,6 +838,9 @@ public class Roster extends Manager {
      * @since 4.1
      */
     public boolean isSubscribedToMyPresence(String jid) {
+        if (connection().getServiceName().equals(jid)) {
+            return true;
+        }
         RosterEntry entry = getEntry(jid);
         if (entry == null) {
             return false;
