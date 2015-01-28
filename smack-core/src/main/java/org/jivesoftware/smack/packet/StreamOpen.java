@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack.packet;
 
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -59,13 +60,17 @@ public class StreamOpen extends FullStreamElement {
      */
     private final String contentNamespace;
 
-    public StreamOpen(String to) {
+    public StreamOpen(CharSequence to) {
        this(to, null, null, null, StreamContentNamespace.client);
     }
 
-    public StreamOpen(String to, String from, String id, String lang, StreamContentNamespace ns) {
-        this.to = to;
-        this.from = from;
+    public StreamOpen(CharSequence to, CharSequence from, String id) {
+        this(to, from, id, "en", StreamContentNamespace.client);
+    }
+
+    public StreamOpen(CharSequence to, CharSequence from, String id, String lang, StreamContentNamespace ns) {
+        this.to = StringUtils.maybeToString(to);
+        this.from = StringUtils.maybeToString(from);
         this.id = id;
         this.lang = lang;
         switch (ns) {

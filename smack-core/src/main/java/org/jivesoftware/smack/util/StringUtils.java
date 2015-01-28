@@ -264,4 +264,17 @@ public class StringUtils {
         }
         return cs;
     }
+
+    /**
+     * Return the String representation of the given char sequence if it is not null.
+     *
+     * @param cs the char sequence or null.
+     * @return the String representation of <code>cs</code> or null.
+     */
+    public static String maybeToString(CharSequence cs) {
+        if (cs == null) {
+            return null;
+        }
+        return cs.toString();
+    }
 }
