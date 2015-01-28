@@ -169,6 +169,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected boolean connected = false;
 
     /**
+     * The stream ID, see RFC 6120 § 4.7.3
+     */
+    protected String streamId;
+
+    /**
      * 
      */
     private long packetReplyTimeout = SmackConfiguration.getDefaultPacketReplyTimeout();
@@ -355,9 +360,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public abstract String getConnectionID();
-
-    @Override
     public abstract boolean isSecureConnection();
 
     protected abstract void sendPacketInternal(Packet packet) throws NotConnectedException;
@@ -382,10 +384,16 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @return a reference to this object, to chain <code>connect()</code> with <code>login()</code>.
      */
     public synchronized AbstractXMPPConnection connect() throws SmackException, IOException, XMPPException {
+        // Check if not already connected
         throwAlreadyConnectedExceptionIfAppropriate();
+
+        // Reset the connection state
         saslAuthentication.init();
         saslFeatureReceived.init();
         lastFeaturesReceived.init();
+        streamId = null;
+
+        // Perform the actual connection to the XMPP service
         connectInternal();
         return this;
     }
@@ -499,6 +507,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public final String getUser() {
         return user;
+    }
+
+    @Override
+    public String getStreamId() {
+        if (!isConnected()) {
+            return null;
+        }
+        return streamId;
     }
 
     // TODO remove this suppression once "disable legacy session" code has been removed from Smack

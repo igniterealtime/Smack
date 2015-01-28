@@ -144,8 +144,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private Socket socket;
 
-    private String connectionID = null;
-
     /**
      * 
      */
@@ -296,14 +294,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     public XMPPTCPConnection(CharSequence username, String password, String serviceName) {
         this(XMPPTCPConnectionConfiguration.builder().setUsernameAndPassword(username, password).setServiceName(
                                         serviceName).build());
-    }
-
-    @Override
-    public String getConnectionID() {
-        if (!isConnected()) {
-            return null;
-        }
-        return connectionID;
     }
 
     @Override
@@ -893,7 +883,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         if (localpart != null) {
             from = XmppStringUtils.completeJidFrom(localpart, to);
         }
-        String id = getConnectionID();
+        String id = getStreamId();
         send(new StreamOpen(to, from, id));
         try {
             packetReader.parser = PacketParserUtils.newXmppParser(reader);
@@ -956,7 +946,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         case "stream":
                             // We found an opening stream.
                             if ("jabber:client".equals(parser.getNamespace(null))) {
-                                connectionID = parser.getAttributeValue("", "id");
+                                streamId = parser.getAttributeValue("", "id");
                                 String reportedServiceName = parser.getAttributeValue("", "from");
                                 assert(reportedServiceName.equals(config.getServiceName()));
                             }

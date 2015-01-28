@@ -96,11 +96,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     private Thread readerConsumer;
 
     /**
-     * The BOSH equivalent of the stream ID which is used for DIGEST authentication.
-     */
-    protected String authID = null;
-
-    /**
      * The session ID for the BOSH session with the connection manager.
      */
     protected String sessionID = null;
@@ -147,7 +142,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                 client = null;
             }
             sessionID = null;
-            authID = null;
 
             // Initialize BOSH client
             BOSHClientConfig.Builder cfgBuilder = BOSHClientConfig.Builder
@@ -204,16 +198,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
 
         callConnectionConnectedListener();
-    }
-
-    public String getConnectionID() {
-        if (!connected) {
-            return null;
-        } else if (authID != null) {
-            return authID;
-        } else {
-            return sessionID;
-        }
     }
 
     public boolean isSecureConnection() {
@@ -298,7 +282,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     @Override
     protected void shutdown() {
         setWasAuthenticated();
-        authID = null;
         sessionID = null;
         done = true;
         authenticated = false;
@@ -525,8 +508,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                     if (sessionID == null) {
                         sessionID = body.getAttribute(BodyQName.create(XMPPBOSHConnection.BOSH_URI, "sid"));
                     }
-                    if (authID == null) {
-                        authID = body.getAttribute(BodyQName.create(XMPPBOSHConnection.BOSH_URI, "authid"));
+                    if (streamId == null) {
+                        streamId = body.getAttribute(BodyQName.create(XMPPBOSHConnection.BOSH_URI, "authid"));
                     }
                     final XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
                     parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);

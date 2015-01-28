@@ -48,8 +48,6 @@ public class DummyConnection extends AbstractXMPPConnection {
 
     private boolean reconnect = false;
 
-    private String connectionID;
-
     private final BlockingQueue<TopLevelStreamElement> queue = new LinkedBlockingQueue<TopLevelStreamElement>();
 
     public static ConnectionConfiguration.Builder<?,?> getDummyConfigurationBuilder() {
@@ -77,7 +75,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     @Override
     protected void connectInternal() {
         connected = true;
-        connectionID = "dummy-" + new Random(new Date().getTime()).nextInt();
+        streamId = "dummy-" + new Random(new Date().getTime()).nextInt();
 
         if (reconnect) {
             notifyReconnection();
@@ -87,22 +85,10 @@ public class DummyConnection extends AbstractXMPPConnection {
     @Override
     protected void shutdown() {
         user = null;
-        connectionID = null;
         authenticated = false;
         
         callConnectionClosedListener();
         reconnect = true;
-    }
-
-    @Override
-    public String getConnectionID() {
-        if (!isConnected()) {
-            return null;
-        }
-        if (connectionID == null) {
-            connectionID = "dummy-" + new Random(new Date().getTime()).nextInt();
-        }
-        return connectionID;
     }
 
     @Override
