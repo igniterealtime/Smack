@@ -293,7 +293,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @param password
      * @param serviceName
      */
-    public XMPPTCPConnection(String username, String password, String serviceName) {
+    public XMPPTCPConnection(CharSequence username, String password, String serviceName) {
         this(XMPPTCPConnectionConfiguration.builder().setUsernameAndPassword(username, password).setServiceName(
                                         serviceName).build());
     }
