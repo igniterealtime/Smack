@@ -89,7 +89,11 @@ public class IQReplyFilter implements PacketFilter {
         } else {
             to = null;
         }
-        local = conn.getUser().toLowerCase(Locale.US);
+        final String localJid = conn.getUser();
+        if (localJid == null) {
+            throw new IllegalArgumentException("Must have a local (user) JID set. Either you didn't configure one or you where not connected at least once");
+        }
+        local = localJid.toLowerCase(Locale.US);
 
         server = conn.getServiceName().toLowerCase(Locale.US);
         packetId = iqPacket.getPacketID();
