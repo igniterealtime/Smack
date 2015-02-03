@@ -19,6 +19,7 @@ package org.jivesoftware.smack.packet;
 
 import java.util.Locale;
 
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -131,10 +132,7 @@ public final class Presence extends Packet {
      * @param type the type of the presence packet.
      */
     public void setType(Type type) {
-        if(type == null) {
-            throw new NullPointerException("Type cannot be null");
-        }
-        this.type = type;
+        this.type = Objects.requireNonNull(type, "Type cannot be null");
     }
 
     /**
