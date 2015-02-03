@@ -180,13 +180,14 @@ public final class Presence extends Packet {
     }
 
     /**
-     * Returns the mode of the presence update, or <tt>null</tt> if the mode is not set.
-     * A null presence mode value is interpreted to be the same thing as
-     * {@link Presence.Mode#available}.
+     * Returns the mode of the presence update.
      *
      * @return the mode.
      */
     public Mode getMode() {
+        if (mode == null) {
+            return Mode.available;
+        }
         return mode;
     }
 
