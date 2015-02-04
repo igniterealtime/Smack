@@ -1,5 +1,3 @@
-Developer Documentation: Stanzas and PacketExtensions
-
 PacketExtension
 ===============
 
@@ -17,9 +15,3 @@ public static RSMSet from(Packet) {
 ```
 
 Sometimes certain PacketExtension's are only found in one stanza type, in that case, specify the parameter type. For example `public static CarbonExtension getFrom(Message)`.
-
-
-
-
-
-
