@@ -29,7 +29,7 @@ Connect and Disconnect
 
 ```
 // Create the configuration for this new connection
-XMPPTCPConnectionConfigurationBuilder configBuilder = XMPPTCPConnectionConfiguration.builder();
+XMPPTCPConnectionConfiguration.Builder configBuilder = XMPPTCPConnectionConfiguration.builder();
 configBuilder.setUsernameAndPassword("username", "password");
 configBuilder.setResource("SomeResource");
 configBuilder.setServiceName("jabber.org");
