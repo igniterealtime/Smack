@@ -18,17 +18,14 @@
 package org.jivesoftware.smack.packet;
 
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
+import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.PacketUtil;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Base class for XMPP Stanzas, which are called packets in Smack.
@@ -50,7 +47,7 @@ public abstract class Packet implements TopLevelStreamElement {
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase(Locale.US);
 
-    private final Map<String, PacketExtension> packetExtensions = new LinkedHashMap<String, PacketExtension>(12);
+    private final MultiMap<String, PacketExtension> packetExtensions = new MultiMap<>();
 
     private String packetID = null;
     private String to = null;
@@ -197,10 +194,7 @@ public abstract class Packet implements TopLevelStreamElement {
      */
     public List<PacketExtension> getExtensions() {
         synchronized (packetExtensions) {
-            if (packetExtensions.isEmpty()) {
-                return Collections.emptyList();
-            }
-            return new ArrayList<PacketExtension>(packetExtensions.values());
+            return packetExtensions.values();
         }
     }
 
@@ -240,7 +234,7 @@ public abstract class Packet implements TopLevelStreamElement {
         String key = XmppStringUtils.generateKey(elementName, namespace);
         PacketExtension packetExtension;
         synchronized (packetExtensions) {
-            packetExtension = packetExtensions.get(key);
+            packetExtension = packetExtensions.getFirst(key);
         }
         if (packetExtension == null) {
             return null;
