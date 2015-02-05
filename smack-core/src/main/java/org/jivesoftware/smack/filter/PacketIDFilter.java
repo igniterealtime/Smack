@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack.filter;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.StringUtils;
 
 /**
@@ -34,8 +34,8 @@ public class PacketIDFilter implements PacketFilter {
      *
      * @param packet the packet which the ID is taken from.
      */
-    public PacketIDFilter(Packet packet) {
-        this(packet.getPacketID());
+    public PacketIDFilter(Stanza packet) {
+        this(packet.getStanzaId());
     }
 
     /**
@@ -48,8 +48,8 @@ public class PacketIDFilter implements PacketFilter {
         this.packetID = packetID;
     }
 
-    public boolean accept(Packet packet) {
-        return packetID.equals(packet.getPacketID());
+    public boolean accept(Stanza packet) {
+        return packetID.equals(packet.getStanzaId());
     }
 
     public String toString() {

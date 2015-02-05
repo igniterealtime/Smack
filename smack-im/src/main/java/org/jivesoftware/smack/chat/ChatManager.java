@@ -40,7 +40,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jxmpp.util.XmppStringUtils;
 
 /**
@@ -143,7 +143,7 @@ public class ChatManager extends Manager{
         // Add a listener for all message packets so that we can deliver
         // messages to the best Chat instance available.
         connection.addSyncPacketListener(new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
                 Chat chat;
                 if (message.getThread() == null) {

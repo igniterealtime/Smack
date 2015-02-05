@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack.filter;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -40,7 +40,7 @@ public class ThreadFilter implements PacketFilter {
         this.thread = thread;
     }
 
-    public boolean accept(Packet packet) {
+    public boolean accept(Stanza packet) {
         return packet instanceof Message && thread.equals(((Message) packet).getThread());
     }
 }

@@ -39,7 +39,7 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.BytestreamManager;
@@ -480,7 +480,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
             Bytestream initiation = createBytestreamInitiation(sessionID, targetJID, streamHosts);
 
             // send initiation packet
-            Packet response = connection.createPacketCollectorAndSend(initiation).nextResultOrThrow(
+            Stanza response = connection.createPacketCollectorAndSend(initiation).nextResultOrThrow(
                             getTargetResponseTimeout());
 
             // extract used stream host from response

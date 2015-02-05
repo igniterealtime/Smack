@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.muc.packet;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -112,10 +112,10 @@ public class GroupChatInvitation implements PacketExtension {
      * 
      * @param packet
      * @return the GroupChatInvitation or null
-     * @deprecated use {@link #from(Packet)} instead
+     * @deprecated use {@link #from(Stanza)} instead
      */
     @Deprecated
-    public static GroupChatInvitation getFrom(Packet packet) {
+    public static GroupChatInvitation getFrom(Stanza packet) {
         return from(packet);
     }
 
@@ -124,7 +124,7 @@ public class GroupChatInvitation implements PacketExtension {
      * @param packet
      * @return the GroupChatInvitation or null
      */
-    public static GroupChatInvitation from(Packet packet) {
+    public static GroupChatInvitation from(Stanza packet) {
         return packet.getExtension(ELEMENT, NAMESPACE);
     }
 

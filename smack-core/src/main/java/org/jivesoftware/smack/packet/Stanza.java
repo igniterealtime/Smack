@@ -28,18 +28,21 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Base class for XMPP Stanzas, which are called packets in Smack.
+ * Base class for XMPP Stanzas, which are called Packet in older versions of Smack (i.e. &lt; 4.1).
  * <p>
- * Every packet has a unique ID (which is automatically
- * generated, but can be overridden). Optionally, the "to" and "from" fields can be set.
+ * Every stanza has a unique ID (which is automatically generated, but can be overridden). Stanza
+ * IDs are required for IQ stanzas and recommended for presence and message stanzas. Optionally, the
+ * "to" and "from" fields can be set.
  * </p>
  * <p>
- * XMPP Stanzas are {@link Message}, {@link IQ} and {@link Presence}. Which therefore subclass this class.
+ * XMPP Stanzas are {@link Message}, {@link IQ} and {@link Presence}. Which therefore subclass this
+ * class. <b>If you think you need to subclass this class, then you are doing something wrong.</b>
  * </p>
  *
  * @author Matt Tucker
+ * @see <a href="http://xmpp.org/rfcs/rfc6120.html#stanzas">RFC 6120 § 8. XML Stanzas</a>
  */
-public abstract class Packet implements TopLevelStreamElement {
+public abstract class Stanza implements TopLevelStreamElement {
 
     public static final String TEXT = "text";
     public static final String ITEM = "item";
@@ -49,7 +52,7 @@ public abstract class Packet implements TopLevelStreamElement {
 
     private final MultiMap<String, PacketExtension> packetExtensions = new MultiMap<>();
 
-    private String packetID = null;
+    private String id = null;
     private String to = null;
     private String from = null;
     private XMPPError error = null;
@@ -66,16 +69,16 @@ public abstract class Packet implements TopLevelStreamElement {
      */
     protected String language;
 
-    public Packet() {
+    public Stanza() {
         this(StanzaIdUtil.newStanzaId());
     }
 
-    public Packet(String packetID) {
-        setPacketID(packetID);
+    public Stanza(String stanzaId) {
+        setStanzaId(stanzaId);
     }
 
-    public Packet(Packet p) {
-        packetID = p.getPacketID();
+    public Stanza(Stanza p) {
+        id = p.getStanzaId();
         to = p.getTo();
         from = p.getFrom();
         error = p.error;
@@ -87,22 +90,42 @@ public abstract class Packet implements TopLevelStreamElement {
     }
 
     /**
-     * Returns the unique ID of the packet. The returned value could be <code>null</code>.
+     * Returns the unique ID of the stanza. The returned value could be <code>null</code>.
      *
-     * @return the packet's unique ID or <code>null</code> if the packet's id is not available.
+     * @return the packet's unique ID or <code>null</code> if the id is not available.
      */
+    public String getStanzaId() {
+        return id;
+    }
+
+    /**
+     * 
+     * @return the stanza id.
+     * @deprecated use {@link #getStanzaId()} instead.
+     */
+    @Deprecated
     public String getPacketID() {
-        return packetID;
+        return getStanzaId();
     }
 
     /**
      * Sets the unique ID of the packet. To indicate that a packet has no id
      * pass <code>null</code> as the packet's id value.
      *
-     * @param packetID the unique ID for the packet.
+     * @param id the unique ID for the packet.
      */
+    public void setStanzaId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * 
+     * @param packetID
+     * @deprecated use {@link #setStanzaId(String)} instead.
+     */
+    @Deprecated
     public void setPacketID(String packetID) {
-        this.packetID = packetID;
+        setStanzaId(packetID);
     }
 
     /**
@@ -367,7 +390,7 @@ public abstract class Packet implements TopLevelStreamElement {
     protected void addCommonAttributes(XmlStringBuilder xml) {
         xml.optAttribute("to", getTo());
         xml.optAttribute("from", getFrom());
-        xml.optAttribute("id", getPacketID());
+        xml.optAttribute("id", getStanzaId());
         xml.xmllangAttribute(getLanguage());
     }
 

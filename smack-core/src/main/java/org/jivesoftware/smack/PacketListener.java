@@ -18,12 +18,12 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * Provides a mechanism to listen for packets that pass a specified filter.
  * This allows event-style programming -- every time a new packet is found,
- * the {@link #processPacket(Packet)} method will be called. This is the
+ * the {@link #processPacket(Stanza)} method will be called. This is the
  * opposite approach to the functionality provided by a {@link PacketCollector}
  * which lets you block while waiting for results.
  * <p>
@@ -48,6 +48,6 @@ public interface PacketListener {
      *
      * @param packet the packet to process.
      */
-    public void processPacket(Packet packet) throws NotConnectedException;
+    public void processPacket(Stanza packet) throws NotConnectedException;
 
 }

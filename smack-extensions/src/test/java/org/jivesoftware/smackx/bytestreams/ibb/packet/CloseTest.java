@@ -76,7 +76,7 @@ public class CloseTest {
         Close close = new Close("i781hf64");
         close.setFrom("romeo@montague.lit/orchard");
         close.setTo("juliet@capulet.lit/balcony");
-        close.setPacketID("us71g45j");
+        close.setStanzaId("us71g45j");
         
         assertXMLEqual(control, close.toXML().toString());
     }

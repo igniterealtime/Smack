@@ -50,7 +50,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Matt Tucker
  */
-public final class Message extends Packet {
+public final class Message extends Stanza {
 
     public static final String ELEMENT = "message";
     public static final String BODY = "body";
@@ -126,7 +126,7 @@ public final class Message extends Packet {
      * <p>
      * The default subject of a message is the subject that corresponds to the message's language.
      * (see {@link #getLanguage()}) or if no language is set to the applications default
-     * language (see {@link Packet#getDefaultLanguage()}).
+     * language (see {@link Stanza#getDefaultLanguage()}).
      *
      * @return the subject of the message.
      */
@@ -244,7 +244,7 @@ public final class Message extends Packet {
      * <p>
      * The default body of a message is the body that corresponds to the message's language.
      * (see {@link #getLanguage()}) or if no language is set to the applications default
-     * language (see {@link Packet#getDefaultLanguage()}).
+     * language (see {@link Stanza#getDefaultLanguage()}).
      *
      * @return the body of the message.
      */

@@ -20,7 +20,7 @@ package org.jivesoftware.smackx.workgroup.agent;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 import java.util.Date;
 import java.util.List;
@@ -83,7 +83,7 @@ public class Offer {
      * @throws NotConnectedException 
      */
     public void accept() throws NotConnectedException {
-        Packet acceptPacket = new AcceptPacket(this.session.getWorkgroupJID());
+        Stanza acceptPacket = new AcceptPacket(this.session.getWorkgroupJID());
         connection.sendPacket(acceptPacket);
         // TODO: listen for a reply.
         accepted = true;

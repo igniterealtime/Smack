@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.json.packet;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * XMPP JSON Containers as defined in XEP-0335
@@ -48,7 +48,7 @@ public class JsonPacketExtension extends AbstractJsonPacketExtension {
      * @param packet
      * @return the JSON packet extension or null.
      */
-    public static JsonPacketExtension from(Packet packet) {
+    public static JsonPacketExtension from(Stanza packet) {
         return packet.getExtension(ELEMENT, NAMESPACE);
     }
 }

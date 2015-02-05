@@ -17,7 +17,7 @@
 package org.jivesoftware.smack.sm.predicates;
 
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 public class ForEveryStanza implements PacketFilter {
 
@@ -27,7 +27,7 @@ public class ForEveryStanza implements PacketFilter {
     }
 
     @Override
-    public boolean accept(Packet packet) {
+    public boolean accept(Stanza packet) {
         return true;
     }
 

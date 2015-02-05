@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Objects;
 
 /**
@@ -69,7 +69,7 @@ public class OrFilter implements PacketFilter {
         filters.add(filter);
     }
 
-    public boolean accept(Packet packet) {
+    public boolean accept(Stanza packet) {
         for (PacketFilter filter : filters) {
             if (filter.accept(packet)) {
                 return true;

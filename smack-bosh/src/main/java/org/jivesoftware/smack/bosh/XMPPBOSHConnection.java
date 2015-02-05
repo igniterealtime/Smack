@@ -36,7 +36,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Type;
@@ -256,15 +256,15 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void sendPacketInternal(Packet packet) throws NotConnectedException {
+    protected void sendPacketInternal(Stanza packet) throws NotConnectedException {
         sendElement(packet);
     }
 
     private void sendElement(Element element) {
         try {
             send(ComposableBody.builder().setPayloadXML(element.toXML().toString()).build());
-            if (element instanceof Packet) {
-                firePacketSendingListeners((Packet) element);
+            if (element instanceof Stanza) {
+                firePacketSendingListeners((Stanza) element);
             }
         }
         catch (BOSHException e) {

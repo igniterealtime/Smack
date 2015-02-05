@@ -59,7 +59,7 @@ public class CompressionTest extends SmackTestCase {
         version.setTo(getServiceName());
 
         // Create a packet collector to listen for a response.
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(version.getPacketID()));
+        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(version.getStanzaId()));
 
         connection.sendPacket(version);
 

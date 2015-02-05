@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack.filter;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * Defines a way to filter packets for particular attributes. Packet filters are used when
@@ -35,7 +35,7 @@ import org.jivesoftware.smack.packet.Packet;
  * // all packets that have a packet ID of &quot;RS145&quot;.
  * PacketFilter myFilter = new PacketFilter() {
  *     public boolean accept(Packet packet) {
- *         return &quot;RS145&quot;.equals(packet.getPacketID());
+ *         return &quot;RS145&quot;.equals(packet.getStanzaId());
  *     }
  * };
  * // Create a new packet collector using the filter we created.
@@ -54,5 +54,5 @@ public interface PacketFilter {
      * @param packet the packet to test.
      * @return true if and only if <tt>packet</tt> passes the filter.
      */
-    public boolean accept(Packet packet);
+    public boolean accept(Stanza packet);
 }

@@ -19,7 +19,7 @@ package org.jivesoftware.util;
 import static org.junit.Assert.assertEquals;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * Implement this interface to verify a request/response pair.
@@ -31,15 +31,15 @@ import org.jivesoftware.smack.packet.Packet;
  * 
  * @author Henning Staib
  */
-public interface Verification<T extends Packet, S extends Packet> {
+public interface Verification<T extends Stanza, S extends Stanza> {
 
     /**
      * Verifies that the "To" field of the request corresponds with the "From" field of
      * the response.
      */
-    public static Verification<Packet, Packet> correspondingSenderReceiver = new Verification<Packet, Packet>() {
+    public static Verification<Stanza, Stanza> correspondingSenderReceiver = new Verification<Stanza, Stanza>() {
 
-        public void verify(Packet request, Packet response) {
+        public void verify(Stanza request, Stanza response) {
             assertEquals(response.getFrom(), request.getTo());
         }
 
@@ -48,9 +48,9 @@ public interface Verification<T extends Packet, S extends Packet> {
     /**
      * Verifies that the type of the request is a GET.
      */
-    public static Verification<IQ, Packet> requestTypeGET = new Verification<IQ, Packet>() {
+    public static Verification<IQ, Stanza> requestTypeGET = new Verification<IQ, Stanza>() {
 
-        public void verify(IQ request, Packet response) {
+        public void verify(IQ request, Stanza response) {
             assertEquals(IQ.Type.get, request.getType());
         }
 
@@ -59,9 +59,9 @@ public interface Verification<T extends Packet, S extends Packet> {
     /**
      * Verifies that the type of the request is a SET.
      */
-    public static Verification<IQ, Packet> requestTypeSET = new Verification<IQ, Packet>() {
+    public static Verification<IQ, Stanza> requestTypeSET = new Verification<IQ, Stanza>() {
 
-        public void verify(IQ request, Packet response) {
+        public void verify(IQ request, Stanza response) {
             assertEquals(IQ.Type.set, request.getType());
         }
 
@@ -70,9 +70,9 @@ public interface Verification<T extends Packet, S extends Packet> {
     /**
      * Verifies that the type of the request is a RESULT.
      */
-    public static Verification<IQ, Packet> requestTypeRESULT = new Verification<IQ, Packet>() {
+    public static Verification<IQ, Stanza> requestTypeRESULT = new Verification<IQ, Stanza>() {
 
-        public void verify(IQ request, Packet response) {
+        public void verify(IQ request, Stanza response) {
             assertEquals(IQ.Type.result, request.getType());
         }
 
@@ -81,9 +81,9 @@ public interface Verification<T extends Packet, S extends Packet> {
     /**
      * Verifies that the type of the request is an ERROR.
      */
-    public static Verification<IQ, Packet> requestTypeERROR = new Verification<IQ, Packet>() {
+    public static Verification<IQ, Stanza> requestTypeERROR = new Verification<IQ, Stanza>() {
 
-        public void verify(IQ request, Packet response) {
+        public void verify(IQ request, Stanza response) {
             assertEquals(IQ.Type.error, request.getType());
         }
 

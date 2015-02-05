@@ -51,7 +51,7 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
@@ -1140,7 +1140,7 @@ public class Roster extends Manager {
         }
 
         @Override
-        public void processPacket(Packet packet) throws NotConnectedException {
+        public void processPacket(Stanza packet) throws NotConnectedException {
             final XMPPConnection connection = connection();
             Presence presence = (Presence) packet;
             String from = presence.getFrom();
@@ -1246,7 +1246,7 @@ public class Roster extends Manager {
     private class RosterResultListener implements PacketListener {
 
         @Override
-        public void processPacket(Packet packet) {
+        public void processPacket(Stanza packet) {
             final XMPPConnection connection = connection();
             LOGGER.fine("RosterResultListener received stanza");
             Collection<String> addedEntries = new ArrayList<String>();

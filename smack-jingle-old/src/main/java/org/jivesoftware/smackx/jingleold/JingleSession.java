@@ -32,7 +32,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.jingleold.listeners.JingleListener;
 import org.jivesoftware.smackx.jingleold.listeners.JingleMediaListener;
@@ -290,7 +290,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             responses.addAll(dispatchIncomingPacket(iq, null));
 
             if (iq != null) {
-                responseId = iq.getPacketID();
+                responseId = iq.getStanzaId();
 
                 // Send the IQ to each of the content negotiators for further processing.
                 // Each content negotiator may pass back a list of JingleContent for addition to the response packet.
@@ -355,14 +355,14 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
                 // TODO getState().eventError(iq);
             } else if (iq.getType().equals(IQ.Type.result)) {
                 // Process ACKs
-                if (isExpectedId(iq.getPacketID())) {
+                if (isExpectedId(iq.getStanzaId())) {
 
                     // The other side provisionally accepted our session-initiate.
                     // Kick off some negotiators.
-                    if (iq.getPacketID().equals(sessionInitPacketID)) {
+                    if (iq.getStanzaId().equals(sessionInitPacketID)) {
                         startNegotiators();
                     }
-                    removeExpectedId(iq.getPacketID());
+                    removeExpectedId(iq.getStanzaId());
                 }
             } else if (iq instanceof Jingle) {
                 // It is not an error: it is a Jingle packet...
@@ -377,7 +377,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
         if (response != null) {
             // Save the packet id, for recognizing ACKs...
-            addExpectedId(response.getPacketID());
+            addExpectedId(response.getStanzaId());
             responses.add(response);
         }
 
@@ -667,7 +667,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         LOGGER.fine("UpdatePacketListener");
 
         packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 try {
                     receivePacketAndRespond((IQ) packet);
                 } catch (Exception e) {
@@ -677,7 +677,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         };
 
         packetFilter = new PacketFilter() {
-            public boolean accept(Packet packet) {
+            public boolean accept(Stanza packet) {
 
                 if (packet instanceof IQ) {
                     IQ iq = (IQ) packet;
@@ -805,7 +805,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
                             jout.addContent(contentNegotiator.getJingleContent());
                     }
                     // Send the "accept" and wait for the ACK
-                    addExpectedId(jout.getPacketID());
+                    addExpectedId(jout.getStanzaId());
                     sendPacket(jout);
 
                     //triggerSessionEstablished();
@@ -837,7 +837,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
                                 jout.addContent(contentNegotiator.getJingleContent());
                         }
                         // Send the "accept" and wait for the ACK
-                        addExpectedId(jout.getPacketID());
+                        addExpectedId(jout.getStanzaId());
                         sendPacket(jout);
                     }
                 }
@@ -1030,7 +1030,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             errorPacket = IQ.createErrorResponse(iq, error);
 
             // Fill in the fields with the info from the Jingle packet
-            errorPacket.setPacketID(iq.getPacketID());
+            errorPacket.setStanzaId(iq.getStanzaId());
             errorPacket.setError(error);
             //            errorPacket.addExtension(jingleError);
 
@@ -1092,7 +1092,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         }
 
         // Save the session-initiate packet ID, so that we can respond to it.
-        sessionInitPacketID = jingle.getPacketID();
+        sessionInitPacketID = jingle.getStanzaId();
 
         sendPacket(jingle);
 

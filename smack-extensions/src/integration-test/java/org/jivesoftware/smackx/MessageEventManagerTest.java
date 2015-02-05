@@ -212,9 +212,9 @@ public class MessageEventManagerTest extends SmackTestCase {
         // Send the message that contains the notifications request
         try {
             chat1.sendMessage(msg);
-            messageEventManager2.sendDisplayedNotification(getBareJID(0), msg.getPacketID());
-            messageEventManager2.sendComposingNotification(getBareJID(0), msg.getPacketID());
-            messageEventManager2.sendCancelledNotification(getBareJID(0), msg.getPacketID());
+            messageEventManager2.sendDisplayedNotification(getBareJID(0), msg.getStanzaId());
+            messageEventManager2.sendComposingNotification(getBareJID(0), msg.getStanzaId());
+            messageEventManager2.sendCancelledNotification(getBareJID(0), msg.getStanzaId());
             // Wait up to 2 seconds
             long initial = System.currentTimeMillis();
             while (System.currentTimeMillis() - initial < 2000 &&

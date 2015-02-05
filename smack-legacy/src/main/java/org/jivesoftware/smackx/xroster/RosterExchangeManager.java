@@ -30,7 +30,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
@@ -77,7 +77,7 @@ public class RosterExchangeManager {
         weakRefConnection = new WeakReference<XMPPConnection>(connection);
         // Listens for all roster exchange packets and fire the roster exchange listeners.
         packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
                 RosterExchange rosterExchange =
                     (RosterExchange) message.getExtension(ELEMENT, NAMESPACE);

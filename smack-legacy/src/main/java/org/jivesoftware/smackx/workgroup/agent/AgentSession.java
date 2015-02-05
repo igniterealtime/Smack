@@ -44,7 +44,7 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.DefaultPacketExtension;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.search.ReportedData;
@@ -148,7 +148,7 @@ public class AgentSession {
                         new PacketTypeFilter(Message.class));
 
         packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 try {
                     handlePacket(packet);
                 }
@@ -689,7 +689,7 @@ public class AgentSession {
 
     // PacketListener Implementation.
 
-    private void handlePacket(Packet packet) throws NotConnectedException {
+    private void handlePacket(Stanza packet) throws NotConnectedException {
         if (packet instanceof OfferRequestProvider.OfferRequestPacket) {
             // Acknowledge the IQ set.
             IQ reply = IQ.createResultIQ((IQ) packet);

@@ -46,8 +46,8 @@ public class IQResponseTest {
         final IQ result = IQ.createResultIQ(request);
 
         assertEquals(IQ.Type.result, result.getType());
-        assertNotNull(result.getPacketID());
-        assertEquals(request.getPacketID(), result.getPacketID());
+        assertNotNull(result.getStanzaId());
+        assertEquals(request.getStanzaId(), result.getStanzaId());
         assertEquals(request.getFrom(), result.getTo());
         assertEquals(request.getTo(), result.getFrom());
         assertEquals("", result.getChildElementXML().toString());
@@ -68,8 +68,8 @@ public class IQResponseTest {
         final IQ result = IQ.createErrorResponse(request, error);
 
         assertEquals(IQ.Type.error, result.getType());
-        assertNotNull(result.getPacketID());
-        assertEquals(request.getPacketID(), result.getPacketID());
+        assertNotNull(result.getStanzaId());
+        assertEquals(request.getStanzaId(), result.getStanzaId());
         assertEquals(request.getFrom(), result.getTo());
         assertEquals(error, result.getError());
         // TODO this test was never valid

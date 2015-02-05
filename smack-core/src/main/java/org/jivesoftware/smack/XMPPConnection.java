@@ -23,7 +23,7 @@ import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 
@@ -151,7 +151,7 @@ public interface XMPPConnection {
      * @param packet the packet to send.
      * @throws NotConnectedException 
      */
-    public void sendPacket(Packet packet) throws NotConnectedException;
+    public void sendPacket(Stanza packet) throws NotConnectedException;
 
     /**
      * Send a PlainStreamElement.
@@ -203,7 +203,7 @@ public interface XMPPConnection {
      * @param packet the packet to send right after the collector got created
      * @return a new packet collector.
      */
-    public PacketCollector createPacketCollectorAndSend(PacketFilter packetFilter, Packet packet)
+    public PacketCollector createPacketCollectorAndSend(PacketFilter packetFilter, Stanza packet)
                     throws NotConnectedException;
 
     /**
@@ -214,7 +214,7 @@ public interface XMPPConnection {
      * <p>
      * <b>Note:</b> If you send a Packet right after using this method, then
      * consider using
-     * {@link #createPacketCollectorAndSend(PacketFilter, Packet)} instead.
+     * {@link #createPacketCollectorAndSend(PacketFilter, Stanza)} instead.
      * Otherwise make sure cancel the PacketCollector in every case, e.g. even
      * if an exception is thrown, or otherwise you may leak the PacketCollector.
      * </p>
@@ -455,7 +455,7 @@ public interface XMPPConnection {
      * @param callback the callback invoked if there is a response (required)
      * @throws NotConnectedException
      */
-    public void sendStanzaWithResponseCallback(Packet stanza, PacketFilter replyFilter,
+    public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
                     PacketListener callback) throws NotConnectedException;
 
     /**
@@ -472,7 +472,7 @@ public interface XMPPConnection {
      * @param exceptionCallback the callback invoked if there is an exception (optional)
      * @throws NotConnectedException
      */
-    public void sendStanzaWithResponseCallback(Packet stanza, PacketFilter replyFilter, PacketListener callback,
+    public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter, PacketListener callback,
                     ExceptionCallback exceptionCallback) throws NotConnectedException;
 
     /**
@@ -490,7 +490,7 @@ public interface XMPPConnection {
      * @param timeout the timeout in milliseconds to wait for a response
      * @throws NotConnectedException
      */
-    public void sendStanzaWithResponseCallback(Packet stanza, PacketFilter replyFilter,
+    public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
                     final PacketListener callback, final ExceptionCallback exceptionCallback,
                     long timeout) throws NotConnectedException;
 

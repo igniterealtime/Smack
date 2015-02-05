@@ -100,7 +100,7 @@ public class EntityCapsManagerTest extends InitExtensions {
     private static DiscoverInfo createComplexSamplePacket() {
         DiscoverInfo di = new DiscoverInfo();
         di.setFrom("benvolio@capulet.lit/230193");
-        di.setPacketID("disco1");
+        di.setStanzaId("disco1");
         di.setTo("juliet@capulet.lit/chamber");
         di.setType(IQ.Type.result);
 
@@ -151,7 +151,7 @@ public class EntityCapsManagerTest extends InitExtensions {
     private static DiscoverInfo createMalformedDiscoverInfo() {
         DiscoverInfo di = new DiscoverInfo();
         di.setFrom("benvolio@capulet.lit/230193");
-        di.setPacketID("disco1");
+        di.setStanzaId("disco1");
         di.setTo(")juliet@capulet.lit/chamber");
         di.setType(IQ.Type.result);
 

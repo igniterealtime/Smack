@@ -39,7 +39,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Matt Tucker
  */
-public abstract class IQ extends Packet {
+public abstract class IQ extends Stanza {
 
     // Don't name this field 'ELEMENT'. When it comes to IQ, ELEMENT is the child element!
     public static final String IQ_ELEMENT = "iq";
@@ -247,7 +247,7 @@ public abstract class IQ extends Packet {
                     "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
         }
         final ErrorIQ result = new ErrorIQ(error);
-        result.setPacketID(request.getPacketID());
+        result.setStanzaId(request.getStanzaId());
         result.setFrom(request.getTo());
         result.setTo(request.getFrom());
         return result;

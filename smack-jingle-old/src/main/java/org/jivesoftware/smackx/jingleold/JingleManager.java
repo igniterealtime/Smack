@@ -29,7 +29,7 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.roster.Roster;
@@ -443,7 +443,7 @@ public class JingleManager implements JingleSessionListener {
     private void initJingleSessionRequestListeners() {
         PacketFilter initRequestFilter = new PacketFilter() {
             // Return true if we accept this packet
-            public boolean accept(Packet pin) {
+            public boolean accept(Stanza pin) {
                 if (pin instanceof IQ) {
                     IQ iq = (IQ) pin;
                     if (iq.getType().equals(IQ.Type.set)) {
@@ -463,7 +463,7 @@ public class JingleManager implements JingleSessionListener {
 
         // Start a packet listener for session initiation requests
         connection.addAsyncPacketListener(new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 triggerSessionRequested((Jingle) packet);
             }
         }, initRequestFilter);

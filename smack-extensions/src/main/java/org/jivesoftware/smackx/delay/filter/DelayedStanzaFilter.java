@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.delay.filter;
 
 import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.delay.DelayInformationManager;
 
 /**
@@ -37,7 +37,7 @@ public class DelayedStanzaFilter implements PacketFilter {
     }
 
     @Override
-    public boolean accept(Packet packet) {
+    public boolean accept(Stanza packet) {
         return DelayInformationManager.isDelayedStanza(packet);
     }
 

@@ -25,7 +25,7 @@ import java.util.Properties;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.test.util.WaitForPacketListener;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
@@ -79,7 +79,7 @@ public class DeliveryReceiptTest extends InitExtensions {
 
         Message m = new Message("romeo@montague.com", Message.Type.normal);
         m.setFrom("julia@capulet.com");
-        m.setPacketID("reply-id");
+        m.setStanzaId("reply-id");
         m.addExtension(new DeliveryReceipt("original-test-id"));
         c.processPacket(m);
 
@@ -88,7 +88,7 @@ public class DeliveryReceiptTest extends InitExtensions {
 
     private static class TestReceiptReceivedListener extends WaitForPacketListener implements ReceiptReceivedListener {
         @Override
-        public void onReceiptReceived(String fromJid, String toJid, String receiptId, Packet receipt) {
+        public void onReceiptReceived(String fromJid, String toJid, String receiptId, Stanza receipt) {
             assertEquals("julia@capulet.com", fromJid);
             assertEquals("romeo@montague.com", toJid);
             assertEquals("original-test-id", receiptId);
@@ -108,13 +108,13 @@ public class DeliveryReceiptTest extends InitExtensions {
         // test auto-receipts
         Message m = new Message("julia@capulet.com", Message.Type.normal);
         m.setFrom("romeo@montague.com");
-        m.setPacketID("test-receipt-request");
+        m.setStanzaId("test-receipt-request");
         DeliveryReceiptRequest.addTo(m);
 
         // the DRM will send a reply-packet
         c.processPacket(m);
 
-        Packet reply = c.getSentPacket();
+        Stanza reply = c.getSentPacket();
         DeliveryReceipt r = DeliveryReceipt.from(reply);
         assertEquals("romeo@montague.com", reply.getTo());
         assertEquals("test-receipt-request", r.getId());

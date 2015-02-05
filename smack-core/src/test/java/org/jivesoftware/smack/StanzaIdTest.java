@@ -29,11 +29,11 @@ public class StanzaIdTest {
     @Test
     public void testIqId() {
         IQ iq1 = new TestIQ();
-        String iq1Id = iq1.getPacketID();
+        String iq1Id = iq1.getStanzaId();
         assertTrue(StringUtils.isNotEmpty(iq1Id));
 
         IQ iq2 = new TestIQ();
-        String iq2Id = iq2.getPacketID();
+        String iq2Id = iq2.getStanzaId();
         assertTrue(StringUtils.isNotEmpty(iq2Id));
 
         assertFalse(iq1Id.equals(iq2Id));

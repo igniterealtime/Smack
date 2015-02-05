@@ -37,7 +37,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.im.InitSmackIm;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
@@ -374,13 +374,13 @@ public class RosterTest extends InitSmackIm {
         packet.setFrom("mallory@example.com");
         packet.addRosterItem(new Item("spam@example.com", "Cool products!"));
 
-        final String requestId = packet.getPacketID();
+        final String requestId = packet.getStanzaId();
         // Simulate receiving the roster push
         connection.processPacket(packet);
 
         // Smack should reply with an error IQ
         ErrorIQ errorIQ = (ErrorIQ) connection.getSentPacket();
-        assertEquals(requestId, errorIQ.getPacketID());
+        assertEquals(requestId, errorIQ.getStanzaId());
         assertEquals(Condition.service_unavailable, errorIQ.getError().getCondition());
 
         assertNull("Contact was added to roster", Roster.getInstanceFor(connection).getEntry("spam@example.com"));
@@ -537,7 +537,7 @@ public class RosterTest extends InitSmackIm {
     private void initRoster() throws InterruptedException, XMPPException, SmackException {
         roster.reload();
         while (true) {
-            final Packet sentPacket = connection.getSentPacket();
+            final Stanza sentPacket = connection.getSentPacket();
             if (sentPacket instanceof RosterPacket && ((IQ) sentPacket).getType() == Type.get) {
                 // setup the roster get request
                 final RosterPacket rosterRequest = (RosterPacket) sentPacket;
@@ -549,7 +549,7 @@ public class RosterTest extends InitSmackIm {
                 final RosterPacket rosterResult = new RosterPacket();
                 rosterResult.setTo(connection.getUser());
                 rosterResult.setType(Type.result);
-                rosterResult.setPacketID(rosterRequest.getPacketID());
+                rosterResult.setStanzaId(rosterRequest.getStanzaId());
 
                 // prepare romeo's roster entry
                 final Item romeo = new Item("romeo@example.net", "Romeo");
@@ -655,7 +655,7 @@ public class RosterTest extends InitSmackIm {
         public void run() {
             try {
                 while (true) {
-                    final Packet packet = connection.getSentPacket();
+                    final Stanza packet = connection.getSentPacket();
                     if (packet instanceof RosterPacket && ((IQ) packet).getType() == Type.set) {
                         final RosterPacket rosterRequest = (RosterPacket) packet;
 

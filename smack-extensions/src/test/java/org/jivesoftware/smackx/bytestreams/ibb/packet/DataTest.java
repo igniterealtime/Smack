@@ -72,7 +72,7 @@ public class DataTest {
         Data data = new Data(dpe);
         data.setFrom("romeo@montague.lit/orchard");
         data.setTo("juliet@capulet.lit/balcony");
-        data.setPacketID("kr91n475");
+        data.setStanzaId("kr91n475");
         
         assertXMLEqual(control, data.toXML().toString());
     }

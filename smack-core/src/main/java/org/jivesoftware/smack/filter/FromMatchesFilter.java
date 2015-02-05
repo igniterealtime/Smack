@@ -19,7 +19,7 @@ package org.jivesoftware.smack.filter;
 
 import java.util.Locale;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jxmpp.util.XmppStringUtils;
 
 /**
@@ -89,7 +89,7 @@ public class FromMatchesFilter implements PacketFilter {
         return new FromMatchesFilter(address, false);
     }
 
-    public boolean accept(Packet packet) {
+    public boolean accept(Stanza packet) {
         String from = packet.getFrom();
         if (from == null) {
             return address == null;

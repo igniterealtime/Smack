@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.debugger.slf4j;
 
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.slf4j.Logger;
 
 
@@ -31,7 +31,7 @@ class SLF4JLoggingPacketListener implements PacketListener {
         this.prefix = Validate.notNull(prefix);
     }
 
-    public void processPacket(Packet packet) {
+    public void processPacket(Stanza packet) {
         if (SLF4JSmackDebugger.printInterpreted.get() && logger.isDebugEnabled()) {
             logger.debug("{}: PKT [{}] '{}'", prefix, packet.getClass().getName(), packet.toXML());
         }

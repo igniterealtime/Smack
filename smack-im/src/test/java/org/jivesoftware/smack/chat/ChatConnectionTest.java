@@ -27,7 +27,7 @@ import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.chat.ChatManager.MatchMode;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.test.util.WaitForPacketListener;
 import org.junit.After;
 import org.junit.Before;
@@ -140,7 +140,7 @@ public class ChatConnectionTest {
         TestMessageListener msgListener = new TestMessageListener();
         TestChatManagerListener listener = new TestChatManagerListener(msgListener);
         cm.addChatListener(listener);
-        Packet incomingChat = createChatPacket(null, true);
+        Stanza incomingChat = createChatPacket(null, true);
         processServerMessage(incomingChat);
         Chat newChat = listener.getNewChat();
         assertNotNull(newChat);
@@ -162,7 +162,7 @@ public class ChatConnectionTest {
         TestChatManagerListener listener = new TestChatManagerListener(msgListener);
         cm.setMatchMode(MatchMode.SUPPLIED_JID);
         cm.addChatListener(listener);
-        Packet incomingChat = createChatPacket(null, true);
+        Stanza incomingChat = createChatPacket(null, true);
         processServerMessage(incomingChat);
         Chat newChat = listener.getNewChat();
         assertNotNull(newChat);
@@ -188,7 +188,7 @@ public class ChatConnectionTest {
         TestChatManagerListener listener = new TestChatManagerListener(msgListener);
         cm.setMatchMode(MatchMode.NONE);
         cm.addChatListener(listener);
-        Packet incomingChat = createChatPacket(null, true);
+        Stanza incomingChat = createChatPacket(null, true);
         processServerMessage(incomingChat);
         Chat newChat = listener.getNewChat();
         assertNotNull(newChat);
@@ -221,7 +221,7 @@ public class ChatConnectionTest {
     public void chatFoundWhenNoThreadFullJid() {
         Chat outgoing = cm.createChat("you@testserver", null);
 
-        Packet incomingChat = createChatPacket(null, true);
+        Stanza incomingChat = createChatPacket(null, true);
         processServerMessage(incomingChat);
 
         Chat newChat = listener.getNewChat();
@@ -237,7 +237,7 @@ public class ChatConnectionTest {
     public void chatFoundWhenNoThreadBaseJid() {
         Chat outgoing = cm.createChat("you@testserver", null);
 
-        Packet incomingChat = createChatPacket(null, false);
+        Stanza incomingChat = createChatPacket(null, false);
         processServerMessage(incomingChat);
 
         Chat newChat = listener.getNewChat();
@@ -253,7 +253,7 @@ public class ChatConnectionTest {
     public void chatFoundWithSameThreadFullJid() {
         Chat outgoing = cm.createChat("you@testserver", null);
 
-        Packet incomingChat = createChatPacket(outgoing.getThreadID(), true);
+        Stanza incomingChat = createChatPacket(outgoing.getThreadID(), true);
         processServerMessage(incomingChat);
 
         Chat newChat = listener.getNewChat();
@@ -269,7 +269,7 @@ public class ChatConnectionTest {
     public void chatFoundWithSameThreadBaseJid() {
         Chat outgoing = cm.createChat("you@testserver", null);
 
-        Packet incomingChat = createChatPacket(outgoing.getThreadID(), false);
+        Stanza incomingChat = createChatPacket(outgoing.getThreadID(), false);
         processServerMessage(incomingChat);
 
         Chat newChat = listener.getNewChat();
@@ -285,7 +285,7 @@ public class ChatConnectionTest {
     public void chatNotFoundWithDiffThreadBaseJid() {
         Chat outgoing = cm.createChat("you@testserver", null);
 
-        Packet incomingChat = createChatPacket(outgoing.getThreadID() + "ff", false);
+        Stanza incomingChat = createChatPacket(outgoing.getThreadID() + "ff", false);
         processServerMessage(incomingChat);
 
         Chat newChat = listener.getNewChat();
@@ -301,7 +301,7 @@ public class ChatConnectionTest {
     public void chatNotFoundWithDiffThreadFullJid() {
         Chat outgoing = cm.createChat("you@testserver", null);
 
-        Packet incomingChat = createChatPacket(outgoing.getThreadID() + "ff", true);
+        Stanza incomingChat = createChatPacket(outgoing.getThreadID() + "ff", true);
         processServerMessage(incomingChat);
 
         Chat newChat = listener.getNewChat();
@@ -328,7 +328,7 @@ public class ChatConnectionTest {
         return chatMsg;
     }
 
-    private void processServerMessage(Packet incomingChat) {
+    private void processServerMessage(Stanza incomingChat) {
         TestChatServer chatServer = new TestChatServer(incomingChat, dc);
         chatServer.start();
         try {
@@ -365,10 +365,10 @@ public class ChatConnectionTest {
     }
     
     private class TestChatServer extends Thread {
-        private Packet chatPacket;
+        private Stanza chatPacket;
         private DummyConnection con;
 
-        TestChatServer(Packet chatMsg, DummyConnection conect) {
+        TestChatServer(Stanza chatMsg, DummyConnection conect) {
             chatPacket = chatMsg;
             con = conect;
         }

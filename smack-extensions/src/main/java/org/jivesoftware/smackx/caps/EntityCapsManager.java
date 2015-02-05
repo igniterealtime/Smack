@@ -26,7 +26,7 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.filter.NotFilter;
@@ -315,7 +315,7 @@ public class EntityCapsManager extends Manager {
             // Listen for remote presence stanzas with the caps extension
             // If we receive such a stanza, record the JID and nodeVer
             @Override
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 if (!entityCapsEnabled())
                     return;
 
@@ -328,7 +328,7 @@ public class EntityCapsManager extends Manager {
 
         connection.addAsyncPacketListener(new PacketListener() {
             @Override
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 // always remove the JID from the map, even if entityCaps are
                 // disabled
                 String from = packet.getFrom();
@@ -338,7 +338,7 @@ public class EntityCapsManager extends Manager {
 
         connection.addPacketSendingListener(new PacketListener() {
             @Override
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 presenceSend = true;
             }
         }, PRESENCES);
@@ -347,7 +347,7 @@ public class EntityCapsManager extends Manager {
         // XEP-0115 specifies that a client SHOULD include entity capabilities
         // with every presence notification it sends.
         PacketListener packetInterceptor = new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 if (!entityCapsEnabled)
                     return;
                 CapsVersionAndHash capsVersionAndHash = getCapsVersion();

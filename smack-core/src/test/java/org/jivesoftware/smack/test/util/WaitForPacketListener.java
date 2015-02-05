@@ -21,14 +21,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 public class WaitForPacketListener implements PacketListener {
 
     private CountDownLatch latch = new CountDownLatch(1);
 
     @Override
-    public void processPacket(Packet packet) throws NotConnectedException {
+    public void processPacket(Stanza packet) throws NotConnectedException {
         reportInvoked();
     }
 

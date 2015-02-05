@@ -56,7 +56,7 @@ public class PacketIDFilterTest extends TestCase {
         public MockIDPacket(String id) {
             this.id = id;
         }
-        public String getPacketID() {
+        public String getStanzaId() {
             return id;
         }
     }

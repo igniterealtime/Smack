@@ -24,7 +24,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jxmpp.util.XmppStringUtils;
 
@@ -282,7 +282,7 @@ public class AgentRoster {
      * Listens for all presence packets and processes them.
      */
     private class PresencePacketListener implements PacketListener {
-        public void processPacket(Packet packet) {
+        public void processPacket(Stanza packet) {
             Presence presence = (Presence)packet;
             String from = presence.getFrom();
             if (from == null) {
@@ -358,7 +358,7 @@ public class AgentRoster {
      */
     private class AgentStatusListener implements PacketListener {
 
-        public void processPacket(Packet packet) {
+        public void processPacket(Stanza packet) {
             if (packet instanceof AgentStatusRequest) {
                 AgentStatusRequest statusRequest = (AgentStatusRequest)packet;
                 for (Iterator<AgentStatusRequest.Item> i = statusRequest.getAgents().iterator(); i.hasNext();) {

@@ -25,7 +25,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -58,7 +58,7 @@ public abstract class StreamNegotiator {
         response.setTo(streamInitiationOffer.getFrom());
         response.setFrom(streamInitiationOffer.getTo());
         response.setType(IQ.Type.result);
-        response.setPacketID(streamInitiationOffer.getPacketID());
+        response.setStanzaId(streamInitiationOffer.getStanzaId());
 
         DataForm form = new DataForm(DataForm.Type.submit);
         FormField field = new FormField(
@@ -72,7 +72,7 @@ public abstract class StreamNegotiator {
         return response;
     }
 
-    Packet initiateIncomingStream(XMPPConnection connection, StreamInitiation initiation) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    Stanza initiateIncomingStream(XMPPConnection connection, StreamInitiation initiation) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         StreamInitiation response = createInitiationAccept(initiation,
                 getNamespaces());
 
@@ -80,7 +80,7 @@ public abstract class StreamNegotiator {
         PacketCollector collector = connection
                 .createPacketCollectorAndSend(getInitiationPacketFilter(initiation.getFrom(), initiation.getSessionID()), response);
 
-        Packet streamMethodInitiation = collector.nextResultOrThrow();
+        Stanza streamMethodInitiation = collector.nextResultOrThrow();
 
         return streamMethodInitiation;
     }
@@ -97,7 +97,7 @@ public abstract class StreamNegotiator {
     public abstract PacketFilter getInitiationPacketFilter(String from, String streamID);
 
 
-    abstract InputStream negotiateIncomingStream(Packet streamInitiation) throws XMPPErrorException,
+    abstract InputStream negotiateIncomingStream(Stanza streamInitiation) throws XMPPErrorException,
             InterruptedException, NoResponseException, SmackException;
 
     /**

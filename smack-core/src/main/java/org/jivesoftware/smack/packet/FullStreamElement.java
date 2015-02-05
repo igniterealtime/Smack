@@ -19,7 +19,7 @@ package org.jivesoftware.smack.packet;
 
 /**
  * Base class for Stream elements. Everything that is not a stanza (RFC 6120 8.), ie. message,
- * presence and iq, should sublcass this class instead of {@link Packet}.
+ * presence and iq, should sublcass this class instead of {@link Stanza}.
  * 
  * @author Florian Schmaus
  */

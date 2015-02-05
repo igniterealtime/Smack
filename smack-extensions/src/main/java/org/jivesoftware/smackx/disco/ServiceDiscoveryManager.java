@@ -26,7 +26,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
@@ -123,7 +123,7 @@ public class ServiceDiscoveryManager extends Manager {
                 DiscoverItems response = new DiscoverItems();
                 response.setType(IQ.Type.result);
                 response.setTo(discoverItems.getFrom());
-                response.setPacketID(discoverItems.getPacketID());
+                response.setStanzaId(discoverItems.getStanzaId());
                 response.setNode(discoverItems.getNode());
 
                 // Add the defined items related to the requested node. Look for
@@ -154,7 +154,7 @@ public class ServiceDiscoveryManager extends Manager {
                 DiscoverInfo response = new DiscoverInfo();
                 response.setType(IQ.Type.result);
                 response.setTo(discoverInfo.getFrom());
-                response.setPacketID(discoverInfo.getPacketID());
+                response.setStanzaId(discoverInfo.getStanzaId());
                 response.setNode(discoverInfo.getNode());
                 // Add the client's identity and features only if "node" is null
                 // and if the request was not send to a node. If Entity Caps are
@@ -528,7 +528,7 @@ public class ServiceDiscoveryManager extends Manager {
         disco.setTo(entityID);
         disco.setNode(node);
 
-        Packet result = connection().createPacketCollectorAndSend(disco).nextResultOrThrow();
+        Stanza result = connection().createPacketCollectorAndSend(disco).nextResultOrThrow();
 
         return (DiscoverInfo) result;
     }
@@ -565,7 +565,7 @@ public class ServiceDiscoveryManager extends Manager {
         disco.setTo(entityID);
         disco.setNode(node);
 
-        Packet result = connection().createPacketCollectorAndSend(disco).nextResultOrThrow();
+        Stanza result = connection().createPacketCollectorAndSend(disco).nextResultOrThrow();
         return (DiscoverItems) result;
     }
 

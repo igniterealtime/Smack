@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.receipts;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * Interface for received receipt notifications.
@@ -28,7 +28,7 @@ public interface ReceiptReceivedListener {
      * Callback invoked when a new receipt got received.
      * <p>
      * {@code receiptId} correspondents to the message ID, which can be obtained with
-     * {@link org.jivesoftware.smack.packet.Packet#getPacketID()}.
+     * {@link org.jivesoftware.smack.packet.Stanza#getStanzaId()}.
      * </p>
      * 
      * @param fromJid the jid that send this receipt
@@ -36,5 +36,5 @@ public interface ReceiptReceivedListener {
      * @param receiptId the message ID of the packet which has been received and this receipt is for
      * @param receipt the receipt
      */
-    void onReceiptReceived(String fromJid, String toJid, String receiptId, Packet receipt);
+    void onReceiptReceived(String fromJid, String toJid, String receiptId, Stanza receipt);
 }

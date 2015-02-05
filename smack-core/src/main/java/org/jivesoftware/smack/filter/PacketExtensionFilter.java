@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack.filter;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -65,7 +65,7 @@ public class PacketExtensionFilter implements PacketFilter {
         this(packetExtension.getElementName(), packetExtension.getNamespace());
     }
 
-    public boolean accept(Packet packet) {
+    public boolean accept(Stanza packet) {
         return packet.hasExtension(elementName, namespace);
     }
 }

@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * Provides a mechanism to collect packets into a result queue that pass a
@@ -46,7 +46,7 @@ public class PacketCollector {
     private static final Logger LOGGER = Logger.getLogger(PacketCollector.class.getName());
 
     private final PacketFilter packetFilter;
-    private final ArrayBlockingQueue<Packet> resultQueue;
+    private final ArrayBlockingQueue<Stanza> resultQueue;
 
     /**
      * The packet collector which timeout for the next result will get reset once this collector collects a stanza.
@@ -103,7 +103,7 @@ public class PacketCollector {
      *      results.
      */
     @SuppressWarnings("unchecked")
-    public <P extends Packet> P pollResult() {
+    public <P extends Stanza> P pollResult() {
         return (P) resultQueue.poll();
     }
 
@@ -118,7 +118,7 @@ public class PacketCollector {
      * @return the next available packet.
      * @throws XMPPErrorException in case an error response.
      */
-    public <P extends Packet> P pollResultOrThrow() throws XMPPErrorException {
+    public <P extends Stanza> P pollResultOrThrow() throws XMPPErrorException {
         P result = pollResult();
         if (result != null) {
             XMPPErrorException.ifHasErrorThenThrow(result);
@@ -133,7 +133,7 @@ public class PacketCollector {
      * @return the next available packet.
      */
     @SuppressWarnings("unchecked")
-    public <P extends Packet> P nextResultBlockForever() {
+    public <P extends Stanza> P nextResultBlockForever() {
         throwIfCancelled();
         P res = null;
         while (res == null) {
@@ -153,7 +153,7 @@ public class PacketCollector {
      * 
      * @return the next available packet.
      */
-    public <P extends Packet> P nextResult() {
+    public <P extends Stanza> P nextResult() {
         return nextResult(connection.getPacketReplyTimeout());
     }
 
@@ -168,7 +168,7 @@ public class PacketCollector {
      * @return the next available packet.
      */
     @SuppressWarnings("unchecked")
-    public <P extends Packet> P nextResult(long timeout) {
+    public <P extends Stanza> P nextResult(long timeout) {
         throwIfCancelled();
         P res = null;
         long remainingWait = timeout;
@@ -197,7 +197,7 @@ public class PacketCollector {
      * @throws XMPPErrorException in case an error response.
      * @throws NoResponseException if there was no response from the server.
      */
-    public <P extends Packet> P nextResultOrThrow() throws NoResponseException, XMPPErrorException {
+    public <P extends Stanza> P nextResultOrThrow() throws NoResponseException, XMPPErrorException {
         return nextResultOrThrow(connection.getPacketReplyTimeout());
     }
 
@@ -210,7 +210,7 @@ public class PacketCollector {
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException in case an error response.
      */
-    public <P extends Packet> P nextResultOrThrow(long timeout) throws NoResponseException, XMPPErrorException {
+    public <P extends Stanza> P nextResultOrThrow(long timeout) throws NoResponseException, XMPPErrorException {
         P result = nextResult(timeout);
         cancel();
         if (result == null) {
@@ -238,7 +238,7 @@ public class PacketCollector {
      *
      * @param packet the packet to process.
      */
-    protected void processPacket(Packet packet) {
+    protected void processPacket(Stanza packet) {
         if (packetFilter == null || packetFilter.accept(packet)) {
         	while (!resultQueue.offer(packet)) {
         		// Since we know the queue is full, this poll should never actually block.

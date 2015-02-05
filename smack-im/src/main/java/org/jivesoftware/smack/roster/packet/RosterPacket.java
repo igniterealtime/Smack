@@ -18,7 +18,7 @@
 package org.jivesoftware.smack.roster.packet;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.ArrayList;
@@ -220,7 +220,7 @@ public class RosterPacket extends IQ {
 
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(Packet.ITEM).attribute("jid", user);
+            xml.halfOpenElement(Stanza.ITEM).attribute("jid", user);
             xml.optAttribute("name", name);
             xml.optAttribute("subscription", itemType);
             xml.optAttribute("ask", itemStatus);
@@ -229,7 +229,7 @@ public class RosterPacket extends IQ {
             for (String groupName : groupNames) {
                 xml.openElement(GROUP).escape(groupName).closeElement(GROUP);
             }
-            xml.closeElement(Packet.ITEM);
+            xml.closeElement(Stanza.ITEM);
             return xml;
         }
 

@@ -35,7 +35,7 @@ import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.xevent.packet.MessageEvent;
 
 /**
@@ -76,7 +76,7 @@ public class MessageEventManager extends Manager {
         super(connection);
         // Listens for all message event packets and fire the proper message event listeners.
         connection.addAsyncPacketListener(new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
                 MessageEvent messageEvent =
                     (MessageEvent) message.getExtension("x", "jabber:x:event");
@@ -85,14 +85,14 @@ public class MessageEventManager extends Manager {
                     for (String eventType : messageEvent.getEventTypes())
                         fireMessageEventRequestListeners(
                             message.getFrom(),
-                            message.getPacketID(),
+                            message.getStanzaId(),
                             eventType.concat("NotificationRequested"));
                 } else
                     // Fire event for notifications of message events
                     for (String eventType : messageEvent.getEventTypes())
                         fireMessageEventNotificationListeners(
                             message.getFrom(),
-                            messageEvent.getPacketID(),
+                            messageEvent.getStanzaId(),
                             eventType.concat("Notification"));
             }
         }, PACKET_FILTER);
@@ -215,7 +215,7 @@ public class MessageEventManager extends Manager {
         // Create a MessageEvent Package and add it to the message
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setDelivered(true);
-        messageEvent.setPacketID(packetID);
+        messageEvent.setStanzaId(packetID);
         msg.addExtension(messageEvent);
         // Send the packet
         connection().sendPacket(msg);
@@ -234,7 +234,7 @@ public class MessageEventManager extends Manager {
         // Create a MessageEvent Package and add it to the message
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setDisplayed(true);
-        messageEvent.setPacketID(packetID);
+        messageEvent.setStanzaId(packetID);
         msg.addExtension(messageEvent);
         // Send the packet
         connection().sendPacket(msg);
@@ -253,7 +253,7 @@ public class MessageEventManager extends Manager {
         // Create a MessageEvent Package and add it to the message
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setComposing(true);
-        messageEvent.setPacketID(packetID);
+        messageEvent.setStanzaId(packetID);
         msg.addExtension(messageEvent);
         // Send the packet
         connection().sendPacket(msg);
@@ -272,7 +272,7 @@ public class MessageEventManager extends Manager {
         // Create a MessageEvent Package and add it to the message
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setCancelled(true);
-        messageEvent.setPacketID(packetID);
+        messageEvent.setStanzaId(packetID);
         msg.addExtension(messageEvent);
         // Send the packet
         connection().sendPacket(msg);

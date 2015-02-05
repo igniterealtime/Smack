@@ -323,7 +323,7 @@ public class AdHocCommandManager extends Manager {
         // Creates the response with the corresponding data
         AdHocCommandData response = new AdHocCommandData();
         response.setTo(requestData.getFrom());
-        response.setPacketID(requestData.getPacketID());
+        response.setStanzaId(requestData.getStanzaId());
         response.setNode(requestData.getNode());
         response.setId(requestData.getTo());
 

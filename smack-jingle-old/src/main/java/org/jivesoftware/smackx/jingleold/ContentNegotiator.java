@@ -70,8 +70,8 @@ public class ContentNegotiator extends JingleNegotiator {
                 // TODO getState().eventError(iq);
             } else if (iq.getType().equals(IQ.Type.result)) {
                 // Process ACKs
-                if (isExpectedId(iq.getPacketID())) {
-                    removeExpectedId(iq.getPacketID());
+                if (isExpectedId(iq.getStanzaId())) {
+                    removeExpectedId(iq.getStanzaId());
                 }
             } else if (iq instanceof Jingle) {
                 Jingle jingle = (Jingle) iq;

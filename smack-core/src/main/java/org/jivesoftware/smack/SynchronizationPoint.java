@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 
 public class SynchronizationPoint<E extends Exception> {
@@ -61,8 +61,8 @@ public class SynchronizationPoint<E extends Exception> {
         connectionLock.lock();
         try {
             if (request != null) {
-                if (request instanceof Packet) {
-                    connection.sendPacket((Packet) request);
+                if (request instanceof Stanza) {
+                    connection.sendPacket((Stanza) request);
                 }
                 else if (request instanceof PlainStreamElement){
                     connection.send((PlainStreamElement) request);

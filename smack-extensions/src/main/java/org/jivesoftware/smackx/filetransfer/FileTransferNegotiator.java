@@ -32,7 +32,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
@@ -317,7 +317,7 @@ public class FileTransferNegotiator extends Manager {
         si.setTo(userID);
         si.setType(IQ.Type.set);
 
-        Packet siResponse = connection().createPacketCollectorAndSend(si).nextResultOrThrow(
+        Stanza siResponse = connection().createPacketCollectorAndSend(si).nextResultOrThrow(
                         responseTimeout);
 
         if (siResponse instanceof IQ) {

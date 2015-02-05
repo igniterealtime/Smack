@@ -40,7 +40,7 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.privacy.filter.SetActiveListFilter;
 import org.jivesoftware.smackx.privacy.filter.SetDefaultListFilter;
@@ -125,7 +125,7 @@ public class PrivacyListManager extends Manager {
         // cached(Active|Default)ListName handling
         connection.addPacketSendingListener(new PacketListener() {
             @Override
-            public void processPacket(Packet packet) throws NotConnectedException {
+            public void processPacket(Stanza packet) throws NotConnectedException {
                 XMPPConnection connection = connection();
                 Privacy privacy = (Privacy) packet;
                 PacketFilter iqResultReplyFilter = new IQResultReplyFilter(privacy, connection);
@@ -133,7 +133,7 @@ public class PrivacyListManager extends Manager {
                 final boolean declinceActiveList = privacy.isDeclineActiveList();
                 connection.addOneTimeSyncCallback(new PacketListener() {
                     @Override
-                    public void processPacket(Packet packet) throws NotConnectedException {
+                    public void processPacket(Stanza packet) throws NotConnectedException {
                             if (declinceActiveList) {
                                 cachedActiveListName = null;
                             }
@@ -147,7 +147,7 @@ public class PrivacyListManager extends Manager {
         }, SetActiveListFilter.INSTANCE);
         connection.addPacketSendingListener(new PacketListener() {
             @Override
-            public void processPacket(Packet packet) throws NotConnectedException {
+            public void processPacket(Stanza packet) throws NotConnectedException {
                 XMPPConnection connection = connection();
                 Privacy privacy = (Privacy) packet;
                 PacketFilter iqResultReplyFilter = new IQResultReplyFilter(privacy, connection);
@@ -155,7 +155,7 @@ public class PrivacyListManager extends Manager {
                 final boolean declinceDefaultList = privacy.isDeclineDefaultList();
                 connection.addOneTimeSyncCallback(new PacketListener() {
                     @Override
-                    public void processPacket(Packet packet) throws NotConnectedException {
+                    public void processPacket(Stanza packet) throws NotConnectedException {
                             if (declinceDefaultList) {
                                 cachedDefaultListName = null;
                             }
@@ -169,7 +169,7 @@ public class PrivacyListManager extends Manager {
         }, SetDefaultListFilter.INSTANCE);
         connection.addSyncPacketListener(new PacketListener() {
             @Override
-            public void processPacket(Packet packet) throws NotConnectedException {
+            public void processPacket(Stanza packet) throws NotConnectedException {
                 Privacy privacy = (Privacy) packet;
                 // If a privacy IQ result stanza has an active or default list name set, then we use that
                 // as cached list name.
@@ -243,7 +243,7 @@ public class PrivacyListManager extends Manager {
      * @throws NoResponseException 
      * @throws NotConnectedException 
      */
-    private Packet setRequest(Privacy requestPrivacy) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    private Stanza setRequest(Privacy requestPrivacy) throws NoResponseException, XMPPErrorException, NotConnectedException  {
         // The request is a get iq type
         requestPrivacy.setType(Privacy.Type.set);
 

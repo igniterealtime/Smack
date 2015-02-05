@@ -50,7 +50,7 @@ public class IQTest extends SmackTestCase {
             }
         };
 
-        PacketFilter filter = new AndFilter(new PacketIDFilter(iq.getPacketID()),
+        PacketFilter filter = new AndFilter(new PacketIDFilter(iq.getStanzaId()),
                 new PacketTypeFilter(IQ.class));
         PacketCollector collector = getConnection(0).createPacketCollector(filter);
         // Send the iq packet with an invalid namespace
@@ -83,7 +83,7 @@ public class IQTest extends SmackTestCase {
 
         // Create a packet collector to listen for a response.
         PacketCollector collector = getConnection(0).createPacketCollector(
-                       new PacketIDFilter(versionRequest.getPacketID()));
+                       new PacketIDFilter(versionRequest.getStanzaId()));
 
         getConnection(0).sendPacket(versionRequest);
 

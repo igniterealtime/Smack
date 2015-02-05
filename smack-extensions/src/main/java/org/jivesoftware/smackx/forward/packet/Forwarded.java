@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.forward.packet;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
@@ -32,7 +32,7 @@ public class Forwarded implements PacketExtension {
     public static final String ELEMENT = "forwarded";
 
     private final DelayInformation delay;
-    private final Packet forwardedPacket;
+    private final Stanza forwardedPacket;
 
     /**
      * Creates a new Forwarded packet extension.
@@ -40,7 +40,7 @@ public class Forwarded implements PacketExtension {
      * @param delay an optional {@link DelayInformation} timestamp of the packet.
      * @param fwdPacket the packet that is forwarded (required).
      */
-    public Forwarded(DelayInformation delay, Packet fwdPacket) {
+    public Forwarded(DelayInformation delay, Stanza fwdPacket) {
         this.delay = delay;
         this.forwardedPacket = fwdPacket;
     }
@@ -50,7 +50,7 @@ public class Forwarded implements PacketExtension {
      *
      * @param fwdPacket the packet that is forwarded (required).
      */
-    public Forwarded(Packet fwdPacket) {
+    public Forwarded(Stanza fwdPacket) {
         this(null, fwdPacket);
     }
 
@@ -77,9 +77,9 @@ public class Forwarded implements PacketExtension {
     /**
      * get the packet forwarded by this stanza.
      *
-     * @return the {@link Packet} instance (typically a message) that was forwarded.
+     * @return the {@link Stanza} instance (typically a message) that was forwarded.
      */
-    public Packet getForwardedPacket() {
+    public Stanza getForwardedPacket() {
         return forwardedPacket;
     }
 
@@ -97,7 +97,7 @@ public class Forwarded implements PacketExtension {
      * @param packet
      * @return the Forwarded extension or null
      */
-    public static Forwarded from(Packet packet) {
+    public static Forwarded from(Stanza packet) {
         return packet.getExtension(ELEMENT, NAMESPACE);
     }
 }

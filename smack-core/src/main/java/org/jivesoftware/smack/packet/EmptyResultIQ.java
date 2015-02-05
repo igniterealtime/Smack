@@ -29,7 +29,7 @@ public class EmptyResultIQ extends IQ {
             throw new IllegalArgumentException(
                     "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
         }
-        setPacketID(request.getPacketID());
+        setStanzaId(request.getStanzaId());
         setFrom(request.getTo());
         setTo(request.getFrom());
     }

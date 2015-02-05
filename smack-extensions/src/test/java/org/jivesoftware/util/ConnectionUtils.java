@@ -29,7 +29,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.mockito.invocation.InvocationOnMock;
@@ -80,7 +80,7 @@ public class ConnectionUtils {
         Answer<PacketCollector> collectorAndSend = new Answer<PacketCollector>() {
             @Override
             public PacketCollector answer(InvocationOnMock invocation) throws Throwable {
-                Packet packet = (Packet) invocation.getArguments()[0];
+                Stanza packet = (Stanza) invocation.getArguments()[0];
                 protocol.getRequests().add(packet);
                 return collector;
             }
@@ -91,24 +91,24 @@ public class ConnectionUtils {
         // mock send method
         Answer<Object> addIncoming = new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                protocol.getRequests().add((Packet) invocation.getArguments()[0]);
+                protocol.getRequests().add((Stanza) invocation.getArguments()[0]);
                 return null;
             }
         };
-        doAnswer(addIncoming).when(connection).sendPacket(isA(Packet.class));
+        doAnswer(addIncoming).when(connection).sendPacket(isA(Stanza.class));
 
         // mock receive methods
-        Answer<Packet> answer = new Answer<Packet>() {
-            public Packet answer(InvocationOnMock invocation) throws Throwable {
+        Answer<Stanza> answer = new Answer<Stanza>() {
+            public Stanza answer(InvocationOnMock invocation) throws Throwable {
                 return protocol.getResponses().poll();
             }
         };
         when(collector.nextResult(anyInt())).thenAnswer(answer);
         when(collector.nextResult()).thenAnswer(answer);
-        Answer<Packet> answerOrThrow = new Answer<Packet>() {
+        Answer<Stanza> answerOrThrow = new Answer<Stanza>() {
             @Override
-            public Packet answer(InvocationOnMock invocation) throws Throwable {
-                Packet packet = protocol.getResponses().poll();
+            public Stanza answer(InvocationOnMock invocation) throws Throwable {
+                Stanza packet = protocol.getResponses().poll();
                 if (packet == null) return packet;
                 XMPPError xmppError = packet.getError();
                 if (xmppError != null) throw new XMPPErrorException(xmppError);

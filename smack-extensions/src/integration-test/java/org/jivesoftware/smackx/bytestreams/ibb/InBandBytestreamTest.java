@@ -62,7 +62,7 @@ public class InBandBytestreamTest extends SmackTestCase {
         open.setTo(targetConnection.getUser());
 
         PacketCollector collector = initiatorConnection.createPacketCollector(new PacketIDFilter(
-                        open.getPacketID()));
+                        open.getStanzaId()));
         initiatorConnection.sendPacket(open);
         Packet result = collector.nextResult();
 

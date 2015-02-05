@@ -21,7 +21,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 public class ShortcutPredicates implements PacketFilter {
 
@@ -43,7 +43,7 @@ public class ShortcutPredicates implements PacketFilter {
     }
 
     @Override
-    public boolean accept(Packet packet) {
+    public boolean accept(Stanza packet) {
         for (PacketFilter predicate : predicates) {
             if (predicate.accept(packet)) {
                 return true;

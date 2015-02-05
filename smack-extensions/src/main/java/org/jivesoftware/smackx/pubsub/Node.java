@@ -29,7 +29,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.delay.DelayInformationManager;
@@ -100,7 +100,7 @@ abstract public class Node
 	{
         PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(
                         PubSubElementType.CONFIGURE_OWNER, getId()), PubSubNamespace.OWNER);
-		Packet reply = sendPubsubPacket(pubSub);
+		Stanza reply = sendPubsubPacket(pubSub);
 		return NodeUtils.getFormFromPacket(reply, PubSubElementType.CONFIGURE_OWNER);
 	}
 	
@@ -492,7 +492,7 @@ abstract public class Node
 	}
 
 
-	private static List<String> getSubscriptionIds(Packet packet)
+	private static List<String> getSubscriptionIds(Stanza packet)
 	{
 		HeadersExtension headers = (HeadersExtension)packet.getExtension("headers", "http://jabber.org/protocol/shim");
 		List<String> values = null;
@@ -526,7 +526,7 @@ abstract public class Node
 		}
 		
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-        public void processPacket(Packet packet)
+        public void processPacket(Stanza packet)
 		{
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
 			ItemsExtension itemsElem = (ItemsExtension)event.getEvent();
@@ -550,7 +550,7 @@ abstract public class Node
 			listener = eventListener;
 		}
 		
-		public void processPacket(Packet packet)
+		public void processPacket(Stanza packet)
 		{
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
 	        
@@ -593,7 +593,7 @@ abstract public class Node
 			listener = eventListener;
 		}
 		
-		public void processPacket(Packet packet)
+		public void processPacket(Stanza packet)
 		{
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
 			ConfigurationEvent config = (ConfigurationEvent)event.getEvent();
@@ -624,7 +624,7 @@ abstract public class Node
 			secondElement = secondLevelElement;
 		}
 
-		public boolean accept(Packet packet)
+		public boolean accept(Stanza packet)
 		{
 			if (!(packet instanceof Message))
 				return false;

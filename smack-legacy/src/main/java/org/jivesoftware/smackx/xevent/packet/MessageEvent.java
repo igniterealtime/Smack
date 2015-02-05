@@ -157,7 +157,7 @@ public class MessageEvent implements PacketExtension {
      *
      * @return the message id that requested to be notified of the event.
      */
-    public String getPacketID() {
+    public String getStanzaId() {
         return packetID;
     }
 
@@ -258,7 +258,7 @@ public class MessageEvent implements PacketExtension {
      *
      * @param packetID the message id that requested to be notified of the event.
      */
-    public void setPacketID(String packetID) {
+    public void setStanzaId(String packetID) {
         this.packetID = packetID;
     }
 
@@ -326,8 +326,8 @@ public class MessageEvent implements PacketExtension {
         if (isComposing())
             buf.append("<").append(MessageEvent.COMPOSING).append("/>");
         // Add the id tag only if the MessageEvent is a notification message (not a request)
-        if (getPacketID() != null)
-            buf.append("<id>").append(getPacketID()).append("</id>");
+        if (getStanzaId() != null)
+            buf.append("<id>").append(getStanzaId()).append("</id>");
         buf.append("</").append(getElementName()).append(">");
         return buf.toString();
     }

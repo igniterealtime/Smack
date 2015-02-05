@@ -49,7 +49,7 @@ public class MessageEventProvider extends PacketExtensionProvider<MessageEvent> 
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("id"))
-                    messageEvent.setPacketID(parser.nextText());
+                    messageEvent.setStanzaId(parser.nextText());
                 if (parser.getName().equals(MessageEvent.COMPOSING))
                     messageEvent.setComposing(true);
                 if (parser.getName().equals(MessageEvent.DELIVERED))

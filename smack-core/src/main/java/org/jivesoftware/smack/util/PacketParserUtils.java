@@ -35,7 +35,7 @@ import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Session;
@@ -128,7 +128,7 @@ public class PacketParserUtils {
         return parser;
     }
 
-    public static Packet parseStanza(String stanza) throws XmlPullParserException, IOException, SmackException {
+    public static Stanza parseStanza(String stanza) throws XmlPullParserException, IOException, SmackException {
         return parseStanza(getParserFor(stanza));
     }
 
@@ -143,7 +143,7 @@ public class PacketParserUtils {
      * @throws SmackException 
      * @throws IOException 
      */
-    public static Packet parseStanza(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
+    public static Stanza parseStanza(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
         ParserUtils.assertAtStartTag(parser);
         final String name = parser.getName();
         switch (name) {
@@ -221,7 +221,7 @@ public class PacketParserUtils {
 
         final int initialDepth = parser.getDepth();
         Message message = new Message();
-        message.setPacketID(parser.getAttributeValue("", "id"));
+        message.setStanzaId(parser.getAttributeValue("", "id"));
         message.setTo(parser.getAttributeValue("", "to"));
         message.setFrom(parser.getAttributeValue("", "from"));
         String typeString = parser.getAttributeValue("", "type");
@@ -237,7 +237,7 @@ public class PacketParserUtils {
             defaultLanguage = language;
         } 
         else {
-            defaultLanguage = Packet.getDefaultLanguage();
+            defaultLanguage = Stanza.getDefaultLanguage();
         }
 
         // Parse sub-elements. We include extra logic to make sure the values
@@ -529,7 +529,7 @@ public class PacketParserUtils {
         Presence presence = new Presence(type);
         presence.setTo(parser.getAttributeValue("", "to"));
         presence.setFrom(parser.getAttributeValue("", "from"));
-        presence.setPacketID(parser.getAttributeValue("", "id"));
+        presence.setStanzaId(parser.getAttributeValue("", "id"));
 
         String language = getLanguageAttribute(parser);
         if (language != null && !"".equals(language.trim())) {
@@ -562,7 +562,7 @@ public class PacketParserUtils {
                         LOGGER.warning("Empty or null mode text in presence show element form "
                                         + presence.getFrom()
                                         + " with id '"
-                                        + presence.getPacketID()
+                                        + presence.getStanzaId()
                                         + "' which is invalid according to RFC6121 4.7.2.1");
                     }
                     break;
@@ -661,7 +661,7 @@ public class PacketParserUtils {
         }
 
         // Set basic values on the iq packet.
-        iqPacket.setPacketID(id);
+        iqPacket.setStanzaId(id);
         iqPacket.setTo(to);
         iqPacket.setFrom(from);
         iqPacket.setType(type);
@@ -868,7 +868,7 @@ public class PacketParserUtils {
                 switch (namespace) {
                 case XMPPError.NAMESPACE:
                     switch (name) {
-                    case Packet.TEXT:
+                    case Stanza.TEXT:
                         descriptiveTexts = parseDescriptiveTexts(parser, descriptiveTexts);
                         break;
                     default:
@@ -1005,13 +1005,13 @@ public class PacketParserUtils {
     	return null;
     }
 
-    public static void addPacketExtension(Packet packet, XmlPullParser parser) throws XmlPullParserException,
+    public static void addPacketExtension(Stanza packet, XmlPullParser parser) throws XmlPullParserException,
                     IOException, SmackException {
         ParserUtils.assertAtStartTag(parser);
         addPacketExtension(packet, parser, parser.getName(), parser.getNamespace());
     }
 
-    public static void addPacketExtension(Packet packet, XmlPullParser parser, String elementName, String namespace)
+    public static void addPacketExtension(Stanza packet, XmlPullParser parser, String elementName, String namespace)
                     throws XmlPullParserException, IOException, SmackException {
         PacketExtension packetExtension = parsePacketExtension(elementName, namespace, parser);
         packet.addExtension(packetExtension);

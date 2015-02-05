@@ -31,7 +31,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.packet.Carbon;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Private;
@@ -120,7 +120,7 @@ public class CarbonManager extends Manager {
         IQ setIQ = carbonsEnabledIQ(new_state);
 
         connection().sendIqWithResponseCallback(setIQ, new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 enabled_state = new_state;
             }
         });

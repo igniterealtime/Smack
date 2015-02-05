@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.search;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.packet.DataForm.Item;
@@ -43,7 +43,7 @@ public class ReportedData {
      * 
      * @param packet the packet used for reporting data.
      */
-    public static ReportedData getReportedDataFrom(Packet packet) {
+    public static ReportedData getReportedDataFrom(Stanza packet) {
         // Check if the packet includes the DataForm extension
         DataForm dataForm = DataForm.from(packet);
         if (dataForm != null) {

@@ -17,7 +17,7 @@
 package org.jivesoftware.smack.sm.predicates;
 
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -26,22 +26,22 @@ public class OnceForThisStanza implements PacketFilter {
     private final String id;
     private final XMPPTCPConnection connection;
 
-    public static void setup(XMPPTCPConnection connection, Packet packet) {
+    public static void setup(XMPPTCPConnection connection, Stanza packet) {
         PacketFilter packetFilter = new OnceForThisStanza(connection, packet);
         connection.addRequestAckPredicate(packetFilter);
     }
 
-    private OnceForThisStanza(XMPPTCPConnection connection, Packet packet) {
+    private OnceForThisStanza(XMPPTCPConnection connection, Stanza packet) {
         this.connection = connection;
-        this.id = packet.getPacketID();
+        this.id = packet.getStanzaId();
         if (StringUtils.isNullOrEmpty(id)) {
             throw new IllegalArgumentException("Stanza ID must be set");
         }
     }
 
     @Override
-    public boolean accept(Packet packet) {
-        String otherId = packet.getPacketID();
+    public boolean accept(Stanza packet) {
+        String otherId = packet.getStanzaId();
         if (StringUtils.isNullOrEmpty(otherId)) {
             return false;
         }

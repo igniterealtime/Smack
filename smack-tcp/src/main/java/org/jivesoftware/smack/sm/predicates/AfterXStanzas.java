@@ -17,7 +17,7 @@
 package org.jivesoftware.smack.sm.predicates;
 
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 public class AfterXStanzas implements PacketFilter {
 
@@ -30,7 +30,7 @@ public class AfterXStanzas implements PacketFilter {
     }
 
     @Override
-    public synchronized boolean accept(Packet packet) {
+    public synchronized boolean accept(Stanza packet) {
         currentCount++;
         if (currentCount == count) {
             resetCounter();

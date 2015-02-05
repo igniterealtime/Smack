@@ -27,7 +27,7 @@ import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
@@ -147,7 +147,7 @@ public class OfflineMessageManager {
         }
         // Filter offline messages that were requested by this request
         PacketFilter messageFilter = new AndFilter(PACKET_FILTER, new PacketFilter() {
-            public boolean accept(Packet packet) {
+            public boolean accept(Stanza packet) {
                 OfflineMessageInfo info = (OfflineMessageInfo) packet.getExtension("offline",
                         namespace);
                 return nodes.contains(info.getNode());

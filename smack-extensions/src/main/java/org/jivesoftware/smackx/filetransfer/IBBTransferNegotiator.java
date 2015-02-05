@@ -28,7 +28,7 @@ import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession;
@@ -77,7 +77,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
          */
         this.manager.ignoreBytestreamRequestOnce(initiation.getSessionID());
 
-        Packet streamInitiation = initiateIncomingStream(this.connection, initiation);
+        Stanza streamInitiation = initiateIncomingStream(this.connection, initiation);
         return negotiateIncomingStream(streamInitiation);
     }
 
@@ -96,7 +96,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         return new String[] { DataPacketExtension.NAMESPACE };
     }
 
-    InputStream negotiateIncomingStream(Packet streamInitiation) throws NotConnectedException {
+    InputStream negotiateIncomingStream(Stanza streamInitiation) throws NotConnectedException {
         // build In-Band Bytestream request
         InBandBytestreamRequest request = new ByteStreamRequest(this.manager,
                         (Open) streamInitiation);
@@ -123,7 +123,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
             this.sessionID = sessionID;
         }
 
-        public boolean accept(Packet packet) {
+        public boolean accept(Stanza packet) {
             if (super.accept(packet)) {
                 Open bytestream = (Open) packet;
 

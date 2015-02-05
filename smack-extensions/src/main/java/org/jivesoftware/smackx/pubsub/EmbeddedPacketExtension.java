@@ -18,14 +18,14 @@ package org.jivesoftware.smackx.pubsub;
 
 import java.util.List;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 /**
  * This interface defines {@link PacketExtension} implementations that contain other
  * extensions.  This effectively extends the idea of an extension within one of the 
- * top level {@link Packet} types to consider any embedded element to be an extension
+ * top level {@link Stanza} types to consider any embedded element to be an extension
  * of its parent.  This more easily enables the usage of some of Smacks parsing
  * utilities such as {@link PacketParserUtils#parsePacketExtension(String, String, org.xmlpull.v1.XmlPullParser)} to be used
  * to parse any element of the XML being parsed.

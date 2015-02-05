@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.xdata.packet;
 
 import org.jivesoftware.smack.packet.Element;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -305,7 +305,7 @@ public class DataForm implements PacketExtension {
      * @param packet
      * @return the DataForm or null
      */
-    public static DataForm from(Packet packet) {
+    public static DataForm from(Stanza packet) {
         return (DataForm) packet.getExtension(ELEMENT, NAMESPACE);
     }
 

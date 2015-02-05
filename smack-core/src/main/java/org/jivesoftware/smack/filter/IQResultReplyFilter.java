@@ -18,7 +18,7 @@ package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 /**
  *
@@ -31,7 +31,7 @@ public class IQResultReplyFilter extends IQReplyFilter {
     }
 
     @Override
-    public boolean accept(Packet packet) {
+    public boolean accept(Stanza packet) {
         if (!super.accept(packet)) {
             return false;
         }

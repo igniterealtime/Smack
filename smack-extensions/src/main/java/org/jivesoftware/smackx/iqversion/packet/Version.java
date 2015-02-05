@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.iqversion.packet;
 
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.StringUtils;
 
 /**
@@ -35,7 +35,7 @@ import org.jivesoftware.smack.util.StringUtils;
  *
  * // Create a packet collector to listen for a response.
  * PacketCollector collector = con.createPacketCollector(
- *                new PacketIDFilter(versionRequest.getPacketID()));
+ *                new PacketIDFilter(versionRequest.getStanzaId()));
  *
  * con.sendPacket(versionRequest);
  *
@@ -147,9 +147,9 @@ public class Version extends IQ {
         return xml;
     }
 
-    public static Version createResultFor(Packet request, Version version) {
+    public static Version createResultFor(Stanza request, Version version) {
         Version result = new Version(version);
-        result.setPacketID(request.getPacketID());
+        result.setStanzaId(request.getStanzaId());
         result.setTo(request.getFrom());
         return result;
     }

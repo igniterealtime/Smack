@@ -32,7 +32,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.ConnectionConfiguration.Builder;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.RosterTest.TestRosterListener;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
@@ -137,11 +137,11 @@ public class RosterVersioningTest {
 
         // We expect that the roster request is the only packet sent. This is not part of the specification,
         // but a shortcut in the test implementation.
-        Packet sentPacket = connection.getSentPacket();
+        Stanza sentPacket = connection.getSentPacket();
         if (sentPacket instanceof RosterPacket) {
             RosterPacket sentRP = (RosterPacket)sentPacket;
             RosterPacket answer = new RosterPacket();
-            answer.setPacketID(sentRP.getPacketID());
+            answer.setStanzaId(sentRP.getStanzaId());
             answer.setType(Type.result);
             answer.setTo(sentRP.getFrom());
 
@@ -249,7 +249,7 @@ public class RosterVersioningTest {
     private void answerWithEmptyRosterResult() throws InterruptedException {
         // We expect that the roster request is the only packet sent. This is not part of the specification,
         // but a shortcut in the test implementation.
-        Packet sentPacket = connection.getSentPacket();
+        Stanza sentPacket = connection.getSentPacket();
         if (sentPacket instanceof RosterPacket) {
             final IQ emptyIQ = IQ.createResultIQ((RosterPacket)sentPacket);
             connection.processPacket(emptyIQ);

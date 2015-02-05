@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 
@@ -77,7 +77,7 @@ class InitiationListener extends AbstractIqRequestHandler {
         return null;
     }
 
-    private void processRequest(Packet packet) throws NotConnectedException {
+    private void processRequest(Stanza packet) throws NotConnectedException {
         Open ibbRequest = (Open) packet;
 
         // validate that block size is within allowed range

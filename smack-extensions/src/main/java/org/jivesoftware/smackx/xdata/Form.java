@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
@@ -53,7 +53,7 @@ public class Form {
      * @return the data form parsed from the packet or <tt>null</tt> if there was not
      *      a form in the packet.
      */
-    public static Form getFormFrom(Packet packet) {
+    public static Form getFormFrom(Stanza packet) {
         // Check if the packet includes the DataForm extension
         DataForm dataForm = DataForm.from(packet);
         if (dataForm != null) {

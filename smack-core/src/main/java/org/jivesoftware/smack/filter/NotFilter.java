@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack.filter;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * Implements the logical NOT operation on a packet filter. In other words, packets
@@ -41,7 +41,7 @@ public class NotFilter implements PacketFilter {
         this.filter = filter;
     }
 
-    public boolean accept(Packet packet) {
+    public boolean accept(Stanza packet) {
         return !filter.accept(packet);
     }
 }

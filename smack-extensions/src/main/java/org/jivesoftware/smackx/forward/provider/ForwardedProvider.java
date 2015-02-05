@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
@@ -43,7 +43,7 @@ public class ForwardedProvider extends PacketExtensionProvider<Forwarded> {
     @Override
     public Forwarded parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         DelayInformation di = null;
-        Packet packet = null;
+        Stanza packet = null;
 
         outerloop: while (true) {
             int eventType = parser.next();

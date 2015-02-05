@@ -83,7 +83,7 @@ public class PacketReaderTest extends SmackTestCase {
 
         // Send the IQ and wait for the answer
         PacketCollector collector = getConnection(0).createPacketCollector(
-                new PacketIDFilter(iqPacket.getPacketID()));
+                new PacketIDFilter(iqPacket.getStanzaId()));
         getConnection(0).sendPacket(iqPacket);
         IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         if (response == null) {

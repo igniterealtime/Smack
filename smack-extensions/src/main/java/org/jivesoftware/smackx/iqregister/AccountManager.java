@@ -290,7 +290,7 @@ public class AccountManager extends Manager {
     }
 
     private PacketCollector createPacketCollectorAndSend(IQ req) throws NotConnectedException {
-        PacketCollector collector = connection().createPacketCollectorAndSend(new PacketIDFilter(req.getPacketID()), req);
+        PacketCollector collector = connection().createPacketCollectorAndSend(new PacketIDFilter(req.getStanzaId()), req);
         return collector;
     }
 }

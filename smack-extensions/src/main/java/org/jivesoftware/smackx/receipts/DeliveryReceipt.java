@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.receipts;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -76,10 +76,10 @@ public class DeliveryReceipt implements PacketExtension
      *
      * @param p the packet
      * @return the {@link DeliveryReceipt} extension or {@code null}
-     * @deprecated use {@link #from(Packet)} instead
+     * @deprecated use {@link #from(Stanza)} instead
      */
     @Deprecated
-    public static DeliveryReceipt getFrom(Packet p) {
+    public static DeliveryReceipt getFrom(Stanza p) {
         return from(p);
     }
 
@@ -89,7 +89,7 @@ public class DeliveryReceipt implements PacketExtension
      * @param packet the packet
      * @return the {@link DeliveryReceipt} extension or {@code null}
      */
-    public static DeliveryReceipt from(Packet packet) {
+    public static DeliveryReceipt from(Stanza packet) {
         return packet.getExtension(ELEMENT, NAMESPACE);
     }
 

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.caps.packet;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -72,7 +72,7 @@ public class CapsExtension implements PacketExtension {
         return xml;
     }
 
-    public static CapsExtension from(Packet stanza) {
+    public static CapsExtension from(Stanza stanza) {
         return stanza.getExtension(ELEMENT, NAMESPACE);
     }
 }

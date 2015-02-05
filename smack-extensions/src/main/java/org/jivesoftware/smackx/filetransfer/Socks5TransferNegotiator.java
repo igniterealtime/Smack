@@ -31,7 +31,7 @@ import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamSession;
@@ -79,7 +79,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
          */
         this.manager.ignoreBytestreamRequestOnce(initiation.getSessionID());
 
-        Packet streamInitiation = initiateIncomingStream(this.connection, initiation);
+        Stanza streamInitiation = initiateIncomingStream(this.connection, initiation);
         return negotiateIncomingStream(streamInitiation);
     }
 
@@ -101,7 +101,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     }
 
     @Override
-    InputStream negotiateIncomingStream(Packet streamInitiation) throws InterruptedException,
+    InputStream negotiateIncomingStream(Stanza streamInitiation) throws InterruptedException,
                     SmackException, XMPPErrorException {
         // build SOCKS5 Bytestream request
         Socks5BytestreamRequest request = new ByteStreamRequest(this.manager,
@@ -138,7 +138,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
         }
 
         @Override
-        public boolean accept(Packet packet) {
+        public boolean accept(Stanza packet) {
             if (super.accept(packet)) {
                 Bytestream bytestream = (Bytestream) packet;
 

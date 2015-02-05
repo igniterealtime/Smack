@@ -35,7 +35,7 @@ import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
@@ -129,7 +129,7 @@ public class DeliveryReceiptManager extends Manager {
         // Add the packet listener to handling incoming delivery receipts
         connection.addAsyncPacketListener(new PacketListener() {
             @Override
-            public void processPacket(Packet packet) throws NotConnectedException {
+            public void processPacket(Stanza packet) throws NotConnectedException {
                 DeliveryReceipt dr = DeliveryReceipt.from(packet);
                 // notify listeners of incoming receipt
                 for (ReceiptReceivedListener l : receiptReceivedListeners) {
@@ -141,7 +141,7 @@ public class DeliveryReceiptManager extends Manager {
         // Add the packet listener to handle incoming delivery receipt requests
         connection.addAsyncPacketListener(new PacketListener() {
             @Override
-            public void processPacket(Packet packet) throws NotConnectedException {
+            public void processPacket(Stanza packet) throws NotConnectedException {
                 final String from = packet.getFrom();
                 final XMPPConnection connection = connection();
                 switch (autoReceiptMode) {
@@ -157,7 +157,7 @@ public class DeliveryReceiptManager extends Manager {
                 }
 
                 Message ack = new Message(from, Message.Type.normal);
-                ack.addExtension(new DeliveryReceipt(packet.getPacketID()));
+                ack.addExtension(new DeliveryReceipt(packet.getStanzaId()));
                 connection.sendPacket(ack);
             }
         }, MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST);
@@ -234,7 +234,7 @@ public class DeliveryReceiptManager extends Manager {
 
     private static final PacketListener AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER = new PacketListener() {
         @Override
-        public void processPacket(Packet packet) throws NotConnectedException {
+        public void processPacket(Stanza packet) throws NotConnectedException {
             Message message = (Message) packet;
             DeliveryReceiptRequest.addTo(message);
         }

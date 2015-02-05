@@ -37,7 +37,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 
 
@@ -69,12 +69,12 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         return new OrFilter(primaryFilter, secondaryFilter);
     }
 
-    InputStream negotiateIncomingStream(Packet streamInitiation) {
+    InputStream negotiateIncomingStream(Stanza streamInitiation) {
         throw new UnsupportedOperationException("Negotiation only handled by create incoming " +
                 "stream method.");
     }
 
-    final Packet initiateIncomingStream(XMPPConnection connection, StreamInitiation initiation) {
+    final Stanza initiateIncomingStream(XMPPConnection connection, StreamInitiation initiation) {
         throw new UnsupportedOperationException("Initiation handled by createIncomingStream " +
                 "method");
     }
@@ -139,7 +139,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         return stream;
     }
 
-    private StreamNegotiator determineNegotiator(Packet streamInitiation) {
+    private StreamNegotiator determineNegotiator(Stanza streamInitiation) {
         return primaryFilter.accept(streamInitiation) ? primaryNegotiator : secondaryNegotiator;
     }
 
@@ -176,7 +176,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         }
 
         public InputStream call() throws XMPPErrorException, InterruptedException, SmackException {
-            Packet streamInitiation = collector.nextResult();
+            Stanza streamInitiation = collector.nextResult();
             if (streamInitiation == null) {
                 throw new NoResponseException(connection);
             }

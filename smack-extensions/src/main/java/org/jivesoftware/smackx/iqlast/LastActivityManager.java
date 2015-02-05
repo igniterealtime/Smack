@@ -34,7 +34,7 @@ import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
@@ -135,7 +135,7 @@ public class LastActivityManager extends Manager {
 
         // Listen to all the sent messages to reset the idle time on each one
         connection.addPacketSendingListener(new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 Presence presence = (Presence) packet;
                 Presence.Mode mode = presence.getMode();
                 if (mode == null) return;
@@ -153,7 +153,7 @@ public class LastActivityManager extends Manager {
 
         connection.addPacketSendingListener(new PacketListener() {
             @Override
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
                 // if it's not an error message, reset the idle time
                 if (message.getType() == Message.Type.error) return;
@@ -172,7 +172,7 @@ public class LastActivityManager extends Manager {
                 message.setType(IQ.Type.result);
                 message.setTo(iqRequest.getFrom());
                 message.setFrom(iqRequest.getTo());
-                message.setPacketID(iqRequest.getPacketID());
+                message.setStanzaId(iqRequest.getStanzaId());
                 message.setLastActivity(getIdleTime());
 
                 return message;

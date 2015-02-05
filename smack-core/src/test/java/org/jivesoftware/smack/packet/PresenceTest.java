@@ -47,7 +47,7 @@ public class PresenceTest {
         String control = controlBuilder.toString();
 
         Presence presenceTypeInConstructor = new Presence(type);
-        presenceTypeInConstructor.setPacketID(null);
+        presenceTypeInConstructor.setStanzaId(null);
         assertEquals(type, presenceTypeInConstructor.getType());
         assertXMLEqual(control, presenceTypeInConstructor.toXML().toString());
 
@@ -146,7 +146,7 @@ public class PresenceTest {
 
         Presence presenceModeInConstructor = new Presence(Presence.Type.available, status, priority,
                 mode1);
-        presenceModeInConstructor.setPacketID(null);
+        presenceModeInConstructor.setStanzaId(null);
         assertEquals(mode1, presenceModeInConstructor.getMode());
         assertXMLEqual(control, presenceModeInConstructor.toXML().toString());
 
@@ -194,7 +194,7 @@ public class PresenceTest {
 
     private static Presence getNewPresence() {
         Presence presence = new Presence(Presence.Type.available);
-        presence.setPacketID(null);
+        presence.setStanzaId(null);
         return presence;
     }
 }

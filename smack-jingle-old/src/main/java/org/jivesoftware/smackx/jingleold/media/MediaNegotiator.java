@@ -116,9 +116,9 @@ public class MediaNegotiator extends JingleNegotiator {
             throw new JingleException(iq.getError().getDescriptiveText());
         } else if (iq.getType().equals(IQ.Type.result)) {
             // Process ACKs
-            if (isExpectedId(iq.getPacketID())) {
+            if (isExpectedId(iq.getStanzaId())) {
                 receiveResult(iq);
-                removeExpectedId(iq.getPacketID());
+                removeExpectedId(iq.getStanzaId());
             }
         } else if (iq instanceof Jingle) {
             Jingle jingle = (Jingle) iq;
@@ -165,7 +165,7 @@ public class MediaNegotiator extends JingleNegotiator {
         }
 
         if (response != null) {
-            addExpectedId(response.getPacketID());
+            addExpectedId(response.getStanzaId());
             responses.add(response);
         }
 

@@ -35,7 +35,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -143,7 +143,7 @@ public class Workgroup {
         PacketFilter typeFilter = new PacketTypeFilter(Message.class);
 
         connection.addAsyncPacketListener(new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 handlePacket(packet);
             }
         }, typeFilter);
@@ -492,7 +492,7 @@ public class Workgroup {
 
     // PacketListener Implementation.
 
-    private void handlePacket(Packet packet) {
+    private void handlePacket(Stanza packet) {
         if (packet instanceof Message) {
             Message msg = (Message)packet;
             // Check to see if the user left the queue.

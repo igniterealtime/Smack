@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jxmpp.util.XmppStringUtils;
 
 /**
@@ -96,7 +96,7 @@ public class IQReplyFilter implements PacketFilter {
         local = localJid.toLowerCase(Locale.US);
 
         server = conn.getServiceName().toLowerCase(Locale.US);
-        packetId = iqPacket.getPacketID();
+        packetId = iqPacket.getStanzaId();
 
         PacketFilter iqFilter = new OrFilter(IQTypeFilter.ERROR, IQTypeFilter.RESULT);
         PacketFilter idFilter = new PacketIDFilter(iqPacket);
@@ -113,7 +113,7 @@ public class IQReplyFilter implements PacketFilter {
     }
 
     @Override
-    public boolean accept(Packet packet) {
+    public boolean accept(Stanza packet) {
         // First filter out everything that is not an IQ stanza and does not have the correct ID set.
         if (!iqAndIdFilter.accept(packet))
             return false;

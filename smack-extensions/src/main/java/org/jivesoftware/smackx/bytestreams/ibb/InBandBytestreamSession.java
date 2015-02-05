@@ -32,7 +32,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
@@ -447,7 +447,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
                 private long lastSequence = -1;
 
-                public void processPacket(Packet packet) throws NotConnectedException {
+                public void processPacket(Stanza packet) throws NotConnectedException {
                     // get data packet extension
                     DataPacketExtension data = ((Data) packet).getDataPacketExtension();
 
@@ -508,7 +508,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         protected PacketListener getDataPacketListener() {
             return new PacketListener() {
 
-                public void processPacket(Packet packet) {
+                public void processPacket(Stanza packet) {
                     // get data packet extension
                     DataPacketExtension data = (DataPacketExtension) packet.getExtension(
                                     DataPacketExtension.ELEMENT,
@@ -553,7 +553,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      */
     private class IBBDataPacketFilter implements PacketFilter {
 
-        public boolean accept(Packet packet) {
+        public boolean accept(Stanza packet) {
             // sender equals remote peer
             if (!packet.getFrom().equalsIgnoreCase(remoteJID)) {
                 return false;

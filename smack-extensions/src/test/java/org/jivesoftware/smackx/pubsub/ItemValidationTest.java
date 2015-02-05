@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.ThreadedDummyConnection;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
@@ -103,7 +103,7 @@ public class ItemValidationTest extends InitExtensions {
                  "</event>" + 
             "</message>");
         
-        Packet message = PacketParserUtils.parseMessage(parser);
+        Stanza message = PacketParserUtils.parseMessage(parser);
         PacketExtension eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
         
         assertTrue(eventExt instanceof EventElement);
@@ -134,7 +134,7 @@ public class ItemValidationTest extends InitExtensions {
                  "</event>" + 
             "</message>");
         
-        Packet message = PacketParserUtils.parseMessage(parser);
+        Stanza message = PacketParserUtils.parseMessage(parser);
         PacketExtension eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
         EventElement event = (EventElement) eventExt;
         PacketExtension itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
@@ -181,7 +181,7 @@ public class ItemValidationTest extends InitExtensions {
                  "</event>" + 
             "</message>");
         
-        Packet message = PacketParserUtils.parseMessage(parser);
+        Stanza message = PacketParserUtils.parseMessage(parser);
         PacketExtension eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
         EventElement event = (EventElement) eventExt;
         PacketExtension itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
@@ -214,7 +214,7 @@ public class ItemValidationTest extends InitExtensions {
                  "</event>" + 
             "</message>");
         
-        Packet message = PacketParserUtils.parseMessage(parser);
+        Stanza message = PacketParserUtils.parseMessage(parser);
         PacketExtension eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
         
         assertTrue(eventExt instanceof EventElement);

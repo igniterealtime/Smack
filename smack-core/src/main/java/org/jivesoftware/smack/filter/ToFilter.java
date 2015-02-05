@@ -18,7 +18,7 @@ package org.jivesoftware.smack.filter;
 
 import java.util.Locale;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 public class ToFilter implements PacketFilter {
 
@@ -29,7 +29,7 @@ public class ToFilter implements PacketFilter {
     }
 
     @Override
-    public boolean accept(Packet packet) {
+    public boolean accept(Stanza packet) {
         String packetTo = packet.getTo();
         if (packetTo == null) {
             return false;

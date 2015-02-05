@@ -53,7 +53,7 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.filter.ToFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -136,7 +136,7 @@ public class MultiUserChat {
 
         messageListener = new PacketListener() {
             @Override
-            public void processPacket(Packet packet) throws NotConnectedException {
+            public void processPacket(Stanza packet) throws NotConnectedException {
                 Message message = (Message) packet;
                 for (MessageListener listener : messageListeners) {
                     listener.processMessage(message);
@@ -146,7 +146,7 @@ public class MultiUserChat {
 
         // Create a listener for subject updates.
         subjectListener = new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 Message msg = (Message) packet;
                 // Update the room subject
                 subject = msg.getSubject();
@@ -159,7 +159,7 @@ public class MultiUserChat {
 
         // Create a listener for all presence updates.
         presenceListener = new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 Presence presence = (Presence) packet;
                 String from = presence.getFrom();
                 String myRoomJID = MultiUserChat.this.room + "/" + nickname;
@@ -225,7 +225,7 @@ public class MultiUserChat {
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // rejection listeners if the message includes an invitation rejection.
         declinesListener = new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 // Get the MUC User extension
                 MUCUser mucUser = MUCUser.from(packet);
                 // Check if the MUCUser informs that the invitee has declined the invitation
@@ -239,7 +239,7 @@ public class MultiUserChat {
 
         presenceInterceptor = new PacketListener() {
             @Override
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 Presence presence = (Presence) packet;
                 for (PresenceListener interceptor : presenceInterceptors) {
                     interceptor.processPresence(presence);
@@ -1709,7 +1709,7 @@ public class MultiUserChat {
         // Wait for an error or confirmation message back from the server.
         PacketFilter responseFilter = new AndFilter(fromRoomGroupchatFilter, new PacketFilter() {
             @Override
-            public boolean accept(Packet packet) {
+            public boolean accept(Stanza packet) {
                 Message msg = (Message) packet;
                 return subject.equals(msg.getSubject());
             }

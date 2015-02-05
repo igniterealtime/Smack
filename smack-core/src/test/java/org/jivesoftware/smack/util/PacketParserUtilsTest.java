@@ -33,7 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
@@ -59,7 +59,7 @@ public class PacketParserUtilsTest {
         
     @Test
     public void singleMessageBodyTest() throws Exception {
-        String defaultLanguage = Packet.getDefaultLanguage();
+        String defaultLanguage = Stanza.getDefaultLanguage();
         String otherLanguage = determineNonDefaultLanguage();
 
         String control;
@@ -208,7 +208,7 @@ public class PacketParserUtilsTest {
 
     @Test
     public void singleMessageSubjectTest() throws Exception {
-        String defaultLanguage = Packet.getDefaultLanguage();
+        String defaultLanguage = Stanza.getDefaultLanguage();
         String otherLanguage = determineNonDefaultLanguage();
 
         String control;
@@ -357,7 +357,7 @@ public class PacketParserUtilsTest {
 
     @Test
     public void multipleMessageBodiesTest() throws Exception {
-        String defaultLanguage = Packet.getDefaultLanguage();
+        String defaultLanguage = Stanza.getDefaultLanguage();
         String otherLanguage = determineNonDefaultLanguage();
         
         String control;
@@ -510,7 +510,7 @@ public class PacketParserUtilsTest {
 
     @Test
     public void multipleMessageSubjectsTest() throws Exception {
-        String defaultLanguage = Packet.getDefaultLanguage();
+        String defaultLanguage = Stanza.getDefaultLanguage();
         String otherLanguage = determineNonDefaultLanguage();
         
         String control;
@@ -748,7 +748,7 @@ public class PacketParserUtilsTest {
                 .t("This is a test of the emergency broadcast system, 3.")
             .asString(outputProperties);
 
-        Packet message = PacketParserUtils.parseStanza(control);
+        Stanza message = PacketParserUtils.parseStanza(control);
         XmlUnitUtils.assertSimilar(control, message.toXML());
     }
 

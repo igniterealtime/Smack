@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
 
 public class JivePropertiesManager {
@@ -53,7 +53,7 @@ public class JivePropertiesManager {
      * @param name the name of the property to add.
      * @param value the value of the property to add.
      */
-    public static void addProperty(Packet packet, String name, Object value) {
+    public static void addProperty(Stanza packet, String name, Object value) {
         JivePropertiesExtension jpe = (JivePropertiesExtension) packet.getExtension(JivePropertiesExtension.NAMESPACE);
         if (jpe == null) {
             jpe = new JivePropertiesExtension();
@@ -70,7 +70,7 @@ public class JivePropertiesManager {
      * @param name
      * @return the property or <tt>null</tt> if none found.
      */
-    public static Object getProperty(Packet packet, String name) {
+    public static Object getProperty(Stanza packet, String name) {
         Object res = null;
         JivePropertiesExtension jpe = (JivePropertiesExtension) packet.getExtension(JivePropertiesExtension.NAMESPACE);
         if (jpe != null) {
@@ -86,7 +86,7 @@ public class JivePropertiesManager {
      * @param packet
      * @return a collection of the names of all properties.
      */
-    public static Collection<String> getPropertiesNames(Packet packet) {
+    public static Collection<String> getPropertiesNames(Stanza packet) {
         JivePropertiesExtension jpe = (JivePropertiesExtension) packet.getExtension(JivePropertiesExtension.NAMESPACE);
         if (jpe == null) {
             return Collections.emptyList();
@@ -101,7 +101,7 @@ public class JivePropertiesManager {
      * @param packet
      * @return a map of all properties of the given packet.
      */
-    public static Map<String, Object> getProperties(Packet packet) {
+    public static Map<String, Object> getProperties(Stanza packet) {
         JivePropertiesExtension jpe = (JivePropertiesExtension) packet.getExtension(JivePropertiesExtension.NAMESPACE);
         if (jpe == null) {
             return Collections.emptyMap();

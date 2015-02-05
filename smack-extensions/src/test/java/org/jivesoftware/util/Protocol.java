@@ -32,7 +32,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * This class can be used in conjunction with a mocked XMPP connection (
@@ -94,16 +94,16 @@ public class Protocol {
     public boolean printProtocol = false;
 
     // responses to requests are taken form this queue
-    Queue<Packet> responses = new LinkedList<Packet>();
+    Queue<Stanza> responses = new LinkedList<Stanza>();
 
     // list of verifications
     List<Verification<?, ?>[]> verificationList = new ArrayList<Verification<?, ?>[]>();
 
     // list of requests
-    List<Packet> requests = new ArrayList<Packet>();
+    List<Stanza> requests = new ArrayList<Stanza>();
 
     // list of all responses
-    List<Packet> responsesList = new ArrayList<Packet>();
+    List<Stanza> responsesList = new ArrayList<Stanza>();
 
     /**
      * Adds a responses and all verifications for the request/response pair to
@@ -112,7 +112,7 @@ public class Protocol {
      * @param response the response for a request
      * @param verifications verifications for request/response pair
      */
-    public void addResponse(Packet response, Verification<?, ?>... verifications) {
+    public void addResponse(Stanza response, Verification<?, ?>... verifications) {
         responses.offer(response);
         verificationList.add(verifications);
         responsesList.add(response);
@@ -130,8 +130,8 @@ public class Protocol {
             System.out.println("=================== Start ===============\n");
 
         for (int i = 0; i < requests.size(); i++) {
-            Packet request = requests.get(i);
-            Packet response = responsesList.get(i);
+            Stanza request = requests.get(i);
+            Stanza response = responsesList.get(i);
 
             if (printProtocol) {
                 System.out.println("------------------- Request -------------\n");
@@ -145,9 +145,9 @@ public class Protocol {
                 }
             }
 
-            Verification<Packet, Packet>[] verifications = (Verification<Packet, Packet>[]) verificationList.get(i);
+            Verification<Stanza, Stanza>[] verifications = (Verification<Stanza, Stanza>[]) verificationList.get(i);
             if (verifications != null) {
-                for (Verification<Packet, Packet> verification : verifications) {
+                for (Verification<Stanza, Stanza> verification : verifications) {
                     verification.verify(request, response);
                 }
             }
@@ -161,7 +161,7 @@ public class Protocol {
      * 
      * @return the responses queue
      */
-    protected Queue<Packet> getResponses() {
+    protected Queue<Stanza> getResponses() {
         return responses;
     }
 
@@ -170,7 +170,7 @@ public class Protocol {
      * 
      * @return list of requests
      */
-    public List<Packet> getRequests() {
+    public List<Stanza> getRequests() {
         return requests;
     }
 

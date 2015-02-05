@@ -83,7 +83,7 @@ public class Socks5ByteStreamTest extends SmackTestCase {
         bytestreamInitiation.addStreamHost("proxy.localhost", "127.0.0.1", 7777);
 
         PacketCollector collector = initiatorConnection.createPacketCollector(new PacketIDFilter(
-                        bytestreamInitiation.getPacketID()));
+                        bytestreamInitiation.getStanzaId()));
         initiatorConnection.sendPacket(bytestreamInitiation);
         Packet result = collector.nextResult();
 

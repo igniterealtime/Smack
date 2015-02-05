@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.muc.packet;
 
 import org.jivesoftware.smack.packet.NamedElement;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -204,10 +204,10 @@ public class MUCUser implements PacketExtension {
      *
      * @param packet
      * @return the MUCUser PacketExtension or {@code null}
-     * @deprecated use {@link #from(Packet)} instead
+     * @deprecated use {@link #from(Stanza)} instead
      */
     @Deprecated
-    public static MUCUser getFrom(Packet packet) {
+    public static MUCUser getFrom(Stanza packet) {
         return from(packet);
     }
 
@@ -217,7 +217,7 @@ public class MUCUser implements PacketExtension {
      * @param packet
      * @return the MUCUser PacketExtension or {@code null}
      */
-    public static MUCUser from(Packet packet) {
+    public static MUCUser from(Stanza packet) {
         return packet.getExtension(ELEMENT, NAMESPACE);
     }
 

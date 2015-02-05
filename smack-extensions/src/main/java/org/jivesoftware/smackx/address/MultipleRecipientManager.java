@@ -24,7 +24,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -65,7 +65,7 @@ public class MultipleRecipientManager {
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      */
-    public static void send(XMPPConnection connection, Packet packet, Collection<String> to, Collection<String> cc, Collection<String> bcc) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException, NotConnectedException
+    public static void send(XMPPConnection connection, Stanza packet, Collection<String> to, Collection<String> cc, Collection<String> bcc) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException, NotConnectedException
    {
         send(connection, packet, to, cc, bcc, null, null, false);
     }
@@ -94,7 +94,7 @@ public class MultipleRecipientManager {
      *         server does not support them.
      * @throws NotConnectedException 
      */
-    public static void send(XMPPConnection connection, Packet packet, Collection<String> to, Collection<String> cc, Collection<String> bcc,
+    public static void send(XMPPConnection connection, Stanza packet, Collection<String> to, Collection<String> cc, Collection<String> bcc,
             String replyTo, String replyRoom, boolean noReply) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException, NotConnectedException {
         // Check if *only* 'to' is set and contains just *one* entry, in this case extended stanzas addressing is not
         // required at all and we can send it just as normal stanza without needing to add the extension element
@@ -192,13 +192,13 @@ public class MultipleRecipientManager {
      * @return the MultipleRecipientInfo contained in the specified packet or <tt>null</tt>
      *         if none was found.
      */
-    public static MultipleRecipientInfo getMultipleRecipientInfo(Packet packet) {
+    public static MultipleRecipientInfo getMultipleRecipientInfo(Stanza packet) {
         MultipleAddresses extension = (MultipleAddresses) packet
                 .getExtension(MultipleAddresses.ELEMENT, MultipleAddresses.NAMESPACE);
         return extension == null ? null : new MultipleRecipientInfo(extension);
     }
 
-    private static void sendToIndividualRecipients(XMPPConnection connection, Packet packet,
+    private static void sendToIndividualRecipients(XMPPConnection connection, Stanza packet,
             Collection<String> to, Collection<String> cc, Collection<String> bcc) throws NotConnectedException {
         if (to != null) {
             for (String jid : to) {
@@ -220,7 +220,7 @@ public class MultipleRecipientManager {
         }
     }
 
-    private static void sendThroughService(XMPPConnection connection, Packet packet, Collection<String> to,
+    private static void sendThroughService(XMPPConnection connection, Stanza packet, Collection<String> to,
             Collection<String> cc, Collection<String> bcc, String replyTo, String replyRoom, boolean noReply,
             String serviceAddress) throws NotConnectedException {
         // Create multiple recipient extension
@@ -289,7 +289,7 @@ public class MultipleRecipientManager {
      * (i.e. cannot change the TO address of a queues packet to be sent) then this class was
      * created to keep the XML stanza to send.
      */
-    private static class PacketCopy extends Packet {
+    private static class PacketCopy extends Stanza {
 
         private CharSequence text;
 

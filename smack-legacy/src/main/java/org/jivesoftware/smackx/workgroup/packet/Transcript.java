@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.workgroup.packet;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class Transcript extends IQ {
     private String sessionID;
-    private List<Packet> packets;
+    private List<Stanza> packets;
 
     /**
      * Creates a transcript request for the given sessionID.
@@ -42,7 +42,7 @@ public class Transcript extends IQ {
      * @param sessionID the id of the session to get the conversation transcript.
      */
     public Transcript(String sessionID) {
-        this(sessionID, new ArrayList<Packet>());
+        this(sessionID, new ArrayList<Stanza>());
     }
 
     /**
@@ -52,7 +52,7 @@ public class Transcript extends IQ {
      * @param sessionID the id of the session that generated this conversation transcript.
      * @param packets the list of messages and presences send to the room.
      */
-    public Transcript(String sessionID, List<Packet> packets) {
+    public Transcript(String sessionID, List<Stanza> packets) {
         super("transcript", "http://jabber.org/protocol/workgroup");
         this.sessionID = sessionID;
         this.packets = packets;
@@ -73,7 +73,7 @@ public class Transcript extends IQ {
      *
      * @return the list of Messages and Presences that were sent to the room.
      */
-    public List<Packet> getPackets() {
+    public List<Stanza> getPackets() {
         return Collections.unmodifiableList(packets);
     }
 
@@ -83,8 +83,8 @@ public class Transcript extends IQ {
                 .append(sessionID)
                 .append("\">");
 
-        for (Iterator<Packet> it=packets.iterator(); it.hasNext();) {
-            Packet packet = it.next();
+        for (Iterator<Stanza> it=packets.iterator(); it.hasNext();) {
+            Stanza packet = it.next();
             buf.append(packet.toXML());
         }
 

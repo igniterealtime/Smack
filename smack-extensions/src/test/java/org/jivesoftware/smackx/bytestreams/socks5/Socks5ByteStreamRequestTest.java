@@ -32,7 +32,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.util.ConnectionUtils;
@@ -109,7 +109,7 @@ public class Socks5ByteStreamRequestTest {
 
         // verify targets response
         assertEquals(1, protocol.getRequests().size());
-        Packet targetResponse = protocol.getRequests().remove(0);
+        Stanza targetResponse = protocol.getRequests().remove(0);
         assertTrue(IQ.class.isInstance(targetResponse));
         assertEquals(initiatorJID, targetResponse.getTo());
         assertEquals(IQ.Type.error, ((IQ) targetResponse).getType());
@@ -153,7 +153,7 @@ public class Socks5ByteStreamRequestTest {
 
         // verify targets response
         assertEquals(1, protocol.getRequests().size());
-        Packet targetResponse = protocol.getRequests().remove(0);
+        Stanza targetResponse = protocol.getRequests().remove(0);
         assertTrue(IQ.class.isInstance(targetResponse));
         assertEquals(initiatorJID, targetResponse.getTo());
         assertEquals(IQ.Type.error, ((IQ) targetResponse).getType());
@@ -201,7 +201,7 @@ public class Socks5ByteStreamRequestTest {
 
             // verify targets response
             assertEquals(1, protocol.getRequests().size());
-            Packet targetResponse = protocol.getRequests().remove(0);
+            Stanza targetResponse = protocol.getRequests().remove(0);
             assertTrue(IQ.class.isInstance(targetResponse));
             assertEquals(initiatorJID, targetResponse.getTo());
             assertEquals(IQ.Type.error, ((IQ) targetResponse).getType());
@@ -243,7 +243,7 @@ public class Socks5ByteStreamRequestTest {
 
         // verify targets response
         assertEquals(1, protocol.getRequests().size());
-        Packet targetResponse = protocol.getRequests().remove(0);
+        Stanza targetResponse = protocol.getRequests().remove(0);
         assertEquals(Bytestream.class, targetResponse.getClass());
         assertEquals(initiatorJID, targetResponse.getTo());
         assertEquals(IQ.Type.result, ((Bytestream) targetResponse).getType());
@@ -293,7 +293,7 @@ public class Socks5ByteStreamRequestTest {
 
             // verify targets response
             assertEquals(1, protocol.getRequests().size());
-            Packet targetResponse = protocol.getRequests().remove(0);
+            Stanza targetResponse = protocol.getRequests().remove(0);
             assertTrue(IQ.class.isInstance(targetResponse));
             assertEquals(initiatorJID, targetResponse.getTo());
             assertEquals(IQ.Type.error, ((IQ) targetResponse).getType());
@@ -363,7 +363,7 @@ public class Socks5ByteStreamRequestTest {
 
         // verify targets response
         assertEquals(1, protocol.getRequests().size());
-        Packet targetResponse = protocol.getRequests().remove(0);
+        Stanza targetResponse = protocol.getRequests().remove(0);
         assertEquals(Bytestream.class, targetResponse.getClass());
         assertEquals(initiatorJID, targetResponse.getTo());
         assertEquals(IQ.Type.result, ((Bytestream) targetResponse).getType());
@@ -416,7 +416,7 @@ public class Socks5ByteStreamRequestTest {
 
         // verify targets response
         assertEquals(1, protocol.getRequests().size());
-        Packet targetResponse = protocol.getRequests().remove(0);
+        Stanza targetResponse = protocol.getRequests().remove(0);
         assertEquals(Bytestream.class, targetResponse.getClass());
         assertEquals(initiatorJID, targetResponse.getTo());
         assertEquals(IQ.Type.result, ((Bytestream) targetResponse).getType());

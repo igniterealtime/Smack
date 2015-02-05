@@ -29,7 +29,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
@@ -62,12 +62,12 @@ public class PingTest extends InitExtensions {
 
         con.processPacket(pingRequest);
 
-        Packet pongPacket = con.getSentPacket();
+        Stanza pongPacket = con.getSentPacket();
         assertTrue(pongPacket instanceof IQ);
 
         IQ pong = (IQ) pongPacket;
         assertEquals("capulet.lit", pong.getTo());
-        assertEquals("s2c1", pong.getPacketID());
+        assertEquals("s2c1", pong.getStanzaId());
         assertEquals(IQ.Type.result, pong.getType());
     }
 
@@ -82,7 +82,7 @@ public class PingTest extends InitExtensions {
             // Ignore the fact the server won't answer for this unit test.
         }
 
-        Packet sentPacket = dummyCon.getSentPacket();
+        Stanza sentPacket = dummyCon.getSentPacket();
         assertTrue(sentPacket instanceof Ping);
     }
 

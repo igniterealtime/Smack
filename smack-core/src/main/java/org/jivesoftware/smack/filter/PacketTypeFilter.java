@@ -18,7 +18,7 @@
 package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 
 /**
@@ -37,7 +37,7 @@ public class PacketTypeFilter implements PacketFilter {
     public static final PacketTypeFilter PRESENCE = new PacketTypeFilter(Presence.class);
     public static final PacketTypeFilter MESSAGE = new PacketTypeFilter(Message.class);
 
-    private final Class<? extends Packet> packetType;
+    private final Class<? extends Stanza> packetType;
 
     /**
      * Creates a new packet type filter that will filter for packets that are the
@@ -45,11 +45,11 @@ public class PacketTypeFilter implements PacketFilter {
      *
      * @param packetType the Class type.
      */
-    public PacketTypeFilter(Class<? extends Packet> packetType) {
+    public PacketTypeFilter(Class<? extends Stanza> packetType) {
         this.packetType = packetType;
     }
 
-    public boolean accept(Packet packet) {
+    public boolean accept(Stanza packet) {
         return packetType.isInstance(packet);
     }
 

@@ -55,7 +55,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Matt Tucker
  */
-public final class Presence extends Packet {
+public final class Presence extends Stanza {
 
     public static final String ELEMENT = "presence";
 

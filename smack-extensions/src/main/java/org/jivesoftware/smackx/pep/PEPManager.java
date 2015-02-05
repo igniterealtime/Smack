@@ -26,7 +26,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.PacketExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.pep.packet.PEPEvent;
 import org.jivesoftware.smackx.pep.packet.PEPItem;
@@ -135,7 +135,7 @@ public class PEPManager {
     private void init() {
         // Listens for all roster exchange packets and fire the roster exchange listeners.
         packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
                 PEPEvent event = (PEPEvent) message.getExtension("event", "http://jabber.org/protocol/pubsub#event");
                 // Fire event for roster exchange listeners
