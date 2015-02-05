@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smack.packet;
 
+import static org.jivesoftware.smack.util.StringUtils.requireNotNullOrEmpty;
+
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.PacketUtil;
@@ -26,6 +28,7 @@ import org.jxmpp.util.XmppStringUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Base class for XMPP Stanzas, which are called Packet in older versions of Smack (i.e. &lt; 4.1).
@@ -219,6 +222,24 @@ public abstract class Stanza implements TopLevelStreamElement {
         synchronized (packetExtensions) {
             return packetExtensions.values();
         }
+    }
+
+    /**
+     * Return a set of all extensions with the given element name <emph>and</emph> namespace.
+     * <p>
+     * Changes to the returned set will update the packet extensions, if the returned set is not the empty set.
+     * </p>
+     *
+     * @param elementName the element name, must not be null.
+     * @param namespace the namespace of the element(s), must not be null.
+     * @return a set of all matching extensions.
+     * @since 4.1
+     */
+    public Set<PacketExtension> getExtensions(String elementName, String namespace) {
+        requireNotNullOrEmpty(elementName, "elementName must not be null or empty");
+        requireNotNullOrEmpty(namespace, "namespace must not be null or empty");
+        String key = XmppStringUtils.generateKey(elementName, namespace);
+        return packetExtensions.getAll(key);
     }
 
     /**
