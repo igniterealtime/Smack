@@ -45,7 +45,8 @@ import java.util.Set;
  * @author Matt Tucker
  * @see <a href="http://xmpp.org/rfcs/rfc6120.html#stanzas">RFC 6120 § 8. XML Stanzas</a>
  */
-public abstract class Stanza implements TopLevelStreamElement {
+@SuppressWarnings("deprecation") // FIXME Remove when 'Packet' is removed from Smack
+public abstract class Stanza implements TopLevelStreamElement, Packet {
 
     public static final String TEXT = "text";
     public static final String ITEM = "item";
