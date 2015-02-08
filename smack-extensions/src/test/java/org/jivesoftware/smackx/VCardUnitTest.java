@@ -15,15 +15,16 @@
  * limitations under the License.
  */
 package org.jivesoftware.smackx;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
-import org.jivesoftware.smackx.vcardtemp.provider.VCardProvider;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,40 +36,239 @@ public class VCardUnitTest extends InitExtensions {
     }
 
     @Test
+    public void testParseFullVCardIQStanza() throws Throwable {
+
+        // @formatter:off
+        final String request =
+        "<iq id='v1' to='user@igniterealtime.org/mobile' type='result'>"
+            + "<vCard xmlns='vcard-temp'>"
+                + "<FN>User Name</FN>"
+                + "<N>"
+                    + "<FAMILY>Name</FAMILY>"
+                    + "<GIVEN>User</GIVEN>"
+                    + "<MIDDLE>PJ</MIDDLE>"
+                + "</N>"
+                + "<NICKNAME>User dude</NICKNAME>"
+                + "<URL>http://www.igniterealtime.org</URL>"
+                + "<BDAY>1970-17-03</BDAY>"
+                + "<ORG>"
+                    + "<ORGNAME>Ignite Realtime</ORGNAME>"
+                    + "<ORGUNIT>Smack</ORGUNIT>"
+                + "</ORG>"
+                + "<TITLE>Programmer &amp; tester</TITLE>"
+                + "<ROLE>Bug fixer</ROLE>"
+                + "<TEL><WORK/><VOICE/><NUMBER>123-456-7890</NUMBER></TEL>"
+                + "<TEL><WORK/><FAX/><NUMBER/></TEL>"
+                + "<TEL><WORK/><MSG/><NUMBER/></TEL>"
+                + "<ADR>"
+                    + "<WORK/>"
+                    + "<EXTADD></EXTADD>"
+                    + "<STREET>Work Street</STREET>"
+                    + "<LOCALITY>Work Locality</LOCALITY>"
+                    + "<REGION>Work Region</REGION>"
+                    + "<PCODE>Work Post Code</PCODE>"
+                    + "<CTRY>Work Country</CTRY>"
+                + "</ADR>"
+                + "<TEL><HOME/><VOICE/><NUMBER>123-098-7654</NUMBER></TEL>"
+                + "<TEL><HOME/><FAX/><NUMBER/></TEL>"
+                + "<TEL><HOME/><MSG/><NUMBER/></TEL>"
+                + "<ADR>"
+                    + "<HOME/>"
+                    + "<EXTADD/>"
+                    + "<STREET/>"
+                    + "<LOCALITY>Home Locality</LOCALITY>"
+                    + "<REGION>Home Region</REGION>"
+                    + "<PCODE>Home Post Code</PCODE>"
+                    + "<CTRY>Home Country</CTRY>"
+                + "</ADR>"
+                + "<EMAIL><INTERNET/><PREF/><USERID>user@igniterealtime.org</USERID></EMAIL>"
+                + "<EMAIL><INTERNET/><WORK/><USERID>work@igniterealtime.org</USERID></EMAIL>"
+                + "<JABBERID>user@igniterealtime.org</JABBERID>"
+                + "<DESC>"
+                    + "&lt;Check out our website: http://www.igniterealtime.org&gt;"
+                + "</DESC>"
+                + "<PHOTO><BINVAL>" + getAvatarEncoded() + "</BINVAL><TYPE>" + MIME_TYPE + "</TYPE></PHOTO>"
+            + "</vCard>"
+            + "</iq>";
+        // @formatter:on
+
+        VCard vCard = (VCard) PacketParserUtils.parseStanza(request);
+
+        assertEquals("User", vCard.getFirstName());
+        assertEquals("Name", vCard.getLastName());
+        assertEquals("PJ", vCard.getMiddleName());
+        assertEquals("User dude", vCard.getNickName());
+
+        assertEquals("Programmer & tester", vCard.getField("TITLE"));
+        assertEquals("Bug fixer", vCard.getField("ROLE"));
+        assertEquals("<Check out our website: http://www.igniterealtime.org>", vCard.getField("DESC"));
+        assertEquals("http://www.igniterealtime.org", vCard.getField("URL"));
+
+        assertEquals("user@igniterealtime.org", vCard.getEmailHome());
+        assertEquals("work@igniterealtime.org", vCard.getEmailWork());
+
+        assertEquals("user@igniterealtime.org", vCard.getJabberId());
+        assertEquals("Ignite Realtime", vCard.getOrganization());
+        assertEquals("Smack", vCard.getOrganizationUnit());
+
+        assertEquals("123-098-7654", vCard.getPhoneHome("VOICE"));
+        assertEquals("123-456-7890", vCard.getPhoneWork("VOICE"));
+
+        assertEquals("Work Locality", vCard.getAddressFieldWork("LOCALITY"));
+        assertEquals("Work Region", vCard.getAddressFieldWork("REGION"));
+        assertEquals("Work Post Code", vCard.getAddressFieldWork("PCODE"));
+        assertEquals("Work Country", vCard.getAddressFieldWork("CTRY"));
+
+        assertEquals("Home Locality", vCard.getAddressFieldHome("LOCALITY"));
+        assertEquals("Home Region", vCard.getAddressFieldHome("REGION"));
+        assertEquals("Home Post Code", vCard.getAddressFieldHome("PCODE"));
+        assertEquals("Home Country", vCard.getAddressFieldHome("CTRY"));
+
+        byte[] expectedAvatar = getAvatarBinary();
+        assertTrue(Arrays.equals(vCard.getAvatar(), expectedAvatar));
+        assertEquals(MIME_TYPE, vCard.getAvatarMimeType());
+    }
+
+    @Test
     public void testNoWorkHomeSpecifier_EMAIL() throws Throwable {
-        VCard card = VCardProvider.createVCardFromXML("<vcard><EMAIL><USERID>foo@fee.www.bar</USERID></EMAIL></vcard>");
-        assertEquals("foo@fee.www.bar", card.getEmailHome());
+
+        // @formatter:off
+        final String request =
+                        "<iq id='v1' to='user@igniterealtime.org/mobile' type='result'>"
+                        + "<vCard xmlns='vcard-temp'><EMAIL><USERID>foo@fee.www.bar</USERID></EMAIL></vCard>"
+                        + "</iq>";
+        // @formatter:on
+
+        VCard vCard = (VCard) PacketParserUtils.parseStanza(request);
+
+        assertEquals("foo@fee.www.bar", vCard.getEmailHome());
     }
 
     @Test
     public void testNoWorkHomeSpecifier_TEL() throws Throwable {
-        VCard card = VCardProvider.createVCardFromXML("<vcard><TEL><FAX/><NUMBER>3443233</NUMBER></TEL></vcard>");
-        assertEquals("3443233", card.getPhoneWork("FAX"));
+
+        // @formatter:off
+        final String request =
+                        "<iq id='v1' to='user@igniterealtime.org/mobile' type='result'>"
+                        + "<vCard xmlns='vcard-temp'><TEL><FAX/><NUMBER>3443233</NUMBER></TEL></vCard>"
+                        + "</iq>";
+        // @formatter:on
+
+        VCard vCard = (VCard) PacketParserUtils.parseStanza(request);
+
+        assertEquals("3443233", vCard.getPhoneWork("FAX"));
+    }
+
+    @Test
+    public void testUnknownTopLevelElementAdded() throws Throwable {
+
+        // @formatter:off
+        final String request =
+                        "<iq id='v1' to='user@igniterealtime.org/mobile' type='result'>"
+                        + "<vCard xmlns='vcard-temp'><UNKNOWN>1234</UNKNOWN></vCard>"
+                        + "</iq>";
+        // @formatter:on
+
+        VCard vCard = (VCard) PacketParserUtils.parseStanza(request);
+
+        assertEquals("1234", vCard.getField("UNKNOWN"));
+    }
+
+    @Test
+    public void testUnknownComplexTopLevelElementNotAdded() throws Throwable {
+
+        // @formatter:off
+        final String request =
+                        "<iq id='v1' to='user@igniterealtime.org/mobile' type='result'>"
+                        + "<vCard xmlns='vcard-temp'><UNKNOWN><FOO/></UNKNOWN></vCard>"
+                        + "</iq>";
+        // @formatter:on
+
+        VCard vCard = (VCard) PacketParserUtils.parseStanza(request);
+
+        assertEquals(null, vCard.getField("UNKNOWN"));
+    }
+
+    @Test
+    public void testUnknownAddressElementNotAdded() throws Throwable {
+
+        // @formatter:off
+        final String request =
+                        "<iq id='v1' to='user@igniterealtime.org/mobile' type='result'>"
+                        + "<vCard xmlns='vcard-temp'><ADR><UNKNOWN>1234</UNKNOWN></ADR></vCard>"
+                        + "</iq>";
+        // @formatter:on
+
+        VCard vCard = (VCard) PacketParserUtils.parseStanza(request);
+        assertEquals(null, vCard.getField("UNKNOWN"));
+    }
+
+    @Test
+    public void testUnknownDeepElementNotAdded() throws Throwable {
+
+        // @formatter:off
+        final String request =
+                        "<iq id='v1' to='user@igniterealtime.org/mobile' type='result'>"
+                        + "<vCard xmlns='vcard-temp'><UNKNOWN><UNKNOWN>1234</UNKNOWN></UNKNOWN></vCard>"
+                        + "</iq>";
+        // @formatter:on
+
+        VCard vCard = (VCard) PacketParserUtils.parseStanza(request);
+        assertEquals(null, vCard.getField("UNKNOWN"));
     }
 
     @Test
     public void testNoWorkHomeSpecifier_ADDR() throws Throwable {
-        VCard card = VCardProvider.createVCardFromXML("<vcard><ADR><STREET>Some street</STREET><FF>ddss</FF></ADR></vcard>");
-        assertEquals("Some street", card.getAddressFieldWork("STREET"));
-        assertEquals("ddss", card.getAddressFieldWork("FF"));
+
+        // @formatter:off
+        final String request =
+                        "<iq id='v1' to='user@igniterealtime.org/mobile' type='result'>"
+                        + "<vCard xmlns='vcard-temp'><ADR><STREET>Some street</STREET><FF>ddss</FF></ADR></vCard>"
+                        + "</iq>";
+        // @formatter:on
+
+        VCard vCard = (VCard) PacketParserUtils.parseStanza(request);
+
+        assertEquals("Some street", vCard.getAddressFieldWork("STREET"));
+        assertEquals("ddss", vCard.getAddressFieldWork("FF"));
+
     }
 
     @Test
     public void testFN() throws Throwable {
-        VCard card = VCardProvider.createVCardFromXML("<vcard><FN>kir max</FN></vcard>");
-        assertEquals("kir max", card.getField("FN"));
-       // assertEquals("kir max", card.getFullName());
+
+        // @formatter:off
+        final String request =
+                        "<iq id='v1' to='user@igniterealtime.org/mobile' type='result'>"
+                        + "<vCard xmlns='vcard-temp'><FN>kir max</FN></vCard>"
+                        + "</iq>";
+        // @formatter:on
+
+        VCard vCard = (VCard) PacketParserUtils.parseStanza(request);
+
+        assertEquals("kir max", vCard.getField("FN"));
     }
 
     private final static String MIME_TYPE = "testtype";
-    private final static String VCARD_XML = "<vcard><PHOTO><BINVAL>" + getAvatarEncoded() + "</BINVAL><TYPE>" + MIME_TYPE + "</TYPE></PHOTO></vcard>";
+    private final static String VCARD_XML = "<vCard xmlns='vcard-temp'><PHOTO><BINVAL>" + getAvatarEncoded()
+                    + "</BINVAL><TYPE>" + MIME_TYPE + "</TYPE></PHOTO></vCard>";
+
     @Test
     public void testPhoto() throws Throwable {
-        VCard vc = VCardProvider.createVCardFromXML(VCARD_XML);
-        byte[] avatar = vc.getAvatar();
-        String mimeType = vc.getAvatarMimeType();
+
+        // @formatter:off
+        final String request =
+                        "<iq id='v1' to='user@igniterealtime.org/mobile' type='result'>"
+                        + VCARD_XML
+                        + "</iq>";
+        // @formatter:on
+
+        VCard vCard = (VCard) PacketParserUtils.parseStanza(request);
+
+        byte[] avatar = vCard.getAvatar();
+        String mimeType = vCard.getAvatarMimeType();
         assertEquals(mimeType, MIME_TYPE);
-        
+
         byte[] expectedAvatar = getAvatarBinary();
         assertTrue(Arrays.equals(avatar, expectedAvatar));
     }
