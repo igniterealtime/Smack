@@ -482,6 +482,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         usingTLS = false;
         reader = null;
         writer = null;
+
+        // Reset the stream management session id to null, since if the stream is cleanly closed, i.e. sending a closing
+        // stream tag, there is no longer a stream to resume.
+        smSessionId = null;
         maybeCompressFeaturesReceived.init();
         compressSyncPoint.init();
         smResumedSyncPoint.init();
