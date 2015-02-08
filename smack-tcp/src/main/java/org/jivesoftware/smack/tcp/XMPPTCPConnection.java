@@ -526,7 +526,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
                 innerloop: while (inetAddresses.hasNext()) {
                     final InetAddress inetAddress = inetAddresses.next();
-                    final String inetAddressAndPort = inetAddress + "at port " + port;
+                    final String inetAddressAndPort = inetAddress + " at port " + port;
                     LOGGER.finer("Trying to establish TCP connection to " + inetAddressAndPort);
                     try {
                         socket.connect(new InetSocketAddress(inetAddress, port), config.getConnectTimeout());
