@@ -119,6 +119,9 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
      * @param id the unique ID for the packet.
      */
     public void setStanzaId(String id) {
+        if (id != null) {
+            requireNotNullOrEmpty(id, "id must either be null or not the empty String");
+        }
         this.id = id;
     }
 
@@ -130,6 +133,18 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     @Deprecated
     public void setPacketID(String packetID) {
         setStanzaId(packetID);
+    }
+
+    /**
+     * Check if this stanza has an ID set.
+     *
+     * @return true if the stanza ID is set, false otherwise.
+     * @since 4.1
+     */
+    public boolean hasStanzaIdSet() {
+        // setStanzaId ensures that the id is either null or not empty,
+        // so we can assume that it is set if it's not null.
+        return id != null;
     }
 
     /**
