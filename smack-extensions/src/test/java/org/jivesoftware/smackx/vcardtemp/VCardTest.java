@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx;
+package org.jivesoftware.smackx.vcardtemp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -24,11 +24,12 @@ import java.util.Arrays;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.junit.Before;
 import org.junit.Test;
 
-public class VCardUnitTest extends InitExtensions {
+public class VCardTest extends InitExtensions {
 
     @Before
     public void initSmackTestSuite() {
