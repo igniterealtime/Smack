@@ -32,9 +32,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -286,7 +286,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     concurrencyLevel,                  // maximumPoolSize
                     THREAD_KEEP_ALIVE_SECONDS,         // keepAliveTime
                     TimeUnit.SECONDS,                  // keepAliveTime unit, note that MINUTES is Android API 9
-                    new SynchronousQueue<Runnable>(),  // workQueue
+                    new LinkedBlockingQueue<Runnable>(), // workQueue
                     new SmackExecutorThreadFactory(    // threadFactory
                                     connectionCounterValue,
                                     "Cached Executor"
