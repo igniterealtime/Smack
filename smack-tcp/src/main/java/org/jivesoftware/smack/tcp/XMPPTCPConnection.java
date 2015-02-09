@@ -283,6 +283,21 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     /**
      * Creates a new XMPP connection over TCP.
      * <p>
+     * Note that {@code jid} must be the bare JID, e.g. "user@example.org". More fine-grained control over the
+     * connection settings is available using the {@link #XMPPTCPConnection(XMPPTCPConnectionConfiguration)}
+     * constructor.
+     * </p>
+     * 
+     * @param jid the bare JID used by the client.
+     * @param password the password or authentication token.
+     */
+    public XMPPTCPConnection(CharSequence jid, String password) {
+        this(XmppStringUtils.parseLocalpart(jid.toString()), password, XmppStringUtils.parseDomain(jid.toString()));
+    }
+
+    /**
+     * Creates a new XMPP connection over TCP.
+     * <p>
      * This is the simplest constructor for connecting to an XMPP server. Alternatively,
      * you can get fine-grained control over connection settings using the
      * {@link #XMPPTCPConnection(XMPPTCPConnectionConfiguration)} constructor.
