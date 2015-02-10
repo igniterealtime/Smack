@@ -540,6 +540,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                                                 BodyQName.create(XMPPBOSHConnection.BOSH_URI, "to"), getServiceName()).build());
                                 Success success = new Success(parser.nextText());
                                 getSASLAuthentication().authenticated(success);
+                                break;
                             case "features":
                                 parseFeatures(parser);
                                 break;
