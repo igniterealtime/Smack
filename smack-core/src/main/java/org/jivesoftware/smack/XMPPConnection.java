@@ -36,7 +36,7 @@ import org.jivesoftware.smack.packet.PlainStreamElement;
  * 
  * <pre>
  * // Create a connection to the igniterealtime.org XMPP server.
- * XMPPConnection con = new XMPPTCPConnection("igniterealtime.org");
+ * XMPPTCPConnection con = new XMPPTCPConnection("igniterealtime.org");
  * // Connect to the server
  * con.connect();
  * // Most servers require you to login before performing other tasks.
