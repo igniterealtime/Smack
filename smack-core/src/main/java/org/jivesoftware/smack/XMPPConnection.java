@@ -28,7 +28,7 @@ import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 
 /**
- * The abstract XMPPConnection class provides an interface for connections to a XMPP server and
+ * The XMPPConnection interface provides an interface for connections to a XMPP server and
  * implements shared methods which are used by the different types of connections (e.g.
  * {@link XMPPTCPConnection} or {@link XMPPBOSHConnection}). To create a connection to a XMPP server
  * a simple usage of this API might look like the following:
@@ -52,11 +52,19 @@ import org.jivesoftware.smack.packet.PlainStreamElement;
  * // Disconnect from the server
  * con.disconnect();
  * </pre>
+ * </p>
  * <p>
- * Connections can be reused between connections. This means that an Connection may be connected,
- * disconnected and then connected again. Listeners of the Connection will be retained across
+ * Note that the XMPPConnection interface does intentionally not declare any methods that manipulate
+ * the connection state, e.g. <code>connect()</code>, <code>disconnect()</code>. You should use the
+ * most specific connection type, e.g. <code>XMPPTCPConnection</code> as declared type and use the
+ * XMPPConnection interface when you don't need to manipulate the connection state.
+ * </p>
+ * <p>
+ * XMPPConnections can be reused between connections. This means that an Connection may be connected,
+ * disconnected and then connected again. Listeners of the XMPPConnection will be retained across
  * connections.
- * 
+ * </p>
+ *
  * @author Matt Tucker
  * @author Guenther Niess
  */
