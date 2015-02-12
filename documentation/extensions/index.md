@@ -51,7 +51,7 @@ Smack Extensions and currently supported XEPs by Smack (smack-extensions)
 | Data Forms Validation                       | [XEP-0122](http://xmpp.org/extensions/xep-0122.html) | Enables an application to specify additional validation guidelines . |
 | Stream Compression                          | [XEP-0138](http://xmpp.org/extensions/xep-0138.html) | Support for optional compression of the XMPP stream.
 | Data Forms Layout                           | [XEP-0141](http://xmpp.org/extensions/xep-0141.html) | Enables an application to specify form layouts. |
-| Personal Eventing Protocol                  | [XEP-0163](http://xmpp.org/extensions/xep-0163.html) | Using the XMPP publish-subscribe protocol to broadcast state change events associated with a XMPP account. |
+| Personal Eventing Protocol                  | [XEP-0163](http://xmpp.org/extensions/xep-0163.html) | Using the XMPP publish-subscribe protocol to broadcast state change events associated with an XMPP account. |
 | Message Delivery Receipts                   | [XEP-0184](http://xmpp.org/extensions/xep-0184.html) | Extension for message delivery receipts. The sender can request notification that the message has been delivered. |
 | XMPP Ping                                   | [XEP-0199](http://xmpp.org/extensions/xep-0199.html) | Sending application-level pings over XML streams.
 | Entity Time                                 | [XEP-0202](http://xmpp.org/extensions/xep-0202.html) | Allows entities to communicate their local time |

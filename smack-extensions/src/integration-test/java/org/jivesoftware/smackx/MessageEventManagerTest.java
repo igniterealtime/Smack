@@ -37,7 +37,7 @@ public class MessageEventManagerTest extends SmackTestCase {
 
     /**
      * High level API test.
-     * This is a simple test to use with a XMPP client and check if the client receives the 
+     * This is a simple test to use with an XMPP client and check if the client receives the 
      * message
      * 1. User_1 will send a message to user_2 requesting to be notified when any of these events
      * occurs: offline, composing, displayed or delivered 
@@ -64,11 +64,11 @@ public class MessageEventManagerTest extends SmackTestCase {
 
     /**
      * High level API test.
-     * This is a simple test to use with a XMPP client, check if the client receives the 
+     * This is a simple test to use with an XMPP client, check if the client receives the 
      * message and display in the console any notification
      * 1. User_1 will send a message to user_2 requesting to be notified when any of these events
      * occurs: offline, composing, displayed or delivered 
-     * 2. User_2 will use a XMPP client (like Exodus) to display the message and compose a reply
+     * 2. User_2 will use an XMPP client (like Exodus) to display the message and compose a reply
      * 3. User_1 will display any notification that receives
      */
     public void testSendMessageEventRequestAndDisplayNotifications() {

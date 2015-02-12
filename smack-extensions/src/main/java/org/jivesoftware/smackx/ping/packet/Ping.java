@@ -35,7 +35,7 @@ public class Ping extends SimpleIQ {
     }
 
     /**
-     * Create a XMPP Pong for this Ping
+     * Create an XMPP Pong for this Ping
      * 
      * @return the Pong
      */

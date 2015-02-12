@@ -53,7 +53,7 @@ import org.jivesoftware.smackx.xdata.Form;
  * An AdHocCommandManager is responsible for keeping the list of available
  * commands offered by a service and for processing commands requests.
  *
- * Pass in a XMPPConnection instance to
+ * Pass in an XMPPConnection instance to
  * {@link #getAddHocCommandsManager(org.jivesoftware.smack.XMPPConnection)} in order to
  * get an instance of this class. 
  * 
@@ -70,7 +70,7 @@ public class AdHocCommandManager extends Manager {
     private static final int SESSION_TIMEOUT = 2 * 60;
 
     /**
-     * Map a XMPPConnection with it AdHocCommandManager. This map have a key-value
+     * Map an XMPPConnection with it AdHocCommandManager. This map have a key-value
      * pair for every active connection.
      */
     private static Map<XMPPConnection, AdHocCommandManager> instances = new WeakHashMap<>();

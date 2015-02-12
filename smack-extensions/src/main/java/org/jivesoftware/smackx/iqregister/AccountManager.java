@@ -72,7 +72,7 @@ public class AccountManager extends Manager {
     /**
      * Creates a new AccountManager instance.
      *
-     * @param connection a connection to a XMPP server.
+     * @param connection a connection to an XMPP server.
      */
     private AccountManager(XMPPConnection connection) {
         super(connection);

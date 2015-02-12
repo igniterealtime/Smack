@@ -16,7 +16,7 @@ The following code snippet demonstrates how to create a new Chat with a user
 and then send them a text message:
 
 ```
-// Assume we've created a XMPPConnection name "connection"._
+// Assume we've created an XMPPConnection name "connection"._
 ChatManager chatmanager = connection.getChatManager();
 Chat newChat = chatmanager.createChat("jsmith@jivesoftware.com", new MessageListener() {
 	public void processMessage(Chat chat, Message message) {
@@ -72,7 +72,7 @@ when it happens. You can register a message listener to receive all future
 messages as part of this handler.
 
 ```
-_// Assume we've created a XMPPConnection name "connection"._
+_// Assume we've created an XMPPConnection name "connection"._
 ChatManager chatmanager = connection.getChatManager().addChatListener(
 	new ChatManagerListener() {
 		@Override

@@ -97,7 +97,7 @@ import org.jxmpp.util.XmppStringUtils;
  * <p/>
  *                               try {
  * <p/>
- *                                           // Connect to a XMPP Server
+ *                                           // Connect to an XMPP Server
  *                                           XMPPConnection x1 = new XMPPTCPConnection("xmpp.com");
  *                                           x1.connect();
  *                                           x1.login("juliet", "juliet");
@@ -140,7 +140,7 @@ import org.jxmpp.util.XmppStringUtils;
  * <p/>
  *                                     try {
  * <p/>
- *                                           // Connect to a XMPP Server
+ *                                           // Connect to an XMPP Server
  *                                           XMPPConnection x0 = new XMPPTCPConnection("xmpp.com");
  *                                           x0.connect();
  *                                           x0.login("romeo", "romeo");
@@ -250,7 +250,7 @@ public class JingleManager implements JingleSessionListener {
     /**
      * Setup the jingle system to let the remote clients know we support Jingle.
      * (This used to be a static part of construction.  The problem is a remote client might
-     * attempt a Jingle connection to us after we've created a XMPPConnection, but before we've
+     * attempt a Jingle connection to us after we've created an XMPPConnection, but before we've
      * setup an instance of a JingleManager.  We will appear to not support Jingle.  With the new
      * method you just call it once and all new connections will report Jingle support.)
      */

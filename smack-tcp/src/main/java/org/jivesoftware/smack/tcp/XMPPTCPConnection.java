@@ -128,8 +128,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Creates a socket connection to a XMPP server. This is the default connection
- * to a XMPP server and is specified in the XMPP Core (RFC 6120).
+ * Creates a socket connection to an XMPP server. This is the default connection
+ * to an XMPP server and is specified in the XMPP Core (RFC 6120).
  * 
  * @see XMPPConnection
  * @author Matt Tucker
@@ -602,7 +602,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
             }
         }
-        // Start the packet writer. This will open a XMPP stream to the server
+        // Start the packet writer. This will open an XMPP stream to the server
         packetWriter.init();
         // Start the packet reader. The startup() method will block until we
         // get an opening stream packet back from server

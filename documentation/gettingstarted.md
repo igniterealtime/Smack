@@ -97,7 +97,7 @@ your presence to let people know you're unavailable and "out fishing":
 // Create a new presence. Pass in false to indicate we're unavailable._
 Presence presence = new Presence(Presence.Type.unavailable);
 presence.setStatus("Gone fishing");
-// Send the packet (assume we have a XMPPConnection instance called "con").
+// Send the packet (assume we have an XMPPConnection instance called "con").
 con.sendPacket(presence);
 ```
 

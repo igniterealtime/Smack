@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Jingle Demo Application. It register in a XMPP Server and let users place calls using a full JID and auto-receive calls.
+ * Jingle Demo Application. It register in an XMPP Server and let users place calls using a full JID and auto-receive calls.
  * Parameters: Server User Pass.
  */
 public class Demo extends JFrame {

@@ -38,7 +38,7 @@ import de.javawi.jstun.util.UtilityException;
 /**
  * ICE Resolver for Jingle transport method that results in sending data between two entities using the Interactive Connectivity Establishment (ICE) methodology. (XEP-0176)
  * The goal of this resolver is to make possible to establish and manage out-of-band connections between two XMPP entities, even if they are behind Network Address Translators (NATs) or firewalls.
- * To use this resolver you must have a STUN Server and be in a non STUN blocked network. Or use a XMPP server with public IP detection Service.
+ * To use this resolver you must have a STUN Server and be in a non STUN blocked network. Or use an XMPP server with public IP detection Service.
  *
  * @author Thiago Camargo
  */

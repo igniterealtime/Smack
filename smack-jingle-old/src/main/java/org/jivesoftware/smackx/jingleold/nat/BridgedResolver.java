@@ -48,7 +48,7 @@ public class BridgedResolver extends TransportResolver {
 
     /**
      * Constructor.
-     * A Bridged Resolver need a XMPPConnection to connect to a RTP Bridge.
+     * A Bridged Resolver need an XMPPConnection to connect to a RTP Bridge.
      */
     public BridgedResolver(XMPPConnection connection) {
         super();

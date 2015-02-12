@@ -28,9 +28,9 @@ import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 
 /**
- * The XMPPConnection interface provides an interface for connections to a XMPP server and
+ * The XMPPConnection interface provides an interface for connections to an XMPP server and
  * implements shared methods which are used by the different types of connections (e.g.
- * {@link XMPPTCPConnection} or {@link XMPPBOSHConnection}). To create a connection to a XMPP server
+ * {@link XMPPTCPConnection} or {@link XMPPBOSHConnection}). To create a connection to an XMPP server
  * a simple usage of this API might look like the following:
  * <p>
  * 
@@ -107,7 +107,7 @@ public interface XMPPConnection {
 
     /**
      * Returns the stream ID for this connection, which is the value set by the server
-     * when opening a XMPP stream. This value will be <tt>null</tt> if not connected to the server.
+     * when opening an XMPP stream. This value will be <tt>null</tt> if not connected to the server.
      * 
      * @return the ID of this connection returned from the XMPP server or <tt>null</tt> if
      *      not connected to the server.

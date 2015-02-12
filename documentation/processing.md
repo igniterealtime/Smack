@@ -22,7 +22,7 @@ and a packet listener:
 // user. We use an AndFilter to combine two other filters._
 PacketFilter filter = new AndFilter(new PacketTypeFilter(Message.class),
 		new FromContainsFilter("mary@jivesoftware.com"));
-// Assume we've created a XMPPConnection name "connection".
+// Assume we've created an XMPPConnection name "connection".
 
 // First, register a packet collector using the filter we created.
 PacketCollector myCollector = connection.createPacketCollector(filter);

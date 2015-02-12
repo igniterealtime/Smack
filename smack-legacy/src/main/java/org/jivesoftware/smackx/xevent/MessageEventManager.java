@@ -70,7 +70,7 @@ public class MessageEventManager extends Manager {
     /**
      * Creates a new message event manager.
      *
-     * @param con a XMPPConnection to a XMPP server.
+     * @param con an XMPPConnection to a XMPP server.
      */
     private MessageEventManager(XMPPConnection connection) {
         super(connection);

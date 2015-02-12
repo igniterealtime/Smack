@@ -69,7 +69,7 @@ completed with default values:
 // Get the MultiUserChatManager
 MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
-// Create a MultiUserChat using a XMPPConnection for a room
+// Create a MultiUserChat using an XMPPConnection for a room
 MultiUserChat muc = = manager.getMultiUserChat("myroom@conference.jabber.org");
 
 // Create the room
@@ -132,7 +132,7 @@ In this example we can see how to join a room with a given nickname:
 // Get the MultiUserChatManager
 MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
-// Create a MultiUserChat using a XMPPConnection for a room
+// Create a MultiUserChat using an XMPPConnection for a room
 MultiUserChat muc2 = manager.getMultiUserChat("myroom@conference.jabber.org");
 
 // User2 joins the new room
@@ -147,7 +147,7 @@ password:
 // Get the MultiUserChatManager
 MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
-// Create a MultiUserChat using a XMPPConnection for a room
+// Create a MultiUserChat using an XMPPConnection for a room
 MultiUserChat muc2 = manager.getMultiUserChat("myroom@conference.jabber.org");
 
 // User2 joins the new room using a password
@@ -162,7 +162,7 @@ the amount of history to receive:
 // Get the MultiUserChatManager
 MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
-// Create a MultiUserChat using a XMPPConnection for a room
+// Create a MultiUserChat using an XMPPConnection for a room
 MultiUserChat muc2 = manager.getMultiUserChat("myroom@conference.jabber.org");
 
 // User2 joins the new room using a password and specifying
@@ -209,7 +209,7 @@ for possible rejections:
 // Get the MultiUserChatManager
 MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
-// Create a MultiUserChat using a XMPPConnection for a room
+// Create a MultiUserChat using an XMPPConnection for a room
 MultiUserChat muc2 = manager.getMultiUserChat("myroom@conference.jabber.org");
 
 muc2.join("testbot2");

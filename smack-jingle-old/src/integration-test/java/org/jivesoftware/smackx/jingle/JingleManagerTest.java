@@ -186,7 +186,7 @@ public class JingleManagerTest extends SmackTestCase {
     }
 
     /**
-     * High level API test. This is a simple test to use with a XMPP client and
+     * High level API test. This is a simple test to use with an XMPP client and
      * check if the client receives the message 1. User_1 will send an
      * invitation to user_2.
      */
@@ -239,7 +239,7 @@ public class JingleManagerTest extends SmackTestCase {
     }
 
     /**
-     * High level API test. This is a simple test to use with a XMPP client and
+     * High level API test. This is a simple test to use with an XMPP client and
      * check if the client receives the message 1. User_1 will send an
      * invitation to user_2.
      */

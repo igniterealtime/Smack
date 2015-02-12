@@ -692,7 +692,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
     }
 
     /**
-     * Responses to the given packet's sender with a XMPP error that a SOCKS5 Bytestream is not
+     * Responses to the given packet's sender with an XMPP error that a SOCKS5 Bytestream is not
      * accepted.
      * <p>
      * Specified in XEP-65 5.3.1 (Example 13)

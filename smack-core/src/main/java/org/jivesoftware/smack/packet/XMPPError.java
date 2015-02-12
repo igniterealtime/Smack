@@ -26,7 +26,7 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
- * Represents a XMPP error sub-packet. Typically, a server responds to a request that has
+ * Represents an XMPP error sub-packet. Typically, a server responds to a request that has
  * problems by sending the packet back and including an error packet. Each error has a type,
  * error condition as well as as an optional text explanation. Typical errors are:<p>
  *

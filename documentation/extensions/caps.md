@@ -8,7 +8,7 @@ Capabilities.
 
 **Description**
 
-Entity Capabilities is a XMPP Protocol extension, which, in order to minimize
+Entity Capabilities is an XMPP Protocol extension, which, in order to minimize
 network impact, caches the capabilities of XMPP entities. Those capabilities
 are determined with the help of the Service Discovery Protocol
 ([XEP-0030](http://xmpp.org/extensions/xep-0030.html)).

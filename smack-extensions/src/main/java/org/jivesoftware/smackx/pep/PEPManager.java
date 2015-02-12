@@ -70,7 +70,7 @@ public class PEPManager {
     /**
      * Creates a new PEP exchange manager.
      *
-     * @param connection a XMPPConnection which is used to send and receive messages.
+     * @param connection an XMPPConnection which is used to send and receive messages.
      */
     public PEPManager(XMPPConnection connection) {
         this.connection = connection;

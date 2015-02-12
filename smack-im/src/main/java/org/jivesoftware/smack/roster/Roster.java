@@ -740,7 +740,7 @@ public class Roster extends Manager {
      * Returns a List of Presence objects for all of a user's current presences if no presence information is available,
      * such as when you are not subscribed to the user's presence updates.
      *
-     * @param bareJid a XMPP ID, e.g. jdoe@example.com.
+     * @param bareJid an XMPP ID, e.g. jdoe@example.com.
      * @return a List of Presence objects for all the user's current presences, or an unavailable presence if no
      *         presence information is available.
      */
@@ -782,7 +782,7 @@ public class Roster extends Manager {
      * information is available, such as when you are not subscribed to the user's presence
      * updates.
      *
-     * @param user a XMPP ID, e.g. jdoe@example.com.
+     * @param user an XMPP ID, e.g. jdoe@example.com.
      * @return a List of Presence objects for all the user's current presences,
      *         or an unavailable presence if the user is offline or if no presence information
      *         is available.

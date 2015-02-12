@@ -327,7 +327,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private final Map<String, IQRequestHandler> getIqRequestHandler = new HashMap<>();
 
     /**
-     * Create a new XMPPConnection to a XMPP server.
+     * Create a new XMPPConnection to an XMPP server.
      * 
      * @param configuration The configuration which is used to establish the connection.
      */
