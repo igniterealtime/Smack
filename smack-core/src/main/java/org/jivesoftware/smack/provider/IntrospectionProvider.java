@@ -117,25 +117,21 @@ public class IntrospectionProvider{
      * @throws ClassNotFoundException
      */
     private static Object decode(Class<?> type, String value) throws ClassNotFoundException {
-        if (type.getName().equals("java.lang.String")) {
+        String name = type.getName();
+        switch (name) {
+        case "java.lang.String":
             return value;
-        }
-        if (type.getName().equals("boolean")) {
+        case "boolean":
             return Boolean.valueOf(value);
-        }
-        if (type.getName().equals("int")) {
+        case "int":
             return Integer.valueOf(value);
-        }
-        if (type.getName().equals("long")) {
+        case "long":
             return Long.valueOf(value);
-        }
-        if (type.getName().equals("float")) {
+        case "float":
             return Float.valueOf(value);
-        }
-        if (type.getName().equals("double")) {
+        case "double":
             return Double.valueOf(value);
-        }
-        if (type.getName().equals("java.lang.Class")) {
+        case "java.lang.Class":
             return Class.forName(value);
         }
         return null;
