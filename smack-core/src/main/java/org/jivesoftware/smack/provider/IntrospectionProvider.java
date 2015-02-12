@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,6 +131,10 @@ public class IntrospectionProvider{
             return Float.valueOf(value);
         case "double":
             return Double.valueOf(value);
+        case "short":
+            return Short.valueOf(value);
+        case "byte":
+            return Byte.valueOf(value);
         case "java.lang.Class":
             return Class.forName(value);
         }
