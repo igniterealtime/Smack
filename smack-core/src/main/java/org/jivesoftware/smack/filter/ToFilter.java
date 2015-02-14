@@ -16,25 +16,23 @@
  */
 package org.jivesoftware.smack.filter;
 
-import java.util.Locale;
-
 import org.jivesoftware.smack.packet.Stanza;
+import org.jxmpp.jid.Jid;
 
 public class ToFilter implements PacketFilter {
 
-    private final String to;
+    private final Jid to;
 
-    public ToFilter(String to) {
-        this.to = to.toLowerCase(Locale.US);
+    public ToFilter(Jid to) {
+        this.to = to;
     }
 
     @Override
     public boolean accept(Stanza packet) {
-        String packetTo = packet.getTo();
+        Jid packetTo = packet.getTo();
         if (packetTo == null) {
             return false;
         }
-        packetTo = packetTo.toLowerCase(Locale.US);
         return packetTo.equals(to);
     }
 

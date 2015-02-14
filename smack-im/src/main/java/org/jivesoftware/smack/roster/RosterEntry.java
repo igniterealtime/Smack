@@ -28,6 +28,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jxmpp.jid.Jid;
 
 
 /**
@@ -41,7 +42,7 @@ public class RosterEntry {
     /**
      * The JID of the entity/user.
      */
-    private final String user;
+    private final Jid user;
 
     private String name;
     private RosterPacket.ItemType type;
@@ -58,7 +59,7 @@ public class RosterEntry {
      * @param status the subscription status (related to subscriptions pending to be approbed).
      * @param connection a connection to the XMPP server.
      */
-    RosterEntry(String user, String name, RosterPacket.ItemType type,
+    RosterEntry(Jid user, String name, RosterPacket.ItemType type,
                 RosterPacket.ItemStatus status, Roster roster, XMPPConnection connection) {
         this.user = user;
         this.name = name;
@@ -73,7 +74,7 @@ public class RosterEntry {
      *
      * @return the user associated with this entry.
      */
-    public String getUser() {
+    public Jid getUser() {
         return user;
     }
 

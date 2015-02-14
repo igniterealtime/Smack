@@ -37,6 +37,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.xevent.packet.MessageEvent;
+import org.jxmpp.jid.Jid;
 
 /**
  * 
@@ -166,7 +167,7 @@ public class MessageEventManager extends Manager {
      * Fires message event request listeners.
      */
     private void fireMessageEventRequestListeners(
-        String from,
+        Jid from,
         String packetID,
         String methodName) {
         try {
@@ -186,7 +187,7 @@ public class MessageEventManager extends Manager {
      * Fires message event notification listeners.
      */
     private void fireMessageEventNotificationListeners(
-        String from,
+        Jid from,
         String packetID,
         String methodName) {
         try {
@@ -210,7 +211,7 @@ public class MessageEventManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void sendDeliveredNotification(String to, String packetID) throws NotConnectedException, InterruptedException {
+    public void sendDeliveredNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
         Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
@@ -230,7 +231,7 @@ public class MessageEventManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void sendDisplayedNotification(String to, String packetID) throws NotConnectedException, InterruptedException {
+    public void sendDisplayedNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
         Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
@@ -250,7 +251,7 @@ public class MessageEventManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void sendComposingNotification(String to, String packetID) throws NotConnectedException, InterruptedException {
+    public void sendComposingNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
         Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
@@ -270,7 +271,7 @@ public class MessageEventManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void sendCancelledNotification(String to, String packetID) throws NotConnectedException, InterruptedException {
+    public void sendCancelledNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
         Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message

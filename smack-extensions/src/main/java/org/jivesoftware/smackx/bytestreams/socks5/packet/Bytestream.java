@@ -23,6 +23,7 @@ import java.util.List;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jxmpp.jid.Jid;
 
 /**
  * A packet representing part of a SOCKS5 Bytestream negotiation.
@@ -113,7 +114,7 @@ public class Bytestream extends IQ {
      * @param address The internet address of the stream host.
      * @return The added stream host.
      */
-    public StreamHost addStreamHost(final String JID, final String address) {
+    public StreamHost addStreamHost(final Jid JID, final String address) {
         return addStreamHost(JID, address, 0);
     }
 
@@ -125,7 +126,7 @@ public class Bytestream extends IQ {
      * @param port The port on which the remote host is seeking connections.
      * @return The added stream host.
      */
-    public StreamHost addStreamHost(final String JID, final String address, final int port) {
+    public StreamHost addStreamHost(final Jid JID, final String address, final int port) {
         StreamHost host = new StreamHost(JID, address, port);
         addStreamHost(host);
 
@@ -156,7 +157,7 @@ public class Bytestream extends IQ {
      * @param JID The JID of the desired stream host.
      * @return Returns the stream host related to the given JID, or null if there is none.
      */
-    public StreamHost getStreamHost(final String JID) {
+    public StreamHost getStreamHost(final Jid JID) {
         if (JID == null) {
             return null;
         }
@@ -184,7 +185,7 @@ public class Bytestream extends IQ {
      * 
      * @param JID The JID of the used host.
      */
-    public void setUsedHost(final String JID) {
+    public void setUsedHost(final Jid JID) {
         this.usedHost = new StreamHostUsed(JID);
     }
 
@@ -215,7 +216,7 @@ public class Bytestream extends IQ {
      * 
      * @param targetID The JID of the target of the file transfer.
      */
-    public void setToActivate(final String targetID) {
+    public void setToActivate(final Jid targetID) {
         this.toActivate = new Activate(targetID);
     }
 
@@ -265,13 +266,13 @@ public class Bytestream extends IQ {
 
         public static String ELEMENTNAME = "streamhost";
 
-        private final String JID;
+        private final Jid JID;
 
         private final String addy;
 
         private final int port;
 
-        public StreamHost(String jid, String address) {
+        public StreamHost(Jid jid, String address) {
             this(jid, address, 0);
         }
 
@@ -281,7 +282,7 @@ public class Bytestream extends IQ {
          * @param JID The JID of the stream host.
          * @param address The internet address of the stream host.
          */
-        public StreamHost(final String JID, final String address, int port) {
+        public StreamHost(final Jid JID, final String address, int port) {
             this.JID = JID;
             this.addy = address;
             this.port = port;
@@ -292,7 +293,7 @@ public class Bytestream extends IQ {
          * 
          * @return Returns the JID of the stream host.
          */
-        public String getJID() {
+        public Jid getJID() {
             return JID;
         }
 
@@ -343,14 +344,14 @@ public class Bytestream extends IQ {
 
         public static String ELEMENTNAME = "streamhost-used";
 
-        private final String JID;
+        private final Jid JID;
 
         /**
          * Default constructor.
          * 
          * @param JID The JID of the selected stream host.
          */
-        public StreamHostUsed(final String JID) {
+        public StreamHostUsed(final Jid JID) {
             this.JID = JID;
         }
 
@@ -359,7 +360,7 @@ public class Bytestream extends IQ {
          * 
          * @return Returns the JID of the selected stream host.
          */
-        public String getJID() {
+        public Jid getJID() {
             return JID;
         }
 
@@ -385,14 +386,14 @@ public class Bytestream extends IQ {
 
         public static String ELEMENTNAME = "activate";
 
-        private final String target;
+        private final Jid target;
 
         /**
          * Default constructor specifying the target of the stream.
          * 
          * @param target The target of the stream.
          */
-        public Activate(final String target) {
+        public Activate(final Jid target) {
             this.target = target;
         }
 
@@ -401,7 +402,7 @@ public class Bytestream extends IQ {
          * 
          * @return Returns the target of the activation.
          */
-        public String getTarget() {
+        public Jid getTarget() {
             return target;
         }
 

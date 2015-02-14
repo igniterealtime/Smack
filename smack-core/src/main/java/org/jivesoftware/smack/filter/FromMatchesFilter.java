@@ -17,10 +17,8 @@
 
 package org.jivesoftware.smack.filter;
 
-import java.util.Locale;
-
 import org.jivesoftware.smack.packet.Stanza;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.jid.Jid;
 
 /**
  * Filter for packets where the "from" field exactly matches a specified JID. If the specified
@@ -32,12 +30,12 @@ import org.jxmpp.util.XmppStringUtils;
  */
 public class FromMatchesFilter implements PacketFilter {
 
-    private final String address;
+    private final Jid address;
 
     /**
      * Flag that indicates if the checking will be done against bare JID addresses or full JIDs.
      */
-    private final boolean matchBareJID;
+    private final boolean ignoreResourcepart;
 
     /**
      * Creates a filter matching on the "from" field. The from address must be the same as the
@@ -46,11 +44,16 @@ public class FromMatchesFilter implements PacketFilter {
      *
      * @param address The address to filter for. If <code>null</code> is given, the packet must not
      *        have a from address.
-     * @param matchBare
+     * @param ignoreResourcepart
      */
-    public FromMatchesFilter(String address, boolean matchBare) {
-        this.address = (address == null) ? null : address.toLowerCase(Locale.US);
-        matchBareJID = matchBare;
+    public FromMatchesFilter(Jid address, boolean ignoreResourcepart) {
+        if (address != null && ignoreResourcepart) {
+            this.address = address.withoutResource();
+        }
+        else {
+            this.address = address;
+        }
+        this.ignoreResourcepart = ignoreResourcepart;
     }
 
     /**
@@ -61,8 +64,8 @@ public class FromMatchesFilter implements PacketFilter {
      * @param address The address to filter for. If <code>null</code> is given, the packet must not
      *        have a from address.
      */
-    public static FromMatchesFilter create(String address) {
-        return new FromMatchesFilter(address, "".equals(XmppStringUtils.parseResource(address))) ;
+    public static FromMatchesFilter create(Jid address) {
+        return new FromMatchesFilter(address, address.hasNoResource()) ;
     }
 
     /**
@@ -72,8 +75,8 @@ public class FromMatchesFilter implements PacketFilter {
      * @param address The address to filter for. If <code>null</code> is given, the packet must not
      *        have a from address.
      */
-    public static FromMatchesFilter createBare(String address) {
-        address = (address == null) ? null : XmppStringUtils.parseBareJid(address);
+    public static FromMatchesFilter createBare(Jid address) {
+        address = (address == null) ? null : address;
         return new FromMatchesFilter(address, true);
     }
 
@@ -85,25 +88,24 @@ public class FromMatchesFilter implements PacketFilter {
      * @param address The address to filter for. If <code>null</code> is given, the packet must not
      *        have a from address.
      */
-    public static FromMatchesFilter createFull(String address) {
+    public static FromMatchesFilter createFull(Jid address) {
         return new FromMatchesFilter(address, false);
     }
 
     public boolean accept(Stanza packet) {
-        String from = packet.getFrom();
+        Jid from = packet.getFrom();
         if (from == null) {
             return address == null;
         }
-        // Simplest form of NAMEPREP/STRINGPREP
-        from = from.toLowerCase(Locale.US);
-        if (matchBareJID) {
-            from = XmppStringUtils.parseBareJid(from);
+
+        if (ignoreResourcepart) {
+            from = from.withoutResource();
         }
         return from.equals(address);
     }
 
     public String toString() {
-        String matchMode = matchBareJID ? "bare" : "full";
+        String matchMode = ignoreResourcepart ? "ignoreResourcepart" : "full";
         return "FromMatchesFilter (" +matchMode + "): " + address;
     }
 }

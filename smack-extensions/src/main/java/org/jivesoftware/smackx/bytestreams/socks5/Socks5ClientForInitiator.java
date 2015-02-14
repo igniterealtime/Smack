@@ -29,6 +29,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
+import org.jxmpp.jid.Jid;
 
 /**
  * Implementation of a SOCKS5 client used on the initiators side. This is needed because connecting
@@ -47,7 +48,8 @@ class Socks5ClientForInitiator extends Socks5Client {
     private String sessionID;
 
     /* the target JID used to activate SOCKS5 stream */
-    private String target;
+    // TODO fullJid?
+    private final Jid target;
 
     /**
      * Creates a new SOCKS5 client for the initiators side.
@@ -59,7 +61,7 @@ class Socks5ClientForInitiator extends Socks5Client {
      * @param target the target JID of the SOCKS5 Bytestream
      */
     public Socks5ClientForInitiator(StreamHost streamHost, String digest, XMPPConnection connection,
-                    String sessionID, String target) {
+                    String sessionID, Jid target) {
         super(streamHost, digest);
         this.connection = connection;
         this.sessionID = sessionID;

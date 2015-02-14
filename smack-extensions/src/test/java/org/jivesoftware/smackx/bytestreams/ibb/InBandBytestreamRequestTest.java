@@ -28,6 +28,8 @@ import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 import org.junit.Before;
 import org.junit.Test;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.JidTestUtil;
 import org.mockito.ArgumentCaptor;
 
 /**
@@ -37,8 +39,8 @@ import org.mockito.ArgumentCaptor;
  */
 public class InBandBytestreamRequestTest {
 
-    String initiatorJID = "initiator@xmpp-server/Smack";
-    String targetJID = "target@xmpp-server/Smack";
+    static final Jid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
+    static final Jid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
     String sessionID = "session_id";
 
     XMPPConnection connection;

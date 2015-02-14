@@ -19,6 +19,7 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
+import org.jxmpp.jid.DomainBareJid;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
@@ -43,7 +44,7 @@ public abstract class ConnectionConfiguration {
      * of the server. However, there are some servers like google where host would be
      * talk.google.com and the serviceName would be gmail.com.
      */
-    protected final String serviceName;
+    protected final DomainBareJid serviceName;
     protected final String host;
     protected final int port;
 
@@ -136,7 +137,7 @@ public abstract class ConnectionConfiguration {
      *
      * @return the server name of the target server.
      */
-    public String getServiceName() {
+    public DomainBareJid getServiceName() {
         return serviceName;
     }
 
@@ -382,7 +383,7 @@ public abstract class ConnectionConfiguration {
         private CallbackHandler callbackHandler;
         private boolean debuggerEnabled = SmackConfiguration.DEBUG;
         private SocketFactory socketFactory;
-        private String serviceName;
+        private DomainBareJid serviceName;
         private String host;
         private int port = 5222;
         private boolean allowEmptyOrNullUsername = false;
@@ -413,7 +414,7 @@ public abstract class ConnectionConfiguration {
          * @param serviceName the service name
          * @return a reference to this builder.
          */
-        public B setServiceName(String serviceName) {
+        public B setServiceName(DomainBareJid serviceName) {
             this.serviceName = serviceName;
             return getThis();
         }

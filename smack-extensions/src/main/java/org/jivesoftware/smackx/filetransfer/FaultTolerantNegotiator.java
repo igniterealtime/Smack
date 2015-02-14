@@ -39,6 +39,7 @@ import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
+import org.jxmpp.jid.Jid;
 
 
 /**
@@ -61,7 +62,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         this.connection = connection;
     }
 
-    public PacketFilter getInitiationPacketFilter(String from, String streamID) {
+    public PacketFilter getInitiationPacketFilter(Jid from, String streamID) {
         if (primaryFilter == null || secondaryFilter == null) {
             primaryFilter = primaryNegotiator.getInitiationPacketFilter(from, streamID);
             secondaryFilter = secondaryNegotiator.getInitiationPacketFilter(from, streamID);
@@ -143,7 +144,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         return primaryFilter.accept(streamInitiation) ? primaryNegotiator : secondaryNegotiator;
     }
 
-    public OutputStream createOutgoingStream(String streamID, String initiator, String target)
+    public OutputStream createOutgoingStream(String streamID, Jid initiator, Jid target)
                     throws SmackException, XMPPException, InterruptedException {
         OutputStream stream;
         try {

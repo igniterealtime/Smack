@@ -21,6 +21,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
+import org.jxmpp.jid.Jid;
 
 /**
  * InBandBytestreamRequest class handles incoming In-Band Bytestream requests.
@@ -49,7 +50,7 @@ public class InBandBytestreamRequest implements BytestreamRequest {
      * 
      * @return the sender of the In-Band Bytestream open request
      */
-    public String getFrom() {
+    public Jid getFrom() {
         return this.byteStreamRequest.getFrom();
     }
 

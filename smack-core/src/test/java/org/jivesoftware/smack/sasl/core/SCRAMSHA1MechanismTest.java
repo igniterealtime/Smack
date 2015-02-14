@@ -27,6 +27,7 @@ import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.junit.Before;
 import org.junit.Test;
+import org.jxmpp.jid.JidTestUtil;
 
 public class SCRAMSHA1MechanismTest {
 
@@ -53,7 +54,7 @@ public class SCRAMSHA1MechanismTest {
             }
         };
 
-        mech.authenticate(USERNAME, "unusedFoo", "unusedBar", PASSWORD);
+        mech.authenticate(USERNAME, "unusedFoo", JidTestUtil.DOMAIN_BARE_JID_1, PASSWORD);
         AuthMechanism authMechanism = con.getSentPacket();
         assertEquals(SCRAMSHA1Mechanism.NAME, authMechanism.getMechanism());
         assertEquals(CLIENT_FIRST_MESSAGE, saslLayerString(authMechanism.getAuthenticationText()));

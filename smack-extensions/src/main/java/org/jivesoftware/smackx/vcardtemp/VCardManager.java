@@ -29,6 +29,8 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.Jid;
 
 public class VCardManager extends Manager {
     public static final String NAMESPACE = VCard.NAMESPACE;
@@ -71,10 +73,10 @@ public class VCardManager extends Manager {
      * @throws NoResponseException 
      * @throws NotConnectedException
      * @throws InterruptedException 
-     * @deprecated use {@link #isSupported(String)} instead.
+     * @deprecated use {@link #isSupported(Jid)} instead.
      */
     @Deprecated
-    public static boolean isSupported(String jid, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+    public static boolean isSupported(Jid jid, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return VCardManager.getInstanceFor(connection).isSupported(jid);
     }
 
@@ -117,7 +119,7 @@ public class VCardManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public VCard loadVCard(String bareJid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public VCard loadVCard(BareJid bareJid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         VCard vcardRequest = new VCard();
         vcardRequest.setTo(bareJid);
         VCard result = connection().createPacketCollectorAndSend(vcardRequest).nextResultOrThrow();
@@ -134,7 +136,7 @@ public class VCardManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public boolean isSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public boolean isSupported(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, NAMESPACE);
     }
 }

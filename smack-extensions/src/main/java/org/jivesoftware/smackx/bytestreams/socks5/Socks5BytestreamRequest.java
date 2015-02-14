@@ -30,6 +30,7 @@ import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.util.cache.Cache;
 import org.jxmpp.util.cache.ExpirationCache;
 
@@ -169,7 +170,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * 
      * @return the sender of the SOCKS5 Bytestream initialization request.
      */
-    public String getFrom() {
+    public Jid getFrom() {
         return this.bytestreamRequest.getFrom();
     }
 

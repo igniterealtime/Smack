@@ -24,6 +24,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.hoxt.packet.AbstractHttpOverXmpp;
+import org.jxmpp.jid.Jid;
 
 /**
  * Manager for HTTP ove XMPP transport (XEP-0332) extension.
@@ -58,7 +59,7 @@ public class HOXTManager {
      * @throws NotConnectedException
      * @throws InterruptedException 
      */
-    public static boolean isSupported(String jid, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public static boolean isSupported(Jid jid, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(jid, NAMESPACE);
     }
 }

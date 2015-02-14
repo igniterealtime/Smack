@@ -43,7 +43,7 @@ public class WaitForPacketListener implements PacketListener {
 
     public void waitUntilInvocationOrTimeout() {
         try {
-            boolean res = latch.await(30, TimeUnit.SECONDS);
+            boolean res = latch.await(300, TimeUnit.SECONDS);
             if (!res) {
                 throw new IllegalStateException("Latch timed out before it reached zero");
             }

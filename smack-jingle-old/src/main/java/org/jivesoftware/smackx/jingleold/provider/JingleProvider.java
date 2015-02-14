@@ -22,12 +22,14 @@ import java.io.IOException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.jingleold.JingleActionEnum;
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.packet.JingleContent;
 import org.jivesoftware.smackx.jingleold.packet.JingleContentInfo;
 import org.jivesoftware.smackx.jingleold.packet.JingleDescription;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
+import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -51,8 +53,8 @@ public class JingleProvider extends IQProvider<Jingle> {
         Jingle jingle = new Jingle();
         String sid = "";
         JingleActionEnum action;
-        String initiator = "";
-        String responder = "";
+        Jid initiator = null;
+        Jid responder = null;
         boolean done = false;
         JingleContent currentContent = null;
 
@@ -70,8 +72,8 @@ public class JingleProvider extends IQProvider<Jingle> {
         // Get some attributes for the <jingle> element
         sid = parser.getAttributeValue("", "sid");
         action = JingleActionEnum.getAction(parser.getAttributeValue("", "action"));
-        initiator = parser.getAttributeValue("", "initiator");
-        responder = parser.getAttributeValue("", "responder");
+        initiator = ParserUtils.getJidAttribute(parser, "initiator");
+        responder = ParserUtils.getJidAttribute(parser, "responder");
 
         jingle.setSid(sid);
         jingle.setAction(action);

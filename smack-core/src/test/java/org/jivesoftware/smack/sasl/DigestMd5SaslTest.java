@@ -25,6 +25,8 @@ import java.util.Map;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 public class DigestMd5SaslTest extends AbstractSaslTest {
 
@@ -35,8 +37,8 @@ public class DigestMd5SaslTest extends AbstractSaslTest {
         super(saslMechanism);
     }
 
-    protected void runTest() throws NotConnectedException, SmackException, InterruptedException {
-        saslMechanism.authenticate("florian", "irrelevant", "xmpp.org", "secret");
+    protected void runTest() throws NotConnectedException, SmackException, InterruptedException, XmppStringprepException {
+        saslMechanism.authenticate("florian", "irrelevant", JidCreate.domainBareFrom("xmpp.org"), "secret");
 
         byte[] response = saslMechanism.evaluateChallenge(challengeBytes);
         String responseString = new String(response);

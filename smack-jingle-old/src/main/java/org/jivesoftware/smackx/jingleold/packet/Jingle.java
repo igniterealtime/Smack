@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingleold.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingleold.JingleActionEnum;
+import org.jxmpp.jid.Jid;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,9 +52,9 @@ public class Jingle extends IQ {
 
     private JingleActionEnum action; // The action associated to the Jingle
 
-    private String initiator; // The initiator as a "user@host/resource"
+    private Jid initiator; // The initiator as a "user@host/resource"
 
-    private String responder; // The responder
+    private Jid responder; // The responder
 
     // Sub-elements of a Jingle object.
     
@@ -281,7 +282,7 @@ public class Jingle extends IQ {
      *
      * @return the initiator
      */
-    public String getInitiator() {
+    public Jid getInitiator() {
         return initiator;
     }
 
@@ -292,7 +293,7 @@ public class Jingle extends IQ {
      *
      * @param initiator the initiator to set
      */
-    public void setInitiator(final String initiator) {
+    public void setInitiator(final Jid initiator) {
         this.initiator = initiator;
     }
 
@@ -303,7 +304,7 @@ public class Jingle extends IQ {
      *
      * @return the responder
      */
-    public String getResponder() {
+    public Jid getResponder() {
         return responder;
     }
 
@@ -314,7 +315,7 @@ public class Jingle extends IQ {
      *
      * @param resp the responder to set
      */
-    public void setResponder(final String resp) {
+    public void setResponder(final Jid resp) {
         responder = resp;
     }
 
@@ -325,7 +326,7 @@ public class Jingle extends IQ {
      * @param initiator The initiator
      * @return A hash key
      */
-    public static int getSessionHash(final String sid, final String initiator) {
+    public static int getSessionHash(final String sid, final Jid initiator) {
         final int PRIME = 31;
         int result = 1;
         result = PRIME * result + (initiator == null ? 0 : initiator.hashCode());

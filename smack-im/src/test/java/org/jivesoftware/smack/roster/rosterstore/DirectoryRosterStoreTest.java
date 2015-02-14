@@ -34,6 +34,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.JidTestUtil;
+import org.jxmpp.jid.impl.JidCreate;
 
 /**
  * Tests the implementation of {@link DirectoryRosterStore}.
@@ -86,7 +89,7 @@ public class DirectoryRosterStoreTest {
 
         assertEquals("Initial roster version", "", store.getRosterVersion());
 
-        String userName = "user@example.com";
+        Jid userName = JidTestUtil.DUMMY_AT_EXAMPLE_ORG;
 
         final RosterPacket.Item item1 = new Item(userName, null);
         final String version1 = "1";
@@ -130,13 +133,13 @@ public class DirectoryRosterStoreTest {
         List<Item> entries = store.getEntries();
         assertEquals("Number of entries", 1, entries.size());
 
-        final RosterPacket.Item item3 = new Item("foobar@example.com", "Foo Bar");
+        final RosterPacket.Item item3 = new Item(JidTestUtil.BARE_JID_1, "Foo Bar");
         item3.addGroupName("The Foo Fighters");
         item3.addGroupName("Bar Friends");
         item3.setItemStatus(ItemStatus.unsubscribe);
         item3.setItemType(ItemType.both);
 
-        final RosterPacket.Item item4 = new Item("baz@example.com", "Baba Baz");
+        final RosterPacket.Item item4 = new Item(JidTestUtil.BARE_JID_2, "Baba Baz");
         item4.addGroupName("The Foo Fighters");
         item4.addGroupName("Bar Friends");
         item4.setItemStatus(ItemStatus.subscribe);
@@ -149,7 +152,7 @@ public class DirectoryRosterStoreTest {
         String version3 = "3";
         store.resetEntries(items34, version3);
 
-        storedItem = store.getEntry("foobar@example.com");
+        storedItem = store.getEntry(JidTestUtil.BARE_JID_1);
         assertNotNull("Added entry not found", storedItem);
         assertEquals("User of added entry",
                 item3.getUser(), storedItem.getUser());
@@ -162,7 +165,7 @@ public class DirectoryRosterStoreTest {
                 item3.getItemStatus(), storedItem.getItemStatus());
 
 
-        storedItem = store.getEntry("baz@example.com");
+        storedItem = store.getEntry(JidTestUtil.BARE_JID_2);
         assertNotNull("Added entry not found", storedItem);
         assertEquals("User of added entry",
                 item4.getUser(), storedItem.getUser());
@@ -178,7 +181,7 @@ public class DirectoryRosterStoreTest {
         assertEquals("Number of entries", 2, entries.size());
 
         String version4 = "4";
-        store.removeEntry("baz@example.com", version4);
+        store.removeEntry(JidTestUtil.BARE_JID_2, version4);
         assertEquals("Removing entry sets version correctly",
                 version4, store.getRosterVersion());
         assertNull("Removed entry is gone", store.getEntry(userName));
@@ -195,7 +198,7 @@ public class DirectoryRosterStoreTest {
         File storeDir = tmpFolder.newFolder();
         DirectoryRosterStore store = DirectoryRosterStore.init(storeDir);
 
-        String user = "../_#;\"'\\&@example.com";
+        Jid user = JidCreate.from(".._#;'&@example.com");
         String name = "\n../_#\0\t;\"'&@\\";
         String group1 = "\t;\"'&@\\\n../_#\0";
         String group2 = "#\0\t;\"'&@\\\n../_";

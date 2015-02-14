@@ -81,6 +81,9 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -164,7 +167,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * certificate.
      * </p>
      */
-    protected String user;
+    protected FullJid user;
 
     protected boolean connected = false;
 
@@ -342,7 +345,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public String getServiceName() {
+    public DomainBareJid getServiceName() {
         if (serviceName != null) {
             return serviceName;
         }
@@ -510,7 +513,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public final String getUser() {
+    public final FullJid getUser() {
         return user;
     }
 
@@ -550,7 +553,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // from the login() arguments and the configurations service name, as, for example, when SASL External is used,
         // the username is not given to login but taken from the 'external' certificate.
         user = response.getJid();
-        serviceName = XmppStringUtils.parseDomain(user);
+        serviceName = user.asDomainBareJid();
 
         Session.Feature sessionFeature = getFeature(Session.ELEMENT, Session.NAMESPACE);
         // Only bind the session if it's announced as stream feature by the server, is not optional and not disabled
@@ -590,7 +593,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         && !config.allowNullOrEmptyUsername;
     }
 
-    private String serviceName;
+    private DomainBareJid serviceName;
 
     protected List<HostAddress> hostAddresses;
 
@@ -608,7 +611,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             hostAddress = new HostAddress(config.host, config.port);
             hostAddresses.add(hostAddress);
         } else {
-            hostAddresses = DNSUtil.resolveXMPPDomain(config.serviceName, failedAddresses);
+            hostAddresses = DNSUtil.resolveXMPPDomain(config.serviceName.toString(), failedAddresses);
         }
         // If we reach this, then hostAddresses *must not* be empty, i.e. there is at least one host added, either the
         // config.host one or the host representing the service name by DNSUtil
@@ -645,7 +648,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         throwNotConnectedExceptionIfAppropriate();
         switch (fromMode) {
         case OMITTED:
-            packet.setFrom(null);
+            packet.setFrom((Jid) null);
             break;
         case USER:
             packet.setFrom(getUser());

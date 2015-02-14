@@ -73,7 +73,8 @@ import org.jivesoftware.smackx.workgroup.packet.Transcripts;
 import org.jivesoftware.smackx.workgroup.settings.GenericSettings;
 import org.jivesoftware.smackx.workgroup.settings.SearchSettings;
 import org.jivesoftware.smackx.xdata.Form;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.parts.Resourcepart;
 
 /**
  * This class embodies the agent's active presence within a given workgroup. The application
@@ -91,14 +92,14 @@ public class AgentSession {
     
     private XMPPConnection connection;
 
-    private String workgroupJID;
+    private Jid workgroupJID;
 
     private boolean online = false;
     private Presence.Mode presenceMode;
     private int maxChats;
     private final Map<String, List<String>> metaData;
 
-    private Map<String, WorkgroupQueue> queues;
+    private final Map<Resourcepart, WorkgroupQueue> queues = new HashMap<>();
 
     private final List<OfferListener> offerListeners;
     private final List<WorkgroupInvitationListener> invitationListeners;
@@ -119,7 +120,7 @@ public class AgentSession {
      *                     authentication.
      * @param workgroupJID the fully qualified JID of the workgroup.
      */
-    public AgentSession(String workgroupJID, XMPPConnection connection) {
+    public AgentSession(Jid workgroupJID, XMPPConnection connection) {
         // Login must have been done before passing in connection.
         if (!connection.isAuthenticated()) {
             throw new IllegalStateException("Must login to server before creating workgroup.");
@@ -133,8 +134,6 @@ public class AgentSession {
         this.maxChats = -1;
 
         this.metaData = new HashMap<String, List<String>>();
-
-        this.queues = new HashMap<String, WorkgroupQueue>();
 
         offerListeners = new ArrayList<OfferListener>();
         invitationListeners = new ArrayList<WorkgroupInvitationListener>();
@@ -486,7 +485,7 @@ public class AgentSession {
      * @throws SmackException 
      * @throws InterruptedException 
      */
-    public Transcripts getTranscripts(String userID) throws XMPPException, SmackException, InterruptedException {
+    public Transcripts getTranscripts(Jid userID) throws XMPPException, SmackException, InterruptedException {
         return transcriptManager.getTranscripts(workgroupJID, userID);
     }
 
@@ -514,7 +513,7 @@ public class AgentSession {
      * @throws InterruptedException 
      */
     public Form getTranscriptSearchForm() throws XMPPException, SmackException, InterruptedException {
-        return transcriptSearchManager.getSearchForm(XmppStringUtils.parseDomain(workgroupJID));
+        return transcriptSearchManager.getSearchForm(workgroupJID.asDomainBareJid());
     }
 
     /**
@@ -529,7 +528,7 @@ public class AgentSession {
      * @throws InterruptedException 
      */
     public ReportedData searchTranscripts(Form completedForm) throws XMPPException, SmackException, InterruptedException {
-        return transcriptSearchManager.submitSearch(XmppStringUtils.parseDomain(workgroupJID),
+        return transcriptSearchManager.submitSearch(workgroupJID.asDomainBareJid(),
                 completedForm);
     }
 
@@ -557,7 +556,7 @@ public class AgentSession {
     /**
      * @return the fully-qualified name of the workgroup for which this session exists
      */
-    public String getWorkgroupJID() {
+    public Jid getWorkgroupJID() {
         return workgroupJID;
     }
 
@@ -579,7 +578,7 @@ public class AgentSession {
     }
 
     public Iterator<WorkgroupQueue> getQueues() {
-        return Collections.unmodifiableMap((new HashMap<String, WorkgroupQueue>(queues))).values().iterator();
+        return Collections.unmodifiableMap((new HashMap<>(queues))).values().iterator();
     }
 
     public void addQueueUsersListener(QueueUsersListener listener) {
@@ -668,8 +667,8 @@ public class AgentSession {
         }
     }
 
-    private void fireInvitationEvent(String groupChatJID, String sessionID, String body,
-                                     String from, Map<String, List<String>> metaData) {
+    private void fireInvitationEvent(Jid groupChatJID, String sessionID, String body,
+                                     Jid from, Map<String, List<String>> metaData) {
         WorkgroupInvitation invitation = new WorkgroupInvitation(connection.getUser(), groupChatJID,
                 workgroupJID, sessionID, body, from, metaData);
 
@@ -717,7 +716,7 @@ public class AgentSession {
             // check for different packet extensions to see what type of presence
             // packet it is.
 
-            String queueName = XmppStringUtils.parseResource(presence.getFrom());
+            Resourcepart queueName = presence.getFrom().getResourceOrNull();
             WorkgroupQueue queue = queues.get(queueName);
             // If there isn't already an entry for the queue, create a new one.
             if (queue == null) {

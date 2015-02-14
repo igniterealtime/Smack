@@ -40,6 +40,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
+import org.jxmpp.jid.Jid;
 
 /**
  * InBandBytestreamSession class represents an In-Band Bytestream session.
@@ -73,7 +74,7 @@ public class InBandBytestreamSession implements BytestreamSession {
     private IBBOutputStream outputStream;
 
     /* JID of the remote peer */
-    private String remoteJID;
+    private Jid remoteJID;
 
     /* flag to close both streams if one of them is closed */
     private boolean closeBothStreamsEnabled = false;
@@ -89,7 +90,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      * @param remoteJID JID of the remote peer
      */
     protected InBandBytestreamSession(XMPPConnection connection, Open byteStreamRequest,
-                    String remoteJID) {
+                    Jid remoteJID) {
         this.connection = connection;
         this.byteStreamRequest = byteStreamRequest;
         this.remoteJID = remoteJID;
@@ -556,7 +557,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
         public boolean accept(Stanza packet) {
             // sender equals remote peer
-            if (!packet.getFrom().equalsIgnoreCase(remoteJID)) {
+            if (!packet.getFrom().equals(remoteJID)) {
                 return false;
             }
 

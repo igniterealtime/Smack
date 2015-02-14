@@ -43,6 +43,7 @@ import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jxmpp.jid.DomainBareJid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.igniterealtime.jbosh.AbstractBody;
@@ -116,7 +117,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      * @param xmppDomain the XMPP service name
      *             (e.g. domain.lt for the user alice@domain.lt)
      */
-    public XMPPBOSHConnection(String username, String password, boolean https, String host, int port, String filePath, String xmppDomain) {
+    public XMPPBOSHConnection(String username, String password, boolean https, String host, int port, String filePath, DomainBareJid xmppDomain) {
         this(BOSHConfiguration.builder().setUseHttps(https).setHost(host)
                 .setPort(port).setFile(filePath).setServiceName(xmppDomain)
                 .setUsernameAndPassword(username, password).build());
@@ -145,7 +146,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
 
             // Initialize BOSH client
             BOSHClientConfig.Builder cfgBuilder = BOSHClientConfig.Builder
-                    .create(config.getURI(), config.getServiceName());
+                    .create(config.getURI(), config.getServiceName().toString());
             if (config.isProxyEnabled()) {
                 cfgBuilder.setProxy(config.getProxyAddress(), config.getProxyPort());
             }
@@ -537,7 +538,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                                                 XMPPBOSHConnection.XMPP_BOSH_NS).setAttribute(
                                                 BodyQName.createWithPrefix(XMPPBOSHConnection.XMPP_BOSH_NS, "restart",
                                                                 "xmpp"), "true").setAttribute(
-                                                BodyQName.create(XMPPBOSHConnection.BOSH_URI, "to"), getServiceName()).build());
+                                                BodyQName.create(XMPPBOSHConnection.BOSH_URI, "to"), getServiceName().toString()).build());
                                 Success success = new Success(parser.nextText());
                                 getSASLAuthentication().authenticated(success);
                                 break;

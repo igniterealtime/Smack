@@ -20,11 +20,11 @@ package org.jivesoftware.smack.roster.packet;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jxmpp.jid.Jid;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -107,7 +107,7 @@ public class RosterPacket extends IQ {
 
         public static final String GROUP = "group";
 
-        private String user;
+        private final Jid user;
         private String name;
         private ItemType itemType;
         private ItemStatus itemStatus;
@@ -119,8 +119,8 @@ public class RosterPacket extends IQ {
          * @param user the user.
          * @param name the user's name.
          */
-        public Item(String user, String name) {
-            this.user = user.toLowerCase(Locale.US);
+        public Item(Jid user, String name) {
+            this.user = user;
             this.name = name;
             itemType = null;
             itemStatus = null;
@@ -132,7 +132,7 @@ public class RosterPacket extends IQ {
          *
          * @return the user.
          */
-        public String getUser() {
+        public Jid getUser() {
             return user;
         }
 

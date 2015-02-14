@@ -30,6 +30,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.jid.DomainBareJid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -66,7 +67,7 @@ public class UserSearch extends SimpleIQ {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public Form getSearchForm(XMPPConnection con, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public Form getSearchForm(XMPPConnection con, DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         UserSearch search = new UserSearch();
         search.setType(IQ.Type.get);
         search.setTo(searchService);
@@ -87,7 +88,7 @@ public class UserSearch extends SimpleIQ {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public ReportedData sendSearchForm(XMPPConnection con, Form searchForm, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public ReportedData sendSearchForm(XMPPConnection con, Form searchForm, DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         UserSearch search = new UserSearch();
         search.setType(IQ.Type.set);
         search.setTo(searchService);
@@ -109,7 +110,7 @@ public class UserSearch extends SimpleIQ {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public ReportedData sendSimpleSearchForm(XMPPConnection con, Form searchForm, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public ReportedData sendSimpleSearchForm(XMPPConnection con, Form searchForm, DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         SimpleUserSearch search = new SimpleUserSearch();
         search.setForm(searchForm);
         search.setType(IQ.Type.set);

@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jxmpp.jid.Jid;
 
 /**
  * Represents XMPP message packets. A message can be one of several types:
@@ -72,7 +73,7 @@ public final class Message extends Stanza {
      *
      * @param to the recipient of the message.
      */
-    public Message(String to) {
+    public Message(Jid to) {
         setTo(to);
     }
 
@@ -82,7 +83,7 @@ public final class Message extends Stanza {
      * @param to the user to send the message to.
      * @param type the message type.
      */
-    public Message(String to, Type type) {
+    public Message(Jid to, Type type) {
         this(to);
         setType(type);
     }
@@ -93,7 +94,7 @@ public final class Message extends Stanza {
      * @param to the user to send the message to.
      * @param body the body of the message.
      */
-    public Message(String to, String body) {
+    public Message(Jid to, String body) {
         this(to);
         setBody(body);
     }

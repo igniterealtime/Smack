@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.nat.TransportResolverListener.Checker;
+import org.jxmpp.jid.Jid;
 
 /**
  * Transport candidate.
@@ -608,8 +609,8 @@ public abstract class TransportCandidate {
     public class CandidateEcho implements Runnable {
 
         DatagramSocket socket = null;
-        String localUser = null;
-        String remoteUser = null;
+        Jid localUser;
+        Jid remoteUser;
         String id = null;
         byte[] send = null;
         byte[] receive = null;

@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.offline;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jxmpp.jid.Jid;
 
 /**
  * The OfflineMessageHeader holds header information of an offline message. The header
@@ -32,7 +33,7 @@ public class OfflineMessageHeader {
     /**
      * Bare JID of the user that was offline when the message was sent.
      */
-    private String user;
+    private Jid user;
     /**
      * Full JID of the user that sent the message.
      */
@@ -56,7 +57,7 @@ public class OfflineMessageHeader {
      *
      * @return the bare JID of the user that was offline when the message was sent.
      */
-    public String getUser() {
+    public Jid getUser() {
         return user;
     }
 

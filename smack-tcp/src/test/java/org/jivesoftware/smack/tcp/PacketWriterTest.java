@@ -25,6 +25,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketWriter;
 import org.junit.Test;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 import static org.junit.Assert.fail;
 
@@ -41,10 +42,11 @@ public class PacketWriterTest {
      * @throws InterruptedException
      * @throws BrokenBarrierException
      * @throws NotConnectedException 
+     * @throws XmppStringprepException 
      */
     @SuppressWarnings("javadoc")
     @Test
-    public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException, NotConnectedException {
+    public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException, NotConnectedException, XmppStringprepException {
         XMPPTCPConnection connection = new XMPPTCPConnection("user", "pass", "example.org");
         final PacketWriter pw = connection.new PacketWriter();
         connection.packetWriter = pw;

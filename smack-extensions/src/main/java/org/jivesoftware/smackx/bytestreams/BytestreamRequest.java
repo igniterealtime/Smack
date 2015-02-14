@@ -22,6 +22,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamRequest;
+import org.jxmpp.jid.Jid;
 
 /**
  * BytestreamRequest provides an interface to handle incoming bytestream requests.
@@ -38,7 +39,7 @@ public interface BytestreamRequest {
      * 
      * @return the sender of the bytestream open request
      */
-    public String getFrom();
+    public Jid getFrom();
 
     /**
      * Returns the session ID of the bytestream open request.

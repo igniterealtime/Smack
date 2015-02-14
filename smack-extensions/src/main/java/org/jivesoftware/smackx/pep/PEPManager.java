@@ -31,6 +31,7 @@ import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.pep.packet.PEPEvent;
 import org.jivesoftware.smackx.pep.packet.PEPItem;
 import org.jivesoftware.smackx.pep.packet.PEPPubSub;
+import org.jxmpp.jid.Jid;
 
 /**
  *
@@ -122,7 +123,7 @@ public class PEPManager {
     /**
      * Fires roster exchange listeners.
      */
-    private void firePEPListeners(String from, PEPEvent event) {
+    private void firePEPListeners(Jid from, PEPEvent event) {
         PEPListener[] listeners = null;
         synchronized (pepListeners) {
             listeners = new PEPListener[pepListeners.size()];

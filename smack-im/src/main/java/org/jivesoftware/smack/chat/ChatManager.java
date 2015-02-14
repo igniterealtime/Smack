@@ -24,6 +24,7 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.MessageListener;
@@ -41,7 +42,9 @@ import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.JidWithLocalpart;
 
 /**
  * The chat manager keeps track of references to all current chats. It will not hold any references
@@ -51,6 +54,9 @@ import org.jxmpp.util.XmppStringUtils;
  * @author Alexander Wenckus
  */
 public class ChatManager extends Manager{
+
+    private static final Logger LOGGER = Logger.getLogger(ChatManager.class.getName());
+
     private static final Map<XMPPConnection, ChatManager> INSTANCES = new WeakHashMap<XMPPConnection, ChatManager>();
 
     /**
@@ -124,12 +130,12 @@ public class ChatManager extends Manager{
     /**
      * Maps jids to chats
      */
-    private Map<String, Chat> jidChats = new ConcurrentHashMap<>();
+    private Map<Jid, Chat> jidChats = new ConcurrentHashMap<>();
 
     /**
      * Maps base jids to chats
      */
-    private Map<String, Chat> baseJidChats = new ConcurrentHashMap<>();
+    private Map<BareJid, Chat> baseJidChats = new ConcurrentHashMap<>();
 
     private Set<ChatManagerListener> chatManagerListeners
             = new CopyOnWriteArraySet<ChatManagerListener>();
@@ -209,7 +215,7 @@ public class ChatManager extends Manager{
      * @param userJID the user this chat is with.
      * @return the created chat.
      */
-    public Chat createChat(String userJID) {
+    public Chat createChat(JidWithLocalpart userJID) {
         return createChat(userJID, null);
     }
 
@@ -220,7 +226,7 @@ public class ChatManager extends Manager{
      * @param listener the optional listener which will listen for new messages from this chat.
      * @return the created chat.
      */
-    public Chat createChat(String userJID, ChatMessageListener listener) {
+    public Chat createChat(JidWithLocalpart userJID, ChatMessageListener listener) {
         return createChat(userJID, null, listener);
     }
 
@@ -232,7 +238,7 @@ public class ChatManager extends Manager{
      * @param listener the optional listener to add to the chat
      * @return the created chat.
      */
-    public Chat createChat(String userJID, String thread, ChatMessageListener listener) {
+    public Chat createChat(JidWithLocalpart userJID, String thread, ChatMessageListener listener) {
         if (thread == null) {
             thread = nextID();
         }
@@ -245,11 +251,11 @@ public class ChatManager extends Manager{
         return chat;
     }
 
-    private Chat createChat(String userJID, String threadID, boolean createdLocally) {
+    private Chat createChat(JidWithLocalpart userJID, String threadID, boolean createdLocally) {
         Chat chat = new Chat(this, userJID, threadID);
         threadChats.put(threadID, chat);
         jidChats.put(userJID, chat);
-        baseJidChats.put(XmppStringUtils.parseBareJid(userJID), chat);
+        baseJidChats.put(userJID.asBareJid(), chat);
 
         for(ChatManagerListener listener : chatManagerListeners) {
             listener.chatCreated(chat, createdLocally);
@@ -260,9 +266,9 @@ public class ChatManager extends Manager{
 
     void closeChat(Chat chat) {
         threadChats.remove(chat.getThreadID());
-        String userJID = chat.getParticipant();
+        JidWithLocalpart userJID = chat.getParticipant();
         jidChats.remove(userJID);
-        baseJidChats.remove(XmppStringUtils.parseBareJid(userJID));
+        baseJidChats.remove(userJID.withoutResource());
     }
 
     /**
@@ -273,10 +279,16 @@ public class ChatManager extends Manager{
      * @return a Chat or null if none can be created
      */
     private Chat createChat(Message message) {
-        String userJID = message.getFrom();
+        Jid from = message.getFrom();
         // According to RFC6120 8.1.2.1 4. messages without a 'from' attribute are valid, but they
         // are of no use in this case for ChatManager
+        if (from == null) {
+            return null;
+        }
+
+        JidWithLocalpart userJID = from.asJidWithLocalpartIfPossible();
         if (userJID == null) {
+            LOGGER.warning("Message from JID without localpart: '" +message.toXML() + "'");
             return null;
         }
         String threadID = message.getThread();
@@ -296,7 +308,7 @@ public class ChatManager extends Manager{
      * @param userJID jid in the from field of message.
      * @return Matching chat, or null if no match found.
      */
-    private Chat getUserChat(String userJID) {
+    private Chat getUserChat(Jid userJID) {
         if (matchMode == MatchMode.NONE) {
             return null;
         }
@@ -308,7 +320,7 @@ public class ChatManager extends Manager{
         Chat match = jidChats.get(userJID);
 	
         if (match == null && (matchMode == MatchMode.BARE_JID)) {
-            match = baseJidChats.get(XmppStringUtils.parseBareJid(userJID));
+            match = baseJidChats.get(userJID.asBareJidIfPossible());
         }
         return match;
     }

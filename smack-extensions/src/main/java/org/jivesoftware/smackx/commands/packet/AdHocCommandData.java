@@ -24,6 +24,7 @@ import org.jivesoftware.smackx.commands.AdHocCommand.Action;
 import org.jivesoftware.smackx.commands.AdHocCommand.SpecificErrorCondition;
 import org.jivesoftware.smackx.commands.AdHocCommandNote;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.jid.Jid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class AdHocCommandData extends IQ {
     public static final String NAMESPACE = "http://jabber.org/protocol/commands";
 
     /* JID of the command host */
-    private String id;
+    private Jid id;
 
     /* Command name */
     private String name;
@@ -114,11 +115,11 @@ public class AdHocCommandData extends IQ {
      *
      * @return the JID of the command host.
      */
-    public String getId() {
+    public Jid getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Jid id) {
         this.id = id;
     }
 

@@ -42,6 +42,7 @@ import org.jivesoftware.smackx.filetransfer.FileTransferException.NoStreamMethod
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.jid.Jid;
 
 /**
  * Manages the negotiation of file transfers according to XEP-0096. If a file is
@@ -302,7 +303,7 @@ public class FileTransferNegotiator extends Manager {
      * @throws NoAcceptableTransferMechanisms 
      * @throws InterruptedException 
      */
-    public StreamNegotiator negotiateOutgoingTransfer(final String userID,
+    public StreamNegotiator negotiateOutgoingTransfer(final Jid userID,
             final String streamID, final String fileName, final long size,
             final String desc, int responseTimeout) throws XMPPErrorException, NotConnectedException, NoResponseException, NoAcceptableTransferMechanisms, InterruptedException {
         StreamInitiation si = new StreamInitiation();

@@ -19,7 +19,9 @@ package org.jivesoftware.smackx.bytestreams.socks5.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
+import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -41,7 +43,7 @@ public class BytestreamsProvider extends IQProvider<Bytestream> {
         String mode = parser.getAttributeValue("", "mode");
 
         // streamhost
-        String JID = null;
+        Jid JID = null;
         String host = null;
         String port = null;
 
@@ -52,15 +54,15 @@ public class BytestreamsProvider extends IQProvider<Bytestream> {
             elementName = parser.getName();
             if (eventType == XmlPullParser.START_TAG) {
                 if (elementName.equals(Bytestream.StreamHost.ELEMENTNAME)) {
-                    JID = parser.getAttributeValue("", "jid");
+                    JID = ParserUtils.getJidAttribute(parser);
                     host = parser.getAttributeValue("", "host");
                     port = parser.getAttributeValue("", "port");
                 }
                 else if (elementName.equals(Bytestream.StreamHostUsed.ELEMENTNAME)) {
-                    toReturn.setUsedHost(parser.getAttributeValue("", "jid"));
+                    toReturn.setUsedHost(ParserUtils.getJidAttribute(parser));
                 }
                 else if (elementName.equals(Bytestream.Activate.ELEMENTNAME)) {
-                    toReturn.setToActivate(parser.getAttributeValue("", "jid"));
+                    toReturn.setToActivate(ParserUtils.getJidAttribute(parser));
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {

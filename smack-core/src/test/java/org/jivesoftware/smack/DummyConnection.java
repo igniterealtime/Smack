@@ -27,6 +27,10 @@ import java.util.concurrent.TimeUnit;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
+import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.JidTestUtil;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * A dummy implementation of {@link XMPPConnection}, intended to be used during
@@ -51,12 +55,25 @@ public class DummyConnection extends AbstractXMPPConnection {
     private final BlockingQueue<TopLevelStreamElement> queue = new LinkedBlockingQueue<TopLevelStreamElement>();
 
     public static ConnectionConfiguration.Builder<?,?> getDummyConfigurationBuilder() {
-        return DummyConnectionConfiguration.builder().setServiceName("example.org").setUsernameAndPassword("dummy",
+        return DummyConnectionConfiguration.builder().setServiceName(JidTestUtil.EXAMPLE_ORG).setUsernameAndPassword("dummy",
                         "dummypass");
     }
 
     public DummyConnection() {
         this(getDummyConfigurationBuilder().build());
+    }
+
+    private FullJid getUserJid() {
+        try {
+            return JidCreate.fullFrom(config.getUsername()
+                            + "@"
+                            + config.getServiceName()
+                            + "/"
+                            + (config.getResource() != null ? config.getResource() : "Test"));
+        }
+        catch (XmppStringprepException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public DummyConnection(ConnectionConfiguration configuration) {
@@ -65,11 +82,7 @@ public class DummyConnection extends AbstractXMPPConnection {
         for (ConnectionCreationListener listener : XMPPConnectionRegistry.getConnectionCreationListeners()) {
             listener.connectionCreated(this);
         }
-        user = config.getUsername()
-                        + "@"
-                        + config.getServiceName()
-                        + "/"
-                        + (config.getResource() != null ? config.getResource() : "Test");
+        user = getUserJid();
     }
 
     @Override
@@ -104,11 +117,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     @Override
     protected void loginNonAnonymously(String username, String password, String resource)
             throws XMPPException {
-        user = username
-                + "@"
-                + config.getServiceName()
-                + "/" 
-                + (resource != null ? resource : "Test");
+        user = getUserJid();
         authenticated = true;
     }
 

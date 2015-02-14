@@ -37,6 +37,7 @@ import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamSession;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
+import org.jxmpp.jid.Jid;
 
 /**
  * Negotiates a SOCKS5 Bytestream to be used for file transfers. The implementation is based on the
@@ -57,7 +58,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     }
 
     @Override
-    public OutputStream createOutgoingStream(String streamID, String initiator, String target) throws NoResponseException, SmackException, XMPPException
+    public OutputStream createOutgoingStream(String streamID, Jid initiator, Jid target) throws NoResponseException, SmackException, XMPPException
                     {
         try {
             return this.manager.establishSession(target, streamID).getOutputStream();
@@ -84,7 +85,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     }
 
     @Override
-    public PacketFilter getInitiationPacketFilter(final String from, String streamID) {
+    public PacketFilter getInitiationPacketFilter(final Jid from, String streamID) {
         /*
          * this method is always called prior to #negotiateIncomingStream() so the SOCKS5
          * InitiationListener must ignore the next SOCKS5 Bytestream request with the given session

@@ -47,6 +47,7 @@ import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
+import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -222,8 +223,8 @@ public class PacketParserUtils {
         final int initialDepth = parser.getDepth();
         Message message = new Message();
         message.setStanzaId(parser.getAttributeValue("", "id"));
-        message.setTo(parser.getAttributeValue("", "to"));
-        message.setFrom(parser.getAttributeValue("", "from"));
+        message.setTo(ParserUtils.getJidAttribute(parser, "to"));
+        message.setFrom(ParserUtils.getJidAttribute(parser, "from"));
         String typeString = parser.getAttributeValue("", "type");
         if (typeString != null) {
             message.setType(Message.Type.fromString(typeString));
@@ -527,8 +528,8 @@ public class PacketParserUtils {
             type = Presence.Type.fromString(typeString);
         }
         Presence presence = new Presence(type);
-        presence.setTo(parser.getAttributeValue("", "to"));
-        presence.setFrom(parser.getAttributeValue("", "from"));
+        presence.setTo(ParserUtils.getJidAttribute(parser, "to"));
+        presence.setFrom(ParserUtils.getJidAttribute(parser, "from"));
         presence.setStanzaId(parser.getAttributeValue("", "id"));
 
         String language = getLanguageAttribute(parser);
@@ -606,8 +607,8 @@ public class PacketParserUtils {
         XMPPError error = null;
 
         final String id = parser.getAttributeValue("", "id");
-        final String to = parser.getAttributeValue("", "to");
-        final String from = parser.getAttributeValue("", "from");
+        final Jid to = ParserUtils.getJidAttribute(parser, "to");
+        final Jid from = ParserUtils.getJidAttribute(parser, "from");
         final IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
 
         outerloop: while (true) {

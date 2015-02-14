@@ -21,6 +21,7 @@ package org.jivesoftware.smackx.iqversion.packet;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jxmpp.jid.Jid;
 
 /**
  * A Version IQ packet, which is used by XMPP clients to discover version information
@@ -68,7 +69,7 @@ public class Version extends IQ {
      * 
      * @param to the jid where to request version from
      */
-    public Version(String to) {
+    public Version(Jid to) {
         this();
         setTo(to);
     }

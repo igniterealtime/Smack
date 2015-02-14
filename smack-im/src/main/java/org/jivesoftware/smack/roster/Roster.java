@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -60,7 +59,11 @@ import org.jivesoftware.smack.roster.packet.RosterVer;
 import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
 import org.jivesoftware.smack.roster.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.Objects;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.JidWithResource;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.jid.parts.Resourcepart;
 
 /**
  * Represents a user's roster, which is the collection of users a person receives
@@ -96,7 +99,7 @@ public class Roster extends Manager {
      * <p>
      * This method will never return <code>null</code>, instead if the user has not yet logged into
      * the server or is logged in anonymously all modifying methods of the returned roster object
-     * like {@link Roster#createEntry(String, String, String[])},
+     * like {@link Roster#createEntry(Jid, String, String[])},
      * {@link Roster#removeEntry(RosterEntry)} , etc. except adding or removing
      * {@link RosterListener}s will throw an IllegalStateException.
      * 
@@ -128,11 +131,16 @@ public class Roster extends Manager {
     /**
      * Concurrent hash map from JID to its roster entry.
      */
-    private final Map<String,RosterEntry> entries = new ConcurrentHashMap<String,RosterEntry>();
+    private final Map<Jid, RosterEntry> entries = new ConcurrentHashMap<>();
 
     private final Set<RosterEntry> unfiledEntries = new CopyOnWriteArraySet<>();
     private final Set<RosterListener> rosterListeners = new LinkedHashSet<>();
-    private final Map<String, Map<String, Presence>> presenceMap = new ConcurrentHashMap<String, Map<String, Presence>>();
+
+    /**
+     * A map of JIDs to another Map of Resourceparts to Presences. The 'inner' map may contain
+     * {@link Resourcepart#EMPTY} if there are no other Presences available.
+     */
+    private final Map<Jid, Map<Resourcepart, Presence>> presenceMap = new ConcurrentHashMap<>();
 
     /**
      * Mutually exclude roster listener invocation and changing the {@link entries} map. Also used
@@ -421,7 +429,7 @@ public class Roster extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void createEntry(String user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void createEntry(Jid user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final XMPPConnection connection = connection();
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
@@ -568,11 +576,11 @@ public class Roster extends Manager {
      *             in any valid format (e.g. "domain/resource", "user@domain" or "user@domain/resource").
      * @return the roster entry or <tt>null</tt> if it does not exist.
      */
-    public RosterEntry getEntry(String user) {
+    public RosterEntry getEntry(Jid user) {
         if (user == null) {
             return null;
         }
-        String key = getMapKey(user);
+        Jid key = getMapKey(user);
         return entries.get(key);
     }
 
@@ -584,7 +592,7 @@ public class Roster extends Manager {
      *             "user@domain" or "user@domain/resource").
      * @return true if the XMPP address is an entry in the roster.
      */
-    public boolean contains(String user) {
+    public boolean contains(Jid user) {
         return getEntry(user) != null;
     }
 
@@ -645,9 +653,9 @@ public class Roster extends Manager {
      * @return the user's current presence, or unavailable presence if the user is offline
      *         or if no presence information is available..
      */
-    public Presence getPresence(String user) {
-        String key = getMapKey(XmppStringUtils.parseBareJid(user));
-        Map<String, Presence> userPresences = presenceMap.get(key);
+    public Presence getPresence(Jid user) {
+        Jid key = getMapKey(user);
+        Map<Resourcepart, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
             presence.setFrom(user);
@@ -660,7 +668,7 @@ public class Roster extends Manager {
             // This is used in case no available presence is found
             Presence unavailable = null;
 
-            for (String resource : userPresences.keySet()) {
+            for (Resourcepart resource : userPresences.keySet()) {
                 Presence p = userPresences.get(resource);
                 if (!p.isAvailable()) {
                     unavailable = p;
@@ -712,10 +720,10 @@ public class Roster extends Manager {
      * @return the user's current presence, or unavailable presence if the user is offline
      *         or if no presence information is available.
      */
-    public Presence getPresenceResource(String userWithResource) {
-        String key = getMapKey(userWithResource);
-        String resource = XmppStringUtils.parseResource(userWithResource);
-        Map<String, Presence> userPresences = presenceMap.get(key);
+    public Presence getPresenceResource(JidWithResource userWithResource) {
+        Jid key = getMapKey(userWithResource);
+        Resourcepart resource = userWithResource.getResourcepart();
+        Map<Resourcepart, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
             presence.setFrom(userWithResource);
@@ -742,8 +750,8 @@ public class Roster extends Manager {
      * @return a List of Presence objects for all the user's current presences, or an unavailable presence if no
      *         presence information is available.
      */
-    public List<Presence> getAllPresences(String bareJid) {
-        Map<String, Presence> userPresences = presenceMap.get(getMapKey(bareJid));
+    public List<Presence> getAllPresences(Jid bareJid) {
+        Map<Resourcepart, Presence> userPresences = presenceMap.get(getMapKey(bareJid));
         List<Presence> res;
         if (userPresences == null) {
             // Create an unavailable presence if none was found
@@ -763,7 +771,7 @@ public class Roster extends Manager {
      * @param bareJid the bare JID from which the presences should be retrieved.
      * @return available presences for the bare JID.
      */
-    public List<Presence> getAvailablePresences(String bareJid) {
+    public List<Presence> getAvailablePresences(Jid bareJid) {
         List<Presence> allPresences = getAllPresences(bareJid);
         List<Presence> res = new ArrayList<>(allPresences.size());
         for (Presence presence : allPresences) {
@@ -785,10 +793,10 @@ public class Roster extends Manager {
      *         or an unavailable presence if the user is offline or if no presence information
      *         is available.
      */
-    public List<Presence> getPresences(String user) {
+    public List<Presence> getPresences(Jid user) {
         List<Presence> res;
-        String key = getMapKey(user);
-        Map<String, Presence> userPresences = presenceMap.get(key);
+        Jid key = getMapKey(user);
+        Map<Resourcepart, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
             presence.setFrom(user);
@@ -835,7 +843,7 @@ public class Roster extends Manager {
      * @return true if the given JID is allowed to see the users presence.
      * @since 4.1
      */
-    public boolean isSubscribedToMyPresence(String jid) {
+    public boolean isSubscribedToMyPresence(Jid jid) {
         if (connection().getServiceName().equals(jid)) {
             return true;
         }
@@ -892,15 +900,19 @@ public class Roster extends Manager {
      *             jdoe@example.com/Work.
      * @return the key to use in the presenceMap and entries Map for the fully qualified XMPP ID.
      */
-    private String getMapKey(String user) {
+    private Jid getMapKey(Jid user) {
         if (user == null) {
             return null;
         }
         if (entries.containsKey(user)) {
             return user;
         }
-        String key = XmppStringUtils.parseBareJid(user);
-        return key.toLowerCase(Locale.US);
+        BareJid bareJid = user.asBareJidIfPossible();
+        if (bareJid != null) {
+            return bareJid;
+        }
+        // jid validate, log this case?
+        return user;
     }
 
     /**
@@ -911,12 +923,17 @@ public class Roster extends Manager {
      */
     private void setOfflinePresencesAndResetLoaded() {
         Presence packetUnavailable;
-        outerloop: for (String user : presenceMap.keySet()) {
-            Map<String, Presence> resources = presenceMap.get(user);
+        outerloop: for (Jid user : presenceMap.keySet()) {
+            Map<Resourcepart, Presence> resources = presenceMap.get(user);
             if (resources != null) {
-                for (String resource : resources.keySet()) {
+                for (Resourcepart resource : resources.keySet()) {
                     packetUnavailable = new Presence(Presence.Type.unavailable);
-                    packetUnavailable.setFrom(user + "/" + resource);
+                    BareJid bareUserJid = user.asBareJidIfPossible();
+                    if (bareUserJid == null) {
+                        LOGGER.warning("Can not transform user JID to bare JID: '" + user + "'");
+                        continue;
+                    }
+                    packetUnavailable.setFrom(JidCreate.fullFrom(bareUserJid, resource));
                     try {
                         presencePacketListener.processPacket(packetUnavailable);
                     }
@@ -943,8 +960,8 @@ public class Roster extends Manager {
      * @param updatedEntries the collection of address of the updated contacts.
      * @param deletedEntries the collection of address of the deleted contacts.
      */
-    private void fireRosterChangedEvent(final Collection<String> addedEntries, final Collection<String> updatedEntries,
-                    final Collection<String> deletedEntries) {
+    private void fireRosterChangedEvent(final Collection<Jid> addedEntries, final Collection<Jid> updatedEntries,
+                    final Collection<Jid> deletedEntries) {
         synchronized (rosterListenersAndEntriesLock) {
             for (RosterListener listener : rosterListeners) {
                 if (!addedEntries.isEmpty()) {
@@ -973,8 +990,8 @@ public class Roster extends Manager {
         }
     }
 
-    private void addUpdateEntry(Collection<String> addedEntries, Collection<String> updatedEntries,
-                    Collection<String> unchangedEntries, RosterPacket.Item item, RosterEntry entry) {
+    private void addUpdateEntry(Collection<Jid> addedEntries, Collection<Jid> updatedEntries,
+                    Collection<Jid> unchangedEntries, RosterPacket.Item item, RosterEntry entry) {
         RosterEntry oldEntry;
         synchronized (rosterListenersAndEntriesLock) {
             oldEntry = entries.put(item.getUser(), entry);
@@ -1032,11 +1049,11 @@ public class Roster extends Manager {
         }
     }
 
-    private void deleteEntry(Collection<String> deletedEntries, RosterEntry entry) {
-        String user = entry.getUser();
+    private void deleteEntry(Collection<Jid> deletedEntries, RosterEntry entry) {
+        Jid user = entry.getUser();
         entries.remove(user);
         unfiledEntries.remove(entry);
-        presenceMap.remove(XmppStringUtils.parseBareJid(user));
+        presenceMap.remove(user);
         deletedEntries.add(user);
 
         for (Entry<String,RosterGroup> e: groups.entrySet()) {
@@ -1131,8 +1148,8 @@ public class Roster extends Manager {
          * @param key the presence map key
          * @return the user presences
          */
-        private Map<String, Presence> getUserPresences(String key) {
-            Map<String, Presence> userPresences = presenceMap.get(key);
+        private Map<Resourcepart, Presence> getUserPresences(Jid key) {
+            Map<Resourcepart, Presence> userPresences = presenceMap.get(key);
             if (userPresences == null) {
                 userPresences = new ConcurrentHashMap<>();
                 presenceMap.put(key, userPresences);
@@ -1144,9 +1161,13 @@ public class Roster extends Manager {
         public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
             final XMPPConnection connection = connection();
             Presence presence = (Presence) packet;
-            String from = presence.getFrom();
-            String key = getMapKey(from);
-            Map<String, Presence> userPresences;
+            Jid from = presence.getFrom();
+            Resourcepart fromResource = from.getResourceOrNull();
+            if (fromResource == null) {
+                fromResource = Resourcepart.EMPTY;
+            }
+            Jid key = getMapKey(from);
+            Map<Resourcepart, Presence> userPresences;
             Presence response = null;
 
             // If an "available" presence, add it to the presence map. Each presence
@@ -1158,9 +1179,9 @@ public class Roster extends Manager {
                 userPresences = getUserPresences(key);
                 // See if an offline presence was being stored in the map. If so, remove
                 // it since we now have an online presence.
-                userPresences.remove("");
+                userPresences.remove(Resourcepart.EMPTY);
                 // Add the new presence, using the resources as a key.
-                userPresences.put(XmppStringUtils.parseResource(from), presence);
+                userPresences.put(fromResource, presence);
                 // If the user is in the roster, fire an event.
                 if (entries.containsKey(key)) {
                     fireRosterPresenceEvent(presence);
@@ -1170,17 +1191,17 @@ public class Roster extends Manager {
             case unavailable:
                 // If no resource, this is likely an offline presence as part of
                 // a roster presence flood. In that case, we store it.
-                if ("".equals(XmppStringUtils.parseResource(from))) {
+                if (from.hasNoResource()) {
                     // Get the user presence map
                     userPresences = getUserPresences(key);
-                    userPresences.put("", presence);
+                    userPresences.put(Resourcepart.EMPTY, presence);
                 }
                 // Otherwise, this is a normal offline presence.
                 else if (presenceMap.get(key) != null) {
                     userPresences = presenceMap.get(key);
                     // Store the offline presence, as it may include extra information
                     // such as the user being on vacation.
-                    userPresences.put(XmppStringUtils.parseResource(from), presence);
+                    userPresences.put(fromResource, presence);
                 }
                 // If the user is in the roster, fire an event.
                 if (entries.containsKey(key)) {
@@ -1221,7 +1242,7 @@ public class Roster extends Manager {
             // Error presence packets from a bare JID mean we invalidate all existing
             // presence info for the user.
             case error:
-                if (!"".equals(XmppStringUtils.parseResource(from))) {
+                if (!from.isBareJid()) {
                     break;
                 }
                 userPresences = getUserPresences(key);
@@ -1229,7 +1250,7 @@ public class Roster extends Manager {
                 userPresences.clear();
 
                 // Set the new presence using the empty resource as a key.
-                userPresences.put("", presence);
+                userPresences.put(Resourcepart.EMPTY, presence);
                 // If the user is in the roster, fire an event.
                 if (entries.containsKey(key)) {
                     fireRosterPresenceEvent(presence);
@@ -1250,10 +1271,10 @@ public class Roster extends Manager {
         public void processPacket(Stanza packet) {
             final XMPPConnection connection = connection();
             LOGGER.fine("RosterResultListener received stanza");
-            Collection<String> addedEntries = new ArrayList<String>();
-            Collection<String> updatedEntries = new ArrayList<String>();
-            Collection<String> deletedEntries = new ArrayList<String>();
-            Collection<String> unchangedEntries = new ArrayList<String>();
+            Collection<Jid> addedEntries = new ArrayList<>();
+            Collection<Jid> updatedEntries = new ArrayList<>();
+            Collection<Jid> deletedEntries = new ArrayList<>();
+            Collection<Jid> unchangedEntries = new ArrayList<>();
 
             if (packet instanceof RosterPacket) {
                 // Non-empty roster result. This stanza contains all the roster elements.
@@ -1274,14 +1295,14 @@ public class Roster extends Manager {
                 }
 
                 // Delete all entries which where not added or updated
-                Set<String> toDelete = new HashSet<String>();
+                Set<Jid> toDelete = new HashSet<>();
                 for (RosterEntry entry : entries.values()) {
                     toDelete.add(entry.getUser());
                 }
                 toDelete.removeAll(addedEntries);
                 toDelete.removeAll(updatedEntries);
                 toDelete.removeAll(unchangedEntries);
-                for (String user : toDelete) {
+                for (Jid user : toDelete) {
                     deleteEntry(deletedEntries, entries.get(user));
                 }
 
@@ -1329,8 +1350,8 @@ public class Roster extends Manager {
 
             // Roster push (RFC 6121, 2.1.6)
             // A roster push with a non-empty from not matching our address MUST be ignored
-            String jid = XmppStringUtils.parseBareJid(connection.getUser());
-            String from = rosterPacket.getFrom();
+            BareJid jid = connection.getUser().asBareJid();
+            Jid from = rosterPacket.getFrom();
             if (from != null && !from.equals(jid)) {
                 LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid='" + jid + "' from='" + from
                                 + "'");
@@ -1344,10 +1365,10 @@ public class Roster extends Manager {
                 return IQ.createErrorResponse(iqRequest, new XMPPError(Condition.bad_request));
             }
 
-            Collection<String> addedEntries = new ArrayList<String>();
-            Collection<String> updatedEntries = new ArrayList<String>();
-            Collection<String> deletedEntries = new ArrayList<String>();
-            Collection<String> unchangedEntries = new ArrayList<String>();
+            Collection<Jid> addedEntries = new ArrayList<>();
+            Collection<Jid> updatedEntries = new ArrayList<>();
+            Collection<Jid> deletedEntries = new ArrayList<>();
+            Collection<Jid> unchangedEntries = new ArrayList<>();
 
             // We assured above that the size of items is exaclty 1, therefore we are able to
             // safely retrieve this single item here.

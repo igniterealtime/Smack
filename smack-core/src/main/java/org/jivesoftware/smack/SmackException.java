@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jxmpp.jid.Jid;
 
 /**
  * Smack uses SmackExceptions for errors that are not defined by any XMPP specification.
@@ -225,13 +226,13 @@ public class SmackException extends Exception {
         private static final long serialVersionUID = 4713404802621452016L;
 
         private final String feature;
-        private final String jid;
+        private final Jid jid;
 
         public FeatureNotSupportedException(String feature) {
             this(feature, null);
         }
 
-        public FeatureNotSupportedException(String feature, String jid) {
+        public FeatureNotSupportedException(String feature, Jid jid) {
             super(feature + " not supported" + (jid == null ? "" : " by '" + jid + "'"));
             this.jid = jid;
             this.feature = feature;
@@ -252,7 +253,7 @@ public class SmackException extends Exception {
          *
          * @return the JID which does not support the feature, or null
          */
-        public String getJid() {
+        public Jid getJid() {
             return jid;
         }
     }

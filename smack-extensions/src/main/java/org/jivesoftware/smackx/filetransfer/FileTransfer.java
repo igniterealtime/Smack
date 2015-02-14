@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.jxmpp.jid.Jid;
+
 /**
  * Contains the generic file information and progress related to a particular
  * file transfer.
@@ -35,7 +37,7 @@ public abstract class FileTransfer {
 
 	private long fileSize;
 
-	private String peer;
+	private Jid peer;
 
 	private Status status = Status.initial;
 
@@ -56,7 +58,7 @@ public abstract class FileTransfer {
      */
     private static final int BUFFER_SIZE = 8192;
 
-    protected FileTransfer(String peer, String streamID,
+    protected FileTransfer(Jid peer, String streamID,
 			FileTransferNegotiator negotiator) {
 		this.peer = peer;
 		this.streamID = streamID;
@@ -106,7 +108,7 @@ public abstract class FileTransfer {
 	 *
 	 * @return Returns the JID of the peer for this file transfer.
 	 */
-	public String getPeer() {
+	public Jid getPeer() {
 		return peer;
 	}
 

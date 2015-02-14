@@ -25,6 +25,7 @@ import java.util.Properties;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.junit.Test;
+import org.jxmpp.jid.impl.JidCreate;
 
 import com.jamesmurty.utils.XMLBuilder;
 
@@ -70,8 +71,8 @@ public class DataTest {
 
         DataPacketExtension dpe = new DataPacketExtension("i781hf64", 0, encodedData);
         Data data = new Data(dpe);
-        data.setFrom("romeo@montague.lit/orchard");
-        data.setTo("juliet@capulet.lit/balcony");
+        data.setFrom(JidCreate.from("romeo@montague.lit/orchard"));
+        data.setTo(JidCreate.from("juliet@capulet.lit/balcony"));
         data.setStanzaId("kr91n475");
         
         assertXMLEqual(control, data.toXML().toString());

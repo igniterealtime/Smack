@@ -107,6 +107,24 @@ public class PrivacyItem {
     }
 
     /**
+     * Creates a new privacy item.
+     *
+     * If the type is "jid", then the 'value' attribute MUST contain a valid Jabber ID.
+     * If the type is "group", then the 'value' attribute SHOULD contain the name of a group
+     * in the user's roster.
+     * If the type is "subscription", then the 'value' attribute MUST be one of "both", "to",
+     * "from", or "none".
+     *
+     * @param type the type.
+     * @param value the value of the privacy item
+     * @param allow true if this is an allow item
+     * @param order the order of this privacy item
+     */
+    public PrivacyItem(Type type, CharSequence value, boolean allow, long order) {
+        this(type, value != null ? value.toString() : null, allow, order);
+    }
+
+    /**
      * Returns the action associated with the item, it MUST be filled and will allow or deny
      * the communication.
      *

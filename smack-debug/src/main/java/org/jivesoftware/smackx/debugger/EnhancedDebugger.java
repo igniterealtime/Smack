@@ -32,6 +32,8 @@ import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.WriterListener;
+import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.Jid;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -735,12 +737,13 @@ public class EnhancedDebugger implements SmackDebugger {
         return writer;
     }
 
-    public void userHasLogged(final String user) {
+    @Override
+    public void userHasLogged(final FullJid user) {
         final EnhancedDebugger debugger = this;
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                userField.setText(user);
-                EnhancedDebuggerWindow.userHasLogged(debugger, user);
+                userField.setText(user.toString());
+                EnhancedDebuggerWindow.userHasLogged(debugger, user.toString());
                 // Add the connection listener to the connection so that the debugger can be notified
                 // whenever the connection is closed.
                 connection.addConnectionListener(connListener);
@@ -795,7 +798,7 @@ public class EnhancedDebugger implements SmackDebugger {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 String messageType;
-                String from = packet.getFrom();
+                Jid from = packet.getFrom();
                 String type = "";
                 Icon packetTypeIcon;
                 receivedPackets++;
@@ -856,7 +859,7 @@ public class EnhancedDebugger implements SmackDebugger {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 String messageType;
-                String to = packet.getTo();
+                Jid to = packet.getTo();
                 String type = "";
                 Icon packetTypeIcon;
                 sentPackets++;

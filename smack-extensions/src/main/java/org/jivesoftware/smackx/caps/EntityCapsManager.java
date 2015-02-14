@@ -45,6 +45,8 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Feature;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.util.cache.LruCache;
 
 import java.util.Comparator;
@@ -107,7 +109,7 @@ public class EntityCapsManager extends Manager {
      * link-local connection the key is formed as user@host (no resource) In
      * case of a server or component the key is formed as domain
      */
-    private static final LruCache<String, NodeVerHash> JID_TO_NODEVER_CACHE = new LruCache<String, NodeVerHash>(10000);
+    private static final LruCache<Jid, NodeVerHash> JID_TO_NODEVER_CACHE = new LruCache<>(10000);
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -166,7 +168,7 @@ public class EntityCapsManager extends Manager {
         }
     }
 
-    public static NodeVerHash getNodeVerHashByJid(String jid) {
+    public static NodeVerHash getNodeVerHashByJid(Jid jid) {
         return JID_TO_NODEVER_CACHE.get(jid);
     }
 
@@ -179,7 +181,7 @@ public class EntityCapsManager extends Manager {
      *            user name (Full JID)
      * @return the discovered info
      */
-    public static DiscoverInfo getDiscoverInfoByUser(String user) {
+    public static DiscoverInfo getDiscoverInfoByUser(Jid user) {
         NodeVerHash nvh = JID_TO_NODEVER_CACHE.get(user);
         if (nvh == null)
             return null;
@@ -242,7 +244,7 @@ public class EntityCapsManager extends Manager {
         CAPS_CACHE.clear();
     }
 
-    private static void addCapsExtensionInfo(String from, CapsExtension capsExtension) {
+    private static void addCapsExtensionInfo(Jid from, CapsExtension capsExtension) {
         String capsExtensionHash = capsExtension.getHash();
         String hashInUppercase = capsExtensionHash.toUpperCase(Locale.US);
         // SUPPORTED_HASHES uses the format of MessageDigest, which is uppercase, e.g. "SHA-1" instead of "sha-1"
@@ -300,7 +302,7 @@ public class EntityCapsManager extends Manager {
                 if (capsExtension == null) {
                     return;
                 }
-                String from = connection.getServiceName();
+                DomainBareJid from = connection.getServiceName();
                 addCapsExtensionInfo(from, capsExtension);
             }
         });
@@ -320,7 +322,7 @@ public class EntityCapsManager extends Manager {
                     return;
 
                 CapsExtension capsExtension = CapsExtension.from(packet);
-                String from = packet.getFrom();
+                Jid from = packet.getFrom();
                 addCapsExtensionInfo(from, capsExtension);
             }
 
@@ -331,7 +333,7 @@ public class EntityCapsManager extends Manager {
             public void processPacket(Stanza packet) {
                 // always remove the JID from the map, even if entityCaps are
                 // disabled
-                String from = packet.getFrom();
+                Jid from = packet.getFrom();
                 JID_TO_NODEVER_CACHE.remove(from);
             }
         }, PRESENCES_WITHOUT_CAPS);
@@ -436,7 +438,7 @@ public class EntityCapsManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public boolean areEntityCapsSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public boolean areEntityCapsSupported(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return sdm.supportsFeature(jid, NAMESPACE);
     }
 

@@ -16,8 +16,10 @@
  */
 package org.jivesoftware.smackx.forward;
 
+import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.util.Properties;
 
@@ -56,7 +58,7 @@ public class ForwardedTest {
         assertEquals(null, fwd.getDelayInformation());
         
         // check message
-        assertEquals("romeo@montague.com", fwd.getForwardedPacket().getFrom());
+        assertThat("romeo@montague.com", equalsCharSequence(fwd.getForwardedPacket().getFrom()));
 
         // check end of tag
         assertEquals(XmlPullParser.END_TAG, parser.getEventType());
@@ -84,7 +86,7 @@ public class ForwardedTest {
         assertNotNull(delay);
 
         // check message
-        assertEquals("romeo@montague.com", fwd.getForwardedPacket().getFrom());
+        assertThat("romeo@montague.com", equalsCharSequence(fwd.getForwardedPacket().getFrom()));
 
         // check end of tag
         assertEquals(XmlPullParser.END_TAG, parser.getEventType());

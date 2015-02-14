@@ -46,7 +46,8 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingleold.nat.TransportResolver;
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.provider.JingleProvider;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.Jid;
 
 /**
  * Jingle is a session establishment protocol defined in (XEP-0166).
@@ -216,18 +217,18 @@ public class JingleManager implements JingleSessionListener {
 
         Roster.getInstanceFor(connection).addRosterListener(new RosterListener() {
 
-            public void entriesAdded(Collection<String> addresses) {
+            public void entriesAdded(Collection<Jid> addresses) {
             }
 
-            public void entriesUpdated(Collection<String> addresses) {
+            public void entriesUpdated(Collection<Jid> addresses) {
             }
 
-            public void entriesDeleted(Collection<String> addresses) {
+            public void entriesDeleted(Collection<Jid> addresses) {
             }
 
             public void presenceChanged(Presence presence) {
                 if (!presence.isAvailable()) {
-                    String xmppAddress = presence.getFrom();
+                    Jid xmppAddress = presence.getFrom();
                     JingleSession aux = null;
                     for (JingleSession jingleSession : jingleSessions) {
                         if (jingleSession.getInitiator().equals(xmppAddress) || jingleSession.getResponder().equals(xmppAddress)) {
@@ -314,7 +315,7 @@ public class JingleManager implements JingleSessionListener {
      * @throws XMPPException 
      * @throws InterruptedException 
      */
-    public static boolean isServiceEnabled(XMPPConnection connection, String userID) throws XMPPException, SmackException, InterruptedException {
+    public static boolean isServiceEnabled(XMPPConnection connection, Jid userID) throws XMPPException, SmackException, InterruptedException {
             return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(userID, Jingle.NAMESPACE);
     }
 
@@ -518,12 +519,7 @@ public class JingleManager implements JingleSessionListener {
      *                     user.
      * @return The session on which the negotiation can be run.
      */
-    public JingleSession createOutgoingJingleSession(String responder) throws XMPPException {
-
-        if (XmppStringUtils.isFullJID(responder)) {
-            throw new IllegalArgumentException("The provided user id was not fully qualified");
-        }
-
+    public JingleSession createOutgoingJingleSession(FullJid responder) throws XMPPException {
         JingleSession session = new JingleSession(connection, (JingleSessionRequest) null, connection.getUser(), responder, jingleMediaManagers);
 
         triggerSessionCreated(session);

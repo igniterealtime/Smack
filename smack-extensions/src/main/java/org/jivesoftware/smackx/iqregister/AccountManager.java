@@ -34,7 +34,6 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.iqregister.packet.Registration;
-import org.jxmpp.util.XmppStringUtils;
 
 /**
  * Allows creation and management of accounts on an XMPP server.
@@ -253,7 +252,7 @@ public class AccountManager extends Manager {
      */
     public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Map<String, String> map = new HashMap<String, String>();
-        map.put("username",XmppStringUtils.parseLocalpart(connection().getUser()));
+        map.put("username",  connection().getUser().getLocalpart().toString());
         map.put("password",newPassword);
         Registration reg = new Registration(map);
         reg.setType(IQ.Type.set);

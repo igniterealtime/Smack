@@ -21,6 +21,8 @@ import java.io.IOException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -44,8 +46,9 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
                 String startTag = parser.getName();
                 switch (startTag) {
                 case "item":
-                    String jid = parser.getAttributeValue("", "jid");
+                    String jidString = parser.getAttributeValue("", "jid");
                     String name = parser.getAttributeValue("", "name");
+                    Jid jid = JidCreate.from(jidString);
                     // Create packet.
                     item = new RosterPacket.Item(jid, name);
                     // Set status.

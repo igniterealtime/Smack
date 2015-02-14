@@ -38,6 +38,10 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.jivesoftware.smackx.pubsub.util.NodeUtils;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * This is the starting point for access to the pubsub service.  It
@@ -51,7 +55,7 @@ import org.jivesoftware.smackx.xdata.FormField;
 final public class PubSubManager
 {
 	private XMPPConnection con;
-	private String to;
+	private DomainBareJid to;
 	private Map<String, Node> nodeMap = new ConcurrentHashMap<String, Node>();
 	
 	/**
@@ -59,11 +63,12 @@ final public class PubSubManager
 	 * name to <i>pubsub</i>
 	 * 
 	 * @param connection The XMPP connection
+	 * @throws XmppStringprepException 
 	 */
-	public PubSubManager(XMPPConnection connection)
+	public PubSubManager(XMPPConnection connection) throws XmppStringprepException
 	{
 		con = connection;
-		to = "pubsub." + connection.getServiceName();
+		to = JidCreate.domainBareFrom("pubsub." + connection.getServiceName());
 	}
 	
 	/**
@@ -73,7 +78,7 @@ final public class PubSubManager
 	 * @param connection The XMPP connection
 	 * @param toAddress The pubsub specific to address (required for some servers)
 	 */
-	public PubSubManager(XMPPConnection connection, String toAddress)
+	public PubSubManager(XMPPConnection connection, DomainBareJid toAddress)
 	{
 		con = connection;
 		to = toAddress;
@@ -314,7 +319,7 @@ final public class PubSubManager
         return sendPubsubPacket(con, to, type, Collections.singletonList(ext), ns);
     }
 
-	static PubSub sendPubsubPacket(XMPPConnection con, String to, Type type, List<PacketExtension> extList, PubSubNamespace ns) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
+	static PubSub sendPubsubPacket(XMPPConnection con, Jid to, Type type, List<PacketExtension> extList, PubSubNamespace ns) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 	    PubSub pubSub = new PubSub(to, type, ns);
 	    for (PacketExtension pe : extList) {

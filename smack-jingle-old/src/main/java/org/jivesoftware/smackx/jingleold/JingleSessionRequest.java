@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
+import org.jxmpp.jid.Jid;
 
 /**
  * A Jingle session request.
@@ -61,7 +62,7 @@ public class JingleSessionRequest {
      * @return Returns the fully-qualified jabber ID of the user that requested
      *         this session.
      */
-    public String getFrom() {
+    public Jid getFrom() {
         return jingle.getFrom();
     }
 

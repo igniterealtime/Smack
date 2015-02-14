@@ -32,6 +32,8 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.JidTestUtil;
 
 /**
  * Test for Socks5Client class.
@@ -43,7 +45,7 @@ public class Socks5ClientTest {
     // settings
     private String serverAddress = "127.0.0.1";
     private int serverPort = 7890;
-    private String proxyJID = "proxy.xmpp-server";
+    private DomainBareJid proxyJID = JidTestUtil.MUC_EXAMPLE_ORG;
     private String digest = "digest";
     private ServerSocket serverSocket;
 

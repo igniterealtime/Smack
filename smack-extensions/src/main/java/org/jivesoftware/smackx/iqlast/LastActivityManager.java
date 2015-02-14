@@ -40,6 +40,7 @@ import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.iqlast.packet.LastActivity;
+import org.jxmpp.jid.Jid;
 
 /**
  * A last activity manager for handling information about the last activity
@@ -233,7 +234,7 @@ public class LastActivityManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public LastActivity getLastActivity(String jid) throws NoResponseException, XMPPErrorException,
+    public LastActivity getLastActivity(Jid jid) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
         LastActivity activity = new LastActivity(jid);
         return (LastActivity) connection().createPacketCollectorAndSend(activity).nextResultOrThrow();
@@ -249,7 +250,7 @@ public class LastActivityManager extends Manager {
      * @throws NoResponseException 
      * @throws InterruptedException 
      */
-    public boolean isLastActivitySupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public boolean isLastActivitySupported(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, LastActivity.NAMESPACE);
     }
 }

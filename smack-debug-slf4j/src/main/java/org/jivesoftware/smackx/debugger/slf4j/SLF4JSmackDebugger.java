@@ -23,7 +23,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.jid.FullJid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,18 +93,9 @@ public class SLF4JSmackDebugger implements SmackDebugger  {
     }
 
     @Override
-    public void userHasLogged(String user) {
+    public void userHasLogged(FullJid user) {
         if (logger.isDebugEnabled()) {
-            String userTitle = getUserTitle(user);
-            logger.debug("({}) User logged in {}", connection.hashCode(), userTitle);
-        }
-    }
-
-    private String getUserTitle(String user) {
-        if (("@" + connection.getServiceName()).equals(XmppStringUtils.parseBareJid(user))) {
-            return "<Anonymous>@" + connection.getServiceName();
-        } else {
-            return user;
+            logger.debug("({}) User logged in {}", connection.hashCode(), user.toString());
         }
     }
 

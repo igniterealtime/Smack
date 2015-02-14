@@ -27,6 +27,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.ParserUtils;
+import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -59,9 +61,9 @@ public class OfferRequestProvider extends IQProvider<IQ> {
             // throw exception
         }
 
-        String userJID = parser.getAttributeValue("", "jid");
+        Jid userJID = ParserUtils.getJidAttribute(parser);
         // Default userID to the JID.
-        String userID = userJID;
+        Jid userID = userJID;
 
         while (!done) {
             eventType = parser.next();
@@ -79,7 +81,7 @@ public class OfferRequestProvider extends IQProvider<IQ> {
                    sessionID = parser.getAttributeValue("", "id");
                 }
                 else if (UserID.ELEMENT_NAME.equals(elemName)) {
-                    userID = parser.getAttributeValue("", "id");
+                    userID = ParserUtils.getJidAttribute(parser, "id");
                 }
                 else if ("user-request".equals(elemName)) {
                     content = UserRequest.getInstance();
@@ -113,13 +115,13 @@ public class OfferRequestProvider extends IQProvider<IQ> {
     public static class OfferRequestPacket extends IQ {
 
         private int timeout;
-        private String userID;
-        private String userJID;
+        private Jid userID;
+        private Jid userJID;
         private Map<String, List<String>> metaData;
         private String sessionID;
         private OfferContent content;
 
-        public OfferRequestPacket(String userJID, String userID, int timeout, Map<String, List<String>> metaData,
+        public OfferRequestPacket(Jid userJID, Jid userID, int timeout, Map<String, List<String>> metaData,
                 String sessionID, OfferContent content)
         {
             super("offer", "http://jabber.org/protocol/workgroup");
@@ -137,7 +139,7 @@ public class OfferRequestProvider extends IQProvider<IQ> {
          *
          * @return the user ID.
          */
-        public String getUserID() {
+        public Jid getUserID() {
             return userID;
         }
 
@@ -146,7 +148,7 @@ public class OfferRequestProvider extends IQProvider<IQ> {
          *
          * @return the user JID.
          */
-        public String getUserJID() {
+        public Jid getUserJID() {
             return userJID;
         }
 

@@ -34,6 +34,8 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.util.cache.Cache;
 import org.jxmpp.util.cache.ExpirationCache;
 
@@ -477,7 +479,7 @@ public class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public DiscoverInfo discoverInfo(String entityID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public DiscoverInfo discoverInfo(Jid entityID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (entityID == null)
             return discoverInfo(null, null);
 
@@ -523,7 +525,7 @@ public class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public DiscoverInfo discoverInfo(String entityID, String node) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public DiscoverInfo discoverInfo(Jid entityID, String node) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Discover the entity's info
         DiscoverInfo disco = new DiscoverInfo();
         disco.setType(IQ.Type.get);
@@ -545,7 +547,7 @@ public class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public DiscoverItems discoverItems(String entityID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+    public DiscoverItems discoverItems(Jid entityID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return discoverItems(entityID, null);
     }
 
@@ -562,7 +564,7 @@ public class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public DiscoverItems discoverItems(String entityID, String node) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public DiscoverItems discoverItems(Jid entityID, String node) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Discover the entity's items
         DiscoverItems disco = new DiscoverItems();
         disco.setType(IQ.Type.get);
@@ -586,7 +588,7 @@ public class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public boolean canPublishItems(String entityID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public boolean canPublishItems(Jid entityID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverInfo info = discoverInfo(entityID);
         return canPublishItems(info);
      }
@@ -617,7 +619,7 @@ public class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void publishItems(String entityID, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void publishItems(Jid entityID, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         publishItems(entityID, null, discoverItems);
     }
 
@@ -635,7 +637,7 @@ public class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void publishItems(String entityID, String node, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
+    public void publishItems(Jid entityID, String node, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
             {
         discoverItems.setType(IQ.Type.set);
         discoverItems.setTo(entityID);
@@ -671,7 +673,7 @@ public class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public boolean supportsFeature(String jid, String feature) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public boolean supportsFeature(Jid jid, String feature) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverInfo result = discoverInfo(jid);
         return result.containsFeature(feature);
     }
@@ -680,7 +682,7 @@ public class ServiceDiscoveryManager extends Manager {
      * Create a cache to hold the 25 most recently lookup services for a given feature for a period
      * of 24 hours.
      */
-    private Cache<String, List<String>> services = new ExpirationCache<String, List<String>>(25,
+    private Cache<String, List<DomainBareJid>> services = new ExpirationCache<>(25,
                     24 * 60 * 60 * 1000);
 
     /**
@@ -695,17 +697,17 @@ public class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException
      * @throws InterruptedException 
      */
-    public List<String> findServices(String feature, boolean stopOnFirst, boolean useCache)
+    public List<DomainBareJid> findServices(String feature, boolean stopOnFirst, boolean useCache)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        List<String> serviceAddresses = null;
-        String serviceName = connection().getServiceName();
+        List<DomainBareJid> serviceAddresses = null;
+        DomainBareJid serviceName = connection().getServiceName();
         if (useCache) {
-            serviceAddresses = (List<String>) services.get(feature);
+            serviceAddresses = services.get(feature);
             if (serviceAddresses != null) {
                 return serviceAddresses;
             }
         }
-        serviceAddresses = new LinkedList<String>();
+        serviceAddresses = new LinkedList<>();
         // Send the disco packet to the server itself
         DiscoverInfo info;
         try {
@@ -748,7 +750,7 @@ public class ServiceDiscoveryManager extends Manager {
                 continue;
             }
             if (info.containsFeature(feature)) {
-                serviceAddresses.add(item.getEntityID());
+                serviceAddresses.add(item.getEntityID().asDomainBareJid());
                 if (stopOnFirst) {
                     break;
                 }

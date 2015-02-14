@@ -29,6 +29,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.jid.Jid;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -94,7 +95,7 @@ public abstract class StreamNegotiator {
      * @return The <b><i>PacketFilter</b></i> that will return the packet relatable to the stream
      *         initiation.
      */
-    public abstract PacketFilter getInitiationPacketFilter(String from, String streamID);
+    public abstract PacketFilter getInitiationPacketFilter(Jid from, String streamID);
 
 
     abstract InputStream negotiateIncomingStream(Stanza streamInitiation) throws XMPPErrorException,
@@ -137,7 +138,7 @@ public abstract class StreamNegotiator {
      * @throws InterruptedException 
      */
     public abstract OutputStream createOutgoingStream(String streamID,
-            String initiator, String target) throws XMPPErrorException, NoResponseException, SmackException, XMPPException, InterruptedException;
+            Jid initiator, Jid target) throws XMPPErrorException, NoResponseException, SmackException, XMPPException, InterruptedException;
 
     /**
      * Returns the XMPP namespace reserved for this particular type of file

@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.disco.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jxmpp.jid.Jid;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -134,7 +135,7 @@ public class DiscoverItems extends IQ {
          */
         public static final String REMOVE_ACTION = "remove";
 
-        private String entityID;
+        private final Jid entityID;
         private String name;
         private String node;
         private String action;
@@ -144,7 +145,7 @@ public class DiscoverItems extends IQ {
          * 
          * @param entityID the id of the entity that contains the item
          */
-        public Item(String entityID) {
+        public Item(Jid entityID) {
             this.entityID = entityID;
         }
 
@@ -153,7 +154,7 @@ public class DiscoverItems extends IQ {
          *
          * @return the entity's ID.
          */
-        public String getEntityID() {
+        public Jid getEntityID() {
             return entityID;
         }
 

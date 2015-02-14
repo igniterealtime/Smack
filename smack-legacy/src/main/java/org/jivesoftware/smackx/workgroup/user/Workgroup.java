@@ -58,7 +58,8 @@ import org.jivesoftware.smackx.workgroup.settings.WorkgroupProperties;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.Jid;
 
 /**
  * Provides workgroup services for users. Users can join the workgroup queue, depart the
@@ -73,7 +74,7 @@ import org.jxmpp.util.XmppStringUtils;
  */
 public class Workgroup {
 
-    private String workgroupJID;
+    private Jid workgroupJID;
     private XMPPConnection connection;
     private boolean inQueue;
     private CopyOnWriteArraySet<WorkgroupInvitationListener> invitationListeners;
@@ -92,7 +93,7 @@ public class Workgroup {
      * @param connection   an XMPP connection which must have already undergone a
      *                     successful login.
      */
-    public Workgroup(String workgroupJID, XMPPConnection connection) {
+    public Workgroup(Jid workgroupJID, XMPPConnection connection) {
         // Login must have been done before passing in connection.
         if (!connection.isAuthenticated()) {
             throw new IllegalStateException("Must login to server before creating workgroup.");
@@ -154,7 +155,7 @@ public class Workgroup {
      *
      * @return the name of the workgroup.
      */
-    public String getWorkgroupJID() {
+    public Jid getWorkgroupJID() {
         return workgroupJID;
     }
 
@@ -242,7 +243,7 @@ public class Workgroup {
      * possible. For example, when the user is logged in anonymously using a web client.
      * In that case the user ID might be a randomly generated value put into a persistent
      * cookie or a username obtained via the session. A userID can be explicitly
-     * passed in by using the {@link #joinQueue(Form, String)} method. When specified,
+     * passed in by using the {@link #joinQueue(Form, Jid)} method. When specified,
      * that userID will be used instead of the user's JID to track conversations. The
      * server will ignore a manually specified userID if the user's connection to the server
      * is not anonymous.
@@ -280,7 +281,7 @@ public class Workgroup {
      * possible. For example, when the user is logged in anonymously using a web client.
      * In that case the user ID might be a randomly generated value put into a persistent
      * cookie or a username obtained via the session. A userID can be explicitly
-     * passed in by using the {@link #joinQueue(Form, String)} method. When specified,
+     * passed in by using the {@link #joinQueue(Form, Jid)} method. When specified,
      * that userID will be used instead of the user's JID to track conversations. The
      * server will ignore a manually specified userID if the user's connection to the server
      * is not anonymous.
@@ -332,7 +333,7 @@ public class Workgroup {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void joinQueue(Form answerForm, String userID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void joinQueue(Form answerForm, Jid userID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // If already in the queue ignore the join request.
         if (inQueue) {
             throw new IllegalStateException("Already in queue " + workgroupJID);
@@ -380,7 +381,7 @@ public class Workgroup {
      * @throws SmackException 
      * @throws InterruptedException 
      */
-    public void joinQueue(Map<String,Object> metadata, String userID) throws XMPPException, SmackException, InterruptedException {
+    public void joinQueue(Map<String,Object> metadata, Jid userID) throws XMPPException, SmackException, InterruptedException {
         // If already in the queue ignore the join request.
         if (inQueue) {
             throw new IllegalStateException("Already in queue " + workgroupJID);
@@ -553,10 +554,10 @@ public class Workgroup {
      */
     private class JoinQueuePacket extends IQ {
 
-        private String userID = null;
+        private Jid userID;
         private DataForm form;
 
-        public JoinQueuePacket(String workgroup, Form answerForm, String userID) {
+        public JoinQueuePacket(Jid workgroup, Form answerForm, Jid userID) {
             super("join-queue", "http://jabber.org/protocol/workgroup");
             this.userID = userID;
 
@@ -660,7 +661,7 @@ public class Workgroup {
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
 
         try {
-            String workgroupService = XmppStringUtils.parseDomain(workgroupJID);
+            DomainBareJid workgroupService = workgroupJID.asDomainBareJid();
             DiscoverInfo infoResult = discoManager.discoverInfo(workgroupService);
             return infoResult.containsFeature("jive:email:provider");
         }

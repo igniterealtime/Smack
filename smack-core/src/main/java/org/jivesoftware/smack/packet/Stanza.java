@@ -23,6 +23,9 @@ import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.PacketUtil;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.util.Collection;
@@ -56,8 +59,8 @@ public abstract class Stanza implements TopLevelStreamElement {
     private final MultiMap<String, PacketExtension> packetExtensions = new MultiMap<>();
 
     private String id = null;
-    private String to = null;
-    private String from = null;
+    private Jid to;
+    private Jid from;
     private XMPPError error = null;
 
     /**
@@ -154,7 +157,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @return who the packet is being sent to, or <tt>null</tt> if the
      *      value has not been set.
      */
-    public String getTo() {
+    public Jid getTo() {
         return to;
     }
 
@@ -163,8 +166,28 @@ public abstract class Stanza implements TopLevelStreamElement {
      * the "to" attribute optional, so it does not always need to be set.
      *
      * @param to who the packet is being sent to.
+     * @throws IllegalArgumentException if to is not a valid JID String.
+     * @deprecated use {@link #setTo(Jid)} instead.
      */
+    @Deprecated
     public void setTo(String to) {
+        Jid jid;
+        try {
+            jid = JidCreate.from(to);
+        }
+        catch (XmppStringprepException e) {
+            throw new IllegalArgumentException(e);
+        }
+        setTo(jid);
+    }
+
+    /**
+     * Sets who the packet is being sent "to". The XMPP protocol often makes
+     * the "to" attribute optional, so it does not always need to be set.
+     *
+     * @param to who the packet is being sent to.
+     */
+    public void setTo(Jid to) {
         this.to = to;
     }
 
@@ -176,7 +199,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @return who the packet is being sent from, or <tt>null</tt> if the
      *      value has not been set.
      */
-    public String getFrom() {
+    public Jid getFrom() {
         return from;
     }
 
@@ -186,8 +209,29 @@ public abstract class Stanza implements TopLevelStreamElement {
      * be set.
      *
      * @param from who the packet is being sent to.
+     * @throws IllegalArgumentException if from is not a valid JID String.
+     * @deprecated use {@link #setFrom(Jid)} instead.
      */
+    @Deprecated
     public void setFrom(String from) {
+        Jid jid;
+        try {
+            jid = JidCreate.from(from);
+        }
+        catch (XmppStringprepException e) {
+            throw new IllegalArgumentException(e);
+        }
+        setFrom(jid);
+    }
+
+    /**
+     * Sets who the packet is being sent "from". The XMPP protocol often
+     * makes the "from" attribute optional, so it does not always need to
+     * be set.
+     *
+     * @param from who the packet is being sent to.
+     */
+    public void setFrom(Jid from) {
         this.from = from;
     }
 

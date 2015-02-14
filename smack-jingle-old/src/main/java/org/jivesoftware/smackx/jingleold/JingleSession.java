@@ -49,6 +49,7 @@ import org.jivesoftware.smackx.jingleold.nat.TransportNegotiator;
 import org.jivesoftware.smackx.jingleold.nat.TransportResolver;
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.packet.JingleError;
+import org.jxmpp.jid.Jid;
 
 /**
  * An abstract Jingle session. <p/> This class contains some basic properties of
@@ -69,9 +70,9 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
     // non-static
 
-    private String initiator; // Who started the communication
+    private Jid initiator; // Who started the communication
 
-    private String responder; // The other endpoint
+    private Jid responder; // The other endpoint
 
     private String sid; // A unique id that identifies this session
 
@@ -107,7 +108,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param jingleMediaManagers
      *            the jingleMediaManager
      */
-    public JingleSession(XMPPConnection conn, String initiator, String responder, String sessionid,
+    public JingleSession(XMPPConnection conn, Jid initiator, Jid responder, String sessionid,
             List<JingleMediaManager> jingleMediaManagers) {
         super();
 
@@ -141,7 +142,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param jingleMediaManagers
      *            the jingleMediaManager
      */
-    public JingleSession(XMPPConnection conn, JingleSessionRequest request, String initiator, String responder,
+    public JingleSession(XMPPConnection conn, JingleSessionRequest request, Jid initiator, Jid responder,
             List<JingleMediaManager> jingleMediaManagers) {
         this(conn, initiator, responder, generateSessionId(), jingleMediaManagers);
         //sessionRequest = request; // unused
@@ -152,7 +153,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * 
      * @return the initiator
      */
-    public String getInitiator() {
+    public Jid getInitiator() {
         return initiator;
     }
 
@@ -166,7 +167,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param initiator
      *            the initiator to set
      */
-    public void setInitiator(String initiator) {
+    public void setInitiator(Jid initiator) {
         this.initiator = initiator;
     }
 
@@ -193,7 +194,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * 
      * @return the responder
      */
-    public String getResponder() {
+    public Jid getResponder() {
         return responder;
     }
 
@@ -203,7 +204,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @param responder
      *            the receptor to set
      */
-    public void setResponder(String responder) {
+    public void setResponder(Jid responder) {
         this.responder = responder;
     }
 
@@ -450,8 +451,8 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
                 jout.setSid(getSid());
             }
 
-            String me = getConnection().getUser();
-            String other = getResponder().equals(me) ? getInitiator() : getResponder();
+            Jid me = getConnection().getUser();
+            Jid other = getResponder().equals(me) ? getInitiator() : getResponder();
 
             if (jout.getTo() == null) {
                 if (iq != null) {
@@ -686,13 +687,13 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
                 if (packet instanceof IQ) {
                     IQ iq = (IQ) packet;
 
-                    String me = getConnection().getUser();
+                    Jid me = getConnection().getUser();
 
                     if (!iq.getTo().equals(me)) {
                         return false;
                     }
 
-                    String other = getResponder().equals(me) ? getInitiator() : getResponder();
+                    Jid other = getResponder().equals(me) ? getInitiator() : getResponder();
 
                     if (iq.getFrom() == null || !iq.getFrom().equals(other == null ? "" : other)) {
                         return false;
@@ -706,7 +707,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
                             LOGGER.fine("Ignored Jingle(SID) " + sid + "|" + getSid() + " :" + iq.toXML());
                             return false;
                         }
-                        String ini = jin.getInitiator();
+                        Jid ini = jin.getInitiator();
                         if (!ini.equals(getInitiator())) {
                             LOGGER.fine("Ignored Jingle(INI): " + iq.toXML());
                             return false;

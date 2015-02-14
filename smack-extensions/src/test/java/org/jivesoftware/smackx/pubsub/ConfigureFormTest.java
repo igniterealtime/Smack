@@ -33,6 +33,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * 
@@ -77,7 +78,7 @@ public class ConfigureFormTest
 	}
 
 	@Test (expected=SmackException.class)
-	public void getConfigFormWithTimeout() throws XMPPException, SmackException, InterruptedException
+	public void getConfigFormWithTimeout() throws XMPPException, SmackException, InterruptedException, XmppStringprepException
 	{
 		ThreadedDummyConnection con = new ThreadedDummyConnection();
 		PubSubManager mgr = new PubSubManager(con);

@@ -18,10 +18,13 @@ package org.jivesoftware.smackx.muc.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.muc.MUCAffiliation;
 import org.jivesoftware.smackx.muc.MUCRole;
 import org.jivesoftware.smackx.muc.packet.Destroy;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.parts.Resourcepart;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -29,10 +32,10 @@ public class MUCParserUtils {
     public static MUCItem parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
         int initialDepth = parser.getDepth();
         MUCAffiliation affiliation = MUCAffiliation.fromString(parser.getAttributeValue("", "affiliation"));
-        String nick = parser.getAttributeValue("", "nick");
+        Resourcepart nick = ParserUtils.getResourcepartAttribute(parser, "nick");
         MUCRole role = MUCRole.fromString(parser.getAttributeValue("", "role"));
-        String jid = parser.getAttributeValue("", "jid");
-        String actor = null;
+        Jid jid = ParserUtils.getJidAttribute(parser);
+        Jid actor = null;
         String reason = null;
         outerloop: while (true) {
             int eventType = parser.next();
@@ -41,7 +44,7 @@ public class MUCParserUtils {
                 String name = parser.getName();
                 switch (name) {
                 case "actor":
-                    actor = parser.getAttributeValue("", "jid");
+                    actor = ParserUtils.getJidAttribute(parser);
                     break;
                 case "reason":
                     reason = parser.nextText();

@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smackx.muc;
 
+import org.jxmpp.jid.Jid;
+
 /**
  * A listener that is fired anytime your participant's status in a room is changed, such as the 
  * user being kicked, banned, or granted admin permissions.
@@ -32,7 +34,7 @@ public interface UserStatusListener {
      * @param actor the moderator that kicked your user from the room (e.g. user@host.org).
      * @param reason the reason provided by the actor to kick you from the room.
      */
-    public abstract void kicked(String actor, String reason);
+    public abstract void kicked(Jid actor, String reason);
 
     /**
      * Called when a moderator grants voice to your user. This means that you were a visitor in 
@@ -57,7 +59,7 @@ public interface UserStatusListener {
      * @param actor the administrator that banned your user (e.g. user@host.org).
      * @param reason the reason provided by the administrator to banned you.
      */
-    public abstract void banned(String actor, String reason);
+    public abstract void banned(Jid actor, String reason);
 
     /**
      * Called when an administrator grants your user membership to the room. This means that you 

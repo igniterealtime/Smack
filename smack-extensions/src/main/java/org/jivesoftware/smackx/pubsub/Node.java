@@ -43,12 +43,13 @@ import org.jivesoftware.smackx.pubsub.util.NodeUtils;
 import org.jivesoftware.smackx.shim.packet.Header;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 import org.jivesoftware.smackx.xdata.Form;
+import org.jxmpp.jid.Jid;
 
 abstract public class Node
 {
 	protected XMPPConnection con;
 	protected String id;
-	protected String to;
+	protected Jid to;
 	
 	protected ConcurrentHashMap<ItemEventListener<Item>, PacketListener> itemEventToListenerMap = new ConcurrentHashMap<ItemEventListener<Item>, PacketListener>();
 	protected ConcurrentHashMap<ItemDeleteListener, PacketListener> itemDeleteToListenerMap = new ConcurrentHashMap<ItemDeleteListener, PacketListener>();
@@ -73,7 +74,7 @@ abstract public class Node
 	 * 
 	 *   For example, OpenFire requires the server to be prefixed by <b>pubsub</b>
 	 */
-	void setTo(String toAddress)
+	void setTo(Jid toAddress)
 	{
 		to = toAddress;
 	}

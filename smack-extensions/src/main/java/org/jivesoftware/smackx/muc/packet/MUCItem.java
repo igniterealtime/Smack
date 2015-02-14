@@ -21,6 +21,8 @@ import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.muc.MUCAffiliation;
 import org.jivesoftware.smackx.muc.MUCRole;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.parts.Resourcepart;
 
 /**
  * Item child that holds information about roles, affiliation, jids and nicks.
@@ -32,10 +34,10 @@ public class MUCItem implements NamedElement {
 
     private final MUCAffiliation affiliation;
     private final MUCRole role;
-    private final String actor;
+    private final Jid actor;
     private final String reason;
-    private final String jid;
-    private final String nick;
+    private final Jid jid;
+    private final Resourcepart nick;
 
     public MUCItem(MUCAffiliation affiliation) {
         this(affiliation, null, null, null, null, null);
@@ -45,19 +47,19 @@ public class MUCItem implements NamedElement {
         this(null, role, null, null, null, null);
     }
 
-    public MUCItem(MUCRole role, String nick) {
+    public MUCItem(MUCRole role, Resourcepart nick) {
         this(null, role, null, null, null, nick);
     }
 
-    public MUCItem(MUCAffiliation affiliation, String jid, String reason) {
+    public MUCItem(MUCAffiliation affiliation, Jid jid, String reason) {
         this(affiliation, null, null, reason, jid, null);
     }
 
-    public MUCItem(MUCAffiliation affiliation, String jid) {
+    public MUCItem(MUCAffiliation affiliation, Jid jid) {
         this(affiliation, null, null, null, jid, null);
     }
 
-    public MUCItem(MUCRole role, String nick, String reason) {
+    public MUCItem(MUCRole role, Resourcepart nick, String reason) {
         this(null, role, null, reason, null, nick);
     }
 
@@ -71,8 +73,8 @@ public class MUCItem implements NamedElement {
      * @param jid
      * @param nick
      */
-    public MUCItem(MUCAffiliation affiliation, MUCRole role, String actor,
-                    String reason, String jid, String nick) {
+    public MUCItem(MUCAffiliation affiliation, MUCRole role, Jid actor,
+                    String reason, Jid jid, Resourcepart nick) {
         this.affiliation = affiliation;
         this.role = role;
         this.actor = actor;
@@ -86,7 +88,7 @@ public class MUCItem implements NamedElement {
      * 
      * @return the JID of an occupant in the room that was kicked or banned.
      */
-    public String getActor() {
+    public Jid getActor() {
         return actor;
     }
 
@@ -118,7 +120,7 @@ public class MUCItem implements NamedElement {
      * 
      * @return the room JID by which an occupant is identified within the room.
      */
-    public String getJid() {
+    public Jid getJid() {
         return jid;
     }
 
@@ -128,7 +130,7 @@ public class MUCItem implements NamedElement {
      * 
      * @return the new nickname of an occupant that is changing his/her nickname.
      */
-    public String getNick() {
+    public Resourcepart getNick() {
         return nick;
     }
 

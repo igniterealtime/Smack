@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smackx.muc;
 
+import org.jxmpp.jid.FullJid;
+
 /**
  * A listener that is fired anytime a MUC room changes its subject.
  * 
@@ -30,6 +32,6 @@ public interface SubjectUpdatedListener {
      * @param subject the new room's subject.
      * @param from the user that changed the room's subject (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void subjectUpdated(String subject, String from);
+    public abstract void subjectUpdated(String subject, FullJid from);
 
 }

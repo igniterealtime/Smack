@@ -32,6 +32,8 @@ import org.jivesoftware.smack.test.util.WaitForPacketListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.JidTestUtil;
 
 public class ChatConnectionTest {
 
@@ -219,7 +221,7 @@ public class ChatConnectionTest {
      */
     @Test
     public void chatFoundWhenNoThreadFullJid() {
-        Chat outgoing = cm.createChat("you@testserver", null);
+        Chat outgoing = cm.createChat(JidTestUtil.DUMMY_AT_EXAMPLE_ORG, null);
 
         Stanza incomingChat = createChatPacket(null, true);
         processServerMessage(incomingChat);
@@ -235,7 +237,7 @@ public class ChatConnectionTest {
      */
     @Test
     public void chatFoundWhenNoThreadBaseJid() {
-        Chat outgoing = cm.createChat("you@testserver", null);
+        Chat outgoing = cm.createChat(JidTestUtil.DUMMY_AT_EXAMPLE_ORG, null);
 
         Stanza incomingChat = createChatPacket(null, false);
         processServerMessage(incomingChat);
@@ -251,7 +253,7 @@ public class ChatConnectionTest {
      */
     @Test
     public void chatFoundWithSameThreadFullJid() {
-        Chat outgoing = cm.createChat("you@testserver", null);
+        Chat outgoing = cm.createChat(JidTestUtil.DUMMY_AT_EXAMPLE_ORG, null);
 
         Stanza incomingChat = createChatPacket(outgoing.getThreadID(), true);
         processServerMessage(incomingChat);
@@ -267,7 +269,7 @@ public class ChatConnectionTest {
      */
     @Test
     public void chatFoundWithSameThreadBaseJid() {
-        Chat outgoing = cm.createChat("you@testserver", null);
+        Chat outgoing = cm.createChat(JidTestUtil.DUMMY_AT_EXAMPLE_ORG, null);
 
         Stanza incomingChat = createChatPacket(outgoing.getThreadID(), false);
         processServerMessage(incomingChat);
@@ -283,7 +285,7 @@ public class ChatConnectionTest {
      */
     @Test
     public void chatNotFoundWithDiffThreadBaseJid() {
-        Chat outgoing = cm.createChat("you@testserver", null);
+        Chat outgoing = cm.createChat(JidTestUtil.DUMMY_AT_EXAMPLE_ORG, null);
 
         Stanza incomingChat = createChatPacket(outgoing.getThreadID() + "ff", false);
         processServerMessage(incomingChat);
@@ -299,7 +301,7 @@ public class ChatConnectionTest {
      */
     @Test
     public void chatNotFoundWithDiffThreadFullJid() {
-        Chat outgoing = cm.createChat("you@testserver", null);
+        Chat outgoing = cm.createChat(JidTestUtil.DUMMY_AT_EXAMPLE_ORG, null);
 
         Stanza incomingChat = createChatPacket(outgoing.getThreadID() + "ff", true);
         processServerMessage(incomingChat);
@@ -321,9 +323,15 @@ public class ChatConnectionTest {
     }
 
     private Message createChatPacket(final String threadId, final boolean isFullJid) {
-        Message chatMsg = new Message("me@testserver", Message.Type.chat);
+        Message chatMsg = new Message(JidTestUtil.BARE_JID_1, Message.Type.chat);
         chatMsg.setBody("the body message - " + System.currentTimeMillis());
-        chatMsg.setFrom("you@testserver" + (isFullJid ? "/resource" : ""));
+        Jid jid;
+        if (isFullJid) {
+            jid = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
+        } else {
+            jid = JidTestUtil.DUMMY_AT_EXAMPLE_ORG;
+        }
+        chatMsg.setFrom(jid);
         chatMsg.setThread(threadId);
         return chatMsg;
     }

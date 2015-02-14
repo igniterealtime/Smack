@@ -74,6 +74,8 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -290,8 +292,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * 
      * @param jid the bare JID used by the client.
      * @param password the password or authentication token.
+     * @throws XmppStringprepException 
      */
-    public XMPPTCPConnection(CharSequence jid, String password) {
+    public XMPPTCPConnection(CharSequence jid, String password) throws XmppStringprepException {
         this(XmppStringUtils.parseLocalpart(jid.toString()), password, XmppStringUtils.parseDomain(jid.toString()));
     }
 
@@ -305,10 +308,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @param username
      * @param password
      * @param serviceName
+     * @throws XmppStringprepException 
      */
-    public XMPPTCPConnection(CharSequence username, String password, String serviceName) {
+    public XMPPTCPConnection(CharSequence username, String password, String serviceName) throws XmppStringprepException {
         this(XMPPTCPConnectionConfiguration.builder().setUsernameAndPassword(username, password).setServiceName(
-                                        serviceName).build());
+                                        JidCreate.domainBareFrom(serviceName)).build());
     }
 
     @Override
@@ -728,7 +732,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         final HostnameVerifier verifier = getConfiguration().getHostnameVerifier();
         if (verifier == null) {
                 throw new IllegalStateException("No HostnameVerifier set. Use connectionConfiguration.setHostnameVerifier() to configure.");
-        } else if (!verifier.verify(getServiceName(), sslSocket.getSession())) {
+        } else if (!verifier.verify(getServiceName().toString(), sslSocket.getSession())) {
             throw new CertificateException("Hostname verification of certificate failed. Certificate does not authenticate " + getServiceName());
         }
 

@@ -24,6 +24,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
+import org.jxmpp.jid.Jid;
 
 import java.util.Collection;
 
@@ -34,9 +35,9 @@ import java.util.Collection;
  */
 public class Agent {
     private XMPPConnection connection;
-    private String workgroupJID;
+    private Jid workgroupJID;
 
-    public static Collection<String> getWorkgroups(String serviceJID, String agentJID, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public static Collection<String> getWorkgroups(Jid serviceJID, Jid agentJID, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         AgentWorkgroups request = new AgentWorkgroups(agentJID);
         request.setTo(serviceJID);
         AgentWorkgroups response = (AgentWorkgroups) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
@@ -46,7 +47,7 @@ public class Agent {
     /**
      * Constructs an Agent.
      */
-    Agent(XMPPConnection connection, String workgroupJID) {
+    Agent(XMPPConnection connection, Jid workgroupJID) {
         this.connection = connection;
         this.workgroupJID = workgroupJID;
     }
@@ -56,7 +57,7 @@ public class Agent {
      *
      * @return - the agents JID.
      */
-    public String getUser() {
+    public Jid getUser() {
         return connection.getUser();
     }
 

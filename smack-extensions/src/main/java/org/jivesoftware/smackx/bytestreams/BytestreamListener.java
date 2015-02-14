@@ -30,7 +30,7 @@ import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
  * <p>
  * There are two ways to add this listener. See
  * {@link BytestreamManager#addIncomingBytestreamListener(BytestreamListener)} and
- * {@link BytestreamManager#addIncomingBytestreamListener(BytestreamListener, String)} for further
+ * {@link BytestreamManager#addIncomingBytestreamListener(BytestreamListener, org.jxmpp.jid.Jid)} for further
  * details.
  * <p>
  * {@link Socks5BytestreamListener} or {@link InBandBytestreamListener} provide a more specific

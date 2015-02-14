@@ -35,6 +35,7 @@ import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
 import org.jivesoftware.smackx.xroster.packet.RosterExchange;
+import org.jxmpp.jid.Jid;
 
 /**
  *
@@ -117,7 +118,7 @@ public class RosterExchangeManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void send(Roster roster, String targetUserID) throws NotConnectedException, InterruptedException {
+    public void send(Roster roster, Jid targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message
@@ -137,7 +138,7 @@ public class RosterExchangeManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void send(RosterEntry rosterEntry, String targetUserID) throws NotConnectedException, InterruptedException {
+    public void send(RosterEntry rosterEntry, Jid targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message
@@ -159,7 +160,7 @@ public class RosterExchangeManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void send(RosterGroup rosterGroup, String targetUserID) throws NotConnectedException, InterruptedException {
+    public void send(RosterGroup rosterGroup, Jid targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message
@@ -177,7 +178,7 @@ public class RosterExchangeManager {
     /**
      * Fires roster exchange listeners.
      */
-    private void fireRosterExchangeListeners(String from, Iterator<RemoteRosterEntry> remoteRosterEntries) {
+    private void fireRosterExchangeListeners(Jid from, Iterator<RemoteRosterEntry> remoteRosterEntries) {
         RosterExchangeListener[] listeners = null;
         synchronized (rosterExchangeListeners) {
             listeners = new RosterExchangeListener[rosterExchangeListeners.size()];

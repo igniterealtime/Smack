@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.filetransfer;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
+import org.jxmpp.jid.Jid;
 
 /**
  * A request to send a file recieved from another user.
@@ -88,7 +89,7 @@ public class FileTransferRequest {
 	 * @return Returns the fully-qualified jabber ID of the user that requested
 	 *         this file transfer.
 	 */
-	public String getRequestor() {
+	public Jid getRequestor() {
 		return streamInitiation.getFrom();
 	}
 

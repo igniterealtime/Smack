@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2012 Florian Schmaus
+ * Copyright 2012-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.ping.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.SimpleIQ;
+import org.jxmpp.jid.Jid;
 
 public class Ping extends SimpleIQ {
 
@@ -28,7 +29,7 @@ public class Ping extends SimpleIQ {
         super(ELEMENT, NAMESPACE);
     }
 
-    public Ping(String to) {
+    public Ping(Jid to) {
         this();
         setTo(to);
         setType(IQ.Type.get);

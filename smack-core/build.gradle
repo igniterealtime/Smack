@@ -9,7 +9,8 @@ Smack core components."""
 dependencies {
 	compile 'xpp3:xpp3:1.1.4c'
 	compile "org.jxmpp:jxmpp-core:$jxmppVersion"
-	//	compile "org.igniterealtime.jxmpp:jxmpp-jid:$jxmppVersion"
+	compile "org.jxmpp:jxmpp-jid:$jxmppVersion"
+	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
 	testCompile 'junit:junit:4.11'
 	testCompile 'xmlunit:xmlunit:1.5'
 	testCompile 'org.powermock:powermock-module-junit4:1.5.5'

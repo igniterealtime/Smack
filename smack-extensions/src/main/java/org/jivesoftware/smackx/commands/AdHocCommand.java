@@ -22,6 +22,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.xdata.Form;
+import org.jxmpp.jid.Jid;
 
 import java.util.List;
 
@@ -146,7 +147,7 @@ public abstract class AdHocCommand {
      * 
      * @return the owner JID.
      */
-    public abstract String getOwnerJID();
+    public abstract Jid getOwnerJID();
 
     /**
      * Returns the notes that the command has at the current stage.

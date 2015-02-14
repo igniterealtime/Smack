@@ -17,13 +17,13 @@
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
 import static org.junit.Assert.assertEquals;
-
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 
 import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.junit.Test;
+import org.jxmpp.jid.impl.JidCreate;
 
 import com.jamesmurty.utils.XMLBuilder;
 
@@ -74,8 +74,8 @@ public class CloseTest {
             .asString(outputProperties);
 
         Close close = new Close("i781hf64");
-        close.setFrom("romeo@montague.lit/orchard");
-        close.setTo("juliet@capulet.lit/balcony");
+        close.setFrom(JidCreate.from("romeo@montague.lit/orchard"));
+        close.setTo(JidCreate.from("juliet@capulet.lit/balcony"));
         close.setStanzaId("us71g45j");
         
         assertXMLEqual(control, close.toXML().toString());

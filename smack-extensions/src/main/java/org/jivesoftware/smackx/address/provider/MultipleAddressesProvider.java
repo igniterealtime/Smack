@@ -20,8 +20,10 @@ package org.jivesoftware.smackx.address.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses.Type;
+import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -46,7 +48,7 @@ public class MultipleAddressesProvider extends PacketExtensionProvider<MultipleA
                 case MultipleAddresses.Address.ELEMENT:
                     String typeString = parser.getAttributeValue("", "type");
                     Type type = Type.valueOf(typeString);
-                    String jid = parser.getAttributeValue("", "jid");
+                    Jid jid = ParserUtils.getJidAttribute(parser, "jid");
                     String node = parser.getAttributeValue("", "node");
                     String desc = parser.getAttributeValue("", "desc");
                     boolean delivered = "true".equals(parser.getAttributeValue("", "delivered"));

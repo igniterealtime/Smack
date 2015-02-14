@@ -48,6 +48,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.xdata.Form;
+import org.jxmpp.jid.Jid;
 
 /**
  * An AdHocCommandManager is responsible for keeping the list of available
@@ -254,7 +255,7 @@ public class AdHocCommandManager extends Manager {
      * @throws SmackException if there was no response from the server.
      * @throws InterruptedException 
      */
-    public DiscoverItems discoverCommands(String jid) throws XMPPException, SmackException, InterruptedException {
+    public DiscoverItems discoverCommands(Jid jid) throws XMPPException, SmackException, InterruptedException {
         return serviceDiscoveryManager.discoverItems(jid, NAMESPACE);
     }
 
@@ -266,7 +267,7 @@ public class AdHocCommandManager extends Manager {
      * @throws SmackException if there was no response from the server.
      * @throws InterruptedException 
      */
-    public void publishCommands(String jid) throws XMPPException, SmackException, InterruptedException {
+    public void publishCommands(Jid jid) throws XMPPException, SmackException, InterruptedException {
         // Collects the commands to publish as items
         DiscoverItems discoverItems = new DiscoverItems();
         Collection<AdHocCommandInfo> xCommandsList = getRegisteredCommands();
@@ -291,7 +292,7 @@ public class AdHocCommandManager extends Manager {
      * @param node the identifier of the command
      * @return a local instance equivalent to the remote command.
      */
-    public RemoteCommand getRemoteCommand(String jid, String node) {
+    public RemoteCommand getRemoteCommand(Jid jid, String node) {
         return new RemoteCommand(connection(), node, jid);
     }
 
@@ -652,10 +653,10 @@ public class AdHocCommandManager extends Manager {
 
         private String node;
         private String name;
-        private String ownerJID;
+        private final Jid ownerJID;
         private LocalCommandFactory factory;
 
-        public AdHocCommandInfo(String node, String name, String ownerJID,
+        public AdHocCommandInfo(String node, String name, Jid ownerJID,
                 LocalCommandFactory factory)
         {
             this.node = node;
@@ -678,7 +679,7 @@ public class AdHocCommandManager extends Manager {
             return node;
         }
 
-        public String getOwnerJID() {
+        public Jid getOwnerJID() {
             return ownerJID;
         }
     }

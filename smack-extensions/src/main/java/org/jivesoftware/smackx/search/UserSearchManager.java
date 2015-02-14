@@ -22,6 +22,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.xdata.Form;
+import org.jxmpp.jid.DomainBareJid;
 
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class UserSearchManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public Form getSearchForm(String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+    public Form getSearchForm(DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return userSearch.getSearchForm(con, searchService);
     }
 
@@ -84,7 +85,7 @@ public class UserSearchManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public ReportedData getSearchResults(Form searchForm, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+    public ReportedData getSearchResults(Form searchForm, DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return userSearch.sendSearchForm(con, searchForm, searchService);
     }
 
@@ -98,7 +99,7 @@ public class UserSearchManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public List<String> getSearchServices() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+    public List<DomainBareJid> getSearchServices() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(con);
         return discoManager.findServices(UserSearch.NAMESPACE, false, false);
     }

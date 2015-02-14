@@ -31,6 +31,8 @@ import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
 import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base32;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -131,7 +133,7 @@ public class DirectoryRosterStore implements RosterStore {
     }
 
     @Override
-    public Item getEntry(String bareJid) {
+    public Item getEntry(Jid bareJid) {
         return readEntry(getBareJidFile(bareJid));
     }
 
@@ -158,7 +160,7 @@ public class DirectoryRosterStore implements RosterStore {
     }
 
     @Override
-    public boolean removeEntry(String bareJid, String version) {
+    public boolean removeEntry(Jid bareJid, String version) {
         return getBareJidFile(bareJid).delete() && setRosterVersion(version);
     }
 
@@ -182,7 +184,7 @@ public class DirectoryRosterStore implements RosterStore {
         }
 
         String parserName;
-        String user = null;
+        Jid user = null;
         String name = null;
         String type = null;
         String status = null;
@@ -199,11 +201,12 @@ public class DirectoryRosterStore implements RosterStore {
                 parserName = parser.getName();
                 if (eventType == XmlPullParser.START_TAG) {
                     if (parserName.equals("item")) {
-                        user = name = type = status = null;
+                        user = null;
+                        name = type = status = null;
                     }
                     else if (parserName.equals("user")) {
                         parser.next();
-                        user = parser.getText();
+                        user = JidCreate.from(parser.getText());
                     }
                     else if (parserName.equals("name")) {
                         parser.next();
@@ -297,8 +300,8 @@ public class DirectoryRosterStore implements RosterStore {
     }
 
 
-    private File getBareJidFile(String bareJid) {
-        String encodedJid = Base32.encode(bareJid);
+    private File getBareJidFile(Jid bareJid) {
+        String encodedJid = Base32.encode(bareJid.toString());
         return new File(fileDir, ENTRY_PREFIX + encodedJid);
     }
 

@@ -38,6 +38,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jxmpp.jid.Jid;
 
 /**
  * Manager for XEP-0184: Message Delivery Receipts. This class implements
@@ -142,7 +143,7 @@ public class DeliveryReceiptManager extends Manager {
         connection.addAsyncPacketListener(new PacketListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
-                final String from = packet.getFrom();
+                final Jid from = packet.getFrom();
                 final XMPPConnection connection = connection();
                 switch (autoReceiptMode) {
                 case disabled:
@@ -190,7 +191,7 @@ public class DeliveryReceiptManager extends Manager {
      * @throws XMPPException 
      * @throws InterruptedException 
      */
-    public boolean isSupported(String jid) throws SmackException, XMPPException, InterruptedException {
+    public boolean isSupported(Jid jid) throws SmackException, XMPPException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid,
                         DeliveryReceipt.NAMESPACE);
     }

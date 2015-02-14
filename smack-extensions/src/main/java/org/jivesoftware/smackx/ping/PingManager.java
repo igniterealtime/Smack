@@ -45,6 +45,7 @@ import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.ping.packet.Ping;
+import org.jxmpp.jid.Jid;
 
 /**
  * Implements the XMPP Ping as defined by XEP-0199. The XMPP Ping protocol allows one entity to
@@ -147,7 +148,7 @@ public class PingManager extends Manager {
      * to this, is a server ping, which will always return true if the server is reachable, 
      * event if there is an error on the ping itself (i.e. ping not supported).
      * <p>
-     * Use {@link #isPingSupported(String)} to determine if XMPP Ping is supported 
+     * Use {@link #isPingSupported(Jid)} to determine if XMPP Ping is supported 
      * by the entity.
      * 
      * @param jid The id of the entity the ping is being sent to
@@ -157,7 +158,7 @@ public class PingManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public boolean ping(String jid, long pingTimeout) throws NotConnectedException, NoResponseException, InterruptedException {
+    public boolean ping(Jid jid, long pingTimeout) throws NotConnectedException, NoResponseException, InterruptedException {
         final XMPPConnection connection = connection();
         // Packet collector for IQs needs an connection that was at least authenticated once,
         // otherwise the client JID will be null causing an NPE
@@ -175,7 +176,7 @@ public class PingManager extends Manager {
     }
 
     /**
-     * Same as calling {@link #ping(String, long)} with the defaultpacket reply 
+     * Same as calling {@link #ping(Jid, long)} with the defaultpacket reply 
      * timeout.
      * 
      * @param jid The id of the entity the ping is being sent to
@@ -184,7 +185,7 @@ public class PingManager extends Manager {
      * @throws NoResponseException if there was no response from the jid.
      * @throws InterruptedException 
      */
-    public boolean ping(String jid) throws NotConnectedException, NoResponseException, InterruptedException {
+    public boolean ping(Jid jid) throws NotConnectedException, NoResponseException, InterruptedException {
         return ping(jid, connection().getPacketReplyTimeout());
     }
 
@@ -198,7 +199,7 @@ public class PingManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public boolean isPingSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+    public boolean isPingSupported(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, Ping.NAMESPACE);
     }
 
@@ -206,8 +207,8 @@ public class PingManager extends Manager {
      * Pings the server. This method will return true if the server is reachable.  It
      * is the equivalent of calling <code>ping</code> with the XMPP domain.
      * <p>
-     * Unlike the {@link #ping(String)} case, this method will return true even if 
-     * {@link #isPingSupported(String)} is false.
+     * Unlike the {@link #ping(Jid)} case, this method will return true even if 
+     * {@link #isPingSupported(Jid)} is false.
      * 
      * @return true if a reply was received from the server, false otherwise.
      * @throws NotConnectedException
@@ -221,8 +222,8 @@ public class PingManager extends Manager {
      * Pings the server. This method will return true if the server is reachable.  It
      * is the equivalent of calling <code>ping</code> with the XMPP domain.
      * <p>
-     * Unlike the {@link #ping(String)} case, this method will return true even if
-     * {@link #isPingSupported(String)} is false.
+     * Unlike the {@link #ping(Jid)} case, this method will return true even if
+     * {@link #isPingSupported(Jid)} is false.
      *
      * @param notifyListeners Notify the PingFailedListener in case of error if true
      * @return true if the user's server could be pinged.
@@ -237,8 +238,8 @@ public class PingManager extends Manager {
      * Pings the server. This method will return true if the server is reachable.  It
      * is the equivalent of calling <code>ping</code> with the XMPP domain.
      * <p>
-     * Unlike the {@link #ping(String)} case, this method will return true even if
-     * {@link #isPingSupported(String)} is false.
+     * Unlike the {@link #ping(Jid)} case, this method will return true even if
+     * {@link #isPingSupported(Jid)} is false.
      *
      * @param notifyListeners Notify the PingFailedListener in case of error if true
      * @param pingTimeout The time to wait for a reply in milliseconds

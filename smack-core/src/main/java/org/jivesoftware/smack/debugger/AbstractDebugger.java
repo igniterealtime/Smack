@@ -24,7 +24,7 @@ import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
 import org.jivesoftware.smack.util.WriterListener;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.jid.FullJid;
 
 import java.io.Reader;
 import java.io.Writer;
@@ -141,8 +141,9 @@ public abstract class AbstractDebugger implements SmackDebugger {
         return writer;
     }
 
-    public void userHasLogged(String user) {
-        String localpart = XmppStringUtils.parseLocalpart(user);
+    @Override
+    public void userHasLogged(FullJid user) {
+        String localpart = user.getLocalpart().toString();
         boolean isAnonymous = "".equals(localpart);
         String title =
                 "User logged (" + connection.getConnectionCounter() + "): "
@@ -151,7 +152,7 @@ public abstract class AbstractDebugger implements SmackDebugger {
                 + connection.getServiceName()
                 + ":"
                 + connection.getPort();
-        title += "/" + XmppStringUtils.parseResource(user);
+        title += "/" + user.getResourcepart();
         log(title);
         // Add the connection listener to the connection so that the debugger can be notified
         // whenever the connection is closed.

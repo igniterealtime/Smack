@@ -23,6 +23,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.xdata.Form;
+import org.jxmpp.jid.Jid;
 
 /**
  * Represents a command that is in a remote location. Invoking one of the
@@ -48,7 +49,7 @@ public class RemoteCommand extends AdHocCommand {
     /**
      * The full JID of the command host
      */
-    private String jid;
+    private Jid jid;
 
     /**
      * The session ID of this execution.
@@ -64,7 +65,7 @@ public class RemoteCommand extends AdHocCommand {
      * @param node the identifier of the command.
      * @param jid the JID of the host.
      */
-    protected RemoteCommand(XMPPConnection connection, String node, String jid) {
+    protected RemoteCommand(XMPPConnection connection, String node, Jid jid) {
         super();
         this.connection = connection;
         this.jid = jid;
@@ -150,7 +151,7 @@ public class RemoteCommand extends AdHocCommand {
     }
 
     @Override
-    public String getOwnerJID() {
+    public Jid getOwnerJID() {
         return jid;
     }
 }

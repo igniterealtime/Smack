@@ -30,6 +30,7 @@ import org.jivesoftware.smack.SmackException.IllegalStateChangeException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jxmpp.jid.Jid;
 
 /**
  * Handles the sending of a file to another user. File transfer's in jabber have
@@ -70,11 +71,11 @@ public class OutgoingFileTransfer extends FileTransfer {
 
 	private OutputStream outputStream;
 
-	private String initiator;
+	private Jid initiator;
 
 	private Thread transferThread;
 
-	protected OutgoingFileTransfer(String initiator, String target,
+	protected OutgoingFileTransfer(Jid initiator, Jid target,
 			String streamID, FileTransferNegotiator transferNegotiator) {
 		super(target, streamID, transferNegotiator);
 		this.initiator = initiator;

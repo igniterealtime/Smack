@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.xroster.RemoteRosterEntry;
 import org.jivesoftware.smackx.xroster.packet.RosterExchange;
+import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -49,7 +51,7 @@ public class RosterExchangeProvider extends PacketExtensionProvider<RosterExchan
         RosterExchange rosterExchange = new RosterExchange();
         boolean done = false;
         RemoteRosterEntry remoteRosterEntry = null;
-		String jid = "";
+        Jid jid = null;
 		String name = "";
 		ArrayList<String> groupsName = new ArrayList<String>();
         while (!done) {
@@ -59,7 +61,7 @@ public class RosterExchangeProvider extends PacketExtensionProvider<RosterExchan
                 	// Reset this variable since they are optional for each item
 					groupsName = new ArrayList<String>();
 					// Initialize the variables from the parsed XML
-                    jid = parser.getAttributeValue("", "jid");
+                    jid = ParserUtils.getJidAttribute(parser);
                     name = parser.getAttributeValue("", "name");
                 }
                 if (parser.getName().equals("group")) {
