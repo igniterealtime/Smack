@@ -38,7 +38,7 @@ public class ThreadedDummyConnection extends DummyConnection {
     private volatile boolean timeout = false;
 
     @Override
-    public void sendPacket(Stanza packet) throws NotConnectedException {
+    public void sendPacket(Stanza packet) throws NotConnectedException, InterruptedException {
         super.sendPacket(packet);
 
         if (packet instanceof IQ && !timeout) {
@@ -102,7 +102,7 @@ public class ThreadedDummyConnection extends DummyConnection {
         }
     }
 
-    public static ThreadedDummyConnection newInstance() throws SmackException, IOException, XMPPException {
+    public static ThreadedDummyConnection newInstance() throws SmackException, IOException, XMPPException, InterruptedException {
         ThreadedDummyConnection threadedDummyConnection = new ThreadedDummyConnection();
         threadedDummyConnection.connect();
         return threadedDummyConnection;

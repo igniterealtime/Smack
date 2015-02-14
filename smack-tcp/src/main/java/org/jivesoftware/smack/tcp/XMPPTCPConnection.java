@@ -334,14 +334,14 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void afterSuccessfulLogin(final boolean resumed) throws NotConnectedException {
+    protected void afterSuccessfulLogin(final boolean resumed) throws NotConnectedException, InterruptedException {
         // Reset the flag in case it was set
         disconnectedButResumeable = false;
         super.afterSuccessfulLogin(resumed);
     }
 
     @Override
-    protected synchronized void loginNonAnonymously(String username, String password, String resource) throws XMPPException, SmackException, IOException {
+    protected synchronized void loginNonAnonymously(String username, String password, String resource) throws XMPPException, SmackException, IOException, InterruptedException {
         if (saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             if (password != null) {
@@ -406,7 +406,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    public synchronized void loginAnonymously() throws XMPPException, SmackException, IOException {
+    public synchronized void loginAnonymously() throws XMPPException, SmackException, IOException, InterruptedException {
         // Wait with SASL auth until the SASL mechanisms have been received
         saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
 
@@ -447,7 +447,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 // Try to send a last SM Acknowledgement. Most servers won't find this information helpful, as the SM
                 // state is dropped after a clean disconnect anyways. OTOH it doesn't hurt much either.
                 sendSmAcknowledgementInternal();
-            } catch (NotConnectedException e) {
+            } catch (InterruptedException | NotConnectedException e) {
                 LOGGER.log(Level.FINE, "Can not send final SM ack as connection is not connected", e);
             }
         }
@@ -509,12 +509,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    public void send(PlainStreamElement element) throws NotConnectedException {
+    public void send(PlainStreamElement element) throws NotConnectedException, InterruptedException {
         packetWriter.sendStreamElement(element);
     }
 
     @Override
-    protected void sendPacketInternal(Stanza packet) throws NotConnectedException {
+    protected void sendPacketInternal(Stanza packet) throws NotConnectedException, InterruptedException {
         packetWriter.sendStreamElement(packet);
         if (isSmEnabled()) {
             for (PacketFilter requestAckPredicate : requestAckPredicates) {
@@ -777,8 +777,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws NotConnectedException 
      * @throws XMPPException 
      * @throws NoResponseException 
+     * @throws InterruptedException 
      */
-    private void useCompression() throws NotConnectedException, NoResponseException, XMPPException {
+    private void useCompression() throws NotConnectedException, NoResponseException, XMPPException, InterruptedException {
         maybeCompressFeaturesReceived.checkIfSuccessOrWait();
         // If stream compression was offered by the server and we want to use
         // compression then send compression request to the server
@@ -800,9 +801,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws XMPPException if an error occurs while trying to establish the connection.
      * @throws SmackException 
      * @throws IOException 
+     * @throws InterruptedException 
      */
     @Override
-    protected void connectInternal() throws SmackException, IOException, XMPPException {
+    protected void connectInternal() throws SmackException, IOException, XMPPException, InterruptedException {
         // Establishes the TCP connection to the server and does setup the reader and writer. Throws an exception if
         // there is an error establishing the connection
         connectUsingConfiguration();
@@ -854,7 +856,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void afterFeaturesReceived() throws SecurityRequiredException, NotConnectedException {
+    protected void afterFeaturesReceived() throws SecurityRequiredException, NotConnectedException, InterruptedException {
         StartTls startTlsFeature = getFeature(StartTls.ELEMENT, StartTls.NAMESPACE);
         if (startTlsFeature != null) {
             if (startTlsFeature.required() && config.getSecurityMode() == SecurityMode.disabled) {
@@ -890,8 +892,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * to be sent by the server.
      *
      * @throws SmackException if the parser could not be reset.
+     * @throws InterruptedException 
      */
-    void openStream() throws SmackException {
+    void openStream() throws SmackException, InterruptedException {
         // If possible, provide the receiving entity of the stream open tag, i.e. the server, as much information as
         // possible. The 'to' attribute is *always* available. The 'from' attribute if set by the user and no external
         // mechanism is used to determine the local entity (user). And the 'id' attribute is available after the first
@@ -1200,24 +1203,21 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          *
          * @param element the element to send.
          * @throws NotConnectedException 
+         * @throws InterruptedException 
          */
-        protected void sendStreamElement(Element element) throws NotConnectedException {
+        protected void sendStreamElement(Element element) throws NotConnectedException, InterruptedException {
             throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
-
-            boolean enqueued = false;
-            while (!enqueued) {
-                try {
-                    queue.put(element);
-                    enqueued = true;
-                }
-                catch (InterruptedException e) {
-                    throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
-                    // If the method above did not throw, then the sending thread was interrupted
-                    // TODO in a later version of Smack the InterruptedException should be thrown to
-                    // allow users to interrupt a sending thread that is currently blocking because
-                    // the queue is full.
-                    LOGGER.log(Level.WARNING, "Sending thread was interrupted", e);
-                }
+            try {
+                queue.put(element);
+            }
+            catch (InterruptedException e) {
+                // put() may throw an InterruptedException for two reasons:
+                // 1. If the queue was shut down
+                // 2. If the thread was interrupted
+                // so we have to check which is the case
+                throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
+                // If the method above did not throw, then the sending thread was interrupted
+                throw e;
             }
         }
 
@@ -1457,15 +1457,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @throws StreamManagementNotEnabledException if Stream Mangement is not enabled.
      * @throws NotConnectedException if the connection is not connected.
+     * @throws InterruptedException 
      */
-    public void requestSmAcknowledgement() throws StreamManagementNotEnabledException, NotConnectedException {
+    public void requestSmAcknowledgement() throws StreamManagementNotEnabledException, NotConnectedException, InterruptedException {
         if (!isSmEnabled()) {
             throw new StreamManagementException.StreamManagementNotEnabledException();
         }
         requestSmAcknowledgementInternal();
     }
 
-    private void requestSmAcknowledgementInternal() throws NotConnectedException {
+    private void requestSmAcknowledgementInternal() throws NotConnectedException, InterruptedException {
         packetWriter.sendStreamElement(AckRequest.INSTANCE);
     }
 
@@ -1479,15 +1480,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * 
      * @throws StreamManagementNotEnabledException if Stream Management is not enabled.
      * @throws NotConnectedException if the connection is not connected.
+     * @throws InterruptedException 
      */
-    public void sendSmAcknowledgement() throws StreamManagementNotEnabledException, NotConnectedException {
+    public void sendSmAcknowledgement() throws StreamManagementNotEnabledException, NotConnectedException, InterruptedException {
         if (!isSmEnabled()) {
             throw new StreamManagementException.StreamManagementNotEnabledException();
         }
         sendSmAcknowledgementInternal();
     }
 
-    private void sendSmAcknowledgementInternal() throws NotConnectedException {
+    private void sendSmAcknowledgementInternal() throws NotConnectedException, InterruptedException {
         packetWriter.sendStreamElement(new AckAnswer(clientHandledStanzasCount));
     }
 
@@ -1679,8 +1681,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             try {
                                 listener.processPacket(ackedStanza);
                             }
-                            catch (NotConnectedException e) {
-                                LOGGER.log(Level.FINER, "Received not connected exception", e);
+                            catch (InterruptedException | NotConnectedException e) {
+                                LOGGER.log(Level.FINER, "Received exception", e);
                             }
                         }
                         String id = ackedStanza.getStanzaId();
@@ -1692,8 +1694,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             try {
                                 listener.processPacket(ackedStanza);
                             }
-                            catch (NotConnectedException e) {
-                                LOGGER.log(Level.FINER, "Received not connected exception", e);
+                            catch (InterruptedException | NotConnectedException e) {
+                                LOGGER.log(Level.FINER, "Received exception", e);
                             }
                         }
                     }

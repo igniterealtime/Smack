@@ -27,12 +27,12 @@ import org.jivesoftware.smackx.csi.packet.ClientStateIndication;
  */
 public class ClientStateIndicationManager {
 
-    public static void active(XMPPConnection connection) throws NotConnectedException {
+    public static void active(XMPPConnection connection) throws NotConnectedException, InterruptedException {
         throwIaeIfNotSupported(connection);
         connection.send(ClientStateIndication.Active.INSTANCE);
     }
 
-    public static void inactive(XMPPConnection connection) throws NotConnectedException {
+    public static void inactive(XMPPConnection connection) throws NotConnectedException, InterruptedException {
         throwIaeIfNotSupported(connection);
         connection.send(ClientStateIndication.Inactive.INSTANCE);
     }

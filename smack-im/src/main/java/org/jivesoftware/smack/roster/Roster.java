@@ -211,7 +211,7 @@ public class Roster extends Manager {
                 try {
                     Roster.this.reload();
                 }
-                catch (SmackException e) {
+                catch (InterruptedException | SmackException e) {
                     LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
                     return;
                 }
@@ -229,7 +229,7 @@ public class Roster extends Manager {
             try {
                 reload();
             }
-            catch (SmackException e) {
+            catch (InterruptedException | SmackException e) {
                 LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
             }
         }
@@ -271,8 +271,9 @@ public class Roster extends Manager {
      * reloaded at a later point when the server responds to the reload request.
      * @throws NotLoggedInException If not logged in.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void reload() throws NotLoggedInException, NotConnectedException{
+    public void reload() throws NotLoggedInException, NotConnectedException, InterruptedException{
         final XMPPConnection connection = connection();
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
@@ -298,9 +299,10 @@ public class Roster extends Manager {
      *
      * @throws NotLoggedInException
      * @throws NotConnectedException
+     * @throws InterruptedException 
      * @since 4.1
      */
-    public void reloadAndWait() throws NotLoggedInException, NotConnectedException {
+    public void reloadAndWait() throws NotLoggedInException, NotConnectedException, InterruptedException {
         reload();
         waitUntilLoaded();
     }
@@ -317,14 +319,14 @@ public class Roster extends Manager {
         try {
             reload();
         }
-        catch (NotLoggedInException | NotConnectedException e) {
+        catch (InterruptedException | NotLoggedInException | NotConnectedException e) {
             LOGGER.log(Level.FINER, "Could not reload roster", e);
             return false;
         }
         return true;
     }
 
-    protected boolean waitUntilLoaded() {
+    protected boolean waitUntilLoaded() throws InterruptedException {
         final XMPPConnection connection = connection();
         while (!loaded) {
             long waitTime = connection.getPacketReplyTimeout();
@@ -332,16 +334,10 @@ public class Roster extends Manager {
             if (waitTime <= 0) {
                 break;
             }
-            try {
-                synchronized (this) {
-                    if (!loaded) {
-                        wait(waitTime);
-                    }
+            synchronized (this) {
+                if (!loaded) {
+                    wait(waitTime);
                 }
-            }
-            catch (InterruptedException e) {
-                LOGGER.log(Level.FINE, "interrupted", e);
-                break;
             }
             long now = System.currentTimeMillis();
             waitTime -= now - start;
@@ -423,8 +419,9 @@ public class Roster extends Manager {
      * @throws XMPPErrorException if an XMPP exception occurs.
      * @throws NotLoggedInException If not logged in.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void createEntry(String user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException {
+    public void createEntry(String user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final XMPPConnection connection = connection();
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
@@ -464,9 +461,10 @@ public class Roster extends Manager {
      * @throws NotLoggedInException if not logged in.
      * @throws NoResponseException SmackException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      * @throws IllegalStateException if connection is not logged in or logged in anonymously
      */
-    public void removeEntry(RosterEntry entry) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException {
+    public void removeEntry(RosterEntry entry) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final XMPPConnection connection = connection();
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
@@ -913,7 +911,7 @@ public class Roster extends Manager {
      */
     private void setOfflinePresencesAndResetLoaded() {
         Presence packetUnavailable;
-        for (String user : presenceMap.keySet()) {
+        outerloop: for (String user : presenceMap.keySet()) {
             Map<String, Presence> resources = presenceMap.get(user);
             if (resources != null) {
                 for (String resource : resources.keySet()) {
@@ -926,6 +924,9 @@ public class Roster extends Manager {
                         throw new IllegalStateException(
                                         "presencePakcetListener should never throw a NotConnectedException when processPacket is called with a presence of type unavailable",
                                         e);
+                    }
+                    catch (InterruptedException e) {
+                        break outerloop;
                     }
                 }
             }
@@ -1140,7 +1141,7 @@ public class Roster extends Manager {
         }
 
         @Override
-        public void processPacket(Stanza packet) throws NotConnectedException {
+        public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
             final XMPPConnection connection = connection();
             Presence presence = (Presence) packet;
             String from = presence.getFrom();

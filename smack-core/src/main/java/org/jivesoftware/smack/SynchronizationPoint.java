@@ -56,7 +56,7 @@ public class SynchronizationPoint<E extends Exception> {
     }
 
     public void sendAndWaitForResponse(TopLevelStreamElement request) throws NoResponseException,
-                    NotConnectedException {
+                    NotConnectedException, InterruptedException {
         assert (state == State.Initial);
         connectionLock.lock();
         try {
@@ -80,7 +80,7 @@ public class SynchronizationPoint<E extends Exception> {
     }
 
     public void sendAndWaitForResponseOrThrow(PlainStreamElement request) throws E, NoResponseException,
-                    NotConnectedException {
+                    NotConnectedException, InterruptedException {
         sendAndWaitForResponse(request);
         switch (state) {
         case Failure:
@@ -172,6 +172,7 @@ public class SynchronizationPoint<E extends Exception> {
                     break;
                 }
             } catch (InterruptedException e) {
+                // This InterruptedException could be "spurious wakeups", see javadoc of awaitNanos()
                 LOGGER.log(Level.WARNING, "Thread interrupt while waiting for condition or timeout ignored", e);
             }
         }

@@ -56,7 +56,7 @@ class DataListener implements PacketListener {
         this.manager = manager;
     }
 
-    public void processPacket(Stanza packet) throws NotConnectedException {
+    public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
         Data data = (Data) packet;
         InBandBytestreamSession ibbSession = this.manager.getSessions().get(
                         data.getDataPacketExtension().getSessionID());

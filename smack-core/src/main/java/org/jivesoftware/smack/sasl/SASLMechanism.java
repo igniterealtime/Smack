@@ -158,9 +158,10 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param password the password for this account.
      * @throws SmackException If a network error occurs while authenticating.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
     public final void authenticate(String username, String host, String serviceName, String password)
-                    throws SmackException, NotConnectedException {
+                    throws SmackException, NotConnectedException, InterruptedException {
         this.authenticationId = username;
         this.host = host;
         this.serviceName = serviceName;
@@ -181,9 +182,10 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param cbh      the CallbackHandler to obtain user information.
      * @throws SmackException
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
     public void authenticate(String host,String serviceName, CallbackHandler cbh)
-                    throws SmackException, NotConnectedException {
+                    throws SmackException, NotConnectedException, InterruptedException {
         this.host = host;
         this.serviceName = serviceName;
         authenticateInternal(cbh);
@@ -192,7 +194,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
 
     protected abstract void authenticateInternal(CallbackHandler cbh) throws SmackException;
 
-    private final void authenticate() throws SmackException, NotConnectedException {
+    private final void authenticate() throws SmackException, NotConnectedException, InterruptedException {
         byte[] authenticationBytes = getAuthenticationText();
         String authenticationText;
         if (authenticationBytes != null) {
@@ -224,8 +226,9 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param finalChallenge true if this is the last challenge send by the server within the success stanza
      * @throws NotConnectedException
      * @throws SmackException
+     * @throws InterruptedException 
      */
-    public final void challengeReceived(String challengeString, boolean finalChallenge) throws SmackException, NotConnectedException {
+    public final void challengeReceived(String challengeString, boolean finalChallenge) throws SmackException, NotConnectedException, InterruptedException {
         byte[] challenge = Base64.decode(challengeString);
         byte[] response = evaluateChallenge(challenge);
         if (finalChallenge) {

@@ -67,9 +67,10 @@ public class InBandBytestreamRequestTest {
     /**
      * Test reject() method.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
     @Test
-    public void shouldReplyWithErrorIfRequestIsRejected() throws NotConnectedException {
+    public void shouldReplyWithErrorIfRequestIsRejected() throws NotConnectedException, InterruptedException {
         InBandBytestreamRequest ibbRequest = new InBandBytestreamRequest(
                         byteStreamManager, initBytestream);
 

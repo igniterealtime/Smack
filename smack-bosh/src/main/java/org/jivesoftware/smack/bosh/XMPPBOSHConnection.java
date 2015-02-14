@@ -212,7 +212,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
 
     @Override
     protected void loginNonAnonymously(String username, String password, String resource)
-            throws XMPPException, SmackException, IOException {
+            throws XMPPException, SmackException, IOException, InterruptedException {
         if (saslAuthentication.hasNonAnonymousAuthentication()) {
             // Authenticate using SASL
             if (password != null) {
@@ -230,7 +230,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void loginAnonymously() throws XMPPException, SmackException, IOException {
+    protected void loginAnonymously() throws XMPPException, SmackException, IOException, InterruptedException {
         // Wait with SASL auth until the SASL mechanisms have been received
         saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
 

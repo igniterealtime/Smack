@@ -47,8 +47,9 @@ public class TranscriptManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public Transcript getTranscript(String workgroupJID, String sessionID) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public Transcript getTranscript(String workgroupJID, String sessionID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Transcript request = new Transcript(sessionID);
         request.setTo(workgroupJID);
         Transcript response = (Transcript) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
@@ -65,8 +66,9 @@ public class TranscriptManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public Transcripts getTranscripts(String workgroupJID, String userID) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public Transcripts getTranscripts(String workgroupJID, String userID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Transcripts request = new Transcripts(userID);
         request.setTo(workgroupJID);
         Transcripts response = (Transcripts) connection.createPacketCollectorAndSend(request).nextResultOrThrow();

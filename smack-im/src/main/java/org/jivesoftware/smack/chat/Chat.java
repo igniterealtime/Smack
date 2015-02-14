@@ -91,8 +91,9 @@ public class Chat {
      *
      * @param text the text to send.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void sendMessage(String text) throws NotConnectedException {
+    public void sendMessage(String text) throws NotConnectedException, InterruptedException {
         Message message = new Message();
         message.setBody(text);
         sendMessage(message);
@@ -104,8 +105,9 @@ public class Chat {
      *
      * @param message the message to send.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void sendMessage(Message message) throws NotConnectedException {
+    public void sendMessage(Message message) throws NotConnectedException, InterruptedException {
         // Force the recipient, message type, and thread ID since the user elected
         // to send the message through this chat object.
         message.setTo(participant);

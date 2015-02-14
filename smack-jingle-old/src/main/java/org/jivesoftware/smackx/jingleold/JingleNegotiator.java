@@ -232,8 +232,9 @@ public abstract class JingleNegotiator {
      * @param id the ID of the response that will be sent
      * @return the new packet to send (either a Jingle or an IQ error).
      * @throws XMPPException
+     * @throws InterruptedException 
      */
-    public abstract List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException;
+    public abstract List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException, InterruptedException;
 
     
     public void start() {

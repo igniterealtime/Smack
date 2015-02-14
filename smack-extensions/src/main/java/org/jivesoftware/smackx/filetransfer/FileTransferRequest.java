@@ -129,8 +129,9 @@ public class FileTransferRequest {
 	/**
 	 * Rejects the file transfer request.
 	 * @throws NotConnectedException 
+	 * @throws InterruptedException 
 	 */
-	public void reject() throws NotConnectedException {
+	public void reject() throws NotConnectedException, InterruptedException {
 		manager.rejectIncomingFileTransfer(this);
 	}
 

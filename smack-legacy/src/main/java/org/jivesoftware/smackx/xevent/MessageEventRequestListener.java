@@ -48,9 +48,10 @@ public interface MessageEventRequestListener {
      * @param packetID the id of the message that was sent.
      * @param messageEventManager the messageEventManager that fired the listener.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
     public void deliveredNotificationRequested(String from, String packetID,
-            MessageEventManager messageEventManager) throws NotConnectedException;
+            MessageEventManager messageEventManager) throws NotConnectedException, InterruptedException;
 
     /**
      * Called when a request for message displayed notification is received.

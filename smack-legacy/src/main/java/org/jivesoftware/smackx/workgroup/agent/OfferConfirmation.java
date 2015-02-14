@@ -53,7 +53,7 @@ public class OfferConfirmation extends SimpleIQ {
     }
 
 
-    public void notifyService(XMPPConnection con, String workgroup, String createdRoomName) throws NotConnectedException {
+    public void notifyService(XMPPConnection con, String workgroup, String createdRoomName) throws NotConnectedException, InterruptedException {
         NotifyServicePacket packet = new NotifyServicePacket(workgroup, createdRoomName);
         con.sendPacket(packet);
     }

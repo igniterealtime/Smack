@@ -59,9 +59,10 @@ public class InBandBytestreamManagerTest {
      * Initialize fields used in the tests.
      * @throws XMPPException 
      * @throws SmackException 
+     * @throws InterruptedException 
      */
     @Before
-    public void setup() throws XMPPException, SmackException {
+    public void setup() throws XMPPException, SmackException, InterruptedException {
 
         // build protocol verifier
         protocol = new Protocol();
@@ -103,9 +104,10 @@ public class InBandBytestreamManagerTest {
      * bytestream.
      * @throws SmackException 
      * @throws XMPPException 
+     * @throws InterruptedException 
      */
     @Test
-    public void shouldFailIfTargetDoesNotSupportIBB() throws SmackException, XMPPException {
+    public void shouldFailIfTargetDoesNotSupportIBB() throws SmackException, XMPPException, InterruptedException {
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
 
         try {
@@ -153,7 +155,7 @@ public class InBandBytestreamManagerTest {
     }
 
     @Test
-    public void shouldUseConfiguredStanzaType() throws SmackException {
+    public void shouldUseConfiguredStanzaType() throws SmackException, InterruptedException {
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
         byteStreamManager.setStanza(StanzaType.MESSAGE);
 

@@ -107,8 +107,9 @@ public class PEPManager {
      * 
      * @param item the item to publish.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void publish(PEPItem item) throws NotConnectedException {
+    public void publish(PEPItem item) throws NotConnectedException, InterruptedException {
         // Create a new message to publish the event.
         PEPPubSub pubSub = new PEPPubSub(item);
         pubSub.setType(Type.set);

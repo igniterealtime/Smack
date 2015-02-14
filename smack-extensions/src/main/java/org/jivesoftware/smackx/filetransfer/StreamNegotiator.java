@@ -72,7 +72,7 @@ public abstract class StreamNegotiator {
         return response;
     }
 
-    Stanza initiateIncomingStream(XMPPConnection connection, StreamInitiation initiation) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    Stanza initiateIncomingStream(XMPPConnection connection, StreamInitiation initiation) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         StreamInitiation response = createInitiationAccept(initiation,
                 getNamespaces());
 
@@ -134,9 +134,10 @@ public abstract class StreamNegotiator {
      *                       exception will be thrown.
      * @throws SmackException 
      * @throws XMPPException 
+     * @throws InterruptedException 
      */
     public abstract OutputStream createOutgoingStream(String streamID,
-            String initiator, String target) throws XMPPErrorException, NoResponseException, SmackException, XMPPException;
+            String initiator, String target) throws XMPPErrorException, NoResponseException, SmackException, XMPPException, InterruptedException;
 
     /**
      * Returns the XMPP namespace reserved for this particular type of file

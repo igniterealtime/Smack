@@ -36,7 +36,7 @@ public class Agent {
     private XMPPConnection connection;
     private String workgroupJID;
 
-    public static Collection<String> getWorkgroups(String serviceJID, String agentJID, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public static Collection<String> getWorkgroups(String serviceJID, String agentJID, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         AgentWorkgroups request = new AgentWorkgroups(agentJID);
         request.setTo(serviceJID);
         AgentWorkgroups response = (AgentWorkgroups) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
@@ -67,8 +67,9 @@ public class Agent {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public String getName() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public String getName() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         AgentInfo agentInfo = new AgentInfo();
         agentInfo.setType(IQ.Type.get);
         agentInfo.setTo(workgroupJID);
@@ -87,8 +88,9 @@ public class Agent {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void setName(String newName) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void setName(String newName) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         AgentInfo agentInfo = new AgentInfo();
         agentInfo.setType(IQ.Type.set);
         agentInfo.setTo(workgroupJID);

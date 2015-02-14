@@ -47,7 +47,8 @@ public interface PacketListener {
      * </p>
      *
      * @param packet the packet to process.
+     * @throws InterruptedException 
      */
-    public void processPacket(Stanza packet) throws NotConnectedException;
+    public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException;
 
 }

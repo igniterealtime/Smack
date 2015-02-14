@@ -79,7 +79,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
                 "method");
     }
 
-    public InputStream createIncomingStream(StreamInitiation initiation) throws SmackException {
+    public InputStream createIncomingStream(StreamInitiation initiation) throws SmackException, InterruptedException {
         PacketCollector collector = connection.createPacketCollectorAndSend(
                         getInitiationPacketFilter(initiation.getFrom(), initiation.getSessionID()),
                         super.createInitiationAccept(initiation, getNamespaces()));
@@ -144,7 +144,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
     }
 
     public OutputStream createOutgoingStream(String streamID, String initiator, String target)
-                    throws SmackException, XMPPException {
+                    throws SmackException, XMPPException, InterruptedException {
         OutputStream stream;
         try {
             stream = primaryNegotiator.createOutgoingStream(streamID, initiator, target);

@@ -174,8 +174,9 @@ public class MultiUserChatManager extends Manager {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
-    public boolean isServiceEnabled(String user) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public boolean isServiceEnabled(String user) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(user, MUCInitialPresence.NAMESPACE);
     }
 
@@ -198,9 +199,10 @@ public class MultiUserChatManager extends Manager {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
     public List<String> getJoinedRooms(String user) throws NoResponseException, XMPPErrorException,
-                    NotConnectedException {
+                    NotConnectedException, InterruptedException {
         // Send the disco packet to the user
         DiscoverItems result = ServiceDiscoveryManager.getInstanceFor(connection()).discoverItems(user, DISCO_NODE);
         List<DiscoverItems.Item> items = result.getItems();
@@ -221,8 +223,9 @@ public class MultiUserChatManager extends Manager {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
-    public RoomInfo getRoomInfo(String room) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public RoomInfo getRoomInfo(String room) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(connection()).discoverInfo(room);
         return new RoomInfo(info);
     }
@@ -234,8 +237,9 @@ public class MultiUserChatManager extends Manager {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
-    public List<String> getServiceNames() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public List<String> getServiceNames() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
         return sdm.findServices(MUCInitialPresence.NAMESPACE, false, false);
     }
@@ -250,9 +254,10 @@ public class MultiUserChatManager extends Manager {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
     public List<HostedRoom> getHostedRooms(String serviceName) throws NoResponseException, XMPPErrorException,
-                    NotConnectedException {
+                    NotConnectedException, InterruptedException {
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection());
         DiscoverItems discoverItems = discoManager.discoverItems(serviceName);
         List<DiscoverItems.Item> items = discoverItems.getItems();
@@ -271,8 +276,9 @@ public class MultiUserChatManager extends Manager {
      * @param inviter the inviter of the declined invitation.
      * @param reason the reason why the invitee is declining the invitation.
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
-    public void decline(String room, String inviter, String reason) throws NotConnectedException {
+    public void decline(String room, String inviter, String reason) throws NotConnectedException, InterruptedException {
         Message message = new Message(room);
 
         // Create the MUCUser packet that will include the rejection

@@ -98,8 +98,9 @@ public class AccountManager extends Manager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public boolean supportsAccountCreation() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public boolean supportsAccountCreation() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Check if we already know that the server supports creating new accounts
         if (accountCreationSupported) {
             return true;
@@ -140,8 +141,9 @@ public class AccountManager extends Manager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public Set<String> getAccountAttributes() throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public Set<String> getAccountAttributes() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         if (info == null) {
             getRegistrationInfo();
         }
@@ -163,8 +165,9 @@ public class AccountManager extends Manager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public String getAccountAttribute(String name) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public String getAccountAttribute(String name) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         if (info == null) {
             getRegistrationInfo();
         }
@@ -180,8 +183,9 @@ public class AccountManager extends Manager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public String getAccountInstructions() throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public String getAccountInstructions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         if (info == null) {
             getRegistrationInfo();
         }
@@ -201,8 +205,9 @@ public class AccountManager extends Manager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void createAccount(String username, String password) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public void createAccount(String username, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         // Create a map for all the required attributes, but give them blank values.
         Map<String, String> attributes = new HashMap<String, String>();
         for (String attributeName : getAccountAttributes()) {
@@ -222,10 +227,11 @@ public class AccountManager extends Manager {
      * @throws XMPPErrorException if an error occurs creating the account.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      * @see #getAccountAttributes()
      */
     public void createAccount(String username, String password, Map<String, String> attributes)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException {
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         attributes.put("username", username);
         attributes.put("password", password);
         Registration reg = new Registration(attributes);
@@ -243,8 +249,9 @@ public class AccountManager extends Manager {
      * @throws XMPPErrorException if an error occurs when changing the password.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Map<String, String> map = new HashMap<String, String>();
         map.put("username",XmppStringUtils.parseLocalpart(connection().getUser()));
         map.put("password",newPassword);
@@ -263,8 +270,9 @@ public class AccountManager extends Manager {
      * @throws XMPPErrorException if an error occurs when deleting the account.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void deleteAccount() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void deleteAccount() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Map<String, String> attributes = new HashMap<String, String>();
         // To delete an account, we add a single attribute, "remove", that is blank.
         attributes.put("remove", "");
@@ -279,17 +287,18 @@ public class AccountManager extends Manager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      *
      * @throws XMPPException if an error occurs.
      * @throws SmackException if there was no response from the server.
      */
-    private synchronized void getRegistrationInfo() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private synchronized void getRegistrationInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Registration reg = new Registration();
         reg.setTo(connection().getServiceName());
         info = createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
-    private PacketCollector createPacketCollectorAndSend(IQ req) throws NotConnectedException {
+    private PacketCollector createPacketCollectorAndSend(IQ req) throws NotConnectedException, InterruptedException {
         PacketCollector collector = connection().createPacketCollectorAndSend(new PacketIDFilter(req.getStanzaId()), req);
         return collector;
     }

@@ -66,8 +66,9 @@ public class UserSearchManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public Form getSearchForm(String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public Form getSearchForm(String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return userSearch.getSearchForm(con, searchService);
     }
 
@@ -81,8 +82,9 @@ public class UserSearchManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public ReportedData getSearchResults(Form searchForm, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public ReportedData getSearchResults(Form searchForm, String searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return userSearch.sendSearchForm(con, searchForm, searchService);
     }
 
@@ -94,8 +96,9 @@ public class UserSearchManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public List<String> getSearchServices() throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public List<String> getSearchServices() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(con);
         return discoManager.findServices(UserSearch.NAMESPACE, false, false);
     }

@@ -64,9 +64,10 @@ public class ConnectionUtils {
      * @return a mocked XMPP connection
      * @throws SmackException 
      * @throws XMPPErrorException 
+     * @throws InterruptedException 
      */
     public static XMPPConnection createMockedConnection(final Protocol protocol,
-                    String initiatorJID, String xmppServer) throws SmackException, XMPPErrorException {
+                    String initiatorJID, String xmppServer) throws SmackException, XMPPErrorException, InterruptedException {
 
         // mock XMPP connection
         XMPPConnection connection = mock(XMPPConnection.class);

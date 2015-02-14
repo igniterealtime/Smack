@@ -120,9 +120,10 @@ public class OutgoingFileTransfer extends FileTransfer {
 	 *             Thrown if an error occurs during the file transfer
 	 *             negotiation process.
 	 * @throws SmackException if there was no response from the server.
+	 * @throws InterruptedException 
 	 */
 	public synchronized OutputStream sendFile(String fileName, long fileSize,
-			String description) throws XMPPException, SmackException {
+			String description) throws XMPPException, SmackException, InterruptedException {
 		if (isDone() || outputStream != null) {
 			throw new IllegalStateException(
 					"The negotation process has already"
@@ -373,7 +374,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 	}
 
 	private OutputStream negotiateStream(String fileName, long fileSize,
-			String description) throws SmackException, XMPPException {
+			String description) throws SmackException, XMPPException, InterruptedException {
 		// Negotiate the file transfer profile
 
         if (!updateStatus(Status.initial, Status.negotiating_transfer)) {

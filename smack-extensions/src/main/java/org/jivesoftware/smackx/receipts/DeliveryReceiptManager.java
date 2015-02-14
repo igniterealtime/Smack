@@ -141,7 +141,7 @@ public class DeliveryReceiptManager extends Manager {
         // Add the packet listener to handle incoming delivery receipt requests
         connection.addAsyncPacketListener(new PacketListener() {
             @Override
-            public void processPacket(Stanza packet) throws NotConnectedException {
+            public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
                 final String from = packet.getFrom();
                 final XMPPConnection connection = connection();
                 switch (autoReceiptMode) {
@@ -188,8 +188,9 @@ public class DeliveryReceiptManager extends Manager {
      * @return true if supported
      * @throws SmackException if there was no response from the server.
      * @throws XMPPException 
+     * @throws InterruptedException 
      */
-    public boolean isSupported(String jid) throws SmackException, XMPPException {
+    public boolean isSupported(String jid) throws SmackException, XMPPException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid,
                         DeliveryReceipt.NAMESPACE);
     }

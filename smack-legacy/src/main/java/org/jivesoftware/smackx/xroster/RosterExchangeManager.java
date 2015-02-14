@@ -115,8 +115,9 @@ public class RosterExchangeManager {
      * @param roster the roster to send
      * @param targetUserID the user that will receive the roster entries
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void send(Roster roster, String targetUserID) throws NotConnectedException {
+    public void send(Roster roster, String targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message
@@ -134,8 +135,9 @@ public class RosterExchangeManager {
      * @param rosterEntry the roster entry to send
      * @param targetUserID the user that will receive the roster entries
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void send(RosterEntry rosterEntry, String targetUserID) throws NotConnectedException {
+    public void send(RosterEntry rosterEntry, String targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message
@@ -155,8 +157,9 @@ public class RosterExchangeManager {
      * @param rosterGroup the roster group to send
      * @param targetUserID the user that will receive the roster entries
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void send(RosterGroup rosterGroup, String targetUserID) throws NotConnectedException {
+    public void send(RosterGroup rosterGroup, String targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message

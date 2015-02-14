@@ -103,9 +103,10 @@ public class PingTest extends InitExtensions {
      * @throws SmackException 
      * @throws XMPPException 
      * @throws IOException 
+     * @throws InterruptedException 
      */
     @Test
-    public void checkFailedPingOnTimeout() throws SmackException, IOException, XMPPException {
+    public void checkFailedPingOnTimeout() throws SmackException, IOException, XMPPException, InterruptedException {
         DummyConnection dummyCon = getAuthenticatedDummyConnectionWithoutIqReplies();
         PingManager pinger = PingManager.getInstanceFor(dummyCon);
 
@@ -181,7 +182,7 @@ public class PingTest extends InitExtensions {
     }
     
     @Test
-    public void checkPingToServerTimeout() throws SmackException, IOException, XMPPException {
+    public void checkPingToServerTimeout() throws SmackException, IOException, XMPPException, InterruptedException {
         DummyConnection con = getAuthenticatedDummyConnectionWithoutIqReplies();
         PingManager pinger = PingManager.getInstanceFor(con);
 
@@ -233,7 +234,7 @@ public class PingTest extends InitExtensions {
         assertFalse(pingSupported);
     }
 
-    private static ThreadedDummyConnection getAuthentiactedDummyConnection() throws SmackException, IOException, XMPPException {
+    private static ThreadedDummyConnection getAuthentiactedDummyConnection() throws SmackException, IOException, XMPPException, InterruptedException {
         ThreadedDummyConnection connection = new ThreadedDummyConnection();
         connection.connect();
         connection.login();
@@ -247,8 +248,9 @@ public class PingTest extends InitExtensions {
      * @throws XMPPException 
      * @throws IOException 
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    private static DummyConnection getAuthenticatedDummyConnectionWithoutIqReplies() throws SmackException, IOException, XMPPException {
+    private static DummyConnection getAuthenticatedDummyConnectionWithoutIqReplies() throws SmackException, IOException, XMPPException, InterruptedException {
         DummyConnection con = new DummyConnection();
         con.setPacketReplyTimeout(500);
         con.connect();

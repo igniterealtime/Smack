@@ -70,10 +70,11 @@ public class VCardManager extends Manager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException
+     * @throws InterruptedException 
      * @deprecated use {@link #isSupported(String)} instead.
      */
     @Deprecated
-    public static boolean isSupported(String jid, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public static boolean isSupported(String jid, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return VCardManager.getInstanceFor(connection).isSupported(jid);
     }
 
@@ -89,8 +90,9 @@ public class VCardManager extends Manager {
      * @throws XMPPErrorException thrown if there was an issue setting the VCard in the server.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void saveVCard(VCard vcard) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void saveVCard(VCard vcard) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         vcard.setType(IQ.Type.set);
         connection().createPacketCollectorAndSend(vcard).nextResultOrThrow();
     }
@@ -101,8 +103,9 @@ public class VCardManager extends Manager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public VCard loadVCard() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public VCard loadVCard() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return loadVCard(null);
     }
 
@@ -112,8 +115,9 @@ public class VCardManager extends Manager {
      * @throws XMPPErrorException 
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public VCard loadVCard(String bareJid) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public VCard loadVCard(String bareJid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         VCard vcardRequest = new VCard();
         vcardRequest.setTo(bareJid);
         VCard result = connection().createPacketCollectorAndSend(vcardRequest).nextResultOrThrow();
@@ -128,8 +132,9 @@ public class VCardManager extends Manager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public boolean isSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public boolean isSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, NAMESPACE);
     }
 }

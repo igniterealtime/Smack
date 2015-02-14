@@ -62,7 +62,8 @@ public interface BytestreamRequest {
     /**
      * Rejects the bytestream request by sending a reject error to the initiator.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void reject() throws NotConnectedException;
+    public void reject() throws NotConnectedException, InterruptedException;
 
 }

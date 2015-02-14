@@ -267,8 +267,9 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
     /**
      * Rejects the SOCKS5 Bytestream request by sending a reject error to the initiator.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void reject() throws NotConnectedException {
+    public void reject() throws NotConnectedException, InterruptedException {
         this.manager.replyRejectPacket(this.bytestreamRequest);
     }
 
@@ -277,8 +278,9 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * XMPP exception.
      * @throws XMPPErrorException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    private void cancelRequest() throws XMPPErrorException, NotConnectedException {
+    private void cancelRequest() throws XMPPErrorException, NotConnectedException, InterruptedException {
         String errorMessage = "Could not establish socket with any provided host";
         XMPPError error = XMPPError.from(XMPPError.Condition.item_not_found, errorMessage);
         IQ errorIQ = IQ.createErrorResponse(this.bytestreamRequest, error);

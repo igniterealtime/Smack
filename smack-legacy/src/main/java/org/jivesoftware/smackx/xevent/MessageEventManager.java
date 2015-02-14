@@ -208,8 +208,9 @@ public class MessageEventManager extends Manager {
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void sendDeliveredNotification(String to, String packetID) throws NotConnectedException {
+    public void sendDeliveredNotification(String to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
         Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
@@ -227,8 +228,9 @@ public class MessageEventManager extends Manager {
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void sendDisplayedNotification(String to, String packetID) throws NotConnectedException {
+    public void sendDisplayedNotification(String to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
         Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
@@ -246,8 +248,9 @@ public class MessageEventManager extends Manager {
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void sendComposingNotification(String to, String packetID) throws NotConnectedException {
+    public void sendComposingNotification(String to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
         Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
@@ -265,8 +268,9 @@ public class MessageEventManager extends Manager {
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void sendCancelledNotification(String to, String packetID) throws NotConnectedException {
+    public void sendCancelledNotification(String to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
         Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message

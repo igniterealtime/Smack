@@ -580,7 +580,7 @@ public class EnhancedDebugger implements SmackDebugger {
                     try {
                         connection.sendPacket(packetToSend);
                     }
-                    catch (NotConnectedException e1) {
+                    catch (InterruptedException | NotConnectedException e1) {
                         e1.printStackTrace();
                     }
                 }

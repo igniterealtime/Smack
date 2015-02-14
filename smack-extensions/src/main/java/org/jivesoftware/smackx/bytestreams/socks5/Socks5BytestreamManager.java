@@ -527,8 +527,9 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    private boolean supportsSocks5(String targetJID) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private boolean supportsSocks5(String targetJID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(targetJID, Bytestream.NAMESPACE);
     }
 
@@ -540,8 +541,9 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * @throws XMPPErrorException if there was an error querying the XMPP server for SOCKS5 proxies
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    private List<String> determineProxies() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private List<String> determineProxies() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ServiceDiscoveryManager serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(this.connection);
 
         List<String> proxies = new ArrayList<String>();
@@ -700,8 +702,9 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * 
      * @param packet Packet that should be answered with a not-acceptable error
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void replyRejectPacket(IQ packet) throws NotConnectedException {
+    protected void replyRejectPacket(IQ packet) throws NotConnectedException, InterruptedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.not_acceptable);
         IQ errorIQ = IQ.createErrorResponse(packet, xmppError);
         this.connection.sendPacket(errorIQ);

@@ -65,7 +65,7 @@ final class InitiationListener extends AbstractIqRequestHandler {
                 try {
                     processRequest(packet);
                 }
-                catch (NotConnectedException e) {
+                catch (InterruptedException | NotConnectedException e) {
                     LOGGER.log(Level.WARNING, "process request", e);
                 }
             }
@@ -74,7 +74,7 @@ final class InitiationListener extends AbstractIqRequestHandler {
         return null;
     }
 
-    private void processRequest(Stanza packet) throws NotConnectedException {
+    private void processRequest(Stanza packet) throws NotConnectedException, InterruptedException {
         Bytestream byteStreamRequest = (Bytestream) packet;
 
         // ignore request if in ignore list

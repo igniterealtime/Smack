@@ -99,11 +99,11 @@ public class EntityTimeManager extends Manager {
         enabled = false;
     }
 
-    public boolean isTimeSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public boolean isTimeSupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, Time.NAMESPACE);
     }
 
-    public Time getTime(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public Time getTime(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (!isTimeSupported(jid))
             return null;
 

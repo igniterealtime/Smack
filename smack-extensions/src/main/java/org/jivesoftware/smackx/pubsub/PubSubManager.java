@@ -86,8 +86,9 @@ final public class PubSubManager
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
 	 * @throws NotConnectedException 
+	 * @throws InterruptedException 
 	 */
-	public LeafNode createNode() throws NoResponseException, XMPPErrorException, NotConnectedException
+	public LeafNode createNode() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		PubSub reply = sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.CREATE), null);
 		NodeExtension elem = reply.getExtension("create", PubSubNamespace.BASIC.getXmlns());
@@ -108,8 +109,9 @@ final public class PubSubManager
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
 	 * @throws NotConnectedException 
+	 * @throws InterruptedException 
 	 */
-	public LeafNode createNode(String id) throws NoResponseException, XMPPErrorException, NotConnectedException
+	public LeafNode createNode(String id) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		return (LeafNode)createNode(id, null);
 	}
@@ -126,8 +128,9 @@ final public class PubSubManager
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
 	 * @throws NotConnectedException 
+	 * @throws InterruptedException 
 	 */
-	public Node createNode(String name, Form config) throws NoResponseException, XMPPErrorException, NotConnectedException
+	public Node createNode(String name, Form config) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		PubSub request = PubSub.createPubsubPacket(to, Type.set, new NodeExtension(PubSubElementType.CREATE, name), null);
 		boolean isLeafNode = true;
@@ -160,9 +163,10 @@ final public class PubSubManager
 	 * @throws XMPPErrorException The node does not exist
 	 * @throws NoResponseException if there was no response from the server.
 	 * @throws NotConnectedException 
+	 * @throws InterruptedException 
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Node> T getNode(String id) throws NoResponseException, XMPPErrorException, NotConnectedException
+	public <T extends Node> T getNode(String id) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		Node node = nodeMap.get(id);
 		
@@ -211,8 +215,9 @@ final public class PubSubManager
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException if there was no response from the server.
 	 * @throws NotConnectedException 
+	 * @throws InterruptedException 
 	 */
-	public DiscoverItems discoverNodes(String nodeId) throws NoResponseException, XMPPErrorException, NotConnectedException
+	public DiscoverItems discoverNodes(String nodeId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		DiscoverItems items = new DiscoverItems();
 		
@@ -230,8 +235,9 @@ final public class PubSubManager
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
 	 * @throws NotConnectedException 
+	 * @throws InterruptedException 
 	 */
-	public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException, NotConnectedException
+	public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		Stanza reply = sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.SUBSCRIPTIONS), null);
 		SubscriptionsExtension subElem = reply.getExtension(PubSubElementType.SUBSCRIPTIONS.getElementName(), PubSubElementType.SUBSCRIPTIONS.getNamespace().getXmlns());
@@ -245,9 +251,10 @@ final public class PubSubManager
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
 	 * @throws NotConnectedException 
+	 * @throws InterruptedException 
 	 * 
 	 */
-	public List<Affiliation> getAffiliations() throws NoResponseException, XMPPErrorException, NotConnectedException
+	public List<Affiliation> getAffiliations() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		PubSub reply = sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.AFFILIATIONS), null);
 		AffiliationsExtension listElem = reply.getExtension(PubSubElementType.AFFILIATIONS);
@@ -261,8 +268,9 @@ final public class PubSubManager
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
 	 * @throws NotConnectedException 
+	 * @throws InterruptedException 
 	 */
-	public void deleteNode(String nodeId) throws NoResponseException, XMPPErrorException, NotConnectedException
+	public void deleteNode(String nodeId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.DELETE, nodeId), PubSubElementType.DELETE.getNamespace());
 		nodeMap.remove(nodeId);
@@ -275,8 +283,9 @@ final public class PubSubManager
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
 	 * @throws NotConnectedException 
+	 * @throws InterruptedException 
 	 */
-	public ConfigureForm getDefaultConfiguration() throws NoResponseException, XMPPErrorException, NotConnectedException
+	public ConfigureForm getDefaultConfiguration() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		// Errors will cause exceptions in getReply, so it only returns
 		// on success.
@@ -292,19 +301,20 @@ final public class PubSubManager
 	 * @throws XMPPErrorException 
 	 * @throws NoResponseException 
 	 * @throws NotConnectedException 
+	 * @throws InterruptedException 
 	 */
-	public DiscoverInfo getSupportedFeatures() throws NoResponseException, XMPPErrorException, NotConnectedException
+	public DiscoverInfo getSupportedFeatures() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		ServiceDiscoveryManager mgr = ServiceDiscoveryManager.getInstanceFor(con);
 		return mgr.discoverInfo(to);
 	}
 
     private PubSub sendPubsubPacket(Type type, PacketExtension ext, PubSubNamespace ns)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException {
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return sendPubsubPacket(con, to, type, Collections.singletonList(ext), ns);
     }
 
-	static PubSub sendPubsubPacket(XMPPConnection con, String to, Type type, List<PacketExtension> extList, PubSubNamespace ns) throws NoResponseException, XMPPErrorException, NotConnectedException
+	static PubSub sendPubsubPacket(XMPPConnection con, String to, Type type, List<PacketExtension> extList, PubSubNamespace ns) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 	    PubSub pubSub = new PubSub(to, type, ns);
 	    for (PacketExtension pe : extList) {
@@ -313,7 +323,7 @@ final public class PubSubManager
 		return sendPubsubPacket(con ,pubSub);
 	}
 
-	static PubSub sendPubsubPacket(XMPPConnection con, PubSub packet) throws NoResponseException, XMPPErrorException, NotConnectedException
+	static PubSub sendPubsubPacket(XMPPConnection con, PubSub packet) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		IQ resultIQ = con.createPacketCollectorAndSend(packet).nextResultOrThrow();
         if (resultIQ instanceof EmptyResultIQ) {

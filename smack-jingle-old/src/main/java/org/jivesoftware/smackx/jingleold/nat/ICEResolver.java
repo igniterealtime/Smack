@@ -91,8 +91,9 @@ public class ICEResolver extends TransportResolver {
     /**
      * Resolve the IP and obtain a valid transport method.
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    public synchronized void resolve(JingleSession session) throws XMPPException, SmackException {
+    public synchronized void resolve(JingleSession session) throws XMPPException, SmackException, InterruptedException {
         this.setResolveInit();
 
         for (TransportCandidate candidate : this.getCandidatesList()) {

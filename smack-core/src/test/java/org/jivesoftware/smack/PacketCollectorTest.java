@@ -27,7 +27,7 @@ public class PacketCollectorTest
 {
 
 	@Test
-	public void verifyRollover()
+	public void verifyRollover() throws InterruptedException
 	{
 		TestPacketCollector collector = new TestPacketCollector(null, new OKEverything(), 5);
 		
@@ -92,13 +92,9 @@ public class PacketCollectorTest
 //						System.out.println(Thread.currentThread().getName() + "  packet: " + packet);
 					}
 				}
-				catch (RuntimeException re)
-				{
-					if (re.getCause() instanceof InterruptedException)
-					{
-//						System.out.println(Thread.currentThread().getName() + " has been interupted");
-					}
-				}
+                catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
 			}
 		});
 		consumer1.setName("consumer 1");
@@ -119,7 +115,12 @@ public class PacketCollectorTest
 					catch (InterruptedException e)
 					{
 					}
-					p = collector.nextResult(1);
+					try {
+                        p = collector.nextResult(1);
+                    }
+                    catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
 //					System.out.println(Thread.currentThread().getName() + "  packet: " + p);
 				}
 				while (p != null);

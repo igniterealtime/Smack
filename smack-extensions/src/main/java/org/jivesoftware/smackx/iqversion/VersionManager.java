@@ -124,7 +124,7 @@ public class VersionManager extends Manager {
     }
 
     public boolean isSupported(String jid) throws NoResponseException, XMPPErrorException,
-                    NotConnectedException {
+                    NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid,
                         Version.NAMESPACE);
     }
@@ -137,9 +137,10 @@ public class VersionManager extends Manager {
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
     public Version getVersion(String jid) throws NoResponseException, XMPPErrorException,
-                    NotConnectedException {
+                    NotConnectedException, InterruptedException {
         if (!isSupported(jid)) {
             return null;
         }

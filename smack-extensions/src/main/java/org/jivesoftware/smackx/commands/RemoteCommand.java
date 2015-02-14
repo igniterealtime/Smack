@@ -72,17 +72,17 @@ public class RemoteCommand extends AdHocCommand {
     }
 
     @Override
-    public void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.cancel);
     }
 
     @Override
-    public void complete(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void complete(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.complete, form);
     }
 
     @Override
-    public void execute() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void execute() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.execute);
     }
 
@@ -95,22 +95,23 @@ public class RemoteCommand extends AdHocCommand {
      * @throws XMPPErrorException if an error occurs.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void execute(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void execute(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.execute, form);
     }
 
     @Override
-    public void next(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void next(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.next, form);
     }
 
     @Override
-    public void prev() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void prev() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.prev);
     }
 
-    private void executeAction(Action action) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private void executeAction(Action action) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(action, null);
     }
 
@@ -124,8 +125,9 @@ public class RemoteCommand extends AdHocCommand {
      * @throws XMPPErrorException if there is a problem executing the command.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    private void executeAction(Action action, Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private void executeAction(Action action, Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // TODO: Check that all the required fields of the form were filled, if
         // TODO: not throw the corresponding exeption. This will make a faster response,
         // TODO: since the request is stoped before it's sent.

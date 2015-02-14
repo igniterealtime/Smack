@@ -93,8 +93,9 @@ public class RosterEntry {
      * @throws NotConnectedException 
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws InterruptedException 
      */
-    public void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException {
+    public void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException, InterruptedException {
         // Do nothing if the name hasn't changed.
         if (name != null && name.equals(this.name)) {
             return;

@@ -19,8 +19,6 @@ package org.jivesoftware.smack;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -42,8 +40,6 @@ import org.jivesoftware.smack.packet.Stanza;
  * @author Matt Tucker
  */
 public class PacketCollector {
-
-    private static final Logger LOGGER = Logger.getLogger(PacketCollector.class.getName());
 
     private final PacketFilter packetFilter;
     private final ArrayBlockingQueue<Stanza> resultQueue;
@@ -131,18 +127,14 @@ public class PacketCollector {
      * available.
      * 
      * @return the next available packet.
+     * @throws InterruptedException 
      */
     @SuppressWarnings("unchecked")
-    public <P extends Stanza> P nextResultBlockForever() {
+    public <P extends Stanza> P nextResultBlockForever() throws InterruptedException {
         throwIfCancelled();
         P res = null;
         while (res == null) {
-            try {
-                res = (P) resultQueue.take();
-            } catch (InterruptedException e) {
-                LOGGER.log(Level.FINE,
-                                "nextResultBlockForever was interrupted", e);
-            }
+            res = (P) resultQueue.take();
         }
         return res;
     }
@@ -152,8 +144,9 @@ public class PacketCollector {
      * timeout has elapsed.
      * 
      * @return the next available packet.
+     * @throws InterruptedException 
      */
-    public <P extends Stanza> P nextResult() {
+    public <P extends Stanza> P nextResult() throws InterruptedException {
         return nextResult(connection.getPacketReplyTimeout());
     }
 
@@ -166,20 +159,16 @@ public class PacketCollector {
      *
      * @param timeout the timeout in milliseconds.
      * @return the next available packet.
+     * @throws InterruptedException 
      */
     @SuppressWarnings("unchecked")
-    public <P extends Stanza> P nextResult(long timeout) {
+    public <P extends Stanza> P nextResult(long timeout) throws InterruptedException {
         throwIfCancelled();
         P res = null;
         long remainingWait = timeout;
         waitStart = System.currentTimeMillis();
         do {
-            try {
-                res = (P) resultQueue.poll(remainingWait, TimeUnit.MILLISECONDS);
-            }
-            catch (InterruptedException e) {
-                LOGGER.log(Level.FINE, "nextResult was interrupted", e);
-            }
+            res = (P) resultQueue.poll(remainingWait, TimeUnit.MILLISECONDS);
             if (res != null) {
                 return res;
             }
@@ -196,8 +185,9 @@ public class PacketCollector {
      * @return the next available packet.
      * @throws XMPPErrorException in case an error response.
      * @throws NoResponseException if there was no response from the server.
+     * @throws InterruptedException 
      */
-    public <P extends Stanza> P nextResultOrThrow() throws NoResponseException, XMPPErrorException {
+    public <P extends Stanza> P nextResultOrThrow() throws NoResponseException, XMPPErrorException, InterruptedException {
         return nextResultOrThrow(connection.getPacketReplyTimeout());
     }
 
@@ -209,8 +199,9 @@ public class PacketCollector {
      * @return the next available packet.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException in case an error response.
+     * @throws InterruptedException 
      */
-    public <P extends Stanza> P nextResultOrThrow(long timeout) throws NoResponseException, XMPPErrorException {
+    public <P extends Stanza> P nextResultOrThrow(long timeout) throws NoResponseException, XMPPErrorException, InterruptedException {
         P result = nextResult(timeout);
         cancel();
         if (result == null) {

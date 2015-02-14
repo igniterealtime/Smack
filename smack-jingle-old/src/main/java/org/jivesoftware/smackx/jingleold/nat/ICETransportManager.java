@@ -39,7 +39,7 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
         }
     }
 
-    protected TransportResolver createResolver(JingleSession session) throws SmackException {
+    protected TransportResolver createResolver(JingleSession session) throws SmackException, InterruptedException {
         try {
             iceResolver.resolve(session);
         }
@@ -51,7 +51,7 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
 
     // Implement a Session Listener to relay candidates after establishment
 
-    public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) throws NotConnectedException {
+    public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) throws NotConnectedException, InterruptedException {
         if (lc instanceof ICECandidate) {
             if (((ICECandidate) lc).getType().equals("relay")) {
                 RTPBridge rtpBridge = RTPBridge.relaySession(lc.getConnection(), lc.getSessionId(), lc.getPassword(), rc, lc);

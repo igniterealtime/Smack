@@ -158,8 +158,9 @@ public interface XMPPConnection {
      * 
      * @param packet the packet to send.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void sendPacket(Stanza packet) throws NotConnectedException;
+    public void sendPacket(Stanza packet) throws NotConnectedException, InterruptedException;
 
     /**
      * Send a PlainStreamElement.
@@ -171,8 +172,9 @@ public interface XMPPConnection {
      *
      * @param element
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
-    public void send(PlainStreamElement element) throws NotConnectedException;
+    public void send(PlainStreamElement element) throws NotConnectedException, InterruptedException;
 
     /**
      * Adds a connection listener to this connection that will be notified when
@@ -198,8 +200,9 @@ public interface XMPPConnection {
      * @param packet the packet to filter responses from
      * @return a new packet collector.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public PacketCollector createPacketCollectorAndSend(IQ packet) throws NotConnectedException;
+    public PacketCollector createPacketCollectorAndSend(IQ packet) throws NotConnectedException, InterruptedException;
 
     /**
      * Creates a new packet collector for this connection. A packet filter determines
@@ -210,9 +213,11 @@ public interface XMPPConnection {
      * @param packetFilter the packet filter to use.
      * @param packet the packet to send right after the collector got created
      * @return a new packet collector.
+     * @throws InterruptedException 
+     * @throws NotConnectedException 
      */
     public PacketCollector createPacketCollectorAndSend(PacketFilter packetFilter, Stanza packet)
-                    throws NotConnectedException;
+                    throws NotConnectedException, InterruptedException;
 
     /**
      * Creates a new packet collector for this connection. A packet filter
@@ -462,9 +467,10 @@ public interface XMPPConnection {
      * @param replyFilter the filter used to determine response stanza (required)
      * @param callback the callback invoked if there is a response (required)
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
     public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
-                    PacketListener callback) throws NotConnectedException;
+                    PacketListener callback) throws NotConnectedException, InterruptedException;
 
     /**
      * Send a stanza and wait asynchronously for a response by using <code>replyFilter</code>.
@@ -479,9 +485,10 @@ public interface XMPPConnection {
      * @param callback the callback invoked if there is a response (required)
      * @param exceptionCallback the callback invoked if there is an exception (optional)
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
     public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter, PacketListener callback,
-                    ExceptionCallback exceptionCallback) throws NotConnectedException;
+                    ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException;
 
     /**
      * Send a stanza and wait asynchronously for a response by using <code>replyFilter</code>.
@@ -497,10 +504,11 @@ public interface XMPPConnection {
      * @param exceptionCallback the callback invoked if there is an exception (optional)
      * @param timeout the timeout in milliseconds to wait for a response
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
     public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
                     final PacketListener callback, final ExceptionCallback exceptionCallback,
-                    long timeout) throws NotConnectedException;
+                    long timeout) throws NotConnectedException, InterruptedException;
 
     /**
      * Send a IQ stanza and invoke <code>callback</code> if there is a result of
@@ -510,8 +518,9 @@ public interface XMPPConnection {
      * @param iqRequest the IQ stanza to send (required)
      * @param callback the callback invoked if there is result response (required)
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
-    public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback) throws NotConnectedException;
+    public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback) throws NotConnectedException, InterruptedException;
 
     /**
      * Send a IQ stanza and invoke <code>callback</code> if there is a result of
@@ -525,9 +534,10 @@ public interface XMPPConnection {
      * @param callback the callback invoked if there is result response (required)
      * @param exceptionCallback the callback invoked if there is an Exception optional
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
     public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback,
-                    ExceptionCallback exceptionCallback) throws NotConnectedException;
+                    ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException;
 
     /**
      * Send a IQ stanza and invoke <code>callback</code> if there is a result of
@@ -542,10 +552,11 @@ public interface XMPPConnection {
      * @param exceptionCallback the callback invoked if there is an Exception optional
      * @param timeout the timeout in milliseconds to wait for a response
      * @throws NotConnectedException
+     * @throws InterruptedException 
      */
     public void sendIqWithResponseCallback(IQ iqRequest, final PacketListener callback,
                     final ExceptionCallback exceptionCallback, long timeout)
-                    throws NotConnectedException;
+                    throws NotConnectedException, InterruptedException;
 
     /**
      * Add a callback that is called exactly once and synchronously with the incoming stanza that matches the given

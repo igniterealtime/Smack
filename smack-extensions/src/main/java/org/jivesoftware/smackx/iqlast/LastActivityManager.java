@@ -231,9 +231,10 @@ public class LastActivityManager extends Manager {
      *             thrown if a server error has occured.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
     public LastActivity getLastActivity(String jid) throws NoResponseException, XMPPErrorException,
-                    NotConnectedException {
+                    NotConnectedException, InterruptedException {
         LastActivity activity = new LastActivity(jid);
         return (LastActivity) connection().createPacketCollectorAndSend(activity).nextResultOrThrow();
     }
@@ -246,8 +247,9 @@ public class LastActivityManager extends Manager {
      * @throws NotConnectedException 
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws InterruptedException 
      */
-    public boolean isLastActivitySupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public boolean isLastActivitySupported(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, LastActivity.NAMESPACE);
     }
 }

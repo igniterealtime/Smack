@@ -323,7 +323,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                                 try {
                                     js.sendFormattedJingle(jin, jout);
                                 }
-                                catch (NotConnectedException e) {
+                                catch (InterruptedException | NotConnectedException e) {
                                     throw new IllegalStateException(e);
                                 }
                                 acceptedRemoteCandidates.add(bestRemote);
@@ -333,7 +333,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                                 try {
                                     triggerTransportEstablished(getAcceptedLocalCandidate(), bestRemote);
                                 }
-                                catch (NotConnectedException e) {
+                                catch (InterruptedException | NotConnectedException e) {
                                     throw new IllegalStateException(e);
                                 }
                                 break;
@@ -414,7 +414,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                                 try {
                                     js.sendFormattedJingle(jin, jout);
                                 }
-                                catch (NotConnectedException e) {
+                                catch (InterruptedException | NotConnectedException e) {
                                     throw new IllegalStateException(e);
                                 }
                                 acceptedRemoteCandidates.add(bestRemote);
@@ -525,8 +525,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *
      * @param cand
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    private synchronized void sendTransportCandidateOffer(TransportCandidate cand) throws NotConnectedException {
+    private synchronized void sendTransportCandidateOffer(TransportCandidate cand) throws NotConnectedException, InterruptedException {
         if (!cand.isNull()) {
             // Offer our new candidate...
             addOfferedCandidate(cand);
@@ -547,8 +548,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *
      * @throws XMPPException
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    private void sendTransportCandidatesOffer() throws XMPPException, SmackException {
+    private void sendTransportCandidatesOffer() throws XMPPException, SmackException, InterruptedException {
         List<TransportCandidate> notOffered = resolver.getCandidatesList();
 
         notOffered.removeAll(offeredCandidates);
@@ -562,7 +564,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         if (resolverListener == null) {
             // Add a listener that sends the offer when the resolver finishes...
             resolverListener = new TransportResolverListener.Resolver() {
-                public void candidateAdded(TransportCandidate cand) throws NotConnectedException {
+                public void candidateAdded(TransportCandidate cand) throws NotConnectedException, InterruptedException {
                     sendTransportCandidateOffer(cand);
                 }
 
@@ -592,8 +594,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * @return the new Jingle packet to send.
      * @throws XMPPException
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    public final List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException {
+    public final List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException, InterruptedException {
         List<IQ> responses = new ArrayList<IQ>();
         IQ response = null;
 
@@ -662,8 +665,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * @return an IQ packet
      * @throws XMPPException
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    private Jingle receiveResult(IQ iq) throws XMPPException, SmackException {
+    private Jingle receiveResult(IQ iq) throws XMPPException, SmackException, InterruptedException {
         Jingle response = null;
 
         sendTransportCandidatesOffer();
@@ -677,8 +681,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *  @param jingleTransport
      *  @return the iq
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    private IQ receiveSessionInitiateAction(Jingle jingle) throws XMPPException, SmackException {
+    private IQ receiveSessionInitiateAction(Jingle jingle) throws XMPPException, SmackException, InterruptedException {
         IQ response = null;
 
         // Parse the Jingle and get any proposed transport candidates
@@ -781,8 +786,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * @param local  TransportCandidate that has been agreed.
      * @param remote TransportCandidate that has been agreed.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    private void triggerTransportEstablished(TransportCandidate local, TransportCandidate remote) throws NotConnectedException {
+    private void triggerTransportEstablished(TransportCandidate local, TransportCandidate remote) throws NotConnectedException, InterruptedException {
         List<JingleListener> listeners = getListenersList();
         for (JingleListener li : listeners) {
             if (li instanceof JingleTransportListener) {

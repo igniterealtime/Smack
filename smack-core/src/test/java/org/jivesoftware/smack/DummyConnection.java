@@ -198,7 +198,7 @@ public class DummyConnection extends AbstractXMPPConnection {
             dummyConnection.connect();
             dummyConnection.login();
         }
-        catch (SmackException | IOException | XMPPException e) {
+        catch (InterruptedException | SmackException | IOException | XMPPException e) {
             throw new IllegalStateException(e);
         }
         return dummyConnection;

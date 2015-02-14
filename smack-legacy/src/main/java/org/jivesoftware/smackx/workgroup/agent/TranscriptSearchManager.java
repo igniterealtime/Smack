@@ -50,8 +50,9 @@ public class TranscriptSearchManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public Form getSearchForm(String serviceJID) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public Form getSearchForm(String serviceJID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         TranscriptSearch search = new TranscriptSearch();
         search.setType(IQ.Type.get);
         search.setTo(serviceJID);
@@ -72,8 +73,9 @@ public class TranscriptSearchManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public ReportedData submitSearch(String serviceJID, Form completedForm) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public ReportedData submitSearch(String serviceJID, Form completedForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         TranscriptSearch search = new TranscriptSearch();
         search.setType(IQ.Type.get);
         search.setTo(serviceJID);

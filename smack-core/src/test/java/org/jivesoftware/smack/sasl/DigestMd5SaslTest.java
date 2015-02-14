@@ -35,7 +35,7 @@ public class DigestMd5SaslTest extends AbstractSaslTest {
         super(saslMechanism);
     }
 
-    protected void runTest() throws NotConnectedException, SmackException {
+    protected void runTest() throws NotConnectedException, SmackException, InterruptedException {
         saslMechanism.authenticate("florian", "irrelevant", "xmpp.org", "secret");
 
         byte[] response = saslMechanism.evaluateChallenge(challengeBytes);

@@ -362,10 +362,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public abstract boolean isSecureConnection();
 
-    protected abstract void sendPacketInternal(Stanza packet) throws NotConnectedException;
+    protected abstract void sendPacketInternal(Stanza packet) throws NotConnectedException, InterruptedException;
 
     @Override
-    public abstract void send(PlainStreamElement element) throws NotConnectedException;
+    public abstract void send(PlainStreamElement element) throws NotConnectedException, InterruptedException;
 
     @Override
     public abstract boolean isUsingCompression();
@@ -382,8 +382,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws IOException 
      * @throws ConnectionException with detailed information about the failed connection.
      * @return a reference to this object, to chain <code>connect()</code> with <code>login()</code>.
+     * @throws InterruptedException 
      */
-    public synchronized AbstractXMPPConnection connect() throws SmackException, IOException, XMPPException {
+    public synchronized AbstractXMPPConnection connect() throws SmackException, IOException, XMPPException, InterruptedException {
         // Check if not already connected
         throwAlreadyConnectedExceptionIfAppropriate();
 
@@ -406,8 +407,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws SmackException
      * @throws IOException
      * @throws XMPPException
+     * @throws InterruptedException 
      */
-    protected abstract void connectInternal() throws SmackException, IOException, XMPPException;
+    protected abstract void connectInternal() throws SmackException, IOException, XMPPException, InterruptedException;
 
     private String usedUsername, usedPassword, usedResource;
 
@@ -432,8 +434,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws XMPPException if an error occurs on the XMPP protocol level.
      * @throws SmackException if an error occurs somewhere else besides XMPP protocol level.
      * @throws IOException if an I/O error occurs during login.
+     * @throws InterruptedException 
      */
-    public synchronized void login() throws XMPPException, SmackException, IOException {
+    public synchronized void login() throws XMPPException, SmackException, IOException, InterruptedException {
         if (isAnonymous()) {
             throwNotConnectedExceptionIfAppropriate();
             throwAlreadyLoggedInExceptionIfAppropriate();
@@ -457,10 +460,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws XMPPException
      * @throws SmackException
      * @throws IOException
+     * @throws InterruptedException 
      * @see #login
      */
     public synchronized void login(CharSequence username, String password) throws XMPPException, SmackException,
-                    IOException {
+                    IOException, InterruptedException {
         login(username, password, config.getResource());
     }
 
@@ -474,10 +478,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws XMPPException
      * @throws SmackException
      * @throws IOException
+     * @throws InterruptedException 
      * @see #login
      */
     public synchronized void login(CharSequence username, String password, String resource) throws XMPPException,
-                    SmackException, IOException {
+                    SmackException, IOException, InterruptedException {
         if (!config.allowNullOrEmptyUsername) {
             StringUtils.requireNotNullOrEmpty(username, "Username must not be null or empty");
         }
@@ -490,9 +495,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected abstract void loginNonAnonymously(String username, String password, String resource)
-                    throws XMPPException, SmackException, IOException;
+                    throws XMPPException, SmackException, IOException, InterruptedException;
 
-    protected abstract void loginAnonymously() throws XMPPException, SmackException, IOException;
+    protected abstract void loginAnonymously() throws XMPPException, SmackException, IOException, InterruptedException;
 
     @Override
     public final boolean isConnected() {
@@ -520,7 +525,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     // TODO remove this suppression once "disable legacy session" code has been removed from Smack
     @SuppressWarnings("deprecation")
     protected void bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
-                    IOException, SmackException {
+                    IOException, SmackException, InterruptedException {
 
         // Wait until either:
         // - the servers last features stanza has been parsed
@@ -557,7 +562,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
-    protected void afterSuccessfulLogin(final boolean resumed) throws NotConnectedException {
+    protected void afterSuccessfulLogin(final boolean resumed) throws NotConnectedException, InterruptedException {
         // Indicate that we're now authenticated.
         this.authenticated = true;
 
@@ -634,7 +639,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void sendPacket(Stanza packet) throws NotConnectedException {
+    public void sendPacket(Stanza packet) throws NotConnectedException, InterruptedException {
         Objects.requireNonNull(packet, "Packet must not be null");
 
         throwNotConnectedExceptionIfAppropriate();
@@ -693,7 +698,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws NotConnectedException 
      */
     public synchronized void disconnect(Presence unavailablePresence) throws NotConnectedException {
-        sendPacket(unavailablePresence);
+        try {
+            sendPacket(unavailablePresence);
+        }
+        catch (InterruptedException e) {
+            LOGGER.log(Level.FINE, "Was interrupted while sending unavailable presence. Continuing to disconnect the connection", e);
+        }
         shutdown();
         callConnectionClosedListener();
     }
@@ -717,7 +727,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public PacketCollector createPacketCollectorAndSend(IQ packet) throws NotConnectedException {
+    public PacketCollector createPacketCollectorAndSend(IQ packet) throws NotConnectedException, InterruptedException {
         PacketFilter packetFilter = new IQReplyFilter(packet, this);
         // Create the packet collector before sending the packet
         PacketCollector packetCollector = createPacketCollectorAndSend(packetFilter, packet);
@@ -726,14 +736,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public PacketCollector createPacketCollectorAndSend(PacketFilter packetFilter, Stanza packet)
-                    throws NotConnectedException {
+                    throws NotConnectedException, InterruptedException {
         // Create the packet collector before sending the packet
         PacketCollector packetCollector = createPacketCollector(packetFilter);
         try {
             // Now we can send the packet as the collector has been created
             sendPacket(packet);
         }
-        catch (NotConnectedException | RuntimeException e) {
+        catch (InterruptedException | NotConnectedException | RuntimeException e) {
             packetCollector.cancel();
             throw e;
         }
@@ -1062,8 +1072,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     try {
                         sendPacket(errorIQ);
                     }
-                    catch (NotConnectedException e) {
-                        LOGGER.log(Level.WARNING, "NotConnectedException while sending error IQ to unkown IQ request", e);
+                    catch (InterruptedException | NotConnectedException e) {
+                        LOGGER.log(Level.WARNING, "Exception while sending error IQ to unkown IQ request", e);
                     }
                 } else {
                     ExecutorService executorService = null;
@@ -1091,8 +1101,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                             try {
                                 sendPacket(response);
                             }
-                            catch (NotConnectedException e) {
-                                LOGGER.log(Level.WARNING, "NotConnectedException while sending response to IQ request", e);
+                            catch (InterruptedException | NotConnectedException e) {
+                                LOGGER.log(Level.WARNING, "Exception while sending response to IQ request", e);
                             }
                         }
                     });
@@ -1334,7 +1344,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected final void parseFeatures(XmlPullParser parser) throws XmlPullParserException,
-                    IOException, SmackException {
+                    IOException, SmackException, InterruptedException {
         streamFeatures.clear();
         final int initialDepth = parser.getDepth();
         while (true) {
@@ -1397,7 +1407,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         afterFeaturesReceived();
     }
 
-    protected void afterFeaturesReceived() throws SecurityRequiredException, NotConnectedException {
+    protected void afterFeaturesReceived() throws SecurityRequiredException, NotConnectedException, InterruptedException {
         // Default implementation does nothing
     }
 
@@ -1419,14 +1429,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
-                    PacketListener callback) throws NotConnectedException {
+                    PacketListener callback) throws NotConnectedException, InterruptedException {
         sendStanzaWithResponseCallback(stanza, replyFilter, callback, null);
     }
 
     @Override
     public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
                     PacketListener callback, ExceptionCallback exceptionCallback)
-                    throws NotConnectedException {
+                    throws NotConnectedException, InterruptedException {
         sendStanzaWithResponseCallback(stanza, replyFilter, callback, exceptionCallback,
                         getPacketReplyTimeout());
     }
@@ -1434,7 +1444,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
                     final PacketListener callback, final ExceptionCallback exceptionCallback,
-                    long timeout) throws NotConnectedException {
+                    long timeout) throws NotConnectedException, InterruptedException {
         Objects.requireNonNull(stanza, "stanza must not be null");
         // While Smack allows to add PacketListeners with a PacketFilter value of 'null', we
         // disallow it here in the async API as it makes no sense
@@ -1443,7 +1453,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         final PacketListener packetListener = new PacketListener() {
             @Override
-            public void processPacket(Stanza packet) throws NotConnectedException {
+            public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
                 try {
                     XMPPErrorException.ifHasErrorThenThrow(packet);
                     callback.processPacket(packet);
@@ -1475,20 +1485,20 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback)
-                    throws NotConnectedException {
+                    throws NotConnectedException, InterruptedException {
         sendIqWithResponseCallback(iqRequest, callback, null);
     }
 
     @Override
     public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback,
-                    ExceptionCallback exceptionCallback) throws NotConnectedException {
+                    ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException {
         sendIqWithResponseCallback(iqRequest, callback, exceptionCallback, getPacketReplyTimeout());
     }
 
     @Override
     public void sendIqWithResponseCallback(IQ iqRequest, final PacketListener callback,
                     final ExceptionCallback exceptionCallback, long timeout)
-                    throws NotConnectedException {
+                    throws NotConnectedException, InterruptedException {
         PacketFilter replyFilter = new IQReplyFilter(iqRequest, this);
         sendStanzaWithResponseCallback(iqRequest, replyFilter, callback, exceptionCallback, timeout);
     }
@@ -1497,7 +1507,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     public void addOneTimeSyncCallback(final PacketListener callback, final PacketFilter packetFilter) {
         final PacketListener packetListener = new PacketListener() {
             @Override
-            public void processPacket(Stanza packet) throws NotConnectedException {
+            public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
                 try {
                     callback.processPacket(packet);
                 } finally {

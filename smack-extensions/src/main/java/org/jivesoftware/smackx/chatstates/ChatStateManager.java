@@ -102,8 +102,9 @@ public class ChatStateManager extends Manager {
      * @param newState the new state of the chat
      * @param chat the chat.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void setCurrentState(ChatState newState, Chat chat) throws NotConnectedException {
+    public void setCurrentState(ChatState newState, Chat chat) throws NotConnectedException, InterruptedException {
         if(chat == null || newState == null) {
             throw new IllegalArgumentException("Arguments cannot be null.");
         }

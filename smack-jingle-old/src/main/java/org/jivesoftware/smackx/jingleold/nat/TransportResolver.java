@@ -88,13 +88,15 @@ public abstract class TransportResolver {
 
     /**
      * Initialize the Resolver
+     * @throws InterruptedException 
      */
-    public abstract void initialize() throws XMPPException, SmackException;
+    public abstract void initialize() throws XMPPException, SmackException, InterruptedException;
 
     /**
      * Start a the resolution.
+     * @throws InterruptedException 
      */
-    public abstract void resolve(JingleSession session) throws XMPPException, SmackException;
+    public abstract void resolve(JingleSession session) throws XMPPException, SmackException, InterruptedException;
 
     /**
      * Clear the list of candidates and start a new resolution process.
@@ -208,8 +210,9 @@ public abstract class TransportResolver {
      *
      * @param cand The candidate added to the list of candidates.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void triggerCandidateAdded(TransportCandidate cand) throws NotConnectedException {
+    protected void triggerCandidateAdded(TransportCandidate cand) throws NotConnectedException, InterruptedException {
         Iterator<TransportResolverListener> iter = getListenersList().iterator();
         while (iter.hasNext()) {
             TransportResolverListener trl = iter.next();
@@ -265,8 +268,9 @@ public abstract class TransportResolver {
      *
      * @param cand The candidate to add
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void addCandidate(TransportCandidate cand) throws NotConnectedException {
+    protected void addCandidate(TransportCandidate cand) throws NotConnectedException, InterruptedException {
         synchronized (candidates) {
             if (!candidates.contains(cand))
                 candidates.add(cand);
@@ -355,8 +359,9 @@ public abstract class TransportResolver {
     /**
      * Initialize Transport Resolver and wait until it is complete unitialized.
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    public void initializeAndWait() throws XMPPException, SmackException {
+    public void initializeAndWait() throws XMPPException, SmackException, InterruptedException {
         this.initialize();
         try {
             LOGGER.fine("Initializing transport resolver...");

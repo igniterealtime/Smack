@@ -65,8 +65,9 @@ public class AgentRoster {
      *
      * @param connection an XMPP connection.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    AgentRoster(XMPPConnection connection, String workgroupJID) throws NotConnectedException {
+    AgentRoster(XMPPConnection connection, String workgroupJID) throws NotConnectedException, InterruptedException {
         this.connection = connection;
         this.workgroupJID = workgroupJID;
         entries = new ArrayList<String>();
@@ -90,8 +91,9 @@ public class AgentRoster {
      * which means the method will return immediately, and the roster will be
      * reloaded at a later point when the server responds to the reload request.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void reload() throws NotConnectedException {
+    public void reload() throws NotConnectedException, InterruptedException {
         AgentStatusRequest request = new AgentStatusRequest();
         request.setTo(workgroupJID);
         connection.sendPacket(request);

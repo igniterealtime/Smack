@@ -102,8 +102,9 @@ public class CarbonManager extends Manager {
      * @throws NotConnectedException 
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws InterruptedException 
      */
-    public boolean isSupportedByServer() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public boolean isSupportedByServer() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).serverSupportsFeature(CarbonExtension.NAMESPACE);
     }
 
@@ -115,8 +116,9 @@ public class CarbonManager extends Manager {
      *
      * @param new_state whether carbons should be enabled or disabled
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void sendCarbonsEnabled(final boolean new_state) throws NotConnectedException {
+    public void sendCarbonsEnabled(final boolean new_state) throws NotConnectedException, InterruptedException {
         IQ setIQ = carbonsEnabledIQ(new_state);
 
         connection().sendIqWithResponseCallback(setIQ, new PacketListener() {
@@ -137,10 +139,11 @@ public class CarbonManager extends Manager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      *
      */
     public synchronized void setCarbonsEnabled(final boolean new_state) throws NoResponseException,
-                    XMPPErrorException, NotConnectedException {
+                    XMPPErrorException, NotConnectedException, InterruptedException {
         if (enabled_state == new_state)
             return;
 
@@ -155,8 +158,9 @@ public class CarbonManager extends Manager {
      *
      * @throws XMPPException 
      * @throws SmackException if there was no response from the server.
+     * @throws InterruptedException 
      */
-    public void enableCarbons() throws XMPPException, SmackException {
+    public void enableCarbons() throws XMPPException, SmackException, InterruptedException {
         setCarbonsEnabled(true);
     }
 
@@ -165,8 +169,9 @@ public class CarbonManager extends Manager {
      *
      * @throws XMPPException 
      * @throws SmackException if there was no response from the server.
+     * @throws InterruptedException 
      */
-    public void disableCarbons() throws XMPPException, SmackException {
+    public void disableCarbons() throws XMPPException, SmackException, InterruptedException {
         setCarbonsEnabled(false);
     }
 

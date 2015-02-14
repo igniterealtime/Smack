@@ -351,7 +351,7 @@ public class ChatManager extends Manager{
         chat.deliver(message);
     }
 
-    void sendMessage(Chat chat, Message message) throws NotConnectedException {
+    void sendMessage(Chat chat, Message message) throws NotConnectedException, InterruptedException {
         for(Map.Entry<MessageListener, PacketFilter> interceptor : interceptors.entrySet()) {
             PacketFilter filter = interceptor.getValue();
             if(filter != null && filter.accept(message)) {

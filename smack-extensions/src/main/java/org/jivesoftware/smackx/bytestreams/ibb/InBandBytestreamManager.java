@@ -399,8 +399,9 @@ public class InBandBytestreamManager implements BytestreamManager {
      * @throws XMPPException if the user doesn't support or accept in-band bytestreams, or if the
      *         user prefers smaller block sizes
      * @throws SmackException if there was no response from the server.
+     * @throws InterruptedException 
      */
-    public InBandBytestreamSession establishSession(String targetJID) throws XMPPException, SmackException {
+    public InBandBytestreamSession establishSession(String targetJID) throws XMPPException, SmackException, InterruptedException {
         String sessionID = getNextSessionID();
         return establishSession(targetJID, sessionID);
     }
@@ -416,9 +417,10 @@ public class InBandBytestreamManager implements BytestreamManager {
      *         user prefers smaller block sizes
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
     public InBandBytestreamSession establishSession(String targetJID, String sessionID)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException {
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Open byteStreamRequest = new Open(sessionID, this.defaultBlockSize, this.stanza);
         byteStreamRequest.setTo(targetJID);
 
@@ -438,8 +440,9 @@ public class InBandBytestreamManager implements BytestreamManager {
      * 
      * @param request IQ packet that should be answered with a not-acceptable error
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void replyRejectPacket(IQ request) throws NotConnectedException {
+    protected void replyRejectPacket(IQ request) throws NotConnectedException, InterruptedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.not_acceptable);
         IQ error = IQ.createErrorResponse(request, xmppError);
         this.connection.sendPacket(error);
@@ -451,8 +454,9 @@ public class InBandBytestreamManager implements BytestreamManager {
      * 
      * @param request IQ packet that should be answered with a resource-constraint error
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void replyResourceConstraintPacket(IQ request) throws NotConnectedException {
+    protected void replyResourceConstraintPacket(IQ request) throws NotConnectedException, InterruptedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.resource_constraint);
         IQ error = IQ.createErrorResponse(request, xmppError);
         this.connection.sendPacket(error);
@@ -464,8 +468,9 @@ public class InBandBytestreamManager implements BytestreamManager {
      * 
      * @param request IQ packet that should be answered with a item-not-found error
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void replyItemNotFoundPacket(IQ request) throws NotConnectedException {
+    protected void replyItemNotFoundPacket(IQ request) throws NotConnectedException, InterruptedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.item_not_found);
         IQ error = IQ.createErrorResponse(request, xmppError);
         this.connection.sendPacket(error);

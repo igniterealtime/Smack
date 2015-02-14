@@ -75,8 +75,9 @@ public class RosterGroup {
      * @throws NotConnectedException 
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws InterruptedException 
      */
-    public void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException {
+    public void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException, InterruptedException {
         synchronized (entries) {
             for (RosterEntry entry : entries) {
                 RosterPacket packet = new RosterPacket();
@@ -169,8 +170,9 @@ public class RosterGroup {
      * @throws XMPPErrorException if an error occured while trying to add the entry to the group.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void addEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void addEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PacketCollector collector = null;
         // Only add the entry if it isn't already in the list.
         synchronized (entries) {
@@ -200,8 +202,9 @@ public class RosterGroup {
      * @throws XMPPErrorException if an error occurred while trying to remove the entry from the group. 
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void removeEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void removeEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PacketCollector collector = null;
         // Only remove the entry if it's in the entry list.
         // Remove the entry locally, if we wait for RosterPacketListenerprocess>>Packet(Packet)

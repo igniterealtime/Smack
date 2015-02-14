@@ -160,8 +160,9 @@ public class InBandBytestreamSession implements BytestreamSession {
      * 
      * @param closeRequest the close request from the remote peer
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void closeByPeer(Close closeRequest) throws NotConnectedException {
+    protected void closeByPeer(Close closeRequest) throws NotConnectedException, InterruptedException {
 
         /*
          * close streams without flushing them, because stream is already considered closed on the
@@ -447,7 +448,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
                 private long lastSequence = -1;
 
-                public void processPacket(Stanza packet) throws NotConnectedException {
+                public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
                     // get data packet extension
                     DataPacketExtension data = ((Data) packet).getDataPacketExtension();
 
@@ -613,8 +614,9 @@ public class InBandBytestreamSession implements BytestreamSession {
          * @param data the data packet
          * @throws IOException if an I/O error occurred while sending or if the stream is closed
          * @throws NotConnectedException 
+         * @throws InterruptedException 
          */
-        protected abstract void writeToXML(DataPacketExtension data) throws IOException, NotConnectedException;
+        protected abstract void writeToXML(DataPacketExtension data) throws IOException, NotConnectedException, InterruptedException;
 
         public synchronized void write(int b) throws IOException {
             if (this.isClosed) {
@@ -718,7 +720,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             try {
                 writeToXML(data);
             }
-            catch (NotConnectedException e) {
+            catch (InterruptedException | NotConnectedException e) {
                 IOException ioException = new IOException();
                 ioException.initCause(e);
                 throw ioException;
@@ -803,7 +805,7 @@ public class InBandBytestreamSession implements BytestreamSession {
     private class MessageIBBOutputStream extends IBBOutputStream {
 
         @Override
-        protected synchronized void writeToXML(DataPacketExtension data) throws NotConnectedException {
+        protected synchronized void writeToXML(DataPacketExtension data) throws NotConnectedException, InterruptedException {
             // create message stanza containing data packet
             Message message = new Message(remoteJID);
             message.addExtension(data);

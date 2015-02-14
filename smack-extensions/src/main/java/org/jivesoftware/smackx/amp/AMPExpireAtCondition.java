@@ -37,8 +37,9 @@ public class AMPExpireAtCondition implements AMPExtension.Condition {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public static boolean isSupported(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public static boolean isSupported(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return AMPManager.isConditionSupported(connection, NAME);
     }
 

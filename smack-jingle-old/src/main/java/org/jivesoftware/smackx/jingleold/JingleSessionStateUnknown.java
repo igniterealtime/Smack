@@ -63,7 +63,7 @@ public class JingleSessionStateUnknown extends JingleSessionState {
 
     }
 
-    public IQ processJingle(JingleSession session, Jingle jingle, JingleActionEnum action) throws SmackException {
+    public IQ processJingle(JingleSession session, Jingle jingle, JingleActionEnum action) throws SmackException, InterruptedException {
         IQ response = null;
 
         switch (action) {
@@ -88,9 +88,10 @@ public class JingleSessionStateUnknown extends JingleSessionState {
      * In the UNKNOWN state we received a <session-initiate> action.
      * This method processes that action.
      * @throws SmackException 
+     * @throws InterruptedException 
      */
 
-    private IQ receiveSessionInitiateAction(JingleSession session, Jingle inJingle) throws SmackException {
+    private IQ receiveSessionInitiateAction(JingleSession session, Jingle inJingle) throws SmackException, InterruptedException {
 
         IQ response = null;
         boolean shouldAck = true;

@@ -163,8 +163,9 @@ public class FileTransferManager extends Manager {
 	 * </p>
 	 * @param request
 	 * @throws NotConnectedException
+	 * @throws InterruptedException 
 	 */
-	protected void rejectIncomingFileTransfer(FileTransferRequest request) throws NotConnectedException {
+	protected void rejectIncomingFileTransfer(FileTransferRequest request) throws NotConnectedException, InterruptedException {
 		StreamInitiation initiation = request.getStreamInitiation();
 
         // Reject as specified in XEP-95 4.2. Note that this is not to be confused with the Socks 5

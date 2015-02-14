@@ -31,7 +31,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 public class DefaultMessageEventRequestListener implements MessageEventRequestListener {
 
     public void deliveredNotificationRequested(String from, String packetID,
-                MessageEventManager messageEventManager) throws NotConnectedException
+                MessageEventManager messageEventManager) throws NotConnectedException, InterruptedException
     {
         // Send to the message's sender that the message has been delivered
         messageEventManager.sendDeliveredNotification(from, packetID);
