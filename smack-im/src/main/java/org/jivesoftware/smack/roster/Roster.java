@@ -135,6 +135,11 @@ public class Roster extends Manager {
     private final Map<String, Map<String, Presence>> presenceMap = new ConcurrentHashMap<String, Map<String, Presence>>();
 
     /**
+     * Listeners called when the Roster was loaded.
+     */
+    private final Set<RosterLoadedListener> rosterLoadedListeners = new LinkedHashSet<>();
+
+    /**
      * Mutually exclude roster listener invocation and changing the {@link entries} map. Also used
      * to synchronize access to either the roster listeners or the entries map.
      */
@@ -384,6 +389,34 @@ public class Roster extends Manager {
     public boolean removeRosterListener(RosterListener rosterListener) {
         synchronized (rosterListenersAndEntriesLock) {
             return rosterListeners.remove(rosterListener);
+        }
+    }
+
+    /**
+     * Add a roster loaded listener.
+     *
+     * @param rosterLoadedListener the listener to add.
+     * @return true if the listener was not already added.
+     * @see RosterLoadedListener
+     * @since 4.1
+     */
+    public boolean addRosterLoadedListener(RosterLoadedListener rosterLoadedListener) {
+        synchronized (rosterLoadedListener) {
+            return rosterLoadedListeners.add(rosterLoadedListener);
+        }
+    }
+
+    /**
+     * Remove a roster loaded listener.
+     *
+     * @param rosterLoadedListener the listener to remove.
+     * @return true if the listener was active and got removed.
+     * @see RosterLoadedListener
+     * @since 4.1
+     */
+    public boolean removeRosterLoadedListener(RosterLoadedListener rosterLoadedListener) {
+        synchronized (rosterLoadedListener) {
+            return rosterLoadedListeners.remove(rosterLoadedListener);
         }
     }
 
@@ -1309,6 +1342,22 @@ public class Roster extends Manager {
             }
             // Fire event for roster listeners.
             fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
+
+            // Call the roster loaded listeners after the roster events have been fired. This is
+            // imporant because the user may call getEntriesAndAddListener() in onRosterLoaded(),
+            // and if the order would be the other way around, the roster listener added by
+            // getEntriesAndAddListener() would be invoked with information that was already
+            // available at the time getEntriesAndAddListenr() was called.
+            try {
+                synchronized (rosterLoadedListeners) {
+                    for (RosterLoadedListener rosterLoadedListener : rosterLoadedListeners) {
+                        rosterLoadedListener.onRosterLoaded(Roster.this);
+                    }
+                }
+            }
+            catch (Exception e) {
+                LOGGER.log(Level.WARNING, "RosterLoadedListener threw exception", e);
+            }
         }
     }
 
