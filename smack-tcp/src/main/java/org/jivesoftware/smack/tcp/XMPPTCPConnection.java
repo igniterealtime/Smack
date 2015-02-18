@@ -125,6 +125,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -183,6 +184,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private final SynchronizationPoint<XMPPException> compressSyncPoint = new SynchronizationPoint<XMPPException>(
                     this);
+
+    private static BundleAndDeferCallback defaultBundleAndDeferCallback;
+
+    private BundleAndDeferCallback bundleAndDeferCallback = defaultBundleAndDeferCallback;
 
     private static boolean useSmDefault = false;
 
@@ -1269,6 +1274,30 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     if (element == null) {
                         continue;
                     }
+
+                    // Get a local version of the bundle and defer callback, in case it's unset
+                    // between the null check and the method invocation
+                    final BundleAndDeferCallback localBundleAndDeferCallback = bundleAndDeferCallback;
+                    // If the preconditions are given (e.g. bundleAndDefer callback is set, queue is
+                    // empty), then we could wait a bit for further stanzas attempting to decrease
+                    // our energy consumption
+                    if (localBundleAndDeferCallback != null && isAuthenticated() && queue.isEmpty()) {
+                        final AtomicBoolean bundlingAndDeferringStopped = new AtomicBoolean();
+                        final int bundleAndDeferMillis = localBundleAndDeferCallback.getBundleAndDeferMillis(new BundleAndDefer(
+                                        bundlingAndDeferringStopped));
+                        if (bundleAndDeferMillis > 0) {
+                            long remainingWait = bundleAndDeferMillis;
+                            final long waitStart = System.currentTimeMillis();
+                            synchronized (bundlingAndDeferringStopped) {
+                                while (!bundlingAndDeferringStopped.get() && remainingWait > 0) {
+                                    bundlingAndDeferringStopped.wait(remainingWait);
+                                    remainingWait = bundleAndDeferMillis
+                                                    - (System.currentTimeMillis() - waitStart);
+                                }
+                            }
+                        }
+                    }
+
                     Stanza packet = null;
                     if (element instanceof Stanza) {
                         packet = (Stanza) element;
@@ -1709,4 +1738,31 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         serverHandledStanzasCount = handledCount;
     }
+
+    /**
+     * Set the default bundle and defer callback used for new connections.
+     *
+     * @param defaultBundleAndDeferCallback
+     * @see BundleAndDeferCallback
+     * @since 4.1
+     */
+    public static void setDefaultBundleAndDeferCallback(BundleAndDeferCallback defaultBundleAndDeferCallback) {
+        XMPPTCPConnection.defaultBundleAndDeferCallback = defaultBundleAndDeferCallback;
+    }
+
+    /**
+     * Set the bundle and defer callback used for this connection.
+     * <p>
+     * You can use <code>null</code> as argument to reset the callback. Outgoing stanzas will then
+     * no longer get deferred.
+     * </p>
+     *
+     * @param bundleAndDeferCallback the callback or <code>null</code>.
+     * @see BundleAndDeferCallback
+     * @since 4.1
+     */
+    public void setBundleandDeferCallback(BundleAndDeferCallback bundleAndDeferCallback) {
+        this.bundleAndDeferCallback = bundleAndDeferCallback;
+    }
+
 }
