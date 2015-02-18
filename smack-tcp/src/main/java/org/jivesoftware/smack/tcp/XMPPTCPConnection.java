@@ -1284,6 +1284,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             writer.flush();
                         }
                         try {
+                            // It is important the we put the stanza in the unacknowledged stanza
+                            // queue before we put it on the wire
                             unacknowledgedStanzas.put(packet);
                         }
                         catch (InterruptedException e) {
