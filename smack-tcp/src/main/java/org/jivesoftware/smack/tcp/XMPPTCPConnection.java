@@ -54,6 +54,7 @@ import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jivesoftware.smack.sm.SMUtils;
 import org.jivesoftware.smack.sm.StreamManagementException;
 import org.jivesoftware.smack.sm.StreamManagementException.StreamIdDoesNotMatchException;
+import org.jivesoftware.smack.sm.StreamManagementException.StreamManagementCounterError;
 import org.jivesoftware.smack.sm.StreamManagementException.StreamManagementNotEnabledException;
 import org.jivesoftware.smack.sm.packet.StreamManagement;
 import org.jivesoftware.smack.sm.packet.StreamManagement.AckAnswer;
@@ -1642,7 +1643,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         return Math.min(clientResumptionTime, serverResumptionTime);
     }
 
-    private void processHandledCount(long handledCount) throws NotConnectedException {
+    private void processHandledCount(long handledCount) throws NotConnectedException, StreamManagementCounterError {
         long ackedStanzasCount = SMUtils.calculateDelta(handledCount, serverHandledStanzasCount);
         final List<Stanza> ackedStanzas = new ArrayList<Stanza>(
                         handledCount <= Integer.MAX_VALUE ? (int) handledCount
@@ -1651,7 +1652,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             Stanza ackedStanza = unacknowledgedStanzas.poll();
             // If the server ack'ed a stanza, then it must be in the
             // unacknowledged stanza queue. There can be no exception.
-            assert(ackedStanza != null);
+            if (ackedStanza == null) {
+                throw new StreamManagementCounterError(handledCount, serverHandledStanzasCount,
+                                ackedStanzasCount, ackedStanzas);
+            }
             ackedStanzas.add(ackedStanza);
         }
 

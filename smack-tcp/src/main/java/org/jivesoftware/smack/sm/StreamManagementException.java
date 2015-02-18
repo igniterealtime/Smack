@@ -16,7 +16,11 @@
  */
 package org.jivesoftware.smack.sm;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.Stanza;
 
 public abstract class StreamManagementException extends SmackException {
 
@@ -50,6 +54,60 @@ public abstract class StreamManagementException extends SmackException {
 
         public StreamIdDoesNotMatchException(String expected, String got) {
             super("Stream IDs do not match. Expected '" + expected + "', but got '" + got + "'");
+        }
+    }
+
+    public static class StreamManagementCounterError extends StreamManagementException {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        private final long handledCount;
+        private final long previousServerHandledCount;
+        private final long ackedStanzaCount;
+        private final int outstandingStanzasCount;
+        private final List<Stanza> ackedStanzas;
+
+        public StreamManagementCounterError(long handledCount, long previousServerHandlerCount,
+                        long ackedStanzaCount,
+                        List<Stanza> ackedStanzas) {
+            super(
+                            "There was an error regarding the Stream Mangement counters. Server reported "
+                                            + handledCount
+                                            + " handled stanzas, which means that the "
+                                            + ackedStanzaCount
+                                            + " recently send stanzas by client are now acked by the server. But Smack had only "
+                                            + ackedStanzas.size()
+                                            + " to acknowledge. The stanza id of the last acked outstanding stanza is "
+                                            + (ackedStanzas.isEmpty() ? "<no acked stanzas>"
+                                                            : ackedStanzas.get(ackedStanzas.size() - 1).getStanzaId()));
+            this.handledCount = handledCount;
+            this.previousServerHandledCount = previousServerHandlerCount;
+            this.ackedStanzaCount = ackedStanzaCount;
+            this.outstandingStanzasCount = ackedStanzas.size();
+            this.ackedStanzas = Collections.unmodifiableList(ackedStanzas);
+        }
+
+        public long getHandledCount() {
+            return handledCount;
+        }
+
+        public long getPreviousServerHandledCount() {
+            return previousServerHandledCount;
+        }
+
+        public long getAckedStanzaCount() {
+            return ackedStanzaCount;
+        }
+
+        public int getOutstandingStanzasCount() {
+            return outstandingStanzasCount;
+        }
+
+        public List<Stanza> getAckedStanzas() {
+            return ackedStanzas;
         }
     }
 }
