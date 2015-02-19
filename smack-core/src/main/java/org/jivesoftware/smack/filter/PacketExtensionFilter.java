@@ -68,4 +68,9 @@ public class PacketExtensionFilter implements PacketFilter {
     public boolean accept(Stanza packet) {
         return packet.hasExtension(elementName, namespace);
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ": element=" + elementName + " namespace=" + namespace;
+    }
 }

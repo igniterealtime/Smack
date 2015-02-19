@@ -189,7 +189,7 @@ public class SynchronizationPoint<E extends Exception> {
         case Initial:
         case NoResponse:
         case RequestSent:
-            throw new NoResponseException(connection);
+            throw NoResponseException.newWith(connection);
         default:
             // Do nothing
             break;

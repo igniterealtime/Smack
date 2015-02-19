@@ -38,4 +38,8 @@ public class ToFilter implements PacketFilter {
         return packetTo.equals(to);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ": to=" + to;
+    }
 }

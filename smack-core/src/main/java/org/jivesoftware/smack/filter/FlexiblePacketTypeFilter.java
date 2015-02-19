@@ -20,6 +20,7 @@ package org.jivesoftware.smack.filter;
 import java.lang.reflect.ParameterizedType;
 
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.Objects;
 
 /**
  * Filters for packets of a particular type and allows a custom method to further filter the packets.
@@ -31,7 +32,7 @@ public abstract class FlexiblePacketTypeFilter<P extends Stanza> implements Pack
     protected final Class<P> packetType;
 
     public FlexiblePacketTypeFilter(Class<P> packetType) {
-        this.packetType = packetType;
+        this.packetType = Objects.requireNonNull(packetType, "Type must not be null");
     }
 
     @SuppressWarnings("unchecked")
@@ -49,4 +50,12 @@ public abstract class FlexiblePacketTypeFilter<P extends Stanza> implements Pack
     }
 
     protected abstract boolean acceptSpecific(P packet);
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" (" + packetType.toString() + ')');
+        return sb.toString();
+    }
 }

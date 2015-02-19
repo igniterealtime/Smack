@@ -18,6 +18,7 @@ package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.util.Objects;
 
 /**
  * A filter for IQ packet types. Returns true only if the packet is an IQ packet
@@ -38,11 +39,16 @@ public class IQTypeFilter extends FlexiblePacketTypeFilter<IQ> {
 
 	private IQTypeFilter(IQ.Type type) {
         super(IQ.class);
-		this.type = type;
+		this.type = Objects.requireNonNull(type, "Type must not be null");
 	}
 
     @Override
     protected boolean acceptSpecific(IQ iq) {
         return iq.getType() == type;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ": type=" + type;
     }
 }

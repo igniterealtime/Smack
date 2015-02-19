@@ -1432,7 +1432,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
+    public void sendStanzaWithResponseCallback(Stanza stanza, final PacketFilter replyFilter,
                     final PacketListener callback, final ExceptionCallback exceptionCallback,
                     long timeout) throws NotConnectedException {
         Objects.requireNonNull(stanza, "stanza must not be null");
@@ -1465,7 +1465,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 // If the packetListener got removed, then it was never run and
                 // we never received a response, inform the exception callback
                 if (removed && exceptionCallback != null) {
-                    exceptionCallback.processException(new NoResponseException(AbstractXMPPConnection.this));
+                    exceptionCallback.processException(NoResponseException.newWith(AbstractXMPPConnection.this, replyFilter));
                 }
             }
         }, timeout, TimeUnit.MILLISECONDS);

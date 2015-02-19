@@ -53,7 +53,8 @@ public class PacketTypeFilter implements PacketFilter {
         return packetType.isInstance(packet);
     }
 
+    @Override
     public String toString() {
-        return "PacketTypeFilter: " + packetType.getName();
+        return getClass().getSimpleName() + ": " + packetType.getName();
     }
 }

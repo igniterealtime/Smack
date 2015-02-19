@@ -53,6 +53,6 @@ public class PacketIDFilter implements PacketFilter {
     }
 
     public String toString() {
-        return "PacketIDFilter by id: " + packetID;
+        return getClass().getSimpleName() + ": id=" + packetID;
     }
 }

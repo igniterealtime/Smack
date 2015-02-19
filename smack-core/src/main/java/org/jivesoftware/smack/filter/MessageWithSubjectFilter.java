@@ -36,4 +36,8 @@ public class MessageWithSubjectFilter extends FlexiblePacketTypeFilter<Message> 
         return message.getSubject() != null;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

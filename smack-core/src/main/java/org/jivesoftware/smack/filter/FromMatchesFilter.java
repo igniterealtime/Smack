@@ -104,6 +104,6 @@ public class FromMatchesFilter implements PacketFilter {
 
     public String toString() {
         String matchMode = matchBareJID ? "bare" : "full";
-        return "FromMatchesFilter (" +matchMode + "): " + address;
+        return getClass().getSimpleName() + " (" + matchMode + "): " + address;
     }
 }
