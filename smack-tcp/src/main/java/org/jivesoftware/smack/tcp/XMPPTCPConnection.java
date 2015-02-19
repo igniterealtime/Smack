@@ -1720,7 +1720,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         }
                         String id = ackedStanza.getStanzaId();
                         if (StringUtils.isNullOrEmpty(id)) {
-                            return;
+                            continue;
                         }
                         PacketListener listener = stanzaIdAcknowledgedListeners.remove(id);
                         if (listener != null) {
