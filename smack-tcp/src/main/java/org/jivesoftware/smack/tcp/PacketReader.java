@@ -215,10 +215,6 @@ class PacketReader {
                                     // Save the connectionID
                                     connection.connectionID = parser.getAttributeValue(i);
                                 }
-                                else if (parser.getAttributeName(i).equals("from")) {
-                                    // Use the server name that the server says that it is.
-                                    connection.setServiceName(parser.getAttributeValue(i));
-                                }
                             }
                         }
                     }
