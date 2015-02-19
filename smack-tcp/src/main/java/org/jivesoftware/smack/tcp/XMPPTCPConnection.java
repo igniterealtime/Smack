@@ -721,7 +721,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         Socket plain = socket;
         // Secure the plain connection
         socket = context.getSocketFactory().createSocket(plain,
-                plain.getInetAddress().getHostAddress(), plain.getPort(), true);
+                host, plain.getPort(), true);
         // Initialize the reader and writer with the new secured version
         initReaderAndWriter();
 
