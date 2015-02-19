@@ -51,7 +51,7 @@ import org.jivesoftware.smack.packet.Stanza;
  * <code>
  * public void methodToTest() {
  *   Packet packet = new Packet(); // create an XMPP packet
- *   PacketCollector collector = connection.createPacketCollector(new PacketIDFilter());
+ *   PacketCollector collector = connection.createPacketCollector(new StanzaIdFilter());
  *   connection.sendPacket(packet);
  *   Packet reply = collector.nextResult();
  * }

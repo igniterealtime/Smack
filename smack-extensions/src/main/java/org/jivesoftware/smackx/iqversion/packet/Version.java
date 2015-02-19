@@ -26,26 +26,6 @@ import org.jivesoftware.smack.util.StringUtils;
  * A Version IQ packet, which is used by XMPP clients to discover version information
  * about the software running at another entity's JID.<p>
  *
- * An example to discover the version of the server:
- * <pre>
- * // Request the version from the server.
- * Version versionRequest = new Version();
- * timeRequest.setType(IQ.Type.get);
- * timeRequest.setTo("example.com");
- *
- * // Create a packet collector to listen for a response.
- * PacketCollector collector = con.createPacketCollector(
- *                new PacketIDFilter(versionRequest.getStanzaId()));
- *
- * con.sendPacket(versionRequest);
- *
- * // Wait up to 5 seconds for a result.
- * IQ result = (IQ)collector.nextResult(5000);
- * if (result != null && result.getType() == IQ.Type.result) {
- *     Version versionResult = (Version)result;
- *     // Do something with result...
- * }</pre><p>
- *
  * @author Gaston Dombiak
  */
 public class Version extends IQ {

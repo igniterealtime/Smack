@@ -99,7 +99,7 @@ public class IQReplyFilter implements PacketFilter {
         packetId = iqPacket.getStanzaId();
 
         PacketFilter iqFilter = new OrFilter(IQTypeFilter.ERROR, IQTypeFilter.RESULT);
-        PacketFilter idFilter = new PacketIDFilter(iqPacket);
+        PacketFilter idFilter = new StanzaIdFilter(iqPacket);
         iqAndIdFilter = new AndFilter(iqFilter, idFilter);
         fromFilter = new OrFilter();
         fromFilter.addFilter(FromMatchesFilter.createFull(to));

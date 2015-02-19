@@ -31,7 +31,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.iqregister.packet.Registration;
 import org.jxmpp.util.XmppStringUtils;
@@ -290,7 +290,7 @@ public class AccountManager extends Manager {
     }
 
     private PacketCollector createPacketCollectorAndSend(IQ req) throws NotConnectedException {
-        PacketCollector collector = connection().createPacketCollectorAndSend(new PacketIDFilter(req.getStanzaId()), req);
+        PacketCollector collector = connection().createPacketCollectorAndSend(new StanzaIdFilter(req.getStanzaId()), req);
         return collector;
     }
 }
