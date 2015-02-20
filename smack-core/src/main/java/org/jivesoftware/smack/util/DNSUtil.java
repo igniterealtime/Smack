@@ -50,7 +50,7 @@ public class DNSUtil {
                         "dnsjava.DNSJavaResolver" };
         for (String resolver :RESOLVERS) {
             DNSResolver availableResolver = null;
-            String resolverFull = "org.jivesoftware.smack.util.dns" + resolver;
+            String resolverFull = "org.jivesoftware.smack.util.dns." + resolver;
             try {
                 Class<?> resolverClass = Class.forName(resolverFull);
                 Method getInstanceMethod = resolverClass.getMethod("getInstance");
