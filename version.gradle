@@ -1,6 +1,6 @@
 allprojects {
 	ext {
 		shortVersion = '4.0.7'
-		isSnapshot = true
+		isSnapshot = false
 	}
 }
