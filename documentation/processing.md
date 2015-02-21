@@ -46,7 +46,7 @@ own filters by coding to the `PacketFilter` interface. The default set of
 filters includes:
 
   * `PacketTypeFilter` -- filters for packets that are a particular Class type.
-  * `PacketIDFilter` -- filters for packets with a particular packet ID.
+  * `StanzaIdFilter` -- filters for packets with a particular packet ID.
   * `ThreadFilter` -- filters for message packets with a particular thread ID.
   * `ToContainsFilter` -- filters for packets that are sent to a particular address.
   * `FromContainsFilter` -- filters for packets that are sent to a particular address.

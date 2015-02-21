@@ -95,6 +95,7 @@ allprojects {
 			options.addStringOption('Xdoclint:none', '-quiet')
 		}
 	}
+
 }
 
 gradle.taskGraph.whenReady { taskGraph ->

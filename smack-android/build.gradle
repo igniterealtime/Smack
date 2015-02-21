@@ -7,9 +7,10 @@ smack-extensions and smack-experimental."""
 // Note that the test dependencies (junit, …) are inferred from the
 // sourceSet.test of the core subproject
 dependencies {
+	// androidProjects lists all projects that are checked to compile against android.jar
 	// Filter out the optional Smack dependencies from androidProjects
 	androidProjects.findAll {
-		![':smack-tcp', ':smack-extensions', ':smack-experimental'].contains(it.getPath())
+		![':smack-tcp', ':smack-extensions', ':smack-experimental', ':smack-bosh'].contains(it.getPath())
 	}.each { project ->
 		compile project
 	}

@@ -57,7 +57,7 @@ import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.ErrorIQ;
@@ -547,7 +547,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Note that we can not use IQReplyFilter here, since the users full JID is not yet
         // available. It will become available right after the resource has been successfully bound.
         Bind bindResource = Bind.newSet(resource);
-        PacketCollector packetCollector = createPacketCollectorAndSend(new PacketIDFilter(bindResource), bindResource);
+        PacketCollector packetCollector = createPacketCollectorAndSend(new StanzaIdFilter(bindResource), bindResource);
         Bind response = packetCollector.nextResultOrThrow();
         // Set the connections user to the result of resource binding. It is important that we don't infer the user
         // from the login() arguments and the configurations service name, as, for example, when SASL External is used,
@@ -560,7 +560,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // For more information see http://tools.ietf.org/html/draft-cridland-xmpp-session-01
         if (sessionFeature != null && !sessionFeature.isOptional() && !getConfiguration().isLegacySessionDisabled()) {
             Session session = new Session();
-            packetCollector = createPacketCollectorAndSend(new PacketIDFilter(session), session);
+            packetCollector = createPacketCollectorAndSend(new StanzaIdFilter(session), session);
             packetCollector.nextResultOrThrow();
         }
     }
@@ -1445,7 +1445,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
+    public void sendStanzaWithResponseCallback(Stanza stanza, final PacketFilter replyFilter,
                     final PacketListener callback, final ExceptionCallback exceptionCallback,
                     long timeout) throws NotConnectedException, InterruptedException {
         Objects.requireNonNull(stanza, "stanza must not be null");
@@ -1478,7 +1478,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 // If the packetListener got removed, then it was never run and
                 // we never received a response, inform the exception callback
                 if (removed && exceptionCallback != null) {
-                    exceptionCallback.processException(new NoResponseException(AbstractXMPPConnection.this));
+                    exceptionCallback.processException(NoResponseException.newWith(AbstractXMPPConnection.this, replyFilter));
                 }
             }
         }, timeout, TimeUnit.MILLISECONDS);

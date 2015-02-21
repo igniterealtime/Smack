@@ -176,11 +176,8 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
             this.collector = collector;
         }
 
-        public InputStream call() throws XMPPErrorException, InterruptedException, SmackException {
-            Stanza streamInitiation = collector.nextResult();
-            if (streamInitiation == null) {
-                throw new NoResponseException(connection);
-            }
+        public InputStream call() throws XMPPErrorException, InterruptedException, NoResponseException, SmackException {
+            Stanza streamInitiation = collector.nextResultOrThrow();
             StreamNegotiator negotiator = determineNegotiator(streamInitiation);
             return negotiator.negotiateIncomingStream(streamInitiation);
         }

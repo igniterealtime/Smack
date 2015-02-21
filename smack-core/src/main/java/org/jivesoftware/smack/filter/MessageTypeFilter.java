@@ -55,4 +55,8 @@ public class MessageTypeFilter extends FlexiblePacketTypeFilter<Message> {
         return message.getType() == type;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ": type=" + type;
+    }
 }

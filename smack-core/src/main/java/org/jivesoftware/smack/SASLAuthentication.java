@@ -196,7 +196,7 @@ public class SASLAuthentication {
             maybeThrowException();
 
             if (!authenticationSuccessful) {
-                throw new NoResponseException(connection);
+                throw NoResponseException.newWith(connection);
             }
         }
         else {
@@ -239,7 +239,7 @@ public class SASLAuthentication {
             maybeThrowException();
 
             if (!authenticationSuccessful) {
-                throw new NoResponseException(connection);
+                throw NoResponseException.newWith(connection);
             }
         }
         else {
@@ -274,7 +274,7 @@ public class SASLAuthentication {
         maybeThrowException();
 
         if (!authenticationSuccessful) {
-            throw new NoResponseException(connection);
+            throw NoResponseException.newWith(connection);
         }
     }
 

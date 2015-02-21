@@ -32,6 +32,7 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamSession;
@@ -128,14 +129,11 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
      */
     private static class BytestreamSIDFilter extends PacketTypeFilter {
 
-        private String sessionID;
+        private final String sessionID;
 
         public BytestreamSIDFilter(String sessionID) {
             super(Bytestream.class);
-            if (sessionID == null) {
-                throw new IllegalArgumentException("StreamID cannot be null");
-            }
-            this.sessionID = sessionID;
+            this.sessionID = Objects.requireNonNull(sessionID, "SessionID cannot be null");
         }
 
         @Override

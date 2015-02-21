@@ -39,7 +39,6 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -288,19 +287,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         authenticated = false;
         connected = false;
         isFirstInitialization = false;
-
-        Presence unavailablePresence = new Presence(Type.unavailable);
-        try {
-            client.disconnect(ComposableBody.builder()
-                    .setNamespaceDefinition("xmpp", XMPP_BOSH_NS)
-                    .setPayloadXML(unavailablePresence.toXML().toString())
-                    .build());
-            // Wait 150 ms for processes to clean-up, then shutdown.
-            Thread.sleep(150);
-        }
-        catch (Exception e) {
-            // Ignore.
-        }
 
         // Close down the readers and writers.
         if (readerPipe != null) {

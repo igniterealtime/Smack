@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketCollector;
@@ -31,7 +32,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.PacketIDFilter;
+import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.iqregister.packet.Registration;
 
@@ -41,6 +42,9 @@ import org.jivesoftware.smackx.iqregister.packet.Registration;
  * @author Matt Tucker
  */
 public class AccountManager extends Manager {
+
+    private static final Logger LOGGER = Logger.getLogger(AccountManager.class.getName());
+
     private static final Map<XMPPConnection, AccountManager> INSTANCES = new WeakHashMap<XMPPConnection, AccountManager>();
 
     /**
@@ -56,6 +60,35 @@ public class AccountManager extends Manager {
             INSTANCES.put(connection, accountManager);
         }
         return accountManager;
+    }
+
+    private static boolean allowSensitiveOperationOverInsecureConnectionDefault = false;
+
+    /**
+     * The default value used by new account managers for <code>allowSensitiveOperationOverInsecureConnection</code>.
+     *
+     * @param allow
+     * @see #sensitiveOperationOverInsecureConnection(boolean)
+     * @since 4.1
+     */
+    public static void sensitiveOperationOverInsecureConnectionDefault(boolean allow) {
+        AccountManager.allowSensitiveOperationOverInsecureConnectionDefault = allow;
+    }
+
+    private boolean allowSensitiveOperationOverInsecureConnection = allowSensitiveOperationOverInsecureConnectionDefault;
+
+    /**
+     * Set to <code>true</code> to allow sensitive operation over insecure connection.
+     * <p>
+     * Set to true to allow sensitive operations like account creation or password changes over an insecure (e.g.
+     * unencrypted) connections.
+     * </p>
+     *
+     * @param allow
+     * @since 4.1
+     */
+    public void sensitiveOperationOverInsecureConnection(boolean allow) {
+        this.allowSensitiveOperationOverInsecureConnection = allow;
     }
 
     private Registration info = null;
@@ -231,6 +264,11 @@ public class AccountManager extends Manager {
      */
     public void createAccount(String username, String password, Map<String, String> attributes)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        if (!connection().isSecureConnection() && !allowSensitiveOperationOverInsecureConnection) {
+            // TODO throw exception in newer Smack versions
+            LOGGER.warning("Creating account over insecure connection. "
+                            + "This will throw an exception in future versions of Smack if AccountManager.sensitiveOperationOverInsecureConnection(true) is not set");
+        }
         attributes.put("username", username);
         attributes.put("password", password);
         Registration reg = new Registration(attributes);
@@ -251,6 +289,11 @@ public class AccountManager extends Manager {
      * @throws InterruptedException 
      */
     public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        if (!connection().isSecureConnection() && !allowSensitiveOperationOverInsecureConnection) {
+            // TODO throw exception in newer Smack versions
+            LOGGER.warning("Changing password over insecure connection. "
+                            + "This will throw an exception in future versions of Smack if AccountManager.sensitiveOperationOverInsecureConnection(true) is not set");
+        }
         Map<String, String> map = new HashMap<String, String>();
         map.put("username",  connection().getUser().getLocalpart().toString());
         map.put("password",newPassword);
@@ -298,7 +341,7 @@ public class AccountManager extends Manager {
     }
 
     private PacketCollector createPacketCollectorAndSend(IQ req) throws NotConnectedException, InterruptedException {
-        PacketCollector collector = connection().createPacketCollectorAndSend(new PacketIDFilter(req.getStanzaId()), req);
+        PacketCollector collector = connection().createPacketCollectorAndSend(new StanzaIdFilter(req.getStanzaId()), req);
         return collector;
     }
 }

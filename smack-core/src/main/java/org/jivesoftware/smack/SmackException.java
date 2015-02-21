@@ -19,6 +19,7 @@ package org.jivesoftware.smack;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jxmpp.jid.Jid;
 
@@ -65,10 +66,47 @@ public class SmackException extends Exception {
          */
         private static final long serialVersionUID = -6523363748984543636L;
 
-        public NoResponseException(XMPPConnection connection) {
-            super("No response received within packet reply timeout. Timeout was " + connection.getPacketReplyTimeout()
-                            + "ms (~" + connection.getPacketReplyTimeout() / 1000 + "s)");
+        private final PacketFilter filter;
+
+        private NoResponseException(String message, PacketFilter filter) {
+            super(message);
+            this.filter = filter;
         }
+
+        /**
+         * Get the filter that was used to collect the response.
+         *
+         * @return the used filter or <code>null</code>.
+         */
+        public PacketFilter getFilter() {
+            return filter;
+        }
+
+        public static NoResponseException newWith(XMPPConnection connection) {
+            return newWith(connection, (PacketFilter) null);
+        }
+
+        public static NoResponseException newWith(XMPPConnection connection,
+                        PacketCollector collector) {
+            return newWith(connection, collector.getPacketFilter());
+        }
+
+        public static NoResponseException newWith(XMPPConnection connection, PacketFilter filter) {
+            final long replyTimeout = connection.getPacketReplyTimeout();
+            final StringBuilder sb = new StringBuilder(256);
+            sb.append("No response received within reply timeout. Timeout was "
+                            + replyTimeout + "ms (~"
+                            + replyTimeout / 1000 + "s). Used filter: ");
+            if (filter != null) {
+                sb.append(filter.toString());
+            }
+            else {
+                sb.append("No filter used or filter was 'null'");
+            }
+            sb.append('.');
+            return new NoResponseException(sb.toString(), filter);
+        }
+
     }
 
     public static class NotLoggedInException extends SmackException {

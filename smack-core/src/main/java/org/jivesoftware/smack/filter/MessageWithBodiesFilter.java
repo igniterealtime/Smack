@@ -36,4 +36,8 @@ public class MessageWithBodiesFilter extends FlexiblePacketTypeFilter<Message> {
         return !message.getBodies().isEmpty();
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

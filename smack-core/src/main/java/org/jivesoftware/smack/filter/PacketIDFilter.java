@@ -24,7 +24,9 @@ import org.jivesoftware.smack.util.StringUtils;
  * Filters for packets with a particular packet ID.
  *
  * @author Matt Tucker
+ * @deprecated use {@link StanzaIdFilter} instead.
  */
+@Deprecated
 public class PacketIDFilter implements PacketFilter {
 
     private final String packetID;
@@ -33,7 +35,9 @@ public class PacketIDFilter implements PacketFilter {
      * Creates a new packet ID filter using the specified packet's ID.
      *
      * @param packet the packet which the ID is taken from.
+     * @deprecated use {@link StanzaIdfilter(Stanza)} instead.
      */
+    @Deprecated
     public PacketIDFilter(Stanza packet) {
         this(packet.getStanzaId());
     }
@@ -42,7 +46,9 @@ public class PacketIDFilter implements PacketFilter {
      * Creates a new packet ID filter using the specified packet ID.
      *
      * @param packetID the packet ID to filter for.
+     * @deprecated use {@link StanzaIdFilter(String)} instead.
      */
+    @Deprecated
     public PacketIDFilter(String packetID) {
         StringUtils.requireNotNullOrEmpty(packetID, "Packet ID must not be null or empty.");
         this.packetID = packetID;
@@ -53,6 +59,6 @@ public class PacketIDFilter implements PacketFilter {
     }
 
     public String toString() {
-        return "PacketIDFilter by id: " + packetID;
+        return getClass().getSimpleName() + ": id=" + packetID;
     }
 }

@@ -5,6 +5,6 @@ Connect your favourite slf4j backend of choice to get output inside of it"""
 
 dependencies {
     compile project(':smack-core')
-    compile 'org.slf4j:slf4j-api:(1.7,1.8]'
+    compile 'org.slf4j:slf4j-api:[1.7,1.8)'
     testCompile project(':smack-core').sourceSets.test.runtimeClasspath
 }

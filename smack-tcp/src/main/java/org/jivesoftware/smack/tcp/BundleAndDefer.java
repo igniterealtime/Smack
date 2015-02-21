@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright 2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.filter;
+package org.jivesoftware.smack.tcp;
 
-import org.jivesoftware.smack.packet.Stanza;
-import org.jxmpp.jid.Jid;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ToFilter implements PacketFilter {
 
-    private final Jid to;
+public class BundleAndDefer {
 
-    public ToFilter(Jid to) {
-        this.to = to;
+    private final AtomicBoolean isStopped;
+
+    BundleAndDefer(AtomicBoolean isStopped) {
+        this.isStopped = isStopped;
     }
 
-    @Override
-    public boolean accept(Stanza packet) {
-        Jid packetTo = packet.getTo();
-        if (packetTo == null) {
-            return false;
+    public void stopCurrentBundleAndDefer() {
+        synchronized (isStopped) {
+            if (isStopped.get()) {
+                return;
+            }
+            isStopped.set(true);
+            isStopped.notify();
         }
-        return packetTo.equals(to);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + ": to=" + to;
     }
 }

@@ -106,6 +106,6 @@ public class FromMatchesFilter implements PacketFilter {
 
     public String toString() {
         String matchMode = ignoreResourcepart ? "ignoreResourcepart" : "full";
-        return "FromMatchesFilter (" +matchMode + "): " + address;
+        return getClass().getSimpleName() + " (" + matchMode + "): " + address;
     }
 }

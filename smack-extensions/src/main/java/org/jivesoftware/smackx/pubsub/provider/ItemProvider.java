@@ -57,14 +57,15 @@ public class ItemProvider extends PacketExtensionProvider<Item>
             String payloadElemName = parser.getName();
             String payloadNS = parser.getNamespace();
 
-            if (ProviderManager.getExtensionProvider(payloadElemName, payloadNS) == null) 
+            final PacketExtensionProvider<PacketExtension> extensionProvider = ProviderManager.getExtensionProvider(payloadElemName, payloadNS);
+            if (extensionProvider == null)
             {
                 CharSequence payloadText = PacketParserUtils.parseElement(parser, true);
                 return new PayloadItem<SimplePayload>(id, node, new SimplePayload(payloadElemName, payloadNS, payloadText));
             }
             else 
             {
-                return new PayloadItem<PacketExtension>(id, node, PacketParserUtils.parsePacketExtension(payloadElemName, payloadNS, parser));
+                return new PayloadItem<PacketExtension>(id, node, extensionProvider.parse(parser));
             }
         }
     }
