@@ -1177,6 +1177,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         private volatile boolean instantShutdown;
 
+        /**
+         * True if some preconditions are given to start the bundle and defer mechanism.
+         * <p>
+         * This will likely get set to true right after the start of the writer thread, because
+         * {@link #nextStreamElement()} will check if {@link queue} is empty, which is probably the case, and then set
+         * this field to true.
+         * </p>
+         */
+        private boolean shouldBundleAndDefer;
+
         /** 
         * Initializes the writer in order to be used. It is called at the first connection and also 
         * is invoked if the connection is disconnected by an error.
@@ -1262,6 +1272,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          * @return the next element for writing or null.
          */
         private Element nextStreamElement() {
+            // It is important the we check if the queue is empty before removing an element from it
+            if (queue.isEmpty()) {
+                shouldBundleAndDefer = true;
+            }
             Element packet = null;
             try {
                 packet = queue.take();
@@ -1292,7 +1306,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     // If the preconditions are given (e.g. bundleAndDefer callback is set, queue is
                     // empty), then we could wait a bit for further stanzas attempting to decrease
                     // our energy consumption
-                    if (localBundleAndDeferCallback != null && isAuthenticated() && queue.isEmpty()) {
+                    if (localBundleAndDeferCallback != null && isAuthenticated() && shouldBundleAndDefer) {
+                        // Reset shouldBundleAndDefer to false, nextStreamElement() will set it to true once the
+                        // queue is empty again.
+                        shouldBundleAndDefer = false;
                         final AtomicBoolean bundlingAndDeferringStopped = new AtomicBoolean();
                         final int bundleAndDeferMillis = localBundleAndDeferCallback.getBundleAndDeferMillis(new BundleAndDefer(
                                         bundlingAndDeferringStopped));

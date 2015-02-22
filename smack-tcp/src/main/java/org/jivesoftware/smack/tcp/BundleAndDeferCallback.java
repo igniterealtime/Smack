@@ -20,7 +20,7 @@ package org.jivesoftware.smack.tcp;
  * This callback is used to get the current value of the period in which Smack does bundle and defer
  * outgoing stanzas.
  * <p>
- * Smack will bundle and defer stanzas if the connection is authenticated, the send queue is empty
+ * Smack will bundle and defer stanzas if the connection is authenticated
  * and if a bundle and defer callback is set, either via
  * {@link XMPPTCPConnection#setDefaultBundleAndDeferCallback(BundleAndDeferCallback)} or
  * {@link XMPPTCPConnection#setBundleandDeferCallback(BundleAndDeferCallback)}, and
