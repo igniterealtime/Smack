@@ -185,8 +185,19 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private final SynchronizationPoint<XMPPException> compressSyncPoint = new SynchronizationPoint<XMPPException>(
                     this);
 
+    /**
+     * The default bundle and defer callback, used for new connections.
+     * @see bundleAndDeferCallback
+     */
     private static BundleAndDeferCallback defaultBundleAndDeferCallback;
 
+    /**
+     * The used bundle and defer callback.
+     * <p>
+     * Although this field may be set concurrently, the 'volatile' keyword was deliberately not added, in order to avoid
+     * having a 'volatile' read within the writer threads loop.
+     * </p>
+     */
     private BundleAndDeferCallback bundleAndDeferCallback = defaultBundleAndDeferCallback;
 
     private static boolean useSmDefault = false;

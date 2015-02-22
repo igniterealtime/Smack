@@ -35,7 +35,7 @@ public class PacketIDFilter implements PacketFilter {
      * Creates a new packet ID filter using the specified packet's ID.
      *
      * @param packet the packet which the ID is taken from.
-     * @deprecated use {@link StanzaIdfilter(Stanza)} instead.
+     * @deprecated use {@link StanzaIdFilter#StanzaIdFilter(Stanza)} instead.
      */
     @Deprecated
     public PacketIDFilter(Stanza packet) {
@@ -46,7 +46,7 @@ public class PacketIDFilter implements PacketFilter {
      * Creates a new packet ID filter using the specified packet ID.
      *
      * @param packetID the packet ID to filter for.
-     * @deprecated use {@link StanzaIdFilter(String)} instead.
+     * @deprecated use {@link StanzaIdFilter#StanzaIdFilter(Stanza)} instead.
      */
     @Deprecated
     public PacketIDFilter(String packetID) {
