@@ -655,8 +655,8 @@ public class Roster extends Manager {
     /**
      * Returns the presence info for a particular user. If the user is offline, or
      * if no presence data is available (such as when you are not subscribed to the
-     * user's presence updates), unavailable presence will be returned.<p>
-     * <p/>
+     * user's presence updates), unavailable presence will be returned.
+     * <p>
      * If the user has several presences (one for each resource), then the presence with
      * highest priority will be returned. If multiple presences have the same priority,
      * the one with the "most available" presence mode will be returned. In order,
@@ -665,7 +665,8 @@ public class Roster extends Manager {
      * {@link org.jivesoftware.smack.packet.Presence.Mode#away away},
      * {@link org.jivesoftware.smack.packet.Presence.Mode#xa extended away}, and
      * {@link org.jivesoftware.smack.packet.Presence.Mode#dnd do not disturb}.<p>
-     * <p/>
+     * </p>
+     * <p>
      * Note that presence information is received asynchronously. So, just after logging
      * in to the server, presence values for users in the roster may be unavailable
      * even if they are actually online. In other words, the value returned by this
@@ -673,6 +674,7 @@ public class Roster extends Manager {
      * other user's presence instant by instant. If you need to track presence over time,
      * such as when showing a visual representation of the roster, consider using a
      * {@link RosterListener}.
+     * </p>
      *
      * @param user an XMPP ID. The address could be in any valid format (e.g.
      *             "domain/resource", "user@domain" or "user@domain/resource"). Any resource
