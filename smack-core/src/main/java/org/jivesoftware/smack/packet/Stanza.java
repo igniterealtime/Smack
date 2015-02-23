@@ -230,12 +230,13 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Returns a copy of the packet extensions attached to the packet.
+     * Returns a list of all extension elements of this stanza.
      *
-     * @return the packet extensions.
+     * @return a list of all extension elements of this stanza.
      */
     public List<PacketExtension> getExtensions() {
         synchronized (packetExtensions) {
+            // No need to create a new list, values() will already create a new one for us
             return packetExtensions.values();
         }
     }

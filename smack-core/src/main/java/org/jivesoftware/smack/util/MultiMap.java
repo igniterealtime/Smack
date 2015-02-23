@@ -184,6 +184,11 @@ public class MultiMap<K,V> {
         return map.keySet();
     }
 
+    /**
+     * Returns a new list containing all values of this multi map.
+     *
+     * @return a new list with all values.
+     */
     public List<V> values() {
         List<V> values = new ArrayList<>(size());
         for (Set<V> set : map.values()) {
