@@ -73,15 +73,15 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
      */
     protected String language;
 
-    public Stanza() {
+    protected Stanza() {
         this(StanzaIdUtil.newStanzaId());
     }
 
-    public Stanza(String stanzaId) {
+    protected Stanza(String stanzaId) {
         setStanzaId(stanzaId);
     }
 
-    public Stanza(Stanza p) {
+    protected Stanza(Stanza p) {
         id = p.getStanzaId();
         to = p.getTo();
         from = p.getFrom();
