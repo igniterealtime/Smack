@@ -724,7 +724,7 @@ public class Roster extends Manager {
             }
             if (presence == null) {
                 if (unavailable != null) {
-                    return unavailable;
+                    return unavailable.clone();
                 }
                 else {
                     presence = new Presence(Presence.Type.unavailable);
@@ -733,7 +733,7 @@ public class Roster extends Manager {
                 }
             }
             else {
-                return presence;
+                return presence.clone();
             }
         }
     }
@@ -764,7 +764,7 @@ public class Roster extends Manager {
                 return presence;
             }
             else {
-                return presence;
+                return presence.clone();
             }
         }
     }
@@ -786,7 +786,10 @@ public class Roster extends Manager {
             unavailable.setFrom(bareJid);
             res = new ArrayList<>(Arrays.asList(unavailable));
         } else {
-            res = new ArrayList<>(userPresences.values());
+            res = new ArrayList<>(userPresences.values().size());
+            for (Presence presence : userPresences.values()) {
+                res.add(presence.clone());
+            }
         }
         return res;
     }
@@ -803,6 +806,7 @@ public class Roster extends Manager {
         List<Presence> res = new ArrayList<>(allPresences.size());
         for (Presence presence : allPresences) {
             if (presence.isAvailable()) {
+                // No need to clone presence here, getAllPresences already returns clones
                 res.add(presence);
             }
         }
@@ -835,7 +839,7 @@ public class Roster extends Manager {
             Presence unavailable = null;
             for (Presence presence : userPresences.values()) {
                 if (presence.isAvailable()) {
-                    answer.add(presence);
+                    answer.add(presence.clone());
                 }
                 else {
                     unavailable = presence;
@@ -845,7 +849,7 @@ public class Roster extends Manager {
                 res = answer;
             }
             else if (unavailable != null) {
-                res = Arrays.asList(unavailable);
+                res = Arrays.asList(unavailable.clone());
             }
             else {
                 Presence presence = new Presence(Presence.Type.unavailable);
@@ -853,7 +857,7 @@ public class Roster extends Manager {
                 res = Arrays.asList(presence);
             }
         }
-        return Collections.unmodifiableList(res);
+        return res;
     }
 
     /**
