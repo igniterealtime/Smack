@@ -27,6 +27,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
@@ -91,7 +92,12 @@ public class VCardManager extends Manager {
      * @throws NotConnectedException 
      */
     public void saveVCard(VCard vcard) throws NoResponseException, XMPPErrorException, NotConnectedException {
+        // XEP-54 § 3.2 "A user may publish or update his or her vCard by sending an IQ of type "set" with no 'to' address…"
+        vcard.setTo(null);
         vcard.setType(IQ.Type.set);
+        // Also make sure to generate a new stanza id (the given vcard could be a vcard result), in which case we don't
+        // want to use the same stanza id again (although it wouldn't break if we did)
+        vcard.setStanzaId(StanzaIdUtil.newStanzaId());
         connection().createPacketCollectorAndSend(vcard).nextResultOrThrow();
     }
 
