@@ -21,9 +21,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -117,7 +117,7 @@ public class PingManager extends Manager {
 
     private PingManager(XMPPConnection connection) {
         super(connection);
-        executorService = new ScheduledThreadPoolExecutor(1,
+        executorService = Executors.newSingleThreadScheduledExecutor(
                         new SmackExecutorThreadFactory(connection.getConnectionCounter(), "Ping"));
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(Ping.NAMESPACE);

@@ -33,8 +33,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -244,7 +244,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * This scheduled thread pool executor is used to remove pending callbacks.
      */
-    private final ScheduledThreadPoolExecutor removeCallbacksService = new ScheduledThreadPoolExecutor(1,
+    private final ScheduledExecutorService removeCallbacksService = Executors.newSingleThreadScheduledExecutor(
                     new SmackExecutorThreadFactory(connectionCounterValue, "Remove Callbacks"));
 
     private static int concurrencyLevel = Runtime.getRuntime().availableProcessors() + 1;
@@ -333,8 +333,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected AbstractXMPPConnection(ConnectionConfiguration configuration) {
         config = configuration;
-        removeCallbacksService.setMaximumPoolSize(concurrencyLevel);
-        removeCallbacksService.setKeepAliveTime(THREAD_KEEP_ALIVE_SECONDS, TimeUnit.SECONDS);
     }
 
     protected ConnectionConfiguration getConfiguration() {
