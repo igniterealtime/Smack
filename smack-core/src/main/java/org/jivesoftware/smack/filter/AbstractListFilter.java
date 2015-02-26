@@ -19,6 +19,7 @@ package org.jivesoftware.smack.filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jivesoftware.smack.util.Objects;
@@ -68,9 +69,13 @@ public abstract class AbstractListFilter implements PacketFilter {
     public final String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
-        sb.append(" (");
-        for (PacketFilter filter : filters) {
-            sb.append(' ' + filter.toString() + ',');
+        sb.append(": (");
+        for (Iterator<PacketFilter> it = filters.iterator(); it.hasNext();) {
+            PacketFilter filter = it.next();
+            sb.append(filter.toString());
+            if (it.hasNext()) {
+                sb.append(", ");
+            }
         }
         sb.append(")");
         return sb.toString();
