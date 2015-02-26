@@ -1260,7 +1260,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 shutdownDone.checkIfSuccessOrWait();
             }
             catch (NoResponseException e) {
-                LOGGER.log(Level.WARNING, "NoResponseException", e);
+                LOGGER.log(Level.WARNING, "shutdownDone was not marked as successful by the writer thread", e);
             }
         }
 
@@ -1406,6 +1406,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     LOGGER.log(Level.FINE, "Ignoring Exception in writePackets()", e);
                 }
             } finally {
+                LOGGER.fine("Reporting shutdownDone success in writer thread");
                 shutdownDone.reportSuccess();
             }
         }
