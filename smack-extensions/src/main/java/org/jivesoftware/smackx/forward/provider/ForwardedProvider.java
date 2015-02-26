@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
@@ -31,12 +31,12 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * This class implements the {@link PacketExtensionProvider} to parse
+ * This class implements the {@link ExtensionElementProvider} to parse
  * forwarded messages from a packet.  It will return a {@link Forwarded} packet extension.
  *
  * @author Georg Lukas
  */
-public class ForwardedProvider extends PacketExtensionProvider<Forwarded> {
+public class ForwardedProvider extends ExtensionElementProvider<Forwarded> {
 
     private static final Logger LOGGER = Logger.getLogger(ForwardedProvider.class.getName());
 

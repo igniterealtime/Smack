@@ -48,10 +48,10 @@ import org.jxmpp.util.XmppStringUtils;
  * @author Lars Noschinski
  *
  */
-public class IQReplyFilter implements PacketFilter {
+public class IQReplyFilter implements StanzaFilter {
     private static final Logger LOGGER = Logger.getLogger(IQReplyFilter.class.getName());
 
-    private final PacketFilter iqAndIdFilter;
+    private final StanzaFilter iqAndIdFilter;
     private final OrFilter fromFilter;
     private final String to;
     private final String local;
@@ -98,8 +98,8 @@ public class IQReplyFilter implements PacketFilter {
         server = conn.getServiceName().toLowerCase(Locale.US);
         packetId = iqPacket.getStanzaId();
 
-        PacketFilter iqFilter = new OrFilter(IQTypeFilter.ERROR, IQTypeFilter.RESULT);
-        PacketFilter idFilter = new StanzaIdFilter(iqPacket);
+        StanzaFilter iqFilter = new OrFilter(IQTypeFilter.ERROR, IQTypeFilter.RESULT);
+        StanzaFilter idFilter = new StanzaIdFilter(iqPacket);
         iqAndIdFilter = new AndFilter(iqFilter, idFilter);
         fromFilter = new OrFilter();
         fromFilter.addFilter(FromMatchesFilter.createFull(to));

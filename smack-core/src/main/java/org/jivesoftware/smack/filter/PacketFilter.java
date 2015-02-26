@@ -17,8 +17,6 @@
 
 package org.jivesoftware.smack.filter;
 
-import org.jivesoftware.smack.packet.Stanza;
-
 /**
  * Defines a way to filter packets for particular attributes. Packet filters are used when
  * constructing packet listeners or collectors -- the filter defines what packets match the criteria
@@ -45,14 +43,9 @@ import org.jivesoftware.smack.packet.Stanza;
  * @see org.jivesoftware.smack.PacketCollector
  * @see org.jivesoftware.smack.PacketListener
  * @author Matt Tucker
+ * @deprecated use {@link StanzaFilter}
  */
-public interface PacketFilter {
+@Deprecated
+public interface PacketFilter extends StanzaFilter {
 
-    /**
-     * Tests whether or not the specified packet should pass the filter.
-     *
-     * @param packet the packet to test.
-     * @return true if and only if <tt>packet</tt> passes the filter.
-     */
-    public boolean accept(Stanza packet);
 }

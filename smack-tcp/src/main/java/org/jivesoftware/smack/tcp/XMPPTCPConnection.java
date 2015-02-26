@@ -38,7 +38,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.compress.packet.Compressed;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IQ;
@@ -279,7 +279,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * order in which they are invoked in order to determine if an ack request should be send or not.
      * </p>
      */
-    private final Set<PacketFilter> requestAckPredicates = new LinkedHashSet<PacketFilter>();
+    private final Set<StanzaFilter> requestAckPredicates = new LinkedHashSet<StanzaFilter>();
 
     private final XMPPTCPConnectionConfiguration config;
 
@@ -534,7 +534,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     protected void sendPacketInternal(Stanza packet) throws NotConnectedException {
         packetWriter.sendStreamElement(packet);
         if (isSmEnabled()) {
-            for (PacketFilter requestAckPredicate : requestAckPredicates) {
+            for (StanzaFilter requestAckPredicate : requestAckPredicates) {
                 if (requestAckPredicate.accept(packet)) {
                     requestSmAcknowledgementInternal();
                     break;
@@ -1487,7 +1487,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @param predicate the predicate to add.
      * @return if the predicate was not already active.
      */
-    public boolean addRequestAckPredicate(PacketFilter predicate) {
+    public boolean addRequestAckPredicate(StanzaFilter predicate) {
         synchronized (requestAckPredicates) {
             return requestAckPredicates.add(predicate);
         }
@@ -1498,7 +1498,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @param predicate the predicate to remove.
      * @return true if the predicate was removed.
      */
-    public boolean removeRequestAckPredicate(PacketFilter predicate) {
+    public boolean removeRequestAckPredicate(StanzaFilter predicate) {
         synchronized (requestAckPredicates) {
             return requestAckPredicates.remove(predicate);
         }

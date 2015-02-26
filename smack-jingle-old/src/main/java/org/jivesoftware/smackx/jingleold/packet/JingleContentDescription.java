@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingleold.packet;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author Alvaro Saurin <alvaro.saurin@gmail.com>
  */
-public abstract class JingleContentDescription implements PacketExtension {
+public abstract class JingleContentDescription implements ExtensionElement {
 
     // static
 

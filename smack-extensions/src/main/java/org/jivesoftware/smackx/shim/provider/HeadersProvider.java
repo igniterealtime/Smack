@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.shim.provider;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 import org.jivesoftware.smackx.shim.packet.Header;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
@@ -35,7 +35,7 @@ public class HeadersProvider extends EmbeddedExtensionProvider<HeadersExtension>
     @SuppressWarnings("unchecked")
     @Override
     protected HeadersExtension createReturnExtension(String currentElement, String currentNamespace,
-                    Map<String, String> attributeMap, List<? extends PacketExtension> content) {
+                    Map<String, String> attributeMap, List<? extends ExtensionElement> content) {
         return new HeadersExtension((List<Header>) content);
     }
 

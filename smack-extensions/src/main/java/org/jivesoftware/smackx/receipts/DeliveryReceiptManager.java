@@ -31,9 +31,9 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
@@ -67,10 +67,10 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  */
 public class DeliveryReceiptManager extends Manager {
 
-    private static final PacketFilter MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST = new AndFilter(PacketTypeFilter.MESSAGE,
-                    new PacketExtensionFilter(new DeliveryReceiptRequest()));
-    private static final PacketFilter MESSAGES_WITH_DELIVERY_RECEIPT = new AndFilter(PacketTypeFilter.MESSAGE,
-                    new PacketExtensionFilter(DeliveryReceipt.ELEMENT, DeliveryReceipt.NAMESPACE));
+    private static final StanzaFilter MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST = new AndFilter(StanzaTypeFilter.MESSAGE,
+                    new StanzaExtensionFilter(new DeliveryReceiptRequest()));
+    private static final StanzaFilter MESSAGES_WITH_DELIVERY_RECEIPT = new AndFilter(StanzaTypeFilter.MESSAGE,
+                    new StanzaExtensionFilter(DeliveryReceipt.ELEMENT, DeliveryReceipt.NAMESPACE));
 
     private static Map<XMPPConnection, DeliveryReceiptManager> instances = new WeakHashMap<XMPPConnection, DeliveryReceiptManager>();
 

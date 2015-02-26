@@ -99,7 +99,7 @@ public class StreamErrorTest {
         assertNotNull(error);
         assertEquals(Condition.conflict, error.getCondition());
         assertEquals("Replaced by new connection", error.getDescriptiveText());
-        PacketExtension appSpecificElement = error.getExtension("appSpecificElement", "myns");
+        ExtensionElement appSpecificElement = error.getExtension("appSpecificElement", "myns");
         assertNotNull(appSpecificElement);
     }
 

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.carbons.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Direction;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
@@ -28,13 +28,13 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * This class implements the {@link PacketExtensionProvider} to parse
+ * This class implements the {@link ExtensionElementProvider} to parse
  * carbon copied messages from a packet.  It will return a {@link CarbonExtension} packet extension.
  * 
  * @author Georg Lukas
  *
  */
-public class CarbonManagerProvider extends PacketExtensionProvider<CarbonExtension> {
+public class CarbonManagerProvider extends ExtensionElementProvider<CarbonExtension> {
 
     private static final ForwardedProvider FORWARDED_PROVIDER = new ForwardedProvider();
 

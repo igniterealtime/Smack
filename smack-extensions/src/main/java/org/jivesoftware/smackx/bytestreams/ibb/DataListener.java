@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.bytestreams.ibb;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
 
@@ -44,8 +44,8 @@ class DataListener implements PacketListener {
     private final InBandBytestreamManager manager;
 
     /* packet filter for all In-Band Bytestream data packets */
-    private final PacketFilter dataFilter = new AndFilter(
-                    new PacketTypeFilter(Data.class));
+    private final StanzaFilter dataFilter = new AndFilter(
+                    new StanzaTypeFilter(Data.class));
 
     /**
      * Constructor.
@@ -70,7 +70,7 @@ class DataListener implements PacketListener {
      * 
      * @return the packet filter for In-Band Bytestream data packets
      */
-    protected PacketFilter getFilter() {
+    protected StanzaFilter getFilter() {
         return this.dataFilter;
     }
 

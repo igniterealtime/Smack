@@ -47,7 +47,7 @@ public class PubSubProvider extends IQProvider<PubSub>
             int eventType = parser.next();
             switch (eventType) {
             case XmlPullParser.START_TAG:
-                PacketParserUtils.addPacketExtension(pubsub, parser);
+                PacketParserUtils.addExtensionElement(pubsub, parser);
                 break;
             case XmlPullParser.END_TAG:
                 if (parser.getDepth() == initialDepth) {

@@ -23,8 +23,8 @@ import java.util.List;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.IQ.Type;
@@ -64,7 +64,7 @@ public class PEPManager {
 
     private XMPPConnection connection;
 
-    private PacketFilter packetFilter = new PacketExtensionFilter("event", "http://jabber.org/protocol/pubsub#event");
+    private StanzaFilter packetFilter = new StanzaExtensionFilter("event", "http://jabber.org/protocol/pubsub#event");
     private PacketListener packetListener;
 
     /**

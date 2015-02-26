@@ -89,7 +89,7 @@ req.setTo("juliet@capulet.com/balcony");
 
 // send it
 connection.sendIqWithResponseCallback(req, new PacketListener() {
-   public void processPacket(Packet packet) {
+   public void processPacket(Stanza packet) {
 		HttpOverXmppResp resp = (HttpOverXmppResp) iq;
 		// check HTTP response code
 		if (resp.getStatusCode() == 200) {

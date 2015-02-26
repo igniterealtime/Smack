@@ -1,7 +1,7 @@
 PacketExtension
 ===============
 
-The static `from(Packet)` Method
+The static `from(Stanza)` Method
 --------------------------------
 
 Every PacketExtension class must have a static `from()` method that retrieves that extension for a given Stanza (if any).
@@ -9,7 +9,7 @@ Every PacketExtension class must have a static `from()` method that retrieves th
 Sample Code
 
 ```java
-public static RSMSet from(Packet) {
+public static RSMSet from(Stanza) {
   return packet.getExtension(ELEMENT, NAMESPACE);
 }
 ```

@@ -28,8 +28,8 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
@@ -279,7 +279,7 @@ public class InBandBytestreamSession implements BytestreamSession {
          * 
          * @return the data packet filter
          */
-        protected abstract PacketFilter getDataPacketFilter();
+        protected abstract StanzaFilter getDataPacketFilter();
 
         public synchronized int read() throws IOException {
             checkClosed();
@@ -489,12 +489,12 @@ public class InBandBytestreamSession implements BytestreamSession {
             };
         }
 
-        protected PacketFilter getDataPacketFilter() {
+        protected StanzaFilter getDataPacketFilter() {
             /*
              * filter all IQ stanzas having type 'SET' (represented by Data class), containing a
              * data packet extension, matching session ID and recipient
              */
-            return new AndFilter(new PacketTypeFilter(Data.class), new IBBDataPacketFilter());
+            return new AndFilter(new StanzaTypeFilter(Data.class), new IBBDataPacketFilter());
         }
 
     }
@@ -536,12 +536,12 @@ public class InBandBytestreamSession implements BytestreamSession {
         }
 
         @Override
-        protected PacketFilter getDataPacketFilter() {
+        protected StanzaFilter getDataPacketFilter() {
             /*
              * filter all message stanzas containing a data packet extension, matching session ID
              * and recipient
              */
-            return new AndFilter(new PacketTypeFilter(Message.class), new IBBDataPacketFilter());
+            return new AndFilter(new StanzaTypeFilter(Message.class), new IBBDataPacketFilter());
         }
 
     }
@@ -551,7 +551,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      * containing an In-Band Bytestream data packet extension whose session ID matches this sessions
      * ID.
      */
-    private class IBBDataPacketFilter implements PacketFilter {
+    private class IBBDataPacketFilter implements StanzaFilter {
 
         public boolean accept(Stanza packet) {
             // sender equals remote peer

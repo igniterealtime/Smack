@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -30,7 +30,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Georg Lukas
  */
-public class DeliveryReceipt implements PacketExtension
+public class DeliveryReceipt implements ExtensionElement
 {
     public static final String NAMESPACE = "urn:xmpp:receipts";
     public static final String ELEMENT = "received";
@@ -101,7 +101,7 @@ public class DeliveryReceipt implements PacketExtension
 
         @Override
         protected DeliveryReceipt createReturnExtension(String currentElement, String currentNamespace,
-                Map<String, String> attributeMap, List<? extends PacketExtension> content)
+                Map<String, String> attributeMap, List<? extends ExtensionElement> content)
         {
             return new DeliveryReceipt(attributeMap.get("id"));
         }

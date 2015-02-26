@@ -25,12 +25,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * Loads the {@link IQProvider} and {@link PacketExtensionProvider} information from a standard provider file in preparation 
+ * Loads the {@link IQProvider} and {@link ExtensionElementProvider} information from a standard provider file in preparation 
  * for loading into the {@link ProviderManager}.
  * 
  * @author Robin Collier
@@ -95,8 +95,8 @@ public class ProviderFileLoader implements ProviderLoader {
                                     // a PacketExtension, add the class object itself and
                                     // then we'll use reflection later to create instances
                                     // of the class.
-                                    if (PacketExtensionProvider.class.isAssignableFrom(provider)) {
-                                        extProviders.add(new ExtensionProviderInfo(elementName, namespace, (PacketExtensionProvider<PacketExtension>) provider.newInstance()));
+                                    if (ExtensionElementProvider.class.isAssignableFrom(provider)) {
+                                        extProviders.add(new ExtensionProviderInfo(elementName, namespace, (ExtensionElementProvider<ExtensionElement>) provider.newInstance()));
                                     }
                                     else {
                                         exceptions.add(new IllegalArgumentException(className
@@ -106,7 +106,7 @@ public class ProviderFileLoader implements ProviderLoader {
                                 case "streamFeatureProvider":
                                     sfProviders.add(new StreamFeatureProviderInfo(elementName,
                                                     namespace,
-                                                    (PacketExtensionProvider<PacketExtension>) provider.newInstance()));
+                                                    (ExtensionElementProvider<ExtensionElement>) provider.newInstance()));
                                     break;
                                 default:
                                     LOGGER.warning("Unknown provider type: " + typeName);

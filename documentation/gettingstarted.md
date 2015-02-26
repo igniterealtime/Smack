@@ -83,7 +83,7 @@ Retrieve the roster using the `Roster.getInstanceFor(XMPPConnection)` method. Th
 class allows you to find all the roster entries, the groups they belong to,
 and the current presence status of each entry.
 
-Reading and Writing Packets
+Reading and Writing Stanzas
 
 Each message to the XMPP server from a client is called a packet and is sent
 as XML. The `org.jivesoftware.smack.packet` package contains classes that
@@ -102,7 +102,7 @@ con.sendPacket(presence);
 ```
 
 Smack provides two ways to read incoming packets: `PacketListener`, and
-`PacketCollector`. Both use `PacketFilter` instances to determine which
+`PacketCollector`. Both use `StanzaFilter` instances to determine which
 packets should be processed. A packet listener is used for event style
 programming, while a packet collector has a result queue of packets that you
 can do polling and blocking operations on. So, a packet listener is useful

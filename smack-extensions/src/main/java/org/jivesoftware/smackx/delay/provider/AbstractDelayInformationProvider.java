@@ -21,12 +21,12 @@ import java.text.ParseException;
 import java.util.Date;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-public abstract class AbstractDelayInformationProvider extends PacketExtensionProvider<DelayInformation> {
+public abstract class AbstractDelayInformationProvider extends ExtensionElementProvider<DelayInformation> {
 
     @Override
     public final DelayInformation parse(XmlPullParser parser,

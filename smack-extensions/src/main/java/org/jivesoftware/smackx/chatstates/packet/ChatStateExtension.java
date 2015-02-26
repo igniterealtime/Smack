@@ -18,8 +18,8 @@
 package org.jivesoftware.smackx.chatstates.packet;
 
 import org.jivesoftware.smackx.chatstates.ChatState;
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -30,7 +30,7 @@ import org.xmlpull.v1.XmlPullParser;
  * @author Alexander Wenckus
  * @see org.jivesoftware.smackx.chatstates.ChatState
  */
-public class ChatStateExtension implements PacketExtension {
+public class ChatStateExtension implements ExtensionElement {
 
     public static final String NAMESPACE = "http://jabber.org/protocol/chatstates";
 
@@ -66,7 +66,7 @@ public class ChatStateExtension implements PacketExtension {
         return xml;
     }
 
-    public static class Provider extends PacketExtensionProvider<ChatStateExtension> {
+    public static class Provider extends ExtensionElementProvider<ChatStateExtension> {
 
         @Override
         public ChatStateExtension parse(XmlPullParser parser, int initialDepth) {

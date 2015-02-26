@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -34,7 +34,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Gaston Dombiak
  */
-public class MUCUser implements PacketExtension {
+public class MUCUser implements ExtensionElement {
 
     public static final String ELEMENT = "x";
     public static final String NAMESPACE = MUCInitialPresence.NAMESPACE + "#user";

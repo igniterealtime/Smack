@@ -31,12 +31,12 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -140,7 +140,7 @@ public class Workgroup {
                 });
 
         // Register a packet listener for all the messages sent to this client.
-        PacketFilter typeFilter = new PacketTypeFilter(Message.class);
+        StanzaFilter typeFilter = new StanzaTypeFilter(Message.class);
 
         connection.addAsyncPacketListener(new PacketListener() {
             public void processPacket(Stanza packet) {
@@ -179,8 +179,8 @@ public class Workgroup {
     public boolean isAvailable() throws NoResponseException, XMPPErrorException, NotConnectedException {
         Presence directedPresence = new Presence(Presence.Type.available);
         directedPresence.setTo(workgroupJID);
-        PacketFilter typeFilter = new PacketTypeFilter(Presence.class);
-        PacketFilter fromFilter = FromMatchesFilter.create(workgroupJID);
+        StanzaFilter typeFilter = new StanzaTypeFilter(Presence.class);
+        StanzaFilter fromFilter = FromMatchesFilter.create(workgroupJID);
         PacketCollector collector = connection.createPacketCollectorAndSend(new AndFilter(fromFilter,
                 typeFilter), directedPresence);
 
@@ -496,8 +496,8 @@ public class Workgroup {
         if (packet instanceof Message) {
             Message msg = (Message)packet;
             // Check to see if the user left the queue.
-            PacketExtension pe = msg.getExtension("depart-queue", "http://jabber.org/protocol/workgroup");
-            PacketExtension queueStatus = msg.getExtension("queue-status", "http://jabber.org/protocol/workgroup");
+            ExtensionElement pe = msg.getExtension("depart-queue", "http://jabber.org/protocol/workgroup");
+            ExtensionElement queueStatus = msg.getExtension("queue-status", "http://jabber.org/protocol/workgroup");
 
             if (pe != null) {
                 fireQueueDepartedEvent();

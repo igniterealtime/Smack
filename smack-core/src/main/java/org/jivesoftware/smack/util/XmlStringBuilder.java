@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.NamedElement;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 public class XmlStringBuilder implements Appendable, CharSequence {
     public static final String RIGHT_ANGLE_BRACKET = Character.toString('>');
@@ -31,7 +31,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         sb = new LazyStringBuilder();
     }
 
-    public XmlStringBuilder(PacketExtension pe) {
+    public XmlStringBuilder(ExtensionElement pe) {
         this();
         prelude(pe);
     }
@@ -244,7 +244,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
-    public XmlStringBuilder prelude(PacketExtension pe) {
+    public XmlStringBuilder prelude(ExtensionElement pe) {
         return prelude(pe.getElementName(), pe.getNamespace());
     }
 

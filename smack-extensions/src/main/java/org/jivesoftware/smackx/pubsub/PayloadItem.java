@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
 
 /**
@@ -43,14 +43,14 @@ import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
  * 
  * @author Robin Collier
  */
-public class PayloadItem<E extends PacketExtension> extends Item
+public class PayloadItem<E extends ExtensionElement> extends Item
 {
 	private E payload;
 	
 	/**
 	 * Create an <tt>Item</tt> with no id and a payload  The id will be set by the server.  
 	 * 
-	 * @param payloadExt A {@link PacketExtension} which represents the payload data.
+	 * @param payloadExt A {@link ExtensionElement} which represents the payload data.
 	 */
 	public PayloadItem(E payloadExt)
 	{
@@ -65,7 +65,7 @@ public class PayloadItem<E extends PacketExtension> extends Item
 	 * Create an <tt>Item</tt> with an id and payload.  
 	 * 
 	 * @param itemId The id of this item.  It can be null if we want the server to set the id.
-	 * @param payloadExt A {@link PacketExtension} which represents the payload data.
+	 * @param payloadExt A {@link ExtensionElement} which represents the payload data.
 	 */
 	public PayloadItem(String itemId, E payloadExt)
 	{
@@ -87,7 +87,7 @@ public class PayloadItem<E extends PacketExtension> extends Item
 	 * 
 	 * @param itemId The id of this item.
 	 * @param nodeId The id of the node the item was published to.
-	 * @param payloadExt A {@link PacketExtension} which represents the payload data.
+	 * @param payloadExt A {@link ExtensionElement} which represents the payload data.
 	 */
 	public PayloadItem(String itemId, String nodeId, E payloadExt)
 	{
@@ -102,7 +102,7 @@ public class PayloadItem<E extends PacketExtension> extends Item
 	 * Get the payload associated with this <tt>Item</tt>.  Customising the payload
 	 * parsing from the server can be accomplished as described in {@link ItemProvider}.
 	 * 
-	 * @return The payload as a {@link PacketExtension}.
+	 * @return The payload as a {@link ExtensionElement}.
 	 */
 	public E getPayload()
 	{

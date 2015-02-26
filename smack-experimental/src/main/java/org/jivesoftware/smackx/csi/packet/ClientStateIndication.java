@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.csi.packet;
 
 import org.jivesoftware.smack.packet.FullStreamElement;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * 
@@ -73,7 +73,7 @@ public class ClientStateIndication {
         }
     }
 
-    public static class Feature implements PacketExtension {
+    public static class Feature implements ExtensionElement {
         public static final Feature INSTANCE = new Feature();
         public static final String ELEMENT = "csi";
 

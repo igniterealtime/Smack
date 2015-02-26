@@ -64,7 +64,7 @@ public class TranscriptSearch extends SimpleIQ {
                 int eventType = parser.next();
                 if (eventType == XmlPullParser.START_TAG) {
                     // Parse the packet extension
-                    PacketParserUtils.addPacketExtension(answer, parser);
+                    PacketParserUtils.addExtensionElement(answer, parser);
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals(ELEMENT_NAME)) {

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingleold.packet;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.jingleold.nat.ICECandidate;
 import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 
@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Alvaro Saurin <alvaro.saurin@gmail.com>
  */
-public class JingleTransport implements PacketExtension {
+public class JingleTransport implements ExtensionElement {
 
     // static
 

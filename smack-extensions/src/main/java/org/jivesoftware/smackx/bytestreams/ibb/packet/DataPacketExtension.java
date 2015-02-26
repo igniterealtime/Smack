@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ.IQChildElementXmlStringBuilder;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
@@ -27,7 +27,7 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
  * 
  * @author Henning Staib
  */
-public class DataPacketExtension implements PacketExtension {
+public class DataPacketExtension implements ExtensionElement {
 
     /**
      * The element name of the data packet extension.

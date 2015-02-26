@@ -20,9 +20,10 @@ package org.jivesoftware.smack.filter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.IQ;
 
 /**
- * Filters for packets of a particular type. The type is given as a Class object, so
+ * Filters for Stanzas of a particular type. The type is given as a Class object, so
  * example types would:
  * <ul>
  *      <li><tt>Message.class</tt>
@@ -31,13 +32,12 @@ import org.jivesoftware.smack.packet.Presence;
  * </ul>
  *
  * @author Matt Tucker
- * @deprecated use {@link StanzaTypeFilter} instead.
  */
-@Deprecated
-public class PacketTypeFilter implements StanzaFilter {
+public final class StanzaTypeFilter implements StanzaFilter {
 
-    public static final PacketTypeFilter PRESENCE = new PacketTypeFilter(Presence.class);
-    public static final PacketTypeFilter MESSAGE = new PacketTypeFilter(Message.class);
+    public static final StanzaTypeFilter PRESENCE = new StanzaTypeFilter(Presence.class);
+    public static final StanzaTypeFilter MESSAGE = new StanzaTypeFilter(Message.class);
+    public static final StanzaTypeFilter IQ = new StanzaTypeFilter(IQ.class);
 
     private final Class<? extends Stanza> packetType;
 
@@ -47,7 +47,7 @@ public class PacketTypeFilter implements StanzaFilter {
      *
      * @param packetType the Class type.
      */
-    public PacketTypeFilter(Class<? extends Stanza> packetType) {
+    public StanzaTypeFilter(Class<? extends Stanza> packetType) {
         this.packetType = packetType;
     }
 

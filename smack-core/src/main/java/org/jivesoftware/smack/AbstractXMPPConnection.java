@@ -56,7 +56,7 @@ import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.filter.IQReplyFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.Bind;
@@ -64,7 +64,7 @@ import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.StartTls;
@@ -72,7 +72,7 @@ import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.UnparsablePacket;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.Objects;
@@ -154,7 +154,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     protected final Lock connectionLock = new ReentrantLock();
 
-    protected final Map<String, PacketExtension> streamFeatures = new HashMap<String, PacketExtension>();
+    protected final Map<String, ExtensionElement> streamFeatures = new HashMap<String, ExtensionElement>();
 
     /**
      * The full JID of the authenticated user, as returned by the resource binding response of the server.
@@ -716,14 +716,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public PacketCollector createPacketCollectorAndSend(IQ packet) throws NotConnectedException {
-        PacketFilter packetFilter = new IQReplyFilter(packet, this);
+        StanzaFilter packetFilter = new IQReplyFilter(packet, this);
         // Create the packet collector before sending the packet
         PacketCollector packetCollector = createPacketCollectorAndSend(packetFilter, packet);
         return packetCollector;
     }
 
     @Override
-    public PacketCollector createPacketCollectorAndSend(PacketFilter packetFilter, Stanza packet)
+    public PacketCollector createPacketCollectorAndSend(StanzaFilter packetFilter, Stanza packet)
                     throws NotConnectedException {
         // Create the packet collector before sending the packet
         PacketCollector packetCollector = createPacketCollector(packetFilter);
@@ -739,8 +739,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public PacketCollector createPacketCollector(PacketFilter packetFilter) {
-        PacketCollector.Configuration configuration = PacketCollector.newConfiguration().setPacketFilter(packetFilter);
+    public PacketCollector createPacketCollector(StanzaFilter packetFilter) {
+        PacketCollector.Configuration configuration = PacketCollector.newConfiguration().setStanzaFilter(packetFilter);
         return createPacketCollector(configuration);
     }
 
@@ -759,7 +759,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     @Deprecated
-    public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
+    public void addPacketListener(PacketListener packetListener, StanzaFilter packetFilter) {
         addAsyncPacketListener(packetListener, packetFilter);
     }
 
@@ -770,7 +770,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void addSyncPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
+    public void addSyncPacketListener(PacketListener packetListener, StanzaFilter packetFilter) {
         if (packetListener == null) {
             throw new NullPointerException("Packet listener is null.");
         }
@@ -788,7 +788,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void addAsyncPacketListener(PacketListener packetListener, PacketFilter packetFilter) {
+    public void addAsyncPacketListener(PacketListener packetListener, StanzaFilter packetFilter) {
         if (packetListener == null) {
             throw new NullPointerException("Packet listener is null.");
         }
@@ -806,7 +806,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void addPacketSendingListener(PacketListener packetListener, PacketFilter packetFilter) {
+    public void addPacketSendingListener(PacketListener packetListener, StanzaFilter packetFilter) {
         if (packetListener == null) {
             throw new NullPointerException("Packet listener is null.");
         }
@@ -862,7 +862,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public void addPacketInterceptor(PacketListener packetInterceptor,
-            PacketFilter packetFilter) {
+            StanzaFilter packetFilter) {
         if (packetInterceptor == null) {
             throw new NullPointerException("Packet interceptor is null.");
         }
@@ -1244,7 +1244,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected static class ListenerWrapper {
 
         private final PacketListener packetListener;
-        private final PacketFilter packetFilter;
+        private final StanzaFilter packetFilter;
 
         /**
          * Create a class which associates a packet filter with a listener.
@@ -1252,7 +1252,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
          * @param packetListener the packet listener.
          * @param packetFilter the associated filter or null if it listen for all packets.
          */
-        public ListenerWrapper(PacketListener packetListener, PacketFilter packetFilter) {
+        public ListenerWrapper(PacketListener packetListener, StanzaFilter packetFilter) {
             this.packetListener = packetListener;
             this.packetFilter = packetFilter;
         }
@@ -1272,7 +1272,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected static class InterceptorWrapper {
 
         private final PacketListener packetInterceptor;
-        private final PacketFilter packetFilter;
+        private final StanzaFilter packetFilter;
 
         /**
          * Create a class which associates a packet filter with an interceptor.
@@ -1280,7 +1280,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
          * @param packetInterceptor the interceptor.
          * @param packetFilter the associated filter or null if it intercepts all packets.
          */
-        public InterceptorWrapper(PacketListener packetInterceptor, PacketFilter packetFilter) {
+        public InterceptorWrapper(PacketListener packetInterceptor, StanzaFilter packetFilter) {
             this.packetInterceptor = packetInterceptor;
             this.packetFilter = packetFilter;
         }
@@ -1339,7 +1339,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             int eventType = parser.next();
 
             if (eventType == XmlPullParser.START_TAG && parser.getDepth() == initialDepth + 1) {
-                PacketExtension streamFeature = null;
+                ExtensionElement streamFeature = null;
                 String name = parser.getName();
                 String namespace = parser.getNamespace();
                 switch (name) {
@@ -1359,7 +1359,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     streamFeature = PacketParserUtils.parseCompressionFeature(parser);
                     break;
                 default:
-                    PacketExtensionProvider<PacketExtension> provider = ProviderManager.getStreamFeatureProvider(name, namespace);
+                    ExtensionElementProvider<ExtensionElement> provider = ProviderManager.getStreamFeatureProvider(name, namespace);
                     if (provider != null) {
                         streamFeature = provider.parse(parser);
                     }
@@ -1401,7 +1401,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <F extends PacketExtension> F getFeature(String element, String namespace) {
+    public <F extends ExtensionElement> F getFeature(String element, String namespace) {
         return (F) streamFeatures.get(XmppStringUtils.generateKey(element, namespace));
     }
 
@@ -1410,19 +1410,19 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return getFeature(element, namespace) != null;
     }
 
-    private void addStreamFeature(PacketExtension feature) {
+    private void addStreamFeature(ExtensionElement feature) {
         String key = XmppStringUtils.generateKey(feature.getElementName(), feature.getNamespace());
         streamFeatures.put(key, feature);
     }
 
     @Override
-    public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
+    public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
                     PacketListener callback) throws NotConnectedException {
         sendStanzaWithResponseCallback(stanza, replyFilter, callback, null);
     }
 
     @Override
-    public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
+    public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
                     PacketListener callback, ExceptionCallback exceptionCallback)
                     throws NotConnectedException {
         sendStanzaWithResponseCallback(stanza, replyFilter, callback, exceptionCallback,
@@ -1430,7 +1430,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void sendStanzaWithResponseCallback(Stanza stanza, final PacketFilter replyFilter,
+    public void sendStanzaWithResponseCallback(Stanza stanza, final StanzaFilter replyFilter,
                     final PacketListener callback, final ExceptionCallback exceptionCallback,
                     long timeout) throws NotConnectedException {
         Objects.requireNonNull(stanza, "stanza must not be null");
@@ -1487,12 +1487,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     public void sendIqWithResponseCallback(IQ iqRequest, final PacketListener callback,
                     final ExceptionCallback exceptionCallback, long timeout)
                     throws NotConnectedException {
-        PacketFilter replyFilter = new IQReplyFilter(iqRequest, this);
+        StanzaFilter replyFilter = new IQReplyFilter(iqRequest, this);
         sendStanzaWithResponseCallback(iqRequest, replyFilter, callback, exceptionCallback, timeout);
     }
 
     @Override
-    public void addOneTimeSyncCallback(final PacketListener callback, final PacketFilter packetFilter) {
+    public void addOneTimeSyncCallback(final PacketListener callback, final StanzaFilter packetFilter) {
         final PacketListener packetListener = new PacketListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException {

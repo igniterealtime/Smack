@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.xhtmlim.packet;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author Gaston Dombiak
  */
-public class XHTMLExtension implements PacketExtension {
+public class XHTMLExtension implements ExtensionElement {
 
     public static final String ELEMENT = "html";
     public static final String NAMESPACE = "http://jabber.org/protocol/xhtml-im";

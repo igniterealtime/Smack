@@ -20,12 +20,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.amp.AMPDeliverCondition;
 import org.jivesoftware.smackx.amp.AMPExpireAtCondition;
 import org.jivesoftware.smackx.amp.AMPMatchResourceCondition;
 
-public class AMPExtension implements PacketExtension {
+public class AMPExtension implements ExtensionElement {
 
     public static final String NAMESPACE = "http://jabber.org/protocol/amp";
     public static final String ELEMENT = "amp";

@@ -27,15 +27,15 @@ import org.jivesoftware.smack.packet.Message.Type;
  * @see org.jivesoftware.smack.packet.Message.Type
  * @author Ward Harold
  */
-public class MessageTypeFilter extends FlexiblePacketTypeFilter<Message> {
+public class MessageTypeFilter extends FlexibleStanzaTypeFilter<Message> {
 
-    public static final PacketFilter NORMAL = new MessageTypeFilter(Type.normal);
-    public static final PacketFilter CHAT = new MessageTypeFilter(Type.chat);
-    public static final PacketFilter GROUPCHAT = new MessageTypeFilter(Type.groupchat);
-    public static final PacketFilter HEADLINE = new MessageTypeFilter(Type.headline);
-    public static final PacketFilter ERROR = new MessageTypeFilter(Type.error);
-    public static final PacketFilter NORMAL_OR_CHAT = new OrFilter(NORMAL, CHAT);
-    public static final PacketFilter NORMAL_OR_CHAT_OR_HEADLINE = new OrFilter(NORMAL_OR_CHAT,
+    public static final StanzaFilter NORMAL = new MessageTypeFilter(Type.normal);
+    public static final StanzaFilter CHAT = new MessageTypeFilter(Type.chat);
+    public static final StanzaFilter GROUPCHAT = new MessageTypeFilter(Type.groupchat);
+    public static final StanzaFilter HEADLINE = new MessageTypeFilter(Type.headline);
+    public static final StanzaFilter ERROR = new MessageTypeFilter(Type.error);
+    public static final StanzaFilter NORMAL_OR_CHAT = new OrFilter(NORMAL, CHAT);
+    public static final StanzaFilter NORMAL_OR_CHAT_OR_HEADLINE = new OrFilter(NORMAL_OR_CHAT,
                     HEADLINE);
 
     private final Message.Type type;

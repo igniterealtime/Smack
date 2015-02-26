@@ -40,8 +40,8 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.OrFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.DefaultPacketExtension;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.packet.DefaultExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
@@ -142,10 +142,10 @@ public class AgentSession {
 
         // Create a filter to listen for packets we're interested in.
         OrFilter filter = new OrFilter(
-                        new PacketTypeFilter(OfferRequestProvider.OfferRequestPacket.class),
-                        new PacketTypeFilter(OfferRevokeProvider.OfferRevokePacket.class),
-                        new PacketTypeFilter(Presence.class),
-                        new PacketTypeFilter(Message.class));
+                        new StanzaTypeFilter(OfferRequestProvider.OfferRequestPacket.class),
+                        new StanzaTypeFilter(OfferRevokeProvider.OfferRevokePacket.class),
+                        new StanzaTypeFilter(Presence.class),
+                        new StanzaTypeFilter(Message.class));
 
         packetListener = new PacketListener() {
             public void processPacket(Stanza packet) {
@@ -298,11 +298,11 @@ public class AgentSession {
         if (online) {
             presence = new Presence(Presence.Type.available);
             presence.setTo(workgroupJID);
-            presence.addExtension(new DefaultPacketExtension(AgentStatus.ELEMENT_NAME,
+            presence.addExtension(new DefaultExtensionElement(AgentStatus.ELEMENT_NAME,
                     AgentStatus.NAMESPACE));
 
             PacketCollector collector = this.connection.createPacketCollectorAndSend(new AndFilter(
-                            new PacketTypeFilter(Presence.class), FromMatchesFilter.create(workgroupJID)), presence);
+                            new StanzaTypeFilter(Presence.class), FromMatchesFilter.create(workgroupJID)), presence);
 
             presence = (Presence)collector.nextResultOrThrow();
 
@@ -316,7 +316,7 @@ public class AgentSession {
 
             presence = new Presence(Presence.Type.unavailable);
             presence.setTo(workgroupJID);
-            presence.addExtension(new DefaultPacketExtension(AgentStatus.ELEMENT_NAME,
+            presence.addExtension(new DefaultExtensionElement(AgentStatus.ELEMENT_NAME,
                     AgentStatus.NAMESPACE));
             connection.sendPacket(presence);
         }
@@ -394,14 +394,14 @@ public class AgentSession {
             presence.setStatus(status);
         }
         // Send information about max chats and current chats as a packet extension.
-        DefaultPacketExtension agentStatus = new DefaultPacketExtension(AgentStatus.ELEMENT_NAME,
+        DefaultExtensionElement agentStatus = new DefaultExtensionElement(AgentStatus.ELEMENT_NAME,
                         AgentStatus.NAMESPACE);
         agentStatus.setValue("max-chats", "" + maxChats);
         presence.addExtension(agentStatus);
         presence.addExtension(new MetaData(this.metaData));
 
         PacketCollector collector = this.connection.createPacketCollectorAndSend(new AndFilter(
-                        new PacketTypeFilter(Presence.class),
+                        new StanzaTypeFilter(Presence.class),
                         FromMatchesFilter.create(workgroupJID)), presence);
 
         collector.nextResultOrThrow();
@@ -444,7 +444,7 @@ public class AgentSession {
         }
         presence.addExtension(new MetaData(this.metaData));
 
-        PacketCollector collector = this.connection.createPacketCollectorAndSend(new AndFilter(new PacketTypeFilter(Presence.class),
+        PacketCollector collector = this.connection.createPacketCollectorAndSend(new AndFilter(new StanzaTypeFilter(Presence.class),
                 FromMatchesFilter.create(workgroupJID)), presence);
 
         collector.nextResultOrThrow();
@@ -741,7 +741,7 @@ public class AgentSession {
             }
 
             // Notify agent packets gives an overview of agent activity in a queue.
-            DefaultPacketExtension notifyAgents = (DefaultPacketExtension)presence.getExtension("notify-agents", "http://jabber.org/protocol/workgroup");
+            DefaultExtensionElement notifyAgents = (DefaultExtensionElement)presence.getExtension("notify-agents", "http://jabber.org/protocol/workgroup");
             if (notifyAgents != null) {
                 int currentChats = Integer.parseInt(notifyAgents.getValue("current-chats"));
                 int maxChats = Integer.parseInt(notifyAgents.getValue("max-chats"));

@@ -19,7 +19,7 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.test.SmackTestCase;
@@ -143,7 +143,7 @@ public class PacketReaderTest extends SmackTestCase {
                 message.setBody("HELLO");
                 getConnection(1).sendPacket(message);
             }
-        }, new PacketTypeFilter(Message.class));
+        }, new StanzaTypeFilter(Message.class));
 
         // User0 listen for replies from user1
         PacketCollector collector = getConnection(0).createPacketCollector(

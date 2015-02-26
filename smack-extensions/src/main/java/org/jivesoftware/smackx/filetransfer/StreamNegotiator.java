@@ -23,7 +23,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
@@ -94,7 +94,7 @@ public abstract class StreamNegotiator {
      * @return The <b><i>PacketFilter</b></i> that will return the packet relatable to the stream
      *         initiation.
      */
-    public abstract PacketFilter getInitiationPacketFilter(String from, String streamID);
+    public abstract StanzaFilter getInitiationPacketFilter(String from, String streamID);
 
 
     abstract InputStream negotiateIncomingStream(Stanza streamInitiation) throws XMPPErrorException,

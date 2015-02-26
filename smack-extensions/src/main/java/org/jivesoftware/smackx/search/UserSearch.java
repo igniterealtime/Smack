@@ -141,7 +141,7 @@ public class UserSearch extends SimpleIQ {
                 else if (eventType == XmlPullParser.START_TAG && parser.getNamespace().equals("jabber:x:data")) {
                     // Otherwise, it must be a packet extension.
                     search = new UserSearch();
-                    PacketParserUtils.addPacketExtension(search, parser);
+                    PacketParserUtils.addExtensionElement(search, parser);
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals("query")) {
@@ -194,7 +194,7 @@ public class UserSearch extends SimpleIQ {
                 }
             }
             else if (eventType == XmlPullParser.START_TAG && parser.getNamespace().equals("jabber:x:data")) {
-                PacketParserUtils.addPacketExtension(search, parser);
+                PacketParserUtils.addExtensionElement(search, parser);
                 done = true;
             }
         }

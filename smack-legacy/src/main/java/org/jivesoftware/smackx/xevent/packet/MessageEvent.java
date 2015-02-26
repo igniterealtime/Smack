@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.xevent.packet;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ import java.util.List;
  *
  * @author Gaston Dombiak
  */
-public class MessageEvent implements PacketExtension {
+public class MessageEvent implements ExtensionElement {
 
     public static final String NAMESPACE = "jabber:x:event";
     public static final String ELEMENT = "x";

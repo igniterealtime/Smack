@@ -22,8 +22,8 @@ import org.jivesoftware.smackx.workgroup.packet.AgentStatusRequest;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jxmpp.util.XmppStringUtils;
@@ -73,11 +73,11 @@ public class AgentRoster {
         listeners = new ArrayList<AgentRosterListener>();
         presenceMap = new HashMap<String, Map<String, Presence>>();
         // Listen for any roster packets.
-        PacketFilter rosterFilter = new PacketTypeFilter(AgentStatusRequest.class);
+        StanzaFilter rosterFilter = new StanzaTypeFilter(AgentStatusRequest.class);
         connection.addAsyncPacketListener(new AgentStatusListener(), rosterFilter);
         // Listen for any presence packets.
         connection.addAsyncPacketListener(new PresencePacketListener(),
-                new PacketTypeFilter(Presence.class));
+                new StanzaTypeFilter(Presence.class));
 
         // Send request for roster.
         AgentStatusRequest request = new AgentStatusRequest();

@@ -19,7 +19,7 @@ package org.jivesoftware.smack;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.junit.Test;
 
@@ -175,7 +175,7 @@ public class PacketCollectorTest
 		assertNull(collector.pollResult());
 	}
 
-	class OKEverything implements PacketFilter
+	class OKEverything implements StanzaFilter
 	{
 		@Override
 		public boolean accept(Stanza packet)
@@ -187,9 +187,9 @@ public class PacketCollectorTest
 	
 	class TestPacketCollector extends PacketCollector 
 	{
-		protected TestPacketCollector(XMPPConnection conection, PacketFilter packetFilter, int size)
+		protected TestPacketCollector(XMPPConnection conection, StanzaFilter packetFilter, int size)
 		{
-			super(conection, PacketCollector.newConfiguration().setPacketFilter(packetFilter).setSize(size));
+			super(conection, PacketCollector.newConfiguration().setStanzaFilter(packetFilter).setSize(size));
 		}
 	}
 

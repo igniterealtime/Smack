@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smack.provider;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * Defines the information required to register a packet extension Provider with the {@link ProviderManager} when using the
@@ -28,13 +28,13 @@ import org.jivesoftware.smack.packet.PacketExtension;
 public final class ExtensionProviderInfo extends AbstractProviderInfo {
 
     /**
-     * Defines an extension provider which implements the <code>PacketExtensionProvider</code> interface.
+     * Defines an extension provider which implements the <code>ExtensionElementProvider</code> interface.
      * 
      * @param elementName Element that provider parses.
      * @param namespace Namespace that provider parses.
      * @param extProvider The provider implementation.
      */
-    public ExtensionProviderInfo(String elementName, String namespace, PacketExtensionProvider<PacketExtension> extProvider) {
+    public ExtensionProviderInfo(String elementName, String namespace, ExtensionElementProvider<ExtensionElement> extProvider) {
         super(elementName, namespace, extProvider);
     }
 

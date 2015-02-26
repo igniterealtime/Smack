@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.amp.provider;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.amp.AMPDeliverCondition;
 import org.jivesoftware.smackx.amp.AMPExpireAtCondition;
 import org.jivesoftware.smackx.amp.AMPMatchResourceCondition;
@@ -28,7 +28,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 
-public class AMPExtensionProvider extends PacketExtensionProvider<AMPExtension> {
+public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension> {
     private static final Logger LOGGER = Logger.getLogger(AMPExtensionProvider.class.getName());
 
     /**

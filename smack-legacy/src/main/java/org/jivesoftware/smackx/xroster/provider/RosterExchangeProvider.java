@@ -20,7 +20,7 @@ package org.jivesoftware.smackx.xroster.provider;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.xroster.RemoteRosterEntry;
 import org.jivesoftware.smackx.xroster.packet.RosterExchange;
 import org.xmlpull.v1.XmlPullParser;
@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author Gaston Dombiak
  */
-public class RosterExchangeProvider extends PacketExtensionProvider<RosterExchange> {
+public class RosterExchangeProvider extends ExtensionElementProvider<RosterExchange> {
 
     /**
      * Parses a RosterExchange packet (extension sub-packet).

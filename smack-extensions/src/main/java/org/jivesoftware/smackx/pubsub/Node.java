@@ -27,10 +27,10 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.OrFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.delay.DelayInformationManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -164,7 +164,7 @@ abstract public class Node
      * @throws XMPPErrorException
      * @throws NotConnectedException
      */
-    public List<Subscription> getSubscriptions(List<PacketExtension> additionalExtensions, Collection<PacketExtension> returnedExtensions)
+    public List<Subscription> getSubscriptions(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
         return getSubscriptions(additionalExtensions, returnedExtensions, null);
     }
@@ -206,18 +206,18 @@ abstract public class Node
      *      Retrieve Subscriptions List</a>
      * @since 4.1
      */
-    public List<Subscription> getSubscriptionsAsOwner(List<PacketExtension> additionalExtensions,
-                    Collection<PacketExtension> returnedExtensions) throws NoResponseException, XMPPErrorException,
+    public List<Subscription> getSubscriptionsAsOwner(List<ExtensionElement> additionalExtensions,
+                    Collection<ExtensionElement> returnedExtensions) throws NoResponseException, XMPPErrorException,
                     NotConnectedException {
         return getSubscriptions(additionalExtensions, returnedExtensions, PubSubNamespace.OWNER);
     }
 
-    private List<Subscription> getSubscriptions(List<PacketExtension> additionalExtensions,
-                    Collection<PacketExtension> returnedExtensions, PubSubNamespace pubSubNamespace)
+    private List<Subscription> getSubscriptions(List<ExtensionElement> additionalExtensions,
+                    Collection<ExtensionElement> returnedExtensions, PubSubNamespace pubSubNamespace)
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
         PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(PubSubElementType.SUBSCRIPTIONS, getId()), pubSubNamespace);
         if (additionalExtensions != null) {
-            for (PacketExtension pe : additionalExtensions) {
+            for (ExtensionElement pe : additionalExtensions) {
                 pubSub.addExtension(pe);
             }
         }
@@ -257,11 +257,11 @@ abstract public class Node
      * @throws XMPPErrorException
      * @throws NotConnectedException
      */
-    public List<Affiliation> getAffiliations(List<PacketExtension> additionalExtensions, Collection<PacketExtension> returnedExtensions)
+    public List<Affiliation> getAffiliations(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
         PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(PubSubElementType.AFFILIATIONS, getId()));
         if (additionalExtensions != null) {
-            for (PacketExtension pe : additionalExtensions) {
+            for (ExtensionElement pe : additionalExtensions) {
                 pubSub.addExtension(pe);
             }
         }
@@ -476,12 +476,12 @@ abstract public class Node
 		return super.toString() + " " + getClass().getName() + " id: " + id;
 	}
 	
-	protected PubSub createPubsubPacket(Type type, PacketExtension ext)
+	protected PubSub createPubsubPacket(Type type, ExtensionElement ext)
 	{
 		return createPubsubPacket(type, ext, null);
 	}
 	
-	protected PubSub createPubsubPacket(Type type, PacketExtension ext, PubSubNamespace ns)
+	protected PubSub createPubsubPacket(Type type, ExtensionElement ext, PubSubNamespace ns)
 	{
 		return PubSub.createPubsubPacket(to, type, ext, ns);
 	}
@@ -554,7 +554,7 @@ abstract public class Node
 		{
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
 	        
-	        List<PacketExtension> extList = event.getExtensions();
+	        List<ExtensionElement> extList = event.getExtensions();
 	        
 	        if (extList.get(0).getElementName().equals(PubSubElementType.PURGE_EVENT.getElementName()))
 	        {
@@ -608,7 +608,7 @@ abstract public class Node
 	 * 
 	 * @author Robin Collier
 	 */
-	class EventContentFilter implements PacketFilter
+	class EventContentFilter implements StanzaFilter
 	{
 		private String firstElement;
 		private String secondElement;
@@ -649,7 +649,7 @@ abstract public class Node
 				
 				if (embedEvent instanceof EmbeddedPacketExtension)
 				{
-					List<PacketExtension> secondLevelList = ((EmbeddedPacketExtension)embedEvent).getExtensions();
+					List<ExtensionElement> secondLevelList = ((EmbeddedPacketExtension)embedEvent).getExtensions();
 					
 					if (secondLevelList.size() > 0 && secondLevelList.get(0).getElementName().equals(secondElement))
 						return true;

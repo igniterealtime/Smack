@@ -25,7 +25,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ.Type;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 
@@ -71,7 +71,7 @@ public class LeafNode extends Node
 	 */
 	public <T extends Item> List<T> getItems() throws NoResponseException, XMPPErrorException, NotConnectedException
 	{
-        return getItems((List<PacketExtension>) null, (List<PacketExtension>) null);
+        return getItems((List<ExtensionElement>) null, (List<ExtensionElement>) null);
 	}
 	
 	/**
@@ -169,8 +169,8 @@ public class LeafNode extends Node
      * @throws XMPPErrorException
      * @throws NotConnectedException
      */
-    public <T extends Item> List<T> getItems(List<PacketExtension> additionalExtensions,
-                    List<PacketExtension> returnedExtensions) throws NoResponseException,
+    public <T extends Item> List<T> getItems(List<ExtensionElement> additionalExtensions,
+                    List<ExtensionElement> returnedExtensions) throws NoResponseException,
                     XMPPErrorException, NotConnectedException {
         PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId()));
         request.addExtensions(additionalExtensions);
@@ -184,7 +184,7 @@ public class LeafNode extends Node
 
     @SuppressWarnings("unchecked")
     private <T extends Item> List<T> getItems(PubSub request,
-                    List<PacketExtension> returnedExtensions) throws NoResponseException,
+                    List<ExtensionElement> returnedExtensions) throws NoResponseException,
                     XMPPErrorException, NotConnectedException {
         PubSub result = con.createPacketCollectorAndSend(request).nextResultOrThrow();
         ItemsExtension itemsElem = result.getExtension(PubSubElementType.ITEMS);

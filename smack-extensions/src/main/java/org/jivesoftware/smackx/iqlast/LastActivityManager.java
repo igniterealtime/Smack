@@ -28,7 +28,7 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
@@ -92,7 +92,7 @@ import org.jivesoftware.smackx.iqlast.packet.LastActivity;
 public class LastActivityManager extends Manager {
     private static final Map<XMPPConnection, LastActivityManager> instances = new WeakHashMap<XMPPConnection, LastActivityManager>();
 //    private static final PacketFilter IQ_GET_LAST_FILTER = new AndFilter(IQTypeFilter.GET,
-//                    new PacketTypeFilter(LastActivity.class));
+//                    new StanzaTypeFilter(LastActivity.class));
 
     private static boolean enabledPerDefault = true;
 
@@ -149,7 +149,7 @@ public class LastActivityManager extends Manager {
                     break;
                 }
             }
-        }, PacketTypeFilter.PRESENCE);
+        }, StanzaTypeFilter.PRESENCE);
 
         connection.addPacketSendingListener(new PacketListener() {
             @Override
@@ -159,7 +159,7 @@ public class LastActivityManager extends Manager {
                 if (message.getType() == Message.Type.error) return;
                 resetIdleTime();
             }
-        }, PacketTypeFilter.MESSAGE);
+        }, StanzaTypeFilter.MESSAGE);
 
         // Register a listener for a last activity query
         connection.registerIQRequestHandler(new AbstractIqRequestHandler(LastActivity.ELEMENT, LastActivity.NAMESPACE,

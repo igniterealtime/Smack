@@ -47,9 +47,9 @@ import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.MessageWithSubjectFilter;
 import org.jivesoftware.smack.filter.NotFilter;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.filter.ToFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
@@ -108,12 +108,12 @@ public class MultiUserChat {
      * the groupchat participants, i.e. it filters only the bare JID of the from
      * attribute against the JID of the MUC.
      */
-    private final PacketFilter fromRoomFilter;
+    private final StanzaFilter fromRoomFilter;
 
     /**
      * Same as {@link #fromRoomFilter} together with {@link MessageTypeFilter#GROUPCHAT}.
      */
-    private final PacketFilter fromRoomGroupchatFilter;
+    private final StanzaFilter fromRoomGroupchatFilter;
 
     private final PacketListener presenceInterceptor;
     private final PacketListener messageListener;
@@ -291,19 +291,19 @@ public class MultiUserChat {
         joinPresence.addExtension(mucInitialPresence);
 
         // Wait for a presence packet back from the server.
-        PacketFilter responseFilter = new AndFilter(FromMatchesFilter.createFull(room + "/"
-                        + nickname), new PacketTypeFilter(Presence.class));
+        StanzaFilter responseFilter = new AndFilter(FromMatchesFilter.createFull(room + "/"
+                        + nickname), new StanzaTypeFilter(Presence.class));
 
         // Setup the messageListeners and presenceListeners *before* the join presence is send.
         connection.addSyncPacketListener(messageListener, fromRoomGroupchatFilter);
         connection.addSyncPacketListener(presenceListener, new AndFilter(fromRoomFilter,
-                        PacketTypeFilter.PRESENCE));
+                        StanzaTypeFilter.PRESENCE));
         connection.addSyncPacketListener(subjectListener, new AndFilter(fromRoomFilter,
                         MessageWithSubjectFilter.INSTANCE));
-        connection.addSyncPacketListener(declinesListener, new AndFilter(new PacketExtensionFilter(MUCUser.ELEMENT,
+        connection.addSyncPacketListener(declinesListener, new AndFilter(new StanzaExtensionFilter(MUCUser.ELEMENT,
                         MUCUser.NAMESPACE), new NotFilter(MessageTypeFilter.ERROR)));
         connection.addPacketInterceptor(presenceInterceptor, new AndFilter(new ToFilter(room),
-                        PacketTypeFilter.PRESENCE));
+                        StanzaTypeFilter.PRESENCE));
         messageCollector = connection.createPacketCollector(fromRoomGroupchatFilter);
 
         Presence presence;
@@ -855,10 +855,10 @@ public class MultiUserChat {
         joinPresence.setTo(room + "/" + nickname);
 
         // Wait for a presence packet back from the server.
-        PacketFilter responseFilter =
+        StanzaFilter responseFilter =
             new AndFilter(
                 FromMatchesFilter.createFull(room + "/" + nickname),
-                new PacketTypeFilter(Presence.class));
+                new StanzaTypeFilter(Presence.class));
         PacketCollector response = connection.createPacketCollectorAndSend(responseFilter, joinPresence);
         // Wait up to a certain number of seconds for a reply. If there is a negative reply, an
         // exception will be thrown
@@ -1707,7 +1707,7 @@ public class MultiUserChat {
         Message message = createMessage();
         message.setSubject(subject);
         // Wait for an error or confirmation message back from the server.
-        PacketFilter responseFilter = new AndFilter(fromRoomGroupchatFilter, new PacketFilter() {
+        StanzaFilter responseFilter = new AndFilter(fromRoomGroupchatFilter, new StanzaFilter() {
             @Override
             public boolean accept(Stanza packet) {
                 Message msg = (Message) packet;

@@ -25,11 +25,11 @@ import org.jivesoftware.smack.packet.Stanza;
  *
  * @author Matt Tucker
  */
-public class OrFilter extends AbstractListFilter implements PacketFilter {
+public class OrFilter extends AbstractListFilter implements StanzaFilter {
 
     /**
      * Creates an empty OR filter. Filters should be added using the
-     * {@link #addFilter(PacketFilter)} method.
+     * {@link #addFilter(StanzaFilter)} method.
      */
     public OrFilter() {
         super();
@@ -40,13 +40,13 @@ public class OrFilter extends AbstractListFilter implements PacketFilter {
      *
      * @param filters the filters to add.
      */
-    public OrFilter(PacketFilter... filters) {
+    public OrFilter(StanzaFilter... filters) {
         super(filters);
     }
 
     @Override
     public boolean accept(Stanza packet) {
-        for (PacketFilter filter : filters) {
+        for (StanzaFilter filter : filters) {
             if (filter.accept(packet)) {
                 return true;
             }

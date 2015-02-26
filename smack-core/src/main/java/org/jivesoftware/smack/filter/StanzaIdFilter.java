@@ -25,7 +25,7 @@ import org.jivesoftware.smack.util.StringUtils;
  *
  * @author Matt Tucker
  */
-public class StanzaIdFilter implements PacketFilter {
+public class StanzaIdFilter implements StanzaFilter {
 
     private final String stanzaId;
 

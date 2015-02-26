@@ -27,7 +27,7 @@ import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -445,10 +445,10 @@ public class ServiceDiscoveryManager extends Manager {
      * 
      * @return the data form as List of PacketExtensions
      */
-    public List<PacketExtension> getExtendedInfoAsList() {
-        List<PacketExtension> res = null;
+    public List<ExtensionElement> getExtendedInfoAsList() {
+        List<ExtensionElement> res = null;
         if (extendedInfo != null) {
-            res = new ArrayList<PacketExtension>(1);
+            res = new ArrayList<ExtensionElement>(1);
             res.add(extendedInfo);
         }
         return res;

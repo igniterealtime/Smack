@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.pubsub;
 
 import java.util.List;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * This class is used to for multiple purposes.  
@@ -36,7 +36,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 {
 	protected ItemsElementType type;
 	protected Boolean notify;
-	protected List<? extends PacketExtension> items;
+	protected List<? extends ExtensionElement> items;
 
 	public enum ItemsElementType
 	{
@@ -83,7 +83,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	 * @param nodeId The node to which the items are being sent or deleted
 	 * @param items The list of {@link Item} or {@link RetractItem}
 	 */
-	public ItemsExtension(ItemsElementType itemsType, String nodeId, List<? extends PacketExtension> items)
+	public ItemsExtension(ItemsElementType itemsType, String nodeId, List<? extends ExtensionElement> items)
 	{
 		super(itemsType.getNodeElement(), nodeId);
 		type = itemsType;
@@ -106,7 +106,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	 * @param nodeId The node to which the items are being sent or deleted
 	 * @param items The list of {@link Item} or {@link RetractItem}
 	 */
-	public ItemsExtension(String nodeId, List<? extends PacketExtension> items, boolean notify)
+	public ItemsExtension(String nodeId, List<? extends ExtensionElement> items, boolean notify)
 	{
 		super(ItemsElementType.retract.getNodeElement(), nodeId);
 		type = ItemsElementType.retract;
@@ -125,9 +125,9 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<PacketExtension> getExtensions()
+	public List<ExtensionElement> getExtensions()
 	{
-		return (List<PacketExtension>)getItems();
+		return (List<ExtensionElement>)getItems();
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	 * 
 	 * return List of {@link Item}, {@link RetractItem}, or null
 	 */
-	public List<? extends PacketExtension> getItems()
+	public List<? extends ExtensionElement> getItems()
 	{
 		return items;
 	}
@@ -175,7 +175,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 			else
 			{
 				builder.append("'>");
-				for (PacketExtension item : items)
+				for (ExtensionElement item : items)
 				{
 					builder.append(item.toXML());
 				}

@@ -36,7 +36,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.OrFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 
@@ -51,8 +51,8 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
     private final StreamNegotiator primaryNegotiator;
     private final StreamNegotiator secondaryNegotiator;
     private final XMPPConnection connection;
-    private PacketFilter primaryFilter;
-    private PacketFilter secondaryFilter;
+    private StanzaFilter primaryFilter;
+    private StanzaFilter secondaryFilter;
 
     public FaultTolerantNegotiator(XMPPConnection connection, StreamNegotiator primary,
             StreamNegotiator secondary) {
@@ -61,7 +61,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         this.connection = connection;
     }
 
-    public PacketFilter getInitiationPacketFilter(String from, String streamID) {
+    public StanzaFilter getInitiationPacketFilter(String from, String streamID) {
         if (primaryFilter == null || secondaryFilter == null) {
             primaryFilter = primaryNegotiator.getInitiationPacketFilter(from, streamID);
             secondaryFilter = secondaryNegotiator.getInitiationPacketFilter(from, streamID);

@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.jingleold.provider;
 
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.jingleold.media.ContentInfo;
 import org.jivesoftware.smackx.jingleold.packet.JingleContentInfo;
 import org.xmlpull.v1.XmlPullParser;
@@ -32,9 +32,9 @@ public class JingleContentInfoProvider {
     /**
      * JingleDescription.Audio info provider
      */
-    public static class Audio extends PacketExtensionProvider<PacketExtension> {
+    public static class Audio extends ExtensionElementProvider<ExtensionElement> {
 
-        private final PacketExtension audioInfo;
+        private final ExtensionElement audioInfo;
 
         /**
          * Empty constructor.
@@ -48,7 +48,7 @@ public class JingleContentInfoProvider {
          *
          * @param audioInfo the jmf info
          */
-        public Audio(final PacketExtension audioInfo) {
+        public Audio(final ExtensionElement audioInfo) {
             super();
             this.audioInfo = audioInfo;
         }
@@ -57,8 +57,8 @@ public class JingleContentInfoProvider {
          * Parse a JingleDescription.Audio extension.
          */
         @Override
-        public PacketExtension parse(XmlPullParser parser, int initialDepth) {
-            PacketExtension result = null;
+        public ExtensionElement parse(XmlPullParser parser, int initialDepth) {
+            ExtensionElement result = null;
 
             if (audioInfo != null) {
                 result = audioInfo;

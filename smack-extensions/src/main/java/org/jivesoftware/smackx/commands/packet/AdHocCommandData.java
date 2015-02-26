@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.commands.packet;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.commands.AdHocCommand;
 import org.jivesoftware.smackx.commands.AdHocCommand.Action;
 import org.jivesoftware.smackx.commands.AdHocCommand.SpecificErrorCondition;
@@ -237,7 +237,7 @@ public class AdHocCommandData extends IQ {
         return sessionID;
     }
 
-    public static class SpecificError implements PacketExtension {
+    public static class SpecificError implements ExtensionElement {
 
         public static final String namespace = "http://jabber.org/protocol/commands";
         

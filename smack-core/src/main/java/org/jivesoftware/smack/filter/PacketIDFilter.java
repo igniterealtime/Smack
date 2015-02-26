@@ -27,7 +27,7 @@ import org.jivesoftware.smack.util.StringUtils;
  * @deprecated use {@link StanzaIdFilter} instead.
  */
 @Deprecated
-public class PacketIDFilter implements PacketFilter {
+public class PacketIDFilter implements StanzaFilter {
 
     private final String packetID;
 

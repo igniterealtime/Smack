@@ -21,7 +21,7 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.jingleold.JingleActionEnum;
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.packet.JingleContent;
@@ -61,7 +61,7 @@ public class JingleProvider extends IQProvider<Jingle> {
         JingleDescriptionProvider jdpAudio = new JingleDescriptionProvider.Audio();
         JingleTransportProvider jtpRawUdp = new JingleTransportProvider.RawUdp();
         JingleTransportProvider jtpIce = new JingleTransportProvider.Ice();
-        PacketExtensionProvider jmipAudio = new JingleContentInfoProvider.Audio();
+        ExtensionElementProvider jmipAudio = new JingleContentInfoProvider.Audio();
 
         int eventType;
         String elementName;

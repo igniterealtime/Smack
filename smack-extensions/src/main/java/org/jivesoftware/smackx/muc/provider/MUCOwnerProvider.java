@@ -49,7 +49,7 @@ public class MUCOwnerProvider extends IQProvider<MUCOwner> {
                 }
                 // Otherwise, it must be a packet extension.
                 else {
-                    PacketParserUtils.addPacketExtension(mucOwner, parser);
+                    PacketParserUtils.addExtensionElement(mucOwner, parser);
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {

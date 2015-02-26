@@ -20,9 +20,9 @@ package org.jivesoftware.smackx.workgroup.packet;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ.IQChildElementXmlStringBuilder;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author Gaston Dombiak
  */
-public class RoomTransfer implements PacketExtension {
+public class RoomTransfer implements ExtensionElement {
 
     /**
      * Element name of the packet extension.
@@ -158,7 +158,7 @@ public class RoomTransfer implements PacketExtension {
         }
     }
 
-    public static class Provider extends PacketExtensionProvider<RoomTransfer> {
+    public static class Provider extends ExtensionElementProvider<RoomTransfer> {
 
         @Override
         public RoomTransfer parse(XmlPullParser parser,

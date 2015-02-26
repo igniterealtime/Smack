@@ -20,7 +20,7 @@ import java.util.Locale;
 
 import org.jivesoftware.smack.packet.Stanza;
 
-public class ToFilter implements PacketFilter {
+public class ToFilter implements StanzaFilter {
 
     private final String to;
 

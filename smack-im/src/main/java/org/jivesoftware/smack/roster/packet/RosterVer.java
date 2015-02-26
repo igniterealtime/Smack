@@ -16,10 +16,10 @@
  */
 package org.jivesoftware.smack.roster.packet;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-public class RosterVer implements PacketExtension {
+public class RosterVer implements ExtensionElement {
 
     public static final String ELEMENT = "ver";
     public static final String NAMESPACE = "urn:xmpp:features:rosterver";

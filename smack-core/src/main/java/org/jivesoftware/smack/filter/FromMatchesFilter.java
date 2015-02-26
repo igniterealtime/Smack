@@ -30,7 +30,7 @@ import org.jxmpp.util.XmppStringUtils;
  *
  * @author Gaston Dombiak
  */
-public class FromMatchesFilter implements PacketFilter {
+public class FromMatchesFilter implements StanzaFilter {
 
     private final String address;
 

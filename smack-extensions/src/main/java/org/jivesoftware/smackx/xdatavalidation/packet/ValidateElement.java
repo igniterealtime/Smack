@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.xdatavalidation.packet;
 
 import org.jivesoftware.smack.packet.NamedElement;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.NumberUtil;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -33,7 +33,7 @@ import org.jivesoftware.smackx.xdatavalidation.ValidationConsistencyException;
  *
  * @author Anno van Vliet
  */
-public abstract class ValidateElement implements PacketExtension {
+public abstract class ValidateElement implements ExtensionElement {
 
     public static final String DATATYPE_XS_STRING = "xs:string";
     public static final String ELEMENT = "validate";

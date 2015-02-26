@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,39 +23,36 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Objects;
 
 /**
- * Filters for packets of a particular type and allows a custom method to further filter the packets.
+ * Filters for stanzas of a particular type and allows a custom method to further filter the packets.
  *
  * @author Florian Schmaus
  */
-public abstract class FlexiblePacketTypeFilter<P extends Stanza> implements PacketFilter {
+public abstract class FlexibleStanzaTypeFilter<S extends Stanza> implements StanzaFilter {
 
-    protected final Class<P> packetType;
+    protected final Class<S> stanzaType;
 
-    public FlexiblePacketTypeFilter(Class<P> packetType) {
-        this.packetType = Objects.requireNonNull(packetType, "Type must not be null");
+    public FlexibleStanzaTypeFilter(Class<S> packetType) {
+        this.stanzaType = Objects.requireNonNull(packetType, "Type must not be null");
     }
 
     @SuppressWarnings("unchecked")
-    public FlexiblePacketTypeFilter() {
-        packetType = (Class<P>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    public FlexibleStanzaTypeFilter() {
+        stanzaType = (Class<S>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean accept(Stanza packet) {
-        if (packetType.isInstance(packet)) {
-            return acceptSpecific((P) packet);
+    public final boolean accept(Stanza packet) {
+        if (stanzaType.isInstance(packet)) {
+            return acceptSpecific((S) packet);
         }
         return false;
     }
 
-    protected abstract boolean acceptSpecific(P packet);
+    protected abstract boolean acceptSpecific(S packet);
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" (" + packetType.toString() + ')');
-        return sb.toString();
+        return getClass().getSimpleName() + ": " + stanzaType.toString();
     }
 }

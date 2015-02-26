@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.xroster.packet;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
@@ -48,7 +48,7 @@ import java.util.List;
  *
  * @author Gaston Dombiak
  */
-public class RosterExchange implements PacketExtension {
+public class RosterExchange implements ExtensionElement {
 
     private List<RemoteRosterEntry> remoteRosterEntries = new ArrayList<RemoteRosterEntry>();
 

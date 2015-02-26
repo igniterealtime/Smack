@@ -33,9 +33,14 @@ package org.jivesoftware.smack.packet;
  * @see DefaultExtensionElement
  * @see org.jivesoftware.smack.provider.ExtensionElementProvider
  * @author Matt Tucker
- * @deprecated use {@link ExtensionElement} instead.
  */
-@Deprecated
-public interface PacketExtension extends ExtensionElement {
+public interface ExtensionElement extends NamedElement {
+
+    /**
+     * Returns the root element XML namespace.
+     *
+     * @return the namespace.
+     */
+    public String getNamespace();
 
 }

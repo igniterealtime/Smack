@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * The default payload representation for {@link PayloadItem#getPayload()}.  It simply 
@@ -24,7 +24,7 @@ import org.jivesoftware.smack.packet.PacketExtension;
  *  
  * @author Robin Collier
  */
-public class SimplePayload implements PacketExtension
+public class SimplePayload implements ExtensionElement
 {
 	private final String elemName;
 	private final String ns;

@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-public class Mechanisms implements PacketExtension {
+public class Mechanisms implements ExtensionElement {
 
     public static final String ELEMENT = "mechanisms";
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-sasl";

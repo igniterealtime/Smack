@@ -30,7 +30,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -79,7 +79,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     
     PacketListener packetListener;
 
-    PacketFilter packetFilter;
+    StanzaFilter packetFilter;
 
     protected List<JingleMediaManager> jingleMediaManagers = null;
 
@@ -676,7 +676,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             }
         };
 
-        packetFilter = new PacketFilter() {
+        packetFilter = new StanzaFilter() {
             public boolean accept(Stanza packet) {
 
                 if (packet instanceof IQ) {

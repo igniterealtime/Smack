@@ -25,7 +25,7 @@ import org.jivesoftware.smack.util.StringUtils;
  *
  * @author Matt Tucker
  */
-public class ThreadFilter extends FlexiblePacketTypeFilter<Message> implements PacketFilter {
+public class ThreadFilter extends FlexibleStanzaTypeFilter<Message> implements StanzaFilter {
 
     private final String thread;
 

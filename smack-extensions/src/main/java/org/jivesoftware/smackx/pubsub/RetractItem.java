@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 /**
@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
  * 
  * @author Robin Collier
  */
-public class RetractItem implements PacketExtension
+public class RetractItem implements ExtensionElement
 {
 	private String id;
 

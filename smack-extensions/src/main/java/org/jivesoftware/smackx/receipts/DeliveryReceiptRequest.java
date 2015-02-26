@@ -20,9 +20,9 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author Georg Lukas
  */
-public class DeliveryReceiptRequest implements PacketExtension
+public class DeliveryReceiptRequest implements ExtensionElement
 {
     public static final String ELEMENT = "request";
 
@@ -93,7 +93,7 @@ public class DeliveryReceiptRequest implements PacketExtension
     /**
      * This Provider parses and returns DeliveryReceiptRequest packets.
      */
-    public static class Provider extends PacketExtensionProvider<DeliveryReceiptRequest> {
+    public static class Provider extends ExtensionElementProvider<DeliveryReceiptRequest> {
         @Override
         public DeliveryReceiptRequest parse(XmlPullParser parser,
                         int initialDepth) throws XmlPullParserException,

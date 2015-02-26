@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.NamedElement;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -31,7 +31,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Anno van Vliet
  */
-public class DataLayout implements PacketExtension {
+public class DataLayout implements ExtensionElement {
 
     public static final String ELEMENT = "page";
     public static final String NAMESPACE = "http://jabber.org/protocol/xdata-layout";

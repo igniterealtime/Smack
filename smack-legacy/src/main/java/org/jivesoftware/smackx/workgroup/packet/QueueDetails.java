@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.workgroup.packet;
 
 import org.jivesoftware.smackx.workgroup.QueueUser;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * Queue details packet extension, which contains details about the users
  * currently in a queue.
  */
-public class QueueDetails implements PacketExtension {
+public class QueueDetails implements ExtensionElement {
     private static final Logger LOGGER = Logger.getLogger(QueueDetails.class.getName());
     
     /**
@@ -143,7 +143,7 @@ public class QueueDetails implements PacketExtension {
     /**
      * Provider class for QueueDetails packet extensions.
      */
-    public static class Provider extends PacketExtensionProvider<QueueDetails> {
+    public static class Provider extends ExtensionElementProvider<QueueDetails> {
 
         @Override
         public QueueDetails parse(XmlPullParser parser,

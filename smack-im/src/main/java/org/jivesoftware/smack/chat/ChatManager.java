@@ -32,11 +32,11 @@ import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.FlexiblePacketTypeFilter;
+import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.OrFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
@@ -97,7 +97,7 @@ public class ChatManager extends Manager{
         BARE_JID; 
     }
 
-    private final PacketFilter packetFilter = new OrFilter(MessageTypeFilter.CHAT, new FlexiblePacketTypeFilter<Message>() {
+    private final StanzaFilter packetFilter = new OrFilter(MessageTypeFilter.CHAT, new FlexibleStanzaTypeFilter<Message>() {
 
         @Override
         protected boolean acceptSpecific(Message message) {
@@ -134,8 +134,8 @@ public class ChatManager extends Manager{
     private Set<ChatManagerListener> chatManagerListeners
             = new CopyOnWriteArraySet<ChatManagerListener>();
 
-    private Map<MessageListener, PacketFilter> interceptors
-            = new WeakHashMap<MessageListener, PacketFilter>();
+    private Map<MessageListener, StanzaFilter> interceptors
+            = new WeakHashMap<MessageListener, StanzaFilter>();
 
     private ChatManager(XMPPConnection connection) {
         super(connection);
@@ -352,8 +352,8 @@ public class ChatManager extends Manager{
     }
 
     void sendMessage(Chat chat, Message message) throws NotConnectedException {
-        for(Map.Entry<MessageListener, PacketFilter> interceptor : interceptors.entrySet()) {
-            PacketFilter filter = interceptor.getValue();
+        for(Map.Entry<MessageListener, StanzaFilter> interceptor : interceptors.entrySet()) {
+            StanzaFilter filter = interceptor.getValue();
             if(filter != null && filter.accept(message)) {
                 interceptor.getKey().processMessage(message);
             }
@@ -379,7 +379,7 @@ public class ChatManager extends Manager{
         addOutgoingMessageInterceptor(messageInterceptor, null);
     }
 
-    public void addOutgoingMessageInterceptor(MessageListener messageInterceptor, PacketFilter filter) {
+    public void addOutgoingMessageInterceptor(MessageListener messageInterceptor, StanzaFilter filter) {
         if (messageInterceptor == null) {
             return;
         }

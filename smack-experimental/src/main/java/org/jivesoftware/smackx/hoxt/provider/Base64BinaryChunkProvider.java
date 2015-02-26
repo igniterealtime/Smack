@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.hoxt.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.hoxt.packet.Base64BinaryChunk;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * @author Andriy Tsykholyas
  * @see <a href="http://xmpp.org/extensions/xep-0332.html">XEP-0332: HTTP over XMPP transport</a>
  */
-public class Base64BinaryChunkProvider extends PacketExtensionProvider<Base64BinaryChunk> {
+public class Base64BinaryChunkProvider extends ExtensionElementProvider<Base64BinaryChunk> {
 
     @Override
     public Base64BinaryChunk parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
