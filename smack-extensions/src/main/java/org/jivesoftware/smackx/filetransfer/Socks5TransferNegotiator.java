@@ -26,13 +26,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
-import org.jivesoftware.smack.filter.FromMatchesFilter;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamSession;
@@ -85,15 +79,13 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     }
 
     @Override
-    public StanzaFilter getInitiationPacketFilter(final String from, String streamID) {
+    public void newStreamInitiation(String from, String streamID) {
         /*
          * this method is always called prior to #negotiateIncomingStream() so the SOCKS5
          * InitiationListener must ignore the next SOCKS5 Bytestream request with the given session
          * ID
          */
         this.manager.ignoreBytestreamRequestOnce(streamID);
-
-        return new AndFilter(FromMatchesFilter.create(from), new BytestreamSIDFilter(streamID));
     }
 
     @Override
@@ -120,25 +112,6 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
         }
         catch (IOException e) {
             throw new SmackException("Error establishing input stream", e);
-        }
-    }
-
-    /**
-     * This PacketFilter accepts an incoming SOCKS5 Bytestream request with a specified session ID.
-     */
-    private static class BytestreamSIDFilter extends FlexibleStanzaTypeFilter<Bytestream> {
-
-        private final String sessionID;
-
-        public BytestreamSIDFilter(String sessionID) {
-            this.sessionID = Objects.requireNonNull(sessionID, "SessionID cannot be null");
-        }
-
-        @Override
-        protected boolean acceptSpecific(Bytestream bytestream) {
-            // packet must by of type SET and contains the given session ID
-            return this.sessionID.equals(bytestream.getSessionID())
-                            && IQ.Type.set.equals(bytestream.getType());
         }
     }
 

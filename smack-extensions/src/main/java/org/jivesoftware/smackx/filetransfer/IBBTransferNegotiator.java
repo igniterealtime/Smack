@@ -23,13 +23,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
-import org.jivesoftware.smack.filter.FromMatchesFilter;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession;
@@ -82,15 +76,14 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         return negotiateIncomingStream(streamInitiation);
     }
 
-    public StanzaFilter getInitiationPacketFilter(String from, String streamID) {
+    @Override
+    public void newStreamInitiation(String from, String streamID) {
         /*
          * this method is always called prior to #negotiateIncomingStream() so
          * the In-Band Bytestream initiation listener must ignore the next
          * In-Band Bytestream request with the given session ID
          */
         this.manager.ignoreBytestreamRequestOnce(streamID);
-
-        return new AndFilter(FromMatchesFilter.create(from), new IBBOpenSidFilter(streamID));
     }
 
     public String[] getNamespaces() {
@@ -106,26 +99,6 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         InBandBytestreamSession session = request.accept();
         session.setCloseBothStreamsEnabled(true);
         return session.getInputStream();
-    }
-
-    /**
-     * This PacketFilter accepts an incoming In-Band Bytestream open request
-     * with a specified session ID.
-     */
-    private static class IBBOpenSidFilter extends FlexibleStanzaTypeFilter<Open> {
-
-        private final String sessionID;
-
-        public IBBOpenSidFilter(String sessionID) {
-            this.sessionID = Objects.requireNonNull(sessionID, "sessionID must not be null");
-        }
-
-        @Override
-        protected boolean acceptSpecific(Open bytestream) {
-            // packet must by of type SET and contains the given session ID
-            return this.sessionID.equals(bytestream.getSessionID())
-                            && IQ.Type.set.equals(bytestream.getType());
-        }
     }
 
     /**

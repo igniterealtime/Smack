@@ -27,6 +27,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
+import org.jivesoftware.smackx.filetransfer.StreamNegotiator;
 
 
 /**
@@ -85,6 +86,8 @@ class InitiationListener extends AbstractIqRequestHandler {
             this.manager.replyResourceConstraintPacket(ibbRequest);
             return;
         }
+
+        StreamNegotiator.signal(ibbRequest.getFrom() + '\t' + ibbRequest.getSessionID(), ibbRequest);
 
         // ignore request if in ignore list
         if (this.manager.getIgnoredBytestreamRequests().remove(ibbRequest.getSessionID()))
