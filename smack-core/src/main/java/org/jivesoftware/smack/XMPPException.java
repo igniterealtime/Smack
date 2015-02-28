@@ -152,7 +152,9 @@ public abstract class XMPPException extends Exception {
          * @param streamError the root cause of the exception.
          */
         public StreamErrorException(StreamError streamError) {
-            super(streamError.toString());
+            super(streamError.getCondition().toString()
+                  + " You can read more about the meaning of this stream error at http://xmpp.org/rfcs/rfc6120.html#streams-error-conditions\n"
+                  + streamError.toString());
             this.streamError = streamError;
         }
 
