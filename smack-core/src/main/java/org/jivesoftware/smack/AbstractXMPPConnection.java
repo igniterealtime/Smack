@@ -131,26 +131,26 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * List of PacketListeners that will be notified synchronously when a new packet was received.
      */
-    private final Map<PacketListener, ListenerWrapper> syncRecvListeners = new LinkedHashMap<>();
+    private final Map<StanzaListener, ListenerWrapper> syncRecvListeners = new LinkedHashMap<>();
 
     /**
      * List of PacketListeners that will be notified asynchronously when a new packet was received.
      */
-    private final Map<PacketListener, ListenerWrapper> asyncRecvListeners = new LinkedHashMap<>();
+    private final Map<StanzaListener, ListenerWrapper> asyncRecvListeners = new LinkedHashMap<>();
 
     /**
      * List of PacketListeners that will be notified when a new packet was sent.
      */
-    private final Map<PacketListener, ListenerWrapper> sendListeners =
-            new HashMap<PacketListener, ListenerWrapper>();
+    private final Map<StanzaListener, ListenerWrapper> sendListeners =
+            new HashMap<StanzaListener, ListenerWrapper>();
 
     /**
      * List of PacketListeners that will be notified when a new packet is about to be
      * sent to the server. These interceptors may modify the packet before it is being
      * actually sent to the server.
      */
-    private final Map<PacketListener, InterceptorWrapper> interceptors =
-            new HashMap<PacketListener, InterceptorWrapper>();
+    private final Map<StanzaListener, InterceptorWrapper> interceptors =
+            new HashMap<StanzaListener, InterceptorWrapper>();
 
     protected final Lock connectionLock = new ReentrantLock();
 
@@ -759,18 +759,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     @Deprecated
-    public void addPacketListener(PacketListener packetListener, StanzaFilter packetFilter) {
-        addAsyncPacketListener(packetListener, packetFilter);
+    public void addPacketListener(StanzaListener packetListener, StanzaFilter packetFilter) {
+        addAsyncStanzaListener(packetListener, packetFilter);
     }
 
     @Override
     @Deprecated
-    public boolean removePacketListener(PacketListener packetListener) {
-        return removeAsyncPacketListener(packetListener);
+    public boolean removePacketListener(StanzaListener packetListener) {
+        return removeAsyncStanzaListener(packetListener);
     }
 
     @Override
-    public void addSyncPacketListener(PacketListener packetListener, StanzaFilter packetFilter) {
+    public void addSyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter) {
         if (packetListener == null) {
             throw new NullPointerException("Packet listener is null.");
         }
@@ -781,14 +781,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public boolean removeSyncPacketListener(PacketListener packetListener) {
+    public boolean removeSyncStanzaListener(StanzaListener packetListener) {
         synchronized (syncRecvListeners) {
             return syncRecvListeners.remove(packetListener) != null;
         }
     }
 
     @Override
-    public void addAsyncPacketListener(PacketListener packetListener, StanzaFilter packetFilter) {
+    public void addAsyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter) {
         if (packetListener == null) {
             throw new NullPointerException("Packet listener is null.");
         }
@@ -799,14 +799,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public boolean removeAsyncPacketListener(PacketListener packetListener) {
+    public boolean removeAsyncStanzaListener(StanzaListener packetListener) {
         synchronized (asyncRecvListeners) {
             return asyncRecvListeners.remove(packetListener) != null;
         }
     }
 
     @Override
-    public void addPacketSendingListener(PacketListener packetListener, StanzaFilter packetFilter) {
+    public void addPacketSendingListener(StanzaListener packetListener, StanzaFilter packetFilter) {
         if (packetListener == null) {
             throw new NullPointerException("Packet listener is null.");
         }
@@ -817,7 +817,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void removePacketSendingListener(PacketListener packetListener) {
+    public void removePacketSendingListener(StanzaListener packetListener) {
         synchronized (sendListeners) {
             sendListeners.remove(packetListener);
         }
@@ -833,7 +833,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     @SuppressWarnings("javadoc")
     protected void firePacketSendingListeners(final Stanza packet) {
-        final List<PacketListener> listenersToNotify = new LinkedList<PacketListener>();
+        final List<StanzaListener> listenersToNotify = new LinkedList<StanzaListener>();
         synchronized (sendListeners) {
             for (ListenerWrapper listenerWrapper : sendListeners.values()) {
                 if (listenerWrapper.filterMatches(packet)) {
@@ -848,7 +848,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         asyncGo(new Runnable() {
             @Override
             public void run() {
-                for (PacketListener listener : listenersToNotify) {
+                for (StanzaListener listener : listenersToNotify) {
                     try {
                         listener.processPacket(packet);
                     }
@@ -861,7 +861,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void addPacketInterceptor(PacketListener packetInterceptor,
+    public void addPacketInterceptor(StanzaListener packetInterceptor,
             StanzaFilter packetFilter) {
         if (packetInterceptor == null) {
             throw new NullPointerException("Packet interceptor is null.");
@@ -873,7 +873,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void removePacketInterceptor(PacketListener packetInterceptor) {
+    public void removePacketInterceptor(StanzaListener packetInterceptor) {
         synchronized (interceptors) {
             interceptors.remove(packetInterceptor);
         }
@@ -888,7 +888,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @param packet the packet that is going to be sent to the server
      */
     private void firePacketInterceptors(Stanza packet) {
-        List<PacketListener> interceptorsToInvoke = new LinkedList<PacketListener>();
+        List<StanzaListener> interceptorsToInvoke = new LinkedList<StanzaListener>();
         synchronized (interceptors) {
             for (InterceptorWrapper interceptorWrapper : interceptors.values()) {
                 if (interceptorWrapper.filterMatches(packet)) {
@@ -896,7 +896,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 }
             }
         }
-        for (PacketListener interceptor : interceptorsToInvoke) {
+        for (StanzaListener interceptor : interceptorsToInvoke) {
             try {
                 interceptor.processPacket(packet);
             } catch (Exception e) {
@@ -1107,7 +1107,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // First handle the async recv listeners. Note that this code is very similar to what follows a few lines below,
         // the only difference is that asyncRecvListeners is used here and that the packet listeners are started in
         // their own thread.
-        final Collection<PacketListener> listenersToNotify = new LinkedList<PacketListener>();
+        final Collection<StanzaListener> listenersToNotify = new LinkedList<StanzaListener>();
         synchronized (asyncRecvListeners) {
             for (ListenerWrapper listenerWrapper : asyncRecvListeners.values()) {
                 if (listenerWrapper.filterMatches(packet)) {
@@ -1116,7 +1116,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             }
         }
 
-        for (final PacketListener listener : listenersToNotify) {
+        for (final StanzaListener listener : listenersToNotify) {
             asyncGo(new Runnable() {
                 @Override
                 public void run() {
@@ -1149,7 +1149,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         singleThreadedExecutorService.execute(new Runnable() {
             @Override
             public void run() {
-                for (PacketListener listener : listenersToNotify) {
+                for (StanzaListener listener : listenersToNotify) {
                     try {
                         listener.processPacket(packet);
                     } catch(NotConnectedException e) {
@@ -1243,7 +1243,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected static class ListenerWrapper {
 
-        private final PacketListener packetListener;
+        private final StanzaListener packetListener;
         private final StanzaFilter packetFilter;
 
         /**
@@ -1252,7 +1252,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
          * @param packetListener the packet listener.
          * @param packetFilter the associated filter or null if it listen for all packets.
          */
-        public ListenerWrapper(PacketListener packetListener, StanzaFilter packetFilter) {
+        public ListenerWrapper(StanzaListener packetListener, StanzaFilter packetFilter) {
             this.packetListener = packetListener;
             this.packetFilter = packetFilter;
         }
@@ -1261,7 +1261,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             return packetFilter == null || packetFilter.accept(packet);
         }
 
-        public PacketListener getListener() {
+        public StanzaListener getListener() {
             return packetListener;
         }
     }
@@ -1271,7 +1271,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected static class InterceptorWrapper {
 
-        private final PacketListener packetInterceptor;
+        private final StanzaListener packetInterceptor;
         private final StanzaFilter packetFilter;
 
         /**
@@ -1280,7 +1280,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
          * @param packetInterceptor the interceptor.
          * @param packetFilter the associated filter or null if it intercepts all packets.
          */
-        public InterceptorWrapper(PacketListener packetInterceptor, StanzaFilter packetFilter) {
+        public InterceptorWrapper(StanzaListener packetInterceptor, StanzaFilter packetFilter) {
             this.packetInterceptor = packetInterceptor;
             this.packetFilter = packetFilter;
         }
@@ -1289,7 +1289,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             return packetFilter == null || packetFilter.accept(packet);
         }
 
-        public PacketListener getInterceptor() {
+        public StanzaListener getInterceptor() {
             return packetInterceptor;
         }
     }
@@ -1417,13 +1417,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
-                    PacketListener callback) throws NotConnectedException {
+                    StanzaListener callback) throws NotConnectedException {
         sendStanzaWithResponseCallback(stanza, replyFilter, callback, null);
     }
 
     @Override
     public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
-                    PacketListener callback, ExceptionCallback exceptionCallback)
+                    StanzaListener callback, ExceptionCallback exceptionCallback)
                     throws NotConnectedException {
         sendStanzaWithResponseCallback(stanza, replyFilter, callback, exceptionCallback,
                         getPacketReplyTimeout());
@@ -1431,7 +1431,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public void sendStanzaWithResponseCallback(Stanza stanza, final StanzaFilter replyFilter,
-                    final PacketListener callback, final ExceptionCallback exceptionCallback,
+                    final StanzaListener callback, final ExceptionCallback exceptionCallback,
                     long timeout) throws NotConnectedException {
         Objects.requireNonNull(stanza, "stanza must not be null");
         // While Smack allows to add PacketListeners with a PacketFilter value of 'null', we
@@ -1439,7 +1439,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         Objects.requireNonNull(replyFilter, "replyFilter must not be null");
         Objects.requireNonNull(callback, "callback must not be null");
 
-        final PacketListener packetListener = new PacketListener() {
+        final StanzaListener packetListener = new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException {
                 try {
@@ -1452,14 +1452,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     }
                 }
                 finally {
-                    removeAsyncPacketListener(this);
+                    removeAsyncStanzaListener(this);
                 }
             }
         };
         removeCallbacksService.schedule(new Runnable() {
             @Override
             public void run() {
-                boolean removed = removeAsyncPacketListener(packetListener);
+                boolean removed = removeAsyncStanzaListener(packetListener);
                 // If the packetListener got removed, then it was never run and
                 // we never received a response, inform the exception callback
                 if (removed && exceptionCallback != null) {
@@ -1467,24 +1467,24 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 }
             }
         }, timeout, TimeUnit.MILLISECONDS);
-        addAsyncPacketListener(packetListener, replyFilter);
+        addAsyncStanzaListener(packetListener, replyFilter);
         sendPacket(stanza);
     }
 
     @Override
-    public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback)
+    public void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback)
                     throws NotConnectedException {
         sendIqWithResponseCallback(iqRequest, callback, null);
     }
 
     @Override
-    public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback,
+    public void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback,
                     ExceptionCallback exceptionCallback) throws NotConnectedException {
         sendIqWithResponseCallback(iqRequest, callback, exceptionCallback, getPacketReplyTimeout());
     }
 
     @Override
-    public void sendIqWithResponseCallback(IQ iqRequest, final PacketListener callback,
+    public void sendIqWithResponseCallback(IQ iqRequest, final StanzaListener callback,
                     final ExceptionCallback exceptionCallback, long timeout)
                     throws NotConnectedException {
         StanzaFilter replyFilter = new IQReplyFilter(iqRequest, this);
@@ -1492,22 +1492,22 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void addOneTimeSyncCallback(final PacketListener callback, final StanzaFilter packetFilter) {
-        final PacketListener packetListener = new PacketListener() {
+    public void addOneTimeSyncCallback(final StanzaListener callback, final StanzaFilter packetFilter) {
+        final StanzaListener packetListener = new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException {
                 try {
                     callback.processPacket(packet);
                 } finally {
-                    removeSyncPacketListener(this);
+                    removeSyncStanzaListener(this);
                 }
             }
         };
-        addSyncPacketListener(packetListener, packetFilter);
+        addSyncStanzaListener(packetListener, packetFilter);
         removeCallbacksService.schedule(new Runnable() {
             @Override
             public void run() {
-                removeSyncPacketListener(packetListener);
+                removeSyncStanzaListener(packetListener);
             }
         }, getPacketReplyTimeout(), TimeUnit.MILLISECONDS);
     }

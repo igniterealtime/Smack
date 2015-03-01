@@ -43,7 +43,7 @@ import org.jivesoftware.smack.packet.Stanza;
  * </pre>
  *
  * @see org.jivesoftware.smack.PacketCollector
- * @see org.jivesoftware.smack.PacketListener
+ * @see org.jivesoftware.smack.StanzaListener
  * @author Matt Tucker
  */
 public interface StanzaFilter {

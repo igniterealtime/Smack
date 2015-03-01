@@ -158,7 +158,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                 initDebugger();
                 if (isFirstInitialization) {
                     if (debugger.getReaderListener() != null) {
-                        addAsyncPacketListener(debugger.getReaderListener(), null);
+                        addAsyncStanzaListener(debugger.getReaderListener(), null);
                     }
                     if (debugger.getWriterListener() != null) {
                         addPacketSendingListener(debugger.getWriterListener(), null);

@@ -26,7 +26,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -127,7 +127,7 @@ public class DeliveryReceiptManager extends Manager {
         sdm.addFeature(DeliveryReceipt.NAMESPACE);
 
         // Add the packet listener to handling incoming delivery receipts
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException {
                 DeliveryReceipt dr = DeliveryReceipt.from(packet);
@@ -139,7 +139,7 @@ public class DeliveryReceiptManager extends Manager {
         }, MESSAGES_WITH_DELIVERY_RECEIPT);
 
         // Add the packet listener to handle incoming delivery receipt requests
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException {
                 final String from = packet.getFrom();
@@ -232,7 +232,7 @@ public class DeliveryReceiptManager extends Manager {
         receiptReceivedListeners.remove(listener);
     }
 
-    private static final PacketListener AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER = new PacketListener() {
+    private static final StanzaListener AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER = new StanzaListener() {
         @Override
         public void processPacket(Stanza packet) throws NotConnectedException {
             Message message = (Message) packet;

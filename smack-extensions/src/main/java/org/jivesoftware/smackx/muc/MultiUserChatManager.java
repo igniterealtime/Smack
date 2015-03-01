@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -117,7 +117,7 @@ public class MultiUserChatManager extends Manager {
         super(connection);
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // listeners if the message includes an invitation.
-        PacketListener invitationPacketListener = new PacketListener() {
+        StanzaListener invitationPacketListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 final Message message = (Message) packet;
                 // Get the MUCUser extension
@@ -133,7 +133,7 @@ public class MultiUserChatManager extends Manager {
                 }
             }
         };
-        connection.addAsyncPacketListener(invitationPacketListener, INVITATION_FILTER);
+        connection.addAsyncStanzaListener(invitationPacketListener, INVITATION_FILTER);
     }
 
     /**

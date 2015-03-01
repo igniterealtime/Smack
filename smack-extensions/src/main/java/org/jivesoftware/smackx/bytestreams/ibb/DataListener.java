@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb;
 
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
@@ -38,7 +38,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
  * 
  * @author Henning Staib
  */
-class DataListener implements PacketListener {
+class DataListener implements StanzaListener {
 
     /* manager containing the listeners and the XMPP connection */
     private final InBandBytestreamManager manager;

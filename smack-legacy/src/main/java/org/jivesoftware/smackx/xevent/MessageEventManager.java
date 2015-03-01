@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -75,7 +75,7 @@ public class MessageEventManager extends Manager {
     private MessageEventManager(XMPPConnection connection) {
         super(connection);
         // Listens for all message event packets and fire the proper message event listeners.
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
                 MessageEvent messageEvent =

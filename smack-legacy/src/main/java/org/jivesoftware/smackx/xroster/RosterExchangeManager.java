@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
@@ -57,7 +57,7 @@ public class RosterExchangeManager {
     private final Set<RosterExchangeListener> rosterExchangeListeners = Collections.synchronizedSet(new HashSet<RosterExchangeListener>());
 
     private final WeakReference<XMPPConnection> weakRefConnection;
-    private final PacketListener packetListener;
+    private final StanzaListener packetListener;
 
     public synchronized static RosterExchangeManager getInstanceFor(XMPPConnection connection) {
         RosterExchangeManager rosterExchangeManager = INSTANCES.get(connection);
@@ -76,7 +76,7 @@ public class RosterExchangeManager {
     public RosterExchangeManager(XMPPConnection connection) {
         weakRefConnection = new WeakReference<XMPPConnection>(connection);
         // Listens for all roster exchange packets and fire the roster exchange listeners.
-        packetListener = new PacketListener() {
+        packetListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
                 RosterExchange rosterExchange =
@@ -85,7 +85,7 @@ public class RosterExchangeManager {
                 fireRosterExchangeListeners(message.getFrom(), rosterExchange.getRosterEntries());
             }
         };
-        connection.addAsyncPacketListener(packetListener, PACKET_FILTER);
+        connection.addAsyncStanzaListener(packetListener, PACKET_FILTER);
     }
 
     /**

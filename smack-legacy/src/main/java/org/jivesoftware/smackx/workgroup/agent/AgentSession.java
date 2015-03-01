@@ -30,7 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -108,7 +108,7 @@ public class AgentSession {
     private TranscriptManager transcriptManager;
     private TranscriptSearchManager transcriptSearchManager;
     private Agent agent;
-    private PacketListener packetListener;
+    private StanzaListener packetListener;
 
     /**
      * Constructs a new agent session instance. Note, the {@link #setOnline(boolean)}
@@ -147,7 +147,7 @@ public class AgentSession {
                         new StanzaTypeFilter(Presence.class),
                         new StanzaTypeFilter(Message.class));
 
-        packetListener = new PacketListener() {
+        packetListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 try {
                     handlePacket(packet);
@@ -157,7 +157,7 @@ public class AgentSession {
                 }
             }
         };
-        connection.addAsyncPacketListener(packetListener, filter);
+        connection.addAsyncStanzaListener(packetListener, filter);
         // Create the agent associated to this session
         agent = new Agent(connection, workgroupJID);
     }
@@ -167,7 +167,7 @@ public class AgentSession {
      * packet listeners that were added by this agent session will be removed.
      */
     public void close() {
-        connection.removeAsyncPacketListener(packetListener);
+        connection.removeAsyncStanzaListener(packetListener);
     }
 
     /**

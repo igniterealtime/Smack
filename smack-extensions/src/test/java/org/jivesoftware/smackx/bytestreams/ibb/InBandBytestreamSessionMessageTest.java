@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Random;
 
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -260,7 +260,7 @@ public class InBandBytestreamSessionMessageTest {
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
         InputStream inputStream = session.getInputStream();
-        PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
+        StanzaListener listener = Whitebox.getInternalState(inputStream, StanzaListener.class);
 
         // build invalid packet with out of order sequence
         String base64Data = Base64.encode("Data");
@@ -300,7 +300,7 @@ public class InBandBytestreamSessionMessageTest {
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
         InputStream inputStream = session.getInputStream();
-        PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
+        StanzaListener listener = Whitebox.getInternalState(inputStream, StanzaListener.class);
 
         // verify data packet and notify listener
         for (int i = 0; i < controlData.length / blockSize; i++) {
@@ -345,7 +345,7 @@ public class InBandBytestreamSessionMessageTest {
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
         InputStream inputStream = session.getInputStream();
-        PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
+        StanzaListener listener = Whitebox.getInternalState(inputStream, StanzaListener.class);
 
         // verify data packet and notify listener
         for (int i = 0; i < controlData.length / blockSize; i++) {

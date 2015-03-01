@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -142,7 +142,7 @@ public class Workgroup {
         // Register a packet listener for all the messages sent to this client.
         StanzaFilter typeFilter = new StanzaTypeFilter(Message.class);
 
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             public void processPacket(Stanza packet) {
                 handlePacket(packet);
             }

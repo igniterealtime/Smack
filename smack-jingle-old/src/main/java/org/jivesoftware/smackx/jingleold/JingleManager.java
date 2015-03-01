@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
@@ -462,7 +462,7 @@ public class JingleManager implements JingleSessionListener {
         jingleSessionRequestListeners = new ArrayList<JingleSessionRequestListener>();
 
         // Start a packet listener for session initiation requests
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             public void processPacket(Stanza packet) {
                 triggerSessionRequested((Jingle) packet);
             }

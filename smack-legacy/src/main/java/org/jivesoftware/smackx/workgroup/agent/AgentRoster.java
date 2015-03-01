@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.workgroup.agent;
 
 import org.jivesoftware.smackx.workgroup.packet.AgentStatus;
 import org.jivesoftware.smackx.workgroup.packet.AgentStatusRequest;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.StanzaFilter;
@@ -74,9 +74,9 @@ public class AgentRoster {
         presenceMap = new HashMap<String, Map<String, Presence>>();
         // Listen for any roster packets.
         StanzaFilter rosterFilter = new StanzaTypeFilter(AgentStatusRequest.class);
-        connection.addAsyncPacketListener(new AgentStatusListener(), rosterFilter);
+        connection.addAsyncStanzaListener(new AgentStatusListener(), rosterFilter);
         // Listen for any presence packets.
-        connection.addAsyncPacketListener(new PresencePacketListener(),
+        connection.addAsyncStanzaListener(new PresencePacketListener(),
                 new StanzaTypeFilter(Presence.class));
 
         // Send request for roster.
@@ -281,7 +281,7 @@ public class AgentRoster {
     /**
      * Listens for all presence packets and processes them.
      */
-    private class PresencePacketListener implements PacketListener {
+    private class PresencePacketListener implements StanzaListener {
         public void processPacket(Stanza packet) {
             Presence presence = (Presence)packet;
             String from = presence.getFrom();
@@ -356,7 +356,7 @@ public class AgentRoster {
     /**
      * Listens for all roster packets and processes them.
      */
-    private class AgentStatusListener implements PacketListener {
+    private class AgentStatusListener implements StanzaListener {
 
         public void processPacket(Stanza packet) {
             if (packet instanceof AgentStatusRequest) {

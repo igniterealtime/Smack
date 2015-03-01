@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -115,11 +115,11 @@ public class MultiUserChat {
      */
     private final StanzaFilter fromRoomGroupchatFilter;
 
-    private final PacketListener presenceInterceptor;
-    private final PacketListener messageListener;
-    private final PacketListener presenceListener;
-    private final PacketListener subjectListener;
-    private final PacketListener declinesListener;
+    private final StanzaListener presenceInterceptor;
+    private final StanzaListener messageListener;
+    private final StanzaListener presenceListener;
+    private final StanzaListener subjectListener;
+    private final StanzaListener declinesListener;
 
     private String subject;
     private String nickname = null;
@@ -134,7 +134,7 @@ public class MultiUserChat {
         fromRoomFilter = FromMatchesFilter.create(room);
         fromRoomGroupchatFilter = new AndFilter(fromRoomFilter, MessageTypeFilter.GROUPCHAT);
 
-        messageListener = new PacketListener() {
+        messageListener = new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException {
                 Message message = (Message) packet;
@@ -145,7 +145,7 @@ public class MultiUserChat {
         };
 
         // Create a listener for subject updates.
-        subjectListener = new PacketListener() {
+        subjectListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Message msg = (Message) packet;
                 // Update the room subject
@@ -158,7 +158,7 @@ public class MultiUserChat {
         };
 
         // Create a listener for all presence updates.
-        presenceListener = new PacketListener() {
+        presenceListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Presence presence = (Presence) packet;
                 String from = presence.getFrom();
@@ -224,7 +224,7 @@ public class MultiUserChat {
 
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // rejection listeners if the message includes an invitation rejection.
-        declinesListener = new PacketListener() {
+        declinesListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 // Get the MUC User extension
                 MUCUser mucUser = MUCUser.from(packet);
@@ -237,7 +237,7 @@ public class MultiUserChat {
             }
         };
 
-        presenceInterceptor = new PacketListener() {
+        presenceInterceptor = new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) {
                 Presence presence = (Presence) packet;
@@ -295,12 +295,12 @@ public class MultiUserChat {
                         + nickname), new StanzaTypeFilter(Presence.class));
 
         // Setup the messageListeners and presenceListeners *before* the join presence is send.
-        connection.addSyncPacketListener(messageListener, fromRoomGroupchatFilter);
-        connection.addSyncPacketListener(presenceListener, new AndFilter(fromRoomFilter,
+        connection.addSyncStanzaListener(messageListener, fromRoomGroupchatFilter);
+        connection.addSyncStanzaListener(presenceListener, new AndFilter(fromRoomFilter,
                         StanzaTypeFilter.PRESENCE));
-        connection.addSyncPacketListener(subjectListener, new AndFilter(fromRoomFilter,
+        connection.addSyncStanzaListener(subjectListener, new AndFilter(fromRoomFilter,
                         MessageWithSubjectFilter.INSTANCE));
-        connection.addSyncPacketListener(declinesListener, new AndFilter(new StanzaExtensionFilter(MUCUser.ELEMENT,
+        connection.addSyncStanzaListener(declinesListener, new AndFilter(new StanzaExtensionFilter(MUCUser.ELEMENT,
                         MUCUser.NAMESPACE), new NotFilter(MessageTypeFilter.ERROR)));
         connection.addPacketInterceptor(presenceInterceptor, new AndFilter(new ToFilter(room),
                         StanzaTypeFilter.PRESENCE));
@@ -754,7 +754,7 @@ public class MultiUserChat {
     }
 
     /**
-     * Adds a new {@link PacketListener} that will be invoked every time a new presence
+     * Adds a new {@link StanzaListener} that will be invoked every time a new presence
      * is going to be sent by this MultiUserChat to the server. Packet interceptors may
      * add new extensions to the presence that is going to be sent to the MUC service.
      *
@@ -765,13 +765,13 @@ public class MultiUserChat {
     }
 
     /**
-     * Removes a {@link PacketListener} that was being invoked every time a new presence
+     * Removes a {@link StanzaListener} that was being invoked every time a new presence
      * was being sent by this MultiUserChat to the server. Packet interceptors may
      * add new extensions to the presence that is going to be sent to the MUC service.
      *
      * @param presenceInterceptor the packet interceptor to remove.
      */
-    public void removePresenceInterceptor(PacketListener presenceInterceptor) {
+    public void removePresenceInterceptor(StanzaListener presenceInterceptor) {
         presenceInterceptors.remove(presenceInterceptor);
     }
 
@@ -1724,9 +1724,9 @@ public class MultiUserChat {
      * connection.
      */
     private void removeConnectionCallbacks() {
-        connection.removeSyncPacketListener(messageListener);
-        connection.removeSyncPacketListener(presenceListener);
-        connection.removeSyncPacketListener(declinesListener);
+        connection.removeSyncStanzaListener(messageListener);
+        connection.removeSyncStanzaListener(presenceListener);
+        connection.removeSyncStanzaListener(declinesListener);
         connection.removePacketInterceptor(presenceInterceptor);
         if (messageCollector != null) {
             messageCollector.cancel();

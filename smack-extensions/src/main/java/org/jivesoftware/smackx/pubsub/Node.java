@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -50,9 +50,9 @@ abstract public class Node
 	protected String id;
 	protected String to;
 	
-	protected ConcurrentHashMap<ItemEventListener<Item>, PacketListener> itemEventToListenerMap = new ConcurrentHashMap<ItemEventListener<Item>, PacketListener>();
-	protected ConcurrentHashMap<ItemDeleteListener, PacketListener> itemDeleteToListenerMap = new ConcurrentHashMap<ItemDeleteListener, PacketListener>();
-	protected ConcurrentHashMap<NodeConfigListener, PacketListener> configEventToListenerMap = new ConcurrentHashMap<NodeConfigListener, PacketListener>();
+	protected ConcurrentHashMap<ItemEventListener<Item>, StanzaListener> itemEventToListenerMap = new ConcurrentHashMap<ItemEventListener<Item>, StanzaListener>();
+	protected ConcurrentHashMap<ItemDeleteListener, StanzaListener> itemDeleteToListenerMap = new ConcurrentHashMap<ItemDeleteListener, StanzaListener>();
+	protected ConcurrentHashMap<NodeConfigListener, StanzaListener> configEventToListenerMap = new ConcurrentHashMap<NodeConfigListener, StanzaListener>();
 	
 	/**
 	 * Construct a node associated to the supplied connection with the specified 
@@ -397,9 +397,9 @@ abstract public class Node
 	@SuppressWarnings("unchecked")
     public void addItemEventListener(@SuppressWarnings("rawtypes") ItemEventListener listener)
 	{
-		PacketListener conListener = new ItemEventTranslator(listener); 
+		StanzaListener conListener = new ItemEventTranslator(listener); 
 		itemEventToListenerMap.put(listener, conListener);
-		con.addSyncPacketListener(conListener, new EventContentFilter(EventElementType.items.toString(), "item"));
+		con.addSyncStanzaListener(conListener, new EventContentFilter(EventElementType.items.toString(), "item"));
 	}
 
 	/**
@@ -409,10 +409,10 @@ abstract public class Node
 	 */
 	public void removeItemEventListener(@SuppressWarnings("rawtypes") ItemEventListener listener)
 	{
-		PacketListener conListener = itemEventToListenerMap.remove(listener);
+		StanzaListener conListener = itemEventToListenerMap.remove(listener);
 		
 		if (conListener != null)
-			con.removeSyncPacketListener(conListener);
+			con.removeSyncStanzaListener(conListener);
 	}
 
 	/**
@@ -423,9 +423,9 @@ abstract public class Node
 	 */
 	public void addConfigurationListener(NodeConfigListener listener)
 	{
-		PacketListener conListener = new NodeConfigTranslator(listener); 
+		StanzaListener conListener = new NodeConfigTranslator(listener); 
 		configEventToListenerMap.put(listener, conListener);
-		con.addSyncPacketListener(conListener, new EventContentFilter(EventElementType.configuration.toString()));
+		con.addSyncStanzaListener(conListener, new EventContentFilter(EventElementType.configuration.toString()));
 	}
 
 	/**
@@ -435,10 +435,10 @@ abstract public class Node
 	 */
 	public void removeConfigurationListener(NodeConfigListener listener)
 	{
-		PacketListener conListener = configEventToListenerMap .remove(listener);
+		StanzaListener conListener = configEventToListenerMap .remove(listener);
 		
 		if (conListener != null)
-			con.removeSyncPacketListener(conListener);
+			con.removeSyncStanzaListener(conListener);
 	}
 	
 	/**
@@ -449,12 +449,12 @@ abstract public class Node
 	 */
 	public void addItemDeleteListener(ItemDeleteListener listener)
 	{
-		PacketListener delListener = new ItemDeleteTranslator(listener); 
+		StanzaListener delListener = new ItemDeleteTranslator(listener); 
 		itemDeleteToListenerMap.put(listener, delListener);
 		EventContentFilter deleteItem = new EventContentFilter(EventElementType.items.toString(), "retract");
 		EventContentFilter purge = new EventContentFilter(EventElementType.purge.toString());
 		
-		con.addSyncPacketListener(delListener, new OrFilter(deleteItem, purge));
+		con.addSyncStanzaListener(delListener, new OrFilter(deleteItem, purge));
 	}
 
 	/**
@@ -464,10 +464,10 @@ abstract public class Node
 	 */
 	public void removeItemDeleteListener(ItemDeleteListener listener)
 	{
-		PacketListener conListener = itemDeleteToListenerMap .remove(listener);
+		StanzaListener conListener = itemDeleteToListenerMap .remove(listener);
 		
 		if (conListener != null)
-			con.removeSyncPacketListener(conListener);
+			con.removeSyncStanzaListener(conListener);
 	}
 
 	@Override
@@ -515,7 +515,7 @@ abstract public class Node
 	 * 
 	 * @author Robin Collier
 	 */
-	public class ItemEventTranslator implements PacketListener
+	public class ItemEventTranslator implements StanzaListener
 	{
 		@SuppressWarnings("rawtypes")
         private ItemEventListener listener;
@@ -541,7 +541,7 @@ abstract public class Node
 	 * 
 	 * @author Robin Collier
 	 */
-	public class ItemDeleteTranslator implements PacketListener
+	public class ItemDeleteTranslator implements StanzaListener
 	{
 		private ItemDeleteListener listener;
 
@@ -584,7 +584,7 @@ abstract public class Node
 	 * 
 	 * @author Robin Collier
 	 */
-	public class NodeConfigTranslator implements PacketListener
+	public class NodeConfigTranslator implements StanzaListener
 	{
 		private NodeConfigListener listener;
 
@@ -603,7 +603,7 @@ abstract public class Node
 	}
 
 	/**
-	 * Filter for {@link PacketListener} to filter out events not specific to the 
+	 * Filter for {@link StanzaListener} to filter out events not specific to the 
 	 * event type expected for this node.
 	 * 
 	 * @author Robin Collier

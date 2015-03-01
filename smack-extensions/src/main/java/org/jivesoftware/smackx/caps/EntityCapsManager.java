@@ -22,7 +22,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
@@ -311,7 +311,7 @@ public class EntityCapsManager extends Manager {
         if (autoEnableEntityCaps)
             enableEntityCaps();
 
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             // Listen for remote presence stanzas with the caps extension
             // If we receive such a stanza, record the JID and nodeVer
             @Override
@@ -326,7 +326,7 @@ public class EntityCapsManager extends Manager {
 
         }, PRESENCES_WITH_CAPS);
 
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) {
                 // always remove the JID from the map, even if entityCaps are
@@ -336,7 +336,7 @@ public class EntityCapsManager extends Manager {
             }
         }, PRESENCES_WITHOUT_CAPS);
 
-        connection.addPacketSendingListener(new PacketListener() {
+        connection.addPacketSendingListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) {
                 presenceSend = true;
@@ -346,7 +346,7 @@ public class EntityCapsManager extends Manager {
         // Intercept presence packages and add caps data when intended.
         // XEP-0115 specifies that a client SHOULD include entity capabilities
         // with every presence notification it sends.
-        PacketListener packetInterceptor = new PacketListener() {
+        StanzaListener packetInterceptor = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 if (!entityCapsEnabled)
                     return;

@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
@@ -235,7 +235,7 @@ public class InBandBytestreamSession implements BytestreamSession {
     private abstract class IBBInputStream extends InputStream {
 
         /* the data packet listener to fill the data queue */
-        private final PacketListener dataPacketListener;
+        private final StanzaListener dataPacketListener;
 
         /* queue containing received In-Band Bytestream data packets */
         protected final BlockingQueue<DataPacketExtension> dataQueue = new LinkedBlockingQueue<DataPacketExtension>();
@@ -264,7 +264,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         public IBBInputStream() {
             // add data packet listener to connection
             this.dataPacketListener = getDataPacketListener();
-            connection.addSyncPacketListener(this.dataPacketListener, getDataPacketFilter());
+            connection.addSyncStanzaListener(this.dataPacketListener, getDataPacketFilter());
         }
 
         /**
@@ -272,7 +272,7 @@ public class InBandBytestreamSession implements BytestreamSession {
          * 
          * @return the data packet listener
          */
-        protected abstract PacketListener getDataPacketListener();
+        protected abstract StanzaListener getDataPacketListener();
 
         /**
          * Returns the packet filter that accepts In-Band Bytestream data packets.
@@ -431,7 +431,7 @@ public class InBandBytestreamSession implements BytestreamSession {
          * Invoked if the session is closed.
          */
         private void cleanup() {
-            connection.removeSyncPacketListener(this.dataPacketListener);
+            connection.removeSyncStanzaListener(this.dataPacketListener);
         }
 
     }
@@ -442,8 +442,8 @@ public class InBandBytestreamSession implements BytestreamSession {
      */
     private class IQIBBInputStream extends IBBInputStream {
 
-        protected PacketListener getDataPacketListener() {
-            return new PacketListener() {
+        protected StanzaListener getDataPacketListener() {
+            return new StanzaListener() {
 
                 private long lastSequence = -1;
 
@@ -505,8 +505,8 @@ public class InBandBytestreamSession implements BytestreamSession {
      */
     private class MessageIBBInputStream extends IBBInputStream {
 
-        protected PacketListener getDataPacketListener() {
-            return new PacketListener() {
+        protected StanzaListener getDataPacketListener() {
+            return new StanzaListener() {
 
                 public void processPacket(Stanza packet) {
                     // get data packet extension

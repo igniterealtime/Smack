@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.debugger.slf4j;
 
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
@@ -47,8 +47,8 @@ public class SLF4JSmackDebugger implements SmackDebugger  {
 
     private final XMPPConnection connection;
 
-    private final PacketListener receivedListener = new SLF4JLoggingPacketListener(logger, RECEIVED_TAG);
-    private final PacketListener sentListener = new SLF4JLoggingPacketListener(logger, SENT_TAG);
+    private final StanzaListener receivedListener = new SLF4JLoggingPacketListener(logger, RECEIVED_TAG);
+    private final StanzaListener sentListener = new SLF4JLoggingPacketListener(logger, SENT_TAG);
     private final SLF4JRawXmlListener slf4JRawXmlListener = new SLF4JRawXmlListener(logger);
 
     private ObservableWriter writer;
@@ -119,12 +119,12 @@ public class SLF4JSmackDebugger implements SmackDebugger  {
     }
 
     @Override
-    public PacketListener getReaderListener() {
+    public StanzaListener getReaderListener() {
         return receivedListener;
     }
 
     @Override
-    public PacketListener getWriterListener() {
+    public StanzaListener getWriterListener() {
         return sentListener;
     }
 }

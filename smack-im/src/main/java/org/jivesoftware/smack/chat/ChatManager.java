@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -142,7 +142,7 @@ public class ChatManager extends Manager{
 
         // Add a listener for all message packets so that we can deliver
         // messages to the best Chat instance available.
-        connection.addSyncPacketListener(new PacketListener() {
+        connection.addSyncStanzaListener(new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
                 Chat chat;

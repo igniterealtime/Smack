@@ -24,7 +24,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -134,7 +134,7 @@ public class LastActivityManager extends Manager {
         super(connection);
 
         // Listen to all the sent messages to reset the idle time on each one
-        connection.addPacketSendingListener(new PacketListener() {
+        connection.addPacketSendingListener(new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Presence presence = (Presence) packet;
                 Presence.Mode mode = presence.getMode();
@@ -151,7 +151,7 @@ public class LastActivityManager extends Manager {
             }
         }, StanzaTypeFilter.PRESENCE);
 
-        connection.addPacketSendingListener(new PacketListener() {
+        connection.addPacketSendingListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) {
                 Message message = (Message) packet;

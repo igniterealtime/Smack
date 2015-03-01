@@ -41,7 +41,7 @@ package org.jivesoftware.smack.filter;
  * </pre>
  *
  * @see org.jivesoftware.smack.PacketCollector
- * @see org.jivesoftware.smack.PacketListener
+ * @see org.jivesoftware.smack.StanzaListener
  * @author Matt Tucker
  * @deprecated use {@link StanzaFilter}
  */

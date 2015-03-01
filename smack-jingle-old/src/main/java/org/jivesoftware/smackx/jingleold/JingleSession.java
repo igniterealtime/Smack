@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -77,7 +77,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
     ConnectionListener connectionListener;
     
-    PacketListener packetListener;
+    StanzaListener packetListener;
 
     StanzaFilter packetFilter;
 
@@ -651,7 +651,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      */
     protected void removeAsyncPacketListener() {
         if (packetListener != null) {
-            getConnection().removeAsyncPacketListener(packetListener);
+            getConnection().removeAsyncStanzaListener(packetListener);
 
             LOGGER.fine("JINGLE SESSION: REMOVE PACKET LISTENER");
         }
@@ -666,7 +666,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
         LOGGER.fine("UpdatePacketListener");
 
-        packetListener = new PacketListener() {
+        packetListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 try {
                     receivePacketAndRespond((IQ) packet);
@@ -723,7 +723,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             }
         };
 
-        getConnection().addAsyncPacketListener(packetListener, packetFilter);
+        getConnection().addAsyncStanzaListener(packetListener, packetFilter);
     }
 
     // Listeners

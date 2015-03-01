@@ -51,7 +51,7 @@ public class ChatConnectionTest {
         listener = new TestChatManagerListener();
         cm.addChatListener(listener);
         waitListener = new WaitForPacketListener();
-        dc.addSyncPacketListener(waitListener, null);
+        dc.addSyncStanzaListener(waitListener, null);
     }
 
     @After

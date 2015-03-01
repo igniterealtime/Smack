@@ -20,7 +20,7 @@ import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
@@ -264,13 +264,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * themselves after they have been invoked.
      * </p>
      */
-    private final Collection<PacketListener> stanzaAcknowledgedListeners = new ConcurrentLinkedQueue<PacketListener>();
+    private final Collection<StanzaListener> stanzaAcknowledgedListeners = new ConcurrentLinkedQueue<StanzaListener>();
 
     /**
      * This listeners are invoked for a acknowledged stanza that has the given stanza ID. They will
      * only be invoked once and automatically removed after that.
      */
-    private final Map<String, PacketListener> stanzaIdAcknowledgedListeners = new ConcurrentHashMap<String, PacketListener>();
+    private final Map<String, StanzaListener> stanzaIdAcknowledgedListeners = new ConcurrentHashMap<String, StanzaListener>();
 
     /**
      * Predicates that determine if an stream management ack should be requested from the server.
@@ -613,7 +613,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             // If debugging is enabled, we should start the thread that will listen for
             // all packets and then log them.
             if (config.isDebuggerEnabled()) {
-                addAsyncPacketListener(debugger.getReaderListener(), null);
+                addAsyncStanzaListener(debugger.getReaderListener(), null);
                 if (debugger.getWriterListener() != null) {
                     addPacketSendingListener(debugger.getWriterListener(), null);
                 }
@@ -1556,13 +1556,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * Add a Stanza acknowledged listener.
      * <p>
      * Those listeners will be invoked every time a Stanza has been acknowledged by the server. The will not get
-     * automatically removed. Consider using {@link #addStanzaIdAcknowledgedListener(String, PacketListener)} when
+     * automatically removed. Consider using {@link #addStanzaIdAcknowledgedListener(String, StanzaListener)} when
      * possible.
      * </p>
      * 
      * @param listener the listener to add.
      */
-    public void addStanzaAcknowledgedListener(PacketListener listener) {
+    public void addStanzaAcknowledgedListener(StanzaListener listener) {
         stanzaAcknowledgedListeners.add(listener);
     }
 
@@ -1572,7 +1572,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @param listener the listener.
      * @return true if the listener was removed.
      */
-    public boolean removeStanzaAcknowledgedListener(PacketListener listener) {
+    public boolean removeStanzaAcknowledgedListener(StanzaListener listener) {
         return stanzaAcknowledgedListeners.remove(listener);
     }
 
@@ -1595,7 +1595,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @return the previous listener for this stanza ID or null.
      * @throws StreamManagementNotEnabledException if Stream Management is not enabled.
      */
-    public PacketListener addStanzaIdAcknowledgedListener(final String id, PacketListener listener) throws StreamManagementNotEnabledException {
+    public StanzaListener addStanzaIdAcknowledgedListener(final String id, StanzaListener listener) throws StreamManagementNotEnabledException {
         // Prevent users from adding callbacks that will never get removed
         if (!smWasEnabledAtLeastOnce) {
             throw new StreamManagementException.StreamManagementNotEnabledException();
@@ -1617,7 +1617,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @param id the stanza ID.
      * @return true if the listener was found and removed, false otherwise.
      */
-    public PacketListener removeStanzaIdAcknowledgedListener(String id) {
+    public StanzaListener removeStanzaIdAcknowledgedListener(String id) {
         return stanzaIdAcknowledgedListeners.remove(id);
     }
 
@@ -1739,7 +1739,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 @Override
                 public void run() {
                     for (Stanza ackedStanza : ackedStanzas) {
-                        for (PacketListener listener : stanzaAcknowledgedListeners) {
+                        for (StanzaListener listener : stanzaAcknowledgedListeners) {
                             try {
                                 listener.processPacket(ackedStanza);
                             }
@@ -1751,7 +1751,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         if (StringUtils.isNullOrEmpty(id)) {
                             continue;
                         }
-                        PacketListener listener = stanzaIdAcknowledgedListeners.remove(id);
+                        StanzaListener listener = stanzaIdAcknowledgedListeners.remove(id);
                         if (listener != null) {
                             try {
                                 listener.processPacket(ackedStanza);

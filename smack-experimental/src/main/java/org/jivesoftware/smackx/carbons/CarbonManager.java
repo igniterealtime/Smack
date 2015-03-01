@@ -25,7 +25,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -119,7 +119,7 @@ public class CarbonManager extends Manager {
     public void sendCarbonsEnabled(final boolean new_state) throws NotConnectedException {
         IQ setIQ = carbonsEnabledIQ(new_state);
 
-        connection().sendIqWithResponseCallback(setIQ, new PacketListener() {
+        connection().sendIqWithResponseCallback(setIQ, new StanzaListener() {
             public void processPacket(Stanza packet) {
                 enabled_state = new_state;
             }

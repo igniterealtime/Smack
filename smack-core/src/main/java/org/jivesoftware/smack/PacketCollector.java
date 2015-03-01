@@ -31,7 +31,7 @@ import org.jivesoftware.smack.packet.Stanza;
  * Provides a mechanism to collect packets into a result queue that pass a
  * specified filter. The collector lets you perform blocking and polling
  * operations on the result queue. So, a PacketCollector is more suitable to
- * use than a {@link PacketListener} when you need to wait for a specific
+ * use than a {@link StanzaListener} when you need to wait for a specific
  * result.<p>
  *
  * Each packet collector will queue up a configured number of packets for processing before

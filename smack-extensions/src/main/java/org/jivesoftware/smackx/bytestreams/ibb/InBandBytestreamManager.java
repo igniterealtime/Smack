@@ -214,7 +214,7 @@ public class InBandBytestreamManager implements BytestreamManager {
 
         // register bytestream data packet listener
         this.dataListener = new DataListener(this);
-        this.connection.addSyncPacketListener(this.dataListener, this.dataListener.getFilter());
+        this.connection.addSyncStanzaListener(this.dataListener, this.dataListener.getFilter());
 
         // register bytestream close packet listener
         this.closeListener = new CloseListener(this);
@@ -542,7 +542,7 @@ public class InBandBytestreamManager implements BytestreamManager {
 
         // remove all listeners registered by this manager
         connection.unregisterIQRequestHandler(initiationListener);
-        this.connection.removeSyncPacketListener(this.dataListener);
+        this.connection.removeSyncStanzaListener(this.dataListener);
         connection.unregisterIQRequestHandler(closeListener);
 
         // shutdown threads

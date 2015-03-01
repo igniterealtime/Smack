@@ -38,7 +38,7 @@ import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ExceptionCallback;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -195,7 +195,7 @@ public class Roster extends Manager {
         // Listen for any roster packets.
         connection.registerIQRequestHandler(new RosterPushListener());
         // Listen for any presence packets.
-        connection.addSyncPacketListener(presencePacketListener, PRESENCE_PACKET_FILTER);
+        connection.addSyncStanzaListener(presencePacketListener, PRESENCE_PACKET_FILTER);
 
         // Listen for connection events
         connection.addConnectionListener(new AbstractConnectionClosedListener() {
@@ -1159,7 +1159,7 @@ public class Roster extends Manager {
     /**
      * Listens for all presence packets and processes them.
      */
-    private class PresencePacketListener implements PacketListener {
+    private class PresencePacketListener implements StanzaListener {
 
         /**
          * Retrieve the user presences (a map from resource to {@link Presence}) for a given key (usually a JID without
@@ -1282,7 +1282,7 @@ public class Roster extends Manager {
     /**
      * Handles roster reults as described in RFC 6121 2.1.4
      */
-    private class RosterResultListener implements PacketListener {
+    private class RosterResultListener implements StanzaListener {
 
         @Override
         public void processPacket(Stanza packet) {
