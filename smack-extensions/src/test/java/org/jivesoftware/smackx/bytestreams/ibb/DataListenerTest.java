@@ -63,7 +63,7 @@ public class DataListenerTest {
         data.setFrom(initiatorJID);
         data.setTo(targetJID);
 
-        dataListener.processPacket(data);
+        dataListener.handleIQRequest(data);
 
         // wait because packet is processed in an extra thread
         Thread.sleep(200);

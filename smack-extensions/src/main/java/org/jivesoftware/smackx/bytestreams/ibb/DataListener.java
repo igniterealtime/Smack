@@ -16,15 +16,9 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb;
 
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
-import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 
@@ -42,14 +36,10 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
  * 
  * @author Henning Staib
  */
-class DataListener extends AbstractIqRequestHandler implements StanzaListener, IQRequestHandler {
+class DataListener extends AbstractIqRequestHandler {
 
     /* manager containing the listeners and the XMPP connection */
     private final InBandBytestreamManager manager;
-
-    /* packet filter for all In-Band Bytestream data packets */
-    private final StanzaFilter dataFilter = new AndFilter(
-                    new StanzaTypeFilter(Data.class));
 
     /**
      * Constructor.
@@ -59,24 +49,6 @@ class DataListener extends AbstractIqRequestHandler implements StanzaListener, I
     public DataListener(InBandBytestreamManager manager) {
       super(DataPacketExtension.ELEMENT, DataPacketExtension.NAMESPACE, IQ.Type.set, Mode.async);
         this.manager = manager;
-    }
-
-    public void processPacket(Stanza packet) throws NotConnectedException {
-        Data data = (Data) packet;
-        InBandBytestreamSession ibbSession = this.manager.getSessions().get(
-                        data.getDataPacketExtension().getSessionID());
-        if (ibbSession == null) {
-            this.manager.replyItemNotFoundPacket(data);
-        }
-    }
-
-    /**
-     * Returns the packet filter for In-Band Bytestream data packets.
-     * 
-     * @return the packet filter for In-Band Bytestream data packets
-     */
-    protected StanzaFilter getFilter() {
-        return this.dataFilter;
     }
 
     @Override
