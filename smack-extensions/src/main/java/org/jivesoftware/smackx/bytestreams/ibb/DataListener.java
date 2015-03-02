@@ -21,8 +21,12 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
+import org.jivesoftware.smack.iqrequest.IQRequestHandler;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
+import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 
 /**
  * DataListener handles all In-Band Bytestream IQ stanzas containing a data
@@ -38,7 +42,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
  * 
  * @author Henning Staib
  */
-class DataListener implements StanzaListener {
+class DataListener extends AbstractIqRequestHandler implements StanzaListener, IQRequestHandler {
 
     /* manager containing the listeners and the XMPP connection */
     private final InBandBytestreamManager manager;
@@ -53,6 +57,7 @@ class DataListener implements StanzaListener {
      * @param manager the In-Band Bytestream manager
      */
     public DataListener(InBandBytestreamManager manager) {
+      super(DataPacketExtension.ELEMENT, DataPacketExtension.NAMESPACE, IQ.Type.set, Mode.async);
         this.manager = manager;
     }
 
@@ -72,6 +77,25 @@ class DataListener implements StanzaListener {
      */
     protected StanzaFilter getFilter() {
         return this.dataFilter;
+    }
+
+    @Override
+    public IQ handleIQRequest(IQ iqRequest) {
+        Data data = (Data) iqRequest;
+        InBandBytestreamSession ibbSession = this.manager.getSessions().get(
+                        data.getDataPacketExtension().getSessionID());
+        try {
+            if (ibbSession == null) {
+                this.manager.replyItemNotFoundPacket(data);
+            }
+            else {
+                ibbSession.processIQPacket(data);
+            }
+        }
+        catch (NotConnectedException e) {
+            return null;
+        }
+        return null;
     }
 
 }

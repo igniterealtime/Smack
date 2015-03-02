@@ -814,4 +814,12 @@ public class InBandBytestreamSession implements BytestreamSession {
 
     }
 
+    /**
+     * @param data
+     * @throws NotConnectedException
+     */
+    public void processIQPacket(Data data) throws NotConnectedException {
+        inputStream.dataPacketListener.processPacket(data);
+    }
+
 }

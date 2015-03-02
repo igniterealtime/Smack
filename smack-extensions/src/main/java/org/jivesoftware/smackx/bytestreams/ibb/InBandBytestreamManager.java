@@ -25,11 +25,11 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.AbstractConnectionClosedListener;
+import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -215,6 +215,7 @@ public class InBandBytestreamManager implements BytestreamManager {
         // register bytestream data packet listener
         this.dataListener = new DataListener(this);
         this.connection.addSyncStanzaListener(this.dataListener, this.dataListener.getFilter());
+        connection.registerIQRequestHandler(dataListener);
 
         // register bytestream close packet listener
         this.closeListener = new CloseListener(this);
