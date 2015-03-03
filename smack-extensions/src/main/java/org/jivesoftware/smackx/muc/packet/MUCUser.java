@@ -119,6 +119,19 @@ public class MUCUser implements ExtensionElement {
     }
 
     /**
+     * Returns true if this MUCUser instance has also {@link Status} information.
+     * <p>
+     * If <code>true</code> is returned, then {@link #getStatus()} will return a non-empty set.
+     * </p>
+     *
+     * @return true if this MUCUser has status information.
+     * @since 4.1
+     */
+    public boolean hasStatus() {
+        return !statusCodes.isEmpty();
+    }
+
+    /**
      * Returns the notification that the room has been destroyed. After a room has been destroyed,
      * the room occupants will receive a Presence packet of type 'unavailable' with the reason for
      * the room destruction if provided by the room owner.

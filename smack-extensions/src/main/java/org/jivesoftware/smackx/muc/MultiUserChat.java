@@ -197,7 +197,7 @@ public class MultiUserChat {
                 case unavailable:
                     occupantsMap.remove(from);
                     MUCUser mucUser = MUCUser.from(packet);
-                    if (mucUser != null && mucUser.getStatus() != null) {
+                    if (mucUser != null && mucUser.hasStatus()) {
                         // Fire events according to the received presence code
                         checkPresenceCode(
                             mucUser.getStatus(),
