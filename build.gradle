@@ -7,6 +7,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.kordamp:markdown-gradle-plugin:0.1.1'
+		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.1.0'
     }
 }
 apply plugin: 'org.kordamp.gradle.markdown'
@@ -95,7 +96,6 @@ allprojects {
 			options.addStringOption('Xdoclint:none', '-quiet')
 		}
 	}
-
 }
 
 gradle.taskGraph.whenReady { taskGraph ->
@@ -181,6 +181,7 @@ subprojects {
 	apply plugin: 'osgi'
 	apply plugin: 'signing'
 	apply plugin: 'checkstyle'
+	apply plugin: 'org.kordamp.gradle.clirr'
 
 	checkstyle {
 		configFile = new File(rootConfigDir, 'checkstyle.xml')
@@ -280,12 +281,23 @@ subprojects {
 		required { signingRequired }
 		sign configurations.archives
 	}
+
+	clirr {
+		baseline = [group, name, clirrBaseline].join(':')
+		failOnErrors clirrFailOnErrors
+	}
 }
 
 subprojects*.jar {
    manifest {
        from sharedManifest
    }
+}
+
+// Important to specify this task after the subprojects block
+task clirrRootReport(type: org.kordamp.gradle.clirr.ClirrReportTask) {
+	dependsOn = subprojects.tasks.clirr
+	reports = files(subprojects.tasks.clirr.xmlReport)
 }
 
 def getGitCommit() {
