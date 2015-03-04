@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -40,6 +43,10 @@ final public class TestUtils {
         return getParser(stanza, "presence");
     }
 
+    public static XmlPullParser getParser(String string) {
+        return getParser(string, null);
+    }
+
     public static XmlPullParser getParser(String string, String startTag) {
         return getParser(new StringReader(string), startTag);
     }
@@ -49,6 +56,9 @@ final public class TestUtils {
         try {
             parser = PacketParserUtils.newXmppParser(reader);
             if (startTag == null) {
+                while (parser.getEventType() != XmlPullParser.START_TAG) {
+                    parser.next();
+                }
                 return parser;
             }
             boolean found = false;
@@ -68,4 +78,17 @@ final public class TestUtils {
         return parser;
     }
 
+    public static <EE extends ExtensionElement> EE parseExtensionElement(String elementString)
+                    throws XmlPullParserException, IOException, SmackException {
+        return parseExtensionElement(getParser(elementString));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <EE extends ExtensionElement> EE parseExtensionElement(XmlPullParser parser)
+                    throws XmlPullParserException, IOException, SmackException {
+        ParserUtils.assertAtStartTag(parser);
+        final String elementName = parser.getName();
+        final String namespace = parser.getNamespace();
+        return (EE) PacketParserUtils.parseExtensionElement(elementName, namespace, parser);
+    }
 }
