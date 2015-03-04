@@ -19,12 +19,12 @@ package org.jivesoftware.smackx.jingleold.packet;
 
 import java.util.Locale;
 
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.jingleold.media.ContentInfo;
 import org.xmlpull.v1.XmlPullParser;
 
-public class JingleError implements PacketExtension {
+public class JingleError implements ExtensionElement {
 
     public static String NAMESPACE = "urn:xmpp:tmp:jingle:errors";
 
@@ -122,9 +122,9 @@ public class JingleError implements PacketExtension {
 		return NAMESPACE;
 	}
 
-    public static class Provider extends PacketExtensionProvider<PacketExtension> {
+    public static class Provider extends ExtensionElementProvider<ExtensionElement> {
 
-           private PacketExtension audioInfo;
+           private ExtensionElement audioInfo;
 
            /**
             * Empty constructor.
@@ -136,8 +136,8 @@ public class JingleError implements PacketExtension {
             * Parse a JingleDescription.Audio extension.
             */
            @Override
-           public PacketExtension parse(XmlPullParser parser, int initialDepth) {
-               PacketExtension result = null;
+           public ExtensionElement parse(XmlPullParser parser, int initialDepth) {
+               ExtensionElement result = null;
 
                if (audioInfo != null) {
                    result = audioInfo;

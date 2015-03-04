@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * Represents a affiliation between a user and a node, where the {@link #type} defines 
@@ -29,7 +29,7 @@ import org.jivesoftware.smack.packet.PacketExtension;
  * 
  * @author Robin Collier
  */
-public class Affiliation implements PacketExtension
+public class Affiliation implements ExtensionElement
 {
 	protected String node;
 	protected Type type;

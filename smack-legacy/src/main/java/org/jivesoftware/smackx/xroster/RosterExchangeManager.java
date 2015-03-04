@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
@@ -53,12 +53,12 @@ public class RosterExchangeManager {
 
     private final static Map<XMPPConnection, RosterExchangeManager> INSTANCES = new WeakHashMap<>();
 
-    private final static PacketFilter PACKET_FILTER = new PacketExtensionFilter(ELEMENT, NAMESPACE);
+    private final static StanzaFilter PACKET_FILTER = new StanzaExtensionFilter(ELEMENT, NAMESPACE);
 
     private final Set<RosterExchangeListener> rosterExchangeListeners = Collections.synchronizedSet(new HashSet<RosterExchangeListener>());
 
     private final WeakReference<XMPPConnection> weakRefConnection;
-    private final PacketListener packetListener;
+    private final StanzaListener packetListener;
 
     public synchronized static RosterExchangeManager getInstanceFor(XMPPConnection connection) {
         RosterExchangeManager rosterExchangeManager = INSTANCES.get(connection);
@@ -77,7 +77,7 @@ public class RosterExchangeManager {
     public RosterExchangeManager(XMPPConnection connection) {
         weakRefConnection = new WeakReference<XMPPConnection>(connection);
         // Listens for all roster exchange packets and fire the roster exchange listeners.
-        packetListener = new PacketListener() {
+        packetListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
                 RosterExchange rosterExchange =
@@ -86,7 +86,7 @@ public class RosterExchangeManager {
                 fireRosterExchangeListeners(message.getFrom(), rosterExchange.getRosterEntries());
             }
         };
-        connection.addAsyncPacketListener(packetListener, PACKET_FILTER);
+        connection.addAsyncStanzaListener(packetListener, PACKET_FILTER);
     }
 
     /**
@@ -127,7 +127,7 @@ public class RosterExchangeManager {
 
         XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        connection.sendPacket(msg);
+        connection.sendStanza(msg);
     }
 
     /**
@@ -148,7 +148,7 @@ public class RosterExchangeManager {
 
         XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        connection.sendPacket(msg);
+        connection.sendStanza(msg);
     }
 
     /**
@@ -172,7 +172,7 @@ public class RosterExchangeManager {
 
         XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        connection.sendPacket(msg);
+        connection.sendStanza(msg);
     }
 
     /**

@@ -30,13 +30,13 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.compress.packet.Compress;
-import org.jivesoftware.smack.packet.DefaultPacketExtension;
+import org.jivesoftware.smack.packet.DefaultExtensionElement;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.StartTls;
@@ -44,7 +44,7 @@ import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.UnparsedIQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jxmpp.jid.Jid;
@@ -285,7 +285,7 @@ public class PacketParserUtils {
                     message.setError(parseError(parser));
                     break;
                  default:
-                    PacketParserUtils.addPacketExtension(message, parser, elementName, namespace);
+                    PacketParserUtils.addExtensionElement(message, parser, elementName, namespace);
                     break;
                 }
                 break;
@@ -575,7 +575,7 @@ public class PacketParserUtils {
                     // Be extra robust: Skip PacketExtensions that cause Exceptions, instead of
                     // failing completely here. See SMACK-390 for more information.
                     try {
-                        PacketParserUtils.addPacketExtension(presence, parser, elementName, namespace);
+                        PacketParserUtils.addExtensionElement(presence, parser, elementName, namespace);
                     } catch (Exception e) {
                         LOGGER.log(Level.WARNING, "Failed to parse extension packet in Presence packet.", e);
                     }
@@ -798,7 +798,7 @@ public class PacketParserUtils {
     public static StreamError parseStreamError(XmlPullParser parser) throws IOException, XmlPullParserException,
                     SmackException {
         final int initialDepth = parser.getDepth();
-        List<PacketExtension> extensions = new ArrayList<PacketExtension>();
+        List<ExtensionElement> extensions = new ArrayList<ExtensionElement>();
         Map<String, String> descriptiveTexts = null;
         StreamError.Condition condition = null;
         String conditionText = null;
@@ -825,7 +825,7 @@ public class PacketParserUtils {
                     }
                     break;
                 default:
-                    PacketParserUtils.addPacketExtension(extensions, parser, name, namespace);
+                    PacketParserUtils.addExtensionElement(extensions, parser, name, namespace);
                     break;
                 }
                 break;
@@ -854,7 +854,7 @@ public class PacketParserUtils {
         Map<String, String> descriptiveTexts = null;
         XMPPError.Condition condition = null;
         String conditionText = null;
-        List<PacketExtension> extensions = new ArrayList<PacketExtension>();
+        List<ExtensionElement> extensions = new ArrayList<ExtensionElement>();
 
         // Parse the error header
         XMPPError.Type errorType = XMPPError.Type.fromString(parser.getAttributeValue("", "type"));
@@ -881,7 +881,7 @@ public class PacketParserUtils {
                     }
                     break;
                 default:
-                    PacketParserUtils.addPacketExtension(extensions, parser, name, namespace);
+                    PacketParserUtils.addExtensionElement(extensions, parser, name, namespace);
                 }
                 break;
             case XmlPullParser.END_TAG:
@@ -894,26 +894,36 @@ public class PacketParserUtils {
     }
 
     /**
-     * Parses a packet extension sub-packet.
+     * @deprecated use {@link #parseExtensionElement(String, String, XmlPullParser)} instead.
+     */
+    @Deprecated
+    public static ExtensionElement parsePacketExtension(String elementName, String namespace,
+                    XmlPullParser parser) throws XmlPullParserException,
+                    IOException, SmackException {
+        return parseExtensionElement(elementName, namespace, parser);
+    }
+ 
+    /**
+     * Parses an extension element.
      *
-     * @param elementName the XML element name of the packet extension.
+     * @param elementName the XML element name of the extension element.
      * @param namespace the XML namespace of the packet extension.
      * @param parser the XML parser, positioned at the starting element of the extension.
-     * @return a PacketExtension.
+     * @return an extension element.
      */
-    public static PacketExtension parsePacketExtension(String elementName, String namespace,
+    public static ExtensionElement parseExtensionElement(String elementName, String namespace,
                     XmlPullParser parser) throws XmlPullParserException,
                     IOException, SmackException {
         ParserUtils.assertAtStartTag(parser);
         // See if a provider is registered to handle the extension.
-        PacketExtensionProvider<PacketExtension> provider = ProviderManager.getExtensionProvider(elementName, namespace);
+        ExtensionElementProvider<ExtensionElement> provider = ProviderManager.getExtensionProvider(elementName, namespace);
         if (provider != null) {
                 return provider.parse(parser);
         }
 
         final int initialDepth = parser.getDepth();
         // No providers registered, so use a default extension.
-        DefaultPacketExtension extension = new DefaultPacketExtension(elementName, namespace);
+        DefaultExtensionElement extension = new DefaultExtensionElement(elementName, namespace);
         outerloop: while (true) {
             int eventType = parser.next();
             switch (eventType) {
@@ -1006,27 +1016,53 @@ public class PacketParserUtils {
     	return null;
     }
 
+    @Deprecated
     public static void addPacketExtension(Stanza packet, XmlPullParser parser) throws XmlPullParserException,
                     IOException, SmackException {
-        ParserUtils.assertAtStartTag(parser);
-        addPacketExtension(packet, parser, parser.getName(), parser.getNamespace());
+        addExtensionElement(packet, parser);
     }
 
+    @Deprecated
     public static void addPacketExtension(Stanza packet, XmlPullParser parser, String elementName, String namespace)
                     throws XmlPullParserException, IOException, SmackException {
-        PacketExtension packetExtension = parsePacketExtension(elementName, namespace, parser);
+        addExtensionElement(packet, parser, elementName, namespace);
+    }
+
+    @Deprecated
+    public static void addPacketExtension(Collection<ExtensionElement> collection, XmlPullParser parser)
+                    throws XmlPullParserException, IOException, SmackException {
+        addExtensionElement(collection, parser, parser.getName(), parser.getNamespace());
+    }
+
+    @Deprecated
+    public static void addPacketExtension(Collection<ExtensionElement> collection, XmlPullParser parser,
+                    String elementName, String namespace) throws XmlPullParserException, IOException, SmackException {
+        addExtensionElement(collection, parser, elementName, namespace);
+    }
+
+
+    public static void addExtensionElement(Stanza packet, XmlPullParser parser)
+                    throws XmlPullParserException, IOException, SmackException {
+        ParserUtils.assertAtStartTag(parser);
+        addExtensionElement(packet, parser, parser.getName(), parser.getNamespace());
+    }
+
+    public static void addExtensionElement(Stanza packet, XmlPullParser parser, String elementName,
+                    String namespace) throws XmlPullParserException, IOException, SmackException {
+        ExtensionElement packetExtension = parseExtensionElement(elementName, namespace, parser);
         packet.addExtension(packetExtension);
     }
 
-    public static void addPacketExtension(Collection<PacketExtension> collection, XmlPullParser parser)
-                    throws XmlPullParserException, IOException, SmackException {
-        addPacketExtension(collection, parser, parser.getName(), parser.getNamespace());
+    public static void addExtensionElement(Collection<ExtensionElement> collection,
+                    XmlPullParser parser) throws XmlPullParserException, IOException,
+                    SmackException {
+        addExtensionElement(collection, parser, parser.getName(), parser.getNamespace());
     }
 
-    public static void addPacketExtension(Collection<PacketExtension> collection, XmlPullParser parser,
-                    String elementName, String namespace) throws XmlPullParserException, IOException, SmackException {
-        PacketExtension packetExtension = parsePacketExtension(elementName, namespace, parser);
+    public static void addExtensionElement(Collection<ExtensionElement> collection,
+                    XmlPullParser parser, String elementName, String namespace)
+                    throws XmlPullParserException, IOException, SmackException {
+        ExtensionElement packetExtension = parseExtensionElement(elementName, namespace, parser);
         collection.add(packetExtension);
     }
-
 }

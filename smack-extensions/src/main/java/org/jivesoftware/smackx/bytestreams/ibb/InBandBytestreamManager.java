@@ -25,11 +25,11 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.AbstractConnectionClosedListener;
+import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -215,7 +215,7 @@ public class InBandBytestreamManager implements BytestreamManager {
 
         // register bytestream data packet listener
         this.dataListener = new DataListener(this);
-        this.connection.addSyncPacketListener(this.dataListener, this.dataListener.getFilter());
+        connection.registerIQRequestHandler(dataListener);
 
         // register bytestream close packet listener
         this.closeListener = new CloseListener(this);
@@ -446,7 +446,7 @@ public class InBandBytestreamManager implements BytestreamManager {
     protected void replyRejectPacket(IQ request) throws NotConnectedException, InterruptedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.not_acceptable);
         IQ error = IQ.createErrorResponse(request, xmppError);
-        this.connection.sendPacket(error);
+        this.connection.sendStanza(error);
     }
 
     /**
@@ -460,7 +460,7 @@ public class InBandBytestreamManager implements BytestreamManager {
     protected void replyResourceConstraintPacket(IQ request) throws NotConnectedException, InterruptedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.resource_constraint);
         IQ error = IQ.createErrorResponse(request, xmppError);
-        this.connection.sendPacket(error);
+        this.connection.sendStanza(error);
     }
 
     /**
@@ -474,7 +474,7 @@ public class InBandBytestreamManager implements BytestreamManager {
     protected void replyItemNotFoundPacket(IQ request) throws NotConnectedException, InterruptedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.item_not_found);
         IQ error = IQ.createErrorResponse(request, xmppError);
-        this.connection.sendPacket(error);
+        this.connection.sendStanza(error);
     }
 
     /**
@@ -548,7 +548,7 @@ public class InBandBytestreamManager implements BytestreamManager {
 
         // remove all listeners registered by this manager
         connection.unregisterIQRequestHandler(initiationListener);
-        this.connection.removeSyncPacketListener(this.dataListener);
+        connection.unregisterIQRequestHandler(dataListener);
         connection.unregisterIQRequestHandler(closeListener);
 
         // shutdown threads

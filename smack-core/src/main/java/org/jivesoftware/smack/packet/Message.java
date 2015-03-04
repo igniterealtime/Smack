@@ -51,7 +51,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Matt Tucker
  */
-public final class Message extends Stanza {
+public final class Message extends Stanza implements Cloneable {
 
     public static final String ELEMENT = "message";
     public static final String BODY = "body";
@@ -97,6 +97,23 @@ public final class Message extends Stanza {
     public Message(Jid to, String body) {
         this(to);
         setBody(body);
+    }
+
+    /**
+     * Copy constructor.
+     * <p>
+     * This does not perform a deep clone, as extension elements are shared between the new and old
+     * instance.
+     * </p>
+     *
+     * @param other
+     */
+    public Message(Message other) {
+        super(other);
+        this.type = other.type;
+        this.thread = other.thread;
+        this.subjects.addAll(other.subjects);
+        this.bodies.addAll(other.bodies);
     }
 
     /**
@@ -444,6 +461,19 @@ public final class Message extends Stanza {
         buf.append(getExtensionsXML());
         buf.closeElement(ELEMENT);
         return buf;
+    }
+
+    /**
+     * Creates and returns a copy of this message stanza.
+     * <p>
+     * This does not perform a deep clone, as extension elements are shared between the new and old
+     * instance.
+     * </p>
+     * @return a clone of this message.
+     */
+    @Override
+    public Message clone() {
+        return new Message(this);
     }
 
     /**

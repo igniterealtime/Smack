@@ -23,11 +23,6 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.FromMatchesFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
@@ -82,15 +77,14 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         return negotiateIncomingStream(streamInitiation);
     }
 
-    public PacketFilter getInitiationPacketFilter(Jid from, String streamID) {
+    @Override
+    public void newStreamInitiation(Jid from, String streamID) {
         /*
          * this method is always called prior to #negotiateIncomingStream() so
          * the In-Band Bytestream initiation listener must ignore the next
          * In-Band Bytestream request with the given session ID
          */
         this.manager.ignoreBytestreamRequestOnce(streamID);
-
-        return new AndFilter(FromMatchesFilter.create(from), new IBBOpenSidFilter(streamID));
     }
 
     public String[] getNamespaces() {
@@ -106,34 +100,6 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         InBandBytestreamSession session = request.accept();
         session.setCloseBothStreamsEnabled(true);
         return session.getInputStream();
-    }
-
-    /**
-     * This PacketFilter accepts an incoming In-Band Bytestream open request
-     * with a specified session ID.
-     */
-    private static class IBBOpenSidFilter extends PacketTypeFilter {
-
-        private String sessionID;
-
-        public IBBOpenSidFilter(String sessionID) {
-            super(Open.class);
-            if (sessionID == null) {
-                throw new IllegalArgumentException("StreamID cannot be null");
-            }
-            this.sessionID = sessionID;
-        }
-
-        public boolean accept(Stanza packet) {
-            if (super.accept(packet)) {
-                Open bytestream = (Open) packet;
-
-                // packet must by of type SET and contains the given session ID
-                return this.sessionID.equals(bytestream.getSessionID())
-                                && IQ.Type.set.equals(bytestream.getType());
-            }
-            return false;
-        }
     }
 
     /**

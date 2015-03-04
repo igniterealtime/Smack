@@ -29,7 +29,7 @@ import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
@@ -314,15 +314,15 @@ final public class PubSubManager
 		return mgr.discoverInfo(to);
 	}
 
-    private PubSub sendPubsubPacket(Type type, PacketExtension ext, PubSubNamespace ns)
+    private PubSub sendPubsubPacket(Type type, ExtensionElement ext, PubSubNamespace ns)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return sendPubsubPacket(con, to, type, Collections.singletonList(ext), ns);
     }
 
-	static PubSub sendPubsubPacket(XMPPConnection con, Jid to, Type type, List<PacketExtension> extList, PubSubNamespace ns) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
+	static PubSub sendPubsubPacket(XMPPConnection con, Jid to, Type type, List<ExtensionElement> extList, PubSubNamespace ns) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 	    PubSub pubSub = new PubSub(to, type, ns);
-	    for (PacketExtension pe : extList) {
+	    for (ExtensionElement pe : extList) {
 	        pubSub.addExtension(pe);
 	    }
 		return sendPubsubPacket(con ,pubSub);

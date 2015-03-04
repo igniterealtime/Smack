@@ -31,8 +31,10 @@ import org.jivesoftware.smack.packet.Presence;
  * </ul>
  *
  * @author Matt Tucker
+ * @deprecated use {@link StanzaTypeFilter} instead.
  */
-public class PacketTypeFilter implements PacketFilter {
+@Deprecated
+public class PacketTypeFilter implements StanzaFilter {
 
     public static final PacketTypeFilter PRESENCE = new PacketTypeFilter(Presence.class);
     public static final PacketTypeFilter MESSAGE = new PacketTypeFilter(Message.class);

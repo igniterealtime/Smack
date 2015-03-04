@@ -26,16 +26,16 @@ import org.jivesoftware.smack.util.Objects;
  *
  * @author Matt Tucker
  */
-public class NotFilter implements PacketFilter {
+public class NotFilter implements StanzaFilter {
 
-    private final PacketFilter filter;
+    private final StanzaFilter filter;
 
     /**
      * Creates a NOT filter using the specified filter.
      *
      * @param filter the filter.
      */
-    public NotFilter(PacketFilter filter) {
+    public NotFilter(StanzaFilter filter) {
         this.filter = Objects.requireNonNull(filter, "Parameter must not be null.");
     }
 

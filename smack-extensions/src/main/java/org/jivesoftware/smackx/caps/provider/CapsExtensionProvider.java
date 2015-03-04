@@ -19,13 +19,13 @@ package org.jivesoftware.smackx.caps.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-public class CapsExtensionProvider extends PacketExtensionProvider<CapsExtension> {
+public class CapsExtensionProvider extends ExtensionElementProvider<CapsExtension> {
 
     public CapsExtension parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
             SmackException {

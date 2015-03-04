@@ -29,14 +29,14 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.IQResultReplyFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
@@ -65,9 +65,9 @@ import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 public class PrivacyListManager extends Manager {
     public static final String NAMESPACE = Privacy.NAMESPACE;
 
-    public static final PacketFilter PRIVACY_FILTER = new PacketTypeFilter(Privacy.class);
+    public static final StanzaFilter PRIVACY_FILTER = new StanzaTypeFilter(Privacy.class);
 
-    private static final PacketFilter PRIVACY_RESULT = new AndFilter(IQTypeFilter.RESULT, PRIVACY_FILTER);
+    private static final StanzaFilter PRIVACY_RESULT = new AndFilter(IQTypeFilter.RESULT, PRIVACY_FILTER);
 
     // Keep the list of instances of this class.
     private static final Map<XMPPConnection, PrivacyListManager> INSTANCES = new WeakHashMap<XMPPConnection, PrivacyListManager>();
@@ -123,15 +123,15 @@ public class PrivacyListManager extends Manager {
         });
 
         // cached(Active|Default)ListName handling
-        connection.addPacketSendingListener(new PacketListener() {
+        connection.addPacketSendingListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException {
                 XMPPConnection connection = connection();
                 Privacy privacy = (Privacy) packet;
-                PacketFilter iqResultReplyFilter = new IQResultReplyFilter(privacy, connection);
+                StanzaFilter iqResultReplyFilter = new IQResultReplyFilter(privacy, connection);
                 final String activeListName = privacy.getActiveName();
                 final boolean declinceActiveList = privacy.isDeclineActiveList();
-                connection.addOneTimeSyncCallback(new PacketListener() {
+                connection.addOneTimeSyncCallback(new StanzaListener() {
                     @Override
                     public void processPacket(Stanza packet) throws NotConnectedException {
                             if (declinceActiveList) {
@@ -145,15 +145,15 @@ public class PrivacyListManager extends Manager {
                 }, iqResultReplyFilter);
             }
         }, SetActiveListFilter.INSTANCE);
-        connection.addPacketSendingListener(new PacketListener() {
+        connection.addPacketSendingListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException {
                 XMPPConnection connection = connection();
                 Privacy privacy = (Privacy) packet;
-                PacketFilter iqResultReplyFilter = new IQResultReplyFilter(privacy, connection);
+                StanzaFilter iqResultReplyFilter = new IQResultReplyFilter(privacy, connection);
                 final String defaultListName = privacy.getDefaultName();
                 final boolean declinceDefaultList = privacy.isDeclineDefaultList();
-                connection.addOneTimeSyncCallback(new PacketListener() {
+                connection.addOneTimeSyncCallback(new StanzaListener() {
                     @Override
                     public void processPacket(Stanza packet) throws NotConnectedException {
                             if (declinceDefaultList) {
@@ -167,7 +167,7 @@ public class PrivacyListManager extends Manager {
                 }, iqResultReplyFilter);
             }
         }, SetDefaultListFilter.INSTANCE);
-        connection.addSyncPacketListener(new PacketListener() {
+        connection.addSyncStanzaListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException {
                 Privacy privacy = (Privacy) packet;

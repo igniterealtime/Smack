@@ -5,7 +5,7 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.TCPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
@@ -90,7 +90,7 @@ public class EntityCapsTest extends SmackTestCase {
                 discoInfoSend = true;
             }
 
-        }, new AndFilter(new PacketTypeFilter(DiscoverInfo.class), new IQTypeFilter(IQ.Type.get)));
+        }, new AndFilter(new StanzaTypeFilter(DiscoverInfo.class), new IQTypeFilter(IQ.Type.get)));
 
         // add a bogus feature so that con1 ver won't match con0's
         sdm1.addFeature(DISCOVER_TEST_FEATURE);

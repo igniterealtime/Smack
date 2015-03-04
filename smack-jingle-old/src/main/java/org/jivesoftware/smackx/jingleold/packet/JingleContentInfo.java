@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingleold.packet;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.jingleold.media.ContentInfo;
 
 /**
@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.jingleold.media.ContentInfo;
  *
  * @author Alvaro Saurin <alvaro.saurin@gmail.com>
  */
-public class JingleContentInfo implements PacketExtension {
+public class JingleContentInfo implements ExtensionElement {
 
     protected ContentInfo mediaInfoElement;
 

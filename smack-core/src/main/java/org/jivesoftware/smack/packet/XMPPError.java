@@ -99,7 +99,7 @@ public class XMPPError extends AbstractError {
         this(condition, null, null, null, null, null);
     }
 
-    public XMPPError(Condition condition, PacketExtension applicationSpecificCondition) {
+    public XMPPError(Condition condition, ExtensionElement applicationSpecificCondition) {
         this(condition, null, null, null, null, Arrays.asList(applicationSpecificCondition));
     }
 
@@ -115,7 +115,7 @@ public class XMPPError extends AbstractError {
      * @param extensions list of packet extensions
      */
     public XMPPError(Condition condition, String conditionText, String errorGenerator, Type type, Map<String, String> descriptiveTexts,
-            List<PacketExtension> extensions) {
+            List<ExtensionElement> extensions) {
         super(descriptiveTexts, NAMESPACE, extensions);
         this.condition = condition;
         // Some implementations may send the condition as non-empty element containing the empty string, that is

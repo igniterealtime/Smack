@@ -36,7 +36,7 @@ public class PacketWriterTest {
     /**
      * Make sure that packet writer does block once the queue reaches
      * {@link PacketWriter#QUEUE_SIZE} and that
-     * {@link PacketWriter#sendPacket(org.jivesoftware.smack.tcp.packet.Packet)} does unblock after the
+     * {@link PacketWriter#sendStanza(org.jivesoftware.smack.tcp.packet.Packet)} does unblock after the
      * interrupt.
      * 
      * @throws InterruptedException
@@ -86,7 +86,7 @@ public class PacketWriterTest {
         // will block before we call shutdown. Otherwise we may get false positives (which is still
         // better then false negatives).
         barrier.await();
-        // Not really cool, but may increases the chances for 't' to block in sendPacket.
+        // Not really cool, but may increases the chances for 't' to block in sendStanza.
         Thread.sleep(250);
 
         // Set to true for testing purposes, so that shutdown() won't wait packet writer

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.delay.packet;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.util.XmppDateTime;
 
@@ -35,7 +35,7 @@ import org.jxmpp.util.XmppDateTime;
  * @author Gaston Dombiak
  * @author Florian Schmaus
  */
-public class DelayInformation implements PacketExtension {
+public class DelayInformation implements ExtensionElement {
     public static final String ELEMENT = "delay";
     public static final String NAMESPACE = "urn:xmpp:delay";
 

@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -34,7 +34,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Gaston Dombiak
  */
-public class MUCUser implements PacketExtension {
+public class MUCUser implements ExtensionElement {
 
     public static final String ELEMENT = "x";
     public static final String NAMESPACE = MUCInitialPresence.NAMESPACE + "#user";
@@ -116,6 +116,19 @@ public class MUCUser implements PacketExtension {
      */
     public Set<Status> getStatus() {
         return statusCodes;
+    }
+
+    /**
+     * Returns true if this MUCUser instance has also {@link Status} information.
+     * <p>
+     * If <code>true</code> is returned, then {@link #getStatus()} will return a non-empty set.
+     * </p>
+     *
+     * @return true if this MUCUser has status information.
+     * @since 4.1
+     */
+    public boolean hasStatus() {
+        return !statusCodes.isEmpty();
     }
 
     /**

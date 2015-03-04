@@ -16,16 +16,16 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
-import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.EventManger;
+import org.jivesoftware.smack.util.EventManger.Callback;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -45,6 +45,19 @@ import java.io.OutputStream;
 public abstract class StreamNegotiator {
 
     /**
+     * A event manager for stream initiation requests send to us.
+     * <p>
+     * Those are typical XEP-45 Open or XEP-65 Bytestream IQ requests. The even key is in the format
+     * "initiationFrom + '\t' + streamId"
+     * </p>
+     */
+    // TODO This field currently being static is considered a quick hack. Ideally this should take
+    // the local connection into account, for example by changing the key to
+    // "localJid + '\t' + initiationFrom + '\t' + streamId" or making the field non-static (but then
+    // you need to provide access to the InitiationListeners, which could get tricky)
+    protected static final EventManger<String, IQ, SmackException.NotConnectedException> initationSetEvents = new EventManger<>();
+
+    /**
      * Creates the initiation acceptance packet to forward to the stream
      * initiator.
      *
@@ -52,7 +65,7 @@ public abstract class StreamNegotiator {
      * @param namespaces            The namespace that relates to the accepted means of transfer.
      * @return The response to be forwarded to the initiator.
      */
-    public StreamInitiation createInitiationAccept(
+    protected static StreamInitiation createInitiationAccept(
             StreamInitiation streamInitiationOffer, String[] namespaces)
     {
         StreamInitiation response = new StreamInitiation();
@@ -73,29 +86,47 @@ public abstract class StreamNegotiator {
         return response;
     }
 
-    Stanza initiateIncomingStream(XMPPConnection connection, StreamInitiation initiation) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
-        StreamInitiation response = createInitiationAccept(initiation,
+    protected final IQ initiateIncomingStream(final XMPPConnection connection, StreamInitiation initiation)
+				   throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        final StreamInitiation response = createInitiationAccept(initiation,
                 getNamespaces());
 
-        // establish collector to await response
-        PacketCollector collector = connection
-                .createPacketCollectorAndSend(getInitiationPacketFilter(initiation.getFrom(), initiation.getSessionID()), response);
+        newStreamInitiation(initiation.getFrom(), initiation.getSessionID());
 
-        Stanza streamMethodInitiation = collector.nextResultOrThrow();
+        final String eventKey = initiation.getFrom().toString() + '\t' + initiation.getSessionID();
+        IQ streamMethodInitiation;
+        try {
+            streamMethodInitiation = initationSetEvents.performActionAndWaitForEvent(eventKey, connection.getPacketReplyTimeout(), new Callback<NotConnectedException>() {
+                @Override
+                public void action() throws NotConnectedException {
+                    try {
+                        connection.sendStanza(response);
+                    }
+                    catch (InterruptedException e) {
+                        // Ignore
+                    }
+                }
+            });
+        }
+        catch (InterruptedException e) {
+            // TODO remove this try/catch once merged into 4.2's master branch
+            throw new IllegalStateException(e);
+        }
 
+        if (streamMethodInitiation == null) {
+            throw NoResponseException.newWith(connection);
+        }
+        XMPPErrorException.ifHasErrorThenThrow(streamMethodInitiation);
         return streamMethodInitiation;
     }
 
     /**
-     * Returns the packet filter that will return the initiation packet for the appropriate stream
-     * initiation.
+     * Signal that a new stream initiation arrived. The negotiator may needs to prepare for it.
      *
      * @param from     The initiator of the file transfer.
      * @param streamID The stream ID related to the transfer.
-     * @return The <b><i>PacketFilter</b></i> that will return the packet relatable to the stream
-     *         initiation.
      */
-    public abstract PacketFilter getInitiationPacketFilter(Jid from, String streamID);
+    protected abstract void newStreamInitiation(Jid from, String streamID);
 
 
     abstract InputStream negotiateIncomingStream(Stanza streamInitiation) throws XMPPErrorException,
@@ -149,4 +180,7 @@ public abstract class StreamNegotiator {
      */
     public abstract String[] getNamespaces();
 
+    public static void signal(String eventKey, IQ eventValue) {
+        initationSetEvents.signalEvent(eventKey, eventValue);
+    }
 }

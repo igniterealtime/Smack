@@ -22,26 +22,27 @@ import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * Provides a mechanism to collect packets into a result queue that pass a
  * specified filter. The collector lets you perform blocking and polling
  * operations on the result queue. So, a PacketCollector is more suitable to
- * use than a {@link PacketListener} when you need to wait for a specific
+ * use than a {@link StanzaListener} when you need to wait for a specific
  * result.<p>
  *
  * Each packet collector will queue up a configured number of packets for processing before
  * older packets are automatically dropped.  The default number is retrieved by 
  * {@link SmackConfiguration#getPacketCollectorSize()}.
  *
- * @see XMPPConnection#createPacketCollector(PacketFilter)
+ * @see XMPPConnection#createPacketCollector(StanzaFilter)
  * @author Matt Tucker
  */
 public class PacketCollector {
 
-    private final PacketFilter packetFilter;
+    private final StanzaFilter packetFilter;
+
     private final ArrayBlockingQueue<Stanza> resultQueue;
 
     /**
@@ -85,11 +86,23 @@ public class PacketCollector {
      * filter is used to determine what packets are queued as results.
      *
      * @return the packet filter.
+     * @deprecated use {@link #getStanzaFilter()} instead.
      */
-    public PacketFilter getPacketFilter() {
-        return packetFilter;
+    @Deprecated
+    public StanzaFilter getPacketFilter() {
+        return getStanzaFilter();
     }
 
+    /**
+     * Returns the stanza filter associated with this stanza collector. The stanza
+     * filter is used to determine what stanzas are queued as results.
+     *
+     * @return the stanza filter.
+     */
+    public StanzaFilter getStanzaFilter() {
+        return packetFilter;
+    }
+ 
     /**
      * Polls to see if a packet is currently available and returns it, or
      * immediately returns <tt>null</tt> if no packets are currently in the
@@ -257,7 +270,7 @@ public class PacketCollector {
     }
 
     public static class Configuration {
-        private PacketFilter packetFilter;
+        private StanzaFilter packetFilter;
         private int size = SmackConfiguration.getPacketCollectorSize();
         private PacketCollector collectorToReset;
 
@@ -270,9 +283,22 @@ public class PacketCollector {
          * 
          * @param packetFilter
          * @return a reference to this configuration.
+         * @deprecated use {@link #setStanzaFilter(StanzaFilter)} instead.
          */
-        public Configuration setPacketFilter(PacketFilter packetFilter) {
-            this.packetFilter = packetFilter;
+        @Deprecated
+        public Configuration setPacketFilter(StanzaFilter packetFilter) {
+            return setStanzaFilter(packetFilter);
+        }
+
+        /**
+         * Set the stanza filter used by this collector. If <code>null</code>, then all stanzas will
+         * get collected by this collector.
+         * 
+         * @param stanzaFilter
+         * @return a reference to this configuration.
+         */
+        public Configuration setStanzaFilter(StanzaFilter stanzaFilter) {
+            this.packetFilter = stanzaFilter;
             return this;
         }
 

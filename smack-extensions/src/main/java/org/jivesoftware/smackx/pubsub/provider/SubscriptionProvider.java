@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.pubsub.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.pubsub.Subscription;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * 
  * @author Robin Collier
  */
-public class SubscriptionProvider extends PacketExtensionProvider<Subscription>
+public class SubscriptionProvider extends ExtensionElementProvider<Subscription>
 {
     @Override
     public Subscription parse(XmlPullParser parser, int initialDepth)

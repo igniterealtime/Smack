@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
@@ -443,7 +443,7 @@ public class JingleManager implements JingleSessionListener {
      * establish a new session.
      */
     private void initJingleSessionRequestListeners() {
-        PacketFilter initRequestFilter = new PacketFilter() {
+        StanzaFilter initRequestFilter = new StanzaFilter() {
             // Return true if we accept this packet
             public boolean accept(Stanza pin) {
                 if (pin instanceof IQ) {
@@ -464,7 +464,7 @@ public class JingleManager implements JingleSessionListener {
         jingleSessionRequestListeners = new ArrayList<JingleSessionRequestListener>();
 
         // Start a packet listener for session initiation requests
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             public void processPacket(Stanza packet) {
                 triggerSessionRequested((Jingle) packet);
             }

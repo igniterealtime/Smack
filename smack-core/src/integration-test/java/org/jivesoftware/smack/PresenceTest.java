@@ -46,9 +46,9 @@ public class PresenceTest extends SmackTestCase {
             conn.connect();
             conn.login(getUsername(1), getUsername(1), "OtherPlace");
             // Change the presence priorities of User_1
-            getConnection(1).sendPacket(new Presence(Presence.Type.available, null, 1,
+            getConnection(1).sendStanza(new Presence(Presence.Type.available, null, 1,
                     Presence.Mode.available));
-            conn.sendPacket(new Presence(Presence.Type.available, null, 2,
+            conn.sendStanza(new Presence(Presence.Type.available, null, 2,
                     Presence.Mode.available));
             Thread.sleep(150);
             // Create the chats between the participants
@@ -64,9 +64,9 @@ public class PresenceTest extends SmackTestCase {
                     chat1.nextMessage(1000));*/
 
             // Invert the presence priorities of User_1
-            getConnection(1).sendPacket(new Presence(Presence.Type.available, null, 2,
+            getConnection(1).sendStanza(new Presence(Presence.Type.available, null, 2,
                     Presence.Mode.available));
-            conn.sendPacket(new Presence(Presence.Type.available, null, 1,
+            conn.sendStanza(new Presence(Presence.Type.available, null, 1,
                     Presence.Mode.available));
 
             Thread.sleep(150);
@@ -86,14 +86,14 @@ public class PresenceTest extends SmackTestCase {
             /*assertNotNull("Resource with highest priority didn't receive the message",
                     chat1.nextMessage(2000));*/
 
-            getConnection(1).sendPacket(new Presence(Presence.Type.available, null, 2,
+            getConnection(1).sendStanza(new Presence(Presence.Type.available, null, 2,
                     Presence.Mode.available));
 
             // User_1 will log in again using another resource
             conn = createConnection();
             conn.connect();
             conn.login(getUsername(1), getPassword(1), "OtherPlace");
-            conn.sendPacket(new Presence(Presence.Type.available, null, 1,
+            conn.sendStanza(new Presence(Presence.Type.available, null, 1,
                     Presence.Mode.available));
             chat2 = conn.getChatManager().createChat(getBareJID(0), chat0.getThreadID(), null);
 
@@ -106,9 +106,9 @@ public class PresenceTest extends SmackTestCase {
                     chat2.nextMessage(1000));*/
 
             // Invert the presence priorities of User_1
-            getConnection(1).sendPacket(new Presence(Presence.Type.available, null, 1,
+            getConnection(1).sendStanza(new Presence(Presence.Type.available, null, 1,
                     Presence.Mode.available));
-            conn.sendPacket(new Presence(Presence.Type.available, null, 2,
+            conn.sendStanza(new Presence(Presence.Type.available, null, 2,
                     Presence.Mode.available));
 
             Thread.sleep(150);
@@ -139,7 +139,7 @@ public class PresenceTest extends SmackTestCase {
      */
     public void testNotAvailablePresence() throws XMPPException {
         // Change the presence to unavailable of User_1
-        getConnection(1).sendPacket(new Presence(Presence.Type.unavailable));
+        getConnection(1).sendStanza(new Presence(Presence.Type.unavailable));
 
         // User_1 will log in again using another resource (that is going to be available)
         XMPPTCPConnection conn = createConnection();

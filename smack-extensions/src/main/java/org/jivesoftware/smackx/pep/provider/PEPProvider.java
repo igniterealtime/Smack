@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -41,11 +41,11 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author Jeff Williams
  */
-public class PEPProvider extends PacketExtensionProvider<PacketExtension> {
+public class PEPProvider extends ExtensionElementProvider<ExtensionElement> {
 
-    private static final Map<String, PacketExtensionProvider<?>> nodeParsers = new HashMap<String, PacketExtensionProvider<?>>();
+    private static final Map<String, ExtensionElementProvider<?>> nodeParsers = new HashMap<String, ExtensionElementProvider<?>>();
 
-    public static void registerPEPParserExtension(String node, PacketExtensionProvider<?> pepItemParser) {
+    public static void registerPEPParserExtension(String node, ExtensionElementProvider<?> pepItemParser) {
         nodeParsers.put(node, pepItemParser);
     }
 
@@ -60,9 +60,9 @@ public class PEPProvider extends PacketExtensionProvider<PacketExtension> {
      * @throws SmackException 
      */
     @Override
-    public PacketExtension parse(XmlPullParser parser, int initialDepth)
+    public ExtensionElement parse(XmlPullParser parser, int initialDepth)
                     throws XmlPullParserException, IOException, SmackException {
-        PacketExtension pepItem = null;
+        ExtensionElement pepItem = null;
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
@@ -72,7 +72,7 @@ public class PEPProvider extends PacketExtensionProvider<PacketExtension> {
                     // Figure out the node for this event.
                     String node = parser.getAttributeValue("", "node");
                     // Get the parser for this kind of node, and if found then parse the node.
-                    PacketExtensionProvider<?> nodeParser = nodeParsers.get(node);
+                    ExtensionElementProvider<?> nodeParser = nodeParsers.get(node);
                     if (nodeParser != null) {
                         pepItem = nodeParser.parse(parser);
                     }

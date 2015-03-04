@@ -20,11 +20,11 @@ package org.jivesoftware.smack;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.FullJid;
@@ -161,8 +161,19 @@ public interface XMPPConnection {
      * @param packet the packet to send.
      * @throws NotConnectedException 
      * @throws InterruptedException 
+     * @deprecated use {@link #sendStanza(Stanza)} instead.
      */
+    @Deprecated
     public void sendPacket(Stanza packet) throws NotConnectedException, InterruptedException;
+
+    /**
+     * Sends the specified stanza to the server.
+     *
+     * @param stanza the stanza to send.
+     * @throws NotConnectedException if the connection is not connected.
+     * @throws InterruptedException
+     * */
+    public void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException;
 
     /**
      * Send a PlainStreamElement.
@@ -209,7 +220,7 @@ public interface XMPPConnection {
     /**
      * Creates a new packet collector for this connection. A packet filter determines
      * which packets will be accumulated by the collector. A PacketCollector is
-     * more suitable to use than a {@link PacketListener} when you need to wait for
+     * more suitable to use than a {@link StanzaListener} when you need to wait for
      * a specific result.
      * 
      * @param packetFilter the packet filter to use.
@@ -218,18 +229,18 @@ public interface XMPPConnection {
      * @throws InterruptedException 
      * @throws NotConnectedException 
      */
-    public PacketCollector createPacketCollectorAndSend(PacketFilter packetFilter, Stanza packet)
+    public PacketCollector createPacketCollectorAndSend(StanzaFilter packetFilter, Stanza packet)
                     throws NotConnectedException, InterruptedException;
 
     /**
      * Creates a new packet collector for this connection. A packet filter
      * determines which packets will be accumulated by the collector. A
-     * PacketCollector is more suitable to use than a {@link PacketListener}
+     * PacketCollector is more suitable to use than a {@link StanzaListener}
      * when you need to wait for a specific result.
      * <p>
      * <b>Note:</b> If you send a Packet right after using this method, then
      * consider using
-     * {@link #createPacketCollectorAndSend(PacketFilter, Stanza)} instead.
+     * {@link #createPacketCollectorAndSend(StanzaFilter, Stanza)} instead.
      * Otherwise make sure cancel the PacketCollector in every case, e.g. even
      * if an exception is thrown, or otherwise you may leak the PacketCollector.
      * </p>
@@ -237,13 +248,13 @@ public interface XMPPConnection {
      * @param packetFilter the packet filter to use.
      * @return a new packet collector.
      */
-    public PacketCollector createPacketCollector(PacketFilter packetFilter);
+    public PacketCollector createPacketCollector(StanzaFilter packetFilter);
 
     /**
      * Create a new packet collector with the given packet collector configuration.
      * <p>
      * Please make sure to cancel the collector when it is no longer required. See also
-     * {@link #createPacketCollector(PacketFilter)}.
+     * {@link #createPacketCollector(StanzaFilter)}.
      * </p>
      * 
      * @param configuration the packet collector configuration.
@@ -264,27 +275,27 @@ public interface XMPPConnection {
      * <p>
      * This method has been deprecated. It is important to differentiate between using an asynchronous packet listener
      * (preferred where possible) and a synchronous packet lister. Refer
-     * {@link #addAsyncPacketListener(PacketListener, PacketFilter)} and
-     * {@link #addSyncPacketListener(PacketListener, PacketFilter)} for more information.
+     * {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)} and
+     * {@link #addSyncStanzaListener(StanzaListener, StanzaFilter)} for more information.
      * </p>
      *
      * @param packetListener the packet listener to notify of new received packets.
      * @param packetFilter the packet filter to use.
-     * @deprecated use {@link #addAsyncPacketListener(PacketListener, PacketFilter)} or
-     *             {@link #addSyncPacketListener(PacketListener, PacketFilter)}.
+     * @deprecated use {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)} or
+     *             {@link #addSyncStanzaListener(StanzaListener, StanzaFilter)}.
      */
     @Deprecated
-    public void addPacketListener(PacketListener packetListener, PacketFilter packetFilter);
+    public void addPacketListener(StanzaListener packetListener, StanzaFilter packetFilter);
 
     /**
      * Removes a packet listener for received packets from this connection.
      * 
      * @param packetListener the packet listener to remove.
      * @return true if the packet listener was removed
-     * @deprecated use {@link #removeAsyncPacketListener(PacketListener)} or {@link #removeSyncPacketListener(PacketListener)}.
+     * @deprecated use {@link #removeAsyncStanzaListener(StanzaListener)} or {@link #removeSyncStanzaListener(StanzaListener)}.
      */
     @Deprecated
-    public boolean removePacketListener(PacketListener packetListener);
+    public boolean removePacketListener(StanzaListener packetListener);
 
     /**
      * Registers a <b>synchronous</b> packet listener with this connection. A packet listener will be invoked only when
@@ -293,17 +304,17 @@ public interface XMPPConnection {
      * <p>
      * <b>Important:</b> This packet listeners will be called in the same <i>single</i> thread that processes all
      * incoming stanzas. Only use this kind of packet filter if it does not perform any XMPP activity that waits for a
-     * response. Consider using {@link #addAsyncPacketListener(PacketListener, PacketFilter)} when possible, i.e. when
+     * response. Consider using {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)} when possible, i.e. when
      * the invocation order doesn't have to be the same as the order of the arriving packets. If the order of the
      * arriving packets, consider using a {@link PacketCollector} when possible.
      * </p>
      *
      * @param packetListener the packet listener to notify of new received packets.
      * @param packetFilter the packet filter to use.
-     * @see #addPacketInterceptor(PacketListener, PacketFilter)
+     * @see #addPacketInterceptor(StanzaListener, StanzaFilter)
      * @since 4.1
      */
-    public void addSyncPacketListener(PacketListener packetListener, PacketFilter packetFilter);
+    public void addSyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter);
 
     /**
      * Removes a packet listener for received packets from this connection.
@@ -312,24 +323,24 @@ public interface XMPPConnection {
      * @return true if the packet listener was removed
      * @since 4.1
      */
-    public boolean removeSyncPacketListener(PacketListener packetListener);
+    public boolean removeSyncStanzaListener(StanzaListener packetListener);
 
     /**
      * Registers an <b>asynchronous</b> packet listener with this connection. A packet listener will be invoked only
      * when an incoming packet is received. A packet filter determines which packets will be delivered to the listener.
      * If the same packet listener is added again with a different filter, only the new filter will be used.
      * <p>
-     * Unlike {@link #addAsyncPacketListener(PacketListener, PacketFilter)} packet listeners added with this method will be
+     * Unlike {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)} packet listeners added with this method will be
      * invoked asynchronously in their own thread. Use this method if the order of the packet listeners must not depend
      * on the order how the stanzas where received.
      * </p>
      * 
      * @param packetListener the packet listener to notify of new received packets.
      * @param packetFilter the packet filter to use.
-     * @see #addPacketInterceptor(PacketListener, PacketFilter)
+     * @see #addPacketInterceptor(StanzaListener, StanzaFilter)
      * @since 4.1
     */
-    public void addAsyncPacketListener(PacketListener packetListener, PacketFilter packetFilter);
+    public void addAsyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter);
 
     /**
      * Removes an <b>asynchronous</b> packet listener for received packets from this connection.
@@ -338,7 +349,7 @@ public interface XMPPConnection {
      * @return true if the packet listener was removed
      * @since 4.1
      */
-    public boolean removeAsyncPacketListener(PacketListener packetListener);
+    public boolean removeAsyncStanzaListener(StanzaListener packetListener);
 
     /**
      * Registers a packet listener with this connection. The listener will be
@@ -351,14 +362,14 @@ public interface XMPPConnection {
      * @param packetListener the packet listener to notify of sent packets.
      * @param packetFilter   the packet filter to use.
      */
-    public void addPacketSendingListener(PacketListener packetListener, PacketFilter packetFilter);
+    public void addPacketSendingListener(StanzaListener packetListener, StanzaFilter packetFilter);
 
     /**
      * Removes a packet listener for sending packets from this connection.
      * 
      * @param packetListener the packet listener to remove.
      */
-    public void removePacketSendingListener(PacketListener packetListener);
+    public void removePacketSendingListener(StanzaListener packetListener);
 
     /**
      * Registers a packet interceptor with this connection. The interceptor will be
@@ -367,19 +378,19 @@ public interface XMPPConnection {
      * will be delivered to the interceptor.
      * 
      * <p>
-     * NOTE: For a similar functionality on incoming packets, see {@link #addAsyncPacketListener(PacketListener, PacketFilter)}.
+     * NOTE: For a similar functionality on incoming packets, see {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)}.
      *
      * @param packetInterceptor the packet interceptor to notify of packets about to be sent.
      * @param packetFilter      the packet filter to use.
      */
-    public void addPacketInterceptor(PacketListener packetInterceptor, PacketFilter packetFilter);
+    public void addPacketInterceptor(StanzaListener packetInterceptor, StanzaFilter packetFilter);
  
     /**
      * Removes a packet interceptor.
      *
      * @param packetInterceptor the packet interceptor to remove.
      */
-    public void removePacketInterceptor(PacketListener packetInterceptor);
+    public void removePacketInterceptor(StanzaListener packetInterceptor);
 
     /**
      * Returns the current value of the reply timeout in milliseconds for request for this
@@ -446,7 +457,7 @@ public interface XMPPConnection {
      * @param namespace
      * @return a packet extensions of the feature or <code>null</code>
      */
-    public <F extends PacketExtension> F getFeature(String element, String namespace);
+    public <F extends ExtensionElement> F getFeature(String element, String namespace);
 
     /**
      * Return true if the server supports the given stream feature.
@@ -471,8 +482,8 @@ public interface XMPPConnection {
      * @throws NotConnectedException
      * @throws InterruptedException 
      */
-    public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
-                    PacketListener callback) throws NotConnectedException, InterruptedException;
+    public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
+                    StanzaListener callback) throws NotConnectedException, InterruptedException;
 
     /**
      * Send a stanza and wait asynchronously for a response by using <code>replyFilter</code>.
@@ -489,7 +500,7 @@ public interface XMPPConnection {
      * @throws NotConnectedException
      * @throws InterruptedException 
      */
-    public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter, PacketListener callback,
+    public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter, StanzaListener callback,
                     ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException;
 
     /**
@@ -508,8 +519,8 @@ public interface XMPPConnection {
      * @throws NotConnectedException
      * @throws InterruptedException 
      */
-    public void sendStanzaWithResponseCallback(Stanza stanza, PacketFilter replyFilter,
-                    final PacketListener callback, final ExceptionCallback exceptionCallback,
+    public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
+                    final StanzaListener callback, final ExceptionCallback exceptionCallback,
                     long timeout) throws NotConnectedException, InterruptedException;
 
     /**
@@ -522,7 +533,7 @@ public interface XMPPConnection {
      * @throws NotConnectedException
      * @throws InterruptedException 
      */
-    public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback) throws NotConnectedException, InterruptedException;
+    public void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback) throws NotConnectedException, InterruptedException;
 
     /**
      * Send a IQ stanza and invoke <code>callback</code> if there is a result of
@@ -538,7 +549,7 @@ public interface XMPPConnection {
      * @throws NotConnectedException
      * @throws InterruptedException 
      */
-    public void sendIqWithResponseCallback(IQ iqRequest, PacketListener callback,
+    public void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback,
                     ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException;
 
     /**
@@ -556,7 +567,7 @@ public interface XMPPConnection {
      * @throws NotConnectedException
      * @throws InterruptedException 
      */
-    public void sendIqWithResponseCallback(IQ iqRequest, final PacketListener callback,
+    public void sendIqWithResponseCallback(IQ iqRequest, final StanzaListener callback,
                     final ExceptionCallback exceptionCallback, long timeout)
                     throws NotConnectedException, InterruptedException;
 
@@ -567,7 +578,7 @@ public interface XMPPConnection {
      * @param callback the callback invoked once the packet filter matches a stanza.
      * @param packetFilter the filter to match stanzas or null to match all.
      */
-    public void addOneTimeSyncCallback(PacketListener callback, PacketFilter packetFilter);
+    public void addOneTimeSyncCallback(StanzaListener callback, StanzaFilter packetFilter);
 
     /**
      * Register an IQ request handler with this connection.

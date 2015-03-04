@@ -569,23 +569,27 @@ public class VCard extends IQ {
         xml.rightAngleBracket();
         if (hasNameField()) {
             xml.openElement("N");
-            xml.element("FAMILY", lastName);
-            xml.element("GIVEN", firstName);
-            xml.element("MIDDLE", middleName);
+            xml.optElement("FAMILY", lastName);
+            xml.optElement("GIVEN", firstName);
+            xml.optElement("MIDDLE", middleName);
             xml.closeElement("N");
         }
         if (hasOrganizationFields()) {
             xml.openElement("ORG");
-            xml.element("ORGNAME", organization);
-            xml.element("ORGUNIT", organizationUnit);
+            xml.optElement("ORGNAME", organization);
+            xml.optElement("ORGUNIT", organizationUnit);
             xml.closeElement("ORG");
         }
         for (Entry<String, String> entry : otherSimpleFields.entrySet()) {
-            xml.element(entry.getKey(), entry.getValue());
+            xml.optElement(entry.getKey(), entry.getValue());
         }
         for (Entry<String, String> entry : otherUnescapableFields.entrySet()) {
+            final String value = entry.getValue();
+            if (value == null) {
+                continue;
+            }
             xml.openElement(entry.getKey());
-            xml.append(entry.getValue());
+            xml.append(value);
             xml.closeElement(entry.getKey());
         }
         if (photoBinval != null) {
@@ -611,24 +615,36 @@ public class VCard extends IQ {
             xml.closeElement("EMAIL");
         }
         for (Entry<String, String> phone : workPhones.entrySet()) {
+            final String number = phone.getValue();
+            if (number == null) {
+                continue;
+            }
             xml.openElement("TEL");
             xml.emptyElement("WORK");
             xml.emptyElement(phone.getKey());
-            xml.element("NUMBER", phone.getValue());
+            xml.element("NUMBER", number);
             xml.closeElement("TEL");
         }
         for (Entry<String, String> phone : homePhones.entrySet()) {
+            final String number = phone.getValue();
+            if (number == null) {
+                continue;
+            }
             xml.openElement("TEL");
             xml.emptyElement("HOME");
             xml.emptyElement(phone.getKey());
-            xml.element("NUMBER", phone.getValue());
+            xml.element("NUMBER", number);
             xml.closeElement("TEL");
         }
         if (!workAddr.isEmpty()) {
             xml.openElement("ADR");
             xml.emptyElement("WORK");
             for (Entry<String, String> entry : workAddr.entrySet()) {
-                xml.element(entry.getKey(), entry.getValue());
+                final String value = entry.getValue();
+                if (value == null) {
+                    continue;
+                }
+                xml.element(entry.getKey(), value);
             }
             xml.closeElement("ADR");
         }
@@ -636,7 +652,11 @@ public class VCard extends IQ {
             xml.openElement("ADR");
             xml.emptyElement("HOME");
             for (Entry<String, String> entry : homeAddr.entrySet()) {
-                xml.element(entry.getKey(), entry.getValue());
+                final String value = entry.getValue();
+                if (value == null) {
+                    continue;
+                }
+                xml.element(entry.getKey(), value);
             }
             xml.closeElement("ADR");
         }

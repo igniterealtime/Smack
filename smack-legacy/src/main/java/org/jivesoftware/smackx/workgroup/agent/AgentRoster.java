@@ -19,11 +19,11 @@ package org.jivesoftware.smackx.workgroup.agent;
 
 import org.jivesoftware.smackx.workgroup.packet.AgentStatus;
 import org.jivesoftware.smackx.workgroup.packet.AgentStatusRequest;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jxmpp.jid.FullJid;
@@ -75,16 +75,16 @@ public class AgentRoster {
         entries = new ArrayList<String>();
         listeners = new ArrayList<AgentRosterListener>();
         // Listen for any roster packets.
-        PacketFilter rosterFilter = new PacketTypeFilter(AgentStatusRequest.class);
-        connection.addAsyncPacketListener(new AgentStatusListener(), rosterFilter);
+        StanzaFilter rosterFilter = new StanzaTypeFilter(AgentStatusRequest.class);
+        connection.addAsyncStanzaListener(new AgentStatusListener(), rosterFilter);
         // Listen for any presence packets.
-        connection.addAsyncPacketListener(new PresencePacketListener(),
-                new PacketTypeFilter(Presence.class));
+        connection.addAsyncStanzaListener(new PresencePacketListener(),
+                new StanzaTypeFilter(Presence.class));
 
         // Send request for roster.
         AgentStatusRequest request = new AgentStatusRequest();
         request.setTo(workgroupJID);
-        connection.sendPacket(request);
+        connection.sendStanza(request);
     }
 
     /**
@@ -97,7 +97,7 @@ public class AgentRoster {
     public void reload() throws NotConnectedException, InterruptedException {
         AgentStatusRequest request = new AgentStatusRequest();
         request.setTo(workgroupJID);
-        connection.sendPacket(request);
+        connection.sendStanza(request);
     }
 
     /**
@@ -284,7 +284,7 @@ public class AgentRoster {
     /**
      * Listens for all presence packets and processes them.
      */
-    private class PresencePacketListener implements PacketListener {
+    private class PresencePacketListener implements StanzaListener {
         public void processPacket(Stanza packet) {
             Presence presence = (Presence)packet;
             FullJid from = presence.getFrom().asFullJidIfPossible();
@@ -359,7 +359,7 @@ public class AgentRoster {
     /**
      * Listens for all roster packets and processes them.
      */
-    private class AgentStatusListener implements PacketListener {
+    private class AgentStatusListener implements StanzaListener {
 
         public void processPacket(Stanza packet) {
             if (packet instanceof AgentStatusRequest) {

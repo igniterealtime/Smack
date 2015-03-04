@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.amp;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.amp.packet.AMPExtension;
 import org.jivesoftware.smackx.amp.provider.AMPExtensionProvider;
 import org.junit.Before;
@@ -70,7 +70,7 @@ public class AMPExtensionTest {
         assertEquals(XmlPullParser.START_TAG, parser.next());
         assertEquals(AMPExtension.ELEMENT, parser.getName());
 
-        PacketExtension extension = ampProvider.parse(parser);
+        ExtensionElement extension = ampProvider.parse(parser);
         assertTrue(extension instanceof AMPExtension);
         AMPExtension amp = (AMPExtension) extension;
 
@@ -89,7 +89,7 @@ public class AMPExtensionTest {
 
         assertEquals(XmlPullParser.START_TAG, parser.next());
         assertEquals(AMPExtension.ELEMENT, parser.getName());
-        PacketExtension extension = ampProvider.parse(parser);
+        ExtensionElement extension = ampProvider.parse(parser);
         assertTrue(extension instanceof AMPExtension);
         AMPExtension amp = (AMPExtension) extension;
 

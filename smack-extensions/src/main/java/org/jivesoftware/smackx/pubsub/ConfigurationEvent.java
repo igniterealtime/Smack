@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * Represents the <b>configuration</b> element of a pubsub message event which 
@@ -49,11 +49,11 @@ public class ConfigurationEvent extends NodeExtension implements EmbeddedPacketE
 		return form;
 	}
 
-	public List<PacketExtension> getExtensions()
+	public List<ExtensionElement> getExtensions()
 	{
 		if (getConfiguration() == null)
 			return Collections.emptyList();
 		else
-			return Arrays.asList(((PacketExtension)getConfiguration().getDataFormToSend()));
+			return Arrays.asList(((ExtensionElement)getConfiguration().getDataFormToSend()));
 	}
 }

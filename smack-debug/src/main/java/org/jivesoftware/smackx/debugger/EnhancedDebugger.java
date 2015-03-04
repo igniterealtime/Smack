@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.debugger;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
@@ -150,8 +150,8 @@ public class EnhancedDebugger implements SmackDebugger {
 
     private XMPPConnection connection = null;
 
-    private PacketListener packetReaderListener = null;
-    private PacketListener packetWriterListener = null;
+    private StanzaListener packetReaderListener = null;
+    private StanzaListener packetWriterListener = null;
     private ConnectionListener connListener = null;
 
     private Writer writer;
@@ -205,7 +205,7 @@ public class EnhancedDebugger implements SmackDebugger {
         // Create a thread that will listen for all incoming packets and write them to
         // the GUI. This is what we call "interpreted" packet data, since it's the packet
         // data as Smack sees it and not as it's coming in as raw XML.
-        packetReaderListener = new PacketListener() {
+        packetReaderListener = new StanzaListener() {
             SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss:SS aaa");
 
             public void processPacket(final Stanza packet) {
@@ -220,7 +220,7 @@ public class EnhancedDebugger implements SmackDebugger {
 
         // Create a thread that will listen for all outgoing packets and write them to
         // the GUI.
-        packetWriterListener = new PacketListener() {
+        packetWriterListener = new StanzaListener() {
             SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss:SS aaa");
 
             public void processPacket(final Stanza packet) {
@@ -580,7 +580,7 @@ public class EnhancedDebugger implements SmackDebugger {
                 if (!"".equals(adhocMessages.getText())) {
                     AdHocPacket packetToSend = new AdHocPacket(adhocMessages.getText());
                     try {
-                        connection.sendPacket(packetToSend);
+                        connection.sendStanza(packetToSend);
                     }
                     catch (InterruptedException | NotConnectedException e1) {
                         e1.printStackTrace();
@@ -760,11 +760,11 @@ public class EnhancedDebugger implements SmackDebugger {
         return writer;
     }
 
-    public PacketListener getReaderListener() {
+    public StanzaListener getReaderListener() {
         return packetReaderListener;
     }
 
-    public PacketListener getWriterListener() {
+    public StanzaListener getWriterListener() {
         return packetWriterListener;
     }
 
@@ -959,7 +959,7 @@ public class EnhancedDebugger implements SmackDebugger {
      */
     void cancel() {
         connection.removeConnectionListener(connListener);
-        connection.removeAsyncPacketListener(packetReaderListener);
+        connection.removeAsyncStanzaListener(packetReaderListener);
         connection.removePacketSendingListener(packetWriterListener);
         ((ObservableReader) reader).removeReaderListener(readerListener);
         ((ObservableWriter) writer).removeWriterListener(writerListener);

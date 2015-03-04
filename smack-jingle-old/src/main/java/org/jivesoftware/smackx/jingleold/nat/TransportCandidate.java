@@ -614,7 +614,7 @@ public abstract class TransportCandidate {
         String id = null;
         byte[] send = null;
         byte[] receive = null;
-        DatagramPacket sendPacket = null;
+        DatagramPacket sendStanza = null;
         List<DatagramListener> listeners = new ArrayList<DatagramListener>();
         List<ResultListener> resultListeners = new ArrayList<ResultListener>();
         boolean enabled = true;

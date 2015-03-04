@@ -194,7 +194,7 @@ public class FileTransferNegotiator extends Manager {
             String errorMessage = "No stream methods contained in stanza.";
             XMPPError error = XMPPError.from(XMPPError.Condition.bad_request, errorMessage);
             IQ iqPacket = IQ.createErrorResponse(si, error);
-            connection().sendPacket(iqPacket);
+            connection().sendStanza(iqPacket);
             throw new FileTransferException.NoStreamMethodsOfferedException();
         }
 
@@ -205,7 +205,7 @@ public class FileTransferNegotiator extends Manager {
         }
         catch (NoAcceptableTransferMechanisms e) {
             IQ iqPacket = IQ.createErrorResponse(si, XMPPError.from(XMPPError.Condition.bad_request, "No acceptable transfer mechanism"));
-            connection().sendPacket(iqPacket);
+            connection().sendStanza(iqPacket);
             throw e;
         }
 

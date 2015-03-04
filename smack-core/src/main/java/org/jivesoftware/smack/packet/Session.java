@@ -42,7 +42,7 @@ public class Session extends SimpleIQ {
         setType(IQ.Type.set);
     }
 
-    public static class Feature implements PacketExtension {
+    public static class Feature implements ExtensionElement {
 
         public static final String OPTIONAL_ELEMENT = "optional";
 

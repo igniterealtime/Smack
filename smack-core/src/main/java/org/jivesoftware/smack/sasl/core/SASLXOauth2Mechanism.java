@@ -73,7 +73,7 @@ public class SASLXOauth2Mechanism extends SASLMechanism {
     @Override
     protected byte[] getAuthenticationText() throws SmackException {
         // base64("\0" + user_name + "\0" + oauth_token)
-        return Base64.decode('\u0000' + authenticationId + '\u0000' + password);
+        return Base64.encode(toBytes('\u0000' + authenticationId + '\u0000' + password));
     }
 
     @Override

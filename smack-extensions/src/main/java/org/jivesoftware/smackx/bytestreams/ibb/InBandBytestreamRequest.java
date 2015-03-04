@@ -81,7 +81,7 @@ public class InBandBytestreamRequest implements BytestreamRequest {
 
         // acknowledge request
         IQ resultIQ = IQ.createResultIQ(this.byteStreamRequest);
-        connection.sendPacket(resultIQ);
+        connection.sendStanza(resultIQ);
 
         return ibbSession;
     }

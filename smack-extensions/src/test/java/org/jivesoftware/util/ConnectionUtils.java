@@ -27,7 +27,7 @@ import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
@@ -55,7 +55,7 @@ public class ConnectionUtils {
      * <pre>
      * <code>
      *   PacketCollector collector = connection.createPacketCollector(new PacketFilter());
-     *   connection.sendPacket(packet);
+     *   connection.sendStanza(packet);
      *   Packet reply = collector.nextResult();
      * </code>
      * </pre>
@@ -78,7 +78,7 @@ public class ConnectionUtils {
 
         // mock packet collector
         final PacketCollector collector = mock(PacketCollector.class);
-        when(connection.createPacketCollector(isA(PacketFilter.class))).thenReturn(
+        when(connection.createPacketCollector(isA(StanzaFilter.class))).thenReturn(
                         collector);
         Answer<PacketCollector> collectorAndSend = new Answer<PacketCollector>() {
             @Override
@@ -98,7 +98,7 @@ public class ConnectionUtils {
                 return null;
             }
         };
-        doAnswer(addIncoming).when(connection).sendPacket(isA(Stanza.class));
+        doAnswer(addIncoming).when(connection).sendStanza(isA(Stanza.class));
 
         // mock receive methods
         Answer<Stanza> answer = new Answer<Stanza>() {

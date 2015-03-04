@@ -19,6 +19,7 @@ package org.jivesoftware.smack.filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jivesoftware.smack.util.Objects;
@@ -26,18 +27,18 @@ import org.jivesoftware.smack.util.Objects;
 /**
  * 
  */
-public abstract class AbstractListFilter implements PacketFilter {
+public abstract class AbstractListFilter implements StanzaFilter {
 
     /**
      * The list of filters.
      */
-    protected final List<PacketFilter> filters;
+    protected final List<StanzaFilter> filters;
 
     /**
      * Creates an empty filter.
      */
     protected AbstractListFilter() {
-        filters = new ArrayList<PacketFilter>();
+        filters = new ArrayList<StanzaFilter>();
     }
 
     /**
@@ -45,12 +46,12 @@ public abstract class AbstractListFilter implements PacketFilter {
      *
      * @param filters the filters to add.
      */
-    protected AbstractListFilter(PacketFilter... filters) {
+    protected AbstractListFilter(StanzaFilter... filters) {
         Objects.requireNonNull(filters, "Parameter must not be null.");
-        for(PacketFilter filter : filters) {
+        for(StanzaFilter filter : filters) {
             Objects.requireNonNull(filter, "Parameter must not be null.");
         }
-        this.filters = new ArrayList<PacketFilter>(Arrays.asList(filters));
+        this.filters = new ArrayList<StanzaFilter>(Arrays.asList(filters));
     }
 
     /**
@@ -59,7 +60,7 @@ public abstract class AbstractListFilter implements PacketFilter {
      *
      * @param filter a filter to add to the filter list.
      */
-    public void addFilter(PacketFilter filter) {
+    public void addFilter(StanzaFilter filter) {
         Objects.requireNonNull(filter, "Parameter must not be null.");
         filters.add(filter);
     }
@@ -68,9 +69,13 @@ public abstract class AbstractListFilter implements PacketFilter {
     public final String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
-        sb.append(" (");
-        for (PacketFilter filter : filters) {
-            sb.append(' ' + filter.toString() + ',');
+        sb.append(": (");
+        for (Iterator<StanzaFilter> it = filters.iterator(); it.hasNext();) {
+            StanzaFilter filter = it.next();
+            sb.append(filter.toString());
+            if (it.hasNext()) {
+                sb.append(", ");
+            }
         }
         sb.append(")");
         return sb.toString();

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 /**
@@ -46,9 +46,9 @@ public class EventElement implements EmbeddedPacketExtension
 		return type;
 	}
 
-	public List<PacketExtension> getExtensions()
+	public List<ExtensionElement> getExtensions()
 	{
-		return Arrays.asList(new PacketExtension[]{getEvent()});
+		return Arrays.asList(new ExtensionElement[]{getEvent()});
 	}
 
 	public NodeExtension getEvent()

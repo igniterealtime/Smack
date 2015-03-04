@@ -37,7 +37,7 @@ import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ExceptionCallback;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -45,8 +45,8 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
@@ -115,7 +115,7 @@ public class Roster extends Manager {
         return roster;
     }
 
-    private static final PacketFilter PRESENCE_PACKET_FILTER = new PacketTypeFilter(Presence.class);
+    private static final StanzaFilter PRESENCE_PACKET_FILTER = StanzaTypeFilter.PRESENCE;
 
     private static boolean rosterLoadedAtLoginDefault = true;
 
@@ -203,7 +203,7 @@ public class Roster extends Manager {
         // Listen for any roster packets.
         connection.registerIQRequestHandler(new RosterPushListener());
         // Listen for any presence packets.
-        connection.addSyncPacketListener(presencePacketListener, PRESENCE_PACKET_FILTER);
+        connection.addSyncStanzaListener(presencePacketListener, PRESENCE_PACKET_FILTER);
 
         // Listen for connection events
         connection.addConnectionListener(new AbstractConnectionClosedListener() {
@@ -488,7 +488,7 @@ public class Roster extends Manager {
         // Create a presence subscription packet and send.
         Presence presencePacket = new Presence(Presence.Type.subscribe);
         presencePacket.setTo(user);
-        connection.sendPacket(presencePacket);
+        connection.sendStanza(presencePacket);
     }
 
     /**
@@ -661,8 +661,8 @@ public class Roster extends Manager {
     /**
      * Returns the presence info for a particular user. If the user is offline, or
      * if no presence data is available (such as when you are not subscribed to the
-     * user's presence updates), unavailable presence will be returned.<p>
-     * <p/>
+     * user's presence updates), unavailable presence will be returned.
+     * <p>
      * If the user has several presences (one for each resource), then the presence with
      * highest priority will be returned. If multiple presences have the same priority,
      * the one with the "most available" presence mode will be returned. In order,
@@ -671,7 +671,8 @@ public class Roster extends Manager {
      * {@link org.jivesoftware.smack.packet.Presence.Mode#away away},
      * {@link org.jivesoftware.smack.packet.Presence.Mode#xa extended away}, and
      * {@link org.jivesoftware.smack.packet.Presence.Mode#dnd do not disturb}.<p>
-     * <p/>
+     * </p>
+     * <p>
      * Note that presence information is received asynchronously. So, just after logging
      * in to the server, presence values for users in the roster may be unavailable
      * even if they are actually online. In other words, the value returned by this
@@ -679,6 +680,7 @@ public class Roster extends Manager {
      * other user's presence instant by instant. If you need to track presence over time,
      * such as when showing a visual representation of the roster, consider using a
      * {@link RosterListener}.
+     * </p>
      *
      * @param user an XMPP ID. The address could be in any valid format (e.g.
      *             "domain/resource", "user@domain" or "user@domain/resource"). Any resource
@@ -730,7 +732,7 @@ public class Roster extends Manager {
             }
             if (presence == null) {
                 if (unavailable != null) {
-                    return unavailable;
+                    return unavailable.clone();
                 }
                 else {
                     presence = new Presence(Presence.Type.unavailable);
@@ -739,7 +741,7 @@ public class Roster extends Manager {
                 }
             }
             else {
-                return presence;
+                return presence.clone();
             }
         }
     }
@@ -770,7 +772,7 @@ public class Roster extends Manager {
                 return presence;
             }
             else {
-                return presence;
+                return presence.clone();
             }
         }
     }
@@ -792,7 +794,10 @@ public class Roster extends Manager {
             unavailable.setFrom(bareJid);
             res = new ArrayList<>(Arrays.asList(unavailable));
         } else {
-            res = new ArrayList<>(userPresences.values());
+            res = new ArrayList<>(userPresences.values().size());
+            for (Presence presence : userPresences.values()) {
+                res.add(presence.clone());
+            }
         }
         return res;
     }
@@ -809,6 +814,7 @@ public class Roster extends Manager {
         List<Presence> res = new ArrayList<>(allPresences.size());
         for (Presence presence : allPresences) {
             if (presence.isAvailable()) {
+                // No need to clone presence here, getAllPresences already returns clones
                 res.add(presence);
             }
         }
@@ -841,7 +847,7 @@ public class Roster extends Manager {
             Presence unavailable = null;
             for (Presence presence : userPresences.values()) {
                 if (presence.isAvailable()) {
-                    answer.add(presence);
+                    answer.add(presence.clone());
                 }
                 else {
                     unavailable = presence;
@@ -851,7 +857,7 @@ public class Roster extends Manager {
                 res = answer;
             }
             else if (unavailable != null) {
-                res = Arrays.asList(unavailable);
+                res = Arrays.asList(unavailable.clone());
             }
             else {
                 Presence presence = new Presence(Presence.Type.unavailable);
@@ -859,7 +865,7 @@ public class Roster extends Manager {
                 res = Arrays.asList(presence);
             }
         }
-        return Collections.unmodifiableList(res);
+        return res;
     }
 
     /**
@@ -1171,7 +1177,7 @@ public class Roster extends Manager {
     /**
      * Listens for all presence packets and processes them.
      */
-    private class PresencePacketListener implements PacketListener {
+    private class PresencePacketListener implements StanzaListener {
 
         /**
          * Retrieve the user presences (a map from resource to {@link Presence}) for a given key (usually a JID without
@@ -1258,7 +1264,7 @@ public class Roster extends Manager {
                 }
                 if (response != null) {
                     response.setTo(presence.getFrom());
-                    connection.sendPacket(response);
+                    connection.sendStanza(response);
                 }
                 break;
             case unsubscribe:
@@ -1268,7 +1274,7 @@ public class Roster extends Manager {
                     // has unsubscribed to our presence.
                     response = new Presence(Presence.Type.unsubscribed);
                     response.setTo(presence.getFrom());
-                    connection.sendPacket(response);
+                    connection.sendStanza(response);
                 }
                 // Otherwise, in manual mode so ignore.
                 break;
@@ -1298,7 +1304,7 @@ public class Roster extends Manager {
     /**
      * Handles roster reults as described in RFC 6121 2.1.4
      */
-    private class RosterResultListener implements PacketListener {
+    private class RosterResultListener implements StanzaListener {
 
         @Override
         public void processPacket(Stanza packet) {

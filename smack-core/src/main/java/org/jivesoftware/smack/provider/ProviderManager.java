@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.util.XmppStringUtils;
 
@@ -109,9 +109,9 @@ import org.jxmpp.util.XmppStringUtils;
  */
 public final class ProviderManager {
 
-    private static final Map<String, PacketExtensionProvider<PacketExtension>> extensionProviders = new ConcurrentHashMap<String, PacketExtensionProvider<PacketExtension>>();
+    private static final Map<String, ExtensionElementProvider<ExtensionElement>> extensionProviders = new ConcurrentHashMap<String, ExtensionElementProvider<ExtensionElement>>();
     private static final Map<String, IQProvider<IQ>> iqProviders = new ConcurrentHashMap<String, IQProvider<IQ>>();
-    private static final Map<String, PacketExtensionProvider<PacketExtension>> streamFeatureProviders = new ConcurrentHashMap<String, PacketExtensionProvider<PacketExtension>>();
+    private static final Map<String, ExtensionElementProvider<ExtensionElement>> streamFeatureProviders = new ConcurrentHashMap<String, ExtensionElementProvider<ExtensionElement>>();
 
     static {
         // Ensure that Smack is initialized by calling getVersion, so that user
@@ -138,7 +138,7 @@ public final class ProviderManager {
         if (loader.getStreamFeatureProviderInfo() != null) {
             for (StreamFeatureProviderInfo info : loader.getStreamFeatureProviderInfo()) {
                 addStreamFeatureProvider(info.getElementName(), info.getNamespace(),
-                                (PacketExtensionProvider<PacketExtension>) info.getProvider());
+                                (ExtensionElementProvider<ExtensionElement>) info.getProvider());
             }
         }
     }
@@ -238,7 +238,7 @@ public final class ProviderManager {
      * @param namespace namespace associated with extension provider.
      * @return the extenion provider.
      */
-    public static PacketExtensionProvider<PacketExtension> getExtensionProvider(String elementName, String namespace) {
+    public static ExtensionElementProvider<ExtensionElement> getExtensionProvider(String elementName, String namespace) {
         String key = getKey(elementName, namespace);
         return extensionProviders.get(key);
     }
@@ -259,8 +259,8 @@ public final class ProviderManager {
         validate(elementName, namespace);
         // First remove existing providers
         String key = removeExtensionProvider(elementName, namespace);
-        if (provider instanceof PacketExtensionProvider) {
-            extensionProviders.put(key, (PacketExtensionProvider<PacketExtension>) provider);
+        if (provider instanceof ExtensionElementProvider) {
+            extensionProviders.put(key, (ExtensionElementProvider<ExtensionElement>) provider);
         } else {
             throw new IllegalArgumentException("Provider must be a PacketExtensionProvider");
         }
@@ -288,18 +288,18 @@ public final class ProviderManager {
      *
      * @return all PacketExtensionProvider instances.
      */
-    public static List<PacketExtensionProvider<PacketExtension>> getExtensionProviders() {
-        List<PacketExtensionProvider<PacketExtension>> providers = new ArrayList<>(extensionProviders.size());
+    public static List<ExtensionElementProvider<ExtensionElement>> getExtensionProviders() {
+        List<ExtensionElementProvider<ExtensionElement>> providers = new ArrayList<>(extensionProviders.size());
         providers.addAll(extensionProviders.values());
         return providers;
     }
 
-    public static PacketExtensionProvider<PacketExtension> getStreamFeatureProvider(String elementName, String namespace) {
+    public static ExtensionElementProvider<ExtensionElement> getStreamFeatureProvider(String elementName, String namespace) {
         String key = getKey(elementName, namespace);
         return streamFeatureProviders.get(key);
     }
 
-    public static void addStreamFeatureProvider(String elementName, String namespace, PacketExtensionProvider<PacketExtension> provider) {
+    public static void addStreamFeatureProvider(String elementName, String namespace, ExtensionElementProvider<ExtensionElement> provider) {
         validate(elementName, namespace);
         String key = getKey(elementName, namespace);
         streamFeatureProviders.put(key, provider);

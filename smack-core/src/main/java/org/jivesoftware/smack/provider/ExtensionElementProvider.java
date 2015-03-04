@@ -18,15 +18,15 @@
 package org.jivesoftware.smack.provider;
 
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
- * An abstract class for parsing custom packets extensions. Each PacketExtensionProvider must
+ * An abstract class for parsing custom extensions elements. Each ExtensionElementProvider must
  * be registered with the ProviderManager class for it to be used. Every implementation
  * of this abstract class <b>must</b> have a public, no-argument constructor.
  *
  * @author Matt Tucker
  */
-public abstract class PacketExtensionProvider<PE extends PacketExtension> extends Provider<PE> {
+public abstract class ExtensionElementProvider<EE extends ExtensionElement> extends Provider<EE> {
 
 }

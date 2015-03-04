@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.pubsub.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.pubsub.Item;
@@ -33,12 +33,12 @@ import org.xmlpull.v1.XmlPullParserException;
 /**
  * Parses an <b>item</b> element as is defined in both the {@link PubSubNamespace#BASIC} and
  * {@link PubSubNamespace#EVENT} namespaces. To parse the item contents, it will use whatever
- * {@link PacketExtensionProvider} is registered in <b>smack.providers</b> for its element name and namespace. If no
+ * {@link ExtensionElementProvider} is registered in <b>smack.providers</b> for its element name and namespace. If no
  * provider is registered, it will return a {@link SimplePayload}.
  * 
  * @author Robin Collier
  */
-public class ItemProvider extends PacketExtensionProvider<Item> 
+public class ItemProvider extends ExtensionElementProvider<Item> 
 {
     @Override
     public Item parse(XmlPullParser parser, int initialDepth)
@@ -57,7 +57,7 @@ public class ItemProvider extends PacketExtensionProvider<Item>
             String payloadElemName = parser.getName();
             String payloadNS = parser.getNamespace();
 
-            final PacketExtensionProvider<PacketExtension> extensionProvider = ProviderManager.getExtensionProvider(payloadElemName, payloadNS);
+            final ExtensionElementProvider<ExtensionElement> extensionProvider = ProviderManager.getExtensionProvider(payloadElemName, payloadNS);
             if (extensionProvider == null)
             {
                 CharSequence payloadText = PacketParserUtils.parseElement(parser, true);
@@ -65,7 +65,7 @@ public class ItemProvider extends PacketExtensionProvider<Item>
             }
             else 
             {
-                return new PayloadItem<PacketExtension>(id, node, extensionProvider.parse(parser));
+                return new PayloadItem<ExtensionElement>(id, node, extensionProvider.parse(parser));
             }
         }
     }

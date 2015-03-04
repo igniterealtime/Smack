@@ -17,14 +17,14 @@
 package org.jivesoftware.smack.sm.packet;
 
 import org.jivesoftware.smack.packet.FullStreamElement;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class StreamManagement {
     public static final String NAMESPACE = "urn:xmpp:sm:3";
 
-    public static class StreamManagementFeature implements PacketExtension {
+    public static class StreamManagementFeature implements ExtensionElement {
 
         public static final String ELEMENT = "sm";
         public static final StreamManagementFeature INSTANCE = new StreamManagementFeature();

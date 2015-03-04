@@ -107,7 +107,7 @@ public class MultipleRecipientManager {
                         && StringUtils.isNullOrEmpty(replyTo) && StringUtils.isNullOrEmpty(replyRoom)) {
             Jid toJid = to.iterator().next();
             packet.setTo(toJid);
-            connection.sendPacket(packet);
+            connection.sendStanza(packet);
             return;
         }
         DomainBareJid serviceAddress = getMultipleRecipienServiceAddress(connection);
@@ -161,7 +161,7 @@ public class MultipleRecipientManager {
         if (replyAddress != null && replyAddress.getJid() != null) {
             // Send reply to the reply_to address
             reply.setTo(replyAddress.getJid());
-            connection.sendPacket(reply);
+            connection.sendStanza(reply);
         }
         else {
             // Send reply to multiple recipients
@@ -209,19 +209,19 @@ public class MultipleRecipientManager {
         if (to != null) {
             for (Jid jid : to) {
                 packet.setTo(jid);
-                connection.sendPacket(new PacketCopy(packet.toXML()));
+                connection.sendStanza(new PacketCopy(packet.toXML()));
             }
         }
         if (cc != null) {
             for (Jid jid : cc) {
                 packet.setTo(jid);
-                connection.sendPacket(new PacketCopy(packet.toXML()));
+                connection.sendStanza(new PacketCopy(packet.toXML()));
             }
         }
         if (bcc != null) {
             for (Jid jid : bcc) {
                 packet.setTo(jid);
-                connection.sendPacket(new PacketCopy(packet.toXML()));
+                connection.sendStanza(new PacketCopy(packet.toXML()));
             }
         }
     }
@@ -264,7 +264,7 @@ public class MultipleRecipientManager {
         // Add extension to packet
         packet.addExtension(multipleAddresses);
         // Send the packet
-        connection.sendPacket(packet);
+        connection.sendStanza(packet);
     }
 
     /**

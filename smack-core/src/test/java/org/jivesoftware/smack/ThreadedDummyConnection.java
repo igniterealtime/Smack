@@ -38,8 +38,8 @@ public class ThreadedDummyConnection extends DummyConnection {
     private volatile boolean timeout = false;
 
     @Override
-    public void sendPacket(Stanza packet) throws NotConnectedException, InterruptedException {
-        super.sendPacket(packet);
+    public void sendStanza(Stanza packet) throws NotConnectedException, InterruptedException {
+        super.sendStanza(packet);
 
         if (packet instanceof IQ && !timeout) {
             timeout = false;
@@ -62,7 +62,7 @@ public class ThreadedDummyConnection extends DummyConnection {
     }
 
     /**
-     * Calling this method will cause the next sendPacket call with an IQ packet to timeout.
+     * Calling this method will cause the next sendStanza call with an IQ packet to timeout.
      * This is accomplished by simply stopping the auto creating of the reply packet 
      * or processing one that was entered via {@link #processPacket(Stanza)}.
      */

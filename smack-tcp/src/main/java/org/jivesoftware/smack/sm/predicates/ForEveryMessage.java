@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smack.sm.predicates;
 
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 
-public class ForEveryMessage implements PacketFilter {
+public class ForEveryMessage implements StanzaFilter {
 
     public static final ForEveryMessage INSTANCE = new ForEveryMessage();
 

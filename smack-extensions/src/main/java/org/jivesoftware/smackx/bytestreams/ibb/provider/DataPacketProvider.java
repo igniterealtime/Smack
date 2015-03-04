@@ -46,7 +46,7 @@ public class DataPacketProvider {
         }
     }
 
-    public static class PacketExtensionProvider extends org.jivesoftware.smack.provider.PacketExtensionProvider<DataPacketExtension> {
+    public static class PacketExtensionProvider extends org.jivesoftware.smack.provider.ExtensionElementProvider<DataPacketExtension> {
 
         @Override
         public DataPacketExtension parse(XmlPullParser parser,

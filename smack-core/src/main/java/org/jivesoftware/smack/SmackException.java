@@ -19,7 +19,7 @@ package org.jivesoftware.smack;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jxmpp.jid.Jid;
 
@@ -66,9 +66,9 @@ public class SmackException extends Exception {
          */
         private static final long serialVersionUID = -6523363748984543636L;
 
-        private final PacketFilter filter;
+        private final StanzaFilter filter;
 
-        private NoResponseException(String message, PacketFilter filter) {
+        private NoResponseException(String message, StanzaFilter filter) {
             super(message);
             this.filter = filter;
         }
@@ -78,20 +78,20 @@ public class SmackException extends Exception {
          *
          * @return the used filter or <code>null</code>.
          */
-        public PacketFilter getFilter() {
+        public StanzaFilter getFilter() {
             return filter;
         }
 
         public static NoResponseException newWith(XMPPConnection connection) {
-            return newWith(connection, (PacketFilter) null);
+            return newWith(connection, (StanzaFilter) null);
         }
 
         public static NoResponseException newWith(XMPPConnection connection,
                         PacketCollector collector) {
-            return newWith(connection, collector.getPacketFilter());
+            return newWith(connection, collector.getStanzaFilter());
         }
 
-        public static NoResponseException newWith(XMPPConnection connection, PacketFilter filter) {
+        public static NoResponseException newWith(XMPPConnection connection, StanzaFilter filter) {
             final long replyTimeout = connection.getPacketReplyTimeout();
             final StringBuilder sb = new StringBuilder(256);
             sb.append("No response received within reply timeout. Timeout was "

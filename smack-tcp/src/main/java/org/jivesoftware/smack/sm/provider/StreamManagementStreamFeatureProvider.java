@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smack.sm.provider;
 
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature;
 import org.xmlpull.v1.XmlPullParser;
 
-public class StreamManagementStreamFeatureProvider extends PacketExtensionProvider<StreamManagementFeature> {
+public class StreamManagementStreamFeatureProvider extends ExtensionElementProvider<StreamManagementFeature> {
 
     @Override
     public StreamManagementFeature parse(XmlPullParser parser,

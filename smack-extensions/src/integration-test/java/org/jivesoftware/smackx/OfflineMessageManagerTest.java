@@ -55,7 +55,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
      */
     public void testReadAndDelete() {
         // Make user2 unavailable
-        getConnection(1).sendPacket(new Presence(Presence.Type.unavailable));
+        getConnection(1).sendStanza(new Presence(Presence.Type.unavailable));
 
         try {
             Thread.sleep(500);
@@ -100,7 +100,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
             // User2 becomes available again
             PacketCollector collector = getConnection(1).createPacketCollector(
                     new MessageTypeFilter(Message.Type.chat));
-            getConnection(1).sendPacket(new Presence(Presence.Type.available));
+            getConnection(1).sendStanza(new Presence(Presence.Type.available));
 
             // Check that no offline messages was sent to the user
             Message message = (Message) collector.nextResult(2500);
@@ -124,7 +124,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
      */
     public void testFetchAndPurge() {
         // Make user2 unavailable
-        getConnection(1).sendPacket(new Presence(Presence.Type.unavailable));
+        getConnection(1).sendStanza(new Presence(Presence.Type.unavailable));
 
         try {
             Thread.sleep(500);
@@ -158,7 +158,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
             // User2 becomes available again
             PacketCollector collector = getConnection(1).createPacketCollector(
                     new MessageTypeFilter(Message.Type.chat));
-            getConnection(1).sendPacket(new Presence(Presence.Type.available));
+            getConnection(1).sendStanza(new Presence(Presence.Type.available));
 
             // Check that no offline messages was sent to the user
             Message message = (Message) collector.nextResult(2500);

@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -30,7 +30,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * 
  * @author Robin Collier
  */
-public class HeadersExtension implements PacketExtension {
+public class HeadersExtension implements ExtensionElement {
     public static final String ELEMENT = "headers";
     public static final String NAMESPACE = "http://jabber.org/protocol/shim";
 

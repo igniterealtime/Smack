@@ -20,11 +20,11 @@ package org.jivesoftware.smackx.pep;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.IQ.Type;
@@ -65,8 +65,8 @@ public class PEPManager {
 
     private XMPPConnection connection;
 
-    private PacketFilter packetFilter = new PacketExtensionFilter("event", "http://jabber.org/protocol/pubsub#event");
-    private PacketListener packetListener;
+    private StanzaFilter packetFilter = new StanzaExtensionFilter("event", "http://jabber.org/protocol/pubsub#event");
+    private StanzaListener packetListener;
 
     /**
      * Creates a new PEP exchange manager.
@@ -117,7 +117,7 @@ public class PEPManager {
         //pubSub.setFrom(connection.getUser());
  
         // Send the message that contains the roster
-        connection.sendPacket(pubSub);
+        connection.sendStanza(pubSub);
     }
 
     /**
@@ -136,7 +136,7 @@ public class PEPManager {
 
     private void init() {
         // Listens for all roster exchange packets and fire the roster exchange listeners.
-        packetListener = new PacketListener() {
+        packetListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
                 PEPEvent event = (PEPEvent) message.getExtension("event", "http://jabber.org/protocol/pubsub#event");
@@ -144,12 +144,12 @@ public class PEPManager {
                 firePEPListeners(message.getFrom(), event);
             }
         };
-        connection.addSyncPacketListener(packetListener, packetFilter);
+        connection.addSyncStanzaListener(packetListener, packetFilter);
     }
 
     public void destroy() {
         if (connection != null)
-            connection.removeSyncPacketListener(packetListener);
+            connection.removeSyncStanzaListener(packetListener);
     }
 
     protected void finalize() throws Throwable {

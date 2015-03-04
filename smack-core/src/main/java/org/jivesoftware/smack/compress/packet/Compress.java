@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.FullStreamElement;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class Compress extends FullStreamElement {
@@ -53,7 +53,7 @@ public class Compress extends FullStreamElement {
         return xml;
     }
 
-    public static class Feature implements PacketExtension {
+    public static class Feature implements ExtensionElement {
         public static final String ELEMENT = "compression";
 
         public final List<String> methods;

@@ -22,7 +22,7 @@ import java.util.Iterator;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -143,7 +143,7 @@ public class XHTMLExtensionTest extends SmackTestCase {
 	//"http://jabber.org/protocol/xhtml-im"
 	// This listener will listen on the conn2 and answer an ACK if everything is ok
 	PacketFilter packetFilter =
-	    new PacketExtensionFilter("html", "http://jabber.org/protocol/xhtml-im");
+	    new StanzaExtensionFilter("html", "http://jabber.org/protocol/xhtml-im");
 	PacketListener packetListener = new PacketListener() {
 	    @Override
 	    public void processPacket(Packet packet) {

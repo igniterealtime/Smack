@@ -29,10 +29,10 @@ import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatManagerListener;
 import org.jivesoftware.smack.chat.ChatMessageListener;
 import org.jivesoftware.smack.filter.NotFilter;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
@@ -55,7 +55,7 @@ public class ChatStateManager extends Manager {
     private static final Map<XMPPConnection, ChatStateManager> INSTANCES =
             new WeakHashMap<XMPPConnection, ChatStateManager>();
 
-    private static final PacketFilter filter = new NotFilter(new PacketExtensionFilter(NAMESPACE));
+    private static final StanzaFilter filter = new NotFilter(new StanzaExtensionFilter(NAMESPACE));
 
     /**
      * Returns the ChatStateManager related to the XMPPConnection and it will create one if it does
@@ -96,7 +96,7 @@ public class ChatStateManager extends Manager {
 
     /**
      * Sets the current state of the provided chat. This method will send an empty bodied Message
-     * packet with the state attached as a {@link org.jivesoftware.smack.packet.PacketExtension}, if
+     * packet with the state attached as a {@link org.jivesoftware.smack.packet.ExtensionElement}, if
      * and only if the new chat state is different than the last state.
      *
      * @param newState the new state of the chat
@@ -171,7 +171,7 @@ public class ChatStateManager extends Manager {
         }
 
         public void processMessage(Chat chat, Message message) {
-            PacketExtension extension = message.getExtension(NAMESPACE);
+            ExtensionElement extension = message.getExtension(NAMESPACE);
             if (extension == null) {
                 return;
             }

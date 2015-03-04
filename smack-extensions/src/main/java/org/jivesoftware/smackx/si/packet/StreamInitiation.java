@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.si.packet;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.util.XmppDateTime;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -195,7 +195,7 @@ public class StreamInitiation extends IQ {
      *
      * @author Alexander Wenckus
      */
-    public static class File implements PacketExtension {
+    public static class File implements ExtensionElement {
 
         private final String name;
 
@@ -370,7 +370,7 @@ public class StreamInitiation extends IQ {
      * @author Alexander Wenckus
      *
      */
-    public class Feature implements PacketExtension {
+    public class Feature implements ExtensionElement {
 
         private final DataForm data;
 

@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.address.packet;
 
 import org.jivesoftware.smack.packet.NamedElement;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.Jid;
 
@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Gaston Dombiak
  */
-public class MultipleAddresses implements PacketExtension {
+public class MultipleAddresses implements ExtensionElement {
 
     public static final String NAMESPACE = "http://jabber.org/protocol/address";
     public static final String ELEMENT = "addresses";

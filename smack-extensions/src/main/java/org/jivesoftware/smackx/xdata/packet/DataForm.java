@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.xdata.packet;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.xdata.FormField;
 
@@ -34,7 +34,7 @@ import java.util.Locale;
  *
  * @author Gaston Dombiak
  */
-public class DataForm implements PacketExtension {
+public class DataForm implements ExtensionElement {
 
     public static final String NAMESPACE = "jabber:x:data";
     public static final String ELEMENT = "x";

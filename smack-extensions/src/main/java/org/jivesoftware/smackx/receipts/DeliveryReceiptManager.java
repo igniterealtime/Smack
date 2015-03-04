@@ -26,14 +26,14 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
@@ -57,7 +57,7 @@ import org.jxmpp.jid.Jid;
  * });
  * Message message = …
  * DeliveryReceiptRequest.addTo(message);
- * connection.sendPacket(message);
+ * connection.sendStanza(message);
  * </pre>
  *
  * DeliveryReceiptManager can be configured to automatically add delivery receipt requests to every
@@ -68,10 +68,10 @@ import org.jxmpp.jid.Jid;
  */
 public class DeliveryReceiptManager extends Manager {
 
-    private static final PacketFilter MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST = new AndFilter(PacketTypeFilter.MESSAGE,
-                    new PacketExtensionFilter(new DeliveryReceiptRequest()));
-    private static final PacketFilter MESSAGES_WITH_DELIVERY_RECEIPT = new AndFilter(PacketTypeFilter.MESSAGE,
-                    new PacketExtensionFilter(DeliveryReceipt.ELEMENT, DeliveryReceipt.NAMESPACE));
+    private static final StanzaFilter MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST = new AndFilter(StanzaTypeFilter.MESSAGE,
+                    new StanzaExtensionFilter(new DeliveryReceiptRequest()));
+    private static final StanzaFilter MESSAGES_WITH_DELIVERY_RECEIPT = new AndFilter(StanzaTypeFilter.MESSAGE,
+                    new StanzaExtensionFilter(DeliveryReceipt.ELEMENT, DeliveryReceipt.NAMESPACE));
 
     private static Map<XMPPConnection, DeliveryReceiptManager> instances = new WeakHashMap<XMPPConnection, DeliveryReceiptManager>();
 
@@ -128,10 +128,10 @@ public class DeliveryReceiptManager extends Manager {
         sdm.addFeature(DeliveryReceipt.NAMESPACE);
 
         // Add the packet listener to handling incoming delivery receipts
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException {
-                DeliveryReceipt dr = DeliveryReceipt.from(packet);
+                DeliveryReceipt dr = DeliveryReceipt.from((Message) packet);
                 // notify listeners of incoming receipt
                 for (ReceiptReceivedListener l : receiptReceivedListeners) {
                     l.onReceiptReceived(packet.getFrom(), packet.getTo(), dr.getId(), packet);
@@ -140,7 +140,7 @@ public class DeliveryReceiptManager extends Manager {
         }, MESSAGES_WITH_DELIVERY_RECEIPT);
 
         // Add the packet listener to handle incoming delivery receipt requests
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
                 final Jid from = packet.getFrom();
@@ -157,9 +157,9 @@ public class DeliveryReceiptManager extends Manager {
                     break;
                 }
 
-                Message ack = new Message(from, Message.Type.normal);
-                ack.addExtension(new DeliveryReceipt(packet.getStanzaId()));
-                connection.sendPacket(ack);
+                final Message messageWithReceiptRequest = (Message) packet;
+                Message ack = receiptMessageFor(messageWithReceiptRequest);
+                connection.sendStanza(ack);
             }
         }, MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST);
     }
@@ -234,7 +234,7 @@ public class DeliveryReceiptManager extends Manager {
         receiptReceivedListeners.remove(listener);
     }
 
-    private static final PacketListener AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER = new PacketListener() {
+    private static final StanzaListener AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER = new StanzaListener() {
         @Override
         public void processPacket(Stanza packet) throws NotConnectedException {
             Message message = (Message) packet;
@@ -287,5 +287,18 @@ public class DeliveryReceiptManager extends Manager {
     @Deprecated
     public static String addDeliveryReceiptRequest(Message m) {
         return DeliveryReceiptRequest.addTo(m);
+    }
+
+    /**
+     * Create and return a new message including a delivery receipt extension for the given message.
+     *
+     * @param messageWithReceiptRequest the given message with a receipt request extension.
+     * @return a new message with a receipt.
+     * @since 4.1
+     */
+    public static Message receiptMessageFor(Message messageWithReceiptRequest) {
+        Message message = new Message(messageWithReceiptRequest.getFrom(), messageWithReceiptRequest.getType());
+        message.addExtension(new DeliveryReceipt(messageWithReceiptRequest.getStanzaId()));
+        return message;
     }
 }

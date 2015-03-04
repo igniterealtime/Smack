@@ -65,14 +65,14 @@ public class DataListenerTest {
         data.setFrom(initiatorJID);
         data.setTo(targetJID);
 
-        dataListener.processPacket(data);
+        dataListener.handleIQRequest(data);
 
         // wait because packet is processed in an extra thread
         Thread.sleep(200);
 
         // capture reply to the In-Band Bytestream close request
         ArgumentCaptor<IQ> argument = ArgumentCaptor.forClass(IQ.class);
-        verify(connection).sendPacket(argument.capture());
+        verify(connection).sendStanza(argument.capture());
 
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());

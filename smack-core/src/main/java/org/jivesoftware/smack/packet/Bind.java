@@ -70,7 +70,7 @@ public class Bind extends IQ {
         return xml;
     }
 
-    public static class Feature implements PacketExtension {
+    public static class Feature implements ExtensionElement {
 
         public static final Feature INSTANCE = new Feature();
 

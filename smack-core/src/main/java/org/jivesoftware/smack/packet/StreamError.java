@@ -104,7 +104,7 @@ public class StreamError extends AbstractError implements PlainStreamElement {
     private final Condition condition;
     private final String conditionText;
 
-    public StreamError(Condition condition, String conditionText, Map<String, String> descriptiveTexts, List<PacketExtension> extensions) {
+    public StreamError(Condition condition, String conditionText, Map<String, String> descriptiveTexts, List<ExtensionElement> extensions) {
         super(descriptiveTexts, extensions);
         // Some implementations may send the condition as non-empty element containing the empty string, that is
         // <condition xmlns='foo'></condition>, in this case the parser may calls this constructor with the empty string

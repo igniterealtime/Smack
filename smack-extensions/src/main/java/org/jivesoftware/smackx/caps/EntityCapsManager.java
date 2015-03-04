@@ -22,18 +22,18 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.filter.NotFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
@@ -92,11 +92,11 @@ public class EntityCapsManager extends Manager {
 
     private static Map<XMPPConnection, EntityCapsManager> instances = new WeakHashMap<>();
 
-    private static final PacketFilter PRESENCES_WITH_CAPS = new AndFilter(new PacketTypeFilter(Presence.class), new PacketExtensionFilter(
+    private static final StanzaFilter PRESENCES_WITH_CAPS = new AndFilter(new StanzaTypeFilter(Presence.class), new StanzaExtensionFilter(
                     ELEMENT, NAMESPACE));
-    private static final PacketFilter PRESENCES_WITHOUT_CAPS = new AndFilter(new PacketTypeFilter(Presence.class), new NotFilter(new PacketExtensionFilter(
+    private static final StanzaFilter PRESENCES_WITHOUT_CAPS = new AndFilter(new StanzaTypeFilter(Presence.class), new NotFilter(new StanzaExtensionFilter(
                     ELEMENT, NAMESPACE)));
-    private static final PacketFilter PRESENCES = PacketTypeFilter.PRESENCE;
+    private static final StanzaFilter PRESENCES = StanzaTypeFilter.PRESENCE;
 
     /**
      * Map of "node + '#' + hash" to DiscoverInfo data
@@ -313,7 +313,7 @@ public class EntityCapsManager extends Manager {
         if (autoEnableEntityCaps)
             enableEntityCaps();
 
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             // Listen for remote presence stanzas with the caps extension
             // If we receive such a stanza, record the JID and nodeVer
             @Override
@@ -328,7 +328,7 @@ public class EntityCapsManager extends Manager {
 
         }, PRESENCES_WITH_CAPS);
 
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) {
                 // always remove the JID from the map, even if entityCaps are
@@ -338,7 +338,7 @@ public class EntityCapsManager extends Manager {
             }
         }, PRESENCES_WITHOUT_CAPS);
 
-        connection.addPacketSendingListener(new PacketListener() {
+        connection.addPacketSendingListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) {
                 presenceSend = true;
@@ -348,7 +348,7 @@ public class EntityCapsManager extends Manager {
         // Intercept presence packages and add caps data when intended.
         // XEP-0115 specifies that a client SHOULD include entity capabilities
         // with every presence notification it sends.
-        PacketListener packetInterceptor = new PacketListener() {
+        StanzaListener packetInterceptor = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 if (!entityCapsEnabled)
                     return;
@@ -486,7 +486,7 @@ public class EntityCapsManager extends Manager {
         final List<Identity> identities = new LinkedList<Identity>(ServiceDiscoveryManager.getInstanceFor(connection).getIdentities());
         sdm.setNodeInformationProvider(entityNode + '#' + currentCapsVersion, new AbstractNodeInformationProvider() {
             List<String> features = sdm.getFeatures();
-            List<PacketExtension> packetExtensions = sdm.getExtendedInfoAsList();
+            List<ExtensionElement> packetExtensions = sdm.getExtendedInfoAsList();
             @Override
             public List<String> getNodeFeatures() {
                 return features;
@@ -496,7 +496,7 @@ public class EntityCapsManager extends Manager {
                 return identities;
             }
             @Override
-            public List<PacketExtension> getNodePacketExtensions() {
+            public List<ExtensionElement> getNodePacketExtensions() {
                 return packetExtensions;
             }
         });
@@ -509,7 +509,7 @@ public class EntityCapsManager extends Manager {
         if (connection != null && connection.isAuthenticated() && presenceSend) {
             Presence presence = new Presence(Presence.Type.available);
             try {
-                connection.sendPacket(presence);
+                connection.sendStanza(presence);
             }
             catch (InterruptedException | NotConnectedException e) {
                 LOGGER.log(Level.WARNING, "Could could not update presence with caps info", e);
@@ -557,7 +557,7 @@ public class EntityCapsManager extends Manager {
      */
     protected static boolean verifyPacketExtensions(DiscoverInfo info) {
         List<FormField> foundFormTypes = new LinkedList<FormField>();
-        for (PacketExtension pe : info.getExtensions()) {
+        for (ExtensionElement pe : info.getExtensions()) {
             if (pe.getNamespace().equals(DataForm.NAMESPACE)) {
                 DataForm df = (DataForm) pe;
                 for (FormField f : df.getFields()) {

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.delay;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 
 /**
@@ -95,7 +95,7 @@ public class DelayInformationManager {
      * @return true if the stanza got delayed.
      */
     public static boolean isDelayedStanza(Stanza packet) {
-        PacketExtension packetExtension = getDelayInformation(packet);
+        ExtensionElement packetExtension = getDelayInformation(packet);
         return packetExtension != null;
     }
 }

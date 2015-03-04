@@ -35,7 +35,7 @@ public class LastActivityManagerTest extends SmackTestCase {
 
 		// Send a message as the last activity action from connection 1 to
 		// connection 0
-		conn1.sendPacket(new Message(getBareJID(0)));
+		conn1.sendStanza(new Message(getBareJID(0)));
 
 		// Wait 1 seconds to have some idle time
 		try {
@@ -70,7 +70,7 @@ public class LastActivityManagerTest extends SmackTestCase {
 
 		// Send a message as the last activity action from connection 2 to
 		// connection 0
-		conn2.sendPacket(new Message(getBareJID(0)));
+		conn2.sendStanza(new Message(getBareJID(0)));
 
 		// Wait 1 seconds to have some idle time
 		try {

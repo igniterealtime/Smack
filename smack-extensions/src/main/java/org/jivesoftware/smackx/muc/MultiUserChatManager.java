@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -38,10 +38,10 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.NotFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
@@ -107,7 +107,7 @@ public class MultiUserChatManager extends Manager {
         return multiUserChatManager;
     }
 
-    private static final PacketFilter INVITATION_FILTER = new AndFilter(PacketTypeFilter.MESSAGE, new PacketExtensionFilter(new MUCUser()),
+    private static final StanzaFilter INVITATION_FILTER = new AndFilter(StanzaTypeFilter.MESSAGE, new StanzaExtensionFilter(new MUCUser()),
                     new NotFilter(MessageTypeFilter.ERROR));
 
     private final Set<InvitationListener> invitationsListeners = new CopyOnWriteArraySet<InvitationListener>();
@@ -124,7 +124,7 @@ public class MultiUserChatManager extends Manager {
         super(connection);
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // listeners if the message includes an invitation.
-        PacketListener invitationPacketListener = new PacketListener() {
+        StanzaListener invitationPacketListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 final Message message = (Message) packet;
                 // Get the MUCUser extension
@@ -145,7 +145,7 @@ public class MultiUserChatManager extends Manager {
                 }
             }
         };
-        connection.addAsyncPacketListener(invitationPacketListener, INVITATION_FILTER);
+        connection.addAsyncStanzaListener(invitationPacketListener, INVITATION_FILTER);
     }
 
     /**
@@ -307,7 +307,7 @@ public class MultiUserChatManager extends Manager {
         // Add the MUCUser packet that includes the rejection
         message.addExtension(mucUser);
 
-        connection().sendPacket(message);
+        connection().sendStanza(message);
     }
 
     /**

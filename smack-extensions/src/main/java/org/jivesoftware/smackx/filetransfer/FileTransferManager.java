@@ -171,6 +171,6 @@ public class FileTransferManager extends Manager {
         // Socks5BytestreamManager.replyRejectPacket(IQ).
         IQ rejection = IQ.createErrorResponse(initiation, new XMPPError(
                         XMPPError.Condition.forbidden));
-        connection().sendPacket(rejection);
+        connection().sendStanza(rejection);
 	}
 }

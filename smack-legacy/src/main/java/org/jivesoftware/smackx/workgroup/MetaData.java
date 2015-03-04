@@ -22,12 +22,12 @@ import java.util.Map;
 
 import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * MetaData packet extension.
  */
-public class MetaData implements PacketExtension {
+public class MetaData implements ExtensionElement {
 
     /**
      * Element name of the packet extension.

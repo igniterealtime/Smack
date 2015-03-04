@@ -28,7 +28,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Gaston Dombiak
  */
-public class FromMatchesFilter implements PacketFilter {
+public class FromMatchesFilter implements StanzaFilter {
 
     private final Jid address;
 

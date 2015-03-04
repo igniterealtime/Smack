@@ -21,7 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -51,7 +51,7 @@ public class IntrospectionProvider{
         }
     }
 
-    public static abstract class PacketExtensionIntrospectionProvider<PE extends PacketExtension> extends PacketExtensionProvider<PE> {
+    public static abstract class PacketExtensionIntrospectionProvider<PE extends ExtensionElement> extends ExtensionElementProvider<PE> {
         private final Class<PE> elementClass;
 
         protected PacketExtensionIntrospectionProvider(Class<PE> elementClass) {

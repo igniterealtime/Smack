@@ -19,11 +19,11 @@ package org.jivesoftware.smack.test.util;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Stanza;
 
-public class WaitForPacketListener implements PacketListener {
+public class WaitForPacketListener implements StanzaListener {
 
     private CountDownLatch latch = new CountDownLatch(1);
 

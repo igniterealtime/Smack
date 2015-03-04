@@ -20,7 +20,7 @@ import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
@@ -38,7 +38,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.compress.packet.Compressed;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IQ;
@@ -187,8 +187,19 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private final SynchronizationPoint<XMPPException> compressSyncPoint = new SynchronizationPoint<XMPPException>(
                     this);
 
+    /**
+     * The default bundle and defer callback, used for new connections.
+     * @see bundleAndDeferCallback
+     */
     private static BundleAndDeferCallback defaultBundleAndDeferCallback;
 
+    /**
+     * The used bundle and defer callback.
+     * <p>
+     * Although this field may be set concurrently, the 'volatile' keyword was deliberately not added, in order to avoid
+     * having a 'volatile' read within the writer threads loop.
+     * </p>
+     */
     private BundleAndDeferCallback bundleAndDeferCallback = defaultBundleAndDeferCallback;
 
     private static boolean useSmDefault = false;
@@ -255,13 +266,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * themselves after they have been invoked.
      * </p>
      */
-    private final Collection<PacketListener> stanzaAcknowledgedListeners = new ConcurrentLinkedQueue<PacketListener>();
+    private final Collection<StanzaListener> stanzaAcknowledgedListeners = new ConcurrentLinkedQueue<StanzaListener>();
 
     /**
      * This listeners are invoked for a acknowledged stanza that has the given stanza ID. They will
      * only be invoked once and automatically removed after that.
      */
-    private final Map<String, PacketListener> stanzaIdAcknowledgedListeners = new ConcurrentHashMap<String, PacketListener>();
+    private final Map<String, StanzaListener> stanzaIdAcknowledgedListeners = new ConcurrentHashMap<String, StanzaListener>();
 
     /**
      * Predicates that determine if an stream management ack should be requested from the server.
@@ -270,7 +281,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * order in which they are invoked in order to determine if an ack request should be send or not.
      * </p>
      */
-    private final Set<PacketFilter> requestAckPredicates = new LinkedHashSet<PacketFilter>();
+    private final Set<StanzaFilter> requestAckPredicates = new LinkedHashSet<StanzaFilter>();
 
     private final XMPPTCPConnectionConfiguration config;
 
@@ -390,10 +401,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             // There was a previous connection with SM enabled but that was either not resumable or
             // failed to resume. Make sure that we (re-)send the unacknowledged stanzas.
             unacknowledgedStanzas.drainTo(previouslyUnackedStanzas);
+            // Reset unacknowledged stanzas to 'null' to signal that we never send 'enable' in this
+            // XMPP session (There maybe was an enabled in a previous XMPP session of this
+            // connection instance though). This is used in writePackets to decide if stanzas should
+            // be added to the unacknowledged stanzas queue, because they have to be added right
+            // after the 'enable' stream element has been sent.
+            unacknowledgedStanzas = null;
         }
         if (isSmAvailable() && useSm) {
             // Remove what is maybe left from previously stream managed sessions
-            unacknowledgedStanzas = new ArrayBlockingQueue<Stanza>(QUEUE_SIZE);
             serverHandledStanzasCount = 0;
             // XEP-198 3. Enabling Stream Management. If the server response to 'Enable' is 'Failed'
             // then this is a non recoverable error and we therefore throw an exception.
@@ -409,7 +425,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
         // (Re-)send the stanzas *after* we tried to enable SM
         for (Stanza stanza : previouslyUnackedStanzas) {
-            sendPacketInternal(stanza);
+            sendStanzaInternal(stanza);
         }
 
         afterSuccessfulLogin(false);
@@ -496,7 +512,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         setWasAuthenticated();
         // If we are able to resume the stream, then don't set
         // connected/authenticated/usingTLS to false since we like behave like we are still
-        // connected (e.g. sendPacket should not throw a NotConnectedException).
+        // connected (e.g. sendStanza should not throw a NotConnectedException).
         if (isSmResumptionPossible() && instant) {
             disconnectedButResumeable = true;
         } else {
@@ -524,10 +540,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void sendPacketInternal(Stanza packet) throws NotConnectedException, InterruptedException {
+    protected void sendStanzaInternal(Stanza packet) throws NotConnectedException, InterruptedException {
         packetWriter.sendStreamElement(packet);
         if (isSmEnabled()) {
-            for (PacketFilter requestAckPredicate : requestAckPredicates) {
+            for (StanzaFilter requestAckPredicate : requestAckPredicates) {
                 if (requestAckPredicate.accept(packet)) {
                     requestSmAcknowledgementInternal();
                     break;
@@ -606,7 +622,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             // If debugging is enabled, we should start the thread that will listen for
             // all packets and then log them.
             if (config.isDebuggerEnabled()) {
-                addAsyncPacketListener(debugger.getReaderListener(), null);
+                addAsyncStanzaListener(debugger.getReaderListener(), null);
                 if (debugger.getWriterListener() != null) {
                     addPacketSendingListener(debugger.getWriterListener(), null);
                 }
@@ -1173,6 +1189,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         private volatile boolean instantShutdown;
 
+        /**
+         * True if some preconditions are given to start the bundle and defer mechanism.
+         * <p>
+         * This will likely get set to true right after the start of the writer thread, because
+         * {@link #nextStreamElement()} will check if {@link queue} is empty, which is probably the case, and then set
+         * this field to true.
+         * </p>
+         */
+        private boolean shouldBundleAndDefer;
+
         /** 
         * Initializes the writer in order to be used. It is called at the first connection and also 
         * is invoked if the connection is disconnected by an error.
@@ -1243,7 +1269,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 shutdownDone.checkIfSuccessOrWait();
             }
             catch (NoResponseException e) {
-                LOGGER.log(Level.WARNING, "NoResponseException", e);
+                LOGGER.log(Level.WARNING, "shutdownDone was not marked as successful by the writer thread", e);
             }
         }
 
@@ -1255,6 +1281,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          * @return the next element for writing or null.
          */
         private Element nextStreamElement() {
+            // It is important the we check if the queue is empty before removing an element from it
+            if (queue.isEmpty()) {
+                shouldBundleAndDefer = true;
+            }
             Element packet = null;
             try {
                 packet = queue.take();
@@ -1285,7 +1315,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     // If the preconditions are given (e.g. bundleAndDefer callback is set, queue is
                     // empty), then we could wait a bit for further stanzas attempting to decrease
                     // our energy consumption
-                    if (localBundleAndDeferCallback != null && isAuthenticated() && queue.isEmpty()) {
+                    if (localBundleAndDeferCallback != null && isAuthenticated() && shouldBundleAndDefer) {
+                        // Reset shouldBundleAndDefer to false, nextStreamElement() will set it to true once the
+                        // queue is empty again.
+                        shouldBundleAndDefer = false;
                         final AtomicBoolean bundlingAndDeferringStopped = new AtomicBoolean();
                         final int bundleAndDeferMillis = localBundleAndDeferCallback.getBundleAndDeferMillis(new BundleAndDefer(
                                         bundlingAndDeferringStopped));
@@ -1306,11 +1339,17 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     if (element instanceof Stanza) {
                         packet = (Stanza) element;
                     }
+                    else if (element instanceof Enable) {
+                        // The client needs to add messages to the unacknowledged stanzas queue
+                        // right after it sent 'enabled'. Stanza will be added once
+                        // unacknowledgedStanzas is not null.
+                        unacknowledgedStanzas = new ArrayBlockingQueue<>(QUEUE_SIZE);
+                    }
                     // Check if the stream element should be put to the unacknowledgedStanza
-                    // queue. Note that we can not do the put() in sendPacketInternal() and the
-                    // packet order is not stable at this point (sendPacketInternal() can be
+                    // queue. Note that we can not do the put() in sendStanzaInternal() and the
+                    // packet order is not stable at this point (sendStanzaInternal() can be
                     // called concurrently).
-                    if (isSmEnabled() && packet != null) {
+                    if (unacknowledgedStanzas != null && packet != null) {
                         // If the unacknowledgedStanza queue is nearly full, request an new ack
                         // from the server in order to drain it
                         if (unacknowledgedStanzas.size() == 0.8 * XMPPTCPConnection.QUEUE_SIZE) {
@@ -1382,6 +1421,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     LOGGER.log(Level.FINE, "Ignoring Exception in writePackets()", e);
                 }
             } finally {
+                LOGGER.fine("Reporting shutdownDone success in writer thread");
                 shutdownDone.reportSuccess();
             }
         }
@@ -1462,7 +1502,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @param predicate the predicate to add.
      * @return if the predicate was not already active.
      */
-    public boolean addRequestAckPredicate(PacketFilter predicate) {
+    public boolean addRequestAckPredicate(StanzaFilter predicate) {
         synchronized (requestAckPredicates) {
             return requestAckPredicates.add(predicate);
         }
@@ -1473,7 +1513,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @param predicate the predicate to remove.
      * @return true if the predicate was removed.
      */
-    public boolean removeRequestAckPredicate(PacketFilter predicate) {
+    public boolean removeRequestAckPredicate(StanzaFilter predicate) {
         synchronized (requestAckPredicates) {
             return requestAckPredicates.remove(predicate);
         }
@@ -1533,13 +1573,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * Add a Stanza acknowledged listener.
      * <p>
      * Those listeners will be invoked every time a Stanza has been acknowledged by the server. The will not get
-     * automatically removed. Consider using {@link #addStanzaIdAcknowledgedListener(String, PacketListener)} when
+     * automatically removed. Consider using {@link #addStanzaIdAcknowledgedListener(String, StanzaListener)} when
      * possible.
      * </p>
      * 
      * @param listener the listener to add.
      */
-    public void addStanzaAcknowledgedListener(PacketListener listener) {
+    public void addStanzaAcknowledgedListener(StanzaListener listener) {
         stanzaAcknowledgedListeners.add(listener);
     }
 
@@ -1549,7 +1589,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @param listener the listener.
      * @return true if the listener was removed.
      */
-    public boolean removeStanzaAcknowledgedListener(PacketListener listener) {
+    public boolean removeStanzaAcknowledgedListener(StanzaListener listener) {
         return stanzaAcknowledgedListeners.remove(listener);
     }
 
@@ -1572,7 +1612,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @return the previous listener for this stanza ID or null.
      * @throws StreamManagementNotEnabledException if Stream Management is not enabled.
      */
-    public PacketListener addStanzaIdAcknowledgedListener(final String id, PacketListener listener) throws StreamManagementNotEnabledException {
+    public StanzaListener addStanzaIdAcknowledgedListener(final String id, StanzaListener listener) throws StreamManagementNotEnabledException {
         // Prevent users from adding callbacks that will never get removed
         if (!smWasEnabledAtLeastOnce) {
             throw new StreamManagementException.StreamManagementNotEnabledException();
@@ -1594,7 +1634,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @param id the stanza ID.
      * @return true if the listener was found and removed, false otherwise.
      */
-    public PacketListener removeStanzaIdAcknowledgedListener(String id) {
+    public StanzaListener removeStanzaIdAcknowledgedListener(String id) {
         return stanzaIdAcknowledgedListeners.remove(id);
     }
 
@@ -1716,7 +1756,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 @Override
                 public void run() {
                     for (Stanza ackedStanza : ackedStanzas) {
-                        for (PacketListener listener : stanzaAcknowledgedListeners) {
+                        for (StanzaListener listener : stanzaAcknowledgedListeners) {
                             try {
                                 listener.processPacket(ackedStanza);
                             }
@@ -1728,7 +1768,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         if (StringUtils.isNullOrEmpty(id)) {
                             continue;
                         }
-                        PacketListener listener = stanzaIdAcknowledgedListeners.remove(id);
+                        StanzaListener listener = stanzaIdAcknowledgedListeners.remove(id);
                         if (listener != null) {
                             try {
                                 listener.processPacket(ackedStanza);

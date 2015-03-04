@@ -23,9 +23,9 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -60,8 +60,8 @@ public class OfflineMessageManager {
 
     private final XMPPConnection connection;
 
-    private static final PacketFilter PACKET_FILTER = new AndFilter(new PacketExtensionFilter(
-                    new OfflineMessageInfo()), PacketTypeFilter.MESSAGE);
+    private static final StanzaFilter PACKET_FILTER = new AndFilter(new StanzaExtensionFilter(
+                    new OfflineMessageInfo()), StanzaTypeFilter.MESSAGE);
 
     public OfflineMessageManager(XMPPConnection connection) {
         this.connection = connection;
@@ -150,7 +150,7 @@ public class OfflineMessageManager {
             request.addItem(item);
         }
         // Filter offline messages that were requested by this request
-        PacketFilter messageFilter = new AndFilter(PACKET_FILTER, new PacketFilter() {
+        StanzaFilter messageFilter = new AndFilter(PACKET_FILTER, new StanzaFilter() {
             public boolean accept(Stanza packet) {
                 OfflineMessageInfo info = (OfflineMessageInfo) packet.getExtension("offline",
                         namespace);
@@ -191,7 +191,7 @@ public class OfflineMessageManager {
         request.setFetch(true);
 
         PacketCollector resultCollector = connection.createPacketCollectorAndSend(request);
-        PacketCollector.Configuration messageCollectorConfiguration = PacketCollector.newConfiguration().setPacketFilter(PACKET_FILTER).setCollectorToReset(resultCollector);
+        PacketCollector.Configuration messageCollectorConfiguration = PacketCollector.newConfiguration().setStanzaFilter(PACKET_FILTER).setCollectorToReset(resultCollector);
         PacketCollector messageCollector = connection.createPacketCollector(messageCollectorConfiguration);
 
         List<Message> messages = null;

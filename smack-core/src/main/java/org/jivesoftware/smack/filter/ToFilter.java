@@ -19,7 +19,7 @@ package org.jivesoftware.smack.filter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jxmpp.jid.Jid;
 
-public class ToFilter implements PacketFilter {
+public class ToFilter implements StanzaFilter {
 
     private final Jid to;
 

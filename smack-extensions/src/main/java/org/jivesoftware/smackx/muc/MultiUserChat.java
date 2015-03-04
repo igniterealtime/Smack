@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -45,9 +45,9 @@ import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.MessageWithSubjectFilter;
 import org.jivesoftware.smack.filter.NotFilter;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.filter.ToFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
@@ -112,18 +112,18 @@ public class MultiUserChat {
      * the groupchat participants, i.e. it filters only the bare JID of the from
      * attribute against the JID of the MUC.
      */
-    private final PacketFilter fromRoomFilter;
+    private final StanzaFilter fromRoomFilter;
 
     /**
      * Same as {@link #fromRoomFilter} together with {@link MessageTypeFilter#GROUPCHAT}.
      */
-    private final PacketFilter fromRoomGroupchatFilter;
+    private final StanzaFilter fromRoomGroupchatFilter;
 
-    private final PacketListener presenceInterceptor;
-    private final PacketListener messageListener;
-    private final PacketListener presenceListener;
-    private final PacketListener subjectListener;
-    private final PacketListener declinesListener;
+    private final StanzaListener presenceInterceptor;
+    private final StanzaListener messageListener;
+    private final StanzaListener presenceListener;
+    private final StanzaListener subjectListener;
+    private final StanzaListener declinesListener;
 
     private String subject;
     private Resourcepart nickname;
@@ -138,7 +138,7 @@ public class MultiUserChat {
         fromRoomFilter = FromMatchesFilter.create(room);
         fromRoomGroupchatFilter = new AndFilter(fromRoomFilter, MessageTypeFilter.GROUPCHAT);
 
-        messageListener = new PacketListener() {
+        messageListener = new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException {
                 Message message = (Message) packet;
@@ -149,7 +149,7 @@ public class MultiUserChat {
         };
 
         // Create a listener for subject updates.
-        subjectListener = new PacketListener() {
+        subjectListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Message msg = (Message) packet;
                 FullJid from = msg.getFrom().asFullJidIfPossible();
@@ -167,7 +167,7 @@ public class MultiUserChat {
         };
 
         // Create a listener for all presence updates.
-        presenceListener = new PacketListener() {
+        presenceListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Presence presence = (Presence) packet;
                 final FullJid from = presence.getFrom().asFullJidIfPossible();
@@ -210,7 +210,7 @@ public class MultiUserChat {
                 case unavailable:
                     occupantsMap.remove(from);
                     MUCUser mucUser = MUCUser.from(packet);
-                    if (mucUser != null && mucUser.getStatus() != null) {
+                    if (mucUser != null && mucUser.hasStatus()) {
                         // Fire events according to the received presence code
                         checkPresenceCode(
                             mucUser.getStatus(),
@@ -237,7 +237,7 @@ public class MultiUserChat {
 
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // rejection listeners if the message includes an invitation rejection.
-        declinesListener = new PacketListener() {
+        declinesListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 // Get the MUC User extension
                 MUCUser mucUser = MUCUser.from(packet);
@@ -250,7 +250,7 @@ public class MultiUserChat {
             }
         };
 
-        presenceInterceptor = new PacketListener() {
+        presenceInterceptor = new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) {
                 Presence presence = (Presence) packet;
@@ -306,18 +306,18 @@ public class MultiUserChat {
         joinPresence.addExtension(mucInitialPresence);
 
         // Wait for a presence packet back from the server.
-        PacketFilter responseFilter = new AndFilter(FromMatchesFilter.createFull(jid), new PacketTypeFilter(Presence.class));
+        StanzaFilter responseFilter = new AndFilter(FromMatchesFilter.createFull(jid), new StanzaTypeFilter(Presence.class));
 
         // Setup the messageListeners and presenceListeners *before* the join presence is send.
-        connection.addSyncPacketListener(messageListener, fromRoomGroupchatFilter);
-        connection.addSyncPacketListener(presenceListener, new AndFilter(fromRoomFilter,
-                        PacketTypeFilter.PRESENCE));
-        connection.addSyncPacketListener(subjectListener, new AndFilter(fromRoomFilter,
+        connection.addSyncStanzaListener(messageListener, fromRoomGroupchatFilter);
+        connection.addSyncStanzaListener(presenceListener, new AndFilter(fromRoomFilter,
+                        StanzaTypeFilter.PRESENCE));
+        connection.addSyncStanzaListener(subjectListener, new AndFilter(fromRoomFilter,
                         MessageWithSubjectFilter.INSTANCE));
-        connection.addSyncPacketListener(declinesListener, new AndFilter(new PacketExtensionFilter(MUCUser.ELEMENT,
+        connection.addSyncStanzaListener(declinesListener, new AndFilter(new StanzaExtensionFilter(MUCUser.ELEMENT,
                         MUCUser.NAMESPACE), new NotFilter(MessageTypeFilter.ERROR)));
         connection.addPacketInterceptor(presenceInterceptor, new AndFilter(new ToFilter(room),
-                        PacketTypeFilter.PRESENCE));
+                        StanzaTypeFilter.PRESENCE));
         messageCollector = connection.createPacketCollector(fromRoomGroupchatFilter);
 
         Presence presence;
@@ -539,7 +539,7 @@ public class MultiUserChat {
         // field is in the form "roomName@service/nickname"
         Presence leavePresence = new Presence(Presence.Type.unavailable);
         leavePresence.setTo(JidCreate.fullFrom(room, nickname));
-        connection.sendPacket(leavePresence);
+        connection.sendStanza(leavePresence);
         // Reset occupant information.
         occupantsMap.clear();
         nickname = null;
@@ -717,7 +717,7 @@ public class MultiUserChat {
         // Add the MUCUser packet that includes the invitation to the message
         message.addExtension(mucUser);
 
-        connection.sendPacket(message);
+        connection.sendStanza(message);
     }
 
     /**
@@ -782,7 +782,7 @@ public class MultiUserChat {
     }
 
     /**
-     * Adds a new {@link PacketListener} that will be invoked every time a new presence
+     * Adds a new {@link StanzaListener} that will be invoked every time a new presence
      * is going to be sent by this MultiUserChat to the server. Packet interceptors may
      * add new extensions to the presence that is going to be sent to the MUC service.
      *
@@ -793,13 +793,13 @@ public class MultiUserChat {
     }
 
     /**
-     * Removes a {@link PacketListener} that was being invoked every time a new presence
+     * Removes a {@link StanzaListener} that was being invoked every time a new presence
      * was being sent by this MultiUserChat to the server. Packet interceptors may
      * add new extensions to the presence that is going to be sent to the MUC service.
      *
      * @param presenceInterceptor the packet interceptor to remove.
      */
-    public void removePresenceInterceptor(PacketListener presenceInterceptor) {
+    public void removePresenceInterceptor(StanzaListener presenceInterceptor) {
         presenceInterceptors.remove(presenceInterceptor);
     }
 
@@ -886,10 +886,10 @@ public class MultiUserChat {
         joinPresence.setTo(jid);
 
         // Wait for a presence packet back from the server.
-        PacketFilter responseFilter =
+        StanzaFilter responseFilter =
             new AndFilter(
                 FromMatchesFilter.createFull(jid),
-                new PacketTypeFilter(Presence.class));
+                new StanzaTypeFilter(Presence.class));
         PacketCollector response = connection.createPacketCollectorAndSend(responseFilter, joinPresence);
         // Wait up to a certain number of seconds for a reply. If there is a negative reply, an
         // exception will be thrown
@@ -924,7 +924,7 @@ public class MultiUserChat {
         joinPresence.setTo(JidCreate.fullFrom(room, nickname));
 
         // Send join packet.
-        connection.sendPacket(joinPresence);
+        connection.sendStanza(joinPresence);
     }
 
     /**
@@ -973,7 +973,7 @@ public class MultiUserChat {
         form.addField(requestVoiceField);
         Message message = new Message(room);
         message.addExtension(form);
-        connection.sendPacket(message);
+        connection.sendStanza(message);
     }
 
     /**
@@ -1642,7 +1642,7 @@ public class MultiUserChat {
     public void sendMessage(String text) throws XMPPException, NotConnectedException, InterruptedException {
         Message message = createMessage();
         message.setBody(text);
-        connection.sendPacket(message);
+        connection.sendStanza(message);
     }
 
     /**
@@ -1680,7 +1680,7 @@ public class MultiUserChat {
     public void sendMessage(Message message) throws XMPPException, NotConnectedException, InterruptedException {
         message.setTo(room);
         message.setType(Message.Type.groupchat);
-        connection.sendPacket(message);
+        connection.sendStanza(message);
     }
 
     /**
@@ -1778,7 +1778,7 @@ public class MultiUserChat {
         Message message = createMessage();
         message.setSubject(subject);
         // Wait for an error or confirmation message back from the server.
-        PacketFilter responseFilter = new AndFilter(fromRoomGroupchatFilter, new PacketFilter() {
+        StanzaFilter responseFilter = new AndFilter(fromRoomGroupchatFilter, new StanzaFilter() {
             @Override
             public boolean accept(Stanza packet) {
                 Message msg = (Message) packet;
@@ -1795,9 +1795,9 @@ public class MultiUserChat {
      * connection.
      */
     private void removeConnectionCallbacks() {
-        connection.removeSyncPacketListener(messageListener);
-        connection.removeSyncPacketListener(presenceListener);
-        connection.removeSyncPacketListener(declinesListener);
+        connection.removeSyncStanzaListener(messageListener);
+        connection.removeSyncStanzaListener(presenceListener);
+        connection.removeSyncStanzaListener(declinesListener);
         connection.removePacketInterceptor(presenceInterceptor);
         if (messageCollector != null) {
             messageCollector.cancel();
