@@ -211,7 +211,7 @@ public class LeafNode extends Node
 	{
 		PubSub packet = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PUBLISH, getId()));
 		
-		con.sendPacket(packet);
+		con.sendStanza(packet);
 	}
 	
 	/**
@@ -256,7 +256,7 @@ public class LeafNode extends Node
 	{
 		PubSub packet = createPubsubPacket(Type.set, new PublishItem<T>(getId(), items));
 		
-		con.sendPacket(packet);
+		con.sendStanza(packet);
 	}
 
 	/**

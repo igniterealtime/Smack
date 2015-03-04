@@ -175,7 +175,7 @@ public class JingleManagerTest extends SmackTestCase {
         iqSent.setType(IQ.Type.set);
 
         System.out.println("Sending packet and waiting... ");
-        getConnection(1).sendPacket(iqSent);
+        getConnection(1).sendStanza(iqSent);
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {

@@ -52,7 +52,7 @@ import org.jivesoftware.smack.packet.Stanza;
  * public void methodToTest() {
  *   Packet packet = new Packet(); // create an XMPP packet
  *   PacketCollector collector = connection.createPacketCollector(new StanzaIdFilter());
- *   connection.sendPacket(packet);
+ *   connection.sendStanza(packet);
  *   Packet reply = collector.nextResult();
  * }
  * 

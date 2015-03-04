@@ -98,7 +98,7 @@ your presence to let people know you're unavailable and "out fishing":
 Presence presence = new Presence(Presence.Type.unavailable);
 presence.setStatus("Gone fishing");
 // Send the packet (assume we have an XMPPConnection instance called "con").
-con.sendPacket(presence);
+con.sendStanza(presence);
 ```
 
 Smack provides two ways to read incoming packets: `PacketListener`, and

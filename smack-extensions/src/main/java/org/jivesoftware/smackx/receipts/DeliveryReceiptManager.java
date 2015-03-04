@@ -56,7 +56,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  * });
  * Message message = …
  * DeliveryReceiptRequest.addTo(message);
- * connection.sendPacket(message);
+ * connection.sendStanza(message);
  * </pre>
  *
  * DeliveryReceiptManager can be configured to automatically add delivery receipt requests to every
@@ -158,7 +158,7 @@ public class DeliveryReceiptManager extends Manager {
 
                 final Message messageWithReceiptRequest = (Message) packet;
                 Message ack = receiptMessageFor(messageWithReceiptRequest);
-                connection.sendPacket(ack);
+                connection.sendStanza(ack);
             }
         }, MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST);
     }

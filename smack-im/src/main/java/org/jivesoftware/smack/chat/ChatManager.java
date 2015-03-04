@@ -362,7 +362,7 @@ public class ChatManager extends Manager{
         if (message.getFrom() == null) {
             message.setFrom(connection().getUser());
         }
-        connection().sendPacket(message);
+        connection().sendStanza(message);
     }
 
     PacketCollector createPacketCollector(Chat chat) {

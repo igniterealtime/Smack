@@ -442,7 +442,7 @@ public class InBandBytestreamManager implements BytestreamManager {
     protected void replyRejectPacket(IQ request) throws NotConnectedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.not_acceptable);
         IQ error = IQ.createErrorResponse(request, xmppError);
-        this.connection.sendPacket(error);
+        this.connection.sendStanza(error);
     }
 
     /**
@@ -455,7 +455,7 @@ public class InBandBytestreamManager implements BytestreamManager {
     protected void replyResourceConstraintPacket(IQ request) throws NotConnectedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.resource_constraint);
         IQ error = IQ.createErrorResponse(request, xmppError);
-        this.connection.sendPacket(error);
+        this.connection.sendStanza(error);
     }
 
     /**
@@ -468,7 +468,7 @@ public class InBandBytestreamManager implements BytestreamManager {
     protected void replyItemNotFoundPacket(IQ request) throws NotConnectedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.item_not_found);
         IQ error = IQ.createErrorResponse(request, xmppError);
-        this.connection.sendPacket(error);
+        this.connection.sendStanza(error);
     }
 
     /**

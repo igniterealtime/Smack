@@ -158,8 +158,18 @@ public interface XMPPConnection {
      * 
      * @param packet the packet to send.
      * @throws NotConnectedException 
+     * @deprecated use {@link #sendStanza(Stanza)} instead.
      */
+    @Deprecated
     public void sendPacket(Stanza packet) throws NotConnectedException;
+
+    /**
+     * Sends the specified stanza to the server.
+     *
+     * @param stanza the stanza to send.
+     * @throws NotConnectedException if the connection is not connected.
+     */
+    public void sendStanza(Stanza stanza) throws NotConnectedException;
 
     /**
      * Send a PlainStreamElement.

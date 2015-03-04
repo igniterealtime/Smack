@@ -46,7 +46,7 @@ public class GroupChatInvitationTest extends SmackTestCase {
             Message message = new Message(getBareJID(1));
             message.setBody("Group chat invitation!");
             message.addExtension(invitation);
-            getConnection(0).sendPacket(message);
+            getConnection(0).sendStanza(message);
 
             Thread.sleep(250);
 

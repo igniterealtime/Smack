@@ -173,7 +173,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
         // acknowledge close request
         IQ confirmClose = IQ.createResultIQ(closeRequest);
-        this.connection.sendPacket(confirmClose);
+        this.connection.sendStanza(confirmClose);
 
     }
 
@@ -457,7 +457,7 @@ public class InBandBytestreamSession implements BytestreamSession {
                     if (data.getSeq() <= this.lastSequence) {
                         IQ unexpectedRequest = IQ.createErrorResponse((IQ) packet, new XMPPError(
                                         XMPPError.Condition.unexpected_request));
-                        connection.sendPacket(unexpectedRequest);
+                        connection.sendStanza(unexpectedRequest);
                         return;
 
                     }
@@ -467,7 +467,7 @@ public class InBandBytestreamSession implements BytestreamSession {
                         // data is invalid; respond with bad-request error
                         IQ badRequest = IQ.createErrorResponse((IQ) packet, new XMPPError(
                                         XMPPError.Condition.bad_request));
-                        connection.sendPacket(badRequest);
+                        connection.sendStanza(badRequest);
                         return;
                     }
 
@@ -476,7 +476,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
                     // confirm IQ
                     IQ confirmData = IQ.createResultIQ((IQ) packet);
-                    connection.sendPacket(confirmData);
+                    connection.sendStanza(confirmData);
 
                     // set last seen sequence
                     this.lastSequence = data.getSeq();
@@ -808,7 +808,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             Message message = new Message(remoteJID);
             message.addExtension(data);
 
-            connection.sendPacket(message);
+            connection.sendStanza(message);
 
         }
 

@@ -255,7 +255,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void sendPacketInternal(Stanza packet) throws NotConnectedException {
+    protected void sendStanzaInternal(Stanza packet) throws NotConnectedException {
         sendElement(packet);
     }
 
@@ -267,7 +267,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             }
         }
         catch (BOSHException e) {
-            LOGGER.log(Level.SEVERE, "BOSHException in sendPacketInternal", e);
+            LOGGER.log(Level.SEVERE, "BOSHException in sendStanzaInternal", e);
         }
     }
 

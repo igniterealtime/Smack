@@ -84,7 +84,7 @@ public class Socks5ByteStreamTest extends SmackTestCase {
 
         PacketCollector collector = initiatorConnection.createPacketCollector(new PacketIDFilter(
                         bytestreamInitiation.getStanzaId()));
-        initiatorConnection.sendPacket(bytestreamInitiation);
+        initiatorConnection.sendStanza(bytestreamInitiation);
         Packet result = collector.nextResult();
 
         assertNotNull(result.getError());

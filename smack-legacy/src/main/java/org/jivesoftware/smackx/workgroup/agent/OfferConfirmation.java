@@ -55,7 +55,7 @@ public class OfferConfirmation extends SimpleIQ {
 
     public void notifyService(XMPPConnection con, String workgroup, String createdRoomName) throws NotConnectedException {
         NotifyServicePacket packet = new NotifyServicePacket(workgroup, createdRoomName);
-        con.sendPacket(packet);
+        con.sendStanza(packet);
     }
 
     public static class Provider extends IQProvider<OfferConfirmation> {

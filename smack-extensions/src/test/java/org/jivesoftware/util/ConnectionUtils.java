@@ -53,7 +53,7 @@ public class ConnectionUtils {
      * <pre>
      * <code>
      *   PacketCollector collector = connection.createPacketCollector(new PacketFilter());
-     *   connection.sendPacket(packet);
+     *   connection.sendStanza(packet);
      *   Packet reply = collector.nextResult();
      * </code>
      * </pre>
@@ -95,7 +95,7 @@ public class ConnectionUtils {
                 return null;
             }
         };
-        doAnswer(addIncoming).when(connection).sendPacket(isA(Stanza.class));
+        doAnswer(addIncoming).when(connection).sendStanza(isA(Stanza.class));
 
         // mock receive methods
         Answer<Stanza> answer = new Answer<Stanza>() {

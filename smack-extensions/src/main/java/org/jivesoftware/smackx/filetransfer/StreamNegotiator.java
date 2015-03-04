@@ -98,7 +98,7 @@ public abstract class StreamNegotiator {
             streamMethodInitiation = initationSetEvents.performActionAndWaitForEvent(eventKey, connection.getPacketReplyTimeout(), new Callback<NotConnectedException>() {
                 @Override
                 public void action() throws NotConnectedException {
-                    connection.sendPacket(response);
+                    connection.sendStanza(response);
                 }
             });
         }

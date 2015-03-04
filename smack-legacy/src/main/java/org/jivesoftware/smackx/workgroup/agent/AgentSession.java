@@ -318,7 +318,7 @@ public class AgentSession {
             presence.setTo(workgroupJID);
             presence.addExtension(new DefaultExtensionElement(AgentStatus.ELEMENT_NAME,
                     AgentStatus.NAMESPACE));
-            connection.sendPacket(presence);
+            connection.sendStanza(presence);
         }
     }
 
@@ -465,7 +465,7 @@ public class AgentSession {
         DepartQueuePacket departPacket = new DepartQueuePacket(this.workgroupJID);
 
         // PENDING
-        this.connection.sendPacket(departPacket);
+        this.connection.sendStanza(departPacket);
     }
 
     /**
@@ -693,7 +693,7 @@ public class AgentSession {
         if (packet instanceof OfferRequestProvider.OfferRequestPacket) {
             // Acknowledge the IQ set.
             IQ reply = IQ.createResultIQ((IQ) packet);
-            connection.sendPacket(reply);
+            connection.sendStanza(reply);
 
             fireOfferRequestEvent((OfferRequestProvider.OfferRequestPacket)packet);
         }
@@ -782,7 +782,7 @@ public class AgentSession {
         else if (packet instanceof OfferRevokeProvider.OfferRevokePacket) {
             // Acknowledge the IQ set.
             IQ reply = IQ.createResultIQ((OfferRevokeProvider.OfferRevokePacket) packet);
-            connection.sendPacket(reply);
+            connection.sendStanza(reply);
 
             fireOfferRevokeEvent((OfferRevokeProvider.OfferRevokePacket)packet);
         }

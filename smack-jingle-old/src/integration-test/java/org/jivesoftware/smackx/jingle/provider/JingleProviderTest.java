@@ -75,7 +75,7 @@ public class JingleProviderTest extends SmackTestCase {
 		System.out.println("Testing if a Jingle IQ can be sent and received...");
 
 		// Send the iq packet with an invalid namespace
-		getConnection(0).sendPacket(iqSent);
+		getConnection(0).sendStanza(iqSent);
 
 		// Receive the packet
 		IQ iqReceived = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());

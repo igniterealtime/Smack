@@ -284,7 +284,7 @@ public class MultiUserChatManager extends Manager {
         // Add the MUCUser packet that includes the rejection
         message.addExtension(mucUser);
 
-        connection().sendPacket(message);
+        connection().sendStanza(message);
     }
 
     /**

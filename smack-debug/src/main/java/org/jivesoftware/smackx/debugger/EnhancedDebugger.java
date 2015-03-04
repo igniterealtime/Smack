@@ -578,7 +578,7 @@ public class EnhancedDebugger implements SmackDebugger {
                 if (!"".equals(adhocMessages.getText())) {
                     AdHocPacket packetToSend = new AdHocPacket(adhocMessages.getText());
                     try {
-                        connection.sendPacket(packetToSend);
+                        connection.sendStanza(packetToSend);
                     }
                     catch (NotConnectedException e1) {
                         e1.printStackTrace();

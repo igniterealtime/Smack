@@ -115,7 +115,7 @@ public class PEPManager {
         //pubSub.setFrom(connection.getUser());
  
         // Send the message that contains the roster
-        connection.sendPacket(pubSub);
+        connection.sendStanza(pubSub);
     }
 
     /**

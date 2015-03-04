@@ -518,7 +518,7 @@ public class MultiUserChat {
         // field is in the form "roomName@service/nickname"
         Presence leavePresence = new Presence(Presence.Type.unavailable);
         leavePresence.setTo(room + "/" + nickname);
-        connection.sendPacket(leavePresence);
+        connection.sendStanza(leavePresence);
         // Reset occupant information.
         occupantsMap.clear();
         nickname = null;
@@ -689,7 +689,7 @@ public class MultiUserChat {
         // Add the MUCUser packet that includes the invitation to the message
         message.addExtension(mucUser);
 
-        connection.sendPacket(message);
+        connection.sendStanza(message);
     }
 
     /**
@@ -892,7 +892,7 @@ public class MultiUserChat {
         joinPresence.setTo(room + "/" + nickname);
 
         // Send join packet.
-        connection.sendPacket(joinPresence);
+        connection.sendStanza(joinPresence);
     }
 
     /**
@@ -939,7 +939,7 @@ public class MultiUserChat {
         form.addField(requestVoiceField);
         Message message = new Message(room);
         message.addExtension(form);
-        connection.sendPacket(message);
+        connection.sendStanza(message);
     }
 
     /**
@@ -1575,7 +1575,7 @@ public class MultiUserChat {
     public void sendMessage(String text) throws XMPPException, NotConnectedException {
         Message message = createMessage();
         message.setBody(text);
-        connection.sendPacket(message);
+        connection.sendStanza(message);
     }
 
     /**
@@ -1612,7 +1612,7 @@ public class MultiUserChat {
     public void sendMessage(Message message) throws XMPPException, NotConnectedException {
         message.setTo(room);
         message.setType(Message.Type.groupchat);
-        connection.sendPacket(message);
+        connection.sendStanza(message);
     }
 
     /**

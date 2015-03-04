@@ -86,7 +86,7 @@ public class InitiationListenerTest {
 
         // capture reply to the In-Band Bytestream open request
         ArgumentCaptor<IQ> argument = ArgumentCaptor.forClass(IQ.class);
-        verify(connection).sendPacket(argument.capture());
+        verify(connection).sendStanza(argument.capture());
 
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());
@@ -114,7 +114,7 @@ public class InitiationListenerTest {
 
         // capture reply to the In-Band Bytestream open request
         ArgumentCaptor<IQ> argument = ArgumentCaptor.forClass(IQ.class);
-        verify(connection).sendPacket(argument.capture());
+        verify(connection).sendStanza(argument.capture());
 
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());
@@ -204,7 +204,7 @@ public class InitiationListenerTest {
 
         // capture reply to the In-Band Bytestream open request
         ArgumentCaptor<IQ> argument = ArgumentCaptor.forClass(IQ.class);
-        verify(connection).sendPacket(argument.capture());
+        verify(connection).sendStanza(argument.capture());
 
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());

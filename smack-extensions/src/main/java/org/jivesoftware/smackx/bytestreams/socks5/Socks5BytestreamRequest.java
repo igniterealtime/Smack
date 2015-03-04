@@ -257,7 +257,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
         // send used-host confirmation
         Bytestream response = createUsedHostResponse(selectedHost);
-        this.manager.getConnection().sendPacket(response);
+        this.manager.getConnection().sendStanza(response);
 
         return new Socks5BytestreamSession(socket, selectedHost.getJID().equals(
                         this.bytestreamRequest.getFrom()));
@@ -282,7 +282,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
         String errorMessage = "Could not establish socket with any provided host";
         XMPPError error = XMPPError.from(XMPPError.Condition.item_not_found, errorMessage);
         IQ errorIQ = IQ.createErrorResponse(this.bytestreamRequest, error);
-        this.manager.getConnection().sendPacket(errorIQ);
+        this.manager.getConnection().sendStanza(errorIQ);
         throw new XMPPErrorException(errorMessage, error);
     }
 

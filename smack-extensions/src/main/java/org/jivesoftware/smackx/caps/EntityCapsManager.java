@@ -505,7 +505,7 @@ public class EntityCapsManager extends Manager {
         if (connection != null && connection.isAuthenticated() && presenceSend) {
             Presence presence = new Presence(Presence.Type.available);
             try {
-                connection.sendPacket(presence);
+                connection.sendStanza(presence);
             }
             catch (NotConnectedException e) {
                 LOGGER.log(Level.WARNING, "Could could not update presence with caps info", e);

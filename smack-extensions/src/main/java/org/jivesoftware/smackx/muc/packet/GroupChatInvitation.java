@@ -36,7 +36,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * Message message = new Message("user@chat.example.com");
  * message.setBody("Join me for a group chat!");
  * message.addExtension(new GroupChatInvitation("room@chat.example.com"););
- * con.sendPacket(message);
+ * con.sendStanza(message);
  * </pre>
  *
  * To listen for group chat invitations, use a StanzaExtensionFilter for the

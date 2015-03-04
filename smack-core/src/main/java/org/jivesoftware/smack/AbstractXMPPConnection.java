@@ -325,7 +325,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public abstract boolean isSecureConnection();
 
-    protected abstract void sendPacketInternal(Stanza packet) throws NotConnectedException;
+    protected abstract void sendStanzaInternal(Stanza packet) throws NotConnectedException;
 
     @Override
     public abstract void send(PlainStreamElement element) throws NotConnectedException;
@@ -538,7 +538,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // eventually load the roster. And we should load the roster before we
         // send the initial presence.
         if (config.isSendPresence() && !resumed) {
-            sendPacket(new Presence(Presence.Type.available));
+            sendStanza(new Presence(Presence.Type.available));
         }
     }
 
@@ -596,8 +596,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
+    @Deprecated
     @Override
     public void sendPacket(Stanza packet) throws NotConnectedException {
+        sendStanza(packet);
+    }
+
+    @Override
+    public void sendStanza(Stanza packet) throws NotConnectedException {
         Objects.requireNonNull(packet, "Packet must not be null");
 
         throwNotConnectedExceptionIfAppropriate();
@@ -615,7 +621,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Invoke interceptors for the new packet that is about to be sent. Interceptors may modify
         // the content of the packet.
         firePacketInterceptors(packet);
-        sendPacketInternal(packet);
+        sendStanzaInternal(packet);
     }
 
     /**
@@ -656,7 +662,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws NotConnectedException 
      */
     public synchronized void disconnect(Presence unavailablePresence) throws NotConnectedException {
-        sendPacket(unavailablePresence);
+        sendStanza(unavailablePresence);
         shutdown();
         callConnectionClosedListener();
     }
@@ -694,7 +700,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         PacketCollector packetCollector = createPacketCollector(packetFilter);
         try {
             // Now we can send the packet as the collector has been created
-            sendPacket(packet);
+            sendStanza(packet);
         }
         catch (NotConnectedException | RuntimeException e) {
             packetCollector.cancel();
@@ -1023,7 +1029,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     ErrorIQ errorIQ = IQ.createErrorResponse(iq, new XMPPError(
                                     XMPPError.Condition.feature_not_implemented));
                     try {
-                        sendPacket(errorIQ);
+                        sendStanza(errorIQ);
                     }
                     catch (NotConnectedException e) {
                         LOGGER.log(Level.WARNING, "NotConnectedException while sending error IQ to unkown IQ request", e);
@@ -1052,7 +1058,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                                 return;
                             }
                             try {
-                                sendPacket(response);
+                                sendStanza(response);
                             }
                             catch (NotConnectedException e) {
                                 LOGGER.log(Level.WARNING, "NotConnectedException while sending response to IQ request", e);
@@ -1433,7 +1439,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             }
         }, timeout, TimeUnit.MILLISECONDS);
         addAsyncStanzaListener(packetListener, replyFilter);
-        sendPacket(stanza);
+        sendStanza(stanza);
     }
 
     @Override

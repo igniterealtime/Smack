@@ -82,7 +82,7 @@ public class AgentRoster {
         // Send request for roster.
         AgentStatusRequest request = new AgentStatusRequest();
         request.setTo(workgroupJID);
-        connection.sendPacket(request);
+        connection.sendStanza(request);
     }
 
     /**
@@ -94,7 +94,7 @@ public class AgentRoster {
     public void reload() throws NotConnectedException {
         AgentStatusRequest request = new AgentStatusRequest();
         request.setTo(workgroupJID);
-        connection.sendPacket(request);
+        connection.sendStanza(request);
     }
 
     /**

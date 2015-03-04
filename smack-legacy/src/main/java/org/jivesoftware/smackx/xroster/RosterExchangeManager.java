@@ -125,7 +125,7 @@ public class RosterExchangeManager {
 
         XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        connection.sendPacket(msg);
+        connection.sendStanza(msg);
     }
 
     /**
@@ -145,7 +145,7 @@ public class RosterExchangeManager {
 
         XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        connection.sendPacket(msg);
+        connection.sendStanza(msg);
     }
 
     /**
@@ -168,7 +168,7 @@ public class RosterExchangeManager {
 
         XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        connection.sendPacket(msg);
+        connection.sendStanza(msg);
     }
 
     /**

@@ -62,7 +62,7 @@ public class SynchronizationPoint<E extends Exception> {
         try {
             if (request != null) {
                 if (request instanceof Stanza) {
-                    connection.sendPacket((Stanza) request);
+                    connection.sendStanza((Stanza) request);
                 }
                 else if (request instanceof PlainStreamElement){
                     connection.send((PlainStreamElement) request);

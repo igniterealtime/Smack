@@ -218,7 +218,7 @@ public class MessageEventManager extends Manager {
         messageEvent.setStanzaId(packetID);
         msg.addExtension(messageEvent);
         // Send the packet
-        connection().sendPacket(msg);
+        connection().sendStanza(msg);
     }
 
     /**
@@ -237,7 +237,7 @@ public class MessageEventManager extends Manager {
         messageEvent.setStanzaId(packetID);
         msg.addExtension(messageEvent);
         // Send the packet
-        connection().sendPacket(msg);
+        connection().sendStanza(msg);
     }
 
     /**
@@ -256,7 +256,7 @@ public class MessageEventManager extends Manager {
         messageEvent.setStanzaId(packetID);
         msg.addExtension(messageEvent);
         // Send the packet
-        connection().sendPacket(msg);
+        connection().sendStanza(msg);
     }
 
     /**
@@ -275,6 +275,6 @@ public class MessageEventManager extends Manager {
         messageEvent.setStanzaId(packetID);
         msg.addExtension(messageEvent);
         // Send the packet
-        connection().sendPacket(msg);
+        connection().sendStanza(msg);
     }
 }

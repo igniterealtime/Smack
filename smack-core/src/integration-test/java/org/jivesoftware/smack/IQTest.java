@@ -54,7 +54,7 @@ public class IQTest extends SmackTestCase {
                 new StanzaTypeFilter(IQ.class));
         PacketCollector collector = getConnection(0).createPacketCollector(filter);
         // Send the iq packet with an invalid namespace
-        getConnection(0).sendPacket(iq);
+        getConnection(0).sendStanza(iq);
 
         IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         // Stop queuing results
@@ -85,7 +85,7 @@ public class IQTest extends SmackTestCase {
         PacketCollector collector = getConnection(0).createPacketCollector(
                        new PacketIDFilter(versionRequest.getStanzaId()));
 
-        getConnection(0).sendPacket(versionRequest);
+        getConnection(0).sendStanza(versionRequest);
 
         // Wait up to 5 seconds for a result.
         IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());

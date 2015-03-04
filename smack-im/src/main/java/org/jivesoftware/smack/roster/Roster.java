@@ -483,7 +483,7 @@ public class Roster extends Manager {
         // Create a presence subscription packet and send.
         Presence presencePacket = new Presence(Presence.Type.subscribe);
         presencePacket.setTo(user);
-        connection.sendPacket(presencePacket);
+        connection.sendStanza(presencePacket);
     }
 
     /**
@@ -1242,7 +1242,7 @@ public class Roster extends Manager {
                 }
                 if (response != null) {
                     response.setTo(presence.getFrom());
-                    connection.sendPacket(response);
+                    connection.sendStanza(response);
                 }
                 break;
             case unsubscribe:
@@ -1252,7 +1252,7 @@ public class Roster extends Manager {
                     // has unsubscribed to our presence.
                     response = new Presence(Presence.Type.unsubscribed);
                     response.setTo(presence.getFrom());
-                    connection.sendPacket(response);
+                    connection.sendStanza(response);
                 }
                 // Otherwise, in manual mode so ignore.
                 break;

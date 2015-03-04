@@ -368,7 +368,7 @@ public class JingleMediaTest extends SmackTestCase {
                         Thread.sleep(20000);
 
                         //js0.sendFormattedError(JingleError.UNSUPPORTED_TRANSPORTS);
-                        js0.sendPacket(js0.createJingleError(null, JingleError.UNSUPPORTED_TRANSPORTS));
+                        js0.sendStanza(js0.createJingleError(null, JingleError.UNSUPPORTED_TRANSPORTS));
                         
 
                         Thread.sleep(20000);

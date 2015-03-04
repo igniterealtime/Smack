@@ -84,7 +84,7 @@ public class Offer {
      */
     public void accept() throws NotConnectedException {
         Stanza acceptPacket = new AcceptPacket(this.session.getWorkgroupJID());
-        connection.sendPacket(acceptPacket);
+        connection.sendStanza(acceptPacket);
         // TODO: listen for a reply.
         accepted = true;
     }
@@ -95,7 +95,7 @@ public class Offer {
      */
     public void reject() throws NotConnectedException {
         RejectPacket rejectPacket = new RejectPacket(this.session.getWorkgroupJID());
-        connection.sendPacket(rejectPacket);
+        connection.sendStanza(rejectPacket);
         // TODO: listen for a reply.
         rejected = true;
     }

@@ -421,7 +421,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
         // (Re-)send the stanzas *after* we tried to enable SM
         for (Stanza stanza : previouslyUnackedStanzas) {
-            sendPacketInternal(stanza);
+            sendStanzaInternal(stanza);
         }
 
         afterSuccessfulLogin(false);
@@ -508,7 +508,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         setWasAuthenticated();
         // If we are able to resume the stream, then don't set
         // connected/authenticated/usingTLS to false since we like behave like we are still
-        // connected (e.g. sendPacket should not throw a NotConnectedException).
+        // connected (e.g. sendStanza should not throw a NotConnectedException).
         if (isSmResumptionPossible() && instant) {
             disconnectedButResumeable = true;
         } else {
@@ -536,7 +536,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void sendPacketInternal(Stanza packet) throws NotConnectedException {
+    protected void sendStanzaInternal(Stanza packet) throws NotConnectedException {
         packetWriter.sendStreamElement(packet);
         if (isSmEnabled()) {
             for (StanzaFilter requestAckPredicate : requestAckPredicates) {
@@ -1342,8 +1342,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         unacknowledgedStanzas = new ArrayBlockingQueue<>(QUEUE_SIZE);
                     }
                     // Check if the stream element should be put to the unacknowledgedStanza
-                    // queue. Note that we can not do the put() in sendPacketInternal() and the
-                    // packet order is not stable at this point (sendPacketInternal() can be
+                    // queue. Note that we can not do the put() in sendStanzaInternal() and the
+                    // packet order is not stable at this point (sendStanzaInternal() can be
                     // called concurrently).
                     if (unacknowledgedStanzas != null && packet != null) {
                         // If the unacknowledgedStanza queue is nearly full, request an new ack
