@@ -156,8 +156,8 @@ public class DeliveryReceiptManager extends Manager {
                     break;
                 }
 
-                Message ack = new Message(from, Message.Type.normal);
-                ack.addExtension(new DeliveryReceipt(packet.getStanzaId()));
+                final Message messageWithReceiptRequest = (Message) packet;
+                Message ack = receiptMessageFor(messageWithReceiptRequest);
                 connection.sendPacket(ack);
             }
         }, MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST);
@@ -285,5 +285,18 @@ public class DeliveryReceiptManager extends Manager {
     @Deprecated
     public static String addDeliveryReceiptRequest(Message m) {
         return DeliveryReceiptRequest.addTo(m);
+    }
+
+    /**
+     * Create and return a new message including a delivery receipt extension for the given message.
+     *
+     * @param messageWithReceiptRequest the given message with a receipt request extension.
+     * @return a new message with a receipt.
+     * @since 4.1
+     */
+    public static Message receiptMessageFor(Message messageWithReceiptRequest) {
+        Message message = new Message(messageWithReceiptRequest.getFrom(), messageWithReceiptRequest.getType());
+        message.addExtension(new DeliveryReceipt(messageWithReceiptRequest.getStanzaId()));
+        return message;
     }
 }
