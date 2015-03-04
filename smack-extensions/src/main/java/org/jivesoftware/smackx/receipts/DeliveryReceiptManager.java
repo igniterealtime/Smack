@@ -130,7 +130,7 @@ public class DeliveryReceiptManager extends Manager {
         connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) throws NotConnectedException {
-                DeliveryReceipt dr = DeliveryReceipt.from(packet);
+                DeliveryReceipt dr = DeliveryReceipt.from((Message) packet);
                 // notify listeners of incoming receipt
                 for (ReceiptReceivedListener l : receiptReceivedListeners) {
                     l.onReceiptReceived(packet.getFrom(), packet.getTo(), dr.getId(), packet);

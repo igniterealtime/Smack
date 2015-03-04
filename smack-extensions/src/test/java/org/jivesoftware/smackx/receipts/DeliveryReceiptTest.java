@@ -115,7 +115,7 @@ public class DeliveryReceiptTest extends InitExtensions {
         c.processPacket(m);
 
         Stanza reply = c.getSentPacket();
-        DeliveryReceipt r = DeliveryReceipt.from(reply);
+        DeliveryReceipt r = DeliveryReceipt.from((Message) reply);
         assertEquals("romeo@montague.com", reply.getTo());
         assertEquals("test-receipt-request", r.getId());
     }
