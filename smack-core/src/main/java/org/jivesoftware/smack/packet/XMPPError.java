@@ -199,7 +199,14 @@ public class XMPPError extends AbstractError {
 
         xml.halfOpenElement(condition.toString());
         xml.xmlnsAttribute(NAMESPACE);
-        xml.closeEmptyElement();
+        if (conditionText != null) {
+            xml.rightAngleBracket();
+            xml.escape(conditionText);
+            xml.closeElement(condition.toString());
+        }
+        else {
+            xml.closeEmptyElement();
+        }
 
         addDescriptiveTextsAndExtensions(xml);
 
