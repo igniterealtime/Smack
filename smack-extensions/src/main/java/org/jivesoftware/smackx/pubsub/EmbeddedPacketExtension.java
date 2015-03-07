@@ -27,7 +27,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
  * extensions.  This effectively extends the idea of an extension within one of the 
  * top level {@link Stanza} types to consider any embedded element to be an extension
  * of its parent.  This more easily enables the usage of some of Smacks parsing
- * utilities such as {@link PacketParserUtils#parsePacketExtension(String, String, org.xmlpull.v1.XmlPullParser)} to be used
+ * utilities such as {@link PacketParserUtils#parseExtensionElement(String, String, org.xmlpull.v1.XmlPullParser)} to be used
  * to parse any element of the XML being parsed.
  * 
  * <p>Top level extensions have only one element, but they can have multiple children, or
