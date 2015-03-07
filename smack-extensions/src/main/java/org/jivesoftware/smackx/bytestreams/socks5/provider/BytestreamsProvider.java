@@ -21,6 +21,7 @@ import java.io.IOException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
+import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.Mode;
 import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -83,7 +84,11 @@ public class BytestreamsProvider extends IQProvider<Bytestream> {
             }
         }
 
-        toReturn.setMode((Bytestream.Mode.fromName(mode)));
+        if (mode == null) {
+            toReturn.setMode(Mode.tcp);
+        } else {
+            toReturn.setMode((Bytestream.Mode.fromName(mode)));
+        }
         toReturn.setSessionID(id);
         return toReturn;
     }

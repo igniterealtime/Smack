@@ -2,13 +2,13 @@
 
 **Contents:**
 
-  * [Overview](overview.html)
-  * [Getting Started Guide](gettingstarted.html)
-  * [Managing Connections](connections.html)
-  * [Messaging Basics](messaging.html)
-  * [Roster and Presence](roster.html)
-  * [Processing Incoming Stanzas](processing.html)
-  * [Provider Architecture](providers.html)
-  * [Debugging with Smack](debugging.html)
+  * [Overview](overview.md)
+  * [Getting Started Guide](gettingstarted.md)
+  * [Managing Connections](connections.md)
+  * [Messaging Basics](messaging.md)
+  * [Roster and Presence](roster.md)
+  * [Processing Incoming Stanzas](processing.md)
+  * [Provider Architecture](providers.md)
+  * [Debugging with Smack](debugging.md)
 
-  * [Smack Extensions Manual](extensions/index.html)
+  * [Smack Extensions Manual](extensions/index.md)

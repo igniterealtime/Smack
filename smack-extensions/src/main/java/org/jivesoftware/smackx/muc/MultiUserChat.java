@@ -1635,11 +1635,10 @@ public class MultiUserChat {
      * Sends a message to the chat room.
      *
      * @param text the text of the message to send.
-     * @throws XMPPException if sending the message fails.
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void sendMessage(String text) throws XMPPException, NotConnectedException, InterruptedException {
+    public void sendMessage(String text) throws NotConnectedException, InterruptedException {
         Message message = createMessage();
         message.setBody(text);
         connection.sendStanza(message);
@@ -1673,11 +1672,10 @@ public class MultiUserChat {
      * Sends a Message to the chat room.
      *
      * @param message the message.
-     * @throws XMPPException if sending the message fails.
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void sendMessage(Message message) throws XMPPException, NotConnectedException, InterruptedException {
+    public void sendMessage(Message message) throws NotConnectedException, InterruptedException {
         message.setTo(room);
         message.setType(Message.Type.groupchat);
         connection.sendStanza(message);

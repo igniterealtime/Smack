@@ -1,7 +1,7 @@
 Smack: Getting Started
 ======================
 
-[Back](index.html)
+[Back](index.md)
 
 This document will introduce you to the Smack API and provide an overview of
 important classes and concepts.
@@ -15,14 +15,14 @@ features applications require:
 
   * `smack-core.jar` -- provides core XMPP functionality. All XMPP features that are part of the XMPP RFCs are included.
   * `smack-tcp.jar` -- support for XMPP over TCP. Includes XMPPTCPConnection class, which you usually want to use
-  * `smack-extensions.jar` -- support for many of the extensions (XEPs) defined by the XMPP Standards Foundation, including multi-user chat, file transfer, user search, etc. The extensions are documented in the [extensions manual](extensions/index.html).
+  * `smack-extensions.jar` -- support for many of the extensions (XEPs) defined by the XMPP Standards Foundation, including multi-user chat, file transfer, user search, etc. The extensions are documented in the [extensions manual](extensions/index.md).
   * `smack-experimental.jar` -- support for experimental extensions (XEPs) defined by the XMPP Standards Foundation. The API and functionality of those extensions should be considered as unstable.
   * `smack-legacy.jar` -- support for legacy extensions (XEPs) defined by the XMPP Standards Foundation.
   * `smack-bosh.jar` -- support for BOSH (XEP-0124). This code should be considered as beta.
   * `smack-jingle.jar` -- support for Jingle. This code is old and currenlty unmaintained.
   * `smack-resolver-dnsjava.jar` -- support for resolving DNS SRV records with the help of dnsjava. Ideal for platforms that do not support the javax.naming API.
   * `smack-resolver-javax.jar` -- support for resolving DNS SRV records with the javax namespace API.
-  * `smack-debug.jar` -- an enhanced GUI debugger for protocol traffic. It will automatically be used when found in the classpath and when [debugging](debugging.html) is enabled.
+  * `smack-debug.jar` -- an enhanced GUI debugger for protocol traffic. It will automatically be used when found in the classpath and when [debugging](debugging.md) is enabled.
 
 Configuration
 -------------
@@ -65,7 +65,7 @@ Note that maximum security will be used when connecting to the server by
 default (and when possible), including use of TLS encryption. The
 ConnectionConfiguration class provides advanced control over the connection
 created, such as the ability to disable or require encryption. See
-[XMPPConnection Management](connections.html) for full details.
+[XMPPConnection Management](connections.md) for full details.
 
 Once you've created a connection, you should login with the
 `XMPPConnection.login()` method. Once you've logged in, you can being

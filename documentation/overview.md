@@ -1,7 +1,7 @@
 Smack Overview
 ==============
 
-[Back](index.html)
+[Back](index.md)
 
 Smack is a library for communicating with XMPP servers to perform real-time
 communications, including instant messaging and group chat.

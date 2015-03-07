@@ -1,7 +1,7 @@
 Messaging using Chats
 =====================
 
-[Back](index.html)
+[Back](index.md)
 
 Sending messages back and forth is at the core of instant messaging. Although
 individual messages can be sent and received as packets, it's generally easier
