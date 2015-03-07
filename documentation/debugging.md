@@ -1,7 +1,7 @@
 Debugging with Smack
 ====================
 
-[Back](index.html)
+[Back](index.md)
 
 Smack includes two built-in debugging consoles that will let you track
 all XML traffic between the client and server. A lite debugger and an

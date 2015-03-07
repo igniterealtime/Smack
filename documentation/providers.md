@@ -1,14 +1,14 @@
 Provider Architecture: Stanza Extensions and Custom IQ's
 ========================================================
 
-[Back](index.html)
+[Back](index.md)
 
 Introduction
 ------------
 
 The Smack provider architecture is a system for plugging in custom XML parsing
 of packet extensions and IQ packets. The standard [Smack
-Extensions](extensions/index.html) are built using the provider architecture.
+Extensions](extensions/index.md) are built using the provider architecture.
 There are two types of providers:
 
   * `IQProvider` -- parses IQ requests into Java objects.

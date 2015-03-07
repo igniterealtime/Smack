@@ -1,7 +1,7 @@
 Processing Incoming Stanzas
 ===========================
 
-[Back](index.html)
+[Back](index.md)
 
 Smack provides a flexible framework for processing incoming packets using two
 constructs:
