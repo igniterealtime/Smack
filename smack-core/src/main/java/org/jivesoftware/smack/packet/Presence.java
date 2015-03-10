@@ -20,6 +20,7 @@ package org.jivesoftware.smack.packet;
 import java.util.Locale;
 
 import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -55,7 +56,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Matt Tucker
  */
-public final class Presence extends Stanza implements Cloneable {
+public final class Presence extends Stanza implements TypedCloneable<Presence> {
 
     public static final String ELEMENT = "presence";
 
