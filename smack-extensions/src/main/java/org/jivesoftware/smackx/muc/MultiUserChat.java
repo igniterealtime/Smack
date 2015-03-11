@@ -655,15 +655,13 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void destroy(String reason, String alternateJID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void destroy(String reason, BareJid alternateJID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
         iq.setType(IQ.Type.set);
 
         // Create the reason for the room destruction
-        Destroy destroy = new Destroy();
-        destroy.setReason(reason);
-        destroy.setJid(alternateJID);
+        Destroy destroy = new Destroy(alternateJID, reason);
         iq.setDestroy(destroy);
 
         connection.createPacketCollectorAndSend(iq).nextResultOrThrow();

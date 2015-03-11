@@ -23,6 +23,7 @@ import org.jivesoftware.smackx.muc.MUCAffiliation;
 import org.jivesoftware.smackx.muc.MUCRole;
 import org.jivesoftware.smackx.muc.packet.Destroy;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.xmlpull.v1.XmlPullParser;
@@ -61,22 +62,27 @@ public class MUCParserUtils {
     }
 
     public static Destroy parseDestroy(XmlPullParser parser) throws XmlPullParserException, IOException {
-        boolean done = false;
-        Destroy destroy = new Destroy();
-        destroy.setJid(parser.getAttributeValue("", "jid"));
-        while (!done) {
+        final int initialDepth = parser.getDepth();
+        final BareJid jid = ParserUtils.getBareJidAttribute(parser);
+        String reason = null;
+        outerloop: while (true) {
             int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("reason")) {
-                    destroy.setReason(parser.nextText());
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                final String name = parser.getName();
+                switch (name) {
+                case "reason":
+                    reason = parser.nextText();
+                    break;
                 }
-            }
-            else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("destroy")) {
-                    done = true;
+                break;
+            case XmlPullParser.END_TAG:
+                if (initialDepth == parser.getDepth()) {
+                    break outerloop;
                 }
+                break;
             }
         }
-        return destroy;
+        return new Destroy(jid, reason);
     }
 }
