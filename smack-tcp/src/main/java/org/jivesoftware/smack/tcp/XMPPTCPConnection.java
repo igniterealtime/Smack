@@ -517,6 +517,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             disconnectedButResumeable = true;
         } else {
             disconnectedButResumeable = false;
+            // Reset the stream management session id to null, since if the stream is cleanly closed, i.e. sending a closing
+            // stream tag, there is no longer a stream to resume.
+            smSessionId = null;
         }
         authenticated = false;
         connected = false;
@@ -524,9 +527,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         reader = null;
         writer = null;
 
-        // Reset the stream management session id to null, since if the stream is cleanly closed, i.e. sending a closing
-        // stream tag, there is no longer a stream to resume.
-        smSessionId = null;
         maybeCompressFeaturesReceived.init();
         compressSyncPoint.init();
         smResumedSyncPoint.init();

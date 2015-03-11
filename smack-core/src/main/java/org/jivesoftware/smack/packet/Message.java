@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.Jid;
 
@@ -51,7 +52,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Matt Tucker
  */
-public final class Message extends Stanza implements Cloneable {
+public final class Message extends Stanza implements TypedCloneable<Message> {
 
     public static final String ELEMENT = "message";
     public static final String BODY = "body";
