@@ -36,7 +36,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.JidTestUtil;
-import org.jxmpp.jid.impl.JidCreate;
 
 /**
  * Tests the implementation of {@link DirectoryRosterStore}.
@@ -190,38 +189,4 @@ public class DirectoryRosterStoreTest {
         assertEquals("Number of entries", 1, entries.size());
     }
 
-    /**
-     * Tests adding entries with evil characters
-     */
-    @Test
-    public void testAddEvilChars() throws IOException {
-        File storeDir = tmpFolder.newFolder();
-        DirectoryRosterStore store = DirectoryRosterStore.init(storeDir);
-
-        Jid user = JidCreate.from(".._#;'&@example.com");
-        String name = "\n../_#\0\t;\"'&@\\";
-        String group1 = "\t;\"'&@\\\n../_#\0";
-        String group2 = "#\0\t;\"'&@\\\n../_";
-
-        Item item = new Item(user, name);
-        item.setItemStatus(ItemStatus.unsubscribe);
-        item.setItemType(ItemType.to);
-        item.addGroupName(group1);
-        item.addGroupName(group2);
-        store.addEntry(item, "a-version");
-        Item storedItem = store.getEntry(user);
-
-        assertNotNull("Added entry not found", storedItem);
-        assertEquals("User of added entry",
-                item.getUser(), storedItem.getUser());
-        assertEquals("Name of added entry",
-                item.getName(), storedItem.getName());
-        assertEquals("Groups", item.getGroupNames(), storedItem.getGroupNames());
-        assertEquals("ItemType of added entry",
-                item.getItemType(), storedItem.getItemType());
-        assertEquals("ItemStatus of added entry",
-                item.getItemStatus(), storedItem.getItemStatus());
-
-    }
 }
-
