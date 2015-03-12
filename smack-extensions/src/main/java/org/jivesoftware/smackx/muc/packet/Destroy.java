@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.muc.packet;
 import java.io.Serializable;
 
 import org.jivesoftware.smack.packet.NamedElement;
-import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.BareJid;
 
@@ -30,7 +29,7 @@ import org.jxmpp.jid.BareJid;
  * 
  * @author Gaston Dombiak
  */
-public class Destroy implements NamedElement, TypedCloneable<Destroy>, Serializable {
+public class Destroy implements NamedElement, Serializable {
     /**
      *
      */

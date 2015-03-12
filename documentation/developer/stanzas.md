@@ -1,10 +1,25 @@
-PacketExtension
-===============
+General Rules
+=============
+
+All classes which subclass `TopLevelStreamElement` and `ExtensionElement` must either
+
+1. be immutable (and ideally provide a Builder)
+2. implemented `TypedCloneable`
+
+and must be `Serializable`.
+The reason that it must be either 1. or 2. is that it makes no sense to clone an inmutable instance.
+
+Note that there is legacy code in Smack which does not follow these rules. Patches welcome.
+
+ExtensionElement
+================
+
+Extension elements are XML elements that are used in various parts and levels of stanzas.
 
 The static `from(Stanza)` Method
 --------------------------------
 
-Every PacketExtension class must have a static `from()` method that retrieves that extension for a given Stanza (if any).
+Every ExtensionElement class must have a static `from()` method that retrieves that extension for a given Stanza (if any).
 
 Sample Code
 
@@ -14,4 +29,4 @@ public static RSMSet from(Stanza) {
 }
 ```
 
-Sometimes certain PacketExtension's are only found in one stanza type, in that case, specify the parameter type. For example `public static CarbonExtension getFrom(Message)`.
+Sometimes certain ExtensionElement's are only found in one stanza type, in that case, specify the parameter type. For example `public static CarbonExtension getFrom(Message)`.
