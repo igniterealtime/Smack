@@ -18,6 +18,7 @@ apply from: 'version.gradle'
 allprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
+	apply plugin: 'jacoco'
 
 	ext {
 		gitCommit = getGitCommit()
@@ -35,6 +36,23 @@ allprojects {
 		// build, causing unnecessary rebuilds.
 		builtDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 		oneLineDesc = 'An Open Source XMPP (Jabber) client library'
+		// A dirty hack used for Gradle's jacoco plugin, since is not
+		// hable to handle the case when a (sub)project has no unit
+		// tests. :-(
+		projectsWithoutUnitTests = [
+			':smack-android',
+			':smack-android-extensions',
+			':smack-bosh',
+			':smack-compression-jzlib',
+			':smack-debug',
+			':smack-debug-slf4j',
+			':smack-java7',
+			':smack-jingle-old',
+			':smack-resolver-dnsjava',
+			':smack-resolver-javax',
+			':smack-resolver-minidns',
+		].collect{ project(it) }
+		projectsWithUnitTests = subprojects - projectsWithoutUnitTests
 		androidProjects = [
 			':smack-tcp',
 			':smack-bosh',
@@ -79,6 +97,8 @@ allprojects {
 	}
 
 	repositories {
+		mavenLocal()
+		mavenCentral()
 		// Add OSS Sonatype Snapshot repository
 		maven {
 			url 'https://oss.sonatype.org/content/repositories/snapshots'
@@ -95,6 +115,19 @@ allprojects {
 	if (JavaVersion.current().isJava8Compatible()) {
 		tasks.withType(Javadoc) {
 			options.addStringOption('Xdoclint:none', '-quiet')
+		}
+	}
+
+	jacoco {
+		toolVersion = "0.7.4.201502262128"
+	}
+
+	jacocoTestReport {
+		dependsOn test
+		sourceDirectories = project.files(sourceSets.main.allSource.srcDirs)
+		classDirectories =  project.files(sourceSets.main.output)
+		reports {
+			xml.enabled true
 		}
 	}
 }
@@ -182,16 +215,10 @@ subprojects {
 	apply plugin: 'osgi'
 	apply plugin: 'signing'
 	apply plugin: 'checkstyle'
-	apply plugin: 'jacoco'
 	apply plugin: 'org.kordamp.gradle.clirr'
-	apply plugin: "com.github.kt3k.coveralls"
 
 	checkstyle {
 		configFile = new File(rootConfigDir, 'checkstyle.xml')
-	}
-	repositories {
-		mavenLocal()
-		mavenCentral()
 	}
 	task sourcesJar(type: Jar, dependsOn: classes) {
 		classifier = 'sources'
@@ -289,25 +316,33 @@ subprojects {
 		baseline = [group, name, clirrBaseline].join(':')
 		failOnErrors clirrFailOnErrors
 	}
-
-	jacoco {
-		toolVersion = "0.7.1.201405082137"
-	}
-
-	jacocoTestReport {
-		dependsOn test
-		sourceDirectories = project.files(sourceSets.main.allSource.srcDirs)
-		classDirectories =  project.files(sourceSets.main.output)
-		reports {
-			xml.enabled true
-		}
-	}
 }
 
 subprojects*.jar {
    manifest {
        from sharedManifest
    }
+}
+
+apply plugin: "com.github.kt3k.coveralls"
+coveralls {
+	sourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs).files.absolutePath
+}
+
+task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+	dependsOn = projectsWithUnitTests.jacocoTestReport
+	sourceDirectories = files(projectsWithUnitTests.sourceSets.main.allSource.srcDirs)
+	classDirectories = files(projectsWithUnitTests.sourceSets.main.output)
+	executionData = files(projectsWithUnitTests.jacocoTestReport.executionData)
+	reports {
+		xml.enabled true
+		xml.destination ="${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+	}
+	// We could remove the following setOnlyIf line, but then
+	// jacocoRootReport would silently be SKIPPED if something with
+	// the projectsWithUnitTests is wrong (e.g. a project is missing
+	// in there).
+	setOnlyIf { true }
 }
 
 // Important to specify this task after the subprojects block
