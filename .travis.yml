@@ -5,3 +5,5 @@ android:
 install: gradle assemble
 script: gradle check
 
+after_success:
+- gradle jacocoTestReport coveralls

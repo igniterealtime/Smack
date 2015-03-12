@@ -8,6 +8,7 @@ buildscript {
     dependencies {
         classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
 		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.1.0'
+		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
     }
 }
 apply plugin: 'org.kordamp.gradle.markdown'
@@ -181,7 +182,9 @@ subprojects {
 	apply plugin: 'osgi'
 	apply plugin: 'signing'
 	apply plugin: 'checkstyle'
+	apply plugin: 'jacoco'
 	apply plugin: 'org.kordamp.gradle.clirr'
+	apply plugin: "com.github.kt3k.coveralls"
 
 	checkstyle {
 		configFile = new File(rootConfigDir, 'checkstyle.xml')
@@ -285,6 +288,19 @@ subprojects {
 	clirr {
 		baseline = [group, name, clirrBaseline].join(':')
 		failOnErrors clirrFailOnErrors
+	}
+
+	jacoco {
+		toolVersion = "0.7.1.201405082137"
+	}
+
+	jacocoTestReport {
+		dependsOn test
+		sourceDirectories = project.files(sourceSets.main.allSource.srcDirs)
+		classDirectories =  project.files(sourceSets.main.output)
+		reports {
+			xml.enabled true
+		}
 	}
 }
 
