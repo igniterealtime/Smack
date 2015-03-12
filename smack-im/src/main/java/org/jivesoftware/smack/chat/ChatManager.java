@@ -151,12 +151,13 @@ public class ChatManager extends Manager{
         connection.addSyncStanzaListener(new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
-                Chat chat;
-                if (message.getThread() == null) {
-                	chat = getUserChat(message.getFrom());
-                }
-                else {
+                Chat chat = null;
+                if (message.getThread() != null) {
                     chat = getThreadChat(message.getThread());
+                }
+
+                if (chat == null) {
+                    chat = getUserChat(message.getFrom());
                 }
 
                 if(chat == null) {
