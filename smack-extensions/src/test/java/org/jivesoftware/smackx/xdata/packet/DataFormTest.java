@@ -19,9 +19,6 @@ package org.jivesoftware.smackx.xdata.packet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
-
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -35,7 +32,6 @@ import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Unit tests for DataForm reading and parsing.
@@ -51,7 +47,7 @@ public class DataFormTest {
     DataFormProvider pr = new DataFormProvider();
 
     @Test
-    public void test() throws XmlPullParserException, IOException, SmackException {
+    public void test() throws Exception {
         //Build a Form
         DataForm df = new DataForm(DataForm.Type.submit);
         String instruction = "InstructionTest1";
@@ -78,7 +74,7 @@ public class DataFormTest {
     }
 
     @Test
-    public void testLayout() throws XmlPullParserException, IOException, SmackException {
+    public void testLayout() throws Exception {
         //Build a Form
         DataForm df = new DataForm(DataForm.Type.submit);
         String instruction = "InstructionTest1";
@@ -120,7 +116,7 @@ public class DataFormTest {
     }
 
     @Test
-    public void testValidation() throws XmlPullParserException, IOException, SmackException {
+    public void testValidation() throws Exception {
         //Build a Form
         DataForm df = new DataForm(DataForm.Type.submit);
         String instruction = "InstructionTest1";
@@ -154,7 +150,7 @@ public class DataFormTest {
     }
 
     @Test
-    public void testFixedField() throws XmlPullParserException, IOException, SmackException {
+    public void testFixedField() throws Exception {
         final String formWithFixedField = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field type='fixed'></field></x>";
         DataForm df = pr.parse(PacketParserUtils.getParserFor(formWithFixedField));
         assertEquals(Type.fixed, df.getFields().get(0).getType());

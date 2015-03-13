@@ -47,7 +47,7 @@ public class DataLayoutTest {
     private static final String TEST_INPUT_1 = "xdata-layout-sample.xml";
 
     @Test
-    public void testLayout() throws XmlPullParserException, IOException, SmackException {
+    public void testLayout() throws Exception {
         DataLayout layout = new DataLayout("Label");
         Fieldref reffield = new Fieldref("testField1");
         layout.getPageLayout().add(reffield);
@@ -116,7 +116,7 @@ public class DataLayoutTest {
     }
 
     @Test
-    public void testLayoutFromFile() throws XmlPullParserException, IOException, SmackException {
+    public void testLayoutFromFile() throws Exception {
         DataFormProvider pr = new DataFormProvider();
         
         XmlPullParser parser = PacketParserUtils.newXmppParser();

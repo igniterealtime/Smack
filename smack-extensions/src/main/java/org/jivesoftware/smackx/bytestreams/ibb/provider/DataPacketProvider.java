@@ -18,7 +18,6 @@ package org.jivesoftware.smackx.bytestreams.ibb.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.xmlpull.v1.XmlPullParser;
@@ -38,8 +37,7 @@ public class DataPacketProvider {
 
         @Override
         public Data parse(XmlPullParser parser, int initialDepth)
-                        throws XmlPullParserException, IOException,
-                        SmackException {
+                        throws Exception {
             DataPacketExtension data = packetExtensionProvider.parse(parser);
             Data iq = new Data(data);
             return iq;

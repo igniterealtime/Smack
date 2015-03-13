@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smackx.xdata.provider;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.provider.RosterPacketProvider;
@@ -42,8 +41,8 @@ import java.util.List;
 public class DataFormProvider extends ExtensionElementProvider<DataForm> {
 
     @Override
-    public DataForm parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
-                    SmackException {
+    public DataForm parse(XmlPullParser parser, int initialDepth) throws
+                    Exception {
         DataForm.Type dataFormType = DataForm.Type.fromString(parser.getAttributeValue("", "type"));
         DataForm dataForm = new DataForm(dataFormType);
         outerloop: while (true) {

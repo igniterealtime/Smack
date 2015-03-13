@@ -85,7 +85,6 @@ import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 
 public abstract class AbstractXMPPConnection implements XMPPConnection {
@@ -960,6 +959,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             stanza = PacketParserUtils.parseStanza(parser);
         }
         catch (Exception e) {
+            // Always re-throw runtime exceptions, they are fatal
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
             CharSequence content = PacketParserUtils.parseContentDepth(parser,
                             parserDepth);
             UnparsablePacket message = new UnparsablePacket(content, e);
@@ -1315,8 +1318,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
-    protected final void parseFeatures(XmlPullParser parser) throws XmlPullParserException,
-                    IOException, SmackException, InterruptedException {
+    protected final void parseFeatures(XmlPullParser parser) throws Exception {
         streamFeatures.clear();
         final int initialDepth = parser.getDepth();
         while (true) {

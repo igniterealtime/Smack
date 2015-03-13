@@ -17,14 +17,10 @@
 
 package org.jivesoftware.smackx.workgroup.ext.forms;
 
-import java.io.IOException;
-
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class WorkgroupForm extends SimpleIQ {
 
@@ -51,8 +47,7 @@ public class WorkgroupForm extends SimpleIQ {
 
         @Override
         public WorkgroupForm parse(XmlPullParser parser, int initialDepth)
-                        throws XmlPullParserException, IOException,
-                        SmackException {
+                        throws Exception {
             WorkgroupForm answer = new WorkgroupForm();
 
             boolean done = false;

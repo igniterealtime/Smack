@@ -61,7 +61,7 @@ public class PEPProvider extends ExtensionElementProvider<ExtensionElement> {
      */
     @Override
     public ExtensionElement parse(XmlPullParser parser, int initialDepth)
-                    throws XmlPullParserException, IOException, SmackException {
+                    throws Exception {
         ExtensionElement pepItem = null;
         boolean done = false;
         while (!done) {

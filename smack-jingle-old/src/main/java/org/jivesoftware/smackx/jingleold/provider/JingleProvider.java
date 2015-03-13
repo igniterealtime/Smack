@@ -48,7 +48,7 @@ public class JingleProvider extends IQProvider<Jingle> {
      */
     @Override
     public Jingle parse(XmlPullParser parser, int intialDepth)
-                    throws XmlPullParserException, IOException, SmackException {
+                    throws Exception {
 
         Jingle jingle = new Jingle();
         String sid = "";

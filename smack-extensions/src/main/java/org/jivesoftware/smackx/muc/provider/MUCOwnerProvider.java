@@ -17,14 +17,10 @@
 
 package org.jivesoftware.smackx.muc.provider;
 
-import java.io.IOException;
-
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.muc.packet.MUCOwner;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The MUCOwnerProvider parses MUCOwner packets. (@see MUCOwner)
@@ -35,7 +31,7 @@ public class MUCOwnerProvider extends IQProvider<MUCOwner> {
 
     @Override
     public MUCOwner parse(XmlPullParser parser, int initialDepth)
-                    throws XmlPullParserException, IOException, SmackException {
+                    throws Exception {
         MUCOwner mucOwner = new MUCOwner();
         boolean done = false;
         while (!done) {

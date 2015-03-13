@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -79,13 +78,13 @@ final public class TestUtils {
     }
 
     public static <EE extends ExtensionElement> EE parseExtensionElement(String elementString)
-                    throws XmlPullParserException, IOException, SmackException {
+                    throws Exception {
         return parseExtensionElement(getParser(elementString));
     }
 
     @SuppressWarnings("unchecked")
     public static <EE extends ExtensionElement> EE parseExtensionElement(XmlPullParser parser)
-                    throws XmlPullParserException, IOException, SmackException {
+                    throws Exception {
         ParserUtils.assertAtStartTag(parser);
         final String elementName = parser.getName();
         final String namespace = parser.getNamespace();

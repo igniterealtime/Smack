@@ -18,19 +18,15 @@ package org.jivesoftware.smackx.caps.provider;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
-
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class CapsExtensionProviderTest extends InitExtensions {
 
     @Test
-    public void parseTest() throws XmlPullParserException, IOException, SmackException {
+    public void parseTest() throws Exception {
         // @formatter:off
         final String capsExtensionString =
             "<c xmlns='http://jabber.org/protocol/caps'"
