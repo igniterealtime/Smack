@@ -6,14 +6,10 @@ Smack
 About
 -----
 
-[Smack] is an Open Source, cross-platform, easy to use Java XMPP
-client library.
+[Smack] is an open source, cross-platform, easy to use, Java XMPP client library.
 
-[Smack] is an Open Source [XMPP (Jabber)] client library for instant
-messaging and presence. A pure Java library, it can be embedded into
-your applications to create anything from a full XMPP client to simple
-XMPP integrations such as sending notification messages and
-presence-enabling devices.
+A pure Java library, it can be embedded into your applications to create anything from a full XMPP client to simple XMPP integrations such as sending notification messages and presence-enabling devices.
+Smack and XMPP allows you to easily exchange data, in various ways e.g. fire-and-forget, publish-subscribe, between human and non-human endpoints.
 
 Confused? Have a look at the [Overview](documentation/overview.md).
 

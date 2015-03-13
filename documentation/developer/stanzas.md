@@ -4,12 +4,13 @@ General Rules
 All classes which subclass `TopLevelStreamElement` and `ExtensionElement` must either
 
 1. be immutable (and ideally provide a Builder)
-2. implemented `TypedCloneable`
+2. implement `TypedCloneable`
 
 and must be `Serializable`.
 The reason that it must be either 1. or 2. is that it makes no sense to clone an inmutable instance.
+The preferred option is 1.
 
-Note that there is legacy code in Smack which does not follow these rules. Patches welcome.
+Note that there is legacy code in Smack which does not follow these rules. Patches are welcome.
 
 ExtensionElement
 ================

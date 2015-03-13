@@ -17,7 +17,7 @@ Smack Key Advantages
 
     Chat chat = ChatManager.getInstanceFor(connection)
         .createChat("jsmith@jivesoftware.com", new MessageListener() {
-
+		@Override
         public void processMessage(Chat chat, Message message) {
             System.out.println("Received message: " + message);
         }
@@ -35,7 +35,7 @@ About XMPP
 
 XMPP (eXtensible Messaging and Presence Protocol) is an open protocol
 standardized by the IETF and supported and extended by the XMPP Standards
-Foundation (([http://www.xmpp.org](http://www.xmpp.org)).
+Foundation (XSF, [http://www.xmpp.org](http://www.xmpp.org)).
 
 How To Use This Documentation
 -----------------------------
