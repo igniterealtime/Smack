@@ -111,6 +111,13 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         }
         return this;
     }
+    
+    public XmlStringBuilder optElement(String name, Object object) {
+        if (object != null) {
+            element(name, object.toString());
+        }
+        return this;
+    }
 
     public XmlStringBuilder optIntElement(String name, int value) {
         if (value >= 0) {

@@ -493,4 +493,11 @@
        <namespace>http://jabber.org/protocol/rsm</namespace>
        <className>org.jivesoftware.smackx.rsm.provider.RSMSetProvider</className>
     </extensionProvider>
+    
+    <!-- XEP-0080: User Location -->
+    <extensionProvider>
+    	<elementName>geoloc</elementName>
+    	<namespace>http://jabber.org/protocol/geoloc</namespace>
+    	<className>org.jivesoftware.smackx.geoloc.provider.GeoLocationProvider</className>
+    </extensionProvider>
 </smackProviders>
