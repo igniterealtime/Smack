@@ -1405,7 +1405,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return getFeature(element, namespace) != null;
     }
 
-    private void addStreamFeature(ExtensionElement feature) {
+    protected void addStreamFeature(ExtensionElement feature) {
         String key = XmppStringUtils.generateKey(feature.getElementName(), feature.getNamespace());
         streamFeatures.put(key, feature);
     }

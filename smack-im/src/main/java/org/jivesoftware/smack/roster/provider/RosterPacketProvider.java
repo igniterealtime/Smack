@@ -21,6 +21,7 @@ import java.io.IOException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParser;
@@ -59,6 +60,9 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
                     String subscription = parser.getAttributeValue("", "subscription");
                     RosterPacket.ItemType type = RosterPacket.ItemType.valueOf(subscription != null ? subscription : "none");
                     item.setItemType(type);
+                    // Set approval status.
+                    boolean approved = ParserUtils.getBooleanAttribute(parser, "approved", false);
+                    item.setApproved(approved);
                     break;
                 case "group":
                     // TODO item!= null

@@ -40,6 +40,7 @@ import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
@@ -57,6 +58,7 @@ import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.packet.RosterVer;
 import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
+import org.jivesoftware.smack.roster.packet.SubscriptionPreApproval;
 import org.jivesoftware.smack.roster.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.Objects;
 import org.jxmpp.jid.BareJid;
@@ -456,6 +458,7 @@ public class Roster extends Manager {
      * @param name   the nickname of the user.
      * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
      *               the roster entry won't belong to a group.
+     * @param approved the pre-approval state.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
      * @throws NotLoggedInException If not logged in.
@@ -489,6 +492,68 @@ public class Roster extends Manager {
         Presence presencePacket = new Presence(Presence.Type.subscribe);
         presencePacket.setTo(user);
         connection.sendStanza(presencePacket);
+    }
+
+    /**
+     * Creates a new pre-approved roster entry and presence subscription. The server will
+     * asynchronously update the roster with the subscription status.
+     *
+     * @param user   the user. (e.g. johndoe@jabber.org)
+     * @param name   the nickname of the user.
+     * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
+     *               the roster entry won't belong to a group.
+     * @param approved the pre-approval state.
+     * @throws NoResponseException if there was no response from the server.
+     * @throws XMPPErrorException if an XMPP exception occurs.
+     * @throws NotLoggedInException if not logged in.
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws FeatureNotSupportedException if pre-approving is not supported.
+     * @since 4.2
+     */
+    public void preApproveAndCreateEntry(Jid user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, FeatureNotSupportedException {
+        preApprove(user);
+        createEntry(user, name, groups);
+    }
+
+    /**
+     * Pre-approve user presence subscription.
+     *
+     * @param user the user. (e.g. johndoe@jabber.org)
+     * @throws NotLoggedInException if not logged in.
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws FeatureNotSupportedException if pre-approving is not supported.
+     * @since 4.2
+     */
+    public void preApprove(Jid user) throws NotLoggedInException, NotConnectedException, InterruptedException, FeatureNotSupportedException {
+        final XMPPConnection connection = connection();
+        if (!isSubscriptionPreApprovalSupported()) {
+            throw new FeatureNotSupportedException("Pre-approving");
+        }
+
+        Presence presencePacket = new Presence(Presence.Type.subscribed);
+        presencePacket.setTo(user);
+        connection.sendStanza(presencePacket);
+    }
+
+    /**
+     * Check for subscription pre-approval support.
+     *
+     * @return true if subscription pre-approval is supported by the server.
+     * @throws NotLoggedInException if not logged in.
+     * @since 4.2
+     */
+    public boolean isSubscriptionPreApprovalSupported() throws NotLoggedInException {
+        final XMPPConnection connection = connection();
+        if (!connection.isAuthenticated()) {
+            throw new NotLoggedInException();
+        }
+        if (connection.isAnonymous()) {
+            throw new IllegalStateException("Anonymous users can't have a roster.");
+        }
+
+        return connection.hasFeature(SubscriptionPreApproval.ELEMENT, SubscriptionPreApproval.NAMESPACE);
     }
 
     /**
@@ -1329,7 +1394,7 @@ public class Roster extends Manager {
 
                 for (RosterPacket.Item item : validItems) {
                     RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
-                            item.getItemType(), item.getItemStatus(), Roster.this, connection);
+                            item.getItemType(), item.getItemStatus(), item.isApproved(), Roster.this, connection);
                     addUpdateEntry(addedEntries, updatedEntries, unchangedEntries, item, entry);
                 }
 
@@ -1359,7 +1424,7 @@ public class Roster extends Manager {
                 // await possible further roster pushes.
                 for (RosterPacket.Item item : rosterStore.getEntries()) {
                     RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
-                            item.getItemType(), item.getItemStatus(), Roster.this, connection);
+                            item.getItemType(), item.getItemStatus(), item.isApproved(), Roster.this, connection);
                     addUpdateEntry(addedEntries, updatedEntries, unchangedEntries, item, entry);
                 }
             }
@@ -1429,7 +1494,7 @@ public class Roster extends Manager {
             // safely retrieve this single item here.
             Item item = items.iterator().next();
             RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
-                            item.getItemType(), item.getItemStatus(), Roster.this, connection);
+                            item.getItemType(), item.getItemStatus(), item.isApproved(), Roster.this, connection);
             String version = rosterPacket.getVersion();
 
             if (item.getItemType().equals(RosterPacket.ItemType.remove)) {

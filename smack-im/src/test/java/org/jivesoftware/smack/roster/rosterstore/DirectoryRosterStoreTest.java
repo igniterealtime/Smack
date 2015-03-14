@@ -107,6 +107,8 @@ public class DirectoryRosterStoreTest {
                 item1.getItemType(), storedItem.getItemType());
         assertEquals("ItemStatus of added entry",
                 item1.getItemStatus(), storedItem.getItemStatus());
+        assertEquals("Approved of added entry",
+                item1.isApproved(), storedItem.isApproved());
 
 
         final String version2 = "2";
@@ -115,6 +117,7 @@ public class DirectoryRosterStoreTest {
         item2.addGroupName("examples");
         item2.setItemStatus(ItemStatus.subscribe);
         item2.setItemType(ItemType.none);
+        item2.setApproved(true);
         store.addEntry(item2,version2);
         assertEquals("Updating entry sets version correctly", version2, store.getRosterVersion());
         storedItem = store.getEntry(userName);
@@ -128,6 +131,8 @@ public class DirectoryRosterStoreTest {
                 item2.getItemType(), storedItem.getItemType());
         assertEquals("ItemStatus of added entry",
                 item2.getItemStatus(), storedItem.getItemStatus());
+        assertEquals("Approved of added entry",
+                item2.isApproved(), storedItem.isApproved());
 
         List<Item> entries = store.getEntries();
         assertEquals("Number of entries", 1, entries.size());
@@ -143,6 +148,7 @@ public class DirectoryRosterStoreTest {
         item4.addGroupName("Bar Friends");
         item4.setItemStatus(ItemStatus.subscribe);
         item4.setItemType(ItemType.both);
+        item4.setApproved(true);
 
         ArrayList<Item> items34 = new ArrayList<RosterPacket.Item>();
         items34.add(item3);
@@ -162,6 +168,8 @@ public class DirectoryRosterStoreTest {
                 item3.getItemType(), storedItem.getItemType());
         assertEquals("ItemStatus of added entry",
                 item3.getItemStatus(), storedItem.getItemStatus());
+        assertEquals("Approved of added entry",
+                item3.isApproved(), storedItem.isApproved());
 
 
         storedItem = store.getEntry(JidTestUtil.BARE_JID_2);
@@ -175,6 +183,8 @@ public class DirectoryRosterStoreTest {
                 item4.getItemType(), storedItem.getItemType());
         assertEquals("ItemStatus of added entry",
                 item4.getItemStatus(), storedItem.getItemStatus());
+        assertEquals("Approved of added entry",
+                item4.isApproved(), storedItem.isApproved());
 
         entries = store.getEntries();
         assertEquals("Number of entries", 2, entries.size());
