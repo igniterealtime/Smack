@@ -188,6 +188,7 @@ public class DirectoryRosterStore implements RosterStore {
         String name = null;
         String type = null;
         String status = null;
+        String approved = null;
 
         List<String> groupNames = new ArrayList<String>();
 
@@ -219,6 +220,10 @@ public class DirectoryRosterStore implements RosterStore {
                     else if (parserName.equals("status")) {
                         parser.next();
                         status = parser.getText();
+                    }
+                    else if (parserName.equals("approved")) {
+                        parser.next();
+                        approved = parser.getText();
                     }
                     else if (parserName.equals("group")) {
                         parser.next();
@@ -275,6 +280,9 @@ public class DirectoryRosterStore implements RosterStore {
                 item.setItemStatus(itemStatus);
             }
         }
+        if (approved != null) {
+            item.setApproved(Boolean.parseBoolean(approved));
+        }
 
         return item;
     }
@@ -287,6 +295,7 @@ public class DirectoryRosterStore implements RosterStore {
         xml.optElement("name", item.getName());
         xml.optElement("type", item.getItemType());
         xml.optElement("status", item.getItemStatus());
+        xml.optElement("approved", Boolean.toString(item.isApproved()));
         for (String groupName : item.getGroupNames()) {
             xml.openElement("group");
             xml.element("groupName", groupName);

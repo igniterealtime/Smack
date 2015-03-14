@@ -47,6 +47,7 @@ public class RosterEntry {
     private String name;
     private RosterPacket.ItemType type;
     private RosterPacket.ItemStatus status;
+    private final boolean approved;
     final private Roster roster;
     final private XMPPConnection connection;
 
@@ -57,14 +58,16 @@ public class RosterEntry {
      * @param name the nickname for the entry.
      * @param type the subscription type.
      * @param status the subscription status (related to subscriptions pending to be approbed).
+     * @param approved the pre-approval flag.
      * @param connection a connection to the XMPP server.
      */
     RosterEntry(Jid user, String name, RosterPacket.ItemType type,
-                RosterPacket.ItemStatus status, Roster roster, XMPPConnection connection) {
+                RosterPacket.ItemStatus status, boolean approved, Roster roster, XMPPConnection connection) {
         this.user = user;
         this.name = name;
         this.type = type;
         this.status = status;
+        this.approved = approved;
         this.roster = roster;
         this.connection = connection;
     }
@@ -122,6 +125,15 @@ public class RosterEntry {
         this.name = name;
         this.type = type;
         this.status = status;
+    }
+
+    /**
+     * Returns the pre-approval state of this entry.
+     *
+     * @return the pre-approval state.
+     */
+    public boolean isApproved() {
+        return approved;
     }
 
     /**
@@ -244,6 +256,8 @@ public class RosterEntry {
         }
         else if (!user.equals(other.user))
             return false;
+        if (approved != other.approved)
+            return false;
         return true;
     }
 
@@ -251,6 +265,7 @@ public class RosterEntry {
         RosterPacket.Item item = new RosterPacket.Item(entry.getUser(), entry.getName());
         item.setItemType(entry.getType());
         item.setItemStatus(entry.getStatus());
+        item.setApproved(entry.isApproved());
         // Set the correct group names for the item.
         for (RosterGroup group : entry.getGroups()) {
             item.addGroupName(group.getName());

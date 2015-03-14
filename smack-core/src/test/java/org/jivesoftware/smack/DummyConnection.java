@@ -24,6 +24,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
@@ -189,6 +190,16 @@ public class DummyConnection extends AbstractXMPPConnection {
      */
     public void processPacket(Stanza packet) {
         invokePacketCollectorsAndNotifyRecvListeners(packet);
+    }
+
+    /**
+     * Enable stream feature.
+     *
+     * @param streamFeature the stream feature.
+     * @since 4.2
+     */
+    public void enableStreamFeature(ExtensionElement streamFeature) {
+        addStreamFeature(streamFeature);
     }
 
     public static DummyConnection newConnectedDummyConnection() {

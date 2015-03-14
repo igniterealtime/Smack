@@ -111,6 +111,7 @@ public class RosterPacket extends IQ {
         private String name;
         private ItemType itemType;
         private ItemStatus itemStatus;
+        private boolean approved;
         private final Set<String> groupNames;
 
         /**
@@ -190,6 +191,25 @@ public class RosterPacket extends IQ {
             this.itemStatus = itemStatus;
         }
 
+
+        /**
+         * Returns the roster item pre-approval state.
+         *
+         * @return the pre-approval state.
+         */
+        public boolean isApproved() {
+            return approved;
+        }
+
+        /**
+         * Sets the roster item pre-approval state.
+         *
+         * @param approved the pre-approval flag.
+         */
+        public void setApproved(boolean approved) {
+            this.approved = approved;
+        }
+
         /**
          * Returns an unmodifiable set of the group names that the roster item
          * belongs to.
@@ -224,6 +244,7 @@ public class RosterPacket extends IQ {
             xml.optAttribute("name", name);
             xml.optAttribute("subscription", itemType);
             xml.optAttribute("ask", itemStatus);
+            xml.optBooleanAttribute("approved", approved);
             xml.rightAngleBracket();
 
             for (String groupName : groupNames) {
@@ -242,6 +263,7 @@ public class RosterPacket extends IQ {
             result = prime * result + ((itemType == null) ? 0 : itemType.hashCode());
             result = prime * result + ((name == null) ? 0 : name.hashCode());
             result = prime * result + ((user == null) ? 0 : user.hashCode());
+            result = prime * result + ((approved == false) ? 0 : 1);
             return result;
         }
 
@@ -275,6 +297,8 @@ public class RosterPacket extends IQ {
                     return false;
             }
             else if (!user.equals(other.user))
+                return false;
+            if (approved != other.approved)
                 return false;
             return true;
         }
