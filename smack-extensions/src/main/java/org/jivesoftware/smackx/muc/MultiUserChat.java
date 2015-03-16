@@ -2179,6 +2179,18 @@ public class MultiUserChat {
                 listener.nicknameChanged(from, mucUser.getItem().getNick());
             }
         }
+        //The room has been destroyed
+        if (mucUser.getDestroy() != null) {
+            MultiUserChat alternateMUC = multiUserChatManager.getMultiUserChat(mucUser.getDestroy().getJid());
+            for (UserStatusListener listener : userStatusListeners) {
+                listener.roomDestroyed(alternateMUC, mucUser.getDestroy().getReason());
+            }
+
+            // Reset occupant information.
+            occupantsMap.clear();
+            nickname = null;
+            userHasLeft();
+        }
     }
 
     @Override
