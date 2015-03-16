@@ -65,5 +65,8 @@ public class DefaultUserStatusListener implements UserStatusListener {
 
     public void adminRevoked() {
     }
+    
+    public void roomDestroyed(MultiUserChat alternateMUC, String reason) {
+    }
 
 }
