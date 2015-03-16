@@ -21,7 +21,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * A listener that is fired anytime your participant's status in a room is changed, such as the 
- * user being kicked, banned, or granted admin permissions.
+ * user being kicked, banned, or granted admin permissions or the room is destroyed.
  * 
  * @author Gaston Dombiak
  */
@@ -122,5 +122,13 @@ public interface UserStatusListener {
      * 
      */
     public abstract void adminRevoked();
+
+    /**
+     * Called when the room is destroyed.
+     * 
+     * @param alternateMUC an alternate MultiUserChat, may be null.
+     * @param reason the reason why the room was closed, may be null.
+     */
+    public abstract void roomDestroyed(MultiUserChat alternateMUC, String reason);
 
 }
