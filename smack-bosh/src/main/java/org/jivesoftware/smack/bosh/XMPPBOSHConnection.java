@@ -31,7 +31,6 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IQ;
@@ -435,9 +434,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                     connected = true;
                     if (isFirstInitialization) {
                         isFirstInitialization = false;
-                        for (ConnectionCreationListener listener : getConnectionCreationListeners()) {
-                            listener.connectionCreated(XMPPBOSHConnection.this);
-                        }
                     }
                     else {
                             if (wasAuthenticated) {

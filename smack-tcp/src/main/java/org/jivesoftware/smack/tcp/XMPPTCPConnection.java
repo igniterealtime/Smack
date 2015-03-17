@@ -19,7 +19,6 @@ package org.jivesoftware.smack.tcp;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
-import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
@@ -633,13 +632,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // Start the packet reader. The startup() method will block until we
         // get an opening stream packet back from server
         packetReader.init();
-
-        if (isFirstInitialization) {
-            // Notify listeners that a new connection has been established
-            for (ConnectionCreationListener listener : getConnectionCreationListeners()) {
-                listener.connectionCreated(this);
-            }
-        }
     }
 
     private void initReaderAndWriter() throws IOException {

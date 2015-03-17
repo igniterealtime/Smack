@@ -103,15 +103,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * Get the collection of listeners that are interested in connection creation events.
-     * 
-     * @return a collection of listeners interested on new connections.
-     */
-    protected static Collection<ConnectionCreationListener> getConnectionCreationListeners() {
-        return XMPPConnectionRegistry.getConnectionCreationListeners();
-    }
-
-    /**
      * A collection of ConnectionListeners which listen for connection closing
      * and reconnection events.
      */
@@ -302,6 +293,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected AbstractXMPPConnection(ConnectionConfiguration configuration) {
         config = configuration;
+        // Notify listeners that a new connection has been established
+        for (ConnectionCreationListener listener : XMPPConnectionRegistry.getConnectionCreationListeners()) {
+            listener.connectionCreated(this);
+        }
     }
 
     protected ConnectionConfiguration getConfiguration() {
