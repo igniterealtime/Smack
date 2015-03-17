@@ -264,7 +264,7 @@ public class PrivacyListManager extends Manager {
 	private Privacy getPrivacyWithListNames() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
 		// The request of the list is an empty privacy message
 		Privacy request = new Privacy();
-		
+
 		// Send the package to the server and get the answer
 		return getRequest(request);
 	}
@@ -371,10 +371,10 @@ public class PrivacyListManager extends Manager {
         // The request of the list is an privacy message with an empty list
         Privacy request = new Privacy();
         request.setPrivacyList(listName, new ArrayList<PrivacyItem>());
-        
+
         // Send the package to the server and get the answer
         Privacy privacyAnswer = getRequest(request);
-        
+
         return privacyAnswer.getPrivacyList(listName);
     }
 
@@ -427,7 +427,7 @@ public class PrivacyListManager extends Manager {
 		// The request of the list is an privacy message with an empty list
 		Privacy request = new Privacy();
 		request.setActiveName(listName);
-		
+
 		// Send the package to the server
 		setRequest(request);
 	}
@@ -443,7 +443,7 @@ public class PrivacyListManager extends Manager {
 		// The request of the list is an privacy message with an empty list
 		Privacy request = new Privacy();
 		request.setDeclineActiveList(true);
-		
+
 		// Send the package to the server
 		setRequest(request);
 	}
@@ -461,7 +461,7 @@ public class PrivacyListManager extends Manager {
 		// The request of the list is an privacy message with an empty list
 		Privacy request = new Privacy();
 		request.setDefaultName(listName);
-		
+
 		// Send the package to the server
 		setRequest(request);
 	}
@@ -477,7 +477,7 @@ public class PrivacyListManager extends Manager {
 		// The request of the list is an privacy message with an empty list
 		Privacy request = new Privacy();
 		request.setDeclineDefaultList(true);
-		
+
 		// Send the package to the server
 		setRequest(request);
 	}

@@ -20,13 +20,13 @@ abstract class AbstractProviderInfo {
     private String element;
     private String ns;
     private Object provider;
-    
+
     AbstractProviderInfo(String elementName, String namespace, Object iqOrExtProvider) {
         element = elementName;
         ns = namespace;
         provider = iqOrExtProvider;
     }
-    
+
     public String getElementName() {
         return element;
     }
@@ -34,7 +34,7 @@ abstract class AbstractProviderInfo {
     public String getNamespace() {
         return ns;
     }
-    
+
     Object getProvider() {
         return provider;
     }

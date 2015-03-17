@@ -264,7 +264,7 @@ public class JingleManagerTest extends SmackTestCase {
 
             JingleManager man0 = new JingleManager(getConnection(0), trl0);
             JingleManager man1 = new JingleManager(getConnection(1), trl1);
-            
+
             man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 /**
                  * Called when a new session request is detected
@@ -323,10 +323,10 @@ public class JingleManagerTest extends SmackTestCase {
 
             JingleManager man0 = new JingleManager(getConnection(0), trl0);
             JingleManager man1 = new JingleManager(getConnection(1), trl1);
-            
+
             man0.addCreationListener(ftm0);
             man1.addCreationListener(ftm1);
-            
+
             man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 /**
                  * Called when a new session request is detected
@@ -527,7 +527,7 @@ public class JingleManagerTest extends SmackTestCase {
 
             JingleManager man0 = new JingleManager(getConnection(0), trl0);
             JingleManager man1 = new JingleManager(getConnection(1), trl1);
-            
+
             man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 /**
                  * Called when a new session request is detected
@@ -681,7 +681,7 @@ public class JingleManagerTest extends SmackTestCase {
     public void testFullTest() {
 
         resetCounter();
-        
+
         XMPPTCPConnection x0 = getConnection(0);
         XMPPTCPConnection x1 = getConnection(1);
 
@@ -701,7 +701,7 @@ public class JingleManagerTest extends SmackTestCase {
 
         JingleManager man0 = new JingleManager(x0, trl0);
         JingleManager man1 = new JingleManager(x1, trl1);
-        
+
         man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
             public void sessionRequested(final JingleSessionRequest request) {
 
@@ -796,7 +796,7 @@ public class JingleManagerTest extends SmackTestCase {
     public void testMediaManager() {
 
         resetCounter();
-        
+
         XMPPTCPConnection x0 = getConnection(0);
         XMPPTCPConnection x1 = getConnection(1);
 
@@ -807,7 +807,7 @@ public class JingleManagerTest extends SmackTestCase {
         FixedTransportManager ftm1 = new FixedTransportManager(tr1);
 
         try {
-            
+
             JingleMediaManager jingleMediaManager = new JingleMediaManager(ftm0) {
                 // Media Session Implementation
                 public JingleMediaSession createMediaSession(final PayloadType payloadType, final TransportCandidate remote,
@@ -852,7 +852,7 @@ public class JingleManagerTest extends SmackTestCase {
                 }
 
             };
-            
+
             List<JingleMediaManager> trl0 = new ArrayList<JingleMediaManager>();
             trl0.add(jingleMediaManager);
 
@@ -901,11 +901,11 @@ public class JingleManagerTest extends SmackTestCase {
     /**
      * This is a simple test where the user_2 rejects the Jingle session.
      */
-    
+
 //      This test doesn't make sense in light of multiple <content> sections allowed in XEp-166.
 //      What we really need is a test for actions: content-add and content-remove.
- 
-    
+
+
 //    public void testIncompatibleCodecs() {
 //
 //        resetCounter();

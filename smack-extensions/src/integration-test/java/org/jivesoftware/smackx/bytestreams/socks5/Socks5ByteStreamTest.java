@@ -140,7 +140,7 @@ public class Socks5ByteStreamTest extends SmackTestCase {
         Socks5BytestreamSession session = initiatorByteStreamManager.establishSession(
                         targetConnection.getUser());
         OutputStream outputStream = session.getOutputStream();
-        
+
         assertTrue(session.isDirect());
 
         // verify stream
@@ -284,9 +284,9 @@ public class Socks5ByteStreamTest extends SmackTestCase {
         Socks5BytestreamManager initiatorByteStreamManager = Socks5BytestreamManager.getBytestreamManager(initiatorConnection);
 
         Socks5BytestreamSession session = initiatorByteStreamManager.establishSession(targetConnection.getUser());
-        
+
         assertTrue(session.isMediated());
-        
+
         // verify stream
         final byte[] receivedData = new byte[3];
         final InputStream inputStream = session.getInputStream();

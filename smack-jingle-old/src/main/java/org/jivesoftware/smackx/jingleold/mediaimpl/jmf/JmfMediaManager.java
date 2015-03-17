@@ -43,7 +43,7 @@ public class JmfMediaManager extends JingleMediaManager {
 
 	public static final String MEDIA_NAME = "JMF";
 
-    
+
     private List<PayloadType> payloads = new ArrayList<PayloadType>();
     private String mediaLocator = null;
 
@@ -159,7 +159,7 @@ public class JmfMediaManager extends JingleMediaManager {
     private static void runLinuxPreInstall() {
         // @TODO Implement Linux Pre-Install
     }
-    
+
     public  String getName() {
         return MEDIA_NAME;
     }

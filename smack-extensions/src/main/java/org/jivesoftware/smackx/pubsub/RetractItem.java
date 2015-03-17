@@ -39,7 +39,7 @@ public class RetractItem implements ExtensionElement
 			throw new IllegalArgumentException("itemId must not be 'null'");
 		id = itemId;
 	}
-	
+
 	public String getId()
 	{
 		return id;

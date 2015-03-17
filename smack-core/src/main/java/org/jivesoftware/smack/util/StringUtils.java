@@ -144,7 +144,7 @@ public class StringUtils {
             throw new IllegalStateException("UTF-8 encoding not supported by platform", e);
         }
     }
- 
+
     /**
      * Pseudo-random number generator object for use with randomString().
      * The Random class is not considered to be cryptographically secure, so

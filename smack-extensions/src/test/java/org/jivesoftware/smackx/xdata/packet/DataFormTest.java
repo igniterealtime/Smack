@@ -54,15 +54,15 @@ public class DataFormTest {
         df.addInstruction(instruction);
         FormField field = new FormField("testField1");
         df.addField(field);
-        
+
         assertNotNull( df.toXML());
         String output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_1, output);
-        
+
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
-        
+
         df = pr.parse(parser);
-        
+
         assertNotNull(df);
         assertNotNull(df.getFields());
         assertEquals(1 , df.getFields().size() );
@@ -81,7 +81,7 @@ public class DataFormTest {
         df.addInstruction(instruction);
         FormField field = new FormField("testField1");
         df.addField(field);
-        
+
         DataLayout layout = new DataLayout("Label");
         Fieldref reffield = new Fieldref("testField1");
         layout.getPageLayout().add(reffield);
@@ -89,25 +89,25 @@ public class DataFormTest {
         section.getSectionLayout().add(new Text("SectionText"));
         layout.getPageLayout().add(section);
         layout.getPageLayout().add(new Text("PageText"));
-        
+
         df.addExtensionElement(layout);
-        
-        
+
+
         assertNotNull( df.toXML());
         String output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_2, output);
-        
+
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
-        
+
         df = pr.parse(parser);
-        
+
         assertNotNull(df);
         assertNotNull(df.getExtensionElements());
         assertEquals(1 , df.getExtensionElements().size() );
         Element element = df.getExtensionElements().get(0);
         assertNotNull(element);
         layout = (DataLayout) element;
-        
+
         assertEquals(3 , layout.getPageLayout().size());
 
         assertNotNull( df.toXML());
@@ -126,22 +126,22 @@ public class DataFormTest {
 
         ValidateElement dv = new RangeValidateElement("xs:integer","1111", "9999");
         field.setValidateElement(dv);
-        
+
         assertNotNull( df.toXML());
         String output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_3, output);
-        
+
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
-        
+
         df = pr.parse(parser);
-        
+
         assertNotNull(df);
         assertNotNull(df.getFields());
         assertEquals(1 , df.getFields().size() );
         Element element = df.getFields().get(0).getValidateElement();
         assertNotNull(element);
         dv = (ValidateElement) element;
-        
+
         assertEquals("xs:integer" , dv.getDatatype());
 
         assertNotNull( df.toXML());

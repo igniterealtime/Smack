@@ -121,7 +121,7 @@ public class Macros extends IQ {
 
             return macroGroup;
         }
-        
+
         public Macro parseMacro(XmlPullParser parser) throws XmlPullParserException, IOException {
         	Macro macro = new Macro();
         	 boolean done = false;
@@ -150,10 +150,10 @@ public class Macros extends IQ {
             }
         	return macro;
         }
-        
+
         public MacroGroup parseMacroGroup(XmlPullParser parser) throws XmlPullParserException, IOException {
         	MacroGroup group = new MacroGroup();
-        	
+
             boolean done = false;
             while (!done) {
 	        	int eventType = parser.next();
@@ -176,7 +176,7 @@ public class Macros extends IQ {
             }
         	return group; 
         }
-        
+
         public MacroGroup parseMacroGroups(String macros) throws XmlPullParserException, IOException {
 
         	MacroGroup group = null;

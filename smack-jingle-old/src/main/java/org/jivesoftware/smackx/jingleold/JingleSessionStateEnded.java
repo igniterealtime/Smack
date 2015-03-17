@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleError;
  *  @see JingleSessionState
  */
 public class JingleSessionStateEnded extends JingleSessionState {
-	
+
 	private static final Logger LOGGER = Logger.getLogger(JingleSessionStateEnded.class.getName());
 
 	private static JingleSessionStateEnded INSTANCE = null;
@@ -64,7 +64,7 @@ public class JingleSessionStateEnded extends JingleSessionState {
      */
     public IQ processJingle(JingleSession session, Jingle jingle, JingleActionEnum action) {
         IQ response = null;
-        
+
         response = session.createJingleError(jingle, JingleError.MALFORMED_STANZA);
 
         return response;

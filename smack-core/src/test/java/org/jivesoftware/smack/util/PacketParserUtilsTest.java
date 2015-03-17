@@ -51,19 +51,19 @@ import com.jamesmurty.utils.XMLBuilder;
  *
  */
 public class PacketParserUtilsTest {
-    
+
     private static Properties outputProperties = new Properties();
     {
         outputProperties.put(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
     }
-        
+
     @Test
     public void singleMessageBodyTest() throws Exception {
         String defaultLanguage = Stanza.getDefaultLanguage();
         String otherLanguage = determineNonDefaultLanguage();
 
         String control;
-        
+
         // message has default language, body has no language
         control = XMLBuilder.create("message")
             .a("from", "romeo@montague.lit/orchard")
@@ -74,7 +74,7 @@ public class PacketParserUtilsTest {
             .e("body")
                 .t(defaultLanguage)
             .asString(outputProperties);
-        
+
         Message message = (Message) PacketParserUtils
                         .parseMessage(PacketParserUtils.getParserFor(control));
 
@@ -102,7 +102,7 @@ public class PacketParserUtilsTest {
         assertEquals(otherLanguage, message.getBody(otherLanguage));
         assertNull(message.getBody(defaultLanguage));
         assertXMLEqual(control, message.toXML().toString());
-        
+
         // message has no language, body has no language
         control = XMLBuilder.create("message")
             .a("from", "romeo@montague.lit/orchard")
@@ -112,7 +112,7 @@ public class PacketParserUtilsTest {
             .e("body")
                 .t(defaultLanguage)
             .asString(outputProperties);
-        
+
         message = (Message) PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
 
         assertEquals(defaultLanguage, message.getBody());
@@ -212,7 +212,7 @@ public class PacketParserUtilsTest {
         String otherLanguage = determineNonDefaultLanguage();
 
         String control;
-        
+
         // message has default language, subject has no language
         control = XMLBuilder.create("message")
             .a("from", "romeo@montague.lit/orchard")
@@ -223,7 +223,7 @@ public class PacketParserUtilsTest {
             .e("subject")
                 .t(defaultLanguage)
             .asString(outputProperties);
-        
+
         Message message = (Message) PacketParserUtils
                         .parseMessage(PacketParserUtils.getParserFor(control));
 
@@ -251,7 +251,7 @@ public class PacketParserUtilsTest {
         assertEquals(otherLanguage, message.getSubject(otherLanguage));
         assertNull(message.getSubject(defaultLanguage));
         assertXMLEqual(control, message.toXML().toString());
-        
+
         // message has no language, subject has no language
         control = XMLBuilder.create("message")
             .a("from", "romeo@montague.lit/orchard")
@@ -261,7 +261,7 @@ public class PacketParserUtilsTest {
             .e("subject")
                 .t(defaultLanguage)
             .asString(outputProperties);
-        
+
         message = (Message) PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
 
         assertEquals(defaultLanguage, message.getSubject());
@@ -359,7 +359,7 @@ public class PacketParserUtilsTest {
     public void multipleMessageBodiesTest() throws Exception {
         String defaultLanguage = Stanza.getDefaultLanguage();
         String otherLanguage = determineNonDefaultLanguage();
-        
+
         String control;
         Message message;
 
@@ -512,7 +512,7 @@ public class PacketParserUtilsTest {
     public void multipleMessageSubjectsTest() throws Exception {
         String defaultLanguage = Stanza.getDefaultLanguage();
         String otherLanguage = determineNonDefaultLanguage();
-        
+
         String control;
         Message message;
 
@@ -700,7 +700,7 @@ public class PacketParserUtilsTest {
             .asString(outputProperties);
 
         String invalidControl = validControl.replace("Good Message Body", "Bad </span> Body");
-        
+
         try {
             PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
             fail("Exception should be thrown");
@@ -709,7 +709,7 @@ public class PacketParserUtilsTest {
         }
 
         invalidControl = validControl.replace("Good Message Body", "Bad </body> Body");
-        
+
         try {
             PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
             fail("Exception should be thrown");
@@ -718,7 +718,7 @@ public class PacketParserUtilsTest {
         }
 
         invalidControl = validControl.replace("Good Message Body", "Bad </message> Body");
-        
+
         try {
             PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
             fail("Exception should be thrown");
@@ -755,22 +755,22 @@ public class PacketParserUtilsTest {
     @Test
     public void validateSimplePresence() throws Exception {
     	String stanza = "<presence from='juliet@example.com/balcony' to='romeo@example.net'/>";
-    	
+
     	Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
-    	
+
     	assertXMLEqual(stanza, presence.toXML().toString());
     }
-    
+
     @Test
     public void validatePresenceProbe() throws Exception {
     	String stanza = "<presence from='mercutio@example.com' id='xv291f38' to='juliet@example.com' type='unsubscribed'/>";
-    	
+
     	Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
-    	
+
     	assertXMLEqual(stanza, presence.toXML().toString());
     	assertEquals(Presence.Type.unsubscribed, presence.getType());
     }
-    
+
     @Test
     public void validatePresenceOptionalElements() throws Exception {
     	String stanza = "<presence xml:lang='en' type='unsubscribed'>"
@@ -778,7 +778,7 @@ public class PacketParserUtilsTest {
     			+ "<status>Wooing Juliet</status>"
     			+ "<priority>1</priority>"
     			+ "</presence>";
-    	
+
     	Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
     	assertXMLEqual(stanza, presence.toXML().toString());
     	assertEquals(Presence.Type.unsubscribed, presence.getType());

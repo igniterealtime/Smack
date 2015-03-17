@@ -73,7 +73,7 @@ public class Form {
     public Form(DataForm dataForm) {
         this.dataForm = dataForm;
     }
-    
+
     /**
      * Creates a new Form of a given type from scratch.
      *
@@ -82,7 +82,7 @@ public class Form {
     public Form(DataForm.Type type) {
         this.dataForm = new DataForm(type);
     }
-    
+
     /**
      * Adds a new field to complete as part of the form.
      * 
@@ -91,7 +91,7 @@ public class Form {
     public void addField(FormField field) {
         dataForm.addField(field);
     }
-    
+
     /**
      * Sets a new String value to a given form's field. The field whose variable matches the 
      * requested variable will be completed with the specified value. If no field could be found 
@@ -401,7 +401,7 @@ public class Form {
     public DataForm.Type getType() {
         return dataForm.getType(); 
     }
-    
+
 
     /**
      * Sets instructions that explain how to fill out the form and what the form is about.
@@ -417,7 +417,7 @@ public class Form {
         }
         // Set the new list of instructions
         dataForm.setInstructions(instructionsList);
-        
+
     }
 
 
@@ -430,7 +430,7 @@ public class Form {
     public void setTitle(String title) {
         dataForm.setTitle(title);
     }
-    
+
     /**
      * Returns a DataForm that serves to send this Form to the server. If the form is of type 
      * submit, it may contain fields with no value. These fields will be removed since they only 
@@ -451,7 +451,7 @@ public class Form {
         }
         return dataForm;
     }
-    
+
     /**
      * Returns true if the form is a form to fill out.
      * 
@@ -460,7 +460,7 @@ public class Form {
     private boolean isFormType() {
         return DataForm.Type.form == dataForm.getType();
     }
-    
+
     /**
      * Returns true if the form is a form to submit.
      * 

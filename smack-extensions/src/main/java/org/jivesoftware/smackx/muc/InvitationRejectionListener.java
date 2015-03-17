@@ -31,5 +31,5 @@ public interface InvitationRejectionListener {
      * @param reason the reason why the invitee declined the invitation.
      */
     public abstract void invitationDeclined(String invitee, String reason);
-    
+
 }

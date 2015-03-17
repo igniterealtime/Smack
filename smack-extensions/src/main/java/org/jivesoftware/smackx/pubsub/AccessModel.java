@@ -29,13 +29,13 @@ public enum AccessModel
 
 	/** Subscription request must be approved and only subscribers may retrieve items */
 	authorize,
-	
+
 	/** Anyone with a presence subscription of both or from may subscribe and retrieve items */
 	presence,
-	
+
 	/** Anyone in the specified roster group(s) may subscribe and retrieve items */
 	roster,
-	
+
 	/** Only those on a whitelist may subscribe and retrieve items */
 	whitelist;
 }

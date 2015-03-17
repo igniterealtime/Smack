@@ -33,7 +33,7 @@ import java.util.List;
  * @author Thiago Camargo
  */
 public abstract class JingleMediaManager {
-    
+
     public static final String MEDIA_NAME = "JingleMediaManager";
 
     // Each media manager must keep track of the transport manager that it uses.
@@ -42,7 +42,7 @@ public abstract class JingleMediaManager {
     public JingleMediaManager(JingleTransportManager transportManager) {
         this.transportManager = transportManager;
     }
-    
+
     /**
      * Return   The transport manager that goes with this media manager.
      */
@@ -76,7 +76,7 @@ public abstract class JingleMediaManager {
      */
     public abstract JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote,
             final TransportCandidate local, JingleSession jingleSession);
-    
+
     // This is to set the attributes of the <content> element of the Jingle packet.    
     public String getName() {
         return MEDIA_NAME;

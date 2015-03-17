@@ -361,7 +361,7 @@ public class ChatConnectionTest {
         @Override
         public void chatCreated(Chat chat, boolean createdLocally) {
             newChat = chat;
-            
+
             if (listener != null)
                 newChat.addMessageListener(listener);
             reportInvoked();
@@ -371,7 +371,7 @@ public class ChatConnectionTest {
             return newChat;
         }
     }
-    
+
     private class TestChatServer extends Thread {
         private Stanza chatPacket;
         private DummyConnection con;
@@ -390,18 +390,18 @@ public class ChatConnectionTest {
     private class TestMessageListener implements ChatMessageListener {
         private Chat msgChat;
         private int counter = 0;
-        
+
         @Override
         public void processMessage(Chat chat, Message message) {
             msgChat = chat;
             counter++;
         }
-        
+
         @SuppressWarnings("unused")
         public Chat getChat() {
             return msgChat;
         }
-        
+
         public int getNumMessages() {
             return counter;
         }

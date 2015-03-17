@@ -50,7 +50,7 @@ import org.jxmpp.jid.Jid;
  */
 public class MessageEventManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(MessageEventManager.class.getName());
-    
+
     private static final Map<XMPPConnection, MessageEventManager> INSTANCES = new WeakHashMap<>();
 
     private static final StanzaFilter PACKET_FILTER = new AndFilter(new StanzaExtensionFilter(

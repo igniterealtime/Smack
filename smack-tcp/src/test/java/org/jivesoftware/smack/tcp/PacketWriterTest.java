@@ -102,7 +102,7 @@ public class PacketWriterTest {
             t.notify();
         }
     }
-    
+
     public class BlockingStringWriter extends Writer {
         @Override
         public void write(char[] cbuf, int off, int len) throws IOException {

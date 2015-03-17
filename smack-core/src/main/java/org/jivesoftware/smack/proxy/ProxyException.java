@@ -33,12 +33,12 @@ public class ProxyException extends IOException {
     {
         super("Proxy Exception " + type.toString() + " : "+ex+", "+cause);
     }
-    
+
     public ProxyException(ProxyInfo.ProxyType type, String ex)
     {
         super("Proxy Exception " + type.toString() + " : "+ex);
     }
-    
+
     public ProxyException(ProxyInfo.ProxyType type)
     {
         super("Proxy Exception " + type.toString() + " : " + "Unknown Error");

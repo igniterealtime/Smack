@@ -113,7 +113,7 @@ public class LoginTest extends SmackTestCase {
             config.setSASLAuthenticationEnabled(false);
             XMPPTCPConnection conn2 = new XMPPConnection(config);
             conn2.connect();
-            
+
             try {
                 // Try to login anonymously
                 conn1.loginAnonymously();

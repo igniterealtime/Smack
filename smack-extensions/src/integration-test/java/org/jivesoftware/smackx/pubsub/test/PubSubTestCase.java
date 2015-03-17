@@ -55,7 +55,7 @@ abstract public class PubSubTestCase extends SmackTestCase
 	protected LeafNode getPubnode(PubSubManager pubMgr, boolean persistItems, boolean deliverPayload, String nodeId) throws XMPPException
 	{
 		LeafNode node = null;
-		
+
 		try
 		{
 			node = (LeafNode)pubMgr.getNode(nodeId);
@@ -76,7 +76,7 @@ abstract public class PubSubTestCase extends SmackTestCase
 		if (manager == null)
 		{
 			manager = new PubSubManager[getMaxConnections()];
-			
+
 			for(int i=0; i<manager.length; i++)
 			{
 				manager[i] = new PubSubManager(getConnection(i), getService());
@@ -84,7 +84,7 @@ abstract public class PubSubTestCase extends SmackTestCase
 		}
 		return manager[idx];
 	}
-	
+
 	protected String getService()
 	{
 		return "pubsub." + getServiceName();

@@ -283,7 +283,7 @@ public class JingleMediaTest extends SmackTestCase {
 
             final JingleManager jm0 = new JingleManager(x0, jml0);
             final JingleManager jm1 = new JingleManager(x1, jml1);
-            
+
             jm1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 public void sessionRequested(final JingleSessionRequest request) {
 
@@ -327,7 +327,7 @@ public class JingleMediaTest extends SmackTestCase {
 
                         XMPPTCPConnection x0 = getConnection(n);
                         XMPPTCPConnection x1 = getConnection(n + 1);
-   
+
                         BridgedTransportManager btm0 = new BridgedTransportManager(x0);
                         BridgedTransportManager btm1 = new BridgedTransportManager(x1);
 
@@ -346,7 +346,7 @@ public class JingleMediaTest extends SmackTestCase {
 
                         jm0.addCreationListener(btm0);
                         jm1.addCreationListener(btm1);
-                        
+
                         jm1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                             public void sessionRequested(final JingleSessionRequest request) {
 
@@ -369,7 +369,7 @@ public class JingleMediaTest extends SmackTestCase {
 
                         //js0.sendFormattedError(JingleError.UNSUPPORTED_TRANSPORTS);
                         js0.sendStanza(js0.createJingleError(null, JingleError.UNSUPPORTED_TRANSPORTS));
-                        
+
 
                         Thread.sleep(20000);
 

@@ -111,7 +111,7 @@ public class MacroGroup {
     public void setTitle(String title) {
         this.title = title;
     }
-    
+
     public String toXML() {
     	StringBuilder buf = new StringBuilder();
     	buf.append("<macrogroup>");
@@ -127,7 +127,7 @@ public class MacroGroup {
     		buf.append("</macro>");
 		}
     	buf.append("</macros>");
-    	
+
     	if (getMacroGroups().size() > 0) {
     		buf.append("<macroGroups>");
     		for (MacroGroup groups : getMacroGroups()) {

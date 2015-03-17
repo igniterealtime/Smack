@@ -27,9 +27,9 @@ import org.jivesoftware.smackx.jingleold.media.PayloadType;
  *  
  */
 public class FixedTransportManager extends JingleTransportManager implements JingleSessionListener, CreatedJingleSessionListener {
-    
+
     FixedResolver resolver;
-    
+
     public FixedTransportManager(FixedResolver inResolver) {
         resolver = inResolver;
     }
@@ -37,7 +37,7 @@ public class FixedTransportManager extends JingleTransportManager implements Jin
     protected TransportResolver createResolver(JingleSession session) {
         return resolver;
     }
-    
+
     public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
     }
 
@@ -56,7 +56,7 @@ public class FixedTransportManager extends JingleTransportManager implements Jin
     public void sessionMediaReceived(JingleSession jingleSession, String participant) {
         // Do Nothing
     }
-    
+
     public void sessionCreated(JingleSession jingleSession) {
         jingleSession.addListener(this);
     }

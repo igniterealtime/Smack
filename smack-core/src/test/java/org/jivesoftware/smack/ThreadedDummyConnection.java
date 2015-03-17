@@ -69,7 +69,7 @@ public class ThreadedDummyConnection extends DummyConnection {
     public void setTimeout() {
         timeout = true;
     }
-    
+
     public void addMessage(Message msgToProcess) {
         messageQ.add(msgToProcess);
     }

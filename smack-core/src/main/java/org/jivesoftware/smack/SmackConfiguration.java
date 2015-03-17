@@ -142,7 +142,7 @@ public final class SmackConfiguration {
     public static void setPacketCollectorSize(int collectorSize) {
         packetCollectorSize = collectorSize;
     }
-    
+
     /**
      * Add a SASL mechanism to the list to be used.
      *

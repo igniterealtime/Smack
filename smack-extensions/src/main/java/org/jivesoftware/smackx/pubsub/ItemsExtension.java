@@ -42,19 +42,19 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	{
 		/** An items element, which has an optional <b>max_items</b> attribute when requesting items */
 		items(PubSubElementType.ITEMS, "max_items"),
-		
+
 		/** A retract element, which has an optional <b>notify</b> attribute when publishing deletions */
 		retract(PubSubElementType.RETRACT, "notify");
-		
+
 		private PubSubElementType elem;
 		private String att;
-		
+
 		private ItemsElementType(PubSubElementType nodeElement, String attribute)
 		{
 			elem = nodeElement;
 			att = attribute;
 		}
-		
+
 		public PubSubElementType getNodeElement()
 		{
 			return elem;
@@ -89,7 +89,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 		type = itemsType;
 		this.items = items;
 	}
-	
+
 	/**
 	 * Construct an instance with a list representing items that have been published or deleted.
 	 * 
@@ -113,7 +113,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 		this.items = items; 
 		this.notify = notify;
 	}
-	
+
 	/**
 	 * Get the type of element
 	 * 
@@ -123,13 +123,13 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	{
 		return type;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<ExtensionElement> getExtensions()
 	{
 		return (List<ExtensionElement>)getItems();
 	}
-	
+
 	/**
 	 * Gets the items related to the type of request or event.
 	 * 
@@ -149,7 +149,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	{
 		return notify;
 	}
-	
+
 	@Override
 	public CharSequence toXML()
 	{
@@ -163,7 +163,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 			builder.append(getElementName());
 			builder.append(" node='");
 			builder.append(getNode());
-			
+
 			if (notify != null)
 			{
 				builder.append("' ");
@@ -180,7 +180,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 					builder.append(item.toXML());
 				}
 			}
-			
+
 			builder.append("</");
 			builder.append(getElementName());
 			builder.append(">");

@@ -65,7 +65,7 @@ class HTTPProxySocketFactory
         throws IOException
     {
         return httpProxifiedSocket(host.getHostAddress(), port);
-        
+
     }
 
     public Socket createSocket( InetAddress address, int port, 
@@ -74,7 +74,7 @@ class HTTPProxySocketFactory
     {
         return httpProxifiedSocket(address.getHostAddress(), port);
     }
-  
+
     private Socket httpProxifiedSocket(String host, int port)
         throws IOException 
     {
@@ -96,11 +96,11 @@ class HTTPProxySocketFactory
         }
         socket.getOutputStream().write((hostport + " HTTP/1.1\r\nHost: "
             + hostport + proxyLine + "\r\n\r\n").getBytes("UTF-8"));
-        
+
         InputStream in = socket.getInputStream();
         StringBuilder got = new StringBuilder(100);
         int nlchars = 0;
-        
+
         while (true)
         {
             char c = (char) in.read();
@@ -141,30 +141,30 @@ class HTTPProxySocketFactory
         }
 
         String gotstr = got.toString();
-        
+
         BufferedReader br = new BufferedReader(new StringReader(gotstr));
         String response = br.readLine();
-        
+
         if (response == null)
         {
             throw new ProxyException(ProxyInfo.ProxyType.HTTP, "Empty proxy " +
                 "response from " + proxyhost + ", cancelling");
         }
-        
+
         Matcher m = RESPONSE_PATTERN.matcher(response);
         if (!m.matches())
         {
             throw new ProxyException(ProxyInfo.ProxyType.HTTP , "Unexpected " +
                 "proxy response from " + proxyhost + ": " + response);
         }
-        
+
         int code = Integer.parseInt(m.group(1));
-        
+
         if (code != HttpURLConnection.HTTP_OK)
         {
             throw new ProxyException(ProxyInfo.ProxyType.HTTP);
         }
-        
+
         return socket;
     }
 

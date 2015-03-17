@@ -95,7 +95,7 @@ public class StreamInitiationProvider extends IQProvider<StreamInitiation> {
                             LOGGER.log(Level.SEVERE, "Failed to parse file size from " + fileSize, e);
                         }
                     }
-                    
+
                     Date fileDate = new Date();
                     if (date != null) {
                         try {
@@ -104,7 +104,7 @@ public class StreamInitiationProvider extends IQProvider<StreamInitiation> {
                             // couldn't parse date, use current date-time
                         }
                     }
-                    
+
                     File file = new File(name, fileSize);
 					file.setHash(hash);
 					file.setDate(fileDate);

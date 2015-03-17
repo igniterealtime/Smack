@@ -45,7 +45,7 @@ public class ConfigureForm extends Form
 	{
 		super(configDataForm);
 	}
-	
+
 	/**
 	 * Create a decorator from an existing {@link Form} for node configuration.
 	 * Typically, this can be used to create a decorator for an answer form
@@ -57,7 +57,7 @@ public class ConfigureForm extends Form
 	{
 		super(nodeConfigForm.getDataFormToSend());
 	}
-	
+
 	/**
 	 * Create a new form for configuring a node.  This would typically only be used 
 	 * when creating and configuring a node at the same time via {@link PubSubManager#createNode(String, Form)}, since 
@@ -69,7 +69,7 @@ public class ConfigureForm extends Form
 	{
 		super(formType);
 	}
-	
+
 	/**
 	 * Get the currently configured {@link AccessModel}, null if it is not set.
 	 * 
@@ -78,13 +78,13 @@ public class ConfigureForm extends Form
 	public AccessModel getAccessModel()
 	{
 		String value = getFieldValue(ConfigureNodeFields.access_model);
-		
+
 		if (value == null)
 			return null;
 		else
 			return AccessModel.valueOf(value);
 	}
-	
+
 	/**
 	 * Sets the value of access model.
 	 * 
@@ -118,7 +118,7 @@ public class ConfigureForm extends Form
 		addField(ConfigureNodeFields.body_xslt, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.body_xslt.getFieldName(), bodyXslt);
 	}
-	
+
 	/**
 	 * The id's of the child nodes associated with a collection node (both leaf and collection).
 	 * 
@@ -128,7 +128,7 @@ public class ConfigureForm extends Form
 	{
 		return getFieldValues(ConfigureNodeFields.children);
 	}
-	
+
 	/**
 	 * Set the list of child node ids that are associated with a collection node.
 	 * 
@@ -139,7 +139,7 @@ public class ConfigureForm extends Form
 		addField(ConfigureNodeFields.children, FormField.Type.text_multi);
 		setAnswer(ConfigureNodeFields.children.getFieldName(), children);
 	}
-	
+
 	/**
 	 * Returns the policy that determines who may associate children with the node.
 	 *  
@@ -148,13 +148,13 @@ public class ConfigureForm extends Form
 	public ChildrenAssociationPolicy getChildrenAssociationPolicy()
 	{
 		String value = getFieldValue(ConfigureNodeFields.children_association_policy);
-		
+
 		if (value == null)
 			return null;
 		else
 			return ChildrenAssociationPolicy.valueOf(value);
 	}
-	
+
 	/**
 	 * Sets the policy that determines who may associate children with the node.
 	 * 
@@ -167,7 +167,7 @@ public class ConfigureForm extends Form
         values.add(policy.toString());
         setAnswer(ConfigureNodeFields.children_association_policy.getFieldName(), values);
 	}
-	
+
 	/**
 	 * List of JID's that are on the whitelist that determines who can associate child nodes 
 	 * with the collection node.  This is only relevant if {@link #getChildrenAssociationPolicy()} is set to
@@ -179,7 +179,7 @@ public class ConfigureForm extends Form
 	{
 		return getFieldValues(ConfigureNodeFields.children_association_whitelist);
 	}
-	
+
 	/**
 	 * Set the JID's in the whitelist of users that can associate child nodes with the collection 
 	 * node.  This is only relevant if {@link #getChildrenAssociationPolicy()} is set to
@@ -269,7 +269,7 @@ public class ConfigureForm extends Form
 	{
 		return parseBoolean(getFieldValue(ConfigureNodeFields.deliver_payloads));
 	}
-	
+
 	/**
 	 * Sets whether the node will deliver payloads with event notifications.
 	 * 
@@ -289,7 +289,7 @@ public class ConfigureForm extends Form
 	public ItemReply getItemReply()
 	{
 		String value = getFieldValue(ConfigureNodeFields.itemreply);
-		
+
 		if (value == null)
 			return null;
 		else
@@ -329,7 +329,7 @@ public class ConfigureForm extends Form
 		addField(ConfigureNodeFields.max_items, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.max_items.getFieldName(), max);
 	}
-	
+
 	/**
 	 * Gets the maximum payload size in bytes.
 	 * 
@@ -350,7 +350,7 @@ public class ConfigureForm extends Form
 		addField(ConfigureNodeFields.max_payload_size, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.max_payload_size.getFieldName(), max);
 	}
-	
+
 	/**
 	 * Gets the node type
 	 * 
@@ -359,13 +359,13 @@ public class ConfigureForm extends Form
 	public NodeType getNodeType()
 	{
 		String value = getFieldValue(ConfigureNodeFields.node_type);
-		
+
 		if (value == null)
 			return null;
 		else
 			return NodeType.valueOf(value);
 	}
-	
+
 	/**
 	 * Sets the node type
 	 * 
@@ -386,7 +386,7 @@ public class ConfigureForm extends Form
 	{
 		return parseBoolean(getFieldValue(ConfigureNodeFields.notify_config));
 	}
-	
+
 	/**
 	 * Sets whether subscribers should be notified when the configuration changes.
 	 * 
@@ -407,7 +407,7 @@ public class ConfigureForm extends Form
 	{
 		return parseBoolean(getFieldValue(ConfigureNodeFields.notify_delete));
 	}
-	
+
 	/**
 	 * Sets whether subscribers should be notified when the node is deleted.
 	 * 
@@ -429,7 +429,7 @@ public class ConfigureForm extends Form
 	{
 		return parseBoolean(getFieldValue(ConfigureNodeFields.notify_retract));
 	}
-	
+
 	/**
 	 * Sets whether subscribers should be notified when items are deleted 
 	 * from the node.
@@ -441,7 +441,7 @@ public class ConfigureForm extends Form
 		addField(ConfigureNodeFields.notify_retract, FormField.Type.bool);
 		setAnswer(ConfigureNodeFields.notify_retract.getFieldName(), notify);
 	}
-	
+
 	/**
 	 * Determines whether items should be persisted in the node.
 	 * 
@@ -451,7 +451,7 @@ public class ConfigureForm extends Form
 	{
 		return parseBoolean(getFieldValue(ConfigureNodeFields.persist_items));
 	}
-	
+
 	/**
 	 * Sets whether items should be persisted in the node.
 	 * 
@@ -472,7 +472,7 @@ public class ConfigureForm extends Form
 	{
 		return parseBoolean(getFieldValue(ConfigureNodeFields.presence_based_delivery));
 	}
-	
+
 	/**
 	 * Sets whether to deliver notifications to available users only.
 	 * 
@@ -492,7 +492,7 @@ public class ConfigureForm extends Form
 	public PublishModel getPublishModel()
 	{
 		String value = getFieldValue(ConfigureNodeFields.publish_model);
-		
+
 		if (value == null)
 			return null;
 		else
@@ -509,7 +509,7 @@ public class ConfigureForm extends Form
 		addField(ConfigureNodeFields.publish_model, FormField.Type.list_single);
 		setAnswer(ConfigureNodeFields.publish_model.getFieldName(), getListSingle(publish.toString()));
 	}
-	
+
 	/**
 	 * List of the multi user chat rooms that are specified as reply rooms.
 	 * 
@@ -519,7 +519,7 @@ public class ConfigureForm extends Form
 	{
 		return getFieldValues(ConfigureNodeFields.replyroom);
 	}
-	
+
 	/**
 	 * Sets the multi user chat rooms that are specified as reply rooms.
 	 * 
@@ -530,7 +530,7 @@ public class ConfigureForm extends Form
 		addField(ConfigureNodeFields.replyroom, FormField.Type.list_multi);
 		setAnswer(ConfigureNodeFields.replyroom.getFieldName(), replyRooms);
 	}
-	
+
 	/**
 	 * Gets the specific JID's for reply to.
 	 *  
@@ -540,7 +540,7 @@ public class ConfigureForm extends Form
 	{
 		return getFieldValues(ConfigureNodeFields.replyto);
 	}
-	
+
 	/**
 	 * Sets the specific JID's for reply to.
 	 * 
@@ -551,7 +551,7 @@ public class ConfigureForm extends Form
 		addField(ConfigureNodeFields.replyto, FormField.Type.list_multi);
 		setAnswer(ConfigureNodeFields.replyto.getFieldName(), replyTos);
 	}
-	
+
 	/**
 	 * Gets the roster groups that are allowed to subscribe and retrieve items.
 	 *  
@@ -561,7 +561,7 @@ public class ConfigureForm extends Form
 	{
 		return getFieldValues(ConfigureNodeFields.roster_groups_allowed);
 	}
-	
+
 	/**
 	 * Sets the roster groups that are allowed to subscribe and retrieve items.
 	 * 
@@ -572,7 +572,7 @@ public class ConfigureForm extends Form
 		addField(ConfigureNodeFields.roster_groups_allowed, FormField.Type.list_multi);
 		setAnswer(ConfigureNodeFields.roster_groups_allowed.getFieldName(), groups);
 	}
-	
+
 	/**
 	 * Determines if subscriptions are allowed.
 	 * 
@@ -604,7 +604,7 @@ public class ConfigureForm extends Form
 		addField(ConfigureNodeFields.subscribe, FormField.Type.bool);
 		setAnswer(ConfigureNodeFields.subscribe.getFieldName(), subscribe);
 	}
-	
+
 	/**
 	 * Gets the human readable node title.
 	 * 
@@ -625,7 +625,7 @@ public class ConfigureForm extends Form
 		addField(ConfigureNodeFields.title, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.title.getFieldName(), title);
 	}
-	
+
 	/**
 	 * The type of node data, usually specified by the namespace of the payload (if any).
 	 * 
@@ -646,27 +646,27 @@ public class ConfigureForm extends Form
 		addField(ConfigureNodeFields.type, FormField.Type.text_single);
 		setAnswer(ConfigureNodeFields.type.getFieldName(), type);
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder(getClass().getName() + " Content [");
-		
+
 		for (FormField formField : getFields())
 		{
 			result.append('(');
 			result.append(formField.getVariable());
 			result.append(':');
-			
+
 			StringBuilder valuesBuilder = new StringBuilder();
-				
+
 			for (String value : formField.getValues())
 			{
 				if (valuesBuilder.length() > 0)
 					result.append(',');
 				valuesBuilder.append(value);
 			}
-			
+
 			if (valuesBuilder.length() == 0)
 				valuesBuilder.append("NOT SET");
 			result.append(valuesBuilder);
@@ -684,21 +684,21 @@ public class ConfigureForm extends Form
 	private String getFieldValue(ConfigureNodeFields field)
 	{
 		FormField formField = getField(field.getFieldName());
-		
+
 		return (formField.getValues().isEmpty()) ? null : formField.getValues().get(0);
 	}
 
 	private List<String> getFieldValues(ConfigureNodeFields field)
 	{
 		FormField formField = getField(field.getFieldName());
-		
+
 		return formField.getValues();
 	}
 
 	private void addField(ConfigureNodeFields nodeField, FormField.Type type)
 	{
 		String fieldName = nodeField.getFieldName();
-		
+
 		if (getField(fieldName) == null)
 		{
 			FormField field = new FormField(fieldName);

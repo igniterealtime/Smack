@@ -47,7 +47,7 @@ public class JivePropertiesExtension implements ExtensionElement {
     public static final String ELEMENT = "properties";
 
     private static final Logger LOGGER = Logger.getLogger(JivePropertiesExtension.class.getName());
-    
+
     private final Map<String, Object> properties;
 
     public JivePropertiesExtension() {

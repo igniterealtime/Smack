@@ -241,13 +241,13 @@ public class AdHocCommandData extends IQ {
     public static class SpecificError implements ExtensionElement {
 
         public static final String namespace = "http://jabber.org/protocol/commands";
-        
+
         public SpecificErrorCondition condition;
-        
+
         public SpecificError(SpecificErrorCondition condition) {
             this.condition = condition;
         }
-        
+
         public String getElementName() {
             return condition.toString();
         }
@@ -258,7 +258,7 @@ public class AdHocCommandData extends IQ {
         public SpecificErrorCondition getCondition() {
             return condition;
         }
-        
+
         public String toXML() {
             StringBuilder buf = new StringBuilder();
             buf.append("<").append(getElementName());

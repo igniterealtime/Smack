@@ -30,13 +30,13 @@ public class PacketCollectorTest
 	public void verifyRollover() throws InterruptedException
 	{
 		TestPacketCollector collector = new TestPacketCollector(null, new OKEverything(), 5);
-		
+
 		for (int i=0; i<6; i++)
 		{
 			Stanza testPacket = new TestPacket(i);
 			collector.processPacket(testPacket);
 		}
-		
+
 		// Assert that '0' has rolled off
 		assertEquals("1", collector.nextResultBlockForever().getStanzaId());
 		assertEquals("2", collector.nextResultBlockForever().getStanzaId());
@@ -44,20 +44,20 @@ public class PacketCollectorTest
 		assertEquals("4", collector.nextResultBlockForever().getStanzaId());
 		assertEquals("5", collector.pollResult().getStanzaId());
 		assertNull(collector.pollResult());
-		
+
 		for (int i=10; i<15; i++)
 		{
 			Stanza testPacket = new TestPacket(i);
 			collector.processPacket(testPacket);
 		}
-		
+
 		assertEquals("10", collector.nextResultBlockForever().getStanzaId());
 		assertEquals("11", collector.nextResultBlockForever().getStanzaId());
 		assertEquals("12", collector.nextResultBlockForever().getStanzaId());
 		assertEquals("13", collector.nextResultBlockForever().getStanzaId());
 		assertEquals("14", collector.pollResult().getStanzaId());
 		assertNull(collector.pollResult());
-		
+
 		assertNull(collector.nextResult(1000));
 	}
 
@@ -70,7 +70,7 @@ public class PacketCollectorTest
 	{
 		int insertCount = 500;
 		final TestPacketCollector collector = new TestPacketCollector(null, new OKEverything(), insertCount);
-		
+
 		Thread consumer1 = new Thread(new Runnable()
 		{
 			@Override
@@ -105,7 +105,7 @@ public class PacketCollectorTest
 			public void run()
 			{
 				Stanza p = null;
-				
+
 				do
 				{
 					try
@@ -134,7 +134,7 @@ public class PacketCollectorTest
 			public void run()
 			{
 				Stanza p = null;
-				
+
 				do
 				{
 					try
@@ -155,7 +155,7 @@ public class PacketCollectorTest
 		consumer1.start();
 		consumer2.start();
 		consumer3.start();
-		
+
 		for(int i=0; i<insertCount; i++)
 		{
 			collector.processPacket(new TestPacket(i));
@@ -183,9 +183,9 @@ public class PacketCollectorTest
 		{
 			return true;
 		}
-		
+
 	}
-	
+
 	class TestPacketCollector extends PacketCollector 
 	{
 		protected TestPacketCollector(XMPPConnection conection, StanzaFilter packetFilter, int size)

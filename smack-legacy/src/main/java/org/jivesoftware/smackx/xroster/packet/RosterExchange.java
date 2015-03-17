@@ -89,7 +89,7 @@ public class RosterExchange implements ExtensionElement {
         // Create a new Entry based on the rosterEntry and add it to the packet
         RemoteRosterEntry remoteRosterEntry = new RemoteRosterEntry(rosterEntry.getUser(),
                 rosterEntry.getName(), groupNames);
-		
+
         addRosterEntry(remoteRosterEntry);
     }
 
@@ -103,7 +103,7 @@ public class RosterExchange implements ExtensionElement {
             remoteRosterEntries.add(remoteRosterEntry);
         }
     }
-    
+
     /**
     * Returns the XML element name of the extension sub-packet root element.
     * Always returns "x"

@@ -27,7 +27,7 @@ import java.util.Collection;
 public class PublishItem<T extends Item> extends NodeExtension
 {
 	protected Collection<T> items;
-	
+
 	/**
 	 * Construct a request to publish an item to a node.
 	 * 
@@ -61,13 +61,13 @@ public class PublishItem<T extends Item> extends NodeExtension
 		builder.append(" node='");
 		builder.append(getNode());
 		builder.append("'>");
-		
+
 		for (Item item : items)
 		{
 			builder.append(item.toXML());
 		}
 		builder.append("</publish>");
-		
+
 		return builder.toString();
 	}
 }

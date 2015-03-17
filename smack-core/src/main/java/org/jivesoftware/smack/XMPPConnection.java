@@ -384,7 +384,7 @@ public interface XMPPConnection {
      * @param packetFilter      the packet filter to use.
      */
     public void addPacketInterceptor(StanzaListener packetInterceptor, StanzaFilter packetFilter);
- 
+
     /**
      * Removes a packet interceptor.
      *

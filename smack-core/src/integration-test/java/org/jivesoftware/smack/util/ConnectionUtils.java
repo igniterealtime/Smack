@@ -7,7 +7,7 @@ import org.jivesoftware.smack.XMPPException;
 public class ConnectionUtils {
 
     private ConnectionUtils() {}
-    
+
     public static void becomeFriends(XMPPConnection con0, XMPPConnection con1) throws XMPPException {
         Roster r0 = con0.getRoster();
         Roster r1 = con1.getRoster();

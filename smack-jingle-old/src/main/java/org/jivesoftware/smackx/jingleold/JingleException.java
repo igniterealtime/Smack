@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleError;
      */
     public class JingleException extends XMPPException {
 	private static final long serialVersionUID = -1521230401958103382L;
-	
+
 		private final JingleError error;
 
         /**

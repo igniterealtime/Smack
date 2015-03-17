@@ -213,10 +213,10 @@ public class MediaNegotiator extends JingleNegotiator {
         bestCommonAudioPt = calculateBestCommonAudioPt(offeredPayloads);
 
         if (bestCommonAudioPt == null) {
-            
+
             setNegotiatorState(JingleNegotiatorState.FAILED);
             response = session.createJingleError(jingle, JingleError.NEGOTIATION_ERROR);
-            
+
         } else {
 
             setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
@@ -242,7 +242,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
         offeredPayloads = description.getAudioPayloadTypesList();
         bestCommonAudioPt = calculateBestCommonAudioPt(offeredPayloads);
-        
+
         synchronized (remoteAudioPts) {
             remoteAudioPts.addAll(offeredPayloads);
         }

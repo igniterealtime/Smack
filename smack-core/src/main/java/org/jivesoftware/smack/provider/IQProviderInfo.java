@@ -26,7 +26,7 @@ import org.jivesoftware.smack.packet.IQ;
  *
  */
 public final class IQProviderInfo extends AbstractProviderInfo {
-    
+
     /**
      * Defines an IQ provider which implements the <code>IQProvider</code> interface.
      * 

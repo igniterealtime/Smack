@@ -115,7 +115,7 @@ public class PEPManager {
         PEPPubSub pubSub = new PEPPubSub(item);
         pubSub.setType(Type.set);
         //pubSub.setFrom(connection.getUser());
- 
+
         // Send the message that contains the roster
         connection.sendStanza(pubSub);
     }

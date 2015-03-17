@@ -108,7 +108,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected static Collection<ConnectionCreationListener> getConnectionCreationListeners() {
         return XMPPConnectionRegistry.getConnectionCreationListeners();
     }
- 
+
     /**
      * A collection of ConnectionListeners which listen for connection closing
      * and reconnection events.
@@ -208,7 +208,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected final SynchronizationPoint<SmackException> saslFeatureReceived = new SynchronizationPoint<SmackException>(
                     AbstractXMPPConnection.this);
- 
+
     /**
      * The SASLAuthentication manager that is responsible for authenticating with the server.
      */

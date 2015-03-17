@@ -40,7 +40,7 @@ public enum SubscribeOptionFields
 	 * <p><b>Value: boolean</b></p>
 	 */
 	digest,
-	
+
 	/**
 	 * The minimum number of seconds between sending any two notifications digests
 	 * 
@@ -61,38 +61,38 @@ public enum SubscribeOptionFields
 	 * <p><b>Value: boolean</b></p>
 	 */
 	include_body,
-	
+
 	/**
 	 * The presence states for which an entity wants to receive notifications.
 	 *
 	 * <p><b>Value: {@link PresenceState}</b></p>
 	 */
 	show_values,
-	
+
 	/**
 	 * 
 	 * 
 	 * <p><b>Value: </b></p>
 	 */
 	subscription_type,
-	
+
 	/**
 	 * 
 	 * <p><b>Value: </b></p>
 	 */
 	subscription_depth;
-	
+
 	public String getFieldName()
 	{
 		if (this == show_values)
 			return "pubsub#" + toString().replace('_', '-');
 		return "pubsub#" + toString();
 	}
-	
+
 	static public SubscribeOptionFields valueOfFromElement(String elementName)
 	{
 		String portion = elementName.substring(elementName.lastIndexOf('#' + 1));
-		
+
 		if ("show-values".equals(portion))
 			return show_values;
 		else

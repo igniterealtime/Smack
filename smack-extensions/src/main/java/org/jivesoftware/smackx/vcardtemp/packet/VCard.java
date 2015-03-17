@@ -87,9 +87,9 @@ public class VCard extends IQ {
     public static final String NAMESPACE = "vcard-temp";
 
     private static final Logger LOGGER = Logger.getLogger(VCard.class.getName());
-    
+
     private static final String DEFAULT_MIME_TYPE = "image/jpeg";
-    
+
     /**
      * Phone types:
      * VOICE?, FAX?, PAGER?, MSG?, CELL?, VIDEO?, BBS?, MODEM?, ISDN?, PCS?, PREF?
@@ -404,7 +404,7 @@ public class VCard extends IQ {
     public void setEncodedImage(String encodedAvatar) {
         setAvatar(encodedAvatar, DEFAULT_MIME_TYPE);
     }
-    
+
     /**
      * Return the byte representation of the avatar(if one exists), otherwise returns null if
      * no avatar could be found.

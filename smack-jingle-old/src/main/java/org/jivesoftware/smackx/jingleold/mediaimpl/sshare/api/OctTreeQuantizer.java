@@ -48,7 +48,7 @@ public class OctTreeQuantizer implements Quantizer {
 		int	totalGreen;
 		int	totalBlue;
 		int index;
-		
+
 		/**
 		 * A debugging method which prints the tree out.
 		 */
@@ -72,7 +72,7 @@ public class OctTreeQuantizer implements Quantizer {
 	private int maximumColors;
 	private int colors = 0;
 	private Vector<OctTreeNode>[] colorList;
-	
+
 	public OctTreeQuantizer() {
 		setup(256);
 		colorList = new Vector[MAX_LEVEL+1];
@@ -89,7 +89,7 @@ public class OctTreeQuantizer implements Quantizer {
 		maximumColors = numColors;
 		reduceColors = Math.max(512, numColors * 2);
 	}
-	
+
 	/**
 	 * Add pixels to the quantizer.
 	 * @param pixels the array of ARGB pixels
@@ -241,7 +241,7 @@ public class OctTreeQuantizer implements Quantizer {
 		buildColorTable(root, table, 0);
 		return table;
 	}
-	
+
 	/**
 	 * A quick way to use the quantizer. Just create a table the right size and pass in the pixels.
      * @param inPixels the input colors
@@ -281,6 +281,6 @@ public class OctTreeQuantizer implements Quantizer {
 		}
 		return index;
 	}
-	
+
 }
 

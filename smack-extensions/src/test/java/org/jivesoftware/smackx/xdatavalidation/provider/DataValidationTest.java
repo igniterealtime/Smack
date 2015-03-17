@@ -46,21 +46,21 @@ public class DataValidationTest {
 
     @Test
     public void testMin() throws XmlPullParserException, IOException, SmackException {
-        
+
         ValidateElement dv = new BasicValidateElement(null);
-        
+
         assertNotNull( dv.toXML());
         String output = dv.toXML().toString();
         assertEquals(TEST_OUTPUT_MIN, output);
 
         XmlPullParser parser = getParser(TEST_INPUT_MIN);
-        
+
         dv = DataValidationProvider.parse(parser);
 
         assertNotNull(dv);
         assertEquals("xs:string", dv.getDatatype());
         assertTrue( dv instanceof BasicValidateElement);
-                
+
         assertNotNull( dv.toXML());
         output = dv.toXML().toString();
         assertEquals(TEST_OUTPUT_MIN, output);
@@ -68,18 +68,18 @@ public class DataValidationTest {
 
     @Test
     public void testRange() throws XmlPullParserException, IOException, SmackException {
-        
+
         ValidateElement dv = new RangeValidateElement("xs:string", "min-val", "max-val");
-        
+
         ListRange listRange = new ListRange(111L, 999L);
         dv.setListRange(listRange );
-        
+
         assertNotNull( dv.toXML());
         String output = dv.toXML().toString();
         assertEquals(TEST_OUTPUT_RANGE, output);
 
         XmlPullParser parser = getParser(output);
-        
+
         dv = DataValidationProvider.parse(parser);
 
         assertNotNull(dv);
@@ -91,8 +91,8 @@ public class DataValidationTest {
         assertNotNull(rdv.getListRange());
         assertEquals(new Long(111), rdv.getListRange().getMin());
         assertEquals(999, rdv.getListRange().getMax().intValue());
-        
-                
+
+
         assertNotNull( dv.toXML());
         output = dv.toXML().toString();
         assertEquals(TEST_OUTPUT_RANGE, output);
@@ -100,15 +100,15 @@ public class DataValidationTest {
 
     @Test
     public void testRange2() throws XmlPullParserException, IOException, SmackException {
-        
+
         ValidateElement dv = new RangeValidateElement(null, null, null);
-        
+
         assertNotNull( dv.toXML());
         String output = dv.toXML().toString();
         assertEquals(TEST_OUTPUT_RANGE2, output);
 
         XmlPullParser parser = getParser(output);
-        
+
         dv = DataValidationProvider.parse(parser);
 
         assertNotNull(dv);
@@ -117,7 +117,7 @@ public class DataValidationTest {
         RangeValidateElement rdv = (RangeValidateElement) dv;
         assertEquals(null, rdv.getMin());
         assertEquals(null, rdv.getMax());
-        
+
         assertNotNull( rdv.toXML());
         output = rdv.toXML().toString();
         assertEquals(TEST_OUTPUT_RANGE2, output);

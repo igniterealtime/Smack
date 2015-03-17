@@ -77,7 +77,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     private String sid; // A unique id that identifies this session
 
     ConnectionListener connectionListener;
-    
+
     StanzaListener packetListener;
 
     StanzaFilter packetFilter;
@@ -91,7 +91,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     private XMPPConnection connection;
 
     private String sessionInitPacketID;
-    
+
     private Map<String, JingleMediaSession> mediaSessionMap;
 
     /**
@@ -121,7 +121,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
         // Initially, we don't known the session state.
         setSessionState(JingleSessionStateUnknown.getInstance());
-        
+
         contentNegotiators = new ArrayList<ContentNegotiator>();
         mediaSessionMap = new HashMap<String, JingleMediaSession>();
 
@@ -394,7 +394,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         contentNegotiators.add(inContentNegotiator);
     }
 
-  
+
 
      // ----------------------------------------------------------------------------------------------------------
     // Send section
@@ -642,11 +642,11 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             connection.addConnectionListener(connectionListener);
         }
     }
-    
+
     private void removeConnectionListener() {
     	if (connectionListener != null) {
     		getConnection().removeConnectionListener(connectionListener);
-    		
+
     		LOGGER.fine("JINGLE SESSION: REMOVE CONNECTION LISTENER");
     	}
     }
@@ -823,17 +823,17 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
             public void transportEstablished(TransportCandidate local, TransportCandidate remote) throws NotConnectedException, InterruptedException {
                 if (isFullyEstablished()) {
- 
+
                 	// Indicate that this session is active.
                 	setSessionState(JingleSessionStateActive.getInstance());
-                	
+
                 	for (ContentNegotiator contentNegotiator : contentNegotiators) {
                         if (contentNegotiator.getNegotiatorState() == JingleNegotiatorState.SUCCEEDED)
                             contentNegotiator.triggerContentEstablished();
                     }
 
                     if (getSessionState().equals(JingleSessionStatePending.getInstance())) {
-                    	
+
                         Jingle jout = new Jingle(JingleActionEnum.SESSION_ACCEPT);
 
                         // Build up a response packet from each media manager.
@@ -1109,7 +1109,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
         // Give each of the content negotiators a chance to start 
         // and return a portion of the structure to make the Jingle packet.
-        
+
 // Don't do this anymore.  The problem is that the other side might not be ready.
 // Later when we receive our first jingle packet from the other side we'll fire-up the negotiators
 // before processing it.  (See receivePacketAndRespond() above.
@@ -1125,9 +1125,9 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
         //updatePacketListener();
     }
-    
+
     protected void doStart() {
-    	
+
     }
 
     /**
@@ -1142,7 +1142,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             transNeg.start();
         }
     }
-    
+
     /**
      * The jingle session may have one or more media managers that are trying to establish media sessions.
      * When the media manager succeeds in creating a media session is registers it with the session by the
@@ -1151,7 +1151,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     public void addJingleMediaSession(String mediaManagerName, JingleMediaSession mediaSession) {
         mediaSessionMap.put(mediaManagerName, mediaSession);
     }
-    
+
     /**
      * The jingle session may have one or more media managers that are trying to establish media sessions.
      * When the media manager succeeds in creating a media session is registers it with the session by the

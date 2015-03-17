@@ -303,7 +303,7 @@ public class Privacy extends IQ {
                 buf.append("<default name=\"").escape(getDefaultName()).append("\"/>");
 	        }
         }
-        
+
         // Add the list with their privacy items
         for (Map.Entry<String, List<PrivacyItem>> entry : this.getItemLists().entrySet()) {
           String listName = entry.getKey();
@@ -326,5 +326,5 @@ public class Privacy extends IQ {
 
         return buf;
     }
-    
+
 }

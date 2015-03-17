@@ -128,7 +128,7 @@ public final class ProviderManager {
                 addIQProvider(info.getElementName(), info.getNamespace(), info.getProvider());
             }
         }
-        
+
         if (loader.getExtensionProviderInfo() != null) {
             for (ExtensionProviderInfo info : loader.getExtensionProviderInfo()) {
                 addExtensionProvider(info.getElementName(), info.getNamespace(), info.getProvider());
@@ -142,7 +142,7 @@ public final class ProviderManager {
             }
         }
     }
-    
+
     /**
      * Returns the IQ provider registered to the specified XML element name and namespace.
      * For example, if a provider was registered to the element name "query" and the

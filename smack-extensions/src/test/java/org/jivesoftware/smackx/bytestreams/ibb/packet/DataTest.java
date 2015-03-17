@@ -56,7 +56,7 @@ public class DataTest {
     @Test
     public void shouldReturnValidIQStanzaXML() throws Exception {
         String encodedData = Base64.encode("Test");
-        
+
         String control = XMLBuilder.create("iq")
             .a("from", "romeo@montague.lit/orchard")
             .a("to", "juliet@capulet.lit/balcony")
@@ -74,7 +74,7 @@ public class DataTest {
         data.setFrom(JidCreate.from("romeo@montague.lit/orchard"));
         data.setTo(JidCreate.from("juliet@capulet.lit/balcony"));
         data.setStanzaId("kr91n475");
-        
+
         assertXMLEqual(control, data.toXML().toString());
     }
 

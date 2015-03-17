@@ -34,5 +34,5 @@ public interface ReaderListener {
      * @param str the read String
      */
     public abstract void read(String str);
-    
+
 }

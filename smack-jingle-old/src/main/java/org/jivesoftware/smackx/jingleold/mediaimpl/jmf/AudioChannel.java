@@ -69,7 +69,7 @@ import org.jivesoftware.smackx.jingleold.media.JingleMediaSession;
 public class AudioChannel {
 
 	private static final Logger LOGGER = Logger.getLogger(AudioChannel.class.getName());
-	
+
 	private MediaLocator locator;
     private String localIpAddress;
     private String remoteIpAddress;
@@ -215,7 +215,7 @@ public class AudioChannel {
         if (!result){
             return "Couldn't configure processor";
         }
-        
+
         // Get the tracks from the processor
         TrackControl[] tracks = processor.getTrackControls();
 

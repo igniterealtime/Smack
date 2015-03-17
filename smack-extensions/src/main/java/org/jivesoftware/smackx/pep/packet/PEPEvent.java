@@ -48,7 +48,7 @@ public class PEPEvent implements ExtensionElement {
 
         this.item = item;
     }
-    
+
     public void addPEPItem(PEPItem item) {
         this.item = item;
     }

@@ -44,17 +44,17 @@ public class SubscribeForm extends Form
 	{
 		super(configDataForm);
 	}
-	
+
 	public SubscribeForm(Form subscribeOptionsForm)
 	{
 		super(subscribeOptionsForm.getDataFormToSend());
 	}
-	
+
 	public SubscribeForm(DataForm.Type formType)
 	{
 		super(formType);
 	}
-	
+
 	/**
 	 * Determines if an entity wants to receive notifications.
 	 * 
@@ -64,7 +64,7 @@ public class SubscribeForm extends Form
 	{
 		return parseBoolean(getFieldValue(SubscribeOptionFields.deliver));
 	}
-	
+
 	/**
 	 * Sets whether an entity wants to receive notifications.
 	 *
@@ -85,7 +85,7 @@ public class SubscribeForm extends Form
 	{
 		return parseBoolean(getFieldValue(SubscribeOptionFields.digest));
 	}
-	
+
 	/**
 	 * Sets whether notifications should be delivered as aggregations or not.
 	 * 
@@ -137,7 +137,7 @@ public class SubscribeForm extends Form
 			throw exc;
 		}
 	}
-	
+
 	/**
 	 * Sets the time at which the leased subscription will expire, or has expired.
 	 * 
@@ -148,7 +148,7 @@ public class SubscribeForm extends Form
 		addField(SubscribeOptionFields.expire, FormField.Type.text_single);
 		setAnswer(SubscribeOptionFields.expire.getFieldName(), XmppDateTime.formatXEP0082Date(expire));
 	}
-	
+
 	/**
 	 * Determines whether the entity wants to receive an XMPP message body in 
 	 * addition to the payload format.
@@ -159,7 +159,7 @@ public class SubscribeForm extends Form
 	{
 		return parseBoolean(getFieldValue(SubscribeOptionFields.include_body));
 	}
-	
+
 	/**
 	 * Sets whether the entity wants to receive an XMPP message body in 
 	 * addition to the payload format.
@@ -181,14 +181,14 @@ public class SubscribeForm extends Form
 	public List<PresenceState> getShowValues()
 	{
 		ArrayList<PresenceState> result = new ArrayList<PresenceState>(5);
-		
+
 		for (String state : getFieldValues(SubscribeOptionFields.show_values))
 		{
 			result.add(PresenceState.valueOf(state));
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Sets the list of {@link PresenceState} for which an entity wants
 	 * to receive notifications.
@@ -198,7 +198,7 @@ public class SubscribeForm extends Form
 	public void setShowValues(Collection<PresenceState> stateValues)
 	{
 		ArrayList<String> values = new ArrayList<String>(stateValues.size());
-		
+
 		for (PresenceState state : stateValues)
 		{
 			values.add(state.toString());
@@ -206,8 +206,8 @@ public class SubscribeForm extends Form
 		addField(SubscribeOptionFields.show_values, FormField.Type.list_multi);
 		setAnswer(SubscribeOptionFields.show_values.getFieldName(), values);
 	}
-	
-	
+
+
 	static private boolean parseBoolean(String fieldValue)
 	{
 		return ("1".equals(fieldValue) || "true".equals(fieldValue));
@@ -216,21 +216,21 @@ public class SubscribeForm extends Form
 	private String getFieldValue(SubscribeOptionFields field)
 	{
 		FormField formField = getField(field.getFieldName());
-		
+
 		return formField.getValues().get(0);
 	}
 
 	private List<String> getFieldValues(SubscribeOptionFields field)
 	{
 		FormField formField = getField(field.getFieldName());
-		
+
 		return formField.getValues();
 	}
 
 	private void addField(SubscribeOptionFields nodeField, FormField.Type type)
 	{
 		String fieldName = nodeField.getFieldName();
-		
+
 		if (getField(fieldName) == null)
 		{
 			FormField field = new FormField(fieldName);

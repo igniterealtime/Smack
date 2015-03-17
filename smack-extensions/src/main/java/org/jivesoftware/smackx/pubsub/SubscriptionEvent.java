@@ -50,7 +50,7 @@ abstract public class SubscriptionEvent extends NodeEvent
 	protected SubscriptionEvent(String nodeId, List<String> subscriptionIds)
 	{
 		super(nodeId);
-		
+
 		if (subscriptionIds != null)
 			subIds = subscriptionIds;
 	}
@@ -64,7 +64,7 @@ abstract public class SubscriptionEvent extends NodeEvent
 	{
 		return Collections.unmodifiableList(subIds);
 	}
-	
+
 	/**
 	 * Set the list of subscription id's for this event.
 	 * 

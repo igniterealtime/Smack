@@ -149,7 +149,7 @@ public class DiscussionHistory {
         if (!isConfigured()) {
             return null;
         }
-        
+
         MUCInitialPresence.History mucHistory = new MUCInitialPresence.History();
         if (maxChars > -1) {
             mucHistory.setMaxChars(maxChars);

@@ -46,7 +46,7 @@ import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
 public class PayloadItem<E extends ExtensionElement> extends Item
 {
 	private E payload;
-	
+
 	/**
 	 * Create an <tt>Item</tt> with no id and a payload  The id will be set by the server.  
 	 * 
@@ -55,7 +55,7 @@ public class PayloadItem<E extends ExtensionElement> extends Item
 	public PayloadItem(E payloadExt)
 	{
 		super();
-		
+
 		if (payloadExt == null)
 			throw new IllegalArgumentException("payload cannot be 'null'");
 		payload = payloadExt;
@@ -70,12 +70,12 @@ public class PayloadItem<E extends ExtensionElement> extends Item
 	public PayloadItem(String itemId, E payloadExt)
 	{
 		super(itemId);
-		
+
 		if (payloadExt == null)
 			throw new IllegalArgumentException("payload cannot be 'null'");
 		payload = payloadExt;
 	}
-	
+
 	/**
 	 * Create an <tt>Item</tt> with an id, node id and payload.  
 	 * 
@@ -92,12 +92,12 @@ public class PayloadItem<E extends ExtensionElement> extends Item
 	public PayloadItem(String itemId, String nodeId, E payloadExt)
 	{
 		super(itemId, nodeId);
-		
+
 		if (payloadExt == null)
 			throw new IllegalArgumentException("payload cannot be 'null'");
 		payload = payloadExt;
 	}
-	
+
 	/**
 	 * Get the payload associated with this <tt>Item</tt>.  Customising the payload
 	 * parsing from the server can be accomplished as described in {@link ItemProvider}.
@@ -108,19 +108,19 @@ public class PayloadItem<E extends ExtensionElement> extends Item
 	{
 		return payload;
 	}
-	
+
 	@Override
 	public String toXML()
 	{
 		StringBuilder builder = new StringBuilder("<item");
-		
+
 		if (getId() != null)
 		{
 			builder.append(" id='");
 			builder.append(getId());
 			builder.append("'");
 		}
-		
+
         if (getNode() != null) {
             builder.append(" node='");
             builder.append(getNode());
@@ -129,7 +129,7 @@ public class PayloadItem<E extends ExtensionElement> extends Item
 		builder.append(">");
 		builder.append(payload.toXML());
 		builder.append("</item>");
-		
+
 		return builder.toString();
 	}
 

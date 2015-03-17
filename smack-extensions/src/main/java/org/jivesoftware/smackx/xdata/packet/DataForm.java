@@ -73,11 +73,11 @@ public class DataForm implements ExtensionElement {
     private final List<Item> items = new ArrayList<Item>();
     private final List<FormField> fields = new ArrayList<FormField>();
     private final List<Element> extensionElements = new ArrayList<Element>();
-    
+
     public DataForm(Type type) {
         this.type = type;
     }
-    
+
     /**
      * Returns the meaning of the data within the context. The data could be part of a form
      * to fill out, a form submission or data results.
@@ -87,7 +87,7 @@ public class DataForm implements ExtensionElement {
     public Type getType() {
         return type; 
     }
-    
+
     /**
      * Returns the description of the data. It is similar to the title on a web page or an X 
      * window.  You can put a <title/> on either a form to fill out, or a set of data results.
@@ -214,7 +214,7 @@ public class DataForm implements ExtensionElement {
             fields.add(field);
         }
     }
-    
+
     /**
      * Adds a new instruction to the list of instructions that explain how to fill out the form 
      * and what the form is about. The dataform could include multiple instructions since each 
@@ -320,7 +320,7 @@ public class DataForm implements ExtensionElement {
         public static final String ELEMENT = "reported";
 
         private List<FormField> fields = new ArrayList<FormField>();
-        
+
         public ReportedData(List<FormField> fields) {
             this.fields = fields;
         }
@@ -345,7 +345,7 @@ public class DataForm implements ExtensionElement {
             return buf;
         }
     }
-    
+
     /**
      * 
      * Represents items of reported data.
@@ -356,11 +356,11 @@ public class DataForm implements ExtensionElement {
         public static final String ELEMENT = "item";
 
         private List<FormField> fields = new ArrayList<FormField>();
-        
+
         public Item(List<FormField> fields) {
             this.fields = fields;
         }
-        
+
         /**
          * Returns the fields that define the data that goes with the item.
          * 
@@ -369,7 +369,7 @@ public class DataForm implements ExtensionElement {
         public List<FormField> getFields() {
             return Collections.unmodifiableList(new ArrayList<FormField>(fields));
         }
-        
+
         public CharSequence toXML() {
             XmlStringBuilder buf = new XmlStringBuilder();
             buf.openElement(ELEMENT);

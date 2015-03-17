@@ -37,7 +37,7 @@ import org.jivesoftware.smack.packet.XMPPError;
  */
 public abstract class XMPPException extends Exception {
     private static final long serialVersionUID = 6881651633890968625L;
-    
+
 
     /**
      * Creates a new XMPPException.

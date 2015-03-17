@@ -28,7 +28,7 @@ import org.jivesoftware.smack.util.Objects;
  * 
  */
 public class IQTypeFilter extends FlexibleStanzaTypeFilter<IQ> {
-    
+
     public static final StanzaFilter GET = new IQTypeFilter(Type.get);
     public static final StanzaFilter SET = new IQTypeFilter(Type.set);
     public static final StanzaFilter RESULT = new IQTypeFilter(Type.result);

@@ -30,13 +30,13 @@ public class JingleSessionTest extends SmackTestCase {
     }
 
     public void testEqualsObject() {
-        
+
         FixedResolver tr1 = new FixedResolver("127.0.0.1", 54222);
         FixedTransportManager ftm1 = new FixedTransportManager(tr1);
         TestMediaManager tmm1 = new TestMediaManager(ftm1);
         List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
         trl1.add(tmm1);
-        
+
         JingleSession js1 = new JingleSession(getConnection(0), "res1", null, "10", trl1);
         JingleSession js2 = new JingleSession(getConnection(1), "res1", null, "10", trl1);
         JingleSession js3 = new JingleSession(getConnection(2), "res2", null, "11", trl1);
@@ -66,7 +66,7 @@ public class JingleSessionTest extends SmackTestCase {
         TestMediaManager tmm1 = new TestMediaManager(ftm1);
         List<JingleMediaManager> trl1 = new ArrayList<JingleMediaManager>();
         trl1.add(tmm1);
-        
+
         JingleSession js1 = new JingleSession(getConnection(0), ini1, null, sid1, trl1);
         JingleSession js2 = new JingleSession(getConnection(1), ini2, null, sid2, trl1);
 

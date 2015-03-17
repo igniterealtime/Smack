@@ -166,7 +166,7 @@ public class MessageTest {
 
         Message.Body body = message.addBody("es", "test");
         assertTrue(message.getBodies().size() == 1);
-        
+
         message.removeBody(body);
         assertTrue(message.getBodies().size() == 0);
     }

@@ -65,7 +65,7 @@ public class BasicResolver extends TransportResolver {
 
             NetworkInterface iface = ifaces.nextElement();
             Enumeration<InetAddress> iaddresses = iface.getInetAddresses();
-            
+
             while (iaddresses.hasMoreElements()) {
                 InetAddress iaddress = iaddresses.nextElement();
                 if (!iaddress.isLoopbackAddress() && !iaddress.isLinkLocalAddress() && !iaddress.isSiteLocalAddress()) {

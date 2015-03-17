@@ -111,7 +111,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         }
         return this;
     }
-    
+
     public XmlStringBuilder optElement(String name, Object object) {
         if (object != null) {
             element(name, object.toString());
@@ -272,7 +272,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         optAttribute("xml:lang", value);
         return this;
     }
- 
+
     public XmlStringBuilder escape(String text) {
         assert text != null;
         sb.append(StringUtils.escapeForXML(text));

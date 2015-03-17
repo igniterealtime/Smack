@@ -119,9 +119,9 @@ public class AdHocCommandManager extends Manager {
      * ID matches the sessionid attribute sent by command responders.
      */
     private final Map<String, LocalCommand> executingCommands = new ConcurrentHashMap<String, LocalCommand>();
-    
+
     private final ServiceDiscoveryManager serviceDiscoveryManager;
-    
+
     /**
      * Thread that reaps stale sessions.
      */

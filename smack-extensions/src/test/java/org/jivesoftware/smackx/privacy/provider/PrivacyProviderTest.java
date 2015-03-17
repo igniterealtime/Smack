@@ -49,7 +49,7 @@ public class PrivacyProviderTest extends InitExtensions {
         // @formatter:on
         IQ iqPrivacyList = (IQ) PacketParserUtils.parseStanza(xmlPrivacyList);
         assertTrue(iqPrivacyList instanceof Privacy);
-        
+
         Privacy privacyList = (Privacy) iqPrivacyList;
         List<PrivacyItem> pl = privacyList.getPrivacyList("public");
 
@@ -58,7 +58,7 @@ public class PrivacyProviderTest extends InitExtensions {
         assertEquals("tybalt@example.com", first.getValue());
         assertEquals(false, first.isAllow());
         assertEquals(1, first.getOrder());
-        
+
         PrivacyItem second = pl.get(1);
         assertEquals(true, second.isAllow());
         assertEquals(2, second.getOrder());

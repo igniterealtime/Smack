@@ -47,7 +47,7 @@ public class EntityCapsTest extends SmackTestCase {
         sdm1 = ServiceDiscoveryManager.getInstanceFor(con1);
         letsAllBeFriends();
     }
-    
+
     public void testLocalEntityCaps() throws InterruptedException {
         DiscoverInfo info = EntityCapsManager.getDiscoveryInfoByNodeVer(ecm1.getLocalNodeVer());
         assertFalse(info.containsFeature(DISCOVER_TEST_FEATURE));

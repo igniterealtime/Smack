@@ -33,7 +33,7 @@ public class Affiliation implements ExtensionElement
 {
 	protected String node;
 	protected Type type;
-	
+
 	public enum Type
 	{
 		member, none, outcast, owner, publisher
@@ -50,17 +50,17 @@ public class Affiliation implements ExtensionElement
 		node = nodeId;
 		type = affiliation;
 	}
-	
+
 	public String getNodeId()
 	{
 		return node;
 	}
-	
+
 	public Type getType()
 	{
 		return type;
 	}
-	
+
 	public String getElementName()
 	{
 		return "subscription";
@@ -77,7 +77,7 @@ public class Affiliation implements ExtensionElement
 		builder.append(getElementName());
 		appendAttribute(builder, "node", node);
 		appendAttribute(builder, "affiliation", type.toString());
-		
+
 		builder.append("/>");
 		return builder.toString();
 	}

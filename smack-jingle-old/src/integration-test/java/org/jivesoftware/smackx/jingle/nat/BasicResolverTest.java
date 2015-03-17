@@ -56,7 +56,7 @@ public class BasicResolverTest extends SmackTestCase {
 		TransportCandidate tc = new TransportCandidate.Fixed(validHostname, 0);
 
 		resetCounter();
-		
+
 		tc.addListener(new TransportResolverListener.Checker() {
 			public void candidateChecked(TransportCandidate cand, boolean result) {
 				if(result == true) {
@@ -66,17 +66,17 @@ public class BasicResolverTest extends SmackTestCase {
 			}
 
             public void candidateChecking(TransportCandidate cand) {
-                
+
             }
         });
-		
+
 		tc.check(new ArrayList<TransportCandidate>());
-		
+
 		try {
 			Thread.sleep(TransportResolver.CHECK_TIMEOUT);
 		} catch (Exception e) {
 		}
-		
+
 		assertTrue(valCounter() > 0);
 	}
 
@@ -86,7 +86,7 @@ public class BasicResolverTest extends SmackTestCase {
 		TransportCandidate tc = new TransportCandidate.Fixed(invalidHostname, 0);
 
 		resetCounter();
-		
+
 		tc.addListener(new TransportResolverListener.Checker() {
 			public void candidateChecked(TransportCandidate cand, boolean result) {
 				if(result == false) {
@@ -98,9 +98,9 @@ public class BasicResolverTest extends SmackTestCase {
             public void candidateChecking(TransportCandidate cand) {
             }
         });
-		
+
 		tc.check(new ArrayList<TransportCandidate>());
-		
+
 		try {
 			Thread.sleep(TransportResolver.CHECK_TIMEOUT);
 		} catch (Exception e) {
@@ -109,7 +109,7 @@ public class BasicResolverTest extends SmackTestCase {
 		assertTrue(valCounter() > 0);
 	}
 
-	
+
 	protected int getMaxConnections() {
 		return 0;
 	}

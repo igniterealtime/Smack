@@ -95,7 +95,7 @@ public class MultiMediaManager extends JingleMediaManager {
     public void setPreferredPayloadType(PayloadType preferredPayloadType) {
         this.preferredPayloadType = preferredPayloadType;
     }
-    
+
     public  String getName() {
         return MEDIA_NAME;
     }

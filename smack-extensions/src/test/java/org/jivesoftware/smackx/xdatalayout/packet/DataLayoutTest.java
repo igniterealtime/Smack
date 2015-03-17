@@ -55,15 +55,15 @@ public class DataLayoutTest {
         section.getSectionLayout().add(new Text("SectionText"));
         layout.getPageLayout().add(section);
         layout.getPageLayout().add(new Text( "PageText"));
-        
+
         assertNotNull( layout.toXML());
         String output = layout.toXML().toString();
         assertEquals(TEST_OUTPUT_2, output);
-        
+
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
-        
+
         layout = DataLayoutProvider.parse(parser);
-        
+
         assertEquals(3 , layout.getPageLayout().size());
         assertEquals("Label", layout.getLabel());
 
@@ -74,7 +74,7 @@ public class DataLayoutTest {
 
     @Test
     public void testLayoutSpecialCharacters() throws XmlPullParserException, IOException, SmackException {
-        
+
         DataLayout layout = new DataLayout("Label - & \u00E9 \u00E1 ");
         Fieldref reffield = new Fieldref("testField1");
         layout.getPageLayout().add(reffield);
@@ -82,22 +82,22 @@ public class DataLayoutTest {
         section.getSectionLayout().add(new Text( "SectionText - & \u00E9 \u00E1 "));
         layout.getPageLayout().add(section);
         layout.getPageLayout().add(new Text( "PageText - & \u00E9 \u00E1 "));
-        
+
         section = new Section("<html>Number of Persons by<br/> Nationality and Status</html>");
         section.getSectionLayout().add(new Reportedref());
         layout.getPageLayout().add(section);
 
         layout.getPageLayout().add(new Text( "<html><font color='red'><em>DO NOT DELAY</em></font><br/>supply further information</html>"));
 
-        
+
         assertNotNull( layout.toXML());
         String output = layout.toXML().toString();
         assertEquals(TEST_OUTPUT_SPECIAL, output);
-        
+
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
-        
+
         layout = DataLayoutProvider.parse(parser);
-        
+
         assertEquals(5 , layout.getPageLayout().size());
         assertEquals("Label - & \u00E9 \u00E1 ", layout.getLabel());
         section = (Section) layout.getPageLayout().get(1);
@@ -109,7 +109,7 @@ public class DataLayoutTest {
         text = (Text) layout.getPageLayout().get(4);
         assertEquals("<html><font color='red'><em>DO NOT DELAY</em></font><br/>supply further information</html>", text.getText());
 
-        
+
         assertNotNull( layout.toXML());
         output = layout.toXML().toString();
         assertEquals(TEST_OUTPUT_SPECIAL, output);
@@ -118,17 +118,17 @@ public class DataLayoutTest {
     @Test
     public void testLayoutFromFile() throws Exception {
         DataFormProvider pr = new DataFormProvider();
-        
+
         XmlPullParser parser = PacketParserUtils.newXmppParser();
         parser.setInput(new InputStreamReader(this.getClass().getResourceAsStream(TEST_INPUT_1), "UTF-8"));
         parser.next();
-        
+
         DataForm form = pr.parse(parser);
         assertNotNull( form);
         assertEquals(1 , form.getExtensionElements().size());
-        
+
         DataLayout layout = (DataLayout) form.getExtensionElements().get(0);
-        
+
         assertEquals(5 , layout.getPageLayout().size());
         assertEquals("Label - & \u00E9 \u00E1 ", layout.getLabel());
         Section section = (Section) layout.getPageLayout().get(1);
@@ -140,7 +140,7 @@ public class DataLayoutTest {
         text = (Text) layout.getPageLayout().get(4);
         assertEquals("<html><font color='red'><em>DO NOT DELAY</em></font><br/>supply further information</html>", text.getText());
 
-        
+
         assertNotNull( layout.toXML());
         String output = layout.toXML().toString();
         assertEquals(TEST_OUTPUT_SPECIAL, output);

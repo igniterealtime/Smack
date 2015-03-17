@@ -28,12 +28,12 @@ import java.util.List;
 public class AffiliationsExtension extends NodeExtension
 {
 	protected List<Affiliation> items = Collections.emptyList();
-	
+
 	public AffiliationsExtension()
 	{
 		super(PubSubElementType.AFFILIATIONS);
 	}
-	
+
 	public AffiliationsExtension(List<Affiliation> subList)
 	{
 		super(PubSubElementType.AFFILIATIONS);
@@ -57,12 +57,12 @@ public class AffiliationsExtension extends NodeExtension
 			StringBuilder builder = new StringBuilder("<");
 			builder.append(getElementName());
 			builder.append(">");
-			
+
 			for (Affiliation item : items)
 			{
 				builder.append(item.toXML());
 			}
-			
+
 			builder.append("</");
 			builder.append(getElementName());
 			builder.append(">");

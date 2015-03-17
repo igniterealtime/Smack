@@ -39,7 +39,7 @@ public class XMPPConnectionRegistry {
             ConnectionCreationListener connectionCreationListener) {
         connectionEstablishedListeners.add(connectionCreationListener);
     }
-    
+
     /**
      * Removes a listener that was interested in connection creation events.
      * 
@@ -49,7 +49,7 @@ public class XMPPConnectionRegistry {
             ConnectionCreationListener connectionCreationListener) {
         connectionEstablishedListeners.remove(connectionCreationListener);
     }
-    
+
 
 
     /**

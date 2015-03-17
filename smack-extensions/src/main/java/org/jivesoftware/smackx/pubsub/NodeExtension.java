@@ -30,7 +30,7 @@ public class NodeExtension implements ExtensionElement
 {
 	private final PubSubElementType element;
 	private final String node;
-	
+
 	/**
 	 * Constructs a <tt>NodeExtension</tt> with an element name specified
 	 * by {@link PubSubElementType} and the specified node id.
@@ -64,7 +64,7 @@ public class NodeExtension implements ExtensionElement
 	{
 		return node;
 	}
-	
+
 	public String getElementName()
 	{
 		return element.getElementName();

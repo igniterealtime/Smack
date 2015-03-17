@@ -77,7 +77,7 @@ public class CloseTest {
         close.setFrom(JidCreate.from("romeo@montague.lit/orchard"));
         close.setTo(JidCreate.from("juliet@capulet.lit/balcony"));
         close.setStanzaId("us71g45j");
-        
+
         assertXMLEqual(control, close.toXML().toString());
     }
 

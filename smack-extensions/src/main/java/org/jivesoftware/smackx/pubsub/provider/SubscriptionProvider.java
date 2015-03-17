@@ -41,14 +41,14 @@ public class SubscriptionProvider extends ExtensionElementProvider<Subscription>
 		boolean isRequired = false;
 
 		int tag = parser.next();
-		
+
 		if ((tag == XmlPullParser.START_TAG) && parser.getName().equals("subscribe-options"))
 		{
 			tag = parser.next();
-			
+
 			if ((tag == XmlPullParser.START_TAG) && parser.getName().equals("required"))
 				isRequired = true;
-			
+
 			while (tag != XmlPullParser.END_TAG && !parser.getName().equals("subscribe-options")) tag = parser.next();
 		}
 		while (parser.getEventType() != XmlPullParser.END_TAG) parser.next();

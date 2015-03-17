@@ -86,7 +86,7 @@ public class JingleSessionStateActive extends JingleSessionState {
         }
         return response;
     }
-    
+
     /**
      * Receive and process the <session-terminate> action.
      */
@@ -103,5 +103,5 @@ public class JingleSessionStateActive extends JingleSessionState {
 
         return response;
     }
-    
+
 }

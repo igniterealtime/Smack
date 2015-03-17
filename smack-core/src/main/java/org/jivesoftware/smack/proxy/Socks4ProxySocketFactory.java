@@ -34,7 +34,7 @@ public class Socks4ProxySocketFactory
     extends SocketFactory
 {
     private ProxyInfo proxy;
-    
+
     public Socks4ProxySocketFactory(ProxyInfo proxy)
     {
         this.proxy = proxy;
@@ -44,7 +44,7 @@ public class Socks4ProxySocketFactory
         throws IOException, UnknownHostException
     {
         return socks4ProxifiedSocket(host,port);
-        
+
     }
 
     public Socket createSocket(String host ,int port, InetAddress localHost,
@@ -65,9 +65,9 @@ public class Socks4ProxySocketFactory
         throws IOException
     {
         return socks4ProxifiedSocket(address.getHostAddress(),port);
-        
+
     }
-    
+
     @SuppressWarnings("resource")
     private Socket socks4ProxifiedSocket(String host, int port) 
         throws IOException
@@ -85,7 +85,7 @@ public class Socks4ProxySocketFactory
             in=socket.getInputStream();
             out=socket.getOutputStream();
             socket.setTcpNoDelay(true);
-            
+
             byte[] buf=new byte[1024];
             int index=0;
 

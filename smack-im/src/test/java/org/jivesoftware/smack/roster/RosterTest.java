@@ -422,7 +422,7 @@ public class RosterTest extends InitSmackIm {
                 assertSame("Shouldn't provide an empty group element!",
                         0,
                         item.getGroupNames().size());
-                
+
             }
         };
         serverSimulator.start();

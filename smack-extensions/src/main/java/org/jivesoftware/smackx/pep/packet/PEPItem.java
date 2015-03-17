@@ -28,11 +28,11 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  * @author Jeff Williams
  */
 public abstract class PEPItem implements ExtensionElement {
-    
+
     String id;
     abstract String getNode();
     abstract String getItemDetailsXML();
-    
+
     /**
     * Creates a new PEPItem.
     *
@@ -41,7 +41,7 @@ public abstract class PEPItem implements ExtensionElement {
         super();
         this.id = id;
     }
-    
+
      /**
     * Returns the XML element name of the extension sub-packet root element.
     * Always returns "x"

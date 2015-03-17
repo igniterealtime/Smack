@@ -124,7 +124,7 @@ public class SpeexMediaManager extends JingleMediaManager {
     private static void runLinuxPreInstall() {
         // @TODO Implement Linux Pre-Install
     }
-    
+
     public String getName() {
         return MEDIA_NAME;
     }

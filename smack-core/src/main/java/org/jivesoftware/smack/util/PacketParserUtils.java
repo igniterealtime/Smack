@@ -226,7 +226,7 @@ public class PacketParserUtils {
             message.setType(Message.Type.fromString(typeString));
         }
         String language = getLanguageAttribute(parser);
-        
+
         // determine message's default language
         String defaultLanguage = null;
         if (language != null && !"".equals(language.trim())) {
@@ -891,7 +891,7 @@ public class PacketParserUtils {
                     XmlPullParser parser) throws Exception {
         return parseExtensionElement(elementName, namespace, parser);
     }
- 
+
     /**
      * Parses an extension element.
      *

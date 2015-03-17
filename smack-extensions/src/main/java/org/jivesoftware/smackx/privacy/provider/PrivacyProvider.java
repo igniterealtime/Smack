@@ -74,7 +74,7 @@ public class PrivacyProvider extends IQProvider<Privacy> {
 
         return privacy;
 	}
-	
+
 	// Parse the list complex type
 	private static void parseList(XmlPullParser parser, Privacy privacy) throws XmlPullParserException, IOException, SmackException {
         boolean done = false;
@@ -96,7 +96,7 @@ public class PrivacyProvider extends IQProvider<Privacy> {
 
         privacy.setPrivacyList(listName, items);
 	}
-	
+
 	// Parse the list complex type
 	private static PrivacyItem parseItem(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
         // Retrieves the required attributes

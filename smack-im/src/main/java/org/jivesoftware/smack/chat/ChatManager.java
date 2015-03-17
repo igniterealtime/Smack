@@ -318,7 +318,7 @@ public class ChatManager extends Manager{
             return null;
         }
         Chat match = jidChats.get(userJID);
-	
+
         if (match == null && (matchMode == MatchMode.BARE_JID)) {
             match = baseJidChats.get(userJID.asBareJidIfPossible());
         }
@@ -397,7 +397,7 @@ public class ChatManager extends Manager{
         }
         interceptors.put(messageInterceptor, filter);
     }
-    
+
     /**
      * Returns a unique id.
      *
@@ -406,11 +406,11 @@ public class ChatManager extends Manager{
     private static String nextID() {
         return UUID.randomUUID().toString();
     }
-    
+
     public static void setDefaultMatchMode(MatchMode mode) {
         defaultMatchMode = mode;
     }
-    
+
     public static void setDefaultIsNormalIncluded(boolean allowNormal) {
         defaultIsNormalInclude = allowNormal;
     }

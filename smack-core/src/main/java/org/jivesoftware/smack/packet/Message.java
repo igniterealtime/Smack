@@ -152,7 +152,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     public String getSubject() {
         return getSubject(null);
     }
-    
+
     /**
      * Returns the subject corresponding to the language. If the language is null, the method result
      * will be the same as {@link #getSubject()}. Null will be returned if the language does not have
@@ -165,7 +165,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         Subject subject = getMessageSubject(language);
         return subject == null ? null : subject.subject;
     }
-    
+
     private Subject getMessageSubject(String language) {
         language = determineLanguage(language);
         for (Subject subject : subjects) {
@@ -284,7 +284,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         Body body = getMessageBody(language);
         return body == null ? null : body.message;
     }
-    
+
     private Body getMessageBody(String language) {
         language = determineLanguage(language);
         for (Body body : bodies) {
@@ -400,7 +400,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     }
 
     private String determineLanguage(String language) {
-        
+
         // empty string is passed by #setSubject() and #setBody() and is the same as null
         language = "".equals(language) ? null : language;
 
@@ -414,7 +414,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         else {
             return language;
         }
-        
+
     }
 
     @Override
@@ -537,7 +537,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             // simplified comparison because language and subject are always set
             return this.language.equals(other.language) && this.subject.equals(other.subject);
         }
-        
+
     }
 
     /**
@@ -599,7 +599,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             // simplified comparison because language and message are always set
             return this.language.equals(other.language) && this.message.equals(other.message);
         }
-        
+
     }
 
     /**

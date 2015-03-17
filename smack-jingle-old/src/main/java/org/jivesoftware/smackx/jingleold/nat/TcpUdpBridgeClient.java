@@ -98,7 +98,7 @@ public class TcpUdpBridgeClient {
 
             public void run() {
                 try {
-                                       
+
                     InputStream in = localTcpSocket.getInputStream();
                     InetAddress remoteHost = InetAddress.getByName(remoteUdpHost);
                     process.start();                    

@@ -49,7 +49,7 @@ public class ConfigureFormTest
 		form.setChildrenAssociationPolicy(ChildrenAssociationPolicy.owners);
 		assertEquals(ChildrenAssociationPolicy.owners, form.getChildrenAssociationPolicy());
 	}
-	
+
 	@Test
 	public void getConfigFormWithInsufficientPriviliges() throws XMPPException, SmackException, IOException, InterruptedException
 	{
@@ -59,14 +59,14 @@ public class ConfigureFormTest
 		Identity ident = new Identity("pubsub", null, "leaf");
 		info.addIdentity(ident);
 		con.addIQReply(info);
-		
+
 		Node node = mgr.getNode("princely_musings");
-		
+
 		PubSub errorIq = new PubSub();
 		XMPPError error = new XMPPError(Condition.forbidden);
 		errorIq.setError(error);
 		con.addIQReply(errorIq);
-		
+
 		try
 		{
 			node.getNodeConfiguration();
@@ -86,12 +86,12 @@ public class ConfigureFormTest
 		Identity ident = new Identity("pubsub", null, "leaf");
 		info.addIdentity(ident);
 		con.addIQReply(info);
-		
+
 		Node node = mgr.getNode("princely_musings");
-		
+
 		SmackConfiguration.setDefaultPacketReplyTimeout(100);
 		con.setTimeout();
-		
+
 		node.getNodeConfiguration();
 	}
 }

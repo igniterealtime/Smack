@@ -62,7 +62,7 @@ public class StringUtilsTest  {
 
         input = "&";
         assertCharSequenceEquals("&amp;", StringUtils.escapeForXML(input));
-        
+
         input = "It's a good day today";
         assertCharSequenceEquals("It&apos;s a good day today", StringUtils.escapeForXML(input));
     }

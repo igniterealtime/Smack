@@ -81,5 +81,5 @@ public interface JingleSessionListener extends JingleListener {
      * @param participant description of the participant
      */
     public void sessionMediaReceived(JingleSession jingleSession, String participant);
-        
+
 }

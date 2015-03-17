@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 package org.jivesoftware.smackx.pubsub;
- 
+
 import java.util.Collection;
 import java.util.List;
 
@@ -126,39 +126,39 @@ public class PublisherUseCases extends SingleUserTestCase
 	public void testDeleteItems() throws XMPPException
 	{
 		LeafNode node = getPubnode(true, false);
-		
+
 		node.send(new Item("1"));
 		node.send(new Item("2"));
 		node.send(new Item("3"));
 		node.send(new Item("4"));
-		
+
 		node.deleteItem("1");
 		Collection<? extends Item> items = node.getItems();
-		
+
 		assertEquals(3, items.size());
 	}
 
 	public void testPersistItems() throws XMPPException
 	{
 		LeafNode node = getPubnode(true, false);
-		
+
 		node.send(new Item("1"));
 		node.send(new Item("2"));
 		node.send(new Item("3"));
 		node.send(new Item("4"));
-		
+
 		Collection<? extends Item> items = node.getItems();
-		
+
 		assertTrue(items.size() == 4);
 	}
-	
+
 	public void testItemOverwritten() throws XMPPException
 	{
 		LeafNode node = getPubnode(true, false);
-		
+
 		node.send(new PayloadItem<SimplePayload>("1", new SimplePayload("test", null, "<test/>")));
 		node.send(new PayloadItem<SimplePayload>("1", new SimplePayload("test2", null, "<test2/>")));
-		
+
 		List<? extends Item> items = node.getItems();
 		assertEquals(1, items.size());
 		assertEquals("1", items.get(0).getId());

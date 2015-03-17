@@ -58,7 +58,7 @@ public class CarbonManager extends Manager {
             }
         });
     }
-    
+
     private volatile boolean enabled_state = false;
 
     private CarbonManager(XMPPConnection connection) {

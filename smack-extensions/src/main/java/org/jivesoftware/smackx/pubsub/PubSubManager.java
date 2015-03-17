@@ -57,7 +57,7 @@ final public class PubSubManager
 	private XMPPConnection con;
 	private DomainBareJid to;
 	private Map<String, Node> nodeMap = new ConcurrentHashMap<String, Node>();
-	
+
 	/**
 	 * Create a pubsub manager associated to the specified connection.  Defaults the service
 	 * name to <i>pubsub</i>
@@ -70,7 +70,7 @@ final public class PubSubManager
 		con = connection;
 		to = JidCreate.domainBareFrom("pubsub." + connection.getServiceName());
 	}
-	
+
 	/**
 	 * Create a pubsub manager associated to the specified connection where
 	 * the pubsub requests require a specific to address for packets.
@@ -83,7 +83,7 @@ final public class PubSubManager
 		con = connection;
 		to = toAddress;
 	}
-	
+
 	/**
 	 * Creates an instant node, if supported.
 	 * 
@@ -97,14 +97,14 @@ final public class PubSubManager
 	{
 		PubSub reply = sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.CREATE), null);
 		NodeExtension elem = reply.getExtension("create", PubSubNamespace.BASIC.getXmlns());
-		
+
 		LeafNode newNode = new LeafNode(con, elem.getNode());
 		newNode.setTo(to);
 		nodeMap.put(newNode.getId(), newNode);
-		
+
 		return newNode;
 	}
-	
+
 	/**
 	 * Creates a node with default configuration.
 	 * 
@@ -120,7 +120,7 @@ final public class PubSubManager
 	{
 		return (LeafNode)createNode(id, null);
 	}
-	
+
 	/**
 	 * Creates a node with specified configuration.
 	 * 
@@ -139,12 +139,12 @@ final public class PubSubManager
 	{
 		PubSub request = PubSub.createPubsubPacket(to, Type.set, new NodeExtension(PubSubElementType.CREATE, name), null);
 		boolean isLeafNode = true;
-		
+
 		if (config != null)
 		{
 			request.addExtension(new FormNode(FormNodeType.CONFIGURE, config));
 			FormField nodeTypeField = config.getField(ConfigureNodeFields.node_type.getFieldName());
-			
+
 			if (nodeTypeField != null)
 				isLeafNode = nodeTypeField.getValues().get(0).equals(NodeType.leaf.toString());
 		}
@@ -155,7 +155,7 @@ final public class PubSubManager
 		Node newNode = isLeafNode ? new LeafNode(con, name) : new CollectionNode(con, name);
 		newNode.setTo(to);
 		nodeMap.put(newNode.getId(), newNode);
-		
+
 		return newNode;
 	}
 
@@ -174,13 +174,13 @@ final public class PubSubManager
 	public <T extends Node> T getNode(String id) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		Node node = nodeMap.get(id);
-		
+
 		if (node == null)
 		{
 			DiscoverInfo info = new DiscoverInfo();
 			info.setTo(to);
 			info.setNode(id);
-			
+
 			DiscoverInfo infoReply = (DiscoverInfo) con.createPacketCollectorAndSend(info).nextResultOrThrow();
 
             if (infoReply.hasIdentity(PubSub.ELEMENT, "leaf")) {
@@ -205,7 +205,7 @@ final public class PubSubManager
 		}
 		return (T) node;
 	}
-	
+
 	/**
 	 * Get all the nodes that currently exist as a child of the specified
 	 * collection node.  If the service does not support collection nodes
@@ -225,14 +225,14 @@ final public class PubSubManager
 	public DiscoverItems discoverNodes(String nodeId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		DiscoverItems items = new DiscoverItems();
-		
+
 		if (nodeId != null)
 			items.setNode(nodeId);
 		items.setTo(to);
 		DiscoverItems nodeItems = (DiscoverItems) con.createPacketCollectorAndSend(items).nextResultOrThrow();
 		return nodeItems;
 	}
-	
+
 	/**
 	 * Gets the subscriptions on the root node.
 	 * 
@@ -248,7 +248,7 @@ final public class PubSubManager
 		SubscriptionsExtension subElem = reply.getExtension(PubSubElementType.SUBSCRIPTIONS.getElementName(), PubSubElementType.SUBSCRIPTIONS.getNamespace().getXmlns());
 		return subElem.getSubscriptions();
 	}
-	
+
 	/**
 	 * Gets the affiliations on the root node.
 	 * 
@@ -280,7 +280,7 @@ final public class PubSubManager
 		sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.DELETE, nodeId), PubSubElementType.DELETE.getNamespace());
 		nodeMap.remove(nodeId);
 	}
-	
+
 	/**
 	 * Returns the default settings for Node configuration.
 	 * 
@@ -297,7 +297,7 @@ final public class PubSubManager
 		PubSub reply = sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.DEFAULT), PubSubElementType.DEFAULT.getNamespace());
 		return NodeUtils.getFormFromPacket(reply, PubSubElementType.DEFAULT);
 	}
-	
+
 	/**
 	 * Gets the supported features of the servers pubsub implementation
 	 * as a standard {@link DiscoverInfo} instance.

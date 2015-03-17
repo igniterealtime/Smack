@@ -440,7 +440,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         public int compareTo(DiscoverInfo.Identity other) {
             String otherLang = other.lang == null ? "" : other.lang;
             String thisLang = lang == null ? "" : lang;
-            
+
             // This can be removed once the deprecated constructor is removed.
             String otherType = other.type == null ? "" : other.type;
             String thisType = type == null ? "" : type;

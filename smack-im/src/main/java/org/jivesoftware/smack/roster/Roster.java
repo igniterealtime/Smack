@@ -319,7 +319,7 @@ public class Roster extends Manager {
         reload();
         waitUntilLoaded();
     }
- 
+
     /**
      * Set the roster store, may cause a roster reload
      *
@@ -442,7 +442,7 @@ public class Roster extends Manager {
         if (groups.containsKey(name)) {
             return groups.get(name);
         }
-        
+
         RosterGroup group = new RosterGroup(name, connection);
         groups.put(name, group);
         return group;

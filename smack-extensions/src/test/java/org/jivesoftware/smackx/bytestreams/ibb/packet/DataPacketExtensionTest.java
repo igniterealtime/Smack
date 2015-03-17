@@ -76,7 +76,7 @@ public class DataPacketExtensionTest {
         data = new DataPacketExtension("sessionID", 0, new String(new byte[] { 123 }));
         assertNull(data.getDecodedData());
     }
-    
+
     private static Properties outputProperties = new Properties();
     {
         outputProperties.put(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");

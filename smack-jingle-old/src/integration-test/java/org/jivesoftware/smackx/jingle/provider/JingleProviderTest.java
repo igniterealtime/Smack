@@ -36,13 +36,13 @@ public class JingleProviderTest extends SmackTestCase {
 		String nameSpace = Jingle.getNamespace();
 
 		System.out.println("Testing if the Jingle IQ provider is registered...");
-		
+
 		// Verify that the Jingle IQProvider is registered.
 		iqProv = (IQProvider)ProviderManager.getInstance().getIQProvider(elementNamee, nameSpace);
-		
+
 		assertNotNull(iqProv);
 	}
-	
+
 	/**
 	 * Test for parsing a Jingle
 	 */
@@ -93,7 +93,7 @@ public class JingleProviderTest extends SmackTestCase {
 			assertTrue(iqReceived instanceof Jingle);
 
 			Jingle jin = (Jingle) iqReceived;
-			
+
 			System.out.println("Sent:     " + iqSent.toXML());
 			System.out.println("Received: " + jin.toXML());
 		}		

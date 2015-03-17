@@ -166,7 +166,7 @@ public class STUNResolverTest extends SmackTestCase {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
- 
+
                 try {
                     TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress()
                             .getHostAddress(), 1, nicNum, "1", candidate.getPort(), "1", candidate.getPriority(),

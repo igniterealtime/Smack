@@ -197,7 +197,7 @@ public class EnhancedDebuggerWindow {
                 getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane),
                 connectionActiveIcon);
     }
-    
+
     /**
      * Creates the main debug window that provides information about Smack and also shows
      * a tab panel for each connection that is being debugged.

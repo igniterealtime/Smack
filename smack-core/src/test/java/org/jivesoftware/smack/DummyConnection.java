@@ -99,7 +99,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     protected void shutdown() {
         user = null;
         authenticated = false;
-        
+
         callConnectionClosedListener();
         reconnect = true;
     }

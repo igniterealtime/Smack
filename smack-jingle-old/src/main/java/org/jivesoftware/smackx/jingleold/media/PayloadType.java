@@ -24,7 +24,7 @@ package org.jivesoftware.smackx.jingleold.media;
 public class PayloadType {
 
     public static final String NODENAME = "payload-type";
-    
+
     public static int MAX_FIXED_PT = 95;
 
     public static int INVALID_PT = 65535;
@@ -195,7 +195,7 @@ public class PayloadType {
 
         return true;
     }
-    
+
     /**
      * Returns the XML element name of the element.
      *
@@ -204,7 +204,7 @@ public class PayloadType {
     public static String getElementName() {
         return NODENAME;
     }
-    
+
     public String toXML() {
         StringBuilder buf = new StringBuilder();
 
@@ -224,10 +224,10 @@ public class PayloadType {
                 buf.append(getChildAttributes());
             }
             buf.append("/>");
-        
+
         return buf.toString();
     }
-    
+
     protected String getChildAttributes() {
         StringBuilder buf = new StringBuilder();
         if (this instanceof PayloadType.Audio) {
@@ -235,7 +235,7 @@ public class PayloadType {
 
             buf.append(" clockrate=\"").append(pta.getClockRate()).append("\" ");
         }
-        
+
         return buf.toString();
     }
 

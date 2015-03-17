@@ -246,7 +246,7 @@ public class RosterEntry {
             return false;
         return true;
     }
-    
+
     static RosterPacket.Item toRosterItem(RosterEntry entry) {
         RosterPacket.Item item = new RosterPacket.Item(entry.getUser(), entry.getName());
         item.setItemType(entry.getType());

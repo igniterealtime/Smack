@@ -57,7 +57,7 @@ public class Jingle extends IQ {
     private Jid responder; // The responder
 
     // Sub-elements of a Jingle object.
-    
+
     private final List<JingleContent> contents = new ArrayList<JingleContent>();
 
     private JingleContentInfo contentInfo;
@@ -353,7 +353,7 @@ public class Jingle extends IQ {
             buf.append(" sid=\"").append(getSid()).append("\"");
         }
         buf.append(">");
- 
+
         synchronized (contents) {
             for (JingleContent content : contents) {
                 buf.append(content.toXML());

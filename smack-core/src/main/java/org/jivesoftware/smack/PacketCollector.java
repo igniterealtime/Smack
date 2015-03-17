@@ -102,7 +102,7 @@ public class PacketCollector {
     public StanzaFilter getStanzaFilter() {
         return packetFilter;
     }
- 
+
     /**
      * Polls to see if a packet is currently available and returns it, or
      * immediately returns <tt>null</tt> if no packets are currently in the

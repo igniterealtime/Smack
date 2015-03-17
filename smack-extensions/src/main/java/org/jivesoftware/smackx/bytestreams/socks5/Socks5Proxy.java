@@ -70,7 +70,7 @@ import org.jivesoftware.smack.SmackException;
  */
 public class Socks5Proxy {
     private static final Logger LOGGER = Logger.getLogger(Socks5Proxy.class.getName());
-    
+
     /* SOCKS5 proxy singleton */
     private static Socks5Proxy socks5Server;
 

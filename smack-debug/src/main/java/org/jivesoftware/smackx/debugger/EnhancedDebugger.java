@@ -99,7 +99,7 @@ import java.util.logging.Logger;
 public class EnhancedDebugger implements SmackDebugger {
 
     private static final Logger LOGGER = Logger.getLogger(EnhancedDebugger.class.getName());
-    
+
     private static final String NEWLINE = "\n";
 
     private static ImageIcon packetReceivedIcon;
@@ -354,22 +354,22 @@ public class EnhancedDebugger implements SmackDebugger {
         messageTextArea.addMouseListener(new PopupListener(menu));
 	JPanel sublayout = new JPanel(new BorderLayout());
         sublayout.add(new JScrollPane(messageTextArea), BorderLayout.CENTER);
-       
+
         JButton clearb = new JButton("Clear All Packets");
-        
+
         clearb.addActionListener(new AbstractAction() {    
 	    private static final long serialVersionUID = -8576045822764763613L;
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
             messagesTable.setRowCount(0);
-		
+
 	    }
 	});
 
         sublayout.add(clearb, BorderLayout.NORTH);
         allPane.setBottomComponent(sublayout);
-       
+
         allPane.setDividerLocation(150);
 
         tabbedPane.add("All Packets", allPane);

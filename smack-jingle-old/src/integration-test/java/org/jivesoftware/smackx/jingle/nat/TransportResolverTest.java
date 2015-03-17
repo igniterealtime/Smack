@@ -25,7 +25,7 @@ public class TransportResolverTest extends SmackTestCase {
 
 	public void testIsResolving() {
 		final TransportResolver tr = new BasicResolver();
-		
+
 		tr.addListener(
 				new TransportResolverListener.Resolver() {
 					public void candidateAdded(final TransportCandidate cand) {
@@ -48,7 +48,7 @@ public class TransportResolverTest extends SmackTestCase {
 
 		assertFalse(tr.isResolving());
 		assertFalse(tr.isResolved());
-		
+
 		try {
 			tr.resolve(null);
 		} catch (XMPPException e) {

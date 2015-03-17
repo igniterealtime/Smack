@@ -34,13 +34,13 @@ public class EventElement implements EmbeddedPacketExtension
 {
 	private EventElementType type;
 	private NodeExtension ext;
-	
+
 	public EventElement(EventElementType eventType, NodeExtension eventExt)
 	{
 		type = eventType;
 		ext = eventExt;
 	}
-	
+
 	public EventElementType getEventType()
 	{
 		return type;

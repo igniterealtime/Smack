@@ -439,7 +439,7 @@ public class RTPBridge extends IQ {
 //                    return true;
 //                }
 //            }
-            
+
         DiscoverInfo discoInfo = disco.discoverInfo(connection.getServiceName());
         for (DiscoverInfo.Identity identity : discoInfo.getIdentities()) {
             if ((identity.getName() != null) && (identity.getName().startsWith("rtpbridge"))) {

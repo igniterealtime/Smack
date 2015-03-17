@@ -29,7 +29,7 @@ import org.jivesoftware.smackx.ping.PingManager;
 public class ReconnectionTest extends SmackTestCase {
 
     private static final long MIN_RECONNECT_WAIT = 17;  // Seconds
-    
+
     public ReconnectionTest(String arg0) {
         super(arg0);
     }
@@ -48,7 +48,7 @@ public class ReconnectionTest extends SmackTestCase {
         // Simulates an error in the connection
         connection.notifyConnectionError(new Exception("Simulated Error"));
         latch.await(MIN_RECONNECT_WAIT, TimeUnit.SECONDS);
-        
+
         // After 10 seconds, the reconnection manager must reestablishes the connection
         assertEquals("The ConnectionListener.connectionStablished() notification was not fired", true, listener.reconnected);
         assertTrue("The ReconnectionManager algorithm has reconnected without waiting at least 5 seconds", listener.attemptsNotifications > 0);
@@ -81,7 +81,7 @@ public class ReconnectionTest extends SmackTestCase {
         // Simulates an error in the connection
         connection.notifyConnectionError(new Exception("Simulated Error"));
         latch.await(MIN_RECONNECT_WAIT, TimeUnit.SECONDS);
-        
+
         // After 10 seconds, the reconnection manager must reestablishes the connection
         assertEquals("The ConnectionListener.connectionEstablished() notification was not fired", true, listener.reconnected);
         assertTrue("The ReconnectionManager algorithm has reconnected without waiting at least 5 seconds", listener.attemptsNotifications > 0);
@@ -106,7 +106,7 @@ public class ReconnectionTest extends SmackTestCase {
                 "An error occurs but the ConnectionListener.connectionClosedOnError(e) was not notified",
                 true, listener.connectionClosedOnError);
 //        Thread.sleep(1000);
-        
+
         // Cancels the automatic reconnection
         connection.getConfiguration().setReconnectionAllowed(false);
         // Waits for a reconnection that must not happened.
@@ -218,7 +218,7 @@ public class ReconnectionTest extends SmackTestCase {
          */
         public void connectionClosed() {
             connectionClosed = true;
-            
+
             if (countDownLatch != null)
                 countDownLatch.countDown();
         }

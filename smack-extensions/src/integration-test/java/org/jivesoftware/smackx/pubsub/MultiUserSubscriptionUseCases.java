@@ -45,7 +45,7 @@ public class MultiUserSubscriptionUseCases extends PubSubTestCase
 		node.send((Item)null);
 		node.send((Item)null);
 		node.send((Item)null);
-		
+
 		LeafNode user2Node = (LeafNode) getManager(1).getNode(node.getId());
 		user2Node.subscribe(getBareJID(1));
 
@@ -61,7 +61,7 @@ public class MultiUserSubscriptionUseCases extends PubSubTestCase
 		node.send((Item)null);
 		node.send((Item)null);
 		node.send((Item)null);
-		
+
 		LeafNode user2Node = (LeafNode) getManager(1).getNode(node.getId());
 		Subscription sub1 = user2Node.subscribe(getBareJID(1));
 

@@ -50,11 +50,11 @@ abstract public class Node
 	protected XMPPConnection con;
 	protected String id;
 	protected Jid to;
-	
+
 	protected ConcurrentHashMap<ItemEventListener<Item>, StanzaListener> itemEventToListenerMap = new ConcurrentHashMap<ItemEventListener<Item>, StanzaListener>();
 	protected ConcurrentHashMap<ItemDeleteListener, StanzaListener> itemDeleteToListenerMap = new ConcurrentHashMap<ItemDeleteListener, StanzaListener>();
 	protected ConcurrentHashMap<NodeConfigListener, StanzaListener> configEventToListenerMap = new ConcurrentHashMap<NodeConfigListener, StanzaListener>();
-	
+
 	/**
 	 * Construct a node associated to the supplied connection with the specified 
 	 * node id.
@@ -105,7 +105,7 @@ abstract public class Node
 		Stanza reply = sendPubsubPacket(pubSub);
 		return NodeUtils.getFormFromPacket(reply, PubSubElementType.CONFIGURE_OWNER);
 	}
-	
+
 	/**
 	 * Update the configuration with the contents of the new {@link Form}
 	 * 
@@ -121,7 +121,7 @@ abstract public class Node
                         getId(), submitForm), PubSubNamespace.OWNER);
 		con.createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}
-	
+
 	/**
 	 * Discover node information in standard {@link DiscoverInfo} format.
 	 * 
@@ -138,7 +138,7 @@ abstract public class Node
 		info.setNode(getId());
 		return (DiscoverInfo) con.createPacketCollectorAndSend(info).nextResultOrThrow();
 	}
-	
+
 	/**
 	 * Get the subscriptions currently associated with this node.
 	 * 
@@ -308,7 +308,7 @@ abstract public class Node
 		PubSub reply = sendPubsubPacket(pubSub);
 		return reply.getExtension(PubSubElementType.SUBSCRIPTION);
 	}
-	
+
 	/**
 	 * The user subscribes to the node using the supplied jid and subscription
 	 * options.  The bare jid portion of this one must match the jid for the 
@@ -352,7 +352,7 @@ abstract public class Node
 	{
 		unsubscribe(jid, null);
 	}
-	
+
 	/**
 	 * Remove the specific subscription related to the specified JID.
 	 * 
@@ -427,7 +427,7 @@ abstract public class Node
 	public void removeItemEventListener(@SuppressWarnings("rawtypes") ItemEventListener listener)
 	{
 		StanzaListener conListener = itemEventToListenerMap.remove(listener);
-		
+
 		if (conListener != null)
 			con.removeSyncStanzaListener(conListener);
 	}
@@ -453,11 +453,11 @@ abstract public class Node
 	public void removeConfigurationListener(NodeConfigListener listener)
 	{
 		StanzaListener conListener = configEventToListenerMap .remove(listener);
-		
+
 		if (conListener != null)
 			con.removeSyncStanzaListener(conListener);
 	}
-	
+
 	/**
 	 * Register an listener for item delete events.  This listener
 	 * gets called whenever an item is deleted from the node.
@@ -470,7 +470,7 @@ abstract public class Node
 		itemDeleteToListenerMap.put(listener, delListener);
 		EventContentFilter deleteItem = new EventContentFilter(EventElementType.items.toString(), "retract");
 		EventContentFilter purge = new EventContentFilter(EventElementType.purge.toString());
-		
+
 		con.addSyncStanzaListener(delListener, new OrFilter(deleteItem, purge));
 	}
 
@@ -482,7 +482,7 @@ abstract public class Node
 	public void removeItemDeleteListener(ItemDeleteListener listener)
 	{
 		StanzaListener conListener = itemDeleteToListenerMap .remove(listener);
-		
+
 		if (conListener != null)
 			con.removeSyncStanzaListener(conListener);
 	}
@@ -492,12 +492,12 @@ abstract public class Node
 	{
 		return super.toString() + " " + getClass().getName() + " id: " + id;
 	}
-	
+
 	protected PubSub createPubsubPacket(Type type, ExtensionElement ext)
 	{
 		return createPubsubPacket(type, ext, null);
 	}
-	
+
 	protected PubSub createPubsubPacket(Type type, ExtensionElement ext, PubSubNamespace ns)
 	{
 		return PubSub.createPubsubPacket(to, type, ext, ns);
@@ -513,11 +513,11 @@ abstract public class Node
 	{
 		HeadersExtension headers = (HeadersExtension)packet.getExtension("headers", "http://jabber.org/protocol/shim");
 		List<String> values = null;
-		
+
 		if (headers != null)
 		{
 			values = new ArrayList<String>(headers.getHeaders().size());
-			
+
 			for (Header header : headers.getHeaders())
 			{
 				values.add(header.getValue());
@@ -541,7 +541,7 @@ abstract public class Node
 		{
 			listener = eventListener;
 		}
-		
+
 		@SuppressWarnings({ "rawtypes", "unchecked" })
         public void processPacket(Stanza packet)
 		{
@@ -566,13 +566,13 @@ abstract public class Node
 		{
 			listener = eventListener;
 		}
-		
+
 		public void processPacket(Stanza packet)
 		{
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
-	        
+
 	        List<ExtensionElement> extList = event.getExtensions();
-	        
+
 	        if (extList.get(0).getElementName().equals(PubSubElementType.PURGE_EVENT.getElementName()))
 	        {
 	        	listener.handlePurge();
@@ -594,7 +594,7 @@ abstract public class Node
 	        }
 		}
 	}
-	
+
 	/**
 	 * This class translates low level node configuration events into api level objects for 
 	 * user consumption.
@@ -609,7 +609,7 @@ abstract public class Node
 		{
 			listener = eventListener;
 		}
-		
+
 		public void processPacket(Stanza packet)
 		{
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
@@ -629,7 +629,7 @@ abstract public class Node
 	{
 		private String firstElement;
 		private String secondElement;
-		
+
 		EventContentFilter(String elementName)
 		{
 			firstElement = elementName;
@@ -647,27 +647,27 @@ abstract public class Node
 				return false;
 
 			EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
-			
+
 			if (event == null)
 				return false;
 
 			NodeExtension embedEvent = event.getEvent();
-			
+
 			if (embedEvent == null)
 				return false;
-			
+
 			if (embedEvent.getElementName().equals(firstElement))
 			{
 				if (!embedEvent.getNode().equals(getId()))
 					return false;
-				
+
 				if (secondElement == null)
 					return true;
-				
+
 				if (embedEvent instanceof EmbeddedPacketExtension)
 				{
 					List<ExtensionElement> secondLevelList = ((EmbeddedPacketExtension)embedEvent).getExtensions();
-					
+
 					if (secondLevelList.size() > 0 && secondLevelList.get(0).getElementName().equals(secondElement))
 						return true;
 				}

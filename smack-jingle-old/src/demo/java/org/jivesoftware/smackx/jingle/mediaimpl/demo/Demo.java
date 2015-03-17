@@ -59,7 +59,7 @@ public class Demo extends JFrame {
         this.server = server;
         this.user = user;
         this.pass = pass;
-        
+
         if (user.equals("jeffw")) {
             jid = new JTextField("eowyn" + "@" + server + "/Smack");
         } else {

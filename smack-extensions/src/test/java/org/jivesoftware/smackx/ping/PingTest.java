@@ -92,13 +92,13 @@ public class PingTest extends InitExtensions {
     @Test
     public void checkSuccessfulPing() throws Exception {
         ThreadedDummyConnection threadedCon = getAuthentiactedDummyConnection();
-        
+
         PingManager pinger = PingManager.getInstanceFor(threadedCon);
 
         boolean pingSuccess = pinger.ping(DUMMY_AT_EXAMPLE_ORG);
-        
+
         assertTrue(pingSuccess);
-        
+
     }
 
     /**
@@ -121,7 +121,7 @@ public class PingTest extends InitExtensions {
         }
         fail();
     }
-    
+
     /**
      * Server returns an exception for entity.
      * @throws Exception
@@ -144,17 +144,17 @@ public class PingTest extends InitExtensions {
         PingManager pinger = PingManager.getInstanceFor(threadedCon);
 
         boolean pingSuccess = pinger.ping(DUMMY_AT_EXAMPLE_ORG);
-        
+
         assertFalse(pingSuccess);
     }
-    
+
     @Test
     public void checkPingToServerSuccess() throws Exception {
         ThreadedDummyConnection con = getAuthentiactedDummyConnection();
         PingManager pinger = PingManager.getInstanceFor(con);
 
         boolean pingSuccess = pinger.pingMyServer();
-        
+
         assertTrue(pingSuccess);
     }
 
@@ -180,10 +180,10 @@ public class PingTest extends InitExtensions {
         PingManager pinger = PingManager.getInstanceFor(con);
 
         boolean pingSuccess = pinger.pingMyServer();
-        
+
         assertTrue(pingSuccess);
     }
-    
+
     @Test
     public void checkPingToServerTimeout() throws SmackException, IOException, XMPPException, InterruptedException {
         DummyConnection con = getAuthenticatedDummyConnectionWithoutIqReplies();
@@ -198,7 +198,7 @@ public class PingTest extends InitExtensions {
         ThreadedDummyConnection con = getAuthentiactedDummyConnection();
         DiscoverInfo info = new DiscoverInfo();
         info.addFeature(Ping.NAMESPACE);
-        
+
         //@formatter:off
         String reply = 
                 "<iq type='result' id='qrzSp-16' to='test@myserver.com'>" +
@@ -211,7 +211,7 @@ public class PingTest extends InitExtensions {
 
         PingManager pinger = PingManager.getInstanceFor(con);
         boolean pingSupported = pinger.isPingSupported(DUMMY_AT_EXAMPLE_ORG);
-        
+
         assertTrue(pingSupported);
     }
 
@@ -220,7 +220,7 @@ public class PingTest extends InitExtensions {
         ThreadedDummyConnection con = getAuthentiactedDummyConnection();
         DiscoverInfo info = new DiscoverInfo();
         info.addFeature(Ping.NAMESPACE);
-        
+
         //@formatter:off
         String reply = 
                 "<iq type='result' id='qrzSp-16' to='test@myserver.com'>" +
@@ -233,7 +233,7 @@ public class PingTest extends InitExtensions {
 
         PingManager pinger = PingManager.getInstanceFor(con);
         boolean pingSupported = pinger.isPingSupported(DUMMY_AT_EXAMPLE_ORG);
-        
+
         assertFalse(pingSupported);
     }
 

@@ -33,7 +33,7 @@ import org.xbill.DNS.Type;
  *
  */
 public class DNSJavaResolver implements SmackInitializer, DNSResolver {
-    
+
     private static DNSJavaResolver instance = new DNSJavaResolver();
 
     public static DNSResolver getInstance() {

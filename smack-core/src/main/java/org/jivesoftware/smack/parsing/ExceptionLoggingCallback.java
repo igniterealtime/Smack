@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class ExceptionLoggingCallback extends ParsingExceptionCallback {
     private static final Logger LOGGER = Logger.getLogger(ExceptionLoggingCallback.class.getName());
-    
+
     @Override
     public void handleUnparsablePacket(UnparsablePacket unparsed) throws Exception {
         LOGGER.log(Level.SEVERE, "Smack message parsing exception: ", unparsed.getParsingException());

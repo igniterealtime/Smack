@@ -29,16 +29,16 @@ public enum FormNodeType
 {
 	/** Form for configuring an existing node */
 	CONFIGURE_OWNER,
-	
+
 	/** Form for configuring a node during creation */
 	CONFIGURE,
-	
+
 	/** Form for configuring subscription options */
 	OPTIONS,
 
 	/** Form which represents the default node configuration options */
 	DEFAULT;
-	
+
 	public PubSubElementType getNodeElement()
 	{
 		return PubSubElementType.valueOf(toString());

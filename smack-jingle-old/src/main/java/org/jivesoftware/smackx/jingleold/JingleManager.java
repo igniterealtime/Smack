@@ -185,7 +185,7 @@ import org.jxmpp.jid.Jid;
 public class JingleManager implements JingleSessionListener {
 
 	private static final Logger LOGGER = Logger.getLogger(JingleManager.class.getName());
-	
+
 	// non-static
 
     final List<JingleSession> jingleSessions = new ArrayList<JingleSession>();
@@ -247,7 +247,7 @@ public class JingleManager implements JingleSessionListener {
 
     }
 
-    
+
     /**
      * Setup the jingle system to let the remote clients know we support Jingle.
      * (This used to be a static part of construction.  The problem is a remote client might

@@ -73,7 +73,7 @@ public class ICEResolver extends TransportResolver {
             if (negociatorsMap.get(server) == null) {
             	ICENegociator iceNegociator = new ICENegociator(server, port, (short) 1);
             	negociatorsMap.put(server, iceNegociator);
-            	
+
             	// gather candidates
             	iceNegociator.gatherCandidateAddresses();
             	// priorize candidates
@@ -137,7 +137,7 @@ public class ICEResolver extends TransportResolver {
 				} catch (SocketException e1) {
 					e1.printStackTrace();
 				}
-                
+
                 TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, nicNum, String.valueOf(Math.abs(random.nextLong())), candidate.getPort(), "1", candidate.getPriority(), iceType);
                 transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
                 transportCandidate.setPort(getFreePort());
@@ -166,8 +166,8 @@ public class ICEResolver extends TransportResolver {
 
                 String localIp;
                 int network;
-                
-                
+
+
                 // JBW/GW - 17JUL08: ICENegotiator.getPublicCandidate() always returned null in JSTUN 1.7.0, and now the API doesn't exist in JSTUN 1.7.1
 //                if (iceNegociator.getPublicCandidate() != null) {
 //                    localIp = iceNegociator.getPublicCandidate().getBase().getAddress().getInetAddress().getHostAddress();

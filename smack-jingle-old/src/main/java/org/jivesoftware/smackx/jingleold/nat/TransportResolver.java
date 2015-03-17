@@ -40,7 +40,7 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
 public abstract class TransportResolver {
 
 	private static final Logger LOGGER = Logger.getLogger(TransportResolver.class.getName());
-	
+
 	public enum Type {
 
         rawupd, ice
@@ -304,7 +304,7 @@ public abstract class TransportResolver {
             if (tpcan instanceof ICECandidate)
                 cands.add((ICECandidate) tpcan);
         }
-        
+
         // (ArrayList<ICECandidate>) getCandidatesList();
         if (cands.size() > 0) {
             Collections.sort(cands);

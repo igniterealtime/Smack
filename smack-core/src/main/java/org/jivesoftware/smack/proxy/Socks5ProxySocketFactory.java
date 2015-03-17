@@ -33,7 +33,7 @@ public class Socks5ProxySocketFactory
     extends SocketFactory
 {
     private ProxyInfo proxy;
-    
+
     public Socks5ProxySocketFactory(ProxyInfo proxy)
     {
         this.proxy = proxy;
@@ -49,28 +49,28 @@ public class Socks5ProxySocketFactory
                                 int localPort)
         throws IOException, UnknownHostException
     {
-        
+
         return socks5ProxifiedSocket(host,port);
-        
+
     }
 
     public Socket createSocket(InetAddress host, int port)
         throws IOException
     {
-        
+
         return socks5ProxifiedSocket(host.getHostAddress(),port);
-        
+
     }
 
     public Socket createSocket( InetAddress address, int port, 
                                 InetAddress localAddress, int localPort) 
         throws IOException
     {
-        
+
         return socks5ProxifiedSocket(address.getHostAddress(),port);
-        
+
     }
-    
+
     private Socket socks5ProxifiedSocket(String host, int port) 
         throws IOException
     {
@@ -81,7 +81,7 @@ public class Socks5ProxySocketFactory
         int proxy_port = proxy.getProxyPort();
         String user = proxy.getProxyUsername();
         String passwd = proxy.getProxyPassword();
-        
+
         try
         {
             socket=new Socket(proxy_host, proxy_port);    
@@ -241,7 +241,7 @@ public class Socks5ProxySocketFactory
       o  DST.PORT desired destination port in network octet
          order
 */
-     
+
             index=0;
             buf[index++]=5;
             buf[index++]=1;       // CONNECT
@@ -328,7 +328,7 @@ public class Socks5ProxySocketFactory
                 default:
             }
             return socket;
-            
+
         }
         catch(RuntimeException e)
         {
@@ -355,7 +355,7 @@ public class Socks5ProxySocketFactory
             throw new IOException(message);
         }
     }
-    
+
     private void fill(InputStream in, byte[] buf, int len) 
       throws IOException
     {

@@ -51,10 +51,10 @@ public class OpenIQProviderTest {
             .a("sid", "i781hf64")
             .a("stanza", "iq")
             .asString(outputProperties);
-        
+
         OpenIQProvider oip = new OpenIQProvider();
         Open open = oip.parse(getParser(control));
-        
+
         assertEquals(StanzaType.IQ, open.getStanza());
     }
 
@@ -66,10 +66,10 @@ public class OpenIQProviderTest {
             .a("sid", "i781hf64")
             .a("stanza", "message")
             .asString(outputProperties);
-        
+
         OpenIQProvider oip = new OpenIQProvider();
         Open open = oip.parse(getParser(control));
-        
+
         assertEquals(StanzaType.MESSAGE, open.getStanza());
     }
 

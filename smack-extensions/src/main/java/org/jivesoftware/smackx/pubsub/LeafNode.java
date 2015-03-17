@@ -43,7 +43,7 @@ public class LeafNode extends Node
 	{
 		super(connection, nodeName);
 	}
-	
+
 	/**
 	 * Get information on the items in the node in standard
 	 * {@link DiscoverItems} format.
@@ -75,7 +75,7 @@ public class LeafNode extends Node
 	{
         return getItems((List<ExtensionElement>) null, (List<ExtensionElement>) null);
 	}
-	
+
 	/**
 	 * Get the current items stored in the node based
 	 * on the subscription associated with the provided 
@@ -113,7 +113,7 @@ public class LeafNode extends Node
 	public <T extends Item> List<T> getItems(Collection<String> ids) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		List<Item> itemList = new ArrayList<Item>(ids.size());
-		
+
 		for (String id : ids)
 		{
 			itemList.add(new Item(id));
@@ -138,7 +138,7 @@ public class LeafNode extends Node
 		PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), maxItems));
         return getItems(request);
 	}
-	
+
 	/**
 	 * Get items persisted on the node, limited to the specified number
 	 * based on the subscription associated with the provided subscriptionId.
@@ -218,10 +218,10 @@ public class LeafNode extends Node
 	public void publish() throws NotConnectedException, InterruptedException
 	{
 		PubSub packet = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PUBLISH, getId()));
-		
+
 		con.sendStanza(packet);
 	}
-	
+
 	/**
 	 * Publishes an event to the node.  This is a simple item
 	 * with no payload.
@@ -265,7 +265,7 @@ public class LeafNode extends Node
 	public <T extends Item> void publish(Collection<T> items) throws NotConnectedException, InterruptedException
 	{
 		PubSub packet = createPubsubPacket(Type.set, new PublishItem<T>(getId(), items));
-		
+
 		con.sendStanza(packet);
 	}
 
@@ -289,10 +289,10 @@ public class LeafNode extends Node
 	public void send() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		PubSub packet = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PUBLISH, getId()));
-		
+
 		con.createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}
-	
+
 	/**
 	 * Publishes an event to the node.  This can be either a simple item
 	 * with no payload, or one with it.  This is determined by the Node
@@ -324,7 +324,7 @@ public class LeafNode extends Node
 		items.add((item == null ? (T)new Item() : item));
 		send(items);
 	}
-	
+
 	/**
 	 * Publishes multiple events to the node.  Same rules apply as in {@link #send(Item)}.
 	 * 
@@ -346,10 +346,10 @@ public class LeafNode extends Node
 	public <T extends Item> void send(Collection<T> items) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		PubSub packet = createPubsubPacket(Type.set, new PublishItem<T>(getId(), items));
-		
+
 		con.createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}
-	
+
 	/**
 	 * Purges the node of all items.
 	 *   
@@ -363,10 +363,10 @@ public class LeafNode extends Node
 	public void deleteAllItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		PubSub request = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PURGE_OWNER, getId()), PubSubElementType.PURGE_OWNER.getNamespace());
-		
+
 		con.createPacketCollectorAndSend(request).nextResultOrThrow();
 	}
-	
+
 	/**
 	 * Delete the item with the specified id from the node.
 	 * 
@@ -382,7 +382,7 @@ public class LeafNode extends Node
 		items.add(itemId);
 		deleteItem(items);
 	}
-	
+
 	/**
 	 * Delete the items with the specified id's from the node.
 	 * 
@@ -395,7 +395,7 @@ public class LeafNode extends Node
 	public void deleteItem(Collection<String> itemIds) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		List<Item> items = new ArrayList<Item>(itemIds.size());
-		
+
 		for (String id : itemIds)
 		{
 			items.add(new Item(id));

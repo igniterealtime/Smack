@@ -28,29 +28,29 @@ public class UnsubscribeExtension extends NodeExtension
 {
 	protected String jid;
 	protected String id;
-	
+
 	public UnsubscribeExtension(String subscriptionJid)
 	{
 		this(subscriptionJid, null, null);
 	}
-	
+
 	public UnsubscribeExtension(String subscriptionJid, String nodeId)
 	{
 		this(subscriptionJid, nodeId, null);
 	}
-	
+
 	public UnsubscribeExtension(String jid, String nodeId, String subscriptionId)
 	{
 		super(PubSubElementType.UNSUBSCRIBE, nodeId);
 		this.jid = jid;
 		id = subscriptionId;
 	}
-	
+
 	public String getJid()
 	{
 		return jid;
 	}
-	
+
 	public String getId()
 	{
 		return id;

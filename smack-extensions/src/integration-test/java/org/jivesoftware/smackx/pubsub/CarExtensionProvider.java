@@ -32,11 +32,11 @@ public class CarExtensionProvider extends PacketExtensionProvider
 	{
 		String color = null;
 		int numTires = 0;
-		
+
 		for (int i=0; i<2; i++)
 		{
 			while (parser.next() != XmlPullParser.START_TAG);
-			
+
 			if (parser.getName().equals("paint"))
 			{
 				color = parser.getAttributeValue(0);
@@ -49,5 +49,5 @@ public class CarExtensionProvider extends PacketExtensionProvider
 		while (parser.next() != XmlPullParser.END_TAG);
 		return new CarExtension(color, numTires);
 	}
-	
+
 }

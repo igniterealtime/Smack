@@ -29,7 +29,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
 {
 	private List<T> items;
 	private Date originalDate;
-	
+
 	/**
 	 * Constructs an <tt>ItemPublishEvent</tt> with the provided list
 	 * of {@link Item} that were published.
@@ -42,7 +42,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
 		super(nodeId);
 		items = eventItems;
 	}
-	
+
 	/**
 	 * Constructs an <tt>ItemPublishEvent</tt> with the provided list
 	 * of {@link Item} that were published.  The list of subscription ids
@@ -58,7 +58,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
 		super(nodeId, subscriptionIds);
 		items = eventItems;
 	}
-	
+
 	/**
 	 * Constructs an <tt>ItemPublishEvent</tt> with the provided list
 	 * of {@link Item} that were published in the past.  The published
@@ -74,11 +74,11 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
 	{
 		super(nodeId, subscriptionIds);
 		items = eventItems;
-		
+
 		if (publishedDate != null)
 			originalDate = publishedDate;
 	}
-	
+
 	/**
 	 * Get the list of {@link Item} that were published.
 	 * 
@@ -88,7 +88,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
 	{
 		return Collections.unmodifiableList(items);
 	}
-	
+
 	/**
 	 * Indicates whether this event was delayed.  That is, the items
 	 * were published to the node at some time in the past.  This will 
@@ -103,7 +103,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
 	{
 		return (originalDate != null);
 	}
-	
+
 	/**
 	 * Gets the original date the items were published.  This is only 
 	 * valid if {@link #isDelayed()} is true.
@@ -120,5 +120,5 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
 		return getClass().getName() + "  [subscriptions: " + getSubscriptions() + "], [Delayed: " + 
 			(isDelayed() ? originalDate.toString() : "false") + ']';
 	}
-	
+
 }

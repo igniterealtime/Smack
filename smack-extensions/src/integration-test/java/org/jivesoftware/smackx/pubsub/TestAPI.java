@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 package org.jivesoftware.smackx.pubsub;
- 
+
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.pubsub.test.SingleUserTestCase;
 

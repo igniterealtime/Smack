@@ -50,13 +50,13 @@ public class DeliveryReceiptTest extends InitExtensions {
     public void receiptTest() throws Exception {
         XmlPullParser parser;
         String control;
-        
+
         control = XMLBuilder.create("message")
             .a("from", "romeo@montague.com")
             .e("request")
                 .a("xmlns", "urn:xmpp:receipts")
             .asString(outputProperties);
-        
+
         parser = PacketParserUtils.getParserFor(control);
         Message p = PacketParserUtils.parseMessage(parser);
 

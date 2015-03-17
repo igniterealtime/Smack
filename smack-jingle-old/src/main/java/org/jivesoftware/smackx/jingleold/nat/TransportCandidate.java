@@ -354,7 +354,7 @@ public abstract class TransportCandidate {
             public void run() {
                 boolean isUsable;
 
-                
+
                 try {
                 	InetAddress candAddress = InetAddress.getByName(getIp());
                     isUsable = true;//candAddress.isReachable(TransportResolver.CHECK_TIMEOUT);

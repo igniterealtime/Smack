@@ -133,7 +133,7 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
         itemToPublish.setNode("romeo/avatar");
         itemToPublish.setAction(DiscoverItems.Item.UPDATE_ACTION);
         itemsToPublish.addItem(itemToPublish);
-        
+
         try {
             ServiceDiscoveryManager.getInstanceFor(getConnection(0)).publishItems(getServiceName(),
                     itemsToPublish);
@@ -141,7 +141,7 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
         catch (Exception e) {
             fail(e.getMessage());
         }
-        
+
     }*/
 
     protected int getMaxConnections() {

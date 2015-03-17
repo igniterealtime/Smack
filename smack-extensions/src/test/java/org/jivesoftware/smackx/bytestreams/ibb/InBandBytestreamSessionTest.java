@@ -665,5 +665,5 @@ public class InBandBytestreamSessionTest {
         protocol.verifyAll();
 
     }
-    
+
 }

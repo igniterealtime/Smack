@@ -89,7 +89,7 @@ import org.jxmpp.jid.parts.Resourcepart;
  */
 public class AgentSession {
     private static final Logger LOGGER = Logger.getLogger(AgentSession.class.getName());
-    
+
     private XMPPConnection connection;
 
     private Jid workgroupJID;

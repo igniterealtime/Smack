@@ -44,7 +44,7 @@ public class PrivacyList {
     private final String listName;
     /** Holds the list of {@link PrivacyItem} */
     private final List<PrivacyItem> items;
-    
+
     protected PrivacyList(boolean isActiveList, boolean isDefaultList,
             String listName, List<PrivacyItem> privacyItems) {
         super();

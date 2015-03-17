@@ -39,10 +39,10 @@ import org.jivesoftware.smack.util.dns.SRVRecord;
  *
  */
 public class JavaxResolver implements SmackInitializer, DNSResolver {
-    
+
     private static JavaxResolver instance;
     private static DirContext dirContext;
-    
+
     static {
         try {
             Hashtable<String, String> env = new Hashtable<String, String>();

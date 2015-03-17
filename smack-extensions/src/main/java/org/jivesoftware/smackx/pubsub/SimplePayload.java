@@ -29,7 +29,7 @@ public class SimplePayload implements ExtensionElement
 	private final String elemName;
 	private final String ns;
 	private final CharSequence payload;
-	
+
 	/**
 	 * Construct a <tt>SimplePayload</tt> object with the specified element name, 
 	 * namespace and content.  The content must be well formed XML.

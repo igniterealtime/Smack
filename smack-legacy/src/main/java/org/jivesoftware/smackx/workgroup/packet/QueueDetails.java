@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  */
 public class QueueDetails implements ExtensionElement {
     private static final Logger LOGGER = Logger.getLogger(QueueDetails.class.getName());
-    
+
     /**
      * Element name of the packet extension.
      */
@@ -149,7 +149,7 @@ public class QueueDetails implements ExtensionElement {
         public QueueDetails parse(XmlPullParser parser,
                         int initialDepth) throws XmlPullParserException,
                         IOException, SmackException {
-            
+
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             QueueDetails queueDetails = new QueueDetails();
 
@@ -165,7 +165,7 @@ public class QueueDetails implements ExtensionElement {
                     Date joinTime = null;
 
                     uid = parser.getAttributeValue("", "jid");
-               
+
                     if (uid == null) {
                         // throw exception
                     }

@@ -44,19 +44,19 @@ public class ForwardedTest {
         XmlPullParser parser;
         String control;
         Forwarded fwd;
-        
+
         control = XMLBuilder.create("forwarded")
             .a("xmlns", "urn:xmpp:forwarded:0")
             .e("message")
                     .a("from", "romeo@montague.com")
             .asString(outputProperties);
-        
+
         parser = PacketParserUtils.getParserFor(control);
         fwd = (Forwarded) new ForwardedProvider().parse(parser);
 
         // no delay in packet
         assertEquals(null, fwd.getDelayInformation());
-        
+
         // check message
         assertThat("romeo@montague.com", equalsCharSequence(fwd.getForwardedPacket().getFrom()));
 
@@ -97,11 +97,11 @@ public class ForwardedTest {
     public void forwardedEmptyTest() throws Exception {
         XmlPullParser parser;
         String control;
-        
+
         control = XMLBuilder.create("forwarded")
             .a("xmlns", "urn:xmpp:forwarded:0")
             .asString(outputProperties);
-        
+
         parser = PacketParserUtils.getParserFor(control);
         new ForwardedProvider().parse(parser);
     }
