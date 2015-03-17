@@ -26,19 +26,26 @@ import java.util.Random;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  * Handles the automatic reconnection process. Every time a connection is dropped without
  * the application explicitly closing it, the manager automatically tries to reconnect to
  * the server.<p>
  *
- * The reconnection mechanism will try to reconnect periodically:
+ * There are two possible reconnection policies:
+ *
+ * {@link ReconnectionPolicy#RANDOM_INCREASING_DELAY} - The reconnection mechanism will try to reconnect periodically:
  * <ol>
  *  <li>For the first minute it will attempt to connect once every ten seconds.
  *  <li>For the next five minutes it will attempt to connect once a minute.
  *  <li>If that fails it will indefinitely try to connect once every five minutes.
  * </ol>
  *
+ * {@link ReconnectionPolicy#FIXED_DELAY} - The reconnection mechanism will try to reconnect after a fixed delay 
+ * independently from the number of reconnection attempts already performed
+ *
  * @author Francisco Vives
+ * @author Luca Stucchi
  */
 public class ReconnectionManager {
     private static final Logger LOGGER = Logger.getLogger(ReconnectionManager.class.getName());
@@ -96,6 +103,52 @@ public class ReconnectionManager {
     private final int randomBase = new Random().nextInt(13) + 2; // between 2 and 15 seconds
     private final Runnable reconnectionRunnable;
 
+    private static int defaultFixedDelay = 15;
+    private static ReconnectionPolicy defaultReconnectionPolicy = ReconnectionPolicy.RANDOM_INCREASING_DELAY;
+
+    private volatile int fixedDelay = defaultFixedDelay;
+    private volatile ReconnectionPolicy reconnectionPolicy = defaultReconnectionPolicy;
+
+    /**
+     * Set the default fixed delay in seconds between the reconnection attempts. Also set the
+     * default connection policy to {@link ReconnectionPolicy#FIXED_DELAY}
+     * 
+     * @param fixedDelay Delay expressed in seconds
+     */
+    public static void setDefaultFixedDelay(int fixedDelay) {
+        defaultFixedDelay = fixedDelay;
+        setDefaultReconnectionPolicy(ReconnectionPolicy.FIXED_DELAY);
+    }
+
+    /**
+     * Set the default Reconnection Policy to use
+     * 
+     * @param reconnectionPolicy
+     */
+    public static void setDefaultReconnectionPolicy(ReconnectionPolicy reconnectionPolicy) {
+        defaultReconnectionPolicy = reconnectionPolicy;
+    }
+
+    /**
+     * Set the fixed delay in seconds between the reconnection attempts Also set the connection
+     * policy to {@link ReconnectionPolicy#FIXED_DELAY}
+     * 
+     * @param fixedDelay Delay expressed in seconds
+     */
+    public void setFixedDelay(int fixedDelay) {
+        this.fixedDelay = fixedDelay;
+        setReconnectionPolicy(ReconnectionPolicy.FIXED_DELAY);
+    }
+
+    /**
+     * Set the Reconnection Policy to use
+     * 
+     * @param reconnectionPolicy
+     */
+    public void setReconnectionPolicy(ReconnectionPolicy reconnectionPolicy) {
+        this.reconnectionPolicy = reconnectionPolicy;
+    }
+
     /**
      * Flag that indicates if a reconnection should be attempted when abruptly disconnected
      */
@@ -122,13 +175,27 @@ public class ReconnectionManager {
              */
             private int timeDelay() {
                 attempts++;
-                if (attempts > 13) {
-                    return randomBase * 6 * 5; // between 2.5 and 7.5 minutes (~5 minutes)
+
+                // Delay variable to be assigned
+                int delay;
+                switch (reconnectionPolicy) {
+                case FIXED_DELAY:
+                    delay = fixedDelay;
+                    break;
+                case RANDOM_INCREASING_DELAY:
+                    if (attempts > 13) {
+                        delay = randomBase * 6 * 5; // between 2.5 and 7.5 minutes (~5 minutes)
+                    }
+                    if (attempts > 7) {
+                        delay = randomBase * 6; // between 30 and 90 seconds (~1 minutes)
+                    }
+                    delay = randomBase; // 10 seconds
+                    break;
+                default:
+                    throw new AssertionError("Unknown reconnection policy " + reconnectionPolicy);
                 }
-                if (attempts > 7) {
-                    return randomBase * 6; // between 30 and 90 seconds (~1 minutes)
-                }
-                return randomBase; // 10 seconds
+
+                return delay;
             }
 
             /**
@@ -287,4 +354,22 @@ public class ReconnectionManager {
             reconnect();
         }
     };
+
+    /**
+     * Reconnection Policy, where {@link ReconnectionPolicy#RANDOM_INCREASING_DELAY} is the default policy used by smack and {@link ReconnectionPolicy#FIXED_DELAY} implies
+     * a fixed amount of time between reconnection attempts
+     */
+    public enum ReconnectionPolicy {
+        /**
+         * Default policy classically used by smack, having an increasing delay related to the
+         * overall number of attempts
+         */
+        RANDOM_INCREASING_DELAY,
+
+        /**
+         * Policy using fixed amount of time between reconnection attempts
+         */
+        FIXED_DELAY,
+        ;
+    }
 }
