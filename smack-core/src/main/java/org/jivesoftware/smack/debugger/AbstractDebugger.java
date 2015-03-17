@@ -98,15 +98,13 @@ public abstract class AbstractDebugger implements SmackDebugger {
                 log(
                         "XMPPConnection closed due to an exception (" +
                         connection.getConnectionCounter() +
-                        ")");
-                e.printStackTrace();
+                        ")", e);
             }
             public void reconnectionFailed(Exception e) {
                 log(
                         "Reconnection failed due to an exception (" +
                         connection.getConnectionCounter() +
-                        ")");
-                e.printStackTrace();
+                        ")", e);
             }
             public void reconnectionSuccessful() {
                 log(
@@ -124,6 +122,8 @@ public abstract class AbstractDebugger implements SmackDebugger {
     }
 
     protected abstract void log(String logMessage);
+
+    protected abstract void log(String logMessage, Throwable throwable);
 
     public Reader newConnectionReader(Reader newReader) {
         reader.removeReaderListener(readerListener);

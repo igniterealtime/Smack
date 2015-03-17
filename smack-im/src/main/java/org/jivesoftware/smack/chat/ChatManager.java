@@ -153,7 +153,9 @@ public class ChatManager extends Manager{
                 Message message = (Message) packet;
                 Chat chat;
                 if (message.getThread() == null) {
+                    // CHECKSTYLE:OFF
                 	chat = getUserChat(message.getFrom());
+                    // CHECKSTYLE:ON
                 }
                 else {
                     chat = getThreadChat(message.getThread());

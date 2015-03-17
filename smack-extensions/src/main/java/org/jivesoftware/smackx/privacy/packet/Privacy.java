@@ -93,11 +93,15 @@ public class Privacy extends IQ {
      */
     public void deletePrivacyList(String listName) {
         // Remove the list from the cache
+        // CHECKSTYLE:OFF
     	this.getItemLists().remove(listName);
+        // CHECKSTYLE:ON
 
         // Check if deleted list was the default list
         if (this.getDefaultName() != null && listName.equals(this.getDefaultName())) {
+        // CHECKSTYLE:OFF
         	this.setDefaultName(null);
+        // CHECKSTYLE:ON
         }
     }
 
@@ -108,11 +112,13 @@ public class Privacy extends IQ {
      */
     public List<PrivacyItem> getActivePrivacyList() {
         // Check if we have the default list
+        // CHECKSTYLE:OFF
         if (this.getActiveName() == null) {
         	return null;
         } else {
         	return this.getItemLists().get(this.getActiveName());
         }
+        // CHECKSTYLE:ON
     }
 
     /**
@@ -122,11 +128,13 @@ public class Privacy extends IQ {
      */
     public List<PrivacyItem> getDefaultPrivacyList() {
         // Check if we have the default list
+        // CHECKSTYLE:OFF
         if (this.getDefaultName() == null) {
         	return null;
         } else {
         	return this.getItemLists().get(this.getDefaultName());
         }
+        // CHECKSTYLE:ON
     }
 
     /**
@@ -147,6 +155,7 @@ public class Privacy extends IQ {
      * @return a List with {@link PrivacyItem}
      */
     public PrivacyItem getItem(String listName, int order) {
+        // CHECKSTYLE:OFF
     	Iterator<PrivacyItem> values = getPrivacyList(listName).iterator();
     	PrivacyItem itemFound = null;
     	while (itemFound == null && values.hasNext()) {
@@ -156,6 +165,7 @@ public class Privacy extends IQ {
 			}
 		}
     	return itemFound;
+        // CHECKSTYLE:ON
     }
 
     /**
@@ -169,7 +179,9 @@ public class Privacy extends IQ {
            this.setDefaultName(newDefault);
            return true;
         } else {
+            // CHECKSTYLE:OFF
         	return false; 
+            // CHECKSTYLE:ON
         }
     }
 
@@ -179,7 +191,9 @@ public class Privacy extends IQ {
      * @param listName name of the list to remove.
      */
      public void deleteList(String listName) {
+     // CHECKSTYLE:OFF
     	 this.getItemLists().remove(listName);
+     // CHECKSTYLE:ON
      }
 
     /**
@@ -188,9 +202,11 @@ public class Privacy extends IQ {
      *
      * @return the name of the active list.
      */
+    // CHECKSTYLE:OFF
 	public String getActiveName() {
 		return activeName;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Sets the name associated with the active list set for the session. Communications
@@ -198,9 +214,11 @@ public class Privacy extends IQ {
      * 
      * @param activeName is the name of the active list.
      */
+    // CHECKSTYLE:OFF
 	public void setActiveName(String activeName) {
 		this.activeName = activeName;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Returns the name of the default list that applies to the user as a whole. Default list is 
@@ -209,9 +227,11 @@ public class Privacy extends IQ {
      * 
      * @return the name of the default list.
      */
+    // CHECKSTYLE:OFF
 	public String getDefaultName() {
 		return defaultName;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Sets the name of the default list that applies to the user as a whole. Default list is 
@@ -222,9 +242,11 @@ public class Privacy extends IQ {
      * 
      * @param defaultName is the name of the default list.
      */
+    // CHECKSTYLE:OFF
 	public void setDefaultName(String defaultName) {
 		this.defaultName = defaultName;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Returns the collection of privacy list that the user holds. A Privacy List contains a set of 
@@ -234,42 +256,51 @@ public class Privacy extends IQ {
      * @return a map where the key is the name of the list and the value the 
      * collection of privacy items.
      */
+    // CHECKSTYLE:OFF
 	public Map<String, List<PrivacyItem>> getItemLists() {
 		return itemLists;
 	}
+    // CHECKSTYLE:ON
 
     /** 
      * Returns whether the receiver allows or declines the use of an active list.
      * 
      * @return the decline status of the list.
      */
+    // CHECKSTYLE:OFF
 	public boolean isDeclineActiveList() {
 		return declineActiveList;
 	}
+    // CHECKSYTLE:ON
 
     /** 
      * Sets whether the receiver allows or declines the use of an active list.
      * 
      * @param declineActiveList indicates if the receiver declines the use of an active list.
      */
+    // CHECKSTYLE:OFF
 	public void setDeclineActiveList(boolean declineActiveList) {
 		this.declineActiveList = declineActiveList;
 	}
+    // CHECKSTYLE:ON
 
     /** 
      * Returns whether the receiver allows or declines the use of a default list.
      * 
      * @return the decline status of the list.
      */
+    // CHECKSTYLE:OFF
 	public boolean isDeclineDefaultList() {
 		return declineDefaultList;
 	}
+    // CHECKSTYLE:ON
 
     /** 
      * Sets whether the receiver allows or declines the use of a default list.
      * 
      * @param declineDefaultList indicates if the receiver declines the use of a default list.
      */
+    // CHECKSTYLE:OFF
 	public void setDeclineDefaultList(boolean declineDefaultList) {
 		this.declineDefaultList = declineDefaultList;
 	}
@@ -282,10 +313,12 @@ public class Privacy extends IQ {
 	public Set<String> getPrivacyListNames() {
 		return this.itemLists.keySet();
 	}
+    // CHECKSTYLE:ON
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         buf.rightAngleBracket();
+        // CHECKSTYLE:OFF
 
         // Add the active tag
         if (this.isDeclineActiveList()) {
@@ -323,7 +356,7 @@ public class Privacy extends IQ {
 				buf.append("</list>");
 			}
 		}
-
+    // CHECKSTYLE:ON
         return buf;
     }
 

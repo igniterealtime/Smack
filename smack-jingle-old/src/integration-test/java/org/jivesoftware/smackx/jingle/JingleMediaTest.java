@@ -96,7 +96,7 @@ public class JingleMediaTest extends SmackTestCase {
                             //                            });
 
                         } catch (XMPPException e) {
-                            e.printStackTrace();
+                            LOGGER.log(Level.WARNING, "exception", e);
                         }
 
                     }
@@ -122,7 +122,7 @@ public class JingleMediaTest extends SmackTestCase {
                 Thread.sleep(60000);
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
     }
@@ -165,11 +165,11 @@ public class JingleMediaTest extends SmackTestCase {
                         try {
                             Thread.sleep(12000);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            LOGGER.log(Level.WARNING, "exception", e);
                         }
                         session.startIncoming();
                     } catch (XMPPException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
 
                 }
@@ -203,7 +203,7 @@ public class JingleMediaTest extends SmackTestCase {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
     }
@@ -238,7 +238,7 @@ public class JingleMediaTest extends SmackTestCase {
 
                         session.startIncoming();
                     } catch (XMPPException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
 
                 }
@@ -257,7 +257,7 @@ public class JingleMediaTest extends SmackTestCase {
             x1.disconnect();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
     }
@@ -293,7 +293,7 @@ public class JingleMediaTest extends SmackTestCase {
 
                         session.startIncoming();
                     } catch (XMPPException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
 
                 }
@@ -312,7 +312,7 @@ public class JingleMediaTest extends SmackTestCase {
             x1.disconnect();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
     }
@@ -355,7 +355,7 @@ public class JingleMediaTest extends SmackTestCase {
 
                                     session.startIncoming();
                                 } catch (XMPPException e) {
-                                    e.printStackTrace();
+                                    LOGGER.log(Level.WARNING, "exception", e);
                                 }
 
                             }
@@ -381,7 +381,7 @@ public class JingleMediaTest extends SmackTestCase {
                         x1.disconnect();
 
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
                 }
             });
@@ -392,7 +392,7 @@ public class JingleMediaTest extends SmackTestCase {
         try {
             Thread.sleep(250000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
     }
 
@@ -429,7 +429,7 @@ public class JingleMediaTest extends SmackTestCase {
 
                         session.startIncoming();
                     } catch (XMPPException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
 
                 }
@@ -459,7 +459,7 @@ public class JingleMediaTest extends SmackTestCase {
             x1.disconnect();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
     }
@@ -480,7 +480,7 @@ public class JingleMediaTest extends SmackTestCase {
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 }
 
                 audioChannel0.stop();
@@ -489,10 +489,10 @@ public class JingleMediaTest extends SmackTestCase {
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
         }
     }
@@ -515,7 +515,7 @@ public class JingleMediaTest extends SmackTestCase {
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 }
 
                 audioChannel0.stop();
@@ -524,11 +524,11 @@ public class JingleMediaTest extends SmackTestCase {
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
     }
 

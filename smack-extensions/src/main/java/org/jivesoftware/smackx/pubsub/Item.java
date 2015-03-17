@@ -85,7 +85,9 @@ public class Item extends NodeExtension
 	 */
     public Item(String itemId, String nodeId) 
     {
+    // CHECKSTYLE:OFF
     	super(PubSubElementType.ITEM_EVENT, nodeId);
+    // CHECKSTYLE:ON
         id = itemId;
     }
 

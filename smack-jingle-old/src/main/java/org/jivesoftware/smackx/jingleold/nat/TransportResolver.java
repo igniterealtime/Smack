@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
@@ -372,7 +373,7 @@ public abstract class TransportResolver {
             LOGGER.fine("Transport resolved");
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
     }
 
@@ -395,7 +396,7 @@ public abstract class TransportResolver {
                 return freePort;
             }
             catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
         }
         try {
@@ -404,7 +405,7 @@ public abstract class TransportResolver {
             ss.close();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
         return freePort;
     }

@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.jingleold.mediaimpl.jmf;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.media.MediaLocator;
@@ -144,7 +145,7 @@ public class AudioMediaSession extends JingleMediaSession {
                 return freePort;
             }
             catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
         }
         try {
@@ -153,7 +154,7 @@ public class AudioMediaSession extends JingleMediaSession {
             ss.close();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
         return freePort;
     }

@@ -52,7 +52,7 @@ public class TransportResolverTest extends SmackTestCase {
 		try {
 			tr.resolve(null);
 		} catch (XMPPException e) {
-			e.printStackTrace();
+			LOGGER.log(Level.WARNING, "exception", e);
 			fail("Error resolving");
 		}
 	}

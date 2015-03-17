@@ -73,7 +73,7 @@ public class Demo extends JFrame {
             initialize();
         }
         catch (XMPPException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
     }
 
@@ -100,7 +100,7 @@ public class Demo extends JFrame {
                     incoming.startIncoming();
                 }
                 catch (XMPPException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 }
 
             }

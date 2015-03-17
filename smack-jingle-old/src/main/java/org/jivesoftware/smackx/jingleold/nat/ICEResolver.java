@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
@@ -71,6 +72,7 @@ public class ICEResolver extends TransportResolver {
             // we now cache established/initialized negotiators for each STUN server, so that subsequent uses
             // of the STUN server are much, much faster.
             if (negociatorsMap.get(server) == null) {
+            // CHECKSTYLE:OFF
             	ICENegociator iceNegociator = new ICENegociator(server, port, (short) 1);
             	negociatorsMap.put(server, iceNegociator);
 
@@ -78,6 +80,7 @@ public class ICEResolver extends TransportResolver {
             	iceNegociator.gatherCandidateAddresses();
             	// priorize candidates
             	iceNegociator.prioritizeCandidates();
+            // CHECKSTYLE:ON
             }
 
         }
@@ -135,7 +138,7 @@ public class ICEResolver extends TransportResolver {
 						i++;
 					}
 				} catch (SocketException e1) {
-					e1.printStackTrace();
+					LOGGER.log(Level.WARNING, "exeption", e1);
 				}
 
                 TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, nicNum, String.valueOf(Math.abs(random.nextLong())), candidate.getPort(), "1", candidate.getPriority(), iceType);
@@ -145,7 +148,7 @@ public class ICEResolver extends TransportResolver {
                     transportCandidate.addCandidateEcho(session);
                 }
                 catch (SocketException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 }
                 this.addCandidate(transportCandidate);
 
@@ -153,10 +156,10 @@ public class ICEResolver extends TransportResolver {
 
             }
             catch (UtilityException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
             catch (UnknownHostException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
         // Get a Relay Candidate from XMPP Server
@@ -207,10 +210,10 @@ public class ICEResolver extends TransportResolver {
 
 //            }
 //            catch (UtilityException e) {
-//                e.printStackTrace();
+//                LOGGER.log(Level.WARNING, "exception", e);
 //            }
 //            catch (UnknownHostException e) {
-//                e.printStackTrace();
+//                LOGGER.log(Level.WARNING, "exception", e);
 //            }
 
             // Get Public Candidate From XMPP Server
@@ -229,7 +232,7 @@ public class ICEResolver extends TransportResolver {
                         ifaces = NetworkInterface.getNetworkInterfaces();
                     }
                     catch (SocketException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
 
                     // If detect this address in local machine, don't use it.
@@ -260,13 +263,13 @@ public class ICEResolver extends TransportResolver {
                                 publicCandidate.addCandidateEcho(session);
                             }
                             catch (SocketException e) {
-                                e.printStackTrace();
+                                LOGGER.log(Level.WARNING, "exception", e);
                             }
 
                             addCandidate(publicCandidate);
                         }
                         catch (UnknownHostException e) {
-                            e.printStackTrace();
+                            LOGGER.log(Level.WARNING, "exception", e);
                         }
                     }
                 }

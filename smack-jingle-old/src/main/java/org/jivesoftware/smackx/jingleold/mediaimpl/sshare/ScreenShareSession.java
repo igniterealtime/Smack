@@ -24,6 +24,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
@@ -83,7 +84,7 @@ public class ScreenShareSession extends JingleMediaSession {
                 transmitter = new ImageTransmitter(new DatagramSocket(getLocal().getPort()), remote, getRemote().getPort(),
                         new Rectangle(0, 0, width, height));
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
         } else {
@@ -106,7 +107,7 @@ public class ScreenShareSession extends JingleMediaSession {
                         height);
                 LOGGER.fine("Receiving on:" + receiver.getLocalPort());
             } catch (UnknownHostException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
             jp.add(receiver);
@@ -176,7 +177,7 @@ public class ScreenShareSession extends JingleMediaSession {
                 ss.close();
                 return freePort;
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
         }
         try {
@@ -184,7 +185,7 @@ public class ScreenShareSession extends JingleMediaSession {
             freePort = ss.getLocalPort();
             ss.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
         return freePort;
     }

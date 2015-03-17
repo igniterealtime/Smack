@@ -122,7 +122,7 @@ public class DirectoryRosterStore implements RosterStore {
         for (File file : fileDir.listFiles(rosterDirFilter)) {
             Item entry = readEntry(file);
             if (entry == null) {
-                log("Roster store file '" + file + "' is invalid.");
+                LOGGER.severe("Roster store file '" + file + "' is invalid.");
             }
             else {
                 entries.add(entry);
@@ -228,7 +228,7 @@ public class DirectoryRosterStore implements RosterStore {
                             groupNames.add(group);
                         }
                         else {
-                            log("Invalid group entry in store entry file "
+                            LOGGER.severe("Invalid group entry in store entry file "
                                     + file);
                         }
                     }
@@ -245,9 +245,7 @@ public class DirectoryRosterStore implements RosterStore {
             return null;
         }
         catch (XmlPullParserException e) {
-            log("Invalid group entry in store entry file "
-                    + file);
-            LOGGER.log(Level.SEVERE, "readEntry()", e);
+            LOGGER.log(Level.SEVERE, "Invalid group entry in store entry file", e);
             return null;
         }
 
@@ -264,14 +262,14 @@ public class DirectoryRosterStore implements RosterStore {
                 item.setItemType(RosterPacket.ItemType.valueOf(type));
             }
             catch (IllegalArgumentException e) {
-                log("Invalid type in store entry file " + file);
+                LOGGER.log(Level.SEVERE, "Invalid type in store entry file " + file, e);
                 return null;
             }
             if (status != null) {
                 RosterPacket.ItemStatus itemStatus = RosterPacket.ItemStatus
                         .fromString(status);
                 if (itemStatus == null) {
-                    log("Invalid status in store entry file " + file);
+                    LOGGER.severe("Invalid status in store entry file " + file);
                     return null;
                 }
                 item.setItemStatus(itemStatus);
@@ -303,9 +301,5 @@ public class DirectoryRosterStore implements RosterStore {
     private File getBareJidFile(Jid bareJid) {
         String encodedJid = Base32.encode(bareJid.toString());
         return new File(fileDir, ENTRY_PREFIX + encodedJid);
-    }
-
-    private void log(String error) {
-        System.err.println(error);
     }
 }

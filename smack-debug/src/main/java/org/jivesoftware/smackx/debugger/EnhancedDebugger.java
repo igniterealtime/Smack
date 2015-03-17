@@ -289,8 +289,10 @@ public class EnhancedDebugger implements SmackDebugger {
                 new DefaultTableModel(
                         new Object[]{"Hide", "Timestamp", "", "", "Message", "Id", "Type", "To", "From"},
                         0) {
+                    // CHECKSTYLE:OFF
         			private static final long serialVersionUID = 8136121224474217264L;
 					public boolean isCellEditable(int rowIndex, int mColIndex) {
+                    // CHECKSTYLE:ON
                         return false;
                     }
 
@@ -583,7 +585,7 @@ public class EnhancedDebugger implements SmackDebugger {
                         connection.sendStanza(packetToSend);
                     }
                     catch (InterruptedException | NotConnectedException e1) {
-                        e1.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
                 }
             }
@@ -704,8 +706,10 @@ public class EnhancedDebugger implements SmackDebugger {
                 new DefaultTableModel(new Object[][]{{"IQ", 0, 0}, {"Message", 0, 0},
                         {"Presence", 0, 0}, {"Other", 0, 0}, {"Total", 0, 0}},
                         new Object[]{"Type", "Received", "Sent"}) {
+                    // CHECKSTYLE:OFF
         			private static final long serialVersionUID = -6793886085109589269L;
 					public boolean isCellEditable(int rowIndex, int mColIndex) {
+                    // CHECKSTYLE:ON
                         return false;
                     }
                 };

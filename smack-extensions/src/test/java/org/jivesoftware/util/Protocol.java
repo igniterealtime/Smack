@@ -124,6 +124,7 @@ public class Protocol {
      */
     @SuppressWarnings("unchecked")
     public void verifyAll() {
+        // CHECKSTYLE:OFF
         assertEquals(requests.size(), responsesList.size());
 
         if (printProtocol)
@@ -154,6 +155,7 @@ public class Protocol {
         }
         if (printProtocol)
             System.out.println("=================== End =================\n");
+        // CHECKSTYLE:ON
     }
 
     /**

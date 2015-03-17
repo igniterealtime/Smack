@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smackx.jingleold.JingleSession;
@@ -106,8 +107,7 @@ public class SpeexMediaManager extends JingleMediaManager {
                 jmfProperties.createNewFile();
             }
             catch (IOException ex) {
-                LOGGER.fine("Failed to create jmf.properties");
-                ex.printStackTrace();
+                LOGGER.log(Level.FINE, "Failed to create jmf.properties", ex);
             }
         }
 

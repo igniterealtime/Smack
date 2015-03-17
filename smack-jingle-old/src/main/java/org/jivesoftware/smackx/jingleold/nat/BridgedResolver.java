@@ -29,6 +29,8 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Bridged Resolver use a RTPBridge Service to add a relayed candidate.
@@ -39,6 +41,7 @@ import java.util.Random;
  * The resolver adds this candidate
  */
 public class BridgedResolver extends TransportResolver {
+    private static final Logger LOGGER = Logger.getLogger(BridgedResolver.class.getName());
 
     XMPPConnection connection;
 
@@ -122,7 +125,7 @@ public class BridgedResolver extends TransportResolver {
             ifaces = NetworkInterface.getNetworkInterfaces();
         }
         catch (SocketException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
         while (ifaces.hasMoreElements()) {
@@ -142,7 +145,7 @@ public class BridgedResolver extends TransportResolver {
             return InetAddress.getLocalHost().getHostAddress();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
         return "127.0.0.1";

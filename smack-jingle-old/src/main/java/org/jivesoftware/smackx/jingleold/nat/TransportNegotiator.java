@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
@@ -164,7 +165,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             setNegotiatorState(JingleNegotiatorState.PENDING);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
     }
@@ -302,7 +303,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            LOGGER.log(Level.WARNING, "exception", e);
                         }
 
                         // Once we are in pending state, look for any valid remote
@@ -397,7 +398,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                         try {
                             Thread.sleep(500);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            LOGGER.log(Level.WARNING, "exception", e);
                         }
 
                         bestRemote = getBestRemoteCandidate();
@@ -431,7 +432,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                             session
                                     .terminate("Unable to negotiate session. This may be caused by firewall configuration problems.");
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            LOGGER.log(Level.WARNING, "exception", e);
                         }
                     }
                 }

@@ -754,25 +754,30 @@ public class PacketParserUtilsTest {
 
     @Test
     public void validateSimplePresence() throws Exception {
+        // CHECKSTYLE:OFF
     	String stanza = "<presence from='juliet@example.com/balcony' to='romeo@example.net'/>";
 
     	Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
 
     	assertXMLEqual(stanza, presence.toXML().toString());
+        // CHECKSTYLE:ON
     }
 
     @Test
     public void validatePresenceProbe() throws Exception {
+        // CHECKSTYLE:OFF
     	String stanza = "<presence from='mercutio@example.com' id='xv291f38' to='juliet@example.com' type='unsubscribed'/>";
 
     	Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
 
     	assertXMLEqual(stanza, presence.toXML().toString());
     	assertEquals(Presence.Type.unsubscribed, presence.getType());
+        // CHECKSTYLE:ON
     }
 
     @Test
     public void validatePresenceOptionalElements() throws Exception {
+        // CHECKSTYLE:OFF
     	String stanza = "<presence xml:lang='en' type='unsubscribed'>"
     			+ "<show>dnd</show>"
     			+ "<status>Wooing Juliet</status>"
@@ -786,6 +791,7 @@ public class PacketParserUtilsTest {
     	assertEquals("en", presence.getLanguage());
     	assertEquals("Wooing Juliet", presence.getStatus());
     	assertEquals(1, presence.getPriority());
+        // CHECKSTYLE:ON
     }
 
     @Test

@@ -21,6 +21,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.media.Codec;
@@ -173,7 +174,7 @@ public class AudioChannel {
                 }
             }
             catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
         }
     }
@@ -202,11 +203,11 @@ public class AudioChannel {
             processor = javax.media.Manager.createProcessor(ds);
         }
         catch (NoProcessorException npe) {
-            npe.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", npe);
             return "Couldn't create processor";
         }
         catch (IOException ioe) {
-            ioe.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", ioe);
             return "IOException creating processor";
         }
 
@@ -277,7 +278,7 @@ public class AudioChannel {
                                     tracks[i].setCodecChain(codec);
                                 }
                                 catch (UnsupportedPlugInException e) {
-                                    e.printStackTrace();
+                                    LOGGER.log(Level.WARNING, "exception", e);
                                 }
                             }
 
@@ -394,7 +395,7 @@ public class AudioChannel {
 
             }
             catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
                 return e.getMessage();
             }
         }
@@ -421,7 +422,7 @@ public class AudioChannel {
                 }
             }
             catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
         }
@@ -514,7 +515,7 @@ public class AudioChannel {
                 Thread.sleep(5000);
             }
             catch (InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
             audioChannel0.setTrasmit(false);
@@ -524,7 +525,7 @@ public class AudioChannel {
                 Thread.sleep(5000);
             }
             catch (InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
             audioChannel0.setTrasmit(true);
@@ -534,7 +535,7 @@ public class AudioChannel {
                 Thread.sleep(5000);
             }
             catch (InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
             audioChannel0.stop();
@@ -542,7 +543,7 @@ public class AudioChannel {
 
         }
         catch (UnknownHostException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
     }

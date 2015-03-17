@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AbstractConnectionClosedListener;
@@ -296,7 +297,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
                 // Send the IQ to each of the content negotiators for further processing.
                 // Each content negotiator may pass back a list of JingleContent for addition to the response packet.
-
+                // CHECKSTYLE:OFF
                 for (ContentNegotiator contentNegotiator : contentNegotiators) {
                 	// If at this point the content negotiator isn't started, it's because we sent a session-init jingle
                 	// packet from startOutgoing() and we're waiting for the other side to let us know they're ready
@@ -307,6 +308,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
                 	}
                     responses.addAll(contentNegotiator.dispatchIncomingPacket(iq, responseId));
                 }
+                // CHECKSTYLE:ON
 
             }
             // Acknowledge the IQ reception
@@ -471,8 +473,10 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             }
 
             // The the packet.
+            // CHECKSTYLE:OFF
             if ((getConnection() != null) && (getConnection().isConnected()))
             	getConnection().sendStanza(jout);
+            // CHECKSTYLE:ON
         }
         return jout;
     }
@@ -644,11 +648,13 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     private void removeConnectionListener() {
+        // CHECKSTYLE:OFF
     	if (connectionListener != null) {
     		getConnection().removeConnectionListener(connectionListener);
 
     		LOGGER.fine("JINGLE SESSION: REMOVE CONNECTION LISTENER");
     	}
+        // CHECKSTYLE:ON
     }
 
     /**
@@ -676,7 +682,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
                 try {
                     receivePacketAndRespond((IQ) packet);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 }
             }
         };
@@ -823,11 +829,12 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
             public void transportEstablished(TransportCandidate local, TransportCandidate remote) throws NotConnectedException, InterruptedException {
                 if (isFullyEstablished()) {
-
+                // CHECKSTYLE:OFF
                 	// Indicate that this session is active.
                 	setSessionState(JingleSessionStateActive.getInstance());
 
                 	for (ContentNegotiator contentNegotiator : contentNegotiators) {
+                // CHECKSTYLE:ON
                         if (contentNegotiator.getNegotiatorState() == JingleNegotiatorState.SUCCEEDED)
                             contentNegotiator.triggerContentEstablished();
                     }
@@ -1081,7 +1088,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             try {
                 resolver = transportManager.getResolver(this);
             } catch (XMPPException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
             if (resolver.getType().equals(TransportResolver.Type.rawupd)) {

@@ -244,10 +244,12 @@ public class PacketCollector {
      */
     protected void processPacket(Stanza packet) {
         if (packetFilter == null || packetFilter.accept(packet)) {
+            // CHECKSTYLE:OFF
         	while (!resultQueue.offer(packet)) {
         		// Since we know the queue is full, this poll should never actually block.
         		resultQueue.poll();
         	}
+            // CHECKSTYLE:ON
             if (collectorToReset != null) {
                 collectorToReset.waitStart = System.currentTimeMillis();
             }

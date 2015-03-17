@@ -134,17 +134,11 @@ public class DummyConnection extends AbstractXMPPConnection {
 
     @Override
     public void send(PlainStreamElement element) {
-        if (SmackConfiguration.DEBUG) {
-            System.out.println("[SEND]: " + element.toXML());
-        }
         queue.add(element);
     }
 
     @Override
     protected void sendStanzaInternal(Stanza packet) {
-        if (SmackConfiguration.DEBUG) {
-            System.out.println("[SEND]: " + packet.toXML());
-        }
         queue.add(packet);
     }
 
@@ -194,10 +188,6 @@ public class DummyConnection extends AbstractXMPPConnection {
      * @param packet the packet to process.
      */
     public void processPacket(Stanza packet) {
-        if (SmackConfiguration.DEBUG) {
-            System.out.println("[RECV]: " + packet.toXML());
-        }
-
         invokePacketCollectorsAndNotifyRecvListeners(packet);
     }
 

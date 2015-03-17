@@ -236,7 +236,7 @@ public abstract class JingleNegotiator {
      */
     public abstract List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException, InterruptedException;
 
-
+    // CHECKSTYLE:OFF
     public void start() {
     	isStarted = true;
     	doStart();
@@ -245,6 +245,7 @@ public abstract class JingleNegotiator {
     public boolean isStarted() {
     	return isStarted;
     }
+    // CHECKSTYLE:ON
 
     /**
      * Each of the negotiators has their individual behavior when they start.

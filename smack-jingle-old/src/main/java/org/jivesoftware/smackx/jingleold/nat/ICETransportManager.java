@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.jingleold.nat;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -26,6 +29,7 @@ import org.jivesoftware.smackx.jingleold.listeners.JingleSessionListener;
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
 
 public class ICETransportManager extends JingleTransportManager implements JingleSessionListener, CreatedJingleSessionListener {
+    private static final Logger LOGGER = Logger.getLogger(ICETransportManager.class.getName());
 
     ICEResolver iceResolver = null;
 
@@ -35,7 +39,7 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
             iceResolver.initializeAndWait();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
     }
 
@@ -44,7 +48,7 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
             iceResolver.resolve(session);
         }
         catch (XMPPException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
         return iceResolver;
     }

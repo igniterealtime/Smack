@@ -175,9 +175,9 @@ public class STUNResolverTest extends SmackTestCase {
                     System.out.println("C: " + candidate.getAddress().getInetAddress() + "|"
                             + candidate.getBase().getAddress().getInetAddress() + " p:" + candidate.getPriority());
                 } catch (UtilityException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 }
             }
             Candidate candidate = cc.getSortedCandidates().get(0);
@@ -251,7 +251,7 @@ public class STUNResolverTest extends SmackTestCase {
             Thread.sleep(55000);
             assertTrue(valCounter() > 0);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
     }
 
@@ -353,7 +353,7 @@ public class STUNResolverTest extends SmackTestCase {
                         });
                         session1.startIncoming();
                     } catch (XMPPException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
                 }
             });
@@ -395,7 +395,7 @@ public class STUNResolverTest extends SmackTestCase {
             assertTrue(valCounter() == 2);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
             fail("An error occured with Jingle");
         }
     }

@@ -233,7 +233,7 @@ public class JingleManagerTest extends SmackTestCase {
             assertTrue(valCounter() > 0);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
             fail("An error occured with Jingle");
         }
     }
@@ -278,7 +278,7 @@ public class JingleManagerTest extends SmackTestCase {
                         JingleSession session1 = request.accept();
                         session1.startIncoming();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
                 }
             });
@@ -293,7 +293,7 @@ public class JingleManagerTest extends SmackTestCase {
             assertTrue(valCounter() > 0);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
             fail("An error occured with Jingle");
         }
     }
@@ -369,7 +369,7 @@ public class JingleManagerTest extends SmackTestCase {
 
                         session1.startIncoming();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
                 }
             });
@@ -384,7 +384,7 @@ public class JingleManagerTest extends SmackTestCase {
             assertTrue(valCounter() == 1);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
             fail("An error occured with Jingle");
         }
     }
@@ -456,7 +456,7 @@ public class JingleManagerTest extends SmackTestCase {
 
                         session1.startIncoming();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
                 }
             });
@@ -498,7 +498,7 @@ public class JingleManagerTest extends SmackTestCase {
             assertTrue(valCounter() == 2);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
             fail("An error occured with Jingle");
         }
     }
@@ -542,7 +542,7 @@ public class JingleManagerTest extends SmackTestCase {
                         session.startIncoming();
                         session.terminate();
                     } catch (XMPPException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
 
                 }
@@ -588,7 +588,7 @@ public class JingleManagerTest extends SmackTestCase {
             assertTrue(valCounter() > 0);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
             fail("An error occured with Jingle");
         }
     }
@@ -625,7 +625,7 @@ public class JingleManagerTest extends SmackTestCase {
                             incCounter();
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
                 }
             }
@@ -666,11 +666,11 @@ public class JingleManagerTest extends SmackTestCase {
                 ds1.close();
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
     }
@@ -737,7 +737,7 @@ public class JingleManagerTest extends SmackTestCase {
 
                     session.startIncoming();
                 } catch (XMPPException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 }
 
             }
@@ -783,7 +783,7 @@ public class JingleManagerTest extends SmackTestCase {
                 Thread.sleep(3000);
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
         System.out.println(valCounter());
@@ -871,7 +871,7 @@ public class JingleManagerTest extends SmackTestCase {
 
                         session.startIncoming();
                     } catch (XMPPException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
 
                 }
@@ -893,7 +893,7 @@ public class JingleManagerTest extends SmackTestCase {
             Thread.sleep(15000);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
     }
@@ -941,7 +941,7 @@ public class JingleManagerTest extends SmackTestCase {
 //
 //                        ses.startIncoming();
 //                    } catch (Exception e) {
-//                        e.printStackTrace();
+//                        LOGGER.log(Level.WARNING, "exception", e);
 //                    }
 //                }
 //            });
@@ -984,7 +984,7 @@ public class JingleManagerTest extends SmackTestCase {
 //            assertTrue(valCounter() > 0);
 //
 //        } catch (Exception e) {
-//            e.printStackTrace();
+//            LOGGER.log(Level.WARNING, "exception", e);
 //            fail("An error occured with Jingle");
 //        }
 //    }

@@ -113,6 +113,7 @@ public class MacroGroup {
     }
 
     public String toXML() {
+        // CHECKSTYLE:OFF
     	StringBuilder buf = new StringBuilder();
     	buf.append("<macrogroup>");
     	buf.append("<title>" +  getTitle() + "</title>");
@@ -136,6 +137,7 @@ public class MacroGroup {
     		buf.append("</macroGroups>");
     	}
     	buf.append("</macrogroup>");
-    	return buf.toString(); 
+    	return buf.toString();
+        // CHECKSTYLE:ON
     }
 }

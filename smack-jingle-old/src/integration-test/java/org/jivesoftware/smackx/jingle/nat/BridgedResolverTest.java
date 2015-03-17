@@ -106,7 +106,7 @@ public class BridgedResolverTest extends SmackTestCase {
             Thread.sleep(1000);
         }
         catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
         assertTrue(valCounter() == 1);

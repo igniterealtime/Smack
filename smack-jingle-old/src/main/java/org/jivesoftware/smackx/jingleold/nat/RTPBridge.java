@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
@@ -522,7 +523,7 @@ public class RTPBridge extends IQ {
             ifaces = NetworkInterface.getNetworkInterfaces();
         }
         catch (SocketException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
         while (ifaces!=null&&ifaces.hasMoreElements()) {
 

@@ -47,7 +47,7 @@ public class RosterExchangeProvider extends ExtensionElementProvider<RosterExcha
     @Override
     public RosterExchange parse(XmlPullParser parser, int initialDepth)
                     throws XmlPullParserException, IOException {
-
+        // CHECKSTYLE:OFF
         RosterExchange rosterExchange = new RosterExchange();
         boolean done = false;
         RemoteRosterEntry remoteRosterEntry = null;
@@ -78,7 +78,7 @@ public class RosterExchangeProvider extends ExtensionElementProvider<RosterExcha
                 }
             }
         }
-
+        // CHECKSTYLE:ON
         return rosterExchange;
 
     }

@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jivesoftware.smack.DummyConnection;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.im.InitSmackIm;
@@ -716,38 +715,20 @@ public class RosterTest extends InitSmackIm {
 
         public synchronized void entriesAdded(Collection<Jid> addresses) {
             addressesAdded.addAll(addresses);
-            if (SmackConfiguration.DEBUG) {
-                for (Jid address : addresses) {
-                    System.out.println("Roster entry for " + address + " added.");
-                }
-            }
             reportInvoked();
         }
 
         public synchronized void entriesDeleted(Collection<Jid> addresses) {
             addressesDeleted.addAll(addresses);
-            if (SmackConfiguration.DEBUG) {
-                for (Jid address : addresses) {
-                    System.out.println("Roster entry for " + address + " deleted.");
-                }
-            }
             reportInvoked();
         }
 
         public synchronized void entriesUpdated(Collection<Jid> addresses) {
             addressesUpdated.addAll(addresses);
-            if (SmackConfiguration.DEBUG) {
-                for (Jid address : addresses) {
-                    System.out.println("Roster entry for " + address + " updated.");
-                }
-            }
             reportInvoked();
         }
 
         public void presenceChanged(Presence presence) {
-            if (SmackConfiguration.DEBUG) {
-                System.out.println("Roster presence changed: " + presence.toXML());
-            }
             reportInvoked();
         }
 

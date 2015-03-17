@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.IQ;
@@ -33,6 +35,8 @@ import org.jivesoftware.smack.packet.IQ.Type;
  *
  */
 public class ThreadedDummyConnection extends DummyConnection {
+    private static final Logger LOGGER = Logger.getLogger(ThreadedDummyConnection.class.getName());
+
     private BlockingQueue<IQ> replyQ = new ArrayBlockingQueue<IQ>(1);
     private BlockingQueue<Stanza> messageQ = new LinkedBlockingQueue<Stanza>(5);
     private volatile boolean timeout = false;
@@ -82,7 +86,7 @@ public class ThreadedDummyConnection extends DummyConnection {
         if (!messageQ.isEmpty())
             new ProcessQueue(messageQ).start();
         else
-            System.out.println("No messages to process");
+            LOGGER.warning("No messages to process");
     }
 
     class ProcessQueue extends Thread {
@@ -97,7 +101,7 @@ public class ThreadedDummyConnection extends DummyConnection {
             try {
                 processPacket(processQ.take());
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
         }
     }

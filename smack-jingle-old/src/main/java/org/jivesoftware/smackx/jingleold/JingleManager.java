@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingleold;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -125,7 +126,7 @@ import org.jxmpp.jid.Jid;
  *                                                       // Start the call
  *                                                       session.start();
  *                                                   } catch (XMPPException e) {
- *                                                       e.printStackTrace();
+ *                                                       LOGGER.log(Level.WARNING, "exception", e);
  *                                                   }
  * <p/>
  *                                               }
@@ -134,7 +135,7 @@ import org.jxmpp.jid.Jid;
  *                                       Thread.sleep(15000);
  * <p/>
  *                                       } catch (Exception e) {
- *                                           e.printStackTrace();
+ *                                           LOGGER.log(Level.WARNING, "exception", e);
  *                                       }
  * <p/>
  *                               To create an Outgoing Jingle Session:
@@ -168,7 +169,7 @@ import org.jxmpp.jid.Jid;
  *                                           Thread.sleep(3000);
  * <p/>
  *                                       } catch (Exception e) {
- *                                           e.printStackTrace();
+ *                                           LOGGER.log(Level.WARNING, "exception", e);
  *                                       }
  *                               </pre>
  *
@@ -239,7 +240,7 @@ public class JingleManager implements JingleSessionListener {
                         try {
                             aux.terminate();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            LOGGER.log(Level.WARNING, "exception", e);
                         }
                 }
             }
@@ -404,7 +405,7 @@ public class JingleManager implements JingleSessionListener {
             try {
                 createdJingleSessionListener.sessionCreated(jingleSession);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
         }
     }
@@ -482,7 +483,7 @@ public class JingleManager implements JingleSessionListener {
             try {
                 jingleSession.terminate();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
         sessions.clear();

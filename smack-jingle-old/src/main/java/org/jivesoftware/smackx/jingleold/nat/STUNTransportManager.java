@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.jingleold.nat;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smackx.jingleold.JingleSession;
 
 /**
@@ -24,6 +27,8 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
  * @author Thiago Camargo
  */
 public class STUNTransportManager extends JingleTransportManager {
+    private static final Logger LOGGER = Logger.getLogger(STUNTransportManager.class.getName());
+
     STUNResolver stunResolver = null;
 
     public STUNTransportManager() {
@@ -32,7 +37,7 @@ public class STUNTransportManager extends JingleTransportManager {
         try {
             stunResolver.initializeAndWait();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
     }
 
@@ -40,7 +45,7 @@ public class STUNTransportManager extends JingleTransportManager {
         try {
             stunResolver.resolve(session);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
         return stunResolver;
     }

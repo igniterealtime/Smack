@@ -18,7 +18,9 @@ package org.jivesoftware.smack.debugger;
 
 import org.jivesoftware.smack.XMPPConnection;
 
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,7 +49,19 @@ public class ConsoleDebugger extends AbstractDebugger {
         synchronized (dateFormatter) {
             formatedDate = dateFormatter.format(new Date());
         }
+        // CHECKSTYLE:OFF
         System.out.println(formatedDate + ' ' + logMessage);
+        // CHECKSTYLE:ON
+    }
+
+    @Override
+    protected void log(String logMessage, Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        // CHECKSTYLE:OFF
+        throwable.printStackTrace(pw);
+        // CHECKSTYLE:ON
+        log(logMessage + sw);
     }
 
 }

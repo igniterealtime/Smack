@@ -528,7 +528,9 @@ public class PacketParserUtils {
 
         String language = getLanguageAttribute(parser);
         if (language != null && !"".equals(language.trim())) {
+        // CHECKSTYLE:OFF
         	presence.setLanguage(language);
+        // CHECKSTYLE:ON
         }
 
         // Parse sub-elements
@@ -993,15 +995,19 @@ public class PacketParserUtils {
 
     }
     private static String getLanguageAttribute(XmlPullParser parser) {
+    // CHECKSTYLE:OFF
     	for (int i = 0; i < parser.getAttributeCount(); i++) {
+    // CHECKSTYLE:ON
             String attributeName = parser.getAttributeName(i);
             if ( "xml:lang".equals(attributeName) ||
                     ("lang".equals(attributeName) &&
                             "xml".equals(parser.getAttributePrefix(i)))) {
+    // CHECKSTYLE:OFF
     			return parser.getAttributeValue(i);
     		}
     	}
     	return null;
+    // CHECKSTYLE:ON
     }
 
     @Deprecated
