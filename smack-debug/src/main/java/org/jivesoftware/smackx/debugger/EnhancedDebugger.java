@@ -354,6 +354,7 @@ public class EnhancedDebugger implements SmackDebugger {
         menu.add(menuItem1);
         // Add listener to the text area so the popup menu can come up.
         messageTextArea.addMouseListener(new PopupListener(menu));
+        // CHECKSTYLE:OFF
 	JPanel sublayout = new JPanel(new BorderLayout());
         sublayout.add(new JScrollPane(messageTextArea), BorderLayout.CENTER);
 
@@ -365,9 +366,9 @@ public class EnhancedDebugger implements SmackDebugger {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
             messagesTable.setRowCount(0);
-
 	    }
 	});
+         // CHECKSTYLE:ON
 
         sublayout.add(clearb, BorderLayout.NORTH);
         allPane.setBottomComponent(sublayout);

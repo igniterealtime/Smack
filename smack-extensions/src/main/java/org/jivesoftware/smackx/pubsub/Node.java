@@ -304,7 +304,9 @@ abstract public class Node
 	 */
 	public Subscription subscribe(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
+// CHECKSTYLE:OFF
 	    PubSub pubSub = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
+// CHECKSTYLE:ON
 		PubSub reply = sendPubsubPacket(pubSub);
 		return reply.getExtension(PubSubElementType.SUBSCRIPTION);
 	}
@@ -330,7 +332,9 @@ abstract public class Node
 	 */
 	public Subscription subscribe(String jid, SubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
+// CHECKSTYLE:OFF
 	    PubSub request = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
+// CHECKSTYLE:ON
 		request.addExtension(new FormNode(FormNodeType.OPTIONS, subForm));
 		PubSub reply = PubSubManager.sendPubsubPacket(con, request);
 		return reply.getExtension(PubSubElementType.SUBSCRIPTION);
@@ -545,7 +549,9 @@ abstract public class Node
 		@SuppressWarnings({ "rawtypes", "unchecked" })
         public void processPacket(Stanza packet)
 		{
+// CHECKSTYLE:OFF
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
+// CHECKSTYLE:ON
 			ItemsExtension itemsElem = (ItemsExtension)event.getEvent();
             ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), (List<Item>)itemsElem.getItems(), getSubscriptionIds(packet), DelayInformationManager.getDelayTimestamp(packet));
 			listener.handlePublishedItems(eventItems);
@@ -569,6 +575,7 @@ abstract public class Node
 
 		public void processPacket(Stanza packet)
 		{
+// CHECKSTYLE:OFF
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
 
 	        List<ExtensionElement> extList = event.getExtensions();
@@ -592,6 +599,7 @@ abstract public class Node
 				ItemDeleteEvent eventItems = new ItemDeleteEvent(itemsElem.getNode(), items, getSubscriptionIds(packet));
 				listener.handleDeletedItems(eventItems);
 	        }
+// CHECKSTYLE:ON
 		}
 	}
 
@@ -612,8 +620,10 @@ abstract public class Node
 
 		public void processPacket(Stanza packet)
 		{
+// CHECKSTYLE:OFF
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
-			ConfigurationEvent config = (ConfigurationEvent)event.getEvent();
+	        ConfigurationEvent config = (ConfigurationEvent)event.getEvent();
+// CHECKSTYLE:ON
 
 			listener.handleNodeConfiguration(config);
 		}

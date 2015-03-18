@@ -321,10 +321,12 @@ final public class PubSubManager
 
 	static PubSub sendPubsubPacket(XMPPConnection con, Jid to, Type type, List<ExtensionElement> extList, PubSubNamespace ns) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
+// CHECKSTYLE:OFF
 	    PubSub pubSub = new PubSub(to, type, ns);
 	    for (ExtensionElement pe : extList) {
 	        pubSub.addExtension(pe);
 	    }
+// CHECKSTYLE:ON
 		return sendPubsubPacket(con ,pubSub);
 	}
 

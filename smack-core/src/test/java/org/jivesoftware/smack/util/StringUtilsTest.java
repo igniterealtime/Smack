@@ -68,7 +68,7 @@ public class StringUtilsTest  {
     }
 
 	public static void assertCharSequenceEquals(CharSequence expected, CharSequence actual) {
-	    assertEquals(expected.toString(), actual.toString());
+        assertEquals(expected.toString(), actual.toString());
 	}
 
 	@Test

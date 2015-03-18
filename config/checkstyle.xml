@@ -28,6 +28,12 @@
 		<property name="message" value="Line containing tab(s) after space"/>
 	</module>
 	<module name="RegexpSingleline">
+		<!-- We use {2,} instead of + here to address the typical case where a file was written
+		   with tabs but javadoc is causing '\t *' -->
+		<property name="format" value="^\t+ {2,}"/>
+		<property name="message" value="Line containing space(s) after tab(s)"/>
+	</module>
+	<module name="RegexpSingleline">
 		<!--
 			Explaining the following Regex
 

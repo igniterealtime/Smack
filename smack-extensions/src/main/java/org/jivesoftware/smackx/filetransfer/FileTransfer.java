@@ -187,8 +187,10 @@ public abstract class FileTransfer {
 
 	protected void setStatus(Status status) {
         synchronized (statusMonitor) {
+         // CHECKSTYLE:OFF
 		    this.status = status;
 	    }
+        // CHECKSTYLE:ON
     }
 
     protected boolean updateStatus(Status oldStatus, Status newStatus) {

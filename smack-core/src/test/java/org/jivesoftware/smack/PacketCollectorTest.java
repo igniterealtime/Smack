@@ -61,10 +61,10 @@ public class PacketCollectorTest
 		assertNull(collector.nextResult(1000));
 	}
 
-	/**
-	 * Although this doesn't guarentee anything due to the nature of threading, it can 
-	 * potentially catch problems.
-	 */
+    /**
+     * Although this doesn't guarentee anything due to the nature of threading, it can potentially
+     * catch problems.
+     */
 	@Test
 	public void verifyThreadSafety()
 	{

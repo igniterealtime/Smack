@@ -87,7 +87,9 @@ public abstract class StreamNegotiator {
     }
 
     protected final IQ initiateIncomingStream(final XMPPConnection connection, StreamInitiation initiation)
+    // CHECKSTYLE:OFF
 				   throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    // CHECKSTYLE:ON
         final StreamInitiation response = createInitiationAccept(initiation,
                 getNamespaces());
 
