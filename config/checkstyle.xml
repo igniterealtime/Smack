@@ -27,12 +27,25 @@
 		<property name="format" value="^ +\t+"/>
 		<property name="message" value="Line containing tab(s) after space"/>
 	</module>
-	<!-- TODO enable this once eclilpse does no longer add javadoc with trailing whitespaces
 	<module name="RegexpSingleline">
-		<property name="format" value="^.*\S+\s+$"/>
+		<!--
+			Explaining the following Regex
+
+			^   \s*   [\S && [^  \*/]]+   \s+   $
+			|    |        |           |    |    +- End of Line (6)
+			|    |        |           |    +- At least one whitespace (5)
+			|    |        |           +- At least one or more of the previous character class (4)
+			|    |        +- All non-whitespace characters except '*' and '/' (to exclude javadoc) (3)
+			|    +- Zero or more space characters (2)
+			+- Start of Line (1)
+
+			Rationale:
+			Matches trailing whitespace (5) in lines containing at least one (4) non-whitespace character
+			that is not one of the characters used by javadoc (3).
+		-->
+		<property name="format" value="^\s*[\S&amp;&amp;[^\*/]]+\s+$"/>
 		<property name="message" value="Line containing trailing whitespace character(s)"/>
 	</module>
-	-->
 	<module name="TreeWalker">
 		<module name="FileContentsHolder"/>
 		<module name="UnusedImports">

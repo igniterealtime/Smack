@@ -340,7 +340,7 @@ public class Socks5ProxySocketFactory
             {
                 if(socket!=null)
                 {
-                    socket.close(); 
+                    socket.close();
                 }
             }
             catch(Exception eee)

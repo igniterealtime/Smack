@@ -102,7 +102,7 @@ public class TcpUdpBridgeClient {
 
                     InputStream in = localTcpSocket.getInputStream();
                     InetAddress remoteHost = InetAddress.getByName(remoteUdpHost);
-                    process.start();                    
+                    process.start();
 
                     while (true) {
                         byte[] b = new byte[500];

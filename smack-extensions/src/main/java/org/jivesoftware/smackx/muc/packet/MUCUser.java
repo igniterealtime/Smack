@@ -475,7 +475,7 @@ public class MUCUser implements ExtensionElement {
             if (other instanceof Status) {
                 Status otherStatus = (Status) other;
                 return code.equals(otherStatus.getCode());
-            } 
+            }
             return false;
         }
 

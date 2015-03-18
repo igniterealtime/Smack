@@ -232,7 +232,7 @@ public class PacketParserUtils {
         if (language != null && !"".equals(language.trim())) {
             message.setLanguage(language);
             defaultLanguage = language;
-        } 
+        }
         else {
             defaultLanguage = Stanza.getDefaultLanguage();
         }

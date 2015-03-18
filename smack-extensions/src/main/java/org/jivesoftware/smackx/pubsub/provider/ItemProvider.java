@@ -48,7 +48,7 @@ public class ItemProvider extends ExtensionElementProvider<Item>
         {
             return new Item(id, node);
         }
-        else 
+        else
         {
             String payloadElemName = parser.getName();
             String payloadNS = parser.getNamespace();
@@ -59,7 +59,7 @@ public class ItemProvider extends ExtensionElementProvider<Item>
                 CharSequence payloadText = PacketParserUtils.parseElement(parser, true);
                 return new PayloadItem<SimplePayload>(id, node, new SimplePayload(payloadElemName, payloadNS, payloadText));
             }
-            else 
+            else
             {
                 return new PayloadItem<ExtensionElement>(id, node, extensionProvider.parse(parser));
             }

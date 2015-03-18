@@ -102,7 +102,7 @@ public class OctTreeQuantizer implements Quantizer {
 			if (colors > reduceColors)
 				reduceTree(reduceColors);
 		}
-	}	
+	}
 
     /**
      * Get the color table index for a color.

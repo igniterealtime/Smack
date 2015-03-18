@@ -205,7 +205,7 @@ public class Socks4ProxySocketFactory
         {
             try
             {
-                if(socket!=null)socket.close(); 
+                if(socket!=null)socket.close();
             }
             catch(Exception eee)
             {

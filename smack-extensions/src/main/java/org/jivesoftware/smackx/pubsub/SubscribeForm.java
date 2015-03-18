@@ -39,7 +39,7 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
  * @author Robin Collier
  */
 public class SubscribeForm extends Form
-{	
+{
 	public SubscribeForm(DataForm configDataForm)
 	{
 		super(configDataForm);

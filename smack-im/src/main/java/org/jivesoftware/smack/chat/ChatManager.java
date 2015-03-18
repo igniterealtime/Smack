@@ -100,7 +100,7 @@ public class ChatManager extends Manager{
          * Will attempt to match on the JID in the from field, and then attempt the base JID if no match was found.
          * This is the most lenient matching.
          */
-        BARE_JID; 
+        BARE_JID;
     }
 
     private final StanzaFilter packetFilter = new OrFilter(MessageTypeFilter.CHAT, new FlexibleStanzaTypeFilter<Message>() {

@@ -254,7 +254,7 @@ public class DNSUtil {
                 } else {
                     double rnd = Math.random() * running_total;
                     selectedPos = bisect(totals, rnd);
-                } 
+                }
                 // add the SRVRecord that was randomly chosen on it's weight
                 // to the start of the result list
                 SRVRecord chosenSRVRecord = bucket.remove(selectedPos);

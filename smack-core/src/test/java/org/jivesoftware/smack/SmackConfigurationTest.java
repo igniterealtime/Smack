@@ -37,7 +37,7 @@ public class SmackConfigurationTest {
     // As there is currently no annotation/way to run a testclass/single test in a separate VM,
     // which is required for reliable results of this test, and we don't want to fork a VM for
     // *every* test, those tests are currently disabled. Hopefully this will change in the future.
-    @Ignore 
+    @Ignore
     @Test
     public void smackConfigurationShouldNotCauseInitializationTest() {
         SmackConfiguration.getDefaultPacketReplyTimeout();
@@ -49,7 +49,7 @@ public class SmackConfigurationTest {
     // As there is currently no annotation/way to run a testclass/single test in a separate VM,
     // which is required for reliable results of this test, and we don't want to fork a VM for
     // *every* test, those tests are currently disabled. Hopefully this will change in the future.
-    @Ignore 
+    @Ignore
     @Test
     public void smackconfigurationVersionShouldInitialzieSmacktTest() {
         SmackConfiguration.getVersion();
