@@ -36,6 +36,7 @@ allprojects {
 		// build, causing unnecessary rebuilds.
 		builtDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 		oneLineDesc = 'An Open Source XMPP (Jabber) client library'
+		javadocAllProjects = subprojects - project(':smack-integration-test')
 		// A dirty hack used for Gradle's jacoco plugin, since is not
 		// hable to handle the case when a (sub)project has no unit
 		// tests. :-(
@@ -65,6 +66,7 @@ allprojects {
 		].collect{ project(it) }
 		androidBootClasspath = getAndroidRuntimeJar()
 		androidJavadocOffline = getAndroidJavadocOffline()
+		junitVersion = '4.11'
 	}
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = 1.7
@@ -147,7 +149,7 @@ gradle.taskGraph.whenReady { taskGraph ->
 }
 
 task javadocAll(type: Javadoc) {
-	source subprojects.collect {project ->
+	source javadocAllProjects.collect {project ->
 		project.sourceSets.main.allJava }
 	destinationDir = javadocAllDir
 	// Might need a classpath
@@ -317,6 +319,9 @@ subprojects {
 	}
 }
 
+// No need to ever clirr smack-integration-test
+project(':smack-integration-test').clirr.enabled = false
+
 subprojects*.jar {
    manifest {
        from sharedManifest
@@ -348,6 +353,10 @@ task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
 task clirrRootReport(type: org.kordamp.gradle.clirr.ClirrReportTask) {
 	dependsOn = subprojects.tasks.clirr
 	reports = files((subprojects.findAll { it.clirr.enabled == true }).tasks.clirr.xmlReport)
+}
+
+task integrationTest {
+	dependsOn project(':smack-integration-test').tasks.run
 }
 
 def getGitCommit() {

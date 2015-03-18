@@ -11,7 +11,7 @@ dependencies {
 	compile "org.jxmpp:jxmpp-core:$jxmppVersion"
 	compile "org.jxmpp:jxmpp-jid:$jxmppVersion"
 	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
-	testCompile 'junit:junit:4.11'
+	testCompile "junit:junit:$junitVersion"
 	testCompile 'xmlunit:xmlunit:1.5'
 	testCompile 'org.powermock:powermock-module-junit4:1.5.5'
 	testCompile 'org.powermock:powermock-api-mockito:1.5.5'

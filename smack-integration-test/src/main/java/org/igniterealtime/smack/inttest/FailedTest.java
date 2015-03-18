@@ -14,18 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.util;
+package org.igniterealtime.smack.inttest;
 
-public class Objects {
+import java.lang.reflect.Method;
+import java.util.List;
 
-    public static <T> T requireNonNull(T obj, String message) {
-        if (obj == null) {
-            throw new NullPointerException(message);
-        }
-        return obj;
-    }
+public class FailedTest extends TestResult {
 
-    public static <T> T requireNonNull(T obj) {
-        return requireNonNull(obj, null);
+    public final Exception failureReason;
+
+    public FailedTest(Method testMethod, long startTime, long endTime, List<String> logMessages, Exception failureReason) {
+        super(testMethod, startTime, endTime, logMessages);
+        this.failureReason = failureReason;
     }
 }

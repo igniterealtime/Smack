@@ -32,35 +32,6 @@ public class LoginTest extends SmackTestCase {
     }
 
     /**
-     * Check that the server is returning the correct error when trying to login using an invalid
-     * (i.e. non-existent) user.
-     */
-    public void testInvalidLogin() {
-        try {
-            XMPPTCPConnection connection = createConnection();
-            connection.connect();
-            try {
-                // Login with an invalid user
-                connection.login("invaliduser" , "invalidpass");
-                connection.disconnect();
-                fail("Invalid user was able to log into the server");
-            }
-            catch (XMPPException e) {
-                if (e.getXMPPError() != null) {
-                    assertEquals("Incorrect error code while login with an invalid user", 401,
-                            e.getXMPPError().getCode());
-                }
-            }
-            // Wait here while trying tests with exodus
-            //Thread.sleep(300);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-    }
-
-    /**
      * Check that the server handles anonymous users correctly.
      */
     public void testSASLAnonymousLogin() {

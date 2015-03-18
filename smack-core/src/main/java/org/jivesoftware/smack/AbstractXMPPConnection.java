@@ -50,6 +50,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.SmackException.ResourceBindingNotOfferedException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredException;
+import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
@@ -68,6 +69,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.PlainStreamElement;
+import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.UnparsablePacket;
@@ -1195,7 +1197,19 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected void callConnectionClosedOnErrorListener(Exception e) {
-        LOGGER.log(Level.WARNING, "Connection closed with error", e);
+        boolean logWarning = true;
+        if (e instanceof StreamErrorException) {
+            StreamErrorException see = (StreamErrorException) e;
+            if (see.getStreamError().getCondition() == StreamError.Condition.not_authorized
+                            && wasAuthenticated) {
+                logWarning = false;
+                LOGGER.log(Level.FINE,
+                                "Connection closed with not-authorized stream error after it was already authenticated. The account was likely deleted/unregistered on the server");
+            }
+        }
+        if (logWarning) {
+            LOGGER.log(Level.WARNING, "Connection closed with error", e);
+        }
         for (ConnectionListener listener : connectionListeners) {
             try {
                 listener.connectionClosedOnError(e);

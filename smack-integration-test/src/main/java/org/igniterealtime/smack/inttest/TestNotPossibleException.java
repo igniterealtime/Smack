@@ -14,18 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.util;
+package org.igniterealtime.smack.inttest;
 
-public class Objects {
+public class TestNotPossibleException extends Exception {
 
-    public static <T> T requireNonNull(T obj, String message) {
-        if (obj == null) {
-            throw new NullPointerException(message);
-        }
-        return obj;
-    }
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-    public static <T> T requireNonNull(T obj) {
-        return requireNonNull(obj, null);
+    public TestNotPossibleException(String reason) {
+        super(reason);
     }
 }

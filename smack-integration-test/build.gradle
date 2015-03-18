@@ -1,0 +1,21 @@
+apply plugin: 'application'
+
+description = """\
+Smack integration tests."""
+
+mainClassName = 'org.igniterealtime.smack.inttest.SmackIntegrationTestFramework'
+
+dependencies {
+	compile project(':smack-java7')
+	compile project(':smack-tcp')
+	compile project(':smack-extensions')
+	compile 'org.reflections:reflections:0.9.9-RC1'
+	compile 'eu.geekplace.javapinning:java-pinning-jar:1.0.1'
+	compile "junit:junit:$junitVersion"
+	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
+}
+
+run {
+	// Pass all system properties down to the "application" run
+	systemProperties System.getProperties()
+}
