@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
-		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.1.0'
+		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.0'
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
     }
 }
@@ -313,8 +313,7 @@ subprojects {
 	}
 
 	clirr {
-		baseline = [group, name, clirrBaseline].join(':')
-		failOnErrors clirrFailOnErrors
+		semver false
 	}
 }
 
@@ -348,7 +347,7 @@ task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
 // Important to specify this task after the subprojects block
 task clirrRootReport(type: org.kordamp.gradle.clirr.ClirrReportTask) {
 	dependsOn = subprojects.tasks.clirr
-	reports = files(subprojects.tasks.clirr.xmlReport)
+	reports = files((subprojects.findAll { it.clirr.enabled == true }).tasks.clirr.xmlReport)
 }
 
 def getGitCommit() {
