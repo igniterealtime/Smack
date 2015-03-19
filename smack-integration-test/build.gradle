@@ -4,6 +4,7 @@ description = """\
 Smack integration tests."""
 
 mainClassName = 'org.igniterealtime.smack.inttest.SmackIntegrationTestFramework'
+applicationDefaultJvmArgs = ["-enableassertions"]
 
 dependencies {
 	compile project(':smack-java7')
