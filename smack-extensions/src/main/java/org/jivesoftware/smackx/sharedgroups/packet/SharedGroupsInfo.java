@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * IQ packet used for discovering the user's shared groups and for getting the answer back
+ * IQ stanza(/packet) used for discovering the user's shared groups and for getting the answer back
  * from the server.<p>
  *
  * Important note: This functionality is not part of the XMPP spec and it will only work

@@ -34,7 +34,7 @@ import org.jivesoftware.smack.packet.Stanza;
  * use than a {@link StanzaListener} when you need to wait for a specific
  * result.<p>
  *
- * Each packet collector will queue up a configured number of packets for processing before
+ * Each stanza(/packet) collector will queue up a configured number of packets for processing before
  * older packets are automatically dropped.  The default number is retrieved by 
  * {@link SmackConfiguration#getPacketCollectorSize()}.
  *
@@ -49,7 +49,7 @@ public class PacketCollector {
     private final ArrayBlockingQueue<Stanza> resultQueue;
 
     /**
-     * The packet collector which timeout for the next result will get reset once this collector collects a stanza.
+     * The stanza(/packet) collector which timeout for the next result will get reset once this collector collects a stanza.
      */
     private final PacketCollector collectorToReset;
 
@@ -58,7 +58,7 @@ public class PacketCollector {
     private boolean cancelled = false;
 
     /**
-     * Creates a new packet collector. If the packet filter is <tt>null</tt>, then
+     * Creates a new stanza(/packet) collector. If the stanza(/packet) filter is <tt>null</tt>, then
      * all packets will match this collector.
      *
      * @param connection the connection the collector is tied to.
@@ -72,9 +72,9 @@ public class PacketCollector {
     }
 
     /**
-     * Explicitly cancels the packet collector so that no more results are
-     * queued up. Once a packet collector has been cancelled, it cannot be
-     * re-enabled. Instead, a new packet collector must be created.
+     * Explicitly cancels the stanza(/packet) collector so that no more results are
+     * queued up. Once a stanza(/packet) collector has been cancelled, it cannot be
+     * re-enabled. Instead, a new stanza(/packet) collector must be created.
      */
     public void cancel() {
         // If the packet collector has already been cancelled, do nothing.
@@ -85,10 +85,10 @@ public class PacketCollector {
     }
 
     /**
-     * Returns the packet filter associated with this packet collector. The packet
+     * Returns the stanza(/packet) filter associated with this stanza(/packet) collector. The packet
      * filter is used to determine what packets are queued as results.
      *
-     * @return the packet filter.
+     * @return the stanza(/packet) filter.
      * @deprecated use {@link #getStanzaFilter()} instead.
      */
     @Deprecated
@@ -107,11 +107,11 @@ public class PacketCollector {
     }
  
     /**
-     * Polls to see if a packet is currently available and returns it, or
+     * Polls to see if a stanza(/packet) is currently available and returns it, or
      * immediately returns <tt>null</tt> if no packets are currently in the
      * result queue.
      *
-     * @return the next packet result, or <tt>null</tt> if there are no more
+     * @return the next stanza(/packet) result, or <tt>null</tt> if there are no more
      *      results.
      */
     @SuppressWarnings("unchecked")
@@ -120,7 +120,7 @@ public class PacketCollector {
     }
 
     /**
-     * Polls to see if a packet is currently available and returns it, or
+     * Polls to see if a stanza(/packet) is currently available and returns it, or
      * immediately returns <tt>null</tt> if no packets are currently in the
      * result queue.
      * <p>
@@ -139,7 +139,7 @@ public class PacketCollector {
     }
 
     /**
-     * Returns the next available packet. The method call will block (not return) until a packet is
+     * Returns the next available packet. The method call will block (not return) until a stanza(/packet) is
      * available.
      * 
      * @return the next available packet.
@@ -173,7 +173,7 @@ public class PacketCollector {
 
     /**
      * Returns the next available packet. The method call will block (not return)
-     * until a packet is available or the <tt>timeout</tt> has elapsed. If the
+     * until a stanza(/packet) is available or the <tt>timeout</tt> has elapsed. If the
      * timeout elapses without a result, <tt>null</tt> will be returned.
      *
      * @param timeout the timeout in milliseconds.
@@ -201,7 +201,7 @@ public class PacketCollector {
     }
 
     /**
-     * Returns the next available packet. The method call will block until a packet is available or
+     * Returns the next available packet. The method call will block until a stanza(/packet) is available or
      * the connections reply timeout has elapsed. If the timeout elapses without a result,
      * <tt>null</tt> will be returned. This method does also cancel the PacketCollector.
      * 
@@ -214,10 +214,10 @@ public class PacketCollector {
     }
 
     /**
-     * Returns the next available packet. The method call will block until a packet is available or
+     * Returns the next available packet. The method call will block until a stanza(/packet) is available or
      * the <tt>timeout</tt> has elapsed. This method does also cancel the PacketCollector.
      * 
-     * @param timeout the amount of time to wait for the next packet (in milleseconds).
+     * @param timeout the amount of time to wait for the next stanza(/packet) (in milleseconds).
      * @return the next available packet.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException in case an error response.
@@ -235,7 +235,7 @@ public class PacketCollector {
     }
 
     /**
-     * Get the number of collected stanzas this packet collector has collected so far.
+     * Get the number of collected stanzas this stanza(/packet) collector has collected so far.
      * 
      * @return the count of collected stanzas.
      * @since 4.1
@@ -245,10 +245,10 @@ public class PacketCollector {
     }
 
     /**
-     * Processes a packet to see if it meets the criteria for this packet collector.
-     * If so, the packet is added to the result queue.
+     * Processes a stanza(/packet) to see if it meets the criteria for this stanza(/packet) collector.
+     * If so, the stanza(/packet) is added to the result queue.
      *
-     * @param packet the packet to process.
+     * @param packet the stanza(/packet) to process.
      */
     protected void processPacket(Stanza packet) {
         if (packetFilter == null || packetFilter.accept(packet)) {
@@ -269,9 +269,9 @@ public class PacketCollector {
     }
 
     /**
-     * Get a new packet collector configuration instance.
+     * Get a new stanza(/packet) collector configuration instance.
      * 
-     * @return a new packet collector configuration.
+     * @return a new stanza(/packet) collector configuration.
      */
     public static Configuration newConfiguration() {
         return new Configuration();
@@ -286,7 +286,7 @@ public class PacketCollector {
         }
 
         /**
-         * Set the packet filter used by this collector. If <code>null</code>, then all packets will
+         * Set the stanza(/packet) filter used by this collector. If <code>null</code>, then all packets will
          * get collected by this collector.
          * 
          * @param packetFilter
@@ -302,7 +302,7 @@ public class PacketCollector {
          * Set the stanza filter used by this collector. If <code>null</code>, then all stanzas will
          * get collected by this collector.
          * 
-         * @param stanzaFilter
+         * @param packetFilter
          * @return a reference to this configuration.
          */
         public Configuration setStanzaFilter(StanzaFilter stanzaFilter) {

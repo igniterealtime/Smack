@@ -78,7 +78,7 @@ public class PrivateDataManager extends Manager {
     /**
      * Returns the private data provider registered to the specified XML element name and namespace.
      * For example, if a provider was registered to the element name "prefs" and the
-     * namespace "http://www.xmppclient.com/prefs", then the following packet would trigger
+     * namespace "http://www.xmppclient.com/prefs", then the following stanza(/packet) would trigger
      * the provider:
      *
      * <pre>

@@ -39,7 +39,7 @@ import org.jivesoftware.smack.packet.TopLevelStreamElement;
  * 
  * Packets that should be processed by the client to simulate a received stanza
  * can be delivered using the {@linkplain #processPacket(Stanza)} method.
- * It invokes the registered packet interceptors and listeners.
+ * It invokes the registered stanza(/packet) interceptors and listeners.
  * 
  * @see XMPPConnection
  * @author Guenther Niess
@@ -150,7 +150,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * Returns the first packet that's sent through {@link #sendStanza(Stanza)}
+     * Returns the first stanza(/packet) that's sent through {@link #sendStanza(Stanza)}
      * and that has not been returned by earlier calls to this method.
      * 
      * @return a sent packet.
@@ -160,7 +160,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * Returns the first packet that's sent through {@link #sendStanza(Stanza)}
+     * Returns the first stanza(/packet) that's sent through {@link #sendStanza(Stanza)}
      * and that has not been returned by earlier calls to this method. This
      * method will block for up to the specified number of seconds if no packets
      * have been sent yet.
@@ -178,11 +178,11 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * Processes a packet through the installed packet collectors and listeners
-     * and letting them examine the packet to see if they are a match with the
+     * Processes a stanza(/packet) through the installed stanza(/packet) collectors and listeners
+     * and letting them examine the stanza(/packet) to see if they are a match with the
      * filter.
      *
-     * @param packet the packet to process.
+     * @param packet the stanza(/packet) to process.
      */
     public void processPacket(Stanza packet) {
         if (SmackConfiguration.DEBUG) {

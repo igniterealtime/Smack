@@ -229,7 +229,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
     /**
      * IBBInputStream class is the base implementation of an In-Band Bytestream input stream.
-     * Subclasses of this input stream must provide a packet listener along with a packet filter to
+     * Subclasses of this input stream must provide a stanza(/packet) listener along with a stanza(/packet) filter to
      * collect the In-Band Bytestream data packets.
      */
     private abstract class IBBInputStream extends InputStream {
@@ -268,16 +268,16 @@ public class InBandBytestreamSession implements BytestreamSession {
         }
 
         /**
-         * Returns the packet listener that processes In-Band Bytestream data packets.
+         * Returns the stanza(/packet) listener that processes In-Band Bytestream data packets.
          * 
-         * @return the data packet listener
+         * @return the data stanza(/packet) listener
          */
         protected abstract StanzaListener getDataPacketListener();
 
         /**
-         * Returns the packet filter that accepts In-Band Bytestream data packets.
+         * Returns the stanza(/packet) filter that accepts In-Band Bytestream data packets.
          * 
-         * @return the data packet filter
+         * @return the data stanza(/packet) filter
          */
         protected abstract StanzaFilter getDataPacketFilter();
 
@@ -334,7 +334,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         }
 
         /**
-         * This method blocks until a data packet is received, the stream is closed or the current
+         * This method blocks until a data stanza(/packet) is received, the stream is closed or the current
          * thread is interrupted.
          * 
          * @return <code>true</code> if data was received, otherwise <code>false</code>
@@ -418,7 +418,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         }
 
         /**
-         * This method sets the close flag and removes the data packet listener.
+         * This method sets the close flag and removes the data stanza(/packet) listener.
          */
         private void closeInternal() {
             if (isClosed) {
@@ -492,7 +492,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         protected StanzaFilter getDataPacketFilter() {
             /*
              * filter all IQ stanzas having type 'SET' (represented by Data class), containing a
-             * data packet extension, matching session ID and recipient
+             * data stanza(/packet) extension, matching session ID and recipient
              */
             return new AndFilter(new StanzaTypeFilter(Data.class), new IBBDataPacketFilter());
         }
@@ -538,7 +538,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         @Override
         protected StanzaFilter getDataPacketFilter() {
             /*
-             * filter all message stanzas containing a data packet extension, matching session ID
+             * filter all message stanzas containing a data stanza(/packet) extension, matching session ID
              * and recipient
              */
             return new AndFilter(new StanzaTypeFilter(Message.class), new IBBDataPacketFilter());
@@ -548,7 +548,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
     /**
      * IBBDataPacketFilter class filters all packets from the remote peer of this session,
-     * containing an In-Band Bytestream data packet extension whose session ID matches this sessions
+     * containing an In-Band Bytestream data stanza(/packet) extension whose session ID matches this sessions
      * ID.
      */
     private class IBBDataPacketFilter implements StanzaFilter {
@@ -608,7 +608,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         }
 
         /**
-         * Writes the given data packet to the XMPP stream.
+         * Writes the given data stanza(/packet) to the XMPP stream.
          * 
          * @param data the data packet
          * @throws IOException if an I/O error occurred while sending or if the stream is closed

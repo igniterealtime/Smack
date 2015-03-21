@@ -138,7 +138,7 @@ public class PacketParserUtils {
      * connection is optional and is used to return feature-not-implemented errors for unknown IQ stanzas.
      *
      * @param parser
-     * @return a packet which is either a Message, IQ or Presence.
+     * @return a stanza(/packet) which is either a Message, IQ or Presence.
      * @throws XmlPullParserException 
      * @throws SmackException 
      * @throws IOException 
@@ -906,7 +906,7 @@ public class PacketParserUtils {
      * Parses an extension element.
      *
      * @param elementName the XML element name of the extension element.
-     * @param namespace the XML namespace of the packet extension.
+     * @param namespace the XML namespace of the stanza(/packet) extension.
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return an extension element.
      */

@@ -179,7 +179,7 @@ public class Jingle extends IQ {
      * Returns the XML element name of the extension sub-packet root element.
      * Always returns "jingle"
      *
-     * @return the XML element name of the packet extension.
+     * @return the XML element name of the stanza(/packet) extension.
      */
     public static String getElementName() {
         return NODENAME;
@@ -188,7 +188,7 @@ public class Jingle extends IQ {
     /**
      * Returns the XML namespace of the extension sub-packet root element.
      *
-     * @return the XML namespace of the packet extension.
+     * @return the XML namespace of the stanza(/packet) extension.
      */
     public static String getNamespace() {
         return NAMESPACE;
@@ -319,7 +319,7 @@ public class Jingle extends IQ {
     }
 
     /**
-     * Get a hash key for the session this packet belongs to.
+     * Get a hash key for the session this stanza(/packet) belongs to.
      *
      * @param sid       The session id
      * @param initiator The initiator

@@ -26,7 +26,7 @@ import org.jxmpp.util.XmppStringUtils;
  * Filter for packets where the "from" field exactly matches a specified JID. If the specified
  * address is a bare JID then the filter will match any address whose bare JID matches the
  * specified JID. But if the specified address is a full JID then the filter will only match
- * if the sender of the packet matches the specified resource.
+ * if the sender of the stanza(/packet) matches the specified resource.
  *
  * @author Gaston Dombiak
  */
@@ -44,7 +44,7 @@ public class FromMatchesFilter implements StanzaFilter {
      * filter address. The second parameter specifies whether the full or the bare addresses are
      * compared.
      *
-     * @param address The address to filter for. If <code>null</code> is given, the packet must not
+     * @param address The address to filter for. If <code>null</code> is given, the stanza(/packet) must not
      *        have a from address.
      * @param matchBare
      */
@@ -58,7 +58,7 @@ public class FromMatchesFilter implements StanzaFilter {
      * the filter address with the bare from address. Otherwise, compares the filter address
      * with the full from address.
      *
-     * @param address The address to filter for. If <code>null</code> is given, the packet must not
+     * @param address The address to filter for. If <code>null</code> is given, the stanza(/packet) must not
      *        have a from address.
      */
     public static FromMatchesFilter create(String address) {
@@ -69,7 +69,7 @@ public class FromMatchesFilter implements StanzaFilter {
      * Creates a filter matching on the "from" field. Compares the bare version of from and filter
      * address.
      *
-     * @param address The address to filter for. If <code>null</code> is given, the packet must not
+     * @param address The address to filter for. If <code>null</code> is given, the stanza(/packet) must not
      *        have a from address.
      */
     public static FromMatchesFilter createBare(String address) {
@@ -82,7 +82,7 @@ public class FromMatchesFilter implements StanzaFilter {
      * Creates a filter matching on the "from" field. Compares the full version of from and filter
      * address.
      *
-     * @param address The address to filter for. If <code>null</code> is given, the packet must not
+     * @param address The address to filter for. If <code>null</code> is given, the stanza(/packet) must not
      *        have a from address.
      */
     public static FromMatchesFilter createFull(String address) {

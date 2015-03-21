@@ -31,7 +31,7 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * Base class for XMPP Stanzas, which are called Packet in older versions of Smack (i.e. &lt; 4.1).
+ * Base class for XMPP Stanzas, which are called Stanza(/Packet) in older versions of Smack (i.e. &lt; 4.1).
  * <p>
  * Every stanza has a unique ID (which is automatically generated, but can be overridden). Stanza
  * IDs are required for IQ stanzas and recommended for presence and message stanzas. Optionally, the
@@ -113,7 +113,7 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Sets the unique ID of the packet. To indicate that a packet has no id
+     * Sets the unique ID of the packet. To indicate that a stanza(/packet) has no id
      * pass <code>null</code> as the packet's id value.
      *
      * @param id the unique ID for the packet.
@@ -148,11 +148,11 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Returns who the packet is being sent "to", or <tt>null</tt> if
+     * Returns who the stanza(/packet) is being sent "to", or <tt>null</tt> if
      * the value is not set. The XMPP protocol often makes the "to"
      * attribute optional, so it does not always need to be set.<p>
      *
-     * @return who the packet is being sent to, or <tt>null</tt> if the
+     * @return who the stanza(/packet) is being sent to, or <tt>null</tt> if the
      *      value has not been set.
      */
     public String getTo() {
@@ -160,21 +160,21 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Sets who the packet is being sent "to". The XMPP protocol often makes
+     * Sets who the stanza(/packet) is being sent "to". The XMPP protocol often makes
      * the "to" attribute optional, so it does not always need to be set.
      *
-     * @param to who the packet is being sent to.
+     * @param to who the stanza(/packet) is being sent to.
      */
     public void setTo(String to) {
         this.to = to;
     }
 
     /**
-     * Returns who the packet is being sent "from" or <tt>null</tt> if
+     * Returns who the stanza(/packet) is being sent "from" or <tt>null</tt> if
      * the value is not set. The XMPP protocol often makes the "from"
      * attribute optional, so it does not always need to be set.<p>
      *
-     * @return who the packet is being sent from, or <tt>null</tt> if the
+     * @return who the stanza(/packet) is being sent from, or <tt>null</tt> if the
      *      value has not been set.
      */
     public String getFrom() {
@@ -182,11 +182,11 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Sets who the packet is being sent "from". The XMPP protocol often
+     * Sets who the stanza(/packet) is being sent "from". The XMPP protocol often
      * makes the "from" attribute optional, so it does not always need to
      * be set.
      *
-     * @param from who the packet is being sent to.
+     * @param from who the stanza(/packet) is being sent to.
      */
     public void setFrom(String from) {
         this.from = from;
@@ -244,7 +244,7 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     /**
      * Return a set of all extensions with the given element name <emph>and</emph> namespace.
      * <p>
-     * Changes to the returned set will update the packet extensions, if the returned set is not the empty set.
+     * Changes to the returned set will update the stanza(/packet) extensions, if the returned set is not the empty set.
      * </p>
      *
      * @param elementName the element name, must not be null.
@@ -260,13 +260,13 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Returns the first extension of this packet that has the given namespace.
+     * Returns the first extension of this stanza(/packet) that has the given namespace.
      * <p>
      * When possible, use {@link #getExtension(String,String)} instead.
      * </p>
      *
      * @param namespace the namespace of the extension that is desired.
-     * @return the packet extension with the given namespace.
+     * @return the stanza(/packet) extension with the given namespace.
      */
     public ExtensionElement getExtension(String namespace) {
         return PacketUtil.extensionElementFrom(getExtensions(), null, namespace);
@@ -304,9 +304,9 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Adds a packet extension to the packet. Does nothing if extension is null.
+     * Adds a stanza(/packet) extension to the packet. Does nothing if extension is null.
      *
-     * @param extension a packet extension.
+     * @param extension a stanza(/packet) extension.
      */
     public void addExtension(ExtensionElement extension) {
         if (extension == null) return;
@@ -317,9 +317,9 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Adds a collection of packet extensions to the packet. Does nothing if extensions is null.
+     * Adds a collection of stanza(/packet) extensions to the packet. Does nothing if extensions is null.
      * 
-     * @param extensions a collection of packet extensions
+     * @param extensions a collection of stanza(/packet) extensions
      */
     public void addExtensions(Collection<ExtensionElement> extensions) {
         if (extensions == null) return;
@@ -329,14 +329,14 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Check if a packet extension with the given element and namespace exists.
+     * Check if a stanza(/packet) extension with the given element and namespace exists.
      * <p>
      * The argument <code>elementName</code> may be null.
      * </p>
      *
      * @param elementName
      * @param namespace
-     * @return true if a packet extension exists, false otherwise.
+     * @return true if a stanza(/packet) extension exists, false otherwise.
      */
     public boolean hasExtension(String elementName, String namespace) {
         if (elementName == null) {
@@ -349,10 +349,10 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Check if a packet extension with the given namespace exists.
+     * Check if a stanza(/packet) extension with the given namespace exists.
      * 
      * @param namespace
-     * @return true if a packet extension exists, false otherwise.
+     * @return true if a stanza(/packet) extension exists, false otherwise.
      */
     public boolean hasExtension(String namespace) {
         synchronized (packetExtensions) {
@@ -366,11 +366,11 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Remove the packet extension with the given elementName and namespace.
+     * Remove the stanza(/packet) extension with the given elementName and namespace.
      *
      * @param elementName
      * @param namespace
-     * @return the removed packet extension or null.
+     * @return the removed stanza(/packet) extension or null.
      */
     public ExtensionElement removeExtension(String elementName, String namespace) {
         String key = XmppStringUtils.generateKey(elementName, namespace);
@@ -380,10 +380,10 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Removes a packet extension from the packet.
+     * Removes a stanza(/packet) extension from the packet.
      *
-     * @param extension the packet extension to remove.
-     * @return the removed packet extension or null.
+     * @param extension the stanza(/packet) extension to remove.
+     * @return the removed stanza(/packet) extension or null.
      */
     public ExtensionElement removeExtension(ExtensionElement extension)  {
         return removeExtension(extension.getElementName(), extension.getNamespace());
@@ -397,10 +397,10 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
 
     /**
      * Returns the extension sub-packets (including properties data) as an XML
-     * String, or the Empty String if there are no packet extensions.
+     * String, or the Empty String if there are no stanza(/packet) extensions.
      *
      * @return the extension sub-packets as XML or the Empty String if there
-     * are no packet extensions.
+     * are no stanza(/packet) extensions.
      */
     protected final XmlStringBuilder getExtensionsXML() {
         XmlStringBuilder xml = new XmlStringBuilder();
@@ -433,7 +433,7 @@ public abstract class Stanza implements TopLevelStreamElement, Packet {
     }
 
     /**
-     * Append an XMPPError is this packet has one set.
+     * Append an XMPPError is this stanza(/packet) has one set.
      *
      * @param xml the XmlStringBuilder to append the error to.
      */

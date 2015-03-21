@@ -78,7 +78,7 @@ public interface SmackDebugger {
 
     /**
      * Returns the thread that will listen for all incoming packets and write them to the GUI. 
-     * This is what we call "interpreted" packet data, since it's the packet data as Smack sees 
+     * This is what we call "interpreted" stanza(/packet) data, since it's the stanza(/packet) data as Smack sees 
      * it and not as it's coming in as raw XML.
      * 
      * @return the PacketListener that will listen for all incoming packets and write them to 

@@ -27,7 +27,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * IQ packet for retrieving the transcript search form, submiting the completed search form
+ * IQ stanza(/packet) for retrieving the transcript search form, submiting the completed search form
  * or retrieving the answer of a transcript search.
  *
  * @author Gaston Dombiak
@@ -35,12 +35,12 @@ import org.xmlpull.v1.XmlPullParserException;
 public class TranscriptSearch extends SimpleIQ {
 
     /**
-    * Element name of the packet extension.
+    * Element name of the stanza(/packet) extension.
     */
    public static final String ELEMENT_NAME = "transcript-search";
 
    /**
-    * Namespace of the packet extension.
+    * Namespace of the stanza(/packet) extension.
     */
    public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 

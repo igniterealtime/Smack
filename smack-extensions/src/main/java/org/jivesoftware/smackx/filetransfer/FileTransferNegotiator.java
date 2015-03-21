@@ -271,7 +271,7 @@ public class FileTransferNegotiator extends Manager {
      * the option of, accepting, rejecting, or not responding to a received file
      * transfer request.
      * <p/>
-     * If they accept, the packet will contain the other user's chosen stream
+     * If they accept, the stanza(/packet) will contain the other user's chosen stream
      * type to send the file across. The two choices this implementation
      * provides to the other user for file transfer are <a
      * href="http://www.xmpp.org/extensions/jep-0065.html">SOCKS5 Bytestreams</a>,

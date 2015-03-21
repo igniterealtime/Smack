@@ -23,7 +23,7 @@ package org.jivesoftware.smack.parsing;
  * place the parser after the faulty stanza.
  * 
  * Subclasses may or may not override certain methods of this class. Each of these methods will receive the exception
- * that caused the parsing error and an instance of an Unparsed Packet type. The latter can be used to inspect the
+ * that caused the parsing error and an instance of an Unparsed Stanza(/Packet) type. The latter can be used to inspect the
  * stanza that caused the parsing error by using the getContent() (for example {@link UnparsablePacket#getContent()})
  * method.
  * 
@@ -37,7 +37,7 @@ public abstract class ParsingExceptionCallback {
     /**
      * Called when parsing an message stanza caused an exception.
      * 
-     * @param stanzaData
+     * @param packetData
      * the raw message stanza data that caused the exception
      * @throws Exception
      */

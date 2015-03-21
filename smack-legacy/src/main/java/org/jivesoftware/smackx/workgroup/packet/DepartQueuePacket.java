@@ -20,7 +20,7 @@ package org.jivesoftware.smackx.workgroup.packet;
 import org.jivesoftware.smack.packet.IQ;
 
 /**
- * A IQ packet used to depart a workgroup queue. There are two cases for issuing a depart
+ * A IQ stanza(/packet) used to depart a workgroup queue. There are two cases for issuing a depart
  * queue request:<ul>
  *     <li>The user wants to leave the queue. In this case, an instance of this class
  *         should be created without passing in a user address.
@@ -39,7 +39,7 @@ public class DepartQueuePacket extends IQ {
     }
 
     /**
-     * Creates a depart queue request packet to the specified workgroup.
+     * Creates a depart queue request stanza(/packet) to the specified workgroup.
      *
      * @param workgroup the workgroup to depart.
      */

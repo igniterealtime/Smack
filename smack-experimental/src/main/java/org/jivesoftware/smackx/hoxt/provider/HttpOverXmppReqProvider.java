@@ -25,7 +25,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Req packet provider.
+ * Req stanza(/packet) provider.
  *
  * @author Andriy Tsykholyas
  * @see <a href="http://xmpp.org/extensions/xep-0332.html">XEP-0332: HTTP over XMPP transport</a>

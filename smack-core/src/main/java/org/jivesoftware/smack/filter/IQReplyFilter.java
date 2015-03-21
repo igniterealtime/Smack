@@ -28,7 +28,7 @@ import org.jxmpp.util.XmppStringUtils;
 /**
  * Filters for packets which are a valid reply to an IQ request.
  * <p>
- * Such a packet must have the same packet id and must be an IQ packet of type
+ * Such a stanza(/packet) must have the same stanza(/packet) id and must be an IQ stanza(/packet) of type
  * <code>RESULT</code> or <code>ERROR</code>. Moreover, it is necessary to check
  * the <code>from</code> address to ignore forged replies.
  * <p>
@@ -61,7 +61,7 @@ public class IQReplyFilter implements StanzaFilter {
     /**
      * Filters for packets which are a valid reply to an IQ request.
      * <p>
-     * Such a packet must have the same packet id and must be an IQ packet of type
+     * Such a stanza(/packet) must have the same stanza(/packet) id and must be an IQ stanza(/packet) of type
      * <code>RESULT</code> or <code>ERROR</code>. Moreover, it is necessary to check
      * the <code>from</code> address to ignore forged replies.
      * <p>

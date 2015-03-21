@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.privacy.packet;
 import org.jivesoftware.smack.util.NumberUtil;
 
 /**
- * A privacy item acts a rule that when matched defines if a packet should be blocked or not.
+ * A privacy item acts a rule that when matched defines if a stanza(/packet) should be blocked or not.
  *
  * Privacy Items can handle different kind of blocking communications based on JID, group,
  * subscription type or globally by:<ul>

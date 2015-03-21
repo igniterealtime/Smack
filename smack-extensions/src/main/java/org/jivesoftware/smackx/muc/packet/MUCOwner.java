@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * IQ packet that serves for granting and revoking ownership privileges, granting 
+ * IQ stanza(/packet) that serves for granting and revoking ownership privileges, granting 
  * and revoking administrative privileges and destroying a room. All these operations 
  * are scoped by the 'http://jabber.org/protocol/muc#owner' namespace.
  * 

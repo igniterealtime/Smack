@@ -25,17 +25,17 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * IQ packet for retrieving and changing the Agent personal information.
+ * IQ stanza(/packet) for retrieving and changing the Agent personal information.
  */
 public class AgentInfo extends IQ {
 
     /**
-    * Element name of the packet extension.
+    * Element name of the stanza(/packet) extension.
     */
    public static final String ELEMENT_NAME = "agent-info";
 
    /**
-    * Namespace of the packet extension.
+    * Namespace of the stanza(/packet) extension.
     */
    public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 

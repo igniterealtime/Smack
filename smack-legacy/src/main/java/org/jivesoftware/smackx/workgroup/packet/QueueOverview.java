@@ -32,12 +32,12 @@ import java.util.Date;
 public class QueueOverview implements ExtensionElement {
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static String ELEMENT_NAME = "notify-queue";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static String NAMESPACE = "http://jabber.org/protocol/workgroup";
 

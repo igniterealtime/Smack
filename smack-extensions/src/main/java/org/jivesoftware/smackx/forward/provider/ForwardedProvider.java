@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * This class implements the {@link ExtensionElementProvider} to parse
- * forwarded messages from a packet.  It will return a {@link Forwarded} packet extension.
+ * forwarded messages from a packet.  It will return a {@link Forwarded} stanza(/packet) extension.
  *
  * @author Georg Lukas
  */

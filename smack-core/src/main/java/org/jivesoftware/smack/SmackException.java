@@ -55,8 +55,8 @@ public class SmackException extends Exception {
     }
 
     /**
-     * Exception thrown always when there was no response to an request within the packet reply timeout of the used
-     * connection instance. You can modify (e.g. increase) the packet reply timeout with
+     * Exception thrown always when there was no response to an request within the stanza(/packet) reply timeout of the used
+     * connection instance. You can modify (e.g. increase) the stanza(/packet) reply timeout with
      * {@link XMPPConnection#setPacketReplyTimeout(long)}.
      */
     public static class NoResponseException extends SmackException {

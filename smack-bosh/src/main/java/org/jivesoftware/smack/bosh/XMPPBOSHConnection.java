@@ -275,7 +275,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      * Closes the connection by setting presence to unavailable and closing the 
      * HTTP client. The shutdown logic will be used during a planned disconnection or when
      * dealing with an unexpected disconnection. Unlike {@link #disconnect()} the connection's
-     * BOSH packet reader will not be removed; thus connection's state is kept.
+     * BOSH stanza(/packet) reader will not be removed; thus connection's state is kept.
      *
      */
     @Override
@@ -476,7 +476,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
 
     /**
      * Listens for XML traffic from the BOSH connection manager and parses it into
-     * packet objects.
+     * stanza(/packet) objects.
      *
      * @author Guenther Niess
      */

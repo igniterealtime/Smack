@@ -46,12 +46,12 @@ public class MonitorPacket extends IQ {
     }
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "monitor";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
@@ -72,7 +72,7 @@ public class MonitorPacket extends IQ {
 
 
     /**
-     * Packet extension provider for Monitor Packets.
+     * Stanza(/Packet) extension provider for Monitor Packets.
      */
     public static class InternalProvider extends IQProvider<MonitorPacket> {
 

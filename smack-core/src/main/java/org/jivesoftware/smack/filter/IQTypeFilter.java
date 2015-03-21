@@ -21,7 +21,7 @@ import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.Objects;
 
 /**
- * A filter for IQ packet types. Returns true only if the packet is an IQ packet
+ * A filter for IQ stanza(/packet) types. Returns true only if the stanza(/packet) is an IQ packet
  * and it matches the type provided in the constructor.
  * 
  * @author Alexander Wenckus

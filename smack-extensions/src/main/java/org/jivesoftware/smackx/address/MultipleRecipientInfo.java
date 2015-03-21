@@ -70,11 +70,11 @@ public class MultipleRecipientInfo {
     }
 
     /**
-     * Returns true if the received packet should not be replied. Use
+     * Returns true if the received stanza(/packet) should not be replied. Use
      * {@link MultipleRecipientManager#reply(org.jivesoftware.smack.XMPPConnection, org.jivesoftware.smack.packet.Message, org.jivesoftware.smack.packet.Message)}
      * to send replies. 
      *
-     * @return true if the received packet should not be replied.
+     * @return true if the received stanza(/packet) should not be replied.
      */
     public boolean shouldNotReply() {
         return !extension.getAddressesOfType(MultipleAddresses.Type.noreply).isEmpty();

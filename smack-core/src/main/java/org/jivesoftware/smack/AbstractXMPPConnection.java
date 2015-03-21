@@ -128,24 +128,24 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private final Collection<PacketCollector> collectors = new ConcurrentLinkedQueue<PacketCollector>();
 
     /**
-     * List of PacketListeners that will be notified synchronously when a new packet was received.
+     * List of PacketListeners that will be notified synchronously when a new stanza(/packet) was received.
      */
     private final Map<StanzaListener, ListenerWrapper> syncRecvListeners = new LinkedHashMap<>();
 
     /**
-     * List of PacketListeners that will be notified asynchronously when a new packet was received.
+     * List of PacketListeners that will be notified asynchronously when a new stanza(/packet) was received.
      */
     private final Map<StanzaListener, ListenerWrapper> asyncRecvListeners = new LinkedHashMap<>();
 
     /**
-     * List of PacketListeners that will be notified when a new packet was sent.
+     * List of PacketListeners that will be notified when a new stanza(/packet) was sent.
      */
     private final Map<StanzaListener, ListenerWrapper> sendListeners =
             new HashMap<StanzaListener, ListenerWrapper>();
 
     /**
-     * List of PacketListeners that will be notified when a new packet is about to be
-     * sent to the server. These interceptors may modify the packet before it is being
+     * List of PacketListeners that will be notified when a new stanza(/packet) is about to be
+     * sent to the server. These interceptors may modify the stanza(/packet) before it is being
      * actually sent to the server.
      */
     private final Map<StanzaListener, InterceptorWrapper> interceptors =
@@ -260,7 +260,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     );
 
     /**
-     * A executor service used to invoke the callbacks of synchronous packet listeners. We use a executor service to
+     * A executor service used to invoke the callbacks of synchronous stanza(/packet) listeners. We use a executor service to
      * decouple incoming stanza processing from callback invocation. It is important that order of callback invocation
      * is the same as the order of the incoming stanzas. Therefore we use a <i>single</i> threaded executor service.
      */
@@ -376,7 +376,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     /**
      * Logs in to the server using the strongest SASL mechanism supported by
-     * the server. If more than the connection's default packet timeout elapses in each step of the 
+     * the server. If more than the connection's default stanza(/packet) timeout elapses in each step of the 
      * authentication process without a response from the server, a
      * {@link SmackException.NoResponseException} will be thrown.
      * <p>
@@ -655,10 +655,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * by closing the stream. The XMPPConnection can still be used for connecting to the server
      * again. A custom unavailable presence is useful for communicating offline presence
      * information such as "On vacation". Typically, just the status text of the presence
-     * packet is set with online information, but most XMPP servers will deliver the full
-     * presence packet with whatever data is set.
+     * stanza(/packet) is set with online information, but most XMPP servers will deliver the full
+     * presence stanza(/packet) with whatever data is set.
      * 
-     * @param unavailablePresence the presence packet to send during shutdown.
+     * @param unavailablePresence the presence stanza(/packet) to send during shutdown.
      * @throws NotConnectedException 
      */
     public synchronized void disconnect(Presence unavailablePresence) throws NotConnectedException {
@@ -795,12 +795,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * Process all packet listeners for sending packets.
+     * Process all stanza(/packet) listeners for sending packets.
      * <p>
      * Compared to {@link #firePacketInterceptors(Stanza)}, the listeners will be invoked in a new thread.
      * </p>
      * 
-     * @param packet the packet to process.
+     * @param packet the stanza(/packet) to process.
      */
     @SuppressWarnings("javadoc")
     protected void firePacketSendingListeners(final Stanza packet) {
@@ -851,12 +851,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * Process interceptors. Interceptors may modify the packet that is about to be sent.
-     * Since the thread that requested to send the packet will invoke all interceptors, it
+     * Process interceptors. Interceptors may modify the stanza(/packet) that is about to be sent.
+     * Since the thread that requested to send the stanza(/packet) will invoke all interceptors, it
      * is important that interceptors perform their work as soon as possible so that the
      * thread does not remain blocked for a long period.
      * 
-     * @param packet the packet that is going to be sent to the server
+     * @param packet the stanza(/packet) that is going to be sent to the server
      */
     private void firePacketInterceptors(Stanza packet) {
         List<StanzaListener> interceptorsToInvoke = new LinkedList<StanzaListener>();
@@ -962,11 +962,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * Processes a packet after it's been fully parsed by looping through the installed
-     * packet collectors and listeners and letting them examine the packet to see if
+     * Processes a stanza(/packet) after it's been fully parsed by looping through the installed
+     * stanza(/packet) collectors and listeners and letting them examine the stanza(/packet) to see if
      * they are a match with the filter.
      *
-     * @param packet the packet to process.
+     * @param packet the stanza(/packet) to process.
      */
     protected void processPacket(Stanza packet) {
         assert(packet != null);
@@ -976,7 +976,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * A runnable to notify all listeners and packet collectors of a packet.
+     * A runnable to notify all listeners and stanza(/packet) collectors of a packet.
      */
     private class ListenerNotification implements Runnable {
 
@@ -993,9 +993,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     /**
      * Invoke {@link PacketCollector#processPacket(Stanza)} for every
-     * PacketCollector with the given packet. Also notify the receive listeners with a matching packet filter about the packet.
+     * PacketCollector with the given packet. Also notify the receive listeners with a matching stanza(/packet) filter about the packet.
      *
-     * @param packet the packet to notify the PacketCollectors and receive listeners about.
+     * @param packet the stanza(/packet) to notify the PacketCollectors and receive listeners about.
      */
     protected void invokePacketCollectorsAndNotifyRecvListeners(final Stanza packet) {
         if (packet instanceof IQ) {
@@ -1210,7 +1210,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * A wrapper class to associate a packet filter with a listener.
+     * A wrapper class to associate a stanza(/packet) filter with a listener.
      */
     protected static class ListenerWrapper {
 
@@ -1218,9 +1218,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         private final StanzaFilter packetFilter;
 
         /**
-         * Create a class which associates a packet filter with a listener.
+         * Create a class which associates a stanza(/packet) filter with a listener.
          * 
-         * @param packetListener the packet listener.
+         * @param packetListener the stanza(/packet) listener.
          * @param packetFilter the associated filter or null if it listen for all packets.
          */
         public ListenerWrapper(StanzaListener packetListener, StanzaFilter packetFilter) {
@@ -1238,7 +1238,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * A wrapper class to associate a packet filter with an interceptor.
+     * A wrapper class to associate a stanza(/packet) filter with an interceptor.
      */
     protected static class InterceptorWrapper {
 
@@ -1246,7 +1246,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         private final StanzaFilter packetFilter;
 
         /**
-         * Create a class which associates a packet filter with an interceptor.
+         * Create a class which associates a stanza(/packet) filter with an interceptor.
          * 
          * @param packetInterceptor the interceptor.
          * @param packetFilter the associated filter or null if it intercepts all packets.

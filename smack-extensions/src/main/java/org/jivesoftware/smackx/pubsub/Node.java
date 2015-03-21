@@ -153,7 +153,7 @@ abstract public class Node
      * Get the subscriptions currently associated with this node.
      * <p>
      * {@code additionalExtensions} can be used e.g. to add a "Result Set Management" extension.
-     * {@code returnedExtensions} will be filled with the packet extensions found in the answer.
+     * {@code returnedExtensions} will be filled with the stanza(/packet) extensions found in the answer.
      * </p>
      *
      * @param additionalExtensions
@@ -193,11 +193,11 @@ abstract public class Node
      * </p>
      * <p>
      * {@code additionalExtensions} can be used e.g. to add a "Result Set Management" extension.
-     * {@code returnedExtensions} will be filled with the packet extensions found in the answer.
+     * {@code returnedExtensions} will be filled with the stanza(/packet) extensions found in the answer.
      * </p>
      *
      * @param additionalExtensions
-     * @param returnedExtensions a collection that will be filled with the returned packet extensions
+     * @param returnedExtensions a collection that will be filled with the returned stanza(/packet) extensions
      * @return List of {@link Subscription}
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -246,7 +246,7 @@ abstract public class Node
      * Get the affiliations of this node.
      * <p>
      * {@code additionalExtensions} can be used e.g. to add a "Result Set Management" extension.
-     * {@code returnedExtensions} will be filled with the packet extensions found in the answer.
+     * {@code returnedExtensions} will be filled with the stanza(/packet) extensions found in the answer.
      * </p>
      *
      * @param additionalExtensions additional {@code PacketExtensions} add to the request

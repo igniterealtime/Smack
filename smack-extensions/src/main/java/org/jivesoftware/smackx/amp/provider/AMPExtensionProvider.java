@@ -32,7 +32,7 @@ public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension>
     private static final Logger LOGGER = Logger.getLogger(AMPExtensionProvider.class.getName());
 
     /**
-     * Parses a AMPExtension packet (extension sub-packet).
+     * Parses a AMPExtension stanza(/packet) (extension sub-packet).
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.

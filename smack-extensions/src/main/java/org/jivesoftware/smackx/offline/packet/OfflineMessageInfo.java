@@ -40,7 +40,7 @@ public class OfflineMessageInfo implements ExtensionElement {
     * Returns the XML element name of the extension sub-packet root element.
     * Always returns "offline"
     *
-    * @return the XML element name of the packet extension.
+    * @return the XML element name of the stanza(/packet) extension.
     */
     public String getElementName() {
         return "offline";
@@ -50,7 +50,7 @@ public class OfflineMessageInfo implements ExtensionElement {
      * Returns the XML namespace of the extension sub-packet root element.
      * According the specification the namespace is always "http://jabber.org/protocol/offline"
      *
-     * @return the XML namespace of the packet extension.
+     * @return the XML namespace of the stanza(/packet) extension.
      */
     public String getNamespace() {
         return "http://jabber.org/protocol/offline";
@@ -91,7 +91,7 @@ public class OfflineMessageInfo implements ExtensionElement {
     public static class Provider extends ExtensionElementProvider<OfflineMessageInfo> {
 
         /**
-         * Parses a OfflineMessageInfo packet (extension sub-packet).
+         * Parses a OfflineMessageInfo stanza(/packet) (extension sub-packet).
          *
          * @param parser the XML parser, positioned at the starting element of the extension.
          * @return a PacketExtension.

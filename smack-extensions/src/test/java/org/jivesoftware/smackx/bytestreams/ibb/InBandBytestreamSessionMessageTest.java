@@ -244,7 +244,7 @@ public class InBandBytestreamSessionMessageTest {
     }
 
     /**
-     * If a data packet is received out of order the session should be closed. See XEP-0047 Section
+     * If a data stanza(/packet) is received out of order the session should be closed. See XEP-0047 Section
      * 2.2.
      * 
      * @throws Exception should not happen

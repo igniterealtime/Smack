@@ -38,7 +38,7 @@ import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Private;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 /**
- * Packet extension for XEP-0280: Message Carbons. This class implements
+ * Stanza(/Packet) extension for XEP-0280: Message Carbons. This class implements
  * the manager for registering {@link CarbonExtension} support, enabling and disabling
  * message carbons.
  *

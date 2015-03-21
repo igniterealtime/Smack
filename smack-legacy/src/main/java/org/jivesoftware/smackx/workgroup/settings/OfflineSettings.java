@@ -87,12 +87,12 @@ public class OfflineSettings extends SimpleIQ {
     }
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "offline-settings";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
@@ -101,7 +101,7 @@ public class OfflineSettings extends SimpleIQ {
     }
 
     /**
-     * Packet extension provider for AgentStatusRequest packets.
+     * Stanza(/Packet) extension provider for AgentStatusRequest packets.
      */
     public static class InternalProvider extends IQProvider<OfflineSettings> {
 

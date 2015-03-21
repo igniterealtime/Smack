@@ -25,7 +25,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Parses an In-Band Bytestream data packet which can be a packet extension of
+ * Parses an In-Band Bytestream data stanza(/packet) which can be a stanza(/packet) extension of
  * either an IQ stanza or a message stanza.
  * 
  * @author Henning Staib

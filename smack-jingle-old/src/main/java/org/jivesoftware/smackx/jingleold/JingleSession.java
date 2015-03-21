@@ -266,14 +266,14 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
     /**
      * Process and respond to an incoming packet. <p/> This method is called
-     * from the packet listener dispatcher when a new packet has arrived. The
-     * method is responsible for recognizing the packet type and, depending on
+     * from the stanza(/packet) listener dispatcher when a new stanza(/packet) has arrived. The
+     * method is responsible for recognizing the stanza(/packet) type and, depending on
      * the current state, delivering it to the right event handler and wait for
-     * a response. The response will be another Jingle packet that will be sent
+     * a response. The response will be another Jingle stanza(/packet) that will be sent
      * to the other end point.
      * 
      * @param iq
-     *            the packet received
+     *            the stanza(/packet) received
      * @throws XMPPException
      * @throws SmackException 
      */
@@ -336,12 +336,12 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
     /**
      * Dispatch an incoming packet. The method is responsible for recognizing
-     * the packet type and, depending on the current state, delivering the
-     * packet to the right event handler and wait for a response.
+     * the stanza(/packet) type and, depending on the current state, delivering the
+     * stanza(/packet) to the right event handler and wait for a response.
      * 
      * @param iq
-     *            the packet received
-     * @return the new Jingle packet to send.
+     *            the stanza(/packet) received
+     * @return the new Jingle stanza(/packet) to send.
      * @throws XMPPException
      * @throws SmackException 
      */
@@ -414,7 +414,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * reponse, using the session information we have.
      * 
      * @param jout
-     *            the Jingle packet we want to complete and send
+     *            the Jingle stanza(/packet) we want to complete and send
      * @throws NotConnectedException 
      */
     public Jingle sendFormattedJingle(Jingle jout) throws NotConnectedException {
@@ -427,9 +427,9 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * incoming packet.
      * 
      * @param iq
-     *            The Jingle packet we are responing to
+     *            The Jingle stanza(/packet) we are responing to
      * @param jout
-     *            the Jingle packet we want to complete and send
+     *            the Jingle stanza(/packet) we want to complete and send
      * @throws NotConnectedException 
      */
     public Jingle sendFormattedJingle(IQ iq, Jingle jout) throws NotConnectedException {
@@ -647,7 +647,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Remove the packet listener used for processing packet.
+     * Remove the stanza(/packet) listener used for processing packet.
      */
     protected void removeAsyncPacketListener() {
         if (packetListener != null) {
@@ -658,8 +658,8 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Install the packet listener. The listener is responsible for responding
-     * to any packet that we receive...
+     * Install the stanza(/packet) listener. The listener is responsible for responding
+     * to any stanza(/packet) that we receive...
      */
     protected void updatePacketListener() {
         removeAsyncPacketListener();
@@ -1017,9 +1017,9 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * incoming packet.
      * 
      * @param iq
-     *            The Jingle packet we are responing to
+     *            The Jingle stanza(/packet) we are responing to
      * @param jingleError
-     *            the IQ packet we want to complete and send
+     *            the IQ stanza(/packet) we want to complete and send
      */
     public IQ createJingleError(IQ iq, JingleError jingleError) {
         IQ errorPacket = null;
@@ -1124,7 +1124,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
     /**
      * When we initiate a session we need to start a bunch of negotiators right after we receive the result
-     * packet for our session-initiate.  This is where we start them.
+     * stanza(/packet) for our session-initiate.  This is where we start them.
      * 
      */
     private void startNegotiators() {

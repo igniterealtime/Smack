@@ -36,7 +36,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * STUN IQ Packet used to request and retrieve a STUN server and port to make p2p connections easier. STUN is usually used by Jingle Media Transmission between two parties that are behind NAT.
+ * STUN IQ Stanza(/Packet) used to request and retrieve a STUN server and port to make p2p connections easier. STUN is usually used by Jingle Media Transmission between two parties that are behind NAT.
  * <p/>
  * High Level Usage Example:
  * <p/>
@@ -53,17 +53,17 @@ public class STUN extends SimpleIQ {
     private String publicIp = null;
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String DOMAIN = "stun";
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "query";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "google:jingleinfo";
 
@@ -107,7 +107,7 @@ public class STUN extends SimpleIQ {
 
     /**
      * IQProvider for RTP Bridge packets.
-     * Parse receive RTPBridge packet to a RTPBridge instance
+     * Parse receive RTPBridge stanza(/packet) to a RTPBridge instance
      *
      * @author Thiago Rocha
      */

@@ -35,12 +35,12 @@ import java.util.List;
 public class AgentChatHistory extends IQ {
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "chat-sessions";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
@@ -86,7 +86,7 @@ public class AgentChatHistory extends IQ {
     }
 
     /**
-     * Packet extension provider for AgentHistory packets.
+     * Stanza(/Packet) extension provider for AgentHistory packets.
      */
     public static class InternalProvider extends IQProvider<AgentChatHistory> {
 

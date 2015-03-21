@@ -58,12 +58,12 @@ public class SearchSettings extends SimpleIQ {
 
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "search-settings";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
@@ -72,7 +72,7 @@ public class SearchSettings extends SimpleIQ {
     }
 
     /**
-     * Packet extension provider for AgentStatusRequest packets.
+     * Stanza(/Packet) extension provider for AgentStatusRequest packets.
      */
     public static class InternalProvider extends IQProvider<SearchSettings> {
 

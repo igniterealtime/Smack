@@ -543,7 +543,7 @@ public class Workgroup {
     }
 
     /**
-     * IQ packet to request joining the workgroup queue.
+     * IQ stanza(/packet) to request joining the workgroup queue.
      */
     private class JoinQueuePacket extends IQ {
 

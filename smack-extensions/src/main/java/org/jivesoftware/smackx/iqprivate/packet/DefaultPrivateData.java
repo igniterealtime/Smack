@@ -64,7 +64,7 @@ public class DefaultPrivateData implements PrivateData {
      /**
      * Returns the XML element name of the private data sub-packet root element.
      *
-     * @return the XML element name of the packet extension.
+     * @return the XML element name of the stanza(/packet) extension.
      */
     public String getElementName() {
         return elementName;
@@ -73,7 +73,7 @@ public class DefaultPrivateData implements PrivateData {
     /**
      * Returns the XML namespace of the private data sub-packet root element.
      *
-     * @return the XML namespace of the packet extension.
+     * @return the XML namespace of the stanza(/packet) extension.
      */
     public String getNamespace() {
         return namespace;

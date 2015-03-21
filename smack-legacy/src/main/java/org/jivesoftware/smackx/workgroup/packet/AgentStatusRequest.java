@@ -29,8 +29,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Agent status request packet. This packet is used by agents to request the list of
- * agents in a workgroup. The response packet contains a list of packets. Presence
+ * Agent status request packet. This stanza(/packet) is used by agents to request the list of
+ * agents in a workgroup. The response stanza(/packet) contains a list of packets. Presence
  * packets from individual agents follow.
  *
  * @author Matt Tucker
@@ -38,12 +38,12 @@ import java.util.Set;
 public class AgentStatusRequest extends IQ {
 
      /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "agent-status-request";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
@@ -114,7 +114,7 @@ public class AgentStatusRequest extends IQ {
     }
 
     /**
-     * Packet extension provider for AgentStatusRequest packets.
+     * Stanza(/Packet) extension provider for AgentStatusRequest packets.
      */
     public static class Provider extends IQProvider<AgentStatusRequest> {
 

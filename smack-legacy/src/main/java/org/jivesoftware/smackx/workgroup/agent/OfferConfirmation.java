@@ -95,7 +95,7 @@ public class OfferConfirmation extends SimpleIQ {
 
 
     /**
-     * Packet for notifying server of RoomName
+     * Stanza(/Packet) for notifying server of RoomName
      */
     private class NotifyServicePacket extends IQ {
         String roomName;

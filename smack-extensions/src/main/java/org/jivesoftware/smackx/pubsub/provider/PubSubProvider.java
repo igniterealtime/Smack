@@ -28,7 +28,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Parses the root pubsub packet extensions of the {@link IQ} packet and returns
+ * Parses the root pubsub stanza(/packet) extensions of the {@link IQ} stanza(/packet) and returns
  * a {@link PubSub} instance.
  * 
  * @author Robin Collier
