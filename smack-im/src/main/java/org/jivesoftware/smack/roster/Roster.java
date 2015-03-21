@@ -458,7 +458,6 @@ public class Roster extends Manager {
      * @param name   the nickname of the user.
      * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
      *               the roster entry won't belong to a group.
-     * @param approved the pre-approval state.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
      * @throws NotLoggedInException If not logged in.
@@ -502,7 +501,6 @@ public class Roster extends Manager {
      * @param name   the nickname of the user.
      * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
      *               the roster entry won't belong to a group.
-     * @param approved the pre-approval state.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
      * @throws NotLoggedInException if not logged in.

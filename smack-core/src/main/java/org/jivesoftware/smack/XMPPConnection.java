@@ -32,7 +32,7 @@ import org.jxmpp.jid.FullJid;
 /**
  * The XMPPConnection interface provides an interface for connections to an XMPP server and
  * implements shared methods which are used by the different types of connections (e.g.
- * {@link XMPPTCPConnection} or {@link XMPPBOSHConnection}). To create a connection to an XMPP server
+ * <code>XMPPTCPConnection</code> or <code>XMPPBOSHConnection</code>). To create a connection to an XMPP server
  * a simple usage of this API might look like the following:
  * <p>
  * 
@@ -70,7 +70,6 @@ import org.jxmpp.jid.FullJid;
  * @author Matt Tucker
  * @author Guenther Niess
  */
-@SuppressWarnings("javadoc")
 public interface XMPPConnection {
 
     /**

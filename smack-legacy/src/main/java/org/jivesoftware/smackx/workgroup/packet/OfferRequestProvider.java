@@ -85,13 +85,13 @@ public class OfferRequestProvider extends IQProvider<IQ> {
                 }
                 else if (RoomInvitation.ELEMENT_NAME.equals(elemName)) {
                     RoomInvitation invitation = (RoomInvitation) PacketParserUtils
-                            .parsePacketExtension(RoomInvitation.ELEMENT_NAME, RoomInvitation.NAMESPACE, parser);
+                            .parseExtensionElement(RoomInvitation.ELEMENT_NAME, RoomInvitation.NAMESPACE, parser);
                     content = new InvitationRequest(invitation.getInviter(), invitation.getRoom(),
                             invitation.getReason());
                 }
                 else if (RoomTransfer.ELEMENT_NAME.equals(elemName)) {
                     RoomTransfer transfer = (RoomTransfer) PacketParserUtils
-                            .parsePacketExtension(RoomTransfer.ELEMENT_NAME, RoomTransfer.NAMESPACE, parser);
+                            .parseExtensionElement(RoomTransfer.ELEMENT_NAME, RoomTransfer.NAMESPACE, parser);
                     content = new TransferRequest(transfer.getInviter(), transfer.getRoom(), transfer.getReason());
                 }
             }

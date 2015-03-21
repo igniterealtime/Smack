@@ -64,6 +64,10 @@ allprojects {
 			':smack-extensions',
 			':smack-experimental',
 		].collect{ project(it) }
+		androidBootClasspathProjects = [
+			':smack-android',
+			':smack-android-extensions',
+		].collect{ project(it) }
 		androidBootClasspath = getAndroidRuntimeJar()
 		androidJavadocOffline = getAndroidJavadocOffline()
 		junitVersion = '4.11'
@@ -114,12 +118,6 @@ allprojects {
 		options.encoding = "utf8"
 	}
 
-	if (JavaVersion.current().isJava8Compatible()) {
-		tasks.withType(Javadoc) {
-			options.addStringOption('Xdoclint:none', '-quiet')
-		}
-	}
-
 	jacoco {
 		toolVersion = "0.7.4.201502262128"
 	}
@@ -155,9 +153,13 @@ task javadocAll(type: Javadoc) {
 	// Might need a classpath
 	classpath = files(subprojects.collect {project ->
 		project.sourceSets.main.compileClasspath})
+	classpath += files(androidBootClasspath)
 	options.linkSource = true
 	options.use = true
-	options.links = ["http://docs.oracle.com/javase/$sourceCompatibility/docs/api/"] as String[]
+	options.links = [
+		"http://docs.oracle.com/javase/$sourceCompatibility/docs/api/",
+		"http://jxmpp.org/$jxmppVersion/javadoc/",
+		] as String[]
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
@@ -326,6 +328,15 @@ subprojects*.jar {
    manifest {
        from sharedManifest
    }
+}
+
+configure(androidBootClasspathProjects) {
+	compileJava {
+		options.bootClasspath = androidBootClasspath
+	}
+	javadoc {
+		classpath += files(androidBootClasspath)
+	}
 }
 
 apply plugin: "com.github.kt3k.coveralls"
