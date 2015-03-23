@@ -988,7 +988,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             if ("jabber:client".equals(parser.getNamespace(null))) {
                                 streamId = parser.getAttributeValue("", "id");
                                 String reportedServiceName = parser.getAttributeValue("", "from");
-                                assert(reportedServiceName.equals(config.getServiceName()));
+                                assert(config.getServiceName().equals(reportedServiceName));
                             }
                             break;
                         case "error":
