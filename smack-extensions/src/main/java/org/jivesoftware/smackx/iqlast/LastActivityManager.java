@@ -145,6 +145,7 @@ public class LastActivityManager extends Manager {
                     // We assume that only a switch to available and chat indicates user activity
                     // since other mode changes could be also a result of some sort of automatism
                     resetIdleTime();
+                    break;
                 default:
                     break;
                 }

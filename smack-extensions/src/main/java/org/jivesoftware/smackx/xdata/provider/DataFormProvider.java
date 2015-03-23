@@ -132,6 +132,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                     }
                     break;
                 }
+                break;
             case XmlPullParser.END_TAG:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;

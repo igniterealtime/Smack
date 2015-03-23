@@ -1070,6 +1070,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     // desired behavior.
                     return;
                 }
+                break;
             default:
                 break;
             }
