@@ -118,6 +118,7 @@ allprojects {
 		options.encoding = "utf8"
 		options.compilerArgs = [
 			'-Xlint:all',
+			'-Werror',
 		]
 	}
 

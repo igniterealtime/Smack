@@ -31,7 +31,7 @@ public class Java7SmackInitializer implements SmackInitializer {
 
     @Override
     public List<Exception> initialize() {
-        SmackConfiguration.setDefaultHostnameVerifier(new Java7HostnameVerifier());
+        SmackConfiguration.setDefaultHostnameVerifier(new XmppHostnameVerifier());
         Base64.setEncoder(Java7Base64Encoder.getInstance());
         Base64UrlSafeEncoder.setEncoder(Java7Base64UrlSafeEncoder.getInstance());
         DNSUtil.setIdnaTransformer(new StringTransformer() {
