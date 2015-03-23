@@ -620,7 +620,7 @@ public class AdHocCommandManager extends Manager {
         AdHocCommandInfo commandInfo = commands.get(commandNode);
         LocalCommand command;
         try {
-            command = (LocalCommand) commandInfo.getCommandInstance();
+            command = commandInfo.getCommandInstance();
             command.setSessionID(sessionID);
             command.setName(commandInfo.getName());
             command.setNode(commandInfo.getNode());

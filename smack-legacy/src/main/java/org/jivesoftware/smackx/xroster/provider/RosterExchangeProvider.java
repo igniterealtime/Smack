@@ -70,7 +70,7 @@ public class RosterExchangeProvider extends ExtensionElementProvider<RosterExcha
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("item")) {
 					// Create packet.
-					remoteRosterEntry = new RemoteRosterEntry(jid, name, (String[]) groupsName.toArray(new String[groupsName.size()]));
+					remoteRosterEntry = new RemoteRosterEntry(jid, name, groupsName.toArray(new String[groupsName.size()]));
                     rosterExchange.addRosterEntry(remoteRosterEntry);
                 }
                 if (parser.getName().equals("x")) {

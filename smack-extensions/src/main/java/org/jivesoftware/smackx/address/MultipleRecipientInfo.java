@@ -68,7 +68,7 @@ public class MultipleRecipientInfo {
     // TODO should return BareJid
     public Jid getReplyRoom() {
         List<MultipleAddresses.Address> replyRoom = extension.getAddressesOfType(MultipleAddresses.Type.replyroom);
-        return replyRoom.isEmpty() ? null : ((MultipleAddresses.Address) replyRoom.get(0)).getJid();
+        return replyRoom.isEmpty() ? null : replyRoom.get(0).getJid();
     }
 
     /**
@@ -92,6 +92,6 @@ public class MultipleRecipientInfo {
      */
     public MultipleAddresses.Address getReplyAddress() {
         List<MultipleAddresses.Address> replyTo = extension.getAddressesOfType(MultipleAddresses.Type.replyto);
-        return replyTo.isEmpty() ? null : (MultipleAddresses.Address) replyTo.get(0);
+        return replyTo.isEmpty() ? null : replyTo.get(0);
     }
 }

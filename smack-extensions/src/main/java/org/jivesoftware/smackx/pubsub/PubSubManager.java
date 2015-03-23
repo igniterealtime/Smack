@@ -170,8 +170,7 @@ final public class PubSubManager
 	 * @throws NotConnectedException 
 	 * @throws InterruptedException 
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends Node> T getNode(String id) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
+    public <T extends Node> T getNode(String id) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		Node node = nodeMap.get(id);
 
@@ -203,7 +202,9 @@ final public class PubSubManager
 			node.setTo(to);
 			nodeMap.put(id, node);
 		}
-		return (T) node;
+		@SuppressWarnings("unchecked")
+		T res = (T) node;
+		return res;
 	}
 
 	/**

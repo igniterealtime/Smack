@@ -98,7 +98,7 @@ public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension>
         return ampExtension;
     }
 
-    private AMPExtension.Condition createCondition(String name, String value) {
+    private static AMPExtension.Condition createCondition(String name, String value) {
         if (name == null || value == null) {
             LOGGER.severe("Can't create rule condition from null name and/or value");
             return null;

@@ -126,7 +126,7 @@ public class FileTransferManager extends Manager {
         }
 
 		return new OutgoingFileTransfer(connection().getUser(), userID,
-				fileTransferNegotiator.getNextStreamID(),
+				FileTransferNegotiator.getNextStreamID(),
 				fileTransferNegotiator);
 	}
 

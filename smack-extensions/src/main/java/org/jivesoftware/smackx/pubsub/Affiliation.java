@@ -82,7 +82,7 @@ public class Affiliation implements ExtensionElement
 		return builder.toString();
 	}
 
-	private void appendAttribute(StringBuilder builder, String att, String value)
+	private static void appendAttribute(StringBuilder builder, String att, String value)
 	{
 		builder.append(" ");
 		builder.append(att);

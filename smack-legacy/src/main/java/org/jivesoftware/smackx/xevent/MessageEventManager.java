@@ -174,7 +174,7 @@ public class MessageEventManager extends Manager {
             Method method =
                 MessageEventRequestListener.class.getDeclaredMethod(
                     methodName,
-                    new Class[] { String.class, String.class, MessageEventManager.class });
+                    new Class<?>[] { String.class, String.class, MessageEventManager.class });
             for (MessageEventRequestListener listener : messageEventRequestListeners) {
                 method.invoke(listener, new Object[] { from, packetID, this });
             }
@@ -194,7 +194,7 @@ public class MessageEventManager extends Manager {
             Method method =
                 MessageEventNotificationListener.class.getDeclaredMethod(
                     methodName,
-                    new Class[] { String.class, String.class });
+                    new Class<?>[] { String.class, String.class });
             for (MessageEventNotificationListener listener : messageEventNotificationListeners) {
                 method.invoke(listener, new Object[] { from, packetID });
             }

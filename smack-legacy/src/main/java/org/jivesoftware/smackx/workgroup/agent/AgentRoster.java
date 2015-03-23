@@ -217,7 +217,7 @@ public class AgentRoster {
             Presence presence = null;
 
             while (it.hasNext()) {
-                p = (Presence)userPresences.get(it.next());
+                p = userPresences.get(it.next());
                 if (presence == null){
                     presence = p;
                 }
@@ -346,7 +346,7 @@ public class AgentRoster {
                 // Fire an event.
                 synchronized (entries) {
                     for (Iterator<String> i = entries.iterator(); i.hasNext();) {
-                        String entry = (String)i.next();
+                        String entry = i.next();
                         if (entry.equals(key.asBareJidIfPossible())) {
                             fireEvent(EVENT_PRESENCE_CHANGED, packet);
                         }

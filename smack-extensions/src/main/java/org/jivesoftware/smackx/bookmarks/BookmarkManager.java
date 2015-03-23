@@ -63,7 +63,7 @@ public class BookmarkManager {
     public synchronized static BookmarkManager getBookmarkManager(XMPPConnection connection)
                     throws XMPPException, SmackException
     {
-        BookmarkManager manager = (BookmarkManager) bookmarkManagerMap.get(connection);
+        BookmarkManager manager = bookmarkManagerMap.get(connection);
         if (manager == null) {
             manager = new BookmarkManager(connection);
         }

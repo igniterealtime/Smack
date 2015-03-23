@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.muc.packet;
 
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.muc.MUCAffiliation;
 import org.jivesoftware.smackx.muc.MUCRole;
@@ -30,7 +30,7 @@ import org.jxmpp.jid.parts.Resourcepart;
  * @author Gaston Dombiak
  */
 public class MUCItem implements NamedElement {
-    public static final String ELEMENT = IQ.ITEM;
+    public static final String ELEMENT = Stanza.ITEM;
 
     private final MUCAffiliation affiliation;
     private final MUCRole role;
@@ -156,7 +156,7 @@ public class MUCItem implements NamedElement {
         if (getActor() != null) {
             xml.halfOpenElement("actor").attribute("jid", getActor()).closeEmptyElement();
         }
-        xml.closeElement(IQ.ITEM);
+        xml.closeElement(Stanza.ITEM);
         return xml;
     }
 

@@ -133,7 +133,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *
      * @param bestLocalCandidate the acceptedLocalCandidate to set
      */
-    private void setAcceptedLocalCandidate(TransportCandidate bestLocalCandidate) throws XMPPException {
+    private void setAcceptedLocalCandidate(TransportCandidate bestLocalCandidate) {
         for (int i = 0; i < resolver.getCandidateCount(); i++) {
             //TODO FIX The EQUAL Sentence
             if (resolver.getCandidate(i).getIp().equals(bestLocalCandidate.getIp())
@@ -708,7 +708,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *  @param jingleTransport
      *  @return the iq
      */
-    private IQ receiveTransportInfoAction(Jingle jingle) throws XMPPException {
+    private IQ receiveTransportInfoAction(Jingle jingle) {
         IQ response = null;
 
         // Parse the Jingle and get any proposed transport candidates
@@ -755,7 +755,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 LOGGER.fine("Remote acccepted candidate addr: " + cand.getIp());
             }
 
-            TransportCandidate cand = (TransportCandidate) accepted.get(0);
+            TransportCandidate cand = accepted.get(0);
             setAcceptedLocalCandidate(cand);
 
             if (isEstablished()) {
@@ -770,7 +770,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *  @param jingle
      *  @return the iq
      */
-    private IQ receiveSessionAcceptAction(Jingle jingle) {
+    private static IQ receiveSessionAcceptAction(Jingle jingle) {
         IQ response = null;
 
         LOGGER.fine("Transport stabilished");
@@ -855,7 +855,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             ArrayList<TransportCandidate> cands = getValidRemoteCandidatesList();
             if (!cands.isEmpty()) {
                 LOGGER.fine("RAW CAND");
-                return (TransportCandidate) cands.get(0);
+                return cands.get(0);
             } else {
                 LOGGER.fine("No Remote Candidate");
                 return null;

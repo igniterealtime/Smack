@@ -175,6 +175,7 @@ public class STUN extends SimpleIQ {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @SuppressWarnings("deprecation")
     public static STUN getSTUNServer(XMPPConnection connection) throws NotConnectedException, InterruptedException {
 
         if (!connection.isConnected()) {

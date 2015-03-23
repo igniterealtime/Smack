@@ -214,7 +214,7 @@ public class FileTransferNegotiator extends Manager {
         return selectedStreamNegotiator;
     }
 
-    private FormField getStreamMethodField(DataForm form) {
+    private static FormField getStreamMethodField(DataForm form) {
         for (FormField field : form.getFields()) {
             if (field.getVariable().equals(STREAM_DATA_FIELD_NAME)) {
                 return field;
@@ -260,7 +260,7 @@ public class FileTransferNegotiator extends Manager {
      *
      * @return Returns a new, unique, stream ID to identify a file transfer.
      */
-    public String getNextStreamID() {
+    public static String getNextStreamID() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(STREAM_INIT_PREFIX);
         buffer.append(Math.abs(randomGenerator.nextLong()));
@@ -368,7 +368,7 @@ public class FileTransferNegotiator extends Manager {
         }
     }
 
-    private DataForm createDefaultInitiationForm() {
+    private static DataForm createDefaultInitiationForm() {
         DataForm form = new DataForm(DataForm.Type.form);
         FormField field = new FormField(STREAM_DATA_FIELD_NAME);
         field.setType(FormField.Type.list_single);

@@ -102,7 +102,7 @@ public class AgentStatus implements ExtensionElement {
         if (!currentChats.isEmpty()) {
             buf.append("<current-chats xmlns= \"http://jivesoftware.com/protocol/workgroup\">");
             for (Iterator<ChatInfo> it = currentChats.iterator(); it.hasNext();) {
-                buf.append(((ChatInfo)it.next()).toXML());
+                buf.append(it.next().toXML());
             }
             buf.append("</current-chats>");
         }
@@ -251,7 +251,7 @@ public class AgentStatus implements ExtensionElement {
             return agentStatus;
         }
 
-        private ChatInfo parseChatInfo(XmlPullParser parser) {
+        private static ChatInfo parseChatInfo(XmlPullParser parser) {
 
             String sessionID = parser.getAttributeValue("", "sessionID");
             String userID = parser.getAttributeValue("", "userID");

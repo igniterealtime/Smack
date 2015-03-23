@@ -64,6 +64,7 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded> {
                 default:
                     LOGGER.warning("Unsupported forwarded packet type: " + name);
                 }
+                break;
             case XmlPullParser.END_TAG:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;

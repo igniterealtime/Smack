@@ -63,7 +63,7 @@ public class JingleProvider extends IQProvider<Jingle> {
         JingleDescriptionProvider jdpAudio = new JingleDescriptionProvider.Audio();
         JingleTransportProvider jtpRawUdp = new JingleTransportProvider.RawUdp();
         JingleTransportProvider jtpIce = new JingleTransportProvider.Ice();
-        ExtensionElementProvider jmipAudio = new JingleContentInfoProvider.Audio();
+        ExtensionElementProvider<?> jmipAudio = new JingleContentInfoProvider.Audio();
 
         int eventType;
         String elementName;
@@ -93,19 +93,19 @@ public class JingleProvider extends IQProvider<Jingle> {
 
                 if (elementName.equals(JingleContent.NODENAME)) {
                     // Add a new <content> element to the jingle
-                    currentContent = (JingleContent) jcp.parse(parser);
+                    currentContent = jcp.parse(parser);
                     jingle.addContent(currentContent);
                 } else if (elementName.equals(JingleDescription.NODENAME) && namespace.equals(JingleDescription.Audio.NAMESPACE)) {
                     // Set the <description> element of the <content>
-                    currentContent.setDescription((JingleDescription) jdpAudio.parse(parser));
+                    currentContent.setDescription(jdpAudio.parse(parser));
                 } else if (elementName.equals(JingleTransport.NODENAME)) {
                     // Add all of the <transport> elements to the <content> of the jingle
 
                     // Parse the possible transport namespaces
                     if (namespace.equals(JingleTransport.RawUdp.NAMESPACE)) {
-                        currentContent.addJingleTransport((JingleTransport) jtpRawUdp.parse(parser));
+                        currentContent.addJingleTransport(jtpRawUdp.parse(parser));
                     } else if (namespace.equals(JingleTransport.Ice.NAMESPACE)) {
-                        currentContent.addJingleTransport((JingleTransport) jtpIce.parse(parser));
+                        currentContent.addJingleTransport(jtpIce.parse(parser));
                     } else {
                         throw new SmackException("Unknown transport namespace \"" + namespace + "\" in Jingle packet.");
                     }

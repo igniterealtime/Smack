@@ -707,7 +707,7 @@ public class ConfigureForm extends Form
 		}
 	}
 
-	private List<String> getListSingle(String value)
+	private static List<String> getListSingle(String value)
 	{
 		List<String> list = new ArrayList<String>(1);
 		list.add(value);

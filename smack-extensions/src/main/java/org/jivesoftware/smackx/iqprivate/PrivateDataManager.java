@@ -99,7 +99,7 @@ public class PrivateDataManager extends Manager {
      */
     public static PrivateDataProvider getPrivateDataProvider(String elementName, String namespace) {
         String key = getProviderKey(elementName, namespace);
-        return (PrivateDataProvider)privateDataProviders.get(key);
+        return privateDataProviders.get(key);
     }
 
     /**

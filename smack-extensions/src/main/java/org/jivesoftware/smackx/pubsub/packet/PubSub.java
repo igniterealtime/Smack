@@ -52,6 +52,7 @@ public class PubSub extends IQ
     *
     * @return the XML element name of the packet extension.
     */
+    @SuppressWarnings("static-method")
     public String getElementName() {
         return ELEMENT;
     }

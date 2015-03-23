@@ -112,7 +112,7 @@ public class QueueDetails implements ExtensionElement {
 
         synchronized (users) {
             for (Iterator<QueueUser> i=users.iterator(); i.hasNext(); ) {
-                QueueUser user = (QueueUser)i.next();
+                QueueUser user = i.next();
                 int position = user.getQueuePosition();
                 int timeRemaining = user.getEstimatedRemainingTime();
                 Date timestamp = user.getQueueJoinTimestamp();

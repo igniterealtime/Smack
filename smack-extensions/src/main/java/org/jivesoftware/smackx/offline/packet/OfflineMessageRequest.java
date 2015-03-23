@@ -225,7 +225,7 @@ public class OfflineMessageRequest extends IQ {
             return request;
         }
 
-        private Item parseItem(XmlPullParser parser)
+        private static Item parseItem(XmlPullParser parser)
                         throws XmlPullParserException, IOException {
             boolean done = false;
             Item item = new Item(parser.getAttributeValue("", "node"));

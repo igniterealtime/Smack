@@ -125,7 +125,7 @@ public abstract class JingleDescription implements ExtensionElement {
         Iterator<PayloadType> jinglePtsIter = getPayloadTypes();
 
         while (jinglePtsIter.hasNext()) {
-            PayloadType jpt = (PayloadType) jinglePtsIter.next();
+            PayloadType jpt = jinglePtsIter.next();
             if (jpt instanceof PayloadType.Audio) {
                 PayloadType.Audio jpta = (PayloadType.Audio) jpt;
                 result.add(jpta);

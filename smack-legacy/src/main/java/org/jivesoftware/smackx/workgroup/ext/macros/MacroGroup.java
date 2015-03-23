@@ -51,7 +51,7 @@ public class MacroGroup {
         Collection<Macro> col = Collections.unmodifiableList(macros);
         Iterator<Macro> iter = col.iterator();
         while (iter.hasNext()) {
-            Macro macro = (Macro)iter.next();
+            Macro macro = iter.next();
             if (macro.getTitle().equalsIgnoreCase(title)) {
                 return macro;
             }
@@ -68,14 +68,14 @@ public class MacroGroup {
     }
 
     public Macro getMacro(int location) {
-        return (Macro)macros.get(location);
+        return macros.get(location);
     }
 
     public MacroGroup getMacroGroupByTitle(String title) {
         Collection<MacroGroup> col = Collections.unmodifiableList(macroGroups);
         Iterator<MacroGroup> iter = col.iterator();
         while (iter.hasNext()) {
-            MacroGroup group = (MacroGroup)iter.next();
+            MacroGroup group = iter.next();
             if (group.getTitle().equalsIgnoreCase(title)) {
                 return group;
             }
@@ -84,7 +84,7 @@ public class MacroGroup {
     }
 
     public MacroGroup getMacroGroup(int location) {
-        return (MacroGroup)macroGroups.get(location);
+        return macroGroups.get(location);
     }
 
 

@@ -54,7 +54,7 @@ public class CarbonTest extends ExperimentalInitializerTest {
             .asString(outputProperties);
 
         parser = PacketParserUtils.getParserFor(control);
-        cc = (CarbonExtension) new CarbonManagerProvider().parse(parser);
+        cc = new CarbonManagerProvider().parse(parser);
         fwd = cc.getForwarded();
 
         // meta
@@ -85,7 +85,7 @@ public class CarbonTest extends ExperimentalInitializerTest {
             .asString(outputProperties);
 
         parser = PacketParserUtils.getParserFor(control);
-        cc = (CarbonExtension) new CarbonManagerProvider().parse(parser);
+        cc = new CarbonManagerProvider().parse(parser);
 
         assertEquals(CarbonExtension.Direction.received, cc.getDirection());
 

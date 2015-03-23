@@ -484,8 +484,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return streamId;
     }
 
-    // TODO remove this suppression once "disable legacy session" code has been removed from Smack
-    @SuppressWarnings("deprecation")
     protected void bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
                     IOException, SmackException, InterruptedException {
 
@@ -517,7 +515,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         Session.Feature sessionFeature = getFeature(Session.ELEMENT, Session.NAMESPACE);
         // Only bind the session if it's announced as stream feature by the server, is not optional and not disabled
         // For more information see http://tools.ietf.org/html/draft-cridland-xmpp-session-01
-        if (sessionFeature != null && !sessionFeature.isOptional() && !getConfiguration().isLegacySessionDisabled()) {
+        // TODO remove this suppression once "disable legacy session" code has been removed from Smack
+        @SuppressWarnings("deprecation")
+        boolean legacySessionDisabled = getConfiguration().isLegacySessionDisabled();
+        if (sessionFeature != null && !sessionFeature.isOptional() && !legacySessionDisabled) {
             Session session = new Session();
             packetCollector = createPacketCollectorAndSend(new StanzaIdFilter(session), session);
             packetCollector.nextResultOrThrow();
@@ -1083,6 +1084,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     // desired behavior.
                     return;
                 }
+                break;
             default:
                 break;
             }

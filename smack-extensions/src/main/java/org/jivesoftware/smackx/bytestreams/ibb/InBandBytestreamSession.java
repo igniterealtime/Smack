@@ -295,7 +295,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             }
 
             // return byte and increment buffer pointer
-            return ((int) buffer[bufferPointer++]) & 0xff;
+            return buffer[bufferPointer++] & 0xff;
         }
 
         public synchronized int read(byte[] b, int off, int len) throws IOException {

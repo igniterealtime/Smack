@@ -392,6 +392,7 @@ public class RTPBridge extends IQ {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @SuppressWarnings("deprecation")
     public static RTPBridge getRTPBridge(XMPPConnection connection, String sessionID) throws NotConnectedException, InterruptedException {
 
         if (!connection.isConnected()) {
@@ -459,6 +460,7 @@ public class RTPBridge extends IQ {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @SuppressWarnings("deprecation")
     public static RTPBridge relaySession(XMPPConnection connection, String sessionID, String pass, TransportCandidate proxyCandidate, TransportCandidate localCandidate) throws NotConnectedException, InterruptedException {
 
         if (!connection.isConnected()) {
@@ -495,6 +497,7 @@ public class RTPBridge extends IQ {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @SuppressWarnings("deprecation")
     public static String getPublicIP(XMPPConnection xmppConnection) throws NotConnectedException, InterruptedException {
 
         if (!xmppConnection.isConnected()) {

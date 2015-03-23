@@ -482,7 +482,7 @@ public class InBandBytestreamManager implements BytestreamManager {
      * 
      * @return a new unique session ID
      */
-    private String getNextSessionID() {
+    private static String getNextSessionID() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(SESSION_ID_PREFIX);
         buffer.append(Math.abs(randomGenerator.nextLong()));

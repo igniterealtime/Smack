@@ -553,7 +553,7 @@ abstract public class Node
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
 // CHECKSTYLE:ON
 			ItemsExtension itemsElem = (ItemsExtension)event.getEvent();
-            ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), (List<Item>)itemsElem.getItems(), getSubscriptionIds(packet), DelayInformationManager.getDelayTimestamp(packet));
+            ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), itemsElem.getItems(), getSubscriptionIds(packet), DelayInformationManager.getDelayTimestamp(packet));
 			listener.handlePublishedItems(eventItems);
 		}
 	}

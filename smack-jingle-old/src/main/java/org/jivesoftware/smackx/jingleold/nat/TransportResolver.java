@@ -310,7 +310,7 @@ public abstract class TransportResolver {
         if (cands.size() > 0) {
             Collections.sort(cands);
             // Return the last candidate
-            result = (TransportCandidate) cands.get(cands.size() - 1);
+            result = cands.get(cands.size() - 1);
             LOGGER.fine("Result: " + result.getIp());
         }
 
@@ -352,7 +352,7 @@ public abstract class TransportResolver {
         TransportCandidate cand;
 
         synchronized (candidates) {
-            cand = (TransportCandidate) candidates.get(i);
+            cand = candidates.get(i);
         }
         return cand;
     }

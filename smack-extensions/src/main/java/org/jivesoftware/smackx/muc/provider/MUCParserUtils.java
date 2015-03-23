@@ -51,6 +51,7 @@ public class MUCParserUtils {
                     reason = parser.nextText();
                     break;
                 }
+                break;
             case XmlPullParser.END_TAG:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;

@@ -392,7 +392,7 @@ public class EntityCapsManager extends Manager {
         return entityCapsEnabled;
     }
 
-    public void setEntityNode(String entityNode) throws NotConnectedException {
+    public void setEntityNode(String entityNode) {
         this.entityNode = entityNode;
         updateLocalEntityCaps();
     }
@@ -403,7 +403,7 @@ public class EntityCapsManager extends Manager {
      * @param user
      *            the user (Full JID)
      */
-    public void removeUserCapsNode(String user) {
+    public static void removeUserCapsNode(String user) {
         JID_TO_NODEVER_CACHE.remove(user);
     }
 

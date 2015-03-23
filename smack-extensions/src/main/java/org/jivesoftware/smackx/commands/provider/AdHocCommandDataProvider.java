@@ -25,7 +25,6 @@ import org.jivesoftware.smackx.commands.AdHocCommand;
 import org.jivesoftware.smackx.commands.AdHocCommand.Action;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.commands.AdHocCommandNote;
-import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -93,7 +92,7 @@ public class AdHocCommandDataProvider extends IQProvider<AdHocCommandData> {
                     adHocCommandData.addAction(AdHocCommand.Action.prev);
                 }
                 else if (elementName.equals("x") && namespace.equals("jabber:x:data")) {
-                    adHocCommandData.setForm((DataForm) dataFormProvider.parse(parser));
+                    adHocCommandData.setForm(dataFormProvider.parse(parser));
                 }
                 else if (parser.getName().equals("note")) {
                     AdHocCommandNote.Type type = AdHocCommandNote.Type.valueOf(

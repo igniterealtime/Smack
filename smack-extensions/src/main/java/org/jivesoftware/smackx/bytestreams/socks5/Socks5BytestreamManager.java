@@ -626,7 +626,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * @param proxy the proxy to query
      * @return IQ packet to query a SOCKS5 proxy its network settings
      */
-    private Bytestream createStreamHostRequest(Jid proxy) {
+    private static Bytestream createStreamHostRequest(Jid proxy) {
         Bytestream request = new Bytestream();
         request.setType(IQ.Type.get);
         request.setTo(proxy);
@@ -681,7 +681,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * @param streamHosts a list of SOCKS5 proxies the target should connect to
      * @return a SOCKS5 Bytestream initialization request packet
      */
-    private Bytestream createBytestreamInitiation(String sessionID, Jid targetJID,
+    private static Bytestream createBytestreamInitiation(String sessionID, Jid targetJID,
                     List<StreamHost> streamHosts) {
         Bytestream initiation = new Bytestream(sessionID);
 
@@ -738,7 +738,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * 
      * @return a new unique session ID
      */
-    private String getNextSessionID() {
+    private static String getNextSessionID() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(SESSION_ID_PREFIX);
         buffer.append(Math.abs(randomGenerator.nextLong()));
