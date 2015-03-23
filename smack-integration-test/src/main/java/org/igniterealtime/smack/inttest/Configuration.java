@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -64,7 +65,8 @@ public class Configuration {
                     boolean debug, String accountOneUsername, String accountOnePassword, String accountTwoUsername,
                     String accountTwoPassword, Set<String> enabledTests, Set<String> disabledTests,
                     Set<String> testPackages) {
-        this.service = service;
+        this.service = Objects.requireNonNull(service,
+                        "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
         this.serviceTlsPin = serviceTlsPin;
         this.securityMode = securityMode;
         this.replyTimeout = replyTimeout;
@@ -214,11 +216,13 @@ public class Configuration {
     private static final String SINTTEST = "sinttest.";
 
     public static Configuration newConfiguration() throws IOException {
-        File propertiesFile = findPropertiesFile();
         Properties properties = new Properties();
 
-        try (FileInputStream in = new FileInputStream(propertiesFile)) {
-            properties.load(in);
+        File propertiesFile = findPropertiesFile();
+        if (propertiesFile != null) {
+            try (FileInputStream in = new FileInputStream(propertiesFile)) {
+                properties.load(in);
+            }
         }
 
         // Properties set via the system override the file properties
@@ -266,7 +270,7 @@ public class Configuration {
             if (res.isFile())
                 return res;
         }
-        throw new IOException("Could not find properties file");
+        return null;
     }
 
     private static Set<String> getTestSetFrom(String string) {
