@@ -41,6 +41,7 @@ Smack Extensions and currently supported XEPs by Smack (smack-extensions)
 | [XHTML-IM](xhtml.md)                      | [XEP-0071](http://xmpp.org/extensions/xep-0071.html) | Allows send and receiving formatted messages using XHTML. |
 | In-Band Registration                        | [XEP-0077](http://xmpp.org/extensions/xep-0077.html) | In-band registration with XMPP services. |
 | Advanced Message Processing                 | [XEP-0079](http://xmpp.org/extensions/xep-0079.html) | Enables entities to request, and servers to perform, advanced processing of XMPP message stanzas. |
+| User Location                               | [XEP-0080](http://xmpp.org/extensions/xep-0080.html) | Enabled communicating information about the current geographical or physical location of an entity. |
 | XMPP Date Time Profiles                     | [XEP-0082](http://xmpp.org/extensions/xep-0082.html)     | Standardization of Date and Time representation in XMPP. |
 | Chat State Notifications                    | [XEP-0085](http://xmpp.org/extensions/xep-0085.html) | Communicating the status of a user in a chat session. |
 | [Time Exchange](time.md)                  | [XEP-0090](http://xmpp.org/extensions/xep-0090.html) | Allows local time information to be shared between users. |
