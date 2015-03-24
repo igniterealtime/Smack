@@ -33,20 +33,13 @@ import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.ping.packet.Ping;
-import org.junit.Before;
 import org.junit.Test;
 
 public class PingTest extends InitExtensions {
-
-    @Before
-    public void initSmackTestSuite() {
-        SmackTestSuite.init();
-    }
 
     @Test
     public void checkProvider() throws Exception {

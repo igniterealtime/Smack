@@ -28,6 +28,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 import org.jivesoftware.util.ConnectionUtils;
@@ -44,7 +45,7 @@ import org.jxmpp.jid.JidTestUtil;
  * 
  * @author Henning Staib
  */
-public class InBandBytestreamManagerTest {
+public class InBandBytestreamManagerTest extends InitExtensions {
 
     // settings
     static final FullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;

@@ -32,6 +32,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
@@ -52,7 +53,7 @@ import org.powermock.reflect.Whitebox;
  * 
  * @author Henning Staib
  */
-public class InBandBytestreamSessionMessageTest {
+public class InBandBytestreamSessionMessageTest extends InitExtensions {
 
     // settings
     static final FullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;

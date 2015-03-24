@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Properties;
 
+import org.jivesoftware.smackx.InitExtensions;
 import org.junit.Test;
 
 import com.jamesmurty.utils.XMLBuilder;
@@ -31,7 +32,7 @@ import com.jamesmurty.utils.XMLBuilder;
  * 
  * @author Henning Staib
  */
-public class DataPacketExtensionTest {
+public class DataPacketExtensionTest extends InitExtensions {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotInstantiateWithInvalidArgument1() {

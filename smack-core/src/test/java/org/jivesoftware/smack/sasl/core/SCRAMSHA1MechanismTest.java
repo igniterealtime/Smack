@@ -25,11 +25,10 @@ import org.jivesoftware.smack.sasl.packet.SaslStreamElements.AuthMechanism;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Response;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.stringencoder.Base64;
-import org.junit.Before;
 import org.junit.Test;
 import org.jxmpp.jid.JidTestUtil;
 
-public class SCRAMSHA1MechanismTest {
+public class SCRAMSHA1MechanismTest extends SmackTestSuite {
 
     public static final String USERNAME = "user";
     public static final String PASSWORD = "pencil";
@@ -37,11 +36,6 @@ public class SCRAMSHA1MechanismTest {
     public static final String SERVER_FIRST_MESSAGE = "r=fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j,s=QSXCR+Q6sek8bf92,i=4096";
     public static final String CLIENT_FINAL_MESSAGE = "c=biws,r=fyko+d2lbbFgONRv9qkxdawL3rfcNHYJY1ZVvWVs7j,p=v0X8v3Bz2T0CJGbJQyF0X+HI4Ts=";
     public static final String SERVER_FINAL_MESSAGE = "v=rmF9pqV8S7suAoZWja4dJRkFsKQ=";
-
-    @Before
-    public void init() {
-        SmackTestSuite.init();
-    }
 
     @Test
     public void testScramSha1Mechanism() throws NotConnectedException, SmackException, InterruptedException {

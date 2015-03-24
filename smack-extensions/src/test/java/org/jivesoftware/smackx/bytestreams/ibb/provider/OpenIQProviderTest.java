@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
 
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 import org.junit.Test;
@@ -36,7 +37,7 @@ import com.jamesmurty.utils.XMLBuilder;
  * 
  * @author Henning Staib
  */
-public class OpenIQProviderTest {
+public class OpenIQProviderTest extends InitExtensions {
 
     private static Properties outputProperties = new Properties();
     {
@@ -73,7 +74,7 @@ public class OpenIQProviderTest {
         assertEquals(StanzaType.MESSAGE, open.getStanza());
     }
 
-    private XmlPullParser getParser(String control) throws XmlPullParserException,
+    private static XmlPullParser getParser(String control) throws XmlPullParserException,
                     IOException {
         XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
         parser.setInput(new StringReader(control));

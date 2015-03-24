@@ -22,6 +22,7 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.InitExtensions;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -32,7 +33,7 @@ import com.jamesmurty.utils.XMLBuilder;
  * 
  * @author Henning Staib
  */
-public class CloseTest {
+public class CloseTest extends InitExtensions {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotInstantiateWithInvalidArguments1() {

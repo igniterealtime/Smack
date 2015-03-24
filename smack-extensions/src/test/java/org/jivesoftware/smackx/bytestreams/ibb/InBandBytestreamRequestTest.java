@@ -25,6 +25,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +38,7 @@ import org.mockito.ArgumentCaptor;
  * 
  * @author Henning Staib
  */
-public class InBandBytestreamRequestTest {
+public class InBandBytestreamRequestTest extends InitExtensions {
 
     static final Jid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
     static final Jid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;

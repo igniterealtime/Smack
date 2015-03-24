@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+import org.jivesoftware.smackx.InitExtensions;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -34,7 +35,7 @@ import com.jamesmurty.utils.XMLBuilder;
  * 
  * @author Henning Staib
  */
-public class DataTest {
+public class DataTest extends InitExtensions {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotInstantiateWithInvalidArgument() {

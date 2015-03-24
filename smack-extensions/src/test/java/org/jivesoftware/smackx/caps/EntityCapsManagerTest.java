@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base32;
 import org.jivesoftware.smack.util.stringencoder.StringEncoder;
@@ -36,18 +35,12 @@ import org.jivesoftware.smackx.caps.cache.SimpleDirectoryPersistentCache;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.junit.Before;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 
 public class EntityCapsManagerTest extends InitExtensions {
-
-    @Before
-    public void initSmackTestSuite() {
-        SmackTestSuite.init();
-    }
 
     /**
      * <a href="http://xmpp.org/extensions/xep-0115.html#ver-gen-complex">XEP-
@@ -80,7 +73,7 @@ public class EntityCapsManagerTest extends InitExtensions {
         assertTrue(di.containsDuplicateIdentities());
     }
 
-    private void testSimpleDirectoryCache(StringEncoder stringEncoder) throws IOException {
+    private static void testSimpleDirectoryCache(StringEncoder stringEncoder) throws IOException {
 
         EntityCapsPersistentCache cache = new SimpleDirectoryPersistentCache(createTempDirectory());
         EntityCapsManager.setPersistentCache(cache);

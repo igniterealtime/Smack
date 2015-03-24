@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 import org.junit.Before;
@@ -39,7 +40,7 @@ import org.powermock.reflect.Whitebox;
  * 
  * @author Henning Staib
  */
-public class InitiationListenerTest {
+public class InitiationListenerTest extends InitExtensions {
 
     static final FullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
     static final FullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;

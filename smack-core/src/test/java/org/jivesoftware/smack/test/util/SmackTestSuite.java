@@ -23,23 +23,14 @@ import net.iharder.Base64;
 
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64.Encoder;
-import org.junit.runners.Suite;
-import org.junit.runners.model.InitializationError;
-import org.junit.runners.model.RunnerBuilder;
 
 /**
  * The SmackTestSuite takes care of initializing Smack for the unit tests. For example the Base64
  * encoder is configured.
  */
-public class SmackTestSuite extends Suite {
+public class SmackTestSuite {
 
-    public SmackTestSuite(Class<?> klass, RunnerBuilder builder) throws InitializationError {
-        super(klass, builder);
-
-        init();
-    }
-
-    public static void init() {
+    static {
         org.jivesoftware.smack.util.stringencoder.Base64.setEncoder(new Encoder() {
 
             @Override
@@ -91,7 +82,6 @@ public class SmackTestSuite extends Suite {
                     throw new AssertionError(e);
                 }
             }
-
         });
     }
 }

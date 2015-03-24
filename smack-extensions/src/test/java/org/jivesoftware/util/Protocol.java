@@ -36,7 +36,7 @@ import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * This class can be used in conjunction with a mocked XMPP connection (
- * {@link ConnectionUtils#createMockedConnection(Protocol, String, String)}) to
+ * {@link ConnectionUtils#createMockedConnection(Protocol, org.jxmpp.jid.FullJid, org.jxmpp.jid.DomainBareJid)}) to
  * verify an XMPP protocol. This can be accomplished in the following was:
  * <ul>
  * <li>add responses to packets sent over the mocked XMPP connection by the
@@ -176,7 +176,7 @@ public class Protocol {
         return requests;
     }
 
-    private String prettyFormat(String input, int indent) {
+    private static String prettyFormat(String input, int indent) {
         try {
             Source xmlInput = new StreamSource(new StringReader(input));
             StringWriter stringWriter = new StringWriter();
@@ -193,7 +193,7 @@ public class Protocol {
         }
     }
 
-    private String prettyFormat(String input) {
+    private static String prettyFormat(String input) {
         return prettyFormat(input, 2);
     }
 

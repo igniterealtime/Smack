@@ -48,7 +48,7 @@ public class XHTMLExtensionProviderTest {
         assertThat(sampleXhtml(), equalsCharSequence(attachmentsInfo.getBodies().get(0)));
     }
 
-    private String sampleXhtml() {
+    private static String sampleXhtml() {
         return "<body xmlns='http://www.w3.org/1999/xhtml'>" +
                 "<span style='color: rgb(0, 0, 0); font-family: sans-serif, &apos;trebuchet ms&apos;" +
                 ", &apos;lucida grande&apos;, &apos;lucida sans unicode&apos;, arial, helvetica, " +

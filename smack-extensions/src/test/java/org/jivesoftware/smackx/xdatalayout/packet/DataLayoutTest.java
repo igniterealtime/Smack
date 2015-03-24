@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
@@ -73,7 +72,7 @@ public class DataLayoutTest {
     }
 
     @Test
-    public void testLayoutSpecialCharacters() throws XmlPullParserException, IOException, SmackException {
+    public void testLayoutSpecialCharacters() throws XmlPullParserException, IOException {
 
         DataLayout layout = new DataLayout("Label - & \u00E9 \u00E1 ");
         Fieldref reffield = new Fieldref("testField1");
