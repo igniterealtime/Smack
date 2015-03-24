@@ -25,12 +25,12 @@ import org.xmlpull.v1.XmlPullParser;
 public class WorkgroupForm extends SimpleIQ {
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "workgroup-form";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 

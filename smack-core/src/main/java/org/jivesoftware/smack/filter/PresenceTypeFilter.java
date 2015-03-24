@@ -21,7 +21,7 @@ import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.util.Objects;
 
 /**
- * A filter for Presence types. Returns true only if the stanza is an Presence packet and it matches the type provided in the
+ * A filter for Presence types. Returns true only if the stanza is an Presence stanza(/packet) and it matches the type provided in the
  * constructor.
  */
 public class PresenceTypeFilter extends FlexibleStanzaTypeFilter<Presence> {

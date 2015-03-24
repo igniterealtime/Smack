@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * Parses the root pubsub packet extensions of the {@link IQ} packet and returns
+ * Parses the root pubsub stanza(/packet) extensions of the {@link IQ} stanza(/packet) and returns
  * a {@link PubSub} instance.
  * 
  * @author Robin Collier

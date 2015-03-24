@@ -28,19 +28,19 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Packet extension for {@link org.jivesoftware.smackx.workgroup.agent.TransferRequest}.
+ * Stanza(/Packet) extension for {@link org.jivesoftware.smackx.workgroup.agent.TransferRequest}.
  *
  * @author Gaston Dombiak
  */
 public class RoomTransfer implements ExtensionElement {
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "transfer";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 

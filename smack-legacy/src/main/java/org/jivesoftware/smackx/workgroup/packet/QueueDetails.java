@@ -34,19 +34,19 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
- * Queue details packet extension, which contains details about the users
+ * Queue details stanza(/packet) extension, which contains details about the users
  * currently in a queue.
  */
 public class QueueDetails implements ExtensionElement {
     private static final Logger LOGGER = Logger.getLogger(QueueDetails.class.getName());
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "notify-queue-details";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
@@ -141,7 +141,7 @@ public class QueueDetails implements ExtensionElement {
     }
 
     /**
-     * Provider class for QueueDetails packet extensions.
+     * Provider class for QueueDetails stanza(/packet) extensions.
      */
     public static class Provider extends ExtensionElementProvider<QueueDetails> {
 

@@ -268,7 +268,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * to the initiator.
      * <p>
      * This method should be used if you are awaiting a SOCKS5 Bytestream request as a reply to
-     * another packet (e.g. file transfer).
+     * another stanza(/packet) (e.g. file transfer).
      * 
      * @param sessionID to be ignored
      */
@@ -621,10 +621,10 @@ public final class Socks5BytestreamManager implements BytestreamManager {
     }
 
     /**
-     * Returns a IQ packet to query a SOCKS5 proxy its network settings.
+     * Returns a IQ stanza(/packet) to query a SOCKS5 proxy its network settings.
      * 
      * @param proxy the proxy to query
-     * @return IQ packet to query a SOCKS5 proxy its network settings
+     * @return IQ stanza(/packet) to query a SOCKS5 proxy its network settings
      */
     private static Bytestream createStreamHostRequest(Jid proxy) {
         Bytestream request = new Bytestream();
@@ -673,7 +673,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
     }
 
     /**
-     * Returns a SOCKS5 Bytestream initialization request packet with the given session ID
+     * Returns a SOCKS5 Bytestream initialization request stanza(/packet) with the given session ID
      * containing the given stream hosts for the given target JID.
      * 
      * @param sessionID the session ID for the SOCKS5 Bytestream
@@ -703,7 +703,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
      * Specified in XEP-65 5.3.1 (Example 13)
      * </p>
      * 
-     * @param packet Packet that should be answered with a not-acceptable error
+     * @param packet Stanza(/Packet) that should be answered with a not-acceptable error
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */

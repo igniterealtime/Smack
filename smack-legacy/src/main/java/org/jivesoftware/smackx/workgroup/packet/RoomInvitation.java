@@ -28,19 +28,19 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Packet extension for {@link org.jivesoftware.smackx.workgroup.agent.InvitationRequest}.
+ * Stanza(/Packet) extension for {@link org.jivesoftware.smackx.workgroup.agent.InvitationRequest}.
  *
  * @author Gaston Dombiak
  */
 public class RoomInvitation implements ExtensionElement {
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "invite";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 

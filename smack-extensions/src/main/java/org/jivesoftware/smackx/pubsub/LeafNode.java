@@ -163,7 +163,7 @@ public class LeafNode extends Node
      * Get items persisted on the node.
      * <p>
      * {@code additionalExtensions} can be used e.g. to add a "Result Set Management" extension.
-     * {@code returnedExtensions} will be filled with the packet extensions found in the answer.
+     * {@code returnedExtensions} will be filled with the stanza(/packet) extensions found in the answer.
      * </p>
      * 
      * @param additionalExtensions additional {@code PacketExtensions} to be added to the request.
@@ -209,7 +209,7 @@ public class LeafNode extends Node
 	 * and {@link ConfigureForm#isDeliverPayloads()}=false.
 	 * 
 	 * This is an asynchronous call which returns as soon as the 
-	 * packet has been sent.
+	 * stanza(/packet) has been sent.
 	 * 
 	 * For synchronous calls use {@link #send() send()}.
 	 * @throws NotConnectedException 
@@ -231,7 +231,7 @@ public class LeafNode extends Node
 	 * publishes an event with NO item.
 	 * 
 	 * This is an asynchronous call which returns as soon as the 
-	 * packet has been sent.
+	 * stanza(/packet) has been sent.
 	 * 
 	 * For synchronous calls use {@link #send(Item) send(Item))}.
 	 * 
@@ -254,7 +254,7 @@ public class LeafNode extends Node
 	 * list will get stored on the node, assuming it stores the last sent item.
 	 * 
 	 * This is an asynchronous call which returns as soon as the 
-	 * packet has been sent.
+	 * stanza(/packet) has been sent.
 	 * 
 	 * For synchronous calls use {@link #send(Collection) send(Collection))}.
 	 * 

@@ -297,7 +297,7 @@ public class AdHocCommandManager extends Manager {
     }
 
     /**
-     * Process the AdHoc-Command packet that request the execution of some
+     * Process the AdHoc-Command stanza(/packet) that request the execution of some
      * action of a command. If this is the first request, this method checks,
      * before executing the command, if:
      * <ul>
@@ -318,7 +318,7 @@ public class AdHocCommandManager extends Manager {
      * </ul>
      *
      * @param requestData
-     *            the packet to process.
+     *            the stanza(/packet) to process.
      * @throws NotConnectedException
      * @throws NoResponseException
      * @throws InterruptedException 

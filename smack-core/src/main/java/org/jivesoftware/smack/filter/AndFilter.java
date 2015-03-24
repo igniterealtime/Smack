@@ -20,7 +20,7 @@ package org.jivesoftware.smack.filter;
 import org.jivesoftware.smack.packet.Stanza;
 
 /**
- * Implements the logical AND operation over two or more packet filters.
+ * Implements the logical AND operation over two or more stanza(/packet) filters.
  * In other words, packets pass this filter if they pass <b>all</b> of the filters.
  *
  * @author Matt Tucker

@@ -20,7 +20,7 @@ package org.jivesoftware.smack.packet;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
- * IQ packet that will be sent to the server to establish a session.<p>
+ * IQ stanza(/packet) that will be sent to the server to establish a session.<p>
  *
  * If a server supports sessions, it MUST include a <i>session</i> element in the
  * stream features it advertises to a client after the completion of stream authentication.

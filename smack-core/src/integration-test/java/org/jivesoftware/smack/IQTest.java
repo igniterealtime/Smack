@@ -37,7 +37,7 @@ public class IQTest extends SmackTestCase {
     }
 
     /**
-     * Check that the server responds a 503 error code when the client sends an IQ packet with an
+     * Check that the server responds a 503 error code when the client sends an IQ stanza(/packet) with an
      * invalid namespace.
      */
     public void testInvalidNamespace() {

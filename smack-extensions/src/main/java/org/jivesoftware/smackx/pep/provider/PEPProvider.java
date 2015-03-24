@@ -50,7 +50,7 @@ public class PEPProvider extends ExtensionElementProvider<ExtensionElement> {
     }
 
     /**
-     * Parses a PEPEvent packet and extracts a PEPItem from it.
+     * Parses a PEPEvent stanza(/packet) and extracts a PEPItem from it.
      * (There is only one per <event>.)
      *
      * @param parser the XML parser, positioned at the starting element of the extension.

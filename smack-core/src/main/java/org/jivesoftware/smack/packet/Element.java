@@ -19,14 +19,14 @@ package org.jivesoftware.smack.packet;
 
 /**
  * Interface to represent a XML element. This is similar to {@link ExtensionElement}, but does not
- * carry a namespace and is usually included as child element of an packet extension.
+ * carry a namespace and is usually included as child element of an stanza(/packet) extension.
  */
 public interface Element {
 
     /**
      * Returns the XML representation of this Element.
      *
-     * @return the packet extension as XML.
+     * @return the stanza(/packet) extension as XML.
      */
     public CharSequence toXML();
 }

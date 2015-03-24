@@ -440,7 +440,7 @@ public class JingleManager implements JingleSessionListener {
     }
 
     /**
-     * Register the listenerJingles, waiting for a Jingle packet that tries to
+     * Register the listenerJingles, waiting for a Jingle stanza(/packet) that tries to
      * establish a new session.
      */
     private void initJingleSessionRequestListeners() {
@@ -492,7 +492,7 @@ public class JingleManager implements JingleSessionListener {
     /**
      * Activates the listenerJingles on a Jingle session request.
      *
-     * @param initJin the packet that must be passed to the jingleSessionRequestListener.
+     * @param initJin the stanza(/packet) that must be passed to the jingleSessionRequestListener.
      */
     void triggerSessionRequested(Jingle initJin) {
 

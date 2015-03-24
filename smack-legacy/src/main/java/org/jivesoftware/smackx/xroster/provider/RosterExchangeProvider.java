@@ -37,7 +37,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class RosterExchangeProvider extends ExtensionElementProvider<RosterExchange> {
 
     /**
-     * Parses a RosterExchange packet (extension sub-packet).
+     * Parses a RosterExchange stanza(/packet) (extension sub-packet).
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.

@@ -40,7 +40,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * RTPBridge IQ Packet used to request and retrieve a RTPBridge Candidates that can be used for a Jingle Media Transmission between two parties that are behind NAT.
+ * RTPBridge IQ Stanza(/Packet) used to request and retrieve a RTPBridge Candidates that can be used for a Jingle Media Transmission between two parties that are behind NAT.
  * This Jingle Bridge has all the needed information to establish a full UDP Channel (Send and Receive) between two parties.
  * <i>This transport method should be used only if other transport methods are not allowed. Or if you want a more reliable transport.</i>
  * <p/>
@@ -70,17 +70,17 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String NAME = "rtpbridge";
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "rtpbridge";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://www.jivesoftware.com/protocol/rtpbridge";
 
@@ -121,7 +121,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Creates a RTPBridge Packet without Session ID
+     * Creates a RTPBridge Stanza(/Packet) without Session ID
      */
     public RTPBridge() {
         super(ELEMENT_NAME, NAMESPACE);
@@ -155,7 +155,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Get the Session ID of the Packet (usually same as Jingle Session ID)
+     * Get the Session ID of the Stanza(/Packet) (usually same as Jingle Session ID)
      *
      * @return the session ID
      */
@@ -164,7 +164,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Set the Session ID of the Packet (usually same as Jingle Session ID)
+     * Set the Session ID of the Stanza(/Packet) (usually same as Jingle Session ID)
      *
      * @param sid
      */
@@ -319,7 +319,7 @@ public class RTPBridge extends IQ {
 
     /**
      * IQProvider for RTP Bridge packets.
-     * Parse receive RTPBridge packet to a RTPBridge instance
+     * Parse receive RTPBridge stanza(/packet) to a RTPBridge instance
      *
      * @author Thiago Rocha
      */

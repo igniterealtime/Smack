@@ -50,7 +50,7 @@ public class PubSub extends IQ
 	/**
     * Returns the XML element name of the extension sub-packet root element.
     *
-    * @return the XML element name of the packet extension.
+    * @return the XML element name of the stanza(/packet) extension.
     */
     @SuppressWarnings("static-method")
     public String getElementName() {
@@ -66,7 +66,7 @@ public class PubSub extends IQ
     /**
      * Returns the XML representation of a pubsub element according the specification.
      * 
-     * The XML representation will be inside of an iq packet like
+     * The XML representation will be inside of an iq stanza(/packet) like
      * in the following example:
      * <pre>
      * &lt;iq type='set' id="MlIpV-4" to="pubsub.gato.home" from="gato3@gato.home/Smack"&gt;

@@ -66,12 +66,12 @@ public class WorkgroupProperties extends IQ {
 
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "workgroup-properties";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
@@ -89,7 +89,7 @@ public class WorkgroupProperties extends IQ {
     }
 
     /**
-     * Packet extension provider for SoundSetting Packets.
+     * Stanza(/Packet) extension provider for SoundSetting Packets.
      */
     public static class InternalProvider extends IQProvider<WorkgroupProperties> {
 

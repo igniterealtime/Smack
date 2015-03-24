@@ -108,7 +108,7 @@ public class RosterExchange implements ExtensionElement {
     * Returns the XML element name of the extension sub-packet root element.
     * Always returns "x"
     *
-    * @return the XML element name of the packet extension.
+    * @return the XML element name of the stanza(/packet) extension.
     */
     public String getElementName() {
         return RosterExchangeManager.ELEMENT;
@@ -119,7 +119,7 @@ public class RosterExchange implements ExtensionElement {
      * According the specification the namespace is always "jabber:x:roster"
      * (which is not to be confused with the 'jabber:iq:roster' namespace
      *
-     * @return the XML namespace of the packet extension.
+     * @return the XML namespace of the stanza(/packet) extension.
      */
     public String getNamespace() {
         return RosterExchangeManager.NAMESPACE;

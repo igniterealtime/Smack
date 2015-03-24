@@ -50,10 +50,10 @@ import org.jivesoftware.smack.packet.Stanza;
  * <pre>
  * <code>
  * public void methodToTest() {
- *   Packet packet = new Packet(); // create an XMPP packet
+ *   Stanza(/Packet) stanza(/packet) = new Packet(); // create an XMPP packet
  *   PacketCollector collector = connection.createPacketCollector(new StanzaIdFilter());
  *   connection.sendStanza(packet);
- *   Packet reply = collector.nextResult();
+ *   Stanza(/Packet) reply = collector.nextResult();
  * }
  * 
  * public void testMethod() {
@@ -62,8 +62,8 @@ import org.jivesoftware.smack.packet.Stanza;
  *   // create mocked connection
  *   XMPPConnection connection = ConnectionUtils.createMockedConnection(protocol, "user@xmpp-server", "xmpp-server");
  *   
- *   // add reply packet to protocol
- *   Packet reply = new Packet();
+ *   // add reply stanza(/packet) to protocol
+ *   Stanza(/Packet) reply = new Packet();
  *   protocol.add(reply);
  *   
  *   // call method to test

@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * This class implements the {@link ExtensionElementProvider} to parse
- * carbon copied messages from a packet.  It will return a {@link CarbonExtension} packet extension.
+ * carbon copied messages from a packet.  It will return a {@link CarbonExtension} stanza(/packet) extension.
  * 
  * @author Georg Lukas
  *

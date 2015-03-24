@@ -28,7 +28,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 
 /**
- * Abstract parent for Req and Resp packet providers.
+ * Abstract parent for Req and Resp stanza(/packet) providers.
  *
  * @author Andriy Tsykholyas
  * @see <a href="http://xmpp.org/extensions/xep-0332.html">XEP-0332: HTTP over XMPP transport</a>

@@ -33,7 +33,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Packet used for requesting information about occupants of a room or for retrieving information
+ * Stanza(/Packet) used for requesting information about occupants of a room or for retrieving information
  * such information.
  *
  * @author Gaston Dombiak
@@ -47,12 +47,12 @@ public class OccupantsInfo extends IQ {
     }
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "occupants-info";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
@@ -127,7 +127,7 @@ public class OccupantsInfo extends IQ {
     }
 
     /**
-     * Packet extension provider for AgentStatusRequest packets.
+     * Stanza(/Packet) extension provider for AgentStatusRequest packets.
      */
     public static class Provider extends IQProvider<OccupantsInfo> {
 

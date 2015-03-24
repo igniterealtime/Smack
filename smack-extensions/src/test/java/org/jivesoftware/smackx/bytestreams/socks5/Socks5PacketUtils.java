@@ -49,7 +49,7 @@ public class Socks5PacketUtils {
     }
 
     /**
-     * Returns a response to a SOCKS5 Bytestream initialization request. The packet doesn't contain
+     * Returns a response to a SOCKS5 Bytestream initialization request. The stanza(/packet) doesn't contain
      * the uses-host information.
      * 
      * @param from the target
@@ -65,7 +65,7 @@ public class Socks5PacketUtils {
     }
 
     /**
-     * Returns a response to an item discovery request. The packet doesn't contain any items.
+     * Returns a response to an item discovery request. The stanza(/packet) doesn't contain any items.
      * 
      * @param from the XMPP server
      * @param to the XMPP client
@@ -80,7 +80,7 @@ public class Socks5PacketUtils {
     }
 
     /**
-     * Returns a response to an info discovery request. The packet doesn't contain any infos.
+     * Returns a response to an info discovery request. The stanza(/packet) doesn't contain any infos.
      * 
      * @param from the target
      * @param to the initiator

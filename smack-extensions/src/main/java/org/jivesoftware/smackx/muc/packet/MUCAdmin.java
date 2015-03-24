@@ -23,7 +23,7 @@ import java.util.List;
 import org.jivesoftware.smack.packet.IQ;
 
 /**
- * IQ packet that serves for kicking users, granting and revoking voice, banning users, 
+ * IQ stanza(/packet) that serves for kicking users, granting and revoking voice, banning users, 
  * modifying the ban list, granting and revoking membership and granting and revoking 
  * moderator privileges. All these operations are scoped by the 
  * 'http://jabber.org/protocol/muc#admin' namespace.

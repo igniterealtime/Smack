@@ -46,7 +46,7 @@ public class XHTMLExtension implements ExtensionElement {
     * Returns the XML element name of the extension sub-packet root element.
     * Always returns "html"
     *
-    * @return the XML element name of the packet extension.
+    * @return the XML element name of the stanza(/packet) extension.
     */
     public String getElementName() {
         return ELEMENT;
@@ -56,7 +56,7 @@ public class XHTMLExtension implements ExtensionElement {
      * Returns the XML namespace of the extension sub-packet root element.
      * According the specification the namespace is always "http://jabber.org/protocol/xhtml-im"
      *
-     * @return the XML namespace of the packet extension.
+     * @return the XML namespace of the stanza(/packet) extension.
      */
     public String getNamespace() {
         return NAMESPACE;

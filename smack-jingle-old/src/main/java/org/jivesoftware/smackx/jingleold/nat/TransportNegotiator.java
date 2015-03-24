@@ -46,7 +46,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleTransport.JingleTransportC
  * <p/>
  * <p/>
  * This class is responsible for managing the transport negotiation process,
- * handling all the packet interchange and the stage control.
+ * handling all the stanza(/packet) interchange and the stage control.
  *
  * @author Alvaro Saurin <alvaro.saurin@gmail.com>
  */
@@ -545,7 +545,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     }
 
     /**
-     * Create a Jingle packet where we announce our transport candidates.
+     * Create a Jingle stanza(/packet) where we announce our transport candidates.
      *
      * @throws XMPPException
      * @throws SmackException 
@@ -588,11 +588,11 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
     /**
      * Dispatch an incoming packet. The method is responsible for recognizing
-     * the packet type and, depending on the current state, deliverying the
-     * packet to the right event handler and wait for a response.
+     * the stanza(/packet) type and, depending on the current state, deliverying the
+     * stanza(/packet) to the right event handler and wait for a response.
      *
-     * @param iq the packet received
-     * @return the new Jingle packet to send.
+     * @param iq the stanza(/packet) received
+     * @return the new Jingle stanza(/packet) to send.
      * @throws XMPPException
      * @throws SmackException 
      * @throws InterruptedException 

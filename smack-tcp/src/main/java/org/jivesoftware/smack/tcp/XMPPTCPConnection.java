@@ -600,7 +600,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * Initializes the connection by creating a packet reader and writer and opening a
+     * Initializes the connection by creating a stanza(/packet) reader and writer and opening a
      * XMPP stream to the server.
      *
      * @throws XMPPException if establishing a connection to the server fails.
@@ -954,7 +954,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          }
 
         /**
-         * Shuts the packet reader down. This method simply sets the 'done' flag to true.
+         * Shuts the stanza(/packet) reader down. This method simply sets the 'done' flag to true.
          */
         void shutdown() {
             done = true;
@@ -1175,7 +1175,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         XMPPTCPConnection.this);
 
         /**
-         * If set, the packet writer is shut down
+         * If set, the stanza(/packet) writer is shut down
          */
         protected volatile Long shutdownTimestamp = null;
 
@@ -1250,7 +1250,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
 
         /**
-         * Shuts down the packet writer. Once this method has been called, no further
+         * Shuts down the stanza(/packet) writer. Once this method has been called, no further
          * packets will be written to the server.
          */
         void shutdown(boolean instant) {

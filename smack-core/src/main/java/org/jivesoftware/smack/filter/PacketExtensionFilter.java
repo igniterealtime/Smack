@@ -22,7 +22,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.StringUtils;
 
 /**
- * Filters for packets with a particular type of packet extension.
+ * Filters for packets with a particular type of stanza(/packet) extension.
  *
  * @author Matt Tucker
  * @deprecated use {@link StanzaExtensionFilter} instead.
@@ -34,12 +34,12 @@ public class PacketExtensionFilter implements StanzaFilter {
     private final String namespace;
 
     /**
-     * Creates a new packet extension filter. Packets will pass the filter if
-     * they have a packet extension that matches the specified element name
+     * Creates a new stanza(/packet) extension filter. Packets will pass the filter if
+     * they have a stanza(/packet) extension that matches the specified element name
      * and namespace.
      *
-     * @param elementName the XML element name of the packet extension.
-     * @param namespace the XML namespace of the packet extension.
+     * @param elementName the XML element name of the stanza(/packet) extension.
+     * @param namespace the XML namespace of the stanza(/packet) extension.
      */
     public PacketExtensionFilter(String elementName, String namespace) {
         StringUtils.requireNotNullOrEmpty(namespace, "namespace must not be null or empty");
@@ -49,17 +49,17 @@ public class PacketExtensionFilter implements StanzaFilter {
     }
 
     /**
-     * Creates a new packet extension filter. Packets will pass the filter if they have a packet
+     * Creates a new stanza(/packet) extension filter. Packets will pass the filter if they have a packet
      * extension that matches the specified namespace.
      *
-     * @param namespace the XML namespace of the packet extension.
+     * @param namespace the XML namespace of the stanza(/packet) extension.
      */
     public PacketExtensionFilter(String namespace) {
         this(null, namespace);
     }
 
     /**
-     * Creates a new packet extension filter for the given packet extension.
+     * Creates a new stanza(/packet) extension filter for the given stanza(/packet) extension.
      *
      * @param packetExtension
      */

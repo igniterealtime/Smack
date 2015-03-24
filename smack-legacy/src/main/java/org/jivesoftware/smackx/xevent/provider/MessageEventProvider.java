@@ -33,7 +33,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MessageEventProvider extends ExtensionElementProvider<MessageEvent> {
 
     /**
-     * Parses a MessageEvent packet (extension sub-packet).
+     * Parses a MessageEvent stanza(/packet) (extension sub-packet).
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.

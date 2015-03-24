@@ -24,9 +24,9 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 
 /**
  * DataListener handles all In-Band Bytestream IQ stanzas containing a data
- * packet extension that don't belong to an existing session.
+ * stanza(/packet) extension that don't belong to an existing session.
  * <p>
- * If a data packet is received it looks if a stored In-Band Bytestream session
+ * If a data stanza(/packet) is received it looks if a stored In-Band Bytestream session
  * exists. If no session with the given session ID exists an
  * &lt;item-not-found/&gt; error is returned to the sender.
  * <p>

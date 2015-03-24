@@ -64,9 +64,9 @@ public interface NodeInformationProvider {
     List<DiscoverInfo.Identity> getNodeIdentities();
 
     /**
-     * Returns a list of the packet extensions defined in the node.
+     * Returns a list of the stanza(/packet) extensions defined in the node.
      *
-     * @return a list of the packet extensions defined in the node.
+     * @return a list of the stanza(/packet) extensions defined in the node.
      */
     List<ExtensionElement> getNodePacketExtensions();
 }

@@ -46,7 +46,7 @@ public abstract class PEPItem implements ExtensionElement {
     * Returns the XML element name of the extension sub-packet root element.
     * Always returns "x"
     *
-    * @return the XML element name of the packet extension.
+    * @return the XML element name of the stanza(/packet) extension.
     */
     public String getElementName() {
         return "item";
@@ -55,7 +55,7 @@ public abstract class PEPItem implements ExtensionElement {
     /** 
      * Returns the XML namespace of the extension sub-packet root element.
      *
-     * @return the XML namespace of the packet extension.
+     * @return the XML namespace of the stanza(/packet) extension.
      */
     public String getNamespace() {
         return "http://jabber.org/protocol/pubsub";

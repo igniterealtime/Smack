@@ -50,7 +50,7 @@ import org.jxmpp.jid.Jid;
  * </p>
  * <pre>
  * deliveryReceiptManager.addReceiptReceivedListener(new ReceiptReceivedListener() {
- *   void onReceiptReceived(String fromJid, String toJid, String receiptId, Packet receipt) {
+ *   void onReceiptReceived(String fromJid, String toJid, String receiptId, Stanza(/Packet) receipt) {
  *     // If the receiving entity does not support delivery receipts,
  *     // then the receipt received listener may not get invoked.
  *   }
@@ -266,7 +266,7 @@ public class DeliveryReceiptManager extends Manager {
     /**
      * Test if a message requires a delivery receipt.
      *
-     * @param message Packet object to check for a DeliveryReceiptRequest
+     * @param message Stanza(/Packet) object to check for a DeliveryReceiptRequest
      *
      * @return true if a delivery receipt was requested
      */

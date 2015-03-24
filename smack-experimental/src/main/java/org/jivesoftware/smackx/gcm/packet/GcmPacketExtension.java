@@ -48,10 +48,10 @@ public class GcmPacketExtension extends AbstractJsonPacketExtension {
     }
 
     /**
-     * Retrieve the GCM packet extension from the packet.
+     * Retrieve the GCM stanza(/packet) extension from the packet.
      *
      * @param packet
-     * @return the GCM packet extension or null.
+     * @return the GCM stanza(/packet) extension or null.
      */
     public static GcmPacketExtension from(Stanza packet) {
         return packet.getExtension(ELEMENT, NAMESPACE);

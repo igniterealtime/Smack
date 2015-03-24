@@ -45,12 +45,12 @@ public class AgentStatus implements ExtensionElement {
     }
 
     /**
-     * Element name of the packet extension.
+     * Element name of the stanza(/packet) extension.
      */
     public static final String ELEMENT_NAME = "agent-status";
 
     /**
-     * Namespace of the packet extension.
+     * Namespace of the stanza(/packet) extension.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
@@ -221,7 +221,7 @@ public class AgentStatus implements ExtensionElement {
     }
 
     /**
-     * Packet extension provider for AgentStatus packets.
+     * Stanza(/Packet) extension provider for AgentStatus packets.
      */
     public static class Provider extends ExtensionElementProvider<AgentStatus> {
 

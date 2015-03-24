@@ -118,10 +118,10 @@ public class Chat {
     }
 
     /**
-     * Adds a packet listener that will be notified of any new messages in the
+     * Adds a stanza(/packet) listener that will be notified of any new messages in the
      * chat.
      *
-     * @param listener a packet listener.
+     * @param listener a stanza(/packet) listener.
      */
     public void addMessageListener(ChatMessageListener listener) {
         if(listener == null) {
