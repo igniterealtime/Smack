@@ -467,11 +467,13 @@ public class EntityCapsManager extends Manager {
 
         DiscoverInfo discoverInfo = new DiscoverInfo();
         discoverInfo.setType(IQ.Type.result);
-        discoverInfo.setNode(getLocalNodeVer());
         sdm.addDiscoverInfoTo(discoverInfo);
 
+        // getLocalNodeVer() will return a result only after currentCapsVersion is set. Therefore
+        // set it first and then call getLocalNodeVer()
         currentCapsVersion = generateVerificationString(discoverInfo);
         final String localNodeVer = getLocalNodeVer();
+        discoverInfo.setNode(localNodeVer);
         addDiscoverInfoByNode(localNodeVer, discoverInfo);
         if (lastLocalCapsVersions.size() > 10) {
             CapsVersionAndHash oldCapsVersion = lastLocalCapsVersions.poll();
