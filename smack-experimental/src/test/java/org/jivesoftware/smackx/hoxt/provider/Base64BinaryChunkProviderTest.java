@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.hoxt.packet.Base64BinaryChunk;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class Base64BinaryChunkProviderTest {
         Base64BinaryChunkProvider provider = new Base64BinaryChunkProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
-        PacketExtension extension = provider.parse(parser);
+        ExtensionElement extension = provider.parse(parser);
         assertTrue(extension instanceof Base64BinaryChunk);
 
         Base64BinaryChunk chunk = (Base64BinaryChunk) extension;
@@ -57,7 +57,7 @@ public class Base64BinaryChunkProviderTest {
         Base64BinaryChunkProvider provider = new Base64BinaryChunkProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
-        PacketExtension extension = provider.parse(parser);
+        ExtensionElement extension = provider.parse(parser);
         assertTrue(extension instanceof Base64BinaryChunk);
 
         Base64BinaryChunk chunk = (Base64BinaryChunk) extension;

@@ -34,13 +34,13 @@ public class ProxyInfo
         SOCKS4,
         SOCKS5
     }
-    
+
     private String proxyAddress;
     private int proxyPort;
     private String proxyUsername;
     private String proxyPassword;
     private ProxyType proxyType;
-    
+
     public ProxyInfo(   ProxyType pType, String pHost, int pPort, String pUser, 
                         String pPass)
     {
@@ -50,60 +50,60 @@ public class ProxyInfo
         this.proxyUsername = pUser;
         this.proxyPassword = pPass;
     }
-    
+
     public static ProxyInfo forHttpProxy(String pHost, int pPort, String pUser, 
                                     String pPass)
     {
         return new ProxyInfo(ProxyType.HTTP, pHost, pPort, pUser, pPass);
     }
-    
+
     public static ProxyInfo forSocks4Proxy(String pHost, int pPort, String pUser, 
                                     String pPass)
     {
         return new ProxyInfo(ProxyType.SOCKS4, pHost, pPort, pUser, pPass);
     }
-    
+
     public static ProxyInfo forSocks5Proxy(String pHost, int pPort, String pUser, 
                                     String pPass)
     {
         return new ProxyInfo(ProxyType.SOCKS5, pHost, pPort, pUser, pPass);
     }
-    
+
     public static ProxyInfo forNoProxy()
     {
         return new ProxyInfo(ProxyType.NONE, null, 0, null, null);
     }
-    
+
     public static ProxyInfo forDefaultProxy()
     {
         return new ProxyInfo(ProxyType.NONE, null, 0, null, null);
     }
-    
+
     public ProxyType getProxyType()
     {
         return proxyType;
     }
-    
+
     public String getProxyAddress()
     {
         return proxyAddress;
     }
-    
+
     public int getProxyPort()
     {
         return proxyPort;
     }
-    
+
     public String getProxyUsername()
     {
         return proxyUsername;
     }
-    
+
     public String getProxyPassword()
     {
         return proxyPassword;
     }
-    
+
     public SocketFactory getSocketFactory()
     {
         if(proxyType == ProxyType.NONE)

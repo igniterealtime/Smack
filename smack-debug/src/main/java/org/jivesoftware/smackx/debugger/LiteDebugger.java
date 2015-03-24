@@ -40,7 +40,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.packet.Stanza;
@@ -48,7 +48,7 @@ import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
 import org.jivesoftware.smack.util.WriterListener;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.jid.FullJid;
 
 /**
  * The LiteDebugger is a very simple debugger that allows to debug sent, received and 
@@ -63,7 +63,7 @@ public class LiteDebugger implements SmackDebugger {
     private JFrame frame = null;
     private XMPPConnection connection = null;
 
-    private PacketListener listener = null;
+    private StanzaListener listener = null;
 
     private Writer writer;
     private Reader reader;
@@ -261,7 +261,7 @@ public class LiteDebugger implements SmackDebugger {
         // Create a thread that will listen for all incoming packets and write them to
         // the GUI. This is what we call "interpreted" packet data, since it's the packet
         // data as Smack sees it and not as it's coming in as raw XML.
-        listener = new PacketListener() {
+        listener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 interpretedText1.append(packet.toXML().toString());
                 interpretedText2.append(packet.toXML().toString());
@@ -278,7 +278,7 @@ public class LiteDebugger implements SmackDebugger {
      * @param evt the event that indicates that the root window is closing 
      */
     public void rootWindowClosing(WindowEvent evt) {
-        connection.removeAsyncPacketListener(listener);
+        connection.removeAsyncStanzaListener(listener);
         ((ObservableReader)reader).removeReaderListener(readerListener);
         ((ObservableWriter)writer).removeWriterListener(writerListener);
     }
@@ -324,16 +324,11 @@ public class LiteDebugger implements SmackDebugger {
         return writer;
     }
 
-    public void userHasLogged(String user) {
-        boolean isAnonymous = "".equals(XmppStringUtils.parseLocalpart(user));
+    @Override
+    public void userHasLogged(FullJid user) {
         String title =
             "Smack Debug Window -- "
-                + (isAnonymous ? "" : XmppStringUtils.parseBareJid(user))
-                + "@"
-                + connection.getServiceName()
-                + ":"
-                + connection.getPort();
-        title += "/" + XmppStringUtils.parseResource(user);
+                + user;
         frame.setTitle(title);
     }
 
@@ -345,11 +340,11 @@ public class LiteDebugger implements SmackDebugger {
         return writer;
     }
 
-    public PacketListener getReaderListener() {
+    public StanzaListener getReaderListener() {
         return listener;
     }
 
-    public PacketListener getWriterListener() {
+    public StanzaListener getWriterListener() {
         return null;
     }
 }

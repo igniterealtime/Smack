@@ -8,6 +8,12 @@
     </iqProvider>
 
     <streamFeatureProvider>
+        <elementName>sub</elementName>
+        <namespace>urn:xmpp:features:pre-approval</namespace>
+        <className>org.jivesoftware.smack.roster.provider.SubscriptionPreApprovalStreamFeatureProvider</className>
+    </streamFeatureProvider>
+
+    <streamFeatureProvider>
         <elementName>ver</elementName>
         <namespace>urn:xmpp:features:rosterver</namespace>
         <className>org.jivesoftware.smack.roster.provider.RosterVerStreamFeatureProvider</className>

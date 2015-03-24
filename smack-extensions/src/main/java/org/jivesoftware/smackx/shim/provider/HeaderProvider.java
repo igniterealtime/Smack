@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.shim.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.shim.packet.Header;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -28,7 +28,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * 
  * @author Robin Collier
  */
-public class HeaderProvider extends PacketExtensionProvider<Header> {
+public class HeaderProvider extends ExtensionElementProvider<Header> {
     @Override
     public Header parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         String name = parser.getAttributeValue(null, "name");

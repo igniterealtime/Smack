@@ -81,7 +81,7 @@ public class AdHocCommandDiscoTest extends SmackTestCase {
                     };
                 }
             });
-            
+
             AdHocCommandManager manager2 = AdHocCommandManager.getAddHocCommandsManager(getConnection(1));
             DiscoverItems items = manager2.discoverCommands(getFullJID(0));
 

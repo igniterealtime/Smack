@@ -1,7 +1,7 @@
 Group Chat Invitations
 ======================
 
-The group chat invitation packet extension is used to invite other users to a
+The group chat invitation extension is used to invite other users to a
 group chat room.
 
   * Inviting Other Users
@@ -20,7 +20,7 @@ appropriately, as in the following code example:
 Message message = new Message("user@chat.example.com");
 message.setBody("Join me for a group chat!");
 message.addExtension(new GroupChatInvitation("room@chat.example.com"));
-con.sendPacket(message);
+con.sendStanza(message);
 ```
 
 The XML generated for the invitation portion of the code above would be:
@@ -32,11 +32,11 @@ The XML generated for the invitation portion of the code above would be:
 Listening for Invitations
 -------------------------
 
-To listen for group chat invitations, use a PacketExtensionFilter for the `x`
+To listen for group chat invitations, use a StanzaExtensionFilter for the `x`
 element name and `jabber:x:conference` namespace, as in the following code
 example:
 
 ```
-PacketFilter filter = new PacketExtensionFilter("x", "jabber:x:conference");
+StanzaFilter filter = new StanzaExtensionFilter("x", "jabber:x:conference");
 // Create a packet collector or packet listeners using the filter...
 ```

@@ -23,6 +23,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.xdata.Form;
+import org.jxmpp.jid.Jid;
 
 /**
  * Represents a command that is in a remote location. Invoking one of the
@@ -48,7 +49,7 @@ public class RemoteCommand extends AdHocCommand {
     /**
      * The full JID of the command host
      */
-    private String jid;
+    private Jid jid;
 
     /**
      * The session ID of this execution.
@@ -64,7 +65,7 @@ public class RemoteCommand extends AdHocCommand {
      * @param node the identifier of the command.
      * @param jid the JID of the host.
      */
-    protected RemoteCommand(XMPPConnection connection, String node, String jid) {
+    protected RemoteCommand(XMPPConnection connection, String node, Jid jid) {
         super();
         this.connection = connection;
         this.jid = jid;
@@ -72,17 +73,17 @@ public class RemoteCommand extends AdHocCommand {
     }
 
     @Override
-    public void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.cancel);
     }
 
     @Override
-    public void complete(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void complete(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.complete, form);
     }
 
     @Override
-    public void execute() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void execute() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.execute);
     }
 
@@ -95,22 +96,23 @@ public class RemoteCommand extends AdHocCommand {
      * @throws XMPPErrorException if an error occurs.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void execute(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void execute(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.execute, form);
     }
 
     @Override
-    public void next(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void next(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.next, form);
     }
 
     @Override
-    public void prev() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void prev() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.prev);
     }
 
-    private void executeAction(Action action) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private void executeAction(Action action) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(action, null);
     }
 
@@ -124,8 +126,9 @@ public class RemoteCommand extends AdHocCommand {
      * @throws XMPPErrorException if there is a problem executing the command.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    private void executeAction(Action action, Form form) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private void executeAction(Action action, Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // TODO: Check that all the required fields of the form were filled, if
         // TODO: not throw the corresponding exeption. This will make a faster response,
         // TODO: since the request is stoped before it's sent.
@@ -148,7 +151,7 @@ public class RemoteCommand extends AdHocCommand {
     }
 
     @Override
-    public String getOwnerJID() {
+    public Jid getOwnerJID() {
         return jid;
     }
 }

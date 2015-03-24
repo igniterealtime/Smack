@@ -19,6 +19,7 @@ package org.jivesoftware.smack.roster.rosterstore;
 import java.util.Collection;
 
 import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jxmpp.jid.Jid;
 
 /**
  * This is an interface for persistent roster store needed to implement
@@ -37,7 +38,7 @@ public interface RosterStore {
      * @param bareJid The bare JID of the RosterEntry
      * @return The {@link org.jivesoftware.smack.roster.RosterEntry} which belongs to that user
      */
-    public RosterPacket.Item getEntry(String bareJid);
+    public RosterPacket.Item getEntry(Jid bareJid);
     /**
      * This method returns the version number as specified by the "ver" attribute
      * of the local store. For a fresh store, this MUST be the empty string.
@@ -64,6 +65,6 @@ public interface RosterStore {
      * @param version the new roster version
      * @return True if successful
      */
-    public boolean removeEntry(String bareJid, String version);
+    public boolean removeEntry(Jid bareJid, String version);
 
 }

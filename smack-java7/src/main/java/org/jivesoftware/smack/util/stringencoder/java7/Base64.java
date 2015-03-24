@@ -63,10 +63,10 @@ public class Base64
 	 public final static int URL_SAFE = 16;
 
 
-	 /**
-	  * Encode using the special "ordered" dialect of Base64 described here:
-	  * <a href="http://www.faqs.org/qa/rfcc-1940.html">http://www.faqs.org/qa/rfcc-1940.html</a>.
-	  */
+	/**
+	 * Encode using the special "ordered" dialect of Base64 described here:
+	 * <a href="http://www.faqs.org/qa/rfcc-1940.html">http://www.faqs.org/qa/rfcc-1940.html</a>.
+	 */
 	 public final static int ORDERED = 32;
 
 

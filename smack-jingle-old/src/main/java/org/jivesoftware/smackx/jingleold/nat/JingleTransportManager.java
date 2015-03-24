@@ -51,8 +51,9 @@ public abstract class JingleTransportManager {
      * Get a new Transport Resolver to be used in a Jingle Session
      *
      * @return the TransportResolver to be used
+     * @throws InterruptedException 
      */
-    public TransportResolver getResolver(JingleSession session) throws XMPPException, SmackException {
+    public TransportResolver getResolver(JingleSession session) throws XMPPException, SmackException, InterruptedException {
         TransportResolver resolver = createResolver(session);
         if (resolver == null) {
             resolver = new BasicResolver();
@@ -66,7 +67,8 @@ public abstract class JingleTransportManager {
      * Create a Transport Resolver instance according to the implementation.
      *
      * @return the TransportResolver
+     * @throws InterruptedException 
      */
-    protected abstract TransportResolver createResolver(JingleSession session) throws SmackException;
+    protected abstract TransportResolver createResolver(JingleSession session) throws SmackException, InterruptedException;
 
 }

@@ -27,11 +27,13 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.nat.TransportResolverListener.Checker;
+import org.jxmpp.jid.Jid;
 
 /**
  * Transport candidate.
@@ -353,9 +355,11 @@ public abstract class TransportCandidate {
             public void run() {
                 boolean isUsable;
 
-                
+
                 try {
+                    // CHECKSTYLE:OFF
                 	InetAddress candAddress = InetAddress.getByName(getIp());
+                    // CHECKSTYLE:ON
                     isUsable = true;//candAddress.isReachable(TransportResolver.CHECK_TIMEOUT);
                 }
                 catch (Exception e) {
@@ -608,12 +612,12 @@ public abstract class TransportCandidate {
     public class CandidateEcho implements Runnable {
 
         DatagramSocket socket = null;
-        String localUser = null;
-        String remoteUser = null;
+        Jid localUser;
+        Jid remoteUser;
         String id = null;
         byte[] send = null;
         byte[] receive = null;
-        DatagramPacket sendPacket = null;
+        DatagramPacket sendStanza = null;
         List<DatagramListener> listeners = new ArrayList<DatagramListener>();
         List<ResultListener> resultListeners = new ArrayList<ResultListener>();
         boolean enabled = true;
@@ -645,7 +649,7 @@ public abstract class TransportCandidate {
                 }
             }
             catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
 
@@ -690,7 +694,7 @@ public abstract class TransportCandidate {
                             cont = (password + ";" + candidate.getIp() + ":" + candidate.getPort()).getBytes("UTF-8");
                         }
                         catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
+                            LOGGER.log(Level.WARNING, "exception", e);
                         }
 
                         packet.setData(cont);
@@ -705,7 +709,7 @@ public abstract class TransportCandidate {
                                 Thread.sleep(delay);
                             }
                             catch (InterruptedException e) {
-                                e.printStackTrace();
+                                LOGGER.log(Level.WARNING, "exception", e);
                             }
                         }
                     }
@@ -756,9 +760,11 @@ public abstract class TransportCandidate {
                                 String ip = addr[0];
                                 String pt = addr[1];
 
+                                // CHECKSTYLE:OFF
                                 if (pass.equals(password) 
                                 		&& transportCandidate.getIp().indexOf(ip) != -1 
                                 		&& transportCandidate.getPort() == Integer.parseInt(pt)) {
+                                    // CHECKSTYLE:ON
                                     LOGGER.fine("ECHO OK: " + candidate.getIp() + ":" + candidate.getPort() + " <-> " + transportCandidate.getIp() + ":" + transportCandidate.getPort());
                                     TestResult testResult = new TestResult();
                                     testResult.setResult(true);
@@ -769,7 +775,7 @@ public abstract class TransportCandidate {
 
                             }
                             catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
+                                LOGGER.log(Level.WARNING, "exception", e);
                             }
 
                             LOGGER.fine("ECHO Wrong Data: " + datagramPacket.getAddress().getHostAddress() + ":" + datagramPacket.getPort());
@@ -784,7 +790,7 @@ public abstract class TransportCandidate {
                         content = new String(password + ";" + getIp() + ":" + getPort()).getBytes("UTF-8");
                     }
                     catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
 
                     DatagramPacket packet = new DatagramPacket(content, content.length);
@@ -793,7 +799,7 @@ public abstract class TransportCandidate {
                         packet.setAddress(InetAddress.getByName(transportCandidate.getIp()));
                     }
                     catch (UnknownHostException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
                     packet.setPort(transportCandidate.getPort());
 
@@ -807,7 +813,7 @@ public abstract class TransportCandidate {
                                 Thread.sleep(delay);
                             }
                             catch (InterruptedException e) {
-                                e.printStackTrace();
+                                LOGGER.log(Level.WARNING, "exception", e);
                             }
                         }
                     }
@@ -819,7 +825,7 @@ public abstract class TransportCandidate {
                         Thread.sleep(2000);
                     }
                     catch (InterruptedException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
 
                     removeListener(listener);

@@ -44,7 +44,7 @@ public enum ConfigureNodeFields
 	 * <p><b>Value: {@link URL}</b></p>
 	 */
 	body_xslt,
-	
+
 	/**
 	 * The collection with which a node is affiliated
 	 * 
@@ -68,21 +68,21 @@ public enum ConfigureNodeFields
 	 * <p><b>Value: boolean</b></p>
 	 */
 	deliver_payloads,
-	
+
 	/**
 	 * Whether owners or publisher should receive replies to items
 	 *
 	 * <p><b>Value: {@link ItemReply}</b></p>
 	 */
 	itemreply,
-	
+
 	/**
 	 * Who may associate leaf nodes with a collection
 	 * 
 	 * <p><b>Value: {@link ChildrenAssociationPolicy}</b></p>
 	 */
 	children_association_policy,
-	
+
 	/**
 	 * The list of JIDs that may associate leaf nodes with a 
 	 * collection
@@ -90,14 +90,14 @@ public enum ConfigureNodeFields
 	 * <p><b>Value: List of JIDs as Strings</b></p>
 	 */
 	children_association_whitelist,
-	
+
 	/**
 	 * The child nodes (leaf or collection) associated with a collection
 	 * 
 	 * <p><b>Value: List of Strings</b></p>
 	 */
 	children,
-	
+
 	/**
 	 * The maximum number of child nodes that can be associated with a 
 	 * collection
@@ -105,35 +105,35 @@ public enum ConfigureNodeFields
 	 * <p><b>Value: int</b></p>
 	 */
 	children_max,
-	
+
 	/**
 	 * The maximum number of items to persist
 	 * 
 	 * <p><b>Value: int</b></p>
 	 */
 	max_items,
-	
+
 	/**
 	 * The maximum payload size in bytes
 	 * 
 	 * <p><b>Value: int</b></p>
 	 */
 	max_payload_size,
-	
+
 	/**
 	 * Whether the node is a leaf (default) or collection
 	 * 
 	 * <p><b>Value: {@link NodeType}</b></p>
 	 */
 	node_type,
-	
+
 	/**
 	 * Whether to notify subscribers when the node configuration changes
 	 * 
 	 * <p><b>Value: boolean</b></p>
 	 */
 	notify_config,
-	
+
 	/**
 	 * Whether to notify subscribers when the node is deleted
 	 * 
@@ -147,7 +147,7 @@ public enum ConfigureNodeFields
 	 * <p><b>Value: boolean</b></p>
 	 */
 	notify_retract,
-	
+
 	/**
 	 * Whether to persist items to storage.  This is required to have multiple 
 	 * items in the node. 
@@ -155,7 +155,7 @@ public enum ConfigureNodeFields
 	 * <p><b>Value: boolean</b></p>
 	 */
 	persist_items,
-	
+
 	/**
 	 * Whether to deliver notifications to available users only
 	 * 
@@ -169,42 +169,42 @@ public enum ConfigureNodeFields
 	 * <p><b>Value: {@link PublishModel}</b></p>
 	 */
 	publish_model,
-	
+
 	/**
 	 * The specific multi-user chat rooms to specify for replyroom
 	 * 
 	 * <p><b>Value: List of JIDs as Strings</b></p>
 	 */
 	replyroom,
-	
+
 	/**
 	 * The specific JID(s) to specify for replyto
 	 * 
 	 * <p><b>Value: List of JIDs as Strings</b></p>
 	 */
 	replyto,
-	
+
 	/**
 	 * The roster group(s) allowed to subscribe and retrieve items
 	 * 
 	 * <p><b>Value: List of strings</b></p>
 	 */
 	roster_groups_allowed,
-	
+
 	/**
 	 * Whether to allow subscriptions
 	 * 
 	 * <p><b>Value: boolean</b></p>
 	 */
 	subscribe,
-	
+
 	/**
 	 * A friendly name for the node
 	 * 
 	 * <p><b>Value: String</b></p>
 	 */
 	title,
-	
+
 	/**
 	 * The type of node data, ussually specified by the namespace 
 	 * of the payload(if any);MAY be a list-single rather than a 
@@ -213,7 +213,7 @@ public enum ConfigureNodeFields
 	 * <p><b>Value: String</b></p>
 	 */
 	type;
-	
+
 	public String getFieldName()
 	{
 		return "pubsub#" + toString();

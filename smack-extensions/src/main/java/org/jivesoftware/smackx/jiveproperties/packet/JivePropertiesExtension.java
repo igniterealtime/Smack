@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -38,7 +38,7 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
  * Serializable interface).
  *
  */
-public class JivePropertiesExtension implements PacketExtension {
+public class JivePropertiesExtension implements ExtensionElement {
     /**
      * Namespace used to store packet properties.
      */
@@ -47,7 +47,7 @@ public class JivePropertiesExtension implements PacketExtension {
     public static final String ELEMENT = "properties";
 
     private static final Logger LOGGER = Logger.getLogger(JivePropertiesExtension.class.getName());
-    
+
     private final Map<String, Object> properties;
 
     public JivePropertiesExtension() {

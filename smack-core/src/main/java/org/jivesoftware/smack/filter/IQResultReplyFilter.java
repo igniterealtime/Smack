@@ -38,4 +38,11 @@ public class IQResultReplyFilter extends IQReplyFilter {
         return IQTypeFilter.RESULT.accept(packet);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" (" + super.toString() + ')');
+        return sb.toString();
+    }
 }

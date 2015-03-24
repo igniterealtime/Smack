@@ -29,6 +29,10 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.junit.Before;
 import org.junit.Test;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.JidTestUtil;
+import org.jxmpp.jid.impl.JidCreate;
 import org.mockito.ArgumentCaptor;
 import org.powermock.reflect.Whitebox;
 
@@ -39,10 +43,10 @@ import org.powermock.reflect.Whitebox;
  */
 public class InitiationListenerTest {
 
-    String initiatorJID = "initiator@xmpp-server/Smack";
-    String targetJID = "target@xmpp-server/Smack";
-    String xmppServer = "xmpp-server";
-    String proxyJID = "proxy.xmpp-server";
+    static final FullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
+    static final FullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
+    static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
+    static final DomainBareJid proxyJID = JidTestUtil.MUC_EXAMPLE_ORG;
     String proxyAddress = "127.0.0.1";
     String sessionID = "session_id";
 
@@ -93,7 +97,7 @@ public class InitiationListenerTest {
 
         // capture reply to the SOCKS5 Bytestream initiation
         ArgumentCaptor<IQ> argument = ArgumentCaptor.forClass(IQ.class);
-        verify(connection).sendPacket(argument.capture());
+        verify(connection).sendStanza(argument.capture());
 
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());
@@ -169,7 +173,7 @@ public class InitiationListenerTest {
 
         // add listener for request of user "other_initiator"
         Socks5BytestreamListener listener = mock(Socks5BytestreamListener.class);
-        byteStreamManager.addIncomingBytestreamListener(listener, "other_" + initiatorJID);
+        byteStreamManager.addIncomingBytestreamListener(listener, JidCreate.from("other_" + initiatorJID));
 
         // run the listener with the initiation packet
         initiationListener.handleIQRequest(initBytestream);
@@ -183,7 +187,7 @@ public class InitiationListenerTest {
 
         // capture reply to the SOCKS5 Bytestream initiation
         ArgumentCaptor<IQ> argument = ArgumentCaptor.forClass(IQ.class);
-        verify(connection).sendPacket(argument.capture());
+        verify(connection).sendStanza(argument.capture());
 
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());
@@ -240,8 +244,8 @@ public class InitiationListenerTest {
 
         // add listener for request of user "other_initiator"
         Socks5BytestreamListener userRequestsListener = mock(Socks5BytestreamListener.class);
-        byteStreamManager.addIncomingBytestreamListener(userRequestsListener, "other_"
-                        + initiatorJID);
+        byteStreamManager.addIncomingBytestreamListener(userRequestsListener, JidCreate.from("other_"
+                        + initiatorJID));
 
         // run the listener with the initiation packet
         initiationListener.handleIQRequest(initBytestream);

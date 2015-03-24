@@ -46,11 +46,6 @@ public class RosterOfflineTest {
     }
 
     @Test(expected = SmackException.class)
-    public void shouldThrowExceptionOnCreateEntry() throws Exception {
-        roster.createEntry("test", "test", null);
-    }
-
-    @Test(expected = SmackException.class)
     public void shouldThrowExceptionOnReload() throws Exception {
         roster.reload();
     }

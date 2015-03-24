@@ -25,11 +25,12 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
+import org.jxmpp.jid.DomainBareJid;
 
 /**
  * A TranscriptSearchManager helps to retrieve the form to use for searching transcripts
- * {@link #getSearchForm(String)} or to submit a search form and return the results of
- * the search {@link #submitSearch(String, Form)}.
+ * {@link #getSearchForm(DomainBareJid)} or to submit a search form and return the results of
+ * the search {@link #submitSearch(DomainBareJid, Form)}.
  *
  * @author Gaston Dombiak
  */
@@ -50,8 +51,9 @@ public class TranscriptSearchManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public Form getSearchForm(String serviceJID) throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public Form getSearchForm(DomainBareJid serviceJID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         TranscriptSearch search = new TranscriptSearch();
         search.setType(IQ.Type.get);
         search.setTo(serviceJID);
@@ -72,8 +74,9 @@ public class TranscriptSearchManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public ReportedData submitSearch(String serviceJID, Form completedForm) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public ReportedData submitSearch(DomainBareJid serviceJID, Form completedForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         TranscriptSearch search = new TranscriptSearch();
         search.setType(IQ.Type.get);
         search.setTo(serviceJID);

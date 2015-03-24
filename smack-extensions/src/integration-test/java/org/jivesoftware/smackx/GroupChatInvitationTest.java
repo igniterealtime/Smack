@@ -21,7 +21,7 @@ import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 
 /**
  * 
@@ -46,7 +46,7 @@ public class GroupChatInvitationTest extends SmackTestCase {
             Message message = new Message(getBareJID(1));
             message.setBody("Group chat invitation!");
             message.addExtension(invitation);
-            getConnection(0).sendPacket(message);
+            getConnection(0).sendStanza(message);
 
             Thread.sleep(250);
 
@@ -67,7 +67,7 @@ public class GroupChatInvitationTest extends SmackTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         // Register listener for groupchat invitations.
-        PacketFilter filter = new PacketExtensionFilter("x", "jabber:x:conference");
+        PacketFilter filter = new StanzaExtensionFilter("x", "jabber:x:conference");
         collector = getConnection(1).createPacketCollector(filter);
     }
 

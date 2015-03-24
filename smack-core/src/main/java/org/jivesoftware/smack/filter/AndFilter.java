@@ -17,12 +17,7 @@
 
 package org.jivesoftware.smack.filter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.util.Objects;
 
 /**
  * Implements the logical AND operation over two or more packet filters.
@@ -30,19 +25,14 @@ import org.jivesoftware.smack.util.Objects;
  *
  * @author Matt Tucker
  */
-public class AndFilter implements PacketFilter {
-
-    /**
-     * The list of filters.
-     */
-    private final List<PacketFilter> filters;
+public class AndFilter extends AbstractListFilter implements StanzaFilter {
 
     /**
      * Creates an empty AND filter. Filters should be added using the
-     * {@link #addFilter(PacketFilter)} method.
+     * {@link #addFilter(StanzaFilter)} method.
      */
     public AndFilter() {
-        filters = new ArrayList<PacketFilter>();
+        super();
     }
 
     /**
@@ -50,27 +40,12 @@ public class AndFilter implements PacketFilter {
      *
      * @param filters the filters to add.
      */
-    public AndFilter(PacketFilter... filters) {
-        Objects.requireNonNull(filters, "Parameter must not be null.");
-        for(PacketFilter filter : filters) {
-            Objects.requireNonNull(filter, "Parameter must not be null.");
-        }
-        this.filters = new ArrayList<PacketFilter>(Arrays.asList(filters));
-    }
-
-    /**
-     * Adds a filter to the filter list for the AND operation. A packet
-     * will pass the filter if all of the filters in the list accept it.
-     *
-     * @param filter a filter to add to the filter list.
-     */
-    public void addFilter(PacketFilter filter) {
-        Objects.requireNonNull(filter, "Parameter must not be null.");
-        filters.add(filter);
+    public AndFilter(StanzaFilter... filters) {
+        super(filters);
     }
 
     public boolean accept(Stanza packet) {
-        for (PacketFilter filter : filters) {
+        for (StanzaFilter filter : filters) {
             if (!filter.accept(packet)) {
                 return false;
             }
@@ -78,7 +53,4 @@ public class AndFilter implements PacketFilter {
         return true;
     }
 
-    public String toString() {
-        return filters.toString();
-    }
 }

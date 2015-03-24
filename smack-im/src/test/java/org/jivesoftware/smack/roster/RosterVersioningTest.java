@@ -44,6 +44,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Tests that verify the correct behavior of the {@link Roster} implementation
@@ -130,9 +132,10 @@ public class RosterVersioningTest {
      * Tests that a non-empty roster result empties the store.
      * @throws SmackException 
      * @throws XMPPException 
+     * @throws XmppStringprepException 
      */
     @Test(timeout = 5000)
-    public void testOtherVersionStored() throws InterruptedException, XMPPException, SmackException {
+    public void testOtherVersionStored() throws InterruptedException, XMPPException, SmackException, XmppStringprepException {
         Item vaglafItem = vaglafItem();
 
         // We expect that the roster request is the only packet sent. This is not part of the specification,
@@ -181,7 +184,7 @@ public class RosterVersioningTest {
         // Simulate a roster push adding vaglaf
         {
             RosterPacket rosterPush = new RosterPacket();
-            rosterPush.setTo("rostertest@example.com/home");
+            rosterPush.setTo(JidCreate.from("rostertest@example.com/home"));
             rosterPush.setType(Type.set);
             rosterPush.setVersion("v97");
 
@@ -193,7 +196,7 @@ public class RosterVersioningTest {
 
             assertEquals("Expect store version after push", "v97", store.getRosterVersion());
 
-            Item storedItem = store.getEntry("vaglaf@example.com");
+            Item storedItem = store.getEntry(JidCreate.from("vaglaf@example.com"));
             assertNotNull("Expect vaglaf to be added", storedItem);
             assertEquals("Expect vaglaf to be equal to pushed item", pushedItem, storedItem);
 
@@ -207,24 +210,24 @@ public class RosterVersioningTest {
         // Simulate a roster push removing vaglaf
         {
             RosterPacket rosterPush = new RosterPacket();
-            rosterPush.setTo("rostertest@example.com/home");
+            rosterPush.setTo(JidCreate.from("rostertest@example.com/home"));
             rosterPush.setType(Type.set);
             rosterPush.setVersion("v98");
 
-            Item item = new Item("vaglaf@example.com", "vaglaf the only");
+            Item item = new Item(JidCreate.from("vaglaf@example.com"), "vaglaf the only");
             item.setItemType(ItemType.remove);
             rosterPush.addRosterItem(item);
             rosterListener.reset();
             connection.processPacket(rosterPush);
             rosterListener.waitAndReset();
 
-            assertNull("Store doses not contain vaglaf", store.getEntry("vaglaf@example.com"));
+            assertNull("Store doses not contain vaglaf", store.getEntry(JidCreate.from("vaglaf@example.com")));
             assertEquals("Expect store version after push", "v98", store.getRosterVersion());
         }
     }
 
-    private Item vaglafItem() {
-        Item item = new Item("vaglaf@example.com", "vaglaf the only");
+    private Item vaglafItem() throws XmppStringprepException {
+        Item item = new Item(JidCreate.from("vaglaf@example.com"), "vaglaf the only");
         item.setItemType(ItemType.both);
         item.addGroupName("all");
         item.addGroupName("friends");
@@ -233,14 +236,14 @@ public class RosterVersioningTest {
     }
 
     private void populateStore(RosterStore store) throws IOException {
-        store.addEntry(new RosterPacket.Item("geoff@example.com", "geoff hurley"), "");
+        store.addEntry(new RosterPacket.Item(JidCreate.from("geoff@example.com"), "geoff hurley"), "");
 
-        RosterPacket.Item item = new RosterPacket.Item("joe@example.com", "joe stevens");
+        RosterPacket.Item item = new RosterPacket.Item(JidCreate.from("joe@example.com"), "joe stevens");
         item.addGroupName("friends");
         item.addGroupName("partners");
         store.addEntry(item, "");
 
-        item = new RosterPacket.Item("higgins@example.com", "higgins mcmann");
+        item = new RosterPacket.Item(JidCreate.from("higgins@example.com"), "higgins mcmann");
         item.addGroupName("all");
         item.addGroupName("friends");
         store.addEntry(item, "v96");

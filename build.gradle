@@ -6,7 +6,9 @@ buildscript {
         maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
     }
     dependencies {
-        classpath 'org.kordamp:markdown-gradle-plugin:0.1.1'
+        classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
+		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.0'
+		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
     }
 }
 apply plugin: 'org.kordamp.gradle.markdown'
@@ -16,6 +18,7 @@ apply from: 'version.gradle'
 allprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
+	apply plugin: 'jacoco'
 
 	ext {
 		gitCommit = getGitCommit()
@@ -33,6 +36,24 @@ allprojects {
 		// build, causing unnecessary rebuilds.
 		builtDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 		oneLineDesc = 'An Open Source XMPP (Jabber) client library'
+		javadocAllProjects = subprojects - project(':smack-integration-test')
+		// A dirty hack used for Gradle's jacoco plugin, since is not
+		// hable to handle the case when a (sub)project has no unit
+		// tests. :-(
+		projectsWithoutUnitTests = [
+			':smack-android',
+			':smack-android-extensions',
+			':smack-bosh',
+			':smack-compression-jzlib',
+			':smack-debug',
+			':smack-debug-slf4j',
+			':smack-java7',
+			':smack-jingle-old',
+			':smack-resolver-dnsjava',
+			':smack-resolver-javax',
+			':smack-resolver-minidns',
+		].collect{ project(it) }
+		projectsWithUnitTests = subprojects - projectsWithoutUnitTests
 		androidProjects = [
 			':smack-tcp',
 			':smack-bosh',
@@ -43,8 +64,13 @@ allprojects {
 			':smack-extensions',
 			':smack-experimental',
 		].collect{ project(it) }
+		androidBootClasspathProjects = [
+			':smack-android',
+			':smack-android-extensions',
+		].collect{ project(it) }
 		androidBootClasspath = getAndroidRuntimeJar()
 		androidJavadocOffline = getAndroidJavadocOffline()
+		junitVersion = '4.11'
 	}
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = 1.7
@@ -77,22 +103,35 @@ allprojects {
 	}
 
 	repositories {
+		mavenLocal()
+		mavenCentral()
 		// Add OSS Sonatype Snapshot repository
 		maven {
 			url 'https://oss.sonatype.org/content/repositories/snapshots'
 		}
 	}
 
-	compileJava {
+	tasks.withType(JavaCompile) {
 		// Some systems may not have set their platform default
 		// converter to 'utf8', but we use unicode in our source
 		// files. Therefore ensure that javac uses unicode
 		options.encoding = "utf8"
+		options.compilerArgs = [
+			'-Xlint:all',
+			'-Werror',
+		]
 	}
 
-	if (JavaVersion.current().isJava8Compatible()) {
-		tasks.withType(Javadoc) {
-			options.addStringOption('Xdoclint:none', '-quiet')
+	jacoco {
+		toolVersion = "0.7.4.201502262128"
+	}
+
+	jacocoTestReport {
+		dependsOn test
+		sourceDirectories = project.files(sourceSets.main.allSource.srcDirs)
+		classDirectories =  project.files(sourceSets.main.output)
+		reports {
+			xml.enabled true
 		}
 	}
 }
@@ -112,15 +151,19 @@ gradle.taskGraph.whenReady { taskGraph ->
 }
 
 task javadocAll(type: Javadoc) {
-	source subprojects.collect {project ->
+	source javadocAllProjects.collect {project ->
 		project.sourceSets.main.allJava }
 	destinationDir = javadocAllDir
 	// Might need a classpath
 	classpath = files(subprojects.collect {project ->
 		project.sourceSets.main.compileClasspath})
+	classpath += files(androidBootClasspath)
 	options.linkSource = true
 	options.use = true
-	options.links = ["http://docs.oracle.com/javase/$sourceCompatibility/docs/api/"] as String[]
+	options.links = [
+		"http://docs.oracle.com/javase/$sourceCompatibility/docs/api/",
+		"http://jxmpp.org/$jxmppVersion/javadoc/",
+		] as String[]
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
@@ -180,13 +223,10 @@ subprojects {
 	apply plugin: 'osgi'
 	apply plugin: 'signing'
 	apply plugin: 'checkstyle'
+	apply plugin: 'org.kordamp.gradle.clirr'
 
 	checkstyle {
 		configFile = new File(rootConfigDir, 'checkstyle.xml')
-	}
-	repositories {
-		mavenLocal()
-		mavenCentral()
 	}
 	task sourcesJar(type: Jar, dependsOn: classes) {
 		classifier = 'sources'
@@ -279,12 +319,59 @@ subprojects {
 		required { signingRequired }
 		sign configurations.archives
 	}
+
+	clirr {
+		semver false
+	}
 }
+
+// No need to ever clirr smack-integration-test
+project(':smack-integration-test').clirr.enabled = false
 
 subprojects*.jar {
    manifest {
        from sharedManifest
    }
+}
+
+configure(androidBootClasspathProjects) {
+	compileJava {
+		options.bootClasspath = androidBootClasspath
+	}
+	javadoc {
+		classpath += files(androidBootClasspath)
+	}
+}
+
+apply plugin: "com.github.kt3k.coveralls"
+coveralls {
+	sourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs).files.absolutePath
+}
+
+task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+	dependsOn = projectsWithUnitTests.jacocoTestReport
+	sourceDirectories = files(projectsWithUnitTests.sourceSets.main.allSource.srcDirs)
+	classDirectories = files(projectsWithUnitTests.sourceSets.main.output)
+	executionData = files(projectsWithUnitTests.jacocoTestReport.executionData)
+	reports {
+		xml.enabled true
+		xml.destination ="${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+	}
+	// We could remove the following setOnlyIf line, but then
+	// jacocoRootReport would silently be SKIPPED if something with
+	// the projectsWithUnitTests is wrong (e.g. a project is missing
+	// in there).
+	setOnlyIf { true }
+}
+
+// Important to specify this task after the subprojects block
+task clirrRootReport(type: org.kordamp.gradle.clirr.ClirrReportTask) {
+	dependsOn = subprojects.tasks.clirr
+	reports = files((subprojects.findAll { it.clirr.enabled == true }).tasks.clirr.xmlReport)
+}
+
+task integrationTest {
+	dependsOn project(':smack-integration-test').tasks.run
 }
 
 def getGitCommit() {

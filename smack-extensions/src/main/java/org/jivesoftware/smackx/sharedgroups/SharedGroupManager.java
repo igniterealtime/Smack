@@ -44,8 +44,9 @@ public class SharedGroupManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public static List<String> getSharedGroups(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public static List<String> getSharedGroups(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Discover the shared groups of the logged user
         SharedGroupsInfo info = new SharedGroupsInfo();
         info.setType(IQ.Type.get);

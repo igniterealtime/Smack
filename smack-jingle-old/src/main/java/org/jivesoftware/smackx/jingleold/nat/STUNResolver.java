@@ -264,8 +264,9 @@ public class STUNResolver extends TransportResolver {
     /**
      * Resolve the IP and obtain a valid transport method.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException {
+    public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException, InterruptedException {
 
         setResolveInit();
 

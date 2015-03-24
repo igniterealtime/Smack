@@ -17,6 +17,8 @@
 package org.jivesoftware.smackx.jingleold.mediaimpl.sshare.api;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -48,7 +50,7 @@ public class OctTreeQuantizer implements Quantizer {
 		int	totalGreen;
 		int	totalBlue;
 		int index;
-		
+
 		/**
 		 * A debugging method which prints the tree out.
 		 */
@@ -71,13 +73,13 @@ public class OctTreeQuantizer implements Quantizer {
 	private int reduceColors;
 	private int maximumColors;
 	private int colors = 0;
-	private Vector<OctTreeNode>[] colorList;
-	
-	public OctTreeQuantizer() {
+	private List<Vector<OctTreeNode>> colorList;
+
+    public OctTreeQuantizer() {
 		setup(256);
-		colorList = new Vector[MAX_LEVEL+1];
+		colorList = new ArrayList<>(MAX_LEVEL+1);
 		for (int i = 0; i < MAX_LEVEL+1; i++)
-			colorList[i] = new Vector<OctTreeNode>();
+			colorList.add(i, new Vector<OctTreeNode>());
 		root = new OctTreeNode();
 	}
 
@@ -89,7 +91,7 @@ public class OctTreeQuantizer implements Quantizer {
 		maximumColors = numColors;
 		reduceColors = Math.max(512, numColors * 2);
 	}
-	
+
 	/**
 	 * Add pixels to the quantizer.
 	 * @param pixels the array of ARGB pixels
@@ -102,7 +104,7 @@ public class OctTreeQuantizer implements Quantizer {
 			if (colors > reduceColors)
 				reduceTree(reduceColors);
 		}
-	}	
+	}
 
     /**
      * Get the color table index for a color.
@@ -171,7 +173,7 @@ public class OctTreeQuantizer implements Quantizer {
 				node.leaf[index] = child;
 				node.isLeaf = false;
 				nodes++;
-				colorList[level].addElement(child);
+				colorList.get(level).addElement(child);
 
 				if (level == MAX_LEVEL) {
 					child.isLeaf = true;
@@ -199,7 +201,7 @@ public class OctTreeQuantizer implements Quantizer {
 
 	private void reduceTree(int numColors) {
 		for (int level = MAX_LEVEL-1; level >= 0; level--) {
-			Vector<OctTreeNode> v = colorList[level];
+			Vector<OctTreeNode> v = colorList.get(level);
 			if (v != null && v.size() > 0) {
 				for (int j = 0; j < v.size(); j++) {
 					OctTreeNode node = v.elementAt(j);
@@ -217,7 +219,7 @@ public class OctTreeQuantizer implements Quantizer {
 								node.children--;
 								colors--;
 								nodes--;
-								colorList[level+1].removeElement(child);
+								colorList.get(level+1).removeElement(child);
 							}
 						}
 						node.isLeaf = true;
@@ -241,7 +243,7 @@ public class OctTreeQuantizer implements Quantizer {
 		buildColorTable(root, table, 0);
 		return table;
 	}
-	
+
 	/**
 	 * A quick way to use the quantizer. Just create a table the right size and pass in the pixels.
      * @param inPixels the input colors
@@ -281,6 +283,6 @@ public class OctTreeQuantizer implements Quantizer {
 		}
 		return index;
 	}
-	
+
 }
 

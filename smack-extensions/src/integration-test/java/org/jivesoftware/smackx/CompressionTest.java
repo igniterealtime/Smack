@@ -61,7 +61,7 @@ public class CompressionTest extends SmackTestCase {
         // Create a packet collector to listen for a response.
         PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(version.getStanzaId()));
 
-        connection.sendPacket(version);
+        connection.sendStanza(version);
 
         // Wait up to 5 seconds for a result.
         IQ result = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());

@@ -37,7 +37,7 @@ import org.jivesoftware.smack.packet.XMPPError;
  */
 public abstract class XMPPException extends Exception {
     private static final long serialVersionUID = 6881651633890968625L;
-    
+
 
     /**
      * Creates a new XMPPException.
@@ -129,11 +129,6 @@ public abstract class XMPPException extends Exception {
             }
         }
 
-        @Override
-        public String toString() {
-            return getMessage();
-        }
-
         public static void ifHasErrorThenThrow(Stanza packet) throws XMPPErrorException {
             XMPPError xmppError = packet.getError();
             if (xmppError != null) {
@@ -157,7 +152,9 @@ public abstract class XMPPException extends Exception {
          * @param streamError the root cause of the exception.
          */
         public StreamErrorException(StreamError streamError) {
-            super();
+            super(streamError.getCondition().toString()
+                  + " You can read more about the meaning of this stream error at http://xmpp.org/rfcs/rfc6120.html#streams-error-conditions\n"
+                  + streamError.toString());
             this.streamError = streamError;
         }
 
@@ -171,14 +168,5 @@ public abstract class XMPPException extends Exception {
             return streamError;
         }
 
-        @Override
-        public String getMessage() {
-            return streamError.toString();
-        }
-
-        @Override
-        public String toString() {
-            return getMessage();
-        }
     }
 }

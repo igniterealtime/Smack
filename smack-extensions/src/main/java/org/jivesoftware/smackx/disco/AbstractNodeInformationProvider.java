@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.disco;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 
@@ -40,7 +40,7 @@ public abstract class AbstractNodeInformationProvider implements NodeInformation
         return null;
     }
 
-    public List<PacketExtension> getNodePacketExtensions() {
+    public List<ExtensionElement> getNodePacketExtensions() {
         return null;
     }
 

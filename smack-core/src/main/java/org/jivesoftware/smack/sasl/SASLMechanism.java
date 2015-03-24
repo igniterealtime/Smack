@@ -24,6 +24,7 @@ import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Response;
 import org.jivesoftware.smack.util.StringTransformer;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+import org.jxmpp.jid.DomainBareJid;
 
 import javax.security.auth.callback.CallbackHandler;
 
@@ -33,9 +34,9 @@ import javax.security.auth.callback.CallbackHandler;
  *  <li>{@link #getName()} -- returns the common name of the SASL mechanism.</li>
  * </ul>
  * Subclasses will likely want to implement their own versions of these methods:
- *  <li>{@link #authenticate(String, String, String, String)} -- Initiate authentication stanza using the
+ *  <li>{@link #authenticate(String, String, DomainBareJid, String)} -- Initiate authentication stanza using the
  *  deprecated method.</li>
- *  <li>{@link #authenticate(String, String, CallbackHandler)} -- Initiate authentication stanza
+ *  <li>{@link #authenticate(String, DomainBareJid, CallbackHandler)} -- Initiate authentication stanza
  *  using the CallbackHandler method.</li>
  *  <li>{@link #challengeReceived(String, boolean)} -- Handle a challenge from the server.</li>
  * </ul>
@@ -104,7 +105,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     /**
      * The name of the XMPP service
      */
-    protected String serviceName;
+    protected DomainBareJid serviceName;
 
     /**
      * The users password
@@ -115,7 +116,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     /**
      * Builds and sends the <tt>auth</tt> stanza to the server. Note that this method of
      * authentication is not recommended, since it is very inflexible. Use
-     * {@link #authenticate(String, String, CallbackHandler)} whenever possible.
+     * {@link #authenticate(String, DomainBareJid, CallbackHandler)} whenever possible.
      * 
      * Explanation of auth stanza:
      * 
@@ -158,9 +159,10 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param password the password for this account.
      * @throws SmackException If a network error occurs while authenticating.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public final void authenticate(String username, String host, String serviceName, String password)
-                    throws SmackException, NotConnectedException {
+    public final void authenticate(String username, String host, DomainBareJid serviceName, String password)
+                    throws SmackException, NotConnectedException, InterruptedException {
         this.authenticationId = username;
         this.host = host;
         this.serviceName = serviceName;
@@ -181,9 +183,10 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param cbh      the CallbackHandler to obtain user information.
      * @throws SmackException
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void authenticate(String host,String serviceName, CallbackHandler cbh)
-                    throws SmackException, NotConnectedException {
+    public void authenticate(String host, DomainBareJid serviceName, CallbackHandler cbh)
+                    throws SmackException, NotConnectedException, InterruptedException {
         this.host = host;
         this.serviceName = serviceName;
         authenticateInternal(cbh);
@@ -192,7 +195,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
 
     protected abstract void authenticateInternal(CallbackHandler cbh) throws SmackException;
 
-    private final void authenticate() throws SmackException, NotConnectedException {
+    private final void authenticate() throws SmackException, NotConnectedException, InterruptedException {
         byte[] authenticationBytes = getAuthenticationText();
         String authenticationText;
         if (authenticationBytes != null) {
@@ -224,8 +227,9 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param finalChallenge true if this is the last challenge send by the server within the success stanza
      * @throws NotConnectedException
      * @throws SmackException
+     * @throws InterruptedException 
      */
-    public final void challengeReceived(String challengeString, boolean finalChallenge) throws SmackException, NotConnectedException {
+    public final void challengeReceived(String challengeString, boolean finalChallenge) throws SmackException, NotConnectedException, InterruptedException {
         byte[] challenge = Base64.decode(challengeString);
         byte[] response = evaluateChallenge(challenge);
         if (finalChallenge) {

@@ -16,10 +16,10 @@
  */
 package org.jivesoftware.smack.sm.predicates;
 
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Stanza;
 
-public class AfterXStanzas implements PacketFilter {
+public class AfterXStanzas implements StanzaFilter {
 
     final int count;
     int currentCount;

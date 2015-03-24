@@ -25,11 +25,11 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.AbstractConnectionClosedListener;
+import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -39,6 +39,7 @@ import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.BytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jxmpp.jid.Jid;
 
 /**
  * The InBandBytestreamManager class handles establishing In-Band Bytestreams as specified in the <a
@@ -55,16 +56,16 @@ import org.jivesoftware.smackx.filetransfer.FileTransferManager;
  * flow-control method like <a href="http://xmpp.org/extensions/xep-0079.html">Advanced Message
  * Processing</a>. To set the stanza that should be used invoke {@link #setStanza(StanzaType)}.
  * <p>
- * To establish an In-Band Bytestream invoke the {@link #establishSession(String)} method. This will
+ * To establish an In-Band Bytestream invoke the {@link #establishSession(Jid)} method. This will
  * negotiate an in-band bytestream with the given target JID and return a session.
  * <p>
  * If a session ID for the In-Band Bytestream was already negotiated (e.g. while negotiating a file
- * transfer) invoke {@link #establishSession(String, String)}.
+ * transfer) invoke {@link #establishSession(Jid, String)}.
  * <p>
  * To handle incoming In-Band Bytestream requests add an {@link InBandBytestreamListener} to the
  * manager. There are two ways to add this listener. If you want to be informed about incoming
  * In-Band Bytestreams from a specific user add the listener by invoking
- * {@link #addIncomingBytestreamListener(BytestreamListener, String)}. If the listener should
+ * {@link #addIncomingBytestreamListener(BytestreamListener, Jid)}. If the listener should
  * respond to all In-Band Bytestream requests invoke
  * {@link #addIncomingBytestreamListener(BytestreamListener)}.
  * <p>
@@ -147,7 +148,7 @@ public class InBandBytestreamManager implements BytestreamManager {
      * assigns a user to a listener that is informed if an In-Band Bytestream request for this user
      * is received
      */
-    private final Map<String, BytestreamListener> userListeners = new ConcurrentHashMap<String, BytestreamListener>();
+    private final Map<Jid, BytestreamListener> userListeners = new ConcurrentHashMap<>();
 
     /*
      * list of listeners that respond to all In-Band Bytestream requests if there are no user
@@ -214,7 +215,7 @@ public class InBandBytestreamManager implements BytestreamManager {
 
         // register bytestream data packet listener
         this.dataListener = new DataListener(this);
-        this.connection.addSyncPacketListener(this.dataListener, this.dataListener.getFilter());
+        connection.registerIQRequestHandler(dataListener);
 
         // register bytestream close packet listener
         this.closeListener = new CloseListener(this);
@@ -267,7 +268,7 @@ public class InBandBytestreamManager implements BytestreamManager {
      * @param listener the listener to register
      * @param initiatorJID the JID of the user that wants to establish an In-Band Bytestream
      */
-    public void addIncomingBytestreamListener(BytestreamListener listener, String initiatorJID) {
+    public void addIncomingBytestreamListener(BytestreamListener listener, Jid initiatorJID) {
         this.userListeners.put(initiatorJID, listener);
     }
 
@@ -392,15 +393,16 @@ public class InBandBytestreamManager implements BytestreamManager {
      * the data to be sent.
      * <p>
      * To establish an In-Band Bytestream after negotiation the kind of data to be sent (e.g. file
-     * transfer) use {@link #establishSession(String, String)}.
+     * transfer) use {@link #establishSession(Jid, String)}.
      * 
      * @param targetJID the JID of the user an In-Band Bytestream should be established
      * @return the session to send/receive data to/from the user
      * @throws XMPPException if the user doesn't support or accept in-band bytestreams, or if the
      *         user prefers smaller block sizes
      * @throws SmackException if there was no response from the server.
+     * @throws InterruptedException 
      */
-    public InBandBytestreamSession establishSession(String targetJID) throws XMPPException, SmackException {
+    public InBandBytestreamSession establishSession(Jid targetJID) throws XMPPException, SmackException, InterruptedException {
         String sessionID = getNextSessionID();
         return establishSession(targetJID, sessionID);
     }
@@ -416,9 +418,10 @@ public class InBandBytestreamManager implements BytestreamManager {
      *         user prefers smaller block sizes
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public InBandBytestreamSession establishSession(String targetJID, String sessionID)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public InBandBytestreamSession establishSession(Jid targetJID, String sessionID)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Open byteStreamRequest = new Open(sessionID, this.defaultBlockSize, this.stanza);
         byteStreamRequest.setTo(targetJID);
 
@@ -438,11 +441,12 @@ public class InBandBytestreamManager implements BytestreamManager {
      * 
      * @param request IQ packet that should be answered with a not-acceptable error
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void replyRejectPacket(IQ request) throws NotConnectedException {
+    protected void replyRejectPacket(IQ request) throws NotConnectedException, InterruptedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.not_acceptable);
         IQ error = IQ.createErrorResponse(request, xmppError);
-        this.connection.sendPacket(error);
+        this.connection.sendStanza(error);
     }
 
     /**
@@ -451,11 +455,12 @@ public class InBandBytestreamManager implements BytestreamManager {
      * 
      * @param request IQ packet that should be answered with a resource-constraint error
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void replyResourceConstraintPacket(IQ request) throws NotConnectedException {
+    protected void replyResourceConstraintPacket(IQ request) throws NotConnectedException, InterruptedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.resource_constraint);
         IQ error = IQ.createErrorResponse(request, xmppError);
-        this.connection.sendPacket(error);
+        this.connection.sendStanza(error);
     }
 
     /**
@@ -464,11 +469,12 @@ public class InBandBytestreamManager implements BytestreamManager {
      * 
      * @param request IQ packet that should be answered with a item-not-found error
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void replyItemNotFoundPacket(IQ request) throws NotConnectedException {
+    protected void replyItemNotFoundPacket(IQ request) throws NotConnectedException, InterruptedException {
         XMPPError xmppError = new XMPPError(XMPPError.Condition.item_not_found);
         IQ error = IQ.createErrorResponse(request, xmppError);
-        this.connection.sendPacket(error);
+        this.connection.sendStanza(error);
     }
 
     /**
@@ -476,7 +482,7 @@ public class InBandBytestreamManager implements BytestreamManager {
      * 
      * @return a new unique session ID
      */
-    private String getNextSessionID() {
+    private static String getNextSessionID() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(SESSION_ID_PREFIX);
         buffer.append(Math.abs(randomGenerator.nextLong()));
@@ -499,7 +505,7 @@ public class InBandBytestreamManager implements BytestreamManager {
      * @param initiator the initiator's JID
      * @return the listener
      */
-    protected BytestreamListener getUserListener(String initiator) {
+    protected BytestreamListener getUserListener(Jid initiator) {
         return this.userListeners.get(initiator);
     }
 
@@ -542,7 +548,7 @@ public class InBandBytestreamManager implements BytestreamManager {
 
         // remove all listeners registered by this manager
         connection.unregisterIQRequestHandler(initiationListener);
-        this.connection.removeSyncPacketListener(this.dataListener);
+        connection.unregisterIQRequestHandler(dataListener);
         connection.unregisterIQRequestHandler(closeListener);
 
         // shutdown threads

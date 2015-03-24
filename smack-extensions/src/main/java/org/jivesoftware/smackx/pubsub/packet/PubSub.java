@@ -17,8 +17,9 @@
 package org.jivesoftware.smackx.pubsub.packet;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.pubsub.PubSubElementType;
+import org.jxmpp.jid.Jid;
 
 /**
  * The standard PubSub extension of an {@link IQ} packet.  This is the topmost
@@ -40,7 +41,7 @@ public class PubSub extends IQ
         super(ELEMENT, ns.getXmlns());
     }
 
-    public PubSub(String to, Type type, PubSubNamespace ns) {
+    public PubSub(Jid to, Type type, PubSubNamespace ns) {
         super(ELEMENT, (ns == null ? PubSubNamespace.BASIC : ns).getXmlns());
         setTo(to);
         setType(type);
@@ -51,12 +52,13 @@ public class PubSub extends IQ
     *
     * @return the XML element name of the packet extension.
     */
+    @SuppressWarnings("static-method")
     public String getElementName() {
         return ELEMENT;
     }
 
     @SuppressWarnings("unchecked")
-    public <PE extends PacketExtension> PE getExtension(PubSubElementType elem)
+    public <PE extends ExtensionElement> PE getExtension(PubSubElementType elem)
 	{
 		return (PE) getExtension(elem.getElementName(), elem.getNamespace().getXmlns());
 	}
@@ -86,7 +88,7 @@ public class PubSub extends IQ
         return xml;
     }
 
-    public static PubSub createPubsubPacket(String to, Type type, PacketExtension extension, PubSubNamespace ns) {
+    public static PubSub createPubsubPacket(Jid to, Type type, ExtensionElement extension, PubSubNamespace ns) {
         PubSub pubSub = new PubSub(to, type, ns);
         pubSub.addExtension(extension);
         return pubSub;

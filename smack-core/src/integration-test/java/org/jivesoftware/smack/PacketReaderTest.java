@@ -19,7 +19,7 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.test.SmackTestCase;
@@ -84,7 +84,7 @@ public class PacketReaderTest extends SmackTestCase {
         // Send the IQ and wait for the answer
         PacketCollector collector = getConnection(0).createPacketCollector(
                 new PacketIDFilter(iqPacket.getStanzaId()));
-        getConnection(0).sendPacket(iqPacket);
+        getConnection(0).sendStanza(iqPacket);
         IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
         if (response == null) {
             fail("No response from the other user.");
@@ -114,7 +114,7 @@ public class PacketReaderTest extends SmackTestCase {
 
         Message msg = new Message(getConnection(0).getUser(), Message.Type.normal);
 
-        getConnection(1).sendPacket(msg);
+        getConnection(1).sendStanza(msg);
 
         // Remove the listener
         getConnection(0).removeAsyncPacketListener(listener);
@@ -141,15 +141,15 @@ public class PacketReaderTest extends SmackTestCase {
                 Message message = new Message(packet.getFrom());
                 message.setFrom(getFullJID(1));
                 message.setBody("HELLO");
-                getConnection(1).sendPacket(message);
+                getConnection(1).sendStanza(message);
             }
-        }, new PacketTypeFilter(Message.class));
+        }, new StanzaTypeFilter(Message.class));
 
         // User0 listen for replies from user1
         PacketCollector collector = getConnection(0).createPacketCollector(
                 new FromMatchesFilter(getFullJID(1)));
         // User0 sends the regular message to user1
-        getConnection(0).sendPacket(packet);
+        getConnection(0).sendStanza(packet);
         // Check that user0 got a reply from user1
         assertNotNull("No message was received", collector.nextResult(1000));
 
@@ -159,7 +159,7 @@ public class PacketReaderTest extends SmackTestCase {
         packet.setTo(getFullJID(1));
         packet.setBody("aloha");
         packet.setError(new XMPPError(XMPPError.Condition.feature_not_implemented, null));
-        getConnection(0).sendPacket(packet);
+        getConnection(0).sendStanza(packet);
         // Check that user0 got a reply from user1
         assertNotNull("No message was received", collector.nextResult(1000));
     }
@@ -213,8 +213,8 @@ public class PacketReaderTest extends SmackTestCase {
 
 
             for (int i = 0; i < 5; i++) {
-                getConnection(1).sendPacket(msg0);
-                getConnection(0).sendPacket(msg1);
+                getConnection(1).sendStanza(msg0);
+                getConnection(0).sendStanza(msg1);
             }
 
             try {
@@ -236,8 +236,8 @@ public class PacketReaderTest extends SmackTestCase {
             }
 
             for (int i = 0; i < 10; i++) {
-                getConnection(0).sendPacket(msg1);
-                getConnection(1).sendPacket(msg0);
+                getConnection(0).sendStanza(msg1);
+                getConnection(1).sendStanza(msg0);
             }
 
             try {

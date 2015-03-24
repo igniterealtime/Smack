@@ -53,7 +53,7 @@ public class TestMediaSession extends JingleMediaSession {
      * Starts transmission and for NAT Traversal reasons start receiving also.
      */
     public void startTrasmit() {
-        
+
     }
 
     /**
@@ -63,7 +63,7 @@ public class TestMediaSession extends JingleMediaSession {
      * @param active active state
      */
     public void setTrasmit(boolean active) {
-        
+
     }
 
     /**
@@ -77,13 +77,13 @@ public class TestMediaSession extends JingleMediaSession {
      * Stops transmission and for NAT Traversal reasons stop receiving also.
      */
     public void stopTrasmit() {
-       
+
     }
 
     /**
      * For NAT Reasons this method does nothing. Use startTransmit() to start transmit and receive jmf
      */
     public void stopReceive() {
-       
+
     }
 }

@@ -17,12 +17,28 @@
 package org.jivesoftware.smack.util;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Locale;
 
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
+import org.jxmpp.util.XmppDateTime;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 public class ParserUtils {
+
+    /**
+     * The constant String "jid".
+     */
+    public static final String JID = "jid";
+
     public static void assertAtStartTag(XmlPullParser parser) throws XmlPullParserException {
         assert(parser.getEventType() == XmlPullParser.START_TAG);
     }
@@ -37,6 +53,38 @@ public class ParserUtils {
         while (!(event == XmlPullParser.END_TAG && parser.getDepth() == depth)) {
             event = parser.next();
         }
+    }
+
+    public static Jid getJidAttribute(XmlPullParser parser) throws XmppStringprepException {
+        return getJidAttribute(parser, JID);
+    }
+
+    public static Jid getJidAttribute(XmlPullParser parser, String name) throws XmppStringprepException {
+        final String jidString = parser.getAttributeValue("", name);
+        if (jidString == null) {
+            return null;
+        }
+        return JidCreate.from(jidString);
+    }
+
+    public static BareJid getBareJidAttribute(XmlPullParser parser) throws XmppStringprepException {
+        return getBareJidAttribute(parser, JID);
+    }
+
+    public static BareJid getBareJidAttribute(XmlPullParser parser, String name) throws XmppStringprepException {
+        final String jidString = parser.getAttributeValue("", name);
+        if (jidString == null) {
+            return null;
+        }
+        return JidCreate.bareFrom(jidString);
+    }
+
+    public static Resourcepart getResourcepartAttribute(XmlPullParser parser, String name) throws XmppStringprepException {
+        final String resourcepartString = parser.getAttributeValue("", name);
+        if (resourcepartString == null) {
+            return null;
+        }
+        return Resourcepart.from(resourcepartString);
     }
 
     /**
@@ -107,4 +155,38 @@ public class ParserUtils {
             return l;
         }
     }
+
+    public static double getDoubleFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException {
+        String doubleString = parser.nextText();
+        return Double.valueOf(doubleString);
+    }
+
+    public static Double getDoubleAttribute(XmlPullParser parser, String name) {
+        String valueString = parser.getAttributeValue("", name);
+        if (valueString == null)
+            return null;
+        return Double.valueOf(valueString);
+    }
+
+    public static double getDoubleAttribute(XmlPullParser parser, String name, long defaultValue) {
+        Double d = getDoubleAttribute(parser, name);
+        if (d == null) {
+            return defaultValue;
+        }
+        else {
+            return d;
+        }
+    }
+
+    public static Date getDateFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
+        String dateString = parser.nextText();
+        return XmppDateTime.parseDate(dateString);
+    }
+
+    public static URI getUriFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException, URISyntaxException  {
+        String uriString = parser.nextText();
+        URI uri = new URI(uriString);
+        return uri;
+    }
+
 }

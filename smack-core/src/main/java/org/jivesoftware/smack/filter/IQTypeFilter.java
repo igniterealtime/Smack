@@ -18,6 +18,7 @@ package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.util.Objects;
 
 /**
  * A filter for IQ packet types. Returns true only if the packet is an IQ packet
@@ -26,23 +27,28 @@ import org.jivesoftware.smack.packet.IQ.Type;
  * @author Alexander Wenckus
  * 
  */
-public class IQTypeFilter extends FlexiblePacketTypeFilter<IQ> {
-    
-    public static final PacketFilter GET = new IQTypeFilter(Type.get);
-    public static final PacketFilter SET = new IQTypeFilter(Type.set);
-    public static final PacketFilter RESULT = new IQTypeFilter(Type.result);
-    public static final PacketFilter ERROR = new IQTypeFilter(Type.error);
-    public static final PacketFilter GET_OR_SET = new OrFilter(GET, SET);
+public class IQTypeFilter extends FlexibleStanzaTypeFilter<IQ> {
+
+    public static final StanzaFilter GET = new IQTypeFilter(Type.get);
+    public static final StanzaFilter SET = new IQTypeFilter(Type.set);
+    public static final StanzaFilter RESULT = new IQTypeFilter(Type.result);
+    public static final StanzaFilter ERROR = new IQTypeFilter(Type.error);
+    public static final StanzaFilter GET_OR_SET = new OrFilter(GET, SET);
 
 	private final IQ.Type type;
 
 	private IQTypeFilter(IQ.Type type) {
         super(IQ.class);
-		this.type = type;
+		this.type = Objects.requireNonNull(type, "Type must not be null");
 	}
 
     @Override
     protected boolean acceptSpecific(IQ iq) {
         return iq.getType() == type;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ": type=" + type;
     }
 }

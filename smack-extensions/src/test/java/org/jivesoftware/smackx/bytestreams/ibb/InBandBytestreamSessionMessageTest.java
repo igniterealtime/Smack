@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Random;
 
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -40,6 +40,9 @@ import org.jivesoftware.util.Protocol;
 import org.jivesoftware.util.Verification;
 import org.junit.Before;
 import org.junit.Test;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.JidTestUtil;
 import org.powermock.reflect.Whitebox;
 
 /**
@@ -52,9 +55,9 @@ import org.powermock.reflect.Whitebox;
 public class InBandBytestreamSessionMessageTest {
 
     // settings
-    String initiatorJID = "initiator@xmpp-server/Smack";
-    String targetJID = "target@xmpp-server/Smack";
-    String xmppServer = "xmpp-server";
+    static final FullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
+    static final FullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
+    static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
     String sessionID = "session_id";
 
     int blockSize = 10;
@@ -75,9 +78,10 @@ public class InBandBytestreamSessionMessageTest {
      * Initialize fields used in the tests.
      * @throws XMPPException 
      * @throws SmackException 
+     * @throws InterruptedException 
      */
     @Before
-    public void setup() throws XMPPException, SmackException {
+    public void setup() throws XMPPException, SmackException, InterruptedException {
 
         // build protocol verifier
         protocol = new Protocol();
@@ -260,7 +264,7 @@ public class InBandBytestreamSessionMessageTest {
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
         InputStream inputStream = session.getInputStream();
-        PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
+        StanzaListener listener = Whitebox.getInternalState(inputStream, StanzaListener.class);
 
         // build invalid packet with out of order sequence
         String base64Data = Base64.encode("Data");
@@ -300,7 +304,7 @@ public class InBandBytestreamSessionMessageTest {
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
         InputStream inputStream = session.getInputStream();
-        PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
+        StanzaListener listener = Whitebox.getInternalState(inputStream, StanzaListener.class);
 
         // verify data packet and notify listener
         for (int i = 0; i < controlData.length / blockSize; i++) {
@@ -345,7 +349,7 @@ public class InBandBytestreamSessionMessageTest {
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
         InputStream inputStream = session.getInputStream();
-        PacketListener listener = Whitebox.getInternalState(inputStream, PacketListener.class);
+        StanzaListener listener = Whitebox.getInternalState(inputStream, StanzaListener.class);
 
         // verify data packet and notify listener
         for (int i = 0; i < controlData.length / blockSize; i++) {

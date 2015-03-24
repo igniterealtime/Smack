@@ -175,7 +175,7 @@ public class JingleManagerTest extends SmackTestCase {
         iqSent.setType(IQ.Type.set);
 
         System.out.println("Sending packet and waiting... ");
-        getConnection(1).sendPacket(iqSent);
+        getConnection(1).sendStanza(iqSent);
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
@@ -186,7 +186,7 @@ public class JingleManagerTest extends SmackTestCase {
     }
 
     /**
-     * High level API test. This is a simple test to use with a XMPP client and
+     * High level API test. This is a simple test to use with an XMPP client and
      * check if the client receives the message 1. User_1 will send an
      * invitation to user_2.
      */
@@ -233,13 +233,13 @@ public class JingleManagerTest extends SmackTestCase {
             assertTrue(valCounter() > 0);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
             fail("An error occured with Jingle");
         }
     }
 
     /**
-     * High level API test. This is a simple test to use with a XMPP client and
+     * High level API test. This is a simple test to use with an XMPP client and
      * check if the client receives the message 1. User_1 will send an
      * invitation to user_2.
      */
@@ -264,7 +264,7 @@ public class JingleManagerTest extends SmackTestCase {
 
             JingleManager man0 = new JingleManager(getConnection(0), trl0);
             JingleManager man1 = new JingleManager(getConnection(1), trl1);
-            
+
             man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 /**
                  * Called when a new session request is detected
@@ -278,7 +278,7 @@ public class JingleManagerTest extends SmackTestCase {
                         JingleSession session1 = request.accept();
                         session1.startIncoming();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
                 }
             });
@@ -293,7 +293,7 @@ public class JingleManagerTest extends SmackTestCase {
             assertTrue(valCounter() > 0);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
             fail("An error occured with Jingle");
         }
     }
@@ -323,10 +323,10 @@ public class JingleManagerTest extends SmackTestCase {
 
             JingleManager man0 = new JingleManager(getConnection(0), trl0);
             JingleManager man1 = new JingleManager(getConnection(1), trl1);
-            
+
             man0.addCreationListener(ftm0);
             man1.addCreationListener(ftm1);
-            
+
             man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 /**
                  * Called when a new session request is detected
@@ -369,7 +369,7 @@ public class JingleManagerTest extends SmackTestCase {
 
                         session1.startIncoming();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
                 }
             });
@@ -384,7 +384,7 @@ public class JingleManagerTest extends SmackTestCase {
             assertTrue(valCounter() == 1);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
             fail("An error occured with Jingle");
         }
     }
@@ -456,7 +456,7 @@ public class JingleManagerTest extends SmackTestCase {
 
                         session1.startIncoming();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
                 }
             });
@@ -498,7 +498,7 @@ public class JingleManagerTest extends SmackTestCase {
             assertTrue(valCounter() == 2);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
             fail("An error occured with Jingle");
         }
     }
@@ -527,7 +527,7 @@ public class JingleManagerTest extends SmackTestCase {
 
             JingleManager man0 = new JingleManager(getConnection(0), trl0);
             JingleManager man1 = new JingleManager(getConnection(1), trl1);
-            
+
             man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
                 /**
                  * Called when a new session request is detected
@@ -542,7 +542,7 @@ public class JingleManagerTest extends SmackTestCase {
                         session.startIncoming();
                         session.terminate();
                     } catch (XMPPException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
 
                 }
@@ -588,7 +588,7 @@ public class JingleManagerTest extends SmackTestCase {
             assertTrue(valCounter() > 0);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
             fail("An error occured with Jingle");
         }
     }
@@ -625,7 +625,7 @@ public class JingleManagerTest extends SmackTestCase {
                             incCounter();
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
                 }
             }
@@ -666,11 +666,11 @@ public class JingleManagerTest extends SmackTestCase {
                 ds1.close();
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
     }
@@ -681,7 +681,7 @@ public class JingleManagerTest extends SmackTestCase {
     public void testFullTest() {
 
         resetCounter();
-        
+
         XMPPTCPConnection x0 = getConnection(0);
         XMPPTCPConnection x1 = getConnection(1);
 
@@ -701,7 +701,7 @@ public class JingleManagerTest extends SmackTestCase {
 
         JingleManager man0 = new JingleManager(x0, trl0);
         JingleManager man1 = new JingleManager(x1, trl1);
-        
+
         man1.addJingleSessionRequestListener(new JingleSessionRequestListener() {
             public void sessionRequested(final JingleSessionRequest request) {
 
@@ -737,7 +737,7 @@ public class JingleManagerTest extends SmackTestCase {
 
                     session.startIncoming();
                 } catch (XMPPException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 }
 
             }
@@ -783,7 +783,7 @@ public class JingleManagerTest extends SmackTestCase {
                 Thread.sleep(3000);
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
         System.out.println(valCounter());
@@ -796,7 +796,7 @@ public class JingleManagerTest extends SmackTestCase {
     public void testMediaManager() {
 
         resetCounter();
-        
+
         XMPPTCPConnection x0 = getConnection(0);
         XMPPTCPConnection x1 = getConnection(1);
 
@@ -807,7 +807,7 @@ public class JingleManagerTest extends SmackTestCase {
         FixedTransportManager ftm1 = new FixedTransportManager(tr1);
 
         try {
-            
+
             JingleMediaManager jingleMediaManager = new JingleMediaManager(ftm0) {
                 // Media Session Implementation
                 public JingleMediaSession createMediaSession(final PayloadType payloadType, final TransportCandidate remote,
@@ -852,7 +852,7 @@ public class JingleManagerTest extends SmackTestCase {
                 }
 
             };
-            
+
             List<JingleMediaManager> trl0 = new ArrayList<JingleMediaManager>();
             trl0.add(jingleMediaManager);
 
@@ -871,7 +871,7 @@ public class JingleManagerTest extends SmackTestCase {
 
                         session.startIncoming();
                     } catch (XMPPException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
 
                 }
@@ -893,7 +893,7 @@ public class JingleManagerTest extends SmackTestCase {
             Thread.sleep(15000);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
     }
@@ -901,11 +901,11 @@ public class JingleManagerTest extends SmackTestCase {
     /**
      * This is a simple test where the user_2 rejects the Jingle session.
      */
-    
+
 //      This test doesn't make sense in light of multiple <content> sections allowed in XEp-166.
 //      What we really need is a test for actions: content-add and content-remove.
- 
-    
+
+
 //    public void testIncompatibleCodecs() {
 //
 //        resetCounter();
@@ -941,7 +941,7 @@ public class JingleManagerTest extends SmackTestCase {
 //
 //                        ses.startIncoming();
 //                    } catch (Exception e) {
-//                        e.printStackTrace();
+//                        LOGGER.log(Level.WARNING, "exception", e);
 //                    }
 //                }
 //            });
@@ -984,7 +984,7 @@ public class JingleManagerTest extends SmackTestCase {
 //            assertTrue(valCounter() > 0);
 //
 //        } catch (Exception e) {
-//            e.printStackTrace();
+//            LOGGER.log(Level.WARNING, "exception", e);
 //            fail("An error occured with Jingle");
 //        }
 //    }

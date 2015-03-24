@@ -24,4 +24,8 @@ public class Objects {
         }
         return obj;
     }
+
+    public static <T> T requireNonNull(T obj) {
+        return requireNonNull(obj, null);
+    }
 }

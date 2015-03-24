@@ -23,10 +23,10 @@ package org.jivesoftware.smack.util.dns;
  * 
  */
 public class SRVRecord extends HostAddress implements Comparable<SRVRecord> {
-    
+
     private int weight;
     private int priority;
-    
+
     /**
      * Create a new SRVRecord
      * 
@@ -52,11 +52,11 @@ public class SRVRecord extends HostAddress implements Comparable<SRVRecord> {
         this.weight = weight;
 
     }
-    
+
     public int getPriority() {
         return priority;
     }
-    
+
     public int getWeight() {
         return weight;
     }

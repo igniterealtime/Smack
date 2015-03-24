@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.muc.packet;
 
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.util.XmppDateTime;
 
@@ -37,7 +37,7 @@ import java.util.Date;
  * @author Gaston Dombiak
  * @see MUCInitialPresence#setHistory(MUCInitialPresence.History)
  */
-public class MUCInitialPresence implements PacketExtension {
+public class MUCInitialPresence implements ExtensionElement {
 
     public static final String ELEMENT = "x";
     public static final String NAMESPACE = "http://jabber.org/protocol/muc";

@@ -26,5 +26,5 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
 public interface CreatedJingleSessionListener {
 
     public void sessionCreated(JingleSession jingleSession);
-    
+
 }

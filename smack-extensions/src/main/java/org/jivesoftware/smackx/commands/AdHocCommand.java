@@ -22,6 +22,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.xdata.Form;
+import org.jxmpp.jid.Jid;
 
 import java.util.List;
 
@@ -146,7 +147,7 @@ public abstract class AdHocCommand {
      * 
      * @return the owner JID.
      */
-    public abstract String getOwnerJID();
+    public abstract Jid getOwnerJID();
 
     /**
      * Returns the notes that the command has at the current stage.
@@ -211,8 +212,9 @@ public abstract class AdHocCommand {
      * 
      * @throws XMPPErrorException if there is an error executing the command.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public abstract void execute() throws NoResponseException, XMPPErrorException, NotConnectedException;
+    public abstract void execute() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
     /**
      * Executes the next action of the command with the information provided in
@@ -224,8 +226,9 @@ public abstract class AdHocCommand {
      * @param response the form answer of the previous stage.
      * @throws XMPPErrorException if there is a problem executing the command.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public abstract void next(Form response) throws NoResponseException, XMPPErrorException, NotConnectedException;
+    public abstract void next(Form response) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
     /**
      * Completes the command execution with the information provided in the
@@ -237,8 +240,9 @@ public abstract class AdHocCommand {
      * @param response the form answer of the previous stage.
      * @throws XMPPErrorException if there is a problem executing the command.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public abstract void complete(Form response) throws NoResponseException, XMPPErrorException, NotConnectedException;
+    public abstract void complete(Form response) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
     /**
      * Goes to the previous stage. The requester is asking to re-send the
@@ -248,8 +252,9 @@ public abstract class AdHocCommand {
      * 
      * @throws XMPPErrorException if there is a problem executing the command.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public abstract void prev() throws NoResponseException, XMPPErrorException, NotConnectedException;
+    public abstract void prev() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
     /**
      * Cancels the execution of the command. This can be invoked on any stage of
@@ -258,8 +263,9 @@ public abstract class AdHocCommand {
      * 
      * @throws XMPPErrorException if there is a problem executing the command.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public abstract void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException;
+    public abstract void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
     /**
      * Returns a collection with the allowed actions based on the current stage.

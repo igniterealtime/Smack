@@ -17,6 +17,10 @@
 
 package org.jivesoftware.smackx.muc;
 
+import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.parts.Resourcepart;
+
 /**
  * A listener that is fired anytime a participant's status in a room is changed, such as the 
  * user being kicked, banned, or granted admin permissions.
@@ -33,7 +37,7 @@ public interface ParticipantStatusListener {
      * @param participant the participant that has just joined the room
      * (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void joined(String participant);
+    public abstract void joined(FullJid participant);
 
     /**
      * Called when a room occupant has left the room on its own. This means that the occupant was
@@ -42,7 +46,7 @@ public interface ParticipantStatusListener {
      * @param participant the participant that has left the room on its own.
      * (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void left(String participant);
+    public abstract void left(FullJid participant);
 
     /**
      * Called when a room participant has been kicked from the room. This means that the kicked 
@@ -53,7 +57,7 @@ public interface ParticipantStatusListener {
      * @param actor the moderator that kicked the occupant from the room (e.g. user@host.org).
      * @param reason the reason provided by the actor to kick the occupant from the room.
      */
-    public abstract void kicked(String participant, String actor, String reason);
+    public abstract void kicked(FullJid participant, Jid actor, String reason);
 
     /**
      * Called when a moderator grants voice to a visitor. This means that the visitor 
@@ -62,7 +66,7 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was granted voice in the room 
      * (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void voiceGranted(String participant);
+    public abstract void voiceGranted(FullJid participant);
 
     /**
      * Called when a moderator revokes voice from a participant. This means that the participant 
@@ -72,7 +76,7 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was revoked voice from the room 
      * (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void voiceRevoked(String participant);
+    public abstract void voiceRevoked(FullJid participant);
 
     /**
      * Called when an administrator or owner banned a participant from the room. This means that 
@@ -83,7 +87,7 @@ public interface ParticipantStatusListener {
      * @param actor the administrator that banned the occupant (e.g. user@host.org).
      * @param reason the reason provided by the administrator to ban the occupant.
      */
-    public abstract void banned(String participant, String actor, String reason);
+    public abstract void banned(FullJid participant, Jid actor, String reason);
 
     /**
      * Called when an administrator grants a user membership to the room. This means that the user 
@@ -92,7 +96,7 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was granted membership in the room 
      * (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void membershipGranted(String participant);
+    public abstract void membershipGranted(FullJid participant);
 
     /**
      * Called when an administrator revokes a user membership to the room. This means that the 
@@ -101,7 +105,7 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was revoked membership from the room 
      * (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void membershipRevoked(String participant);
+    public abstract void membershipRevoked(FullJid participant);
 
     /**
      * Called when an administrator grants moderator privileges to a user. This means that the user 
@@ -111,7 +115,7 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was granted moderator privileges in the room 
      * (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void moderatorGranted(String participant);
+    public abstract void moderatorGranted(FullJid participant);
 
     /**
      * Called when an administrator revokes moderator privileges from a user. This means that the 
@@ -121,7 +125,7 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was revoked moderator privileges in the room 
      * (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void moderatorRevoked(String participant);
+    public abstract void moderatorRevoked(FullJid participant);
 
     /**
      * Called when an owner grants a user ownership on the room. This means that the user 
@@ -131,7 +135,7 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was granted ownership on the room 
      * (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void ownershipGranted(String participant);
+    public abstract void ownershipGranted(FullJid participant);
 
     /**
      * Called when an owner revokes a user ownership on the room. This means that the user 
@@ -141,7 +145,7 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was revoked ownership on the room 
      * (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void ownershipRevoked(String participant);
+    public abstract void ownershipRevoked(FullJid participant);
 
     /**
      * Called when an owner grants administrator privileges to a user. This means that the user 
@@ -151,7 +155,7 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was granted administrator privileges 
      * (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void adminGranted(String participant);
+    public abstract void adminGranted(FullJid participant);
 
     /**
      * Called when an owner revokes administrator privileges from a user. This means that the user 
@@ -161,7 +165,7 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was revoked administrator privileges 
      * (e.g. room@conference.jabber.org/nick).
      */
-    public abstract void adminRevoked(String participant);
+    public abstract void adminRevoked(FullJid participant);
 
     /**
      * Called when a participant changed his/her nickname in the room. The new participant's 
@@ -171,6 +175,6 @@ public interface ParticipantStatusListener {
      * (e.g. room@conference.jabber.org/nick).
      * @param newNickname the new nickname that the participant decided to use.
      */
-    public abstract void nicknameChanged(String participant, String newNickname);
+    public abstract void nicknameChanged(FullJid participant, Resourcepart newNickname);
 
 }

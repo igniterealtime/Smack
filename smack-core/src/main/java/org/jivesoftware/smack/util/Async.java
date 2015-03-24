@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Async {
 
     /**
@@ -49,5 +52,31 @@ public class Async {
         Thread thread = new Thread(runnable);
         thread.setDaemon(true);
         return thread;
+    }
+
+    /**
+     * Like {@link Runnable}, but allows the <code>runOrThrow()</code> method to throw an exception.
+     * <p>
+     * If the exception is an instance of {@link RuntimeException}, then it will be re-thrown, otherwise <b>it will be
+     * simply logged.</b>
+     */
+    public static abstract class ThrowingRunnable implements Runnable {
+
+        public static final Logger LOGGER = Logger.getLogger(ThrowingRunnable.class.getName());
+
+        @Override
+        public final void run() {
+            try {
+                runOrThrow();
+            }
+            catch (Exception e) {
+                if (e instanceof RuntimeException) {
+                    throw (RuntimeException) e;
+                }
+                LOGGER.log(Level.WARNING, "Catched Exception", e);
+            }
+        }
+
+        public abstract void runOrThrow() throws Exception;
     }
 }

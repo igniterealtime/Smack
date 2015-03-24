@@ -25,7 +25,7 @@ import java.util.Map;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
- * Default implementation of the PacketExtension interface. Unless a PacketExtensionProvider
+ * Default implementation of the ExtensionElement interface. Unless a ExtensionElementProvider
  * is registered with {@link org.jivesoftware.smack.provider.ProviderManager ProviderManager},
  * instances of this class will be returned when getting packet extensions.<p>
  *
@@ -42,11 +42,11 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * In this case, getValue("color") would return "blue", and getValue("food") would
  * return "pizza". This parsing mechanism mechanism is very simplistic and will not work
  * as desired in all cases (for example, if some of the elements have attributes. In those
- * cases, a custom PacketExtensionProvider should be used.
+ * cases, a custom ExtensionElementProvider should be used.
  *
  * @author Matt Tucker
  */
-public class DefaultPacketExtension implements PacketExtension {
+public class DefaultExtensionElement implements ExtensionElement {
 
     private String elementName;
     private String namespace;
@@ -58,7 +58,7 @@ public class DefaultPacketExtension implements PacketExtension {
      * @param elementName the name of the element of the XML sub-document.
      * @param namespace the namespace of the element.
      */
-    public DefaultPacketExtension(String elementName, String namespace) {
+    public DefaultExtensionElement(String elementName, String namespace) {
         this.elementName = elementName;
         this.namespace = namespace;
     }

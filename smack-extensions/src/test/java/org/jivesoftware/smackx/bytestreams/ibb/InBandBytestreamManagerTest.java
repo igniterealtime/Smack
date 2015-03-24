@@ -35,6 +35,9 @@ import org.jivesoftware.util.Protocol;
 import org.jivesoftware.util.Verification;
 import org.junit.Before;
 import org.junit.Test;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.JidTestUtil;
 
 /**
  * Test for InBandBytestreamManager.
@@ -44,9 +47,9 @@ import org.junit.Test;
 public class InBandBytestreamManagerTest {
 
     // settings
-    String initiatorJID = "initiator@xmpp-server/Smack";
-    String targetJID = "target@xmpp-server/Smack";
-    String xmppServer = "xmpp-server";
+    static final FullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
+    static final FullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
+    static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
     String sessionID = "session_id";
 
     // protocol verifier
@@ -59,9 +62,10 @@ public class InBandBytestreamManagerTest {
      * Initialize fields used in the tests.
      * @throws XMPPException 
      * @throws SmackException 
+     * @throws InterruptedException 
      */
     @Before
-    public void setup() throws XMPPException, SmackException {
+    public void setup() throws XMPPException, SmackException, InterruptedException {
 
         // build protocol verifier
         protocol = new Protocol();
@@ -98,14 +102,15 @@ public class InBandBytestreamManagerTest {
     }
 
     /**
-     * Invoking {@link InBandBytestreamManager#establishSession(String)} should
+     * Invoking {@link InBandBytestreamManager#establishSession(org.jxmpp.jid.Jid)} should
      * throw an exception if the given target does not support in-band
      * bytestream.
      * @throws SmackException 
      * @throws XMPPException 
+     * @throws InterruptedException 
      */
     @Test
-    public void shouldFailIfTargetDoesNotSupportIBB() throws SmackException, XMPPException {
+    public void shouldFailIfTargetDoesNotSupportIBB() throws SmackException, XMPPException, InterruptedException {
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
 
         try {
@@ -153,7 +158,7 @@ public class InBandBytestreamManagerTest {
     }
 
     @Test
-    public void shouldUseConfiguredStanzaType() throws SmackException {
+    public void shouldUseConfiguredStanzaType() throws SmackException, InterruptedException {
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
         byteStreamManager.setStanza(StanzaType.MESSAGE);
 

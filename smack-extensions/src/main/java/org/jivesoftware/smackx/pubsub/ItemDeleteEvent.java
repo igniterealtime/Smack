@@ -27,7 +27,7 @@ import java.util.List;
 public class ItemDeleteEvent extends SubscriptionEvent
 {
 	private List<String> itemIds = Collections.emptyList();
-	
+
 	/**
 	 * Constructs an <tt>ItemDeleteEvent</tt> that indicates the the supplied
 	 * items (by id) have been deleted, and that the event matches the listed
@@ -41,12 +41,12 @@ public class ItemDeleteEvent extends SubscriptionEvent
 	public ItemDeleteEvent(String nodeId, List<String> deletedItemIds, List<String> subscriptionIds)
 	{
 		super(nodeId, subscriptionIds);
-		
+
 		if (deletedItemIds == null)
 			throw new IllegalArgumentException("deletedItemIds cannot be null");
 		itemIds = deletedItemIds;
 	}
-	
+
 	/**
 	 * Get the item id's of the items that have been deleted.
 	 * 
@@ -56,7 +56,7 @@ public class ItemDeleteEvent extends SubscriptionEvent
 	{
 		return Collections.unmodifiableList(itemIds);
 	}
-	
+
 	@Override
 	public String toString()
 	{

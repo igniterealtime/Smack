@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * Represents a affiliation between a user and a node, where the {@link #type} defines 
@@ -29,11 +29,11 @@ import org.jivesoftware.smack.packet.PacketExtension;
  * 
  * @author Robin Collier
  */
-public class Affiliation implements PacketExtension
+public class Affiliation implements ExtensionElement
 {
 	protected String node;
 	protected Type type;
-	
+
 	public enum Type
 	{
 		member, none, outcast, owner, publisher
@@ -50,17 +50,17 @@ public class Affiliation implements PacketExtension
 		node = nodeId;
 		type = affiliation;
 	}
-	
+
 	public String getNodeId()
 	{
 		return node;
 	}
-	
+
 	public Type getType()
 	{
 		return type;
 	}
-	
+
 	public String getElementName()
 	{
 		return "subscription";
@@ -77,12 +77,12 @@ public class Affiliation implements PacketExtension
 		builder.append(getElementName());
 		appendAttribute(builder, "node", node);
 		appendAttribute(builder, "affiliation", type.toString());
-		
+
 		builder.append("/>");
 		return builder.toString();
 	}
 
-	private void appendAttribute(StringBuilder builder, String att, String value)
+	private static void appendAttribute(StringBuilder builder, String att, String value)
 	{
 		builder.append(" ");
 		builder.append(att);

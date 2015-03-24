@@ -28,7 +28,7 @@ import org.jivesoftware.smack.packet.IQ;
  * @author Jeff Williams
  */
 public class PEPPubSub extends IQ {
-    
+
     public static final String ELEMENT = "pubsub";
     public static final String NAMESPACE = "http://jabber.org/protocol/pubsub";
 

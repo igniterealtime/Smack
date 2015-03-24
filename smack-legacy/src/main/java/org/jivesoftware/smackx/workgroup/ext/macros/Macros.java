@@ -82,10 +82,12 @@ public class Macros extends IQ {
         if (isPersonal()) {
             buf.append("<personal>true</personal>");
         }
-        if (getPersonalMacroGroup() != null) {        	
+        if (getPersonalMacroGroup() != null) {
+            // CHECKSTYLE:OFF
         	buf.append("<personalMacro>");
         	buf.append(StringUtils.escapeForXML(getPersonalMacroGroup().toXML()));
         	buf.append("</personalMacro>");
+            // CHECKSTYLE:ON
         }
 
         return buf;
@@ -121,8 +123,9 @@ public class Macros extends IQ {
 
             return macroGroup;
         }
-        
+
         public Macro parseMacro(XmlPullParser parser) throws XmlPullParserException, IOException {
+            // CHECKSTYLE:OFF
         	Macro macro = new Macro();
         	 boolean done = false;
             while (!done) {
@@ -149,11 +152,13 @@ public class Macros extends IQ {
 	            }
             }
         	return macro;
+            // CHECKSTYLE:ON
         }
-        
+
         public MacroGroup parseMacroGroup(XmlPullParser parser) throws XmlPullParserException, IOException {
+            // CHECKSTYLE:OFF
         	MacroGroup group = new MacroGroup();
-        	
+
             boolean done = false;
             while (!done) {
 	        	int eventType = parser.next();
@@ -175,10 +180,11 @@ public class Macros extends IQ {
 	            }
             }
         	return group; 
+            // CHECKSTYLE:ON
         }
-        
-        public MacroGroup parseMacroGroups(String macros) throws XmlPullParserException, IOException {
 
+        public MacroGroup parseMacroGroups(String macros) throws XmlPullParserException, IOException {
+            // CHECKSTYLE:OFF
         	MacroGroup group = null;
         	XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
         	parser.setInput(new StringReader(macros));
@@ -192,6 +198,7 @@ public class Macros extends IQ {
 				 }
 			}
 			return group;
+            // CHECKSTYLE:ON
         }
     }
 }

@@ -21,6 +21,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
+import org.jxmpp.jid.Jid;
 
 /**
  * InBandBytestreamRequest class handles incoming In-Band Bytestream requests.
@@ -49,7 +50,7 @@ public class InBandBytestreamRequest implements BytestreamRequest {
      * 
      * @return the sender of the In-Band Bytestream open request
      */
-    public String getFrom() {
+    public Jid getFrom() {
         return this.byteStreamRequest.getFrom();
     }
 
@@ -68,8 +69,9 @@ public class InBandBytestreamRequest implements BytestreamRequest {
      * 
      * @return the session to send/receive data
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public InBandBytestreamSession accept() throws NotConnectedException {
+    public InBandBytestreamSession accept() throws NotConnectedException, InterruptedException {
         XMPPConnection connection = this.manager.getConnection();
 
         // create In-Band Bytestream session and store it
@@ -79,7 +81,7 @@ public class InBandBytestreamRequest implements BytestreamRequest {
 
         // acknowledge request
         IQ resultIQ = IQ.createResultIQ(this.byteStreamRequest);
-        connection.sendPacket(resultIQ);
+        connection.sendStanza(resultIQ);
 
         return ibbSession;
     }
@@ -88,8 +90,9 @@ public class InBandBytestreamRequest implements BytestreamRequest {
      * Rejects the In-Band Bytestream request by sending a reject error to the
      * initiator.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void reject() throws NotConnectedException {
+    public void reject() throws NotConnectedException, InterruptedException {
         this.manager.replyRejectPacket(this.byteStreamRequest);
     }
 

@@ -21,9 +21,9 @@ import junit.framework.TestCase;
 import org.jivesoftware.smack.packet.*;
 
 /**
- * Test cases for the PacketTypeFilter class.
+ * Test cases for the StanzaTypeFilter class.
  */
-public class PacketTypeFilterTest extends TestCase {
+public class StanzaTypeFilterTest extends TestCase {
 
     private class InnerClassDummy {
         public class DummyPacket extends Packet {
@@ -48,20 +48,20 @@ public class PacketTypeFilterTest extends TestCase {
     }
 
     /**
-     * Test case for the constructor of PacketTypeFilter objects.
+     * Test case for the constructor of StanzaTypeFilter objects.
      */
     public void testConstructor() {
-        // We dont need to test this since PacketTypeFilter(Class<? extends Packet> packetType) only excepts Packets
+        // We dont need to test this since StanzaTypeFilter(Class<? extends Packet> packetType) only excepts Packets
         // Test a class that is not a subclass of Packet
         // try {
-        // new PacketTypeFilter(Dummy.class);
+        // new StanzaTypeFilter(Dummy.class);
         // fail("Parameter must be a subclass of Packet.");
         // }
         // catch (IllegalArgumentException e) {}
 
         // Test a class that is a subclass of Packet
         try {
-            new PacketTypeFilter(MockPacket.class);
+            new StanzaTypeFilter(MockPacket.class);
         }
         catch (IllegalArgumentException e) {
             fail();
@@ -69,7 +69,7 @@ public class PacketTypeFilterTest extends TestCase {
 
         // Test another class which is a subclass of Packet
         try {
-            new PacketTypeFilter(IQ.class);
+            new StanzaTypeFilter(IQ.class);
         }
         catch (IllegalArgumentException e) {
             fail();
@@ -77,7 +77,7 @@ public class PacketTypeFilterTest extends TestCase {
 
         // Test an internal class which is a subclass of Packet
         try {
-            new PacketTypeFilter(InnerClassDummy.DummyPacket.class);
+            new StanzaTypeFilter(InnerClassDummy.DummyPacket.class);
         }
         catch (IllegalArgumentException e) {
             fail();
@@ -85,7 +85,7 @@ public class PacketTypeFilterTest extends TestCase {
 
         // Test an internal static class which is a static subclass of Packet
         try {
-            new PacketTypeFilter(StaticInnerClassDummy.StaticDummyPacket.class);
+            new StanzaTypeFilter(StaticInnerClassDummy.StaticDummyPacket.class);
         }
         catch (IllegalArgumentException e) {
             fail();
@@ -93,19 +93,19 @@ public class PacketTypeFilterTest extends TestCase {
     }
 
     /**
-     * Test case to test the accept() method of PacketTypeFilter objects.
+     * Test case to test the accept() method of StanzaTypeFilter objects.
      */
     public void testAccept() {
         Packet packet = new MockPacket();
-        PacketTypeFilter filter = new PacketTypeFilter(MockPacket.class);
+        StanzaTypeFilter filter = new PacketTypeFilter(MockPacket.class);
         assertTrue(filter.accept(packet));
 
         packet = (new InnerClassDummy()).getInnerInstance();
-        filter = new PacketTypeFilter(InnerClassDummy.DummyPacket.class);
+        filter = new StanzaTypeFilter(InnerClassDummy.DummyPacket.class);
         assertTrue(filter.accept(packet));
 
         packet = StaticInnerClassDummy.getInnerInstance();
-        filter = new PacketTypeFilter(StaticInnerClassDummy.StaticDummyPacket.class);
+        filter = new StanzaTypeFilter(StaticInnerClassDummy.StaticDummyPacket.class);
         assertTrue(filter.accept(packet));
     }
 }

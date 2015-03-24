@@ -38,7 +38,7 @@ public class RosterExchangeTest extends SmackTestCase {
 
     /**
      * Low level API test.
-     * This is a simple test to use with a XMPP client and check if the client receives the message
+     * This is a simple test to use with an XMPP client and check if the client receives the message
      * 1. User_1 will send his/her roster entries to user_2
      */
     public void testSendRosterEntries() {

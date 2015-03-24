@@ -25,6 +25,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketWriter;
 import org.junit.Test;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 import static org.junit.Assert.fail;
 
@@ -35,16 +36,17 @@ public class PacketWriterTest {
     /**
      * Make sure that packet writer does block once the queue reaches
      * {@link PacketWriter#QUEUE_SIZE} and that
-     * {@link PacketWriter#sendPacket(org.jivesoftware.smack.tcp.packet.Packet)} does unblock after the
+     * {@link PacketWriter#sendStanza(org.jivesoftware.smack.tcp.packet.Packet)} does unblock after the
      * interrupt.
      * 
      * @throws InterruptedException
      * @throws BrokenBarrierException
      * @throws NotConnectedException 
+     * @throws XmppStringprepException 
      */
     @SuppressWarnings("javadoc")
     @Test
-    public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException, NotConnectedException {
+    public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException, NotConnectedException, XmppStringprepException {
         XMPPTCPConnection connection = new XMPPTCPConnection("user", "pass", "example.org");
         final PacketWriter pw = connection.new PacketWriter();
         connection.packetWriter = pw;
@@ -84,7 +86,7 @@ public class PacketWriterTest {
         // will block before we call shutdown. Otherwise we may get false positives (which is still
         // better then false negatives).
         barrier.await();
-        // Not really cool, but may increases the chances for 't' to block in sendPacket.
+        // Not really cool, but may increases the chances for 't' to block in sendStanza.
         Thread.sleep(250);
 
         // Set to true for testing purposes, so that shutdown() won't wait packet writer
@@ -100,7 +102,7 @@ public class PacketWriterTest {
             t.notify();
         }
     }
-    
+
     public class BlockingStringWriter extends Writer {
         @Override
         public void write(char[] cbuf, int off, int len) throws IOException {

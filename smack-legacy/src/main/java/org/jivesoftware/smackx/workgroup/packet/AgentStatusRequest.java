@@ -75,7 +75,7 @@ public class AgentStatusRequest extends IQ {
         buf.rightAngleBracket();
         synchronized (agents) {
             for (Iterator<Item> i=agents.iterator(); i.hasNext(); ) {
-                Item item = (Item) i.next();
+                Item item = i.next();
                 buf.append("<agent jid=\"").append(item.getJID()).append("\">");
                 if (item.getName() != null) {
                     buf.append("<name xmlns=\""+ AgentInfo.NAMESPACE + "\">");

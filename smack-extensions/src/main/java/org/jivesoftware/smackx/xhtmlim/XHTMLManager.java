@@ -26,6 +26,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
+import org.jxmpp.jid.Jid;
 
 import java.util.List;
 
@@ -128,9 +129,10 @@ public class XHTMLManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public static boolean isServiceEnabled(XMPPConnection connection, String userID)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public static boolean isServiceEnabled(XMPPConnection connection, Jid userID)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(userID, XHTMLExtension.NAMESPACE);
     }
 }

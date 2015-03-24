@@ -17,13 +17,13 @@
 package org.jivesoftware.smackx.caps.packet;
 
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * A XEP-0115 Entity Capabilities extension.
  */
-public class CapsExtension implements PacketExtension {
+public class CapsExtension implements ExtensionElement {
     public static final String NAMESPACE = "http://jabber.org/protocol/caps";
     public static final String ELEMENT = "c";
 

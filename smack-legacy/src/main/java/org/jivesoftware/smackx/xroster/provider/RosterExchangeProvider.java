@@ -20,9 +20,11 @@ package org.jivesoftware.smackx.xroster.provider;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.xroster.RemoteRosterEntry;
 import org.jivesoftware.smackx.xroster.packet.RosterExchange;
+import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -32,7 +34,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author Gaston Dombiak
  */
-public class RosterExchangeProvider extends PacketExtensionProvider<RosterExchange> {
+public class RosterExchangeProvider extends ExtensionElementProvider<RosterExchange> {
 
     /**
      * Parses a RosterExchange packet (extension sub-packet).
@@ -45,11 +47,11 @@ public class RosterExchangeProvider extends PacketExtensionProvider<RosterExchan
     @Override
     public RosterExchange parse(XmlPullParser parser, int initialDepth)
                     throws XmlPullParserException, IOException {
-
+        // CHECKSTYLE:OFF
         RosterExchange rosterExchange = new RosterExchange();
         boolean done = false;
         RemoteRosterEntry remoteRosterEntry = null;
-		String jid = "";
+        Jid jid = null;
 		String name = "";
 		ArrayList<String> groupsName = new ArrayList<String>();
         while (!done) {
@@ -59,7 +61,7 @@ public class RosterExchangeProvider extends PacketExtensionProvider<RosterExchan
                 	// Reset this variable since they are optional for each item
 					groupsName = new ArrayList<String>();
 					// Initialize the variables from the parsed XML
-                    jid = parser.getAttributeValue("", "jid");
+                    jid = ParserUtils.getJidAttribute(parser);
                     name = parser.getAttributeValue("", "name");
                 }
                 if (parser.getName().equals("group")) {
@@ -68,7 +70,7 @@ public class RosterExchangeProvider extends PacketExtensionProvider<RosterExchan
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("item")) {
 					// Create packet.
-					remoteRosterEntry = new RemoteRosterEntry(jid, name, (String[]) groupsName.toArray(new String[groupsName.size()]));
+					remoteRosterEntry = new RemoteRosterEntry(jid, name, groupsName.toArray(new String[groupsName.size()]));
                     rosterExchange.addRosterEntry(remoteRosterEntry);
                 }
                 if (parser.getName().equals("x")) {
@@ -76,7 +78,7 @@ public class RosterExchangeProvider extends PacketExtensionProvider<RosterExchan
                 }
             }
         }
-
+        // CHECKSTYLE:ON
         return rosterExchange;
 
     }

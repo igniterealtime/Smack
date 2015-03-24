@@ -34,6 +34,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.JidTestUtil;
 
 /**
  * Tests the implementation of {@link DirectoryRosterStore}.
@@ -86,7 +88,7 @@ public class DirectoryRosterStoreTest {
 
         assertEquals("Initial roster version", "", store.getRosterVersion());
 
-        String userName = "user@example.com";
+        Jid userName = JidTestUtil.DUMMY_AT_EXAMPLE_ORG;
 
         final RosterPacket.Item item1 = new Item(userName, null);
         final String version1 = "1";
@@ -105,6 +107,8 @@ public class DirectoryRosterStoreTest {
                 item1.getItemType(), storedItem.getItemType());
         assertEquals("ItemStatus of added entry",
                 item1.getItemStatus(), storedItem.getItemStatus());
+        assertEquals("Approved of added entry",
+                item1.isApproved(), storedItem.isApproved());
 
 
         final String version2 = "2";
@@ -113,6 +117,7 @@ public class DirectoryRosterStoreTest {
         item2.addGroupName("examples");
         item2.setItemStatus(ItemStatus.subscribe);
         item2.setItemType(ItemType.none);
+        item2.setApproved(true);
         store.addEntry(item2,version2);
         assertEquals("Updating entry sets version correctly", version2, store.getRosterVersion());
         storedItem = store.getEntry(userName);
@@ -126,21 +131,24 @@ public class DirectoryRosterStoreTest {
                 item2.getItemType(), storedItem.getItemType());
         assertEquals("ItemStatus of added entry",
                 item2.getItemStatus(), storedItem.getItemStatus());
+        assertEquals("Approved of added entry",
+                item2.isApproved(), storedItem.isApproved());
 
         List<Item> entries = store.getEntries();
         assertEquals("Number of entries", 1, entries.size());
 
-        final RosterPacket.Item item3 = new Item("foobar@example.com", "Foo Bar");
+        final RosterPacket.Item item3 = new Item(JidTestUtil.BARE_JID_1, "Foo Bar");
         item3.addGroupName("The Foo Fighters");
         item3.addGroupName("Bar Friends");
         item3.setItemStatus(ItemStatus.unsubscribe);
         item3.setItemType(ItemType.both);
 
-        final RosterPacket.Item item4 = new Item("baz@example.com", "Baba Baz");
+        final RosterPacket.Item item4 = new Item(JidTestUtil.BARE_JID_2, "Baba Baz");
         item4.addGroupName("The Foo Fighters");
         item4.addGroupName("Bar Friends");
         item4.setItemStatus(ItemStatus.subscribe);
         item4.setItemType(ItemType.both);
+        item4.setApproved(true);
 
         ArrayList<Item> items34 = new ArrayList<RosterPacket.Item>();
         items34.add(item3);
@@ -149,7 +157,7 @@ public class DirectoryRosterStoreTest {
         String version3 = "3";
         store.resetEntries(items34, version3);
 
-        storedItem = store.getEntry("foobar@example.com");
+        storedItem = store.getEntry(JidTestUtil.BARE_JID_1);
         assertNotNull("Added entry not found", storedItem);
         assertEquals("User of added entry",
                 item3.getUser(), storedItem.getUser());
@@ -160,9 +168,11 @@ public class DirectoryRosterStoreTest {
                 item3.getItemType(), storedItem.getItemType());
         assertEquals("ItemStatus of added entry",
                 item3.getItemStatus(), storedItem.getItemStatus());
+        assertEquals("Approved of added entry",
+                item3.isApproved(), storedItem.isApproved());
 
 
-        storedItem = store.getEntry("baz@example.com");
+        storedItem = store.getEntry(JidTestUtil.BARE_JID_2);
         assertNotNull("Added entry not found", storedItem);
         assertEquals("User of added entry",
                 item4.getUser(), storedItem.getUser());
@@ -173,12 +183,14 @@ public class DirectoryRosterStoreTest {
                 item4.getItemType(), storedItem.getItemType());
         assertEquals("ItemStatus of added entry",
                 item4.getItemStatus(), storedItem.getItemStatus());
+        assertEquals("Approved of added entry",
+                item4.isApproved(), storedItem.isApproved());
 
         entries = store.getEntries();
         assertEquals("Number of entries", 2, entries.size());
 
         String version4 = "4";
-        store.removeEntry("baz@example.com", version4);
+        store.removeEntry(JidTestUtil.BARE_JID_2, version4);
         assertEquals("Removing entry sets version correctly",
                 version4, store.getRosterVersion());
         assertNull("Removed entry is gone", store.getEntry(userName));
@@ -187,38 +199,4 @@ public class DirectoryRosterStoreTest {
         assertEquals("Number of entries", 1, entries.size());
     }
 
-    /**
-     * Tests adding entries with evil characters
-     */
-    @Test
-    public void testAddEvilChars() throws IOException {
-        File storeDir = tmpFolder.newFolder();
-        DirectoryRosterStore store = DirectoryRosterStore.init(storeDir);
-
-        String user = "../_#;\"'\\&@example.com";
-        String name = "\n../_#\0\t;\"'&@\\";
-        String group1 = "\t;\"'&@\\\n../_#\0";
-        String group2 = "#\0\t;\"'&@\\\n../_";
-
-        Item item = new Item(user, name);
-        item.setItemStatus(ItemStatus.unsubscribe);
-        item.setItemType(ItemType.to);
-        item.addGroupName(group1);
-        item.addGroupName(group2);
-        store.addEntry(item, "a-version");
-        Item storedItem = store.getEntry(user);
-
-        assertNotNull("Added entry not found", storedItem);
-        assertEquals("User of added entry",
-                item.getUser(), storedItem.getUser());
-        assertEquals("Name of added entry",
-                item.getName(), storedItem.getName());
-        assertEquals("Groups", item.getGroupNames(), storedItem.getGroupNames());
-        assertEquals("ItemType of added entry",
-                item.getItemType(), storedItem.getItemType());
-        assertEquals("ItemStatus of added entry",
-                item.getItemStatus(), storedItem.getItemStatus());
-
-    }
 }
-

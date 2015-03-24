@@ -42,6 +42,7 @@ import org.jivesoftware.smackx.filetransfer.FileTransferException.NoStreamMethod
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.jid.Jid;
 
 /**
  * Manages the negotiation of file transfers according to XEP-0096. If a file is
@@ -181,9 +182,10 @@ public class FileTransferNegotiator extends Manager {
      *                       there is not an appropriate stream method.
      * @throws NotConnectedException 
      * @throws NoAcceptableTransferMechanisms 
+     * @throws InterruptedException 
      */
     public StreamNegotiator selectStreamNegotiator(
-            FileTransferRequest request) throws NotConnectedException, NoStreamMethodsOfferedException, NoAcceptableTransferMechanisms {
+            FileTransferRequest request) throws NotConnectedException, NoStreamMethodsOfferedException, NoAcceptableTransferMechanisms, InterruptedException {
         StreamInitiation si = request.getStreamInitiation();
         FormField streamMethodField = getStreamMethodField(si
                 .getFeatureNegotiationForm());
@@ -192,7 +194,7 @@ public class FileTransferNegotiator extends Manager {
             String errorMessage = "No stream methods contained in stanza.";
             XMPPError error = XMPPError.from(XMPPError.Condition.bad_request, errorMessage);
             IQ iqPacket = IQ.createErrorResponse(si, error);
-            connection().sendPacket(iqPacket);
+            connection().sendStanza(iqPacket);
             throw new FileTransferException.NoStreamMethodsOfferedException();
         }
 
@@ -203,7 +205,7 @@ public class FileTransferNegotiator extends Manager {
         }
         catch (NoAcceptableTransferMechanisms e) {
             IQ iqPacket = IQ.createErrorResponse(si, XMPPError.from(XMPPError.Condition.bad_request, "No acceptable transfer mechanism"));
-            connection().sendPacket(iqPacket);
+            connection().sendStanza(iqPacket);
             throw e;
         }
 
@@ -212,7 +214,7 @@ public class FileTransferNegotiator extends Manager {
         return selectedStreamNegotiator;
     }
 
-    private FormField getStreamMethodField(DataForm form) {
+    private static FormField getStreamMethodField(DataForm form) {
         for (FormField field : form.getFields()) {
             if (field.getVariable().equals(STREAM_DATA_FIELD_NAME)) {
                 return field;
@@ -258,7 +260,7 @@ public class FileTransferNegotiator extends Manager {
      *
      * @return Returns a new, unique, stream ID to identify a file transfer.
      */
-    public String getNextStreamID() {
+    public static String getNextStreamID() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(STREAM_INIT_PREFIX);
         buffer.append(Math.abs(randomGenerator.nextLong()));
@@ -299,10 +301,11 @@ public class FileTransferNegotiator extends Manager {
      * @throws NotConnectedException 
      * @throws NoResponseException 
      * @throws NoAcceptableTransferMechanisms 
+     * @throws InterruptedException 
      */
-    public StreamNegotiator negotiateOutgoingTransfer(final String userID,
+    public StreamNegotiator negotiateOutgoingTransfer(final Jid userID,
             final String streamID, final String fileName, final long size,
-            final String desc, int responseTimeout) throws XMPPErrorException, NotConnectedException, NoResponseException, NoAcceptableTransferMechanisms {
+            final String desc, int responseTimeout) throws XMPPErrorException, NotConnectedException, NoResponseException, NoAcceptableTransferMechanisms, InterruptedException {
         StreamInitiation si = new StreamInitiation();
         si.setSessionID(streamID);
         si.setMimeType(URLConnection.guessContentTypeFromName(fileName));
@@ -365,7 +368,7 @@ public class FileTransferNegotiator extends Manager {
         }
     }
 
-    private DataForm createDefaultInitiationForm() {
+    private static DataForm createDefaultInitiationForm() {
         DataForm form = new DataForm(DataForm.Type.form);
         FormField field = new FormField(STREAM_DATA_FIELD_NAME);
         field.setType(FormField.Type.list_single);

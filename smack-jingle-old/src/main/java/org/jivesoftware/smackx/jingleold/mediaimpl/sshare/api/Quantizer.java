@@ -27,7 +27,7 @@ public interface Quantizer {
 	 * @param numColors the number of colors we're quantizing to.
 	 */
 	public void setup(int numColors);
-	
+
 	/**
 	 * Add pixels to the quantizer.
 	 * @param pixels the array of ARGB pixels
@@ -35,13 +35,13 @@ public interface Quantizer {
 	 * @param count the count of pixels
 	 */
 	public void addPixels(int[] pixels, int offset, int count);
-	
+
 	/**
 	 * Build a color table from the added pixels.
 	 * @return an array of ARGB pixels representing a color table
 	 */
 	public int[] buildColorTable();
-	
+
 	/**
 	 * Using the previously-built color table, return the index into that table for a pixel.
 	 * This is guaranteed to return a valid index - returning the index of a color closer

@@ -32,11 +32,11 @@ import java.util.List;
  * @author Gaston Dombiak
  */
 public class ReportedData {
-    
+
     private List<Column> columns = new ArrayList<Column>();
     private List<Row> rows = new ArrayList<Row>();
     private String title = "";
-    
+
     /**
      * Returns a new ReportedData if the packet is used for reporting data and includes an 
      * extension that matches the elementName and namespace "x","jabber:x:data".

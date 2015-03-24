@@ -16,8 +16,10 @@
  */
 package org.jivesoftware.smackx.forward;
 
+import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.util.Properties;
 
@@ -42,21 +44,21 @@ public class ForwardedTest {
         XmlPullParser parser;
         String control;
         Forwarded fwd;
-        
+
         control = XMLBuilder.create("forwarded")
             .a("xmlns", "urn:xmpp:forwarded:0")
             .e("message")
                     .a("from", "romeo@montague.com")
             .asString(outputProperties);
-        
+
         parser = PacketParserUtils.getParserFor(control);
-        fwd = (Forwarded) new ForwardedProvider().parse(parser);
+        fwd = new ForwardedProvider().parse(parser);
 
         // no delay in packet
         assertEquals(null, fwd.getDelayInformation());
-        
+
         // check message
-        assertEquals("romeo@montague.com", fwd.getForwardedPacket().getFrom());
+        assertThat("romeo@montague.com", equalsCharSequence(fwd.getForwardedPacket().getFrom()));
 
         // check end of tag
         assertEquals(XmlPullParser.END_TAG, parser.getEventType());
@@ -77,14 +79,14 @@ public class ForwardedTest {
         // @formatter:on
 
         parser = PacketParserUtils.getParserFor(control);
-        fwd = (Forwarded) new ForwardedProvider().parse(parser);
+        fwd = new ForwardedProvider().parse(parser);
 
         // assert there is delay information in packet
         DelayInformation delay = fwd.getDelayInformation();
         assertNotNull(delay);
 
         // check message
-        assertEquals("romeo@montague.com", fwd.getForwardedPacket().getFrom());
+        assertThat("romeo@montague.com", equalsCharSequence(fwd.getForwardedPacket().getFrom()));
 
         // check end of tag
         assertEquals(XmlPullParser.END_TAG, parser.getEventType());
@@ -95,11 +97,11 @@ public class ForwardedTest {
     public void forwardedEmptyTest() throws Exception {
         XmlPullParser parser;
         String control;
-        
+
         control = XMLBuilder.create("forwarded")
             .a("xmlns", "urn:xmpp:forwarded:0")
             .asString(outputProperties);
-        
+
         parser = PacketParserUtils.getParserFor(control);
         new ForwardedProvider().parse(parser);
     }

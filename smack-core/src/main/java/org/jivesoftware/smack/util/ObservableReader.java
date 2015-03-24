@@ -36,7 +36,7 @@ public class ObservableReader extends Reader {
     public ObservableReader(Reader wrappedReader) {
         this.wrappedReader = wrappedReader;
     }
-        
+
     public int read(char[] cbuf, int off, int len) throws IOException {
         int count = wrappedReader.read(cbuf, off, len);
         if (count > 0) {

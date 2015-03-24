@@ -17,7 +17,7 @@ package org.jivesoftware.smackx.jingle.provider;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -36,13 +36,13 @@ public class JingleProviderTest extends SmackTestCase {
 		String nameSpace = Jingle.getNamespace();
 
 		System.out.println("Testing if the Jingle IQ provider is registered...");
-		
+
 		// Verify that the Jingle IQProvider is registered.
 		iqProv = (IQProvider)ProviderManager.getInstance().getIQProvider(elementNamee, nameSpace);
-		
+
 		assertNotNull(iqProv);
 	}
-	
+
 	/**
 	 * Test for parsing a Jingle
 	 */
@@ -69,13 +69,13 @@ public class JingleProviderTest extends SmackTestCase {
 		iqSent.setType(IQ.Type.get);
 
 		// Create a filter and a collector...
-		PacketFilter filter = new PacketTypeFilter(IQ.class);
+		PacketFilter filter = new StanzaTypeFilter(IQ.class);
 		PacketCollector collector = getConnection(0).createPacketCollector(filter);
 
 		System.out.println("Testing if a Jingle IQ can be sent and received...");
 
 		// Send the iq packet with an invalid namespace
-		getConnection(0).sendPacket(iqSent);
+		getConnection(0).sendStanza(iqSent);
 
 		// Receive the packet
 		IQ iqReceived = (IQ)collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
@@ -93,7 +93,7 @@ public class JingleProviderTest extends SmackTestCase {
 			assertTrue(iqReceived instanceof Jingle);
 
 			Jingle jin = (Jingle) iqReceived;
-			
+
 			System.out.println("Sent:     " + iqSent.toXML());
 			System.out.println("Received: " + jin.toXML());
 		}		

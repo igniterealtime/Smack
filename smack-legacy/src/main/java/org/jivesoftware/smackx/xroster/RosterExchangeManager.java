@@ -24,17 +24,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.filter.PacketExtensionFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
 import org.jivesoftware.smackx.xroster.packet.RosterExchange;
+import org.jxmpp.jid.Jid;
 
 /**
  *
@@ -52,12 +53,12 @@ public class RosterExchangeManager {
 
     private final static Map<XMPPConnection, RosterExchangeManager> INSTANCES = new WeakHashMap<>();
 
-    private final static PacketFilter PACKET_FILTER = new PacketExtensionFilter(ELEMENT, NAMESPACE);
+    private final static StanzaFilter PACKET_FILTER = new StanzaExtensionFilter(ELEMENT, NAMESPACE);
 
     private final Set<RosterExchangeListener> rosterExchangeListeners = Collections.synchronizedSet(new HashSet<RosterExchangeListener>());
 
     private final WeakReference<XMPPConnection> weakRefConnection;
-    private final PacketListener packetListener;
+    private final StanzaListener packetListener;
 
     public synchronized static RosterExchangeManager getInstanceFor(XMPPConnection connection) {
         RosterExchangeManager rosterExchangeManager = INSTANCES.get(connection);
@@ -71,12 +72,12 @@ public class RosterExchangeManager {
     /**
      * Creates a new roster exchange manager.
      *
-     * @param connection a XMPPConnection which is used to send and receive messages.
+     * @param connection an XMPPConnection which is used to send and receive messages.
      */
     public RosterExchangeManager(XMPPConnection connection) {
         weakRefConnection = new WeakReference<XMPPConnection>(connection);
         // Listens for all roster exchange packets and fire the roster exchange listeners.
-        packetListener = new PacketListener() {
+        packetListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
                 RosterExchange rosterExchange =
@@ -85,7 +86,7 @@ public class RosterExchangeManager {
                 fireRosterExchangeListeners(message.getFrom(), rosterExchange.getRosterEntries());
             }
         };
-        connection.addAsyncPacketListener(packetListener, PACKET_FILTER);
+        connection.addAsyncStanzaListener(packetListener, PACKET_FILTER);
     }
 
     /**
@@ -115,8 +116,9 @@ public class RosterExchangeManager {
      * @param roster the roster to send
      * @param targetUserID the user that will receive the roster entries
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void send(Roster roster, String targetUserID) throws NotConnectedException {
+    public void send(Roster roster, Jid targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message
@@ -125,7 +127,7 @@ public class RosterExchangeManager {
 
         XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        connection.sendPacket(msg);
+        connection.sendStanza(msg);
     }
 
     /**
@@ -134,8 +136,9 @@ public class RosterExchangeManager {
      * @param rosterEntry the roster entry to send
      * @param targetUserID the user that will receive the roster entries
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void send(RosterEntry rosterEntry, String targetUserID) throws NotConnectedException {
+    public void send(RosterEntry rosterEntry, Jid targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message
@@ -145,7 +148,7 @@ public class RosterExchangeManager {
 
         XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        connection.sendPacket(msg);
+        connection.sendStanza(msg);
     }
 
     /**
@@ -155,8 +158,9 @@ public class RosterExchangeManager {
      * @param rosterGroup the roster group to send
      * @param targetUserID the user that will receive the roster entries
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void send(RosterGroup rosterGroup, String targetUserID) throws NotConnectedException {
+    public void send(RosterGroup rosterGroup, Jid targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
         Message msg = new Message(targetUserID);
         // Create a RosterExchange Package and add it to the message
@@ -168,13 +172,13 @@ public class RosterExchangeManager {
 
         XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        connection.sendPacket(msg);
+        connection.sendStanza(msg);
     }
 
     /**
      * Fires roster exchange listeners.
      */
-    private void fireRosterExchangeListeners(String from, Iterator<RemoteRosterEntry> remoteRosterEntries) {
+    private void fireRosterExchangeListeners(Jid from, Iterator<RemoteRosterEntry> remoteRosterEntries) {
         RosterExchangeListener[] listeners = null;
         synchronized (rosterExchangeListeners) {
             listeners = new RosterExchangeListener[rosterExchangeListeners.size()];

@@ -30,24 +30,24 @@ public enum PubSubNamespace
 	ERROR("errors"),
 	EVENT("event"),
 	OWNER("owner");
-	
+
 	private String fragment;
-	
+
 	private PubSubNamespace(String fragment)
 	{
 		this.fragment = fragment;
 	}
-	
+
 	public String getXmlns()
 	{
 		String ns = PubSub.NAMESPACE;
-		
+
 		if (fragment != null)
 			ns += '#' + fragment;
-		
+
 		return ns;
 	}
-	
+
 	public String getFragment()
 	{
 		return fragment;
@@ -56,7 +56,7 @@ public enum PubSubNamespace
 	public static PubSubNamespace valueOfFromXmlns(String ns)
 	{
 		int index = ns.lastIndexOf('#');
-		
+
 		if (index != -1)
 		{
 			String suffix = ns.substring(ns.lastIndexOf('#')+1);

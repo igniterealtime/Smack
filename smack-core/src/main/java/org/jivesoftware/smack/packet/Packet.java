@@ -132,7 +132,7 @@ public interface Packet extends TopLevelStreamElement {
      *
      * @return the packet extensions.
      */
-    public List<PacketExtension> getExtensions();
+    public List<ExtensionElement> getExtensions();
 
     /**
      * Return a set of all extensions with the given element name <emph>and</emph> namespace.
@@ -145,7 +145,7 @@ public interface Packet extends TopLevelStreamElement {
      * @return a set of all matching extensions.
      * @since 4.1
      */
-    public Set<PacketExtension> getExtensions(String elementName, String namespace);
+    public Set<ExtensionElement> getExtensions(String elementName, String namespace);
 
     /**
      * Returns the first extension of this packet that has the given namespace.
@@ -156,7 +156,7 @@ public interface Packet extends TopLevelStreamElement {
      * @param namespace the namespace of the extension that is desired.
      * @return the packet extension with the given namespace.
      */
-    public PacketExtension getExtension(String namespace);
+    public ExtensionElement getExtension(String namespace);
 
     /**
      * Returns the first packet extension that matches the specified element name and
@@ -173,20 +173,20 @@ public interface Packet extends TopLevelStreamElement {
      * @param namespace the XML element namespace of the packet extension.
      * @return the extension, or <tt>null</tt> if it doesn't exist.
      */
-    public <PE extends PacketExtension> PE getExtension(String elementName, String namespace);
+    public <PE extends ExtensionElement> PE getExtension(String elementName, String namespace);
     /**
      * Adds a packet extension to the packet. Does nothing if extension is null.
      *
      * @param extension a packet extension.
      */
-    public void addExtension(PacketExtension extension);
+    public void addExtension(ExtensionElement extension);
 
     /**
      * Adds a collection of packet extensions to the packet. Does nothing if extensions is null.
      * 
      * @param extensions a collection of packet extensions
      */
-    public void addExtensions(Collection<PacketExtension> extensions);
+    public void addExtensions(Collection<ExtensionElement> extensions);
 
     /**
      * Check if a packet extension with the given element and namespace exists.
@@ -215,7 +215,7 @@ public interface Packet extends TopLevelStreamElement {
      * @param namespace
      * @return the removed packet extension or null.
      */
-    public PacketExtension removeExtension(String elementName, String namespace);
+    public ExtensionElement removeExtension(String elementName, String namespace);
 
     /**
      * Removes a packet extension from the packet.
@@ -223,7 +223,7 @@ public interface Packet extends TopLevelStreamElement {
      * @param extension the packet extension to remove.
      * @return the removed packet extension or null.
      */
-    public PacketExtension removeExtension(PacketExtension extension);
+    public ExtensionElement removeExtension(ExtensionElement extension);
 
     @Override
     // NOTE When Smack is using Java 8, then this method should be moved in Element as "Default Method".

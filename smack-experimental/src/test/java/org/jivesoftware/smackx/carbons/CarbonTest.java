@@ -17,6 +17,8 @@
 package org.jivesoftware.smackx.carbons;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
 
 import java.util.Properties;
 
@@ -43,26 +45,26 @@ public class CarbonTest extends ExperimentalInitializerTest {
         String control;
         CarbonExtension cc;
         Forwarded fwd;
-        
+
         control = XMLBuilder.create("sent")
             .e("forwarded")
                 .a("xmlns", "urn:xmpp:forwarded:0")
                 .e("message")
                     .a("from", "romeo@montague.com")
             .asString(outputProperties);
-        
+
         parser = PacketParserUtils.getParserFor(control);
-        cc = (CarbonExtension) new CarbonManagerProvider().parse(parser);
+        cc = new CarbonManagerProvider().parse(parser);
         fwd = cc.getForwarded();
 
         // meta
         assertEquals(CarbonExtension.Direction.sent, cc.getDirection());
-        
+
         // no delay in packet
         assertEquals(null, fwd.getDelayInformation());
-        
+
         // check message
-        assertEquals("romeo@montague.com", fwd.getForwardedPacket().getFrom());
+        assertThat("romeo@montague.com", equalsCharSequence(fwd.getForwardedPacket().getFrom()));
 
         // check end of tag
         assertEquals(XmlPullParser.END_TAG, parser.getEventType());
@@ -74,19 +76,19 @@ public class CarbonTest extends ExperimentalInitializerTest {
         XmlPullParser parser;
         String control;
         CarbonExtension cc;
-        
+
         control = XMLBuilder.create("received")
             .e("forwarded")
                 .a("xmlns", "urn:xmpp:forwarded:0")
                 .e("message")
                     .a("from", "romeo@montague.com")
             .asString(outputProperties);
-        
+
         parser = PacketParserUtils.getParserFor(control);
-        cc = (CarbonExtension) new CarbonManagerProvider().parse(parser);
+        cc = new CarbonManagerProvider().parse(parser);
 
         assertEquals(CarbonExtension.Direction.received, cc.getDirection());
-        
+
         // check end of tag
         assertEquals(XmlPullParser.END_TAG, parser.getEventType());
         assertEquals("received", parser.getName());
@@ -96,11 +98,11 @@ public class CarbonTest extends ExperimentalInitializerTest {
     public void carbonEmptyTest() throws Exception {
         XmlPullParser parser;
         String control;
-        
+
         control = XMLBuilder.create("sent")
             .a("xmlns", "urn:xmpp:forwarded:0")
             .asString(outputProperties);
-        
+
         parser = PacketParserUtils.getParserFor(control);
         new CarbonManagerProvider().parse(parser);
     }

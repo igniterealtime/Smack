@@ -76,8 +76,9 @@ public class IncomingFileTransfer extends FileTransfer {
      * @throws SmackException 
      * @throws XMPPErrorException If there is an error in the negotiation process an exception
      *                       is thrown.
+     * @throws InterruptedException 
      */
-    public InputStream recieveFile() throws SmackException, XMPPErrorException {
+    public InputStream recieveFile() throws SmackException, XMPPErrorException, InterruptedException {
         if (inputStream != null) {
             throw new IllegalStateException("Transfer already negotiated!");
         }
@@ -174,7 +175,7 @@ public class IncomingFileTransfer extends FileTransfer {
         transferThread.start();
     }
 
-    private InputStream negotiateStream() throws SmackException, XMPPErrorException {
+    private InputStream negotiateStream() throws SmackException, XMPPErrorException, InterruptedException {
         setStatus(Status.negotiating_transfer);
         final StreamNegotiator streamNegotiator = negotiator
                 .selectStreamNegotiator(recieveRequest);

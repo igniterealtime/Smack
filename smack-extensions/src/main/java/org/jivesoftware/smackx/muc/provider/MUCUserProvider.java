@@ -20,7 +20,7 @@ package org.jivesoftware.smackx.muc.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -31,7 +31,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author Gaston Dombiak
  */
-public class MUCUserProvider extends PacketExtensionProvider<MUCUser> {
+public class MUCUserProvider extends ExtensionElementProvider<MUCUser> {
 
     /**
      * Parses a MUCUser packet (extension sub-packet).

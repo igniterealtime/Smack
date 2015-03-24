@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.receipts;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -30,7 +30,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Georg Lukas
  */
-public class DeliveryReceipt implements PacketExtension
+public class DeliveryReceipt implements ExtensionElement
 {
     public static final String NAMESPACE = "urn:xmpp:receipts";
     public static final String ELEMENT = "received";
@@ -76,21 +76,21 @@ public class DeliveryReceipt implements PacketExtension
      *
      * @param p the packet
      * @return the {@link DeliveryReceipt} extension or {@code null}
-     * @deprecated use {@link #from(Stanza)} instead
+     * @deprecated use {@link #from(Message)} instead
      */
     @Deprecated
-    public static DeliveryReceipt getFrom(Stanza p) {
+    public static DeliveryReceipt getFrom(Message p) {
         return from(p);
     }
 
     /**
-     * Get the {@link DeliveryReceipt} extension of the packet, if any.
+     * Get the {@link DeliveryReceipt} extension of the message, if any.
      *
-     * @param packet the packet
+     * @param message the message.
      * @return the {@link DeliveryReceipt} extension or {@code null}
      */
-    public static DeliveryReceipt from(Stanza packet) {
-        return packet.getExtension(ELEMENT, NAMESPACE);
+    public static DeliveryReceipt from(Message message) {
+        return message.getExtension(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -101,7 +101,7 @@ public class DeliveryReceipt implements PacketExtension
 
         @Override
         protected DeliveryReceipt createReturnExtension(String currentElement, String currentNamespace,
-                Map<String, String> attributeMap, List<? extends PacketExtension> content)
+                Map<String, String> attributeMap, List<? extends ExtensionElement> content)
         {
             return new DeliveryReceipt(attributeMap.get("id"));
         }

@@ -101,7 +101,7 @@ public class ChatSettings extends IQ {
 
     public ChatSetting getFirstEntry() {
         if (settings.size() > 0) {
-            return (ChatSetting)settings.get(0);
+            return settings.get(0);
         }
         return null;
     }
@@ -146,7 +146,7 @@ public class ChatSettings extends IQ {
             return chatSettings;
         }
 
-        private ChatSetting parseChatSetting(XmlPullParser parser) throws XmlPullParserException, IOException {
+        private static ChatSetting parseChatSetting(XmlPullParser parser) throws XmlPullParserException, IOException {
 
             boolean done = false;
             String key = null;

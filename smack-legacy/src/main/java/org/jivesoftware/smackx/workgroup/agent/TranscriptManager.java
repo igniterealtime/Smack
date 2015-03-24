@@ -23,11 +23,12 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jxmpp.jid.Jid;
 
 /**
  * A TranscriptManager helps to retrieve the full conversation transcript of a given session
- * {@link #getTranscript(String, String)} or to retrieve a list with the summary of all the
- * conversations that a user had {@link #getTranscripts(String, String)}.
+ * {@link #getTranscript(Jid, String)} or to retrieve a list with the summary of all the
+ * conversations that a user had {@link #getTranscripts(Jid, Jid)}.
  *
  * @author Gaston Dombiak
  */
@@ -47,8 +48,9 @@ public class TranscriptManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public Transcript getTranscript(String workgroupJID, String sessionID) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public Transcript getTranscript(Jid workgroupJID, String sessionID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Transcript request = new Transcript(sessionID);
         request.setTo(workgroupJID);
         Transcript response = (Transcript) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
@@ -65,8 +67,9 @@ public class TranscriptManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public Transcripts getTranscripts(String workgroupJID, String userID) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public Transcripts getTranscripts(Jid workgroupJID, Jid userID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Transcripts request = new Transcripts(userID);
         request.setTo(workgroupJID);
         Transcripts response = (Transcripts) connection.createPacketCollectorAndSend(request).nextResultOrThrow();

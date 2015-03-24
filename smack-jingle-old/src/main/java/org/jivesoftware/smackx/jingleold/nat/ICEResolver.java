@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
@@ -38,7 +39,7 @@ import de.javawi.jstun.util.UtilityException;
 /**
  * ICE Resolver for Jingle transport method that results in sending data between two entities using the Interactive Connectivity Establishment (ICE) methodology. (XEP-0176)
  * The goal of this resolver is to make possible to establish and manage out-of-band connections between two XMPP entities, even if they are behind Network Address Translators (NATs) or firewalls.
- * To use this resolver you must have a STUN Server and be in a non STUN blocked network. Or use a XMPP server with public IP detection Service.
+ * To use this resolver you must have a STUN Server and be in a non STUN blocked network. Or use an XMPP server with public IP detection Service.
  *
  * @author Thiago Camargo
  */
@@ -71,13 +72,15 @@ public class ICEResolver extends TransportResolver {
             // we now cache established/initialized negotiators for each STUN server, so that subsequent uses
             // of the STUN server are much, much faster.
             if (negociatorsMap.get(server) == null) {
+            // CHECKSTYLE:OFF
             	ICENegociator iceNegociator = new ICENegociator(server, port, (short) 1);
             	negociatorsMap.put(server, iceNegociator);
-            	
+
             	// gather candidates
             	iceNegociator.gatherCandidateAddresses();
             	// priorize candidates
             	iceNegociator.prioritizeCandidates();
+            // CHECKSTYLE:ON
             }
 
         }
@@ -91,8 +94,9 @@ public class ICEResolver extends TransportResolver {
     /**
      * Resolve the IP and obtain a valid transport method.
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    public synchronized void resolve(JingleSession session) throws XMPPException, SmackException {
+    public synchronized void resolve(JingleSession session) throws XMPPException, SmackException, InterruptedException {
         this.setResolveInit();
 
         for (TransportCandidate candidate : this.getCandidatesList()) {
@@ -134,9 +138,9 @@ public class ICEResolver extends TransportResolver {
 						i++;
 					}
 				} catch (SocketException e1) {
-					e1.printStackTrace();
+					LOGGER.log(Level.WARNING, "exeption", e1);
 				}
-                
+
                 TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, nicNum, String.valueOf(Math.abs(random.nextLong())), candidate.getPort(), "1", candidate.getPriority(), iceType);
                 transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());
                 transportCandidate.setPort(getFreePort());
@@ -144,7 +148,7 @@ public class ICEResolver extends TransportResolver {
                     transportCandidate.addCandidateEcho(session);
                 }
                 catch (SocketException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 }
                 this.addCandidate(transportCandidate);
 
@@ -152,10 +156,10 @@ public class ICEResolver extends TransportResolver {
 
             }
             catch (UtilityException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
             catch (UnknownHostException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
 
         // Get a Relay Candidate from XMPP Server
@@ -165,8 +169,8 @@ public class ICEResolver extends TransportResolver {
 
                 String localIp;
                 int network;
-                
-                
+
+
                 // JBW/GW - 17JUL08: ICENegotiator.getPublicCandidate() always returned null in JSTUN 1.7.0, and now the API doesn't exist in JSTUN 1.7.1
 //                if (iceNegociator.getPublicCandidate() != null) {
 //                    localIp = iceNegociator.getPublicCandidate().getBase().getAddress().getInetAddress().getHostAddress();
@@ -206,10 +210,10 @@ public class ICEResolver extends TransportResolver {
 
 //            }
 //            catch (UtilityException e) {
-//                e.printStackTrace();
+//                LOGGER.log(Level.WARNING, "exception", e);
 //            }
 //            catch (UnknownHostException e) {
-//                e.printStackTrace();
+//                LOGGER.log(Level.WARNING, "exception", e);
 //            }
 
             // Get Public Candidate From XMPP Server
@@ -228,7 +232,7 @@ public class ICEResolver extends TransportResolver {
                         ifaces = NetworkInterface.getNetworkInterfaces();
                     }
                     catch (SocketException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, "exception", e);
                     }
 
                     // If detect this address in local machine, don't use it.
@@ -259,13 +263,13 @@ public class ICEResolver extends TransportResolver {
                                 publicCandidate.addCandidateEcho(session);
                             }
                             catch (SocketException e) {
-                                e.printStackTrace();
+                                LOGGER.log(Level.WARNING, "exception", e);
                             }
 
                             addCandidate(publicCandidate);
                         }
                         catch (UnknownHostException e) {
-                            e.printStackTrace();
+                            LOGGER.log(Level.WARNING, "exception", e);
                         }
                     }
                 }

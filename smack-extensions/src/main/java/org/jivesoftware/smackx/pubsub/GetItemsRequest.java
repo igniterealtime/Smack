@@ -27,12 +27,12 @@ public class GetItemsRequest extends NodeExtension
 {
 	protected final String subId;
 	protected final int maxItems;
-	
+
 	public GetItemsRequest(String nodeId)
 	{
 		this(nodeId, null, -1);
 	}
-	
+
 	public GetItemsRequest(String nodeId, String subscriptionId)
 	{
         this(nodeId, subscriptionId, -1);

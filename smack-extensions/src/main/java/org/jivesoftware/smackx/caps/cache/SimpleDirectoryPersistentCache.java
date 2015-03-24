@@ -40,7 +40,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
  */
 public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache {
     private static final Logger LOGGER = Logger.getLogger(SimpleDirectoryPersistentCache.class.getName());
-    
+
     private File cacheDir;
     private StringEncoder filenameEncoder;
 

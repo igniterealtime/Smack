@@ -22,6 +22,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Tests that verifies the correct behavior of creating result and error IQ packets.
@@ -36,12 +38,13 @@ public class IQResponseTest {
 
     /**
      * Test creating a simple and empty IQ response.
+     * @throws XmppStringprepException 
      */
     @Test
-    public void testGeneratingSimpleResponse() {
+    public void testGeneratingSimpleResponse() throws XmppStringprepException {
         final IQ request = new TestIQ(ELEMENT, NAMESPACE);
-        request.setFrom("sender@test/Smack");
-        request.setTo("receiver@test/Smack");
+        request.setFrom(JidCreate.from("sender@test/Smack"));
+        request.setTo(JidCreate.from("receiver@test/Smack"));
 
         final IQ result = IQ.createResultIQ(request);
 
@@ -55,15 +58,16 @@ public class IQResponseTest {
 
     /**
      * Test creating a error response based on an IQ request.
+     * @throws XmppStringprepException 
      */
     @Test
-    public void testGeneratingValidErrorResponse() {
+    public void testGeneratingValidErrorResponse() throws XmppStringprepException {
         final XMPPError error = new XMPPError(XMPPError.Condition.bad_request);
         final IQ request = new TestIQ(ELEMENT, NAMESPACE);
 
         request.setType(IQ.Type.set);
-        request.setFrom("sender@test/Smack");
-        request.setTo("receiver@test/Smack");
+        request.setFrom(JidCreate.from("sender@test/Smack"));
+        request.setTo(JidCreate.from("receiver@test/Smack"));
 
         final IQ result = IQ.createErrorResponse(request, error);
 
@@ -79,14 +83,15 @@ public class IQResponseTest {
     /**
      * According to <a href="http://xmpp.org/rfcs/rfc3920.html#stanzas-semantics-iq"
      * >RFC3920: IQ Semantics</a> we shouldn't respond to an IQ of type result.
+     * @throws XmppStringprepException 
      */
     @Test
-    public void testGeneratingResponseBasedOnResult() {
+    public void testGeneratingResponseBasedOnResult() throws XmppStringprepException {
         final IQ request = new TestIQ(ELEMENT, NAMESPACE);
 
         request.setType(IQ.Type.result);
-        request.setFrom("sender@test/Smack");
-        request.setTo("receiver@test/Smack");
+        request.setFrom(JidCreate.from("sender@test/Smack"));
+        request.setTo(JidCreate.from("receiver@test/Smack"));
 
         try {
             IQ.createResultIQ(request);
@@ -101,15 +106,16 @@ public class IQResponseTest {
     /**
      * According to <a href="http://xmpp.org/rfcs/rfc3920.html#stanzas-semantics-iq"
      * >RFC3920: IQ Semantics</a> we shouldn't respond to an IQ of type error.
+     * @throws XmppStringprepException 
      */
     @Test
-    public void testGeneratingErrorBasedOnError() {
+    public void testGeneratingErrorBasedOnError() throws XmppStringprepException {
         final XMPPError error = new XMPPError(XMPPError.Condition.bad_request);
         final IQ request = new TestIQ(ELEMENT, NAMESPACE);
 
         request.setType(IQ.Type.error);
-        request.setFrom("sender@test/Smack");
-        request.setTo("receiver@test/Smack");
+        request.setFrom(JidCreate.from("sender@test/Smack"));
+        request.setTo(JidCreate.from("receiver@test/Smack"));
         request.setError(error);
 
         try {

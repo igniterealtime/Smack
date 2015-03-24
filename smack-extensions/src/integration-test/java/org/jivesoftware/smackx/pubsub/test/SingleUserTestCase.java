@@ -31,7 +31,7 @@ public class SingleUserTestCase extends PubSubTestCase
 	{
 		return getManager(0);
 	}
-	
+
 	protected LeafNode getPubnode(boolean persistItems, boolean deliverPayload) throws XMPPException
 	{
 		return getRandomPubnode(getManager(), persistItems, deliverPayload);

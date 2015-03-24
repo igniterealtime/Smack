@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.forward.packet;
 
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 
@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.delay.packet.DelayInformation;
  * @author Georg Lukas
  * @see <a href="http://xmpp.org/extensions/xep-0297.html">XEP-0297: Stanza Forwarding</a>
  */
-public class Forwarded implements PacketExtension {
+public class Forwarded implements ExtensionElement {
     public static final String NAMESPACE = "urn:xmpp:forward:0";
     public static final String ELEMENT = "forwarded";
 

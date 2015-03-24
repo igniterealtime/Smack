@@ -36,7 +36,7 @@ public abstract class WholeImageFilter extends AbstractBufferedImageOp {
      * The input image bounds.
      */
 	protected Rectangle originalSpace;
-	
+
 	/**
 	 * Construct a WholeImageFilter.
 	 */
@@ -72,7 +72,7 @@ public abstract class WholeImageFilter extends AbstractBufferedImageOp {
      */
 	protected void transformSpace(Rectangle rect) {
 	}
-	
+
 	/**
      * Actually filter the pixels.
      * @param width the image width

@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
@@ -102,18 +102,18 @@ public class ItemValidationTest extends InitExtensions {
                     "</items>" + 
                  "</event>" + 
             "</message>");
-        
+
         Stanza message = PacketParserUtils.parseMessage(parser);
-        PacketExtension eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
-        
+        ExtensionElement eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
+
         assertTrue(eventExt instanceof EventElement);
         EventElement event = (EventElement) eventExt;
         assertEquals(EventElementType.items, event.getEventType());
         assertEquals(1, event.getExtensions().size());
         assertTrue(event.getExtensions().get(0) instanceof ItemsExtension);
         assertEquals(1, ((ItemsExtension)event.getExtensions().get(0)).items.size());
-        
-        PacketExtension itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
+
+        ExtensionElement itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
         assertTrue(itemExt instanceof Item);
         assertEquals("testid1", ((Item)itemExt).getId());
 	}
@@ -122,7 +122,7 @@ public class ItemValidationTest extends InitExtensions {
     public void parseSimplePayloadItem() throws Exception
     {
         String itemContent = "<foo xmlns='smack:test'>Some text</foo>";
-        
+
         XmlPullParser parser = PacketParserUtils.getParserFor(
             "<message from='pubsub.myserver.com' to='francisco@denmark.lit' id='foo'>" +
                 "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
@@ -133,18 +133,18 @@ public class ItemValidationTest extends InitExtensions {
                     "</items>" + 
                  "</event>" + 
             "</message>");
-        
+
         Stanza message = PacketParserUtils.parseMessage(parser);
-        PacketExtension eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
+        ExtensionElement eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
         EventElement event = (EventElement) eventExt;
-        PacketExtension itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
+        ExtensionElement itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
 
         assertTrue(itemExt instanceof PayloadItem<?>);
         PayloadItem<?> item = (PayloadItem<?>)itemExt;
-        
+
         assertEquals("testid1", item.getId());
         assertTrue(item.getPayload() instanceof SimplePayload);
-        
+
         SimplePayload payload = (SimplePayload) item.getPayload();
         assertEquals("foo", payload.getElementName());
         assertEquals("smack:test", payload.getNamespace());
@@ -169,7 +169,7 @@ public class ItemValidationTest extends InitExtensions {
                     "<published>2003-12-13T18:30:02Z</published>" +
                     "<updated>2003-12-13T18:30:02Z</updated>" +
                 "</entry>";
-        
+
         XmlPullParser parser = PacketParserUtils.getParserFor(
             "<message from='pubsub.myserver.com' to='francisco@denmark.lit' id='foo'>" +
                 "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
@@ -180,18 +180,18 @@ public class ItemValidationTest extends InitExtensions {
                     "</items>" + 
                  "</event>" + 
             "</message>");
-        
+
         Stanza message = PacketParserUtils.parseMessage(parser);
-        PacketExtension eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
+        ExtensionElement eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
         EventElement event = (EventElement) eventExt;
-        PacketExtension itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
+        ExtensionElement itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
 
         assertTrue(itemExt instanceof PayloadItem<?>);
         PayloadItem<?> item = (PayloadItem<?>)itemExt;
-        
+
         assertEquals("testid1", item.getId());
         assertTrue(item.getPayload() instanceof SimplePayload);
-        
+
         SimplePayload payload = (SimplePayload) item.getPayload();
         assertEquals("entry", payload.getElementName());
         assertEquals("http://www.w3.org/2005/Atom", payload.getNamespace());
@@ -202,7 +202,7 @@ public class ItemValidationTest extends InitExtensions {
     public void parseEmptyTag() throws Exception
     {
         String itemContent = "<foo xmlns='smack:test'><bar/></foo>";
-        
+
         XmlPullParser parser = PacketParserUtils.getParserFor(
             "<message from='pubsub.myserver.com' to='francisco@denmark.lit' id='foo'>" +
                 "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
@@ -213,24 +213,24 @@ public class ItemValidationTest extends InitExtensions {
                     "</items>" + 
                  "</event>" + 
             "</message>");
-        
+
         Stanza message = PacketParserUtils.parseMessage(parser);
-        PacketExtension eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
-        
+        ExtensionElement eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
+
         assertTrue(eventExt instanceof EventElement);
         EventElement event = (EventElement) eventExt;
         assertEquals(EventElementType.items, event.getEventType());
         assertEquals(1, event.getExtensions().size());
         assertTrue(event.getExtensions().get(0) instanceof ItemsExtension);
         assertEquals(1, ((ItemsExtension)event.getExtensions().get(0)).items.size());
-        
-        PacketExtension itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
+
+        ExtensionElement itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
         assertTrue(itemExt instanceof PayloadItem<?>);
         PayloadItem<?> item = (PayloadItem<?>)itemExt;
-        
+
         assertEquals("testid1", item.getId());
         assertTrue(item.getPayload() instanceof SimplePayload);
-        
+
         assertXMLEqual(itemContent, ((SimplePayload)item.getPayload()).toXML().toString());
     }
 }

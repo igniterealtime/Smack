@@ -28,6 +28,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jxmpp.jid.Jid;
 
 
 /**
@@ -41,11 +42,12 @@ public class RosterEntry {
     /**
      * The JID of the entity/user.
      */
-    private final String user;
+    private final Jid user;
 
     private String name;
     private RosterPacket.ItemType type;
     private RosterPacket.ItemStatus status;
+    private final boolean approved;
     final private Roster roster;
     final private XMPPConnection connection;
 
@@ -56,14 +58,16 @@ public class RosterEntry {
      * @param name the nickname for the entry.
      * @param type the subscription type.
      * @param status the subscription status (related to subscriptions pending to be approbed).
+     * @param approved the pre-approval flag.
      * @param connection a connection to the XMPP server.
      */
-    RosterEntry(String user, String name, RosterPacket.ItemType type,
-                RosterPacket.ItemStatus status, Roster roster, XMPPConnection connection) {
+    RosterEntry(Jid user, String name, RosterPacket.ItemType type,
+                RosterPacket.ItemStatus status, boolean approved, Roster roster, XMPPConnection connection) {
         this.user = user;
         this.name = name;
         this.type = type;
         this.status = status;
+        this.approved = approved;
         this.roster = roster;
         this.connection = connection;
     }
@@ -73,7 +77,7 @@ public class RosterEntry {
      *
      * @return the user associated with this entry.
      */
-    public String getUser() {
+    public Jid getUser() {
         return user;
     }
 
@@ -93,8 +97,9 @@ public class RosterEntry {
      * @throws NotConnectedException 
      * @throws XMPPErrorException 
      * @throws NoResponseException 
+     * @throws InterruptedException 
      */
-    public void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException {
+    public void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException, InterruptedException {
         // Do nothing if the name hasn't changed.
         if (name != null && name.equals(this.name)) {
             return;
@@ -120,6 +125,15 @@ public class RosterEntry {
         this.name = name;
         this.type = type;
         this.status = status;
+    }
+
+    /**
+     * Returns the pre-approval state of this entry.
+     *
+     * @return the pre-approval state.
+     */
+    public boolean isApproved() {
+        return approved;
     }
 
     /**
@@ -242,13 +256,16 @@ public class RosterEntry {
         }
         else if (!user.equals(other.user))
             return false;
+        if (approved != other.approved)
+            return false;
         return true;
     }
-    
+
     static RosterPacket.Item toRosterItem(RosterEntry entry) {
         RosterPacket.Item item = new RosterPacket.Item(entry.getUser(), entry.getName());
         item.setItemType(entry.getType());
         item.setItemStatus(entry.getStatus());
+        item.setApproved(entry.isApproved());
         // Set the correct group names for the item.
         for (RosterGroup group : entry.getGroups()) {
             item.addGroupName(group.getName());

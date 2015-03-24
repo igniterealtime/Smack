@@ -18,15 +18,17 @@
 package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Filters for packets with a particular type of packet extension.
  *
  * @author Matt Tucker
+ * @deprecated use {@link StanzaExtensionFilter} instead.
  */
-public class PacketExtensionFilter implements PacketFilter {
+@Deprecated
+public class PacketExtensionFilter implements StanzaFilter {
 
     private final String elementName;
     private final String namespace;
@@ -61,11 +63,16 @@ public class PacketExtensionFilter implements PacketFilter {
      *
      * @param packetExtension
      */
-    public PacketExtensionFilter(PacketExtension packetExtension) {
+    public PacketExtensionFilter(ExtensionElement packetExtension) {
         this(packetExtension.getElementName(), packetExtension.getNamespace());
     }
 
     public boolean accept(Stanza packet) {
         return packet.hasExtension(elementName, namespace);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ": element=" + elementName + " namespace=" + namespace;
     }
 }

@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.pep;
 
 import org.jivesoftware.smackx.pep.packet.PEPEvent;
+import org.jxmpp.jid.Jid;
 
 
 /**
@@ -34,6 +35,6 @@ public interface PEPListener {
      * @param from the user that sent the entries.
      * @param event the event contained in the message.
      */
-    public void eventReceived(String from, PEPEvent event);
+    public void eventReceived(Jid from, PEPEvent event);
 
 }

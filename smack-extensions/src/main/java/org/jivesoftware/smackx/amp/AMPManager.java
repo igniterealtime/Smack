@@ -86,10 +86,11 @@ public class AMPManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public static boolean isActionSupported(XMPPConnection connection, AMPExtension.Action action) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public static boolean isActionSupported(XMPPConnection connection, AMPExtension.Action action) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         String featureName = AMPExtension.NAMESPACE + "?action=" + action.toString();
-        return isFeatureSupportedByServer(connection, featureName, AMPExtension.NAMESPACE);
+        return isFeatureSupportedByServer(connection, featureName);
     }
 
     /**
@@ -100,16 +101,17 @@ public class AMPManager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      * @see AMPDeliverCondition
      * @see AMPExpireAtCondition
      * @see AMPMatchResourceCondition
      */
-    public static boolean isConditionSupported(XMPPConnection connection, String conditionName) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public static boolean isConditionSupported(XMPPConnection connection, String conditionName) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         String featureName = AMPExtension.NAMESPACE + "?condition=" + conditionName;
-        return isFeatureSupportedByServer(connection, featureName, AMPExtension.NAMESPACE);
+        return isFeatureSupportedByServer(connection, featureName);
     }
 
-    private static boolean isFeatureSupportedByServer(XMPPConnection connection, String featureName, String node) throws NoResponseException, XMPPErrorException, NotConnectedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(node, featureName);
+    private static boolean isFeatureSupportedByServer(XMPPConnection connection, String featureName) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return ServiceDiscoveryManager.getInstanceFor(connection).serverSupportsFeature(featureName);
     }
 }

@@ -20,8 +20,8 @@ import static org.junit.Assert.assertThat;
 import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -72,12 +72,12 @@ public class ParsingExceptionTest {
         assertThat(MESSAGE_EXCEPTION_ELEMENT + EXTENSION2 + "</message>", equalsCharSequence(content));
     }
 
-    static class ThrowException extends PacketExtensionProvider<PacketExtension> {
+    static class ThrowException extends ExtensionElementProvider<ExtensionElement> {
         public static final String ELEMENT = "exception";
         public static final String NAMESPACE = "http://smack.jivesoftware.org/exception";
 
         @Override
-        public PacketExtension parse(XmlPullParser parser, int initialDepth) throws SmackException {
+        public ExtensionElement parse(XmlPullParser parser, int initialDepth) throws SmackException {
             throw new SmackException("Test Exception");
         }
 

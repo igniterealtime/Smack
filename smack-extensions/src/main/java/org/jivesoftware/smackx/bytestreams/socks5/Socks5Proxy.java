@@ -54,7 +54,7 @@ import org.jivesoftware.smack.SmackException;
  * <p>
  * The local SOCKS5 proxy server refuses all connections except the ones that are explicitly allowed
  * in the process of establishing a SOCKS5 Bytestream (
- * {@link Socks5BytestreamManager#establishSession(String)}).
+ * {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid)}).
  * <p>
  * This Implementation has the following limitations:
  * <ul>
@@ -70,7 +70,7 @@ import org.jivesoftware.smack.SmackException;
  */
 public class Socks5Proxy {
     private static final Logger LOGGER = Logger.getLogger(Socks5Proxy.class.getName());
-    
+
     /* SOCKS5 proxy singleton */
     private static Socks5Proxy socks5Server;
 

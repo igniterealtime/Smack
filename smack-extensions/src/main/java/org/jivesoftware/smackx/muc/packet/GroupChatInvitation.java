@@ -20,8 +20,8 @@ package org.jivesoftware.smackx.muc.packet;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -36,15 +36,15 @@ import org.xmlpull.v1.XmlPullParserException;
  * Message message = new Message("user@chat.example.com");
  * message.setBody("Join me for a group chat!");
  * message.addExtension(new GroupChatInvitation("room@chat.example.com"););
- * con.sendPacket(message);
+ * con.sendStanza(message);
  * </pre>
  *
- * To listen for group chat invitations, use a PacketExtensionFilter for the
+ * To listen for group chat invitations, use a StanzaExtensionFilter for the
  * <tt>x</tt> element name and <tt>jabber:x:conference</tt> namespace, as in the
  * following code example:
  *
  * <pre>
- * PacketFilter filter = new PacketExtensionFilter("x", "jabber:x:conference");
+ * PacketFilter filter = new StanzaExtensionFilter("x", "jabber:x:conference");
  * // Create a packet collector or packet listeners using the filter...
  * </pre>
  *
@@ -55,7 +55,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * 
  * @author Matt Tucker
  */
-public class GroupChatInvitation implements PacketExtension {
+public class GroupChatInvitation implements ExtensionElement {
 
     /**
      * Element name of the packet extension.
@@ -128,7 +128,7 @@ public class GroupChatInvitation implements PacketExtension {
         return packet.getExtension(ELEMENT, NAMESPACE);
     }
 
-    public static class Provider extends PacketExtensionProvider<GroupChatInvitation> {
+    public static class Provider extends ExtensionElementProvider<GroupChatInvitation> {
 
         @Override
         public GroupChatInvitation parse(XmlPullParser parser,

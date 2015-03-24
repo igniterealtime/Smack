@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub.provider;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 import org.jivesoftware.smackx.pubsub.Affiliation;
 
@@ -32,7 +32,7 @@ import org.jivesoftware.smackx.pubsub.Affiliation;
 public class AffiliationProvider extends EmbeddedExtensionProvider<Affiliation>
 {
 	@Override
-	protected Affiliation createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends PacketExtension> content)
+	protected Affiliation createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
 	{
 		return new Affiliation(attributeMap.get("node"), Affiliation.Type.valueOf(attributeMap.get("affiliation")));
 	}

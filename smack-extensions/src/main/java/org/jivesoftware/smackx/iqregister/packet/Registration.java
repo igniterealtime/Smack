@@ -20,7 +20,7 @@ package org.jivesoftware.smackx.iqregister.packet;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * Represents registration packets. An empty GET query will cause the server to return information
@@ -100,7 +100,7 @@ public class Registration extends IQ {
         return xml;
     }
 
-    public static class Feature implements PacketExtension {
+    public static class Feature implements ExtensionElement {
 
         public static final String ELEMENT = "register";
         public static final String NAMESPACE = "http://jabber.org/features/iq-register";

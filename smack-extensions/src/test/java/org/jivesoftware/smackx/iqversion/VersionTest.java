@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smackx.iqversion;
 
+import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.DummyConnection;
@@ -52,7 +54,7 @@ public class VersionTest {
         Version reply = (Version) replyPacket;
         //getFrom check is pending for SMACK-547
         //assertEquals("juliet@capulet.lit/balcony", reply.getFrom());
-        assertEquals("capulet.lit", reply.getTo());
+        assertThat("capulet.lit", equalsCharSequence(reply.getTo()));
         assertEquals("s2c1", reply.getStanzaId());
         assertEquals(IQ.Type.result, reply.getType());
         assertEquals("Test", reply.getName());

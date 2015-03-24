@@ -64,14 +64,14 @@ public class PixelUtils {
 	public static int interpolate(int v1, int v2, float f) {
 		return clamp((int)(v1+f*(v2-v1)));
 	}
-	
+
 	public static int brightness(int rgb) {
 		int r = (rgb >> 16) & 0xff;
 		int g = (rgb >> 8) & 0xff;
 		int b = rgb & 0xff;
 		return (r+g+b)/3;
 	}
-	
+
 	public static boolean nearColors(int rgb1, int rgb2, int tolerance) {
 		int r1 = (rgb1 >> 16) & 0xff;
 		int g1 = (rgb1 >> 8) & 0xff;
@@ -81,19 +81,19 @@ public class PixelUtils {
 		int b2 = rgb2 & 0xff;
 		return Math.abs(r1-r2) <= tolerance && Math.abs(g1-g2) <= tolerance && Math.abs(b1-b2) <= tolerance;
 	}
-	
+
 	private final static float[] hsb1 = new float[3];//FIXME-not thread safe
 	private final static float[] hsb2 = new float[3];//FIXME-not thread safe
-	
+
 	// Return rgb1 painted onto rgb2
 	public static int combinePixels(int rgb1, int rgb2, int op) {
 		return combinePixels(rgb1, rgb2, op, 0xff);
 	}
-	
+
 	public static int combinePixels(int rgb1, int rgb2, int op, int extraAlpha, int channelMask) {
 		return (rgb2 & ~channelMask) | combinePixels(rgb1 & channelMask, rgb2, op, extraAlpha);
 	}
-	
+
 	public static int combinePixels(int rgb1, int rgb2, int op, int extraAlpha) {
 		if (op == REPLACE)
 			return rgb1;

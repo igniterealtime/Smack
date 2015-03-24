@@ -92,13 +92,12 @@ public class ServerPingWithAlarmManager extends Manager {
 		super(connection);
 	}
 
-	/**
-	 * If enabled, ServerPingWithAlarmManager will call
-	 * {@link PingManager#pingServerIfNecessary()} for the connection of this
-	 * instance every half hour.
-	 * 
-	 * @param enabled
-	 */
+    /**
+     * If enabled, ServerPingWithAlarmManager will call {@link PingManager#pingServerIfNecessary()}
+     * for the connection of this instance every half hour.
+     * 
+     * @param enabled
+     */
 	public void setEnabled(boolean enabled) {
 		mEnabled = enabled;
 	}
@@ -144,14 +143,13 @@ public class ServerPingWithAlarmManager extends Manager {
 	private static PendingIntent sPendingIntent;
 	private static AlarmManager sAlarmManager;
 
-	/**
-	 * Register a pending intent with the AlarmManager to be broadcasted every
-	 * half hour and register the alarm broadcast receiver to receive this
-	 * intent. The receiver will check all known questions if a ping is
-	 * Necessary when invoked by the alarm intent.
-	 * 
-	 * @param context
-	 */
+    /**
+     * Register a pending intent with the AlarmManager to be broadcasted every half hour and
+     * register the alarm broadcast receiver to receive this intent. The receiver will check all
+     * known questions if a ping is Necessary when invoked by the alarm intent.
+     * 
+     * @param context
+     */
 	public static void onCreate(Context context) {
 		sContext = context;
 		context.registerReceiver(ALARM_BROADCAST_RECEIVER, new IntentFilter(PING_ALARM_ACTION));
@@ -162,9 +160,9 @@ public class ServerPingWithAlarmManager extends Manager {
 				AlarmManager.INTERVAL_HALF_HOUR, sPendingIntent);
 	}
 
-	/**
-	 * Unregister the alarm broadcast receiver and cancel the alarm. 
-	 */
+    /**
+     * Unregister the alarm broadcast receiver and cancel the alarm.
+     */
 	public static void onDestroy() {
 		sContext.unregisterReceiver(ALARM_BROADCAST_RECEIVER);
 		sAlarmManager.cancel(sPendingIntent);

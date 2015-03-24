@@ -35,7 +35,7 @@ public interface ItemDeleteListener
 	 * @param items The event with item deletion details
 	 */
 	void handleDeletedItems(ItemDeleteEvent items);
-	
+
 	/**
 	 * Called when <b>all</b> items are deleted from a node the listener is 
 	 * registered with. 

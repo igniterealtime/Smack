@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 package org.jivesoftware.smackx.pubsub;
- 
+
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class SubscriberUseCases extends SingleUserTestCase
 	{
 		LeafNode node = getPubnode(false, false);
 		Subscription sub = node.subscribe(getJid());
-		
+
 		assertEquals(getJid(), sub.getJid());
 		assertNotNull(sub.getId());
 		assertEquals(node.getId(), sub.getNode());
@@ -50,7 +50,7 @@ public class SubscriberUseCases extends SingleUserTestCase
 	public void testSubscribeBadJid() throws Exception
 	{
 		LeafNode node = getPubnode(false, false);
-		
+
 		try
 		{
 			node.subscribe("this@over.here");
@@ -71,12 +71,12 @@ public class SubscriberUseCases extends SingleUserTestCase
 		LeafNode node = getPubnode(false, false);
 		node.subscribe(getJid(), form);
 	}
-	
+
 	public void testSubscribeConfigRequired() throws Exception
 	{
 		ConfigureForm form = new ConfigureForm(FormType.submit);
 		form.setAccessModel(AccessModel.open);
-		
+
 		// Openfire specific field - nothing in the spec yet
 		FormField required = new FormField("pubsub#subscription_required");
 		required.setType(FormField.TYPE_BOOLEAN);
@@ -85,31 +85,31 @@ public class SubscriberUseCases extends SingleUserTestCase
 		LeafNode node = (LeafNode)getManager().createNode("Pubnode" + System.currentTimeMillis(), form);
 
 		Subscription sub = node.subscribe(getJid());
-		
+
 		assertEquals(getJid(), sub.getJid());
 		assertNotNull(sub.getId());
 		assertEquals(node.getId(), sub.getNode());
 		assertEquals(true, sub.isConfigRequired());
 	}
-	
+
 	public void testUnsubscribe() throws Exception
 	{
 		LeafNode node = getPubnode(false, false);
 		node.subscribe(getJid());
 		Collection<Subscription> subs = node.getSubscriptions();
-		
+
 		node.unsubscribe(getJid());
 		Collection<Subscription> afterSubs = node.getSubscriptions();
 		assertEquals(subs.size()-1, afterSubs.size());
 	}
-	
+
 	public void testUnsubscribeWithMultipleNoSubId() throws Exception
 	{
 		LeafNode node = getPubnode(false, false);
 		node.subscribe(getBareJID(0));
 		node.subscribe(getBareJID(0));
 		node.subscribe(getBareJID(0));
-		
+
 		try
 		{
 			node.unsubscribe(getBareJID(0));
@@ -119,7 +119,7 @@ public class SubscriberUseCases extends SingleUserTestCase
 		{
 		}
 	}
-	
+
 	public void testUnsubscribeWithMultipleWithSubId() throws Exception
 	{
 		LeafNode node = getPubnode(false, false);
@@ -128,7 +128,7 @@ public class SubscriberUseCases extends SingleUserTestCase
 		node.subscribe(getJid());
 		node.unsubscribe(getJid(), sub.getId());
 	}
-	
+
 	public void testGetOptions() throws Exception
 	{
 		LeafNode node = getPubnode(false, false);
@@ -136,7 +136,7 @@ public class SubscriberUseCases extends SingleUserTestCase
 		SubscribeForm form = node.getSubscriptionOptions(getJid(), sub.getId());
 		assertNotNull(form);
 	}
-	
+
 //	public void testSubscribeWithConfig() throws Exception
 //	{		
 //		LeafNode node = getPubnode(false, false);
@@ -154,7 +154,7 @@ public class SubscriberUseCases extends SingleUserTestCase
 		LeafNode node = getPubnode(true, false);
 		runNodeTests(node);
 	}
-	
+
 	private void runNodeTests(LeafNode node) throws Exception
 	{
 		node.send((Item)null);
@@ -162,17 +162,17 @@ public class SubscriberUseCases extends SingleUserTestCase
 		node.send((Item)null);
 		node.send((Item)null);
 		node.send((Item)null);
-		
+
 		Collection<? extends Item> items = node.getItems();
 		assertTrue(items.size() == 5);
-		
+
 		long curTime = System.currentTimeMillis();
 		node.send(new Item("1-" + curTime));
 		node.send(new Item("2-" + curTime));
 		node.send(new Item("3-" + curTime));
 		node.send(new Item("4-" + curTime));
 		node.send(new Item("5-" + curTime));
-		
+
 		items = node.getItems();
 		assertTrue(items.size() == 10);
 
@@ -183,35 +183,35 @@ public class SubscriberUseCases extends SingleUserTestCase
 		idPayload.put("7-" + curTime, "<a href=\"/up/here\"/>");
 		idPayload.put("8-" + curTime, "<entity>text<inner></inner></entity>");
 		idPayload.put("9-" + curTime, "<entity><inner><text></text></inner></entity>");
-		
+
 		for (Map.Entry<String, String> payload : idPayload.entrySet())
 		{
 			payloadNode.send(new PayloadItem<SimplePayload>(payload.getKey(), new SimplePayload("a", "pubsub:test", payload.getValue())));
 		}
-		
+
 		payloadNode.send(new PayloadItem<SimplePayload>("6-" + curTime, new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test'/>")));
 		payloadNode.send(new PayloadItem<SimplePayload>("7-" + curTime, new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href=\'/up/here\'/>")));
 		payloadNode.send(new PayloadItem<SimplePayload>("8-" + curTime, new SimplePayload("entity", "pubsub:test", "<entity xmlns='pubsub:test'>text<inner>a</inner></entity>")));
 		payloadNode.send(new PayloadItem<SimplePayload>("9-" + curTime, new SimplePayload("entity", "pubsub:test", "<entity xmlns='pubsub:test'><inner><text>b</text></inner></entity>")));
-		
+
 		List<PayloadItem<SimplePayload>> payloadItems = payloadNode.getItems();
 		Map<String, PayloadItem<SimplePayload>> idMap = new HashMap<String, PayloadItem<SimplePayload>>();
-		
+
 		for (PayloadItem<SimplePayload> payloadItem : payloadItems) 
 		{
 			idMap.put(payloadItem.getId(), payloadItem);
 		}
-		
+
 		assertEquals(4, payloadItems.size());
 
 		PayloadItem<SimplePayload> testItem = idMap.get("6-" + curTime);
 		assertNotNull(testItem);
 		assertXMLEqual("<a xmlns='pubsub:test'/>", testItem.getPayload().toXML());
-		
+
 		testItem = idMap.get("7-" + curTime);
 		assertNotNull(testItem);
 		assertXMLEqual("<a xmlns='pubsub:test' href=\'/up/here\'/>", testItem.getPayload().toXML());
-		
+
 		testItem = idMap.get("8-" + curTime);
 		assertNotNull(testItem);
 		assertXMLEqual("<entity xmlns='pubsub:test'>text<inner>a</inner></entity>", testItem.getPayload().toXML());
@@ -224,13 +224,13 @@ public class SubscriberUseCases extends SingleUserTestCase
 	public void testGetSpecifiedItems() throws Exception
 	{
 		LeafNode node = getPubnode(true, true);
-		
+
 		node.send(new PayloadItem<SimplePayload>("1", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='1'/>")));
 		node.send(new PayloadItem<SimplePayload>("2", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='2'/>")));
 		node.send(new PayloadItem<SimplePayload>("3", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='3'/>")));
 		node.send(new PayloadItem<SimplePayload>("4", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='4'/>")));
 		node.send(new PayloadItem<SimplePayload>("5", new SimplePayload("a", "pubsub:test", "<a xmlns='pubsub:test' href='5'/>")));
-		
+
 		Collection<String> ids = new ArrayList<String>(3);
 		ids.add("1");
 		ids.add("3");
@@ -249,13 +249,13 @@ public class SubscriberUseCases extends SingleUserTestCase
 	public void testGetLastNItems() throws XMPPException
 	{
 		LeafNode node = getPubnode(true, false);
-		
+
 		node.send(new Item("1"));
 		node.send(new Item("2"));
 		node.send(new Item("3"));
 		node.send(new Item("4"));
 		node.send(new Item("5"));
-		
+
 		List<Item> items = node.getItems(2);
 		assertEquals(2, items.size());
 		assertTrue(listContainsId("4", items));

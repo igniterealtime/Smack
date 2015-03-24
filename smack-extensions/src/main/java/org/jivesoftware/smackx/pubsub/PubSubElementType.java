@@ -53,28 +53,28 @@ public enum PubSubElementType
 
 	private String eName;
 	private PubSubNamespace nSpace;
-	
+
 	private PubSubElementType(String elemName, PubSubNamespace ns)
 	{
 		eName = elemName;
 		nSpace = ns;
 	}
-	
+
 	public PubSubNamespace getNamespace()
 	{
 		return nSpace;
 	}
-	
+
 	public String getElementName()
 	{
 		return eName;
 	}
-	
+
 	public static PubSubElementType valueOfFromElemName(String elemName, String namespace)
 	{
 		int index = namespace.lastIndexOf('#');
 		String fragment = (index == -1 ? null : namespace.substring(index+1));
-		
+
 		if (fragment != null)
 		{
 			return valueOf((elemName + '_' + fragment).toUpperCase(Locale.US));

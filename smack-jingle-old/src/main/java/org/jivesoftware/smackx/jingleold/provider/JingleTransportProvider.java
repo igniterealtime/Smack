@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.jingleold.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.jingleold.nat.ICECandidate;
 import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author Alvaro Saurin <alvaro.saurin@gmail.com>
  */
-public abstract class JingleTransportProvider extends PacketExtensionProvider<JingleTransport> {
+public abstract class JingleTransportProvider extends ExtensionElementProvider<JingleTransport> {
 
     /**
      * Obtain the corresponding TransportNegotiator instance.

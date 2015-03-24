@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.workgroup.packet;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -28,7 +28,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * A packet extension that contains information about the user and agent in a
  * workgroup chat. The packet extension is attached to group chat invitations.
  */
-public class WorkgroupInformation implements PacketExtension {
+public class WorkgroupInformation implements ExtensionElement {
 
     /**
      * Element name of the packet extension.
@@ -68,7 +68,7 @@ public class WorkgroupInformation implements PacketExtension {
         return buf.toString();
     }
 
-    public static class Provider extends PacketExtensionProvider<WorkgroupInformation> {
+    public static class Provider extends ExtensionElementProvider<WorkgroupInformation> {
 
         /**
          * PacketExtensionProvider implementation

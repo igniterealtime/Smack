@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Jingle Demo Application. It register in a XMPP Server and let users place calls using a full JID and auto-receive calls.
+ * Jingle Demo Application. It register in an XMPP Server and let users place calls using a full JID and auto-receive calls.
  * Parameters: Server User Pass.
  */
 public class Demo extends JFrame {
@@ -59,7 +59,7 @@ public class Demo extends JFrame {
         this.server = server;
         this.user = user;
         this.pass = pass;
-        
+
         if (user.equals("jeffw")) {
             jid = new JTextField("eowyn" + "@" + server + "/Smack");
         } else {
@@ -73,7 +73,7 @@ public class Demo extends JFrame {
             initialize();
         }
         catch (XMPPException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
     }
 
@@ -100,7 +100,7 @@ public class Demo extends JFrame {
                     incoming.startIncoming();
                 }
                 catch (XMPPException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "exception", e);
                 }
 
             }

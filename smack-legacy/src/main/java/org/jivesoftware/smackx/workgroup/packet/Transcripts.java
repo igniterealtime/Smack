@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jxmpp.jid.Jid;
 
 /**
  * Represents a list of conversation transcripts that a user had in all his history. Each
@@ -40,7 +41,7 @@ public class Transcripts extends IQ {
         UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+0"));
     }
 
-    private String userID;
+    private Jid userID;
     private List<Transcripts.TranscriptSummary> summaries;
 
 
@@ -49,7 +50,7 @@ public class Transcripts extends IQ {
      *
      * @param userID the id of the user to get his conversations transcripts.
      */
-    public Transcripts(String userID) {
+    public Transcripts(Jid userID) {
         this(userID, new ArrayList<Transcripts.TranscriptSummary>());
     }
 
@@ -60,7 +61,7 @@ public class Transcripts extends IQ {
      *        anonymous users.
      * @param summaries the list of TranscriptSummaries.
      */
-    public Transcripts(String userID, List<Transcripts.TranscriptSummary> summaries) {
+    public Transcripts(Jid userID, List<Transcripts.TranscriptSummary> summaries) {
         super("transcripts", "http://jabber.org/protocol/workgroup");
         this.userID = userID;
         this.summaries = summaries;
@@ -74,7 +75,7 @@ public class Transcripts extends IQ {
      *
      * @return the id of the user that was involved in the conversations.
      */
-    public String getUserID() {
+    public Jid getUserID() {
         return userID;
     }
 

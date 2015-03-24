@@ -27,7 +27,7 @@ import java.util.List;
 public class SubscriptionsExtension extends NodeExtension
 {
 	protected List<Subscription> items = Collections.emptyList();
-	
+
 	/**
 	 * Subscriptions to the root node
 	 * 
@@ -36,7 +36,7 @@ public class SubscriptionsExtension extends NodeExtension
 	public SubscriptionsExtension(List<Subscription> subList)
 	{
 		super(PubSubElementType.SUBSCRIPTIONS);
-		
+
 		if (subList != null)
 			items = subList;
 	}
@@ -76,7 +76,7 @@ public class SubscriptionsExtension extends NodeExtension
 		{
 			StringBuilder builder = new StringBuilder("<");
 			builder.append(getElementName());
-			
+
 			if (getNode() != null)
 			{
 				builder.append(" node='");
@@ -84,12 +84,12 @@ public class SubscriptionsExtension extends NodeExtension
 				builder.append("'");
 			}
 			builder.append(">");
-			
+
 			for (Subscription item : items)
 			{
 				builder.append(item.toXML());
 			}
-			
+
 			builder.append("</");
 			builder.append(getElementName());
 			builder.append(">");

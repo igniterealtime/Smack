@@ -103,8 +103,9 @@ public class MediaNegotiator extends JingleNegotiator {
      * @return the new Jingle packet to send.
      * @throws XMPPException
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, NotConnectedException {
+    public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, NotConnectedException, InterruptedException {
         List<IQ> responses = new ArrayList<IQ>();
         IQ response = null;
 
@@ -202,8 +203,9 @@ public class MediaNegotiator extends JingleNegotiator {
       *  @param jingle
       *  @return the iq
      * @throws NotConnectedException 
+     * @throws InterruptedException 
       */
-    private IQ receiveContentAcceptAction(Jingle jingle, JingleDescription description) throws XMPPException, NotConnectedException {
+    private IQ receiveContentAcceptAction(Jingle jingle, JingleDescription description) throws XMPPException, NotConnectedException, InterruptedException {
         IQ response = null;
         List<PayloadType> offeredPayloads = new ArrayList<PayloadType>();
 
@@ -211,10 +213,10 @@ public class MediaNegotiator extends JingleNegotiator {
         bestCommonAudioPt = calculateBestCommonAudioPt(offeredPayloads);
 
         if (bestCommonAudioPt == null) {
-            
+
             setNegotiatorState(JingleNegotiatorState.FAILED);
             response = session.createJingleError(jingle, JingleError.NEGOTIATION_ERROR);
-            
+
         } else {
 
             setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
@@ -240,7 +242,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
         offeredPayloads = description.getAudioPayloadTypesList();
         bestCommonAudioPt = calculateBestCommonAudioPt(offeredPayloads);
-        
+
         synchronized (remoteAudioPts) {
             remoteAudioPts.addAll(offeredPayloads);
         }
@@ -477,8 +479,9 @@ public class MediaNegotiator extends JingleNegotiator {
      * @param bestPt
      *            payload type that has been agreed.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void triggerMediaEstablished(PayloadType bestPt) throws NotConnectedException {
+    protected void triggerMediaEstablished(PayloadType bestPt) throws NotConnectedException, InterruptedException {
         List<JingleListener> listeners = getListenersList();
         for (JingleListener li : listeners) {
             if (li instanceof JingleMediaListener) {

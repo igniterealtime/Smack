@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -31,12 +31,12 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -58,7 +58,8 @@ import org.jivesoftware.smackx.workgroup.settings.WorkgroupProperties;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.Jid;
 
 /**
  * Provides workgroup services for users. Users can join the workgroup queue, depart the
@@ -73,7 +74,7 @@ import org.jxmpp.util.XmppStringUtils;
  */
 public class Workgroup {
 
-    private String workgroupJID;
+    private Jid workgroupJID;
     private XMPPConnection connection;
     private boolean inQueue;
     private CopyOnWriteArraySet<WorkgroupInvitationListener> invitationListeners;
@@ -92,7 +93,7 @@ public class Workgroup {
      * @param connection   an XMPP connection which must have already undergone a
      *                     successful login.
      */
-    public Workgroup(String workgroupJID, XMPPConnection connection) {
+    public Workgroup(Jid workgroupJID, XMPPConnection connection) {
         // Login must have been done before passing in connection.
         if (!connection.isAuthenticated()) {
             throw new IllegalStateException("Must login to server before creating workgroup.");
@@ -140,9 +141,9 @@ public class Workgroup {
                 });
 
         // Register a packet listener for all the messages sent to this client.
-        PacketFilter typeFilter = new PacketTypeFilter(Message.class);
+        StanzaFilter typeFilter = new StanzaTypeFilter(Message.class);
 
-        connection.addAsyncPacketListener(new PacketListener() {
+        connection.addAsyncStanzaListener(new StanzaListener() {
             public void processPacket(Stanza packet) {
                 handlePacket(packet);
             }
@@ -154,7 +155,7 @@ public class Workgroup {
      *
      * @return the name of the workgroup.
      */
-    public String getWorkgroupJID() {
+    public Jid getWorkgroupJID() {
         return workgroupJID;
     }
 
@@ -175,12 +176,13 @@ public class Workgroup {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public boolean isAvailable() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public boolean isAvailable() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Presence directedPresence = new Presence(Presence.Type.available);
         directedPresence.setTo(workgroupJID);
-        PacketFilter typeFilter = new PacketTypeFilter(Presence.class);
-        PacketFilter fromFilter = FromMatchesFilter.create(workgroupJID);
+        StanzaFilter typeFilter = new StanzaTypeFilter(Presence.class);
+        StanzaFilter fromFilter = FromMatchesFilter.create(workgroupJID);
         PacketCollector collector = connection.createPacketCollectorAndSend(new AndFilter(fromFilter,
                 typeFilter), directedPresence);
 
@@ -241,7 +243,7 @@ public class Workgroup {
      * possible. For example, when the user is logged in anonymously using a web client.
      * In that case the user ID might be a randomly generated value put into a persistent
      * cookie or a username obtained via the session. A userID can be explicitly
-     * passed in by using the {@link #joinQueue(Form, String)} method. When specified,
+     * passed in by using the {@link #joinQueue(Form, Jid)} method. When specified,
      * that userID will be used instead of the user's JID to track conversations. The
      * server will ignore a manually specified userID if the user's connection to the server
      * is not anonymous.
@@ -250,8 +252,9 @@ public class Workgroup {
      *                       that a connection failure occured or that the server explicitly rejected the
      *                       request to join the queue.
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    public void joinQueue() throws XMPPException, SmackException {
+    public void joinQueue() throws XMPPException, SmackException, InterruptedException {
         joinQueue(null);
     }
 
@@ -278,7 +281,7 @@ public class Workgroup {
      * possible. For example, when the user is logged in anonymously using a web client.
      * In that case the user ID might be a randomly generated value put into a persistent
      * cookie or a username obtained via the session. A userID can be explicitly
-     * passed in by using the {@link #joinQueue(Form, String)} method. When specified,
+     * passed in by using the {@link #joinQueue(Form, Jid)} method. When specified,
      * that userID will be used instead of the user's JID to track conversations. The
      * server will ignore a manually specified userID if the user's connection to the server
      * is not anonymous.
@@ -288,8 +291,9 @@ public class Workgroup {
      *                       that a connection failure occured or that the server explicitly rejected the
      *                       request to join the queue.
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    public void joinQueue(Form answerForm) throws XMPPException, SmackException {
+    public void joinQueue(Form answerForm) throws XMPPException, SmackException, InterruptedException {
         joinQueue(answerForm, null);
     }
 
@@ -327,8 +331,9 @@ public class Workgroup {
      *                       request to join the queue.
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void joinQueue(Form answerForm, String userID) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void joinQueue(Form answerForm, Jid userID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // If already in the queue ignore the join request.
         if (inQueue) {
             throw new IllegalStateException("Already in queue " + workgroupJID);
@@ -374,8 +379,9 @@ public class Workgroup {
      *                       that a connection failure occured or that the server explicitly rejected the
      *                       request to join the queue.
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    public void joinQueue(Map<String,Object> metadata, String userID) throws XMPPException, SmackException {
+    public void joinQueue(Map<String,Object> metadata, Jid userID) throws XMPPException, SmackException, InterruptedException {
         // If already in the queue ignore the join request.
         if (inQueue) {
             throw new IllegalStateException("Already in queue " + workgroupJID);
@@ -408,8 +414,9 @@ public class Workgroup {
      *                       request to the server.
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public void departQueue() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public void departQueue() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // If not in the queue ignore the depart request.
         if (!inQueue) {
             return;
@@ -462,13 +469,17 @@ public class Workgroup {
 
     private void fireInvitationEvent(WorkgroupInvitation invitation) {
         for (WorkgroupInvitationListener listener : invitationListeners ){
+            // CHECKSTYLE:OFF
     	    listener.invitationReceived(invitation);
+            // CHECKSTYLE:ON
         }
     }
 
     private void fireQueueJoinedEvent() {
         for (QueueListener listener : queueListeners){
+            // CHECKSTYLE:OFF
     	    listener.joinedQueue();
+            // CHECKSTYLE:ON
         }
     }
 
@@ -496,8 +507,8 @@ public class Workgroup {
         if (packet instanceof Message) {
             Message msg = (Message)packet;
             // Check to see if the user left the queue.
-            PacketExtension pe = msg.getExtension("depart-queue", "http://jabber.org/protocol/workgroup");
-            PacketExtension queueStatus = msg.getExtension("queue-status", "http://jabber.org/protocol/workgroup");
+            ExtensionElement pe = msg.getExtension("depart-queue", "http://jabber.org/protocol/workgroup");
+            ExtensionElement queueStatus = msg.getExtension("queue-status", "http://jabber.org/protocol/workgroup");
 
             if (pe != null) {
                 fireQueueDepartedEvent();
@@ -547,10 +558,10 @@ public class Workgroup {
      */
     private class JoinQueuePacket extends IQ {
 
-        private String userID = null;
+        private Jid userID;
         private DataForm form;
 
-        public JoinQueuePacket(String workgroup, Form answerForm, String userID) {
+        public JoinQueuePacket(Jid workgroup, Form answerForm, Jid userID) {
             super("join-queue", "http://jabber.org/protocol/workgroup");
             this.userID = userID;
 
@@ -584,8 +595,9 @@ public class Workgroup {
      * @return the ChatSetting if found, otherwise false.
      * @throws XMPPException if an error occurs while getting information from the server.
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    public ChatSetting getChatSetting(String key) throws XMPPException, SmackException {
+    public ChatSetting getChatSetting(String key) throws XMPPException, SmackException, InterruptedException {
         ChatSettings chatSettings = getChatSettings(key, -1);
         return chatSettings.getFirstEntry();
     }
@@ -597,8 +609,9 @@ public class Workgroup {
      * @return the ChatSettings of given type, otherwise null.
      * @throws XMPPException if an error occurs while getting information from the server.
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    public ChatSettings getChatSettings(int type) throws XMPPException, SmackException {
+    public ChatSettings getChatSettings(int type) throws XMPPException, SmackException, InterruptedException {
         return getChatSettings(null, type);
     }
 
@@ -608,8 +621,9 @@ public class Workgroup {
      * @return all ChatSettings of a given workgroup.
      * @throws XMPPException if an error occurs while getting information from the server.
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    public ChatSettings getChatSettings() throws XMPPException, SmackException {
+    public ChatSettings getChatSettings() throws XMPPException, SmackException, InterruptedException {
         return getChatSettings(null, -1);
     }
 
@@ -621,8 +635,9 @@ public class Workgroup {
      * @throws NoResponseException 
      * @throws XMPPErrorException if an error occurs while getting information from the server.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    private ChatSettings getChatSettings(String key, int type) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    private ChatSettings getChatSettings(String key, int type) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ChatSettings request = new ChatSettings();
         if (key != null) {
             request.setKey(key);
@@ -644,12 +659,13 @@ public class Workgroup {
      *
      * @return true if the email service is available, otherwise return false.
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    public boolean isEmailAvailable() throws SmackException {
+    public boolean isEmailAvailable() throws SmackException, InterruptedException {
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
 
         try {
-            String workgroupService = XmppStringUtils.parseDomain(workgroupJID);
+            DomainBareJid workgroupService = workgroupJID.asDomainBareJid();
             DiscoverInfo infoResult = discoManager.discoverInfo(workgroupService);
             return infoResult.containsFeature("jive:email:provider");
         }
@@ -665,8 +681,9 @@ public class Workgroup {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public OfflineSettings getOfflineSettings() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public OfflineSettings getOfflineSettings() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         OfflineSettings request = new OfflineSettings();
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
@@ -683,8 +700,9 @@ public class Workgroup {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public SoundSettings getSoundSettings() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public SoundSettings getSoundSettings() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         SoundSettings request = new SoundSettings();
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
@@ -700,8 +718,9 @@ public class Workgroup {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public WorkgroupProperties getWorkgroupProperties() throws NoResponseException, XMPPErrorException, NotConnectedException  {
+    public WorkgroupProperties getWorkgroupProperties() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         WorkgroupProperties request = new WorkgroupProperties();
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
@@ -719,8 +738,9 @@ public class Workgroup {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public WorkgroupProperties getWorkgroupProperties(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public WorkgroupProperties getWorkgroupProperties(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         WorkgroupProperties request = new WorkgroupProperties();
         request.setJid(jid);
         request.setType(IQ.Type.get);
@@ -741,8 +761,9 @@ public class Workgroup {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public Form getWorkgroupForm() throws NoResponseException, XMPPErrorException, NotConnectedException {
+    public Form getWorkgroupForm() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         WorkgroupForm workgroupForm = new WorkgroupForm();
         workgroupForm.setType(IQ.Type.get);
         workgroupForm.setTo(workgroupJID);

@@ -16,12 +16,8 @@
  */
 package org.jivesoftware.smackx.hoxt.provider;
 
-import java.io.IOException;
-
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppResp;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Resp packet provider.
@@ -36,7 +32,7 @@ public class HttpOverXmppRespProvider extends AbstractHttpOverXmppProvider<HttpO
 
     @Override
     public HttpOverXmppResp parse(XmlPullParser parser, int initialDepth)
-                    throws XmlPullParserException, IOException, SmackException {
+                    throws Exception {
         String version = parser.getAttributeValue("", ATTRIBUTE_VERSION);
         String statusMessage = parser.getAttributeValue("", ATTRIBUTE_STATUS_MESSAGE);
         String statusCodeString = parser.getAttributeValue("", ATTRIBUTE_STATUS_CODE);

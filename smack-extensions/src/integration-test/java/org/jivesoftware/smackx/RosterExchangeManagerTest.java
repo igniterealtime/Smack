@@ -43,7 +43,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
 
     /**
      * High level API test.
-     * This is a simple test to use with a XMPP client and check if the client receives user1's 
+     * This is a simple test to use with an XMPP client and check if the client receives user1's 
      * roster
      * 1. User_1 will send his/her roster to user_2
      */
@@ -62,7 +62,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
 
     /**
      * High level API test.
-     * This is a simple test to use with a XMPP client and check if the client receives user1's 
+     * This is a simple test to use with an XMPP client and check if the client receives user1's 
      * roster groups
      * 1. User_1 will send his/her RosterGroups to user_2
      */

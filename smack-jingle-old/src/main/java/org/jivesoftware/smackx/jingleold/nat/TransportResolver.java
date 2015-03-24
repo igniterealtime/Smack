@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
@@ -40,7 +41,7 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
 public abstract class TransportResolver {
 
 	private static final Logger LOGGER = Logger.getLogger(TransportResolver.class.getName());
-	
+
 	public enum Type {
 
         rawupd, ice
@@ -88,13 +89,15 @@ public abstract class TransportResolver {
 
     /**
      * Initialize the Resolver
+     * @throws InterruptedException 
      */
-    public abstract void initialize() throws XMPPException, SmackException;
+    public abstract void initialize() throws XMPPException, SmackException, InterruptedException;
 
     /**
      * Start a the resolution.
+     * @throws InterruptedException 
      */
-    public abstract void resolve(JingleSession session) throws XMPPException, SmackException;
+    public abstract void resolve(JingleSession session) throws XMPPException, SmackException, InterruptedException;
 
     /**
      * Clear the list of candidates and start a new resolution process.
@@ -208,8 +211,9 @@ public abstract class TransportResolver {
      *
      * @param cand The candidate added to the list of candidates.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void triggerCandidateAdded(TransportCandidate cand) throws NotConnectedException {
+    protected void triggerCandidateAdded(TransportCandidate cand) throws NotConnectedException, InterruptedException {
         Iterator<TransportResolverListener> iter = getListenersList().iterator();
         while (iter.hasNext()) {
             TransportResolverListener trl = iter.next();
@@ -265,8 +269,9 @@ public abstract class TransportResolver {
      *
      * @param cand The candidate to add
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    protected void addCandidate(TransportCandidate cand) throws NotConnectedException {
+    protected void addCandidate(TransportCandidate cand) throws NotConnectedException, InterruptedException {
         synchronized (candidates) {
             if (!candidates.contains(cand))
                 candidates.add(cand);
@@ -300,12 +305,12 @@ public abstract class TransportResolver {
             if (tpcan instanceof ICECandidate)
                 cands.add((ICECandidate) tpcan);
         }
-        
+
         // (ArrayList<ICECandidate>) getCandidatesList();
         if (cands.size() > 0) {
             Collections.sort(cands);
             // Return the last candidate
-            result = (TransportCandidate) cands.get(cands.size() - 1);
+            result = cands.get(cands.size() - 1);
             LOGGER.fine("Result: " + result.getIp());
         }
 
@@ -347,7 +352,7 @@ public abstract class TransportResolver {
         TransportCandidate cand;
 
         synchronized (candidates) {
-            cand = (TransportCandidate) candidates.get(i);
+            cand = candidates.get(i);
         }
         return cand;
     }
@@ -355,8 +360,9 @@ public abstract class TransportResolver {
     /**
      * Initialize Transport Resolver and wait until it is complete unitialized.
      * @throws SmackException 
+     * @throws InterruptedException 
      */
-    public void initializeAndWait() throws XMPPException, SmackException {
+    public void initializeAndWait() throws XMPPException, SmackException, InterruptedException {
         this.initialize();
         try {
             LOGGER.fine("Initializing transport resolver...");
@@ -367,7 +373,7 @@ public abstract class TransportResolver {
             LOGGER.fine("Transport resolved");
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
     }
 
@@ -390,7 +396,7 @@ public abstract class TransportResolver {
                 return freePort;
             }
             catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "exception", e);
             }
         }
         try {
@@ -399,7 +405,7 @@ public abstract class TransportResolver {
             ss.close();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
         return freePort;
     }

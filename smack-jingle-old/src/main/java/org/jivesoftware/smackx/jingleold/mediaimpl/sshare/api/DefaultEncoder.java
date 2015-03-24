@@ -17,14 +17,18 @@
 package org.jivesoftware.smackx.jingleold.mediaimpl.sshare.api;
 
 import javax.imageio.ImageIO;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Implements a default PNG Encoder
  */
 public class DefaultEncoder implements ImageEncoder{
+    private static final Logger LOGGER = Logger.getLogger(DefaultEncoder.class.getName());
 
     public ByteArrayOutputStream encode(BufferedImage bufferedImage) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -32,7 +36,7 @@ public class DefaultEncoder implements ImageEncoder{
             ImageIO.write(bufferedImage, "png", baos);
         }
         catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
             baos = null;
         }
         return baos;

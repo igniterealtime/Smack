@@ -16,11 +16,8 @@
  */
 package org.jivesoftware.smackx.pubsub.provider;
 
-import java.io.IOException;
-
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.PacketExtension;
-import org.jivesoftware.smack.provider.PacketExtensionProvider;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.pubsub.Item;
@@ -28,21 +25,20 @@ import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.SimplePayload;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parses an <b>item</b> element as is defined in both the {@link PubSubNamespace#BASIC} and
  * {@link PubSubNamespace#EVENT} namespaces. To parse the item contents, it will use whatever
- * {@link PacketExtensionProvider} is registered in <b>smack.providers</b> for its element name and namespace. If no
+ * {@link ExtensionElementProvider} is registered in <b>smack.providers</b> for its element name and namespace. If no
  * provider is registered, it will return a {@link SimplePayload}.
  * 
  * @author Robin Collier
  */
-public class ItemProvider extends PacketExtensionProvider<Item> 
+public class ItemProvider extends ExtensionElementProvider<Item> 
 {
     @Override
     public Item parse(XmlPullParser parser, int initialDepth)
-                    throws XmlPullParserException, IOException, SmackException {
+                    throws Exception {
         String id = parser.getAttributeValue(null, "id");
         String node = parser.getAttributeValue(null, "node");
 
@@ -52,19 +48,20 @@ public class ItemProvider extends PacketExtensionProvider<Item>
         {
             return new Item(id, node);
         }
-        else 
+        else
         {
             String payloadElemName = parser.getName();
             String payloadNS = parser.getNamespace();
 
-            if (ProviderManager.getExtensionProvider(payloadElemName, payloadNS) == null) 
+            final ExtensionElementProvider<ExtensionElement> extensionProvider = ProviderManager.getExtensionProvider(payloadElemName, payloadNS);
+            if (extensionProvider == null)
             {
                 CharSequence payloadText = PacketParserUtils.parseElement(parser, true);
                 return new PayloadItem<SimplePayload>(id, node, new SimplePayload(payloadElemName, payloadNS, payloadText));
             }
-            else 
+            else
             {
-                return new PayloadItem<PacketExtension>(id, node, PacketParserUtils.parsePacketExtension(payloadElemName, payloadNS, parser));
+                return new PayloadItem<ExtensionElement>(id, node, extensionProvider.parse(parser));
             }
         }
     }

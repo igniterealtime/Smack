@@ -226,7 +226,21 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
         }
     }
 
-    @Override
+    /**
+     * Inserts the specified element into this queue, waiting if necessary
+     * for space to become available.
+     * <p>
+     * This may throw an {@link InterruptedException} in two cases
+     * <ol>
+     *  <li>If the queue was shut down.</li>
+     *  <li>If the thread was was interrupted.</li>
+     * </ol>
+     * So you have to check which is the case, e.g. by calling {@link #isShutdown()}.
+     * </p>
+     *
+     * @param e the element to add.
+     * @throws InterruptedException if interrupted while waiting or if the queue was shut down.
+     */
     public void put(E e) throws InterruptedException {
         checkNotNull(e);
         lock.lockInterruptibly();

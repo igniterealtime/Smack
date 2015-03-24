@@ -31,7 +31,7 @@ public class ProviderConfigTest {
     @Test
     public void addGenericLoaderProvider() {
         ProviderManager.addLoader(new ProviderLoader() {
-            
+
             @Override
             public Collection<IQProviderInfo> getIQProviderInfo() {
                 ArrayList<IQProviderInfo> l = new ArrayList<IQProviderInfo>(1);

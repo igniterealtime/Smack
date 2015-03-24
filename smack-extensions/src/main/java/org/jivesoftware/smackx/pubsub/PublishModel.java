@@ -26,10 +26,10 @@ public enum PublishModel
 {
 	/** Only publishers may publish */
 	publishers,
-	
+
 	/** Only subscribers may publish */
 	subscribers,
-	
+
 	/** Anyone may publish */
 	open;
 }

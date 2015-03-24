@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.jingleold.nat;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -26,6 +29,7 @@ import org.jivesoftware.smackx.jingleold.listeners.JingleSessionListener;
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
 
 public class ICETransportManager extends JingleTransportManager implements JingleSessionListener, CreatedJingleSessionListener {
+    private static final Logger LOGGER = Logger.getLogger(ICETransportManager.class.getName());
 
     ICEResolver iceResolver = null;
 
@@ -35,23 +39,23 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
             iceResolver.initializeAndWait();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
     }
 
-    protected TransportResolver createResolver(JingleSession session) throws SmackException {
+    protected TransportResolver createResolver(JingleSession session) throws SmackException, InterruptedException {
         try {
             iceResolver.resolve(session);
         }
         catch (XMPPException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
         return iceResolver;
     }
 
     // Implement a Session Listener to relay candidates after establishment
 
-    public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) throws NotConnectedException {
+    public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) throws NotConnectedException, InterruptedException {
         if (lc instanceof ICECandidate) {
             if (((ICECandidate) lc).getType().equals("relay")) {
                 RTPBridge rtpBridge = RTPBridge.relaySession(lc.getConnection(), lc.getSessionId(), lc.getPassword(), rc, lc);

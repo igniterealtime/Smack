@@ -6,6 +6,7 @@
 	<module name="SuppressionFilter">
 		<property name="file" value="config/suppressions.xml"/>
 	</module>
+	<module name="SuppressionCommentFilter"/>
 	<module name="Header">
 		<property name="headerFile" value="config/header.txt"/>
 		<property name="ignoreLines" value="3"/>
@@ -18,7 +19,41 @@
 		<property name="format" value="MXParser"/>
 		<property name="message" value="Must not use MXParser, use XmlPullParserFactory instead"/>
 	</module>
+	<module name="RegexpSingleline">
+		<property name="format" value="^\s+$"/>
+		<property name="message" value="Line containing only whitespace character(s)"/>
+	</module>
+	<module name="RegexpSingleline">
+		<property name="format" value="^ +\t+"/>
+		<property name="message" value="Line containing tab(s) after space"/>
+	</module>
+	<module name="RegexpSingleline">
+		<!-- We use {2,} instead of + here to address the typical case where a file was written
+		   with tabs but javadoc is causing '\t *' -->
+		<property name="format" value="^\t+ {2,}"/>
+		<property name="message" value="Line containing space(s) after tab(s)"/>
+	</module>
+	<module name="RegexpSingleline">
+		<!--
+			Explaining the following Regex
+
+			^   \s*   [\S && [^  \*/]]+   \s+   $
+			|    |        |           |    |    +- End of Line (6)
+			|    |        |           |    +- At least one whitespace (5)
+			|    |        |           +- At least one or more of the previous character class (4)
+			|    |        +- All non-whitespace characters except '*' and '/' (to exclude javadoc) (3)
+			|    +- Zero or more space characters (2)
+			+- Start of Line (1)
+
+			Rationale:
+			Matches trailing whitespace (5) in lines containing at least one (4) non-whitespace character
+			that is not one of the characters used by javadoc (3).
+		-->
+		<property name="format" value="^\s*[\S&amp;&amp;[^\*/]]+\s+$"/>
+		<property name="message" value="Line containing trailing whitespace character(s)"/>
+	</module>
 	<module name="TreeWalker">
+		<module name="FileContentsHolder"/>
 		<module name="UnusedImports">
 			<property name="processJavadoc" value="true"/>
 		</module>
@@ -30,5 +65,15 @@
 		<module name="GenericWhitespace"/>
 		<module name="EmptyStatement"/>
 		<module name="PackageDeclaration"/>
+		<module name="RegexpSinglelineJava">
+			<property name="format" value="printStackTrace"/>
+			<property name="message" value="Usage of printStackTrace"/>
+			<property name="ignoreComments" value="true"/>
+		</module>
+		<module name="RegexpSinglelineJava">
+			<property name="format" value="println"/>
+			<property name="message" value="Usage of println"/>
+			<property name="ignoreComments" value="true"/>
+		</module>
 	</module>
 </module>

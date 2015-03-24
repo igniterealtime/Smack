@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.jivesoftware.smackx.workgroup.QueueUser;
+import org.jxmpp.jid.parts.Resourcepart;
 
 /**
  * A queue in a workgroup, which is a pool of agents that are routed  a specific type of
@@ -32,7 +33,7 @@ import org.jivesoftware.smackx.workgroup.QueueUser;
  */
 public class WorkgroupQueue {
 
-    private String name;
+    private Resourcepart name;
     private Status status = Status.CLOSED;
 
     private int averageWaitTime = -1;
@@ -47,7 +48,7 @@ public class WorkgroupQueue {
      *
      * @param name the name of the queue.
      */
-    WorkgroupQueue(String name) {
+    WorkgroupQueue(Resourcepart name) {
         this.name = name;
     }
 
@@ -56,7 +57,7 @@ public class WorkgroupQueue {
      *
      * @return the name of the queue.
      */
-    public String getName() {
+    public Resourcepart getName() {
         return name;
     }
 

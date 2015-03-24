@@ -24,24 +24,27 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.FlexiblePacketTypeFilter;
+import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.OrFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.JidWithLocalpart;
 
 /**
  * The chat manager keeps track of references to all current chats. It will not hold any references
@@ -51,6 +54,9 @@ import org.jxmpp.util.XmppStringUtils;
  * @author Alexander Wenckus
  */
 public class ChatManager extends Manager{
+
+    private static final Logger LOGGER = Logger.getLogger(ChatManager.class.getName());
+
     private static final Map<XMPPConnection, ChatManager> INSTANCES = new WeakHashMap<XMPPConnection, ChatManager>();
 
     /**
@@ -94,10 +100,10 @@ public class ChatManager extends Manager{
          * Will attempt to match on the JID in the from field, and then attempt the base JID if no match was found.
          * This is the most lenient matching.
          */
-        BARE_JID; 
+        BARE_JID;
     }
 
-    private final PacketFilter packetFilter = new OrFilter(MessageTypeFilter.CHAT, new FlexiblePacketTypeFilter<Message>() {
+    private final StanzaFilter packetFilter = new OrFilter(MessageTypeFilter.CHAT, new FlexibleStanzaTypeFilter<Message>() {
 
         @Override
         protected boolean acceptSpecific(Message message) {
@@ -124,30 +130,32 @@ public class ChatManager extends Manager{
     /**
      * Maps jids to chats
      */
-    private Map<String, Chat> jidChats = new ConcurrentHashMap<>();
+    private Map<Jid, Chat> jidChats = new ConcurrentHashMap<>();
 
     /**
      * Maps base jids to chats
      */
-    private Map<String, Chat> baseJidChats = new ConcurrentHashMap<>();
+    private Map<BareJid, Chat> baseJidChats = new ConcurrentHashMap<>();
 
     private Set<ChatManagerListener> chatManagerListeners
             = new CopyOnWriteArraySet<ChatManagerListener>();
 
-    private Map<MessageListener, PacketFilter> interceptors
-            = new WeakHashMap<MessageListener, PacketFilter>();
+    private Map<MessageListener, StanzaFilter> interceptors
+            = new WeakHashMap<MessageListener, StanzaFilter>();
 
     private ChatManager(XMPPConnection connection) {
         super(connection);
 
         // Add a listener for all message packets so that we can deliver
         // messages to the best Chat instance available.
-        connection.addSyncPacketListener(new PacketListener() {
+        connection.addSyncStanzaListener(new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Message message = (Message) packet;
                 Chat chat;
                 if (message.getThread() == null) {
+                    // CHECKSTYLE:OFF
                 	chat = getUserChat(message.getFrom());
+                    // CHECKSTYLE:ON
                 }
                 else {
                     chat = getThreadChat(message.getThread());
@@ -209,7 +217,7 @@ public class ChatManager extends Manager{
      * @param userJID the user this chat is with.
      * @return the created chat.
      */
-    public Chat createChat(String userJID) {
+    public Chat createChat(JidWithLocalpart userJID) {
         return createChat(userJID, null);
     }
 
@@ -220,7 +228,7 @@ public class ChatManager extends Manager{
      * @param listener the optional listener which will listen for new messages from this chat.
      * @return the created chat.
      */
-    public Chat createChat(String userJID, ChatMessageListener listener) {
+    public Chat createChat(JidWithLocalpart userJID, ChatMessageListener listener) {
         return createChat(userJID, null, listener);
     }
 
@@ -232,7 +240,7 @@ public class ChatManager extends Manager{
      * @param listener the optional listener to add to the chat
      * @return the created chat.
      */
-    public Chat createChat(String userJID, String thread, ChatMessageListener listener) {
+    public Chat createChat(JidWithLocalpart userJID, String thread, ChatMessageListener listener) {
         if (thread == null) {
             thread = nextID();
         }
@@ -245,11 +253,11 @@ public class ChatManager extends Manager{
         return chat;
     }
 
-    private Chat createChat(String userJID, String threadID, boolean createdLocally) {
+    private Chat createChat(JidWithLocalpart userJID, String threadID, boolean createdLocally) {
         Chat chat = new Chat(this, userJID, threadID);
         threadChats.put(threadID, chat);
         jidChats.put(userJID, chat);
-        baseJidChats.put(XmppStringUtils.parseBareJid(userJID), chat);
+        baseJidChats.put(userJID.asBareJid(), chat);
 
         for(ChatManagerListener listener : chatManagerListeners) {
             listener.chatCreated(chat, createdLocally);
@@ -260,9 +268,9 @@ public class ChatManager extends Manager{
 
     void closeChat(Chat chat) {
         threadChats.remove(chat.getThreadID());
-        String userJID = chat.getParticipant();
+        JidWithLocalpart userJID = chat.getParticipant();
         jidChats.remove(userJID);
-        baseJidChats.remove(XmppStringUtils.parseBareJid(userJID));
+        baseJidChats.remove(userJID.withoutResource());
     }
 
     /**
@@ -273,10 +281,16 @@ public class ChatManager extends Manager{
      * @return a Chat or null if none can be created
      */
     private Chat createChat(Message message) {
-        String userJID = message.getFrom();
+        Jid from = message.getFrom();
         // According to RFC6120 8.1.2.1 4. messages without a 'from' attribute are valid, but they
         // are of no use in this case for ChatManager
+        if (from == null) {
+            return null;
+        }
+
+        JidWithLocalpart userJID = from.asJidWithLocalpartIfPossible();
         if (userJID == null) {
+            LOGGER.warning("Message from JID without localpart: '" +message.toXML() + "'");
             return null;
         }
         String threadID = message.getThread();
@@ -296,7 +310,7 @@ public class ChatManager extends Manager{
      * @param userJID jid in the from field of message.
      * @return Matching chat, or null if no match found.
      */
-    private Chat getUserChat(String userJID) {
+    private Chat getUserChat(Jid userJID) {
         if (matchMode == MatchMode.NONE) {
             return null;
         }
@@ -306,9 +320,9 @@ public class ChatManager extends Manager{
             return null;
         }
         Chat match = jidChats.get(userJID);
-	
+
         if (match == null && (matchMode == MatchMode.BARE_JID)) {
-            match = baseJidChats.get(XmppStringUtils.parseBareJid(userJID));
+            match = baseJidChats.get(userJID.asBareJidIfPossible());
         }
         return match;
     }
@@ -351,9 +365,9 @@ public class ChatManager extends Manager{
         chat.deliver(message);
     }
 
-    void sendMessage(Chat chat, Message message) throws NotConnectedException {
-        for(Map.Entry<MessageListener, PacketFilter> interceptor : interceptors.entrySet()) {
-            PacketFilter filter = interceptor.getValue();
+    void sendMessage(Chat chat, Message message) throws NotConnectedException, InterruptedException {
+        for(Map.Entry<MessageListener, StanzaFilter> interceptor : interceptors.entrySet()) {
+            StanzaFilter filter = interceptor.getValue();
             if(filter != null && filter.accept(message)) {
                 interceptor.getKey().processMessage(message);
             }
@@ -362,7 +376,7 @@ public class ChatManager extends Manager{
         if (message.getFrom() == null) {
             message.setFrom(connection().getUser());
         }
-        connection().sendPacket(message);
+        connection().sendStanza(message);
     }
 
     PacketCollector createPacketCollector(Chat chat) {
@@ -379,13 +393,13 @@ public class ChatManager extends Manager{
         addOutgoingMessageInterceptor(messageInterceptor, null);
     }
 
-    public void addOutgoingMessageInterceptor(MessageListener messageInterceptor, PacketFilter filter) {
+    public void addOutgoingMessageInterceptor(MessageListener messageInterceptor, StanzaFilter filter) {
         if (messageInterceptor == null) {
             return;
         }
         interceptors.put(messageInterceptor, filter);
     }
-    
+
     /**
      * Returns a unique id.
      *
@@ -394,11 +408,11 @@ public class ChatManager extends Manager{
     private static String nextID() {
         return UUID.randomUUID().toString();
     }
-    
+
     public static void setDefaultMatchMode(MatchMode mode) {
         defaultMatchMode = mode;
     }
-    
+
     public static void setDefaultIsNormalIncluded(boolean allowNormal) {
         defaultIsNormalInclude = allowNormal;
     }

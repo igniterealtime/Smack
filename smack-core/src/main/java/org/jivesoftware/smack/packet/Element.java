@@ -18,7 +18,7 @@
 package org.jivesoftware.smack.packet;
 
 /**
- * Interface to represent a XML element. This is similar to {@link PacketExtension}, but does not
+ * Interface to represent a XML element. This is similar to {@link ExtensionElement}, but does not
  * carry a namespace and is usually included as child element of an packet extension.
  */
 public interface Element {

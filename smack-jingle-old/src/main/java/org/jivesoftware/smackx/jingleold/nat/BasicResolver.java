@@ -24,6 +24,8 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Basic Resolver takes all IP addresses of the interfaces and uses the
@@ -31,6 +33,7 @@ import java.util.Enumeration;
  * A very simple and easy to use resolver.
  */
 public class BasicResolver extends TransportResolver {
+    private static final Logger LOGGER = Logger.getLogger(BasicResolver.class.getName());
 
     /**
      * Constructor.
@@ -45,8 +48,9 @@ public class BasicResolver extends TransportResolver {
      * The BasicResolver takes the IP addresses of the interfaces and uses the
      * first non-loopback, non-linklocal and non-sitelocal address.
      * @throws NotConnectedException 
+     * @throws InterruptedException 
      */
-    public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException {
+    public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException, InterruptedException {
 
         setResolveInit();
 
@@ -57,14 +61,14 @@ public class BasicResolver extends TransportResolver {
         try {
             ifaces = NetworkInterface.getNetworkInterfaces();
         } catch (SocketException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
         while (ifaces.hasMoreElements()) {
 
             NetworkInterface iface = ifaces.nextElement();
             Enumeration<InetAddress> iaddresses = iface.getInetAddresses();
-            
+
             while (iaddresses.hasMoreElements()) {
                 InetAddress iaddress = iaddresses.nextElement();
                 if (!iaddress.isLoopbackAddress() && !iaddress.isLinkLocalAddress() && !iaddress.isSiteLocalAddress()) {
@@ -80,7 +84,7 @@ public class BasicResolver extends TransportResolver {
         try {
             ifaces = NetworkInterface.getNetworkInterfaces();
         } catch (SocketException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
 
         while (ifaces.hasMoreElements()) {
@@ -105,7 +109,7 @@ public class BasicResolver extends TransportResolver {
             tr.setLocalIp(InetAddress.getLocalHost().getHostAddress() != null ? InetAddress.getLocalHost().getHostAddress() : InetAddress.getLocalHost().getHostName());
             addCandidate(tr);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "exception", e);
         }
         setResolveEnd();
 

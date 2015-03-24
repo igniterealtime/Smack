@@ -1,19 +1,15 @@
 Smack
 =====
 
-[![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smackxmpp/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smackxmpp) [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/thing/3480125)
+[![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)  [![Coverage Status](https://coveralls.io/repos/igniterealtime/Smack/badge.svg)](https://coveralls.io/r/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smackxmpp/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smackxmpp) [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/thing/3480125)
 
 About
 -----
 
-[Smack] is an Open Source, cross-platform, easy to use Java XMPP
-client library.
+[Smack] is an open source, cross-platform, easy to use, Java XMPP client library.
 
-[Smack] is an Open Source [XMPP (Jabber)] client library for instant
-messaging and presence. A pure Java library, it can be embedded into
-your applications to create anything from a full XMPP client to simple
-XMPP integrations such as sending notification messages and
-presence-enabling devices.
+A pure Java library, it can be embedded into your applications to create anything from a full XMPP client to simple XMPP integrations such as sending notification messages and presence-enabling devices.
+Smack and XMPP allows you to easily exchange data, in various ways e.g. fire-and-forget, publish-subscribe, between human and non-human endpoints.
 
 Confused? Have a look at the [Overview](documentation/overview.md).
 
@@ -25,10 +21,11 @@ Bug Reporting
 Only a few users have access for for filling bugs in the tracker. New
 users should:
 
-1. [Create a forums account](https://community.igniterealtime.org/login!input.jspa?registerOnly=true) (only e-mail is a requirement, you can skip all the other fields).
-2. Login to the forum account
-3. Press New in your toolbar and choose Discussion
-4. Choose the [Smack Developers Forum] of Smack and add the tag 'bug_report' to your new post
+1. Read ["How to ask for help or report an issue"](https://github.com/igniterealtime/Smack/wiki/How-to-ask-for-help-or-report-an-issue)
+2. [Create a forums account](https://community.igniterealtime.org/login!input.jspa?registerOnly=true) (only e-mail is a requirement, you can skip all the other fields).
+3. Login to the forum account
+4. Press New in your toolbar and choose Discussion
+5. Choose the [Smack Developers Forum] of Smack and add the tag 'bug_report' to your new post
 
 Please search for your issues in the bug tracker before reporting.
 
@@ -40,10 +37,17 @@ Remember that it may take some time (~hours) to get a response.
  
 You can also reach us via the [Smack Users Forum] if you have questions or need support, or the [Smack Developers Forum] if you want to discuss Smack development.
 
+Contributing
+------------
+
+If you want to start developing for Smack and eventually contribute code back, then please have a look at the [Guidelines for Smack Developers and Contributors](https://github.com/igniterealtime/Smack/wiki/Guidelines-for-Smack-Developers-and-Contributors).
+The guidelines also contain development quickstart instructions.
+
 Resources
 ---------
 
 - Bug Tracker: http://issues.igniterealtime.org/browse/SMACK
+- JaCoCo Coverage Reports: https://www.igniterealtime.org/builds/smack/dailybuilds/jacoco/html/
 - Nightly Builds: http://www.igniterealtime.org/downloads/nightly_smack.jsp
 - Nightly Javadoc: http://www.igniterealtime.org/builds/smack/dailybuilds/javadoc/
 - Nightly Documentation: http://www.igniterealtime.org/builds/smack/dailybuilds/documentation/

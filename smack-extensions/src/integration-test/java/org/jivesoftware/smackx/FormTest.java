@@ -123,7 +123,7 @@ public class FormTest extends SmackTestCase {
             // Add the completed form to the message
             msg2.addExtension(completedForm.getDataFormToSend());
             // Send the message with the completed form
-            getConnection(1).sendPacket(msg2);
+            getConnection(1).sendStanza(msg2);
 
             // Get the message with the completed form
             Message msg3 = (Message) collector.nextResult(2000);

@@ -33,7 +33,7 @@ class CarExtension implements PacketExtension
 		color = col;
 		numTires = num;
 	}
-	
+
 	public String getColor()
 	{
 		return color;
@@ -59,5 +59,5 @@ class CarExtension implements PacketExtension
 		return "<" + getElementName() + " xmlns='" + getNamespace() + "'><paint color='" + 
 			getColor() + "'/><tires num='" + getNumTires() + "'/></" + getElementName() + ">";
 	}
-	
+
 }

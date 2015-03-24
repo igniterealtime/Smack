@@ -107,14 +107,34 @@ public class PrivacyItem {
     }
 
     /**
+     * Creates a new privacy item.
+     *
+     * If the type is "jid", then the 'value' attribute MUST contain a valid Jabber ID.
+     * If the type is "group", then the 'value' attribute SHOULD contain the name of a group
+     * in the user's roster.
+     * If the type is "subscription", then the 'value' attribute MUST be one of "both", "to",
+     * "from", or "none".
+     *
+     * @param type the type.
+     * @param value the value of the privacy item
+     * @param allow true if this is an allow item
+     * @param order the order of this privacy item
+     */
+    public PrivacyItem(Type type, CharSequence value, boolean allow, long order) {
+        this(type, value != null ? value.toString() : null, allow, order);
+    }
+
+    /**
      * Returns the action associated with the item, it MUST be filled and will allow or deny
      * the communication.
      *
      * @return the allow communication status.
      */
     public boolean isAllow() {
+    // CHECKSTYLE:OFF
 		return allow;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Returns whether the receiver allow or deny incoming IQ stanzas or not.
@@ -122,8 +142,10 @@ public class PrivacyItem {
      * @return the iq filtering status.
      */
     public boolean isFilterIQ() {
+    // CHECKSTYLE:OFF
 		return filterIQ;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Sets whether the receiver allows or denies incoming IQ stanzas or not.
@@ -131,8 +153,11 @@ public class PrivacyItem {
      * @param filterIQ indicates if the receiver allows or denies incoming IQ stanzas.
      */
     public void setFilterIQ(boolean filterIQ) {
+    // CHECKSTYLE:OFF
+
 		this.filterIQ = filterIQ;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Returns whether the receiver allows or denies incoming messages or not.
@@ -140,8 +165,10 @@ public class PrivacyItem {
      * @return the message filtering status.
      */
     public boolean isFilterMessage() {
+        // CHECKSTYLE:OFF
 		return filterMessage;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Sets wheather the receiver allows or denies incoming messages or not.
@@ -149,8 +176,10 @@ public class PrivacyItem {
      * @param filterMessage indicates if the receiver allows or denies incoming messages or not.
      */
     public void setFilterMessage(boolean filterMessage) {
+        // CHECKSTYLE:OFF
 		this.filterMessage = filterMessage;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Returns whether the receiver allows or denies incoming presence or not.
@@ -158,8 +187,10 @@ public class PrivacyItem {
      * @return the iq filtering incoming presence status.
      */
     public boolean isFilterPresenceIn() {
+        // CHECKSTYLE:OFF
 		return filterPresenceIn;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Sets whether the receiver allows or denies incoming presence or not.
@@ -167,8 +198,10 @@ public class PrivacyItem {
      * @param filterPresenceIn indicates if the receiver allows or denies filtering incoming presence.
      */
     public void setFilterPresenceIn(boolean filterPresenceIn) {
+        // CHECKSTYLE:OFF
 		this.filterPresenceIn = filterPresenceIn;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Returns whether the receiver allows or denies incoming presence or not.
@@ -176,8 +209,10 @@ public class PrivacyItem {
      * @return the iq filtering incoming presence status.
      */
     public boolean isFilterPresenceOut() {
+        // CHECKSTYLE:OFF
 		return filterPresenceOut;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Sets whether the receiver allows or denies outgoing presence or not.
@@ -185,8 +220,10 @@ public class PrivacyItem {
      * @param filterPresenceOut indicates if the receiver allows or denies filtering outgoing presence
      */
     public void setFilterPresenceOut(boolean filterPresenceOut) {
+        // CHECKSTYLE:OFF
 		this.filterPresenceOut = filterPresenceOut;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Returns the order where the receiver is processed. List items are processed in
@@ -198,8 +235,10 @@ public class PrivacyItem {
      * @return the order number.
      */
     public long getOrder() {
+        // CHECKSTYLE:OFF
 		return order;
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Returns the type hold the kind of communication it will allow or block.
@@ -209,7 +248,9 @@ public class PrivacyItem {
      */
     public Type getType() {
         return type;
+    // CHECKSTYLE:OFF
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Returns the element identifier to apply the action.
@@ -224,7 +265,9 @@ public class PrivacyItem {
      */
     public String getValue() {
         return value;
+        // CHECKSTYLE:OFF
 	}
+    // CHECKSTYLE:ON
 
     /**
      * Returns whether the receiver allows or denies every kind of communication.
@@ -235,6 +278,7 @@ public class PrivacyItem {
      * @return the all communications status.
      */
     public boolean isFilterEverything() {
+        // CHECKSTYLE:OFF
 		return !(this.isFilterIQ() || this.isFilterMessage() || this.isFilterPresenceIn()
 				|| this.isFilterPresenceOut());
 	}
@@ -277,6 +321,7 @@ public class PrivacyItem {
             }
         	buf.append("</item>");
         }
+        // CHECKSTYLE:ON
         return buf.toString();
     }
 

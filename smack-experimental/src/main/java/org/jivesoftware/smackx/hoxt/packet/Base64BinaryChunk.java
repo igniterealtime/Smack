@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.hoxt.packet;
 
-import org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.hoxt.HOXTManager;
 
 /**
@@ -26,7 +26,7 @@ import org.jivesoftware.smackx.hoxt.HOXTManager;
  * @author Andriy Tsykholyas
  * @see <a href="http://xmpp.org/extensions/xep-0332.html">XEP-0332: HTTP over XMPP transport</a>
  */
-public class Base64BinaryChunk implements PacketExtension {
+public class Base64BinaryChunk implements ExtensionElement {
 
     public static final String ELEMENT_CHUNK = "chunk";
     public static final String ATTRIBUTE_STREAM_ID = "streamId";

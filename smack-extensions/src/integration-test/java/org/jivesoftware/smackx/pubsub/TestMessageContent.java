@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 public class TestMessageContent extends TestCase
 {
 	String payloadXmlWithNS = "<book xmlns='pubsub:test:book'><author name='Stephen King'/></book>";
-	
+
 	public void testItemWithId() 
 	{
 		Item item = new Item("123");
@@ -47,21 +47,21 @@ public class TestMessageContent extends TestCase
 	public void testSimplePayload() 
 	{
 		SimplePayload payloadNS = new SimplePayload("book", "pubsub:test:book", payloadXmlWithNS);
-		
+
 		assertEquals(payloadXmlWithNS, payloadNS.toXML());
-		
+
 		String payloadXmlWithNoNS = "<book><author name='Stephen King'/></book>";
 		SimplePayload payloadNoNS = new SimplePayload("book", null, "<book><author name='Stephen King'/></book>");
-		
+
 		assertEquals(payloadXmlWithNoNS, payloadNoNS.toXML());
-		
+
 	}
-	
+
 	public void testPayloadItemWithId()
 	{
 		SimplePayload payload = new SimplePayload("book", "pubsub:test:book", payloadXmlWithNS);
 		PayloadItem<SimplePayload> item = new PayloadItem<SimplePayload>("123", payload);
-		
+
 		String xml = "<item id='123'>" + payloadXmlWithNS + "</item>";
 		assertEquals(xml, item.toXML());
 		assertEquals("item", item.getElementName());
@@ -71,7 +71,7 @@ public class TestMessageContent extends TestCase
 	{
 		SimplePayload payload = new SimplePayload("book", "pubsub:test:book", payloadXmlWithNS);
 		PayloadItem<SimplePayload> item = new PayloadItem<SimplePayload>(null, payload);
-		
+
 		String xml = "<item>" + payloadXmlWithNS + "</item>";
 		assertEquals(xml, item.toXML());
 	}
@@ -99,14 +99,14 @@ public class TestMessageContent extends TestCase
 		{
 		}
 	}
-	
+
 	public void testRetractItem()
 	{
 		RetractItem item = new RetractItem("1234");
-		
+
 		assertEquals("<retract id='1234'/>", item.toXML());
 		assertEquals("retract", item.getElementName());
-		
+
 		try
 		{
 			new RetractItem(null);
@@ -116,7 +116,7 @@ public class TestMessageContent extends TestCase
 		{
 		}
 	}
-	
+
 	public void testGetItemsRequest()
 	{
 		GetItemsRequest request = new GetItemsRequest("testId");
@@ -124,10 +124,10 @@ public class TestMessageContent extends TestCase
 
 		request = new GetItemsRequest("testId", 5);
 		assertEquals("<items node='testId' max_items='5'/>", request.toXML());
-		
+
 		request = new GetItemsRequest("testId", "qwerty");
 		assertEquals("<items node='testId' subid='qwerty'/>", request.toXML());
-		
+
 		request = new GetItemsRequest("testId", "qwerty", 5);
 		assertEquals("<items node='testId' subid='qwerty' max_items='5'/>", request.toXML());
 	}
