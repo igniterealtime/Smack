@@ -51,7 +51,7 @@ public class Open extends IQ {
      * 
      * @param sessionID unique session ID identifying this In-Band Bytestream
      * @param blockSize block size in which the data will be fragmented
-     * @param packet stanza type used to encapsulate the data
+     * @param stanza stanza type used to encapsulate the data
      */
     public Open(String sessionID, int blockSize, StanzaType stanza) {
         super(ELEMENT, NAMESPACE);

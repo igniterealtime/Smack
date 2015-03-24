@@ -32,7 +32,7 @@ public class StanzaIdFilter implements StanzaFilter {
     /**
      * Creates a new stanza ID filter using the specified stanza's ID.
      *
-     * @param packet the stanza which the ID is taken from.
+     * @param stanza the stanza which the ID is taken from.
      */
     public StanzaIdFilter(Stanza stanza) {
         this(stanza.getStanzaId());
@@ -41,7 +41,7 @@ public class StanzaIdFilter implements StanzaFilter {
     /**
      * Creates a new stanza ID filter using the specified stanza ID.
      *
-     * @param packetID the stanza ID to filter for.
+     * @param stanzaID the stanza ID to filter for.
      */
     public StanzaIdFilter(String stanzaID) {
         this.stanzaId = StringUtils.requireNotNullOrEmpty(stanzaID, "Stanza ID must not be null or empty.");

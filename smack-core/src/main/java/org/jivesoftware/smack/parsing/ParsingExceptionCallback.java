@@ -37,7 +37,7 @@ public abstract class ParsingExceptionCallback {
     /**
      * Called when parsing an message stanza caused an exception.
      * 
-     * @param packetData
+     * @param stanzaData
      * the raw message stanza data that caused the exception
      * @throws Exception
      */

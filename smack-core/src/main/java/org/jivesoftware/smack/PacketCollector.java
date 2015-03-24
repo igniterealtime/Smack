@@ -302,7 +302,7 @@ public class PacketCollector {
          * Set the stanza filter used by this collector. If <code>null</code>, then all stanzas will
          * get collected by this collector.
          * 
-         * @param packetFilter
+         * @param stanzaFilter
          * @return a reference to this configuration.
          */
         public Configuration setStanzaFilter(StanzaFilter stanzaFilter) {

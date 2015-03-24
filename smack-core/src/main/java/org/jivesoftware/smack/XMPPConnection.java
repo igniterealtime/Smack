@@ -166,7 +166,7 @@ public interface XMPPConnection {
     /**
      * Sends the specified stanza to the server.
      *
-     * @param packet the stanza to send.
+     * @param stanza the stanza to send.
      * @throws NotConnectedException if the connection is not connected.
      */
     public void sendStanza(Stanza stanza) throws NotConnectedException;
@@ -468,7 +468,7 @@ public interface XMPPConnection {
      * has been elapsed.
      * </p>
      * 
-     * @param packet the stanza to send (required)
+     * @param stanza the stanza to send (required)
      * @param replyFilter the filter used to determine response stanza (required)
      * @param callback the callback invoked if there is a response (required)
      * @throws NotConnectedException
@@ -484,7 +484,7 @@ public interface XMPPConnection {
      * with a {@link SmackException.NoResponseException}. The callback will be invoked at most once.
      * </p>
      * 
-     * @param packet the stanza to send (required)
+     * @param stanza the stanza to send (required)
      * @param replyFilter the filter used to determine response stanza (required)
      * @param callback the callback invoked if there is a response (required)
      * @param exceptionCallback the callback invoked if there is an exception (optional)
@@ -501,7 +501,7 @@ public interface XMPPConnection {
      * with a {@link SmackException.NoResponseException}. The callback will be invoked at most once.
      * </p>
      * 
-     * @param packet the stanza to send (required)
+     * @param stanza the stanza to send (required)
      * @param replyFilter the filter used to determine response stanza (required)
      * @param callback the callback invoked if there is a response (required)
      * @param exceptionCallback the callback invoked if there is an exception (optional)

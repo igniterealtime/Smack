@@ -377,7 +377,7 @@ public class InBandBytestreamManager implements BytestreamManager {
      * The use of {@link StanzaType#IQ} is recommended. See <a
      * href="http://xmpp.org/extensions/xep-0047.html#message">XEP-0047</a> Section 4.
      * 
-     * @param packet the stanza to set
+     * @param stanza the stanza to set
      */
     public void setStanza(StanzaType stanza) {
         this.stanza = stanza;
