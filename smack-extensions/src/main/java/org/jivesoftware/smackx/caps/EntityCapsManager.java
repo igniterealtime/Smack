@@ -350,7 +350,7 @@ public class EntityCapsManager extends Manager {
             public void processPacket(Stanza packet) {
                 if (!entityCapsEnabled)
                     return;
-                CapsVersionAndHash capsVersionAndHash = getCapsVersion();
+                CapsVersionAndHash capsVersionAndHash = getCapsVersionAndHash();
                 CapsExtension caps = new CapsExtension(entityNode, capsVersionAndHash.version, capsVersionAndHash.hash);
                 packet.addExtension(caps);
             }
@@ -411,7 +411,7 @@ public class EntityCapsManager extends Manager {
      * 
      * @return our own caps version
      */
-    public CapsVersionAndHash getCapsVersion() {
+    public CapsVersionAndHash getCapsVersionAndHash() {
         return currentCapsVersion;
     }
 
@@ -423,7 +423,11 @@ public class EntityCapsManager extends Manager {
      * @return the local NodeVer
      */
     public String getLocalNodeVer() {
-        return entityNode + '#' + getCapsVersion();
+        CapsVersionAndHash capsVersionAndHash = getCapsVersionAndHash();
+        if (capsVersionAndHash == null) {
+            return null;
+        }
+        return entityNode + '#' + capsVersionAndHash.version;
     }
 
     /**
@@ -464,12 +468,11 @@ public class EntityCapsManager extends Manager {
         DiscoverInfo discoverInfo = new DiscoverInfo();
         discoverInfo.setType(IQ.Type.result);
         discoverInfo.setNode(getLocalNodeVer());
-        if (connection != null)
-            discoverInfo.setFrom(connection.getUser());
         sdm.addDiscoverInfoTo(discoverInfo);
 
         currentCapsVersion = generateVerificationString(discoverInfo);
-        addDiscoverInfoByNode(entityNode + '#' + currentCapsVersion.version, discoverInfo);
+        final String localNodeVer = getLocalNodeVer();
+        addDiscoverInfoByNode(localNodeVer, discoverInfo);
         if (lastLocalCapsVersions.size() > 10) {
             CapsVersionAndHash oldCapsVersion = lastLocalCapsVersions.poll();
             sdm.removeNodeInformationProvider(entityNode + '#' + oldCapsVersion.version);
@@ -480,7 +483,7 @@ public class EntityCapsManager extends Manager {
             JID_TO_NODEVER_CACHE.put(connection.getUser(), new NodeVerHash(entityNode, currentCapsVersion));
 
         final List<Identity> identities = new LinkedList<Identity>(ServiceDiscoveryManager.getInstanceFor(connection).getIdentities());
-        sdm.setNodeInformationProvider(entityNode + '#' + currentCapsVersion, new AbstractNodeInformationProvider() {
+        sdm.setNodeInformationProvider(localNodeVer, new AbstractNodeInformationProvider() {
             List<String> features = sdm.getFeatures();
             List<ExtensionElement> packetExtensions = sdm.getExtendedInfoAsList();
             @Override
