@@ -29,6 +29,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
@@ -200,9 +201,10 @@ public class ServiceDiscoveryManager extends Manager {
      *
      * @param identity
      */
-    public void setIdentity(Identity identity) {
-        if (identity == null) throw new IllegalArgumentException("Identity can not be null");
-        this.identity = identity;
+    public synchronized void setIdentity(Identity identity) {
+        this.identity = Objects.requireNonNull(identity, "Identity can not be null");
+        // Notify others of a state change of SDM. In order to keep the state consistent, this
+        // method is synchronized
         renewEntityCapsVersion();
     }
 
@@ -232,8 +234,10 @@ public class ServiceDiscoveryManager extends Manager {
      * 
      * @param identity
      */
-    public void addIdentity(DiscoverInfo.Identity identity) {
+    public synchronized void addIdentity(DiscoverInfo.Identity identity) {
         identities.add(identity);
+        // Notify others of a state change of SDM. In order to keep the state consistent, this
+        // method is synchronized
         renewEntityCapsVersion();
     }
 
@@ -244,9 +248,11 @@ public class ServiceDiscoveryManager extends Manager {
      * @param identity
      * @return true, if successful. Otherwise the default identity was given.
      */
-    public boolean removeIdentity(DiscoverInfo.Identity identity) {
+    public synchronized boolean removeIdentity(DiscoverInfo.Identity identity) {
         if (identity.equals(this.identity)) return false;
         identities.remove(identity);
+        // Notify others of a state change of SDM. In order to keep the state consistent, this
+        // method is synchronized
         renewEntityCapsVersion();
         return true;
     }
@@ -286,17 +292,15 @@ public class ServiceDiscoveryManager extends Manager {
      *
      * @param response the discover info response packet
      */
-    public void addDiscoverInfoTo(DiscoverInfo response) {
+    public synchronized void addDiscoverInfoTo(DiscoverInfo response) {
         // First add the identities of the connection
         response.addIdentities(getIdentities());
 
         // Add the registered features to the response
-        synchronized (features) {
-            for (String feature : getFeatures()) {
-                response.addFeature(feature);
-            }
-            response.addExtension(extendedInfo);
+        for (String feature : getFeatures()) {
+            response.addFeature(feature);
         }
+        response.addExtension(extendedInfo);
     }
 
     /**
@@ -356,10 +360,8 @@ public class ServiceDiscoveryManager extends Manager {
      * 
      * @return a List of the supported features by this XMPP entity.
      */
-    public List<String> getFeatures() {
-        synchronized (features) {
-            return new ArrayList<String>(features);
-        }
+    public synchronized List<String> getFeatures() {
+        return new ArrayList<String>(features);
     }
 
     /**
@@ -373,13 +375,11 @@ public class ServiceDiscoveryManager extends Manager {
      *
      * @param feature the feature to register as supported.
      */
-    public void addFeature(String feature) {
-        synchronized (features) {
-            if (!features.contains(feature)) {
-                features.add(feature);
-                renewEntityCapsVersion();
-            }
-        }
+    public synchronized void addFeature(String feature) {
+        features.add(feature);
+        // Notify others of a state change of SDM. In order to keep the state consistent, this
+        // method is synchronized
+        renewEntityCapsVersion();
     }
 
     /**
@@ -390,11 +390,11 @@ public class ServiceDiscoveryManager extends Manager {
      *
      * @param feature the feature to remove from the supported features.
      */
-    public void removeFeature(String feature) {
-        synchronized (features) {
-            features.remove(feature);
-            renewEntityCapsVersion();
-        }
+    public synchronized void removeFeature(String feature) {
+        features.remove(feature);
+        // Notify others of a state change of SDM. In order to keep the state consistent, this
+        // method is synchronized
+        renewEntityCapsVersion();
     }
 
     /**
@@ -403,10 +403,8 @@ public class ServiceDiscoveryManager extends Manager {
      * @param feature the feature to look for.
      * @return a boolean indicating if the specified featured is registered or not.
      */
-    public boolean includesFeature(String feature) {
-        synchronized (features) {
-            return features.contains(feature);
-        }
+    public synchronized boolean includesFeature(String feature) {
+        return features.contains(feature);
     }
 
     /**
@@ -424,8 +422,10 @@ public class ServiceDiscoveryManager extends Manager {
      *            the data form that contains the extend service discovery
      *            information.
      */
-    public void setExtendedInfo(DataForm info) {
+    public synchronized void setExtendedInfo(DataForm info) {
       extendedInfo = info;
+      // Notify others of a state change of SDM. In order to keep the state consistent, this
+      // method is synchronized
       renewEntityCapsVersion();
     }
 
@@ -461,8 +461,10 @@ public class ServiceDiscoveryManager extends Manager {
      * Since no stanza(/packet) is actually sent to the server it is safe to perform this
      * operation before logging to the server.
      */
-    public void removeExtendedInfo() {
+    public synchronized void removeExtendedInfo() {
        extendedInfo = null;
+       // Notify others of a state change of SDM. In order to keep the state consistent, this
+       // method is synchronized
        renewEntityCapsVersion();
     }
 
