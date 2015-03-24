@@ -485,7 +485,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected void bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
-                    IOException, SmackException, InterruptedException {
+                    SmackException, InterruptedException {
 
         // Wait until either:
         // - the servers last features stanza has been parsed
@@ -1392,6 +1392,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         afterFeaturesReceived();
     }
 
+    @SuppressWarnings("unused")
     protected void afterFeaturesReceived() throws SecurityRequiredException, NotConnectedException, InterruptedException {
         // Default implementation does nothing
     }

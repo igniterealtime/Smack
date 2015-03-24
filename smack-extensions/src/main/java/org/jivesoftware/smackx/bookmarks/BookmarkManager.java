@@ -66,11 +66,12 @@ public class BookmarkManager {
         BookmarkManager manager = bookmarkManagerMap.get(connection);
         if (manager == null) {
             manager = new BookmarkManager(connection);
+            bookmarkManagerMap.put(connection, manager);
         }
         return manager;
     }
 
-    private PrivateDataManager privateDataManager;
+    private final PrivateDataManager privateDataManager;
     private Bookmarks bookmarks;
     private final Object bookmarkLock = new Object();
 
@@ -80,9 +81,8 @@ public class BookmarkManager {
      *
      * @param connection the connection for persisting and retrieving bookmarks.
      */
-    private BookmarkManager(XMPPConnection connection) throws XMPPException, SmackException {
+    private BookmarkManager(XMPPConnection connection) {
         privateDataManager = PrivateDataManager.getInstanceFor(connection);
-        bookmarkManagerMap.put(connection, this);
     }
 
     /**

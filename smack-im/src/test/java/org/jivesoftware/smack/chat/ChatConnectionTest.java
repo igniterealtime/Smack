@@ -322,7 +322,7 @@ public class ChatConnectionTest {
         assertNull(listener.getNewChat());
     }
 
-    private Message createChatPacket(final String threadId, final boolean isFullJid) {
+    private static Message createChatPacket(final String threadId, final boolean isFullJid) {
         Message chatMsg = new Message(JidTestUtil.BARE_JID_1, Message.Type.chat);
         chatMsg.setBody("the body message - " + System.currentTimeMillis());
         Jid jid;

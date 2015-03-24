@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 
@@ -193,10 +194,20 @@ public class IncomingFileTransfer extends FileTransfer {
         try {
             inputStream = streamNegotiatorTask.get(15, TimeUnit.SECONDS);
         }
-        catch (InterruptedException e) {
-            throw new SmackException("Interruption while executing", e);
-        }
         catch (ExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof XMPPErrorException) {
+                throw (XMPPErrorException) cause;
+            }
+            if (cause instanceof InterruptedException) {
+                throw (InterruptedException) cause;
+            }
+            if (cause instanceof NoResponseException) {
+                throw (NoResponseException) cause;
+            }
+            if (cause instanceof SmackException) {
+                throw (SmackException) cause;
+            }
             throw new SmackException("Error in execution", e);
         }
         catch (TimeoutException e) {

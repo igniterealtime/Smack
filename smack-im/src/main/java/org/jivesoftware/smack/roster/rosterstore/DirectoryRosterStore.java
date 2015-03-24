@@ -177,7 +177,7 @@ public class DirectoryRosterStore implements RosterStore {
         return setRosterVersion(version);
     }
 
-    private Item readEntry(File file) {
+    private static Item readEntry(File file) {
         String s = FileUtils.readFile(file);
         if (s == null) {
             return null;

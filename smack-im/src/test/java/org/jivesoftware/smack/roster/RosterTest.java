@@ -32,7 +32,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.im.InitSmackIm;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
@@ -511,8 +510,7 @@ public class RosterTest extends InitSmackIm {
      * @param connection the dummy connection of which the provided roster belongs to.
      * @param roster the roster (or buddy list) which should be initialized.
      */
-    public static void removeAllRosterEntries(DummyConnection connection, Roster roster)
-            throws InterruptedException, XMPPException {
+    public static void removeAllRosterEntries(DummyConnection connection, Roster roster) {
         for(RosterEntry entry : roster.getEntries()) {
             // prepare the roster push packet
             final RosterPacket rosterPush= new RosterPacket();
@@ -539,7 +537,7 @@ public class RosterTest extends InitSmackIm {
      * @throws SmackException 
      * @throws XmppStringprepException 
      */
-    private void initRoster() throws InterruptedException, XMPPException, SmackException, XmppStringprepException {
+    private void initRoster() throws InterruptedException, SmackException, XmppStringprepException {
         roster.reload();
         while (true) {
             final Stanza sentPacket = connection.getSentPacket();

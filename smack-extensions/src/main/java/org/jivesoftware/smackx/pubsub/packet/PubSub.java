@@ -47,16 +47,6 @@ public class PubSub extends IQ
         setType(type);
     }
 
-	/**
-    * Returns the XML element name of the extension sub-packet root element.
-    *
-    * @return the XML element name of the stanza(/packet) extension.
-    */
-    @SuppressWarnings("static-method")
-    public String getElementName() {
-        return ELEMENT;
-    }
-
     @SuppressWarnings("unchecked")
     public <PE extends ExtensionElement> PE getExtension(PubSubElementType elem)
 	{

@@ -360,7 +360,7 @@ public class ChatManager extends Manager{
         return Collections.unmodifiableSet(chatManagerListeners);
     }
 
-    private void deliverMessage(Chat chat, Message message) {
+    private static void deliverMessage(Chat chat, Message message) {
         // Here we will run any interceptors
         chat.deliver(message);
     }

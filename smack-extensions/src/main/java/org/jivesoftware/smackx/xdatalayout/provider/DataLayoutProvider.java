@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.xdatalayout.provider;
 import java.io.IOException;
 import java.util.List;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.DataFormLayoutElement;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Fieldref;
@@ -37,8 +36,7 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class DataLayoutProvider {
 
-    public static DataLayout parse(XmlPullParser parser) throws XmlPullParserException, IOException,
-                    SmackException {
+    public static DataLayout parse(XmlPullParser parser) throws XmlPullParserException, IOException {
         DataLayout dataLayout = new DataLayout(parser.getAttributeValue("", "label"));
         parseLayout(dataLayout.getPageLayout(), parser);
         return dataLayout;

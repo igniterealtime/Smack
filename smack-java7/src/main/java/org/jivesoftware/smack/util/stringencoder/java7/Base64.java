@@ -898,7 +898,7 @@ public class Base64
         if( bytes != null && bytes.length >= 4 )
         {
 
-            int head = ((int)bytes[0] & 0xff) | ((bytes[1] << 8) & 0xff00);
+            int head = (bytes[0] & 0xff) | ((bytes[1] << 8) & 0xff00);
             if( java.util.zip.GZIPInputStream.GZIP_MAGIC == head )
             {
                 java.io.ByteArrayInputStream  bais = null;
@@ -969,12 +969,10 @@ public class Base64
         catch( java.io.IOException e )
         {
             LOGGER.log(Level.SEVERE, "Error reading object", e);
-            obj = null;
         }   // end catch
         catch( java.lang.ClassNotFoundException e )
         {
             LOGGER.log(Level.SEVERE, "Class not found for encoded object", e);
-            obj = null;
         }   // end catch
         finally
         {

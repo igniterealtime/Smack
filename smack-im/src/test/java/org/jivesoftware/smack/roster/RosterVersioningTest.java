@@ -135,7 +135,7 @@ public class RosterVersioningTest {
      * @throws XmppStringprepException 
      */
     @Test(timeout = 5000)
-    public void testOtherVersionStored() throws InterruptedException, XMPPException, SmackException, XmppStringprepException {
+    public void testOtherVersionStored() throws XMPPException, SmackException, XmppStringprepException {
         Item vaglafItem = vaglafItem();
 
         // We expect that the roster request is the only packet sent. This is not part of the specification,
@@ -226,7 +226,7 @@ public class RosterVersioningTest {
         }
     }
 
-    private Item vaglafItem() throws XmppStringprepException {
+    private static Item vaglafItem() throws XmppStringprepException {
         Item item = new Item(JidCreate.from("vaglaf@example.com"), "vaglaf the only");
         item.setItemType(ItemType.both);
         item.addGroupName("all");
@@ -235,7 +235,7 @@ public class RosterVersioningTest {
         return item;
     }
 
-    private void populateStore(RosterStore store) throws IOException {
+    private static void populateStore(RosterStore store) throws IOException {
         store.addEntry(new RosterPacket.Item(JidCreate.from("geoff@example.com"), "geoff hurley"), "");
 
         RosterPacket.Item item = new RosterPacket.Item(JidCreate.from("joe@example.com"), "joe stevens");
@@ -249,7 +249,7 @@ public class RosterVersioningTest {
         store.addEntry(item, "v96");
     }
 
-    private void answerWithEmptyRosterResult() throws InterruptedException {
+    private void answerWithEmptyRosterResult() {
         // We expect that the roster request is the only packet sent. This is not part of the specification,
         // but a shortcut in the test implementation.
         Stanza sentPacket = connection.getSentPacket();

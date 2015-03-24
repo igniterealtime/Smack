@@ -574,7 +574,7 @@ public class AdHocCommandManager extends Manager {
      * @param condition the condition of the error.
      * @throws NotConnectedException 
      */
-    private IQ respondError(AdHocCommandData response,
+    private static IQ respondError(AdHocCommandData response,
             XMPPError.Condition condition) {
         return respondError(response, new XMPPError(condition));
     }

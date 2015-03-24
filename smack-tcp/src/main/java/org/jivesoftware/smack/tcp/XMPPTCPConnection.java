@@ -669,14 +669,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         KeyManager[] kms = null;
         PasswordCallback pcb = null;
 
-        if(config.getCallbackHandler() == null) {
-           ks = null;
-        } else if (context == null) {
-            if(config.getKeystoreType().equals("NONE")) {
-                ks = null;
-                pcb = null;
-            }
-            else if(config.getKeystoreType().equals("PKCS11")) {
+        if (context == null) {
+            if(config.getKeystoreType().equals("PKCS11")) {
                 try {
                     Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
                     String pkcs11Config = "name = SmartCard\nlibrary = "+config.getPKCS11Library();
@@ -1710,7 +1704,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         return Math.min(clientResumptionTime, serverResumptionTime);
     }
 
-    private void processHandledCount(long handledCount) throws NotConnectedException, StreamManagementCounterError {
+    private void processHandledCount(long handledCount) throws StreamManagementCounterError {
         long ackedStanzasCount = SMUtils.calculateDelta(handledCount, serverHandledStanzasCount);
         final List<Stanza> ackedStanzas = new ArrayList<Stanza>(
                         handledCount <= Integer.MAX_VALUE ? (int) handledCount
