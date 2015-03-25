@@ -21,13 +21,14 @@ import static org.junit.Assert.assertTrue;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.jxmpp.jid.JidTestUtil;
 
-public class FileTransferNegotiatorTest {
+public class FileTransferNegotiatorTest extends InitExtensions {
     private DummyConnection connection;
 
     @Before
