@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -219,4 +220,14 @@ public class JivePropertiesExtension implements ExtensionElement {
         return xml;
     }
 
+    /**
+     * Return a Jive properties extensions of the given message.
+     *
+     * @param message the message to return the extension from.
+     * @return a Jive properties extension or null.
+     * @since 4.2
+     */
+    public static JivePropertiesExtension from(Message message) {
+        return message.getExtension(ELEMENT, NAMESPACE);
+    }
 }
