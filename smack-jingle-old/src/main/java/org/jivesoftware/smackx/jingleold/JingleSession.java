@@ -96,7 +96,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     private Map<String, JingleMediaSession> mediaSessionMap;
 
     /**
-     * Full featured JingleSession constructor
+     * Full featured JingleSession constructor.
      * 
      * @param conn
      *            the XMPPConnection which is used
@@ -132,7 +132,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * JingleSession constructor (for an outgoing Jingle session)
+     * JingleSession constructor (for an outgoing Jingle session).
      * 
      * @param conn
      *            Connection
@@ -150,7 +150,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Get the session initiator
+     * Get the session initiator.
      * 
      * @return the initiator
      */
@@ -163,7 +163,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Set the session initiator
+     * Set the session initiator.
      * 
      * @param initiator
      *            the initiator to set
@@ -173,7 +173,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Get the Media Manager of this Jingle Session
+     * Get the Media Manager of this Jingle Session.
      * 
      * @return the JingleMediaManagers
      */
@@ -182,7 +182,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Set the Media Manager of this Jingle Session
+     * Set the Media Manager of this Jingle Session.
      * 
      * @param jingleMediaManagers
      */
@@ -191,7 +191,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Get the session responder
+     * Get the session responder.
      * 
      * @return the responder
      */
@@ -210,7 +210,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Get the session ID
+     * Get the session ID.
      * 
      * @return the sid
      */
@@ -251,7 +251,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Return true if all of the media managers have finished
+     * Return true if all of the media managers have finished.
      */
     public boolean isFullyEstablished() {
         boolean result = true;
@@ -740,7 +740,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     // Listeners
 
     /**
-     * Add a listener for jmf negotiation events
+     * Add a listener for jmf negotiation events.
      * 
      * @param li
      *            The listener
@@ -755,7 +755,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Remove a listener for jmf negotiation events
+     * Remove a listener for jmf negotiation events.
      * 
      * @param li
      *            The listener
@@ -769,7 +769,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Add a listener for transport negotiation events
+     * Add a listener for transport negotiation events.
      * 
      * @param li
      *            The listener
@@ -783,7 +783,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Remove a listener for transport negotiation events
+     * Remove a listener for transport negotiation events.
      * 
      * @param li
      *            The listener

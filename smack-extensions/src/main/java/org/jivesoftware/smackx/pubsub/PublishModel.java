@@ -24,12 +24,12 @@ package org.jivesoftware.smackx.pubsub;
  */
 public enum PublishModel
 {
-	/** Only publishers may publish */
+	/** Only publishers may publish. */
 	publishers,
 
-	/** Only subscribers may publish */
+	/** Only subscribers may publish. */
 	subscribers,
 
-	/** Anyone may publish */
+	/** Anyone may publish. */
 	open;
 }

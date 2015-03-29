@@ -50,6 +50,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     /**
+     * Add a new element to this builder.
      *
      * @param name
      * @param content
@@ -64,6 +65,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     /**
+    * Add a new element to this builder.
     *
     * @param name
     * @param content
@@ -158,7 +160,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     /**
-     * Add a right angle bracket '>'
+     * Add a right angle bracket '>'.
      * 
      * @return a reference to this object.
      */
@@ -168,7 +170,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     /**
-     * 
+     * Add a right angle bracket '>'.
      * @return a reference to this object
      * @deprecated use {@link #rightAngleBracket()} instead
      */
@@ -229,7 +231,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     /**
-     * Add the given attribute if value => 0
+     * Add the given attribute if {@code value => 0}.
      *
      * @param name
      * @param value

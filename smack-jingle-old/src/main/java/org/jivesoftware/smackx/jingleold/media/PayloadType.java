@@ -36,7 +36,7 @@ public class PayloadType {
     private int channels;
 
     /**
-     * Constructor with Id, name and number of channels
+     * Constructor with Id, name and number of channels.
      *
      * @param id       The identifier
      * @param name     A name
@@ -57,7 +57,7 @@ public class PayloadType {
     }
 
     /**
-     * Constructor with Id and name
+     * Constructor with Id and name.
      *
      * @param id   The identification
      * @param name A name
@@ -67,7 +67,7 @@ public class PayloadType {
     }
 
     /**
-     * Copy constructor
+     * Copy constructor.
      *
      * @param pt The other payload type.
      */
@@ -130,7 +130,7 @@ public class PayloadType {
     }
 
     /**
-     * Return true if the Payload type is not valid
+     * Return true if the Payload type is not valid.
      *
      * @return true if the payload type is invalid
      */
@@ -247,7 +247,7 @@ public class PayloadType {
         private int clockRate;
 
         /**
-         * Constructor with all the attributes of an Audio payload type
+         * Constructor with all the attributes of an Audio payload type.
          *
          * @param id       The identifier
          * @param name     The name assigned to this payload type
@@ -260,7 +260,7 @@ public class PayloadType {
         }
 
         /**
-         * Constructor with all the attributes of an Audio payload type
+         * Constructor with all the attributes of an Audio payload type.
          *
          * @param id       The identifier
          * @param name     The name assigned to this payload type
@@ -280,7 +280,7 @@ public class PayloadType {
         }
 
         /**
-         * Constructor with Id and name
+         * Constructor with Id and name.
          *
          * @param id   the Id for the payload type
          * @param name the name of the payload type
@@ -291,7 +291,7 @@ public class PayloadType {
         }
 
         /**
-         * Copy constructor
+         * Copy constructor.
          *
          * @param pt the other payload type
          */
@@ -301,7 +301,7 @@ public class PayloadType {
         }
 
         /**
-         * Copy constructor
+         * Copy constructor.
          *
          * @param pt the other payload type
          */
@@ -311,7 +311,7 @@ public class PayloadType {
         }
 
         /**
-         * Get the sampling clockRate for a payload type
+         * Get the sampling clockRate for a payload type.
          *
          * @return The sampling clockRate
          */

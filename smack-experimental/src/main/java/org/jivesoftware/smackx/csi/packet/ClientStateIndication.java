@@ -20,7 +20,7 @@ import org.jivesoftware.smack.packet.FullStreamElement;
 import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
- * 
+ * Client State Indication.
  * @see <a href="http://xmpp.org/extensions/xep-0352.html">XEP-0352: Client State Indication</a>
  *
  */

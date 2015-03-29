@@ -187,7 +187,7 @@ public class StringUtils {
     }
 
     /**
-     * Returns true if CharSequence is not null and is not empty, false otherwise
+     * Returns true if CharSequence is not null and is not empty, false otherwise.
      * Examples:
      *    isNotEmpty(null) - false
      *    isNotEmpty("") - false
@@ -212,7 +212,7 @@ public class StringUtils {
     }
 
     /**
-     * Returns true if the given CharSequence is empty
+     * Returns true if the given CharSequence is empty.
      * 
      * @param cs
      * @return true if the given CharSequence is empty

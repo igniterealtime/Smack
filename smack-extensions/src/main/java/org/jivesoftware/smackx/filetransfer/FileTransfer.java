@@ -288,7 +288,7 @@ public abstract class FileTransfer {
 		complete("Complete"),
 
 		/**
-		 * The file transfer was cancelled
+		 * The file transfer was cancelled.
 		 */
 		cancelled("Cancelled");
 
@@ -313,7 +313,7 @@ public abstract class FileTransfer {
 
     public enum Error {
 		/**
-		 * No error
+		 * No error.
 		 */
 		none("No error"),
 
@@ -339,7 +339,7 @@ public abstract class FileTransfer {
 		connection("An error occured over the socket connected to send the file."),
 
 		/**
-		 * An error occurred while sending or receiving the file
+		 * An error occurred while sending or receiving the file.
 		 */
 		stream("An error occured while sending or recieving the file.");
 

@@ -24,9 +24,6 @@ import java.util.List;
 
 import org.jivesoftware.smack.util.Objects;
 
-/**
- * 
- */
 public abstract class AbstractListFilter implements StanzaFilter {
 
     /**

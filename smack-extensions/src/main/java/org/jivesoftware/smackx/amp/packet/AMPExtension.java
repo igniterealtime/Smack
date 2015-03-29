@@ -59,6 +59,7 @@ public class AMPExtension implements ExtensionElement {
     }
 
     /**
+     * Get the JID that triggered this AMP callback.
      * @return jid that triggered this amp callback.
      */
     public String getFrom() {
@@ -66,6 +67,7 @@ public class AMPExtension implements ExtensionElement {
     }
 
     /**
+     * Get the receiver of this AMP receipt.
      * @return receiver of this amp receipt.
      */
     public String getTo() {
@@ -73,7 +75,7 @@ public class AMPExtension implements ExtensionElement {
     }
 
     /**
-     * Status of this amp notification
+     * Status of this amp notification.
      * @return Status for this amp
      */
     public Status getStatus() {
@@ -217,7 +219,7 @@ public class AMPExtension implements ExtensionElement {
     }
 
     /**
-     * Interface for defining XEP-0079 Conditions and their values
+     * Interface for defining XEP-0079 Conditions and their values.
      * @see AMPDeliverCondition
      * @see AMPExpireAtCondition
      * @see AMPMatchResourceCondition
@@ -230,7 +232,7 @@ public class AMPExtension implements ExtensionElement {
     }
 
     /**
-     * amp action attribute
+     * amp action attribute.
      * See http://xmpp.org/extensions/xep-0079.html#actions-def
      **/
     public static enum Action {
@@ -267,7 +269,7 @@ public class AMPExtension implements ExtensionElement {
     }
 
     /**
-     * amp notification status as defined by XEP-0079
+     * amp notification status as defined by XEP-0079.
      */
     public static enum Status {
         alert,

@@ -35,7 +35,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MetaDataProvider extends ExtensionElementProvider<MetaData> {
 
     /**
-     * PacketExtensionProvider implementation
+     * PacketExtensionProvider implementation.
      * @throws IOException 
      * @throws XmlPullParserException 
      */

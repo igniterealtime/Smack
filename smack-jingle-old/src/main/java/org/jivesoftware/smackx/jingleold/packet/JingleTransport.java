@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A jingle transport extension
+ * A jingle transport extension.
  *
  * @author Alvaro Saurin <alvaro.saurin@gmail.com>
  */
@@ -88,7 +88,7 @@ public class JingleTransport implements ExtensionElement {
     }
 
     /**
-     * Get an iterator for the candidates
+     * Get an iterator for the candidates.
      *
      * @return an iterator
      */
@@ -242,7 +242,7 @@ public class JingleTransport implements ExtensionElement {
         }
 
         /**
-         * Obtain a valid XML representation of a trancport candidate
+         * Obtain a valid XML representation of a trancport candidate.
          *
          * @return A string containing the XML dump of the transport candidate.
          */
@@ -263,7 +263,7 @@ public class JingleTransport implements ExtensionElement {
     // Subclasses
 
     /**
-     * RTP-ICE profile
+     * RTP-ICE profile.
      */
     public static class Ice extends JingleTransport {
         public static final String NAMESPACE = "urn:xmpp:tmp:jingle:transports:ice-udp";
@@ -274,7 +274,7 @@ public class JingleTransport implements ExtensionElement {
         }
 
         /**
-         * Add a transport candidate
+         * Add a transport candidate.
          *
          * @see org.jivesoftware.smackx.jingleold.packet.JingleTransport#addCandidate(org.jivesoftware.smackx.jingleold.packet.JingleTransport.JingleTransportCandidate)
          */
@@ -300,7 +300,7 @@ public class JingleTransport implements ExtensionElement {
 
         public static class Candidate extends JingleTransportCandidate {
             /**
-             * Default constructor
+             * Default constructor.
              */
             public Candidate() {
                 super();
@@ -356,7 +356,7 @@ public class JingleTransport implements ExtensionElement {
         }
 
         /**
-         * Add a transport candidate
+         * Add a transport candidate.
          *
          * @see org.jivesoftware.smackx.jingleold.packet.JingleTransport#addCandidate(org.jivesoftware.smackx.jingleold.packet.JingleTransport.JingleTransportCandidate)
          */
@@ -386,7 +386,7 @@ public class JingleTransport implements ExtensionElement {
          */
         public static class Candidate extends JingleTransportCandidate {
             /**
-             * Default constructor
+             * Default constructor.
              */
             public Candidate() {
                 super();

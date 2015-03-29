@@ -17,15 +17,12 @@
 
 package org.jivesoftware.smackx.pep.provider;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  *
@@ -55,9 +52,7 @@ public class PEPProvider extends ExtensionElementProvider<ExtensionElement> {
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.
-     * @throws IOException 
-     * @throws XmlPullParserException 
-     * @throws SmackException 
+     * @throws Exception 
      */
     @Override
     public ExtensionElement parse(XmlPullParser parser, int initialDepth)

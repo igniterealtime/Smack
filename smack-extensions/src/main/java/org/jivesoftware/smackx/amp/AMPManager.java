@@ -79,7 +79,7 @@ public class AMPManager {
     }
 
     /**
-     * Check if server supports specified action
+     * Check if server supports specified action.
      * @param connection active xmpp connection
      * @param action action to check
      * @return true if this action is supported.
@@ -94,7 +94,7 @@ public class AMPManager {
     }
 
     /**
-     * Check if server supports specified condition
+     * Check if server supports specified condition.
      * @param connection active xmpp connection
      * @param conditionName name of condition to check
      * @return true if this condition is supported.

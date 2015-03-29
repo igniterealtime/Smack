@@ -72,14 +72,14 @@ public class STUN extends SimpleIQ {
     }
 
     /**
-     * Creates a STUN IQ
+     * Creates a STUN IQ.
      */
     public STUN() {
         super(ELEMENT_NAME, NAMESPACE);
     }
 
     /**
-     * Get a list of STUN Servers recommended by the Server
+     * Get a list of STUN Servers recommended by the Server.
      *
      * @return the list of STUN servers
      */
@@ -88,7 +88,7 @@ public class STUN extends SimpleIQ {
     }
 
     /**
-     * Get Public Ip returned from the XMPP server
+     * Get Public Ip returned from the XMPP server.
      *
      * @return the public IP
      */
@@ -232,7 +232,7 @@ public class STUN extends SimpleIQ {
     }
 
     /**
-     * Provides easy abstract to store STUN Server Addresses and Ports
+     * Provides easy abstract to store STUN Server Addresses and Ports.
      */
     public static class StunServerAddress {
 
@@ -245,7 +245,7 @@ public class STUN extends SimpleIQ {
         }
 
         /**
-         * Get the Host Address
+         * Get the Host Address.
          *
          * @return the host address
          */
@@ -254,7 +254,7 @@ public class STUN extends SimpleIQ {
         }
 
         /**
-         * Get the Server Port
+         * Get the Server Port.
          *
          * @return the server port
          */

@@ -23,6 +23,7 @@ import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.packet.JingleError;
 
 /**
+ * Jingle. 
  *  @author Jeff Williams
  *  @see JingleSessionState
  */

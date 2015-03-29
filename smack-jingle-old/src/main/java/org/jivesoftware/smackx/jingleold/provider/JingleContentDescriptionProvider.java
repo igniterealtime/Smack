@@ -27,7 +27,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Parser for a Jingle description
+ * Parser for a Jingle description.
  *
  * @author Alvaro Saurin <alvaro.saurin@gmail.com>
  */
@@ -101,7 +101,7 @@ public abstract class JingleContentDescriptionProvider extends ExtensionElementP
     protected abstract JingleContentDescription getInstance();
 
     /**
-     * Jingle audio
+     * Jingle audio.
      */
     public static class Audio extends JingleContentDescriptionProvider {
 

@@ -190,7 +190,7 @@ public class PingManager extends Manager {
     }
 
     /**
-     * Query the specified entity to see if it supports the Ping protocol (XEP-0199)
+     * Query the specified entity to see if it supports the Ping protocol (XEP-0199).
      * 
      * @param jid The id of the entity the query is being sent to
      * @return true if it supports ping, false otherwise.
@@ -288,7 +288,7 @@ public class PingManager extends Manager {
     }
 
     /**
-     * Register a new PingFailedListener
+     * Register a new PingFailedListener.
      *
      * @param listener the listener to invoke
      */
@@ -297,7 +297,7 @@ public class PingManager extends Manager {
     }
 
     /**
-     * Unregister a PingFailedListener
+     * Unregister a PingFailedListener.
      *
      * @param listener the listener to remove
      */

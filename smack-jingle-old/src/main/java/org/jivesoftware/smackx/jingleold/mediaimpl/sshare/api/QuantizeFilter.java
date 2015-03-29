@@ -68,7 +68,7 @@ public class QuantizeFilter extends WholeImageFilter {
 	}
 
 	/**
-	 * Return the dithering setting
+	 * Return the dithering setting.
 	 * @return the current setting
 	 */
 	public boolean getDither() {
@@ -84,7 +84,7 @@ public class QuantizeFilter extends WholeImageFilter {
 	}
 
 	/**
-	 * Return the serpentine setting
+	 * Return the serpentine setting.
 	 * @return the current setting
 	 */
 	public boolean getSerpentine() {

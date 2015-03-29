@@ -39,7 +39,7 @@ public interface Packet extends TopLevelStreamElement {
     public String getStanzaId();
 
     /**
-     * 
+     * Get the stanza id.
      * @return the stanza id.
      * @deprecated use {@link #getStanzaId()} instead.
      */
@@ -55,7 +55,7 @@ public interface Packet extends TopLevelStreamElement {
     public void setStanzaId(String id);
 
     /**
-     * 
+     * Set the stanza ID.
      * @param packetID
      * @deprecated use {@link #setStanzaId(String)} instead.
      */

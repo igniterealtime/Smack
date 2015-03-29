@@ -515,7 +515,7 @@ public class MediaNegotiator extends JingleNegotiator {
     }
 
     /**
-     * Terminate the jmf negotiator
+     * Terminate the jmf negotiator.
      */
     public void close() {
         super.close();

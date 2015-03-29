@@ -94,7 +94,7 @@ public class Subscription extends NodeExtension
 	}
 
 	/**
-	 * Gets the JID the subscription is created for
+	 * Gets the JID the subscription is created for.
 	 * 
 	 * @return The JID
 	 */
@@ -104,7 +104,7 @@ public class Subscription extends NodeExtension
 	}
 
 	/**
-	 * Gets the subscription id
+	 * Gets the subscription id.
 	 * 
 	 * @return The subscription id
 	 */
@@ -124,7 +124,7 @@ public class Subscription extends NodeExtension
 	}
 
 	/**
-	 * This value is only relevant when the {@link #getState()} is {@link State#unconfigured}
+	 * This value is only relevant when the {@link #getState()} is {@link State#unconfigured}.
 	 * 
 	 * @return true if configuration is required, false otherwise
 	 */

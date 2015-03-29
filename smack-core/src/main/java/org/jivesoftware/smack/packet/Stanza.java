@@ -105,7 +105,7 @@ public abstract class Stanza implements TopLevelStreamElement {
     }
 
     /**
-     * 
+     * Get the Stanza ID.
      * @return the stanza id.
      * @deprecated use {@link #getStanzaId()} instead.
      */
@@ -128,7 +128,7 @@ public abstract class Stanza implements TopLevelStreamElement {
     }
 
     /**
-     * 
+     * Set the stanza ID.
      * @param packetID
      * @deprecated use {@link #setStanzaId(String)} instead.
      */

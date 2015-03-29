@@ -21,7 +21,7 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
- * 
+ * The stream open <b>tag</b>.
  */
 public class StreamOpen extends FullStreamElement {
 
@@ -31,32 +31,32 @@ public class StreamOpen extends FullStreamElement {
     public static final String SERVER_NAMESPACE = "jabber:server";
 
     /**
-     * RFC 6120 § 4.7.5
+     * RFC 6120 § 4.7.5.
      */
     public static final String VERSION = "1.0";
 
     /**
-     * RFC 6120 § 4.7.1
+     * RFC 6120 § 4.7.1.
      */
     private final String from;
 
     /**
-     * RFC 6120 § 4.7.2
+     * RFC 6120 § 4.7.2.
      */
     private final String to;
 
     /**
-     * RFC 6120 § 4.7.3
+     * RFC 6120 § 4.7.3.
      */
     private final String id;
 
     /**
-     * RFC 6120 § 4.7.4
+     * RFC 6120 § 4.7.4.
      */
     private final String lang;
 
     /**
-     * RFC 6120 § 4.8.2
+     * RFC 6120 § 4.8.2.
      */
     private final String contentNamespace;
 

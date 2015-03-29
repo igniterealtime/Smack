@@ -29,7 +29,7 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 public class TestMediaSession extends JingleMediaSession {
 
      /**
-     * Creates a TestMediaSession with defined payload type, remote and local candidates
+     * Creates a TestMediaSession with defined payload type, remote and local candidates.
      *
      * @param payloadType Payload of the jmf
      * @param remote      the remote information. The candidate that the jmf will be sent to.

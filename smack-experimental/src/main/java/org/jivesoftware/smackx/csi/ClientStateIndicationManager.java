@@ -21,7 +21,8 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.csi.packet.ClientStateIndication;
 
 /**
- * 
+ * Manager for Client State Indication.
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0352.html">XEP-0352: Client State Indication</a>
  *
  */

@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.jingleold.media;
 
 /**
- * Listener for new Incoming Media Streams
+ * Listener for new Incoming Media Streams.
  */
 public interface MediaReceivedListener {
 

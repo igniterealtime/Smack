@@ -35,7 +35,7 @@ public interface JingleMediaListener extends JingleListener {
     public void mediaEstablished(PayloadType pt) throws NotConnectedException, InterruptedException;
 
     /**
-     * Notification that a payload type must be cancelled
+     * Notification that a payload type must be cancelled.
      *
      * @param cand The payload type that must be closed
      */

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.muc;
 import java.util.Locale;
 
 /**
- * XEP-0045: Multi User Chat - 5.1 Roles
+ * XEP-0045: Multi User Chat - 5.1 Roles.
  *
  * @see <a href="http://xmpp.org/extensions/xep-0045.html#roles">XEP-0045: Multi-User-Chat - 5.1 Roles</a>
  */

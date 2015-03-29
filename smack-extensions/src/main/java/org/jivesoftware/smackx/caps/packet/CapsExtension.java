@@ -56,6 +56,8 @@ public class CapsExtension implements ExtensionElement {
     }
 
     /**
+     * {@inheritDoc}.
+     *
      * <pre>
      *  <c xmlns='http://jabber.org/protocol/caps'
      *     hash='sha-1'

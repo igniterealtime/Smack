@@ -26,7 +26,7 @@ import java.net.UnknownHostException;
 import javax.net.SocketFactory;
 
 /**
- * Socket factory for socks4 proxy 
+ * Socket factory for socks4 proxy.
  *  
  * @author Atul Aggarwal
  */

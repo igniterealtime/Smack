@@ -60,7 +60,7 @@ public interface RosterStore {
      */
     public boolean resetEntries(Collection<RosterPacket.Item> items, String version);
     /**
-     * Removes an entry from the store
+     * Removes an entry from the store.
      * @param bareJid The bare JID of the entry to be removed
      * @param version the new roster version
      * @return True if successful

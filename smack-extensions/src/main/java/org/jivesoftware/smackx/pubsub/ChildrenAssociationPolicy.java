@@ -18,13 +18,13 @@ package org.jivesoftware.smackx.pubsub;
 
 /**
  * This enumeration represents the children association policy for associating leaf nodes
- * with collection nodes as defined in the pubsub specification section <a href="http://xmpp.org/extensions/xep-0060.html#registrar-formtypes-config">16.4.3</a>
+ * with collection nodes as defined in the pubsub specification section <a href="http://xmpp.org/extensions/xep-0060.html#registrar-formtypes-config">16.4.3</a>.
  * 
  * @author Robin Collier
  */
 public enum ChildrenAssociationPolicy
 {
-	/** Anyone may associate leaf nodes with the collection	 */
+	/** Anyone may associate leaf nodes with the collection.	 */
 	all,
 
 	/** Only collection node owners may associate leaf nodes with the collection. */

@@ -49,7 +49,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Tests that verify the correct behavior of the {@link Roster} implementation
- * with regard to roster versioning
+ * with regard to roster versioning.
  *
  * @see Roster
  * @see <a href="http://xmpp.org/rfcs/rfc6121.html#roster">Managing the Roster</a>
@@ -172,7 +172,7 @@ public class RosterVersioningTest {
     }
 
     /**
-     * Test roster versioning with roster pushes
+     * Test roster versioning with roster pushes.
      */
     @Test(timeout = 5000)
     public void testRosterVersioningWithCachedRosterAndPushes() throws Throwable {

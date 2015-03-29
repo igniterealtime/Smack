@@ -122,7 +122,7 @@ public class SaslStreamElements {
         final private String data;
 
         /**
-         * Construct a new SASL success stream element with optional additional data for the SASL layer
+         * Construct a new SASL success stream element with optional additional data for the SASL layer.
          * (RFC6120 6.3.10)
          * 
          * @param data additional data for the SASL layer or <code>null</code>
@@ -151,7 +151,7 @@ public class SaslStreamElements {
     }
 
     /**
-     * A SASL failure stream element, also called "SASL Error"
+     * A SASL failure stream element, also called "SASL Error".
      * @see <a href="http://xmpp.org/rfcs/rfc6120.html#sasl-errors">RFC 6120 6.5 SASL Errors</a>
      */
     public static class SASLFailure extends AbstractError implements PlainStreamElement {
@@ -188,6 +188,7 @@ public class SaslStreamElements {
         }
 
         /**
+         * Get the SASL error as String.
          * @return the SASL error as String
          */
         public String getSASLErrorString() {

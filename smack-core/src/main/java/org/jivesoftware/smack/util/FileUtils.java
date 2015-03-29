@@ -96,7 +96,7 @@ public final class FileUtils {
     }
 
     /**
-     * Reads the contents of a File
+     * Reads the contents of a File.
      *
      * @param file
      * @return the content of file or null in case of an error

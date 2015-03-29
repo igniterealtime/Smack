@@ -260,7 +260,7 @@ public class ServiceDiscoveryManager extends Manager {
     }
 
     /**
-     * Returns all identities of this client as unmodifiable Collection
+     * Returns all identities of this client as unmodifiable Collection.
      * 
      * @return all identies as set
      */
@@ -432,7 +432,7 @@ public class ServiceDiscoveryManager extends Manager {
     }
 
     /**
-     * Returns the data form that is set as extended information for this Service Discovery instance (XEP-0128)
+     * Returns the data form that is set as extended information for this Service Discovery instance (XEP-0128).
      * 
      * @see <a href="http://xmpp.org/extensions/xep-0128.html">XEP-128: Service Discovery Extensions</a>
      * @return the data form

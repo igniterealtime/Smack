@@ -21,7 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
- * Image Decoder Interface use this interface if you want to change the default decoder
+ * Image Decoder Interface use this interface if you want to change the default decoder.
  *
  * @author Thiago Rocha Camargo
  */

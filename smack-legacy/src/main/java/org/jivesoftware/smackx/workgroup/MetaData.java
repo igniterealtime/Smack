@@ -46,6 +46,7 @@ public class MetaData implements ExtensionElement {
     }
 
     /**
+     * Get meta data.
      * @return the Map of metadata contained by this instance
      */
     public Map<String, List<String>> getMetaData() {

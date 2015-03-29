@@ -37,7 +37,7 @@ public class FormField implements NamedElement {
     public static final String ELEMENT = "field";
 
     /**
-     * The constant String "FORM_TYPE"
+     * The constant String "FORM_TYPE".
      */
     public static final String FORM_TYPE = "FORM_TYPE";
 
@@ -58,17 +58,17 @@ public class FormField implements NamedElement {
         bool,
 
         /**
-         * Fixed for putting in text to show sections, or just advertise your web site in the middle of the form
+         * Fixed for putting in text to show sections, or just advertise your web site in the middle of the form.
          */
         fixed,
 
         /**
-         * Is not given to the user at all, but returned with the questionnaire
+         * Is not given to the user at all, but returned with the questionnaire.
          */
         hidden,
 
         /**
-         * multiple entries for JIDs
+         * multiple entries for JIDs.
          */
         jid_multi,
 
@@ -244,6 +244,8 @@ public class FormField implements NamedElement {
     }
 
     /**
+     * Get validate element.
+     *
      * @return the validateElement
      */
     public ValidateElement getValidateElement() {
@@ -283,6 +285,7 @@ public class FormField implements NamedElement {
     }
 
     /**
+     * Set validate element.
      * @param validateElement the validateElement to set
      */
     public void setValidateElement(ValidateElement validateElement) {

@@ -36,6 +36,8 @@ import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.packet.JingleContent;
 
 /**
+ * Content negotiator.
+ *
  *  @author Jeff Williams
  */
 public class ContentNegotiator extends JingleNegotiator {
@@ -106,7 +108,7 @@ public class ContentNegotiator extends JingleNegotiator {
     }
 
     /**
-     * Get the JingleMediaSession of this Jingle Session
+     * Get the JingleMediaSession of this Jingle Session.
      * 
      * @return the JingleMediaSession
      */
@@ -119,6 +121,7 @@ public class ContentNegotiator extends JingleNegotiator {
     }
 
     /**
+     * Set jingle transport manager.
      * @param jingleTransportManager
      */
     public void setJingleTransportManager(JingleTransportManager jingleTransportManager) {
@@ -126,6 +129,7 @@ public class ContentNegotiator extends JingleNegotiator {
     }
 
     /**
+     * Get jingle transport manager.
      * @return the JingleTransportManager
      */
     public JingleTransportManager getTransportManager() {
@@ -156,7 +160,7 @@ public class ContentNegotiator extends JingleNegotiator {
     }
 
     /**
-     * Obtain the description negotiator for this session
+     * Obtain the description negotiator for this session.
      * 
      * @return the description negotiator
      */
@@ -216,7 +220,7 @@ public class ContentNegotiator extends JingleNegotiator {
     }
 
     /**
-     * Return true if the transport and content negotiators have finished
+     * Return true if the transport and content negotiators have finished.
      */
     public boolean isFullyEstablished() {
         boolean result = true;

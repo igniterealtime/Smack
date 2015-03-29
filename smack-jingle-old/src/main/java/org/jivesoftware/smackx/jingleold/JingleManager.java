@@ -204,7 +204,7 @@ public class JingleManager implements JingleSessionListener {
     private List<JingleMediaManager> jingleMediaManagers;
 
      /**
-     * Default constructor with a defined XMPPConnection, Transport Resolver and a Media Manager
+     * Default constructor with a defined XMPPConnection, Transport Resolver and a Media Manager.
      * If a fully implemented JingleMediaSession is entered, JingleManager manage Jingle signalling and jmf
      *
      * @param connection             XMPP XMPPConnection to be used
@@ -321,7 +321,7 @@ public class JingleManager implements JingleSessionListener {
     }
 
     /**
-     * Get the Media Managers of this Jingle Manager
+     * Get the Media Managers of this Jingle Manager.
      *
      * @return the list of JingleMediaManagers
      */
@@ -330,7 +330,7 @@ public class JingleManager implements JingleSessionListener {
     }
 
     /**
-     * Set the Media Managers of this Jingle Manager
+     * Set the Media Managers of this Jingle Manager.
      *
      * @param jingleMediaManagers JingleMediaManager to be used for open, close, start and stop jmf streamings
      */
@@ -473,7 +473,7 @@ public class JingleManager implements JingleSessionListener {
     }
 
     /**
-     * Disconnect all Jingle Sessions
+     * Disconnect all Jingle Sessions.
      */
     public void disconnectAllSessions() {
 

@@ -144,7 +144,7 @@ public class Jingle extends IQ {
     }
 
     /**
-     * The default constructor
+     * The default constructor.
      */
     public Jingle() {
         super(NODENAME, NAMESPACE);
@@ -196,21 +196,25 @@ public class Jingle extends IQ {
     }
 
     /**
-     * @return the audioInfo
+     * Jingle content info.
+     *
+     * @return the audioInfo.
      */
     public JingleContentInfo getContentInfo() {
         return contentInfo;
     }
 
     /**
-     * @param contentInfo the audioInfo to set
+     * Set content info.
+     *
+     * @param contentInfo the audioInfo to set.
      */
     public void setContentInfo(final JingleContentInfo contentInfo) {
         this.contentInfo = contentInfo;
     }
 
     /**
-     * Get an iterator for the contents
+     * Get an iterator for the contents.
      *
      * @return the contents
      */
@@ -221,7 +225,7 @@ public class Jingle extends IQ {
     }
 
     /**
-     * Get an iterator for the content
+     * Get an iterator for the content.
      *
      * @return the contents
      */
@@ -245,7 +249,7 @@ public class Jingle extends IQ {
     }
 
     /**
-     * Add a list of JingleContent elements
+     * Add a list of JingleContent elements.
      *
      * @param contentList the list of contents to add
      */
@@ -258,7 +262,7 @@ public class Jingle extends IQ {
     }
 
      /**
-     * Get the action specified in the packet
+     * Get the action specified in the packet.
      *
      * @return the action
      */
@@ -267,7 +271,7 @@ public class Jingle extends IQ {
     }
 
     /**
-     * Set the action in the packet
+     * Set the action in the packet.
      *
      * @param action the action to set
      */

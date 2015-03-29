@@ -29,7 +29,7 @@ import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RegexValid
 import org.junit.Test;
 
 /**
- *
+ * Data validation helper test.
  * @author Anno van Vliet
  *
  */

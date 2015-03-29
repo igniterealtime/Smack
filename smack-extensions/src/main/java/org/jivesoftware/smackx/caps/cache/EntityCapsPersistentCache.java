@@ -20,7 +20,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 public interface EntityCapsPersistentCache {
     /**
-     * Add an DiscoverInfo to the persistent Cache
+     * Add an DiscoverInfo to the persistent Cache.
      * 
      * @param nodeVer
      * @param info
@@ -28,12 +28,12 @@ public interface EntityCapsPersistentCache {
     void addDiscoverInfoByNodePersistent(String nodeVer, DiscoverInfo info);
 
     /**
-     * Lookup DiscoverInfo by a Node string
+     * Lookup DiscoverInfo by a Node string.
      */
     DiscoverInfo lookup(String nodeVer);
 
     /**
-     * Empty the Cache
+     * Empty the Cache.
      */
     void emptyCache();
 }

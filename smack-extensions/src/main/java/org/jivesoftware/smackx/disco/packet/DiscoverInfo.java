@@ -56,7 +56,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
     }
 
     /**
-     * Copy constructor
+     * Copy constructor.
      * 
      * @param d
      */
@@ -128,7 +128,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
     }
 
     /**
-     * Adds identities to the DiscoverInfo stanza
+     * Adds identities to the DiscoverInfo stanza.
      * 
      * @param identitiesToAdd
      */
@@ -354,7 +354,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         }
 
         /**
-         * Returns the identities natural language if one is set
+         * Returns the identities natural language if one is set.
          * 
          * @return the value of xml:lang of this Identity
          */
@@ -391,7 +391,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         /** 
          * Check equality for Identity  for category, type, lang and name
          * in that order as defined by
-         * <a href="http://xmpp.org/extensions/xep-0115.html#ver-proc">XEP-0015 5.4 Processing Method (Step 3.3)</a>
+         * <a href="http://xmpp.org/extensions/xep-0115.html#ver-proc">XEP-0015 5.4 Processing Method (Step 3.3)</a>.
          *  
          */
         public boolean equals(Object obj) {

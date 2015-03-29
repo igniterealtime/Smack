@@ -24,9 +24,6 @@ import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.junit.Test;
 
-/**
- * 
- */
 public class FilterToStringTest {
 
     @Test

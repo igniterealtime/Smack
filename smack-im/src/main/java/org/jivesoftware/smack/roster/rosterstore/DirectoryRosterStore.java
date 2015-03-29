@@ -75,7 +75,7 @@ public class DirectoryRosterStore implements RosterStore {
     }
 
     /**
-     * Creates a new roster store on disk
+     * Creates a new roster store on disk.
      *
      * @param baseDir
      *            The directory to create the store in. The directory should
@@ -94,7 +94,7 @@ public class DirectoryRosterStore implements RosterStore {
     }
 
     /**
-     * Opens a roster store
+     * Opens a roster store.
      * @param baseDir
      *            The directory containing the roster store.
      * @return A {@link DirectoryRosterStore} instance if successful,

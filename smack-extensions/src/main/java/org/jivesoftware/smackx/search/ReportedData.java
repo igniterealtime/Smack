@@ -99,7 +99,7 @@ public class ReportedData {
     }
 
     /**
-     * Adds a new <code>Column</code>
+     * Adds a new <code>Column</code>.
      * @param column the column to add.
      */
     public void addColumn(Column column){

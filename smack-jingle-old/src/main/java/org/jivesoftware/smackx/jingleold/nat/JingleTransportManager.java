@@ -48,7 +48,7 @@ public abstract class JingleTransportManager {
     }
 
     /**
-     * Get a new Transport Resolver to be used in a Jingle Session
+     * Get a new Transport Resolver to be used in a Jingle Session.
      *
      * @return the TransportResolver to be used
      * @throws InterruptedException 

@@ -23,10 +23,6 @@ import org.jivesoftware.smack.util.stringencoder.StringEncoder;
 
 import android.util.Base64;
 
-
-/**
- * 
- */
 public class AndroidBase64UrlSafeEncoder implements StringEncoder {
 
     private static AndroidBase64UrlSafeEncoder instance = new AndroidBase64UrlSafeEncoder();

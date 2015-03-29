@@ -301,7 +301,7 @@ public class DataForm implements ExtensionElement {
     }
 
     /**
-     * 
+     * Get data form from stanza.
      * @param packet
      * @return the DataForm or null
      */

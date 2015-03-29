@@ -268,7 +268,7 @@ final public class PubSubManager
 	}
 
 	/**
-	 * Delete the specified node
+	 * Delete the specified node.
 	 * 
 	 * @param nodeId
 	 * @throws XMPPErrorException 

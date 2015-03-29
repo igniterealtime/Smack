@@ -17,7 +17,7 @@
 package org.jivesoftware.smack.sasl.javax;
 
 /**
- * Implementation of the SASL CRAM-MD5 mechanism
+ * Implementation of the SASL CRAM-MD5 mechanism.
  *
  * @author Jay Kline
  */

@@ -242,7 +242,7 @@ public class LastActivityManager extends Manager {
     }
 
     /**
-     * Returns true if Last Activity (XEP-0012) is supported by a given JID
+     * Returns true if Last Activity (XEP-0012) is supported by a given JID.
      * 
      * @param jid a JID to be tested for Last Activity support
      * @return true if Last Activity is supported, otherwise false

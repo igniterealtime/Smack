@@ -24,7 +24,7 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.util.XmppStringUtils;
 
 /**
- * Implementation of the SASL-EXTERNAL authentication mechanism
+ * Implementation of the SASL-EXTERNAL authentication mechanism.
  * 
  * @author Daniele Ricci
  */

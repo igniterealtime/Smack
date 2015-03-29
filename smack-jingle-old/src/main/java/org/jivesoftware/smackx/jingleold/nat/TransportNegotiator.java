@@ -819,7 +819,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     // Subclasses
 
     /**
-     * Raw-UDP transport negotiator
+     * Raw-UDP transport negotiator.
      *
      * @author Alvaro Saurin <alvaro.saurin@gmail.com>
      */

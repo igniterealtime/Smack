@@ -86,7 +86,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Get the ID
+     * Get the ID.
      *
      * @return the id
      */
@@ -95,7 +95,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Set the ID
+     * Set the ID.
      *
      * @param id the id to set
      */
@@ -104,7 +104,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Get the protocol used for the transmission
+     * Get the protocol used for the transmission.
      *
      * @return the protocol used for transmission
      */
@@ -113,7 +113,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Set the protocol for the transmission
+     * Set the protocol for the transmission.
      *
      * @param proto the protocol to use
      */
@@ -122,7 +122,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Get the network interface used for this connection
+     * Get the network interface used for this connection.
      *
      * @return the interface number
      */
@@ -131,7 +131,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Set the interface for this connection
+     * Set the interface for this connection.
      *
      * @param network the interface number
      */
@@ -140,7 +140,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Get the username for this transportElement in ICE
+     * Get the username for this transportElement in ICE.
      *
      * @return a username string
      */
@@ -149,7 +149,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Get the channel
+     * Get the channel.
      *
      * @return the channel associated
      */
@@ -158,7 +158,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Set the channel for this transportElement
+     * Set the channel for this transportElement.
      *
      * @param channel the new channel
      */
@@ -167,7 +167,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Set the username for this transportElement in ICE
+     * Set the username for this transportElement in ICE.
      *
      * @param username the username used in ICE
      */
@@ -176,7 +176,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Get the preference number for this transportElement
+     * Get the preference number for this transportElement.
      *
      * @return the preference for this transportElement
      */
@@ -185,7 +185,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Set the preference order for this transportElement
+     * Set the preference order for this transportElement.
      *
      * @param preference a number identifying the preference (as defined in
      *                   ICE)
@@ -195,7 +195,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Get the Candidate Type
+     * Get the Candidate Type.
      *
      * @return candidate Type
      */
@@ -204,7 +204,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
     }
 
     /**
-     * Set the Candidate Type
+     * Set the Candidate Type.
      *
      * @param type candidate type.
      */

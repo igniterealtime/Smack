@@ -58,7 +58,7 @@ public class ScreenShareSession extends JingleMediaSession {
     private int height = 600;
 
     /**
-     * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates
+     * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates.
      *
      * @param payloadType Payload of the jmf
      * @param remote      the remote information. The candidate that the jmf will be sent to.

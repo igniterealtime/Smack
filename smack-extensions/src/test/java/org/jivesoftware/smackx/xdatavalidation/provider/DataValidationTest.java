@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- *
+ * Data validation test.
  * @author Anno van Vliet
  *
  */

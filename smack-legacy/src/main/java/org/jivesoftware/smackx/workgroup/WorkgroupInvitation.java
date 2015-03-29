@@ -40,7 +40,7 @@ public class WorkgroupInvitation {
     protected Map<String, List<String>> metaData;
 
     /**
-     * This calls the 5-argument constructor with a null MetaData argument value
+     * This calls the 5-argument constructor with a null MetaData argument value.
      *
      * @param jid the jid string with which the issuing AgentSession or Workgroup instance
      *                  was created
@@ -56,7 +56,8 @@ public class WorkgroupInvitation {
     }
 
     /**
-     * @param jid the jid string with which the issuing AgentSession or Workgroup instance
+     * WorkgroupInvitation.
+     * @param jid the jid string with which the issuing AgentSession or Workgroup instance.
      *                  was created
      * @param group the jid of the room to which the person is invited
      * @param workgroup the jid of the workgroup issuing the invitation
@@ -79,6 +80,7 @@ public class WorkgroupInvitation {
     }
 
     /**
+     * Get the unique id.
      * @return the jid string with which the issuing AgentSession or Workgroup instance
      *  was created.
      */
@@ -87,7 +89,8 @@ public class WorkgroupInvitation {
     }
 
     /**
-     * @return the session id associated with the pending chat; working backwards temporally,
+     * Get the session id.
+     * @return the session id associated with the pending chat; working backwards temporally
      *              this session id should match the session id to the corresponding offer request
      *              which resulted in this invitation.
      */
@@ -96,6 +99,7 @@ public class WorkgroupInvitation {
     }
 
     /**
+     * Get the group chat name.
      * @return the jid of the room to which the person is invited.
      */
     public Jid getGroupChatName () {
@@ -103,6 +107,7 @@ public class WorkgroupInvitation {
     }
 
     /**
+     * Get workgroup name.
      * @return the name of the workgroup from which the invitation was issued.
      */
     public Jid getWorkgroupName () {
@@ -110,6 +115,7 @@ public class WorkgroupInvitation {
     }
 
     /**
+     * Get the message body.
      * @return the contents of the body-block of the message that housed this invitation.
      */
     public String getMessageBody () {
@@ -117,6 +123,7 @@ public class WorkgroupInvitation {
     }
 
     /**
+     * Get invitation sender.
      * @return the user who issued the invitation, or null if it wasn't known.
      */
     public Jid getInvitationSender () {
@@ -124,6 +131,7 @@ public class WorkgroupInvitation {
     }
 
     /**
+     * Get meta data.
      * @return the meta data associated with the invitation, or null if this instance was
      *              constructed with none
      */

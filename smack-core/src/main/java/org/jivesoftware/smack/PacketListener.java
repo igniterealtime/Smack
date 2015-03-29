@@ -18,6 +18,7 @@
 package org.jivesoftware.smack;
 
 /**
+ * This interface is deprecated.
  * @deprecated use {@link StanzaListener} instead
  */
 @Deprecated

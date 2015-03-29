@@ -35,7 +35,7 @@ public class Bytestream extends IQ {
     public static final String ELEMENT = QUERY_ELEMENT;
 
     /**
-     * The XMPP namespace of the SOCKS5 Bytestream
+     * The XMPP namespace of the SOCKS5 Bytestream.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/bytestreams";
 
@@ -50,7 +50,7 @@ public class Bytestream extends IQ {
     private Activate toActivate;
 
     /**
-     * The default constructor
+     * The default constructor.
      */
     public Bytestream() {
         super(ELEMENT, NAMESPACE);

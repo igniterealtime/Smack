@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.muc;
 import java.util.Locale;
 
 /**
- * XEP-0045: Multi-User-Chat - 5.2 Affiliations
+ * XEP-0045: Multi-User-Chat - 5.2 Affiliations.
  *
  * @see <a href="http://xmpp.org/extensions/xep-0045.html#affil">XEP-0045: Multi-User-Chat - 5.2 Affiliations</a>
  */

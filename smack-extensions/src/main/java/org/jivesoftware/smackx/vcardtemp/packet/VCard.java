@@ -247,7 +247,7 @@ public class VCard extends IQ {
     }
 
     /**
-     * Get home address field
+     * Get home address field.
      *
      * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR, STREET,
      *                  LOCALITY, REGION, PCODE, CTRY
@@ -257,7 +257,7 @@ public class VCard extends IQ {
     }
 
     /**
-     * Set home address field
+     * Set home address field.
      *
      * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR, STREET,
      *                  LOCALITY, REGION, PCODE, CTRY
@@ -267,7 +267,7 @@ public class VCard extends IQ {
     }
 
     /**
-     * Get work address field
+     * Get work address field.
      *
      * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR, STREET,
      *                  LOCALITY, REGION, PCODE, CTRY
@@ -277,7 +277,7 @@ public class VCard extends IQ {
     }
 
     /**
-     * Set work address field
+     * Set work address field.
      *
      * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR, STREET,
      *                  LOCALITY, REGION, PCODE, CTRY
@@ -288,7 +288,7 @@ public class VCard extends IQ {
 
 
     /**
-     * Set home phone number
+     * Set home phone number.
      *
      * @param phoneType one of VOICE, FAX, PAGER, MSG, CELL, VIDEO, BBS, MODEM, ISDN, PCS, PREF
      * @param phoneNum  phone number
@@ -298,7 +298,7 @@ public class VCard extends IQ {
     }
 
     /**
-     * Get home phone number
+     * Get home phone number.
      *
      * @param phoneType one of VOICE, FAX, PAGER, MSG, CELL, VIDEO, BBS, MODEM, ISDN, PCS, PREF
      */
@@ -307,7 +307,7 @@ public class VCard extends IQ {
     }
 
     /**
-     * Set work phone number
+     * Set work phone number.
      *
      * @param phoneType one of VOICE, FAX, PAGER, MSG, CELL, VIDEO, BBS, MODEM, ISDN, PCS, PREF
      * @param phoneNum  phone number
@@ -317,7 +317,7 @@ public class VCard extends IQ {
     }
 
     /**
-     * Get work phone number
+     * Get work phone number.
      *
      * @param phoneType one of VOICE, FAX, PAGER, MSG, CELL, VIDEO, BBS, MODEM, ISDN, PCS, PREF
      */
@@ -343,7 +343,7 @@ public class VCard extends IQ {
     }
 
     /**
-     * Removes the avatar from the vCard
+     * Removes the avatar from the vCard.
      *
      *  This is done by setting the PHOTO value to the empty string as defined in XEP-0153
      */
@@ -436,7 +436,7 @@ public class VCard extends IQ {
     }
 
     /**
-     * Returns the MIME Type of the avatar or null if none is set
+     * Returns the MIME Type of the avatar or null if none is set.
      *
      * @return the MIME Type of the avatar or null
      */

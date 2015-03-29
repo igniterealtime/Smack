@@ -29,7 +29,7 @@ public class SubscriptionsExtension extends NodeExtension
 	protected List<Subscription> items = Collections.emptyList();
 
 	/**
-	 * Subscriptions to the root node
+	 * Subscriptions to the root node.
 	 * 
 	 * @param subList The list of subscriptions
 	 */

@@ -62,6 +62,7 @@ public class RevokedOffer {
     }
 
     /**
+     * Get user id.
      * @return the jid of the user for which this revocation was issued
      */
     public Jid getUserID() {
@@ -69,6 +70,7 @@ public class RevokedOffer {
     }
 
     /**
+     * Get workgroup name.
      * @return the fully qualified name of the workgroup
      */
     public Jid getWorkgroupName() {
@@ -76,6 +78,7 @@ public class RevokedOffer {
     }
 
     /**
+     * Get the sesion id.
      * @return the session id which will associate all packets for the pending chat
      */
     public String getSessionID() {
@@ -83,6 +86,7 @@ public class RevokedOffer {
     }
 
     /**
+     * Get reason.
      * @return the server issued message as to why this revocation was issued
      */
     public String getReason() {
@@ -90,6 +94,7 @@ public class RevokedOffer {
     }
 
     /**
+     * Get the timestamp.
      * @return the timestamp at which the revocation was issued
      */
     public Date getTimestamp() {

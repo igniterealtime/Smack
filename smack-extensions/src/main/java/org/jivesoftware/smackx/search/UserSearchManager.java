@@ -75,7 +75,7 @@ public class UserSearchManager {
 
     /**
      * Submits a search form to the server and returns the resulting information
-     * in the form of <code>ReportedData</code>
+     * in the form of <code>ReportedData</code>.
      *
      * @param searchForm    the <code>Form</code> to submit for searching.
      * @param searchService the name of the search service to use.

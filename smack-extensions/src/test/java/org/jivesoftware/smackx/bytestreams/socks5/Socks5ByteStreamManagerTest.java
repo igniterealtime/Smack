@@ -96,7 +96,7 @@ public class Socks5ByteStreamManagerTest {
 
     /**
      * Test that {@link Socks5BytestreamManager#getBytestreamManager(XMPPConnection)} returns one
-     * bytestream manager for every connection
+     * bytestream manager for every connection.
      */
     @Test
     public void shouldHaveOneManagerForEveryConnection() {

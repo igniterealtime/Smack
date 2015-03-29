@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A very Simple HTTP Server
+ * A very Simple HTTP Server.
  */
 public class HttpServer {
 

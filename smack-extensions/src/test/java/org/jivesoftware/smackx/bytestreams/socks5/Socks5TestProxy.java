@@ -69,7 +69,7 @@ public class Socks5TestProxy {
     }
 
     /**
-     * Returns the local SOCKS5 proxy server
+     * Returns the local SOCKS5 proxy server.
      * 
      * @param port of the test proxy
      * @return the local SOCKS5 proxy server
@@ -83,7 +83,7 @@ public class Socks5TestProxy {
     }
 
     /**
-     * Stops the test proxy
+     * Stops the test proxy.
      */
     public static synchronized void stopProxy() {
         if (socks5Server != null) {

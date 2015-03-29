@@ -32,6 +32,7 @@ public class ValidationConsistencyException extends IllegalArgumentException {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Validation consistency exception constructor.
      * @param message
      */
     public ValidationConsistencyException(String message) {

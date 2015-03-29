@@ -28,7 +28,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Provider for a Jingle transport element
+ * Provider for a Jingle transport element.
  *
  * @author Alvaro Saurin <alvaro.saurin@gmail.com>
  */
@@ -83,7 +83,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
     protected abstract JingleTransportCandidate parseCandidate(final XmlPullParser parser);
 
     /**
-     * RTP-ICE profile
+     * RTP-ICE profile.
      */
     public static class Ice extends JingleTransportProvider {
 
@@ -192,7 +192,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
     }
 
     /**
-     * Raw UDP profile
+     * Raw UDP profile.
      */
     public static class RawUdp extends JingleTransportProvider {
 

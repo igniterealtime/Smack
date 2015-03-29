@@ -248,7 +248,7 @@ public class Socks5ClientTest {
     }
 
     /**
-     * The SOCKS5 client should successfully connect to the SOCKS5 server
+     * The SOCKS5 client should successfully connect to the SOCKS5 server.
      * 
      * @throws Exception should not happen
      */

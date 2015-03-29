@@ -89,7 +89,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Creates a RTPBridge Instance with defined Session ID
+     * Creates a RTPBridge Instance with defined Session ID.
      *
      * @param sid
      */
@@ -99,7 +99,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Creates a RTPBridge Instance with defined Session ID
+     * Creates a RTPBridge Instance with defined Session ID.
      *
      * @param action
      */
@@ -109,7 +109,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Creates a RTPBridge Instance with defined Session ID
+     * Creates a RTPBridge Instance with defined Session ID.
      *
      * @param sid
      * @param bridgeAction
@@ -121,14 +121,14 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Creates a RTPBridge Stanza(/Packet) without Session ID
+     * Creates a RTPBridge Stanza(/Packet) without Session ID.
      */
     public RTPBridge() {
         super(ELEMENT_NAME, NAMESPACE);
     }
 
     /**
-     * Get the attributes string
+     * Get the attributes string.
      */
     public String getAttributes() {
         StringBuilder str = new StringBuilder();
@@ -155,7 +155,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Get the Session ID of the Stanza(/Packet) (usually same as Jingle Session ID)
+     * Get the Session ID of the Stanza(/Packet) (usually same as Jingle Session ID).
      *
      * @return the session ID
      */
@@ -164,7 +164,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Set the Session ID of the Stanza(/Packet) (usually same as Jingle Session ID)
+     * Set the Session ID of the Stanza(/Packet) (usually same as Jingle Session ID).
      *
      * @param sid
      */
@@ -173,7 +173,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Get the Host A IP Address
+     * Get the Host A IP Address.
      *
      * @return the Host A IP Address
      */
@@ -182,7 +182,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Set the Host A IP Address
+     * Set the Host A IP Address.
      *
      * @param hostA
      */
@@ -191,7 +191,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Get the Host B IP Address
+     * Get the Host B IP Address.
      *
      * @return the Host B IP Address
      */
@@ -200,7 +200,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Set the Host B IP Address
+     * Set the Host B IP Address.
      *
      * @param hostB
      */
@@ -209,7 +209,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Get Side A receive port
+     * Get Side A receive port.
      *
      * @return the side A receive prot
      */
@@ -218,7 +218,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Set Side A receive port
+     * Set Side A receive port.
      *
      * @param portA
      */
@@ -227,7 +227,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Get Side B receive port
+     * Get Side B receive port.
      *
      * @return the side B receive port
      */
@@ -236,7 +236,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Set Side B receive port
+     * Set Side B receive port.
      *
      * @param portB
      */
@@ -245,7 +245,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Get the RTP Bridge IP
+     * Get the RTP Bridge IP.
      *
      * @return the RTP Bridge IP
      */
@@ -254,7 +254,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Set the RTP Bridge IP
+     * Set the RTP Bridge IP.
      *
      * @param ip
      */
@@ -263,7 +263,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Get the RTP Agent Pass
+     * Get the RTP Agent Pass.
      *
      * @return the RTP Agent Pass
      */
@@ -272,7 +272,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Set the RTP Agent Pass
+     * Set the RTP Agent Pass.
      *
      * @param pass
      */
@@ -281,7 +281,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Get the name of the Candidate
+     * Get the name of the Candidate.
      *
      * @return the name of the Candidate
      */
@@ -290,7 +290,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Set the name of the Candidate
+     * Set the name of the Candidate.
      *
      * @param name
      */

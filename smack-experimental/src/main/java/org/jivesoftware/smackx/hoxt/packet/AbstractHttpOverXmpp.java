@@ -246,7 +246,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         private final String text;
 
         /**
-         * Creates this element.builder.toString();
+         * Creates this element.builder.toString().
          *
          * @param text value of text
          */

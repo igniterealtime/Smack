@@ -23,14 +23,14 @@ import org.jivesoftware.smackx.jingleold.packet.JingleContentInfo;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * Jingle Audio jmf-info provider
+ * Jingle Audio jmf-info provider.
  *
  * @author Alvaro Saurin
  */
 public class JingleContentInfoProvider {
 
     /**
-     * JingleDescription.Audio info provider
+     * JingleDescription.Audio info provider.
      */
     public static class Audio extends ExtensionElementProvider<ExtensionElement> {
 

@@ -25,7 +25,7 @@ import java.net.UnknownHostException;
 import javax.net.SocketFactory;
 
 /**
- * Socket factory for Socks5 proxy
+ * Socket factory for Socks5 proxy.
  * 
  * @author Atul Aggarwal
  */

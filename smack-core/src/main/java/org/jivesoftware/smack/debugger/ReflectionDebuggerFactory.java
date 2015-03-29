@@ -44,7 +44,7 @@ public class ReflectionDebuggerFactory implements SmackDebuggerFactory {
             };
 
     /**
-     * Sets custom debugger class to be created by this factory
+     * Sets custom debugger class to be created by this factory.
      * @param debuggerClass class to be used by this factory
      */
     public static void setDebuggerClass(Class<? extends SmackDebugger> debuggerClass) {
@@ -56,7 +56,7 @@ public class ReflectionDebuggerFactory implements SmackDebuggerFactory {
     }
 
     /**
-     * Returns debugger class used by this factory
+     * Returns debugger class used by this factory.
      * @return debugger class that will be used for instantiation by this factory
      */
     @SuppressWarnings("unchecked")

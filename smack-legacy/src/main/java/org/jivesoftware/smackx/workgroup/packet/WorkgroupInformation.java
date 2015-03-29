@@ -71,7 +71,7 @@ public class WorkgroupInformation implements ExtensionElement {
     public static class Provider extends ExtensionElementProvider<WorkgroupInformation> {
 
         /**
-         * PacketExtensionProvider implementation
+         * PacketExtensionProvider implementation.
          * @throws IOException 
          * @throws XmlPullParserException 
          */

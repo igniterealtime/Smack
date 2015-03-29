@@ -21,7 +21,7 @@ import java.util.Map;
 import javax.security.sasl.Sasl;
 
 /**
- * Implementation of the SASL GSSAPI mechanism
+ * Implementation of the SASL GSSAPI mechanism.
  *
  * @author Jay Kline
  */

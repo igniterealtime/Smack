@@ -90,7 +90,7 @@ public class DeliveryReceiptManager extends Manager {
     public enum AutoReceiptMode {
 
         /**
-         * Never send deliver receipts
+         * Never send deliver receipts.
          */
         disabled,
 
@@ -183,7 +183,7 @@ public class DeliveryReceiptManager extends Manager {
     }
 
     /**
-     * Returns true if Delivery Receipts are supported by a given JID
+     * Returns true if Delivery Receipts are supported by a given JID.
      * 
      * @param jid
      * @return true if supported

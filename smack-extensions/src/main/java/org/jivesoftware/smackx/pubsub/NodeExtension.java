@@ -56,7 +56,7 @@ public class NodeExtension implements ExtensionElement
 	}
 
 	/**
-	 * Gets the node id
+	 * Gets the node id.
 	 * 
 	 * @return The node id
 	 */

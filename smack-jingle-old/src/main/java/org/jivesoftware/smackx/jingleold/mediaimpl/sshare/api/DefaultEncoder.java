@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Implements a default PNG Encoder
+ * Implements a default PNG Encoder.
  */
 public class DefaultEncoder implements ImageEncoder{
     private static final Logger LOGGER = Logger.getLogger(DefaultEncoder.class.getName());

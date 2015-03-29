@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.json.packet;
 import org.jivesoftware.smack.packet.Stanza;
 
 /**
- * XMPP JSON Containers as defined in XEP-0335
+ * XMPP JSON Containers as defined in XEP-0335.
  *
  * @see <a href="http://xmpp.org/extensions/xep-0335.html">XEP-0335: JSON Containers</a>
  */

@@ -25,7 +25,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 /**
- * Implementation of SmackDebuggerFactory which always creates instance of SLF4JSmackDebugger
+ * Implementation of SmackDebuggerFactory which always creates instance of SLF4JSmackDebugger.
  */
 public class SLF4JDebuggerFactory implements SmackDebuggerFactory {
     @Override

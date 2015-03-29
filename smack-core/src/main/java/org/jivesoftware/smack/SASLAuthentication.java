@@ -65,7 +65,7 @@ public class SASLAuthentication {
     private static final Set<String> BLACKLISTED_MECHANISMS = new HashSet<String>();
 
     /**
-     * Registers a new SASL mechanism
+     * Registers a new SASL mechanism.
      *
      * @param mechanism a SASLMechanism subclass.
      */

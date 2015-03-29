@@ -55,14 +55,14 @@ public class SLF4JSmackDebugger implements SmackDebugger  {
     private ObservableReader reader;
 
     /**
-     * Makes Smack use this Debugger
+     * Makes Smack use this Debugger.
      */
     public static void enable() {
         SmackConfiguration.setDebuggerFactory(new SLF4JDebuggerFactory());
     }
 
     /**
-     * Create new SLF4J Smack Debugger instance
+     * Create new SLF4J Smack Debugger instance.
      * @param connection Smack connection to debug
      * @param writer connection data writer to observe
      * @param reader connection data reader to observe

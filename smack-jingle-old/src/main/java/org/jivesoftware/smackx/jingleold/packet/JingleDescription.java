@@ -172,7 +172,7 @@ public abstract class JingleDescription implements ExtensionElement {
     }
 
     /**
-     * Jingle audio description
+     * Jingle audio description.
      */
     public static class Audio extends JingleDescription {
 
@@ -183,7 +183,7 @@ public abstract class JingleDescription implements ExtensionElement {
         }
 
         /**
-         * Utility constructor, with a PayloadType
+         * Utility constructor, with a PayloadType.
          */
         public Audio(final PayloadType pt) {
             super();

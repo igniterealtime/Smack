@@ -19,7 +19,7 @@ package org.jivesoftware.smack.util.stringencoder.android;
 import android.util.Base64;
 
 /**
- * A Base 64 encoding implementation based on android.util.Base64
+ * A Base 64 encoding implementation based on android.util.Base64.
  * @author Florian Schmaus
  */
 public class AndroidBase64Encoder implements org.jivesoftware.smack.util.stringencoder.Base64.Encoder {

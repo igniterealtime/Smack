@@ -98,6 +98,7 @@ public abstract class ValidateElement implements ExtensionElement {
     protected abstract void appendXML(XmlStringBuilder buf);
 
     /**
+     * Set list range.
      * @param listRange the listRange to set
      */
     public void setListRange(ListRange listRange) {
@@ -105,6 +106,7 @@ public abstract class ValidateElement implements ExtensionElement {
     }
 
     /**
+     * Get list range.
      * @return the listRange
      */
     public ListRange getListRange() {
@@ -112,7 +114,7 @@ public abstract class ValidateElement implements ExtensionElement {
     }
 
     /**
-     * Check if this element is consistent according to the business rules in XEP=0122
+     * Check if this element is consistent according to the business rules in XEP=0122.
      * 
      * @param formField
      */
@@ -129,6 +131,7 @@ public abstract class ValidateElement implements ExtensionElement {
         public static final String METHOD = "basic";
 
         /**
+         * Basic validate element constructor.
          * @param dataType
          * @see #getDatatype()
          */
@@ -170,6 +173,7 @@ public abstract class ValidateElement implements ExtensionElement {
         public static final String METHOD = "open";
 
         /**
+         * Open validate element constructor.
          * @param dataType
          * @see #getDatatype()
          */
@@ -210,6 +214,7 @@ public abstract class ValidateElement implements ExtensionElement {
         private final String max;
 
         /**
+         * Range validate element constructor.
          * @param dataType
          * @param min the minimum allowable value. This attribute is OPTIONAL. The value depends on the datatype in use.
          * @param max the maximum allowable value. This attribute is OPTIONAL. The value depends on the datatype in use.
@@ -273,6 +278,7 @@ public abstract class ValidateElement implements ExtensionElement {
         private final String regex;
 
         /**
+         * Regex validate element.
          * @param dataType
          * @param regex
          * @see #getDatatype()

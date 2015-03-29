@@ -323,7 +323,7 @@ public class Roster extends Manager {
     }
 
     /**
-     * Set the roster store, may cause a roster reload
+     * Set the roster store, may cause a roster reload.
      *
      * @param rosterStore
      * @return true if the roster reload was initiated, false otherwise.

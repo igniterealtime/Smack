@@ -23,7 +23,7 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
 
 /**
  * Represents a chunk of data of an In-Band Bytestream within an IQ stanza or a
- * message stanza
+ * message stanza.
  * 
  * @author Henning Staib
  */
@@ -35,7 +35,7 @@ public class DataPacketExtension implements ExtensionElement {
     public final static String ELEMENT = "data";
 
     /**
-     * The XMPP namespace of the In-Band Bytestream
+     * The XMPP namespace of the In-Band Bytestream.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/ibb";
 

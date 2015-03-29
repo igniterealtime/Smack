@@ -712,7 +712,7 @@ public class Workgroup {
     }
 
     /**
-     * Asks the workgroup for it's Properties
+     * Asks the workgroup for it's Properties.
      *
      * @return the WorkgroupProperties for the specified workgroup.
      * @throws XMPPErrorException
@@ -731,7 +731,7 @@ public class Workgroup {
     }
 
     /**
-     * Asks the workgroup for it's Properties
+     * Asks the workgroup for it's Properties.
      *
      * @param jid the jid of the user who's information you would like the workgroup to retreive.
      * @return the WorkgroupProperties for the specified workgroup.

@@ -80,7 +80,7 @@ abstract public class Node
 	}
 
 	/**
-	 * Get the NodeId
+	 * Get the NodeId.
 	 * 
 	 * @return the node id
 	 */
@@ -107,7 +107,7 @@ abstract public class Node
 	}
 
 	/**
-	 * Update the configuration with the contents of the new {@link Form}
+	 * Update the configuration with the contents of the new {@link Form}.
 	 * 
 	 * @param submitForm
 	 * @throws XMPPErrorException 

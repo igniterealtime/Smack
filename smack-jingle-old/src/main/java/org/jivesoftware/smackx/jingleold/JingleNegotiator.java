@@ -64,7 +64,7 @@ public abstract class JingleNegotiator {
     }
 
     /**
-     * Default constructor with a Connection
+     * Default constructor with a Connection.
      *
      * @param session the jingle session
      */
@@ -129,7 +129,7 @@ public abstract class JingleNegotiator {
     // Acks management
 
     /**
-     * Add expected ID
+     * Add expected ID.
      *
      * @param id
      */
@@ -138,7 +138,7 @@ public abstract class JingleNegotiator {
     }
 
     /**
-     * Check if the passed ID is the expected ID
+     * Check if the passed ID is the expected ID.
      *
      * @param id
      * @return true if is expected id
@@ -152,7 +152,7 @@ public abstract class JingleNegotiator {
     }
 
     /**
-     * Remove and expected ID
+     * Remove and expected ID.
      *
      * @param id
      */

@@ -36,7 +36,7 @@ import org.junit.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
- * 
+ * Configure form test.
  * @author Robin Collier
  *
  */

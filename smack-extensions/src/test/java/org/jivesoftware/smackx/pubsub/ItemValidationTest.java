@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * 
+ * Item validation test.
  * @author Robin Collier
  *
  */

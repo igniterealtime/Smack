@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.packet.DefaultExtensionElement;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
@@ -593,9 +592,7 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of an IQ packet.
      * @return an IQ object.
-     * @throws XmlPullParserException 
-     * @throws IOException 
-     * @throws SmackException 
+     * @throws Exception
      */
     public static IQ parseIQ(XmlPullParser parser) throws Exception {
         ParserUtils.assertAtStartTag(parser);
@@ -887,6 +884,7 @@ public class PacketParserUtils {
     }
 
     /**
+     * Parse an extension element.
      * @deprecated use {@link #parseExtensionElement(String, String, XmlPullParser)} instead.
      */
     @Deprecated

@@ -183,7 +183,7 @@ public class ImageTransmitter implements Runnable {
     }
 
     /**
-     * Set Transmit Enabled/Disabled
+     * Set Transmit Enabled/Disabled.
      *
      * @param transmit boolean Enabled/Disabled
      */
@@ -192,7 +192,7 @@ public class ImageTransmitter implements Runnable {
     }
 
     /**
-     * Get the encoder used to encode Images Tiles
+     * Get the encoder used to encode Images Tiles.
      *
      * @return encoder
      */
@@ -201,7 +201,7 @@ public class ImageTransmitter implements Runnable {
     }
 
     /**
-     * Set the encoder used to encode Image Tiles
+     * Set the encoder used to encode Image Tiles.
      *
      * @param encoder encoder
      */
@@ -210,7 +210,7 @@ public class ImageTransmitter implements Runnable {
     }
 
     /**
-     * Stops Transmitter
+     * Stops Transmitter.
      */
     public void stop() {
         this.transmit = false;

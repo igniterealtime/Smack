@@ -243,7 +243,7 @@ public class StreamInitiation extends IQ {
         }
 
         /**
-         * Sets the MD5 sum of the file's contents
+         * Sets the MD5 sum of the file's contents.
          *
          * @param hash The MD5 sum of the file's contents.
          */
@@ -252,7 +252,7 @@ public class StreamInitiation extends IQ {
         }
 
         /**
-         * Returns the MD5 sum of the file's contents
+         * Returns the MD5 sum of the file's contents.
          *
          * @return Returns the MD5 sum of the file's contents
          */

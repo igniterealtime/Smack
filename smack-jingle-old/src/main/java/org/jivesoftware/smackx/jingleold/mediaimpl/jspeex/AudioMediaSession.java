@@ -57,7 +57,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
 	private MediaSession mediaSession;
 
     /**
-     * Create a Session using Speex Codec
+     * Create a Session using Speex Codec.
      *
      * @param localhost    localHost
      * @param localPort    localPort
@@ -96,7 +96,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
 
 
     /**
-     * Creates a org.jivesoftware.jingleaudio.jspeex.AudioMediaSession with defined payload type, remote and local candidates
+     * Creates a org.jivesoftware.jingleaudio.jspeex.AudioMediaSession with defined payload type, remote and local candidates.
      *
      * @param payloadType Payload of the jmf
      * @param remote      the remote information. The candidate that the jmf will be sent to.
@@ -110,7 +110,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
     }
 
     /**
-     * Initialize the Audio Channel to make it able to send and receive audio
+     * Initialize the Audio Channel to make it able to send and receive audio.
      */
     public void initialize() {
 

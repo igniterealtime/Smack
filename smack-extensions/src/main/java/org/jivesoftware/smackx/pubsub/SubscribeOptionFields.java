@@ -27,7 +27,7 @@ import java.util.Calendar;
 public enum SubscribeOptionFields
 {
 	/**
-	 * Whether an entity wants to receive or disable notifications
+	 * Whether an entity wants to receive or disable notifications.
 	 * 
 	 * <p><b>Value: boolean</b></p>
 	 */
@@ -42,14 +42,14 @@ public enum SubscribeOptionFields
 	digest,
 
 	/**
-	 * The minimum number of seconds between sending any two notifications digests
+	 * The minimum number of seconds between sending any two notifications digests.
 	 * 
 	 * <p><b>Value: int</b></p>
 	 */
 	digest_frequency,
 
 	/**
-	 * 
+	 * Expire.
 	 * <p><b>Value: {@link Calendar}</b></p>
 	 */
 	expire,
@@ -70,14 +70,15 @@ public enum SubscribeOptionFields
 	show_values,
 
 	/**
-	 * 
+	 * Subscription type.
 	 * 
 	 * <p><b>Value: </b></p>
 	 */
 	subscription_type,
 
 	/**
-	 * 
+	 * Subscription depth.
+	 *
 	 * <p><b>Value: </b></p>
 	 */
 	subscription_depth;

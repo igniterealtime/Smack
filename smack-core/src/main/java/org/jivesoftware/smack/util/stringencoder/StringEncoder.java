@@ -17,11 +17,13 @@
 package org.jivesoftware.smack.util.stringencoder;
 
 /**
+ * An interface for String encoder.
+ *
  * @author Florian Schmaus
  */
 public interface StringEncoder {
     /**
-     * Encodes an string to another representation
+     * Encodes an string to another representation.
      * 
      * @param string
      * @return the encoded String
@@ -29,7 +31,7 @@ public interface StringEncoder {
     String encode(String string);
 
     /**
-     * Decodes an string back to it's initial representation
+     * Decodes an string back to it's initial representation.
      * 
      * @param string
      * @return the decoded String

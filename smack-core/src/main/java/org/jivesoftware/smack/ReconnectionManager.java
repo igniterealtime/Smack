@@ -121,7 +121,7 @@ public class ReconnectionManager {
     }
 
     /**
-     * Set the default Reconnection Policy to use
+     * Set the default Reconnection Policy to use.
      * 
      * @param reconnectionPolicy
      */
@@ -131,7 +131,7 @@ public class ReconnectionManager {
 
     /**
      * Set the fixed delay in seconds between the reconnection attempts Also set the connection
-     * policy to {@link ReconnectionPolicy#FIXED_DELAY}
+     * policy to {@link ReconnectionPolicy#FIXED_DELAY}.
      * 
      * @param fixedDelay Delay expressed in seconds
      */
@@ -141,7 +141,7 @@ public class ReconnectionManager {
     }
 
     /**
-     * Set the Reconnection Policy to use
+     * Set the Reconnection Policy to use.
      * 
      * @param reconnectionPolicy
      */
@@ -150,7 +150,7 @@ public class ReconnectionManager {
     }
 
     /**
-     * Flag that indicates if a reconnection should be attempted when abruptly disconnected
+     * Flag that indicates if a reconnection should be attempted when abruptly disconnected.
      */
     private boolean automaticReconnectEnabled = false;
 
@@ -357,17 +357,17 @@ public class ReconnectionManager {
 
     /**
      * Reconnection Policy, where {@link ReconnectionPolicy#RANDOM_INCREASING_DELAY} is the default policy used by smack and {@link ReconnectionPolicy#FIXED_DELAY} implies
-     * a fixed amount of time between reconnection attempts
+     * a fixed amount of time between reconnection attempts.
      */
     public enum ReconnectionPolicy {
         /**
          * Default policy classically used by smack, having an increasing delay related to the
-         * overall number of attempts
+         * overall number of attempts.
          */
         RANDOM_INCREASING_DELAY,
 
         /**
-         * Policy using fixed amount of time between reconnection attempts
+         * Policy using fixed amount of time between reconnection attempts.
          */
         FIXED_DELAY,
         ;

@@ -31,7 +31,7 @@ public class AMPExpireAtCondition implements AMPExtension.Condition {
     public static final String NAME = "expire-at";
 
     /**
-     * Check if server supports expire-at condition
+     * Check if server supports expire-at condition.
      * @param connection Smack connection instance
      * @return true if expire-at condition is supported.
      * @throws XMPPErrorException 

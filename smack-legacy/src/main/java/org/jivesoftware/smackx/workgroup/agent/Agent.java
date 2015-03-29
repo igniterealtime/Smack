@@ -53,7 +53,7 @@ public class Agent {
     }
 
     /**
-     * Return the agents JID
+     * Return the agents JID.
      *
      * @return - the agents JID.
      */

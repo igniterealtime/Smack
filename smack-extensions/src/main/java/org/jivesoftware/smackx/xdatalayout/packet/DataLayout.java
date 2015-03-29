@@ -40,6 +40,7 @@ public class DataLayout implements ExtensionElement {
     private final String label;
 
     /**
+     * Data layout constructor.
      * @param label
      */
     public DataLayout(String label) {
@@ -116,6 +117,7 @@ public class DataLayout implements ExtensionElement {
         private final String var;
 
         /**
+         * Field ref constructor.
          * @param var reference to a field
          */
         public Fieldref(String var) {
@@ -152,6 +154,7 @@ public class DataLayout implements ExtensionElement {
         private final String label;
 
         /**
+         * Section constructor.
          * @param label
          */
         public Section(String label) {
@@ -226,6 +229,7 @@ public class DataLayout implements ExtensionElement {
         private final String text;
 
         /**
+         * Text constructor.
          * @param text reference to a field
          */
         public Text(String text) {

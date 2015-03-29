@@ -818,6 +818,7 @@ public class InBandBytestreamSession implements BytestreamSession {
     }
 
     /**
+     * Process IQ stanza.
      * @param data
      * @throws NotConnectedException
      * @throws InterruptedException 

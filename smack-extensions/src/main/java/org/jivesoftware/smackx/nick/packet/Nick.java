@@ -42,7 +42,7 @@ public class Nick implements ExtensionElement {
 	}
 
 	/**
-	 * The value of this nickname
+	 * The value of this nickname.
 	 * 
 	 * @return the nickname
 	 */
@@ -51,7 +51,7 @@ public class Nick implements ExtensionElement {
 	}
 
 	/**
-	 * Sets the value of this nickname
+	 * Sets the value of this nickname.
 	 * 
 	 * @param name
 	 *            the name to set

@@ -77,6 +77,7 @@ public class ListenerEventDispatcher implements Runnable {
     }
 
     /**
+     * Has finished.
      * @return whether this instance has finished dispatching its messages
      */
     public boolean hasFinished() {

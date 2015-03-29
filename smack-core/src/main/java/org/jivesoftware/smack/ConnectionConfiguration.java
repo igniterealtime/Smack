@@ -497,7 +497,7 @@ public abstract class ConnectionConfiguration {
 
         /**
          * Sets the PKCS11 library file location, needed when the
-         * Keystore type is PKCS11
+         * Keystore type is PKCS11.
          *
          * @param pkcs11Library the path to the PKCS11 library file.
          * @return a reference to this builder.

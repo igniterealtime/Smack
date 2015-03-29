@@ -80,7 +80,7 @@ public class InBandBytestreamManagerTest extends InitExtensions {
     /**
      * Test that
      * {@link InBandBytestreamManager#getByteStreamManager(XMPPConnection)} returns
-     * one bytestream manager for every connection
+     * one bytestream manager for every connection.
      */
     @Test
     public void shouldHaveOneManagerForEveryConnection() {

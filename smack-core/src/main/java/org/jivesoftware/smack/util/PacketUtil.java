@@ -23,7 +23,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 public class PacketUtil {
 
     /**
-     * Get a extension element from a collection
+     * Get a extension element from a collection.
      *
      * @param collection
      * @param element
@@ -39,7 +39,7 @@ public class PacketUtil {
     }
 
     /**
-     * Get a extension element from a collection
+     * Get a extension element from a collection.
      *
      * @param collection
      * @param element

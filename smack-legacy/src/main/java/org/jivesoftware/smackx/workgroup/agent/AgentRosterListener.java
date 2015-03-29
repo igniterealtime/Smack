@@ -20,7 +20,7 @@ package org.jivesoftware.smackx.workgroup.agent;
 import org.jivesoftware.smack.packet.Presence;
 
 /**
- *
+ * Agent roster listener.
  * @author Matt Tucker
  */
 public interface AgentRosterListener {

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.jingleold.nat;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 
 /**
- * Transport resolver Interface 
+ * Transport resolver Interface .
  */
 public abstract interface TransportResolverListener {
     /**
@@ -32,7 +32,7 @@ public abstract interface TransportResolverListener {
         public void init();
 
         /**
-         * A transport candidate has been added
+         * A transport candidate has been added.
          *
          * @param cand The transport candidate.
          * @throws NotConnectedException 

@@ -71,7 +71,7 @@ public class MultiMediaManager extends JingleMediaManager {
     }
 
     /**
-     * Returns a new JingleMediaSession
+     * Returns a new JingleMediaSession.
      *
      * @param payloadType payloadType
      * @param remote      remote Candidate

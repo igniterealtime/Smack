@@ -438,7 +438,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 	public interface NegotiationProgress {
 
 		/**
-		 * Called when the status changes
+		 * Called when the status changes.
          *
          * @param oldStatus the previous status of the file transfer.
          * @param newStatus the new status of the file transfer.

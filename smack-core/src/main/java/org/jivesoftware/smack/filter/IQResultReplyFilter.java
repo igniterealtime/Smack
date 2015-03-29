@@ -20,9 +20,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 
-/**
- *
- */
 public class IQResultReplyFilter extends IQReplyFilter {
 
 

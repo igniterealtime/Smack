@@ -30,7 +30,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.IQ.Type;
 
 /**
- * 
+ * A threaded dummy connection.
  * @author Robin Collier
  *
  */

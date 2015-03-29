@@ -27,7 +27,7 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.JidTestUtil;
 
 /**
- * 
+ * From matches filter test.
  * @author Robin Collier
  *
  */

@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.jingleold.nat;
 
 /**
- * Listener for ECHO Test Results
+ * Listener for ECHO Test Results.
  *
  * @author Thiago Camargo
  */

@@ -23,7 +23,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 
 /**
- * Delayed Delivery (XEP-203)
+ * Delayed Delivery (XEP-203).
  *
  * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0203.html">Delayed Delivery (XEP-203)</a>
@@ -75,7 +75,7 @@ public class DelayInformationManager {
     }
 
     /**
-     * Get the Delayed Delivery timestamp or <code>null</code>
+     * Get the Delayed Delivery timestamp or <code>null</code>.
      *
      * @param packet
      * @return the Delayed Delivery timestamp or <code>null</code>

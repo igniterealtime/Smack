@@ -17,7 +17,7 @@
 package org.jivesoftware.smack.sasl.javax;
 
 /**
- * Implementation of the SASL PLAIN mechanism
+ * Implementation of the SASL PLAIN mechanism.
  *
  * @author Jay Kline
  */

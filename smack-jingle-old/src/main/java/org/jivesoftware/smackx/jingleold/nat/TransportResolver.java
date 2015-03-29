@@ -88,7 +88,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Initialize the Resolver
+     * Initialize the Resolver.
      * @throws InterruptedException 
      */
     public abstract void initialize() throws XMPPException, SmackException, InterruptedException;
@@ -141,7 +141,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Chack if the Transport Resolver is initialized
+     * Chack if the Transport Resolver is initialized.
      *
      * @return true if initialized
      */
@@ -196,7 +196,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Get the list of listeners
+     * Get the list of listeners.
      *
      * @return the list of listeners
      */
@@ -282,7 +282,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Get an iterator for the list of candidates
+     * Get an iterator for the list of candidates.
      *
      * @return an iterator
      */
@@ -329,7 +329,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Get the list of candidates
+     * Get the list of candidates.
      *
      * @return the list of transport candidates
      */
@@ -344,7 +344,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Get the n-th candidate
+     * Get the n-th candidate.
      *
      * @return a transport candidate
      */

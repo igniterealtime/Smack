@@ -47,7 +47,6 @@ import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
 import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.SmackException.ResourceBindingNotOfferedException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredException;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
@@ -342,7 +341,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws XMPPException if an error occurs on the XMPP protocol level.
      * @throws SmackException if an error occurs somewhere else besides XMPP protocol level.
      * @throws IOException 
-     * @throws ConnectionException with detailed information about the failed connection.
      * @return a reference to this object, to chain <code>connect()</code> with <code>login()</code>.
      * @throws InterruptedException 
      */
@@ -1554,7 +1552,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     /**
      * Install a parsing exception callback, which will be invoked once an exception is encountered while parsing a
-     * stanza
+     * stanza.
      * 
      * @param callback the callback to install
      */

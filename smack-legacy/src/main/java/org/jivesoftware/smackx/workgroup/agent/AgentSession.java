@@ -170,7 +170,7 @@ public class AgentSession {
     }
 
     /**
-     * Returns the agent roster for the workgroup, which contains
+     * Returns the agent roster for the workgroup, which contains.
      *
      * @return the AgentRoster
      * @throws NotConnectedException 
@@ -554,6 +554,7 @@ public class AgentSession {
     }
 
     /**
+     * Get workgroup JID.
      * @return the fully-qualified name of the workgroup for which this session exists
      */
     public Jid getWorkgroupJID() {
@@ -570,6 +571,8 @@ public class AgentSession {
     }
 
     /**
+     * Get queue.
+     *
      * @param queueName the name of the queue
      * @return an instance of WorkgroupQueue for the argument queue name, or null if none exists
      */

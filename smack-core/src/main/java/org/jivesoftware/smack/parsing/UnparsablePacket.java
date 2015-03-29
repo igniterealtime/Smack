@@ -34,7 +34,7 @@ public class UnparsablePacket {
     }
 
     /**
-     * 
+     * Get the exception that caused the parser to fail.
      * @return the exception that caused the parser to fail
      */
     public Exception getParsingException() {
@@ -42,7 +42,7 @@ public class UnparsablePacket {
     }
 
     /**
-     * Retrieve the raw stanza data
+     * Retrieve the raw stanza data.
      * 
      * @return the raw stanza data
      */

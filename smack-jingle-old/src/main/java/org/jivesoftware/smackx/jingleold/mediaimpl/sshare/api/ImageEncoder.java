@@ -20,7 +20,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 
 /**
- * Image Encoder Interface use this interface if you want to change the default encoder
+ * Image Encoder Interface use this interface if you want to change the default encoder.
   *
  * @author Thiago Rocha Camargo
  */

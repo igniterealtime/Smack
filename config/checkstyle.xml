@@ -75,5 +75,20 @@
 			<property name="message" value="Usage of println"/>
 			<property name="ignoreComments" value="true"/>
 		</module>
+		<module name="JavadocMethod">
+			<!-- TODO stricten those checks -->
+			<property name="scope" value="public"/>
+			<property name="allowUndeclaredRTE" value="true"/>
+			<property name="allowMissingParamTags" value="true"/>
+			<property name="allowMissingThrowsTags" value="true"/>
+			<property name="allowMissingReturnTag" value="true"/>
+			<property name="allowMissingJavadoc" value="true"/>
+			<property name="suppressLoadErrors" value="true"/>
+		</module>
+		<module name="JavadocStyle">
+			<property name="scope" value="public"/>
+			<property name="checkEmptyJavadoc" value="true"/>
+			<property name="checkHtml" value="false"/>
+		</module>
 	</module>
 </module>

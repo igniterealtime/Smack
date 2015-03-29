@@ -18,9 +18,6 @@ package org.jivesoftware.smack.provider;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 
-/**
- *
- */
 public final class StreamFeatureProviderInfo extends AbstractProviderInfo {
 
     /**

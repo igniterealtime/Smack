@@ -282,7 +282,7 @@ public class ConfigureForm extends Form
 	}
 
 	/**
-	 * Determines who should get replies to items
+	 * Determines who should get replies to items.
 	 * 
 	 * @return Who should get the reply
 	 */
@@ -297,7 +297,7 @@ public class ConfigureForm extends Form
 	}
 
 	/**
-	 * Sets who should get the replies to items
+	 * Sets who should get the replies to items.
 	 * 
 	 * @param reply Defines who should get the reply
 	 */
@@ -341,7 +341,7 @@ public class ConfigureForm extends Form
 	}
 
 	/**
-	 * Sets the maximum payload size in bytes
+	 * Sets the maximum payload size in bytes.
 	 * 
 	 * @param max The maximum payload size
 	 */
@@ -352,7 +352,7 @@ public class ConfigureForm extends Form
 	}
 
 	/**
-	 * Gets the node type
+	 * Gets the node type.
 	 * 
 	 * @return The node type
 	 */
@@ -367,7 +367,7 @@ public class ConfigureForm extends Form
 	}
 
 	/**
-	 * Sets the node type
+	 * Sets the node type.
 	 * 
 	 * @param type The node type
 	 */

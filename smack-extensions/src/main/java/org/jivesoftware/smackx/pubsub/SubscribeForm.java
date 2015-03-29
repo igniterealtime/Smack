@@ -98,7 +98,7 @@ public class SubscribeForm extends Form
 	}
 
 	/**
-	 * Gets the minimum number of milliseconds between sending notification digests
+	 * Gets the minimum number of milliseconds between sending notification digests.
 	 * 
 	 * @return The frequency in milliseconds
 	 */
@@ -108,7 +108,7 @@ public class SubscribeForm extends Form
 	}
 
 	/**
-	 * Sets the minimum number of milliseconds between sending notification digests
+	 * Sets the minimum number of milliseconds between sending notification digests.
 	 * 
 	 * @param frequency The frequency in milliseconds
 	 */

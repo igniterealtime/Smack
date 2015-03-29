@@ -40,10 +40,10 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 
 	public enum ItemsElementType
 	{
-		/** An items element, which has an optional <b>max_items</b> attribute when requesting items */
+		/** An items element, which has an optional <b>max_items</b> attribute when requesting items. */
 		items(PubSubElementType.ITEMS, "max_items"),
 
-		/** A retract element, which has an optional <b>notify</b> attribute when publishing deletions */
+		/** A retract element, which has an optional <b>notify</b> attribute when publishing deletions. */
 		retract(PubSubElementType.RETRACT, "notify");
 
 		private PubSubElementType elem;
@@ -115,7 +115,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	}
 
 	/**
-	 * Get the type of element
+	 * Get the type of element.
 	 * 
 	 * @return The element type
 	 */

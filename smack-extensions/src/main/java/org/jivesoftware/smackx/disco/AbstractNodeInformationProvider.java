@@ -23,9 +23,6 @@ import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import java.util.List;
 
 
-/**
- * 
- */
 public abstract class AbstractNodeInformationProvider implements NodeInformationProvider {
 
     public List<DiscoverItems.Item> getNodeItems() {

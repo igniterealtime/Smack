@@ -16,9 +16,6 @@
  */
 package org.jivesoftware.smack;
 
-/**
- * 
- */
 public abstract class AbstractConnectionClosedListener extends AbstractConnectionListener {
 
     @Override

@@ -127,7 +127,7 @@ public class EntityCapsManager extends Manager {
     }
 
     /**
-     * Set the default entity node that will be used for new EntityCapsManagers
+     * Set the default entity node that will be used for new EntityCapsManagers.
      *
      * @param entityNode
      */
@@ -217,7 +217,7 @@ public class EntityCapsManager extends Manager {
     }
 
     /**
-     * Set the persistent cache implementation
+     * Set the persistent cache implementation.
      * 
      * @param cache
      */
@@ -226,7 +226,7 @@ public class EntityCapsManager extends Manager {
     }
 
     /**
-     * Sets the maximum cache sizes
+     * Sets the maximum cache sizes.
      *
      * @param maxJidToNodeVerSize
      * @param maxCapsCacheSize
@@ -433,7 +433,7 @@ public class EntityCapsManager extends Manager {
     }
 
     /**
-     * Returns true if Entity Caps are supported by a given JID
+     * Returns true if Entity Caps are supported by a given JID.
      * 
      * @param jid
      * @return true if the entity supports Entity Capabilities.
@@ -447,7 +447,7 @@ public class EntityCapsManager extends Manager {
     }
 
     /**
-     * Returns true if Entity Caps are supported by the local service/server
+     * Returns true if Entity Caps are supported by the local service/server.
      * 
      * @return true if the user's server supports Entity Capabilities.
      * @throws XMPPErrorException 
@@ -524,7 +524,7 @@ public class EntityCapsManager extends Manager {
 
     /**
      * Verify DisoverInfo and Caps Node as defined in XEP-0115 5.4 Processing
-     * Method
+     * Method.
      * 
      * @see <a href="http://xmpp.org/extensions/xep-0115.html#ver-proc">XEP-0115
      *      5.4 Processing Method</a>

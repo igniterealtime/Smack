@@ -149,7 +149,7 @@ public class StreamError extends AbstractError implements PlainStreamElement {
     }
 
     /**
-     * The defined stream error conditions, see RFC 6120 § 4.9.3
+     * The defined stream error conditions, see RFC 6120 § 4.9.3.
      *
      */
     public enum Condition {

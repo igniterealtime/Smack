@@ -304,7 +304,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         error,
 
         /**
-         * A presence probe as defined in section 4.3 of RFC 6121
+         * A presence probe as defined in section 4.3 of RFC 6121.
          */
         probe,
         ;

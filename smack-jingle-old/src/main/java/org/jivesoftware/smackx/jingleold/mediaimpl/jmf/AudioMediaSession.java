@@ -45,7 +45,7 @@ public class AudioMediaSession extends JingleMediaSession {
 	private AudioChannel audioChannel;
 
     /**
-     * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates
+     * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates.
      *
      * @param payloadType Payload of the jmf
      * @param remote      the remote information. The candidate that the jmf will be sent to.
@@ -59,7 +59,7 @@ public class AudioMediaSession extends JingleMediaSession {
     }
 
     /**
-     * Initialize the Audio Channel to make it able to send and receive audio
+     * Initialize the Audio Channel to make it able to send and receive audio.
      */
     public void initialize() {
 

@@ -51,14 +51,14 @@ public abstract class JingleMediaManager {
     }
 
     /**
-     * Return all supported Payloads for this Manager
+     * Return all supported Payloads for this Manager.
      *
      * @return The Payload List
      */
     public abstract List<PayloadType> getPayloads();
 
     /**
-     * Returns the Preferred PayloadType of the Media Manager
+     * Returns the Preferred PayloadType of the Media Manager.
      *
      * @return The PayloadType
      */
@@ -67,7 +67,7 @@ public abstract class JingleMediaManager {
     }
 
     /**
-     * Create a Media Session Implementation
+     * Create a Media Session Implementation.
      *
      * @param payloadType
      * @param remote

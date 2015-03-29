@@ -49,7 +49,7 @@ public class JmfMediaManager extends JingleMediaManager {
     private String mediaLocator = null;
 
     /**
-     * Creates a Media Manager instance
+     * Creates a Media Manager instance.
      */
     public JmfMediaManager(JingleTransportManager transportManager) {
         super(transportManager);
@@ -57,7 +57,7 @@ public class JmfMediaManager extends JingleMediaManager {
     }
 
     /**
-     * Creates a Media Manager instance
+     * Creates a Media Manager instance.
      *
      * @param mediaLocator Media Locator
      */
@@ -68,7 +68,7 @@ public class JmfMediaManager extends JingleMediaManager {
     }
 
     /**
-     * Returns a new jingleMediaSession
+     * Returns a new jingleMediaSession.
      *
      * @param payloadType payloadType
      * @param remote      remote Candidate
@@ -89,7 +89,7 @@ public class JmfMediaManager extends JingleMediaManager {
     }
 
     /**
-     * Return all supported Payloads for this Manager
+     * Return all supported Payloads for this Manager.
      *
      * @return The Payload List
      */
@@ -98,7 +98,7 @@ public class JmfMediaManager extends JingleMediaManager {
     }
 
     /**
-     * Return the media locator or null if not defined
+     * Return the media locator or null if not defined.
      *
      * @return media locator
      */
@@ -107,7 +107,7 @@ public class JmfMediaManager extends JingleMediaManager {
     }
 
     /**
-     * Set the media locator
+     * Set the media locator.
      *
      * @param mediaLocator media locator or null to use default
      */

@@ -204,7 +204,7 @@ public class MessageEventManager extends Manager {
     }
 
     /**
-     * Sends the notification that the message was delivered to the sender of the original message
+     * Sends the notification that the message was delivered to the sender of the original message.
      * 
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
@@ -224,7 +224,7 @@ public class MessageEventManager extends Manager {
     }
 
     /**
-     * Sends the notification that the message was displayed to the sender of the original message
+     * Sends the notification that the message was displayed to the sender of the original message.
      * 
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
@@ -244,7 +244,7 @@ public class MessageEventManager extends Manager {
     }
 
     /**
-     * Sends the notification that the receiver of the message is composing a reply
+     * Sends the notification that the receiver of the message is composing a reply.
      * 
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.

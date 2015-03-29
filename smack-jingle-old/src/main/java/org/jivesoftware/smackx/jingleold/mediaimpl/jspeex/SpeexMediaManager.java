@@ -53,7 +53,7 @@ public class SpeexMediaManager extends JingleMediaManager {
     }
 
     /**
-     * Returns a new jingleMediaSession
+     * Returns a new jingleMediaSession.
      *
      * @param payloadType payloadType
      * @param remote      remote Candidate
@@ -72,7 +72,7 @@ public class SpeexMediaManager extends JingleMediaManager {
     }
 
     /**
-     * Return all supported Payloads for this Manager
+     * Return all supported Payloads for this Manager.
      *
      * @return The Payload List
      */

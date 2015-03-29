@@ -27,9 +27,6 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
-/**
- *
- */
 public class PresenceTest {
     @Test
     public void setPresenceTypeTest() throws IOException, SAXException {

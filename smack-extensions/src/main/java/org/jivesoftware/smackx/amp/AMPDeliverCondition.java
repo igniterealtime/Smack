@@ -27,7 +27,7 @@ public class AMPDeliverCondition implements AMPExtension.Condition {
     public static final String NAME = "deliver";
 
     /**
-     * Check if server supports deliver condition
+     * Check if server supports deliver condition.
      * @param connection Smack connection instance
      * @return true if deliver condition is supported.
      * @throws XMPPErrorException 

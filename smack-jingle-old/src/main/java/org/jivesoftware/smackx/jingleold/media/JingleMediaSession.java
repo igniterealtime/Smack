@@ -67,7 +67,7 @@ public abstract class JingleMediaSession {
     }
 
     /**
-     * Returns the PayloadType of the Media Session
+     * Returns the PayloadType of the Media Session.
      *
      * @return the PayloadType
      */
@@ -76,7 +76,7 @@ public abstract class JingleMediaSession {
     }
 
     /**
-     * Returns the Media Session local Candidate
+     * Returns the Media Session local Candidate.
      *
      * @return the TransportCandidate
      */
@@ -85,7 +85,7 @@ public abstract class JingleMediaSession {
     }
 
     /**
-     * Returns the Media Session remote Candidate
+     * Returns the Media Session remote Candidate.
      *
      * @return the TransportCandidate
      */
@@ -94,7 +94,7 @@ public abstract class JingleMediaSession {
     }
 
     /**
-     * Return the media locator or null if not defined
+     * Return the media locator or null if not defined.
      *
      * @return media locator
      */
@@ -103,7 +103,7 @@ public abstract class JingleMediaSession {
     }
 
     /**
-     * Set the media locator
+     * Set the media locator.
      *
      * @param mediaLocator media locator or null to use default
      */
@@ -112,7 +112,7 @@ public abstract class JingleMediaSession {
     }
 
     /**
-     * Adds a Media Received Listener
+     * Adds a Media Received Listener.
      *
      * @param mediaReceivedListener
      */
@@ -121,7 +121,7 @@ public abstract class JingleMediaSession {
     }
 
     /**
-     * Removes a Media Received Listener
+     * Removes a Media Received Listener.
      *
      * @param mediaReceivedListener
      */
@@ -130,7 +130,7 @@ public abstract class JingleMediaSession {
     }
 
     /**
-     * Removes all Media Received Listeners
+     * Removes all Media Received Listeners.
      */
     public void removeAllMediaReceivedListener() {
         mediaReceivedListeners.clear();
@@ -142,12 +142,12 @@ public abstract class JingleMediaSession {
     public abstract void initialize();
 
     /**
-     * Starts a RTP / UDP / TCP Transmission to the remote Candidate
+     * Starts a RTP / UDP / TCP Transmission to the remote Candidate.
      */
     public abstract void startTrasmit();
 
     /**
-     * Starts a RTP / UDP / TCP Receiver from the remote Candidate to local Candidate
+     * Starts a RTP / UDP / TCP Receiver from the remote Candidate to local Candidate.
      */
     public abstract void startReceive();
 
@@ -160,12 +160,12 @@ public abstract class JingleMediaSession {
     public abstract void setTrasmit(boolean active);
 
     /**
-     * Stops a RTP / UDP / TCP Transmission to the remote Candidate
+     * Stops a RTP / UDP / TCP Transmission to the remote Candidate.
      */
     public abstract void stopTrasmit();
 
     /**
-     * Stops a RTP / UDP / TCP Receiver from the remote Candidate to local Candidate
+     * Stops a RTP / UDP / TCP Receiver from the remote Candidate to local Candidate.
      */
     public abstract void stopReceive();
 
@@ -179,7 +179,7 @@ public abstract class JingleMediaSession {
     }
 
     /**
-     * Gets associated JingleSession
+     * Gets associated JingleSession.
      * @return associated JingleSession
      */
     public JingleSession getJingleSession() {

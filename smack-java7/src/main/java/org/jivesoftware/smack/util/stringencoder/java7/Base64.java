@@ -49,7 +49,7 @@ public class Base64
     public final static int GZIP = 2;
 
 
-    /** Don't break lines when encoding (violates strict Base64 specification) */
+    /** Don't break lines when encoding (violates strict Base64 specification). */
     public final static int DONT_BREAK_LINES = 8;
 
 	/**

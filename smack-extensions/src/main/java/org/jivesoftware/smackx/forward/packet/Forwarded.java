@@ -93,7 +93,7 @@ public class Forwarded implements ExtensionElement {
     }
 
     /**
-     * 
+     * Get the forwarded extension.
      * @param packet
      * @return the Forwarded extension or null
      */

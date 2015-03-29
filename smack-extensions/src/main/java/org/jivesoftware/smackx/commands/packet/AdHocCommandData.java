@@ -124,7 +124,7 @@ public class AdHocCommandData extends IQ {
     }
 
     /**
-     * Returns the human name of the command
+     * Returns the human name of the command.
      *
      * @return the name of the command.
      */
@@ -137,7 +137,7 @@ public class AdHocCommandData extends IQ {
     }
 
     /**
-     * Returns the identifier of the command
+     * Returns the identifier of the command.
      *
      * @return the node.
      */

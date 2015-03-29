@@ -109,7 +109,7 @@ public class GroupChatInvitation implements ExtensionElement {
     }
 
     /**
-     * 
+     * Deprecated.
      * @param packet
      * @return the GroupChatInvitation or null
      * @deprecated use {@link #from(Stanza)} instead
@@ -120,7 +120,7 @@ public class GroupChatInvitation implements ExtensionElement {
     }
 
     /**
-     * 
+     * Get the group chat invitation from the given stanza.
      * @param packet
      * @return the GroupChatInvitation or null
      */

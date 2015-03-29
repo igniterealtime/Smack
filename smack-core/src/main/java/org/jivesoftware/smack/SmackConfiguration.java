@@ -175,6 +175,8 @@ public final class SmackConfiguration {
     }
 
     /**
+     * Get the debugger factory.
+     *
      * @return a debugger factory or <code>null</code>
      */
     public static SmackDebuggerFactory getDebuggerFactory() {
@@ -230,7 +232,7 @@ public final class SmackConfiguration {
     }
 
     /**
-     * Set the default parsing exception callback for all newly created connections
+     * Set the default parsing exception callback for all newly created connections.
      *
      * @param callback
      * @see ParsingExceptionCallback
@@ -240,7 +242,7 @@ public final class SmackConfiguration {
     }
 
     /**
-     * Returns the default parsing exception callback
+     * Returns the default parsing exception callback.
      * 
      * @return the default parsing exception callback
      * @see ParsingExceptionCallback

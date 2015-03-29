@@ -43,7 +43,7 @@ import org.junit.Test;
 public class Socks5ProxyTest {
 
     /**
-     * The SOCKS5 proxy should be a singleton used by all XMPP connections
+     * The SOCKS5 proxy should be a singleton used by all XMPP connections.
      */
     @Test
     public void shouldBeASingleton() {

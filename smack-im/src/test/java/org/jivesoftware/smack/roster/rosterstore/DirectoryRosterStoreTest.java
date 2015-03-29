@@ -79,7 +79,7 @@ public class DirectoryRosterStoreTest {
     }
 
     /**
-     * Tests adding and removing entries
+     * Tests adding and removing entries.
      */
     @Test
     public void testStoreAddRemove() throws IOException {

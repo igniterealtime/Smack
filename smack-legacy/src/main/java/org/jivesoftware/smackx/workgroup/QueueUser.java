@@ -35,6 +35,8 @@ public class QueueUser {
     private Date joinDate;
 
     /**
+     * Queue user.
+     *
      * @param uid the user jid of the customer in the queue
      * @param position the position customer sits in the queue
      * @param time the estimate of how much longer the customer will be in the queue in seconds
@@ -50,6 +52,7 @@ public class QueueUser {
     }
 
     /**
+     * Get user id.
      * @return the user jid of the customer in the queue
      */
     public String getUserID () {
@@ -57,6 +60,7 @@ public class QueueUser {
     }
 
     /**
+     * Get queue position.
      * @return the position in the queue at which the customer sits, or -1 if the update which
      *          this instance embodies is only a time update instead
      */
@@ -65,6 +69,7 @@ public class QueueUser {
     }
 
     /**
+     * Get the estimated remaining time. 
      * @return the estimated time remaining of the customer in the queue in seconds, or -1 if
      *          if the update which this instance embodies is only a position update instead
      */
@@ -73,6 +78,7 @@ public class QueueUser {
     }
 
     /**
+     * Get queue join timestamp.
      * @return the timestamp of when this customer entered the queue, or null if the server did not
      *          provide this information
      */

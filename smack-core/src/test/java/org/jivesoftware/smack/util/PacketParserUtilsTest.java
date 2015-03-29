@@ -47,9 +47,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import com.jamesmurty.utils.XMLBuilder;
 
-/**
- *
- */
 public class PacketParserUtilsTest {
 
     private static Properties outputProperties = new Properties();

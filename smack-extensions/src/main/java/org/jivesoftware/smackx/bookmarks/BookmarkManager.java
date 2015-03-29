@@ -23,11 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.iqprivate.PrivateDataManager;
 
@@ -56,12 +54,9 @@ public class BookmarkManager {
      * @param connection the connection for which the manager is desired.
      * @return Returns the <i>BookmarkManager</i> for a connection, if it doesn't
      * exist it is created.
-     * @throws XMPPException 
-     * @throws SmackException thrown has not been authenticated.
      * @throws IllegalArgumentException when the connection is null.
      */
     public synchronized static BookmarkManager getBookmarkManager(XMPPConnection connection)
-                    throws XMPPException, SmackException
     {
         BookmarkManager manager = bookmarkManagerMap.get(connection);
         if (manager == null) {

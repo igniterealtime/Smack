@@ -311,12 +311,12 @@ public class RosterPacket extends IQ {
      */
     public static enum ItemStatus {
         /**
-         * Request to subscribe
+         * Request to subscribe.
          */
         subscribe,
 
         /**
-         * Request to unsubscribe
+         * Request to unsubscribe.
          */
         unsubscribe;
 

@@ -92,7 +92,7 @@ public class STUNResolver extends TransportResolver {
     }
 
     /**
-     * Set the STUN server name and port
+     * Set the STUN server name and port.
      *
      * @param ip   the STUN server name
      * @param port the STUN server port

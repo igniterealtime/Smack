@@ -21,7 +21,7 @@ import org.jivesoftware.smack.SmackException;
 import javax.security.auth.callback.CallbackHandler;
 
 /**
- * Implementation of the SASL ANONYMOUS mechanism
+ * Implementation of the SASL ANONYMOUS mechanism.
  *
  * @author Jay Kline
  */

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.carbons.packet;
 import org.jivesoftware.smack.packet.SimpleIQ;
 
 /**
- * Carbon IQs
+ * Carbon IQs.
  */
 public class Carbon {
     public static final String NAMESPACE = "urn:xmpp:carbons:2";

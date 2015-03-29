@@ -23,6 +23,8 @@ public class SMUtils {
     private static long MASK_32_BIT = BigInteger.ONE.shiftLeft(32).subtract(BigInteger.ONE).longValue();
 
     /**
+     * Increment the Stream Management height counter.
+     *
      * Quoting XEP-198 4.:
      * "In the unlikely case that the number of stanzas handled during a stream management session exceeds the number
      * of digits that can be represented by the unsignedInt datatype as specified in XML Schema Part 2 [10]

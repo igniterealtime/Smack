@@ -128,7 +128,7 @@ public class InBandBytestreamManager implements BytestreamManager {
     }
 
     /**
-     * Maximum block size that is allowed for In-Band Bytestreams
+     * Maximum block size that is allowed for In-Band Bytestreams.
      */
     public static final int MAXIMUM_BLOCK_SIZE = 65535;
 
