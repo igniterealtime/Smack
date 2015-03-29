@@ -141,6 +141,131 @@ hr {
 
 	<div id="pageBody">
 
+<h2>4.1.0 -- <span style="font-weight: normal;">2015-03-29</span></h2>
+
+<h2>        Sub-task
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-398'>SMACK-398</a>] -         Implement SCRAM support
+</li>
+</ul>
+
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-65'>SMACK-65</a>] -         Packet parsing should look for depth
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-237'>SMACK-237</a>] -         Handle more vCard values (XEP-0054)
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-383'>SMACK-383</a>] -         Allow the garbage collection of all object instances of a closed and unreferenced connection
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-424'>SMACK-424</a>] -         Add a MultiUserChat.presenceChanged callback method to be informed if a presence within a MUC has changed (joined, leaved, status change)
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-542'>SMACK-542</a>] -         MUC: RoomInfo should hold more data if the result contains a FORM_TYPE field
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-549'>SMACK-549</a>] -         MUCUser#getStatus should be a List
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-564'>SMACK-564</a>] -         Some tests fail with Java 8
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-570'>SMACK-570</a>] -         Smack does not support resourceparts which contain the &#39;@&#39; character.
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-571'>SMACK-571</a>] -         Don&#39;t remove the MUC listeners after a disconnect() , keep state of Connection between disconnect() and connect()/login()
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-573'>SMACK-573</a>] -         MessageEventManager treats error replies as message events
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-583'>SMACK-583</a>] -         PacketListeners may not be invoked in delivery order
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-585'>SMACK-585</a>] -         XMPPTCPConnection does not set &#39;host&#39; and &#39;port&#39;
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-590'>SMACK-590</a>] -         Don&#39;t use IQReplyFilter for the bind set/result exchange
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-597'>SMACK-597</a>] -         PingManager.getLastReceivedPong() always returns -1
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-604'>SMACK-604</a>] -         MUCUser must support multiple status codes
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-620'>SMACK-620</a>] -         Smack should use a safe SAX parser, e.g. with entity reference expansion disabled
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-635'>SMACK-635</a>] -         Typo DNSUtil.init() prevents DNS SRV lookups to fail in some cases
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-643'>SMACK-643</a>] -         Smack should not set the service name to the vale of the &#39;from&#39; attribute of the opening stream element received from the service
+</li>
+</ul>
+
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-340'>SMACK-340</a>] -         Should make the wait/timeouts on SASL authentication configurable.
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-402'>SMACK-402</a>] -         Update obsolete &quot;Message Delivery Receipts&quot; support from (JEP|XEP)-0022 to XEP-0184
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-453'>SMACK-453</a>] -         Add support for all primitive types in IntrospectionProvider.decode()
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-521'>SMACK-521</a>] -         Clear PacketWriters queue when the connection is shut down
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-532'>SMACK-532</a>] -         Evaluate if its possible to guarantee the order of listeners by using a LinkedHashMap
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-566'>SMACK-566</a>] -         Create public method that parses Strings/CharSequences to messages, IQs and presence instances
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-587'>SMACK-587</a>] -         Subprojects should uses versions when importing the OSGi smack-core components
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-595'>SMACK-595</a>] -         Add an API to send a stanza and wait asynchronously for a response
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-599'>SMACK-599</a>] -         Provide string messages to all exceptions thrown by Smack
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-600'>SMACK-600</a>] -         RoomInfo Class should add the information from the Identity element.
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-608'>SMACK-608</a>] -         Add support for XMPP error conditions text
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-622'>SMACK-622</a>] -         Add support for &#39;optional&#39; in session stream features
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-626'>SMACK-626</a>] -         Add support for &#39;ofrom&#39; Extended Stanza Addressing type
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-627'>SMACK-627</a>] -         Smack should allow null usernames under certain circumstances
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-645'>SMACK-645</a>] -         Roster should not leak internal state e.g. presences
+</li>
+</ul>
+
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-234'>SMACK-234</a>] -         Add support for SASL EXTERNAL: PKI (Client SSL Cert) Support
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-333'>SMACK-333</a>] -         Implement XEP-0198: Stream Management 
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-378'>SMACK-378</a>] -         Give access to the socket outside the XMPPconnection
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-581'>SMACK-581</a>] -         Add support for &quot;Result Set Management&quot; (XEP-59)
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-607'>SMACK-607</a>] -         Add support for XEP-0352: Client State Indication
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-612'>SMACK-612</a>] -         Add support for XEP-0141: Data Forms Layout
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-621'>SMACK-621</a>] -         Add support for XEP-0122: Data Forms Validation
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-623'>SMACK-623</a>] -         Add API to retrieve the subscriptions of a PubSub node as owner
+</li>
+</ul>
+
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-365'>SMACK-365</a>] -         SmackConfiguration should only report errors if the file fails to load, not when it fails to load for a specific classloader.
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-371'>SMACK-371</a>] -         Some MUC tasks are using stanza&#39;s as defined in an older version of the spec.  Fails to work on some servers.
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-569'>SMACK-569</a>] -         Move Message Event code to legacy subproject
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-578'>SMACK-578</a>] -         Remove decorators for &quot;Legacy Delayed Delivery&quot; (XEP-91) in favor of Delayed Delivery (XEP-203)
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-579'>SMACK-579</a>] -         FileTransferManager and FileTransferNegoiator should use WeakHashMaps and extend Manager
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-582'>SMACK-582</a>] -         Change ReceiptReceivedListener.onReceiptReceived parameters
+</li>
+<li>[<a href='https://igniterealtime.org/issues/browse/SMACK-637'>SMACK-637</a>] -         Move Roster and Chat code to new smack-im subproject
+</li>
+</ul>
+
 <h2>4.0.7 -- <span style="font-weight: normal;">2015-02-20</span></h2>
 
 <h2>        Bug
