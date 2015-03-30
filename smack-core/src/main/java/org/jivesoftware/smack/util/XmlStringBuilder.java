@@ -17,10 +17,12 @@
 package org.jivesoftware.smack.util;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jxmpp.util.XmppDateTime;
 
 public class XmlStringBuilder implements Appendable, CharSequence {
     public static final String RIGHT_ANGLE_BRACKET = Character.toString('>');
@@ -65,6 +67,19 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     /**
+     * Add a new element to this builder, with the {@link java.util.Date} instance as its content,
+     * which will get formated with {@link XmppDateTime#formatXEP0082Date(Date)}.
+     *
+     * @param name element name
+     * @param content content of element
+     * @return this XmlStringBuilder
+     */
+    public XmlStringBuilder element(String name, Date content) {
+        assert content != null;
+        return element(name, XmppDateTime.formatXEP0082Date(content));
+    }
+
+   /**
     * Add a new element to this builder.
     *
     * @param name
@@ -87,6 +102,22 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     public XmlStringBuilder optElement(String name, String content) {
+        if (content != null) {
+            element(name, content);
+        }
+        return this;
+    }
+
+    /**
+     * Add a new element to this builder, with the {@link java.util.Date} instance as its content,
+     * which will get formated with {@link XmppDateTime#formatXEP0082Date(Date)}
+     * if {@link java.util.Date} instance is not <code>null</code>.
+     *
+     * @param name element name
+     * @param content content of element
+     * @return this XmlStringBuilder
+     */
+    public XmlStringBuilder optElement(String name, Date content) {
         if (content != null) {
             element(name, content);
         }
@@ -171,6 +202,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
 
     /**
      * Add a right angle bracket '>'.
+     *
      * @return a reference to this object
      * @deprecated use {@link #rightAngleBracket()} instead
      */
@@ -194,6 +226,19 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
+    /**
+     * Add a new attribute to this builder, with the {@link java.util.Date} instance as its value,
+     * which will get formated with {@link XmppDateTime#formatXEP0082Date(Date)}.
+     *
+     * @param name name of attribute
+     * @param value value of attribute
+     * @return this XmlStringBuilder
+     */
+    public XmlStringBuilder attribute(String name, Date value) {
+        assert value != null;
+        return attribute(name, XmppDateTime.formatXEP0082Date(value));
+    }
+
     public XmlStringBuilder attribute(String name, CharSequence value) {
         return attribute(name, value.toString());
     }
@@ -210,6 +255,22 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     public XmlStringBuilder optAttribute(String name, String value) {
+        if (value != null) {
+            attribute(name, value);
+        }
+        return this;
+    }
+
+    /**
+     * Add a new attribute to this builder, with the {@link java.util.Date} instance as its value,
+     * which will get formated with {@link XmppDateTime#formatXEP0082Date(Date)}
+     * if {@link java.util.Date} instance is not <code>null</code>.
+     *
+     * @param name attribute name
+     * @param value value of this attribute
+     * @return this XmlStringBuilder
+     */
+    public XmlStringBuilder optAttribute(String name, Date value) {
         if (value != null) {
             attribute(name, value);
         }
