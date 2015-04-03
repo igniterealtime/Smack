@@ -236,7 +236,6 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
      *  <li>If the thread was was interrupted.</li>
      * </ol>
      * So you have to check which is the case, e.g. by calling {@link #isShutdown()}.
-     * </p>
      *
      * @param e the element to add.
      * @throws InterruptedException if interrupted while waiting or if the queue was shut down.

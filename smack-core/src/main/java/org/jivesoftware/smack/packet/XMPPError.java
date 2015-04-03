@@ -31,6 +31,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * error condition as well as as an optional text explanation. Typical errors are:<p>
  *
  * <table border=1>
+ *      <caption>XMPP Errors</caption>
  *      <hr><td><b>XMPP Error Condition</b></td><td><b>Type</b></td><td><b>RFC 6120 Section</b></td></hr>
  *      <tr><td>bad-request</td><td>MODIFY</td><td>8.3.3.1</td></tr>
  *      <tr><td>conflict</td><td>CANCEL</td><td>8.3.3.2</td></tr>

@@ -285,7 +285,7 @@ public abstract class Stanza implements TopLevelStreamElement {
     }
 
     /**
-     * Return a set of all extensions with the given element name <emph>and</emph> namespace.
+     * Return a set of all extensions with the given element name <em>and</em> namespace.
      * <p>
      * Changes to the returned set will update the stanza(/packet) extensions, if the returned set is not the empty set.
      * </p>

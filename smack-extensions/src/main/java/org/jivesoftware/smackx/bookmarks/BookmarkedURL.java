@@ -84,12 +84,18 @@ public class BookmarkedURL implements SharedBookmark {
         return isRss;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if(!(obj instanceof BookmarkedURL)) {
             return false;
         }
         BookmarkedURL url = (BookmarkedURL)obj;
         return url.getURL().equalsIgnoreCase(URL);
+    }
+
+    @Override
+    public int hashCode() {
+        return getURL().hashCode();
     }
 
     protected void setShared(boolean shared) {

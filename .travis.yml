@@ -2,8 +2,14 @@ language: android
 android:
   components:
     - android-8
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+
 install: gradle assemble
 script: gradle check
 
 after_success:
-- gradle jacocoRootReport coveralls
+- JAVAC_VERSION=$((javac -version) 2>&1)
+# Only run jacocoRootReport in the Java7 build
+- if [[ "$JAVAC_VERSION" = javac\ 1.7.* ]]; then gradle jacocoRootReport coveralls; fi

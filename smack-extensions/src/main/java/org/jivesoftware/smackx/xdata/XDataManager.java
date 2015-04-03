@@ -51,7 +51,7 @@ public class XDataManager extends Manager {
     /**
      * Get the XDataManager for the given XMPP connection.
      *
-     * @param connection
+     * @param connection the XMPPConnection.
      * @return the XDataManager
      */
     public static synchronized XDataManager getInstanceFor(XMPPConnection connection) {

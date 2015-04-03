@@ -165,9 +165,10 @@ public class FormField implements NamedElement {
     /**
      * Returns a description that provides extra clarification about the question. This information
      * could be presented to the user either in tool-tip, help button, or as a section of text
-     * before the question.<p>
-     * <p/>
+     * before the question.
+     * <p>
      * If the question is of type FIXED then the description should remain empty.
+     * </p>
      *
      * @return description that provides extra clarification about the question.
      */
@@ -255,9 +256,10 @@ public class FormField implements NamedElement {
     /**
      * Sets a description that provides extra clarification about the question. This information
      * could be presented to the user either in tool-tip, help button, or as a section of text
-     * before the question.<p>
-     * <p/>
+     * before the question.
+     * <p>
      * If the question is of type FIXED then the description should remain empty.
+     * </p>
      *
      * @param description provides extra clarification about the question.
      */

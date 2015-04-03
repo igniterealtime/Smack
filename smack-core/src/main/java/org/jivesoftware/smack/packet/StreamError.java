@@ -29,6 +29,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * These is the list of stream errors as defined in the XMPP spec:<p>
  *
  * <table border=1>
+ *      <caption>Stream Errors</caption>
  *      <tr><td><b>Code</b></td><td><b>Description</b></td></tr>
  *      <tr><td> bad-format </td><td> the entity has sent XML that cannot be processed </td></tr>
  *      <tr><td> unsupported-encoding </td><td>  the entity has sent a namespace prefix that is

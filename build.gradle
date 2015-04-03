@@ -118,6 +118,14 @@ allprojects {
 		options.encoding = "utf8"
 		options.compilerArgs = [
 			'-Xlint:all',
+			// Set '-options' because a non-java7 javac will emit a
+			// warning if source/traget is set to 1.7 and
+			// bootclasspath is *not* set.
+			// TODO implement a sound heuristic to determine a java7
+			// rt.jar on the build host. And if none is found,
+			// fallback to using a environment variable,
+			// e.g. JAVA7_HOME. See SMACK-651.
+			'-Xlint:-options',
 			'-Werror',
 		]
 	}
@@ -132,6 +140,17 @@ allprojects {
 		classDirectories =  project.files(sourceSets.main.output)
 		reports {
 			xml.enabled true
+		}
+	}
+
+	if (JavaVersion.current().isJava8Compatible()) {
+		tasks.withType(Javadoc) {
+			// The '-quiet' as second argument is actually a hack,
+			// since the one paramater addStringOption doesn't seem to
+			// work, we extra add '-quiet', which is added anyway by
+			// gradle.
+			// TODO enable all doclints, see SMACK-650
+			options.addStringOption('Xdoclint:all,-html,-syntax', '-quiet')
 		}
 	}
 }

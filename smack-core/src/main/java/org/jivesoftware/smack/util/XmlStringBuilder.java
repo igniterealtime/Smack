@@ -191,7 +191,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     /**
-     * Add a right angle bracket '>'.
+     * Add a right angle bracket '&gt;'.
      * 
      * @return a reference to this object.
      */
@@ -201,7 +201,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     /**
-     * Add a right angle bracket '>'.
+     * Add a right angle bracket '&gt;'.
      *
      * @return a reference to this object
      * @deprecated use {@link #rightAngleBracket()} instead
@@ -306,7 +306,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     /**
-     * Add the given attribute if value not null and value => 0.
+     * Add the given attribute if value not null and {@code value => 0}.
      *
      * @param name
      * @param value

@@ -489,11 +489,7 @@ public abstract class TransportCandidate {
             }
         }
 
-        /*
-           * (non-Javadoc)
-           *
-           * @see java.lang.Object#equals(java.lang.Object)
-           */
+        @Override
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
@@ -513,6 +509,14 @@ public abstract class TransportCandidate {
                 return false;
             }
             return true;
+        }
+
+        @Override
+        public int hashCode() {
+            if (value == null) {
+                return -1;
+            }
+            return value.hashCode();
         }
 
         /**
@@ -567,11 +571,7 @@ public abstract class TransportCandidate {
             }
         }
 
-        /*
-           * (non-Javadoc)
-           *
-           * @see java.lang.Object#equals(java.lang.Object)
-           */
+        @Override
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
@@ -591,6 +591,14 @@ public abstract class TransportCandidate {
                 return false;
             }
             return true;
+        }
+
+        @Override
+        public int hashCode() {
+            if (value == null) {
+                return -1;
+            }
+            return value.hashCode();
         }
 
         /**

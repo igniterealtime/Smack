@@ -69,14 +69,15 @@ import org.jxmpp.jid.parts.Resourcepart;
 
 /**
  * Represents a user's roster, which is the collection of users a person receives
- * presence updates for. Roster items are categorized into groups for easier management.<p>
- * <p/>
+ * presence updates for. Roster items are categorized into groups for easier management.
+ * <p>
  * Others users may attempt to subscribe to this user using a subscription request. Three
  * modes are supported for handling these requests: <ul>
  * <li>{@link SubscriptionMode#accept_all accept_all} -- accept all subscription requests.</li>
  * <li>{@link SubscriptionMode#reject_all reject_all} -- reject all subscription requests.</li>
  * <li>{@link SubscriptionMode#manual manual} -- manually process all subscription requests.</li>
  * </ul>
+ * </p>
  *
  * @author Matt Tucker
  * @see #getInstanceFor(XMPPConnection)
@@ -253,11 +254,12 @@ public class Roster extends Manager {
     /**
      * Returns the subscription processing mode, which dictates what action
      * Smack will take when subscription requests from other users are made.
-     * The default subscription mode is {@link SubscriptionMode#accept_all}.<p>
-     * <p/>
+     * The default subscription mode is {@link SubscriptionMode#accept_all}.
+     * <p>
      * If using the manual mode, a PacketListener should be registered that
      * listens for Presence packets that have a type of
      * {@link org.jivesoftware.smack.packet.Presence.Type#subscribe}.
+     * </p>
      *
      * @return the subscription mode.
      */
@@ -268,11 +270,12 @@ public class Roster extends Manager {
     /**
      * Sets the subscription processing mode, which dictates what action
      * Smack will take when subscription requests from other users are made.
-     * The default subscription mode is {@link SubscriptionMode#accept_all}.<p>
-     * <p/>
+     * The default subscription mode is {@link SubscriptionMode#accept_all}.
+     * <p>
      * If using the manual mode, a PacketListener should be registered that
      * listens for Presence packets that have a type of
      * {@link org.jivesoftware.smack.packet.Presence.Type#subscribe}.
+     * </p>
      *
      * @param subscriptionMode the subscription mode.
      */
@@ -427,10 +430,11 @@ public class Roster extends Manager {
     }
 
     /**
-     * Creates a new group.<p>
-     * <p/>
+     * Creates a new group.
+     * <p>
      * Note: you must add at least one entry to the group for the group to be kept
      * after a logout/login. This is due to the way that XMPP stores group information.
+     * </p>
      *
      * @param name the name of the group.
      * @return a new group, or null if the group already exists

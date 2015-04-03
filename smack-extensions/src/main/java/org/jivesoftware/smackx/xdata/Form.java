@@ -27,11 +27,11 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 /**
  * Represents a Form for gathering data. The form could be of the following types:
  * <ul>
- *  <li>form -> Indicates a form to fill out.</li>
- *  <li>submit -> The form is filled out, and this is the data that is being returned from 
+ *  <li>form &rarr; Indicates a form to fill out.</li>
+ *  <li>submit &rarr; The form is filled out, and this is the data that is being returned from 
  * the form.</li>
- *  <li>cancel -> The form was cancelled. Tell the asker that piece of information.</li>
- *  <li>result -> Data results being returned from a search, or some other query.</li>
+ *  <li>cancel &rarr; The form was cancelled. Tell the asker that piece of information.</li>
+ *  <li>result &rarr; Data results being returned from a search, or some other query.</li>
  * </ul>
  * 
  * Depending of the form's type different operations are available. For example, it's only possible
@@ -383,7 +383,7 @@ public class Form {
 
     /**
      * Returns the description of the data. It is similar to the title on a web page or an X 
-     * window.  You can put a <title/> on either a form to fill out, or a set of data results.
+     * window.  You can put a title on either a form to fill out, or a set of data results.
      * 
      * @return description of the data.
      */
@@ -423,7 +423,7 @@ public class Form {
 
     /**
      * Sets the description of the data. It is similar to the title on a web page or an X window.
-     * You can put a <title/> on either a form to fill out, or a set of data results.
+     * You can put a title on either a form to fill out, or a set of data results.
      * 
      * @param title description of the data.
      */

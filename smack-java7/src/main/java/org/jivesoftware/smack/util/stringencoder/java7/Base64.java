@@ -20,9 +20,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * <p>Encodes and decodes to and from Base64 notation.</p>
- * This code was obtained from <a href="http://iharder.net/base64">http://iharder.net/base64</a></p>
- *
+ * Encodes and decodes to and from Base64 notation.
+ * <p>
+ * This code was obtained from <a href="http://iharder.net/base64">http://iharder.net/base64</a>
+ * </p>
  *
  * @author Robert Harder
  * @author rob@iharder.net

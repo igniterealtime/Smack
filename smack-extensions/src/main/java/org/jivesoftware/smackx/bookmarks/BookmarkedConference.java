@@ -110,12 +110,18 @@ public class BookmarkedConference implements SharedBookmark {
         this.password = password;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if(obj == null || !(obj instanceof BookmarkedConference)) {
             return false;
         }
         BookmarkedConference conference = (BookmarkedConference)obj;
         return conference.getJid().equalsIgnoreCase(jid);
+    }
+
+    @Override
+    public int hashCode() {
+        return getJid().hashCode();
     }
 
     protected void setShared(boolean isShared) {

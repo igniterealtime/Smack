@@ -293,11 +293,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
         checkThread.start();
     }
 
-    /*
-    * (non-Javadoc)
-    *
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -380,6 +376,22 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
         }
 
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int res = 37;
+        res = 37 * res + (getChannel() == null ? 0 : getChannel().hashCode());
+        res = 37 * res + (getId() == null ? 0 : getId().hashCode());
+        res = 37 * res + getNetwork();
+        res = 37 * res + (getPassword() == null ? 0 : getPassword().hashCode());
+        res = 37 * res + getPreference();
+        res = 37 * res + (getProto() == null ? 0 : getProto().hashCode());
+        res = 37 * res + (getUsername() == null ? 0 : getUsername().hashCode());
+        res = 37 * res + (getIp() == null ? 0 : getIp().hashCode());
+        res = 37 * res + getPort();
+        res = 37 * res + (getType() == null ? 0 : getType().hashCode());
+        return res;
     }
 
     public boolean isNull() {
