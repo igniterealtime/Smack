@@ -1,0 +1,1 @@
+../../../../../../../main/java/org/jivesoftware/smack/sasl/core/package-info.java

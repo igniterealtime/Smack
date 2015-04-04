@@ -1,0 +1,1 @@
+../../../../../../../main/java/org/jivesoftware/smack/roster/rosterstore/package-info.java

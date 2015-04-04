@@ -1,0 +1,1 @@
+../../../../../../main/java/org/jivesoftware/smackx/ping/package-info.java

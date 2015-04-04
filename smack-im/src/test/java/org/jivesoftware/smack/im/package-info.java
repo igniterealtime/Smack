@@ -1,0 +1,1 @@
+../../../../../../main/java/org/jivesoftware/smack/im/package-info.java

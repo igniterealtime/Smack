@@ -1,0 +1,1 @@
+../../../../../../../main/java/org/jivesoftware/smackx/pubsub/provider/package-info.java

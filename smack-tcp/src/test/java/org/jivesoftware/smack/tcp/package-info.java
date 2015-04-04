@@ -1,0 +1,1 @@
+../../../../../../main/java/org/jivesoftware/smack/tcp/package-info.java

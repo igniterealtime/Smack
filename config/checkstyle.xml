@@ -52,6 +52,7 @@
 		<property name="format" value="^\s*[\S&amp;&amp;[^\*/]]+\s+$"/>
 		<property name="message" value="Line containing trailing whitespace character(s)"/>
 	</module>
+	<module name="JavadocPackage"/>
 	<module name="TreeWalker">
 		<module name="FileContentsHolder"/>
 		<module name="UnusedImports">

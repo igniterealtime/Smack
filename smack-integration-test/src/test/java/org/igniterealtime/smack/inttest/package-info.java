@@ -1,0 +1,1 @@
+../../../../../../main/java/org/igniterealtime/smack/inttest/package-info.java

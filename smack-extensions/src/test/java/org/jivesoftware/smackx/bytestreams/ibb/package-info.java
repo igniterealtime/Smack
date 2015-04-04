@@ -1,0 +1,1 @@
+../../../../../../../main/java/org/jivesoftware/smackx/bytestreams/ibb/package-info.java
