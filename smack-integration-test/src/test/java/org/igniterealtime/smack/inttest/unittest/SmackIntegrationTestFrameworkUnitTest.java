@@ -18,6 +18,7 @@ package org.igniterealtime.smack.inttest.unittest;
 
 import static org.igniterealtime.smack.inttest.SmackIntegrationTestUnitTestUtil.getFrameworkForUnitTest;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -35,6 +36,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -43,6 +46,9 @@ public class SmackIntegrationTestFrameworkUnitTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+
+    private static boolean beforeClassInvoked;
+    private static boolean afterClassInvoked;
 
     @Test
     public void throwsRuntimeExceptionsTest() throws KeyManagementException, NoSuchAlgorithmException, SmackException,
@@ -93,6 +99,42 @@ public class SmackIntegrationTestFrameworkUnitTest {
         public void throwRuntimeExceptionTest() throws XMPPErrorException {
             throw new XMPPException.XMPPErrorException(
                             XMPPError.from(XMPPError.Condition.bad_request, DESCRIPTIVE_TEXT));
+        }
+    }
+
+    @Test
+    public void testInvoking() throws KeyManagementException, NoSuchAlgorithmException, SmackException, IOException,
+                    XMPPException, InterruptedException {
+        beforeClassInvoked = false;
+        afterClassInvoked = false;
+
+        DummySmackIntegrationTestFramework sinttest = getFrameworkForUnitTest(BeforeAfterClassTest.class);
+        sinttest.run();
+
+        assertTrue("A before class method should have been executed to this time", beforeClassInvoked);
+        assertTrue("A after class method should have been executed to this time", afterClassInvoked);
+    }
+
+    public static class BeforeAfterClassTest extends AbstractSmackIntegrationTest {
+
+        public BeforeAfterClassTest(SmackIntegrationTestEnvironment environment) {
+            super(environment);
+        }
+
+        @BeforeClass
+        public static void setUp() {
+            beforeClassInvoked = true;
+        }
+
+        @AfterClass
+        public static void tearDown() {
+            afterClassInvoked = true;
+        }
+
+        @SmackIntegrationTest
+        public void test() {
+            assertTrue("A before class method should have been executed to this time", beforeClassInvoked);
+            assertFalse("A after class method shouldn't have been executed to this time", afterClassInvoked);
         }
     }
 }

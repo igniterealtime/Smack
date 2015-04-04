@@ -400,7 +400,7 @@ public class SmackIntegrationTestFramework {
                                                 | Modifier.STATIC));
 
                 // See if there are any methods that have the @AfterClassAnnotation but a wrong signature
-                Set<Method> allAfterClassMethods =  getAllMethods(testClass, withAnnotation(BeforeClass.class));
+                Set<Method> allAfterClassMethods =  getAllMethods(testClass, withAnnotation(AfterClass.class));
                 allAfterClassMethods.removeAll(afterClassMethods);
                 if (!allAfterClassMethods.isEmpty()) {
                     LOGGER.warning("@AfterClass methods with wrong signature found");
