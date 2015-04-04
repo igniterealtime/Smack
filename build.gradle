@@ -153,6 +153,9 @@ allprojects {
 			options.addStringOption('Xdoclint:all,-html,-syntax', '-quiet')
 		}
 	}
+	tasks.withType(Javadoc) {
+		options.charSet = "UTF-8"
+	}
 }
 
 gradle.taskGraph.whenReady { taskGraph ->
