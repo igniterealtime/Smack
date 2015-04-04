@@ -334,7 +334,7 @@ public class SmackIntegrationTestFramework {
                 Set<Method> allBeforeClassMethods =  getAllMethods(testClass, withAnnotation(BeforeClass.class));
                 allBeforeClassMethods.removeAll(beforeClassMethods);
                 if (!allBeforeClassMethods.isEmpty()) {
-                    LOGGER.warning("@BeforeClass methods with wrong signature found");
+                    throw new IllegalArgumentException("@BeforeClass methods with wrong signature found");
                 }
 
                 if (beforeClassMethods.size() == 1) {
@@ -403,7 +403,7 @@ public class SmackIntegrationTestFramework {
                 Set<Method> allAfterClassMethods =  getAllMethods(testClass, withAnnotation(AfterClass.class));
                 allAfterClassMethods.removeAll(afterClassMethods);
                 if (!allAfterClassMethods.isEmpty()) {
-                    LOGGER.warning("@AfterClass methods with wrong signature found");
+                    throw new IllegalArgumentException("@AfterClass methods with wrong signature found");
                 }
 
                 if (afterClassMethods.size() == 1) {
