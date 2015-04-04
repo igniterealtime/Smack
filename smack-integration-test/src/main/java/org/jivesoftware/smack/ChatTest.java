@@ -55,12 +55,12 @@ public class ChatTest extends AbstractSmackIntegrationTest {
     }
 
     @BeforeClass
-    public void setUp() {
+    public static void setUp() {
         JivePropertiesManager.setJavaObjectEnabled(true);
     }
 
     @AfterClass
-    public void tearDown() {
+    public static void tearDown() {
         JivePropertiesManager.setJavaObjectEnabled(false);
     }
 
