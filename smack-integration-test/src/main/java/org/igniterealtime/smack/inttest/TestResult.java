@@ -29,7 +29,7 @@ public abstract class TestResult {
 
     public TestResult(Method testMethod, long startTime, long endTime, List<String> logMessages) {
         this.testMethod = testMethod;
-        assert (endTime > startTime);
+        assert (endTime >= startTime);
         this.startTime = startTime;
         this.endTime = endTime;
         this.duration = endTime - startTime;
