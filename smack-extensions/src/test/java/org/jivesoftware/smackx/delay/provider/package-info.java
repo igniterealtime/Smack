@@ -1,1 +1,0 @@
-../../../../../../../main/java/org/jivesoftware/smackx/delay/provider/package-info.java

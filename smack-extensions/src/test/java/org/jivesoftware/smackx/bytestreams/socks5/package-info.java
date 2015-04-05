@@ -1,1 +1,0 @@
-../../../../../../../main/java/org/jivesoftware/smackx/bytestreams/socks5/package-info.java

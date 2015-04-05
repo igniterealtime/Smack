@@ -1,1 +1,0 @@
-../../../../../../main/java/org/jivesoftware/smack/chat/package-info.java

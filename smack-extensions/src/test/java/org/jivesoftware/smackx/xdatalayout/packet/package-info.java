@@ -1,1 +1,0 @@
-../../../../../../../main/java/org/jivesoftware/smackx/xdatalayout/packet/package-info.java

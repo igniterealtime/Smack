@@ -1,1 +1,0 @@
-../../../../../../main/java/org/jivesoftware/smackx/geoloc/package-info.java

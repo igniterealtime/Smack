@@ -1,1 +1,0 @@
-../../../../../../../main/java/org/jivesoftware/smackx/hoxt/provider/package-info.java

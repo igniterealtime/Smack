@@ -1,1 +1,0 @@
-../../../../../../../main/java/org/jivesoftware/smackx/xhtmlim/provider/package-info.java

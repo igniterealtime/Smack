@@ -1,1 +1,0 @@
-../../../../../../main/java/org/jivesoftware/smackx/vcardtemp/package-info.java

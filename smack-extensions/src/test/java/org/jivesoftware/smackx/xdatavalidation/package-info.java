@@ -1,1 +1,0 @@
-../../../../../../main/java/org/jivesoftware/smackx/xdatavalidation/package-info.java

@@ -1,1 +1,0 @@
-../../../../../../../main/java/org/jivesoftware/smackx/privacy/provider/package-info.java

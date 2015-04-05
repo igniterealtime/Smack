@@ -1,1 +1,0 @@
-../../../../../../../main/java/org/jivesoftware/smackx/shim/provider/package-info.java

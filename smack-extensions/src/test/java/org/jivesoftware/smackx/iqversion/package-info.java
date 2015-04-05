@@ -1,1 +1,0 @@
-../../../../../../main/java/org/jivesoftware/smackx/iqversion/package-info.java

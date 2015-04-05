@@ -1,1 +1,0 @@
-../../../../../../../main/java/org/jivesoftware/smackx/muc/packet/package-info.java

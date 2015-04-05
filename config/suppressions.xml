@@ -10,4 +10,6 @@ it disabled until gradle uses a checkstyle version where this is fixed
 -->
 	<suppress checks="GenericWhitespace"
 			  files="Protocol.java" />
+	<!-- Suppress JavadocPackage in the test packages -->
+	<suppress checks="JavadocPackage" files="[\\/]test[\\/]"/>
 </suppressions>

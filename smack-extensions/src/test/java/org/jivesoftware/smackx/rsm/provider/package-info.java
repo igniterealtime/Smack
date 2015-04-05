@@ -1,1 +1,0 @@
-../../../../../../../main/java/org/jivesoftware/smackx/rsm/provider/package-info.java
