@@ -101,13 +101,13 @@ public final class Roster extends Manager {
      * Returns the roster for the user.
      * <p>
      * This method will never return <code>null</code>, instead if the user has not yet logged into
-     * the server or is logged in anonymously all modifying methods of the returned roster object
+     * the server all modifying methods of the returned roster object
      * like {@link Roster#createEntry(Jid, String, String[])},
      * {@link Roster#removeEntry(RosterEntry)} , etc. except adding or removing
      * {@link RosterListener}s will throw an IllegalStateException.
+     * </p>
      * 
      * @return the user's roster.
-     * @throws IllegalStateException if the connection is anonymous
      */
     public static synchronized Roster getInstanceFor(XMPPConnection connection) {
         Roster roster = INSTANCES.get(connection);
@@ -213,11 +213,6 @@ public final class Roster extends Manager {
 
             @Override
             public void authenticated(XMPPConnection connection, boolean resumed) {
-                // Anonymous users can't have a roster, but it is possible that a Roster instance is
-                // retrieved if getRoster() is called *before* connect(). So we have to check here
-                // again if it's an anonymous connection.
-                if (connection.isAnonymous())
-                    return;
                 if (!isRosterLoadedAtLogin())
                     return;
                 // We are done here if the connection was resumed
@@ -295,9 +290,6 @@ public final class Roster extends Manager {
         final XMPPConnection connection = connection();
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
-        }
-        if (connection.isAnonymous()) {
-            throw new IllegalStateException("Anonymous users can't have a roster.");
         }
 
         RosterPacket packet = new RosterPacket();
@@ -438,13 +430,9 @@ public final class Roster extends Manager {
      *
      * @param name the name of the group.
      * @return a new group, or null if the group already exists
-     * @throws IllegalStateException if logged in anonymously
      */
     public RosterGroup createGroup(String name) {
         final XMPPConnection connection = connection();
-        if (connection.isAnonymous()) {
-            throw new IllegalStateException("Anonymous users can't have a roster.");
-        }
         if (groups.containsKey(name)) {
             return groups.get(name);
         }
@@ -472,9 +460,6 @@ public final class Roster extends Manager {
         final XMPPConnection connection = connection();
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
-        }
-        if (connection.isAnonymous()) {
-            throw new IllegalStateException("Anonymous users can't have a roster.");
         }
 
         // Create and send roster entry creation packet.
@@ -551,9 +536,6 @@ public final class Roster extends Manager {
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
         }
-        if (connection.isAnonymous()) {
-            throw new IllegalStateException("Anonymous users can't have a roster.");
-        }
 
         return connection.hasFeature(SubscriptionPreApproval.ELEMENT, SubscriptionPreApproval.NAMESPACE);
     }
@@ -570,15 +552,11 @@ public final class Roster extends Manager {
      * @throws NoResponseException SmackException if there was no response from the server.
      * @throws NotConnectedException 
      * @throws InterruptedException 
-     * @throws IllegalStateException if connection is not logged in or logged in anonymously
      */
     public void removeEntry(RosterEntry entry) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final XMPPConnection connection = connection();
         if (!connection.isAuthenticated()) {
             throw new NotLoggedInException();
-        }
-        if (connection.isAnonymous()) {
-            throw new IllegalStateException("Anonymous users can't have a roster.");
         }
 
         // Only remove the entry if it's in the entry list.
