@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,11 @@ public class SynchronizationPoint<E extends Exception> {
     private State state;
     private E failureException;
 
+    /**
+     * Construct a new synchronization point for the given connection.
+     *
+     * @param connection the connection of this synchronization point.
+     */
     public SynchronizationPoint(AbstractXMPPConnection connection) {
         this.connection = connection;
         this.connectionLock = connection.getConnectionLock();
@@ -48,6 +53,9 @@ public class SynchronizationPoint<E extends Exception> {
         init();
     }
 
+    /**
+     * Initialize (or reset) this synchronization point.
+     */
     public void init() {
         connectionLock.lock();
         state = State.Initial;
@@ -55,6 +63,13 @@ public class SynchronizationPoint<E extends Exception> {
         connectionLock.unlock();
     }
 
+    /**
+     * Send the given top level stream element and wait for a response.
+     *
+     * @param request the plain stream element to send.
+     * @throws NoResponseException if no response was received.
+     * @throws NotConnectedException if the connection is not connected.
+     */
     public void sendAndWaitForResponse(TopLevelStreamElement request) throws NoResponseException,
                     NotConnectedException {
         assert (state == State.Initial);
@@ -79,6 +94,14 @@ public class SynchronizationPoint<E extends Exception> {
         checkForResponse();
     }
 
+    /**
+     * Send the given plain stream element and wait for a response.
+     *
+     * @param request the plain stream element to send.
+     * @throws E if an failure was reported.
+     * @throws NoResponseException if no response was received.
+     * @throws NotConnectedException if the connection is not connected.
+     */
     public void sendAndWaitForResponseOrThrow(PlainStreamElement request) throws E, NoResponseException,
                     NotConnectedException {
         sendAndWaitForResponse(request);
@@ -93,6 +116,11 @@ public class SynchronizationPoint<E extends Exception> {
         }
     }
 
+    /**
+     * Check if this synchronization point is successful or wait the connections reply timeout.
+     * @throws NoResponseException if there was no response marking the synchronization point as success or failed.
+     * @throws E if there was a failure
+     */
     public void checkIfSuccessOrWaitOrThrow() throws NoResponseException, E {
         checkIfSuccessOrWait();
         if (state == State.Failure) {
@@ -100,6 +128,10 @@ public class SynchronizationPoint<E extends Exception> {
         }
     }
 
+    /**
+     * Check if this synchronization point is successful or wait the connections reply timeout.
+     * @throws NoResponseException if there was no response marking the synchronization point as success or failed.
+     */
     public void checkIfSuccessOrWait() throws NoResponseException {
         connectionLock.lock();
         try {
@@ -114,6 +146,9 @@ public class SynchronizationPoint<E extends Exception> {
         checkForResponse();
     }
 
+    /**
+     * Report this synchronization point as successful.
+     */
     public void reportSuccess() {
         connectionLock.lock();
         try {
@@ -129,6 +164,11 @@ public class SynchronizationPoint<E extends Exception> {
         reportFailure(null);
     }
 
+    /**
+     * Report this synchronization point as failed because of the given exception.
+     *
+     * @param failureException the exception causing this synchronization point to fail.
+     */
     public void reportFailure(E failureException) {
         connectionLock.lock();
         try {
@@ -141,6 +181,11 @@ public class SynchronizationPoint<E extends Exception> {
         }
     }
 
+    /**
+     * Check if this synchronization point was successful.
+     *
+     * @return true if the synchronization point was successful, false otherwise.
+     */
     public boolean wasSuccessful() {
         connectionLock.lock();
         try {
@@ -151,6 +196,11 @@ public class SynchronizationPoint<E extends Exception> {
         }
     }
 
+    /**
+     * Check if this synchronization point has its request already sent.
+     *
+     * @return true if the request was already sent, false otherwise.
+     */
     public boolean requestSent() {
         connectionLock.lock();
         try {
@@ -161,6 +211,12 @@ public class SynchronizationPoint<E extends Exception> {
         }
     }
 
+    /**
+     * Wait for the condition to become something else as {@link State#RequestSent} or {@link State#Initial}.
+     * {@link #reportSuccess()}, {@link #reportFailure()} and {@link #reportFailure(Exception)} will either set this
+     * synchronization point to {@link State#Success} or {@link State#Failure}. If none of them is set after the
+     * connections reply timeout, this method will set the state of {@link State#NoResponse}.
+     */
     private void waitForConditionOrTimeout() {
         long remainingWait = TimeUnit.MILLISECONDS.toNanos(connection.getPacketReplyTimeout());
         while (state == State.RequestSent || state == State.Initial) {
