@@ -221,12 +221,11 @@ public class SynchronizationPoint<E extends Exception> {
         long remainingWait = TimeUnit.MILLISECONDS.toNanos(connection.getPacketReplyTimeout());
         while (state == State.RequestSent || state == State.Initial) {
             try {
-                remainingWait = condition.awaitNanos(
-                                remainingWait);
                 if (remainingWait <= 0) {
                     state = State.NoResponse;
                     break;
                 }
+                remainingWait = condition.awaitNanos(remainingWait);
             } catch (InterruptedException e) {
                 LOGGER.log(Level.WARNING, "Thread interrupt while waiting for condition or timeout ignored", e);
             }
