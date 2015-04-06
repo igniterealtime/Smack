@@ -287,10 +287,7 @@ public final class Roster extends Manager {
      * @throws InterruptedException 
      */
     public void reload() throws NotLoggedInException, NotConnectedException, InterruptedException{
-        final XMPPConnection connection = connection();
-        if (!connection.isAuthenticated()) {
-            throw new NotLoggedInException();
-        }
+        final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
 
         RosterPacket packet = new RosterPacket();
         if (rosterStore != null && isRosterVersioningSupported()) {
@@ -457,10 +454,7 @@ public final class Roster extends Manager {
      * @throws InterruptedException 
      */
     public void createEntry(Jid user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        final XMPPConnection connection = connection();
-        if (!connection.isAuthenticated()) {
-            throw new NotLoggedInException();
-        }
+        final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
 
         // Create and send roster entry creation packet.
         RosterPacket rosterPacket = new RosterPacket();
@@ -532,11 +526,7 @@ public final class Roster extends Manager {
      * @since 4.2
      */
     public boolean isSubscriptionPreApprovalSupported() throws NotLoggedInException {
-        final XMPPConnection connection = connection();
-        if (!connection.isAuthenticated()) {
-            throw new NotLoggedInException();
-        }
-
+        final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
         return connection.hasFeature(SubscriptionPreApproval.ELEMENT, SubscriptionPreApproval.NAMESPACE);
     }
 
@@ -554,10 +544,7 @@ public final class Roster extends Manager {
      * @throws InterruptedException 
      */
     public void removeEntry(RosterEntry entry) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        final XMPPConnection connection = connection();
-        if (!connection.isAuthenticated()) {
-            throw new NotLoggedInException();
-        }
+        final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
 
         // Only remove the entry if it's in the entry list.
         // The actual removal logic takes place in RosterPacketListenerprocess>>Packet(Packet)
