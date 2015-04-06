@@ -1693,8 +1693,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // See if resumption time is over
         long current = System.currentTimeMillis();
-        long maxResumptionMillies = getMaxSmResumptionTime() * 1000;
-        if (shutdownTimestamp + maxResumptionMillies > current) {
+        long maxResumptionMillies = ((long) getMaxSmResumptionTime()) * 1000;
+        if (current > shutdownTimestamp + maxResumptionMillies) {
+            // Stream resumption is *not* possible if the current timestamp is greater then the greatest timestamp where
+            // resumption is possible
             return false;
         } else {
             return true;
