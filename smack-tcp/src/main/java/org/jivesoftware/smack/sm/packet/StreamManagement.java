@@ -24,7 +24,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 public class StreamManagement {
     public static final String NAMESPACE = "urn:xmpp:sm:3";
 
-    public static class StreamManagementFeature implements ExtensionElement {
+    public static final class StreamManagementFeature implements ExtensionElement {
 
         public static final String ELEMENT = "sm";
         public static final StreamManagementFeature INSTANCE = new StreamManagementFeature();
@@ -320,7 +320,7 @@ public class StreamManagement {
         }
     }
 
-    public static class AckRequest extends FullStreamElement {
+    public static final class AckRequest extends FullStreamElement {
         public static final String ELEMENT = "r";
         public static final AckRequest INSTANCE = new AckRequest();
 

@@ -33,7 +33,7 @@ import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
-public class VCardManager extends Manager {
+public final class VCardManager extends Manager {
     public static final String NAMESPACE = VCard.NAMESPACE;
     public static final String ELEMENT = VCard.ELEMENT;
 

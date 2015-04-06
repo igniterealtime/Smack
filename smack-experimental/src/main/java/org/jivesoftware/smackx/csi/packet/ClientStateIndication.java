@@ -27,7 +27,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 public class ClientStateIndication {
     public static final String NAMESPACE = "urn:xmpp:csi:0";
 
-    public static class Active extends FullStreamElement {
+    public static final class Active extends FullStreamElement {
         public static final Active INSTANCE = new Active();
         public static final String ELEMENT = "active";
 
@@ -50,7 +50,7 @@ public class ClientStateIndication {
         }
     }
 
-    public static class Inactive extends FullStreamElement {
+    public static final class Inactive extends FullStreamElement {
         public static final Inactive INSTANCE = new Inactive();
         public static final String ELEMENT = "inactive";
 
@@ -73,7 +73,7 @@ public class ClientStateIndication {
         }
     }
 
-    public static class Feature implements ExtensionElement {
+    public static final class Feature implements ExtensionElement {
         public static final Feature INSTANCE = new Feature();
         public static final String ELEMENT = "csi";
 

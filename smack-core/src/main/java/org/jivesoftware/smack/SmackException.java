@@ -60,7 +60,7 @@ public class SmackException extends Exception {
      * connection instance. You can modify (e.g. increase) the stanza(/packet) reply timeout with
      * {@link XMPPConnection#setPacketReplyTimeout(long)}.
      */
-    public static class NoResponseException extends SmackException {
+    public static final class NoResponseException extends SmackException {
         /**
          * 
          */

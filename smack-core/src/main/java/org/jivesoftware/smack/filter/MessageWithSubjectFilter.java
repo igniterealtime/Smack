@@ -22,7 +22,7 @@ import org.jivesoftware.smack.packet.Message;
 /**
  * Filters message stanzas which have at least one body.
  */
-public class MessageWithSubjectFilter extends FlexibleStanzaTypeFilter<Message> {
+public final class MessageWithSubjectFilter extends FlexibleStanzaTypeFilter<Message> {
 
     public static final StanzaFilter INSTANCE = new MessageWithSubjectFilter();
 

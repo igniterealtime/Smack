@@ -68,7 +68,7 @@ import org.jivesoftware.smack.SmackException;
  * 
  * @author Henning Staib
  */
-public class Socks5Proxy {
+public final class Socks5Proxy {
     private static final Logger LOGGER = Logger.getLogger(Socks5Proxy.class.getName());
 
     /* SOCKS5 proxy singleton */

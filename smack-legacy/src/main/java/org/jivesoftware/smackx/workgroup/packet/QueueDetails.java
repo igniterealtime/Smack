@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * Queue details stanza(/packet) extension, which contains details about the users
  * currently in a queue.
  */
-public class QueueDetails implements ExtensionElement {
+public final class QueueDetails implements ExtensionElement {
     private static final Logger LOGGER = Logger.getLogger(QueueDetails.class.getName());
 
     /**

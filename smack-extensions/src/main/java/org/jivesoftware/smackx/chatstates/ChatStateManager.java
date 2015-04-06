@@ -49,7 +49,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  * @see org.jivesoftware.smackx.chatstates.ChatState
  * @see org.jivesoftware.smackx.chatstates.packet.ChatStateExtension
  */
-public class ChatStateManager extends Manager {
+public final class ChatStateManager extends Manager {
     public static final String NAMESPACE = "http://jabber.org/protocol/chatstates";
 
     private static final Map<XMPPConnection, ChatStateManager> INSTANCES =

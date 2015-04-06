@@ -55,7 +55,7 @@ import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.JidWithLocalpart;
 
-public class MultiUserChatManager extends Manager {
+public final class MultiUserChatManager extends Manager {
     private final static String DISCO_NODE = MUCInitialPresence.NAMESPACE + "#rooms";
 
     private static final Logger LOGGER = Logger.getLogger(MultiUserChatManager.class.getName());

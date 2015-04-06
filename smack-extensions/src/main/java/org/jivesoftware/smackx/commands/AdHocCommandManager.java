@@ -60,7 +60,7 @@ import org.jxmpp.jid.Jid;
  * 
  * @author Gabriel Guardincerri
  */
-public class AdHocCommandManager extends Manager {
+public final class AdHocCommandManager extends Manager {
     public static final String NAMESPACE = "http://jabber.org/protocol/commands";
 
     private static final Logger LOGGER = Logger.getLogger(AdHocCommandManager.class.getName());

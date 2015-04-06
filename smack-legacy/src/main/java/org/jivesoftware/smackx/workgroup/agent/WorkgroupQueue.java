@@ -170,7 +170,7 @@ public class WorkgroupQueue {
      *          chat requests.
      * </ul>
      */
-    public static class Status {
+    public static final class Status {
 
         /**
          * The queue is active and accepting new chat requests.

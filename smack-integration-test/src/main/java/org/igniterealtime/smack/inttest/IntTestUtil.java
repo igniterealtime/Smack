@@ -55,7 +55,7 @@ public class IntTestUtil {
         return new UsernameAndPassword(username, password);
     }
 
-    public static class UsernameAndPassword {
+    public static final class UsernameAndPassword {
         public final String username;
         public final String password;
 

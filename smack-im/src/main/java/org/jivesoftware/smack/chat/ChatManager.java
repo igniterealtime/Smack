@@ -53,7 +53,7 @@ import org.jxmpp.jid.JidWithLocalpart;
  *
  * @author Alexander Wenckus
  */
-public class ChatManager extends Manager{
+public final class ChatManager extends Manager{
 
     private static final Logger LOGGER = Logger.getLogger(ChatManager.class.getName());
 

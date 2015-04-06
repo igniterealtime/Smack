@@ -30,7 +30,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jxmpp.jid.Jid;
 
-public class XDataManager extends Manager {
+public final class XDataManager extends Manager {
 
     /**
      * The value of {@link DataForm#NAMESPACE}.

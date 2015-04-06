@@ -52,7 +52,7 @@ import org.jxmpp.jid.Jid;
  * @author Alexander Wenckus
  * @see <a href="http://xmpp.org/extensions/xep-0096.html">XEP-0096: SI File Transfer</a>
  */
-public class FileTransferNegotiator extends Manager {
+public final class FileTransferNegotiator extends Manager {
 
     public static final String SI_NAMESPACE = "http://jabber.org/protocol/si";
     public static final String SI_PROFILE_FILE_TRANSFER_NAMESPACE = "http://jabber.org/protocol/si/profile/file-transfer";

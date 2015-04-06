@@ -59,7 +59,7 @@ import android.os.SystemClock;
  * functionality.
  * </p>
  */
-public class ServerPingWithAlarmManager extends Manager {
+public final class ServerPingWithAlarmManager extends Manager {
 
 	private static final Logger LOGGER = Logger.getLogger(ServerPingWithAlarmManager.class
 			.getName());

@@ -481,7 +481,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     /**
      * Represents a message subject, its language and the content of the subject.
      */
-    public static class Subject {
+    public static final class Subject {
 
         private final String subject;
         private final String language;
@@ -544,7 +544,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     /**
      * Represents a message body, its language and the content of the message.
      */
-    public static class Body {
+    public static final class Body {
 
         private final String message;
         private final String language;

@@ -59,7 +59,7 @@ import java.util.WeakHashMap;
  *
  * @author Matt Tucker
  */
-public class PrivateDataManager extends Manager {
+public final class PrivateDataManager extends Manager {
     private static final Map<XMPPConnection, PrivateDataManager> instances = new WeakHashMap<XMPPConnection, PrivateDataManager>();
 
     public static synchronized PrivateDataManager getInstanceFor(XMPPConnection connection) {

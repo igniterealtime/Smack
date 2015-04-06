@@ -33,7 +33,7 @@ import org.jivesoftware.smack.ConnectionConfiguration;
  * }
  * </pre>
  */
-public class XMPPTCPConnectionConfiguration extends ConnectionConfiguration {
+public final class XMPPTCPConnectionConfiguration extends ConnectionConfiguration {
 
     /**
      * The default connect timeout in milliseconds. Preinitialized with 30000 (30 seconds). If this value is changed,
@@ -84,7 +84,7 @@ public class XMPPTCPConnectionConfiguration extends ConnectionConfiguration {
      * A configuration builder for XMPP connections over TCP. Use {@link XMPPTCPConnectionConfiguration#builder()} to
      * obtain a new instance and {@link #build} to build the configuration.
      */
-    public static class Builder extends ConnectionConfiguration.Builder<Builder, XMPPTCPConnectionConfiguration> {
+    public static final class Builder extends ConnectionConfiguration.Builder<Builder, XMPPTCPConnectionConfiguration> {
         private boolean compressionEnabled = false;
         private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 

@@ -62,7 +62,7 @@ import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
  * @author Francisco Vives
  * @see <a href="http://xmpp.org/extensions/xep-0016.html">XEP-16: Privacy Lists</a>
  */
-public class PrivacyListManager extends Manager {
+public final class PrivacyListManager extends Manager {
     public static final String NAMESPACE = Privacy.NAMESPACE;
 
     public static final StanzaFilter PRIVACY_FILTER = new StanzaTypeFilter(Privacy.class);

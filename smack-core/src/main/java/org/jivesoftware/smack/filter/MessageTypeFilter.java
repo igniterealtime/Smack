@@ -27,7 +27,7 @@ import org.jivesoftware.smack.packet.Message.Type;
  * @see org.jivesoftware.smack.packet.Message.Type
  * @author Ward Harold
  */
-public class MessageTypeFilter extends FlexibleStanzaTypeFilter<Message> {
+public final class MessageTypeFilter extends FlexibleStanzaTypeFilter<Message> {
 
     public static final StanzaFilter NORMAL = new MessageTypeFilter(Type.normal);
     public static final StanzaFilter CHAT = new MessageTypeFilter(Type.chat);

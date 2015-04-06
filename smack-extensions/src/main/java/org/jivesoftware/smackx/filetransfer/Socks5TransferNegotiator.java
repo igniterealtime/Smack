@@ -119,7 +119,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     /**
      * Derive from Socks5BytestreamRequest to access protected constructor.
      */
-    private static class ByteStreamRequest extends Socks5BytestreamRequest {
+    private static final class ByteStreamRequest extends Socks5BytestreamRequest {
 
         private ByteStreamRequest(Socks5BytestreamManager manager, Bytestream byteStreamRequest) {
             super(manager, byteStreamRequest);

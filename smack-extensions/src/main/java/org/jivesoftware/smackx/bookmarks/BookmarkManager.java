@@ -40,7 +40,7 @@ import org.jivesoftware.smackx.iqprivate.PrivateDataManager;
  *
  * @author Alexander Wenckus
  */
-public class BookmarkManager {
+public final class BookmarkManager {
     private static final Map<XMPPConnection, BookmarkManager> bookmarkManagerMap = new WeakHashMap<XMPPConnection, BookmarkManager>();
 
     static {

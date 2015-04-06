@@ -413,7 +413,7 @@ public class MUCUser implements ExtensionElement {
      *
      * @author Gaston Dombiak
      */
-    public static class Status implements NamedElement {
+    public static final class Status implements NamedElement {
         public static final String ELEMENT = "status";
 
         private static final Map<Integer, Status> statusMap = new HashMap<Integer, Status>(8);

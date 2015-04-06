@@ -105,7 +105,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
     /**
      * Derive from InBandBytestreamRequest to access protected constructor.
      */
-    private static class ByteStreamRequest extends InBandBytestreamRequest {
+    private static final class ByteStreamRequest extends InBandBytestreamRequest {
 
         private ByteStreamRequest(InBandBytestreamManager manager, Open byteStreamRequest) {
             super(manager, byteStreamRequest);

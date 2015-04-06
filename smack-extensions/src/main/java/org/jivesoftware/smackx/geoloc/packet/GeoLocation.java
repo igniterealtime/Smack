@@ -33,7 +33,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @see <a href="http://www.xmpp.org/extensions/xep-0080.html">XEP-0080</a>
  * @author Ishan Khanna
  */
-public class GeoLocation implements Serializable, ExtensionElement {
+public final class GeoLocation implements Serializable, ExtensionElement {
 
     private static final long serialVersionUID = 1L;
     public static final String NAMESPACE = "http://jabber.org/protocol/geoloc";

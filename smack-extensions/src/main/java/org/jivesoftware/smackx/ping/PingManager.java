@@ -60,7 +60,7 @@ import org.jxmpp.jid.Jid;
  * @author Florian Schmaus
  * @see <a href="http://www.xmpp.org/extensions/xep-0199.html">XEP-0199:XMPP Ping</a>
  */
-public class PingManager extends Manager {
+public final class PingManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(PingManager.class.getName());
 
     private static final Map<XMPPConnection, PingManager> INSTANCES = new WeakHashMap<XMPPConnection, PingManager>();

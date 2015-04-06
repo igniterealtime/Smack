@@ -223,7 +223,7 @@ public class DummyConnection extends AbstractXMPPConnection {
             return new Builder();
         }
 
-        public static class Builder
+        public static final class Builder
                         extends
                         ConnectionConfiguration.Builder<Builder, DummyConnectionConfiguration> {
 

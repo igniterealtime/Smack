@@ -18,7 +18,7 @@ package org.jivesoftware.smack.compress.packet;
 
 import org.jivesoftware.smack.packet.FullStreamElement;
 
-public class Compressed extends FullStreamElement {
+public final class Compressed extends FullStreamElement {
 
     public static final String ELEMENT = "compressed";
     public static final String NAMESPACE = Compress.NAMESPACE;

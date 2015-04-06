@@ -43,7 +43,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Alexander Wenckus
  * 
  */
-public class FileTransferManager extends Manager {
+public final class FileTransferManager extends Manager {
 
     private static final Map<XMPPConnection, FileTransferManager> INSTANCES = new WeakHashMap<XMPPConnection, FileTransferManager>();
 

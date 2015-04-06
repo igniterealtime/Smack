@@ -128,7 +128,7 @@ public class MultipleAddresses implements ExtensionElement {
         return buf;
     }
 
-    public static class Address implements NamedElement {
+    public static final class Address implements NamedElement {
 
         public static final String ELEMENT = "address";
 

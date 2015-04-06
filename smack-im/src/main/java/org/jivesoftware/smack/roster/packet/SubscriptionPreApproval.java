@@ -19,7 +19,7 @@ package org.jivesoftware.smack.roster.packet;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-public class SubscriptionPreApproval implements ExtensionElement {
+public final class SubscriptionPreApproval implements ExtensionElement {
 
     public static final String ELEMENT = "sub";
     public static final String NAMESPACE = "urn:xmpp:features:pre-approval";

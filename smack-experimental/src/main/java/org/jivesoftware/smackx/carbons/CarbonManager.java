@@ -47,7 +47,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  *
  * @author Georg Lukas
  */
-public class CarbonManager extends Manager {
+public final class CarbonManager extends Manager {
 
     private static Map<XMPPConnection, CarbonManager> INSTANCES = new WeakHashMap<XMPPConnection, CarbonManager>();
 

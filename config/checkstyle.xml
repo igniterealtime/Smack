@@ -54,6 +54,7 @@
 	</module>
 	<module name="JavadocPackage"/>
 	<module name="TreeWalker">
+		<module name="FinalClass"/>
 		<module name="FileContentsHolder"/>
 		<module name="UnusedImports">
 			<property name="processJavadoc" value="true"/>

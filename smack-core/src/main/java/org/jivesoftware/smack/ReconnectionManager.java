@@ -47,7 +47,7 @@ import java.util.logging.Logger;
  * @author Francisco Vives
  * @author Luca Stucchi
  */
-public class ReconnectionManager {
+public final class ReconnectionManager {
     private static final Logger LOGGER = Logger.getLogger(ReconnectionManager.class.getName());
 
     private static final Map<AbstractXMPPConnection, ReconnectionManager> INSTANCES = new WeakHashMap<AbstractXMPPConnection, ReconnectionManager>();

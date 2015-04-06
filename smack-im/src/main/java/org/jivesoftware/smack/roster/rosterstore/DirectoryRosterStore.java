@@ -44,7 +44,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * @author Lars Noschinski
  * @author Fabian Schuetz
  */
-public class DirectoryRosterStore implements RosterStore {
+public final class DirectoryRosterStore implements RosterStore {
 
     private final File fileDir;
 

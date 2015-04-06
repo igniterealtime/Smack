@@ -131,7 +131,7 @@ public class CarbonExtension implements ExtensionElement {
      * Stanza(/Packet) extension indicating that a message may not be carbon-copied.  Adding this
      * extension to any message will disallow that message from being copied. 
      */
-    public static class Private implements ExtensionElement {
+    public static final class Private implements ExtensionElement {
         public static final Private INSTANCE = new Private();
         public static final String ELEMENT = "private";
 

@@ -36,7 +36,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.time.packet.Time;
 import org.jxmpp.jid.Jid;
 
-public class EntityTimeManager extends Manager {
+public final class EntityTimeManager extends Manager {
 
     private static final Map<XMPPConnection, EntityTimeManager> INSTANCES = new WeakHashMap<XMPPConnection, EntityTimeManager>();
 

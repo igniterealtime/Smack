@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  * @author rob@iharder.net
  * @version 2.2.1
  */
-public class Base64
+public final class Base64
 {
     private static final Logger LOGGER = Logger.getLogger(Base64.class.getName());
 

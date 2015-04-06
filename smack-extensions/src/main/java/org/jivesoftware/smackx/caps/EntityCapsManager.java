@@ -71,7 +71,7 @@ import java.security.NoSuchAlgorithmException;
  * @author Florian Schmaus
  * @see <a href="http://www.xmpp.org/extensions/xep-0115.html">XEP-0115: Entity Capabilities</a>
  */
-public class EntityCapsManager extends Manager {
+public final class EntityCapsManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(EntityCapsManager.class.getName());
 
     public static final String NAMESPACE = CapsExtension.NAMESPACE;

@@ -100,7 +100,7 @@ public class Registration extends IQ {
         return xml;
     }
 
-    public static class Feature implements ExtensionElement {
+    public static final class Feature implements ExtensionElement {
 
         public static final String ELEMENT = "register";
         public static final String NAMESPACE = "http://jabber.org/features/iq-register";

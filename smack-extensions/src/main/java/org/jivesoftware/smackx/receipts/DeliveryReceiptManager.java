@@ -66,7 +66,7 @@ import org.jxmpp.jid.Jid;
  * @author Georg Lukas
  * @see <a href="http://xmpp.org/extensions/xep-0184.html">XEP-0184: Message Delivery Receipts</a>
  */
-public class DeliveryReceiptManager extends Manager {
+public final class DeliveryReceiptManager extends Manager {
 
     private static final StanzaFilter MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST = new AndFilter(StanzaTypeFilter.MESSAGE,
                     new StanzaExtensionFilter(new DeliveryReceiptRequest()));

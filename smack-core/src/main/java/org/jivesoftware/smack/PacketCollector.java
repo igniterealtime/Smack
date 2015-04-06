@@ -271,7 +271,7 @@ public class PacketCollector {
         return new Configuration();
     }
 
-    public static class Configuration {
+    public static final class Configuration {
         private StanzaFilter packetFilter;
         private int size = SmackConfiguration.getPacketCollectorSize();
         private PacketCollector collectorToReset;

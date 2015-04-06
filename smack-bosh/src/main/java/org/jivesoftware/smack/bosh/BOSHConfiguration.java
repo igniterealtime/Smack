@@ -30,7 +30,7 @@ import org.jivesoftware.smack.proxy.ProxyInfo;
  * @see XMPPBOSHConnection
  * @author Guenther Niess
  */
-public class BOSHConfiguration extends ConnectionConfiguration {
+public final class BOSHConfiguration extends ConnectionConfiguration {
 
     private final boolean https;
     private final String file;
@@ -73,7 +73,7 @@ public class BOSHConfiguration extends ConnectionConfiguration {
         return new Builder();
     }
 
-    public static class Builder extends ConnectionConfiguration.Builder<Builder, BOSHConfiguration> {
+    public static final class Builder extends ConnectionConfiguration.Builder<Builder, BOSHConfiguration> {
         private boolean https;
         private String file;
 

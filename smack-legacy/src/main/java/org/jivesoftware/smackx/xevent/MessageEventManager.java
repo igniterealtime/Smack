@@ -48,7 +48,7 @@ import org.jxmpp.jid.Jid;
  * @author Gaston Dombiak
  * @see <a href="http://xmpp.org/extensions/xep-0022.html">XEP-22: Message Events</a>
  */
-public class MessageEventManager extends Manager {
+public final class MessageEventManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(MessageEventManager.class.getName());
 
     private static final Map<XMPPConnection, MessageEventManager> INSTANCES = new WeakHashMap<>();

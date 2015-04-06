@@ -20,7 +20,7 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 
-public class ForEveryMessage implements StanzaFilter {
+public final class ForEveryMessage implements StanzaFilter {
 
     public static final ForEveryMessage INSTANCE = new ForEveryMessage();
 

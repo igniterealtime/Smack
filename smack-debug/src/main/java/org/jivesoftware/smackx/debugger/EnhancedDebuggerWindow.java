@@ -56,7 +56,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
  *
  * @author Gaston Dombiak
  */
-public class EnhancedDebuggerWindow {
+public final class EnhancedDebuggerWindow {
 
     private static EnhancedDebuggerWindow instance;
 

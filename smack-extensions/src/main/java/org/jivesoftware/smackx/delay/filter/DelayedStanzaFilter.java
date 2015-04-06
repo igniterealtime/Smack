@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.delay.DelayInformationManager;
 /**
  * Filters stanza with delay information, ie. stanzas that got delayed for some reason
  */
-public class DelayedStanzaFilter implements StanzaFilter {
+public final class DelayedStanzaFilter implements StanzaFilter {
 
     public static final StanzaFilter INSTANCE = new DelayedStanzaFilter();
 

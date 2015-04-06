@@ -33,7 +33,7 @@ import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-public class Configuration {
+public final class Configuration {
 
     public final DomainBareJid service;
 
@@ -92,7 +92,7 @@ public class Configuration {
         return new Builder();
     }
 
-    public static class Builder {
+    public static final class Builder {
 
         private DomainBareJid service;
 

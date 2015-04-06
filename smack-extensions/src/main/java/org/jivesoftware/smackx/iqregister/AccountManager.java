@@ -41,7 +41,7 @@ import org.jivesoftware.smackx.iqregister.packet.Registration;
  *
  * @author Matt Tucker
  */
-public class AccountManager extends Manager {
+public final class AccountManager extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(AccountManager.class.getName());
 

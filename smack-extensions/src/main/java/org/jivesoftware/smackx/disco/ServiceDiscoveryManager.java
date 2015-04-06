@@ -63,7 +63,7 @@ import java.util.logging.Logger;
  * 
  * @author Gaston Dombiak
  */
-public class ServiceDiscoveryManager extends Manager {
+public final class ServiceDiscoveryManager extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(ServiceDiscoveryManager.class.getName());
 

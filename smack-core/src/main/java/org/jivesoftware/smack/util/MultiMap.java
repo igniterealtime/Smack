@@ -208,7 +208,7 @@ public class MultiMap<K,V> {
         return entrySet;
     }
 
-    private static class SimpleMapEntry<K, V> implements Map.Entry<K, V> {
+    private static final class SimpleMapEntry<K, V> implements Map.Entry<K, V> {
 
         private final K key;
         private V value;

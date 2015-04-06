@@ -24,7 +24,7 @@ import org.jivesoftware.smack.util.StringUtils;
  * A Base 64 encoding implementation.
  * @author Florian Schmaus
  */
-public class Java7Base64Encoder implements org.jivesoftware.smack.util.stringencoder.Base64.Encoder {
+public final class Java7Base64Encoder implements org.jivesoftware.smack.util.stringencoder.Base64.Encoder {
 
     private static Java7Base64Encoder instance = new Java7Base64Encoder();
 

@@ -82,7 +82,7 @@ import org.jxmpp.jid.parts.Resourcepart;
  * @author Matt Tucker
  * @see #getInstanceFor(XMPPConnection)
  */
-public class Roster extends Manager {
+public final class Roster extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(Roster.class.getName());
 
@@ -1459,7 +1459,7 @@ public class Roster extends Manager {
     /**
      * Listens for all roster pushes and processes them.
      */
-    private class RosterPushListener extends AbstractIqRequestHandler {
+    private final class RosterPushListener extends AbstractIqRequestHandler {
 
         private RosterPushListener() {
             super(RosterPacket.ELEMENT, RosterPacket.NAMESPACE, Type.set, Mode.sync);

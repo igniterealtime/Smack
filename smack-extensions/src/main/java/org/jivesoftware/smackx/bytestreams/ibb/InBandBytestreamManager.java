@@ -79,7 +79,7 @@ import org.jxmpp.jid.Jid;
  * 
  * @author Henning Staib
  */
-public class InBandBytestreamManager implements BytestreamManager {
+public final class InBandBytestreamManager implements BytestreamManager {
 
     /**
      * Stanzas that can be used to encapsulate In-Band Bytestream data packets.

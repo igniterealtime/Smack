@@ -595,7 +595,7 @@ public class SmackIntegrationTestFramework {
         return (Exception) e;
     }
 
-    public static class TestRunResult {
+    public static final class TestRunResult {
         public final String testRunId = StringUtils.randomString(5);
         private final List<SuccessfulTest> successfulTests = Collections.synchronizedList(new LinkedList<SuccessfulTest>());
         private final List<FailedTest> failedIntegrationTests = Collections.synchronizedList(new LinkedList<FailedTest>());

@@ -21,7 +21,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.StringUtils;
 
-public class OnceForThisStanza implements StanzaFilter {
+public final class OnceForThisStanza implements StanzaFilter {
 
     private final String id;
     private final XMPPTCPConnection connection;

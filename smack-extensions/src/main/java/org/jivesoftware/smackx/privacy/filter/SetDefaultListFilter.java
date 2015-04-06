@@ -20,7 +20,7 @@ import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.privacy.packet.Privacy;
 
-public class SetDefaultListFilter extends FlexibleStanzaTypeFilter<Privacy> {
+public final class SetDefaultListFilter extends FlexibleStanzaTypeFilter<Privacy> {
 
     public static final SetDefaultListFilter INSTANCE = new SetDefaultListFilter();
 
