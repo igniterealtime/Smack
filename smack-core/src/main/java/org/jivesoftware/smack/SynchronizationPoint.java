@@ -153,7 +153,7 @@ public class SynchronizationPoint<E extends Exception> {
         connectionLock.lock();
         try {
             state = State.Success;
-            condition.signal();
+            condition.signalAll();
         }
         finally {
             connectionLock.unlock();
@@ -174,7 +174,7 @@ public class SynchronizationPoint<E extends Exception> {
         try {
             state = State.Failure;
             this.failureException = failureException;
-            condition.signal();
+            condition.signalAll();
         }
         finally {
             connectionLock.unlock();
