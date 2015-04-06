@@ -803,12 +803,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * Establishes a connection to the XMPP server and performs an automatic login
-     * only if the previous connection state was logged (authenticated). It basically
-     * creates and maintains a socket connection to the server.<p>
-     * <p/>
+     * Establishes a connection to the XMPP server. It basically
+     * creates and maintains a socket connection to the server.
+     * <p>
      * Listeners will be preserved from a previous connection if the reconnection
      * occurs after an abrupt termination.
+     * </p>
      *
      * @throws XMPPException if an error occurs while trying to establish the connection.
      * @throws SmackException 
@@ -831,13 +831,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // Make note of the fact that we're now connected.
         connected = true;
         callConnectionConnectedListener();
-
-        // Automatically makes the login if the user was previously connected successfully
-        // to the server and the connection was terminated abruptly
-        if (wasAuthenticated) {
-            login();
-            notifyReconnection();
-        }
     }
 
     /**

@@ -332,11 +332,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     public abstract boolean isUsingCompression();
 
     /**
-     * Establishes a connection to the XMPP server and performs an automatic login
-     * only if the previous connection state was logged (authenticated). It basically
+     * Establishes a connection to the XMPP server. It basically
      * creates and maintains a connection to the server.
      * <p>
      * Listeners will be preserved from a previous connection.
+     * </p>
      * 
      * @throws XMPPException if an error occurs on the XMPP protocol level.
      * @throws SmackException if an error occurs somewhere else besides XMPP protocol level.
