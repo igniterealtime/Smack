@@ -160,16 +160,22 @@ public class SynchronizationPoint<E extends Exception> {
         }
     }
 
+    /**
+     * Deprecated
+     * @deprecated use {@link #reportFailure(Exception)} instead.
+     */
+    @Deprecated
     public void reportFailure() {
         reportFailure(null);
     }
 
     /**
-     * Report this synchronization point as failed because of the given exception.
+     * Report this synchronization point as failed because of the given exception. The {@code failureException} must be set.
      *
      * @param failureException the exception causing this synchronization point to fail.
      */
     public void reportFailure(E failureException) {
+        assert failureException != null;
         connectionLock.lock();
         try {
             state = State.Failure;
