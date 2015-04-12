@@ -1233,9 +1233,12 @@ public final class Roster extends Manager {
             final XMPPConnection connection = connection();
             Presence presence = (Presence) packet;
             Jid from = presence.getFrom();
-            Resourcepart fromResource = from.getResourceOrNull();
-            if (fromResource == null) {
-                fromResource = Resourcepart.EMPTY;
+            Resourcepart fromResource = Resourcepart.EMPTY;
+            if (from != null) {
+                fromResource = from.getResourceOrNull();
+                if (fromResource == null) {
+                    fromResource = Resourcepart.EMPTY;
+                }
             }
             Jid key = getMapKey(from);
             Map<Resourcepart, Presence> userPresences;
@@ -1313,7 +1316,10 @@ public final class Roster extends Manager {
             // Error presence packets from a bare JID mean we invalidate all existing
             // presence info for the user.
             case error:
-                if (!from.isBareJid()) {
+                // No need to act on error presences send without from, i.e.
+                // directly send from the users XMPP service, or where the from
+                // address is not a bare JID
+                if (from == null || !from.isBareJid()) {
                     break;
                 }
                 userPresences = getUserPresences(key);
