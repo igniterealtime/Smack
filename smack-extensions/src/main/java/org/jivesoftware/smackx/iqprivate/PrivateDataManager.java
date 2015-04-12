@@ -29,6 +29,7 @@ import org.jivesoftware.smackx.iqprivate.packet.DefaultPrivateData;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateDataIQ;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
+import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -98,7 +99,7 @@ public final class PrivateDataManager extends Manager {
      * @return the PrivateData provider.
      */
     public static PrivateDataProvider getPrivateDataProvider(String elementName, String namespace) {
-        String key = getProviderKey(elementName, namespace);
+        String key = XmppStringUtils.generateKey(elementName, namespace);
         return privateDataProviders.get(key);
     }
 
@@ -113,7 +114,7 @@ public final class PrivateDataManager extends Manager {
     public static void addPrivateDataProvider(String elementName, String namespace,
             PrivateDataProvider provider)
     {
-        String key = getProviderKey(elementName, namespace);
+        String key = XmppStringUtils.generateKey(elementName, namespace);
         privateDataProviders.put(key, provider);
     }
 
@@ -124,7 +125,7 @@ public final class PrivateDataManager extends Manager {
      * @param namespace The XML namespace.
      */
     public static void removePrivateDataProvider(String elementName, String namespace) {
-        String key = getProviderKey(elementName, namespace);
+        String key = XmppStringUtils.generateKey(elementName, namespace);
         privateDataProviders.remove(key);
     }
 
@@ -181,19 +182,6 @@ public final class PrivateDataManager extends Manager {
         IQ privateDataSet = new PrivateDataIQ(privateData);
 
         connection().createPacketCollectorAndSend(privateDataSet).nextResultOrThrow();
-    }
-
-    /**
-     * Returns a String key for a given element name and namespace.
-     *
-     * @param elementName the element name.
-     * @param namespace the namespace.
-     * @return a unique key for the element name and namespace pair.
-     */
-    private static String getProviderKey(String elementName, String namespace) {
-        StringBuilder buf = new StringBuilder();
-        buf.append("<").append(elementName).append("/><").append(namespace).append("/>");
-        return buf.toString();
     }
 
     /**
