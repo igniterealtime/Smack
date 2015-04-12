@@ -25,8 +25,10 @@ import org.jivesoftware.smackx.xdata.FormField;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Represents a form that could be use for gathering data as well as for reporting data
@@ -71,7 +73,7 @@ public class DataForm implements ExtensionElement {
     private List<String> instructions = new ArrayList<String>();
     private ReportedData reportedData;
     private final List<Item> items = new ArrayList<Item>();
-    private final List<FormField> fields = new ArrayList<FormField>();
+    private final Map<String, FormField> fields = new LinkedHashMap<>();
     private final List<Element> extensionElements = new ArrayList<Element>();
 
     public DataForm(Type type) {
@@ -139,7 +141,7 @@ public class DataForm implements ExtensionElement {
      */
     public List<FormField> getFields() {
         synchronized (fields) {
-            return Collections.unmodifiableList(new ArrayList<FormField>(fields));
+            return new ArrayList<>(fields.values());
         }
     }
 
@@ -152,13 +154,21 @@ public class DataForm implements ExtensionElement {
      */
     public FormField getField(String variableName) {
         synchronized (fields) {
-            for (FormField field : fields) {
-                if (variableName.equals(field.getVariable())) {
-                    return field;
-                }
-            }
+            return fields.get(variableName);
         }
-        return null;
+    }
+
+    /**
+     * Check if a form field with the given variable name exists.
+     *
+     * @param variableName
+     * @return true if a form field with the variable name exists, false otherwise.
+     * @since 4.2
+     */
+    public boolean hasField(String variableName) {
+        synchronized (fields) {
+            return fields.containsKey(variableName);
+        }
     }
 
     public String getElementName() {
@@ -206,12 +216,12 @@ public class DataForm implements ExtensionElement {
      */
     public void addField(FormField field) {
         String fieldVariableName = field.getVariable();
-        if (fieldVariableName != null && getField(fieldVariableName) != null) {
+        if (hasField(fieldVariableName)) {
             throw new IllegalArgumentException("This data form already contains a form field with the variable name '"
                             + fieldVariableName + "'");
         }
         synchronized (fields) {
-            fields.add(field);
+            fields.put(fieldVariableName, field);
         }
     }
 

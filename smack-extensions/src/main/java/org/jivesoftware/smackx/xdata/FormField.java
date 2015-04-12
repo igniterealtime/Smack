@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 
@@ -150,7 +151,7 @@ public class FormField implements NamedElement {
      * @param variable the variable name of the question.
      */
     public FormField(String variable) {
-        this.variable = variable;
+        this.variable = StringUtils.requireNotNullOrEmpty(variable, "Variable must not be null or empty");
     }
 
     /**
@@ -158,7 +159,7 @@ public class FormField implements NamedElement {
      * name.
      */
     public FormField() {
-        this(null);
+        this.variable = null;
         this.type = Type.fixed;
     }
 

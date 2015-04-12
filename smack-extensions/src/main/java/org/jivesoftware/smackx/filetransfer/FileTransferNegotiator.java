@@ -215,12 +215,7 @@ public final class FileTransferNegotiator extends Manager {
     }
 
     private static FormField getStreamMethodField(DataForm form) {
-        for (FormField field : form.getFields()) {
-            if (field.getVariable().equals(STREAM_DATA_FIELD_NAME)) {
-                return field;
-            }
-        }
-        return null;
+        return form.getField(STREAM_DATA_FIELD_NAME);
     }
 
     private StreamNegotiator getNegotiator(final FormField field)
