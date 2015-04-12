@@ -1597,7 +1597,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             throw new StreamManagementException.StreamManagementNotEnabledException();
         }
         // Remove the listener after max. 12 hours
-        final int removeAfterSeconds = Math.min(getMaxSmResumptionTime() + 60, 12 * 60 * 60);
+        final int removeAfterSeconds = Math.min(getMaxSmResumptionTime(), 12 * 60 * 60);
         schedule(new Runnable() {
             @Override
             public void run() {
@@ -1678,8 +1678,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // See if resumption time is over
         long current = System.currentTimeMillis();
-        long maxResumptionMillies = getMaxSmResumptionTime() * 1000;
-        if (shutdownTimestamp + maxResumptionMillies > current) {
+        long maxResumptionMillies = ((long) getMaxSmResumptionTime()) * 1000;
+        if (current > shutdownTimestamp + maxResumptionMillies) {
+            // Stream resumption is *not* possible if the current timestamp is greater then the greatest timestamp where
+            // resumption is possible
             return false;
         } else {
             return true;
@@ -1688,8 +1690,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     /**
      * Get the maximum resumption time in seconds after which a managed stream can be resumed.
+     * <p>
+     * This method will return {@link Integer#MAX_VALUE} if neither the client nor the server specify a maximum
+     * resumption time. Be aware of integer overflows when using this value, e.g. do not add arbitrary values to it
+     * without checking for overflows before.
+     * </p>
      *
-     * @return the maximum resumption time in seconds.
+     * @return the maximum resumption time in seconds or {@link Integer#MAX_VALUE} if none set.
      */
     public int getMaxSmResumptionTime() {
         int clientResumptionTime = smClientMaxResumptionTime > 0 ? smClientMaxResumptionTime : Integer.MAX_VALUE;
