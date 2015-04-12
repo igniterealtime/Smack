@@ -1239,6 +1239,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         /**
          * Shuts down the stanza(/packet) writer. Once this method has been called, no further
          * packets will be written to the server.
+         * @throws InterruptedException 
          */
         void shutdown(boolean instant) {
             instantShutdown = instant;
@@ -1247,7 +1248,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             try {
                 shutdownDone.checkIfSuccessOrWait();
             }
-            catch (NoResponseException e) {
+            catch (NoResponseException | InterruptedException e) {
                 LOGGER.log(Level.WARNING, "shutdownDone was not marked as successful by the writer thread", e);
             }
         }

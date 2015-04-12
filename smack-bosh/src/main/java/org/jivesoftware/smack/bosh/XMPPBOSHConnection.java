@@ -132,7 +132,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void connectInternal() throws SmackException {
+    protected void connectInternal() throws SmackException, InterruptedException {
         done = false;
         try {
             // Ensure a clean starting state

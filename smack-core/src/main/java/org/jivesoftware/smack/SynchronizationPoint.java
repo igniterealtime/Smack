@@ -19,8 +19,6 @@ package org.jivesoftware.smack;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -29,8 +27,6 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 
 public class SynchronizationPoint<E extends Exception> {
-
-    private static final Logger LOGGER = Logger.getLogger(SynchronizationPoint.class.getName());
 
     private final AbstractXMPPConnection connection;
     private final Lock connectionLock;
@@ -120,8 +116,9 @@ public class SynchronizationPoint<E extends Exception> {
      * Check if this synchronization point is successful or wait the connections reply timeout.
      * @throws NoResponseException if there was no response marking the synchronization point as success or failed.
      * @throws E if there was a failure
+     * @throws InterruptedException 
      */
-    public void checkIfSuccessOrWaitOrThrow() throws NoResponseException, E {
+    public void checkIfSuccessOrWaitOrThrow() throws NoResponseException, E, InterruptedException {
         checkIfSuccessOrWait();
         if (state == State.Failure) {
             throw failureException;
@@ -131,8 +128,9 @@ public class SynchronizationPoint<E extends Exception> {
     /**
      * Check if this synchronization point is successful or wait the connections reply timeout.
      * @throws NoResponseException if there was no response marking the synchronization point as success or failed.
+     * @throws InterruptedException 
      */
-    public void checkIfSuccessOrWait() throws NoResponseException {
+    public void checkIfSuccessOrWait() throws NoResponseException, InterruptedException {
         connectionLock.lock();
         try {
             if (state == State.Success) {
@@ -222,20 +220,16 @@ public class SynchronizationPoint<E extends Exception> {
      * {@link #reportSuccess()}, {@link #reportFailure()} and {@link #reportFailure(Exception)} will either set this
      * synchronization point to {@link State#Success} or {@link State#Failure}. If none of them is set after the
      * connections reply timeout, this method will set the state of {@link State#NoResponse}.
+     * @throws InterruptedException 
      */
-    private void waitForConditionOrTimeout() {
+    private void waitForConditionOrTimeout() throws InterruptedException {
         long remainingWait = TimeUnit.MILLISECONDS.toNanos(connection.getPacketReplyTimeout());
         while (state == State.RequestSent || state == State.Initial) {
-            try {
-                if (remainingWait <= 0) {
-                    state = State.NoResponse;
-                    break;
-                }
-                remainingWait = condition.awaitNanos(remainingWait);
-            } catch (InterruptedException e) {
-                // This InterruptedException could be "spurious wakeups", see javadoc of awaitNanos()
-                LOGGER.log(Level.WARNING, "Thread interrupt while waiting for condition or timeout ignored", e);
+            if (remainingWait <= 0) {
+                state = State.NoResponse;
+                break;
             }
+            remainingWait = condition.awaitNanos(remainingWait);
         }
     }
 
