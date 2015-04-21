@@ -17,6 +17,9 @@
 
 package org.jivesoftware.smackx.bookmarks;
 
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.parts.Resourcepart;
+
 /**
  * Respresents a Conference Room bookmarked on the server using XEP-0048 Bookmark Storage XEP.
  *
@@ -26,17 +29,17 @@ public class BookmarkedConference implements SharedBookmark {
 
     private String name;
     private boolean autoJoin;
-    private final String jid;
+    private final BareJid jid;
 
-    private String nickname;
+    private Resourcepart nickname;
     private String password;
     private boolean isShared;
 
-    protected BookmarkedConference(String jid) {
+    protected BookmarkedConference(BareJid jid) {
         this.jid = jid;
     }
 
-    protected BookmarkedConference(String name, String jid, boolean autoJoin, String nickname,
+    protected BookmarkedConference(String name, BareJid jid, boolean autoJoin, Resourcepart nickname,
             String password)
     {
         this.name = name;
@@ -78,7 +81,7 @@ public class BookmarkedConference implements SharedBookmark {
      *
      * @return the full JID of  this conference room.
      */
-    public String getJid() {
+    public BareJid getJid() {
         return jid;
     }
 
@@ -88,11 +91,11 @@ public class BookmarkedConference implements SharedBookmark {
      *
      * @return the nickname to use when joining, null may be returned.
      */
-    public String getNickname() {
+    public Resourcepart getNickname() {
         return nickname;
     }
 
-    protected void setNickname(String nickname) {
+    protected void setNickname(Resourcepart nickname) {
         this.nickname = nickname;
     }
 
@@ -116,7 +119,7 @@ public class BookmarkedConference implements SharedBookmark {
             return false;
         }
         BookmarkedConference conference = (BookmarkedConference)obj;
-        return conference.getJid().equalsIgnoreCase(jid);
+        return conference.getJid().equals(jid);
     }
 
     @Override

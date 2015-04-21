@@ -28,6 +28,8 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.iqprivate.PrivateDataManager;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.parts.Resourcepart;
 
 
 /**
@@ -109,8 +111,8 @@ public final class BookmarkManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void addBookmarkedConference(String name, String jid, boolean isAutoJoin,
-            String nickname, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
+    public void addBookmarkedConference(String name, BareJid jid, boolean isAutoJoin,
+            Resourcepart nickname, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         retrieveBookmarks();
         BookmarkedConference bookmark
@@ -144,12 +146,12 @@ public final class BookmarkManager {
      * @throws IllegalArgumentException thrown when the conference being removed is a shared
      * conference
      */
-    public void removeBookmarkedConference(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void removeBookmarkedConference(BareJid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         retrieveBookmarks();
         Iterator<BookmarkedConference> it = bookmarks.getBookmarkedConferences().iterator();
         while(it.hasNext()) {
             BookmarkedConference conference = it.next();
-            if(conference.getJid().equalsIgnoreCase(jid)) {
+            if(conference.getJid().equals(jid)) {
                 if(conference.isShared()) {
                     throw new IllegalArgumentException("Conference is shared and can't be removed");
                 }
@@ -228,6 +230,22 @@ public final class BookmarkManager {
                 return;
             }
         }
+    }
+
+    /**
+     * Check if the service supports bookmarks using private data.
+     *
+     * @return true if the service supports private data, false otherwise.
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws XMPPErrorException
+     * @see PrivateDataManager#isSupported()
+     * @since 4.2
+     */
+    public boolean isSupported() throws NoResponseException, NotConnectedException,
+                    XMPPErrorException, InterruptedException {
+        return privateDataManager.isSupported();
     }
 
     private Bookmarks retrieveBookmarks() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {

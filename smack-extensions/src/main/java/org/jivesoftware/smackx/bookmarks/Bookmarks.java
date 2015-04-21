@@ -16,9 +16,12 @@
  */
 package org.jivesoftware.smackx.bookmarks;
 
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.parts.Resourcepart;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -268,7 +271,7 @@ public class Bookmarks implements PrivateData {
     private static BookmarkedConference getConferenceStorage(XmlPullParser parser) throws XmlPullParserException, IOException {
         String name = parser.getAttributeValue("", "name");
         String autojoin = parser.getAttributeValue("", "autojoin");
-        String jid = parser.getAttributeValue("", "jid");
+        BareJid jid = ParserUtils.getBareJidAttribute(parser);
 
         BookmarkedConference conf = new BookmarkedConference(jid);
         conf.setName(name);
@@ -279,7 +282,8 @@ public class Bookmarks implements PrivateData {
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG && "nick".equals(parser.getName())) {
-                conf.setNickname(parser.nextText());
+                String nickString = parser.nextText();
+                conf.setNickname(Resourcepart.from(nickString));
             }
             else if (eventType == XmlPullParser.START_TAG && "password".equals(parser.getName())) {
                 conf.setPassword(parser.nextText());

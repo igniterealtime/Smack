@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright 2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.muc;
-
-import org.jivesoftware.smack.SmackException;
 
 /**
- * Thrown if the requested operation required the MUC to be joined by the
- * client, while the client is currently joined.
- * 
+ * Manager to autojoin bookmarked Multi-User Chat conferences.
  */
-public class MUCNotJoinedException extends SmackException {
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -5204934585663465576L;
-
-    public MUCNotJoinedException(MultiUserChat multiUserChat) {
-        super("Client not currently joined " + multiUserChat.getRoom());
-    }
-}
+package org.jivesoftware.smackx.muc.bookmarkautojoin;

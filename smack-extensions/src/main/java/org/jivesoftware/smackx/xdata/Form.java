@@ -354,6 +354,17 @@ public class Form {
     }
 
     /**
+     * Check if a field with the given variable exists.
+     *
+     * @param variable the variable to check for.
+     * @return true if a field with the variable exists, false otherwise.
+     * @since 4.2
+     */
+    public boolean hasField(String variable) {
+        return dataForm.hasField(variable);
+    }
+
+    /**
      * Returns the instructions that explain how to fill out the form and what the form is about.
      * 
      * @return instructions that explain how to fill out the form.

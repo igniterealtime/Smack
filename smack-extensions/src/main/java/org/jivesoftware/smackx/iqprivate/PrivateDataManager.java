@@ -24,6 +24,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.iqprivate.packet.DefaultPrivateData;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
@@ -182,6 +183,51 @@ public final class PrivateDataManager extends Manager {
         IQ privateDataSet = new PrivateDataIQ(privateData);
 
         connection().createPacketCollectorAndSend(privateDataSet).nextResultOrThrow();
+    }
+
+    private static final PrivateData DUMMY_PRIVATE_DATA = new PrivateData() {
+        @Override
+        public String getElementName() {
+            return "smackDummyPrivateData";
+        }
+
+        @Override
+        public String getNamespace() {
+            return "https://igniterealtime.org/projects/smack/";
+        }
+
+        @Override
+        public CharSequence toXML() {
+            return '<' + getElementName() + " xmlns='" + getNamespace() + "'/>";
+        }
+    };
+
+    /**
+     * Check if the service supports private data.
+     *
+     * @return true if the service supports private data, false otherwise.
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws XMPPErrorException
+     * @since 4.2
+     */
+    public boolean isSupported() throws NoResponseException, NotConnectedException,
+                    InterruptedException, XMPPErrorException {
+        // This is just a primitive hack, since XEP-49 does not specify a way to determine if the
+        // service supports it
+        try {
+            setPrivateData(DUMMY_PRIVATE_DATA);
+            return true;
+        }
+        catch (XMPPErrorException e) {
+            if (e.getXMPPError().getCondition() == Condition.service_unavailable) {
+                return false;
+            }
+            else {
+                throw e;
+            }
+        }
     }
 
     /**

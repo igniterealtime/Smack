@@ -38,8 +38,8 @@ the _**MultiUserChat**_ instance where nickname is the nickname to use when
 joining the room.
 
 Depending on the type of room that you want to create you will have to use
-different configuration forms. In order to create an Instant room just send
-**sendConfigurationForm(Form form)** where form is an empty form. But if you
+different configuration forms. In order to create an Instant room just use
+`MucCreateConfigFormHandle.makeInstant()`. But if you
 want to create a Reserved room then you should first get the room's
 configuration form, complete the form and finally send it back to the server.
 
@@ -54,12 +54,8 @@ MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 // Get a MultiUserChat using MultiUserChatManager
 MultiUserChat muc = manager.getMultiUserChat("myroom@conference.jabber.org");
 
-// Create the room
-muc.create("testbot");
-
-// Send an empty room configuration form which indicates that we want
-// an instant room
-muc.sendConfigurationForm(new Form(DataForm.Type.submit));
+// Create the room and send an empty configuration form to make this an instant room
+muc.create("testbot").makeInstant();
 ```
 
 In this example we can see how to create a reserved room. The form is
@@ -72,27 +68,14 @@ MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 // Create a MultiUserChat using an XMPPConnection for a room
 MultiUserChat muc = = manager.getMultiUserChat("myroom@conference.jabber.org");
 
-// Create the room
-muc.create("testbot");
+// Prepare a list of owners of the new room
+Set<Jid> owners = JidUtil.jidSetFrom(new String[] { "me@example.org", "juliet@example.org" });
 
-// Get the the room's configuration form
-Form form = muc.getConfigurationForm();
-// Create a new form to submit based on the original form
-Form submitForm = form.createAnswerForm();
-// Add default answers to the form to submit
-for (Iterator fields = form.getFields(); fields.hasNext();) {
-	FormField field = (FormField) fields.next();
-	if (!FormField.type.hidden.equals(field.getType()) && field.getVariable() != null) {
-		// Sets the default value as the answer
-		submitForm.setDefaultAnswer(field.getVariable());
-}
-}
-// Sets the new owner of the room
-List owners = new ArrayList();
-owners.add("johndoe@jabber.org");
-submitForm.setAnswer("muc#roomconfig_roomowners", owners);
-// Send the completed form (with default values) to the server to configure the room
-muc.sendConfigurationForm(submitForm);
+// Create the room
+muc.create("testbot")
+  .getConfigFormManger()
+  .setRoomOwners(owners)
+  .submitConfigurationForm();
 ```
 
 Join a room
