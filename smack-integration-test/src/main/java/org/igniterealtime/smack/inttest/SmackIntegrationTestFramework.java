@@ -466,11 +466,27 @@ public class SmackIntegrationTestFramework {
     }
 
     protected void disconnectAndMaybeDelete(XMPPTCPConnection connection)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException,
-                    InterruptedException {
+                    throws InterruptedException, XMPPException, SmackException, IOException {
         if (config.registerAccounts) {
+            final int maxAttempts = 3;
             AccountManager am = AccountManager.getInstance(connection);
-            am.deleteAccount();
+            int attempts;
+            for (attempts = 0; attempts < maxAttempts; attempts++) {
+                try {
+                    am.deleteAccount();
+                } catch (NoResponseException | InterruptedException e) {
+                    LOGGER.log(Level.WARNING, "Exception deleting account" , e);
+                    continue;
+                } catch (NotConnectedException e) {
+                    LOGGER.log(Level.WARNING, "Exception deleting account" , e);
+                    connection.connect().login();
+                    continue;
+                }
+                break;
+            }
+            if (attempts > maxAttempts) {
+                LOGGER.log(Level.SEVERE, "Could not delete account for connection: " + connection);
+            }
         }
         connection.disconnect();
     }
