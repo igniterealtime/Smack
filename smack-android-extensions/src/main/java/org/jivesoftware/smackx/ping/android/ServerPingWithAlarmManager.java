@@ -115,7 +115,7 @@ public final class ServerPingWithAlarmManager extends Manager {
 				XMPPConnection connection = it.next();
 				if (ServerPingWithAlarmManager.getInstanceFor(connection).isEnabled()) {
 					LOGGER.fine("Calling pingServerIfNecessary for connection "
-							+ connection.getConnectionCounter());
+							+ connection);
 					final PingManager pingManager = PingManager.getInstanceFor(connection);
 					// Android BroadcastReceivers have a timeout of 60 seconds.
 					// The connections reply timeout may be higher, which causes

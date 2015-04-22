@@ -78,10 +78,10 @@ public abstract class AbstractDebugger implements SmackDebugger {
         connListener = new ConnectionListener() {
             public void connected(XMPPConnection connection) {
                 log("XMPPConnection connected ("
-                                + connection.getConnectionCounter() + ")");
+                                + connection + ")");
             }
             public void authenticated(XMPPConnection connection, boolean resumed) {
-                String logString = "XMPPConnection authenticated (" + connection.getConnectionCounter() + ")";
+                String logString = "XMPPConnection authenticated (" + connection + ")";
                 if (resumed) {
                     logString += " and resumed";
                 }
@@ -90,32 +90,32 @@ public abstract class AbstractDebugger implements SmackDebugger {
             public void connectionClosed() {
                 log(
                        "XMPPConnection closed (" +
-                        connection.getConnectionCounter() +
+                        connection +
                         ")");
             }
 
             public void connectionClosedOnError(Exception e) {
                 log(
                         "XMPPConnection closed due to an exception (" +
-                        connection.getConnectionCounter() +
+                        connection +
                         ")", e);
             }
             public void reconnectionFailed(Exception e) {
                 log(
                         "Reconnection failed due to an exception (" +
-                        connection.getConnectionCounter() +
+                        connection +
                         ")", e);
             }
             public void reconnectionSuccessful() {
                 log(
                         "XMPPConnection reconnected (" +
-                        connection.getConnectionCounter() +
+                        connection +
                         ")");
             }
             public void reconnectingIn(int seconds) {
                 log(
                         "XMPPConnection (" +
-                        connection.getConnectionCounter() +
+                        connection +
                         ") will reconnect in " + seconds);
             }
         };

@@ -1303,8 +1303,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     protected void finalize() throws Throwable {
-        LOGGER.fine("finalizing XMPPConnection ( " + getConnectionCounter()
-                        + "): Shutting down executor services");
+        LOGGER.fine("finalizing " + this + ": Shutting down executor services");
         try {
             // It's usually not a good idea to rely on finalize. But this is the easiest way to
             // avoid the "Smack Listener Processor" leaking. The thread(s) of the executor have a
@@ -1567,6 +1566,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     public ParsingExceptionCallback getParsingExceptionCallback() {
         return parsingExceptionCallback;
+    }
+
+    @Override
+    public final String toString() {
+        FullJid localEndpoint = getUser();
+        String localEndpointString = (localEndpoint == null ?  "not-authenticated" : localEndpoint.toString());
+        return getClass().getSimpleName() + '[' + localEndpointString + "] (" + getConnectionCounter() + ')';
     }
 
     protected final void asyncGo(Runnable runnable) {
