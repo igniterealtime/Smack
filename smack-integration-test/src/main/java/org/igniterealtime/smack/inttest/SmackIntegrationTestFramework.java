@@ -453,12 +453,11 @@ public class SmackIntegrationTestFramework {
             for (int i = 0; i < numberOfConnections; ++i) {
                 try {
                     AccountManager.getInstance(connections[i]).deleteAccount();
-                    LOGGER.info("Successfully deleted account for connection ("
-                                    + connections[i] + ')');
+                    LOGGER.info("Successfully deleted account of" + connections[i]);
                 }
                 catch (NoResponseException | XMPPErrorException | NotConnectedException
                                 | InterruptedException e) {
-                    LOGGER.log(Level.SEVERE, "Could not delete account", e);
+                    LOGGER.log(Level.SEVERE, "Could not delete account of " + connections[i], e);
                 }
                 connections[i].disconnect();
             }
@@ -475,10 +474,10 @@ public class SmackIntegrationTestFramework {
                 try {
                     am.deleteAccount();
                 } catch (NoResponseException | InterruptedException e) {
-                    LOGGER.log(Level.WARNING, "Exception deleting account" , e);
+                    LOGGER.log(Level.WARNING, "Exception deleting account for " + connection , e);
                     continue;
                 } catch (NotConnectedException e) {
-                    LOGGER.log(Level.WARNING, "Exception deleting account" , e);
+                    LOGGER.log(Level.WARNING, "Exception deleting account for " + connection , e);
                     connection.connect().login();
                     continue;
                 }
