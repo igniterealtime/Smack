@@ -119,7 +119,7 @@ public final class PingManager extends Manager {
     private PingManager(XMPPConnection connection) {
         super(connection);
         executorService = Executors.newSingleThreadScheduledExecutor(
-                        new SmackExecutorThreadFactory(connection.getConnectionCounter(), "Ping"));
+                        new SmackExecutorThreadFactory(connection, "Ping"));
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(Ping.NAMESPACE);
 

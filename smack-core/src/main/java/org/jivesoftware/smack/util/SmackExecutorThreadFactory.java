@@ -18,6 +18,8 @@ package org.jivesoftware.smack.util;
 
 import java.util.concurrent.ThreadFactory;
 
+import org.jivesoftware.smack.XMPPConnection;
+
 /**
  * SmackExecutorThreadFactory creates daemon threads with a particular name. Note that you should
  * not use anonymous inner classes for thread factories in order to prevent threads from leaking.
@@ -27,8 +29,8 @@ public final class SmackExecutorThreadFactory implements ThreadFactory {
     private final String name;
     private int count = 0;
 
-    public SmackExecutorThreadFactory(int connectionCounterValue, String name) {
-        this.connectionCounterValue = connectionCounterValue;
+    public SmackExecutorThreadFactory(XMPPConnection connection, String name) {
+        this.connectionCounterValue = connection.getConnectionCounter();
         this.name = name;
     }
 

@@ -232,13 +232,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * PacketListeners are invoked in the same order the stanzas arrived.
      */
     private final ThreadPoolExecutor executorService = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<Runnable>(100), new SmackExecutorThreadFactory(connectionCounterValue, "Incoming Processor"));
+                    new ArrayBlockingQueue<Runnable>(100), new SmackExecutorThreadFactory(this, "Incoming Processor"));
 
     /**
      * This scheduled thread pool executor is used to remove pending callbacks.
      */
     private final ScheduledExecutorService removeCallbacksService = Executors.newSingleThreadScheduledExecutor(
-                    new SmackExecutorThreadFactory(connectionCounterValue, "Remove Callbacks"));
+                    new SmackExecutorThreadFactory(this, "Remove Callbacks"));
 
     /**
      * A cached thread pool executor service with custom thread factory to set meaningful names on the threads and set
@@ -247,7 +247,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private final ExecutorService cachedExecutorService = Executors.newCachedThreadPool(
                     // @formatter:off
                     new SmackExecutorThreadFactory(    // threadFactory
-                                    connectionCounterValue,
+                                    this,
                                     "Cached Executor"
                                     )
                     // @formatter:on
@@ -259,7 +259,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * is the same as the order of the incoming stanzas. Therefore we use a <i>single</i> threaded executor service.
      */
     private final ExecutorService singleThreadedExecutorService = Executors.newSingleThreadExecutor(new SmackExecutorThreadFactory(
-                    getConnectionCounter(), "Single Threaded Executor"));
+                    this, "Single Threaded Executor"));
 
     /**
      * The used host to establish the connection to
