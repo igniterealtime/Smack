@@ -418,6 +418,7 @@ public class MUCUser implements ExtensionElement {
 
         private static final Map<Integer, Status> statusMap = new HashMap<Integer, Status>(8);
 
+        public static final Status PRESENCE_TO_SELF_110 = Status.create(110);
         public static final Status ROOM_CREATED_201 = Status.create(201);
         public static final Status BANNED_301 = Status.create(301);
         public static final Status NEW_NICKNAME_303 = Status.create(303);
@@ -465,6 +466,11 @@ public class MUCUser implements ExtensionElement {
             xml.attribute("code", getCode());
             xml.closeEmptyElement();
             return xml;
+        }
+
+        @Override
+        public String toString() {
+            return code.toString();
         }
 
         @Override

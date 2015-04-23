@@ -60,6 +60,7 @@ import org.jivesoftware.smackx.iqregister.packet.Registration;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucAlreadyJoinedException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucNotJoinedException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MissingMucCreationAcknowledgeException;
+import org.jivesoftware.smackx.muc.filter.MUCUserStatusCodeFilter;
 import org.jivesoftware.smackx.muc.packet.Destroy;
 import org.jivesoftware.smackx.muc.packet.MUCAdmin;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
@@ -308,9 +309,6 @@ public class MultiUserChat {
         }
         joinPresence.addExtension(mucInitialPresence);
 
-        // Wait for a presence packet back from the server.
-        StanzaFilter responseFilter = new AndFilter(FromMatchesFilter.createFull(jid), new StanzaTypeFilter(Presence.class));
-
         // Setup the messageListeners and presenceListeners *before* the join presence is send.
         connection.addSyncStanzaListener(messageListener, fromRoomGroupchatFilter);
         connection.addSyncStanzaListener(presenceListener, new AndFilter(fromRoomFilter,
@@ -323,6 +321,10 @@ public class MultiUserChat {
                         StanzaTypeFilter.PRESENCE));
         messageCollector = connection.createPacketCollector(fromRoomGroupchatFilter);
 
+        // Wait for a presence packet back from the server.
+        // Use a bare JID filter, since the room may rewrite the nickname.
+        StanzaFilter responseFilter = new AndFilter(FromMatchesFilter.createBare(jid), new StanzaTypeFilter(
+                        Presence.class), MUCUserStatusCodeFilter.STATUS_110_PRESENCE_TO_SELF);
         Presence presence;
         try {
             presence = connection.createPacketCollectorAndSend(responseFilter, joinPresence).nextResultOrThrow(timeout);
@@ -333,7 +335,9 @@ public class MultiUserChat {
             throw e;
         }
 
-        this.nickname = nickname;
+        // This presence must be send from a full JID. We use the resourcepart of this JID as nick, since the room may
+        // performed roomnick rewriting
+        this.nickname = presence.getFrom().asFullJidIfPossible().getResourcepart();
         joined = true;
 
         // Update the list of joined rooms
