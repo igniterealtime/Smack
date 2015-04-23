@@ -969,7 +969,7 @@ public class MultiUserChat {
      * @throws InterruptedException 
      * @throws MucNotJoinedException 
      */
-    public void changeNickname(Resourcepart nickname) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, MucNotJoinedException  {
+    public synchronized void changeNickname(Resourcepart nickname) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, MucNotJoinedException  {
         StringUtils.requireNotNullOrEmpty(nickname, "Nickname must not be null or blank.");
         // Check that we already have joined the room before attempting to change the
         // nickname.
