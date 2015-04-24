@@ -51,7 +51,6 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration.Builder;
@@ -425,7 +424,7 @@ public class SmackIntegrationTestFramework {
         }
     }
 
-    private void invokeLowLevel(Method testMethod, AbstractSmackIntTest test) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    private void invokeLowLevel(Method testMethod, AbstractSmackIntTest test) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InterruptedException {
         // We have checked before that every parameter, if any, is of type XMPPTCPConnection
         final int numberOfConnections = testMethod.getParameterTypes().length;
         XMPPTCPConnection[] connections = null;
@@ -451,43 +450,13 @@ public class SmackIntegrationTestFramework {
         }
         finally {
             for (int i = 0; i < numberOfConnections; ++i) {
-                try {
-                    AccountManager.getInstance(connections[i]).deleteAccount();
-                    LOGGER.info("Successfully deleted account of" + connections[i]);
-                }
-                catch (NoResponseException | XMPPErrorException | NotConnectedException
-                                | InterruptedException e) {
-                    LOGGER.log(Level.SEVERE, "Could not delete account of " + connections[i], e);
-                }
-                connections[i].disconnect();
+                IntTestUtil.disconnectAndMaybeDelete(connections[i], true);
             }
         }
     }
 
-    protected void disconnectAndMaybeDelete(XMPPTCPConnection connection)
-                    throws InterruptedException, XMPPException, SmackException, IOException {
-        if (config.registerAccounts) {
-            final int maxAttempts = 3;
-            AccountManager am = AccountManager.getInstance(connection);
-            int attempts;
-            for (attempts = 0; attempts < maxAttempts; attempts++) {
-                try {
-                    am.deleteAccount();
-                } catch (NoResponseException | InterruptedException e) {
-                    LOGGER.log(Level.WARNING, "Exception deleting account for " + connection , e);
-                    continue;
-                } catch (NotConnectedException e) {
-                    LOGGER.log(Level.WARNING, "Exception deleting account for " + connection , e);
-                    connection.connect().login();
-                    continue;
-                }
-                break;
-            }
-            if (attempts > maxAttempts) {
-                LOGGER.log(Level.SEVERE, "Could not delete account for connection: " + connection);
-            }
-        }
-        connection.disconnect();
+    protected void disconnectAndMaybeDelete(XMPPTCPConnection connection) throws InterruptedException {
+        IntTestUtil.disconnectAndMaybeDelete(connection, config.registerAccounts);
     }
 
     protected SmackIntegrationTestEnvironment prepareEnvironment() throws SmackException,
