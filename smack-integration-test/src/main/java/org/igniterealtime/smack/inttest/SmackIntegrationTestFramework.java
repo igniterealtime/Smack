@@ -140,7 +140,7 @@ public class SmackIntegrationTestFramework {
         else {
             testPackages = config.testPackages.toArray(new String[config.testPackages.size()]);
         }
-        Reflections reflections = new Reflections((Object[]) testPackages, new SubTypesScanner(),
+        Reflections reflections = new Reflections(testPackages, new SubTypesScanner(),
                         new TypeAnnotationsScanner(), new MethodAnnotationsScanner(), new MethodParameterScanner());
         Set<Class<? extends AbstractSmackIntegrationTest>> inttestClasses = reflections.getSubTypesOf(AbstractSmackIntegrationTest.class);
         Set<Class<? extends AbstractSmackLowLevelIntegrationTest>> lowLevelInttestClasses = reflections.getSubTypesOf(AbstractSmackLowLevelIntegrationTest.class);
