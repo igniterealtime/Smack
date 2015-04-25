@@ -20,8 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
 import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
 import org.igniterealtime.smack.inttest.Configuration;
@@ -63,9 +61,8 @@ public class StreamManagementTest extends AbstractSmackLowLevelIntegrationTest {
     }
 
     @SmackIntegrationTest
-    public void testStreamManagement(XMPPTCPConnection conOne, XMPPTCPConnection conTwo) throws InterruptedException, KeyManagementException,
-                    NoSuchAlgorithmException, SmackException, IOException, XMPPException,
-                    TestNotPossibleException {
+    public void testStreamManagement(XMPPTCPConnection conOne, XMPPTCPConnection conTwo) throws InterruptedException,
+                    SmackException, IOException, XMPPException {
         final String body1 = "Hi, what's up? " + testRunId;
         final String body2 = "Hi, what's up? I've been just instantly shutdown" + testRunId;
         final String body3 = "Hi, what's up? I've been just resumed" + testRunId;

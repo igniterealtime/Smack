@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -35,7 +34,7 @@ public class VersionIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
-    public void testVersion() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, TestNotPossibleException {
+    public void testVersion() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // TODO put into @BeforeClass method
         VersionManager.setAutoAppendSmackVersion(false);
 
