@@ -615,6 +615,17 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
+         * Set the information about the Proxy used for the connection.
+         *
+         * @param proxyInfo the Proxy information.
+         * @return a reference to this builder.
+         */
+        public B setProxyInfo(ProxyInfo proxyInfo) {
+            this.proxy = proxyInfo;
+            return getThis();
+        }
+
+        /**
          * Allow <code>null</code> or the empty String as username.
          *
          * Some SASL mechanisms (e.g. SASL External) may also signal the username (as "authorization identity"), in
