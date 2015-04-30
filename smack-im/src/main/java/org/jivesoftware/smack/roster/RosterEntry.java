@@ -94,7 +94,7 @@ public final class RosterEntry extends Manager {
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      */
-    public void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException {
+    public synchronized void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException {
         // Do nothing if the name hasn't changed.
         if (name != null && name.equals(this.name)) {
             return;
@@ -102,7 +102,10 @@ public final class RosterEntry extends Manager {
 
         RosterPacket packet = new RosterPacket();
         packet.setType(IQ.Type.set);
-        packet.addRosterItem(toRosterItem(this));
+
+        // Create a new roster item with the current RosterEntry and the *new* name. Note that we can't set the name of
+        // RosterEntry right away, as otherwise the updated event wont get fired, because equalsDeep would return true.
+        packet.addRosterItem(toRosterItem(this, name));
         connection().createPacketCollectorAndSend(packet).nextResultOrThrow();
 
         // We have received a result response to the IQ set, the name was successfully changed
@@ -246,7 +249,11 @@ public final class RosterEntry extends Manager {
     }
     
     static RosterPacket.Item toRosterItem(RosterEntry entry) {
-        RosterPacket.Item item = new RosterPacket.Item(entry.getUser(), entry.getName());
+        return toRosterItem(entry, entry.getName());
+    }
+
+    private static RosterPacket.Item toRosterItem(RosterEntry entry, String name) {
+        RosterPacket.Item item = new RosterPacket.Item(entry.getUser(), name);
         item.setItemType(entry.getType());
         item.setItemStatus(entry.getStatus());
         // Set the correct group names for the item.
