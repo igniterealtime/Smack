@@ -116,20 +116,9 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void loginNonAnonymously(String username, String password, String resource)
+    protected void loginInternal(String username, String password, String resource)
             throws XMPPException {
         user = getUserJid();
-        authenticated = true;
-    }
-
-    @Override
-    public void loginAnonymously() throws XMPPException {
-        if (!isConnected()) {
-            throw new IllegalStateException("Not connected to server.");
-        }
-        if (isAuthenticated()) {
-            throw new IllegalStateException("Already logged in to server.");
-        }
         authenticated = true;
     }
 

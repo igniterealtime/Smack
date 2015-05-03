@@ -210,38 +210,12 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void loginNonAnonymously(String username, String password, String resource)
-            throws XMPPException, SmackException, IOException, InterruptedException {
-        if (saslAuthentication.hasNonAnonymousAuthentication()) {
-            // Authenticate using SASL
-            if (password != null) {
-                 saslAuthentication.authenticate(username, password, resource);
-            } else {
-                saslAuthentication.authenticate(resource, config.getCallbackHandler());
-            }
-        } else {
-            throw new SmackException("No non-anonymous SASL authentication mechanism available");
-        }
+    protected void loginInternal(String username, String password, String resource) throws XMPPException,
+                    SmackException, IOException, InterruptedException {
+        // Authenticate using SASL
+        saslAuthentication.authenticate(username, password);
 
         bindResourceAndEstablishSession(resource);
-
-        afterSuccessfulLogin(false);
-    }
-
-    @Override
-    protected void loginAnonymously() throws XMPPException, SmackException, IOException, InterruptedException {
-        // Wait with SASL auth until the SASL mechanisms have been received
-        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
-
-        if (saslAuthentication.hasAnonymousAuthentication()) {
-            saslAuthentication.authenticateAnonymously();
-        }
-        else {
-            // Authenticate using Non-SASL
-            throw new SmackException("No anonymous SASL authentication mechanism available");
-        }
-
-        bindResourceAndEstablishSession(null);
 
         afterSuccessfulLogin(false);
     }

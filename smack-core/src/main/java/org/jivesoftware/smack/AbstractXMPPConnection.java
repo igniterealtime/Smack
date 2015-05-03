@@ -204,7 +204,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * The SASLAuthentication manager that is responsible for authenticating with the server.
      */
-    protected SASLAuthentication saslAuthentication = new SASLAuthentication(this);
+    protected final SASLAuthentication saslAuthentication;
 
     /**
      * A number to uniquely identify connections that are created. This is distinct from the
@@ -291,6 +291,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @param configuration The configuration which is used to establish the connection.
      */
     protected AbstractXMPPConnection(ConnectionConfiguration configuration) {
+        saslAuthentication = new SASLAuthentication(this, configuration);
         config = configuration;
         // Notify listeners that a new connection has been established
         for (ConnectionCreationListener listener : XMPPConnectionRegistry.getConnectionCreationListeners()) {
@@ -397,18 +398,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws InterruptedException 
      */
     public synchronized void login() throws XMPPException, SmackException, IOException, InterruptedException {
-        if (isAnonymous()) {
-            throwNotConnectedExceptionIfAppropriate();
-            throwAlreadyLoggedInExceptionIfAppropriate();
-            loginAnonymously();
-        } else {
-            // The previously used username, password and resource take over precedence over the
-            // ones from the connection configuration
-            CharSequence username = usedUsername != null ? usedUsername : config.getUsername();
-            String password = usedPassword != null ? usedPassword : config.getPassword();
-            String resource = usedResource != null ? usedResource : config.getResource();
-            login(username, password, resource);
-        }
+        // The previously used username, password and resource take over precedence over the
+        // ones from the connection configuration
+        CharSequence username = usedUsername != null ? usedUsername : config.getUsername();
+        String password = usedPassword != null ? usedPassword : config.getPassword();
+        String resource = usedResource != null ? usedResource : config.getResource();
+        login(username, password, resource);
     }
 
     /**
@@ -451,13 +446,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         usedUsername = username != null ? username.toString() : null;
         usedPassword = password;
         usedResource = resource;
-        loginNonAnonymously(usedUsername, usedPassword, usedResource);
+        loginInternal(usedUsername, usedPassword, usedResource);
     }
 
-    protected abstract void loginNonAnonymously(String username, String password, String resource)
+    protected abstract void loginInternal(String username, String password, String resource)
                     throws XMPPException, SmackException, IOException, InterruptedException;
-
-    protected abstract void loginAnonymously() throws XMPPException, SmackException, IOException, InterruptedException;
 
     @Override
     public final boolean isConnected() {

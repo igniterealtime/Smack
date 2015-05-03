@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.sasl;
+package org.jivesoftware.smack.sasl.core;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.sasl.SASLMechanism;
 
 import javax.security.auth.callback.CallbackHandler;
 

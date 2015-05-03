@@ -361,18 +361,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected synchronized void loginNonAnonymously(String username, String password, String resource) throws XMPPException, SmackException, IOException, InterruptedException {
-        if (saslAuthentication.hasNonAnonymousAuthentication()) {
-            // Authenticate using SASL
-            if (password != null) {
-                saslAuthentication.authenticate(username, password, resource);
-            }
-            else {
-                saslAuthentication.authenticate(resource, config.getCallbackHandler());
-            }
-        } else {
-            throw new SmackException("No non-anonymous SASL authentication mechanism available");
-        }
+    protected synchronized void loginInternal(String username, String password, String resource) throws XMPPException,
+                    SmackException, IOException, InterruptedException {
+        // Authenticate using SASL
+        saslAuthentication.authenticate(username, password);
 
         // If compression is enabled then request the server to use stream compression. XEP-170
         // recommends to perform stream compression before resource binding.
@@ -426,28 +418,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         for (Stanza stanza : previouslyUnackedStanzas) {
             sendStanzaInternal(stanza);
         }
-
-        afterSuccessfulLogin(false);
-    }
-
-    @Override
-    public synchronized void loginAnonymously() throws XMPPException, SmackException, IOException, InterruptedException {
-        // Wait with SASL auth until the SASL mechanisms have been received
-        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
-
-        if (saslAuthentication.hasAnonymousAuthentication()) {
-            saslAuthentication.authenticateAnonymously();
-        }
-        else {
-            throw new SmackException("No anonymous SASL authentication mechanism available");
-        }
-
-        // If compression is enabled then request the server to use stream compression
-        if (config.isCompressionEnabled()) {
-            useCompression();
-        }
-
-        bindResourceAndEstablishSession(null);
 
         afterSuccessfulLogin(false);
     }

@@ -171,6 +171,9 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         authenticate();
     }
 
+    /**
+     * @throws SmackException
+     */
     protected void authenticateInternal() throws SmackException {
     }
 
@@ -248,6 +251,9 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         connection.send(responseStanza);
     }
 
+    /**
+     * @throws SmackException
+     */
     protected byte[] evaluateChallenge(byte[] challenge) throws SmackException {
         return null;
     }

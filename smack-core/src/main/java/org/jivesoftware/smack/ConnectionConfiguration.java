@@ -17,8 +17,19 @@
 
 package org.jivesoftware.smack;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
+import org.jivesoftware.smack.sasl.SASLMechanism;
+import org.jivesoftware.smack.sasl.core.SASLAnonymous;
+import org.jivesoftware.smack.util.CollectionUtil;
+import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.jid.DomainBareJid;
 
 import javax.net.SocketFactory;
@@ -93,6 +104,8 @@ public abstract class ConnectionConfiguration {
 
     protected final boolean allowNullOrEmptyUsername;
 
+    private final Set<String> enabledSaslMechanisms;
+
     protected ConnectionConfiguration(Builder<?,?> builder) {
         username = builder.username;
         password = builder.password;
@@ -130,6 +143,10 @@ public abstract class ConnectionConfiguration {
         legacySessionDisabled = builder.legacySessionDisabled;
         debuggerEnabled = builder.debuggerEnabled;
         allowNullOrEmptyUsername = builder.allowEmptyOrNullUsername;
+        enabledSaslMechanisms = builder.enabledSaslMechanisms;
+
+        // If the enabledSaslmechanisms are set, then they must not be empty
+        assert(enabledSaslMechanisms != null ? !enabledSaslMechanisms.isEmpty() : true);
     }
 
     /**
@@ -351,6 +368,24 @@ public abstract class ConnectionConfiguration {
     }
 
     /**
+     * Check if the given SASL mechansism is enabled in this connection configuration.
+     *
+     * @param saslMechanism
+     * @return true if the given SASL mechanism is enabled, false otherwise.
+     */
+    public boolean isEnabledSaslMechanism(String saslMechanism) {
+        // If enabledSaslMechanisms is not set, then all mechanisms are enabled per default
+        if (enabledSaslMechanisms == null) {
+            return true;
+        }
+        return enabledSaslMechanisms.contains(saslMechanism);
+    }
+
+    public Set<String> getEnabledSaslMechanisms() {
+        return Collections.unmodifiableSet(enabledSaslMechanisms);
+    }
+
+    /**
      * A builder for XMPP connection configurations.
      * <p>
      * This is an abstract class that uses the builder design pattern and the "getThis() trick" to recover the type of
@@ -387,6 +422,8 @@ public abstract class ConnectionConfiguration {
         private String host;
         private int port = 5222;
         private boolean allowEmptyOrNullUsername = false;
+        private boolean saslMechanismsSealed;
+        private Set<String> enabledSaslMechanisms;
 
         protected Builder() {
         }
@@ -518,7 +555,7 @@ public abstract class ConnectionConfiguration {
          * @return a reference to this builder.
          */
         public B setCustomSSLContext(SSLContext context) {
-            this.customSSLContext = context;
+            this.customSSLContext = Objects.requireNonNull(context, "The SSLContext must not be null");
             return getThis();
         }
 
@@ -625,6 +662,92 @@ public abstract class ConnectionConfiguration {
          */
         public B allowEmptyOrNullUsernames() {
             allowEmptyOrNullUsername = true;
+            return getThis();
+        }
+
+        /**
+         * Perform anonymous authentication using SASL ANONYMOUS. Your XMPP service must support this authentication
+         * mechanism. This method also calls {@link #addEnabledSaslMechanism(String)} with "ANONYMOUS" as argument.
+         * 
+         * @return a reference to this builder.
+         */
+        public B performSaslAnonymousAuthentication() {
+            if (!SASLAuthentication.isSaslMechanismRegistered(SASLAnonymous.NAME)) {
+                throw new IllegalArgumentException("SASL " + SASLAnonymous.NAME + " is not registered");
+            }
+            throwIfEnabledSaslMechanismsSet();
+
+            allowEmptyOrNullUsernames();
+            addEnabledSaslMechanism(SASLAnonymous.NAME);
+            saslMechanismsSealed = true;
+            return getThis();
+        }
+
+        /**
+         * Perform authentication using SASL EXTERNAL. Your XMPP service must support this
+         * authentication mechanism. This method also calls {@link #addEnabledSaslMechanism(String)} with "EXTERNAL" as
+         * argument. It also calls {@link #allowEmptyOrNullUsernames()} and {@link #setSecurityMode(SecurityMode)} to
+         * {@link SecurityMode#required}.
+         *
+         * @return a reference to this builder.
+         */
+        public B performSaslExternalAuthentication(SSLContext sslContext) {
+            if (!SASLAuthentication.isSaslMechanismRegistered(SASLMechanism.EXTERNAL)) {
+                throw new IllegalArgumentException("SASL " + SASLMechanism.EXTERNAL + " is not registered");
+            }
+            setCustomSSLContext(sslContext);
+            throwIfEnabledSaslMechanismsSet();
+
+            allowEmptyOrNullUsernames();
+            setSecurityMode(SecurityMode.required);
+            addEnabledSaslMechanism(SASLMechanism.EXTERNAL);
+            saslMechanismsSealed = true;
+            return getThis();
+        }
+
+        private void throwIfEnabledSaslMechanismsSet() {
+            if (enabledSaslMechanisms != null) {
+                throw new IllegalStateException("Enabled SASL mechanisms found");
+            }
+        }
+
+        /**
+         * Add the given mechanism to the enabled ones. See {@link #addEnabledSaslMechanism(Collection)} for a discussion about enabled SASL mechanisms.
+         *
+         * @param saslMechanism the name of the mechanism to enable.
+         * @return a reference to this builder.
+         */
+        public B addEnabledSaslMechanism(String saslMechanism) {
+            return addEnabledSaslMechanism(Arrays.asList(StringUtils.requireNotNullOrEmpty(saslMechanism,
+                            "saslMechanism must not be null or empty")));
+        }
+
+        /**
+         * Enable the given SASL mechanisms. If you never add a mechanism to the set of enabled ones, <b>all mechanisms
+         * known to Smack</b> will be enabled. Only explicitly enable particular SASL mechanisms if you want to limit
+         * the used mechanisms to the enabled ones.
+         * 
+         * @param saslMechanisms a collection of names of mechanisms to enable.
+         * @return a reference to this builder.
+         */
+        public B addEnabledSaslMechanism(Collection<String> saslMechanisms) {
+            if (saslMechanismsSealed) {
+                throw new IllegalStateException("The enabled SASL mechanisms are sealed, you can not add new ones");
+            }
+            CollectionUtil.requireNotEmpty(saslMechanisms, "saslMechanisms");
+            Set<String> blacklistedMechanisms = SASLAuthentication.getBlacklistedSASLMechanisms();
+            for (String mechanism : saslMechanisms) {
+                if (!SASLAuthentication.isSaslMechanismRegistered(mechanism)) {
+                    throw new IllegalArgumentException("SASL " + mechanism + " is not avaiable. Consider registering it with Smack");
+                }
+                if (blacklistedMechanisms.contains(mechanism)) {
+                    throw new IllegalArgumentException("SALS " + mechanism + " is blacklisted.");
+                }
+            }
+            if (enabledSaslMechanisms == null) {
+                enabledSaslMechanisms = new HashSet<>(saslMechanisms.size());
+            }
+            enabledSaslMechanisms.addAll(saslMechanisms);
             return getThis();
         }
 

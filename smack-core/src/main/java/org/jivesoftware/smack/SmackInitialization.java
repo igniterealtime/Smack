@@ -32,6 +32,7 @@ import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.provider.BindIQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.sasl.core.SASLAnonymous;
 import org.jivesoftware.smack.sasl.core.SASLXOauth2Mechanism;
 import org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism;
 import org.jivesoftware.smack.util.FileUtils;
@@ -137,6 +138,7 @@ public final class SmackInitialization {
 
         SASLAuthentication.registerSASLMechanism(new SCRAMSHA1Mechanism());
         SASLAuthentication.registerSASLMechanism(new SASLXOauth2Mechanism());
+        SASLAuthentication.registerSASLMechanism(new SASLAnonymous());
 
         ProviderManager.addIQProvider(Bind.ELEMENT, Bind.NAMESPACE, new BindIQProvider());
 
