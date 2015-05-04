@@ -31,6 +31,7 @@ import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.JidTestUtil;
 import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
@@ -116,7 +117,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void loginInternal(String username, String password, String resource)
+    protected void loginInternal(String username, String password, Resourcepart resource)
             throws XMPPException {
         user = getUserJid();
         authenticated = true;

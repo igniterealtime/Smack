@@ -42,6 +42,7 @@ import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.parts.Resourcepart;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.igniterealtime.jbosh.AbstractBody;
@@ -210,7 +211,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void loginInternal(String username, String password, String resource) throws XMPPException,
+    protected void loginInternal(String username, String password, Resourcepart resource) throws XMPPException,
                     SmackException, IOException, InterruptedException {
         // Authenticate using SASL
         saslAuthentication.authenticate(username, password);

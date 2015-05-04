@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
@@ -31,6 +33,8 @@ import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
@@ -49,6 +53,8 @@ public abstract class ConnectionConfiguration {
         // SmackConfiguration.DEBUG may not be initialized yet.
         SmackConfiguration.getVersion();
     }
+
+    private static final Logger LOGGER = Logger.getLogger(ConnectionConfiguration.class.getName());
 
     /**
      * Hostname of the XMPP server. Usually servers use the same service name as the name
@@ -76,7 +82,7 @@ public abstract class ConnectionConfiguration {
 
     private final CharSequence username;
     private final String password;
-    private final String resource;
+    private final Resourcepart resource;
 
     /**
      * Initial presence as of RFC 6121 § 4.2
@@ -341,7 +347,7 @@ public abstract class ConnectionConfiguration {
      *
      * @return the resource to use when trying to reconnect to the server.
      */
-    public String getResource() {
+    public Resourcepart getResource() {
         return resource;
     }
 
@@ -401,6 +407,19 @@ public abstract class ConnectionConfiguration {
      * @param <C> the resulting connection configuration type parameter.
      */
     public static abstract class Builder<B extends Builder<B, C>, C extends ConnectionConfiguration> {
+        private static final Resourcepart DEFAULT_RESOURCE;
+
+        static {
+            Resourcepart resourcepart = null;
+            try {
+                resourcepart = Resourcepart.from("Smack");
+            }
+            catch (XmppStringprepException e) {
+                LOGGER.log(Level.WARNING, "Could not create default resourcepart", e);
+            }
+            DEFAULT_RESOURCE = resourcepart;
+        }
+
         private SecurityMode securityMode = SecurityMode.ifpossible;
         private String keystorePath = System.getProperty("javax.net.ssl.keyStore");
         private String keystoreType = "jks";
@@ -411,7 +430,7 @@ public abstract class ConnectionConfiguration {
         private HostnameVerifier hostnameVerifier;
         private CharSequence username;
         private String password;
-        private String resource = "Smack";
+        private Resourcepart resource = DEFAULT_RESOURCE;
         private boolean sendPresence = true;
         private boolean legacySessionDisabled = false;
         private ProxyInfo proxy;
@@ -466,9 +485,22 @@ public abstract class ConnectionConfiguration {
          * @param resource the resource to use.
          * @return a reference to this builder.
          */
-        public B setResource(String resource) {
+        public B setResource(Resourcepart resource) {
             this.resource = resource;
             return getThis();
+        }
+
+        /**
+         * Set the resource to use.
+         *
+         * @param resource the non-null CharSequence to use a resource.
+         * @return a reference ot this builder.
+         * @throws XmppStringprepException if the CharSequence is not a valid resourcepart.
+         * @see setResource(Resourcepart)
+         */
+        public B setResource(CharSequence resource) throws XmppStringprepException {
+            Objects.requireNonNull(resource, "resource must not be null");
+            return setResource(Resourcepart.from(resource.toString()));
         }
 
         public B setHost(String host) {

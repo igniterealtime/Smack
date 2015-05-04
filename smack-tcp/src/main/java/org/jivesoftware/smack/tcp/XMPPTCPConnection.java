@@ -75,6 +75,7 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
@@ -361,7 +362,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected synchronized void loginInternal(String username, String password, String resource) throws XMPPException,
+    protected synchronized void loginInternal(String username, String password, Resourcepart resource) throws XMPPException,
                     SmackException, IOException, InterruptedException {
         // Authenticate using SASL
         saslAuthentication.authenticate(username, password);

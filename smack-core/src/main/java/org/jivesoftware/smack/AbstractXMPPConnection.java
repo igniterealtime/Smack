@@ -84,6 +84,7 @@ import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -372,7 +373,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected abstract void connectInternal() throws SmackException, IOException, XMPPException, InterruptedException;
 
-    private String usedUsername, usedPassword, usedResource;
+    private String usedUsername, usedPassword;
+
+    /**
+     * The resourcepart used for this connection. May not be the resulting resourcepart if it's null or overridden by the XMPP service.
+     */
+    private Resourcepart usedResource;
 
     /**
      * Logs in to the server using the strongest SASL mechanism supported by
@@ -402,12 +408,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // ones from the connection configuration
         CharSequence username = usedUsername != null ? usedUsername : config.getUsername();
         String password = usedPassword != null ? usedPassword : config.getPassword();
-        String resource = usedResource != null ? usedResource : config.getResource();
+        Resourcepart resource = usedResource != null ? usedResource : config.getResource();
         login(username, password, resource);
     }
 
     /**
-     * Same as {@link #login(CharSequence, String, String)}, but takes the resource from the connection
+     * Same as {@link #login(CharSequence, String, Resourcepart)}, but takes the resource from the connection
      * configuration.
      * 
      * @param username
@@ -436,7 +442,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws InterruptedException 
      * @see #login
      */
-    public synchronized void login(CharSequence username, String password, String resource) throws XMPPException,
+    public synchronized void login(CharSequence username, String password, Resourcepart resource) throws XMPPException,
                     SmackException, IOException, InterruptedException {
         if (!config.allowNullOrEmptyUsername) {
             StringUtils.requireNotNullOrEmpty(username, "Username must not be null or empty");
@@ -449,7 +455,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         loginInternal(usedUsername, usedPassword, usedResource);
     }
 
-    protected abstract void loginInternal(String username, String password, String resource)
+    protected abstract void loginInternal(String username, String password, Resourcepart resource)
                     throws XMPPException, SmackException, IOException, InterruptedException;
 
     @Override
@@ -475,7 +481,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return streamId;
     }
 
-    protected void bindResourceAndEstablishSession(String resource) throws XMPPErrorException,
+    protected void bindResourceAndEstablishSession(Resourcepart resource) throws XMPPErrorException,
                     SmackException, InterruptedException {
 
         // Wait until either:
