@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -37,7 +38,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Matt Tucker
  */
-public class RosterEntry {
+public final class RosterEntry extends Manager {
 
     /**
      * The JID of the entity/user.
@@ -49,7 +50,6 @@ public class RosterEntry {
     private RosterPacket.ItemStatus status;
     private final boolean approved;
     final private Roster roster;
-    final private XMPPConnection connection;
 
     /**
      * Creates a new roster entry.
@@ -63,13 +63,13 @@ public class RosterEntry {
      */
     RosterEntry(Jid user, String name, RosterPacket.ItemType type,
                 RosterPacket.ItemStatus status, boolean approved, Roster roster, XMPPConnection connection) {
+        super(connection);
         this.user = user;
         this.name = name;
         this.type = type;
         this.status = status;
         this.approved = approved;
         this.roster = roster;
-        this.connection = connection;
     }
 
     /**
@@ -99,7 +99,7 @@ public class RosterEntry {
      * @throws NoResponseException 
      * @throws InterruptedException 
      */
-    public void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException, InterruptedException {
+    public synchronized void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException, InterruptedException {
         // Do nothing if the name hasn't changed.
         if (name != null && name.equals(this.name)) {
             return;
@@ -107,8 +107,11 @@ public class RosterEntry {
 
         RosterPacket packet = new RosterPacket();
         packet.setType(IQ.Type.set);
-        packet.addRosterItem(toRosterItem(this));
-        connection.createPacketCollectorAndSend(packet).nextResultOrThrow();
+
+        // Create a new roster item with the current RosterEntry and the *new* name. Note that we can't set the name of
+        // RosterEntry right away, as otherwise the updated event wont get fired, because equalsDeep would return true.
+        packet.addRosterItem(toRosterItem(this, name));
+        connection().createPacketCollectorAndSend(packet).nextResultOrThrow();
 
         // We have received a result response to the IQ set, the name was successfully changed
         this.name = name;
@@ -262,7 +265,11 @@ public class RosterEntry {
     }
 
     static RosterPacket.Item toRosterItem(RosterEntry entry) {
-        RosterPacket.Item item = new RosterPacket.Item(entry.getUser(), entry.getName());
+        return toRosterItem(entry, entry.getName());
+    }
+
+    private static RosterPacket.Item toRosterItem(RosterEntry entry, String name) {
+        RosterPacket.Item item = new RosterPacket.Item(entry.getUser(), name);
         item.setItemType(entry.getType());
         item.setItemStatus(entry.getStatus());
         item.setApproved(entry.isApproved());

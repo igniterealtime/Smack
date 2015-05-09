@@ -31,6 +31,7 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
@@ -234,6 +235,16 @@ public final class DeliveryReceiptManager extends Manager {
         receiptReceivedListeners.remove(listener);
     }
 
+    /**
+     * A filter for stanzas to request delivery receipts for. Notably those are message stanzas of type normal, chat or
+     * headline, which <b>do not</b>contain a delivery receipt, i.e. are ack messages.
+     *
+     * @see <a href="http://xmpp.org/extensions/xep-0184.html#when-ack">XEP-184 § 5.4 Ack Messages</a>
+     */
+    private static final StanzaFilter MESSAGES_TO_REQUEST_RECEIPTS_FOR = new AndFilter(
+                    MessageTypeFilter.NORMAL_OR_CHAT_OR_HEADLINE, new NotFilter(new StanzaExtensionFilter(
+                                    DeliveryReceipt.ELEMENT, DeliveryReceipt.NAMESPACE)));
+
     private static final StanzaListener AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER = new StanzaListener() {
         @Override
         public void processPacket(Stanza packet) throws NotConnectedException {
@@ -249,8 +260,8 @@ public final class DeliveryReceiptManager extends Manager {
      * @see #dontAutoAddDeliveryReceiptRequests()
      */
     public void autoAddDeliveryReceiptRequests() {
-        connection().addPacketSendingListener(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER,
-                        MessageTypeFilter.NORMAL_OR_CHAT_OR_HEADLINE);
+        connection().addPacketInterceptor(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER,
+                        MESSAGES_TO_REQUEST_RECEIPTS_FOR);
     }
 
     /**
@@ -260,7 +271,7 @@ public final class DeliveryReceiptManager extends Manager {
      * @see #autoAddDeliveryReceiptRequests()
      */
     public void dontAutoAddDeliveryReceiptRequests() {
-        connection().removePacketSendingListener(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER);
+        connection().removePacketInterceptor(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER);
     }
 
     /**

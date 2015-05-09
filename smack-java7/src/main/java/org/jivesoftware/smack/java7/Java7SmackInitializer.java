@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 the original author or authors
+ * Copyright 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.StringTransformer;
+import org.jivesoftware.smack.util.SystemUtil;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smack.util.stringencoder.Base64UrlSafeEncoder;
 import org.jivesoftware.smack.util.stringencoder.java7.Java7Base64Encoder;
@@ -31,6 +32,14 @@ public class Java7SmackInitializer implements SmackInitializer {
 
     @Override
     public List<Exception> initialize() {
+        if (SystemUtil.onAndroid()) {
+            // @formatter:off
+            throw new RuntimeException(
+                            "You need to remove the smack-java7 dependency/jar from your build, " +
+                            "as it does not run on Android. " +
+                            "Use smack-android instead.");
+            // @formatter:on
+        }
         SmackConfiguration.setDefaultHostnameVerifier(new XmppHostnameVerifier());
         Base64.setEncoder(Java7Base64Encoder.getInstance());
         Base64UrlSafeEncoder.setEncoder(Java7Base64UrlSafeEncoder.getInstance());

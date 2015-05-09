@@ -186,10 +186,12 @@ public final class ReconnectionManager {
                     if (attempts > 13) {
                         delay = randomBase * 6 * 5; // between 2.5 and 7.5 minutes (~5 minutes)
                     }
-                    if (attempts > 7) {
+                    else if (attempts > 7) {
                         delay = randomBase * 6; // between 30 and 90 seconds (~1 minutes)
                     }
-                    delay = randomBase; // 10 seconds
+                    else {
+                        delay = randomBase; // 10 seconds
+                    }
                     break;
                 default:
                     throw new AssertionError("Unknown reconnection policy " + reconnectionPolicy);
