@@ -24,7 +24,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.muc.MultiUserChatException.MucConfigurationNotSupported;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MucConfigurationNotSupportedException;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jxmpp.jid.Jid;
@@ -97,9 +97,9 @@ public class MucConfigFormManager {
         return owners != null;
     }
 
-    public MucConfigFormManager setRoomOwners(Collection<? extends Jid> newOwners) throws MucConfigurationNotSupported {
+    public MucConfigFormManager setRoomOwners(Collection<? extends Jid> newOwners) throws MucConfigurationNotSupportedException {
         if (!supportsRoomOwners()) {
-            throw new MucConfigurationNotSupported(MUC_ROOMCONFIG_ROOMOWNERS);
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_ROOMOWNERS);
         }
         owners.clear();
         owners.addAll(newOwners);

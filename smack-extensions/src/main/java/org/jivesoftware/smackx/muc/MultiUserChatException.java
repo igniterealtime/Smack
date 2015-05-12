@@ -72,14 +72,14 @@ public abstract class MultiUserChatException extends SmackException {
     /**
      * Thrown if the MUC room does not support the requested configuration option.
      */
-    public static class MucConfigurationNotSupported extends MultiUserChatException {
+    public static class MucConfigurationNotSupportedException extends MultiUserChatException {
 
         /**
          * 
          */
         private static final long serialVersionUID = 1L;
 
-        public MucConfigurationNotSupported(String configString) {
+        public MucConfigurationNotSupportedException(String configString) {
             super("The MUC configuration '" + configString + "' is not supported by the MUC service");
         }
     }
