@@ -262,6 +262,24 @@ public final class MultiUserChatManager extends Manager {
     }
 
     /**
+     * Check if the provided domain bare JID provides a MUC service.
+     * 
+     * @param domainBareJid the domain bare JID to check.
+     * @return <code>true</code> if the provided JID provides a MUC service, <code>false</code> otherwise.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @see <a href="http://xmpp.org/extensions/xep-0045.html#disco-service-features">XEP-45 § 6.2 Discovering the Features Supported by a MUC Service</a>
+     * @since 4.2
+     */
+    public boolean providesMucService(DomainBareJid domainBareJid) throws NoResponseException,
+                    XMPPErrorException, NotConnectedException, InterruptedException {
+        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(domainBareJid,
+                        MUCInitialPresence.NAMESPACE);
+    }
+
+    /**
      * Returns a List of HostedRooms where each HostedRoom has the XMPP address of the room and the room's name.
      * Once discovered the rooms hosted by a chat service it is possible to discover more detailed room information or
      * join the room.

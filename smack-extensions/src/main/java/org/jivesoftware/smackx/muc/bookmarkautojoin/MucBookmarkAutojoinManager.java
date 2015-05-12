@@ -34,6 +34,7 @@ import org.jivesoftware.smackx.bookmarks.BookmarkManager;
 import org.jivesoftware.smackx.bookmarks.BookmarkedConference;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChat.MucCreateConfigFormHandle;
+import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jxmpp.jid.parts.Resourcepart;
 
@@ -136,7 +137,7 @@ public final class MucBookmarkAutojoinManager extends Manager {
                 // abort here
                 break;
             }
-            catch (NoResponseException | XMPPErrorException e) {
+            catch (NotAMucServiceException | NoResponseException | XMPPErrorException e) {
                 // Do no abort, just log,
                 LOGGER.log(Level.WARNING, "Could not autojoin bookmarked MUC", e);
             }

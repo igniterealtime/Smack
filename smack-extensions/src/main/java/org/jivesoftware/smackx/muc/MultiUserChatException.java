@@ -83,4 +83,23 @@ public abstract class MultiUserChatException extends SmackException {
             super("The MUC configuration '" + configString + "' is not supported by the MUC service");
         }
     }
+
+    /**
+     * Thrown when trying to enter a MUC room that is not hosted a domain providing a MUC service.
+     * Try {@link MultiUserChatManager#getServiceNames()} for a list of client-local domains
+     * providing a MUC service.
+     */
+    public static class NotAMucServiceException extends MultiUserChatException {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
+        public NotAMucServiceException(MultiUserChat multiUserChat) {
+            super("Can not join '" + multiUserChat.getRoom() + "', because '"
+                            + multiUserChat.getRoom().asDomainBareJid()
+                            + "' does not provide a MUC (XEP-45) service.");
+        }
+    }
 }
