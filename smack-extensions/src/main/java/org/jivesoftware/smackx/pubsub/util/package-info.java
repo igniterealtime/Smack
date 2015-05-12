@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Utilities for Publish-Subscribe (XEP-60).
  */
 package org.jivesoftware.smackx.pubsub.util;

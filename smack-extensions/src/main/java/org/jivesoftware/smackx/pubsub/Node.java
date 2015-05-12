@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
@@ -43,13 +42,11 @@ import org.jivesoftware.smackx.pubsub.util.NodeUtils;
 import org.jivesoftware.smackx.shim.packet.Header;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 import org.jivesoftware.smackx.xdata.Form;
-import org.jxmpp.jid.Jid;
 
 abstract public class Node
 {
-	protected XMPPConnection con;
-	protected String id;
-	protected Jid to;
+    protected final PubSubManager pubSubManager;
+    protected final String id;
 
 	protected ConcurrentHashMap<ItemEventListener<Item>, StanzaListener> itemEventToListenerMap = new ConcurrentHashMap<ItemEventListener<Item>, StanzaListener>();
 	protected ConcurrentHashMap<ItemDeleteListener, StanzaListener> itemDeleteToListenerMap = new ConcurrentHashMap<ItemDeleteListener, StanzaListener>();
@@ -62,21 +59,10 @@ abstract public class Node
 	 * @param connection The connection the node is associated with
 	 * @param nodeName The node id
 	 */
-	Node(XMPPConnection connection, String nodeName)
+	Node(PubSubManager pubSubManager, String nodeId)
 	{
-		con = connection;
-		id = nodeName;
-	}
-
-	/**
-	 * Some XMPP servers may require a specific service to be addressed on the 
-	 * server.
-	 * 
-	 *   For example, OpenFire requires the server to be prefixed by <b>pubsub</b>
-	 */
-	void setTo(Jid toAddress)
-	{
-		to = toAddress;
+		this.pubSubManager = pubSubManager;
+		id = nodeId;
 	}
 
 	/**
@@ -119,7 +105,7 @@ abstract public class Node
 	{
         PubSub packet = createPubsubPacket(Type.set, new FormNode(FormNodeType.CONFIGURE_OWNER,
                         getId(), submitForm), PubSubNamespace.OWNER);
-		con.createPacketCollectorAndSend(packet).nextResultOrThrow();
+        pubSubManager.getConnection().createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}
 
 	/**
@@ -134,9 +120,9 @@ abstract public class Node
 	public DiscoverInfo discoverInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		DiscoverInfo info = new DiscoverInfo();
-		info.setTo(to);
+		info.setTo(pubSubManager.getServiceJid());
 		info.setNode(getId());
-		return (DiscoverInfo) con.createPacketCollectorAndSend(info).nextResultOrThrow();
+		return pubSubManager.getConnection().createPacketCollectorAndSend(info).nextResultOrThrow();
 	}
 
 	/**
@@ -336,7 +322,7 @@ abstract public class Node
 	    PubSub request = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
 // CHECKSTYLE:ON
 		request.addExtension(new FormNode(FormNodeType.OPTIONS, subForm));
-		PubSub reply = PubSubManager.sendPubsubPacket(con, request);
+		PubSub reply = sendPubsubPacket(request);
 		return reply.getExtension(PubSubElementType.SUBSCRIPTION);
 	}
 
@@ -420,7 +406,7 @@ abstract public class Node
 	{
 		StanzaListener conListener = new ItemEventTranslator(listener); 
 		itemEventToListenerMap.put(listener, conListener);
-		con.addSyncStanzaListener(conListener, new EventContentFilter(EventElementType.items.toString(), "item"));
+		pubSubManager.getConnection().addSyncStanzaListener(conListener, new EventContentFilter(EventElementType.items.toString(), "item"));
 	}
 
 	/**
@@ -433,7 +419,7 @@ abstract public class Node
 		StanzaListener conListener = itemEventToListenerMap.remove(listener);
 
 		if (conListener != null)
-			con.removeSyncStanzaListener(conListener);
+			pubSubManager.getConnection().removeSyncStanzaListener(conListener);
 	}
 
 	/**
@@ -446,7 +432,7 @@ abstract public class Node
 	{
 		StanzaListener conListener = new NodeConfigTranslator(listener); 
 		configEventToListenerMap.put(listener, conListener);
-		con.addSyncStanzaListener(conListener, new EventContentFilter(EventElementType.configuration.toString()));
+		pubSubManager.getConnection().addSyncStanzaListener(conListener, new EventContentFilter(EventElementType.configuration.toString()));
 	}
 
 	/**
@@ -459,7 +445,7 @@ abstract public class Node
 		StanzaListener conListener = configEventToListenerMap .remove(listener);
 
 		if (conListener != null)
-			con.removeSyncStanzaListener(conListener);
+			pubSubManager.getConnection().removeSyncStanzaListener(conListener);
 	}
 
 	/**
@@ -475,7 +461,7 @@ abstract public class Node
 		EventContentFilter deleteItem = new EventContentFilter(EventElementType.items.toString(), "retract");
 		EventContentFilter purge = new EventContentFilter(EventElementType.purge.toString());
 
-		con.addSyncStanzaListener(delListener, new OrFilter(deleteItem, purge));
+		pubSubManager.getConnection().addSyncStanzaListener(delListener, new OrFilter(deleteItem, purge));
 	}
 
 	/**
@@ -488,7 +474,7 @@ abstract public class Node
 		StanzaListener conListener = itemDeleteToListenerMap .remove(listener);
 
 		if (conListener != null)
-			con.removeSyncStanzaListener(conListener);
+			pubSubManager.getConnection().removeSyncStanzaListener(conListener);
 	}
 
 	@Override
@@ -504,12 +490,12 @@ abstract public class Node
 
 	protected PubSub createPubsubPacket(Type type, ExtensionElement ext, PubSubNamespace ns)
 	{
-		return PubSub.createPubsubPacket(to, type, ext, ns);
+        return PubSub.createPubsubPacket(pubSubManager.getServiceJid(), type, ext, ns);
 	}
 
 	protected PubSub sendPubsubPacket(PubSub packet) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
-		return PubSubManager.sendPubsubPacket(con, packet);
+		return pubSubManager.sendPubsubPacket(packet);
 	}
 
 

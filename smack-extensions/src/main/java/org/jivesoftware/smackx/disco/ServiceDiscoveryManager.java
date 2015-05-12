@@ -684,7 +684,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * Create a cache to hold the 25 most recently lookup services for a given feature for a period
      * of 24 hours.
      */
-    private Cache<String, List<DomainBareJid>> services = new ExpirationCache<>(25,
+    private Cache<String, List<DiscoverInfo>> services = new ExpirationCache<>(25,
                     24 * 60 * 60 * 1000);
 
     /**
@@ -699,17 +699,17 @@ public final class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException
      * @throws InterruptedException 
      */
-    public List<DomainBareJid> findServices(String feature, boolean stopOnFirst, boolean useCache)
+    public List<DiscoverInfo> findServicesDiscoverInfo(String feature, boolean stopOnFirst, boolean useCache)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        List<DomainBareJid> serviceAddresses = null;
+        List<DiscoverInfo> serviceDiscoInfo = null;
         DomainBareJid serviceName = connection().getServiceName();
         if (useCache) {
-            serviceAddresses = services.get(feature);
-            if (serviceAddresses != null) {
-                return serviceAddresses;
+            serviceDiscoInfo = services.get(feature);
+            if (serviceDiscoInfo != null) {
+                return serviceDiscoInfo;
             }
         }
-        serviceAddresses = new LinkedList<>();
+        serviceDiscoInfo = new LinkedList<>();
         // Send the disco packet to the server itself
         DiscoverInfo info;
         try {
@@ -717,17 +717,17 @@ public final class ServiceDiscoveryManager extends Manager {
         } catch (XMPPErrorException e) {
             // Be extra robust here: Return the empty linked list and log this situation
             LOGGER.log(Level.WARNING, "Could not discover information about service", e);
-            return serviceAddresses;
+            return serviceDiscoInfo;
         }
-        // Check if the server supports XEP-33
+        // Check if the server supports the feature
         if (info.containsFeature(feature)) {
-            serviceAddresses.add(serviceName);
+            serviceDiscoInfo.add(info);
             if (stopOnFirst) {
                 if (useCache) {
                     // Cache the discovered information
-                    services.put(feature, serviceAddresses);
+                    services.put(feature, serviceDiscoInfo);
                 }
-                return serviceAddresses;
+                return serviceDiscoInfo;
             }
         }
         DiscoverItems items;
@@ -736,7 +736,7 @@ public final class ServiceDiscoveryManager extends Manager {
             items = discoverItems(serviceName);
         } catch(XMPPErrorException e) {
             LOGGER.log(Level.WARNING, "Could not discover items about service", e);
-            return serviceAddresses;
+            return serviceDiscoInfo;
         }
         for (DiscoverItems.Item item : items.getItems()) {
             try {
@@ -752,7 +752,8 @@ public final class ServiceDiscoveryManager extends Manager {
                 continue;
             }
             if (info.containsFeature(feature)) {
-                serviceAddresses.add(item.getEntityID().asDomainBareJid());
+                serviceDiscoInfo.add(info);
+                //serviceAddresses.add(item.getEntityID().asDomainBareJid());
                 if (stopOnFirst) {
                     break;
                 }
@@ -760,9 +761,54 @@ public final class ServiceDiscoveryManager extends Manager {
         }
         if (useCache) {
             // Cache the discovered information
-            services.put(feature, serviceAddresses);
+            services.put(feature, serviceDiscoInfo);
         }
-        return serviceAddresses;
+        return serviceDiscoInfo;
+    }
+
+    /**
+     * Find all services under the users service that provide a given feature.
+     * 
+     * @param feature the feature to search for
+     * @param stopOnFirst if true, stop searching after the first service was found
+     * @param useCache if true, query a cache first to avoid network I/O
+     * @return a possible empty list of services providing the given feature
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException 
+     */
+    public List<DomainBareJid> findServices(String feature, boolean stopOnFirst, boolean useCache) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        List<DiscoverInfo> services = findServicesDiscoverInfo(feature, stopOnFirst, useCache);
+        List<DomainBareJid> res = new ArrayList<>(services.size());
+        for (DiscoverInfo info : services) {
+            res.add(info.getFrom().asDomainBareJid());
+        }
+        return res;
+    }
+
+    public DomainBareJid findService(String feature, boolean useCache, String category, String type)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException,
+                    InterruptedException {
+        List<DiscoverInfo> services = findServicesDiscoverInfo(feature, true, useCache);
+        if (services.isEmpty()) {
+            return null;
+        }
+        DiscoverInfo info = services.get(0);
+        if (category != null && type != null) {
+            if (!info.hasIdentity(category, type)) {
+                return null;
+            }
+        }
+        else if (category != null || type != null) {
+            throw new IllegalArgumentException("Must specify either both, category and type, or none");
+        }
+        return info.getFrom().asDomainBareJid();
+    }
+
+    public DomainBareJid findService(String feature, boolean useCache) throws NoResponseException,
+                    XMPPErrorException, NotConnectedException, InterruptedException {
+        return findService(feature, useCache, null, null);
     }
 
     /**

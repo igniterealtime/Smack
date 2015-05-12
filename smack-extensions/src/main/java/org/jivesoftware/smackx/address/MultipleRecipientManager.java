@@ -283,11 +283,7 @@ public class MultipleRecipientManager {
      */
     private static DomainBareJid getMultipleRecipienServiceAddress(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
-        List<DomainBareJid> services = sdm.findServices(MultipleAddresses.NAMESPACE, true, true);
-        if (services.size() > 0) {
-            return services.get(0);
-        }
-        return null;
+        return sdm.findService(MultipleAddresses.NAMESPACE, true);
     }
 
     /**

@@ -25,13 +25,29 @@ import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.junit.Test;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 public class PubSubManagerTest {
+
+    public static final DomainBareJid DUMMY_PUBSUB_SERVICE;
+
+    static {
+        DomainBareJid pubSubService;
+        try {
+            pubSubService = JidCreate.domainBareFrom("pubsub.dummy.org");
+        }
+        catch (XmppStringprepException e) {
+            throw new AssertionError(e);
+        }
+        DUMMY_PUBSUB_SERVICE = pubSubService;
+    }
 
     @Test
     public void deleteNodeTest() throws InterruptedException, SmackException, IOException, XMPPException {
         ThreadedDummyConnection con = ThreadedDummyConnection.newInstance();
-        PubSubManager mgr = new PubSubManager(con);
+        PubSubManager mgr = new PubSubManager(con, DUMMY_PUBSUB_SERVICE);
 
         mgr.deleteNode("foo@bar.org");
 

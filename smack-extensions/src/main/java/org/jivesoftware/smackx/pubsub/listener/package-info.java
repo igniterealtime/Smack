@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Listeners for Publish-Subscribe (XEP-60) events.
  */
 package org.jivesoftware.smackx.pubsub.listener;

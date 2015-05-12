@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.ExtensionElement;
@@ -39,9 +38,9 @@ import org.jivesoftware.smackx.pubsub.packet.PubSub;
  */
 public class LeafNode extends Node
 {
-	LeafNode(XMPPConnection connection, String nodeName)
+	LeafNode(PubSubManager pubSubManager, String nodeId)
 	{
-		super(connection, nodeName);
+		super(pubSubManager, nodeId);
 	}
 
 	/**
@@ -57,9 +56,9 @@ public class LeafNode extends Node
 	public DiscoverItems discoverItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
 	{
 		DiscoverItems items = new DiscoverItems();
-		items.setTo(to);
+		items.setTo(pubSubManager.getServiceJid());
 		items.setNode(getId());
-		return (DiscoverItems) con.createPacketCollectorAndSend(items).nextResultOrThrow();
+        return pubSubManager.getConnection().createPacketCollectorAndSend(items).nextResultOrThrow();
 	}
 
 	/**
@@ -193,7 +192,7 @@ public class LeafNode extends Node
     private <T extends Item> List<T> getItems(PubSub request,
                     List<ExtensionElement> returnedExtensions) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub result = con.createPacketCollectorAndSend(request).nextResultOrThrow();
+        PubSub result = pubSubManager.getConnection().createPacketCollectorAndSend(request).nextResultOrThrow();
         ItemsExtension itemsElem = result.getExtension(PubSubElementType.ITEMS);
         if (returnedExtensions != null) {
             returnedExtensions.addAll(result.getExtensions());
@@ -219,7 +218,7 @@ public class LeafNode extends Node
 	{
 		PubSub packet = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PUBLISH, getId()));
 
-		con.sendStanza(packet);
+		pubSubManager.getConnection().sendStanza(packet);
 	}
 
 	/**
@@ -266,7 +265,7 @@ public class LeafNode extends Node
 	{
 		PubSub packet = createPubsubPacket(Type.set, new PublishItem<T>(getId(), items));
 
-		con.sendStanza(packet);
+		pubSubManager.getConnection().sendStanza(packet);
 	}
 
 	/**
@@ -290,7 +289,7 @@ public class LeafNode extends Node
 	{
 		PubSub packet = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PUBLISH, getId()));
 
-		con.createPacketCollectorAndSend(packet).nextResultOrThrow();
+		pubSubManager.getConnection().createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}
 
 	/**
@@ -347,7 +346,7 @@ public class LeafNode extends Node
 	{
 		PubSub packet = createPubsubPacket(Type.set, new PublishItem<T>(getId(), items));
 
-		con.createPacketCollectorAndSend(packet).nextResultOrThrow();
+		pubSubManager.getConnection().createPacketCollectorAndSend(packet).nextResultOrThrow();
 	}
 
 	/**
@@ -364,7 +363,7 @@ public class LeafNode extends Node
 	{
 		PubSub request = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PURGE_OWNER, getId()), PubSubElementType.PURGE_OWNER.getNamespace());
 
-		con.createPacketCollectorAndSend(request).nextResultOrThrow();
+		pubSubManager.getConnection().createPacketCollectorAndSend(request).nextResultOrThrow();
 	}
 
 	/**
@@ -401,6 +400,6 @@ public class LeafNode extends Node
 			items.add(new Item(id));
 		}
 		PubSub request = createPubsubPacket(Type.set, new ItemsExtension(ItemsExtension.ItemsElementType.retract, getId(), items));
-		con.createPacketCollectorAndSend(request).nextResultOrThrow();
+		pubSubManager.getConnection().createPacketCollectorAndSend(request).nextResultOrThrow();
 	}
 }

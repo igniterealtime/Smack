@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Stanzas and extension elements for Publish-Subscribe (XEP-60).
  */
 package org.jivesoftware.smackx.pubsub.packet;

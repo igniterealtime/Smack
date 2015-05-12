@@ -54,7 +54,7 @@ public class ConfigureFormTest
 	public void getConfigFormWithInsufficientPriviliges() throws XMPPException, SmackException, IOException, InterruptedException
 	{
 		ThreadedDummyConnection con = ThreadedDummyConnection.newInstance();
-		PubSubManager mgr = new PubSubManager(con);
+		PubSubManager mgr = new PubSubManager(con, PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
 		DiscoverInfo info = new DiscoverInfo();
 		Identity ident = new Identity("pubsub", null, "leaf");
 		info.addIdentity(ident);
@@ -81,7 +81,7 @@ public class ConfigureFormTest
 	public void getConfigFormWithTimeout() throws XMPPException, SmackException, InterruptedException, XmppStringprepException
 	{
 		ThreadedDummyConnection con = new ThreadedDummyConnection();
-		PubSubManager mgr = new PubSubManager(con);
+		PubSubManager mgr = new PubSubManager(con, PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
 		DiscoverInfo info = new DiscoverInfo();
 		Identity ident = new Identity("pubsub", null, "leaf");
 		info.addIdentity(ident);
