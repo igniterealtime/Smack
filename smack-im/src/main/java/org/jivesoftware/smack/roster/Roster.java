@@ -238,7 +238,7 @@ public final class Roster extends Manager {
         // If the connection is already established, call reload
         if (connection.isAuthenticated()) {
             try {
-                reload();
+                reloadAndWait();
             }
             catch (InterruptedException | SmackException e) {
                 LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
