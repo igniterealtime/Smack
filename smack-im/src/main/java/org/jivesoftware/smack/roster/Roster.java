@@ -333,7 +333,7 @@ public final class Roster extends Manager {
         return true;
     }
 
-    protected boolean waitUntilLoaded() throws InterruptedException {
+    boolean waitUntilLoaded() throws InterruptedException {
         final XMPPConnection connection = connection();
         while (!loaded) {
             long waitTime = connection.getPacketReplyTimeout();
