@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Florian Schmaus.
+ * Copyright 2013-2015 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,19 @@
 package org.jivesoftware.smack.parsing;
 
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.UnparseableStanza;
 
 /**
  * Parsing exception callback class that simply throws the encountered parsing exception. This usually leads to an
- * {@link ConnectionListener#connectionClosedOnError(Exception)} disconnect of the connection.
+ * {@link ConnectionListener#connectionClosedOnError(Exception)} and disconnect of the connection.
  * 
  * @author Florian Schmaus
  * 
  */
-public class ExceptionThrowingCallback extends ParsingExceptionCallback {
+public class ExceptionThrowingCallback implements ParsingExceptionCallback {
 
     @Override
-    public void handleUnparsablePacket(UnparsablePacket packetData) throws Exception {
+    public void handleUnparsableStanza(UnparseableStanza packetData) throws Exception {
         throw packetData.getParsingException();
     }
 }

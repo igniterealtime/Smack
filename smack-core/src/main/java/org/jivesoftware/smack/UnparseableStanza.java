@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Florian Schmaus.
+ * Copyright 2013-2015 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,19 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack.parsing;
-
+package org.jivesoftware.smack;
 
 /**
- * Representation of an unparsable packet.
+ * Representation of an unparsable stanza.
  * 
  * @author Florian Schmaus
  *
  */
-public class UnparsablePacket {
+public class UnparseableStanza {
     private final CharSequence content;
     private final Exception e;
 
-    public UnparsablePacket(final CharSequence content, final Exception e) {
+    UnparseableStanza(CharSequence content, Exception e) {
         this.content = content;
         this.e = e;
     }

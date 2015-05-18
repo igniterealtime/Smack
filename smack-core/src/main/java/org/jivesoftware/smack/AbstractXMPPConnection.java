@@ -71,7 +71,6 @@ import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
-import org.jivesoftware.smack.parsing.UnparsablePacket;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.DNSUtil;
@@ -956,10 +955,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         catch (Exception e) {
             CharSequence content = PacketParserUtils.parseContentDepth(parser,
                             parserDepth);
-            UnparsablePacket message = new UnparsablePacket(content, e);
+            UnparseableStanza message = new UnparseableStanza(content, e);
             ParsingExceptionCallback callback = getParsingExceptionCallback();
             if (callback != null) {
-                callback.handleUnparsablePacket(message);
+                callback.handleUnparsableStanza(message);
             }
         }
         ParserUtils.assertAtEndTag(parser);
