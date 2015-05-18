@@ -56,7 +56,7 @@ import java.util.logging.Logger;
  * @author Gaston Dombiak
  * @author Jay Kline
  */
-public class SASLAuthentication {
+public final class SASLAuthentication {
 
     private static final Logger LOGGER = Logger.getLogger(SASLAuthentication.class.getName());
 
@@ -294,9 +294,17 @@ public class SASLAuthentication {
      * is used by the connection at the first login and then reused after the connection
      * is disconnected and then reconnected.
      */
-    protected void init() {
+    void init() {
         authenticationSuccessful = false;
         saslException = null;
+    }
+
+    String getNameOfLastUsedSaslMechansism() {
+        SASLMechanism lastUsedMech = currentMechanism;
+        if (lastUsedMech == null) {
+            return null;
+        }
+        return lastUsedMech.getName();
     }
 
     private SASLMechanism selectMechanism() throws SmackException {

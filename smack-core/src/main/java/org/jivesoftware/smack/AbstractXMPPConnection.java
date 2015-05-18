@@ -73,6 +73,7 @@ import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.sasl.core.SASLAnonymous;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -551,8 +552,19 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public final boolean isAnonymous() {
-        return config.getUsername() == null && usedUsername == null
-                        && !config.allowNullOrEmptyUsername;
+        return isAuthenticated() && SASLAnonymous.NAME.equals(getUsedSaslMechansism());
+    }
+
+    /**
+     * Get the name of the SASL mechanism that was used to authenticate this connection. This returns the name of
+     * mechanism which was used the last time this conneciton was authenticated, and will return <code>null</code> if
+     * this connection was not authenticated before.
+     * 
+     * @return the name of the used SASL mechanism.
+     * @since 4.2
+     */
+    public final String getUsedSaslMechansism() {
+        return saslAuthentication.getNameOfLastUsedSaslMechansism();
     }
 
     private DomainBareJid xmppServiceDomain;
