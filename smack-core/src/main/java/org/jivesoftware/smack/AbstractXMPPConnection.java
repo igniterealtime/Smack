@@ -303,12 +303,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return config;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public DomainBareJid getServiceName() {
-        if (serviceName != null) {
-            return serviceName;
+        return getXMPPServiceDomain();
+    }
+
+    @Override
+    public DomainBareJid getXMPPServiceDomain() {
+        if (xmppServiceDomain != null) {
+            return xmppServiceDomain;
         }
-        return config.getServiceName();
+        return config.getXMPPServiceDomain();
     }
 
     @Override
@@ -506,7 +512,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // from the login() arguments and the configurations service name, as, for example, when SASL External is used,
         // the username is not given to login but taken from the 'external' certificate.
         user = response.getJid();
-        serviceName = user.asDomainBareJid();
+        xmppServiceDomain = user.asDomainBareJid();
 
         Session.Feature sessionFeature = getFeature(Session.ELEMENT, Session.NAMESPACE);
         // Only bind the session if it's announced as stream feature by the server, is not optional and not disabled
@@ -549,7 +555,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         && !config.allowNullOrEmptyUsername;
     }
 
-    private DomainBareJid serviceName;
+    private DomainBareJid xmppServiceDomain;
 
     protected List<HostAddress> hostAddresses;
 
@@ -567,7 +573,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             hostAddress = new HostAddress(config.host, config.port);
             hostAddresses.add(hostAddress);
         } else {
-            hostAddresses = DNSUtil.resolveXMPPDomain(config.serviceName.toString(), failedAddresses);
+            hostAddresses = DNSUtil.resolveXMPPServiceDomain(config.getXMPPServiceDomain().toString(), failedAddresses);
         }
         // If we reach this, then hostAddresses *must not* be empty, i.e. there is at least one host added, either the
         // config.host one or the host representing the service name by DNSUtil

@@ -52,7 +52,7 @@ public class TestEvents extends SmackTestCase
 
 	private String getService()
 	{
-		return "pubsub." + getServiceName();
+		return "pubsub." + getXMPPServiceDomain();
 	}
 
 	public void testCreateAndGetNode() throws Exception

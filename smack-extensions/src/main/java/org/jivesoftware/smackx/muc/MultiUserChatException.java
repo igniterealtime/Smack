@@ -86,7 +86,7 @@ public abstract class MultiUserChatException extends SmackException {
 
     /**
      * Thrown when trying to enter a MUC room that is not hosted a domain providing a MUC service.
-     * Try {@link MultiUserChatManager#getServiceNames()} for a list of client-local domains
+     * Try {@link MultiUserChatManager#getXMPPServiceDomains()} for a list of client-local domains
      * providing a MUC service.
      */
     public static class NotAMucServiceException extends MultiUserChatException {

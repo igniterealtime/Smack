@@ -224,7 +224,7 @@ public class MultiUserChatTest extends SmackTestCase {
         try {
             // Anonymous user joins the new room
             ConnectionConfiguration connectionConfiguration =
-                    new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+                    new ConnectionConfiguration(getHost(), getPort(), getXMPPServiceDomain());
             XMPPTCPConnection anonConnection = new XMPPConnection(connectionConfiguration);
             anonConnection.connect();
             anonConnection.loginAnonymously();
@@ -405,7 +405,7 @@ public class MultiUserChatTest extends SmackTestCase {
 
     public void testDiscoverMUCService() {
         try {
-            Collection<String> services = MultiUserChat.getServiceNames(getConnection(1));
+            Collection<String> services = MultiUserChat.getXMPPServiceDomains(getConnection(1));
             assertFalse("No MUC service was found", services.isEmpty());
 
             // Discover the hosted rooms by the chat service.
@@ -1736,7 +1736,7 @@ public class MultiUserChatTest extends SmackTestCase {
             XMPPTCPConnection[] conns = new XMPPConnection[5];
             for (int i = 0; i < conns.length; i++) {
                 ConnectionConfiguration connectionConfiguration =
-                        new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+                        new ConnectionConfiguration(getHost(), getPort(), getXMPPServiceDomain());
                 connectionConfiguration.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
                 conns[i] = new XMPPTCPConnection(connectionConfiguration);
                 conns[i].connect();

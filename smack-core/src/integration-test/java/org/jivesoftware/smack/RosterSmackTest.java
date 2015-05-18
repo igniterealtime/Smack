@@ -434,7 +434,7 @@ public class RosterSmackTest extends SmackTestCase {
 
         // Create another connection for the same user of connection 1
         ConnectionConfiguration connectionConfiguration =
-                new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+                new ConnectionConfiguration(getHost(), getPort(), getXMPPServiceDomain());
         XMPPTCPConnection conn4 = new XMPPConnection(connectionConfiguration);
         conn4.connect();
         conn4.login(getUsername(1), getPassword(1), "Home");
@@ -455,7 +455,7 @@ public class RosterSmackTest extends SmackTestCase {
         assertTrue("Returned a null Presence for an existing user", presence.isAvailable());
 
         // Check that the right presence is returned for a user+resource
-        presence = roster.getPresenceResource(getUsername(1) + "@" + conn4.getServiceName() + "/Home");
+        presence = roster.getPresenceResource(getUsername(1) + "@" + conn4.getXMPPServiceDomain() + "/Home");
         assertEquals("Returned the wrong Presence", "Home",
                 StringUtils.parseResource(presence.getFrom()));
 
@@ -466,7 +466,7 @@ public class RosterSmackTest extends SmackTestCase {
                 StringUtils.parseResource(presence.getFrom()));
 
         // Check the returned presence for a non-existent user+resource
-        presence = roster.getPresenceResource("noname@" + getServiceName() + "/Smack");
+        presence = roster.getPresenceResource("noname@" + getXMPPServiceDomain() + "/Smack");
         assertFalse("Available presence was returned for a non-existing user", presence.isAvailable());
         assertEquals("Returned Presence for a non-existing user has the incorrect type",
                 Presence.Type.unavailable, presence.getType());
@@ -501,7 +501,7 @@ public class RosterSmackTest extends SmackTestCase {
     public void testMultipleResources() throws Exception {
         // Create another connection for the same user of connection 1
         ConnectionConfiguration connectionConfiguration =
-                new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+                new ConnectionConfiguration(getHost(), getPort(), getXMPPServiceDomain());
         XMPPTCPConnection conn4 = new XMPPConnection(connectionConfiguration);
         conn4.connect();
         conn4.login(getUsername(1), getPassword(1), "Home");
@@ -566,7 +566,7 @@ public class RosterSmackTest extends SmackTestCase {
 
         // Create another connection for the same user of connection 0
         ConnectionConfiguration connectionConfiguration =
-                new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+                new ConnectionConfiguration(getHost(), getPort(), getXMPPServiceDomain());
         XMPPTCPConnection conn2 = new XMPPConnection(connectionConfiguration);
         conn2.connect();
         conn2.login(getUsername(0), getPassword(0), "Home");

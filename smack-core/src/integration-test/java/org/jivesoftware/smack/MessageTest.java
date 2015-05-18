@@ -193,7 +193,7 @@ public class MessageTest extends SmackTestCase {
     public void testHighestPriority() throws Exception {
         // Create another connection for the same user of connection 1
         ConnectionConfiguration connectionConfiguration =
-                new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+                new ConnectionConfiguration(getHost(), getPort(), getXMPPServiceDomain());
         XMPPTCPConnection conn3 = new XMPPConnection(connectionConfiguration);
         conn3.connect();
         conn3.login(getUsername(0), getPassword(0), "Home");
@@ -242,7 +242,7 @@ public class MessageTest extends SmackTestCase {
     public void testHighestShow() throws Exception {
         // Create another connection for the same user of connection 1
         ConnectionConfiguration connectionConfiguration =
-                new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+                new ConnectionConfiguration(getHost(), getPort(), getXMPPServiceDomain());
         XMPPTCPConnection conn3 = new XMPPConnection(connectionConfiguration);
         conn3.connect();
         conn3.login(getUsername(0), getPassword(0), "Home");
@@ -291,7 +291,7 @@ public class MessageTest extends SmackTestCase {
     public void testMostRecentActive() throws Exception {
         // Create another connection for the same user of connection 1
         ConnectionConfiguration connectionConfiguration =
-                new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+                new ConnectionConfiguration(getHost(), getPort(), getXMPPServiceDomain());
         XMPPTCPConnection conn3 = new XMPPConnection(connectionConfiguration);
         conn3.connect();
         conn3.login(getUsername(0), getPassword(0), "Home");
@@ -307,7 +307,7 @@ public class MessageTest extends SmackTestCase {
         getConnection(0).sendStanza(presence);
 
         connectionConfiguration =
-                new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+                new ConnectionConfiguration(getHost(), getPort(), getXMPPServiceDomain());
         XMPPTCPConnection conn4 = new XMPPConnection(connectionConfiguration);
         conn4.connect();
         conn4.login(getUsername(0), getPassword(0), "Home2");
@@ -326,7 +326,7 @@ public class MessageTest extends SmackTestCase {
         PacketCollector coll4 = conn4.createPacketCollector(new MessageTypeFilter(Message.Type.chat));
 
         // Send a message from this resource to indicate most recent activity 
-        conn3.sendStanza(new Message("admin@" + getServiceName()));
+        conn3.sendStanza(new Message("admin@" + getXMPPServiceDomain()));
 
         // User1 sends a message to the bare JID of User0
         Chat chat = getConnection(1).getChatManager().createChat(getBareJID(0), null);

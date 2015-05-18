@@ -81,7 +81,7 @@ public class LiteDebugger implements SmackDebugger {
      * Creates the debug process, which is a GUI window that displays XML traffic.
      */
     private void createDebug() {
-        frame = new JFrame("Smack Debug Window -- " + connection.getServiceName() + ":" +
+        frame = new JFrame("Smack Debug Window -- " + connection.getXMPPServiceDomain() + ":" +
                 connection.getPort());
 
         // Add listener for window closing event 

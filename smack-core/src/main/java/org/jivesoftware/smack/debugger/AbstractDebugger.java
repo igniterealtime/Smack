@@ -149,7 +149,7 @@ public abstract class AbstractDebugger implements SmackDebugger {
                 "User logged (" + connection.getConnectionCounter() + "): "
                 + (isAnonymous ? "" : localpart)
                 + "@"
-                + connection.getServiceName()
+                + connection.getXMPPServiceDomain()
                 + ":"
                 + connection.getPort();
         title += "/" + user.getResourcepart();

@@ -170,7 +170,7 @@ public final class PingManager extends Manager {
             connection.createPacketCollectorAndSend(ping).nextResultOrThrow(pingTimeout);
         }
         catch (XMPPException exc) {
-            return jid.equals(connection.getServiceName());
+            return jid.equals(connection.getXMPPServiceDomain());
         }
         return true;
     }
@@ -250,7 +250,7 @@ public final class PingManager extends Manager {
     public boolean pingMyServer(boolean notifyListeners, long pingTimeout) throws NotConnectedException, InterruptedException {
         boolean res;
         try {
-            res = ping(connection().getServiceName(), pingTimeout);
+            res = ping(connection().getXMPPServiceDomain(), pingTimeout);
         }
         catch (NoResponseException e) {
             res = false;

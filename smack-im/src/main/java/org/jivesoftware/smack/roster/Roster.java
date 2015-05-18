@@ -915,7 +915,7 @@ public final class Roster extends Manager {
      * @since 4.1
      */
     public boolean isSubscribedToMyPresence(Jid jid) {
-        if (connection().getServiceName().equals(jid)) {
+        if (connection().getXMPPServiceDomain().equals(jid)) {
             return true;
         }
         RosterEntry entry = getEntry(jid);

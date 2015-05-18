@@ -78,8 +78,19 @@ public interface XMPPConnection {
      * authenticating with the server the returned value may be different.
      * 
      * @return the name of the service provided by the XMPP server.
+     // TODO remove this once the java bugs are fixed, causing a warning
+//     * @deprecated use {@link #getXMPPServiceDomain()} instead.
      */
+//    @Deprecated
     public DomainBareJid getServiceName();
+
+    /**
+     * Returns the XMPP Domain of the service provided by the XMPP server and used for this connection. After
+     * authenticating with the server the returned value may be different.
+     * 
+     * @return the XMPP domain of this XMPP session.
+     */
+    public DomainBareJid getXMPPServiceDomain();
 
     /**
      * Returns the host name of the server where the XMPP server is running. This would be the

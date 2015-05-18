@@ -183,7 +183,7 @@ public class STUN extends SimpleIQ {
         }
 
         STUN stunPacket = new STUN();
-        stunPacket.setTo(DOMAIN + "." + connection.getServiceName());
+        stunPacket.setTo(DOMAIN + "." + connection.getXMPPServiceDomain());
 
         PacketCollector collector = connection.createPacketCollectorAndSend(stunPacket);
 
@@ -213,7 +213,7 @@ public class STUN extends SimpleIQ {
         LOGGER.fine("Service listing");
 
         ServiceDiscoveryManager disco = ServiceDiscoveryManager.getInstanceFor(connection);
-        DiscoverItems items = disco.discoverItems(connection.getServiceName());
+        DiscoverItems items = disco.discoverItems(connection.getXMPPServiceDomain());
 
         for (DiscoverItems.Item item : items.getItems()) {
             DiscoverInfo info = disco.discoverInfo(item.getEntityID());

@@ -711,8 +711,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         final HostnameVerifier verifier = getConfiguration().getHostnameVerifier();
         if (verifier == null) {
                 throw new IllegalStateException("No HostnameVerifier set. Use connectionConfiguration.setHostnameVerifier() to configure.");
-        } else if (!verifier.verify(getServiceName().toString(), sslSocket.getSession())) {
-            throw new CertificateException("Hostname verification of certificate failed. Certificate does not authenticate " + getServiceName());
+        } else if (!verifier.verify(getXMPPServiceDomain().toString(), sslSocket.getSession())) {
+            throw new CertificateException("Hostname verification of certificate failed. Certificate does not authenticate " + getXMPPServiceDomain());
         }
 
         // Set that TLS was successful
@@ -875,7 +875,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // possible. The 'to' attribute is *always* available. The 'from' attribute if set by the user and no external
         // mechanism is used to determine the local entity (user). And the 'id' attribute is available after the first
         // response from the server (see e.g. RFC 6120 § 9.1.1 Step 2.)
-        CharSequence to = getServiceName();
+        CharSequence to = getXMPPServiceDomain();
         CharSequence from = null;
         CharSequence localpart = config.getUsername();
         if (localpart != null) {
@@ -945,8 +945,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             // We found an opening stream.
                             if ("jabber:client".equals(parser.getNamespace(null))) {
                                 streamId = parser.getAttributeValue("", "id");
-                                String reportedServiceName = parser.getAttributeValue("", "from");
-                                assert(config.getServiceName().equals(reportedServiceName));
+                                String reportedServerDomain = parser.getAttributeValue("", "from");
+                                assert(config.getXMPPServiceDomain().equals(reportedServerDomain));
                             }
                             break;
                         case "error":

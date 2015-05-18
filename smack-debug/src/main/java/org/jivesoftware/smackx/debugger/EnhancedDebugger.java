@@ -621,7 +621,7 @@ public class EnhancedDebugger implements SmackDebugger {
         connPanel.add(
                 label,
                 new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, 21, 0, new Insets(0, 0, 0, 0), 0, 0));
-        JFormattedTextField field = new JFormattedTextField(connection.getServiceName());
+        JFormattedTextField field = new JFormattedTextField(connection.getXMPPServiceDomain());
         field.setMinimumSize(new java.awt.Dimension(150, 20));
         field.setMaximumSize(new java.awt.Dimension(150, 20));
         field.setEditable(false);

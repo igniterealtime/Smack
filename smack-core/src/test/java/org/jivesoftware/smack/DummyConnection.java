@@ -69,7 +69,7 @@ public class DummyConnection extends AbstractXMPPConnection {
         try {
             return JidCreate.fullFrom(config.getUsername()
                             + "@"
-                            + config.getServiceName()
+                            + config.getXMPPServiceDomain()
                             + "/"
                             + (config.getResource() != null ? config.getResource() : "Test"));
         }

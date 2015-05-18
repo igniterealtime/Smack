@@ -111,7 +111,7 @@ public class DNSUtilTest {
     }
 
     private void xmppClientDomainTest() {
-        List<HostAddress> hostAddresses = DNSUtil.resolveXMPPDomain(igniterealtimeDomain);
+        List<HostAddress> hostAddresses = DNSUtil.resolveXMPPServiceDomain(igniterealtimeDomain);
         HostAddress ha = hostAddresses.get(0);
         assertEquals(ha.getFQDN(), igniterealtimeXMPPServer);
         assertEquals(ha.getPort(), igniterealtimeClientPort);

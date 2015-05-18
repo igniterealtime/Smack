@@ -552,7 +552,7 @@ public final class Socks5BytestreamManager implements BytestreamManager {
         List<Jid> proxies = new ArrayList<>();
 
         // get all items from XMPP server
-        DiscoverItems discoverItems = serviceDiscoveryManager.discoverItems(this.connection.getServiceName());
+        DiscoverItems discoverItems = serviceDiscoveryManager.discoverItems(this.connection.getXMPPServiceDomain());
 
         // query all items if they are SOCKS5 proxies
         for (Item item : discoverItems.getItems()) {

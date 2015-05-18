@@ -109,7 +109,7 @@ public class DNSUtil {
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
      */
-    public static List<HostAddress> resolveXMPPDomain(String domain, List<HostAddress> failedAddresses) {
+    public static List<HostAddress> resolveXMPPServiceDomain(String domain, List<HostAddress> failedAddresses) {
         domain = idnaTransformer.transform(domain);
         if (dnsResolver == null) {
             LOGGER.warning("No DNS Resolver active in Smack, will be unable to perform DNS SRV lookups");

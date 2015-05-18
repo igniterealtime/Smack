@@ -44,7 +44,7 @@ public class MultiUserChatLowLevelIntegrationTest extends AbstractSmackLowLevelI
         performCheck(new ConnectionCallback() {
             @Override
             public void connectionCallback(XMPPTCPConnection connection) throws Exception {
-                if (MultiUserChatManager.getInstanceFor(connection).getServiceNames().isEmpty()) {
+                if (MultiUserChatManager.getInstanceFor(connection).getXMPPServiceDomains().isEmpty()) {
                     throw new TestNotPossibleException("MUC component not offered by service");
                 }
             }
@@ -61,7 +61,7 @@ public class MultiUserChatLowLevelIntegrationTest extends AbstractSmackLowLevelI
         final MultiUserChatManager multiUserChatManager = MultiUserChatManager.getInstanceFor(connection);
         final Resourcepart mucNickname = Resourcepart.from("Nick-" + StringUtils.randomString(6));
         final String randomMucName = StringUtils.randomString(6);
-        final DomainBareJid mucComponent = multiUserChatManager.getServiceNames().get(0);
+        final DomainBareJid mucComponent = multiUserChatManager.getXMPPServiceDomains().get(0);
         final MultiUserChat muc = multiUserChatManager.getMultiUserChat(JidCreate.bareFrom(
                         Localpart.from(randomMucName), mucComponent));
 

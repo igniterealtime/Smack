@@ -160,7 +160,7 @@ public class PingTest extends InitExtensions {
         ThreadedDummyConnection con = getAuthentiactedDummyConnection();
         //@formatter:off
         String reply = 
-                "<iq type='error' id='qrzSp-16' to='test@myserver.com' from='" + con.getServiceName() + "'>" +
+                "<iq type='error' id='qrzSp-16' to='test@myserver.com' from='" + con.getXMPPServiceDomain() + "'>" +
                         "<ping xmlns='urn:xmpp:ping'/>" +
                         "<error type='cancel'>" +
                             "<service-unavailable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +

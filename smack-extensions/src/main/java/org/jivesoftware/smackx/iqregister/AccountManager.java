@@ -273,7 +273,7 @@ public final class AccountManager extends Manager {
         attributes.put("password", password);
         Registration reg = new Registration(attributes);
         reg.setType(IQ.Type.set);
-        reg.setTo(connection().getServiceName());
+        reg.setTo(connection().getXMPPServiceDomain());
         createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
@@ -299,7 +299,7 @@ public final class AccountManager extends Manager {
         map.put("password",newPassword);
         Registration reg = new Registration(map);
         reg.setType(IQ.Type.set);
-        reg.setTo(connection().getServiceName());
+        reg.setTo(connection().getXMPPServiceDomain());
         createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
@@ -320,7 +320,7 @@ public final class AccountManager extends Manager {
         attributes.put("remove", "");
         Registration reg = new Registration(attributes);
         reg.setType(IQ.Type.set);
-        reg.setTo(connection().getServiceName());
+        reg.setTo(connection().getXMPPServiceDomain());
         createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 
@@ -336,7 +336,7 @@ public final class AccountManager extends Manager {
      */
     private synchronized void getRegistrationInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Registration reg = new Registration();
-        reg.setTo(connection().getServiceName());
+        reg.setTo(connection().getXMPPServiceDomain());
         info = createPacketCollectorAndSend(reg).nextResultOrThrow();
     }
 

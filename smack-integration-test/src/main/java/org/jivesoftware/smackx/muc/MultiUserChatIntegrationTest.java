@@ -52,7 +52,7 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
         mucManagerOne = MultiUserChatManager.getInstanceFor(conOne);
         mucManagerTwo = MultiUserChatManager.getInstanceFor(conTwo);
 
-        List<DomainBareJid> services = mucManagerOne.getServiceNames();
+        List<DomainBareJid> services = mucManagerOne.getXMPPServiceDomains();
         if (services.isEmpty()) {
             throw new TestNotPossibleException("No MUC (XEP-45) service found");
         }

@@ -661,7 +661,7 @@ public final class ServiceDiscoveryManager extends Manager {
      */
     public boolean serverSupportsFeature(String feature) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
-        return supportsFeature(connection().getServiceName(), feature);
+        return supportsFeature(connection().getXMPPServiceDomain(), feature);
     }
 
     /**
@@ -702,7 +702,7 @@ public final class ServiceDiscoveryManager extends Manager {
     public List<DiscoverInfo> findServicesDiscoverInfo(String feature, boolean stopOnFirst, boolean useCache)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         List<DiscoverInfo> serviceDiscoInfo = null;
-        DomainBareJid serviceName = connection().getServiceName();
+        DomainBareJid serviceName = connection().getXMPPServiceDomain();
         if (useCache) {
             serviceDiscoInfo = services.get(feature);
             if (serviceDiscoInfo != null) {

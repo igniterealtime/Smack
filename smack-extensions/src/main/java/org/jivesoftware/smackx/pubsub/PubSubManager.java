@@ -96,7 +96,7 @@ public final class PubSubManager extends Manager {
         if (pubSubService == null) {
             try {
                 // Perform an educated guess about what the PubSub service's domain bare JID may be
-                pubSubService = JidCreate.domainBareFrom("pubsub." + connection.getServiceName());
+                pubSubService = JidCreate.domainBareFrom("pubsub." + connection.getXMPPServiceDomain());
             }
             catch (XmppStringprepException e) {
                 throw new RuntimeException(e);

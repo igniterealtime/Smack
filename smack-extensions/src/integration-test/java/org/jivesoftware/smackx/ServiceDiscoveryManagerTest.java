@@ -114,7 +114,7 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
     public void testDiscoverPublishItemsSupport() {
         try {
             boolean canPublish = ServiceDiscoveryManager.getInstanceFor(getConnection(0))
-                    .canPublishItems(getServiceName());
+                    .canPublishItems(getXMPPServiceDomain());
             assertFalse("Wildfire does not support publishing...so far!!", canPublish);
         }
         catch (Exception e) {
@@ -135,7 +135,7 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
         itemsToPublish.addItem(itemToPublish);
 
         try {
-            ServiceDiscoveryManager.getInstanceFor(getConnection(0)).publishItems(getServiceName(),
+            ServiceDiscoveryManager.getInstanceFor(getConnection(0)).publishItems(getXMPPServiceDomain(),
                     itemsToPublish);
         }
         catch (Exception e) {

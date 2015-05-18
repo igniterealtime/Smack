@@ -168,7 +168,7 @@ public class PresenceTest extends SmackTestCase {
     public void testMultipleResources() throws Exception {
         // Create another connection for the same user of connection 1
         ConnectionConfiguration connectionConfiguration =
-                new ConnectionConfiguration(getHost(), getPort(), getServiceName());
+                new ConnectionConfiguration(getHost(), getPort(), getXMPPServiceDomain());
         XMPPTCPConnection conn4 = new XMPPConnection(connectionConfiguration);
         conn4.connect();
         conn4.login(getUsername(1), getPassword(1), "Home");

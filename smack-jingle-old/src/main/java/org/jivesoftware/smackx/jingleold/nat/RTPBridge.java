@@ -400,7 +400,7 @@ public class RTPBridge extends IQ {
         }
 
         RTPBridge rtpPacket = new RTPBridge(sessionID);
-        rtpPacket.setTo(RTPBridge.NAME + "." + connection.getServiceName());
+        rtpPacket.setTo(RTPBridge.NAME + "." + connection.getXMPPServiceDomain());
 
         PacketCollector collector = connection.createPacketCollectorAndSend(rtpPacket);
 
@@ -433,7 +433,7 @@ public class RTPBridge extends IQ {
 
         ServiceDiscoveryManager disco = ServiceDiscoveryManager
                 .getInstanceFor(connection);
-//            DiscoverItems items = disco.discoverItems(connection.getServiceName());
+//            DiscoverItems items = disco.discoverItems(connection.getXMPPServiceDomain());
 //            Iterator iter = items.getItems();
 //            while (iter.hasNext()) {
 //                DiscoverItems.Item item = (DiscoverItems.Item) iter.next();
@@ -442,7 +442,7 @@ public class RTPBridge extends IQ {
 //                }
 //            }
 
-        DiscoverInfo discoInfo = disco.discoverInfo(connection.getServiceName());
+        DiscoverInfo discoInfo = disco.discoverInfo(connection.getXMPPServiceDomain());
         for (DiscoverInfo.Identity identity : discoInfo.getIdentities()) {
             if ((identity.getName() != null) && (identity.getName().startsWith("rtpbridge"))) {
                 return true;
@@ -468,7 +468,7 @@ public class RTPBridge extends IQ {
         }
 
         RTPBridge rtpPacket = new RTPBridge(sessionID, RTPBridge.BridgeAction.change);
-        rtpPacket.setTo(RTPBridge.NAME + "." + connection.getServiceName());
+        rtpPacket.setTo(RTPBridge.NAME + "." + connection.getXMPPServiceDomain());
         rtpPacket.setType(Type.set);
 
         rtpPacket.setPass(pass);
@@ -505,7 +505,7 @@ public class RTPBridge extends IQ {
         }
 
         RTPBridge rtpPacket = new RTPBridge(RTPBridge.BridgeAction.publicip);
-        rtpPacket.setTo(RTPBridge.NAME + "." + xmppConnection.getServiceName());
+        rtpPacket.setTo(RTPBridge.NAME + "." + xmppConnection.getXMPPServiceDomain());
         rtpPacket.setType(Type.set);
 
         // LOGGER.debug("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());

@@ -183,14 +183,14 @@ public class SASLAuthentication {
         currentMechanism = selectMechanism();
         final CallbackHandler callbackHandler = configuration.getCallbackHandler();
         final String host = connection.getHost();
-        final DomainBareJid xmppDomain = connection.getServiceName();
+        final DomainBareJid xmppServiceDomain = connection.getXMPPServiceDomain();
 
         synchronized (this) {
             if (callbackHandler != null) {
-                currentMechanism.authenticate(host, xmppDomain, callbackHandler);
+                currentMechanism.authenticate(host, xmppServiceDomain, callbackHandler);
             }
             else {
-                currentMechanism.authenticate(username, host, xmppDomain, password);
+                currentMechanism.authenticate(username, host, xmppServiceDomain, password);
             }
             // Wait until SASL negotiation finishes
             wait(connection.getPacketReplyTimeout());

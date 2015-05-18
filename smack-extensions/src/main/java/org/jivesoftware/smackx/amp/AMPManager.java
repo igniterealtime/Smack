@@ -74,7 +74,7 @@ public class AMPManager {
      * @return a boolean indicating if the AMP support is enabled for the given connection
      */
     public static boolean isServiceEnabled(XMPPConnection connection) {
-        connection.getServiceName();
+        connection.getXMPPServiceDomain();
         return ServiceDiscoveryManager.getInstanceFor(connection).includesFeature(AMPExtension.NAMESPACE);
     }
 

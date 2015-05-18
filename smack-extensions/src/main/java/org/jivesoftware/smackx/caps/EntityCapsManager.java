@@ -302,7 +302,7 @@ public final class EntityCapsManager extends Manager {
                 if (capsExtension == null) {
                     return;
                 }
-                DomainBareJid from = connection.getServiceName();
+                DomainBareJid from = connection.getXMPPServiceDomain();
                 addCapsExtensionInfo(from, capsExtension);
             }
         });
@@ -456,7 +456,7 @@ public final class EntityCapsManager extends Manager {
      * @throws InterruptedException 
      */
     public boolean areEntityCapsSupportedByServer() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
-        return areEntityCapsSupported(connection().getServiceName());
+        return areEntityCapsSupported(connection().getXMPPServiceDomain());
     }
 
     /**

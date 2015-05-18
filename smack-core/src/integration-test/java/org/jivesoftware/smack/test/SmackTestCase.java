@@ -185,7 +185,7 @@ public abstract class SmackTestCase extends TestCase {
      * @return the bare XMPP address of the user (e.g. johndoe@jabber.org).
      */
     protected String getBareJID(int index) {
-        return getUsername(index) + "@" + getConnection(index).getServiceName();
+        return getUsername(index) + "@" + getConnection(index).getXMPPServiceDomain();
     }
 
     /**
@@ -207,7 +207,7 @@ public abstract class SmackTestCase extends TestCase {
         return port;
     }
 
-    protected String getServiceName() {
+    protected String getXMPPServiceDomain() {
         return serviceName;
     }
 
@@ -259,7 +259,7 @@ public abstract class SmackTestCase extends TestCase {
             // cases, but could fail if the user set a hostname in their XMPP server
             // that will not resolve as a network connection.
             host = connections[0].getHost();
-            serviceName = connections[0].getServiceName();
+            serviceName = connections[0].getXMPPServiceDomain();
 
             if (!createOfflineConnections()) {
                 for (int i = 0; i < getMaxConnections(); i++) {

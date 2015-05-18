@@ -22,8 +22,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
@@ -54,14 +52,13 @@ public abstract class ConnectionConfiguration {
         SmackConfiguration.getVersion();
     }
 
-    private static final Logger LOGGER = Logger.getLogger(ConnectionConfiguration.class.getName());
-
     /**
-     * Hostname of the XMPP server. Usually servers use the same service name as the name
+     * The XMPP domain of the XMPP Service. Usually servers use the same service name as the name
      * of the server. However, there are some servers like google where host would be
      * talk.google.com and the serviceName would be gmail.com.
      */
-    protected final DomainBareJid serviceName;
+    protected final DomainBareJid xmppServiceDomain;
+
     protected final String host;
     protected final int port;
 
@@ -120,9 +117,9 @@ public abstract class ConnectionConfiguration {
         // Resource can be null, this means that the server must provide one
         resource = builder.resource;
 
-        serviceName = builder.serviceName;
-        if (serviceName == null) {
-            throw new IllegalArgumentException("Must provide XMPP service name");
+        xmppServiceDomain = builder.xmppServiceDomain;
+        if (xmppServiceDomain == null) {
+            throw new IllegalArgumentException("Must define the XMPP domain");
         }
         host = builder.host;
         port = builder.port;
@@ -159,9 +156,20 @@ public abstract class ConnectionConfiguration {
      * Returns the server name of the target server.
      *
      * @return the server name of the target server.
+     * @deprecated use {@link #getXMPPServiceDomain()} instead.
      */
+    @Deprecated
     public DomainBareJid getServiceName() {
-        return serviceName;
+        return xmppServiceDomain;
+    }
+
+    /**
+     * Returns the XMPP domain used by this configuration.
+     *
+     * @return the XMPP domain.
+     */
+    public DomainBareJid getXMPPServiceDomain() {
+        return xmppServiceDomain;
     }
 
     /**
@@ -407,19 +415,6 @@ public abstract class ConnectionConfiguration {
      * @param <C> the resulting connection configuration type parameter.
      */
     public static abstract class Builder<B extends Builder<B, C>, C extends ConnectionConfiguration> {
-        private static final Resourcepart DEFAULT_RESOURCE;
-
-        static {
-            Resourcepart resourcepart = null;
-            try {
-                resourcepart = Resourcepart.from("Smack");
-            }
-            catch (XmppStringprepException e) {
-                LOGGER.log(Level.WARNING, "Could not create default resourcepart", e);
-            }
-            DEFAULT_RESOURCE = resourcepart;
-        }
-
         private SecurityMode securityMode = SecurityMode.ifpossible;
         private String keystorePath = System.getProperty("javax.net.ssl.keyStore");
         private String keystoreType = "jks";
@@ -430,14 +425,14 @@ public abstract class ConnectionConfiguration {
         private HostnameVerifier hostnameVerifier;
         private CharSequence username;
         private String password;
-        private Resourcepart resource = DEFAULT_RESOURCE;
+        private Resourcepart resource;
         private boolean sendPresence = true;
         private boolean legacySessionDisabled = false;
         private ProxyInfo proxy;
         private CallbackHandler callbackHandler;
         private boolean debuggerEnabled = SmackConfiguration.DEBUG;
         private SocketFactory socketFactory;
-        private DomainBareJid serviceName;
+        private DomainBareJid xmppServiceDomain;
         private String host;
         private int port = 5222;
         private boolean allowEmptyOrNullUsername = false;
@@ -471,7 +466,7 @@ public abstract class ConnectionConfiguration {
          * @return a reference to this builder.
          */
         public B setServiceName(DomainBareJid serviceName) {
-            this.serviceName = serviceName;
+            this.xmppServiceDomain = serviceName;
             return getThis();
         }
 
@@ -496,7 +491,7 @@ public abstract class ConnectionConfiguration {
          * @param resource the non-null CharSequence to use a resource.
          * @return a reference ot this builder.
          * @throws XmppStringprepException if the CharSequence is not a valid resourcepart.
-         * @see setResource(Resourcepart)
+         * @see #setResource(Resourcepart)
          */
         public B setResource(CharSequence resource) throws XmppStringprepException {
             Objects.requireNonNull(resource, "resource must not be null");

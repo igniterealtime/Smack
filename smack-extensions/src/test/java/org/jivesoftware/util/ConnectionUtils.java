@@ -74,7 +74,7 @@ public class ConnectionUtils {
         // mock XMPP connection
         XMPPConnection connection = mock(XMPPConnection.class);
         when(connection.getUser()).thenReturn(initiatorJID);
-        when(connection.getServiceName()).thenReturn(xmppServer);
+        when(connection.getXMPPServiceDomain()).thenReturn(xmppServer);
 
         // mock packet collector
         final PacketCollector collector = mock(PacketCollector.class);

@@ -256,7 +256,7 @@ public final class MultiUserChatManager extends Manager {
      * @throws NotConnectedException
      * @throws InterruptedException 
      */
-    public List<DomainBareJid> getServiceNames() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public List<DomainBareJid> getXMPPServiceDomains() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
         return sdm.findServices(MUCInitialPresence.NAMESPACE, false, false);
     }

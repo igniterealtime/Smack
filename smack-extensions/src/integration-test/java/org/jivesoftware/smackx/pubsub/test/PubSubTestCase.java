@@ -87,6 +87,6 @@ abstract public class PubSubTestCase extends SmackTestCase
 
 	protected String getService()
 	{
-		return "pubsub." + getServiceName();
+		return "pubsub." + getXMPPServiceDomain();
 	}
 }
