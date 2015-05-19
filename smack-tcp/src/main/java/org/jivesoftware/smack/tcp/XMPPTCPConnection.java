@@ -1117,6 +1117,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             }
                             smResumedSyncPoint.reportSuccess();
                             smEnabledSyncPoint.reportSuccess();
+                            // If there where stanzas resent, then request a SM ack for them.
+                            // Writer's sendStreamElement() won't do it automatically based on
+                            // predicates.
+                            if (!stanzasToResend.isEmpty()) {
+                                requestSmAcknowledgementInternal();
+                            }
                             LOGGER.fine("Stream Management (XEP-198): Stream resumed");
                             break;
                         case AckAnswer.ELEMENT:
