@@ -46,6 +46,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
@@ -55,6 +56,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
+import org.jivesoftware.smack.roster.SubscribeListener.SubscribeAnswer;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.packet.RosterVer;
 import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
@@ -169,6 +171,8 @@ public final class Roster extends Manager {
 
     private SubscriptionMode subscriptionMode = getDefaultSubscriptionMode();
 
+    private SubscribeListener subscribeListener;
+
     /**
      * Returns the default subscription processing mode to use when a new Roster is created. The
      * subscription processing mode dictates what action Smack will take when subscription
@@ -207,6 +211,46 @@ public final class Roster extends Manager {
         connection.registerIQRequestHandler(new RosterPushListener());
         // Listen for any presence packets.
         connection.addSyncStanzaListener(presencePacketListener, PRESENCE_PACKET_FILTER);
+
+        connection.addAsyncStanzaListener(new StanzaListener() {
+            @Override
+            public void processPacket(Stanza stanza) throws NotConnectedException,
+                            InterruptedException {
+                Presence presence = (Presence) stanza;
+                Jid from = presence.getFrom();
+                SubscribeAnswer subscribeAnswer = null;
+                switch (subscriptionMode) {
+                case manual:
+                    final SubscribeListener subscribeListener = Roster.this.subscribeListener;
+                    if (subscribeListener == null) {
+                        return;
+                    }
+                    subscribeAnswer = subscribeListener.processSubscribe(from, presence);
+                    if (subscribeAnswer == null) {
+                        return;
+                    }
+                    break;
+                case accept_all:
+                    // Accept all subscription requests.
+                    subscribeAnswer = SubscribeAnswer.Approve;
+                    break;
+                case reject_all:
+                    // Reject all subscription requests.
+                    subscribeAnswer = SubscribeAnswer.Deny;
+                    break;
+                }
+
+                Presence response;
+                if (subscribeAnswer == SubscribeAnswer.Approve) {
+                    response = new Presence(Presence.Type.subscribed);
+                }
+                else {
+                    response = new Presence(Presence.Type.unsubscribed);
+                }
+                response.setTo(presence.getFrom());
+                connection.sendStanza(response);
+            }
+        }, PresenceTypeFilter.SUBSCRIBE);
 
         // Listen for connection events
         connection.addConnectionListener(new AbstractConnectionClosedListener() {
@@ -528,6 +572,22 @@ public final class Roster extends Manager {
     public boolean isSubscriptionPreApprovalSupported() throws NotLoggedInException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
         return connection.hasFeature(SubscriptionPreApproval.ELEMENT, SubscriptionPreApproval.NAMESPACE);
+    }
+
+    /**
+     * Set the subscribe listener, which is invoked on incoming subscription requests and if
+     * {@link SubscriptionMode} is set to {@link SubscriptionMode#manual}. If
+     * <code>subscribeListener</code> is not <code>null</code>, then this also sets subscription
+     * mode to {@link SubscriptionMode#manual}.
+     * 
+     * @param subscribeListener the subscribe listener to set.
+     * @since 4.2
+     */
+    public void setSubscribeListener(SubscribeListener subscribeListener) {
+        if (subscribeListener != null) {
+            setSubscriptionMode(SubscriptionMode.manual);
+        }
+        this.subscribeListener = subscribeListener;
     }
 
     /**
@@ -1230,7 +1290,6 @@ public final class Roster extends Manager {
 
         @Override
         public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
-            final XMPPConnection connection = connection();
             Presence presence = (Presence) packet;
             Jid from = presence.getFrom();
             Resourcepart fromResource = Resourcepart.EMPTY;
@@ -1242,7 +1301,6 @@ public final class Roster extends Manager {
             }
             Jid key = getMapKey(from);
             Map<Resourcepart, Presence> userPresences;
-            Presence response = null;
 
             // If an "available" presence, add it to the presence map. Each presence
             // map will hold for a particular user a map with the presence
@@ -1281,37 +1339,6 @@ public final class Roster extends Manager {
                 if (entries.containsKey(key)) {
                     fireRosterPresenceEvent(presence);
                 }
-                break;
-            case subscribe:
-                switch (subscriptionMode) {
-                case accept_all:
-                    // Accept all subscription requests.
-                    response = new Presence(Presence.Type.subscribed);
-                    break;
-                case reject_all:
-                    // Reject all subscription requests.
-                    response = new Presence(Presence.Type.unsubscribed);
-                    break;
-                case manual:
-                default:
-                    // Otherwise, in manual mode so ignore.
-                    break;
-                }
-                if (response != null) {
-                    response.setTo(presence.getFrom());
-                    connection.sendStanza(response);
-                }
-                break;
-            case unsubscribe:
-                if (subscriptionMode != SubscriptionMode.manual) {
-                    // Acknowledge and accept unsubscription notification so that the
-                    // server will stop sending notifications saying that the contact
-                    // has unsubscribed to our presence.
-                    response = new Presence(Presence.Type.unsubscribed);
-                    response.setTo(presence.getFrom());
-                    connection.sendStanza(response);
-                }
-                // Otherwise, in manual mode so ignore.
                 break;
             // Error presence packets from a bare JID mean we invalidate all existing
             // presence info for the user.
