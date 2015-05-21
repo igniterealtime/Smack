@@ -19,6 +19,7 @@ package org.jivesoftware.smack.packet;
 
 import java.util.Locale;
 
+import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -257,6 +258,18 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
     @Override
     public Presence clone() {
         return new Presence(this);
+    }
+
+    /**
+     * Clone this presence and set a newly generated stanza ID as the clone's ID.
+     *
+     * @return a "clone" of this presence  with a different stanza ID.
+     * @since 4.1.2
+     */
+    public Presence cloneWithNewId() {
+        Presence clone = clone();
+        clone.setStanzaId(StanzaIdUtil.newStanzaId());
+        return clone;
     }
 
     /**
