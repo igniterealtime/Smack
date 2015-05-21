@@ -28,9 +28,11 @@ import java.util.List;
  * @author Gaston Dombiak
  */
 public class ObservableWriter extends Writer {
+    private static final int MAX_STRING_BUILDER_SIZE = 4096;
 
     Writer wrappedWriter = null;
     List<WriterListener> listeners = new ArrayList<WriterListener>();
+    private final StringBuilder stringBuilder = new StringBuilder(MAX_STRING_BUILDER_SIZE);
 
     public ObservableWriter(Writer wrappedWriter) {
         this.wrappedWriter = wrappedWriter;
@@ -39,10 +41,11 @@ public class ObservableWriter extends Writer {
     public void write(char[] cbuf, int off, int len) throws IOException {
         wrappedWriter.write(cbuf, off, len);
         String str = new String(cbuf, off, len);
-        notifyListeners(str);
+        maybeNotifyListeners(str);
     }
 
     public void flush() throws IOException {
+        notifyListeners();
         wrappedWriter.flush();
     }
 
@@ -57,18 +60,25 @@ public class ObservableWriter extends Writer {
     public void write(char[] cbuf) throws IOException {
         wrappedWriter.write(cbuf);
         String str = new String(cbuf);
-        notifyListeners(str);
+        maybeNotifyListeners(str);
     }
 
     public void write(String str) throws IOException {
         wrappedWriter.write(str);
-        notifyListeners(str);
+        maybeNotifyListeners(str);
     }
 
     public void write(String str, int off, int len) throws IOException {
         wrappedWriter.write(str, off, len);
         str = str.substring(off, off + len);
-        notifyListeners(str);
+        maybeNotifyListeners(str);
+    }
+
+    private void maybeNotifyListeners(String s) {
+        stringBuilder.append(s);
+        if (stringBuilder.length() > MAX_STRING_BUILDER_SIZE) {
+            notifyListeners();
+        }
     }
 
     /**
@@ -76,12 +86,14 @@ public class ObservableWriter extends Writer {
      * 
      * @param str the written String to notify 
      */
-    private void notifyListeners(String str) {
+    private void notifyListeners() {
         WriterListener[] writerListeners = null;
         synchronized (listeners) {
             writerListeners = new WriterListener[listeners.size()];
             listeners.toArray(writerListeners);
         }
+        String str = stringBuilder.toString();
+        stringBuilder.setLength(0);
         for (int i = 0; i < writerListeners.length; i++) {
             writerListeners[i].write(str);
         }

@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LazyStringBuilder implements Appendable, CharSequence {
@@ -104,5 +105,18 @@ public class LazyStringBuilder implements Appendable, CharSequence {
             cache = sb.toString();
         }
         return cache;
+    }
+
+    /**
+     * Get the List of CharSequences representation of this instance. The list is unmodifiable. If
+     * the resulting String was already cached, a list with a single String entry will be returned.
+     *
+     * @return a List of CharSequences representing this instance.
+     */
+    public List<CharSequence> getAsList() {
+        if (cache != null) {
+            return Collections.singletonList((CharSequence) cache);
+        }
+        return Collections.unmodifiableList(list);
     }
 }

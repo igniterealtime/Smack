@@ -73,6 +73,7 @@ import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -1316,7 +1317,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             throw new IllegalStateException(e);
                         }
                     }
-                    writer.write(element.toXML().toString());
+
+                    CharSequence elementXml = element.toXML();
+                    if (elementXml instanceof XmlStringBuilder) {
+                        ((XmlStringBuilder) elementXml).write(writer);
+                    }
+                    else {
+                        writer.write(elementXml.toString());
+                    }
+
                     if (queue.isEmpty()) {
                         writer.flush();
                     }

@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Date;
 
@@ -458,5 +460,24 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     @Override
     public int hashCode() {
         return toString().hashCode();
+    }
+
+    /**
+     * Write the contents of this <code>XmlStringBuilder</code> to a {@link Writer}. This will write
+     * the single parts one-by-one, avoiding allocation of a big continuous memory block holding the
+     * XmlStringBuilder contents.
+     *
+     * @param writer
+     * @throws IOException
+     */
+    public void write(Writer writer) throws IOException {
+        for (CharSequence csq : sb.getAsList()) {
+            if (csq instanceof XmlStringBuilder) {
+                ((XmlStringBuilder) csq).write(writer);
+            }
+            else {
+                writer.write(csq.toString());
+            }
+        }
     }
 }
