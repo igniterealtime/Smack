@@ -30,6 +30,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.filter.NotFilter;
+import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
@@ -96,7 +97,6 @@ public final class EntityCapsManager extends Manager {
                     ELEMENT, NAMESPACE));
     private static final StanzaFilter PRESENCES_WITHOUT_CAPS = new AndFilter(new StanzaTypeFilter(Presence.class), new NotFilter(new StanzaExtensionFilter(
                     ELEMENT, NAMESPACE)));
-    private static final StanzaFilter PRESENCES = StanzaTypeFilter.PRESENCE;
 
     /**
      * Map of "node + '#' + hash" to DiscoverInfo data
@@ -264,7 +264,7 @@ public final class EntityCapsManager extends Manager {
 
     private boolean entityCapsEnabled;
     private CapsVersionAndHash currentCapsVersion;
-    private boolean presenceSend = false;
+    private volatile Presence presenceSend;
 
     /**
      * The entity node String used by this EntityCapsManager instance.
@@ -293,7 +293,7 @@ public final class EntityCapsManager extends Manager {
 
                 // Reset presenceSend when the connection was not resumed
                 if (!resumed) {
-                    presenceSend = false;
+                    presenceSend = null;
                 }
             }
             private void processCapsStreamFeatureIfAvailable(XMPPConnection connection) {
@@ -341,23 +341,26 @@ public final class EntityCapsManager extends Manager {
         connection.addPacketSendingListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza packet) {
-                presenceSend = true;
+                presenceSend = (Presence) packet;
             }
-        }, PRESENCES);
+        }, PresenceTypeFilter.AVAILABLE);
 
         // Intercept presence packages and add caps data when intended.
         // XEP-0115 specifies that a client SHOULD include entity capabilities
         // with every presence notification it sends.
         StanzaListener packetInterceptor = new StanzaListener() {
             public void processPacket(Stanza packet) {
-                if (!entityCapsEnabled)
+                if (!entityCapsEnabled) {
+                    // Be sure to not send stanzas with the caps extension if it's not enabled
+                    packet.removeExtension(CapsExtension.ELEMENT, CapsExtension.NAMESPACE);
                     return;
+                }
                 CapsVersionAndHash capsVersionAndHash = getCapsVersionAndHash();
                 CapsExtension caps = new CapsExtension(entityNode, capsVersionAndHash.version, capsVersionAndHash.hash);
-                packet.addExtension(caps);
+                packet.overrideExtension(caps);
             }
         };
-        connection.addPacketInterceptor(packetInterceptor, PRESENCES);
+        connection.addPacketInterceptor(packetInterceptor, PresenceTypeFilter.AVAILABLE);
         // It's important to do this as last action. Since it changes the
         // behavior of the SDM in some ways
         sdm.setEntityCapsManager(this);
@@ -506,15 +509,14 @@ public final class EntityCapsManager extends Manager {
             }
         });
 
-        // Send an empty presence, and let the packet interceptor
+        // Re-send the last sent presence, and let the stanza interceptor
         // add a <c/> node to it.
         // See http://xmpp.org/extensions/xep-0115.html#advertise
         // We only send a presence packet if there was already one send
         // to respect ConnectionConfiguration.isSendPresence()
-        if (connection != null && connection.isAuthenticated() && presenceSend) {
-            Presence presence = new Presence(Presence.Type.available);
+        if (connection != null && connection.isAuthenticated() && presenceSend != null) {
             try {
-                connection.sendStanza(presence);
+                connection.sendStanza(presenceSend.cloneWithNewId());
             }
             catch (InterruptedException | NotConnectedException e) {
                 LOGGER.log(Level.WARNING, "Could could not update presence with caps info", e);

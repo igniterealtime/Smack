@@ -360,6 +360,23 @@ public abstract class Stanza implements TopLevelStreamElement {
     }
 
     /**
+     * Add the given extension and override eventually existing extensions with the same name and
+     * namespace.
+     *
+     * @param extension the extension element to add.
+     * @return one of the removed extensions or <code>null</code> if there are none.
+     * @since 4.1.2
+     */
+    public ExtensionElement overrideExtension(ExtensionElement extension) {
+        if (extension == null) return null;
+        synchronized (packetExtensions) {
+            ExtensionElement removedExtension = removeExtension(extension);
+            addExtension(extension);
+            return removedExtension;
+        }
+    }
+
+    /**
      * Adds a collection of stanza(/packet) extensions to the packet. Does nothing if extensions is null.
      * 
      * @param extensions a collection of stanza(/packet) extensions
