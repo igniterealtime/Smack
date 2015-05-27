@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -38,10 +38,9 @@ import org.jxmpp.util.XmppStringUtils;
  * @see Roster#getGroup(String)
  * @author Matt Tucker
  */
-public class RosterGroup {
+public class RosterGroup extends Manager {
 
     private final String name;
-    private final XMPPConnection connection;
     private final Set<RosterEntry> entries;
 
     /**
@@ -51,8 +50,8 @@ public class RosterGroup {
      * @param connection the connection the group belongs to.
      */
     RosterGroup(String name, XMPPConnection connection) {
+        super(connection);
         this.name = name;
-        this.connection = connection;
         entries = new LinkedHashSet<RosterEntry>();
     }
 
@@ -85,7 +84,7 @@ public class RosterGroup {
                 item.removeGroupName(this.name);
                 item.addGroupName(name);
                 packet.addRosterItem(item);
-                connection.createPacketCollectorAndSend(packet).nextResultOrThrow();
+                connection().createPacketCollectorAndSend(packet).nextResultOrThrow();
             }
         }
     }
@@ -171,7 +170,6 @@ public class RosterGroup {
      * @throws NotConnectedException 
      */
     public void addEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException, NotConnectedException {
-        PacketCollector collector = null;
         // Only add the entry if it isn't already in the list.
         synchronized (entries) {
             if (!entries.contains(entry)) {
@@ -181,11 +179,8 @@ public class RosterGroup {
                 item.addGroupName(getName());
                 packet.addRosterItem(item);
                 // Wait up to a certain number of seconds for a reply from the server.
-                collector = connection.createPacketCollectorAndSend(packet);
+                connection().createPacketCollectorAndSend(packet).nextResultOrThrow();
             }
-        }
-        if (collector != null) {
-            collector.nextResultOrThrow();
         }
     }
 
@@ -202,7 +197,6 @@ public class RosterGroup {
      * @throws NotConnectedException 
      */
     public void removeEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException, NotConnectedException {
-        PacketCollector collector = null;
         // Only remove the entry if it's in the entry list.
         // Remove the entry locally, if we wait for RosterPacketListenerprocess>>Packet(Packet)
         // to take place the entry will exist in the group until a packet is received from the 
@@ -215,11 +209,8 @@ public class RosterGroup {
                 item.removeGroupName(this.getName());
                 packet.addRosterItem(item);
                 // Wait up to a certain number of seconds for a reply from the server.
-                collector = connection.createPacketCollectorAndSend(packet);
+                connection().createPacketCollectorAndSend(packet).nextResultOrThrow();
             }
-        }
-        if (collector != null) {
-            collector.nextResultOrThrow();
         }
     }
 
