@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack.packet;
 
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
 /**
@@ -37,9 +37,9 @@ public class Bind extends IQ {
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-bind";
 
     private final Resourcepart resource;
-    private final FullJid jid;
+    private final EntityFullJid jid;
 
-    public Bind(Resourcepart resource, FullJid jid) {
+    public Bind(Resourcepart resource, EntityFullJid jid) {
         super(ELEMENT, NAMESPACE);
         this.resource = resource;
         this.jid = jid;
@@ -49,7 +49,7 @@ public class Bind extends IQ {
         return resource;
     }
 
-    public FullJid getJid() {
+    public EntityFullJid getJid() {
         return jid;
     }
 
@@ -59,7 +59,7 @@ public class Bind extends IQ {
         return bind;
     }
 
-    public static Bind newResult(FullJid jid) {
+    public static Bind newResult(EntityFullJid jid) {
         return new Bind(null, jid);
     }
 

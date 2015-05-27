@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 
 /**
  * Represents a request to the server to destroy a room. The sender of the request should be the
@@ -38,13 +38,13 @@ public class Destroy implements NamedElement, Serializable {
     public static final String ELEMENT = "destroy";
 
     private final String reason;
-    private final BareJid jid;
+    private final EntityBareJid jid;
 
     public Destroy(Destroy other) {
         this(other.jid, other.reason);
     }
 
-    public Destroy(BareJid alternativeJid, String reason) {
+    public Destroy(EntityBareJid alternativeJid, String reason) {
         this.jid = alternativeJid;
         this.reason = reason;
     }
@@ -54,7 +54,7 @@ public class Destroy implements NamedElement, Serializable {
      * 
      * @return the JID of an alternate location.
      */
-    public BareJid getJid() {
+    public EntityBareJid getJid() {
         return jid;
     }
 

@@ -37,7 +37,7 @@ import org.jivesoftware.util.Verification;
 import org.junit.Before;
 import org.junit.Test;
 import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.JidTestUtil;
 
 /**
@@ -48,8 +48,8 @@ import org.jxmpp.jid.JidTestUtil;
 public class InBandBytestreamManagerTest extends InitExtensions {
 
     // settings
-    static final FullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
-    static final FullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
+    static final EntityFullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
+    static final EntityFullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
     static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
     String sessionID = "session_id";
 

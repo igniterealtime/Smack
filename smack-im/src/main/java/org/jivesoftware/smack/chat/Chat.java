@@ -21,7 +21,7 @@ import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jxmpp.jid.JidWithLocalpart;
+import org.jxmpp.jid.EntityJid;
 
 import java.util.Set;
 import java.util.Collections;
@@ -41,7 +41,7 @@ public class Chat {
 
     private ChatManager chatManager;
     private String threadID;
-    private JidWithLocalpart participant;
+    private EntityJid participant;
     private final Set<ChatMessageListener> listeners = new CopyOnWriteArraySet<ChatMessageListener>();
 
     /**
@@ -51,7 +51,7 @@ public class Chat {
      * @param participant the user to chat with.
      * @param threadID the thread ID to use.
      */
-    Chat(ChatManager chatManager, JidWithLocalpart participant, String threadID) {
+    Chat(ChatManager chatManager, EntityJid participant, String threadID) {
         if (StringUtils.isEmpty(threadID)) {
             throw new IllegalArgumentException("Thread ID must not be null");
         }
@@ -76,7 +76,7 @@ public class Chat {
      *
      * @return the name of the user the chat is occuring with.
      */
-    public JidWithLocalpart getParticipant() {
+    public EntityJid getParticipant() {
         return participant;
     }
 

@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.muc.MUCAffiliation;
 import org.jivesoftware.smackx.muc.MUCRole;
 import org.jivesoftware.smackx.muc.packet.Destroy;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.xmlpull.v1.XmlPullParser;
@@ -64,7 +64,7 @@ public class MUCParserUtils {
 
     public static Destroy parseDestroy(XmlPullParser parser) throws XmlPullParserException, IOException {
         final int initialDepth = parser.getDepth();
-        final BareJid jid = ParserUtils.getBareJidAttribute(parser);
+        final EntityBareJid jid = ParserUtils.getBareJidAttribute(parser);
         String reason = null;
         outerloop: while (true) {
             int eventType = parser.next();

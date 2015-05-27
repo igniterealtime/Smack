@@ -36,7 +36,7 @@ import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * This class can be used in conjunction with a mocked XMPP connection (
- * {@link ConnectionUtils#createMockedConnection(Protocol, org.jxmpp.jid.FullJid, org.jxmpp.jid.DomainBareJid)}) to
+ * {@link ConnectionUtils#createMockedConnection(Protocol, org.jxmpp.jid.EntityFullJid, org.jxmpp.jid.DomainBareJid)}) to
  * verify an XMPP protocol. This can be accomplished in the following was:
  * <ul>
  * <li>add responses to packets sent over the mocked XMPP connection by the

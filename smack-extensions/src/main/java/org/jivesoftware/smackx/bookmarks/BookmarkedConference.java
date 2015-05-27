@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.bookmarks;
 
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
 /**
@@ -29,17 +29,17 @@ public class BookmarkedConference implements SharedBookmark {
 
     private String name;
     private boolean autoJoin;
-    private final BareJid jid;
+    private final EntityBareJid jid;
 
     private Resourcepart nickname;
     private String password;
     private boolean isShared;
 
-    protected BookmarkedConference(BareJid jid) {
+    protected BookmarkedConference(EntityBareJid jid) {
         this.jid = jid;
     }
 
-    protected BookmarkedConference(String name, BareJid jid, boolean autoJoin, Resourcepart nickname,
+    protected BookmarkedConference(String name, EntityBareJid jid, boolean autoJoin, Resourcepart nickname,
             String password)
     {
         this.name = name;
@@ -81,7 +81,7 @@ public class BookmarkedConference implements SharedBookmark {
      *
      * @return the full JID of  this conference room.
      */
-    public BareJid getJid() {
+    public EntityBareJid getJid() {
         return jid;
     }
 

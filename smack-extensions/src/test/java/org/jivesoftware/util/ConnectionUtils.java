@@ -33,7 +33,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -69,7 +69,7 @@ public class ConnectionUtils {
      * @throws InterruptedException 
      */
     public static XMPPConnection createMockedConnection(final Protocol protocol,
-                    FullJid initiatorJID, DomainBareJid xmppServer) throws SmackException, XMPPErrorException, InterruptedException {
+                    EntityFullJid initiatorJID, DomainBareJid xmppServer) throws SmackException, XMPPErrorException, InterruptedException {
 
         // mock XMPP connection
         XMPPConnection connection = mock(XMPPConnection.class);

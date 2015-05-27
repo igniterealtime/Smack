@@ -21,7 +21,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.jivesoftware.smack.StanzaListener;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 
 /**
  * Interface that allows for implementing classes to debug XML traffic. That is a GUI window that 
@@ -41,7 +41,7 @@ public interface SmackDebugger {
      * 
      * @param user the user@host/resource that has just logged in
      */
-    public abstract void userHasLogged(FullJid user);
+    public abstract void userHasLogged(EntityFullJid user);
 
     /**
      * Returns the special Reader that wraps the main Reader and logs data to the GUI.

@@ -48,7 +48,7 @@ import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
 import org.jivesoftware.smack.util.WriterListener;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 
 /**
  * The LiteDebugger is a very simple debugger that allows to debug sent, received and 
@@ -325,7 +325,7 @@ public class LiteDebugger implements SmackDebugger {
     }
 
     @Override
-    public void userHasLogged(FullJid user) {
+    public void userHasLogged(EntityFullJid user) {
         String title =
             "Smack Debug Window -- "
                 + user;

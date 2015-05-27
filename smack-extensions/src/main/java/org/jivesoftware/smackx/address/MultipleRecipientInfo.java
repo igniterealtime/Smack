@@ -65,7 +65,7 @@ public class MultipleRecipientInfo {
      * @return the JID of a MUC room to which responses should be sent or <tt>null</tt>  if
      *         no specific address was provided.
      */
-    // TODO should return BareJid
+    // TODO should return EntityBareJid
     public Jid getReplyRoom() {
         List<MultipleAddresses.Address> replyRoom = extension.getAddressesOfType(MultipleAddresses.Type.replyroom);
         return replyRoom.isEmpty() ? null : replyRoom.get(0).getJid();

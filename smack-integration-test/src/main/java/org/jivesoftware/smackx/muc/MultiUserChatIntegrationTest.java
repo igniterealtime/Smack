@@ -31,7 +31,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.muc.MultiUserChat.MucCreateConfigFormHandle;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
@@ -63,7 +63,7 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
 
     @SmackIntegrationTest
     public void mucTest() throws TimeoutException, Exception {
-        BareJid mucAddress = JidCreate.bareFrom(Localpart.from("smack-inttest-" + randomString), mucService.getDomain());
+        EntityBareJid mucAddress = JidCreate.bareFrom(Localpart.from("smack-inttest-" + randomString), mucService.getDomain());
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);

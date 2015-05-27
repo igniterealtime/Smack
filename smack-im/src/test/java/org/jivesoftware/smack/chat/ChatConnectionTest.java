@@ -82,7 +82,7 @@ public class ChatConnectionTest {
     }
 
     @Test
-    public void validateDefaultSetMatchModeBareJid() {
+    public void validateDefaultSetMatchModeEntityBareJid() {
         ChatManager.setDefaultMatchMode(MatchMode.BARE_JID);
         assertEquals(MatchMode.BARE_JID, ChatManager.getInstanceFor(new DummyConnection()).getMatchMode());
     }
@@ -220,7 +220,7 @@ public class ChatConnectionTest {
      * id and the user is a full jid.
      */
     @Test
-    public void chatFoundWhenNoThreadFullJid() {
+    public void chatFoundWhenNoThreadEntityFullJid() {
         Chat outgoing = cm.createChat(JidTestUtil.DUMMY_AT_EXAMPLE_ORG, null);
 
         Stanza incomingChat = createChatPacket(null, true);
@@ -252,7 +252,7 @@ public class ChatConnectionTest {
      * and the user is a full jid.
      */
     @Test
-    public void chatFoundWithSameThreadFullJid() {
+    public void chatFoundWithSameThreadEntityFullJid() {
         Chat outgoing = cm.createChat(JidTestUtil.DUMMY_AT_EXAMPLE_ORG, null);
 
         Stanza incomingChat = createChatPacket(outgoing.getThreadID(), true);
@@ -300,7 +300,7 @@ public class ChatConnectionTest {
      * different id and the same base jid.
      */
     @Test
-    public void chatNotFoundWithDiffThreadFullJid() {
+    public void chatNotFoundWithDiffThreadEntityFullJid() {
         Chat outgoing = cm.createChat(JidTestUtil.DUMMY_AT_EXAMPLE_ORG, null);
 
         Stanza incomingChat = createChatPacket(outgoing.getThreadID() + "ff", true);
@@ -322,11 +322,11 @@ public class ChatConnectionTest {
         assertNull(listener.getNewChat());
     }
 
-    private static Message createChatPacket(final String threadId, final boolean isFullJid) {
+    private static Message createChatPacket(final String threadId, final boolean isEntityFullJid) {
         Message chatMsg = new Message(JidTestUtil.BARE_JID_1, Message.Type.chat);
         chatMsg.setBody("the body message - " + System.currentTimeMillis());
         Jid jid;
-        if (isFullJid) {
+        if (isEntityFullJid) {
             jid = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
         } else {
             jid = JidTestUtil.DUMMY_AT_EXAMPLE_ORG;

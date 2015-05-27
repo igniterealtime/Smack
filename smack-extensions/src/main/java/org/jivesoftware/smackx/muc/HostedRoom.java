@@ -23,9 +23,9 @@ import org.jxmpp.jid.Jid;
  * Hosted rooms by a chat service may be discovered if they are configured to appear in the room
  * directory . The information that may be discovered is the XMPP address of the room and the room
  * name. The address of the room may be used for obtaining more detailed information
- * {@link org.jivesoftware.smackx.muc.MultiUserChatManager#getRoomInfo(org.jxmpp.jid.BareJid)}
+ * {@link org.jivesoftware.smackx.muc.MultiUserChatManager#getRoomInfo(org.jxmpp.jid.EntityBareJid)}
  * or could be used for joining the room
- * {@link org.jivesoftware.smackx.muc.MultiUserChatManager#getMultiUserChat(org.jxmpp.jid.BareJid)}
+ * {@link org.jivesoftware.smackx.muc.MultiUserChatManager#getMultiUserChat(org.jxmpp.jid.EntityBareJid)}
  * and {@link org.jivesoftware.smackx.muc.MultiUserChat#join(org.jxmpp.jid.parts.Resourcepart)}.
  *
  * @author Gaston Dombiak

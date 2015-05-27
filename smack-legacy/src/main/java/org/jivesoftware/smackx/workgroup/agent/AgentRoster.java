@@ -26,7 +26,7 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.util.XmppStringUtils;
@@ -252,7 +252,7 @@ public class AgentRoster {
     private Jid getPresenceMapKey(Jid user) {
         Jid key = user;
         if (!contains(user)) {
-            key = user.asBareJidIfPossible();
+            key = user.asEntityBareJidIfPossible();
         }
         return key;
     }
@@ -287,7 +287,7 @@ public class AgentRoster {
     private class PresencePacketListener implements StanzaListener {
         public void processPacket(Stanza packet) {
             Presence presence = (Presence)packet;
-            FullJid from = presence.getFrom().asFullJidIfPossible();
+            EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
             if (from == null) {
                 // TODO Check if we need to ignore these presences or this is a server bug?
                 LOGGER.warning("Presence with non full JID from: " + presence.toXML());
@@ -326,7 +326,7 @@ public class AgentRoster {
                 synchronized (entries) {
                     for (Iterator<String> i = entries.iterator(); i.hasNext();) {
                         String entry = i.next();
-                        if (entry.equals(key.asBareJidIfPossible())) {
+                        if (entry.equals(key.asEntityBareJidIfPossible())) {
                             fireEvent(EVENT_PRESENCE_CHANGED, packet);
                         }
                     }
@@ -347,7 +347,7 @@ public class AgentRoster {
                 synchronized (entries) {
                     for (Iterator<String> i = entries.iterator(); i.hasNext();) {
                         String entry = i.next();
-                        if (entry.equals(key.asBareJidIfPossible())) {
+                        if (entry.equals(key.asEntityBareJidIfPossible())) {
                             fireEvent(EVENT_PRESENCE_CHANGED, packet);
                         }
                     }

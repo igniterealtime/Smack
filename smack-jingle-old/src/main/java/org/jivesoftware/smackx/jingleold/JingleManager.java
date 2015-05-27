@@ -47,7 +47,7 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingleold.nat.TransportResolver;
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.provider.JingleProvider;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -520,7 +520,7 @@ public class JingleManager implements JingleSessionListener {
      *                     user.
      * @return The session on which the negotiation can be run.
      */
-    public JingleSession createOutgoingJingleSession(FullJid responder) throws XMPPException {
+    public JingleSession createOutgoingJingleSession(EntityFullJid responder) throws XMPPException {
         JingleSession session = new JingleSession(connection, (JingleSessionRequest) null, connection.getUser(), responder, jingleMediaManagers);
 
         triggerSessionCreated(session);

@@ -24,7 +24,7 @@ import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +33,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The file transfer manager class handles the sending and recieving of files.
- * To send a file invoke the {@link #createOutgoingFileTransfer(FullJid)} method.
+ * To send a file invoke the {@link #createOutgoingFileTransfer(EntityFullJid)} method.
  * <p>
  * And to recieve a file add a file transfer listener to the manager. The
  * listener will notify you when there is a new file transfer request. To create
@@ -117,7 +117,7 @@ public final class FileTransferManager extends Manager {
 	 * @return The send file object on which the negotiated transfer can be run.
 	 * @exception IllegalArgumentException if userID is null or not a full JID
 	 */
-	public OutgoingFileTransfer createOutgoingFileTransfer(FullJid userID) {
+	public OutgoingFileTransfer createOutgoingFileTransfer(EntityFullJid userID) {
         // We need to create outgoing file transfers with a full JID since this method will later
         // use XEP-0095 to negotiate the stream. This is done with IQ stanzas that need to be addressed to a full JID
         // in order to reach an client entity.

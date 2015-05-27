@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smack.packet.Presence;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 
@@ -58,7 +58,7 @@ public class Occupant {
         this.affiliation = item.getAffiliation();
         this.role = item.getRole();
         // Get the nickname from the FROM attribute of the presence
-        FullJid from = presence.getFrom().asFullJidIfPossible();
+        EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
         if (from == null) {
             LOGGER.warning("Occupant presence without resource: " + presence.getFrom());
             this.nick = null;

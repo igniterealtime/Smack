@@ -30,7 +30,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 
 public final class VCardManager extends Manager {
@@ -125,7 +125,7 @@ public final class VCardManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public VCard loadVCard(BareJid bareJid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public VCard loadVCard(EntityBareJid bareJid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         VCard vcardRequest = new VCard();
         vcardRequest.setTo(bareJid);
         VCard result = connection().createPacketCollectorAndSend(vcardRequest).nextResultOrThrow();

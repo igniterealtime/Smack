@@ -24,7 +24,7 @@ import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
 import org.jivesoftware.smack.util.WriterListener;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 
 import java.io.Reader;
 import java.io.Writer;
@@ -142,7 +142,7 @@ public abstract class AbstractDebugger implements SmackDebugger {
     }
 
     @Override
-    public void userHasLogged(FullJid user) {
+    public void userHasLogged(EntityFullJid user) {
         String localpart = user.getLocalpart().toString();
         boolean isAnonymous = "".equals(localpart);
         String title =

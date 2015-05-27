@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.muc;
 
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 
@@ -32,49 +32,49 @@ import org.jxmpp.jid.parts.Resourcepart;
  */
 public class DefaultParticipantStatusListener implements ParticipantStatusListener {
 
-    public void joined(FullJid participant) {
+    public void joined(EntityFullJid participant) {
     }
 
-    public void left(FullJid participant) {
+    public void left(EntityFullJid participant) {
     }
 
-    public void kicked(FullJid participant, Jid actor, String reason) {
+    public void kicked(EntityFullJid participant, Jid actor, String reason) {
     }
 
-    public void voiceGranted(FullJid participant) {
+    public void voiceGranted(EntityFullJid participant) {
     }
 
-    public void voiceRevoked(FullJid participant) {
+    public void voiceRevoked(EntityFullJid participant) {
     }
 
-    public void banned(FullJid participant, Jid actor, String reason) {
+    public void banned(EntityFullJid participant, Jid actor, String reason) {
     }
 
-    public void membershipGranted(FullJid participant) {
+    public void membershipGranted(EntityFullJid participant) {
     }
 
-    public void membershipRevoked(FullJid participant) {
+    public void membershipRevoked(EntityFullJid participant) {
     }
 
-    public void moderatorGranted(FullJid participant) {
+    public void moderatorGranted(EntityFullJid participant) {
     }
 
-    public void moderatorRevoked(FullJid participant) {
+    public void moderatorRevoked(EntityFullJid participant) {
     }
 
-    public void ownershipGranted(FullJid participant) {
+    public void ownershipGranted(EntityFullJid participant) {
     }
 
-    public void ownershipRevoked(FullJid participant) {
+    public void ownershipRevoked(EntityFullJid participant) {
     }
 
-    public void adminGranted(FullJid participant) {
+    public void adminGranted(EntityFullJid participant) {
     }
 
-    public void adminRevoked(FullJid participant) {
+    public void adminRevoked(EntityFullJid participant) {
     }
 
-    public void nicknameChanged(FullJid participant, Resourcepart newNickname) {
+    public void nicknameChanged(EntityFullJid participant, Resourcepart newNickname) {
     }
 
 }

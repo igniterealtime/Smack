@@ -28,7 +28,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.JidTestUtil;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -65,7 +65,7 @@ public class DummyConnection extends AbstractXMPPConnection {
         this(getDummyConfigurationBuilder().build());
     }
 
-    private FullJid getUserJid() {
+    private EntityFullJid getUserJid() {
         try {
             return JidCreate.fullFrom(config.getUsername()
                             + "@"

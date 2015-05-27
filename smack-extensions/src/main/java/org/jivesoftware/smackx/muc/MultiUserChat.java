@@ -72,17 +72,17 @@ import org.jivesoftware.smackx.muc.packet.MUCUser.Status;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.JidWithLocalpart;
+import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.util.cache.ExpirationCache;
 
 /**
- * A MultiUserChat room (XEP-45), created with {@link MultiUserChatManager#getMultiUserChat(BareJid)}.
+ * A MultiUserChat room (XEP-45), created with {@link MultiUserChatManager#getMultiUserChat(EntityBareJid)}.
  * <p>
  * A MultiUserChat is a conversation that takes place among many users in a virtual
  * room. A room could have many occupants with different affiliation and roles.
@@ -105,9 +105,9 @@ public class MultiUserChat {
                     100, 1000 * 60 * 60 * 24);
 
     private final XMPPConnection connection;
-    private final BareJid room;
+    private final EntityBareJid room;
     private final MultiUserChatManager multiUserChatManager;
-    private final Map<FullJid, Presence> occupantsMap = new ConcurrentHashMap<>();
+    private final Map<EntityFullJid, Presence> occupantsMap = new ConcurrentHashMap<>();
 
     private final Set<InvitationRejectionListener> invitationRejectionListeners = new CopyOnWriteArraySet<InvitationRejectionListener>();
     private final Set<SubjectUpdatedListener> subjectUpdatedListeners = new CopyOnWriteArraySet<SubjectUpdatedListener>();
@@ -140,7 +140,7 @@ public class MultiUserChat {
     private boolean joined = false;
     private PacketCollector messageCollector;
 
-    MultiUserChat(XMPPConnection connection, BareJid room, MultiUserChatManager multiUserChatManager) {
+    MultiUserChat(XMPPConnection connection, EntityBareJid room, MultiUserChatManager multiUserChatManager) {
         this.connection = connection;
         this.room = room;
         this.multiUserChatManager = multiUserChatManager;
@@ -162,7 +162,7 @@ public class MultiUserChat {
         subjectListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Message msg = (Message) packet;
-                FullJid from = msg.getFrom().asFullJidIfPossible();
+                EntityFullJid from = msg.getFrom().asEntityFullJidIfPossible();
                 if (from == null) {
                     LOGGER.warning("Message subject not changed by a full JID: " + msg.getFrom());
                     return;
@@ -180,7 +180,7 @@ public class MultiUserChat {
         presenceListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
                 Presence presence = (Presence) packet;
-                final FullJid from = presence.getFrom().asFullJidIfPossible();
+                final EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
                 if (from == null) {
                     LOGGER.warning("Presence not from a full JID: " + presence.getFrom());
                     return;
@@ -277,7 +277,7 @@ public class MultiUserChat {
      *
      * @return the multi user chat room name.
      */
-    public BareJid getRoom() {
+    public EntityBareJid getRoom() {
         return room;
     }
 
@@ -311,7 +311,7 @@ public class MultiUserChat {
         // We enter a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
         Presence joinPresence = new Presence(Presence.Type.available);
-        final FullJid jid = JidCreate.fullFrom(room, nickname);
+        final EntityFullJid jid = JidCreate.fullFrom(room, nickname);
         joinPresence.setTo(jid);
 
         // Indicate the the client supports MUC
@@ -352,7 +352,7 @@ public class MultiUserChat {
 
         // This presence must be send from a full JID. We use the resourcepart of this JID as nick, since the room may
         // performed roomnick rewriting
-        this.nickname = presence.getFrom().asFullJidIfPossible().getResourcepart();
+        this.nickname = presence.getFrom().asEntityFullJidIfPossible().getResourcepart();
         joined = true;
 
         // Update the list of joined rooms
@@ -780,7 +780,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void destroy(String reason, BareJid alternateJID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void destroy(String reason, EntityBareJid alternateJID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
         iq.setType(IQ.Type.set);
@@ -1002,7 +1002,7 @@ public class MultiUserChat {
         if (!joined) {
             throw new MucNotJoinedException(this);
         }
-        final FullJid jid = JidCreate.fullFrom(room, nickname);
+        final EntityFullJid jid = JidCreate.fullFrom(room, nickname);
         // We change the nickname by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
         // We don't have to signal the MUC support again
@@ -1455,7 +1455,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void revokeAdmin(JidWithLocalpart jid) throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException {
+    public void revokeAdmin(EntityJid jid) throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException {
         changeAffiliationByAdmin(jid, MUCAffiliation.member);
     }
 
@@ -1561,7 +1561,7 @@ public class MultiUserChat {
      *
      * @return a List of the occupants in the group chat.
      */
-    public List<FullJid> getOccupants() {
+    public List<EntityFullJid> getOccupants() {
         return new ArrayList<>(occupantsMap.keySet());
     }
 
@@ -1779,7 +1779,7 @@ public class MultiUserChat {
      * created chat.
      * @return new Chat for sending private messages to a given room occupant.
      */
-    public Chat createPrivateChat(FullJid occupant, ChatMessageListener listener) {
+    public Chat createPrivateChat(EntityFullJid occupant, ChatMessageListener listener) {
         return ChatManager.getInstanceFor(connection).createChat(occupant, listener);
     }
 
@@ -2020,7 +2020,7 @@ public class MultiUserChat {
         MUCRole oldRole,
         MUCRole newRole,
         boolean isUserModification,
-        FullJid from) {
+        EntityFullJid from) {
         // Voice was granted to a visitor
         if (("visitor".equals(oldRole) || "none".equals(oldRole))
             && "participant".equals(newRole)) {
@@ -2146,7 +2146,7 @@ public class MultiUserChat {
         MUCAffiliation oldAffiliation,
         MUCAffiliation newAffiliation,
         boolean isUserModification,
-        FullJid from) {
+        EntityFullJid from) {
         // First check for revoked affiliation and then for granted affiliations. The idea is to
         // first fire the "revoke" events and then fire the "grant" events.
 
@@ -2243,7 +2243,7 @@ public class MultiUserChat {
         Set<Status> statusCodes,
         boolean isUserModification,
         MUCUser mucUser,
-        FullJid from) {
+        EntityFullJid from) {
         // Check if an occupant was kicked from the room
         if (statusCodes.contains(Status.KICKED_307)) {
             // Check if this occupant was kicked

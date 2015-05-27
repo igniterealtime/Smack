@@ -32,7 +32,7 @@ import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.WriterListener;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 
 import javax.swing.AbstractAction;
@@ -743,7 +743,7 @@ public class EnhancedDebugger implements SmackDebugger {
     }
 
     @Override
-    public void userHasLogged(final FullJid user) {
+    public void userHasLogged(final EntityFullJid user) {
         final EnhancedDebugger debugger = this;
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

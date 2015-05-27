@@ -40,7 +40,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 
 /**
  * A VCard class for use with the
@@ -552,10 +552,10 @@ public class VCard extends IQ {
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      * @throws InterruptedException 
-     * @deprecated use {@link VCardManager#loadVCard(BareJid)} instead.
+     * @deprecated use {@link VCardManager#loadVCard(EntityBareJid)} instead.
      */
     @Deprecated
-    public void load(XMPPConnection connection, BareJid user) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void load(XMPPConnection connection, EntityBareJid user) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         VCard result = VCardManager.getInstanceFor(connection).loadVCard(user);
         copyFieldsFrom(result);
     }

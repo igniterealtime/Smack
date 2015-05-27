@@ -23,7 +23,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -67,11 +67,11 @@ public class ParserUtils {
         return JidCreate.from(jidString);
     }
 
-    public static BareJid getBareJidAttribute(XmlPullParser parser) throws XmppStringprepException {
+    public static EntityBareJid getBareJidAttribute(XmlPullParser parser) throws XmppStringprepException {
         return getBareJidAttribute(parser, JID);
     }
 
-    public static BareJid getBareJidAttribute(XmlPullParser parser, String name) throws XmppStringprepException {
+    public static EntityBareJid getBareJidAttribute(XmlPullParser parser, String name) throws XmppStringprepException {
         final String jidString = parser.getAttributeValue("", name);
         if (jidString == null) {
             return null;

@@ -27,7 +27,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.PlainStreamElement;
 import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 
 /**
  * The XMPPConnection interface provides an interface for connections to an XMPP server and
@@ -115,7 +115,7 @@ public interface XMPPConnection {
      * 
      * @return the full XMPP address of the user logged in.
      */
-    public FullJid getUser();
+    public EntityFullJid getUser();
 
     /**
      * Returns the stream ID for this connection, which is the value set by the server

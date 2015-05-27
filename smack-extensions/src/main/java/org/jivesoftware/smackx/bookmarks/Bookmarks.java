@@ -20,7 +20,7 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -271,7 +271,7 @@ public class Bookmarks implements PrivateData {
     private static BookmarkedConference getConferenceStorage(XmlPullParser parser) throws XmlPullParserException, IOException {
         String name = parser.getAttributeValue("", "name");
         String autojoin = parser.getAttributeValue("", "autojoin");
-        BareJid jid = ParserUtils.getBareJidAttribute(parser);
+        EntityBareJid jid = ParserUtils.getBareJidAttribute(parser);
 
         BookmarkedConference conf = new BookmarkedConference(jid);
         conf.setName(name);

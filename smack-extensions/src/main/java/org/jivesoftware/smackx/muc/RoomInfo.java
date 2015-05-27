@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -43,7 +43,7 @@ public class RoomInfo {
     /**
      * JID of the room. The localpart of the JID is commonly used as the ID of the room or name.
      */
-    private final BareJid room;
+    private final EntityBareJid room;
     /**
      * Description of the room.
      */
@@ -132,7 +132,7 @@ public class RoomInfo {
     RoomInfo(DiscoverInfo info) {
         final Jid from = info.getFrom();
         if (from != null) {
-            this.room = info.getFrom().asBareJidIfPossible();
+            this.room = info.getFrom().asEntityBareJidIfPossible();
         } else {
             this.room = null;
         }
@@ -240,7 +240,7 @@ public class RoomInfo {
      *
      * @return the JID of the room whose information was discovered.
      */
-    public BareJid getRoom() {
+    public EntityBareJid getRoom() {
         return room;
     }
 

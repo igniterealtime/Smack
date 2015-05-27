@@ -42,9 +42,9 @@ import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.JidWithLocalpart;
+import org.jxmpp.jid.EntityJid;
 
 /**
  * The chat manager keeps track of references to all current chats. It will not hold any references
@@ -135,7 +135,7 @@ public final class ChatManager extends Manager{
     /**
      * Maps base jids to chats
      */
-    private Map<BareJid, Chat> baseJidChats = new ConcurrentHashMap<>();
+    private Map<EntityBareJid, Chat> baseJidChats = new ConcurrentHashMap<>();
 
     private Set<ChatManagerListener> chatManagerListeners
             = new CopyOnWriteArraySet<ChatManagerListener>();
@@ -217,7 +217,7 @@ public final class ChatManager extends Manager{
      * @param userJID the user this chat is with.
      * @return the created chat.
      */
-    public Chat createChat(JidWithLocalpart userJID) {
+    public Chat createChat(EntityJid userJID) {
         return createChat(userJID, null);
     }
 
@@ -228,7 +228,7 @@ public final class ChatManager extends Manager{
      * @param listener the optional listener which will listen for new messages from this chat.
      * @return the created chat.
      */
-    public Chat createChat(JidWithLocalpart userJID, ChatMessageListener listener) {
+    public Chat createChat(EntityJid userJID, ChatMessageListener listener) {
         return createChat(userJID, null, listener);
     }
 
@@ -240,7 +240,7 @@ public final class ChatManager extends Manager{
      * @param listener the optional listener to add to the chat
      * @return the created chat.
      */
-    public Chat createChat(JidWithLocalpart userJID, String thread, ChatMessageListener listener) {
+    public Chat createChat(EntityJid userJID, String thread, ChatMessageListener listener) {
         if (thread == null) {
             thread = nextID();
         }
@@ -253,7 +253,7 @@ public final class ChatManager extends Manager{
         return chat;
     }
 
-    private Chat createChat(JidWithLocalpart userJID, String threadID, boolean createdLocally) {
+    private Chat createChat(EntityJid userJID, String threadID, boolean createdLocally) {
         Chat chat = new Chat(this, userJID, threadID);
         threadChats.put(threadID, chat);
         jidChats.put(userJID, chat);
@@ -268,7 +268,7 @@ public final class ChatManager extends Manager{
 
     void closeChat(Chat chat) {
         threadChats.remove(chat.getThreadID());
-        JidWithLocalpart userJID = chat.getParticipant();
+        EntityJid userJID = chat.getParticipant();
         jidChats.remove(userJID);
         baseJidChats.remove(userJID.withoutResource());
     }
@@ -288,7 +288,7 @@ public final class ChatManager extends Manager{
             return null;
         }
 
-        JidWithLocalpart userJID = from.asJidWithLocalpartIfPossible();
+        EntityJid userJID = from.asEntityJidIfPossible();
         if (userJID == null) {
             LOGGER.warning("Message from JID without localpart: '" +message.toXML() + "'");
             return null;
@@ -322,7 +322,7 @@ public final class ChatManager extends Manager{
         Chat match = jidChats.get(userJID);
 
         if (match == null && (matchMode == MatchMode.BARE_JID)) {
-            match = baseJidChats.get(userJID.asBareJidIfPossible());
+            match = baseJidChats.get(userJID.asEntityBareJidIfPossible());
         }
         return match;
     }

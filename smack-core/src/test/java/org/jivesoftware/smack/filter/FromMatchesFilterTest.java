@@ -21,7 +21,7 @@ import static org.junit.Assert.assertFalse;
 
 import org.jivesoftware.smack.packet.Stanza;
 import org.junit.Test;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.JidTestUtil;
 
@@ -32,8 +32,8 @@ import org.jxmpp.jid.JidTestUtil;
  */
 public class FromMatchesFilterTest {
     private static final Jid BASE_JID1 = JidTestUtil.BARE_JID_1;
-    private static final FullJid FULL_JID1_R1 = JidTestUtil.FULL_JID_1_RESOURCE_1;
-    private static final FullJid FULL_JID1_R2 = JidTestUtil.FULL_JID_1_RESOURCE_2;
+    private static final EntityFullJid FULL_JID1_R1 = JidTestUtil.FULL_JID_1_RESOURCE_1;
+    private static final EntityFullJid FULL_JID1_R2 = JidTestUtil.FULL_JID_1_RESOURCE_2;
     private static final Jid BASE_JID2 = JidTestUtil.BARE_JID_2;
     private static final Jid FULL_JID2 = JidTestUtil.FULL_JID_2_RESOURCE_1;
 
@@ -43,7 +43,7 @@ public class FromMatchesFilterTest {
     private static final Jid SERVICE_JID2 = JidTestUtil.PUBSUB_EXAMPLE_ORG;
 
     @Test
-    public void autoCompareMatchingFullJid()
+    public void autoCompareMatchingEntityFullJid()
     {
         FromMatchesFilter filter = FromMatchesFilter.create(FULL_JID1_R1);
         Stanza packet = new Stanza() {
@@ -124,7 +124,7 @@ public class FromMatchesFilterTest {
     }
 
     @Test
-    public void bareCompareMatchingFullJid()
+    public void bareCompareMatchingEntityFullJid()
     {
         FromMatchesFilter filter = FromMatchesFilter.createBare(FULL_JID1_R1);
         Stanza packet = new Stanza() {
@@ -205,7 +205,7 @@ public class FromMatchesFilterTest {
     }
 
     @Test
-    public void fullCompareMatchingFullJid()
+    public void fullCompareMatchingEntityFullJid()
     {
         FromMatchesFilter filter = FromMatchesFilter.createFull(FULL_JID1_R1);
         Stanza packet = new Stanza() {

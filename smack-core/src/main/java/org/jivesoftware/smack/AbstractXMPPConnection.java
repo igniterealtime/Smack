@@ -82,7 +82,7 @@ import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.util.XmppStringUtils;
@@ -158,7 +158,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * certificate.
      * </p>
      */
-    protected FullJid user;
+    protected EntityFullJid user;
 
     protected boolean connected = false;
 
@@ -475,7 +475,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public final FullJid getUser() {
+    public final EntityFullJid getUser() {
         return user;
     }
 
@@ -1586,7 +1586,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public final String toString() {
-        FullJid localEndpoint = getUser();
+        EntityFullJid localEndpoint = getUser();
         String localEndpointString = (localEndpoint == null ?  "not-authenticated" : localEndpoint.toString());
         return getClass().getSimpleName() + '[' + localEndpointString + "] (" + getConnectionCounter() + ')';
     }

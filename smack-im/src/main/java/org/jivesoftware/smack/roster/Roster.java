@@ -63,9 +63,9 @@ import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
 import org.jivesoftware.smack.roster.packet.SubscriptionPreApproval;
 import org.jivesoftware.smack.roster.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.Objects;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.JidWithResource;
+import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 
@@ -847,7 +847,7 @@ public final class Roster extends Manager {
      * @return the user's current presence, or unavailable presence if the user is offline
      *         or if no presence information is available.
      */
-    public Presence getPresenceResource(JidWithResource userWithResource) {
+    public Presence getPresenceResource(FullJid userWithResource) {
         Jid key = getMapKey(userWithResource);
         Resourcepart resource = userWithResource.getResourcepart();
         Map<Resourcepart, Presence> userPresences = presenceMap.get(key);
@@ -1038,7 +1038,7 @@ public final class Roster extends Manager {
         if (entries.containsKey(user)) {
             return user;
         }
-        BareJid bareJid = user.asBareJidIfPossible();
+        EntityBareJid bareJid = user.asEntityBareJidIfPossible();
         if (bareJid != null) {
             return bareJid;
         }
@@ -1059,7 +1059,7 @@ public final class Roster extends Manager {
             if (resources != null) {
                 for (Resourcepart resource : resources.keySet()) {
                     packetUnavailable = new Presence(Presence.Type.unavailable);
-                    BareJid bareUserJid = user.asBareJidIfPossible();
+                    EntityBareJid bareUserJid = user.asEntityBareJidIfPossible();
                     if (bareUserJid == null) {
                         LOGGER.warning("Can not transform user JID to bare JID: '" + user + "'");
                         continue;
@@ -1346,7 +1346,7 @@ public final class Roster extends Manager {
                 // No need to act on error presences send without from, i.e.
                 // directly send from the users XMPP service, or where the from
                 // address is not a bare JID
-                if (from == null || !from.isBareJid()) {
+                if (from == null || !from.isEntityBareJid()) {
                     break;
                 }
                 userPresences = getUserPresences(key);
@@ -1470,7 +1470,7 @@ public final class Roster extends Manager {
 
             // Roster push (RFC 6121, 2.1.6)
             // A roster push with a non-empty from not matching our address MUST be ignored
-            BareJid jid = connection.getUser().asBareJid();
+            EntityBareJid jid = connection.getUser().asBareJid();
             Jid from = rosterPacket.getFrom();
             if (from != null && !from.equals(jid)) {
                 LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid='" + jid + "' from='" + from

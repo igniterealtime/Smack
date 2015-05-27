@@ -28,7 +28,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.iqprivate.PrivateDataManager;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
 
@@ -111,7 +111,7 @@ public final class BookmarkManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void addBookmarkedConference(String name, BareJid jid, boolean isAutoJoin,
+    public void addBookmarkedConference(String name, EntityBareJid jid, boolean isAutoJoin,
             Resourcepart nickname, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         retrieveBookmarks();
@@ -146,7 +146,7 @@ public final class BookmarkManager {
      * @throws IllegalArgumentException thrown when the conference being removed is a shared
      * conference
      */
-    public void removeBookmarkedConference(BareJid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void removeBookmarkedConference(EntityBareJid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         retrieveBookmarks();
         Iterator<BookmarkedConference> it = bookmarks.getBookmarkedConferences().iterator();
         while(it.hasNext()) {

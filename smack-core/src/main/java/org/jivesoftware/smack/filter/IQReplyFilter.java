@@ -23,7 +23,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -55,7 +55,7 @@ public class IQReplyFilter implements StanzaFilter {
     private final StanzaFilter iqAndIdFilter;
     private final OrFilter fromFilter;
     private final Jid to;
-    private final FullJid local;
+    private final EntityFullJid local;
     private final DomainBareJid server;
     private final String packetId;
 
