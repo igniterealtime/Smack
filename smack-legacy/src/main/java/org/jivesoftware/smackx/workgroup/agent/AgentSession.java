@@ -41,6 +41,8 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
+import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.DefaultExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
@@ -141,8 +143,6 @@ public class AgentSession {
 
         // Create a filter to listen for packets we're interested in.
         OrFilter filter = new OrFilter(
-                        new StanzaTypeFilter(OfferRequestProvider.OfferRequestPacket.class),
-                        new StanzaTypeFilter(OfferRevokeProvider.OfferRevokePacket.class),
                         new StanzaTypeFilter(Presence.class),
                         new StanzaTypeFilter(Message.class));
 
@@ -157,6 +157,37 @@ public class AgentSession {
             }
         };
         connection.addAsyncStanzaListener(packetListener, filter);
+
+        connection.registerIQRequestHandler(new AbstractIqRequestHandler(
+                OfferRequestProvider.OfferRequestPacket.ELEMENT,
+                OfferRequestProvider.OfferRequestPacket.NAMESPACE, IQ.Type.set,
+                Mode.async) {
+
+            @Override
+            public IQ handleIQRequest(IQ iqRequest) {
+                // Acknowledge the IQ set.
+                IQ reply = IQ.createResultIQ(iqRequest);
+
+                fireOfferRequestEvent((OfferRequestProvider.OfferRequestPacket) iqRequest);
+                return reply;
+            }
+        });
+
+        connection.registerIQRequestHandler(new AbstractIqRequestHandler(
+                OfferRevokeProvider.OfferRevokePacket.ELEMENT,
+                OfferRevokeProvider.OfferRevokePacket.NAMESPACE, IQ.Type.set,
+                Mode.async) {
+
+            @Override
+            public IQ handleIQRequest(IQ iqRequest) {
+                // Acknowledge the IQ set.
+                IQ reply = IQ.createResultIQ(iqRequest);
+
+                fireOfferRevokeEvent((OfferRevokeProvider.OfferRevokePacket) iqRequest);
+                return reply;
+            }
+        });
+
         // Create the agent associated to this session
         agent = new Agent(connection, workgroupJID);
     }
@@ -704,15 +735,8 @@ public class AgentSession {
 
     // PacketListener Implementation.
 
-    private void handlePacket(Stanza packet) throws NotConnectedException, InterruptedException {
-        if (packet instanceof OfferRequestProvider.OfferRequestPacket) {
-            // Acknowledge the IQ set.
-            IQ reply = IQ.createResultIQ((IQ) packet);
-            connection.sendStanza(reply);
-
-            fireOfferRequestEvent((OfferRequestProvider.OfferRequestPacket)packet);
-        }
-        else if (packet instanceof Presence) {
+    private void handlePacket(Stanza packet) {
+        if (packet instanceof Presence) {
             Presence presence = (Presence)packet;
 
             // The workgroup can send us a number of different presence packets. We
@@ -793,13 +817,6 @@ public class AgentSession {
                 this.fireInvitationEvent(message.getFrom(), sessionID, message.getBody(),
                         message.getFrom(), metaData);
             }
-        }
-        else if (packet instanceof OfferRevokeProvider.OfferRevokePacket) {
-            // Acknowledge the IQ set.
-            IQ reply = IQ.createResultIQ((OfferRevokeProvider.OfferRevokePacket) packet);
-            connection.sendStanza(reply);
-
-            fireOfferRevokeEvent((OfferRevokeProvider.OfferRevokePacket)packet);
         }
     }
 

@@ -111,6 +111,9 @@ public class OfferRequestProvider extends IQProvider<IQ> {
 
     public static class OfferRequestPacket extends IQ {
 
+        public static final String ELEMENT = "offer";
+        public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
+
         private int timeout;
         private Jid userID;
         private Jid userJID;
@@ -121,7 +124,7 @@ public class OfferRequestProvider extends IQProvider<IQ> {
         public OfferRequestPacket(Jid userJID, Jid userID, int timeout, Map<String, List<String>> metaData,
                 String sessionID, OfferContent content)
         {
-            super("offer", "http://jabber.org/protocol/workgroup");
+            super(ELEMENT, NAMESPACE);
             this.userJID = userJID;
             this.userID = userID;
             this.timeout = timeout;
