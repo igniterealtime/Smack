@@ -31,6 +31,7 @@ import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
 import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base32;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -184,7 +185,7 @@ public final class DirectoryRosterStore implements RosterStore {
         }
 
         String parserName;
-        Jid user = null;
+        BareJid user = null;
         String name = null;
         String type = null;
         String status = null;
@@ -207,7 +208,7 @@ public final class DirectoryRosterStore implements RosterStore {
                     }
                     else if (parserName.equals("user")) {
                         parser.next();
-                        user = JidCreate.from(parser.getText());
+                        user = JidCreate.bareFrom(parser.getText());
                     }
                     else if (parserName.equals("name")) {
                         parser.next();
@@ -291,7 +292,7 @@ public final class DirectoryRosterStore implements RosterStore {
     private boolean addEntryRaw (Item item) {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.openElement("item");
-        xml.element("user", item.getUser());
+        xml.element("user", item.getJid());
         xml.optElement("name", item.getName());
         xml.optElement("type", item.getItemType());
         xml.optElement("status", item.getItemStatus());
@@ -303,7 +304,7 @@ public final class DirectoryRosterStore implements RosterStore {
         }
         xml.closeElement("item");
 
-        return FileUtils.writeFile(getBareJidFile(item.getUser()), xml.toString());
+        return FileUtils.writeFile(getBareJidFile(item.getJid()), xml.toString());
     }
 
 

@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.JidTestUtil;
 
 /**
@@ -88,7 +88,7 @@ public class DirectoryRosterStoreTest {
 
         assertEquals("Initial roster version", "", store.getRosterVersion());
 
-        Jid userName = JidTestUtil.DUMMY_AT_EXAMPLE_ORG;
+        BareJid userName = JidTestUtil.DUMMY_AT_EXAMPLE_ORG;
 
         final RosterPacket.Item item1 = new Item(userName, null);
         final String version1 = "1";
@@ -99,7 +99,7 @@ public class DirectoryRosterStoreTest {
         RosterPacket.Item storedItem = store.getEntry(userName);
         assertNotNull("Added entry not found found", storedItem);
         assertEquals("User of added entry",
-                item1.getUser(), storedItem.getUser());
+                item1.getJid(), storedItem.getJid());
         assertEquals("Name of added entry",
                 item1.getName(), storedItem.getName());
         assertEquals("Groups", item1.getGroupNames(), storedItem.getGroupNames());
@@ -123,7 +123,7 @@ public class DirectoryRosterStoreTest {
         storedItem = store.getEntry(userName);
         assertNotNull("Added entry not found", storedItem);
         assertEquals("User of added entry",
-                item2.getUser(), storedItem.getUser());
+                item2.getJid(), storedItem.getJid());
         assertEquals("Name of added entry",
                 item2.getName(), storedItem.getName());
         assertEquals("Groups", item2.getGroupNames(), storedItem.getGroupNames());
@@ -160,7 +160,7 @@ public class DirectoryRosterStoreTest {
         storedItem = store.getEntry(JidTestUtil.BARE_JID_1);
         assertNotNull("Added entry not found", storedItem);
         assertEquals("User of added entry",
-                item3.getUser(), storedItem.getUser());
+                item3.getJid(), storedItem.getJid());
         assertEquals("Name of added entry",
                 item3.getName(), storedItem.getName());
         assertEquals("Groups", item3.getGroupNames(), storedItem.getGroupNames());
@@ -175,7 +175,7 @@ public class DirectoryRosterStoreTest {
         storedItem = store.getEntry(JidTestUtil.BARE_JID_2);
         assertNotNull("Added entry not found", storedItem);
         assertEquals("User of added entry",
-                item4.getUser(), storedItem.getUser());
+                item4.getJid(), storedItem.getJid());
         assertEquals("Name of added entry",
                 item4.getName(), storedItem.getName());
         assertEquals("Groups", item4.getGroupNames(), storedItem.getGroupNames());

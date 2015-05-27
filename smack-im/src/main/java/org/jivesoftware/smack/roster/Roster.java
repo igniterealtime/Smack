@@ -63,6 +63,7 @@ import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
 import org.jivesoftware.smack.roster.packet.SubscriptionPreApproval;
 import org.jivesoftware.smack.roster.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.Objects;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.FullJid;
@@ -104,7 +105,7 @@ public final class Roster extends Manager {
      * <p>
      * This method will never return <code>null</code>, instead if the user has not yet logged into
      * the server all modifying methods of the returned roster object
-     * like {@link Roster#createEntry(Jid, String, String[])},
+     * like {@link Roster#createEntry(BareJid, String, String[])},
      * {@link Roster#removeEntry(RosterEntry)} , etc. except adding or removing
      * {@link RosterListener}s will throw an IllegalStateException.
      * </p>
@@ -136,7 +137,7 @@ public final class Roster extends Manager {
     /**
      * Concurrent hash map from JID to its roster entry.
      */
-    private final Map<Jid, RosterEntry> entries = new ConcurrentHashMap<>();
+    private final Map<BareJid, RosterEntry> entries = new ConcurrentHashMap<>();
 
     private final Set<RosterEntry> unfiledEntries = new CopyOnWriteArraySet<>();
     private final Set<RosterListener> rosterListeners = new LinkedHashSet<>();
@@ -497,7 +498,7 @@ public final class Roster extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void createEntry(Jid user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void createEntry(BareJid user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
 
         // Create and send roster entry creation packet.
@@ -536,7 +537,7 @@ public final class Roster extends Manager {
      * @throws FeatureNotSupportedException if pre-approving is not supported.
      * @since 4.2
      */
-    public void preApproveAndCreateEntry(Jid user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, FeatureNotSupportedException {
+    public void preApproveAndCreateEntry(BareJid user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, FeatureNotSupportedException {
         preApprove(user);
         createEntry(user, name, groups);
     }
@@ -608,7 +609,7 @@ public final class Roster extends Manager {
 
         // Only remove the entry if it's in the entry list.
         // The actual removal logic takes place in RosterPacketListenerprocess>>Packet(Packet)
-        if (!entries.containsKey(entry.getUser())) {
+        if (!entries.containsKey(entry.getJid())) {
             return;
         }
         RosterPacket packet = new RosterPacket();
@@ -1125,18 +1126,18 @@ public final class Roster extends Manager {
                     Collection<Jid> unchangedEntries, RosterPacket.Item item, RosterEntry entry) {
         RosterEntry oldEntry;
         synchronized (rosterListenersAndEntriesLock) {
-            oldEntry = entries.put(item.getUser(), entry);
+            oldEntry = entries.put(item.getJid(), entry);
         }
         if (oldEntry == null) {
-            addedEntries.add(item.getUser());
+            addedEntries.add(item.getJid());
         }
         else {
             RosterPacket.Item oldItem = RosterEntry.toRosterItem(oldEntry);
             if (!oldEntry.equalsDeep(entry) || !item.getGroupNames().equals(oldItem.getGroupNames())) {
-                updatedEntries.add(item.getUser());
+                updatedEntries.add(item.getJid());
             } else {
                 // Record the entry as unchanged, so that it doesn't end up as deleted entry
-                unchangedEntries.add(item.getUser());
+                unchangedEntries.add(item.getJid());
             }
         }
 
@@ -1181,7 +1182,7 @@ public final class Roster extends Manager {
     }
 
     private void deleteEntry(Collection<Jid> deletedEntries, RosterEntry entry) {
-        Jid user = entry.getUser();
+        Jid user = entry.getJid();
         entries.remove(user);
         unfiledEntries.remove(entry);
         presenceMap.remove(user);
@@ -1393,7 +1394,7 @@ public final class Roster extends Manager {
                 }
 
                 for (RosterPacket.Item item : validItems) {
-                    RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
+                    RosterEntry entry = new RosterEntry(item.getJid(), item.getName(),
                             item.getItemType(), item.getItemStatus(), item.isApproved(), Roster.this, connection);
                     addUpdateEntry(addedEntries, updatedEntries, unchangedEntries, item, entry);
                 }
@@ -1401,7 +1402,7 @@ public final class Roster extends Manager {
                 // Delete all entries which where not added or updated
                 Set<Jid> toDelete = new HashSet<>();
                 for (RosterEntry entry : entries.values()) {
-                    toDelete.add(entry.getUser());
+                    toDelete.add(entry.getJid());
                 }
                 toDelete.removeAll(addedEntries);
                 toDelete.removeAll(updatedEntries);
@@ -1423,7 +1424,7 @@ public final class Roster extends Manager {
                 // version we presented the server. So we simply load the roster from the store and
                 // await possible further roster pushes.
                 for (RosterPacket.Item item : rosterStore.getEntries()) {
-                    RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
+                    RosterEntry entry = new RosterEntry(item.getJid(), item.getName(),
                             item.getItemType(), item.getItemStatus(), item.isApproved(), Roster.this, connection);
                     addUpdateEntry(addedEntries, updatedEntries, unchangedEntries, item, entry);
                 }
@@ -1493,14 +1494,14 @@ public final class Roster extends Manager {
             // We assured above that the size of items is exaclty 1, therefore we are able to
             // safely retrieve this single item here.
             Item item = items.iterator().next();
-            RosterEntry entry = new RosterEntry(item.getUser(), item.getName(),
+            RosterEntry entry = new RosterEntry(item.getJid(), item.getName(),
                             item.getItemType(), item.getItemStatus(), item.isApproved(), Roster.this, connection);
             String version = rosterPacket.getVersion();
 
             if (item.getItemType().equals(RosterPacket.ItemType.remove)) {
                 deleteEntry(deletedEntries, entry);
                 if (rosterStore != null) {
-                    rosterStore.removeEntry(entry.getUser(), version);
+                    rosterStore.removeEntry(entry.getJid(), version);
                 }
             }
             else if (hasValidSubscriptionType(item)) {

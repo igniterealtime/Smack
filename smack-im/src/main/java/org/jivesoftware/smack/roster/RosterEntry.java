@@ -29,7 +29,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.BareJid;
 
 
 /**
@@ -43,7 +43,7 @@ public final class RosterEntry extends Manager {
     /**
      * The JID of the entity/user.
      */
-    private final Jid user;
+    private final BareJid jid;
 
     private String name;
     private RosterPacket.ItemType type;
@@ -61,10 +61,10 @@ public final class RosterEntry extends Manager {
      * @param approved the pre-approval flag.
      * @param connection a connection to the XMPP server.
      */
-    RosterEntry(Jid user, String name, RosterPacket.ItemType type,
+    RosterEntry(BareJid user, String name, RosterPacket.ItemType type,
                 RosterPacket.ItemStatus status, boolean approved, Roster roster, XMPPConnection connection) {
         super(connection);
-        this.user = user;
+        this.jid = user;
         this.name = name;
         this.type = type;
         this.status = status;
@@ -76,9 +76,20 @@ public final class RosterEntry extends Manager {
      * Returns the JID of the user associated with this entry.
      *
      * @return the user associated with this entry.
+     * @deprecated use {@link #getJid()} instead.
      */
-    public Jid getUser() {
-        return user;
+    @Deprecated
+    public String getUser() {
+        return jid.toString();
+    }
+
+    /**
+     * Returns the JID associated with this entry.
+     *
+     * @return the user associated with this entry.
+     */
+    public BareJid getJid() {
+        return jid;
     }
 
     /**
@@ -184,7 +195,7 @@ public final class RosterEntry extends Manager {
         if (name != null) {
             buf.append(name).append(": ");
         }
-        buf.append(user);
+        buf.append(jid);
         Collection<RosterGroup> groups = getGroups();
         if (!groups.isEmpty()) {
             buf.append(" [");
@@ -203,7 +214,7 @@ public final class RosterEntry extends Manager {
 
     @Override
     public int hashCode() {
-        return (user == null ? 0 : user.hashCode());
+        return (jid == null ? 0 : jid.hashCode());
     }
 
     public boolean equals(Object object) {
@@ -211,7 +222,7 @@ public final class RosterEntry extends Manager {
             return true;
         }
         if (object != null && object instanceof RosterEntry) {
-            return user.equals(((RosterEntry)object).getUser());
+            return jid.equals(((RosterEntry)object).getUser());
         }
         else {
             return false;
@@ -253,11 +264,11 @@ public final class RosterEntry extends Manager {
         }
         else if (!type.equals(other.type))
             return false;
-        if (user == null) {
-            if (other.user != null)
+        if (jid == null) {
+            if (other.jid != null)
                 return false;
         }
-        else if (!user.equals(other.user))
+        else if (!jid.equals(other.jid))
             return false;
         if (approved != other.approved)
             return false;
@@ -269,7 +280,7 @@ public final class RosterEntry extends Manager {
     }
 
     private static RosterPacket.Item toRosterItem(RosterEntry entry, String name) {
-        RosterPacket.Item item = new RosterPacket.Item(entry.getUser(), name);
+        RosterPacket.Item item = new RosterPacket.Item(entry.getJid(), name);
         item.setItemType(entry.getType());
         item.setItemStatus(entry.getStatus());
         item.setApproved(entry.isApproved());

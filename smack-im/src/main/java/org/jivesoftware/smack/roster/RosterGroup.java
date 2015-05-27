@@ -20,7 +20,6 @@ package org.jivesoftware.smack.roster;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import org.jivesoftware.smack.PacketCollector;
@@ -30,7 +29,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.jid.Jid;
 
 /**
  * A group of roster entries.
@@ -120,17 +119,16 @@ public class RosterGroup {
      * @param user the XMPP address of the user (eg "jsmith@example.com").
      * @return the roster entry or <tt>null</tt> if it does not exist in the group.
      */
-    public RosterEntry getEntry(String user) {
+    public RosterEntry getEntry(Jid user) {
         if (user == null) {
             return null;
         }
         // Roster entries never include a resource so remove the resource
         // if it's a part of the XMPP address.
-        user = XmppStringUtils.parseBareJid(user);
-        String userLowerCase = user.toLowerCase(Locale.US);
+        user = user.withoutResource();
         synchronized (entries) {
             for (RosterEntry entry : entries) {
-                if (entry.getUser().equals(userLowerCase)) {
+                if (entry.getJid().equals(user)) {
                     return entry;
                 }
             }
@@ -156,7 +154,7 @@ public class RosterGroup {
      * @param user the XMPP address of the user.
      * @return true if the XMPP address is an entry in this group.
      */
-    public boolean contains(String user) {
+    public boolean contains(Jid user) {
         return getEntry(user) != null;
     }
 

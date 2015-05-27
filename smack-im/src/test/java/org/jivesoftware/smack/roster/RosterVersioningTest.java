@@ -160,13 +160,13 @@ public class RosterVersioningTest {
 
         Roster roster = Roster.getInstanceFor(connection);
         assertEquals("Size of roster", 1, roster.getEntries().size());
-        RosterEntry entry = roster.getEntry(vaglafItem.getUser());
+        RosterEntry entry = roster.getEntry(vaglafItem.getJid());
         assertNotNull("Roster contains vaglaf entry", entry);
         assertEquals("vaglaf entry in roster equals the sent entry", vaglafItem, RosterEntry.toRosterItem(entry));
 
         RosterStore store = roster.getRosterStore();
         assertEquals("Size of store", 1, store.getEntries().size());
-        Item item = store.getEntry(vaglafItem.getUser());
+        Item item = store.getEntry(vaglafItem.getJid());
         assertNotNull("Store contains vaglaf entry");
         assertEquals("vaglaf entry in store equals the sent entry", vaglafItem, item);
     }
@@ -214,20 +214,20 @@ public class RosterVersioningTest {
             rosterPush.setType(Type.set);
             rosterPush.setVersion("v98");
 
-            Item item = new Item(JidCreate.from("vaglaf@example.com"), "vaglaf the only");
+            Item item = new Item(JidCreate.bareFrom("vaglaf@example.com"), "vaglaf the only");
             item.setItemType(ItemType.remove);
             rosterPush.addRosterItem(item);
             rosterListener.reset();
             connection.processPacket(rosterPush);
             rosterListener.waitAndReset();
 
-            assertNull("Store doses not contain vaglaf", store.getEntry(JidCreate.from("vaglaf@example.com")));
+            assertNull("Store doses not contain vaglaf", store.getEntry(JidCreate.bareFrom("vaglaf@example.com")));
             assertEquals("Expect store version after push", "v98", store.getRosterVersion());
         }
     }
 
     private static Item vaglafItem() throws XmppStringprepException {
-        Item item = new Item(JidCreate.from("vaglaf@example.com"), "vaglaf the only");
+        Item item = new Item(JidCreate.bareFrom("vaglaf@example.com"), "vaglaf the only");
         item.setItemType(ItemType.both);
         item.addGroupName("all");
         item.addGroupName("friends");
@@ -236,14 +236,14 @@ public class RosterVersioningTest {
     }
 
     private static void populateStore(RosterStore store) throws IOException {
-        store.addEntry(new RosterPacket.Item(JidCreate.from("geoff@example.com"), "geoff hurley"), "");
+        store.addEntry(new RosterPacket.Item(JidCreate.bareFrom("geoff@example.com"), "geoff hurley"), "");
 
-        RosterPacket.Item item = new RosterPacket.Item(JidCreate.from("joe@example.com"), "joe stevens");
+        RosterPacket.Item item = new RosterPacket.Item(JidCreate.bareFrom("joe@example.com"), "joe stevens");
         item.addGroupName("friends");
         item.addGroupName("partners");
         store.addEntry(item, "");
 
-        item = new RosterPacket.Item(JidCreate.from("higgins@example.com"), "higgins mcmann");
+        item = new RosterPacket.Item(JidCreate.bareFrom("higgins@example.com"), "higgins mcmann");
         item.addGroupName("all");
         item.addGroupName("friends");
         store.addEntry(item, "v96");

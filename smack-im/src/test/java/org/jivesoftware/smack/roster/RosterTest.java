@@ -48,6 +48,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -133,7 +134,7 @@ public class RosterTest extends InitSmackIm {
     @Test
     public void testAddRosterItem() throws Throwable {
         // Constants for the new contact
-        final Jid contactJID = JidCreate.from("nurse@example.com");
+        final BareJid contactJID = JidCreate.bareFrom("nurse@example.com");
         final String contactName = "Nurse";
         final String[] contactGroup = {"Servants"};
 
@@ -146,9 +147,9 @@ public class RosterTest extends InitSmackIm {
         final RosterUpdateResponder serverSimulator = new RosterUpdateResponder() {
             void verifyUpdateRequest(final RosterPacket updateRequest) {
                 final Item item = updateRequest.getRosterItems().iterator().next();
-                assertSame("The provided JID doesn't match the requested!",
+                assertEquals("The provided JID doesn't match the requested!",
                         contactJID,
-                        item.getUser());
+                        item.getJid());
                 assertSame("The provided name doesn't match the requested!",
                         contactName,
                         item.getName());
@@ -217,9 +218,9 @@ public class RosterTest extends InitSmackIm {
         final RosterUpdateResponder serverSimulator = new RosterUpdateResponder() {
             void verifyUpdateRequest(final RosterPacket updateRequest) {
                 final Item item = updateRequest.getRosterItems().iterator().next();
-                assertSame("The provided JID doesn't match the requested!",
+                assertEquals("The provided JID doesn't match the requested!",
                         contactJID,
-                        item.getUser());
+                        item.getJid());
                 assertSame("The provided name doesn't match the requested!",
                         contactName,
                         item.getName());
@@ -290,9 +291,9 @@ public class RosterTest extends InitSmackIm {
         final RosterUpdateResponder serverSimulator = new RosterUpdateResponder() {
             void verifyUpdateRequest(final RosterPacket updateRequest) {
                 final Item item = updateRequest.getRosterItems().iterator().next();
-                assertSame("The provided JID doesn't match the requested!",
+                assertEquals("The provided JID doesn't match the requested!",
                         contactJID,
-                        item.getUser());
+                        item.getJid());
             }
         };
         serverSimulator.start();
@@ -370,7 +371,7 @@ public class RosterTest extends InitSmackIm {
      */
     @Test
     public void testIgnoreInvalidFrom() throws XmppStringprepException {
-        final Jid spammerJid = JidCreate.from("spam@example.com");
+        final BareJid spammerJid = JidCreate.bareFrom("spam@example.com");
         RosterPacket packet = new RosterPacket();
         packet.setType(Type.set);
         packet.setTo(connection.getUser());
@@ -398,7 +399,7 @@ public class RosterTest extends InitSmackIm {
     @Test(timeout=5000)
     public void testAddEmptyGroupEntry() throws Throwable {
         // Constants for the new contact
-        final Jid contactJID = JidCreate.from("nurse@example.com");
+        final BareJid contactJID = JidCreate.bareFrom("nurse@example.com");
         final String contactName = "Nurse";
         final String[] contactGroup = {""};
 
@@ -413,7 +414,7 @@ public class RosterTest extends InitSmackIm {
                 final Item item = updateRequest.getRosterItems().iterator().next();
                 assertSame("The provided JID doesn't match the requested!",
                         contactJID,
-                        item.getUser());
+                        item.getJid());
                 assertSame("The provided name doesn't match the requested!",
                         contactName,
                         item.getName());
@@ -518,7 +519,7 @@ public class RosterTest extends InitSmackIm {
             rosterPush.setTo(connection.getUser());
 
             // prepare the buddy's item entry which should be removed
-            final RosterPacket.Item item = new RosterPacket.Item(entry.getUser(), entry.getName());
+            final RosterPacket.Item item = new RosterPacket.Item(entry.getJid(), entry.getName());
             item.setItemType(ItemType.remove);
             rosterPush.addRosterItem(item);
 
@@ -555,18 +556,18 @@ public class RosterTest extends InitSmackIm {
                 rosterResult.setStanzaId(rosterRequest.getStanzaId());
 
                 // prepare romeo's roster entry
-                final Item romeo = new Item(JidCreate.from("romeo@example.net"), "Romeo");
+                final Item romeo = new Item(JidCreate.bareFrom("romeo@example.net"), "Romeo");
                 romeo.addGroupName("Friends");
                 romeo.setItemType(ItemType.both);
                 rosterResult.addRosterItem(romeo);
 
                 // prepare mercutio's roster entry
-                final Item mercutio = new Item(JidCreate.from("mercutio@example.com"), "Mercutio");
+                final Item mercutio = new Item(JidCreate.bareFrom("mercutio@example.com"), "Mercutio");
                 mercutio.setItemType(ItemType.from);
                 rosterResult.addRosterItem(mercutio);
 
                 // prepare benvolio's roster entry
-                final Item benvolio = new Item(JidCreate.from("benvolio@example.net"), "Benvolio");
+                final Item benvolio = new Item(JidCreate.bareFrom("benvolio@example.net"), "Benvolio");
                 benvolio.setItemType(ItemType.both);
                 rosterResult.addRosterItem(benvolio);
 

@@ -19,8 +19,9 @@ package org.jivesoftware.smack.roster.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.BareJid;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -107,7 +108,7 @@ public class RosterPacket extends IQ {
 
         public static final String GROUP = "group";
 
-        private final Jid user;
+        private final BareJid jid;
         private String name;
         private ItemType itemType;
         private ItemStatus itemStatus;
@@ -117,11 +118,11 @@ public class RosterPacket extends IQ {
         /**
          * Creates a new roster item.
          *
-         * @param user the user.
+         * @param jid the jid.
          * @param name the user's name.
          */
-        public Item(Jid user, String name) {
-            this.user = user;
+        public Item(BareJid jid, String name) {
+            this.jid = Objects.requireNonNull(jid);
             this.name = name;
             itemType = null;
             itemStatus = null;
@@ -132,9 +133,20 @@ public class RosterPacket extends IQ {
          * Returns the user.
          *
          * @return the user.
+         * @deprecated use {@link #getJid()} instead.
          */
-        public Jid getUser() {
-            return user;
+        @Deprecated
+        public String getUser() {
+            return jid.toString();
+        }
+
+        /**
+         * Returns the JID of this item.
+         *
+         * @return the JID.
+         */
+        public BareJid getJid() {
+            return jid;
         }
 
         /**
@@ -240,7 +252,7 @@ public class RosterPacket extends IQ {
 
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(Stanza.ITEM).attribute("jid", user);
+            xml.halfOpenElement(Stanza.ITEM).attribute("jid", jid);
             xml.optAttribute("name", name);
             xml.optAttribute("subscription", itemType);
             xml.optAttribute("ask", itemStatus);
@@ -262,7 +274,7 @@ public class RosterPacket extends IQ {
             result = prime * result + ((itemStatus == null) ? 0 : itemStatus.hashCode());
             result = prime * result + ((itemType == null) ? 0 : itemType.hashCode());
             result = prime * result + ((name == null) ? 0 : name.hashCode());
-            result = prime * result + ((user == null) ? 0 : user.hashCode());
+            result = prime * result + ((jid == null) ? 0 : jid.hashCode());
             result = prime * result + ((approved == false) ? 0 : 1);
             return result;
         }
@@ -292,11 +304,11 @@ public class RosterPacket extends IQ {
             }
             else if (!name.equals(other.name))
                 return false;
-            if (user == null) {
-                if (other.user != null)
+            if (jid == null) {
+                if (other.jid != null)
                     return false;
             }
-            else if (!user.equals(other.user))
+            else if (!jid.equals(other.jid))
                 return false;
             if (approved != other.approved)
                 return false;

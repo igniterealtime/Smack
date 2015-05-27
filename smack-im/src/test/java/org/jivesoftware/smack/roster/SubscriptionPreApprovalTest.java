@@ -37,6 +37,7 @@ import org.jivesoftware.smack.roster.packet.SubscriptionPreApproval;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -77,7 +78,7 @@ public class SubscriptionPreApprovalTest extends InitSmackIm {
 
     @Test
     public void testPreApproveAndCreate() throws Throwable {
-        final Jid contactJID = JidCreate.from("preapproval@example.com");
+        final BareJid contactJID = JidCreate.bareFrom("preapproval@example.com");
         final String contactName = "PreApproval";
         final String[] contactGroup = {};
         connection.enableStreamFeature(SubscriptionPreApproval.INSTANCE);
@@ -88,7 +89,7 @@ public class SubscriptionPreApprovalTest extends InitSmackIm {
                 final Item item = updateRequest.getRosterItems().iterator().next();
                 assertSame("The provided JID doesn't match the requested!",
                         contactJID,
-                        item.getUser());
+                        item.getJid());
                 assertSame("The provided name doesn't match the requested!",
                         contactName,
                         item.getName());

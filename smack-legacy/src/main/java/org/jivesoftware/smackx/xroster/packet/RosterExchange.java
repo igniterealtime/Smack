@@ -87,7 +87,7 @@ public class RosterExchange implements ExtensionElement {
 		groupNames = groupNamesList.toArray(new String[groupNamesList.size()]);
 
         // Create a new Entry based on the rosterEntry and add it to the packet
-        RemoteRosterEntry remoteRosterEntry = new RemoteRosterEntry(rosterEntry.getUser(),
+        RemoteRosterEntry remoteRosterEntry = new RemoteRosterEntry(rosterEntry.getJid(),
                 rosterEntry.getName(), groupNames);
 
         addRosterEntry(remoteRosterEntry);
