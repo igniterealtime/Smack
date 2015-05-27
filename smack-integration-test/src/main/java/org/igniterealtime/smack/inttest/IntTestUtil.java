@@ -75,6 +75,17 @@ public class IntTestUtil {
 
     public static void disconnectAndMaybeDelete(XMPPTCPConnection connection, boolean delete)
                     throws InterruptedException {
+        // If the connection is disconnected, then re-reconnect and login. This could happen when
+        // (low-level) integration tests disconnect the connection, e.g. to test disconnection
+        // mechanisms
+        if (!connection.isConnected()) {
+            try {
+                connection.connect().login();
+            }
+            catch (XMPPException | SmackException | IOException e) {
+                LOGGER.log(Level.WARNING, "Exception reconnection account for deletion", e);
+            }
+        }
         try {
             if (delete) {
                 final int maxAttempts = 3;

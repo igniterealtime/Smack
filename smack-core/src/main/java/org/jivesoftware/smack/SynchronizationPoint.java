@@ -65,8 +65,9 @@ public class SynchronizationPoint<E extends Exception> {
      * @param request the plain stream element to send.
      * @throws NoResponseException if no response was received.
      * @throws NotConnectedException if the connection is not connected.
+     * @return <code>true</code> if synchronization point was successful, <code>false</code> on failure.
      */
-    public void sendAndWaitForResponse(TopLevelStreamElement request) throws NoResponseException,
+    public boolean sendAndWaitForResponse(TopLevelStreamElement request) throws NoResponseException,
                     NotConnectedException, InterruptedException {
         assert (state == State.Initial);
         connectionLock.lock();
@@ -87,7 +88,7 @@ public class SynchronizationPoint<E extends Exception> {
         finally {
             connectionLock.unlock();
         }
-        checkForResponse();
+        return checkForResponse();
     }
 
     /**
@@ -128,20 +129,27 @@ public class SynchronizationPoint<E extends Exception> {
     /**
      * Check if this synchronization point is successful or wait the connections reply timeout.
      * @throws NoResponseException if there was no response marking the synchronization point as success or failed.
-     * @throws InterruptedException 
+     * @throws InterruptedException
+     * @return <code>true</code> if synchronization point was successful, <code>false</code> on failure.
      */
-    public void checkIfSuccessOrWait() throws NoResponseException, InterruptedException {
+    public boolean checkIfSuccessOrWait() throws NoResponseException, InterruptedException {
         connectionLock.lock();
         try {
-            if (state == State.Success) {
-                // Return immediately
-                return;
+            switch (state) {
+            // Return immediately on success or failure
+            case Success:
+                return true;
+            case Failure:
+                return false;
+            default:
+                // Do nothing
+                break;
             }
             waitForConditionOrTimeout();
         } finally {
             connectionLock.unlock();
         }
-        checkForResponse();
+        return checkForResponse();
     }
 
     /**
@@ -240,15 +248,18 @@ public class SynchronizationPoint<E extends Exception> {
      * </p>
      * @throws NoResponseException
      */
-    private void checkForResponse() throws NoResponseException {
+    private boolean checkForResponse() throws NoResponseException {
         switch (state) {
         case Initial:
         case NoResponse:
         case RequestSent:
             throw NoResponseException.newWith(connection);
+        case Success:
+            return true;
+        case Failure:
+            return false;
         default:
-            // Do nothing
-            break;
+            throw new AssertionError("Unknown state " + state);
         }
     }
 

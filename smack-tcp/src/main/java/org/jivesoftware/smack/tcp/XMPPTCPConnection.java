@@ -189,6 +189,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     this);
 
     /**
+     * A synchronization point which is successful if this connection has received the closing
+     * stream element from the remote end-point, i.e. the server.
+     */
+    private final SynchronizationPoint<Exception> closingStreamReceived = new SynchronizationPoint<Exception>(this);
+
+    /**
      * The default bundle and defer callback, used for new connections.
      * @see bundleAndDeferCallback
      */
@@ -458,15 +464,27 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         shutdown(true);
     }
 
+    /**
+     * <code>true</code> if this connection is currently disconnecting the session by performing a
+     * shut down.
+     */
+    private volatile boolean shutdownInProgress;
+
     private void shutdown(boolean instant) {
         if (disconnectedButResumeable) {
             return;
         }
+
+        shutdownInProgress = true;
+
+        // First shutdown the writer, this will result in a closing stream element getting send to
+        // the server
+        if (packetWriter != null) {
+            packetWriter.shutdown(instant);
+        }
+
         if (packetReader != null) {
                 packetReader.shutdown();
-        }
-        if (packetWriter != null) {
-                packetWriter.shutdown(instant);
         }
 
         // Set socketClosed to true. This will cause the PacketReader
@@ -492,6 +510,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             // stream tag, there is no longer a stream to resume.
             smSessionId = null;
         }
+        shutdownInProgress = false;
         authenticated = false;
         connected = false;
         usingTLS = false;
@@ -789,6 +808,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     @Override
     protected void connectInternal() throws SmackException, IOException, XMPPException, InterruptedException {
+        closingStreamReceived.init();
         // Establishes the TCP connection to the server and does setup the reader and writer. Throws an exception if
         // there is an error establishing the connection
         connectUsingConfiguration();
@@ -1102,8 +1122,19 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         break;
                     case XmlPullParser.END_TAG:
                         if (parser.getName().equals("stream")) {
-                            // Disconnect the connection
-                            disconnect();
+                            closingStreamReceived.reportSuccess();
+                            if (shutdownInProgress) {
+                                // We received a closing stream element *after* we initiated the
+                                // termination of the session by sending a closing stream element to
+                                // the server first
+                                return;
+                            } else {
+                                // We received a closing stream element from the server without us
+                                // sending a closing stream element first. This means that the
+                                // server wants to terminate the session, therefore disconnect
+                                // the connection
+                                disconnect();
+                            }
                         }
                         break;
                     case XmlPullParser.END_DOCUMENT:
@@ -1116,6 +1147,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
             }
             catch (Exception e) {
+                closingStreamReceived.reportFailure(e);
                 // The exception can be ignored if the the connection is 'done'
                 // or if the it was caused because the socket got closed
                 if (!(done || isSocketClosed())) {
@@ -1362,6 +1394,18 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     catch (Exception e) {
                         LOGGER.log(Level.WARNING, "Exception writing closing stream element", e);
                     }
+
+                    try {
+                        // After we send the closing stream element, check if there was already a
+                        // closing stream element sent by the server or wait with a timeout for a
+                        // closing stream element to be received from the server.
+                        closingStreamReceived.checkIfSuccessOrWait();
+                    } catch (NoResponseException e) {
+                        LOGGER.log(Level.INFO, "No response while waiting for closing stream element from the server (" + getConnectionCounter() + ")", e);
+                    } catch (InterruptedException e) {
+                        LOGGER.log(Level.INFO, "Waiting for closing stream element from the server was interrupted (" + getConnectionCounter() + ")", e);
+                    }
+
                     // Delete the queue contents (hopefully nothing is left).
                     queue.clear();
                 } else if (instantShutdown && isSmEnabled()) {
