@@ -174,25 +174,27 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     protected PacketReader packetReader;
 
-    private final SynchronizationPoint<Exception> initalOpenStreamSend = new SynchronizationPoint<Exception>(this);
+    private final SynchronizationPoint<Exception> initalOpenStreamSend = new SynchronizationPoint<>(
+                    this, "initial open stream element send to server");
 
     /**
      * 
      */
     private final SynchronizationPoint<XMPPException> maybeCompressFeaturesReceived = new SynchronizationPoint<XMPPException>(
-                    this);
+                    this, "stream compression feature");
 
     /**
      * 
      */
     private final SynchronizationPoint<XMPPException> compressSyncPoint = new SynchronizationPoint<XMPPException>(
-                    this);
+                    this, "stream compression");
 
     /**
      * A synchronization point which is successful if this connection has received the closing
      * stream element from the remote end-point, i.e. the server.
      */
-    private final SynchronizationPoint<Exception> closingStreamReceived = new SynchronizationPoint<Exception>(this);
+    private final SynchronizationPoint<Exception> closingStreamReceived = new SynchronizationPoint<>(
+                    this, "stream closing element received");
 
     /**
      * The default bundle and defer callback, used for new connections.
@@ -221,10 +223,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private String smSessionId;
 
     private final SynchronizationPoint<XMPPException> smResumedSyncPoint = new SynchronizationPoint<XMPPException>(
-                    this);
+                    this, "stream resumed element");
 
     private final SynchronizationPoint<XMPPException> smEnabledSyncPoint = new SynchronizationPoint<XMPPException>(
-                    this);
+                    this, "stream enabled element");
 
     /**
      * The client's preferred maximum resumption time in seconds.
@@ -1169,7 +1171,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          * Needs to be protected for unit testing purposes.
          */
         protected SynchronizationPoint<NoResponseException> shutdownDone = new SynchronizationPoint<NoResponseException>(
-                        XMPPTCPConnection.this);
+                        XMPPTCPConnection.this, "shutdown completed");
 
         /**
          * If set, the stanza(/packet) writer is shut down

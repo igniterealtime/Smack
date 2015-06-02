@@ -31,6 +31,7 @@ public class SynchronizationPoint<E extends Exception> {
     private final AbstractXMPPConnection connection;
     private final Lock connectionLock;
     private final Condition condition;
+    private final String waitFor;
 
     // Note that there is no need to make 'state' and 'failureException' volatile. Since 'lock' and 'unlock' have the
     // same memory synchronization effects as synchronization block enter and leave.
@@ -41,11 +42,13 @@ public class SynchronizationPoint<E extends Exception> {
      * Construct a new synchronization point for the given connection.
      *
      * @param connection the connection of this synchronization point.
+     * @param waitFor a description of the event this synchronization point handles.
      */
-    public SynchronizationPoint(AbstractXMPPConnection connection) {
+    public SynchronizationPoint(AbstractXMPPConnection connection, String waitFor) {
         this.connection = connection;
         this.connectionLock = connection.getConnectionLock();
         this.condition = connection.getConnectionLock().newCondition();
+        this.waitFor = waitFor;
         init();
     }
 
@@ -253,7 +256,7 @@ public class SynchronizationPoint<E extends Exception> {
         case Initial:
         case NoResponse:
         case RequestSent:
-            throw NoResponseException.newWith(connection);
+            throw NoResponseException.newWith(connection, waitFor);
         case Success:
             return true;
         case Failure:

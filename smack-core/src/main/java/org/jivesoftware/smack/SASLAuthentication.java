@@ -207,7 +207,7 @@ public final class SASLAuthentication {
         }
 
         if (!authenticationSuccessful) {
-            throw NoResponseException.newWith(connection);
+            throw NoResponseException.newWith(connection, "successful SASL authentication");
         }
     }
 

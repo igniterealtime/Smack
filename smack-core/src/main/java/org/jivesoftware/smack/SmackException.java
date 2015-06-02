@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,6 +68,10 @@ public class SmackException extends Exception {
 
         private final StanzaFilter filter;
 
+        private NoResponseException(String message) {
+            this(message, null);
+        }
+
         private NoResponseException(String message, StanzaFilter filter) {
             super(message);
             this.filter = filter;
@@ -82,8 +86,10 @@ public class SmackException extends Exception {
             return filter;
         }
 
-        public static NoResponseException newWith(XMPPConnection connection) {
-            return newWith(connection, (StanzaFilter) null);
+        public static NoResponseException newWith(XMPPConnection connection, String waitingFor) {
+            final StringBuilder sb = getWaitingFor(connection);
+            sb.append(" While waiting for ").append(waitingFor);
+            return new NoResponseException(sb.toString());
         }
 
         public static NoResponseException newWith(XMPPConnection connection,
@@ -92,11 +98,8 @@ public class SmackException extends Exception {
         }
 
         public static NoResponseException newWith(XMPPConnection connection, StanzaFilter filter) {
-            final long replyTimeout = connection.getPacketReplyTimeout();
-            final StringBuilder sb = new StringBuilder(256);
-            sb.append("No response received within reply timeout. Timeout was "
-                            + replyTimeout + "ms (~"
-                            + replyTimeout / 1000 + "s). Used filter: ");
+            final StringBuilder sb = getWaitingFor(connection);
+            sb.append(" Waited for response using: ");
             if (filter != null) {
                 sb.append(filter.toString());
             }
@@ -107,6 +110,14 @@ public class SmackException extends Exception {
             return new NoResponseException(sb.toString(), filter);
         }
 
+        private static StringBuilder getWaitingFor(XMPPConnection connection) {
+            final long replyTimeout = connection.getPacketReplyTimeout();
+            final StringBuilder sb = new StringBuilder(256);
+            sb.append("No response received within reply timeout. Timeout was "
+                            + replyTimeout + "ms (~"
+                            + replyTimeout / 1000 + "s).");
+            return sb;
+        }
     }
 
     public static class NotLoggedInException extends SmackException {

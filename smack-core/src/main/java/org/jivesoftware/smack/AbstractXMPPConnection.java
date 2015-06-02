@@ -194,13 +194,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * parsed.
      */
     protected final SynchronizationPoint<Exception> lastFeaturesReceived = new SynchronizationPoint<Exception>(
-                    AbstractXMPPConnection.this);
+                    AbstractXMPPConnection.this, "last stream features received from server");
 
     /**
      * Set to success if the sasl feature has been received.
      */
     protected final SynchronizationPoint<SmackException> saslFeatureReceived = new SynchronizationPoint<SmackException>(
-                    AbstractXMPPConnection.this);
+                    AbstractXMPPConnection.this, "SASL mechanisms stream feature from server");
 
     /**
      * The SASLAuthentication manager that is responsible for authenticating with the server.

@@ -114,7 +114,7 @@ public abstract class StreamNegotiator {
         }
 
         if (streamMethodInitiation == null) {
-            throw NoResponseException.newWith(connection);
+            throw NoResponseException.newWith(connection, "stream initiation");
         }
         XMPPErrorException.ifHasErrorThenThrow(streamMethodInitiation);
         return streamMethodInitiation;
