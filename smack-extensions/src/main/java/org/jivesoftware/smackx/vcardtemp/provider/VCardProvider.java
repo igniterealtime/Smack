@@ -284,6 +284,12 @@ public class VCardProvider extends IQProvider<VCard> {
                 case "MIDDLE":
                     vCard.setMiddleName(parser.nextText());
                     break;
+                case "PREFIX":
+                    vCard.setPrefix(parser.nextText());
+                    break;
+                case "SUFFIX":
+                    vCard.setSuffix(parser.nextText());
+                    break;
                 default:
                     break;
                 }
