@@ -64,7 +64,7 @@ public class CarbonTest extends ExperimentalInitializerTest {
         assertEquals(null, fwd.getDelayInformation());
 
         // check message
-        assertThat("romeo@montague.com", equalsCharSequence(fwd.getForwardedPacket().getFrom()));
+        assertThat("romeo@montague.com", equalsCharSequence(fwd.getForwardedStanza().getFrom()));
 
         // check end of tag
         assertEquals(XmlPullParser.END_TAG, parser.getEventType());

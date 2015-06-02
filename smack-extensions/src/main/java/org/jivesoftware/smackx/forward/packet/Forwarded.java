@@ -78,8 +78,19 @@ public class Forwarded implements ExtensionElement {
      * get the stanza(/packet) forwarded by this stanza.
      *
      * @return the {@link Stanza} instance (typically a message) that was forwarded.
+     * @deprecated use @{link {@link #getForwardedStanza()}} instead.
      */
+    @Deprecated
     public Stanza getForwardedPacket() {
+        return forwardedPacket;
+    }
+
+    /**
+     * Get the forwarded Stanza found in this extension.
+     *
+     * @return the {@link Stanza} (typically a message) that was forwarded.
+     */
+    public Stanza getForwardedStanza() {
         return forwardedPacket;
     }
 
