@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.packet.DefaultExtensionElement;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
@@ -543,9 +544,23 @@ public class PacketParserUtils {
                 case "status":
                     presence.setStatus(parser.nextText());
                     break;
-                case "priority":
-                    int priority = Integer.parseInt(parser.nextText());
-                    presence.setPriority(priority);
+                case "priority" :
+                    try {
+                        int priority = Integer.parseInt(parser
+                                .nextText());
+                        presence.setPriority(priority);
+                    } catch (Throwable e) {
+                        // Some implementations send presence stanzas with a
+                        // '<priority />' element or an invalid presence element, which is a invalid XMPP presence
+                        // stanza according to RFC 6121 4.7.2.3
+                        LOGGER.log(
+                                Level.WARNING,
+                                "Empty, null or malformed text in presence priority element form "
+                                        + presence.getFrom()
+                                        + " with id '"
+                                        + presence.getStanzaId()
+                                        + "' which is invalid.", e);
+                    }
                     break;
                 case "show":
                     String modeText = parser.nextText();
@@ -909,7 +924,17 @@ public class PacketParserUtils {
         // See if a provider is registered to handle the extension.
         ExtensionElementProvider<ExtensionElement> provider = ProviderManager.getExtensionProvider(elementName, namespace);
         if (provider != null) {
+            try {
                 return provider.parse(parser);
+            } catch (IOException e) {
+                throw e;
+            } catch (XmlPullParserException e) {
+                throw e;
+            } catch (SmackException e) {
+                throw e;
+            } catch (Throwable e) {
+                throw new SmackException(e);
+            }
         }
 
         final int initialDepth = parser.getDepth();
@@ -1043,8 +1068,16 @@ public class PacketParserUtils {
 
     public static void addExtensionElement(Stanza packet, XmlPullParser parser, String elementName,
                     String namespace) throws Exception{
-        ExtensionElement packetExtension = parseExtensionElement(elementName, namespace, parser);
-        packet.addExtension(packetExtension);
+        final int initialDepth = parser.getDepth();
+        try {
+            ExtensionElement packetExtension = parseExtensionElement(elementName, namespace, parser);
+            packet.addExtension(packetExtension);
+        } catch (SmackException e) {
+            LOGGER.warning("Malformed extension " + elementName + " "
+                    + namespace + " in stanza from " + packet.getFrom());
+        }
+        // XPP3 calling convention assert: Parser should be at end tag of the consumed/parsed element
+        ParserUtils.forwardToEndTagOfDepth(parser, initialDepth);
     }
 
     public static void addExtensionElement(Collection<ExtensionElement> collection,
@@ -1055,7 +1088,15 @@ public class PacketParserUtils {
     public static void addExtensionElement(Collection<ExtensionElement> collection,
                     XmlPullParser parser, String elementName, String namespace)
                     throws Exception {
-        ExtensionElement packetExtension = parseExtensionElement(elementName, namespace, parser);
-        collection.add(packetExtension);
+        final int initialDepth = parser.getDepth();
+        try {
+            ExtensionElement packetExtension = parseExtensionElement(elementName, namespace, parser);
+            collection.add(packetExtension);
+        } catch (SmackException e) {
+            LOGGER.warning("Malformed extension " + elementName + " "
+                    + namespace);
+        }
+        // XPP3 calling convention assert: Parser should be at end tag of the consumed/parsed element
+        ParserUtils.forwardToEndTagOfDepth(parser, initialDepth);
     }
 }
