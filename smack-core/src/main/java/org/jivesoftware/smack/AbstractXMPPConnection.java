@@ -62,6 +62,7 @@ import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Mechanisms;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
@@ -622,25 +623,26 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void sendStanza(Stanza packet) throws NotConnectedException, InterruptedException {
-        Objects.requireNonNull(packet, "Packet must not be null");
+    public void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
+        Objects.requireNonNull(stanza, "Stanza must not be null");
+        assert(stanza instanceof Message || stanza instanceof Presence || stanza instanceof IQ);
 
         throwNotConnectedExceptionIfAppropriate();
         switch (fromMode) {
         case OMITTED:
-            packet.setFrom((Jid) null);
+            stanza.setFrom((Jid) null);
             break;
         case USER:
-            packet.setFrom(getUser());
+            stanza.setFrom(getUser());
             break;
         case UNCHANGED:
         default:
             break;
         }
-        // Invoke interceptors for the new packet that is about to be sent. Interceptors may modify
-        // the content of the packet.
-        firePacketInterceptors(packet);
-        sendStanzaInternal(packet);
+        // Invoke interceptors for the new stanza that is about to be sent. Interceptors may modify
+        // the content of the stanza.
+        firePacketInterceptors(stanza);
+        sendStanzaInternal(stanza);
     }
 
     /**
