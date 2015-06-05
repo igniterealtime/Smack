@@ -152,7 +152,7 @@ public class RosterVersioningTest {
             answer.addRosterItem(vaglafItem);
 
             rosterListener.reset();
-            connection.processPacket(answer);
+            connection.processStanza(answer);
             rosterListener.waitUntilInvocationOrTimeout();
         } else {
             assertTrue("Expected to get a RosterPacket ", false);
@@ -191,7 +191,7 @@ public class RosterVersioningTest {
             Item pushedItem = vaglafItem();
             rosterPush.addRosterItem(pushedItem);
             rosterListener.reset();
-            connection.processPacket(rosterPush);
+            connection.processStanza(rosterPush);
             rosterListener.waitAndReset();
 
             assertEquals("Expect store version after push", "v97", store.getRosterVersion());
@@ -218,7 +218,7 @@ public class RosterVersioningTest {
             item.setItemType(ItemType.remove);
             rosterPush.addRosterItem(item);
             rosterListener.reset();
-            connection.processPacket(rosterPush);
+            connection.processStanza(rosterPush);
             rosterListener.waitAndReset();
 
             assertNull("Store doses not contain vaglaf", store.getEntry(JidCreate.bareFrom("vaglaf@example.com")));
@@ -255,7 +255,7 @@ public class RosterVersioningTest {
         Stanza sentPacket = connection.getSentPacket();
         if (sentPacket instanceof RosterPacket) {
             final IQ emptyIQ = IQ.createResultIQ((RosterPacket)sentPacket);
-            connection.processPacket(emptyIQ);
+            connection.processStanza(emptyIQ);
         } else {
             assertTrue("Expected to get a RosterPacket ", false);
         }

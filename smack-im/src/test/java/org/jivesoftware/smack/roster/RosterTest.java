@@ -341,7 +341,7 @@ public class RosterTest extends InitSmackIm {
         rosterListener.reset();
 
         // Simulate receiving the roster push
-        connection.processPacket(rosterPush);
+        connection.processStanza(rosterPush);
         rosterListener.waitUntilInvocationOrTimeout();
 
         // Verify the roster entry of the new contact
@@ -380,7 +380,7 @@ public class RosterTest extends InitSmackIm {
 
         final String requestId = packet.getStanzaId();
         // Simulate receiving the roster push
-        connection.processPacket(packet);
+        connection.processStanza(packet);
 
         // Smack should reply with an error IQ
         ErrorIQ errorIQ = (ErrorIQ) connection.getSentPacket();
@@ -482,7 +482,7 @@ public class RosterTest extends InitSmackIm {
         rosterListener.reset();
 
         // Simulate receiving the roster push
-        connection.processPacket(rosterPush);
+        connection.processStanza(rosterPush);
         rosterListener.waitUntilInvocationOrTimeout();
 
         // Verify the roster entry of the new contact
@@ -524,7 +524,7 @@ public class RosterTest extends InitSmackIm {
             rosterPush.addRosterItem(item);
 
             // simulate receiving the roster push
-            connection.processPacket(rosterPush);
+            connection.processStanza(rosterPush);
         }
     }
 
@@ -572,7 +572,7 @@ public class RosterTest extends InitSmackIm {
                 rosterResult.addRosterItem(benvolio);
 
                 // simulate receiving the roster result and exit the loop
-                connection.processPacket(rosterResult);
+                connection.processStanza(rosterResult);
                 break;
             }
         }
@@ -672,11 +672,11 @@ public class RosterTest extends InitSmackIm {
                         rosterPush.setType(Type.set);
                         rosterPush.setTo(connection.getUser());
                         rosterPush.addRosterItem(item);
-                        connection.processPacket(rosterPush);
+                        connection.processStanza(rosterPush);
 
                         // Create and process the IQ response
                         final IQ response = IQ.createResultIQ(rosterRequest);
-                        connection.processPacket(response);
+                        connection.processStanza(response);
 
                         // Verify the roster update request
                         assertSame("A roster set MUST contain one and only one <item/> element.",

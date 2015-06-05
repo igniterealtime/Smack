@@ -46,7 +46,7 @@ public class LastActivityTest extends InitExtensions {
         IQ lastRequest = (IQ) PacketParserUtils.parseStanza(xml.asString());
         assertTrue(lastRequest instanceof LastActivity);
 
-        c.processPacket(lastRequest);
+        c.processStanza(lastRequest);
         Stanza reply = c.getSentPacket();
         assertTrue(reply instanceof LastActivity);
         LastActivity l = (LastActivity) reply;

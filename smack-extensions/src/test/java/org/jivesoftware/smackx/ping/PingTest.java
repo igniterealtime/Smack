@@ -56,7 +56,7 @@ public class PingTest extends InitExtensions {
 
         assertTrue(pingRequest instanceof Ping);
 
-        con.processPacket(pingRequest);
+        con.processStanza(pingRequest);
 
         Stanza pongPacket = con.getSentPacket();
         assertTrue(pongPacket instanceof IQ);

@@ -383,7 +383,7 @@ public class ChatConnectionTest {
 
         @Override
         public void run() {
-            con.processPacket(chatPacket);
+            con.processStanza(chatPacket);
         }
     }
 

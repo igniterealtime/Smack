@@ -68,7 +68,7 @@ public class ThreadedDummyConnection extends DummyConnection {
     /**
      * Calling this method will cause the next sendStanza call with an IQ stanza(/packet) to timeout.
      * This is accomplished by simply stopping the auto creating of the reply stanza(/packet) 
-     * or processing one that was entered via {@link #processPacket(Stanza)}.
+     * or processing one that was entered via {@link #processStanza(Stanza)}.
      */
     public void setTimeout() {
         timeout = true;
@@ -99,7 +99,7 @@ public class ThreadedDummyConnection extends DummyConnection {
         @Override
         public void run() {
             try {
-                processPacket(processQ.take());
+                processStanza(processQ.take());
             } catch (InterruptedException e) {
                 LOGGER.log(Level.WARNING, "exception", e);
             }

@@ -171,11 +171,11 @@ public class SubscriptionPreApprovalTest extends InitSmackIm {
                         rosterPush.setType(Type.set);
                         rosterPush.setTo(connection.getUser());
                         rosterPush.addRosterItem(item);
-                        connection.processPacket(rosterPush);
+                        connection.processStanza(rosterPush);
 
                         // Create and process the IQ response
                         final IQ response = IQ.createResultIQ(rosterRequest);
-                        connection.processPacket(response);
+                        connection.processStanza(response);
 
                         // Verify the roster update request
                         assertSame("A roster set MUST contain one and only one <item/> element.",

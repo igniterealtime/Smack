@@ -981,7 +981,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
         ParserUtils.assertAtEndTag(parser);
         if (stanza != null) {
-            processPacket(stanza);
+            processStanza(stanza);
         }
     }
 
@@ -990,29 +990,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * stanza(/packet) collectors and listeners and letting them examine the stanza(/packet) to see if
      * they are a match with the filter.
      *
-     * @param packet the stanza(/packet) to process.
+     * @param stanza the stanza to process.
      */
-    protected void processPacket(Stanza packet) {
-        assert(packet != null);
+    protected void processStanza(final Stanza stanza) {
+        assert(stanza != null);
         lastStanzaReceived = System.currentTimeMillis();
         // Deliver the incoming packet to listeners.
-        executorService.submit(new ListenerNotification(packet));
-    }
-
-    /**
-     * A runnable to notify all listeners and stanza(/packet) collectors of a packet.
-     */
-    private class ListenerNotification implements Runnable {
-
-        private final Stanza packet;
-
-        public ListenerNotification(Stanza packet) {
-            this.packet = packet;
-        }
-
-        public void run() {
-            invokePacketCollectorsAndNotifyRecvListeners(packet);
-        }
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                invokePacketCollectorsAndNotifyRecvListeners(stanza);
+            }
+        });
     }
 
     /**

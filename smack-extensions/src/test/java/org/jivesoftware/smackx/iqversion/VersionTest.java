@@ -47,7 +47,7 @@ public class VersionTest extends InitExtensions {
 
         assertTrue(versionRequest instanceof Version);
 
-        con.processPacket(versionRequest);
+        con.processStanza(versionRequest);
 
         Stanza replyPacket = con.getSentPacket();
         assertTrue(replyPacket instanceof Version);

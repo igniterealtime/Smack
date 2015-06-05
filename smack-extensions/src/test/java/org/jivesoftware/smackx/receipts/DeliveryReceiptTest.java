@@ -85,7 +85,7 @@ public class DeliveryReceiptTest extends InitExtensions {
         m.setFrom(JidCreate.from("julia@capulet.com"));
         m.setStanzaId("reply-id");
         m.addExtension(new DeliveryReceipt("original-test-id"));
-        c.processPacket(m);
+        c.processStanza(m);
 
         rrl.waitUntilInvocationOrTimeout();
     }
@@ -116,7 +116,7 @@ public class DeliveryReceiptTest extends InitExtensions {
         DeliveryReceiptRequest.addTo(m);
 
         // the DRM will send a reply-packet
-        c.processPacket(m);
+        c.processStanza(m);
 
         Stanza reply = c.getSentPacket();
 		DeliveryReceipt r = DeliveryReceipt.from((Message) reply);
