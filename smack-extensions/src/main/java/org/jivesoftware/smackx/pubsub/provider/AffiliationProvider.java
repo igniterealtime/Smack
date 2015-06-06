@@ -16,12 +16,13 @@
  */
 package org.jivesoftware.smackx.pubsub.provider;
 
-import java.util.List;
-import java.util.Map;
-
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.pubsub.Affiliation;
+import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
+import org.jxmpp.jid.BareJid;
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Parses the affiliation element out of the reply stanza from the server
@@ -29,12 +30,32 @@ import org.jivesoftware.smackx.pubsub.Affiliation;
  * 
  * @author Robin Collier
  */
-public class AffiliationProvider extends EmbeddedExtensionProvider<Affiliation>
-{
-	@Override
-	protected Affiliation createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
-	{
-		return new Affiliation(attributeMap.get("node"), Affiliation.Type.valueOf(attributeMap.get("affiliation")));
-	}
+public class AffiliationProvider extends ExtensionElementProvider<Affiliation> {
+
+    @Override
+    public Affiliation parse(XmlPullParser parser, int initialDepth)
+            throws Exception {
+        String node = parser.getAttributeValue(null, "node");
+        BareJid jid = ParserUtils.getBareJidAttribute(parser);
+
+        String affiliationString = parser.getAttributeValue(null, "affiliation");
+        Affiliation.Type affiliationType = null;
+        if (affiliationString != null) {
+            affiliationType = Affiliation.Type.valueOf(affiliationString);
+        }
+        Affiliation affiliation;
+        if (node != null && jid == null) {
+            // affiliationType may be empty
+            affiliation = new Affiliation(node, affiliationType);
+        }
+        else if (node == null && jid != null) {
+            PubSubNamespace namespace = null; // TODO
+            affiliation = new Affiliation(jid, affiliationType, namespace);
+        }
+        else {
+            throw new SmackException("Invalid affililation");
+        }
+        return affiliation;
+    }
 
 }

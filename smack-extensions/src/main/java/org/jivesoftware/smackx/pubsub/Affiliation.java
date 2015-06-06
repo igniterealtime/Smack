@@ -18,9 +18,13 @@ package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
+import org.jxmpp.jid.BareJid;
 
 /**
- * Represents a affiliation between a user and a node, where the {@link #type} defines 
+ * Represents a affiliation between a user and a node, where the {@link Type} defines
  * the type of affiliation.
  * 
  * Affiliations are retrieved from the {@link PubSubManager#getAffiliations()} method, which 
@@ -31,8 +35,12 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  */
 public class Affiliation implements ExtensionElement
 {
-	protected String node;
-	protected Type type;
+    public static final String ELEMENT = "affiliation";
+
+    private final BareJid jid;
+    private final String node;
+    private final Type affiliation;
+    private final PubSubNamespace namespace;
 
 	public enum Type
 	{
@@ -42,52 +50,93 @@ public class Affiliation implements ExtensionElement
 	/**
 	 * Constructs an affiliation.
 	 * 
-	 * @param nodeId The node the user is affiliated with.
-	 * @param affiliation The type of affiliation.
+	 * @param node The node the user is affiliated with.
+	 * @param affiliation the optional affiliation.
 	 */
-	public Affiliation(String nodeId, Type affiliation)
-	{
-		node = nodeId;
-		type = affiliation;
-	}
+    public Affiliation(String node, Type affiliation) {
+        this.node = StringUtils.requireNotNullOrEmpty(node, "node must not be null or empty");
+        this.affiliation = affiliation;
+        this.jid = null;
+        if (affiliation != null) {
+            namespace = PubSubNamespace.BASIC;
+        } else {
+            namespace = PubSubNamespace.OWNER;
+        }
+    }
 
-	public String getNodeId()
-	{
-		return node;
-	}
+    /**
+     * Construct a affiliation modification request.
+     *
+     * @param jid
+     * @param affiliation
+     */
+    public Affiliation(BareJid jid, Type affiliation) {
+        this(jid, affiliation, PubSubNamespace.OWNER);
+    }
 
-	public Type getType()
-	{
-		return type;
-	}
+    public Affiliation(BareJid jid, Type affiliation, PubSubNamespace namespace) {
+        this.jid = jid;
+        this.affiliation = affiliation;
+        this.node = null;
+        // This is usually the pubsub#owner namesapce, but see xep60 example 208 where just 'pubsub' is used
+        // ("notification of affilliation change")
+        this.namespace = namespace;
+    }
 
-	public String getElementName()
-	{
-		return "subscription";
-	}
+    /**
+     * Get the node.
+     *
+     * @return the node.
+     * @deprecated use {@link #getNode} instead.
+     */
+    @Deprecated
+    public String getNodeId() {
+        return getNode();
+    }
 
-	public String getNamespace()
-	{
-		return null;
-	}
+    public String getNode() {
+        return node;
+    }
 
-	public String toXML()
-	{
-		StringBuilder builder = new StringBuilder("<");
-		builder.append(getElementName());
-		appendAttribute(builder, "node", node);
-		appendAttribute(builder, "affiliation", type.toString());
+    /**
+     * Get the type.
+     *
+     * @return the type.
+     * @deprecated use {@link #getAffiliation()} instead.
+     */
+    @Deprecated
+    public Type getType() {
+        return getAffiliation();
+    }
 
-		builder.append("/>");
-		return builder.toString();
-	}
+    public Type getAffiliation() {
+        return affiliation;
+    }
 
-	private static void appendAttribute(StringBuilder builder, String att, String value)
-	{
-		builder.append(" ");
-		builder.append(att);
-		builder.append("='");
-		builder.append(value);
-		builder.append("'");
-	}
+    public BareJid getJid() {
+        return jid;
+    }
+
+    @Override
+    public String getElementName() {
+        return ELEMENT;
+    }
+
+    public String getNamespace() {
+        return namespace.getXmlns();
+    }
+
+    public PubSubNamespace getPubSubNamespace() {
+        return namespace;
+    }
+
+    @Override
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.optAttribute("node", node);
+        xml.optAttribute("jid", jid);
+        xml.optAttribute("affiliation", affiliation);
+        xml.closeEmptyElement();
+        return xml;
+    }
 }
