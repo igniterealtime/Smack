@@ -19,26 +19,33 @@ package org.jivesoftware.smackx.pubsub;
 import java.util.Collections;
 import java.util.List;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 /**
  * Represents the <b>affiliations</b> element of the reply to a request for affiliations.
- * It is defined in the specification in section <a href="http://xmpp.org/extensions/xep-0060.html#entity-affiliations">5.7 Retrieve Affiliations</a>.
+ * It is defined in the specification in section <a href="http://xmpp.org/extensions/xep-0060.html#entity-affiliations">5.7 Retrieve Affiliations</a> and
+ * <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-affiliations">8.9 Manage Affiliations</a>.
  * 
  * @author Robin Collier
  */
 public class AffiliationsExtension extends NodeExtension
 {
 	protected List<Affiliation> items = Collections.emptyList();
+	private final String node;
 
-	public AffiliationsExtension()
-	{
-		super(PubSubElementType.AFFILIATIONS);
-	}
+    public AffiliationsExtension() {
+        this(null, null);
+    }
 
-	public AffiliationsExtension(List<Affiliation> subList)
-	{
-		super(PubSubElementType.AFFILIATIONS);
-		items = subList;
-	}
+    public AffiliationsExtension(List<Affiliation> subList) {
+        this(subList, null);
+    }
+
+    public AffiliationsExtension(List<Affiliation> subList, String node) {
+        super(PubSubElementType.AFFILIATIONS);
+        items = subList;
+        this.node = node;
+    }
 
 	public List<Affiliation> getAffiliations()
 	{
@@ -54,19 +61,14 @@ public class AffiliationsExtension extends NodeExtension
 		}
 		else
 		{
-			StringBuilder builder = new StringBuilder("<");
-			builder.append(getElementName());
-			builder.append(">");
-
-			for (Affiliation item : items)
-			{
-				builder.append(item.toXML());
-			}
-
-			builder.append("</");
-			builder.append(getElementName());
-			builder.append(">");
-			return builder.toString();
+            // Can't use XmlStringBuilder(this), because we don't want the namespace to be included
+            XmlStringBuilder xml = new XmlStringBuilder();
+            xml.openElement(getElementName());
+            xml.optAttribute("node", node);
+            xml.rightAngleBracket();
+            xml.append(items);
+            xml.closeElement(this);
+            return xml;
 		}
 	}
 }

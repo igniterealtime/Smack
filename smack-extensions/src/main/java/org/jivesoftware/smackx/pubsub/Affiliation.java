@@ -130,6 +130,20 @@ public class Affiliation implements ExtensionElement
         return namespace;
     }
 
+    /**
+     * Check if this is an affiliation element to modify affiliations on a node.
+     *
+     * @return <code>true</code> if this is an affiliation element to modify affiliations on a node, <code>false</code> otherwise.
+     * @since 4.2
+     */
+    public boolean isAffiliationModification() {
+        if (jid != null && affiliation != null) {
+            assert(node == null && namespace == PubSubNamespace.OWNER);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);

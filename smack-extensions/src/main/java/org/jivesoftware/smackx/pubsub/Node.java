@@ -256,7 +256,54 @@ abstract public class Node
     public List<Affiliation> getAffiliations(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
 
-        PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(PubSubElementType.AFFILIATIONS, getId()));
+        return getAffiliations(PubSubNamespace.BASIC, additionalExtensions, returnedExtensions);
+    }
+
+    /**
+     * Retrieve the affiliation list for this node as owner.
+     *
+     * @return list of entities whose affiliation is not 'none'.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @see #getAffiliations(List, Collection)
+     * @since 4.2
+     */
+    public List<Affiliation> getAffiliationsAsOwner()
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+
+        return getAffiliationsAsOwner(null, null);
+    }
+
+    /**
+     * Retrieve the affiliation list for this node as owner.
+     * <p>
+     * Note that this is an <b>optional</b> PubSub feature ('pubusb#modify-affiliations').
+     * </p>
+     *
+     * @param additionalExtensions optional additional extension elements add to the request.
+     * @param returnedExtensions an optional collection that will be filled with the returned
+     *        extension elements.
+     * @return list of entities whose affiliation is not 'none'.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @see <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-affiliations-retrieve">XEP-60 § 8.9.1 Retrieve Affiliations List</a>
+     * @since 4.2
+     */
+    public List<Affiliation> getAffiliationsAsOwner(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+
+        return getAffiliations(PubSubNamespace.OWNER, additionalExtensions, returnedExtensions);
+    }
+
+    private List<Affiliation> getAffiliations(PubSubNamespace namespace, List<ExtensionElement> additionalExtensions,
+                    Collection<ExtensionElement> returnedExtensions) throws NoResponseException, XMPPErrorException,
+                    NotConnectedException, InterruptedException {
+
+        PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(PubSubElementType.AFFILIATIONS, getId()), namespace);
         if (additionalExtensions != null) {
             for (ExtensionElement pe : additionalExtensions) {
                 pubSub.addExtension(pe);
@@ -268,6 +315,35 @@ abstract public class Node
         }
         AffiliationsExtension affilElem = (AffiliationsExtension) reply.getExtension(PubSubElementType.AFFILIATIONS);
         return affilElem.getAffiliations();
+    }
+
+    /**
+     * Modify the affiliations for this PubSub node as owner. The {@link Affiliation}s given must be created with the
+     * {@link Affiliation#Affiliation(org.jxmpp.jid.BareJid, Affiliation.Type)} constructor.
+     * <p>
+     * Note that this is an <b>optional</b> PubSub feature ('pubusb#modify-affiliations').
+     * </p>
+     * 
+     * @param affiliations
+     * @return <code>null</code> or a PubSub stanza with additional information on success.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @see <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-affiliations-modify">XEP-60 § 8.9.2 Modify Affiliation</a>
+     * @since 4.2
+     */
+    public PubSub modifyAffiliationAsOwner(List<Affiliation> affiliations) throws NoResponseException,
+                    XMPPErrorException, NotConnectedException, InterruptedException {
+        for (Affiliation affiliation : affiliations) {
+            if (affiliation.getPubSubNamespace() != PubSubNamespace.OWNER) {
+                throw new IllegalArgumentException("Must use Affiliation(BareJid, Type) affiliations");
+            }
+        }
+
+        PubSub pubSub = createPubsubPacket(Type.set, new AffiliationsExtension(affiliations, getId()),
+                        PubSubNamespace.OWNER);
+        return sendPubsubPacket(pubSub);
     }
 
 	/**
