@@ -44,7 +44,7 @@ public class BindIQProvider extends IQProvider<Bind> {
                     bind = Bind.newSet(Resourcepart.from(resourceString));
                     break;
                 case "jid":
-                    EntityFullJid fullJid = JidCreate.fullFrom(parser.nextText()); 
+                    EntityFullJid fullJid = JidCreate.entityFullFrom(parser.nextText());
                     bind = Bind.newResult(fullJid);
                     break;
                 }

@@ -72,7 +72,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
             }
             private void checkIfAddedAndSubscribed(Collection<Jid> addresses) {
                 for (Jid jid : addresses) {
-                    if (!jid.equals(conTwo.getUser().asBareJidString())) {
+                    if (!jid.equals(conTwo.getUser().asBareJid())) {
                         continue;
                     }
                     RosterEntry rosterEntry = rosterOne.getEntry(conTwo.getUser().asBareJid());

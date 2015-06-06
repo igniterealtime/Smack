@@ -34,6 +34,7 @@ import org.jivesoftware.smack.util.stringencoder.Base32;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -208,7 +209,18 @@ public final class DirectoryRosterStore implements RosterStore {
                     }
                     else if (parserName.equals("user")) {
                         parser.next();
-                        user = JidCreate.bareFrom(parser.getText());
+
+                        String jidString = parser.getText();
+                        // workaround for bug in jxmpp 0.5.0-alpha5, where
+                        // JidCreate.bareFrom(String), which we would want to
+                        // use here, does not produce correct results
+                        String localpart = XmppStringUtils.parseLocalpart(jidString);
+                        if (localpart.length() != 0) {
+                            user = JidCreate.entityBareFrom(jidString);
+                        }
+                        else {
+                            user = JidCreate.domainBareFrom(jidString);
+                        }
                     }
                     else if (parserName.equals("name")) {
                         parser.next();

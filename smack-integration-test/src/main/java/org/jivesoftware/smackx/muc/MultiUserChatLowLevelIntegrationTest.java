@@ -62,7 +62,7 @@ public class MultiUserChatLowLevelIntegrationTest extends AbstractSmackLowLevelI
         final Resourcepart mucNickname = Resourcepart.from("Nick-" + StringUtils.randomString(6));
         final String randomMucName = StringUtils.randomString(6);
         final DomainBareJid mucComponent = multiUserChatManager.getXMPPServiceDomains().get(0);
-        final MultiUserChat muc = multiUserChatManager.getMultiUserChat(JidCreate.bareFrom(
+        final MultiUserChat muc = multiUserChatManager.getMultiUserChat(JidCreate.entityBareFrom(
                         Localpart.from(randomMucName), mucComponent));
 
         MucCreateConfigFormHandle handle = muc.createOrJoin(mucNickname);

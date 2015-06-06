@@ -257,7 +257,7 @@ public final class ChatManager extends Manager{
         Chat chat = new Chat(this, userJID, threadID);
         threadChats.put(threadID, chat);
         jidChats.put(userJID, chat);
-        baseJidChats.put(userJID.asBareJid(), chat);
+        baseJidChats.put(userJID.asEntityBareJid(), chat);
 
         for(ChatManagerListener listener : chatManagerListeners) {
             listener.chatCreated(chat, createdLocally);
@@ -270,7 +270,7 @@ public final class ChatManager extends Manager{
         threadChats.remove(chat.getThreadID());
         EntityJid userJID = chat.getParticipant();
         jidChats.remove(userJID);
-        baseJidChats.remove(userJID.withoutResource());
+        baseJidChats.remove(userJID.asEntityBareJid());
     }
 
     /**

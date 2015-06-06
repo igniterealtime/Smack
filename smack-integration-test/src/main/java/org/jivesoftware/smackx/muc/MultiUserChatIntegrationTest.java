@@ -63,7 +63,7 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
 
     @SmackIntegrationTest
     public void mucTest() throws TimeoutException, Exception {
-        EntityBareJid mucAddress = JidCreate.bareFrom(Localpart.from("smack-inttest-" + randomString), mucService.getDomain());
+        EntityBareJid mucAddress = JidCreate.entityBareFrom(Localpart.from("smack-inttest-" + randomString), mucService.getDomain());
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);

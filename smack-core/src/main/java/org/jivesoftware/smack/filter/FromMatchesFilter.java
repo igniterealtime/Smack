@@ -48,7 +48,7 @@ public class FromMatchesFilter implements StanzaFilter {
      */
     public FromMatchesFilter(Jid address, boolean ignoreResourcepart) {
         if (address != null && ignoreResourcepart) {
-            this.address = address.withoutResource();
+            this.address = address.asBareJid();
         }
         else {
             this.address = address;
@@ -99,7 +99,7 @@ public class FromMatchesFilter implements StanzaFilter {
         }
 
         if (ignoreResourcepart) {
-            from = from.withoutResource();
+            from = from.asBareJid();
         }
         return from.equals(address);
     }

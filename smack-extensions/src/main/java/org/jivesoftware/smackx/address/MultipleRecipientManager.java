@@ -180,7 +180,7 @@ public class MultipleRecipientManager {
             // Remove the sender from the TO/CC list (try with bare JID too)
             EntityFullJid from = connection.getUser();
             if (!to.remove(from) && !cc.remove(from)) {
-                EntityBareJid bareJID = from.asBareJid();
+                EntityBareJid bareJID = from.asEntityBareJid();
                 to.remove(bareJID);
                 cc.remove(bareJID);
             }

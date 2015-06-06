@@ -99,7 +99,7 @@ public class RosterVersioningTest {
      * @throws SmackException 
      * @throws XMPPException 
      */
-    @Test(timeout = 5000)
+    @Test(timeout = 300000)
     public void testEqualVersionStored() throws InterruptedException, IOException, XMPPException, SmackException {
         answerWithEmptyRosterResult();
         roster.waitUntilLoaded();
@@ -214,20 +214,20 @@ public class RosterVersioningTest {
             rosterPush.setType(Type.set);
             rosterPush.setVersion("v98");
 
-            Item item = new Item(JidCreate.bareFrom("vaglaf@example.com"), "vaglaf the only");
+            Item item = new Item(JidCreate.entityBareFrom("vaglaf@example.com"), "vaglaf the only");
             item.setItemType(ItemType.remove);
             rosterPush.addRosterItem(item);
             rosterListener.reset();
             connection.processStanza(rosterPush);
             rosterListener.waitAndReset();
 
-            assertNull("Store doses not contain vaglaf", store.getEntry(JidCreate.bareFrom("vaglaf@example.com")));
+            assertNull("Store doses not contain vaglaf", store.getEntry(JidCreate.entityBareFrom("vaglaf@example.com")));
             assertEquals("Expect store version after push", "v98", store.getRosterVersion());
         }
     }
 
     private static Item vaglafItem() throws XmppStringprepException {
-        Item item = new Item(JidCreate.bareFrom("vaglaf@example.com"), "vaglaf the only");
+        Item item = new Item(JidCreate.entityBareFrom("vaglaf@example.com"), "vaglaf the only");
         item.setItemType(ItemType.both);
         item.addGroupName("all");
         item.addGroupName("friends");
@@ -236,14 +236,14 @@ public class RosterVersioningTest {
     }
 
     private static void populateStore(RosterStore store) throws IOException {
-        store.addEntry(new RosterPacket.Item(JidCreate.bareFrom("geoff@example.com"), "geoff hurley"), "");
+        store.addEntry(new RosterPacket.Item(JidCreate.entityBareFrom("geoff@example.com"), "geoff hurley"), "");
 
-        RosterPacket.Item item = new RosterPacket.Item(JidCreate.bareFrom("joe@example.com"), "joe stevens");
+        RosterPacket.Item item = new RosterPacket.Item(JidCreate.entityBareFrom("joe@example.com"), "joe stevens");
         item.addGroupName("friends");
         item.addGroupName("partners");
         store.addEntry(item, "");
 
-        item = new RosterPacket.Item(JidCreate.bareFrom("higgins@example.com"), "higgins mcmann");
+        item = new RosterPacket.Item(JidCreate.entityBareFrom("higgins@example.com"), "higgins mcmann");
         item.addGroupName("all");
         item.addGroupName("friends");
         store.addEntry(item, "v96");

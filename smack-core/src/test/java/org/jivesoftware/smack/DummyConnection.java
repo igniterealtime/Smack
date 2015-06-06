@@ -67,7 +67,7 @@ public class DummyConnection extends AbstractXMPPConnection {
 
     private EntityFullJid getUserJid() {
         try {
-            return JidCreate.fullFrom(config.getUsername()
+            return JidCreate.entityFullFrom(config.getUsername()
                             + "@"
                             + config.getXMPPServiceDomain()
                             + "/"

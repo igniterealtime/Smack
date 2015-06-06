@@ -124,7 +124,7 @@ public class RosterGroup extends Manager {
         }
         // Roster entries never include a resource so remove the resource
         // if it's a part of the XMPP address.
-        user = user.withoutResource();
+        user = user.asBareJid();
         synchronized (entries) {
             for (RosterEntry entry : entries) {
                 if (entry.getJid().equals(user)) {

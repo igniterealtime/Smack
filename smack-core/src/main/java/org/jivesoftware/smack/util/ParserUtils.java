@@ -76,7 +76,7 @@ public class ParserUtils {
         if (jidString == null) {
             return null;
         }
-        return JidCreate.bareFrom(jidString);
+        return JidCreate.entityBareFrom(jidString);
     }
 
     public static Resourcepart getResourcepartAttribute(XmlPullParser parser, String name) throws XmppStringprepException {

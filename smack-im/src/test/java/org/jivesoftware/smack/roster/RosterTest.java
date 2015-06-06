@@ -106,9 +106,9 @@ public class RosterTest extends InitSmackIm {
 
         // Verify roster
         assertTrue("Roster can't be loaded!", roster.waitUntilLoaded());
-        verifyRomeosEntry(roster.getEntry(JidCreate.from("romeo@example.net")));
-        verifyMercutiosEntry(roster.getEntry(JidCreate.from("mercutio@example.com")));
-        verifyBenvoliosEntry(roster.getEntry(JidCreate.from("benvolio@example.net")));
+        verifyRomeosEntry(roster.getEntry(JidCreate.entityBareFrom("romeo@example.net")));
+        verifyMercutiosEntry(roster.getEntry(JidCreate.entityBareFrom("mercutio@example.com")));
+        verifyBenvoliosEntry(roster.getEntry(JidCreate.entityBareFrom("benvolio@example.net")));
         assertSame("Wrong number of roster entries.", 3, roster.getEntries().size());
 
         // Verify roster listener
@@ -134,7 +134,7 @@ public class RosterTest extends InitSmackIm {
     @Test
     public void testAddRosterItem() throws Throwable {
         // Constants for the new contact
-        final BareJid contactJID = JidCreate.bareFrom("nurse@example.com");
+        final BareJid contactJID = JidCreate.entityBareFrom("nurse@example.com");
         final String contactName = "Nurse";
         final String[] contactGroup = {"Servants"};
 
@@ -191,9 +191,9 @@ public class RosterTest extends InitSmackIm {
                 addedEntry.getGroups().iterator().next().getName());
 
         // Verify the unchanged roster items
-        verifyRomeosEntry(roster.getEntry(JidCreate.from("romeo@example.net")));
-        verifyMercutiosEntry(roster.getEntry(JidCreate.from("mercutio@example.com")));
-        verifyBenvoliosEntry(roster.getEntry(JidCreate.from("benvolio@example.net")));
+        verifyRomeosEntry(roster.getEntry(JidCreate.entityBareFrom("romeo@example.net")));
+        verifyMercutiosEntry(roster.getEntry(JidCreate.entityBareFrom("mercutio@example.com")));
+        verifyBenvoliosEntry(roster.getEntry(JidCreate.entityBareFrom("benvolio@example.net")));
         assertSame("Wrong number of roster entries.", 4, roster.getEntries().size());
     }
 
@@ -205,7 +205,7 @@ public class RosterTest extends InitSmackIm {
     @Test
     public void testUpdateRosterItem() throws Throwable {
         // Constants for the updated contact
-        final Jid contactJID = JidCreate.from("romeo@example.net");
+        final BareJid contactJID = JidCreate.entityBareFrom("romeo@example.net");
         final String contactName = "Romeo";
         final String[] contactGroups = {"Friends", "Lovers"};
 
@@ -265,8 +265,8 @@ public class RosterTest extends InitSmackIm {
                 addedEntry.getGroups().size());
 
         // Verify the unchanged roster items
-        verifyMercutiosEntry(roster.getEntry(JidCreate.from("mercutio@example.com")));
-        verifyBenvoliosEntry(roster.getEntry(JidCreate.from("benvolio@example.net")));
+        verifyMercutiosEntry(roster.getEntry(JidCreate.entityBareFrom("mercutio@example.com")));
+        verifyBenvoliosEntry(roster.getEntry(JidCreate.entityBareFrom("benvolio@example.net")));
         assertSame("Wrong number of roster entries (" + roster.getEntries() + ").",
                 3,
                 roster.getEntries().size());
@@ -280,7 +280,7 @@ public class RosterTest extends InitSmackIm {
     @Test
     public void testDeleteRosterItem() throws Throwable {
         // The contact which should be deleted
-        final Jid contactJID = JidCreate.from("romeo@example.net");
+        final BareJid contactJID = JidCreate.entityBareFrom("romeo@example.net");
 
         // Setup
         assertNotNull("Can't get the roster from the provided connection!", roster);
@@ -312,8 +312,8 @@ public class RosterTest extends InitSmackIm {
         assertNull("The contact wasn't deleted from the roster!", deletedEntry);
         assertTrue("The roster listener wasn't invoked for the deleted contact!",
                 rosterListener.getDeletedAddresses().contains(contactJID));
-        verifyMercutiosEntry(roster.getEntry(JidCreate.from("mercutio@example.com")));
-        verifyBenvoliosEntry(roster.getEntry(JidCreate.from("benvolio@example.net")));
+        verifyMercutiosEntry(roster.getEntry(JidCreate.entityBareFrom("mercutio@example.com")));
+        verifyBenvoliosEntry(roster.getEntry(JidCreate.entityBareFrom("benvolio@example.net")));
         assertSame("Wrong number of roster entries (" + roster.getEntries() + ").",
                 2,
                 roster.getEntries().size());
@@ -326,7 +326,7 @@ public class RosterTest extends InitSmackIm {
      */
     @Test
     public void testSimpleRosterPush() throws Throwable {
-        final Jid contactJID = JidCreate.from("nurse@example.com");
+        final BareJid contactJID = JidCreate.entityBareFrom("nurse@example.com");
         assertNotNull("Can't get the roster from the provided connection!", roster);
         final StringBuilder sb = new StringBuilder();
         sb.append("<iq id=\"rostertest1\" type=\"set\" ")
@@ -357,9 +357,9 @@ public class RosterTest extends InitSmackIm {
                 addedEntry.getGroups().size());
 
         // Verify the unchanged roster items
-        verifyRomeosEntry(roster.getEntry(JidCreate.from("romeo@example.net")));
-        verifyMercutiosEntry(roster.getEntry(JidCreate.from("mercutio@example.com")));
-        verifyBenvoliosEntry(roster.getEntry(JidCreate.from("benvolio@example.net")));
+        verifyRomeosEntry(roster.getEntry(JidCreate.entityBareFrom("romeo@example.net")));
+        verifyMercutiosEntry(roster.getEntry(JidCreate.entityBareFrom("mercutio@example.com")));
+        verifyBenvoliosEntry(roster.getEntry(JidCreate.entityBareFrom("benvolio@example.net")));
         assertSame("Wrong number of roster entries.", 4, roster.getEntries().size());
     }
 
@@ -371,11 +371,11 @@ public class RosterTest extends InitSmackIm {
      */
     @Test
     public void testIgnoreInvalidFrom() throws XmppStringprepException {
-        final BareJid spammerJid = JidCreate.bareFrom("spam@example.com");
+        final BareJid spammerJid = JidCreate.entityBareFrom("spam@example.com");
         RosterPacket packet = new RosterPacket();
         packet.setType(Type.set);
         packet.setTo(connection.getUser());
-        packet.setFrom(JidCreate.from("mallory@example.com"));
+        packet.setFrom(JidCreate.entityBareFrom("mallory@example.com"));
         packet.addRosterItem(new Item(spammerJid, "Cool products!"));
 
         final String requestId = packet.getStanzaId();
@@ -399,7 +399,7 @@ public class RosterTest extends InitSmackIm {
     @Test(timeout=5000)
     public void testAddEmptyGroupEntry() throws Throwable {
         // Constants for the new contact
-        final BareJid contactJID = JidCreate.bareFrom("nurse@example.com");
+        final BareJid contactJID = JidCreate.entityBareFrom("nurse@example.com");
         final String contactName = "Nurse";
         final String[] contactGroup = {""};
 
@@ -451,9 +451,9 @@ public class RosterTest extends InitSmackIm {
                 addedEntry.getGroups().size());
 
         // Verify the unchanged roster items
-        verifyRomeosEntry(roster.getEntry(JidCreate.from("romeo@example.net")));
-        verifyMercutiosEntry(roster.getEntry(JidCreate.from("mercutio@example.com")));
-        verifyBenvoliosEntry(roster.getEntry(JidCreate.from("benvolio@example.net")));
+        verifyRomeosEntry(roster.getEntry(JidCreate.entityBareFrom("romeo@example.net")));
+        verifyMercutiosEntry(roster.getEntry(JidCreate.entityBareFrom("mercutio@example.com")));
+        verifyBenvoliosEntry(roster.getEntry(JidCreate.entityBareFrom("benvolio@example.net")));
         assertSame("Wrong number of roster entries.", 4, roster.getEntries().size());
     }
 
@@ -465,7 +465,7 @@ public class RosterTest extends InitSmackIm {
      */
     @Test
     public void testEmptyGroupRosterPush() throws Throwable {
-        final Jid contactJID = JidCreate.from("nurse@example.com");
+        final BareJid contactJID = JidCreate.entityBareFrom("nurse@example.com");
         assertNotNull("Can't get the roster from the provided connection!", roster);
         final StringBuilder sb = new StringBuilder();
         sb.append("<iq id=\"rostertest2\" type=\"set\" ")
@@ -498,9 +498,9 @@ public class RosterTest extends InitSmackIm {
                 addedEntry.getGroups().size());
 
         // Verify the unchanged roster items
-        verifyRomeosEntry(roster.getEntry(JidCreate.from("romeo@example.net")));
-        verifyMercutiosEntry(roster.getEntry(JidCreate.from("mercutio@example.com")));
-        verifyBenvoliosEntry(roster.getEntry(JidCreate.from("benvolio@example.net")));
+        verifyRomeosEntry(roster.getEntry(JidCreate.entityBareFrom("romeo@example.net")));
+        verifyMercutiosEntry(roster.getEntry(JidCreate.entityBareFrom("mercutio@example.com")));
+        verifyBenvoliosEntry(roster.getEntry(JidCreate.entityBareFrom("benvolio@example.net")));
         assertSame("Wrong number of roster entries.", 4, roster.getEntries().size());
     }
 
@@ -556,18 +556,18 @@ public class RosterTest extends InitSmackIm {
                 rosterResult.setStanzaId(rosterRequest.getStanzaId());
 
                 // prepare romeo's roster entry
-                final Item romeo = new Item(JidCreate.bareFrom("romeo@example.net"), "Romeo");
+                final Item romeo = new Item(JidCreate.entityBareFrom("romeo@example.net"), "Romeo");
                 romeo.addGroupName("Friends");
                 romeo.setItemType(ItemType.both);
                 rosterResult.addRosterItem(romeo);
 
                 // prepare mercutio's roster entry
-                final Item mercutio = new Item(JidCreate.bareFrom("mercutio@example.com"), "Mercutio");
+                final Item mercutio = new Item(JidCreate.entityBareFrom("mercutio@example.com"), "Mercutio");
                 mercutio.setItemType(ItemType.from);
                 rosterResult.addRosterItem(mercutio);
 
                 // prepare benvolio's roster entry
-                final Item benvolio = new Item(JidCreate.bareFrom("benvolio@example.net"), "Benvolio");
+                final Item benvolio = new Item(JidCreate.entityBareFrom("benvolio@example.net"), "Benvolio");
                 benvolio.setItemType(ItemType.both);
                 rosterResult.addRosterItem(benvolio);
 

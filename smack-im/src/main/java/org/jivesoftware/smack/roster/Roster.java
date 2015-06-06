@@ -146,7 +146,7 @@ public final class Roster extends Manager {
      * A map of JIDs to another Map of Resourceparts to Presences. The 'inner' map may contain
      * {@link Resourcepart#EMPTY} if there are no other Presences available.
      */
-    private final Map<Jid, Map<Resourcepart, Presence>> presenceMap = new ConcurrentHashMap<>();
+    private final Map<BareJid, Map<Resourcepart, Presence>> presenceMap = new ConcurrentHashMap<>();
 
     /**
      * Listeners called when the Roster was loaded.
@@ -698,28 +698,27 @@ public final class Roster extends Manager {
      * Returns the roster entry associated with the given XMPP address or
      * <tt>null</tt> if the user is not an entry in the roster.
      *
-     * @param user the XMPP address of the user (eg "jsmith@example.com"). The address could be
+     * @param jid the XMPP address of the user (eg "jsmith@example.com"). The address could be
      *             in any valid format (e.g. "domain/resource", "user@domain" or "user@domain/resource").
      * @return the roster entry or <tt>null</tt> if it does not exist.
      */
-    public RosterEntry getEntry(Jid user) {
-        if (user == null) {
+    public RosterEntry getEntry(BareJid jid) {
+        if (jid == null) {
             return null;
         }
-        Jid key = getMapKey(user);
-        return entries.get(key);
+        return entries.get(jid);
     }
 
     /**
      * Returns true if the specified XMPP address is an entry in the roster.
      *
-     * @param user the XMPP address of the user (eg "jsmith@example.com"). The
-     *             address could be in any valid format (e.g. "domain/resource",
-     *             "user@domain" or "user@domain/resource").
+     * @param jid the XMPP address of the user (eg "jsmith@example.com"). The
+     *             address must be a bare JID e.g. "domain/resource" or
+     *             "user@domain".
      * @return true if the XMPP address is an entry in the roster.
      */
-    public boolean contains(Jid user) {
-        return getEntry(user) != null;
+    public boolean contains(BareJid jid) {
+        return getEntry(jid) != null;
     }
 
     /**
@@ -775,18 +774,17 @@ public final class Roster extends Manager {
      * {@link RosterListener}.
      * </p>
      *
-     * @param user an XMPP ID. The address could be in any valid format (e.g.
-     *             "domain/resource", "user@domain" or "user@domain/resource"). Any resource
-     *             information that's part of the ID will be discarded.
+     * @param jid the XMPP address of the user (eg "jsmith@example.com"). The
+     *             address must be a bare JID e.g. "domain/resource" or
+     *             "user@domain".
      * @return the user's current presence, or unavailable presence if the user is offline
      *         or if no presence information is available..
      */
-    public Presence getPresence(Jid user) {
-        Jid key = getMapKey(user);
-        Map<Resourcepart, Presence> userPresences = presenceMap.get(key);
+    public Presence getPresence(Jid jid) {
+        Map<Resourcepart, Presence> userPresences = presenceMap.get(jid);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
-            presence.setFrom(user);
+            presence.setFrom(jid);
             return presence;
         }
         else {
@@ -829,7 +827,7 @@ public final class Roster extends Manager {
                 }
                 else {
                     presence = new Presence(Presence.Type.unavailable);
-                    presence.setFrom(user);
+                    presence.setFrom(jid);
                     return presence;
                 }
             }
@@ -849,7 +847,7 @@ public final class Roster extends Manager {
      *         or if no presence information is available.
      */
     public Presence getPresenceResource(FullJid userWithResource) {
-        Jid key = getMapKey(userWithResource);
+        BareJid key = userWithResource.asBareJid();
         Resourcepart resource = userWithResource.getResourcepart();
         Map<Resourcepart, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
@@ -878,8 +876,8 @@ public final class Roster extends Manager {
      * @return a List of Presence objects for all the user's current presences, or an unavailable presence if no
      *         presence information is available.
      */
-    public List<Presence> getAllPresences(Jid bareJid) {
-        Map<Resourcepart, Presence> userPresences = presenceMap.get(getMapKey(bareJid));
+    public List<Presence> getAllPresences(BareJid bareJid) {
+        Map<Resourcepart, Presence> userPresences = presenceMap.get(bareJid);
         List<Presence> res;
         if (userPresences == null) {
             // Create an unavailable presence if none was found
@@ -902,7 +900,7 @@ public final class Roster extends Manager {
      * @param bareJid the bare JID from which the presences should be retrieved.
      * @return available presences for the bare JID.
      */
-    public List<Presence> getAvailablePresences(Jid bareJid) {
+    public List<Presence> getAvailablePresences(BareJid bareJid) {
         List<Presence> allPresences = getAllPresences(bareJid);
         List<Presence> res = new ArrayList<>(allPresences.size());
         for (Presence presence : allPresences) {
@@ -920,18 +918,17 @@ public final class Roster extends Manager {
      * information is available, such as when you are not subscribed to the user's presence
      * updates.
      *
-     * @param user an XMPP ID, e.g. jdoe@example.com.
+     * @param jid an XMPP ID, e.g. jdoe@example.com.
      * @return a List of Presence objects for all the user's current presences,
      *         or an unavailable presence if the user is offline or if no presence information
      *         is available.
      */
-    public List<Presence> getPresences(Jid user) {
+    public List<Presence> getPresences(BareJid jid) {
         List<Presence> res;
-        Jid key = getMapKey(user);
-        Map<Resourcepart, Presence> userPresences = presenceMap.get(key);
+        Map<Resourcepart, Presence> userPresences = presenceMap.get(jid);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
-            presence.setFrom(user);
+            presence.setFrom(jid);
             res = Arrays.asList(presence);
         }
         else {
@@ -954,7 +951,7 @@ public final class Roster extends Manager {
             }
             else {
                 Presence presence = new Presence(Presence.Type.unavailable);
-                presence.setFrom(user);
+                presence.setFrom(jid);
                 res = Arrays.asList(presence);
             }
         }
@@ -976,10 +973,14 @@ public final class Roster extends Manager {
      * @since 4.1
      */
     public boolean isSubscribedToMyPresence(Jid jid) {
-        if (connection().getXMPPServiceDomain().equals(jid)) {
+        if (jid == null) {
+            return false;
+        }
+        BareJid bareJid = jid.asBareJid();
+        if (connection().getXMPPServiceDomain().equals(bareJid)) {
             return true;
         }
-        RosterEntry entry = getEntry(jid);
+        RosterEntry entry = getEntry(bareJid);
         if (entry == null) {
             return false;
         }
@@ -1017,34 +1018,6 @@ public final class Roster extends Manager {
 
     RosterStore getRosterStore() {
         return rosterStore;
-    }
-
-    /**
-     * Returns the key to use in the presenceMap and entries Map for a fully qualified XMPP ID.
-     * The roster can contain any valid address format such us "domain/resource",
-     * "user@domain" or "user@domain/resource". If the roster contains an entry
-     * associated with the fully qualified XMPP ID then use the fully qualified XMPP
-     * ID as the key in presenceMap, otherwise use the bare address. Note: When the
-     * key in presenceMap is a fully qualified XMPP ID, the userPresences is useless
-     * since it will always contain one entry for the user.
-     *
-     * @param user the bare or fully qualified XMPP ID, e.g. jdoe@example.com or
-     *             jdoe@example.com/Work.
-     * @return the key to use in the presenceMap and entries Map for the fully qualified XMPP ID.
-     */
-    private Jid getMapKey(Jid user) {
-        if (user == null) {
-            return null;
-        }
-        if (entries.containsKey(user)) {
-            return user;
-        }
-        EntityBareJid bareJid = user.asEntityBareJidIfPossible();
-        if (bareJid != null) {
-            return bareJid;
-        }
-        // jid validate, log this case?
-        return user;
     }
 
     /**
@@ -1280,7 +1253,7 @@ public final class Roster extends Manager {
          * @param key the presence map key
          * @return the user presences
          */
-        private Map<Resourcepart, Presence> getUserPresences(Jid key) {
+        private Map<Resourcepart, Presence> getUserPresences(BareJid key) {
             Map<Resourcepart, Presence> userPresences = presenceMap.get(key);
             if (userPresences == null) {
                 userPresences = new ConcurrentHashMap<>();
@@ -1300,7 +1273,7 @@ public final class Roster extends Manager {
                     fromResource = Resourcepart.EMPTY;
                 }
             }
-            Jid key = getMapKey(from);
+            BareJid key = from != null ? from.asBareJid() : null;
             Map<Resourcepart, Presence> userPresences;
 
             // If an "available" presence, add it to the presence map. Each presence
@@ -1471,7 +1444,7 @@ public final class Roster extends Manager {
 
             // Roster push (RFC 6121, 2.1.6)
             // A roster push with a non-empty from not matching our address MUST be ignored
-            EntityBareJid jid = connection.getUser().asBareJid();
+            EntityBareJid jid = connection.getUser().asEntityBareJid();
             Jid from = rosterPacket.getFrom();
             if (from != null && !from.equals(jid)) {
                 LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid='" + jid + "' from='" + from
