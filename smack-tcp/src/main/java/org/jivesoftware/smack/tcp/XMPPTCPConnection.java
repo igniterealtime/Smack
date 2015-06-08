@@ -337,7 +337,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws XmppStringprepException 
      */
     public XMPPTCPConnection(CharSequence username, String password, String serviceName) throws XmppStringprepException {
-        this(XMPPTCPConnectionConfiguration.builder().setUsernameAndPassword(username, password).setServiceName(
+        this(XMPPTCPConnectionConfiguration.builder().setUsernameAndPassword(username, password).setXmppDomain(
                                         JidCreate.domainBareFrom(serviceName)).build());
     }
 

@@ -516,7 +516,7 @@ public class SmackIntegrationTestFramework {
         }
         // @formatter:off
         Builder builder = XMPPTCPConnectionConfiguration.builder()
-                        .setServiceName(config.service)
+                        .setXmppDomain(config.service)
                         .setUsernameAndPassword(accountUsername, accountPassword)
                         .setResource(middlefix + '-' + testRunResult.testRunId)
                         .setSecurityMode(config.securityMode);
@@ -551,7 +551,7 @@ public class SmackIntegrationTestFramework {
             builder.setCustomSSLContext(sc);
         }
         builder.setSecurityMode(config.securityMode);
-        builder.setServiceName(config.service);
+        builder.setXmppDomain(config.service);
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
         connection.connect();
         UsernameAndPassword uap = IntTestUtil.registerAccount(connection);

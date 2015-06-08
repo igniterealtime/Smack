@@ -53,7 +53,7 @@ conn1.connect();
 // Create a connection to the jabber.org server on a specific port.
 XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
   .setUsernameAndPassword("username", "password")
-  .setServiceName("jabber.org")
+  .setXmppDomain("jabber.org")
   .setHost("earl.jabber.org")
   .setPort("8222")
   .build();

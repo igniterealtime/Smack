@@ -32,7 +32,7 @@ Connect and Disconnect
 XMPPTCPConnectionConfiguration.Builder configBuilder = XMPPTCPConnectionConfiguration.builder();
 configBuilder.setUsernameAndPassword("username", "password");
 configBuilder.setResource("SomeResource");
-configBuilder.setServiceName("jabber.org");
+configBuilder.setXmppDomain("jabber.org");
 
 AbstractXMPPConnection connection = new XMPPTCPConnection(configBuilder.build());
 // Connect to the server

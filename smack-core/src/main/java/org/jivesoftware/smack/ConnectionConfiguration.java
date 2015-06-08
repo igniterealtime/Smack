@@ -464,9 +464,21 @@ public abstract class ConnectionConfiguration {
          *
          * @param serviceName the service name
          * @return a reference to this builder.
+         * @deprecated use {@link #setXmppDomain(DomainBareJid)} instead.
          */
+        @Deprecated
         public B setServiceName(DomainBareJid serviceName) {
-            this.xmppServiceDomain = serviceName;
+            return setXmppDomain(serviceName);
+        }
+
+        /**
+         * Set the service name of this XMPP service (i.e., the XMPP domain).
+         *
+         * @param xmppServiceDomain the service name
+         * @return a reference to this builder.
+         */
+        public B setXmppDomain(DomainBareJid xmppServiceDomain) {
+            this.xmppServiceDomain = xmppServiceDomain;
             return getThis();
         }
 

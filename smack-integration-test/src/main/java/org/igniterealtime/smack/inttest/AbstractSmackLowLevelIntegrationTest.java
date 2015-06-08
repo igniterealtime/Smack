@@ -51,7 +51,7 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
             builder.setCustomSSLContext(sc);
         }
         builder.setSecurityMode(configuration.securityMode);
-        builder.setServiceName(service);
+        builder.setXmppDomain(service);
         return builder;
     }
 

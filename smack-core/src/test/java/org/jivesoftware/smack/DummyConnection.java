@@ -57,7 +57,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     private final BlockingQueue<TopLevelStreamElement> queue = new LinkedBlockingQueue<TopLevelStreamElement>();
 
     public static ConnectionConfiguration.Builder<?,?> getDummyConfigurationBuilder() {
-        return DummyConnectionConfiguration.builder().setServiceName(JidTestUtil.EXAMPLE_ORG).setUsernameAndPassword("dummy",
+        return DummyConnectionConfiguration.builder().setXmppDomain(JidTestUtil.EXAMPLE_ORG).setUsernameAndPassword("dummy",
                         "dummypass");
     }
 
