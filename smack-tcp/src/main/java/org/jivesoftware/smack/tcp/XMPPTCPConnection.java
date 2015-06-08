@@ -466,18 +466,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         shutdown(true);
     }
 
-    /**
-     * <code>true</code> if this connection is currently disconnecting the session by performing a
-     * shut down.
-     */
-    private volatile boolean shutdownInProgress;
-
     private void shutdown(boolean instant) {
         if (disconnectedButResumeable) {
             return;
         }
-
-        shutdownInProgress = true;
 
         // First shutdown the writer, this will result in a closing stream element getting send to
         // the server
@@ -512,7 +504,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             // stream tag, there is no longer a stream to resume.
             smSessionId = null;
         }
-        shutdownInProgress = false;
         authenticated = false;
         connected = false;
         usingTLS = false;
@@ -1125,7 +1116,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     case XmlPullParser.END_TAG:
                         if (parser.getName().equals("stream")) {
                             closingStreamReceived.reportSuccess();
-                            if (shutdownInProgress) {
+                            if (packetWriter.queue.isShutdown()) {
                                 // We received a closing stream element *after* we initiated the
                                 // termination of the session by sending a closing stream element to
                                 // the server first
@@ -1255,8 +1246,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          */
         void shutdown(boolean instant) {
             instantShutdown = instant;
-            shutdownTimestamp = System.currentTimeMillis();
             queue.shutdown();
+            shutdownTimestamp = System.currentTimeMillis();
             try {
                 shutdownDone.checkIfSuccessOrWait();
             }
