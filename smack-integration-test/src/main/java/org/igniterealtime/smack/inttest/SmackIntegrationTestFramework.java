@@ -102,7 +102,7 @@ public class SmackIntegrationTestFramework {
                 final Method method = failedTest.testMethod;
                 final String className = method.getDeclaringClass().getName();
                 final String methodName = method.getName();
-                final Exception cause = failedTest.failureReason;
+                final Throwable cause = failedTest.failureReason;
                 LOGGER.severe(className + CLASS_METHOD_SEP + methodName + " failed: " + cause);
             }
             System.exit(2);
@@ -380,10 +380,17 @@ public class SmackIntegrationTestFramework {
                                             null, (TestNotPossibleException) cause));
                             continue;
                         }
-                        Exception nonFatalException = throwFatalException(cause);
+                        Throwable nonFatalFailureReason;
+                        // junit assert's throw an AssertionError if they fail, those should not be
+                        // thrown up, as it would be done by throwFatalException()
+                        if (cause instanceof AssertionError) {
+                            nonFatalFailureReason = cause;
+                        } else {
+                            nonFatalFailureReason = throwFatalException(cause);
+                        }
                         // An integration test failed
                         testRunResult.failedIntegrationTests.add(new FailedTest(testMethod, testStart, testEnd, null,
-                                        nonFatalException));
+                                        nonFatalFailureReason));
                         LOGGER.log(Level.SEVERE, testPrefix + "Failed", e);
                     }
                     catch (IllegalArgumentException | IllegalAccessException e) {

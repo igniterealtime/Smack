@@ -21,9 +21,9 @@ import java.util.List;
 
 public class FailedTest extends TestResult {
 
-    public final Exception failureReason;
+    public final Throwable failureReason;
 
-    public FailedTest(Method testMethod, long startTime, long endTime, List<String> logMessages, Exception failureReason) {
+    public FailedTest(Method testMethod, long startTime, long endTime, List<String> logMessages, Throwable failureReason) {
         super(testMethod, startTime, endTime, logMessages);
         this.failureReason = failureReason;
     }
