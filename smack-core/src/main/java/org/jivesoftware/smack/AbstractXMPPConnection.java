@@ -1206,7 +1206,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             }
         }
         if (logWarning) {
-            LOGGER.log(Level.WARNING, "Connection closed with error", e);
+            LOGGER.log(Level.WARNING, "Connection " + this + " closed with error", e);
         }
         for (ConnectionListener listener : connectionListeners) {
             try {
