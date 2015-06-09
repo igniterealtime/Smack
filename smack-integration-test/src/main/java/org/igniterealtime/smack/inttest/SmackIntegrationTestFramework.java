@@ -566,11 +566,8 @@ public class SmackIntegrationTestFramework {
         return connection;
     }
 
-    private static Exception throwFatalException(Throwable e) throws Error, NotConnectedException, NoResponseException,
+    private static Exception throwFatalException(Throwable e) throws Error, NoResponseException,
                     InterruptedException {
-        if (e instanceof NotConnectedException) {
-            throw (NotConnectedException) e;
-        }
         if (e instanceof NoResponseException) {
             throw (NoResponseException) e;
         }
