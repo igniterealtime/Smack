@@ -354,7 +354,7 @@ public class SmackIntegrationTestFramework {
 
                 for (Method testMethod : smackIntegrationTestMethods) {
                     final String testPrefix = testClass.getSimpleName() + '.'
-                                    + testMethod.getName() + ": ";
+                                    + testMethod.getName() + " (" + testType + "): ";
                     // Invoke all test methods on the test instance
                     LOGGER.info(testPrefix + "Start");
                     long testStart = System.currentTimeMillis();
