@@ -1097,6 +1097,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         break;
                     case XmlPullParser.END_TAG:
                         if (parser.getName().equals("stream")) {
+                            if (!parser.getNamespace().equals("http://etherx.jabber.org/streams")) {
+                                LOGGER.warning(XMPPTCPConnection.this +  " </stream> but different namespace " + parser.getNamespace());
+                                break;
+                            }
                             closingStreamReceived.reportSuccess();
                             if (packetWriter.queue.isShutdown()) {
                                 // We received a closing stream element *after* we initiated the
