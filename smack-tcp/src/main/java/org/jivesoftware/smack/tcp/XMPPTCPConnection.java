@@ -154,14 +154,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private boolean disconnectedButResumeable = false;
 
-    /**
-     * Flag to indicate if the socket was closed intentionally by Smack.
-     * <p>
-     * This boolean flag is used concurrently, therefore it is marked volatile.
-     * </p>
-     */
-    private volatile boolean socketClosed = false;
-
     private boolean usingTLS = false;
 
     /**
@@ -437,10 +429,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         return usingTLS;
     }
 
-    public boolean isSocketClosed() {
-        return socketClosed;
-    }
-
     /**
      * Shuts the current connection down. After this method returns, the connection must be ready
      * for re-use by connect.
@@ -481,11 +469,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 packetReader.shutdown();
         }
 
-        // Set socketClosed to true. This will cause the PacketReader
-        // and PacketWriter to ignore any Exceptions that are thrown
-        // because of a read/write from/to a closed stream.
-        // It is *important* that this is done before socket.close()!
-        socketClosed = true;
         try {
                 socket.close();
         } catch (Exception e) {
@@ -807,7 +790,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         connectUsingConfiguration();
 
         // We connected successfully to the servers TCP port
-        socketClosed = false;
         initConnection();
 
         // Wait with SASL auth until the SASL mechanisms have been received
@@ -1143,7 +1125,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 closingStreamReceived.reportFailure(e);
                 // The exception can be ignored if the the connection is 'done'
                 // or if the it was caused because the socket got closed
-                if (!(done || isSocketClosed())) {
+                if (!(done || packetWriter.queue.isShutdown())) {
                     // Close the connection and notify connection listeners of the
                     // error.
                     notifyConnectionError(e);
@@ -1423,7 +1405,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             catch (Exception e) {
                 // The exception can be ignored if the the connection is 'done'
                 // or if the it was caused because the socket got closed
-                if (!(done() || isSocketClosed())) {
+                if (!(done() || queue.isShutdown())) {
                     notifyConnectionError(e);
                 } else {
                     LOGGER.log(Level.FINE, "Ignoring Exception in writePackets()", e);
