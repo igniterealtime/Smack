@@ -1112,6 +1112,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 // sending a closing stream element first. This means that the
                                 // server wants to terminate the session, therefore disconnect
                                 // the connection
+                                LOGGER.info(XMPPTCPConnection.this
+                                                + " received closing </stream> element."
+                                                + " Server wants to terminate the connection, calling disconnect()");
                                 disconnect();
                             }
                         }
