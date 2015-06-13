@@ -465,6 +465,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             packetWriter.shutdown(instant);
         }
 
+        try {
+            // After we send the closing stream element, check if there was already a
+            // closing stream element sent by the server or wait with a timeout for a
+            // closing stream element to be received from the server.
+            Exception res = closingStreamReceived.checkIfSuccessOrWait();
+            LOGGER.info("closingstream " + res);
+        } catch (InterruptedException | NoResponseException e) {
+            LOGGER.log(Level.INFO, "Exception while waiting for closing stream element from the server " + this, e);
+        }
+
         if (packetReader != null) {
                 packetReader.shutdown();
         }
@@ -1101,8 +1111,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 LOGGER.warning(XMPPTCPConnection.this +  " </stream> but different namespace " + parser.getNamespace());
                                 break;
                             }
+
+                            // Check if the queue was already shut down before reporting success on closing stream tag
+                            // received. This avoids a race if there is a disconnect(), followed by a connect(), which
+                            // did re-start the queue again, causing this writer to assume that the queue is not
+                            // shutdown, which results in a call to disconnect().
+                            final boolean queueWasShutdown = packetWriter.queue.isShutdown();
                             closingStreamReceived.reportSuccess();
-                            if (packetWriter.queue.isShutdown()) {
+
+                            if (queueWasShutdown) {
                                 // We received a closing stream element *after* we initiated the
                                 // termination of the session by sending a closing stream element to
                                 // the server first
@@ -1382,17 +1399,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         LOGGER.log(Level.WARNING, "Exception writing closing stream element", e);
                     }
 
-                    try {
-                        // After we send the closing stream element, check if there was already a
-                        // closing stream element sent by the server or wait with a timeout for a
-                        // closing stream element to be received from the server.
-                        closingStreamReceived.checkIfSuccessOrWait();
-                    } catch (NoResponseException e) {
-                        LOGGER.log(Level.INFO, "No response while waiting for closing stream element from the server (" + getConnectionCounter() + ")", e);
-                    } catch (InterruptedException e) {
-                        LOGGER.log(Level.INFO, "Waiting for closing stream element from the server was interrupted (" + getConnectionCounter() + ")", e);
-                    }
-
                     // Delete the queue contents (hopefully nothing is left).
                     queue.clear();
                 } else if (instantShutdown && isSmEnabled()) {
@@ -1400,14 +1406,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     // into the unacknowledgedStanzas queue
                     drainWriterQueueToUnacknowledgedStanzas();
                 }
-
-                try {
-                    writer.close();
-                }
-                catch (Exception e) {
-                    // Do nothing
-                }
-
+                // Do *not* close the writer here, as it will cause the socket
+                // to get closed. But we may want to receive further stanzas
+                // until the closing stream tag is received. The socket will be
+                // closed in shutdown().
             }
             catch (Exception e) {
                 // The exception can be ignored if the the connection is 'done'
