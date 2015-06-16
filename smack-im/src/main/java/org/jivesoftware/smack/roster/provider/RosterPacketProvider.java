@@ -24,7 +24,6 @@ import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -51,16 +50,7 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
                     String jidString = parser.getAttributeValue("", "jid");
                     String name = parser.getAttributeValue("", "name");
 
-                    // workaround for bug in jxmpp 0.5.0-alpha5, where
-                    // JidCreate.bareFrom(String), which we would want to use
-                    // here, does not produce correct results
-                    String localpart = XmppStringUtils.parseLocalpart(jidString);
-                    BareJid jid;
-                    if (localpart.length() != 0) {
-                        jid = JidCreate.entityBareFrom(jidString);
-                    } else {
-                        jid = JidCreate.domainBareFrom(jidString);
-                    }
+                    BareJid jid = JidCreate.bareFrom(jidString);
 
                     // Create packet.
                     item = new RosterPacket.Item(jid, name);
