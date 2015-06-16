@@ -37,8 +37,12 @@ public class DigestMd5SaslTest extends AbstractSaslTest {
         super(saslMechanism);
     }
 
-    protected void runTest() throws NotConnectedException, SmackException, InterruptedException, XmppStringprepException {
-        saslMechanism.authenticate("florian", "irrelevant", JidCreate.domainBareFrom("xmpp.org"), "secret");
+    protected void runTest(boolean useAuthzid) throws NotConnectedException, SmackException, InterruptedException, XmppStringprepException {
+        if (useAuthzid) {
+            saslMechanism.authenticate(JidCreate.bareFrom("shazbat@xmpp.org"), "florian", "irrelevant", JidCreate.domainBareFrom("xmpp.org"), "secret");
+        } else {
+            saslMechanism.authenticate(null, "florian", "irrelevant", JidCreate.domainBareFrom("xmpp.org"), "secret");
+        }
 
         byte[] response = saslMechanism.evaluateChallenge(challengeBytes);
         String responseString = new String(response);
@@ -50,6 +54,11 @@ public class DigestMd5SaslTest extends AbstractSaslTest {
             String key = keyValue[0];
             String value = keyValue[1].replace("\"", "");
             responsePairs.put(key, value);
+        }
+        if (useAuthzid) {
+          assertMapValue("authzid", "shazbat@xmpp.org", responsePairs);
+        } else {
+          assert(!responsePairs.containsKey("authzid"));
         }
         assertMapValue("username", "florian", responsePairs);
         assertMapValue("realm", "xmpp.org", responsePairs);

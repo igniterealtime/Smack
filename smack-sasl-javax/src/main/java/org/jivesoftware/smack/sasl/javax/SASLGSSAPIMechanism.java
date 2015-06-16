@@ -35,6 +35,11 @@ public class SASLGSSAPIMechanism extends SASLJavaXMechanism {
     }
 
     @Override
+    public boolean authzidSupported() {
+      return true;
+    }
+
+    @Override
     public String getName() {
         return NAME;
     }

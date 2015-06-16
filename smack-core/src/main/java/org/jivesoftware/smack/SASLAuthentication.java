@@ -25,6 +25,7 @@ import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.BareJid;
 
 import javax.security.auth.callback.CallbackHandler;
 
@@ -180,6 +181,31 @@ public final class SASLAuthentication {
     public void authenticate(String username, String password)
                     throws XMPPErrorException, SASLErrorException, IOException,
                     SmackException, InterruptedException {
+      this.authenticate(null, username, password);
+    }
+
+    /**
+     * Performs SASL authentication of the specified user. If SASL authentication was successful
+     * then resource binding and session establishment will be performed. This method will return
+     * the full JID provided by the server while binding a resource to the connection.<p>
+     *
+     * The server may assign a full JID with a username or resource different than the requested
+     * by this method.
+     *
+     * This variant allows the caller to specify an explicit authorization identifier.
+     *
+     * @param authzid the authorization identifier (typically null).
+     * @param username the username that is authenticating with the server.
+     * @param password the password to send to the server.
+     * @throws XMPPErrorException
+     * @throws SASLErrorException
+     * @throws IOException
+     * @throws SmackException
+     * @throws InterruptedException
+     */
+    public void authenticate(BareJid authzid, String username, String password)
+                    throws XMPPErrorException, SASLErrorException, IOException,
+                    SmackException, InterruptedException {
         currentMechanism = selectMechanism();
         final CallbackHandler callbackHandler = configuration.getCallbackHandler();
         final String host = connection.getHost();
@@ -187,10 +213,10 @@ public final class SASLAuthentication {
 
         synchronized (this) {
             if (callbackHandler != null) {
-                currentMechanism.authenticate(host, xmppServiceDomain, callbackHandler);
+                currentMechanism.authenticate(authzid, host, xmppServiceDomain, callbackHandler);
             }
             else {
-                currentMechanism.authenticate(username, host, xmppServiceDomain, password);
+                currentMechanism.authenticate(authzid, username, host, xmppServiceDomain, password);
             }
             // Wait until SASL negotiation finishes
             wait(connection.getPacketReplyTimeout());

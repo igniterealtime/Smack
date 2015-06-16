@@ -54,7 +54,7 @@ public abstract class SASLJavaXMechanism extends SASLMechanism {
         String[] mechanisms = { getName() };
         Map<String, String> props = getSaslProps();
         try {
-            sc = Sasl.createSaslClient(mechanisms, null, "xmpp", getServerName().toString(), props,
+            sc = Sasl.createSaslClient(mechanisms, authorizationId.toString(), "xmpp", getServerName().toString(), props,
                             new CallbackHandler() {
                                 @Override
                                 public void handle(Callback[] callbacks) throws IOException,

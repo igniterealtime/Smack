@@ -38,7 +38,7 @@ public class SCRAMSHA1Mechanism extends SASLMechanism {
     public static final String NAME = "SCRAM-SHA-1";
 
     private static final int RANDOM_ASCII_BYTE_COUNT = 32;
-    private static final String DEFAULT_GS2_HEADER = "n,,";
+    private static final String DEFAULT_GS2_HEADER = "n,";
     private static final byte[] CLIENT_KEY_BYTES = toBytes("Client Key");
     private static final byte[] SERVER_KEY_BYTES = toBytes("Server Key");
     private static final byte[] ONE = new byte[] { 0, 0, 0, 1 };

@@ -25,6 +25,7 @@ import org.jivesoftware.smack.util.StringTransformer;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.BareJid;
 
 import javax.security.auth.callback.CallbackHandler;
 
@@ -103,6 +104,12 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     protected String authenticationId;
 
     /**
+     * The authorization identifier (authzid).
+     * This is always a Jid, but can be null.
+     */
+    protected BareJid authorizationId;
+
+    /**
      * The name of the XMPP service
      */
     protected DomainBareJid serviceName;
@@ -149,9 +156,10 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * called "mail3.example.com"; it's "serv-name" would be "example.com", it's "host" would be
      * "mail3.example.com". If the service is not replicated, or the serv-name is identical to
      * the host, then the serv-name component MUST be omitted
-     * 
-     * digest-uri verification is needed for ejabberd 2.0.3 and higher   
-     * 
+     *
+     * digest-uri verification is needed for ejabberd 2.0.3 and higher
+     *
+     * @param authzid the authorization identifier, usually null.
      * @param username the username of the user being authenticated.
      * @param host the hostname where the user account resides.
      * @param serviceName the xmpp service location - used by the SASL client in digest-uri creation
@@ -161,8 +169,12 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public final void authenticate(String username, String host, DomainBareJid serviceName, String password)
+    public final void authenticate(BareJid authzid, String username, String host, DomainBareJid serviceName, String password)
                     throws SmackException, NotConnectedException, InterruptedException {
+        this.authorizationId = authzid;
+        if (authzid != null && !authzidSupported()) {
+          throw new SmackException("This mechanism does not support authzids");
+        }
         this.authenticationId = username;
         this.host = host;
         this.serviceName = serviceName;
@@ -178,6 +190,15 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     }
 
     /**
+     * Indicates whether this mechanism can support an authorization identifier.
+     *
+     * @return True if an authzid is supported.
+     */
+     public boolean authzidSupported() {
+       return false;
+     }
+
+    /**
      * Builds and sends the <tt>auth</tt> stanza to the server. The callback handler will handle
      * any additional information, such as the authentication ID or realm, if it is needed.
      *
@@ -188,8 +209,12 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void authenticate(String host, DomainBareJid serviceName, CallbackHandler cbh)
+    public void authenticate(BareJid authzid, String host, DomainBareJid serviceName, CallbackHandler cbh)
                     throws SmackException, NotConnectedException, InterruptedException {
+        this.authorizationId = authzid;
+        if (authzid != null && !authzidSupported()) {
+          throw new SmackException("This mechanism does not support authzids");
+        }
         this.host = host;
         this.serviceName = serviceName;
         authenticateInternal(cbh);

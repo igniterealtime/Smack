@@ -25,6 +25,11 @@ public class SASLDigestMD5Mechanism extends SASLJavaXMechanism {
 
     public static final String NAME = DIGESTMD5;
 
+    @Override
+    public boolean authzidSupported() {
+      return true;
+    }
+
     public String getName() {
         return NAME;
     }

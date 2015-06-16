@@ -47,6 +47,11 @@ public class SASLExternalMechanism extends SASLJavaXMechanism  {
     public static final String NAME = EXTERNAL;
 
     @Override
+    public boolean authzidSupported() {
+      return true;
+    }
+
+    @Override
     public String getName() {
         return EXTERNAL;
     }
