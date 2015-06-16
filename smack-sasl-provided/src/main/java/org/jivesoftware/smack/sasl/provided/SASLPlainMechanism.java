@@ -34,7 +34,13 @@ public class SASLPlainMechanism extends SASLMechanism {
     @Override
     protected byte[] getAuthenticationText() throws SmackException {
         // concatenate and encode username (authcid) and password
-        byte[] authcid = toBytes('\u0000' + authenticationId);
+        String authzid;
+        if (authorizationId == null) {
+          authzid = "";
+        } else {
+          authzid = authorizationId.toString();
+        }
+        byte[] authcid = toBytes(authzid + '\u0000' + authenticationId);
         byte[] passw = toBytes('\u0000' + password);
 
         return ByteUtils.concact(authcid, passw);
@@ -58,5 +64,10 @@ public class SASLPlainMechanism extends SASLMechanism {
     @Override
     public void checkIfSuccessfulOrThrow() throws SmackException {
         // No check performed
+    }
+
+    @Override
+    public boolean authzidSupported() {
+      return true;
     }
 }

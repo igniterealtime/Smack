@@ -29,6 +29,11 @@ public class SASLDigestMD5Test extends DigestMd5SaslTest {
 
     @Test
     public void testDigestMD5() throws NotConnectedException, SmackException, InterruptedException, XmppStringprepException {
-        runTest();
+        runTest(false);
+    }
+
+    @Test
+    public void testDigestMD5Authzid() throws NotConnectedException, SmackException, InterruptedException, XmppStringprepException {
+        runTest(true);
     }
 }

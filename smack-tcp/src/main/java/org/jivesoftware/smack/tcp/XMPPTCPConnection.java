@@ -376,7 +376,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     protected synchronized void loginInternal(String username, String password, Resourcepart resource) throws XMPPException,
                     SmackException, IOException, InterruptedException {
         // Authenticate using SASL
-        saslAuthentication.authenticate(username, password);
+        saslAuthentication.authenticate(username, password, config.getAuthzid());
 
         // If compression is enabled then request the server to use stream compression. XEP-170
         // recommends to perform stream compression before resource binding.

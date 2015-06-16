@@ -30,6 +30,11 @@ public class SASLPlainMechanism extends SASLJavaXMechanism {
     }
 
     @Override
+    public boolean authzidSupported() {
+      return true;
+    }
+
+    @Override
     public int getPriority() {
         return 400;
     }

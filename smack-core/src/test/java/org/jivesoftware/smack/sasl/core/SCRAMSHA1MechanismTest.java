@@ -48,7 +48,7 @@ public class SCRAMSHA1MechanismTest extends SmackTestSuite {
             }
         };
 
-        mech.authenticate(USERNAME, "unusedFoo", JidTestUtil.DOMAIN_BARE_JID_1, PASSWORD);
+        mech.authenticate(USERNAME, "unusedFoo", JidTestUtil.DOMAIN_BARE_JID_1, PASSWORD, null);
         AuthMechanism authMechanism = con.getSentPacket();
         assertEquals(SCRAMSHA1Mechanism.NAME, authMechanism.getMechanism());
         assertEquals(CLIENT_FIRST_MESSAGE, saslLayerString(authMechanism.getAuthenticationText()));

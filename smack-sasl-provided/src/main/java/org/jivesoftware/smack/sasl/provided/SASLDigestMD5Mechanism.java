@@ -83,6 +83,11 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
         return new SASLDigestMD5Mechanism();
     }
 
+    @Override
+    public boolean authzidSupported() {
+      return true;
+    }
+
 
     @Override
     public void checkIfSuccessfulOrThrow() throws SmackException {
@@ -141,7 +146,14 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
             String responseValue = calcResponse(DigestType.ClientResponse);
             // @formatter:off
             // See RFC 2831 2.1.2 digest-response
+            String authzid;
+            if (authorizationId == null) {
+              authzid = "";
+            } else {
+              authzid = ",authzid=\"" + authorizationId + '"';
+            }
             String saslString = "username=\"" + authenticationId + '"'
+                               + authzid
                                + ",realm=\"" + serviceName + '"'
                                + ",nonce=\"" + nonce + '"'
                                + ",cnonce=\"" + cnonce + '"'

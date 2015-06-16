@@ -25,6 +25,7 @@ import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityBareJid;
 
 import javax.security.auth.callback.CallbackHandler;
 
@@ -171,26 +172,27 @@ public final class SASLAuthentication {
      *
      * @param username the username that is authenticating with the server.
      * @param password the password to send to the server.
-     * @throws XMPPErrorException 
-     * @throws SASLErrorException 
-     * @throws IOException 
-     * @throws SmackException 
-     * @throws InterruptedException 
+     * @param authzid the authorization identifier (typically null).
+     * @throws XMPPErrorException
+     * @throws SASLErrorException
+     * @throws IOException
+     * @throws SmackException
+     * @throws InterruptedException
      */
-    public void authenticate(String username, String password)
+    public void authenticate(String username, String password, EntityBareJid authzid)
                     throws XMPPErrorException, SASLErrorException, IOException,
                     SmackException, InterruptedException {
-        currentMechanism = selectMechanism();
+        currentMechanism = selectMechanism(authzid);
         final CallbackHandler callbackHandler = configuration.getCallbackHandler();
         final String host = connection.getHost();
         final DomainBareJid xmppServiceDomain = connection.getXMPPServiceDomain();
 
         synchronized (this) {
             if (callbackHandler != null) {
-                currentMechanism.authenticate(host, xmppServiceDomain, callbackHandler);
+                currentMechanism.authenticate(host, xmppServiceDomain, callbackHandler, authzid);
             }
             else {
-                currentMechanism.authenticate(username, host, xmppServiceDomain, password);
+                currentMechanism.authenticate(username, host, xmppServiceDomain, password, authzid);
             }
             final long deadline = System.currentTimeMillis() + connection.getPacketReplyTimeout();
             while (!authenticationSuccessful && saslException == null) {
@@ -312,7 +314,7 @@ public final class SASLAuthentication {
         return lastUsedMech.getName();
     }
 
-    private SASLMechanism selectMechanism() throws SmackException {
+    private SASLMechanism selectMechanism(EntityBareJid authzid) throws SmackException {
         Iterator<SASLMechanism> it = REGISTERED_MECHANISMS.iterator();
         final List<String> serverMechanisms = getServerMechanisms();
         if (serverMechanisms.isEmpty()) {
@@ -329,6 +331,12 @@ public final class SASLAuthentication {
             }
             if (!configuration.isEnabledSaslMechanism(mechanismName)) {
                 continue;
+            }
+            if (authzid != null) {
+                if (!mechanism.authzidSupported()) {
+                    LOGGER.fine("Skipping " + mechanism + " because authzid is required by not supported by this SASL mechanism");
+                    continue;
+                }
             }
             if (serverMechanisms.contains(mechanismName)) {
                 // Create a new instance of the SASLMechanism for every authentication attempt.

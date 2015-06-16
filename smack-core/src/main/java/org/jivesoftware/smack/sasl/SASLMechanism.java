@@ -25,6 +25,7 @@ import org.jivesoftware.smack.util.StringTransformer;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityBareJid;
 
 import javax.security.auth.callback.CallbackHandler;
 
@@ -34,9 +35,9 @@ import javax.security.auth.callback.CallbackHandler;
  *  <li>{@link #getName()} -- returns the common name of the SASL mechanism.</li>
  * </ul>
  * Subclasses will likely want to implement their own versions of these methods:
- *  <li>{@link #authenticate(String, String, DomainBareJid, String)} -- Initiate authentication stanza using the
+ *  <li>{@link #authenticate(String, String, DomainBareJid, String, EntityBareJid)} -- Initiate authentication stanza using the
  *  deprecated method.</li>
- *  <li>{@link #authenticate(String, DomainBareJid, CallbackHandler)} -- Initiate authentication stanza
+ *  <li>{@link #authenticate(String, DomainBareJid, CallbackHandler, EntityBareJid)} -- Initiate authentication stanza
  *  using the CallbackHandler method.</li>
  *  <li>{@link #challengeReceived(String, boolean)} -- Handle a challenge from the server.</li>
  * </ul>
@@ -103,6 +104,12 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     protected String authenticationId;
 
     /**
+     * The authorization identifier (authzid).
+     * This is always a bare Jid, but can be null.
+     */
+    protected EntityBareJid authorizationId;
+
+    /**
      * The name of the XMPP service
      */
     protected DomainBareJid serviceName;
@@ -116,7 +123,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     /**
      * Builds and sends the <tt>auth</tt> stanza to the server. Note that this method of
      * authentication is not recommended, since it is very inflexible. Use
-     * {@link #authenticate(String, DomainBareJid, CallbackHandler)} whenever possible.
+     * {@link #authenticate(String, DomainBareJid, CallbackHandler, EntityBareJid)} whenever possible.
      * 
      * Explanation of auth stanza:
      * 
@@ -149,24 +156,27 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * called "mail3.example.com"; it's "serv-name" would be "example.com", it's "host" would be
      * "mail3.example.com". If the service is not replicated, or the serv-name is identical to
      * the host, then the serv-name component MUST be omitted
-     * 
-     * digest-uri verification is needed for ejabberd 2.0.3 and higher   
-     * 
+     *
+     * digest-uri verification is needed for ejabberd 2.0.3 and higher
+     *
      * @param username the username of the user being authenticated.
      * @param host the hostname where the user account resides.
      * @param serviceName the xmpp service location - used by the SASL client in digest-uri creation
      * serviceName format is: host [ "/" serv-name ] as per RFC-2831
      * @param password the password for this account.
+     * @param authzid the optional authorization identity.
      * @throws SmackException If a network error occurs while authenticating.
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public final void authenticate(String username, String host, DomainBareJid serviceName, String password)
+    public final void authenticate(String username, String host, DomainBareJid serviceName, String password, EntityBareJid authzid)
                     throws SmackException, NotConnectedException, InterruptedException {
         this.authenticationId = username;
         this.host = host;
         this.serviceName = serviceName;
         this.password = password;
+        this.authorizationId = authzid;
+        assert(authorizationId == null || authzidSupported());
         authenticateInternal();
         authenticate();
     }
@@ -184,14 +194,17 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param host     the hostname where the user account resides.
      * @param serviceName the xmpp service location
      * @param cbh      the CallbackHandler to obtain user information.
+     * @param authzid the optional authorization identity.
      * @throws SmackException
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void authenticate(String host, DomainBareJid serviceName, CallbackHandler cbh)
+    public void authenticate(String host, DomainBareJid serviceName, CallbackHandler cbh, EntityBareJid authzid)
                     throws SmackException, NotConnectedException, InterruptedException {
         this.host = host;
         this.serviceName = serviceName;
+        this.authorizationId = authzid;
+        assert(authorizationId == null || authzidSupported());
         authenticateInternal(cbh);
         authenticate();
     }
@@ -281,6 +294,10 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         SASLMechanism saslMechansim = newInstance();
         saslMechansim.connection = connection;
         return saslMechansim;
+    }
+
+    public boolean authzidSupported() {
+        return false;
     }
 
     protected abstract SASLMechanism newInstance();
