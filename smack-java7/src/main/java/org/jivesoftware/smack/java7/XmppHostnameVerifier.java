@@ -30,6 +30,9 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
@@ -133,7 +136,24 @@ public class XmppHostnameVerifier implements HostnameVerifier {
                 throw new CertificateException(sb.toString());
             }
         }
-        // TODO SubjectX500Name
+
+        LdapName dn = null;
+        try {
+            dn = new LdapName(cert.getSubjectX500Principal().getName());
+        } catch (InvalidNameException e) {
+            LOGGER.warning("Invalid DN: " + e.getMessage());
+        }
+        if (dn != null) {
+            for (Rdn rdn : dn.getRdns()) {
+                if (rdn.getType().equalsIgnoreCase("CN")) {
+                    if (matchesPerRfc2818(name, rdn.getValue().toString())) {
+                        return;
+                    }
+                    break;
+                }
+            }
+        }
+
         throw new CertificateException("No name matching " + name + " found");
     }
 
