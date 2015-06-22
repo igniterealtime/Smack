@@ -41,10 +41,13 @@ import javax.security.auth.kerberos.KerberosPrincipal;
 import org.jivesoftware.smack.util.IpAddressUtil;
 
 /**
- * HostnameVerifier implementation for XMPP.
+ * HostnameVerifier implementation for XMPP. Verifies a given name, the 'hostname' argument, which
+ * should be the XMPP domain of the used XMPP service. The verifier compares the name with the
+ * servers TLS certificate's <a href="https://tools.ietf.org/html/rfc5280#section-4.2.1.6">Subject
+ * Alternative Name (SAN)</a> DNS name ('dNSName'), and, if there are no SANs, which the Common Name
+ * (CN).
  * <p>
- * Based on the <a href="found at http://kevinlocke.name/bits
- * /2012/10/03/ssl-certificate-verification-in-dispatch-and-asynchttpclient/">work by Kevin
+ * Based on the <a href="http://kevinlocke.name/bits/2012/10/03/ssl-certificate-verification-in-dispatch-and-asynchttpclient/">work by Kevin
  * Locke</a> (released under CC0 1.0 Universal / Public Domain Dedication).
  * </p>
  */
@@ -108,8 +111,26 @@ public class XmppHostnameVerifier implements HostnameVerifier {
         return false;
     }
 
+    /**
+     * As defined in RFC 5280 § 4.2.1.6
+     * <pre>
+     * GeneralName ::= CHOICE {
+     *   ...
+     *   dNSName                         [2]     IA5String,
+     *   ...
+     * }
+     * </pre>
+     */
     private static final int ALTNAME_DNS = 2;
 
+    /**
+     * Try to match a certificate with a DNS name. This method returns if the certificate matches or
+     * throws a {@link CertificateException} if not.
+     *
+     * @param name the DNS name.
+     * @param cert the certificate.
+     * @throws CertificateException if the DNS name does not match the certificate.
+     */
     private static void matchDns(String name, X509Certificate cert) throws CertificateException {
         Collection<List<?>> subjAltNames = cert.getSubjectAlternativeNames();
         if (subjAltNames != null) {
@@ -120,6 +141,7 @@ public class XmppHostnameVerifier implements HostnameVerifier {
                 }
                 String dnsName = (String) san.get(1);
                 if (matchesPerRfc2818(name, dnsName)) {
+                    // Signal success by returning.
                     return;
                 }
                 else {
@@ -137,6 +159,8 @@ public class XmppHostnameVerifier implements HostnameVerifier {
             }
         }
 
+        // Control flow will end here if the X509 certificate does not have *any* Subject
+        // Alternative Names (SANs). Fallback trying to validate against the CN of the subject.
         LdapName dn = null;
         try {
             dn = new LdapName(cert.getSubjectX500Principal().getName());
@@ -147,6 +171,7 @@ public class XmppHostnameVerifier implements HostnameVerifier {
             for (Rdn rdn : dn.getRdns()) {
                 if (rdn.getType().equalsIgnoreCase("CN")) {
                     if (matchesPerRfc2818(name, rdn.getValue().toString())) {
+                        // Signal success by returning.
                         return;
                     }
                     break;
