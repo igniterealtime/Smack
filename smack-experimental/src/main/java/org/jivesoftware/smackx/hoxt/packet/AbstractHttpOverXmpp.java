@@ -42,8 +42,8 @@ public abstract class AbstractHttpOverXmpp extends IQ {
 
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         IQChildElementXmlStringBuilder builder = getIQHoxtChildElementBuilder(xml);
-        builder.append(headers.toXML());
-        builder.append(data.toXML());
+        builder.optAppend(headers.toXML());
+        builder.optAppend(data.toXML());
 
         return builder;
     }
