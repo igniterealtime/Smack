@@ -38,7 +38,6 @@ public class SCRAMSHA1Mechanism extends SASLMechanism {
     public static final String NAME = "SCRAM-SHA-1";
 
     private static final int RANDOM_ASCII_BYTE_COUNT = 32;
-    private static final String DEFAULT_GS2_HEADER = "n,";
     private static final byte[] CLIENT_KEY_BYTES = toBytes("Client Key");
     private static final byte[] SERVER_KEY_BYTES = toBytes("Server Key");
     private static final byte[] ONE = new byte[] { 0, 0, 0, 1 };
@@ -71,13 +70,21 @@ public class SCRAMSHA1Mechanism extends SASLMechanism {
     protected void authenticateInternal(CallbackHandler cbh) throws SmackException {
         throw new UnsupportedOperationException("CallbackHandler not (yet) supported");
     }
+    
+    private String getGS2Header() {
+        String authzidPortion = "";
+        if (authorizationId != null) {
+            authzidPortion = "a=" + authorizationId.toString();
+        }
+        return "n," + authzidPortion + ",";
+    }
 
     @Override
     protected byte[] getAuthenticationText() throws SmackException {
         clientRandomAscii = getRandomAscii();
         String saslPrepedAuthcId = saslPrep(authenticationId);
         clientFirstMessageBare = "n=" + escape(saslPrepedAuthcId) + ",r=" + clientRandomAscii;
-        String clientFirstMessage = DEFAULT_GS2_HEADER + clientFirstMessageBare;
+        String clientFirstMessage = getGS2Header() + clientFirstMessageBare;
         state = State.AUTH_TEXT_SENT;
         return toBytes(clientFirstMessage);
     }
@@ -148,7 +155,7 @@ public class SCRAMSHA1Mechanism extends SASLMechanism {
             // Parsing and error checking is done, we can now begin to calculate the values
 
             // First the client-final-message-without-proof
-            String clientFinalMessageWithoutProof = "c=" + Base64.encode(DEFAULT_GS2_HEADER) + ",r=" + rvalue;
+            String clientFinalMessageWithoutProof = "c=" + Base64.encode(getGS2Header()) + ",r=" + rvalue;
 
             // AuthMessage := client-first-message-bare + "," + server-first-message + "," +
             // client-final-message-without-proof

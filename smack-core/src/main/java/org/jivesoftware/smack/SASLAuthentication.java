@@ -206,7 +206,7 @@ public final class SASLAuthentication {
     public void authenticate(BareJid authzid, String username, String password)
                     throws XMPPErrorException, SASLErrorException, IOException,
                     SmackException, InterruptedException {
-        currentMechanism = selectMechanism();
+        currentMechanism = selectMechanism(authzid != null);
         final CallbackHandler callbackHandler = configuration.getCallbackHandler();
         final String host = connection.getHost();
         final DomainBareJid xmppServiceDomain = connection.getXMPPServiceDomain();
@@ -333,7 +333,7 @@ public final class SASLAuthentication {
         return lastUsedMech.getName();
     }
 
-    private SASLMechanism selectMechanism() throws SmackException {
+    private SASLMechanism selectMechanism(boolean authzidNeeded) throws SmackException {
         Iterator<SASLMechanism> it = REGISTERED_MECHANISMS.iterator();
         final List<String> serverMechanisms = getServerMechanisms();
         if (serverMechanisms.isEmpty()) {
@@ -350,6 +350,11 @@ public final class SASLAuthentication {
             }
             if (!configuration.isEnabledSaslMechanism(mechanismName)) {
                 continue;
+            }
+            if (authzidNeeded || configuration.getAuthzid() != null) {
+                if (!mechanism.authzidSupported()) {
+                    continue;
+                }
             }
             if (serverMechanisms.contains(mechanismName)) {
                 // Create a new instance of the SASLMechanism for every authentication attempt.

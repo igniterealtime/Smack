@@ -27,6 +27,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
+import org.jxmpp.jid.BareJid;
 
 public class DigestMd5SaslTest extends AbstractSaslTest {
 
@@ -39,7 +40,9 @@ public class DigestMd5SaslTest extends AbstractSaslTest {
 
     protected void runTest(boolean useAuthzid) throws NotConnectedException, SmackException, InterruptedException, XmppStringprepException {
         if (useAuthzid) {
-            saslMechanism.authenticate(JidCreate.bareFrom("shazbat@xmpp.org"), "florian", "irrelevant", JidCreate.domainBareFrom("xmpp.org"), "secret");
+            BareJid authzid = JidCreate.entityBareFrom("shazbat@xmpp.org");
+            assertEquals("shazbat@xmpp.org", authzid.toString());
+            saslMechanism.authenticate(authzid, "florian", "irrelevant", JidCreate.domainBareFrom("xmpp.org"), "secret");
         } else {
             saslMechanism.authenticate(null, "florian", "irrelevant", JidCreate.domainBareFrom("xmpp.org"), "secret");
         }
@@ -67,6 +70,6 @@ public class DigestMd5SaslTest extends AbstractSaslTest {
     }
 
     private static void assertMapValue(String key, String value, Map<String, String> map) {
-        assertEquals(map.get(key), value);
+        assertEquals(value, map.get(key));
     }
 }

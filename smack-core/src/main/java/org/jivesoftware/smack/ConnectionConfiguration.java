@@ -31,6 +31,7 @@ import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -77,6 +78,7 @@ public abstract class ConnectionConfiguration {
     // Holds the socket factory that is used to generate the socket in the connection
     private final SocketFactory socketFactory;
 
+    private final BareJid authzid; 
     private final CharSequence username;
     private final String password;
     private final Resourcepart resource;
@@ -110,6 +112,7 @@ public abstract class ConnectionConfiguration {
     private final Set<String> enabledSaslMechanisms;
 
     protected ConnectionConfiguration(Builder<?,?> builder) {
+        authzid = builder.authzid;
         username = builder.username;
         password = builder.password;
         callbackHandler = builder.callbackHandler;
@@ -150,6 +153,15 @@ public abstract class ConnectionConfiguration {
 
         // If the enabledSaslmechanisms are set, then they must not be empty
         assert(enabledSaslMechanisms != null ? !enabledSaslMechanisms.isEmpty() : true);
+    }
+    
+    /**
+     * Returns the bare jid to be requested as the authorization identifier.
+     * 
+     * @return the authorization identifier.
+     */
+    public BareJid getAuthzid() {
+        return authzid;
     }
 
     /**
@@ -423,6 +435,7 @@ public abstract class ConnectionConfiguration {
         private String[] enabledSSLProtocols;
         private String[] enabledSSLCiphers;
         private HostnameVerifier hostnameVerifier;
+        private BareJid authzid;
         private CharSequence username;
         private String password;
         private Resourcepart resource;
@@ -440,6 +453,23 @@ public abstract class ConnectionConfiguration {
         private Set<String> enabledSaslMechanisms;
 
         protected Builder() {
+        }
+        
+        /**
+         * Set the XMPP entity's authorization identifier.
+         * <p>
+         * In XMPP, authorization identifiers are bare jids. In general, callers should allow the server to select the
+         * authorization identifier automatically, and not call this. Note that setting the authzid does not set the XMPP
+         * service domain, which should typically match.
+         * Calling this will also cause SASL mechanisms which do not support an authorization identifier to be dropped.
+         * </p>
+         * 
+         * @param authzid The BareJid to be requested as the authorization identifier.
+         * @return a reference to this builder.
+         */
+        public B setAuthzid(BareJid authzid) {
+            this.authzid = authzid;
+            return getThis();
         }
 
         /**
