@@ -78,18 +78,19 @@ public class XmppHostnameVerifier implements HostnameVerifier {
         }
         catch (SSLPeerUnverifiedException e) {
             // Not using certificates for peers, try verifying the principal
+            Principal peerPrincipal = null;
             try {
-                Principal peerPrincipal = session.getPeerPrincipal();
-                if (peerPrincipal instanceof KerberosPrincipal) {
-                    validPrincipal = match(hostname, (KerberosPrincipal) peerPrincipal);
-                }
-                else {
-                    LOGGER.info("Can't verify principal for " + hostname + ". Not kerberos");
-                }
+                peerPrincipal = session.getPeerPrincipal();
             }
             catch (SSLPeerUnverifiedException e2) {
                 LOGGER.log(Level.INFO, "Can't verify principal for " + hostname + ". Not kerberos",
                                 e2);
+            }
+            if (peerPrincipal instanceof KerberosPrincipal) {
+                validPrincipal = match(hostname, (KerberosPrincipal) peerPrincipal);
+            }
+            else {
+                LOGGER.info("Can't verify principal for " + hostname + ". Not kerberos");
             }
         }
 
