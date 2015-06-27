@@ -20,6 +20,7 @@ import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.util.Async;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.Random;
@@ -239,8 +240,17 @@ public class ReconnectionManager {
                         if (isReconnectionPossible(connection)) {
                             connection.connect();
                         }
+                        // TODO Starting with Smack 4.2, connect() will no
+                        // longer login automatically. So change this and the
+                        // previous lines to connection.connect().login() in the
+                        // 4.2, or any later, branch.
+                        if (!connection.isAuthenticated()) {
+                            connection.login();
+                        }
+                        // Successfully reconnected.
+                        attempts = 0;
                     }
-                    catch (Exception e) {
+                    catch (SmackException | IOException | XMPPException e) {
                         // Fires the failed reconnection notification
                         for (ConnectionListener listener : connection.connectionListeners) {
                             listener.reconnectionFailed(e);
