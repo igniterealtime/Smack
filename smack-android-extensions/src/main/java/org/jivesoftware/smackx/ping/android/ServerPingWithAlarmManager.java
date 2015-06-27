@@ -17,8 +17,10 @@
 
 package org.jivesoftware.smackx.ping.android;
 
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
 
@@ -110,10 +112,16 @@ public final class ServerPingWithAlarmManager extends Manager {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			LOGGER.fine("Ping Alarm broadcast received");
-			Iterator<XMPPConnection> it = INSTANCES.keySet().iterator();
-			while (it.hasNext()) {
-				XMPPConnection connection = it.next();
-				if (ServerPingWithAlarmManager.getInstanceFor(connection).isEnabled()) {
+			Set<Entry<XMPPConnection, ServerPingWithAlarmManager>> managers;
+			synchronized (ServerPingWithAlarmManager.class) {
+				// Make a copy to avoid ConcurrentModificationException when
+				// iterating directly over INSTANCES and the Set is modified
+				// concurrently by creating a new ServerPingWithAlarmManager.
+				managers = new HashSet<>(INSTANCES.entrySet());
+			}
+			for (Entry<XMPPConnection, ServerPingWithAlarmManager> entry : managers) {
+				XMPPConnection connection = entry.getKey();
+				if (entry.getValue().isEnabled()) {
 					LOGGER.fine("Calling pingServerIfNecessary for connection "
 							+ connection);
 					final PingManager pingManager = PingManager.getInstanceFor(connection);

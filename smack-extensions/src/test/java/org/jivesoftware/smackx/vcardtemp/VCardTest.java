@@ -41,6 +41,8 @@ public class VCardTest extends InitExtensions {
                     + "<FAMILY>Name</FAMILY>"
                     + "<GIVEN>User</GIVEN>"
                     + "<MIDDLE>PJ</MIDDLE>"
+                    + "<PREFIX>Mr.</PREFIX>"
+                    + "<SUFFIX>III</SUFFIX>"
                 + "</N>"
                 + "<NICKNAME>User dude</NICKNAME>"
                 + "<URL>http://www.igniterealtime.org</URL>"
@@ -92,6 +94,8 @@ public class VCardTest extends InitExtensions {
         assertEquals("Name", vCard.getLastName());
         assertEquals("PJ", vCard.getMiddleName());
         assertEquals("User dude", vCard.getNickName());
+        assertEquals("Mr.", vCard.getPrefix());
+        assertEquals("III", vCard.getSuffix());
 
         assertEquals("Programmer & tester", vCard.getField("TITLE"));
         assertEquals("Bug fixer", vCard.getField("ROLE"));

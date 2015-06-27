@@ -846,11 +846,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 return;
             }
 
-            if (config.getSecurityMode() == ConnectionConfiguration.SecurityMode.disabled) {
-                // Do not secure the connection using TLS since TLS was disabled
-                return;
+            if (config.getSecurityMode() != ConnectionConfiguration.SecurityMode.disabled) {
+                send(new StartTls());
             }
-            send(new StartTls());
         }
         // If TLS is required but the server doesn't offer it, disconnect
         // from the server and throw an error. First check if we've already negotiated TLS

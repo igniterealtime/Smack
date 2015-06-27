@@ -301,7 +301,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
-    protected ConnectionConfiguration getConfiguration() {
+    /**
+     * Get the connection configuration used by this connection.
+     *
+     * @return the connection configuration.
+     */
+    public ConnectionConfiguration getConfiguration() {
         return config;
     }
 

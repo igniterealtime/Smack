@@ -108,6 +108,8 @@ public class VCard extends IQ {
     private String firstName;
     private String lastName;
     private String middleName;
+    private String prefix;
+    private String suffix;
 
     private String emailHome;
     private String emailWork;
@@ -195,6 +197,24 @@ public class VCard extends IQ {
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
         // Update FN field
+        updateFN();
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+        updateFN();
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
         updateFN();
     }
 
@@ -572,6 +592,8 @@ public class VCard extends IQ {
             xml.optElement("FAMILY", lastName);
             xml.optElement("GIVEN", firstName);
             xml.optElement("MIDDLE", middleName);
+            xml.optElement("PREFIX", prefix);
+            xml.optElement("SUFFIX", suffix);
             xml.closeElement("N");
         }
         if (hasOrganizationFields()) {
@@ -696,7 +718,8 @@ public class VCard extends IQ {
     }
 
     private boolean hasNameField() {
-        return firstName != null || lastName != null || middleName != null;
+        return firstName != null || lastName != null || middleName != null
+                || prefix != null || suffix != null;
     }
 
     private boolean hasOrganizationFields() {
