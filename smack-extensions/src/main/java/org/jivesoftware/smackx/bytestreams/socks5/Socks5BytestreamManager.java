@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 
@@ -110,7 +110,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
     private final static Random randomGenerator = new Random();
 
     /* stores one Socks5BytestreamManager for each XMPP connection */
-    private final static Map<XMPPConnection, Socks5BytestreamManager> managers = new HashMap<XMPPConnection, Socks5BytestreamManager>();
+    private final static Map<XMPPConnection, Socks5BytestreamManager> managers = new WeakHashMap<>();
 
     /*
      * assigns a user to a listener that is informed if a bytestream request for this user is
