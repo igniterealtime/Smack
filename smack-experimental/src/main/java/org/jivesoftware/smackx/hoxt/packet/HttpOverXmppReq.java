@@ -24,15 +24,18 @@ import org.jivesoftware.smack.util.StringUtils;
  * @author Andriy Tsykholyas
  * @see <a href="http://xmpp.org/extensions/xep-0332.html">XEP-0332: HTTP over XMPP transport</a>
  */
-public class HttpOverXmppReq extends AbstractHttpOverXmpp {
+public final class HttpOverXmppReq extends AbstractHttpOverXmpp {
 
     public static final String ELEMENT = "req";
 
-
-    public HttpOverXmppReq(HttpMethod method, String resource) {
-        super(ELEMENT);
-        this.method = method;
-        this.resource = resource;
+    private HttpOverXmppReq(Builder builder) {
+        super(ELEMENT, builder);
+        this.method = builder.method;
+        this.resource = builder.resource;
+        this.maxChunkSize = builder.maxChunkSize;
+        this.ibb = builder.ibb;
+        this.jingle = builder.jingle;
+        this.sipub = builder.sipub;
         setType(Type.set);
     }
 
@@ -40,12 +43,12 @@ public class HttpOverXmppReq extends AbstractHttpOverXmpp {
     private String resource;
 
     // TODO: validate: xs:minInclusive value='256' xs:maxInclusive value='65536'
-    private int maxChunkSize = 0; // 0 means not set
+    private int maxChunkSize; // 0 means not set
 
-    private boolean sipub = true;
+    private boolean sipub;
 
-    private boolean ibb = true;
-    private boolean jingle = true;
+    private boolean ibb;
+    private boolean jingle;
 
     @Override
     protected IQChildElementXmlStringBuilder getIQHoxtChildElementBuilder(IQChildElementXmlStringBuilder builder) {
@@ -97,30 +100,12 @@ public class HttpOverXmppReq extends AbstractHttpOverXmpp {
     }
 
     /**
-     * Sets maxChunkSize attribute.
-     *
-     * @param maxChunkSize maxChunkSize attribute
-     */
-    public void setMaxChunkSize(int maxChunkSize) {
-        this.maxChunkSize = maxChunkSize;
-    }
-
-    /**
      * Returns sipub attribute.
      *
      * @return sipub attribute
      */
     public boolean isSipub() {
         return sipub;
-    }
-
-    /**
-     * Sets sipub attribute.
-     *
-     * @param sipub sipub attribute
-     */
-    public void setSipub(boolean sipub) {
-        this.sipub = sipub;
     }
 
     /**
@@ -133,15 +118,6 @@ public class HttpOverXmppReq extends AbstractHttpOverXmpp {
     }
 
     /**
-     * Sets ibb attribute.
-     *
-     * @param ibb ibb attribute
-     */
-    public void setIbb(boolean ibb) {
-        this.ibb = ibb;
-    }
-
-    /**
      * Returns jingle attribute.
      *
      * @return jingle attribute
@@ -150,12 +126,119 @@ public class HttpOverXmppReq extends AbstractHttpOverXmpp {
         return jingle;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     /**
-     * Sets jingle attribute.
-     *
-     * @param jingle jingle attribute
+     * A configuration builder for HttpOverXmppReq. Use {@link HttpOverXmppReq#builder()} to obtain a new instance and
+     * {@link #build} to build the configuration.
      */
-    public void setJingle(boolean jingle) {
-        this.jingle = jingle;
+    public static final class Builder extends AbstractHttpOverXmpp.Builder<Builder, HttpOverXmppReq> {
+
+        private HttpMethod method;
+        private String resource;
+
+        // TODO: validate: xs:minInclusive value='256' xs:maxInclusive
+        // value='65536'
+        private int maxChunkSize = 0; // 0 means not set
+
+        private boolean sipub = true;
+
+        private boolean ibb = true;
+        private boolean jingle = true;
+
+        private Builder() {
+
+        }
+
+        /**
+         * Sets method attribute.
+         *
+         * @param method attribute
+         *
+         * @return the builder
+         */
+        public Builder setMethod(HttpMethod method) {
+            this.method = method;
+            return this;
+        }
+
+        /**
+         * Sets resource attribute.
+         *
+         * @param resource attribute
+         * 
+         * @return the builder
+         */
+        public Builder setResource(String resource) {
+            this.resource = resource;
+            return this;
+        }
+
+        /**
+         * Sets jingle attribute.
+         *
+         * @param jingle jingle attribute
+         * 
+         * @return the builder
+         */
+        public Builder setJingle(boolean jingle) {
+            this.jingle = jingle;
+            return this;
+        }
+
+        /**
+         * Sets ibb attribute.
+         *
+         * @param ibb ibb attribute
+         * 
+         * @return the builder
+         */
+        public Builder setIbb(boolean ibb) {
+            this.ibb = ibb;
+            return this;
+        }
+
+        /**
+         * Sets sipub attribute.
+         *
+         * @param sipub sipub attribute
+         * 
+         * @return the builder
+         */
+        public Builder setSipub(boolean sipub) {
+            this.sipub = sipub;
+            return this;
+        }
+
+        /**
+         * Sets maxChunkSize attribute.
+         *
+         * @param maxChunkSize maxChunkSize attribute
+         * 
+         * @return the builder
+         */
+        public Builder setMaxChunkSize(int maxChunkSize) {
+            this.maxChunkSize = maxChunkSize;
+            return this;
+        }
+
+        @Override
+        public HttpOverXmppReq build() {
+            if (method == null) {
+                throw new IllegalArgumentException("Method cannot be null");
+            }
+            if (resource == null) {
+                throw new IllegalArgumentException("Resource cannot be null");
+            }
+            return new HttpOverXmppReq(this);
+        }
+
+        @Override
+        protected Builder getThis() {
+            return this;
+        }
+
     }
 }

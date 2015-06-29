@@ -24,17 +24,18 @@ import org.jivesoftware.smack.util.StringUtils;
  * @author Andriy Tsykholyas
  * @see <a href="http://xmpp.org/extensions/xep-0332.html">XEP-0332: HTTP over XMPP transport</a>
  */
-public class HttpOverXmppResp extends AbstractHttpOverXmpp {
+public final class HttpOverXmppResp extends AbstractHttpOverXmpp {
 
     public static final String ELEMENT = "resp";
 
-
-    public HttpOverXmppResp() {
-        super(ELEMENT);
+    private HttpOverXmppResp(Builder builder) {
+        super(ELEMENT, builder);
+        this.statusCode = builder.statusCode;
+        this.statusMessage = builder.statusMessage;
     }
 
     private int statusCode;
-    private String statusMessage = null;
+    private String statusMessage;
 
     @Override
     protected IQChildElementXmlStringBuilder getIQHoxtChildElementBuilder(IQChildElementXmlStringBuilder builder) {
@@ -60,15 +61,6 @@ public class HttpOverXmppResp extends AbstractHttpOverXmpp {
     }
 
     /**
-     * Sets statusCode attribute.
-     *
-     * @param statusCode statusCode attribute
-     */
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
-    }
-
-    /**
      * Returns statusMessage attribute.
      *
      * @return statusMessage attribute
@@ -77,12 +69,53 @@ public class HttpOverXmppResp extends AbstractHttpOverXmpp {
         return statusMessage;
     }
 
-    /**
-     * Sets statusMessage attribute.
-     *
-     * @param statusMessage statusMessage attribute
-     */
-    public void setStatusMessage(String statusMessage) {
-        this.statusMessage = statusMessage;
+    public static Builder builder() {
+        return new Builder();
     }
+
+    /**
+     * A configuration builder for HttpOverXmppReq. Use {@link HttpOverXmppResp#builder()} to obtain a new instance and
+     * {@link #build} to build the configuration.
+     */
+    public static final class Builder extends AbstractHttpOverXmpp.Builder<Builder, HttpOverXmppResp> {
+
+        private int statusCode = 200;
+        private String statusMessage = null;
+
+        /**
+         * Sets statusCode attribute.
+         *
+         * @param statusCode statusCode attribute
+         * 
+         * @return the builder
+         */
+        public Builder setStatusCode(int statusCode) {
+            this.statusCode = statusCode;
+            return this;
+        }
+
+        /**
+         * Sets statusMessage attribute.
+         *
+         * @param statusMessage statusMessage attribute
+         * 
+         * @return the builder
+         */
+        public Builder setStatusMessage(String statusMessage) {
+            this.statusMessage = statusMessage;
+            return this;
+
+        }
+
+        @Override
+        public HttpOverXmppResp build() {
+            return new HttpOverXmppResp(this);
+        }
+
+        @Override
+        protected Builder getThis() {
+            return this;
+        }
+    }
+
 }

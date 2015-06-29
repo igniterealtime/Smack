@@ -16,8 +16,10 @@
  */
 package org.jivesoftware.smackx.hoxt.provider;
 
+import org.jivesoftware.smackx.hoxt.packet.AbstractHttpOverXmpp;
 import org.jivesoftware.smackx.hoxt.packet.HttpMethod;
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppReq;
+import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -33,16 +35,13 @@ public class HttpOverXmppReqProvider extends AbstractHttpOverXmppProvider<HttpOv
     private static final String ATTRIBUTE_MAX_CHUNK_SIZE = "maxChunkSize";
 
     @Override
-    public HttpOverXmppReq parse(XmlPullParser parser, int initialDepth)
-                    throws Exception {
+    public HttpOverXmppReq parse(XmlPullParser parser, int initialDepth) throws Exception {
         String method = parser.getAttributeValue("", ATTRIBUTE_METHOD);
         String resource = parser.getAttributeValue("", ATTRIBUTE_RESOURCE);
         String version = parser.getAttributeValue("", ATTRIBUTE_VERSION);
         String maxChunkSize = parser.getAttributeValue("", ATTRIBUTE_MAX_CHUNK_SIZE);
 
         HttpMethod reqMethod = HttpMethod.valueOf(method);
-        HttpOverXmppReq req = new HttpOverXmppReq(reqMethod, resource);
-        req.setVersion(version);
 
         Boolean sipub = true;
         Boolean jingle = true;
@@ -62,16 +61,14 @@ public class HttpOverXmppReqProvider extends AbstractHttpOverXmppProvider<HttpOv
             jingle = Boolean.valueOf(jingleStr);
         }
 
-        req.setIbb(ibb);
-        req.setSipub(sipub);
-        req.setJingle(jingle);
-
+        int maxChunkSizeValue = 0;
         if (maxChunkSize != null) {
-            int maxChunkSizeValue = Integer.parseInt(maxChunkSize);
-            req.setMaxChunkSize(maxChunkSizeValue);
+            maxChunkSizeValue = Integer.parseInt(maxChunkSize);
         }
 
-        parseHeadersAndData(parser, HttpOverXmppReq.ELEMENT, req);
-        return req;
+        HeadersExtension headers = parseHeaders(parser);
+        AbstractHttpOverXmpp.Data data = parseData(parser);
+
+        return HttpOverXmppReq.builder().setMethod(reqMethod).setResource(resource).setIbb(ibb).setSipub(sipub).setJingle(jingle).setMaxChunkSize(maxChunkSizeValue).setData(data).setHeaders(headers).setVersion(version).build();
     }
 }

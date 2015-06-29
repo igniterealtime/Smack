@@ -49,73 +49,78 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
     static final String ATTRIBUTE_VERSION = "version";
 
     /**
-     * Parses Headers and Data elements.
+     * Parses HeadersExtension element if any.
      *
-     * @param parser      parser
-     * @param elementName name of concrete implementation of this element
-     * @param body        parent Body element
-     * @throws Exception 
+     * @param parser parser
+     * @return HeadersExtension or null if no headers
+     * @throws Exception
      */
-    protected void parseHeadersAndData(XmlPullParser parser, String elementName, AbstractHttpOverXmpp body) throws Exception {
-        boolean done = false;
-
-        while (!done) {
-            int eventType = parser.next();
-
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals(HeadersExtension.ELEMENT)) {
-                    HeadersExtension headersExtension = HeadersProvider.INSTANCE.parse(parser);
-                    body.setHeaders(headersExtension);
-                } else if (parser.getName().endsWith(ELEMENT_DATA)) {
-                    AbstractHttpOverXmpp.Data data = parseData(parser);
-                    body.setData(data);
-                } else {
-                    throw new IllegalArgumentException("unexpected tag:" + parser.getName() + "'");
-                }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(elementName)) {
-                    done = true;
-                }
-            }
+    protected HeadersExtension parseHeaders(XmlPullParser parser) throws Exception {
+        HeadersExtension headersExtension = null;
+        /* We are either at start of headers, start of data or end of req/res */
+        if (parser.next() == XmlPullParser.START_TAG && parser.getName().equals(HeadersExtension.ELEMENT)) {
+            headersExtension = HeadersProvider.INSTANCE.parse(parser);
+            parser.next();
         }
+
+        return headersExtension;
     }
 
-    private AbstractHttpOverXmpp.Data parseData(XmlPullParser parser) throws XmlPullParserException, IOException {
+    /**
+     * Parses Data element if any.
+     *
+     * @param parser parser
+     * @return Data or null if no data
+     * 
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    protected AbstractHttpOverXmpp.Data parseData(XmlPullParser parser) throws XmlPullParserException, IOException {
         NamedElement child = null;
         boolean done = false;
+        AbstractHttpOverXmpp.Data data = null;
+        /* We are either at start of data or end of req/res */
+        if (parser.getEventType() == XmlPullParser.START_TAG) {
+            while (!done) {
+                int eventType = parser.next();
 
-        while (!done) {
-            int eventType = parser.next();
-
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals(ELEMENT_TEXT)) {
-                    child = parseText(parser);
-                } else if (parser.getName().equals(ELEMENT_BASE_64)) {
-                    child = parseBase64(parser);
-                } else if (parser.getName().equals(ELEMENT_CHUNKED_BASE_64)) {
-                    child = parseChunkedBase64(parser);
-                } else if (parser.getName().equals(ELEMENT_XML)) {
-                    child = parseXml(parser);
-                } else if (parser.getName().equals(ELEMENT_IBB)) {
-                    child = parseIbb(parser);
-                } else if (parser.getName().equals(ELEMENT_SIPUB)) {
-                    // TODO: sipub is allowed by xep-0332, but is not implemented yet
-                    throw new UnsupportedOperationException("sipub is not supported yet");
-                } else if (parser.getName().equals(ELEMENT_JINGLE)) {
-                    // TODO: jingle is allowed by xep-0332, but is not implemented yet
-                    throw new UnsupportedOperationException("jingle is not supported yet");
-                } else {
-                    // other elements are not allowed
-                    throw new IllegalArgumentException("unsupported child tag: " + parser.getName());
-                }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(ELEMENT_DATA)) {
-                    done = true;
+                if (eventType == XmlPullParser.START_TAG) {
+                    switch (parser.getName()) {
+                    case ELEMENT_TEXT:
+                        child = parseText(parser);
+                        break;
+                    case ELEMENT_BASE_64:
+                        child = parseBase64(parser);
+                        break;
+                    case ELEMENT_CHUNKED_BASE_64:
+                        child = parseChunkedBase64(parser);
+                        break;
+                    case ELEMENT_XML:
+                        child = parseXml(parser);
+                        break;
+                    case ELEMENT_IBB:
+                        child = parseIbb(parser);
+                        break;
+                    case ELEMENT_SIPUB:
+                        // TODO: sipub is allowed by xep-0332, but is not
+                        // implemented yet
+                        throw new UnsupportedOperationException("sipub is not supported yet");
+                    case ELEMENT_JINGLE:
+                        // TODO: jingle is allowed by xep-0332, but is not
+                        // implemented yet
+                        throw new UnsupportedOperationException("jingle is not supported yet");
+                    default:
+                        // other elements are not allowed
+                        throw new IllegalArgumentException("unsupported child tag: " + parser.getName());
+                    }
+                } else if (eventType == XmlPullParser.END_TAG) {
+                    if (parser.getName().equals(ELEMENT_DATA)) {
+                        done = true;
+                    }
                 }
             }
+            data = new AbstractHttpOverXmpp.Data(child);
         }
-
-        AbstractHttpOverXmpp.Data data = new AbstractHttpOverXmpp.Data(child);
         return data;
     }
 
