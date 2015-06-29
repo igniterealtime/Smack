@@ -31,20 +31,25 @@ public abstract class AbstractHttpOverXmpp extends IQ {
 
     public static final String NAMESPACE = "urn:xmpp:http";
 
-    protected AbstractHttpOverXmpp(String element) {
-        super(element, NAMESPACE);
-    }
-
     private HeadersExtension headers;
     private Data data;
 
     protected String version;
 
+    protected AbstractHttpOverXmpp(String element, Builder<?, ?> builder) {
+        super(element, NAMESPACE);
+        this.headers = builder.headers;
+        this.data = builder.data;
+        this.version = builder.version;
+    }
+
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         IQChildElementXmlStringBuilder builder = getIQHoxtChildElementBuilder(xml);
-        builder.optAppend(headers.toXML());
-        builder.optAppend(data.toXML());
-
+        builder.optAppend(headers);
+        /* data cannot be fed to optAppend */
+        if (data != null) {
+            builder.optAppend(data.toXML());
+        }
         return builder;
     }
 
@@ -65,30 +70,12 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     }
 
     /**
-     * Sets version attribute.
-     *
-     * @param version version attribute
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    /**
      * Returns Headers element.
      *
      * @return Headers element
      */
     public HeadersExtension getHeaders() {
         return headers;
-    }
-
-    /**
-     * Sets Headers element.
-     *
-     * @param headers Headers element
-     */
-    public void setHeaders(HeadersExtension headers) {
-        this.headers = headers;
     }
 
     /**
@@ -101,16 +88,65 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     }
 
     /**
-     * Sets Data element.
+     * A builder for XMPP connection configurations.
+     * <p>
+     * See ConnectionConfiguration Buidler for more details.
+     * </p>
      *
-     * @param data Headers element
+     * @param <B> the builder type parameter.
+     * @param <C> the resulting HttpOverXmpp IQ
      */
-    public void setData(Data data) {
-        this.data = data;
+    public static abstract class Builder<B extends Builder<B, C>, C extends AbstractHttpOverXmpp> {
+
+        private HeadersExtension headers;
+        private Data data;
+
+        private String version = "1.1";
+
+        /**
+         * Sets Data element.
+         *
+         * @param data Headers element
+         *
+         * @return the builder
+         */
+        public B setData(Data data) {
+            this.data = data;
+            return getThis();
+        }
+
+        /**
+         * Sets Headers element.
+         *
+         * @param headers Headers element
+         * 
+         * @return the builder
+         */
+        public B setHeaders(HeadersExtension headers) {
+            this.headers = headers;
+            return getThis();
+        }
+
+        /**
+         * Sets version attribute.
+         *
+         * @param version version attribute
+         *
+         * @return the builder
+         */
+        public B setVersion(String version) {
+            this.version = version;
+            return getThis();
+        }
+
+        public abstract C build();
+
+        protected abstract B getThis();
     }
 
     /**
-     * Representation of Data element.<p>
+     * Representation of Data element.
+     * <p>
      * This class is immutable.
      */
     public static class Data {
@@ -150,7 +186,8 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     }
 
     /**
-     * Representation of Text element.<p>
+     * Representation of Text element.
+     * <p>
      * This class is immutable.
      */
     public static class Text implements NamedElement {
@@ -193,7 +230,8 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     }
 
     /**
-     * Representation of Base64 element.<p>
+     * Representation of Base64 element.
+     * <p>
      * This class is immutable.
      */
     public static class Base64 implements NamedElement {
@@ -236,7 +274,8 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     }
 
     /**
-     * Representation of Xml element.<p>
+     * Representation of Xml element.
+     * <p>
      * This class is immutable.
      */
     public static class Xml implements NamedElement {
@@ -279,7 +318,8 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     }
 
     /**
-     * Representation of ChunkedBase64 element.<p>
+     * Representation of ChunkedBase64 element.
+     * <p>
      * This class is immutable.
      */
     public static class ChunkedBase64 implements NamedElement {
@@ -321,7 +361,8 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     }
 
     /**
-     * Representation of Ibb element.<p>
+     * Representation of Ibb element.
+     * <p>
      * This class is immutable.
      */
     public static class Ibb implements NamedElement {
