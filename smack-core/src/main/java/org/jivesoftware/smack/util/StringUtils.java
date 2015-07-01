@@ -41,18 +41,17 @@ public class StringUtils {
     public static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
 
     /**
-     * Escapes all necessary characters in the String so that it can be used
+     * Escapes all necessary characters in the CharSequence so that it can be used
      * in an XML doc.
      *
-     * @param string the string to escape.
+     * @param input the CharSequence to escape.
      * @return the string with appropriate characters escaped.
      */
-    public static CharSequence escapeForXML(final String string) {
-        if (string == null) {
+    public static CharSequence escapeForXML(final CharSequence input) {
+        if (input == null) {
             return null;
         }
-        final char[] input = string.toCharArray();
-        final int len = input.length;
+        final int len = input.length();
         final StringBuilder out = new StringBuilder((int)(len*1.3));
         CharSequence toAppend;
         char ch;
@@ -60,7 +59,7 @@ public class StringUtils {
         int i = 0;
         while (i < len) {
             toAppend = null;
-            ch = input[i];
+            ch = input.charAt(i);
             switch(ch) {
             case '<':
                 toAppend = LT_ENCODE;
@@ -82,7 +81,7 @@ public class StringUtils {
             }
             if (toAppend != null) {
                 if (i > last) {
-                    out.append(input, last, i - last);
+                    out.append(input, last, i);
                 }
                 out.append(toAppend);
                 last = ++i;
@@ -91,10 +90,10 @@ public class StringUtils {
             }
         }
         if (last == 0) {
-            return string;
+            return input;
         }
         if (i > last) {
-            out.append(input, last, i - last);
+            out.append(input, last, i);
         }
         return out;
     }
