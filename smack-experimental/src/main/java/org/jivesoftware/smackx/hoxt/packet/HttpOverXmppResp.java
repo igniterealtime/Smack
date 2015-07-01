@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.hoxt.packet;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.Objects;
 
 /**
  * Represents Resp IQ packet.
@@ -30,24 +30,19 @@ public final class HttpOverXmppResp extends AbstractHttpOverXmpp {
 
     private HttpOverXmppResp(Builder builder) {
         super(ELEMENT, builder);
-        this.statusCode = builder.statusCode;
+        this.statusCode = Objects.requireNonNull(builder.statusCode, "statusCode must not be null");
         this.statusMessage = builder.statusMessage;
     }
 
-    private int statusCode;
-    private String statusMessage;
+    private final int statusCode;
+    private final String statusMessage;
 
     @Override
     protected IQChildElementXmlStringBuilder getIQHoxtChildElementBuilder(IQChildElementXmlStringBuilder builder) {
-        builder.append(" ");
-        builder.append("version='").append(StringUtils.escapeForXML(version)).append("'");
-        builder.append(" ");
-        builder.append("statusCode='").append(Integer.toString(statusCode)).append("'");
-        if (statusMessage != null) {
-            builder.append(" ");
-            builder.append("statusMessage='").append(StringUtils.escapeForXML(statusMessage)).append("'");
-        }
-        builder.append(">");
+        builder.attribute("version", getVersion());
+        builder.attribute("statusCode", statusCode);
+        builder.optAttribute("statusMessage", statusMessage);
+        builder.rightAngleBracket();
         return builder;
     }
 
@@ -81,6 +76,9 @@ public final class HttpOverXmppResp extends AbstractHttpOverXmpp {
 
         private int statusCode = 200;
         private String statusMessage = null;
+
+        private Builder() {
+        }
 
         /**
          * Sets statusCode attribute.

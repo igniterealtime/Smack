@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.hoxt.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 
@@ -31,25 +32,22 @@ public abstract class AbstractHttpOverXmpp extends IQ {
 
     public static final String NAMESPACE = "urn:xmpp:http";
 
-    private HeadersExtension headers;
-    private Data data;
+    private final HeadersExtension headers;
+    private final Data data;
 
-    protected String version;
+    private final String version;
 
     protected AbstractHttpOverXmpp(String element, Builder<?, ?> builder) {
         super(element, NAMESPACE);
         this.headers = builder.headers;
         this.data = builder.data;
-        this.version = builder.version;
+        this.version = Objects.requireNonNull(builder.version, "version must not be null");
     }
 
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         IQChildElementXmlStringBuilder builder = getIQHoxtChildElementBuilder(xml);
         builder.optAppend(headers);
-        /* data cannot be fed to optAppend */
-        if (data != null) {
-            builder.optAppend(data.toXML());
-        }
+        builder.optAppend(data);
         return builder;
     }
 
@@ -149,7 +147,9 @@ public abstract class AbstractHttpOverXmpp extends IQ {
      * <p>
      * This class is immutable.
      */
-    public static class Data {
+    public static class Data implements NamedElement {
+
+        public static final String ELEMENT = "data";
 
         private final NamedElement child;
 
@@ -167,12 +167,13 @@ public abstract class AbstractHttpOverXmpp extends IQ {
          *
          * @return xml representation of this object
          */
-        public String toXML() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("<data>");
-            builder.append(child.toXML());
-            builder.append("</data>");
-            return builder.toString();
+        @Override
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.rightAngleBracket();
+            xml.element(child);
+            xml.closeElement(this);
+            return xml;
         }
 
         /**
@@ -182,6 +183,11 @@ public abstract class AbstractHttpOverXmpp extends IQ {
          */
         public NamedElement getChild() {
             return child;
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
         }
     }
 

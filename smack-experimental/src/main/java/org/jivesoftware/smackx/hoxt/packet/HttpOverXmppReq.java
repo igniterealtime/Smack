@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Andriy Tsykholyas
+ * Copyright 2014 Andriy Tsykholyas, 2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 package org.jivesoftware.smackx.hoxt.packet;
-
-import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Represents Req IQ packet.
@@ -39,36 +37,26 @@ public final class HttpOverXmppReq extends AbstractHttpOverXmpp {
         setType(Type.set);
     }
 
-    private HttpMethod method;
-    private String resource;
+    private final HttpMethod method;
+    private final String resource;
 
-    // TODO: validate: xs:minInclusive value='256' xs:maxInclusive value='65536'
-    private int maxChunkSize; // 0 means not set
+    private final int maxChunkSize;
 
-    private boolean sipub;
+    private final boolean sipub;
 
-    private boolean ibb;
-    private boolean jingle;
+    private final boolean ibb;
+    private final boolean jingle;
 
     @Override
     protected IQChildElementXmlStringBuilder getIQHoxtChildElementBuilder(IQChildElementXmlStringBuilder builder) {
-        builder.append(" ");
-        builder.append("method='").append(method.toString()).append("'");
-        builder.append(" ");
-        builder.append("resource='").append(StringUtils.escapeForXML(resource)).append("'");
-        builder.append(" ");
-        builder.append("version='").append(StringUtils.escapeForXML(version)).append("'");
-        if (maxChunkSize != 0) {
-            builder.append(" ");
-            builder.append("maxChunkSize='").append(Integer.toString(maxChunkSize)).append("'");
-        }
-        builder.append(" ");
-        builder.append("sipub='").append(Boolean.toString(sipub)).append("'");
-        builder.append(" ");
-        builder.append("ibb='").append(Boolean.toString(ibb)).append("'");
-        builder.append(" ");
-        builder.append("jingle='").append(Boolean.toString(jingle)).append("'");
-        builder.append(">");
+        builder.attribute("method", method);
+        builder.attribute("resource", resource);
+        builder.attribute("version", getVersion());
+        builder.optIntAttribute("maxChunkSize", maxChunkSize);
+        builder.optBooleanAttributeDefaultTrue("sipub", sipub);
+        builder.optBooleanAttributeDefaultTrue("ibb", ibb);
+        builder.optBooleanAttributeDefaultTrue("jingle", jingle);
+        builder.rightAngleBracket();
         return builder;
     }
 
@@ -139,9 +127,7 @@ public final class HttpOverXmppReq extends AbstractHttpOverXmpp {
         private HttpMethod method;
         private String resource;
 
-        // TODO: validate: xs:minInclusive value='256' xs:maxInclusive
-        // value='65536'
-        private int maxChunkSize = 0; // 0 means not set
+        private int maxChunkSize = -1;
 
         private boolean sipub = true;
 
@@ -149,7 +135,6 @@ public final class HttpOverXmppReq extends AbstractHttpOverXmpp {
         private boolean jingle = true;
 
         private Builder() {
-
         }
 
         /**
@@ -220,6 +205,9 @@ public final class HttpOverXmppReq extends AbstractHttpOverXmpp {
          * @return the builder
          */
         public Builder setMaxChunkSize(int maxChunkSize) {
+            if (maxChunkSize < 256 || maxChunkSize > 65536) {
+                throw new IllegalArgumentException("maxChunkSize must be within [256, 65536]");
+            }
             this.maxChunkSize = maxChunkSize;
             return this;
         }

@@ -16,10 +16,8 @@
  */
 package org.jivesoftware.smackx.hoxt.provider;
 
-import org.jivesoftware.smackx.hoxt.packet.AbstractHttpOverXmpp;
 import org.jivesoftware.smackx.hoxt.packet.HttpMethod;
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppReq;
-import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -36,39 +34,35 @@ public class HttpOverXmppReqProvider extends AbstractHttpOverXmppProvider<HttpOv
 
     @Override
     public HttpOverXmppReq parse(XmlPullParser parser, int initialDepth) throws Exception {
+        HttpOverXmppReq.Builder builder = HttpOverXmppReq.builder();
+        builder.setResource(parser.getAttributeValue("", ATTRIBUTE_RESOURCE));
+        builder.setVersion(parser.getAttributeValue("", ATTRIBUTE_VERSION));
+
         String method = parser.getAttributeValue("", ATTRIBUTE_METHOD);
-        String resource = parser.getAttributeValue("", ATTRIBUTE_RESOURCE);
-        String version = parser.getAttributeValue("", ATTRIBUTE_VERSION);
-        String maxChunkSize = parser.getAttributeValue("", ATTRIBUTE_MAX_CHUNK_SIZE);
-
-        HttpMethod reqMethod = HttpMethod.valueOf(method);
-
-        Boolean sipub = true;
-        Boolean jingle = true;
-        Boolean ibb = true;
+        builder.setMethod(HttpMethod.valueOf(method));
 
         String sipubStr = parser.getAttributeValue("", AbstractHttpOverXmppProvider.ELEMENT_SIPUB);
         String ibbStr = parser.getAttributeValue("", AbstractHttpOverXmppProvider.ELEMENT_IBB);
         String jingleStr = parser.getAttributeValue("", AbstractHttpOverXmppProvider.ELEMENT_JINGLE);
 
         if (sipubStr != null) {
-            sipub = Boolean.valueOf(sipubStr);
+            builder.setSipub(Boolean.valueOf(sipubStr));
         }
         if (ibbStr != null) {
-            ibb = Boolean.valueOf(ibbStr);
+            builder.setIbb(Boolean.valueOf(ibbStr));
         }
         if (jingleStr != null) {
-            jingle = Boolean.valueOf(jingleStr);
+            builder.setJingle(Boolean.valueOf(jingleStr));
         }
 
-        int maxChunkSizeValue = 0;
+        String maxChunkSize = parser.getAttributeValue("", ATTRIBUTE_MAX_CHUNK_SIZE);
         if (maxChunkSize != null) {
-            maxChunkSizeValue = Integer.parseInt(maxChunkSize);
+            builder.setMaxChunkSize(Integer.parseInt(maxChunkSize));
         }
 
-        HeadersExtension headers = parseHeaders(parser);
-        AbstractHttpOverXmpp.Data data = parseData(parser);
+        builder.setHeaders(parseHeaders(parser));
+        builder.setData(parseData(parser));
 
-        return HttpOverXmppReq.builder().setMethod(reqMethod).setResource(resource).setIbb(ibb).setSipub(sipub).setJingle(jingle).setMaxChunkSize(maxChunkSizeValue).setData(data).setHeaders(headers).setVersion(version).build();
+        return builder.build();
     }
 }

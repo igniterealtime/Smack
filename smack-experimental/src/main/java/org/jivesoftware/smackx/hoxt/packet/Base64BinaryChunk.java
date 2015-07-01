@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Andriy Tsykholyas
+ * Copyright 2014 Andriy Tsykholyas, 2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package org.jivesoftware.smackx.hoxt.packet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.hoxt.HOXTManager;
 
 /**
@@ -47,8 +49,11 @@ public class Base64BinaryChunk implements ExtensionElement {
      * @param last     value of last attribute
      */
     public Base64BinaryChunk(String text, String streamId, int nr, boolean last) {
-        this.text = text;
-        this.streamId = streamId;
+        this.text = Objects.requireNonNull(text, "text must not be null");
+        this.streamId = Objects.requireNonNull(streamId, "streamId must not be null");
+        if (nr < 0) {
+            throw new IllegalArgumentException("nr must be a non negative integer");
+        }
         this.nr = nr;
         this.last = last;
     }
@@ -111,17 +116,14 @@ public class Base64BinaryChunk implements ExtensionElement {
     }
 
     @Override
-    public String toXML() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<chunk xmlns='urn:xmpp:http' streamId='");
-        builder.append(streamId);
-        builder.append("' nr='");
-        builder.append(nr);
-        builder.append("' last='");
-        builder.append(Boolean.toString(last));
-        builder.append("'>");
-        builder.append(text);
-        builder.append("</chunk>");
-        return builder.toString();
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.attribute("streamId", streamId);
+        xml.attribute("nr", nr);
+        xml.optBooleanAttribute("last", last);
+        xml.rightAngleBracket();
+        xml.append(text);
+        xml.closeElement(this);
+        return xml;
     }
 }

@@ -65,7 +65,7 @@ public class HttpOverXmppReqProviderTest {
         assertEquals(req.isJingle(), true);
     }
 
-    private HttpOverXmppReq parseReq(String string) throws Exception {
+    private static HttpOverXmppReq parseReq(String string) throws Exception {
         HttpOverXmppReqProvider provider = new HttpOverXmppReqProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
         IQ iq = provider.parse(parser);

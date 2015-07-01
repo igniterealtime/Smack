@@ -181,7 +181,7 @@ public class AbstractHttpOverXmppProviderTest {
     }
 
     // TODO The method name makes no sense after the HOXT re-design, change to parseHttpOverXmppResp()
-    private HttpOverXmppResp parseAbstractBody(String string, String tag) throws Exception {
+    private static HttpOverXmppResp parseAbstractBody(String string, String tag) throws Exception {
         HttpOverXmppRespProvider provider = new HttpOverXmppRespProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string, tag);
 
@@ -190,7 +190,7 @@ public class AbstractHttpOverXmppProviderTest {
         return (HttpOverXmppResp) iq;
     }
 
-    private void checkHeaders(HeadersExtension headers, Map<String, String> expectedHeaders) {
+    private static void checkHeaders(HeadersExtension headers, Map<String, String> expectedHeaders) {
         Collection<Header> collection = headers.getHeaders();
 
         assertEquals(collection.size(), expectedHeaders.size());

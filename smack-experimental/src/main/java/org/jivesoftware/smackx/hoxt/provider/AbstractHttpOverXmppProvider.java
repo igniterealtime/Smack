@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Andriy Tsykholyas
+ * Copyright 2014 Andriy Tsykholyas, 2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
         return data;
     }
 
-    private AbstractHttpOverXmpp.Text parseText(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static AbstractHttpOverXmpp.Text parseText(XmlPullParser parser) throws XmlPullParserException, IOException {
         String text = null;
         boolean done = false;
 
@@ -147,7 +147,8 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
         return new AbstractHttpOverXmpp.Text(text);
     }
 
-    private AbstractHttpOverXmpp.Xml parseXml(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static AbstractHttpOverXmpp.Xml parseXml(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
         StringBuilder builder = new StringBuilder();
         boolean done = false;
         boolean startClosed = true;
@@ -195,7 +196,7 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
         return new AbstractHttpOverXmpp.Xml(builder.toString());
     }
 
-    private void appendXmlAttributes(XmlPullParser parser, StringBuilder builder) {
+    private static void appendXmlAttributes(XmlPullParser parser, StringBuilder builder) {
         // NOTE: for now we ignore namespaces
         int count = parser.getAttributeCount();
 
@@ -211,7 +212,8 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
         }
     }
 
-    private AbstractHttpOverXmpp.Base64 parseBase64(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static AbstractHttpOverXmpp.Base64 parseBase64(XmlPullParser parser) throws XmlPullParserException,
+                    IOException {
         String text = null;
         boolean done = false;
 
@@ -235,7 +237,8 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
         return new AbstractHttpOverXmpp.Base64(text);
     }
 
-    private AbstractHttpOverXmpp.ChunkedBase64 parseChunkedBase64(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static AbstractHttpOverXmpp.ChunkedBase64 parseChunkedBase64(XmlPullParser parser)
+                    throws XmlPullParserException, IOException {
         String streamId = parser.getAttributeValue("", ATTRIBUTE_STREAM_ID);
         AbstractHttpOverXmpp.ChunkedBase64 child = new AbstractHttpOverXmpp.ChunkedBase64(streamId);
         boolean done = false;
@@ -256,7 +259,7 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
         return child;
     }
 
-    private AbstractHttpOverXmpp.Ibb parseIbb(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static AbstractHttpOverXmpp.Ibb parseIbb(XmlPullParser parser) throws XmlPullParserException, IOException {
         String sid = parser.getAttributeValue("", ATTRIBUTE_SID);
         AbstractHttpOverXmpp.Ibb child = new AbstractHttpOverXmpp.Ibb(sid);
         boolean done = false;
