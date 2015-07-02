@@ -481,7 +481,7 @@ public class PacketParserUtils {
                 }
                 break;
             case XmlPullParser.TEXT:
-                xml.append(parser.getText());
+                xml.escape(parser.getText());
                 break;
             }
             event = parser.next();
@@ -497,7 +497,12 @@ public class PacketParserUtils {
             // Only append the text if the parser is not on on an empty element' start tag. Empty elements are reported
             // twice, so in order to prevent duplication we only add their text when we are on their end tag.
             if (!(event == XmlPullParser.START_TAG && parser.isEmptyElementTag())) {
-                sb.append(parser.getText());
+                CharSequence text = parser.getText();
+                if (event == XmlPullParser.TEXT) {
+                    // TODO the toString() can be removed in Smack 4.2.
+                    text = StringUtils.escapeForXML(text.toString());
+                }
+                sb.append(text);
             }
             if (event == XmlPullParser.END_TAG && parser.getDepth() <= depth) {
                 break outerloop;
