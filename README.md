@@ -3,6 +3,8 @@ Smack
 
 [![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)  [![Coverage Status](https://coveralls.io/repos/igniterealtime/Smack/badge.svg)](https://coveralls.io/r/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smackxmpp/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smackxmpp) [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/thing/3480125)
 
+Instructions how to use Smack in your Java or Android project are provided in the [Smack 4.1 Readme and Upgrade Guide](https://github.com/igniterealtime/Smack/wiki/Smack-4.1-Readme-and-Upgrade-Guide).
+
 About
 -----
 
