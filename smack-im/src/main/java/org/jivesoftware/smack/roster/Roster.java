@@ -145,9 +145,16 @@ public class Roster extends Manager {
      */
     private final Object rosterListenersAndEntriesLock = new Object();
 
-    // The roster is marked as initialized when at least a single roster packet
-    // has been received and processed.
-    private boolean loaded = false;
+    private enum RosterState {
+        uninitialized,
+        loading,
+        loaded,
+    }
+
+    /**
+     * The current state of the roster.
+     */
+    private RosterState rosterState = RosterState.uninitialized;
 
     private final PresencePacketListener presencePacketListener = new PresencePacketListener();
 
@@ -290,9 +297,11 @@ public class Roster extends Manager {
         if (rosterStore != null && isRosterVersioningSupported()) {
             packet.setVersion(rosterStore.getRosterVersion());
         }
+        rosterState = RosterState.loading;
         connection.sendIqWithResponseCallback(packet, new RosterResultListener(), new ExceptionCallback() {
             @Override
             public void processException(Exception exception) {
+                rosterState = RosterState.uninitialized;
                 LOGGER.log(Level.SEVERE, "Exception reloading roster" , exception);
             }
         });
@@ -333,12 +342,12 @@ public class Roster extends Manager {
     protected boolean waitUntilLoaded() throws InterruptedException {
         long waitTime = connection().getPacketReplyTimeout();
         long start = System.currentTimeMillis();
-        while (!loaded) {
+        while (!isLoaded()) {
             if (waitTime <= 0) {
                 break;
             }
             synchronized (this) {
-                if (!loaded) {
+                if (!isLoaded()) {
                     wait(waitTime);
                 }
             }
@@ -356,7 +365,7 @@ public class Roster extends Manager {
      * @since 4.1
      */
     public boolean isLoaded() {
-        return loaded;
+        return rosterState == RosterState.loaded;
     }
 
     /**
@@ -963,7 +972,7 @@ public class Roster extends Manager {
                 }
             }
         }
-        loaded = false;
+        rosterState = RosterState.uninitialized;
     }
 
     /**
@@ -1177,15 +1186,16 @@ public class Roster extends Manager {
             // Try to ensure that the roster is loaded when processing presence stanzas. While the
             // presence listener is synchronous, the roster result listener is not, which means that
             // the presence listener may be invoked with a not yet loaded roster.
-            boolean loaded;
-            try {
-                loaded = waitUntilLoaded();
+            if (rosterState == RosterState.loading) {
+                try {
+                    waitUntilLoaded();
+                }
+                catch (InterruptedException e) {
+                    LOGGER.log(Level.INFO, "Presence listener was interrupted", e);
+
+                }
             }
-            catch (InterruptedException e) {
-                LOGGER.log(Level.INFO, "Presence listener was interrupted", e);
-                loaded = Roster.this.loaded;
-            }
-            if (loaded) {
+            if (!isLoaded()) {
                 LOGGER.warning("Roster not loaded while processing presence stanza");
             }
             final XMPPConnection connection = connection();
@@ -1350,7 +1360,7 @@ public class Roster extends Manager {
                 }
             }
 
-            loaded = true;
+            rosterState = RosterState.loaded;
             synchronized (Roster.this) {
                 Roster.this.notifyAll();
             }
