@@ -303,9 +303,10 @@ public class Roster extends Manager {
      *
      * @throws NotLoggedInException
      * @throws NotConnectedException
+     * @throws InterruptedException 
      * @since 4.1
      */
-    public void reloadAndWait() throws NotLoggedInException, NotConnectedException {
+    public void reloadAndWait() throws NotLoggedInException, NotConnectedException, InterruptedException {
         reload();
         waitUntilLoaded();
     }
@@ -329,24 +330,17 @@ public class Roster extends Manager {
         return true;
     }
 
-    protected boolean waitUntilLoaded() {
-        final XMPPConnection connection = connection();
+    protected boolean waitUntilLoaded() throws InterruptedException {
+        long waitTime = connection().getPacketReplyTimeout();
+        long start = System.currentTimeMillis();
         while (!loaded) {
-            long waitTime = connection.getPacketReplyTimeout();
-            long start = System.currentTimeMillis();
             if (waitTime <= 0) {
                 break;
             }
-            try {
-                synchronized (this) {
-                    if (!loaded) {
-                        wait(waitTime);
-                    }
+            synchronized (this) {
+                if (!loaded) {
+                    wait(waitTime);
                 }
-            }
-            catch (InterruptedException e) {
-                LOGGER.log(Level.FINE, "interrupted", e);
-                break;
             }
             long now = System.currentTimeMillis();
             waitTime -= now - start;
@@ -1183,7 +1177,14 @@ public class Roster extends Manager {
             // Try to ensure that the roster is loaded when processing presence stanzas. While the
             // presence listener is synchronous, the roster result listener is not, which means that
             // the presence listener may be invoked with a not yet loaded roster.
-            boolean loaded = waitUntilLoaded();
+            boolean loaded;
+            try {
+                loaded = waitUntilLoaded();
+            }
+            catch (InterruptedException e) {
+                LOGGER.log(Level.INFO, "Presence listener was interrupted", e);
+                loaded = Roster.this.loaded;
+            }
             if (loaded) {
                 LOGGER.warning("Roster not loaded while processing presence stanza");
             }
