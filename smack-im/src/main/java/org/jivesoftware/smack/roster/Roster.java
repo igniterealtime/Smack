@@ -1180,6 +1180,13 @@ public class Roster extends Manager {
 
         @Override
         public void processPacket(Stanza packet) throws NotConnectedException {
+            // Try to ensure that the roster is loaded when processing presence stanzas. While the
+            // presence listener is synchronous, the roster result listener is not, which means that
+            // the presence listener may be invoked with a not yet loaded roster.
+            boolean loaded = waitUntilLoaded();
+            if (loaded) {
+                LOGGER.warning("Roster not loaded while processing presence stanza");
+            }
             final XMPPConnection connection = connection();
             Presence presence = (Presence) packet;
             String from = presence.getFrom();
