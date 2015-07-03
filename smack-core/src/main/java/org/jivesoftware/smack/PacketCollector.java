@@ -20,6 +20,7 @@ package org.jivesoftware.smack;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.StanzaFilter;
@@ -199,8 +200,10 @@ public class PacketCollector {
      * @throws XMPPErrorException in case an error response.
      * @throws NoResponseException if there was no response from the server.
      * @throws InterruptedException 
+     * @throws NotConnectedException 
      */
-    public <P extends Stanza> P nextResultOrThrow() throws NoResponseException, XMPPErrorException, InterruptedException {
+    public <P extends Stanza> P nextResultOrThrow() throws NoResponseException, XMPPErrorException,
+                    InterruptedException, NotConnectedException {
         return nextResultOrThrow(connection.getPacketReplyTimeout());
     }
 
@@ -213,11 +216,16 @@ public class PacketCollector {
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException in case an error response.
      * @throws InterruptedException 
+     * @throws NotConnectedException 
      */
-    public <P extends Stanza> P nextResultOrThrow(long timeout) throws NoResponseException, XMPPErrorException, InterruptedException {
+    public <P extends Stanza> P nextResultOrThrow(long timeout) throws NoResponseException,
+                    XMPPErrorException, InterruptedException, NotConnectedException {
         P result = nextResult(timeout);
         cancel();
         if (result == null) {
+            if (!connection.isConnected()) {
+                throw new NotConnectedException(connection, packetFilter);
+            }
             throw NoResponseException.newWith(connection, this);
         }
 

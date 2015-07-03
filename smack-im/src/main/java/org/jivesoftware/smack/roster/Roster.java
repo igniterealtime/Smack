@@ -341,7 +341,13 @@ public final class Roster extends Manager {
         connection.sendIqWithResponseCallback(packet, new RosterResultListener(), new ExceptionCallback() {
             @Override
             public void processException(Exception exception) {
-                LOGGER.log(Level.SEVERE, "Exception reloading roster" , exception);
+                Level logLevel;
+                if (exception instanceof NotConnectedException) {
+                    logLevel = Level.FINE;
+                } else {
+                    logLevel = Level.SEVERE;
+                }
+                LOGGER.log(logLevel, "Exception reloading roster" , exception);
             }
         });
     }

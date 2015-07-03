@@ -171,6 +171,11 @@ public class SmackException extends Exception {
             super("The connection " + connection.toString() + " is no longer connected. "
                             + details);
         }
+
+        public NotConnectedException(XMPPConnection connection, StanzaFilter stanzaFilter) {
+            super("The connection " + connection
+                            + " is no longer connected while waiting for response with " + stanzaFilter);
+        }
     }
 
     public static class IllegalStateChangeException extends SmackException {
