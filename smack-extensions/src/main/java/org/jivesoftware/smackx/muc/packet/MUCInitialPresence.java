@@ -42,8 +42,35 @@ public class MUCInitialPresence implements ExtensionElement {
     public static final String ELEMENT = "x";
     public static final String NAMESPACE = "http://jabber.org/protocol/muc";
 
+    // TODO make those fields final once deprecated setter methods have been removed.
     private String password;
     private History history; 
+
+    /**
+     * Deprecated constructor.
+     * @deprecated use {@link #MUCInitialPresence(String, int, int, int, Date)} instead.
+     */
+    @Deprecated
+    public MUCInitialPresence() {
+    }
+
+    /**
+     * Construct a new MUC initial presence extension.
+     *
+     * @param password the optional password used to enter the room.
+     * @param maxChars the maximal count of characters of history to request.
+     * @param maxStanzas the maximal count of stanzas of history to request.
+     * @param seconds the last seconds since when to request history.
+     * @param since the date since when to request history.
+     */
+    public MUCInitialPresence(String password, int maxChars, int maxStanzas, int seconds, Date since) {
+        this.password = password;
+        if (maxChars > -1 || maxStanzas > -1 || seconds > -1 || since != null) {
+            this.history = new History(maxChars, maxStanzas, seconds, since);
+        } else {
+            this.history = null;
+        }
+    }
 
     public String getElementName() {
         return ELEMENT;
@@ -89,7 +116,9 @@ public class MUCInitialPresence implements ExtensionElement {
      * 
      * @param history that manages the amount of discussion history provided on 
      * entering a room.
+     * @deprecated use {@link #MUCInitialPresence(String, int, int, int, Date)} instead.
      */
+    @Deprecated
     public void setHistory(History history) {
         this.history = history;
     }
@@ -98,7 +127,9 @@ public class MUCInitialPresence implements ExtensionElement {
      * Sets the password to use when the room requires a password.
      * 
      * @param password the password to use when the room requires a password.
+     * @deprecated use {@link #MUCInitialPresence(String, int, int, int, Date)} instead.
      */
+    @Deprecated
     public void setPassword(String password) {
         this.password = password;
     }
@@ -135,10 +166,32 @@ public class MUCInitialPresence implements ExtensionElement {
 
         public static final String ELEMENT = "history";
 
-        private int maxChars = -1;
-        private int maxStanzas = -1; 
-        private int seconds = -1; 
+        // TODO make those fields final once the deprecated setter methods have been removed.
+        private int maxChars;
+        private int maxStanzas;
+        private int seconds;
         private Date since; 
+
+        /**
+         * Deprecated constructor.
+         * @deprecated use {@link #MUCInitialPresence.History(int, int, int, Date)} instead.
+         */
+        @Deprecated
+        public History() {
+            this.maxChars = -1;
+            this.maxStanzas = -1;
+            this.seconds = -1;
+        }
+
+        public History(int maxChars, int maxStanzas, int seconds, Date since) {
+            if (maxChars < 0 && maxStanzas < 0 && seconds < 0 && since == null) {
+                throw new IllegalArgumentException();
+            }
+            this.maxChars = maxChars;
+            this.maxStanzas = maxStanzas;
+            this.seconds = seconds;
+            this.since = since;
+        }
 
         /**
          * Returns the total number of characters to receive in the history.
@@ -184,7 +237,9 @@ public class MUCInitialPresence implements ExtensionElement {
          * Sets the total number of characters to receive in the history.
          * 
          * @param maxChars the total number of characters to receive in the history.
+         * @deprecated use {@link #MUCInitialPresence.History(int, int, int, Date)} instead.
          */
+        @Deprecated
         public void setMaxChars(int maxChars) {
             this.maxChars = maxChars;
         }
@@ -193,7 +248,9 @@ public class MUCInitialPresence implements ExtensionElement {
          * Sets the total number of messages to receive in the history.
          * 
          * @param maxStanzas the total number of messages to receive in the history.
+         * @deprecated use {@link #MUCInitialPresence.History(int, int, int, Date)} instead.
          */
+        @Deprecated
         public void setMaxStanzas(int maxStanzas) {
             this.maxStanzas = maxStanzas;
         }
@@ -205,7 +262,9 @@ public class MUCInitialPresence implements ExtensionElement {
          * 
          * @param seconds the number of seconds to use to filter the messages received during 
          * that time.
+         * @deprecated use {@link #MUCInitialPresence.History(int, int, int, Date)} instead.
          */
+        @Deprecated
         public void setSeconds(int seconds) {
             this.seconds = seconds;
         }
@@ -216,7 +275,9 @@ public class MUCInitialPresence implements ExtensionElement {
          * included in the history.
          * 
          * @param since the since date to use to filter the messages received during that time.
+         * @deprecated use {@link #MUCInitialPresence.History(int, int, int, Date)} instead.
          */
+        @Deprecated
         public void setSince(Date since) {
             this.since = since;
         }

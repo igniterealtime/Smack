@@ -39,7 +39,9 @@ import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
  * Note: Setting maxchars to 0 indicates that the user requests to receive no history.
  * 
  * @author Gaston Dombiak
+ * @deprecated use {@link org.jivesoftware.smackx.muc.MucEnterConfiguration} instead.
  */
+@Deprecated
 public class DiscussionHistory {
 
     private int maxChars = -1;
@@ -150,19 +152,6 @@ public class DiscussionHistory {
             return null;
         }
 
-        MUCInitialPresence.History mucHistory = new MUCInitialPresence.History();
-        if (maxChars > -1) {
-            mucHistory.setMaxChars(maxChars);
-        }
-        if (maxStanzas > -1) {
-            mucHistory.setMaxStanzas(maxStanzas);
-        }
-        if (seconds > -1) {
-            mucHistory.setSeconds(seconds);
-        }
-        if (since != null) {
-            mucHistory.setSince(since);
-        }
-        return mucHistory;
+        return new MUCInitialPresence.History(maxChars, maxStanzas, seconds, since);
     }
 }

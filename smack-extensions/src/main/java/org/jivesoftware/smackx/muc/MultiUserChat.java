@@ -284,10 +284,7 @@ public class MultiUserChat {
     /**
      * Enter a room, as described in XEP-45 7.2.
      *
-     * @param nickname
-     * @param password
-     * @param history
-     * @param timeout
+     * @param conf the configuration used to enter the room.
      * @return the returned presence by the service after the client send the initial presence in order to enter the room.
      * @throws NotConnectedException
      * @throws NoResponseException
@@ -296,8 +293,7 @@ public class MultiUserChat {
      * @throws NotAMucServiceException 
      * @see <a href="http://xmpp.org/extensions/xep-0045.html#enter">XEP-45 7.2 Entering a Room</a>
      */
-    private Presence enter(Resourcepart nickname, String password, DiscussionHistory history,
-                    long timeout) throws NotConnectedException, NoResponseException,
+    private Presence enter(MucEnterConfiguration conf) throws NotConnectedException, NoResponseException,
                     XMPPErrorException, InterruptedException, NotAMucServiceException {
         StringUtils.requireNotNullOrEmpty(nickname, "Nickname must not be null or blank.");
         final DomainBareJid mucService = room.asDomainBareJid();
@@ -310,19 +306,7 @@ public class MultiUserChat {
         }
         // We enter a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
-        Presence joinPresence = new Presence(Presence.Type.available);
-        final EntityFullJid jid = JidCreate.fullFrom(room, nickname);
-        joinPresence.setTo(jid);
-
-        // Indicate the the client supports MUC
-        MUCInitialPresence mucInitialPresence = new MUCInitialPresence();
-        if (password != null) {
-            mucInitialPresence.setPassword(password);
-        }
-        if (history != null) {
-            mucInitialPresence.setHistory(history.getMUCHistory());
-        }
-        joinPresence.addExtension(mucInitialPresence);
+        Presence joinPresence = conf.getJoinPresence(this);
 
         // Setup the messageListeners and presenceListeners *before* the join presence is send.
         connection.addSyncStanzaListener(messageListener, fromRoomGroupchatFilter);
@@ -338,11 +322,11 @@ public class MultiUserChat {
 
         // Wait for a presence packet back from the server.
         // Use a bare JID filter, since the room may rewrite the nickname.
-        StanzaFilter responseFilter = new AndFilter(FromMatchesFilter.createBare(jid), new StanzaTypeFilter(
+        StanzaFilter responseFilter = new AndFilter(FromMatchesFilter.createBare(getRoom()), new StanzaTypeFilter(
                         Presence.class), MUCUserStatusCodeFilter.STATUS_110_PRESENCE_TO_SELF);
         Presence presence;
         try {
-            presence = connection.createPacketCollectorAndSend(responseFilter, joinPresence).nextResultOrThrow(timeout);
+            presence = connection.createPacketCollectorAndSend(responseFilter, joinPresence).nextResultOrThrow(conf.getTimeout());
         }
         catch (InterruptedException | NoResponseException | XMPPErrorException e) {
             // Ensure that all callbacks are removed if there is an exception
@@ -358,6 +342,17 @@ public class MultiUserChat {
         // Update the list of joined rooms
         multiUserChatManager.addJoinedRoom(room);
         return presence;
+    }
+
+    /**
+     * Get a new MUC enter configuration builder.
+     * 
+     * @param nickname the nickname used when entering the MUC room.
+     * @return a new MUC enter configuration builder.
+     * @since 4.2
+     */
+    public MucEnterConfiguration.Builder getEnterConfigurationBuilder(Resourcepart nickname) {
+        return new MucEnterConfiguration.Builder(nickname, connection.getPacketReplyTimeout());
     }
 
     /**
@@ -419,7 +414,8 @@ public class MultiUserChat {
      */
     public synchronized MucCreateConfigFormHandle createOrJoin(Resourcepart nickname) throws NoResponseException, XMPPErrorException,
                     InterruptedException, MucAlreadyJoinedException, NotConnectedException, NotAMucServiceException {
-        return createOrJoin(nickname, null, null, connection.getPacketReplyTimeout());
+        MucEnterConfiguration mucEnterConfiguration = getEnterConfigurationBuilder(nickname).build();
+        return createOrJoin(mucEnterConfiguration);
     }
 
     /**
@@ -440,14 +436,40 @@ public class MultiUserChat {
      * @throws MucAlreadyJoinedException if the MUC is already joined
      * @throws NotConnectedException 
      * @throws NotAMucServiceException 
+     * @deprecated use {@link #createOrJoin(MucEnterConfiguration)} instead.
      */
-    public synchronized MucCreateConfigFormHandle createOrJoin(Resourcepart nickname, String password, DiscussionHistory history, long timeout)
+    @Deprecated
+    public MucCreateConfigFormHandle createOrJoin(Resourcepart nickname, String password, DiscussionHistory history, long timeout)
+                    throws NoResponseException, XMPPErrorException, InterruptedException, MucAlreadyJoinedException, NotConnectedException, NotAMucServiceException {
+        MucEnterConfiguration.Builder builder = getEnterConfigurationBuilder(nickname).withPassword(
+                        password).timeoutAfter(timeout);
+
+        return createOrJoin(builder.build());
+    }
+
+    /**
+     * Like {@link #create(Resourcepart)}, but will return true if the room creation was acknowledged by
+     * the service (with an 201 status code). It's up to the caller to decide, based on the return
+     * value, if he needs to continue sending the room configuration. If false is returned, the room
+     * already existed and the user is able to join right away, without sending a form.
+     *
+     * @param mucEnterConfiguration the configuration used to enter the MUC.
+     * @return A {@link MucCreateConfigFormHandle} if the room was created, or {code null} if the room was joined.
+     * @throws XMPPErrorException if the room couldn't be created for some reason (e.g. 405 error if
+     *         the user is not allowed to create the room)
+     * @throws NoResponseException if there was no response from the server.
+     * @throws InterruptedException 
+     * @throws MucAlreadyJoinedException if the MUC is already joined
+     * @throws NotConnectedException 
+     * @throws NotAMucServiceException 
+     */
+    public synchronized MucCreateConfigFormHandle createOrJoin(MucEnterConfiguration mucEnterConfiguration)
                     throws NoResponseException, XMPPErrorException, InterruptedException, MucAlreadyJoinedException, NotConnectedException, NotAMucServiceException {
         if (joined) {
             throw new MucAlreadyJoinedException();
         }
 
-        Presence presence = enter(nickname, password, history, timeout);
+        Presence presence = enter(mucEnterConfiguration);
 
         // Look for confirmation of room creation from the server
         MUCUser mucUser = MUCUser.from(presence);
@@ -457,7 +479,6 @@ public class MultiUserChat {
         }
         return null;
     }
-
 
     /**
      * A handle used to configure a newly created room. As long as the room is not configured it will be locked, which
@@ -520,8 +541,10 @@ public class MultiUserChat {
         if (isJoined()) {
             return null;
         }
+        MucEnterConfiguration mucEnterConfiguration = getEnterConfigurationBuilder(nickname).withPassword(
+                        password).build();
         try {
-            return createOrJoin(nickname, password, null, connection.getPacketReplyTimeout());
+            return createOrJoin(mucEnterConfiguration);
         }
         catch (MucAlreadyJoinedException e) {
             return null;
@@ -548,8 +571,10 @@ public class MultiUserChat {
      * @throws InterruptedException 
      * @throws NotAMucServiceException 
      */
-    public void join(Resourcepart nickname) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotAMucServiceException {
-        join(nickname, null, null, connection.getPacketReplyTimeout());
+    public void join(Resourcepart nickname) throws NoResponseException, XMPPErrorException,
+                    NotConnectedException, InterruptedException, NotAMucServiceException {
+        MucEnterConfiguration.Builder builder = getEnterConfigurationBuilder(nickname);
+        join(builder.build());
     }
 
     /**
@@ -576,7 +601,9 @@ public class MultiUserChat {
      * @throws NotAMucServiceException 
      */
     public void join(Resourcepart nickname, String password) throws XMPPErrorException, InterruptedException, NoResponseException, NotConnectedException, NotAMucServiceException {
-        join(nickname, password, null, connection.getPacketReplyTimeout());
+        MucEnterConfiguration.Builder builder = getEnterConfigurationBuilder(nickname).withPassword(
+                        password);
+        join(builder.build());
     }
 
     /**
@@ -607,19 +634,55 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      * @throws NotAMucServiceException 
+     * @deprecated use {@link #join(MucEnterConfiguration) instead.
      */
-    public synchronized void join(
+    @Deprecated
+    public void join(
         Resourcepart nickname,
         String password,
         DiscussionHistory history,
         long timeout)
+        throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException, NotAMucServiceException {
+        MucEnterConfiguration.Builder builder = getEnterConfigurationBuilder(nickname).withPassword(
+                        password).timeoutAfter(timeout);
+
+        join(builder.build());
+    }
+
+    /**
+     * Joins the chat room using the specified nickname and password. If already joined
+     * using another nickname, this method will first leave the room and then
+     * re-join using the new nickname.<p>
+     *
+     * To control the amount of history to receive while joining a room you will need to provide
+     * a configured DiscussionHistory object.<p>
+     *
+     * A password is required when joining password protected rooms. If the room does
+     * not require a password there is no need to provide one.<p>
+     *
+     * If the room does not already exist when the user seeks to enter it, the server will
+     * decide to create a new room or not.
+     *
+     * @param mucEnterConfiguration the configuration used to enter the MUC.
+     * @throws XMPPErrorException if an error occurs joining the room. In particular, a
+     *      401 error can occur if no password was provided and one is required; or a
+     *      403 error can occur if the user is banned; or a
+     *      404 error can occur if the room does not exist or is locked; or a
+     *      407 error can occur if user is not on the member list; or a
+     *      409 error can occur if someone is already in the group chat with the same nickname.
+     * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException 
+     * @throws InterruptedException 
+     * @throws NotAMucServiceException 
+     */
+    public synchronized void join(MucEnterConfiguration mucEnterConfiguration)
         throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException, NotAMucServiceException {
         // If we've already joined the room, leave it before joining under a new
         // nickname.
         if (joined) {
             leave();
         }
-        enter(nickname, password, history, timeout);
+        enter(mucEnterConfiguration);
     }
 
     /**
