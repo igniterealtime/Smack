@@ -35,9 +35,9 @@ import javax.security.auth.callback.CallbackHandler;
  *  <li>{@link #getName()} -- returns the common name of the SASL mechanism.</li>
  * </ul>
  * Subclasses will likely want to implement their own versions of these methods:
- *  <li>{@link #authenticate(String, String, DomainBareJid, String)} -- Initiate authentication stanza using the
+ *  <li>{@link #authenticate(BareJid, String, String, DomainBareJid, String)} -- Initiate authentication stanza using the
  *  deprecated method.</li>
- *  <li>{@link #authenticate(String, DomainBareJid, CallbackHandler)} -- Initiate authentication stanza
+ *  <li>{@link #authenticate(BareJid, String, DomainBareJid, CallbackHandler)} -- Initiate authentication stanza
  *  using the CallbackHandler method.</li>
  *  <li>{@link #challengeReceived(String, boolean)} -- Handle a challenge from the server.</li>
  * </ul>
@@ -123,7 +123,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     /**
      * Builds and sends the <tt>auth</tt> stanza to the server. Note that this method of
      * authentication is not recommended, since it is very inflexible. Use
-     * {@link #authenticate(String, DomainBareJid, CallbackHandler)} whenever possible.
+     * {@link #authenticate(BareJid, String, DomainBareJid, CallbackHandler)} whenever possible.
      * 
      * Explanation of auth stanza:
      * 
