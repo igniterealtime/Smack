@@ -19,6 +19,7 @@ package org.jivesoftware.smack.util;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -221,16 +222,22 @@ public class StringUtils {
         return cs.length() == 0;
     }
 
-    public static String collectionToString(Collection<String> collection) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : collection) {
-            sb.append(s);
-            sb.append(" ");
+    /**
+     * Transform a collection of CharSequences to a whitespace delimited String.
+     *
+     * @param collection the collection to transform.
+     * @return a String with all the elements of the collection.
+     */
+    public static String collectionToString(Collection<? extends CharSequence> collection) {
+        StringBuilder sb = new StringBuilder(collection.size() * 20);
+        for (Iterator<? extends CharSequence> it = collection.iterator(); it.hasNext();) {
+            CharSequence cs = it.next();
+            sb.append(cs);
+            if (it.hasNext()) {
+                sb.append(' ');
+            }
         }
-        String res = sb.toString();
-        // Remove the trailing whitespace
-        res = res.substring(0, res.length() - 1);
-        return res;
+        return sb.toString();
     }
 
     public static String returnIfNotEmptyTrimmed(String string) {
