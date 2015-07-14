@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PlainStreamElement;
+import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.JidTestUtil;
@@ -124,7 +124,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    public void send(PlainStreamElement element) {
+    public void sendNonza(Nonza element) {
         queue.add(element);
     }
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 package org.jivesoftware.smack.packet;
 
 /**
- * Plain stream elements, ie. everything that is <b>not a stanza</b> as defined
+ * A Nonza, i.e everything that is <b>not a stanza</b> as defined
  * RFC 6120 8. Stanzas are {@link Message}, {@link Presence} and {@link IQ}.
  * Everything else should sublcass this class instead of {@link Stanza}.
  * <p>
@@ -26,9 +26,10 @@ package org.jivesoftware.smack.packet;
  * example plain stream elements don't count into the stanza count of XEP-198
  * Stream Management.
  * </p>
- * 
+ *
  * @author Florian Schmaus
+ * @see <a href="http://xmpp.org/extensions/xep-0360.html">XEP-0360: Nonzas (are not Stanzas)</a>
  */
-public interface PlainStreamElement extends TopLevelStreamElement {
+public interface Nonza extends TopLevelStreamElement, ExtensionElement {
 
 }

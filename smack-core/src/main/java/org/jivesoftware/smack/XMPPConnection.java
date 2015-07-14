@@ -25,7 +25,7 @@ import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.PlainStreamElement;
+import org.jivesoftware.smack.packet.Nonza;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityFullJid;
 
@@ -186,18 +186,18 @@ public interface XMPPConnection {
     public void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException;
 
     /**
-     * Send a PlainStreamElement.
+     * Send a Nonza.
      * <p>
      * <b>This method is not meant for end-user usage!</b> It allows sending plain stream elements, which should not be
      * done by a user manually. <b>Doing so may result in a unstable or unusable connection.</b> Certain Smack APIs use
      * this method to send plain stream elements.
      * </p>
      *
-     * @param element
+     * @param nonza the Nonza to send.
      * @throws NotConnectedException
      * @throws InterruptedException 
      */
-    public void send(PlainStreamElement element) throws NotConnectedException, InterruptedException;
+    public void sendNonza(Nonza nonza) throws NotConnectedException, InterruptedException;
 
     /**
      * Adds a connection listener to this connection that will be notified when

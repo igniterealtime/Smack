@@ -66,7 +66,7 @@ import org.jivesoftware.smack.sm.packet.StreamManagement.Resumed;
 import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature;
 import org.jivesoftware.smack.sm.predicates.Predicate;
 import org.jivesoftware.smack.sm.provider.ParseStreamManagement;
-import org.jivesoftware.smack.packet.PlainStreamElement;
+import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.Async;
@@ -511,7 +511,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    public void send(PlainStreamElement element) throws NotConnectedException, InterruptedException {
+    public void sendNonza(Nonza element) throws NotConnectedException, InterruptedException {
         packetWriter.sendStreamElement(element);
     }
 
@@ -847,7 +847,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
 
             if (config.getSecurityMode() != ConnectionConfiguration.SecurityMode.disabled) {
-                send(new StartTls());
+                sendNonza(new StartTls());
             }
         }
         // If TLS is required but the server doesn't offer it, disconnect
@@ -886,7 +886,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             from = XmppStringUtils.completeJidFrom(localpart, to);
         }
         String id = getStreamId();
-        send(new StreamOpen(to, from, id));
+        sendNonza(new StreamOpen(to, from, id));
         try {
             packetReader.parser = PacketParserUtils.newXmppParser(reader);
         }

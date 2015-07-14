@@ -68,7 +68,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.StartTls;
-import org.jivesoftware.smack.packet.PlainStreamElement;
+import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
@@ -340,7 +340,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected abstract void sendStanzaInternal(Stanza packet) throws NotConnectedException, InterruptedException;
 
     @Override
-    public abstract void send(PlainStreamElement element) throws NotConnectedException, InterruptedException;
+    public abstract void sendNonza(Nonza element) throws NotConnectedException, InterruptedException;
 
     @Override
     public abstract boolean isUsingCompression();

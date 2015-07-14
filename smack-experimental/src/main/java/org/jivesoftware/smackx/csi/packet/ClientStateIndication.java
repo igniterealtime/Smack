@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.csi.packet;
 
-import org.jivesoftware.smack.packet.FullStreamElement;
+import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
@@ -27,7 +27,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 public class ClientStateIndication {
     public static final String NAMESPACE = "urn:xmpp:csi:0";
 
-    public static final class Active extends FullStreamElement {
+    public static final class Active implements Nonza {
         public static final Active INSTANCE = new Active();
         public static final String ELEMENT = "active";
 
@@ -50,7 +50,7 @@ public class ClientStateIndication {
         }
     }
 
-    public static final class Inactive extends FullStreamElement {
+    public static final class Inactive implements Nonza {
         public static final Inactive INSTANCE = new Inactive();
         public static final String ELEMENT = "inactive";
 

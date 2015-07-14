@@ -97,7 +97,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Gaston Dombiak
  */
-public class StreamError extends AbstractError implements PlainStreamElement {
+public class StreamError extends AbstractError implements Nonza {
 
     public static final String ELEMENT = "stream:error";
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-streams";
@@ -196,5 +196,15 @@ public class StreamError extends AbstractError implements PlainStreamElement {
             }
             return condition;
         }
+    }
+
+    @Override
+    public String getNamespace() {
+        return NAMESPACE;
+    }
+
+    @Override
+    public String getElementName() {
+        return ELEMENT;
     }
 }

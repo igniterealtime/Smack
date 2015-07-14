@@ -23,7 +23,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 /**
  * The stream open <b>tag</b>.
  */
-public class StreamOpen extends FullStreamElement {
+public class StreamOpen implements Nonza {
 
     public static final String ELEMENT = "stream:stream";
 

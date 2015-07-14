@@ -19,7 +19,7 @@ package org.jivesoftware.smack.sasl.packet;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.AbstractError;
-import org.jivesoftware.smack.packet.PlainStreamElement;
+import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
@@ -31,7 +31,7 @@ public class SaslStreamElements {
     /**
      * Initiating SASL authentication by select a mechanism.
      */
-    public static class AuthMechanism implements PlainStreamElement {
+    public static class AuthMechanism implements Nonza {
         public static final String ELEMENT = "auth";
 
         private final String mechanism;
@@ -59,12 +59,22 @@ public class SaslStreamElements {
         public String getAuthenticationText() {
             return authenticationText;
         }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
     }
 
     /**
      * A SASL challenge stream element.
      */
-    public static class Challenge implements PlainStreamElement {
+    public static class Challenge implements Nonza {
         public static final String ELEMENT = "challenge";
 
         private final String data;
@@ -81,12 +91,22 @@ public class SaslStreamElements {
             xml.closeElement(ELEMENT);
             return xml;
         }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
     }
 
     /**
      * A SASL response stream element.
      */
-    public static class Response implements PlainStreamElement {
+    public static class Response implements Nonza {
         public static final String ELEMENT = "response";
 
         private final String authenticationText;
@@ -111,12 +131,22 @@ public class SaslStreamElements {
         public String getAuthenticationText() {
             return authenticationText;
         }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
     }
 
     /**
      * A SASL success stream element.
      */
-    public static class Success implements PlainStreamElement {
+    public static class Success implements Nonza {
         public static final String ELEMENT = "success";
 
         final private String data;
@@ -148,13 +178,23 @@ public class SaslStreamElements {
             xml.closeElement(ELEMENT);
             return xml;
         }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
     }
 
     /**
      * A SASL failure stream element, also called "SASL Error".
      * @see <a href="http://xmpp.org/rfcs/rfc6120.html#sasl-errors">RFC 6120 6.5 SASL Errors</a>
      */
-    public static class SASLFailure extends AbstractError implements PlainStreamElement {
+    public static class SASLFailure extends AbstractError implements Nonza {
         public static final String ELEMENT = "failure";
 
         private final SASLError saslError;
@@ -208,6 +248,16 @@ public class SaslStreamElements {
         @Override
         public String toString() {
             return toXML().toString();
+        }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
         }
     }
 }

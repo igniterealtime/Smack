@@ -213,7 +213,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
             authenticationText = "=";
         }
         // Send the authentication to the server
-        connection.send(new AuthMechanism(getName(), authenticationText));
+        connection.sendNonza(new AuthMechanism(getName(), authenticationText));
     }
 
     /**
@@ -252,7 +252,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         }
 
         // Send the authentication to the server
-        connection.send(responseStanza);
+        connection.sendNonza(responseStanza);
     }
 
     /**

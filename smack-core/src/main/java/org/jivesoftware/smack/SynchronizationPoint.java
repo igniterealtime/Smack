@@ -24,7 +24,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.PlainStreamElement;
+import org.jivesoftware.smack.packet.Nonza;
 
 public class SynchronizationPoint<E extends Exception> {
 
@@ -79,8 +79,8 @@ public class SynchronizationPoint<E extends Exception> {
                 if (request instanceof Stanza) {
                     connection.sendStanza((Stanza) request);
                 }
-                else if (request instanceof PlainStreamElement){
-                    connection.send((PlainStreamElement) request);
+                else if (request instanceof Nonza){
+                    connection.sendNonza((Nonza) request);
                 } else {
                     throw new IllegalStateException("Unsupported element type");
                 }
@@ -102,7 +102,7 @@ public class SynchronizationPoint<E extends Exception> {
      * @throws NoResponseException if no response was received.
      * @throws NotConnectedException if the connection is not connected.
      */
-    public void sendAndWaitForResponseOrThrow(PlainStreamElement request) throws E, NoResponseException,
+    public void sendAndWaitForResponseOrThrow(Nonza request) throws E, NoResponseException,
                     NotConnectedException, InterruptedException {
         sendAndWaitForResponse(request);
         switch (state) {

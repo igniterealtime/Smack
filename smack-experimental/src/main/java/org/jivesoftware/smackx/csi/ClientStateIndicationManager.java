@@ -30,12 +30,12 @@ public class ClientStateIndicationManager {
 
     public static void active(XMPPConnection connection) throws NotConnectedException, InterruptedException {
         throwIaeIfNotSupported(connection);
-        connection.send(ClientStateIndication.Active.INSTANCE);
+        connection.sendNonza(ClientStateIndication.Active.INSTANCE);
     }
 
     public static void inactive(XMPPConnection connection) throws NotConnectedException, InterruptedException {
         throwIaeIfNotSupported(connection);
-        connection.send(ClientStateIndication.Inactive.INSTANCE);
+        connection.sendNonza(ClientStateIndication.Inactive.INSTANCE);
     }
 
     public static boolean isSupported(XMPPConnection connection) {

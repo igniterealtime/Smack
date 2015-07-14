@@ -18,7 +18,7 @@ package org.jivesoftware.smack.packet;
 
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-public class StartTls extends FullStreamElement {
+public class StartTls implements Nonza {
 
     public static final String ELEMENT = "starttls";
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-tls";

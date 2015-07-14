@@ -9,6 +9,13 @@ for many of the protocol extensions.
 This manual provides details about each of the "smackx" extensions, including
 what it is, how to use it, and some simple example code.
 
+Currently supported XEPs of Smack (all subprojects)
+---------------------------------------------------
+
+| Name                                        | XEP                                                      | Description |
+|---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| Nonzas  | [XEP-0360](http://xmpp.org/extensions/xep-0360.html) | Defines the term "Nonza", describing every top level stream element that is not a Stanza.                                         |
+
 Currently supported XEPs of smack-tcp
 -------------------------------------
 
@@ -17,8 +24,8 @@ Currently supported XEPs of smack-tcp
 | [Stream Management](streammanagement.md)  | [XEP-0198](http://xmpp.org/extensions/xep-0198.html) | Allows active management of an XML Stream between two XMPP entities (stanza acknowledgement, stream resumption). |
 
 
-Smack Extensions and currently supported XEPs by Smack (smack-extensions)
--------------------------------------------------------------------------
+Smack Extensions and currently supported XEPs of smack-extensions
+-----------------------------------------------------------------
 
 | Name                                        | XEP                                                      | Description |
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
@@ -63,8 +70,8 @@ Smack Extensions and currently supported XEPs by Smack (smack-extensions)
 | [Jive Properties](properties.md)          | n/a                                                      | TODO |
 
 
-Experimental Smack Extensions and currently supported XEPs by Smack (smack-experimental)
-----------------------------------------------------------------------------------------
+Experimental Smack Extensions and currently supported XEPs of smack-experimental
+--------------------------------------------------------------------------------
 
 | Name                                        | XEP                                                      | Description |
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
@@ -75,8 +82,8 @@ Experimental Smack Extensions and currently supported XEPs by Smack (smack-exper
 | Client State Indication                     | [XEP-0352](http://xmpp.org/extensions/xep-0352.html) | A way for the client to indicate its active/inactive state. |
 
 
-Legacy Smack Extensions and currently supported XEPs by Smack (smack-legacy)
-----------------------------------------------------------------------------
+Legacy Smack Extensions and currently supported XEPs of smack-legacy
+--------------------------------------------------------------------
 
 If a XEP becomes 'Deprecated' or 'Obsolete' the code will be moved to the *smack-legacy* subproject.
 
