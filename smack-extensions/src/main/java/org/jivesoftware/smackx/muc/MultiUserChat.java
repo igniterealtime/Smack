@@ -295,7 +295,6 @@ public class MultiUserChat {
      */
     private Presence enter(MucEnterConfiguration conf) throws NotConnectedException, NoResponseException,
                     XMPPErrorException, InterruptedException, NotAMucServiceException {
-        StringUtils.requireNotNullOrEmpty(nickname, "Nickname must not be null or blank.");
         final DomainBareJid mucService = room.asDomainBareJid();
         if (!KNOWN_MUC_SERVICES.containsKey(mucService)) {
             if (multiUserChatManager.providesMucService(mucService)) {
