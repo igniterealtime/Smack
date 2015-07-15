@@ -398,10 +398,9 @@ public class MultiUserChat {
     }
 
     /**
-     * Same as {@link #createOrJoin(Resourcepart, String, DiscussionHistory, long)}, but without a password, specifying a
-     * discussion history and using the connections default reply timeout.
+     * Create or join the MUC room with the given nickname.
      * 
-     * @param nickname
+     * @param nickname the nickname to use in the MUC room.
      * @return A {@link MucCreateConfigFormHandle} if the room was created, or {code null} if the room was joined.
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -409,7 +408,6 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      * @throws MucAlreadyJoinedException 
      * @throws NotAMucServiceException 
-     * @see #createOrJoin(Resourcepart, String, DiscussionHistory, long)
      */
     public synchronized MucCreateConfigFormHandle createOrJoin(Resourcepart nickname) throws NoResponseException, XMPPErrorException,
                     InterruptedException, MucAlreadyJoinedException, NotConnectedException, NotAMucServiceException {
@@ -633,7 +631,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      * @throws NotAMucServiceException 
-     * @deprecated use {@link #join(MucEnterConfiguration) instead.
+     * @deprecated use {@link #join(MucEnterConfiguration)} instead.
      */
     @Deprecated
     public void join(
