@@ -159,9 +159,16 @@ public final class Roster extends Manager {
      */
     private final Object rosterListenersAndEntriesLock = new Object();
 
-    // The roster is marked as initialized when at least a single roster packet
-    // has been received and processed.
-    private boolean loaded = false;
+    private enum RosterState {
+        uninitialized,
+        loading,
+        loaded,
+    }
+
+    /**
+     * The current state of the roster.
+     */
+    private RosterState rosterState = RosterState.uninitialized;
 
     private final PresencePacketListener presencePacketListener = new PresencePacketListener();
 
@@ -338,9 +345,11 @@ public final class Roster extends Manager {
         if (rosterStore != null && isRosterVersioningSupported()) {
             packet.setVersion(rosterStore.getRosterVersion());
         }
+        rosterState = RosterState.loading;
         connection.sendIqWithResponseCallback(packet, new RosterResultListener(), new ExceptionCallback() {
             @Override
             public void processException(Exception exception) {
+                rosterState = RosterState.uninitialized;
                 Level logLevel;
                 if (exception instanceof NotConnectedException) {
                     logLevel = Level.FINE;
@@ -384,16 +393,15 @@ public final class Roster extends Manager {
         return true;
     }
 
-    boolean waitUntilLoaded() throws InterruptedException {
-        final XMPPConnection connection = connection();
-        while (!loaded) {
-            long waitTime = connection.getPacketReplyTimeout();
-            long start = System.currentTimeMillis();
+    protected boolean waitUntilLoaded() throws InterruptedException {
+        long waitTime = connection().getPacketReplyTimeout();
+        long start = System.currentTimeMillis();
+        while (!isLoaded()) {
             if (waitTime <= 0) {
                 break;
             }
             synchronized (this) {
-                if (!loaded) {
+                if (!isLoaded()) {
                     wait(waitTime);
                 }
             }
@@ -411,7 +419,7 @@ public final class Roster extends Manager {
      * @since 4.1
      */
     public boolean isLoaded() {
-        return loaded;
+        return rosterState == RosterState.loaded;
     }
 
     /**
@@ -1059,7 +1067,7 @@ public final class Roster extends Manager {
                 }
             }
         }
-        loaded = false;
+        rosterState = RosterState.uninitialized;
     }
 
     /**
@@ -1270,6 +1278,21 @@ public final class Roster extends Manager {
 
         @Override
         public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
+            // Try to ensure that the roster is loaded when processing presence stanzas. While the
+            // presence listener is synchronous, the roster result listener is not, which means that
+            // the presence listener may be invoked with a not yet loaded roster.
+            if (rosterState == RosterState.loading) {
+                try {
+                    waitUntilLoaded();
+                }
+                catch (InterruptedException e) {
+                    LOGGER.log(Level.INFO, "Presence listener was interrupted", e);
+
+                }
+            }
+            if (!isLoaded()) {
+                LOGGER.warning("Roster not loaded while processing presence stanza");
+            }
             Presence presence = (Presence) packet;
             Jid from = presence.getFrom();
             Resourcepart fromResource = Resourcepart.EMPTY;
@@ -1409,7 +1432,7 @@ public final class Roster extends Manager {
                 }
             }
 
-            loaded = true;
+            rosterState = RosterState.loaded;
             synchronized (Roster.this) {
                 Roster.this.notifyAll();
             }
