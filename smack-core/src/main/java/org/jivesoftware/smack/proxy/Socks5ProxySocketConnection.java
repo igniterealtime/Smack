@@ -20,61 +20,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import javax.net.SocketFactory;
 
 /**
  * Socket factory for Socks5 proxy.
  * 
  * @author Atul Aggarwal
  */
-public class Socks5ProxySocketFactory 
-    extends SocketFactory
-{
-    private ProxyInfo proxy;
+public class Socks5ProxySocketConnection implements ProxySocketConnection {
+    private final ProxyInfo proxy;
 
-    public Socks5ProxySocketFactory(ProxyInfo proxy)
+    Socks5ProxySocketConnection(ProxyInfo proxy)
     {
         this.proxy = proxy;
     }
 
-    public Socket createSocket(String host, int port) 
-        throws IOException, UnknownHostException
-    {
-        return socks5ProxifiedSocket(host,port);
-    }
-
-    public Socket createSocket(String host ,int port, InetAddress localHost,
-                                int localPort)
-        throws IOException, UnknownHostException
-    {
-
-        return socks5ProxifiedSocket(host,port);
-
-    }
-
-    public Socket createSocket(InetAddress host, int port)
-        throws IOException
-    {
-
-        return socks5ProxifiedSocket(host.getHostAddress(),port);
-
-    }
-
-    public Socket createSocket( InetAddress address, int port, 
-                                InetAddress localAddress, int localPort) 
-        throws IOException
-    {
-
-        return socks5ProxifiedSocket(address.getHostAddress(),port);
-
-    }
-
-    private Socket socks5ProxifiedSocket(String host, int port) 
-        throws IOException
-    {
-        Socket socket = null;
+    @Override
+    public void connect(Socket socket, InetAddress inetAddress, int port, int timeout)
+                    throws IOException {
         InputStream in = null;
         OutputStream out = null;
         String proxy_host = proxy.getProxyAddress();
@@ -84,7 +48,7 @@ public class Socks5ProxySocketFactory
 
         try
         {
-            socket=new Socket(proxy_host, proxy_port);    
+            socket.connect(new InetSocketAddress(proxy_host, proxy_port), timeout);
             in=socket.getInputStream();
             out=socket.getOutputStream();
 
@@ -247,7 +211,7 @@ public class Socks5ProxySocketFactory
             buf[index++]=1;       // CONNECT
             buf[index++]=0;
 
-            byte[] hostb=host.getBytes();
+            byte[] hostb= inetAddress.getCanonicalHostName().getBytes();
             int len=hostb.length;
             buf[index++]=3;      // DOMAINNAME
             buf[index++]=(byte)(len);
@@ -327,8 +291,6 @@ public class Socks5ProxySocketFactory
                     break;
                 default:
             }
-            return socket;
-
         }
         catch(RuntimeException e)
         {
@@ -338,10 +300,7 @@ public class Socks5ProxySocketFactory
         {
             try
             {
-                if(socket!=null)
-                {
-                    socket.close();
-                }
+                socket.close();
             }
             catch(Exception eee)
             {
@@ -371,4 +330,5 @@ public class Socks5ProxySocketFactory
             s+=i;
         }
     }
+
 }

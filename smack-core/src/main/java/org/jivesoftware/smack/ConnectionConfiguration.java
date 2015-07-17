@@ -125,14 +125,7 @@ public abstract class ConnectionConfiguration {
         port = builder.port;
 
         proxy = builder.proxy;
-        if (proxy != null) {
-            if (builder.socketFactory != null) {
-                throw new IllegalArgumentException("Can not use proxy together with custom socket factory");
-            }
-            socketFactory = proxy.getSocketFactory();
-        } else {
-            socketFactory = builder.socketFactory;
-        }
+        socketFactory = builder.socketFactory;
 
         securityMode = builder.securityMode;
         keystoreType = builder.keystoreType;
@@ -298,6 +291,15 @@ public abstract class ConnectionConfiguration {
      */
     public SocketFactory getSocketFactory() {
         return this.socketFactory;
+    }
+
+    /**
+     * Get the configured proxy information (if any).
+     *
+     * @return the configured proxy information or <code>null</code>.
+     */
+    public ProxyInfo getProxyInfo() {
+        return proxy;
     }
 
     /**

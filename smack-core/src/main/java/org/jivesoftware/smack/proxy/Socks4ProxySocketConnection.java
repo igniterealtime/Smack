@@ -20,59 +20,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-
-import javax.net.SocketFactory;
 
 /**
  * Socket factory for socks4 proxy.
  *  
  * @author Atul Aggarwal
  */
-public class Socks4ProxySocketFactory 
-    extends SocketFactory
-{
-    private ProxyInfo proxy;
+public class Socks4ProxySocketConnection implements ProxySocketConnection {
+    private final ProxyInfo proxy;
 
-    public Socks4ProxySocketFactory(ProxyInfo proxy)
+    Socks4ProxySocketConnection(ProxyInfo proxy)
     {
         this.proxy = proxy;
     }
 
-    public Socket createSocket(String host, int port) 
-        throws IOException, UnknownHostException
-    {
-        return socks4ProxifiedSocket(host,port);
-
-    }
-
-    public Socket createSocket(String host ,int port, InetAddress localHost,
-                                int localPort)
-        throws IOException, UnknownHostException
-    {
-        return socks4ProxifiedSocket(host,port);
-    }
-
-    public Socket createSocket(InetAddress host, int port)
-        throws IOException
-    {
-        return socks4ProxifiedSocket(host.getHostAddress(),port);
-    }
-
-    public Socket createSocket( InetAddress address, int port, 
-                                InetAddress localAddress, int localPort) 
-        throws IOException
-    {
-        return socks4ProxifiedSocket(address.getHostAddress(),port);
-
-    }
-
-    @SuppressWarnings("resource")
-    private Socket socks4ProxifiedSocket(String host, int port) 
-        throws IOException
-    {
-        Socket socket = null;
+    @Override
+    public void connect(Socket socket, InetAddress inetAddress, int port, int timeout)
+                    throws IOException {
         InputStream in = null;
         OutputStream out = null;
         String proxy_host = proxy.getProxyAddress();
@@ -81,7 +47,7 @@ public class Socks4ProxySocketFactory
 
         try
         {
-            socket=new Socket(proxy_host, proxy_port);    
+            socket.connect(new InetSocketAddress(proxy_host, proxy_port), timeout);
             in=socket.getInputStream();
             out=socket.getOutputStream();
             socket.setTcpNoDelay(true);
@@ -114,19 +80,10 @@ public class Socks4ProxySocketFactory
             buf[index++]=(byte)(port>>>8);
             buf[index++]=(byte)(port&0xff);
 
-            try
+            byte[] byteAddress = inetAddress.getAddress();
+            for (int i = 0; i < byteAddress.length; i++)
             {
-                InetAddress addr=InetAddress.getByName(host);
-                byte[] byteAddress = addr.getAddress();
-                for (int i = 0; i < byteAddress.length; i++) 
-                {
-                    buf[index++]=byteAddress[i];
-                }
-            }
-            catch(UnknownHostException uhe)
-            {
-                throw new ProxyException(ProxyInfo.ProxyType.SOCKS4, 
-                    uhe.toString(), uhe);
+                buf[index++]=byteAddress[i];
             }
 
             if(user!=null)
@@ -195,7 +152,6 @@ public class Socks4ProxySocketFactory
             }
             byte[] temp = new byte[2];
             in.read(temp, 0, 2);
-            return socket;
         }
         catch(RuntimeException e)
         {
@@ -205,7 +161,7 @@ public class Socks4ProxySocketFactory
         {
             try
             {
-                if(socket!=null)socket.close();
+               socket.close();
             }
             catch(Exception eee)
             {
@@ -213,4 +169,5 @@ public class Socks4ProxySocketFactory
             throw new ProxyException(ProxyInfo.ProxyType.SOCKS4, e.toString());
         }
     }
+
 }

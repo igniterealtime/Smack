@@ -68,6 +68,7 @@ import org.jivesoftware.smack.sm.predicates.Predicate;
 import org.jivesoftware.smack.sm.provider.ParseStreamManagement;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -531,6 +532,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private void connectUsingConfiguration() throws IOException, ConnectionException {
         List<HostAddress> failedAddresses = populateHostAddresses();
         SocketFactory socketFactory = config.getSocketFactory();
+        ProxyInfo proxyInfo = config.getProxyInfo();
+        int timeout = config.getConnectTimeout();
         if (socketFactory == null) {
             socketFactory = SocketFactory.getDefault();
         }
@@ -550,7 +553,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     final String inetAddressAndPort = inetAddress + " at port " + port;
                     LOGGER.finer("Trying to establish TCP connection to " + inetAddressAndPort);
                     try {
-                        socket.connect(new InetSocketAddress(inetAddress, port), config.getConnectTimeout());
+                        if (proxyInfo == null) {
+                            socket.connect(new InetSocketAddress(inetAddress, port), timeout);
+                        }
+                        else {
+                            proxyInfo.getProxySocketConnection().connect(socket, inetAddress, port, timeout);
+                        }
                     } catch (Exception e) {
                         if (inetAddresses.hasNext()) {
                             continue innerloop;

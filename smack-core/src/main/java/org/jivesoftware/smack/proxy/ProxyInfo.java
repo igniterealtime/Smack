@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smack.proxy;
 
-import javax.net.SocketFactory;
-
 /**
  * Class which stores proxy information such as proxy type, host, port, 
  * authentication etc.
@@ -29,7 +27,6 @@ public class ProxyInfo
 {
     public static enum ProxyType
     {
-        NONE,
         HTTP,
         SOCKS4,
         SOCKS5
@@ -40,6 +37,7 @@ public class ProxyInfo
     private String proxyUsername;
     private String proxyPassword;
     private ProxyType proxyType;
+    private final ProxySocketConnection proxySocketConnection;
 
     public ProxyInfo(   ProxyType pType, String pHost, int pPort, String pUser, 
                         String pPass)
@@ -49,6 +47,19 @@ public class ProxyInfo
         this.proxyPort = pPort;
         this.proxyUsername = pUser;
         this.proxyPassword = pPass;
+        switch (proxyType) {
+        case HTTP:
+            proxySocketConnection = new HTTPProxySocketConnection(this);
+            break;
+        case SOCKS4:
+            proxySocketConnection = new Socks4ProxySocketConnection(this);
+            break;
+        case SOCKS5:
+            proxySocketConnection = new Socks5ProxySocketConnection(this);
+            break;
+        default:
+            throw new IllegalStateException();
+        }
     }
 
     public static ProxyInfo forHttpProxy(String pHost, int pPort, String pUser, 
@@ -67,16 +78,6 @@ public class ProxyInfo
                                     String pPass)
     {
         return new ProxyInfo(ProxyType.SOCKS5, pHost, pPort, pUser, pPass);
-    }
-
-    public static ProxyInfo forNoProxy()
-    {
-        return new ProxyInfo(ProxyType.NONE, null, 0, null, null);
-    }
-
-    public static ProxyInfo forDefaultProxy()
-    {
-        return new ProxyInfo(ProxyType.NONE, null, 0, null, null);
     }
 
     public ProxyType getProxyType()
@@ -104,27 +105,7 @@ public class ProxyInfo
         return proxyPassword;
     }
 
-    public SocketFactory getSocketFactory()
-    {
-        if(proxyType == ProxyType.NONE)
-        {
-            return new DirectSocketFactory();
-        }
-        else if(proxyType == ProxyType.HTTP)
-        {
-            return new HTTPProxySocketFactory(this);
-        }
-        else if(proxyType == ProxyType.SOCKS4)
-        {
-            return new Socks4ProxySocketFactory(this);
-        }
-        else if(proxyType == ProxyType.SOCKS5)
-        {
-            return new Socks5ProxySocketFactory(this);
-        }
-        else
-        {
-            return null;
-        }
+    public ProxySocketConnection getProxySocketConnection() {
+        return proxySocketConnection;
     }
 }

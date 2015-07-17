@@ -22,10 +22,8 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-
-import javax.net.SocketFactory;
 
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -33,56 +31,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Http Proxy Socket Factory which returns socket connected to Http Proxy
+ * HTTP Proxy Socket Connection which connects the socket using a HTTP Proxy.
  * 
  * @author Atul Aggarwal
  */
-class HTTPProxySocketFactory 
-    extends SocketFactory
-{
+class HTTPProxySocketConnection implements ProxySocketConnection {
 
-    private ProxyInfo proxy;
+    private final ProxyInfo proxy;
 
-    public HTTPProxySocketFactory(ProxyInfo proxy)
+    HTTPProxySocketConnection(ProxyInfo proxy)
     {
         this.proxy = proxy;
     }
 
-    public Socket createSocket(String host, int port) 
-        throws IOException, UnknownHostException
-    {
-        return httpProxifiedSocket(host, port);
-    }
-
-    public Socket createSocket(String host ,int port, InetAddress localHost,
-                                int localPort)
-        throws IOException, UnknownHostException
-    {
-        return httpProxifiedSocket(host, port);
-    }
-
-    public Socket createSocket(InetAddress host, int port)
-        throws IOException
-    {
-        return httpProxifiedSocket(host.getHostAddress(), port);
-
-    }
-
-    public Socket createSocket( InetAddress address, int port, 
-                                InetAddress localAddress, int localPort) 
-        throws IOException
-    {
-        return httpProxifiedSocket(address.getHostAddress(), port);
-    }
-
-    private Socket httpProxifiedSocket(String host, int port)
-        throws IOException 
-    {
+    @Override
+    public void connect(Socket socket, InetAddress inetAddress, int port, int timeout)
+                    throws IOException {
         String proxyhost = proxy.getProxyAddress();
         int proxyPort = proxy.getProxyPort();
-        @SuppressWarnings("resource")
-        Socket socket = new Socket(proxyhost,proxyPort);
-        String hostport = "CONNECT " + host + ":" + port;
+        socket.connect(new InetSocketAddress(proxyhost, proxyPort));
+        String hostport = "CONNECT " + inetAddress.getCanonicalHostName() + ":" + port;
         String proxyLine;
         String username = proxy.getProxyUsername();
         if (username == null)
@@ -164,8 +132,6 @@ class HTTPProxySocketFactory
         {
             throw new ProxyException(ProxyInfo.ProxyType.HTTP);
         }
-
-        return socket;
     }
 
     private static final Pattern RESPONSE_PATTERN

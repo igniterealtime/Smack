@@ -37,6 +37,12 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
 
     private BOSHConfiguration(Builder builder) {
         super(builder);
+        if (proxy != null) {
+            if (proxy.getProxyType() != ProxyInfo.ProxyType.HTTP) {
+                throw new IllegalArgumentException(
+                                "Only HTTP proxies are support with BOSH connections");
+            }
+        }
         https = builder.https;
         if (builder.file.charAt(0) != '/') {
             file = '/' + builder.file;
@@ -46,7 +52,7 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
     }
 
     public boolean isProxyEnabled() {
-        return (proxy != null && proxy.getProxyType() != ProxyInfo.ProxyType.NONE);
+        return proxy != null;
     }
 
     public ProxyInfo getProxyInfo() {
