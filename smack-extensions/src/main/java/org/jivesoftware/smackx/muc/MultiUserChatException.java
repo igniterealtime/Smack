@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.muc;
 
 import org.jivesoftware.smack.SmackException;
+import org.jxmpp.jid.DomainBareJid;
 
 public abstract class MultiUserChatException extends SmackException {
 
@@ -96,7 +97,12 @@ public abstract class MultiUserChatException extends SmackException {
          */
         private static final long serialVersionUID = 1L;
 
-        public NotAMucServiceException(MultiUserChat multiUserChat) {
+        NotAMucServiceException(DomainBareJid service) {
+            super("Can't perform operation because " + service
+                            + " does not provide a MUC (XEP-45) service.");
+        }
+
+        NotAMucServiceException(MultiUserChat multiUserChat) {
             super("Can not join '" + multiUserChat.getRoom() + "', because '"
                             + multiUserChat.getRoom().asDomainBareJid()
                             + "' does not provide a MUC (XEP-45) service.");
