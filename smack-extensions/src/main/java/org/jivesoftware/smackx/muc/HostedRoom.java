@@ -16,8 +16,9 @@
  */
 package org.jivesoftware.smackx.muc;
 
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.EntityBareJid;
 
 /**
  * Hosted rooms by a chat service may be discovered if they are configured to appear in the room
@@ -32,12 +33,13 @@ import org.jxmpp.jid.Jid;
  */
 public class HostedRoom {
 
-    private final Jid jid;
+    private final EntityBareJid jid;
 
     private final String name;
 
     public HostedRoom(DiscoverItems.Item item) {
-        jid = item.getEntityID();
+        jid = Objects.requireNonNull(item.getEntityID().asEntityBareJidIfPossible(),
+                        "The discovered item must be an entity bare JID");
         name = item.getName();
     }
 
@@ -47,7 +49,7 @@ public class HostedRoom {
      *
      * @return the XMPP address of the hosted room by the chat service.
      */
-    public Jid getJid() {
+    public EntityBareJid getJid() {
         return jid;
     }
 
