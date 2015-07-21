@@ -154,7 +154,7 @@ public class XmppHostnameVerifier implements HostnameVerifier {
                 StringBuilder sb = new StringBuilder("No subject alternative DNS name matching "
                                 + name + " found. Tried: ");
                 for (String nonMatchingDnsAltname : nonMatchingDnsAltnames) {
-                    sb.append(nonMatchingDnsAltname).append(",");
+                    sb.append(nonMatchingDnsAltname).append(',');
                 }
                 throw new CertificateException(sb.toString());
             }
@@ -279,7 +279,7 @@ public class XmppHostnameVerifier implements HostnameVerifier {
         StringBuilder sb = new StringBuilder("No subject alternative names matching IP address "
                         + expectedIP + " found. Tried: ");
         for (String s : nonMatchingIpAltnames) {
-            sb.append(s).append(",");
+            sb.append(s).append(',');
         }
         throw new CertificateException(sb.toString());
     }

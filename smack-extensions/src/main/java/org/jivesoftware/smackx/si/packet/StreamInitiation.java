@@ -328,7 +328,7 @@ public class StreamInitiation extends IQ {
         public String toXML() {
             StringBuilder buffer = new StringBuilder();
 
-            buffer.append("<").append(getElementName()).append(" xmlns=\"")
+            buffer.append('<').append(getElementName()).append(" xmlns=\"")
                     .append(getNamespace()).append("\" ");
 
             if (getName() != null) {
@@ -348,14 +348,14 @@ public class StreamInitiation extends IQ {
             }
 
             if ((desc != null && desc.length() > 0) || isRanged) {
-                buffer.append(">");
+                buffer.append('>');
                 if (getDesc() != null && desc.length() > 0) {
                     buffer.append("<desc>").append(StringUtils.escapeForXML(getDesc())).append("</desc>");
                 }
                 if (isRanged()) {
                     buffer.append("<range/>");
                 }
-                buffer.append("</").append(getElementName()).append(">");
+                buffer.append("</").append(getElementName()).append('>');
             }
             else {
                 buffer.append("/>");

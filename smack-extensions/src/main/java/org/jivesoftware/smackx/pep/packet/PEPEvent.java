@@ -93,9 +93,9 @@ public class PEPEvent implements ExtensionElement {
      */
     public String toXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append("\">");
+        buf.append('<').append(getElementName()).append(" xmlns=\"").append(getNamespace()).append("\">");
         buf.append(item.toXML());
-        buf.append("</").append(getElementName()).append(">");
+        buf.append("</").append(getElementName()).append('>');
         return buf.toString();
     }
 

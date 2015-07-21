@@ -59,7 +59,7 @@ public class UserID implements ExtensionElement {
     public String toXML() {
         StringBuilder buf = new StringBuilder();
 
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\" ");
+        buf.append('<').append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\" ");
         buf.append("id=\"").append(this.getUserID());
         buf.append("\"/>");
 

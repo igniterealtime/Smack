@@ -122,13 +122,13 @@ public class Item extends NodeExtension
 		{
 			builder.append(" id='");
 			builder.append(id);
-			builder.append("'");
+			builder.append('\'');
 		}
 
         if (getNode() != null) {
             builder.append(" node='");
             builder.append(getNode());
-            builder.append("'");
+            builder.append('\'');
         }
 		builder.append("/>");
 

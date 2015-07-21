@@ -134,22 +134,22 @@ public class RTPBridge extends IQ {
         StringBuilder str = new StringBuilder();
 
         if (getSid() != null)
-            str.append(" sid='").append(getSid()).append("'");
+            str.append(" sid='").append(getSid()).append('\'');
 
         if (getPass() != null)
-            str.append(" pass='").append(getPass()).append("'");
+            str.append(" pass='").append(getPass()).append('\'');
 
         if (getPortA() != -1)
-            str.append(" porta='").append(getPortA()).append("'");
+            str.append(" porta='").append(getPortA()).append('\'');
 
         if (getPortB() != -1)
-            str.append(" portb='").append(getPortB()).append("'");
+            str.append(" portb='").append(getPortB()).append('\'');
 
         if (getHostA() != null)
-            str.append(" hosta='").append(getHostA()).append("'");
+            str.append(" hosta='").append(getHostA()).append('\'');
 
         if (getHostB() != null)
-            str.append(" hostb='").append(getHostB()).append("'");
+            str.append(" hostb='").append(getHostB()).append('\'');
 
         return str.toString();
     }

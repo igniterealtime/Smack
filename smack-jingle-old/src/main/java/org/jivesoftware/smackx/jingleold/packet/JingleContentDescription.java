@@ -149,7 +149,7 @@ public abstract class JingleContentDescription implements ExtensionElement {
 
         synchronized (payloads) {
             if (payloads.size() > 0) {
-                buf.append("<").append(getElementName());
+                buf.append('<').append(getElementName());
                 buf.append(" xmlns=\"").append(getNamespace()).append("\" >");
 
                 Iterator<JinglePayloadType> pt = payloads.listIterator();
@@ -157,7 +157,7 @@ public abstract class JingleContentDescription implements ExtensionElement {
                     JinglePayloadType pte = pt.next();
                     buf.append(pte.toXML());
                 }
-                buf.append("</").append(getElementName()).append(">");
+                buf.append("</").append(getElementName()).append('>');
             }
         }
 
@@ -251,17 +251,17 @@ public abstract class JingleContentDescription implements ExtensionElement {
             StringBuilder buf = new StringBuilder();
 
             if (payload != null) {
-                buf.append("<").append(getElementName()).append(" ");
+                buf.append('<').append(getElementName()).append(' ');
 
                 // We covert here the payload type to XML
                 if (payload.getId() != PayloadType.INVALID_PT) {
-                    buf.append(" id=\"").append(payload.getId()).append("\"");
+                    buf.append(" id=\"").append(payload.getId()).append('"');
                 }
                 if (payload.getName() != null) {
-                    buf.append(" name=\"").append(payload.getName()).append("\"");
+                    buf.append(" name=\"").append(payload.getName()).append('"');
                 }
                 if (payload.getChannels() != 0) {
-                    buf.append(" channels=\"").append(payload.getChannels()).append("\"");
+                    buf.append(" channels=\"").append(payload.getChannels()).append('"');
                 }
                 if (getChildAttributes() != null) {
                     buf.append(getChildAttributes());

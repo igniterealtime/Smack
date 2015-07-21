@@ -52,7 +52,7 @@ public class SubscribeExtension extends NodeExtension
 		{
 			builder.append(" node='");
 			builder.append(getNode());
-			builder.append("'");
+			builder.append('\'');
 		}
 		builder.append(" jid='");
 		builder.append(getJid());

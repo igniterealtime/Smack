@@ -67,7 +67,7 @@ public class AttentionExtension implements ExtensionElement {
      */
     public String toXML() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("<").append(getElementName()).append(" xmlns=\"").append(
+        sb.append('<').append(getElementName()).append(" xmlns=\"").append(
                 getNamespace()).append("\"/>");
         return sb.toString();
     }

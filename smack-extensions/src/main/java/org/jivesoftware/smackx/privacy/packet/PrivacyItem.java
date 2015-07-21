@@ -296,17 +296,17 @@ public class PrivacyItem {
         } else {
         	buf.append(" action=\"deny\"");
         }
-        buf.append(" order=\"").append(getOrder()).append("\"");
+        buf.append(" order=\"").append(getOrder()).append('"');
         if (getType() != null) {
-            buf.append(" type=\"").append(getType()).append("\"");
+            buf.append(" type=\"").append(getType()).append('"');
         }
         if (getValue() != null) {
-            buf.append(" value=\"").append(getValue()).append("\"");
+            buf.append(" value=\"").append(getValue()).append('"');
         }
         if (isFilterEverything()) {
         	buf.append("/>");
         } else {
-        	buf.append(">");
+        	buf.append('>');
         	if (this.isFilterIQ()) {
             	buf.append("<iq/>");
             }

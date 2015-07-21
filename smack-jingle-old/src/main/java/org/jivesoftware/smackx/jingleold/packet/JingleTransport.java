@@ -151,19 +151,19 @@ public class JingleTransport implements ExtensionElement {
     public String toXML() {
         StringBuilder buf = new StringBuilder();
 
-        buf.append("<").append(getElementName()).append(" xmlns=\"");
+        buf.append('<').append(getElementName()).append(" xmlns=\"");
         buf.append(getNamespace()).append("\" ");
 
         synchronized (candidates) {
             if (getCandidatesCount() > 0) {
-                buf.append(">");
+                buf.append('>');
                 Iterator<JingleTransportCandidate> iter = getCandidates();
 
                 while (iter.hasNext()) {
                     JingleTransportCandidate candidate = iter.next();
                     buf.append(candidate.toXML());
                 }
-                buf.append("</").append(getElementName()).append(">");
+                buf.append("</").append(getElementName()).append('>');
             } else {
                 buf.append("/>");
             }
@@ -251,7 +251,7 @@ public class JingleTransport implements ExtensionElement {
             String childElements = getChildElements();
 
             if (transportCandidate != null && childElements != null) {
-                buf.append("<").append(getElementName()).append(" ");
+                buf.append('<').append(getElementName()).append(' ');
                 buf.append(childElements);
                 buf.append("/>");
             }
@@ -323,18 +323,18 @@ public class JingleTransport implements ExtensionElement {
                     ICECandidate tci = (ICECandidate) transportCandidate;
 
                     // We convert the transportElement candidate to XML here...
-                    buf.append(" generation=\"").append(tci.getGeneration()).append("\"");
-                    buf.append(" ip=\"").append(tci.getIp()).append("\"");
-                    buf.append(" port=\"").append(tci.getPort()).append("\"");
-                    buf.append(" network=\"").append(tci.getNetwork()).append("\"");
-                    buf.append(" username=\"").append(tci.getUsername()).append("\"");
-                    buf.append(" password=\"").append(tci.getPassword()).append("\"");
-                    buf.append(" preference=\"").append(tci.getPreference()).append("\"");
-                    buf.append(" type=\"").append(tci.getType()).append("\"");
+                    buf.append(" generation=\"").append(tci.getGeneration()).append('"');
+                    buf.append(" ip=\"").append(tci.getIp()).append('"');
+                    buf.append(" port=\"").append(tci.getPort()).append('"');
+                    buf.append(" network=\"").append(tci.getNetwork()).append('"');
+                    buf.append(" username=\"").append(tci.getUsername()).append('"');
+                    buf.append(" password=\"").append(tci.getPassword()).append('"');
+                    buf.append(" preference=\"").append(tci.getPreference()).append('"');
+                    buf.append(" type=\"").append(tci.getType()).append('"');
 
                     // Optional elements
                     if (transportCandidate.getName() != null) {
-                        buf.append(" name=\"").append(tci.getName()).append("\"");
+                        buf.append(" name=\"").append(tci.getName()).append('"');
                     }
                 }
 
@@ -408,14 +408,14 @@ public class JingleTransport implements ExtensionElement {
                 if (transportCandidate != null && transportCandidate instanceof TransportCandidate.Fixed) {
                     TransportCandidate.Fixed tcf = (TransportCandidate.Fixed) transportCandidate;
 
-                    buf.append(" generation=\"").append(tcf.getGeneration()).append("\"");
-                    buf.append(" ip=\"").append(tcf.getIp()).append("\"");
-                    buf.append(" port=\"").append(tcf.getPort()).append("\"");
+                    buf.append(" generation=\"").append(tcf.getGeneration()).append('"');
+                    buf.append(" ip=\"").append(tcf.getIp()).append('"');
+                    buf.append(" port=\"").append(tcf.getPort()).append('"');
 
                     // Optional parameters
                     String name = tcf.getName();
                     if (name != null) {
-                        buf.append(" name=\"").append(name).append("\"");
+                        buf.append(" name=\"").append(name).append('"');
                     }
                 }
                 return buf.toString();

@@ -81,9 +81,9 @@ public class SubscriptionsExtension extends NodeExtension
 			{
 				builder.append(" node='");
 				builder.append(getNode());
-				builder.append("'");
+				builder.append('\'');
 			}
-			builder.append(">");
+			builder.append('>');
 
 			for (Subscription item : items)
 			{
@@ -92,7 +92,7 @@ public class SubscriptionsExtension extends NodeExtension
 
 			builder.append("</");
 			builder.append(getElementName());
-			builder.append(">");
+			builder.append('>');
 			return builder.toString();
 		}
 	}

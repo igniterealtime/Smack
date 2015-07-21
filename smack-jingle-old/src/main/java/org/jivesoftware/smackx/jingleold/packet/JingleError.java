@@ -77,7 +77,7 @@ public class JingleError implements ExtensionElement {
         StringBuilder buf = new StringBuilder();
         if (message != null) {
             buf.append("<error type=\"cancel\">");
-            buf.append("<").append(message).append(" xmlns=\"").append(NAMESPACE).append(
+            buf.append('<').append(message).append(" xmlns=\"").append(NAMESPACE).append(
                     "\"/>");
             buf.append("</error>");
         }

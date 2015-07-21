@@ -86,7 +86,7 @@ public class Nick implements ExtensionElement {
 	public String toXML() {
 		final StringBuilder buf = new StringBuilder();
 
-		buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(
+		buf.append('<').append(ELEMENT_NAME).append(" xmlns=\"").append(
 				NAMESPACE).append("\">");
 		buf.append(getName());
 		buf.append("</").append(ELEMENT_NAME).append('>');

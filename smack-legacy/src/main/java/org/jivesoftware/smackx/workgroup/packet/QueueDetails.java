@@ -108,7 +108,7 @@ public final class QueueDetails implements ExtensionElement {
 
     public String toXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
+        buf.append('<').append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
 
         synchronized (users) {
             for (Iterator<QueueUser> i=users.iterator(); i.hasNext(); ) {
@@ -136,7 +136,7 @@ public final class QueueDetails implements ExtensionElement {
                 buf.append("</user>");
             }
         }
-        buf.append("</").append(ELEMENT_NAME).append(">");
+        buf.append("</").append(ELEMENT_NAME).append('>');
         return buf.toString();
     }
 

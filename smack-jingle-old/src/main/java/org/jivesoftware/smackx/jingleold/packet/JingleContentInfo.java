@@ -82,7 +82,7 @@ public class JingleContentInfo implements ExtensionElement {
 
     public String toXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" xmlns=\"");
+        buf.append('<').append(getElementName()).append(" xmlns=\"");
         buf.append(getNamespace()).append("\" ");
         buf.append("/>");
         return buf.toString();

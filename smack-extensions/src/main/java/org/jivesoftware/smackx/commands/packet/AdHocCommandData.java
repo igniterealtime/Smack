@@ -261,7 +261,7 @@ public class AdHocCommandData extends IQ {
 
         public String toXML() {
             StringBuilder buf = new StringBuilder();
-            buf.append("<").append(getElementName());
+            buf.append('<').append(getElementName());
             buf.append(" xmlns=\"").append(getNamespace()).append("\"/>");
             return buf.toString();
         }

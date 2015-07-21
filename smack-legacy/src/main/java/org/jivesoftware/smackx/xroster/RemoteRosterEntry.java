@@ -100,11 +100,11 @@ public class RemoteRosterEntry {
 
     public String toXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<item jid=\"").append(user).append("\"");
+        buf.append("<item jid=\"").append(user).append('"');
         if (name != null) {
-            buf.append(" name=\"").append(name).append("\"");
+            buf.append(" name=\"").append(name).append('"');
         }
-        buf.append(">");
+        buf.append('>');
         synchronized (groupNames) {
             for (String groupName : groupNames) {
                 buf.append("<group>").append(groupName).append("</group>");

@@ -118,15 +118,15 @@ public class PayloadItem<E extends ExtensionElement> extends Item
 		{
 			builder.append(" id='");
 			builder.append(getId());
-			builder.append("'");
+			builder.append('\'');
 		}
 
         if (getNode() != null) {
             builder.append(" node='");
             builder.append(getNode());
-            builder.append("'");
+            builder.append('\'');
         }
-		builder.append(">");
+		builder.append('>');
 		builder.append(payload.toXML());
 		builder.append("</item>");
 

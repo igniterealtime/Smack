@@ -19,10 +19,10 @@ package org.jivesoftware.smack.filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.StringUtils;
 
 public abstract class AbstractListFilter implements StanzaFilter {
 
@@ -67,14 +67,8 @@ public abstract class AbstractListFilter implements StanzaFilter {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(": (");
-        for (Iterator<StanzaFilter> it = filters.iterator(); it.hasNext();) {
-            StanzaFilter filter = it.next();
-            sb.append(filter.toString());
-            if (it.hasNext()) {
-                sb.append(", ");
-            }
-        }
-        sb.append(")");
+        sb.append(StringUtils.toStringBuilder(filters, ", "));
+        sb.append(')');
         return sb.toString();
     }
 }

@@ -66,7 +66,7 @@ public class GenericSettings extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
-        buf.append(">");
+        buf.append('>');
         if (ModelUtil.hasLength(getQuery())) {
             buf.append("<query>" + getQuery() + "</query>");
         }

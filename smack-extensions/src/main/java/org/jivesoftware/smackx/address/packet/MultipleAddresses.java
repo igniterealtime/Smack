@@ -201,7 +201,7 @@ public class MultipleAddresses implements ExtensionElement {
             buf.optAttribute("desc", description);
             if (description != null && description.trim().length() > 0) {
                 buf.append(" desc=\"");
-                buf.append(description).append("\"");
+                buf.append(description).append('"');
             }
             buf.optBooleanAttribute("delivered", delivered);
             buf.optAttribute("uri", uri);

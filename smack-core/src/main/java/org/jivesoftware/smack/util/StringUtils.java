@@ -222,21 +222,32 @@ public class StringUtils {
     }
 
     /**
-     * Transform a collection of CharSequences to a whitespace delimited String.
+     * Transform a collection of objects to a whitespace delimited String.
      *
      * @param collection the collection to transform.
      * @return a String with all the elements of the collection.
      */
-    public static String collectionToString(Collection<? extends CharSequence> collection) {
+    public static String collectionToString(Collection<? extends Object> collection) {
+        return toStringBuilder(collection, " ").toString();
+    }
+
+    /**
+     * Transform a collection of objects to a delimited String.
+     *
+     * @param collection the collection to transform.
+     * @param delimiter the delimiter used to delimit the Strings.
+     * @return a StringBuilder with all the elements of the collection.
+     */
+    public static StringBuilder toStringBuilder(Collection<? extends Object> collection, String delimiter) {
         StringBuilder sb = new StringBuilder(collection.size() * 20);
-        for (Iterator<? extends CharSequence> it = collection.iterator(); it.hasNext();) {
-            CharSequence cs = it.next();
+        for (Iterator<? extends Object> it = collection.iterator(); it.hasNext();) {
+            Object cs = it.next();
             sb.append(cs);
             if (it.hasNext()) {
-                sb.append(' ');
+                sb.append(delimiter);
             }
         }
-        return sb.toString();
+        return sb;
     }
 
     public static String returnIfNotEmptyTrimmed(String string) {

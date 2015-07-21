@@ -62,7 +62,7 @@ public class WorkgroupInformation implements ExtensionElement {
         StringBuilder buf = new StringBuilder();
 
         buf.append('<').append(ELEMENT_NAME);
-        buf.append(" jid=\"").append(getWorkgroupJID()).append("\"");
+        buf.append(" jid=\"").append(getWorkgroupJID()).append('"');
         buf.append(" xmlns=\"").append(NAMESPACE).append("\" />");
 
         return buf.toString();

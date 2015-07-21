@@ -345,18 +345,18 @@ public class Jingle extends IQ {
      */
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         if (getInitiator() != null) {
-            buf.append(" initiator=\"").append(getInitiator()).append("\"");
+            buf.append(" initiator=\"").append(getInitiator()).append('"');
         }
         if (getResponder() != null) {
-            buf.append(" responder=\"").append(getResponder()).append("\"");
+            buf.append(" responder=\"").append(getResponder()).append('"');
         }
         if (getAction() != null) {
-            buf.append(" action=\"").append(getAction().name()).append("\"");
+            buf.append(" action=\"").append(getAction().name()).append('"');
         }
         if (getSid() != null) {
-            buf.append(" sid=\"").append(getSid()).append("\"");
+            buf.append(" sid=\"").append(getSid()).append('"');
         }
-        buf.append(">");
+        buf.append('>');
 
         synchronized (contents) {
             for (JingleContent content : contents) {

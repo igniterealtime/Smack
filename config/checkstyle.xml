@@ -20,6 +20,18 @@
 		<property name="message" value="Must not use MXParser, use XmlPullParserFactory instead"/>
 	</module>
 	<module name="RegexpSingleline">
+	  <!--
+		  Matches StringBuilder.append(String) calls where the
+		  argument is a String of length one. Those should be replaced
+		  with append(char) for performance reasons.
+
+		  TODO: This could be more advanced in order to match also
+		  - .append("\u1234")
+	  -->
+		<property name="format" value="\.append\(&quot;(.|\\.)&quot;\)"/>
+		<property name="message" value="Don&apos;t use StringBuilder.append(String) when you can use StringBuilder.append(char). Solution: Replace double quotes of append&apos;s argument with single quotes."/>
+	</module>
+	<module name="RegexpSingleline">
 		<property name="format" value="^\s+$"/>
 		<property name="message" value="Line containing only whitespace character(s)"/>
 	</module>

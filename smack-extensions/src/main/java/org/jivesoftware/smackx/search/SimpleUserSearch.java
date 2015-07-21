@@ -75,7 +75,7 @@ class SimpleUserSearch extends IQ {
             String name = field.getVariable();
             String value = getSingleValue(field);
             if (value.trim().length() > 0) {
-                buf.append("<").append(name).append(">").append(value).append("</").append(name).append(">");
+                buf.append('<').append(name).append('>').append(value).append("</").append(name).append('>');
             }
         }
 

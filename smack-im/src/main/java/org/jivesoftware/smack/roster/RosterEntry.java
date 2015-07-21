@@ -207,7 +207,7 @@ public final class RosterEntry extends Manager {
                 group = iter.next();
                 buf.append(group.getName());
             }
-            buf.append("]");
+            buf.append(']');
         }
         return buf.toString();
     }

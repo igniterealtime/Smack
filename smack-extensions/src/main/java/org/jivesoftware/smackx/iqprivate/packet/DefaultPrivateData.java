@@ -81,14 +81,14 @@ public class DefaultPrivateData implements PrivateData {
 
     public String toXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<").append(elementName).append(" xmlns=\"").append(namespace).append("\">");
+        buf.append('<').append(elementName).append(" xmlns=\"").append(namespace).append("\">");
         for (String name : getNames()) {
             String value = getValue(name);
-            buf.append("<").append(name).append(">");
+            buf.append('<').append(name).append('>');
             buf.append(value);
-            buf.append("</").append(name).append(">");
+            buf.append("</").append(name).append('>');
         }
-        buf.append("</").append(elementName).append(">");
+        buf.append("</").append(elementName).append('>');
         return buf.toString();
     }
 

@@ -183,7 +183,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 
 			builder.append("</");
 			builder.append(getElementName());
-			builder.append(">");
+			builder.append('>');
 			return builder.toString();
 		}
 	}

@@ -160,7 +160,7 @@ public class MessageTest extends SmackTestCase {
         Message msg = new Message(getFullJID(1), Message.Type.chat);
         StringBuilder sb = new StringBuilder(5000);
         for (int i = 0; i <= 4000; i++) {
-            sb.append("X");
+            sb.append('X');
         }
         msg.setBody(sb.toString());
 

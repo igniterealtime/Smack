@@ -80,9 +80,9 @@ public abstract class PEPItem implements ExtensionElement {
      */
     public String toXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" id=\"").append(id).append("\">");
+        buf.append('<').append(getElementName()).append(" id=\"").append(id).append("\">");
         buf.append(getItemDetailsXML());
-        buf.append("</").append(getElementName()).append(">");
+        buf.append("</").append(getElementName()).append('>');
         return buf.toString();
     }
 

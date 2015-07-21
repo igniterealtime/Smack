@@ -182,13 +182,13 @@ public class OfflineMessageRequest extends IQ {
             StringBuilder buf = new StringBuilder();
             buf.append("<item");
             if (getAction() != null) {
-                buf.append(" action=\"").append(getAction()).append("\"");
+                buf.append(" action=\"").append(getAction()).append('"');
             }
             if (getJid() != null) {
-                buf.append(" jid=\"").append(getJid()).append("\"");
+                buf.append(" jid=\"").append(getJid()).append('"');
             }
             if (getNode() != null) {
-                buf.append(" node=\"").append(getNode()).append("\"");
+                buf.append(" node=\"").append(getNode()).append('"');
             }
             buf.append("/>");
             return buf.toString();

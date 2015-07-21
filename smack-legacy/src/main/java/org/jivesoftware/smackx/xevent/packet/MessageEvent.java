@@ -305,30 +305,30 @@ public class MessageEvent implements ExtensionElement {
      */
     public String toXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
+        buf.append('<').append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");
         // Note: Cancellation events don't specify any tag. They just send the packetID
 
         // Add the offline tag if the sender requests to be notified of offline events or if 
         // the target is offline
         if (isOffline())
-            buf.append("<").append(MessageEvent.OFFLINE).append("/>");
+            buf.append('<').append(MessageEvent.OFFLINE).append("/>");
         // Add the delivered tag if the sender requests to be notified when the message is 
         // delivered or if the target notifies that the message has been delivered
         if (isDelivered())
-            buf.append("<").append(MessageEvent.DELIVERED).append("/>");
+            buf.append('<').append(MessageEvent.DELIVERED).append("/>");
         // Add the displayed tag if the sender requests to be notified when the message is 
         // displayed or if the target notifies that the message has been displayed
         if (isDisplayed())
-            buf.append("<").append(MessageEvent.DISPLAYED).append("/>");
+            buf.append('<').append(MessageEvent.DISPLAYED).append("/>");
         // Add the composing tag if the sender requests to be notified when the target is 
         // composing a reply or if the target notifies that he/she is composing a reply
         if (isComposing())
-            buf.append("<").append(MessageEvent.COMPOSING).append("/>");
+            buf.append('<').append(MessageEvent.COMPOSING).append("/>");
         // Add the id tag only if the MessageEvent is a notification message (not a request)
         if (getStanzaId() != null)
             buf.append("<id>").append(getStanzaId()).append("</id>");
-        buf.append("</").append(getElementName()).append(">");
+        buf.append("</").append(getElementName()).append('>');
         return buf.toString();
     }
 

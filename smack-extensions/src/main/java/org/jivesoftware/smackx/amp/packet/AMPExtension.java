@@ -155,27 +155,27 @@ public class AMPExtension implements ExtensionElement {
     @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append("\"");
+        buf.append('<').append(getElementName()).append(" xmlns=\"").append(getNamespace()).append('"');
         if (status != null) {
-            buf.append(" status=\"").append(status.toString()).append("\"");
+            buf.append(" status=\"").append(status.toString()).append('"');
         }
         if (to != null) {
-            buf.append(" to=\"").append(to).append("\"");
+            buf.append(" to=\"").append(to).append('"');
         }
         if (from != null) {
-            buf.append(" from=\"").append(from).append("\"");
+            buf.append(" from=\"").append(from).append('"');
         }
         if (perHop) {
             buf.append(" per-hop=\"true\"");
         }
-        buf.append(">");
+        buf.append('>');
 
         // Loop through all the rules and append them to the string buffer
         for (Rule rule : getRules()) {
             buf.append(rule.toXML());
         }
 
-        buf.append("</").append(getElementName()).append(">");
+        buf.append("</").append(getElementName()).append('>');
         return buf.toString();
     }
 

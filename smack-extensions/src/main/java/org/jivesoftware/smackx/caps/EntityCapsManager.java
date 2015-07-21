@@ -631,13 +631,13 @@ public final class EntityCapsManager extends Manager {
         // followed by the '<' character.
         for (DiscoverInfo.Identity identity : sortedIdentities) {
             sb.append(identity.getCategory());
-            sb.append("/");
+            sb.append('/');
             sb.append(identity.getType());
-            sb.append("/");
+            sb.append('/');
             sb.append(identity.getLanguage() == null ? "" : identity.getLanguage());
-            sb.append("/");
+            sb.append('/');
             sb.append(identity.getName() == null ? "" : identity.getName());
-            sb.append("<");
+            sb.append('<');
         }
 
         // 4. Sort the supported service discovery features.
@@ -649,7 +649,7 @@ public final class EntityCapsManager extends Manager {
         // character
         for (String f : features) {
             sb.append(f);
-            sb.append("<");
+            sb.append('<');
         }
 
         // only use the data form for calculation is it has a hidden FORM_TYPE
@@ -690,7 +690,7 @@ public final class EntityCapsManager extends Manager {
                 // followed by the '<' character.
                 for (FormField f : fs) {
                     sb.append(f.getVariable());
-                    sb.append("<");
+                    sb.append('<');
                     formFieldValuesToCaps(f.getValues(), sb);
                 }
             }
@@ -719,7 +719,7 @@ public final class EntityCapsManager extends Manager {
         }
         for (String fv : fvs) {
             sb.append(fv);
-            sb.append("<");
+            sb.append('<');
         }
     }
 

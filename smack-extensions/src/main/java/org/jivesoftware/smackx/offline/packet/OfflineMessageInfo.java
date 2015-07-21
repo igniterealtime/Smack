@@ -80,11 +80,11 @@ public class OfflineMessageInfo implements ExtensionElement {
 
     public String toXML() {
         StringBuilder buf = new StringBuilder();
-        buf.append("<").append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
+        buf.append('<').append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");
         if (getNode() != null)
             buf.append("<item node=\"").append(getNode()).append("\"/>");
-        buf.append("</").append(getElementName()).append(">");
+        buf.append("</").append(getElementName()).append('>');
         return buf.toString();
     }
 

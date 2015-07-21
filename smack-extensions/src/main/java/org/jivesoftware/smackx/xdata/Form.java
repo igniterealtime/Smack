@@ -376,7 +376,7 @@ public class Form {
             sb.append(it.next());
             // If this is not the last instruction then append a newline
             if (it.hasNext()) {
-                sb.append("\n");
+                sb.append('\n');
             }
         }
         return sb.toString();

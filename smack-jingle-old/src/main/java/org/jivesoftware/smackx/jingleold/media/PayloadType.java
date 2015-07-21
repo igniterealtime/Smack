@@ -208,17 +208,17 @@ public class PayloadType {
     public String toXML() {
         StringBuilder buf = new StringBuilder();
 
-            buf.append("<").append(getElementName()).append(" ");
+            buf.append('<').append(getElementName()).append(' ');
 
             // We covert here the payload type to XML
             if (this.getId() != PayloadType.INVALID_PT) {
-                buf.append(" id=\"").append(this.getId()).append("\"");
+                buf.append(" id=\"").append(this.getId()).append('"');
             }
             if (this.getName() != null) {
-                buf.append(" name=\"").append(this.getName()).append("\"");
+                buf.append(" name=\"").append(this.getName()).append('"');
             }
             if (this.getChannels() != 0) {
-                buf.append(" channels=\"").append(this.getChannels()).append("\"");
+                buf.append(" channels=\"").append(this.getChannels()).append('"');
             }
             if (getChildAttributes() != null) {
                 buf.append(getChildAttributes());

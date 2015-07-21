@@ -153,11 +153,11 @@ public class Subscription extends NodeExtension
 
 	private static void appendAttribute(StringBuilder builder, String att, String value)
 	{
-		builder.append(" ");
+		builder.append(' ');
 		builder.append(att);
 		builder.append("='");
 		builder.append(value);
-		builder.append("'");
+		builder.append('\'');
 	}
 
 }

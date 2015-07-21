@@ -98,7 +98,7 @@ public class QueueOverview implements ExtensionElement {
 
     public String toXML () {
         StringBuilder buf = new StringBuilder();
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
+        buf.append('<').append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
 
         if (userCount != -1) {
             buf.append("<count>").append(userCount).append("</count>");
@@ -112,7 +112,7 @@ public class QueueOverview implements ExtensionElement {
         if (status != null) {
             buf.append("<status>").append(status).append("</status>");
         }
-        buf.append("</").append(ELEMENT_NAME).append(">");
+        buf.append("</").append(ELEMENT_NAME).append('>');
 
         return buf.toString();
     }

@@ -91,11 +91,11 @@ public class AgentStatus implements ExtensionElement {
     public String toXML() {
         StringBuilder buf = new StringBuilder();
 
-        buf.append("<").append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\"");
+        buf.append('<').append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append('"');
         if (workgroupJID != null) {
-            buf.append(" jid=\"").append(workgroupJID).append("\"");
+            buf.append(" jid=\"").append(workgroupJID).append('"');
         }
-        buf.append(">");
+        buf.append('>');
         if (maxChats != -1) {
             buf.append("<max-chats>").append(maxChats).append("</max-chats>");
         }
@@ -197,22 +197,22 @@ public class AgentStatus implements ExtensionElement {
 
             buf.append("<chat ");
             if (sessionID != null) {
-                buf.append(" sessionID=\"").append(sessionID).append("\"");
+                buf.append(" sessionID=\"").append(sessionID).append('"');
             }
             if (userID != null) {
-                buf.append(" userID=\"").append(userID).append("\"");
+                buf.append(" userID=\"").append(userID).append('"');
             }
             if (date != null) {
-                buf.append(" startTime=\"").append(UTC_FORMAT.format(date)).append("\"");
+                buf.append(" startTime=\"").append(UTC_FORMAT.format(date)).append('"');
             }
             if (email != null) {
-                buf.append(" email=\"").append(email).append("\"");
+                buf.append(" email=\"").append(email).append('"');
             }
             if (username != null) {
-                buf.append(" username=\"").append(username).append("\"");
+                buf.append(" username=\"").append(username).append('"');
             }
             if (question != null) {
-                buf.append(" question=\"").append(question).append("\"");
+                buf.append(" question=\"").append(question).append('"');
             }
             buf.append("/>");
 

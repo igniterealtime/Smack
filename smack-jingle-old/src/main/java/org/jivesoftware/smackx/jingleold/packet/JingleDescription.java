@@ -156,7 +156,7 @@ public abstract class JingleDescription implements ExtensionElement {
 
         synchronized (payloads) {
             if (payloads.size() > 0) {
-                buf.append("<").append(getElementName());
+                buf.append('<').append(getElementName());
                 buf.append(" xmlns=\"").append(getNamespace()).append("\" >");
 
                 for (PayloadType payloadType : payloads) {
@@ -164,7 +164,7 @@ public abstract class JingleDescription implements ExtensionElement {
                         buf.append(payloadType.toXML());
                     }
                 }
-                buf.append("</").append(getElementName()).append(">");
+                buf.append("</").append(getElementName()).append('>');
             }
         }
 

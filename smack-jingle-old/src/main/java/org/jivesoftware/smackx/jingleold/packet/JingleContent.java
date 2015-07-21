@@ -162,7 +162,7 @@ public class JingleContent implements ExtensionElement {
 
         synchronized (transports) {
 
-            buf.append("<").append(getElementName());
+            buf.append('<').append(getElementName());
 
             buf.append(" creator='" + creator + "' name='" + name + "'>");
 
@@ -175,7 +175,7 @@ public class JingleContent implements ExtensionElement {
             for (JingleTransport transport : transports) {
                 buf.append(transport.toXML());
             }
-            buf.append("</").append(getElementName()).append(">");
+            buf.append("</").append(getElementName()).append('>');
         }
         return buf.toString();
     }
