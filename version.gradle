@@ -2,7 +2,7 @@ allprojects {
 	ext {
 		shortVersion = '4.1.4'
 		isSnapshot = true
-		jxmppVersion = '0.4.2-beta1'
+		jxmppVersion = '0.4.2'
 		smackMinAndroidSdk = 8
 	}
 }
