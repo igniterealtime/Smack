@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,7 +152,12 @@ public class SmackException extends Exception {
         private static final long serialVersionUID = 9197980400776001173L;
 
         public NotConnectedException() {
-            super("Client is not, or no longer, connected");
+            this(null);
+        }
+
+        public NotConnectedException(String optionalHint) {
+            super("Client is not, or no longer, connected."
+                            + (optionalHint != null ? ' ' + optionalHint : ""));
         }
     }
 

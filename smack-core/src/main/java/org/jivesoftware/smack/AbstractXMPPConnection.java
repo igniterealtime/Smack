@@ -403,7 +403,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     public synchronized void login() throws XMPPException, SmackException, IOException {
         if (isAnonymous()) {
-            throwNotConnectedExceptionIfAppropriate();
+            throwNotConnectedExceptionIfAppropriate("Did you call connect() before login()?");
             throwAlreadyLoggedInExceptionIfAppropriate();
             loginAnonymously();
         } else {
@@ -584,8 +584,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected void throwNotConnectedExceptionIfAppropriate() throws NotConnectedException {
+        throwNotConnectedExceptionIfAppropriate(null);
+    }
+
+    protected void throwNotConnectedExceptionIfAppropriate(String optionalHint) throws NotConnectedException {
         if (!isConnected()) {
-            throw new NotConnectedException();
+            throw new NotConnectedException(optionalHint);
         }
     }
 
