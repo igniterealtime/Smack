@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.carbons;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.jivesoftware.smack.ExceptionCallback;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -116,16 +117,63 @@ public final class CarbonManager extends Manager {
      *
      * @param new_state whether carbons should be enabled or disabled
      * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws InterruptedException
+     * @deprecated use {@link #enableCarbonsAsync(ExceptionCallback)} or {@link #disableCarbonsAsync(ExceptionCallback)} instead.
      */
+    @Deprecated
     public void sendCarbonsEnabled(final boolean new_state) throws NotConnectedException, InterruptedException {
-        IQ setIQ = carbonsEnabledIQ(new_state);
+        sendUseCarbons(new_state, null);
+    }
 
-        connection().sendIqWithResponseCallback(setIQ, new StanzaListener() {
-            public void processPacket(Stanza packet) {
-                enabled_state = new_state;
+    /**
+     * Enable carbons asynchronously. If an error occurs as result of the attempt to enable carbons, the optional
+     * <code>exceptionCallback</code> will be invoked.
+     * <p>
+     * Note that although this method is asynchronous, it may block if the outgoing stream element queue is full (e.g.
+     * because of a slow network connection). Thus, if the thread performing this operation is interrupted while the
+     * queue is full, an {@link InterruptedException} is thrown.
+     * </p>
+     * 
+     * @param exceptionCallback the optional exception callback.
+     * @throws InterruptedException if the thread got interrupted while this action is performed.
+     * @since 4.2
+     */
+    public void enableCarbonsAsync(ExceptionCallback exceptionCallback) throws InterruptedException {
+        sendUseCarbons(true, exceptionCallback);
+    }
+
+    /**
+     * Disable carbons asynchronously. If an error occurs as result of the attempt to disable carbons, the optional
+     * <code>exceptionCallback</code> will be invoked.
+     * <p>
+     * Note that although this method is asynchronous, it may block if the outgoing stream element queue is full (e.g.
+     * because of a slow network connection). Thus, if the thread performing this operation is interrupted while the
+     * queue is full, an {@link InterruptedException} is thrown.
+     * </p>
+     * 
+     * @param exceptionCallback the optional exception callback.
+     * @throws InterruptedException if the thread got interrupted while this action is performed.
+     * @since 4.2
+     */
+    public void disableCarbonsAsync(ExceptionCallback exceptionCallback) throws InterruptedException {
+        sendUseCarbons(false, exceptionCallback);
+    }
+
+    private void sendUseCarbons(final boolean use, ExceptionCallback exceptionCallback) throws InterruptedException {
+        IQ setIQ = carbonsEnabledIQ(use);
+
+        try {
+            connection().sendIqWithResponseCallback(setIQ, new StanzaListener() {
+                public void processPacket(Stanza packet) {
+                    enabled_state = use;
+                }
+            }, exceptionCallback);
+        }
+        catch (NotConnectedException e) {
+            if (exceptionCallback != null) {
+                exceptionCallback.processException(e);
             }
-        });
+        }
     }
 
     /**
