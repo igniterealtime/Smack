@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.carbons;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -65,6 +66,22 @@ public class CarbonManager extends Manager {
         super(connection);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(CarbonExtension.NAMESPACE);
+        connection.addConnectionListener(new AbstractConnectionListener() {
+            @Override
+            public void connectionClosed() {
+                // Reset the state if the connection was cleanly closed. Note that this is not strictly necessary,
+                // because we also reset in authenticated() if the stream got not resumed, but for maximum correctness,
+                // also reset here.
+                enabled_state = false;
+            }
+            @Override
+            public void authenticated(XMPPConnection connection, boolean resumed) {
+                if (!resumed) {
+                    // Non-resumed XMPP sessions always start with disabled carbons
+                    enabled_state = false;
+                }
+            }
+        });
     }
 
     /**
