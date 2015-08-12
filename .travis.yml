@@ -5,6 +5,10 @@ android:
 jdk:
   - oraclejdk8
   - oraclejdk7
+sudo: false
+cache:
+  directories:
+  - $HOME/.m2
 
 install: gradle assemble
 script: gradle check
