@@ -1634,7 +1634,7 @@ public class MultiUserChat {
      * @return the occupant's current presence, or <tt>null</tt> if the user is unavailable
      *      or if no presence information is available.
      */
-    public Presence getOccupantPresence(String user) {
+    public Presence getOccupantPresence(EntityFullJid user) {
         return occupantsMap.get(user);
     }
 
@@ -1647,8 +1647,8 @@ public class MultiUserChat {
      * be: roomName@service/nickname (e.g. darkcave@macbeth.shakespeare.lit/thirdwitch).
      * @return the Occupant or <tt>null</tt> if the user is unavailable (i.e. not in the room).
      */
-    public Occupant getOccupant(String user) {
-        Presence presence = occupantsMap.get(user);
+    public Occupant getOccupant(EntityFullJid user) {
+        Presence presence = getOccupantPresence(user);
         if (presence != null) {
             return new Occupant(presence);
         }
