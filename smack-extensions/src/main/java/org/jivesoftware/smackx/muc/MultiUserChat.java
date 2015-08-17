@@ -2082,8 +2082,8 @@ public class MultiUserChat {
         boolean isUserModification,
         EntityFullJid from) {
         // Voice was granted to a visitor
-        if (("visitor".equals(oldRole) || "none".equals(oldRole))
-            && "participant".equals(newRole)) {
+        if ((MUCRole.visitor.equals(oldRole) || MUCRole.none.equals(oldRole))
+            && MUCRole.participant.equals(newRole)) {
             if (isUserModification) {
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.voiceGranted();
@@ -2097,8 +2097,8 @@ public class MultiUserChat {
         }
         // The participant's voice was revoked from the room
         else if (
-            "participant".equals(oldRole)
-                && ("visitor".equals(newRole) || "none".equals(newRole))) {
+            MUCRole.participant.equals(oldRole)
+                && (MUCRole.visitor.equals(newRole) || MUCRole.none.equals(newRole))) {
             if (isUserModification) {
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.voiceRevoked();
@@ -2111,8 +2111,8 @@ public class MultiUserChat {
             }
         }
         // Moderator privileges were granted to a participant
-        if (!"moderator".equals(oldRole) && "moderator".equals(newRole)) {
-            if ("visitor".equals(oldRole) || "none".equals(oldRole)) {
+        if (!MUCRole.moderator.equals(oldRole) && MUCRole.moderator.equals(newRole)) {
+            if (MUCRole.visitor.equals(oldRole) || MUCRole.none.equals(oldRole)) {
                 if (isUserModification) {
                     for (UserStatusListener listener : userStatusListeners) {
                         listener.voiceGranted();
@@ -2136,8 +2136,8 @@ public class MultiUserChat {
             }
         }
         // Moderator privileges were revoked from a participant
-        else if ("moderator".equals(oldRole) && !"moderator".equals(newRole)) {
-            if ("visitor".equals(newRole) || "none".equals(newRole)) {
+        else if (MUCRole.moderator.equals(oldRole) && !MUCRole.moderator.equals(newRole)) {
+            if (MUCRole.visitor.equals(newRole) || MUCRole.none.equals(newRole)) {
                 if (isUserModification) {
                     for (UserStatusListener listener : userStatusListeners) {
                         listener.voiceRevoked();
@@ -2211,7 +2211,7 @@ public class MultiUserChat {
         // first fire the "revoke" events and then fire the "grant" events.
 
         // The user's ownership to the room was revoked
-        if ("owner".equals(oldAffiliation) && !"owner".equals(newAffiliation)) {
+        if (MUCAffiliation.owner.equals(oldAffiliation) && !MUCAffiliation.owner.equals(newAffiliation)) {
             if (isUserModification) {
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.ownershipRevoked();
@@ -2224,7 +2224,7 @@ public class MultiUserChat {
             }
         }
         // The user's administrative privileges to the room were revoked
-        else if ("admin".equals(oldAffiliation) && !"admin".equals(newAffiliation)) {
+        else if (MUCAffiliation.admin.equals(oldAffiliation) && !MUCAffiliation.admin.equals(newAffiliation)) {
             if (isUserModification) {
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.adminRevoked();
@@ -2237,7 +2237,7 @@ public class MultiUserChat {
             }
         }
         // The user's membership to the room was revoked
-        else if ("member".equals(oldAffiliation) && !"member".equals(newAffiliation)) {
+        else if (MUCAffiliation.member.equals(oldAffiliation) && !MUCAffiliation.member.equals(newAffiliation)) {
             if (isUserModification) {
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.membershipRevoked();
@@ -2251,7 +2251,7 @@ public class MultiUserChat {
         }
 
         // The user was granted ownership to the room
-        if (!"owner".equals(oldAffiliation) && "owner".equals(newAffiliation)) {
+        if (!MUCAffiliation.owner.equals(oldAffiliation) && MUCAffiliation.owner.equals(newAffiliation)) {
             if (isUserModification) {
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.ownershipGranted();
@@ -2264,7 +2264,7 @@ public class MultiUserChat {
             }
         }
         // The user was granted administrative privileges to the room
-        else if (!"admin".equals(oldAffiliation) && "admin".equals(newAffiliation)) {
+        else if (!MUCAffiliation.admin.equals(oldAffiliation) && MUCAffiliation.admin.equals(newAffiliation)) {
             if (isUserModification) {
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.adminGranted();
@@ -2277,7 +2277,7 @@ public class MultiUserChat {
             }
         }
         // The user was granted membership to the room
-        else if (!"member".equals(oldAffiliation) && "member".equals(newAffiliation)) {
+        else if (!MUCAffiliation.member.equals(oldAffiliation) && MUCAffiliation.member.equals(newAffiliation)) {
             if (isUserModification) {
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.membershipGranted();
