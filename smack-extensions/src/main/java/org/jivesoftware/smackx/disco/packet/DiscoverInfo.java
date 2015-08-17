@@ -209,7 +209,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
      * @param feature the feature to check
      * @return true if the requestes feature has been discovered
      */
-    public boolean containsFeature(String feature) {
+    public boolean containsFeature(CharSequence feature) {
         return features.contains(new Feature(feature));
     }
 
@@ -480,6 +480,10 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
         public Feature(Feature feature) {
             this.variable = feature.variable;
+        }
+
+        public Feature(CharSequence variable) {
+            this(variable.toString());
         }
 
         /**

@@ -44,6 +44,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.jivesoftware.smackx.pubsub.util.NodeUtils;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -61,12 +62,12 @@ import org.jxmpp.stringprep.XmppStringprepException;
 public final class PubSubManager extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(PubSubManager.class.getName());
-    private static final Map<XMPPConnection, Map<DomainBareJid, PubSubManager>> INSTANCES = new WeakHashMap<>();
+    private static final Map<XMPPConnection, Map<BareJid, PubSubManager>> INSTANCES = new WeakHashMap<>();
 
     /**
      * The JID of the PubSub service this manager manages.
      */
-    private final DomainBareJid pubSubService;
+    private final BareJid pubSubService;
 
     /**
      * A map of node IDs to Nodes, used to cache those Nodes. This does only cache the type of Node,
@@ -112,8 +113,8 @@ public final class PubSubManager extends Manager {
      * @param pubSubService the PubSub service.
      * @return a PubSub manager for the connection and service.
      */
-    public static synchronized PubSubManager getInstance(XMPPConnection connection, DomainBareJid pubSubService) {
-        Map<DomainBareJid, PubSubManager> managers = INSTANCES.get(connection);
+    public static synchronized PubSubManager getInstance(XMPPConnection connection, BareJid pubSubService) {
+        Map<BareJid, PubSubManager> managers = INSTANCES.get(connection);
         if (managers == null) {
             managers = new HashMap<>();
             INSTANCES.put(connection, managers);
@@ -133,7 +134,7 @@ public final class PubSubManager extends Manager {
 	 * @param connection The XMPP connection
 	 * @param toAddress The pubsub specific to address (required for some servers)
 	 */
-	PubSubManager(XMPPConnection connection, DomainBareJid toAddress)
+	PubSubManager(XMPPConnection connection, BareJid toAddress)
 	{
 		super(connection);
 		pubSubService = toAddress;
@@ -356,7 +357,7 @@ public final class PubSubManager extends Manager {
      *
      * @return the JID of the PubSub service.
      */
-    public DomainBareJid getServiceJid() {
+    public BareJid getServiceJid() {
         return pubSubService;
     }
 

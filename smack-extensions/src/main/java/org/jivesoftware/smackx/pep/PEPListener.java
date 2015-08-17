@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2015 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,9 @@
 
 package org.jivesoftware.smackx.pep;
 
-import org.jivesoftware.smackx.pep.packet.PEPEvent;
-import org.jxmpp.jid.Jid;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smackx.pubsub.EventElement;
+import org.jxmpp.jid.EntityBareJid;
 
 
 /**
@@ -26,6 +27,7 @@ import org.jxmpp.jid.Jid;
  * A listener that is fired anytime a PEP event message is received.
  *
  * @author Jeff Williams
+ * @author Florian Schmaus
  */
 public interface PEPListener {
 
@@ -34,7 +36,8 @@ public interface PEPListener {
      *  
      * @param from the user that sent the entries.
      * @param event the event contained in the message.
+     * @param message the message stanza containing the PEP event.
      */
-    public void eventReceived(Jid from, PEPEvent event);
+    public void eventReceived(EntityBareJid from, EventElement event, Message message);
 
 }

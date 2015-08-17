@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jivesoftware.smackx.pubsub.filter;
+
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smackx.pubsub.EventElement;
 
 /**
- * TODO describe me.
+ * Filter for stanzas with the PubSub 'event' extension.
+ *
+ * @author Florian Schmaus
+ *
  */
-package org.jivesoftware.smackx.pep.packet;
+public final class EventExtensionFilter extends StanzaExtensionFilter {
+
+    public static final EventExtensionFilter INSTANCE = new EventExtensionFilter();
+
+    private EventExtensionFilter() {
+        super(EventElement.ELEMENT, EventElement.NAMESPACE);
+    }
+
+}

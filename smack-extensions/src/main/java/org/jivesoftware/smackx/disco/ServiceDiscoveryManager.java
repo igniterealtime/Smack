@@ -41,6 +41,8 @@ import org.jxmpp.util.cache.Cache;
 import org.jxmpp.util.cache.ExpirationCache;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -659,9 +661,20 @@ public final class ServiceDiscoveryManager extends Manager {
      * @throws InterruptedException 
      * @since 4.1
      */
-    public boolean serverSupportsFeature(String feature) throws NoResponseException, XMPPErrorException,
+    public boolean serverSupportsFeature(CharSequence feature) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
-        return supportsFeature(connection().getXMPPServiceDomain(), feature);
+        return serverSupportsFeatures(feature);
+    }
+
+    public boolean serverSupportsFeatures(CharSequence... features) throws NoResponseException,
+                    XMPPErrorException, NotConnectedException, InterruptedException {
+        return serverSupportsFeatures(Arrays.asList(features));
+    }
+
+    public boolean serverSupportsFeatures(Collection<? extends CharSequence> features)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException,
+                    InterruptedException {
+        return supportsFeatures(connection().getXMPPServiceDomain(), features);
     }
 
     /**
@@ -675,9 +688,22 @@ public final class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public boolean supportsFeature(Jid jid, String feature) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public boolean supportsFeature(Jid jid, CharSequence feature) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return supportsFeatures(jid, feature);
+    }
+
+    public boolean supportsFeatures(Jid jid, CharSequence... features) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return supportsFeatures(jid, Arrays.asList(features));
+    }
+
+    public boolean supportsFeatures(Jid jid, Collection<? extends CharSequence> features) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverInfo result = discoverInfo(jid);
-        return result.containsFeature(feature);
+        for (CharSequence feature : features) {
+            if (!result.containsFeature(feature)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

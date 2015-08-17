@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jivesoftware.smack.filter.jidtype;
+
+import org.jivesoftware.smack.packet.Stanza;
+import org.jxmpp.jid.Jid;
 
 /**
- * TODO describe me.
+ * Filter based on the 'from' XMPP address type.
+ *
+ * @author Florian Schmaus
+ *
  */
-package org.jivesoftware.smackx.pep.provider;
+public class FromJidTypeFilter extends AbstractJidTypeFilter {
+
+    public FromJidTypeFilter(JidType jidType) {
+        super(jidType);
+    }
+
+    @Override
+    protected Jid getJidToMatchFrom(Stanza stanza) {
+        return stanza.getFrom();
+    }
+
+}
