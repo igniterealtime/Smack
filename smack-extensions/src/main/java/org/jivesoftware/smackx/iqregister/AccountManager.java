@@ -34,7 +34,9 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.iqregister.packet.Registration;
+import org.jxmpp.jid.parts.Localpart;
 
 /**
  * Allows creation and management of accounts on an XMPP server.
@@ -239,7 +241,7 @@ public final class AccountManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void createAccount(String username, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+    public void createAccount(Localpart username, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         // Create a map for all the required attributes, but give them blank values.
         Map<String, String> attributes = new HashMap<String, String>();
         for (String attributeName : getAccountAttributes()) {
@@ -262,14 +264,21 @@ public final class AccountManager extends Manager {
      * @throws InterruptedException 
      * @see #getAccountAttributes()
      */
-    public void createAccount(String username, String password, Map<String, String> attributes)
+    public void createAccount(Localpart username, String password, Map<String, String> attributes)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (!connection().isSecureConnection() && !allowSensitiveOperationOverInsecureConnection) {
             // TODO throw exception in newer Smack versions
             LOGGER.warning("Creating account over insecure connection. "
                             + "This will throw an exception in future versions of Smack if AccountManager.sensitiveOperationOverInsecureConnection(true) is not set");
         }
-        attributes.put("username", username);
+        if (username == null) {
+            throw new IllegalArgumentException("Username must not be null");
+        }
+        if (StringUtils.isNullOrEmpty(password)) {
+            throw new IllegalArgumentException("Password must not be null");
+        }
+
+        attributes.put("username", username.toString());
         attributes.put("password", password);
         Registration reg = new Registration(attributes);
         reg.setType(IQ.Type.set);

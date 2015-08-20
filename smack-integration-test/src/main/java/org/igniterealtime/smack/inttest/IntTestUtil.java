@@ -32,6 +32,8 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.iqregister.AccountManager;
+import org.jxmpp.jid.parts.Localpart;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 public class IntTestUtil {
 
@@ -58,7 +60,14 @@ public class IntTestUtil {
         Map<String, String> additionalAttributes = new HashMap<>();
         additionalAttributes.put("name", "Smack Integration Test");
         additionalAttributes.put("email", "flow@igniterealtime.org");
-        accountManager.createAccount(username, password, additionalAttributes);
+        Localpart usernameLocalpart;
+        try {
+            usernameLocalpart = Localpart.from(username);
+        }
+        catch (XmppStringprepException e) {
+            throw new IllegalArgumentException("Invalid username: " + username, e);
+        }
+        accountManager.createAccount(usernameLocalpart, password, additionalAttributes);
 
         return new UsernameAndPassword(username, password);
     }
