@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.tcp;
 
+import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
@@ -295,6 +296,14 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     public XMPPTCPConnection(XMPPTCPConnectionConfiguration config) {
         super(config);
         this.config = config;
+        addConnectionListener(new AbstractConnectionListener() {
+            @Override
+            public void connectionClosedOnError(Exception e) {
+                if (e instanceof XMPPException.StreamErrorException) {
+                    dropSmState();
+                }
+            }
+        });
     }
 
     /**
@@ -402,7 +411,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             // connection instance though). This is used in writePackets to decide if stanzas should
             // be added to the unacknowledged stanzas queue, because they have to be added right
             // after the 'enable' stream element has been sent.
-            unacknowledgedStanzas = null;
+            dropSmState();
         }
         if (isSmAvailable() && useSm) {
             // Remove what is maybe left from previously stream managed sessions
@@ -1705,6 +1714,17 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Drop the stream management state. Sets {@link #smSessionId} and
+     * {@link #unacknowledgedStanzas} to <code>null</code>.
+     */
+    private void dropSmState() {
+        // clientHandledCount and serverHandledCount will be reset on <enable/> and <enabled/>
+        // respective. No need to reset them here.
+        smSessionId = null;
+        unacknowledgedStanzas = null;
     }
 
     /**
