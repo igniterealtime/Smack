@@ -371,9 +371,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // If compression is enabled then request the server to use stream compression. XEP-170
         // recommends to perform stream compression before resource binding.
-        if (config.isCompressionEnabled()) {
-            useCompression();
-        }
+        maybeEnableCompression();
 
         if (isSmResumptionPossible()) {
             smResumedSyncPoint.sendAndWaitForResponse(new Resume(clientHandledStanzasCount, smSessionId));
@@ -739,12 +737,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @return a instance of XMPPInputOutputStream or null if no suitable instance was found
      * 
      */
-    private XMPPInputOutputStream maybeGetCompressionHandler() {
-        Compress.Feature compression = getFeature(Compress.Feature.ELEMENT, Compress.NAMESPACE);
-        if (compression == null) {
-            // Server does not support compression
-            return null;
-        }
+    private XMPPInputOutputStream maybeGetCompressionHandler(Compress.Feature compression) {
         for (XMPPInputOutputStream handler : SmackConfiguration.getCompresionHandlers()) {
                 String method = handler.getCompressionMethod();
                 if (compression.getMethods().contains(method))
@@ -776,11 +769,19 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws NoResponseException 
      * @throws InterruptedException 
      */
-    private void useCompression() throws NotConnectedException, NoResponseException, XMPPException, InterruptedException {
+    private void maybeEnableCompression() throws NotConnectedException, NoResponseException, XMPPException, InterruptedException {
+        if (!config.isCompressionEnabled()) {
+            return;
+        }
         maybeCompressFeaturesReceived.checkIfSuccessOrWait();
+        Compress.Feature compression = getFeature(Compress.Feature.ELEMENT, Compress.NAMESPACE);
+        if (compression == null) {
+            // Server does not support compression
+            return;
+        }
         // If stream compression was offered by the server and we want to use
         // compression then send compression request to the server
-        if ((compressionHandler = maybeGetCompressionHandler()) != null) {
+        if ((compressionHandler = maybeGetCompressionHandler(compression)) != null) {
             compressSyncPoint.sendAndWaitForResponseOrThrow(new Compress(compressionHandler.getCompressionMethod()));
         } else {
             LOGGER.warning("Could not enable compression because no matching handler/method pair was found");
