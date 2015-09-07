@@ -1195,7 +1195,7 @@ public class Roster extends Manager {
 
                 }
             }
-            if (!isLoaded()) {
+            if (!isLoaded() && rosterLoadedAtLogin) {
                 LOGGER.warning("Roster not loaded while processing presence stanza");
             }
             final XMPPConnection connection = connection();
