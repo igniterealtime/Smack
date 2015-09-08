@@ -262,6 +262,21 @@ subprojects {
 		classifier = 'tests'
 		from sourceSets.test.output
 	}
+
+	// Does install unique snapshosts (and release)s in the local maven
+	// repository, unlike the 'install' task.
+	// You can specify the path of the local maven repository using 'maven.repo.local', e.g.
+	// gradle uploadLocal -Dmaven.repo.local=/var/www/repo
+	task uploadLocal(type: Upload) {
+		description "Uploads artifacts into the local maven repositories URL."
+		configuration = configurations['archives']
+		repositories {
+			mavenDeployer {
+				repository url: repositories.mavenLocal().url
+			}
+		}
+	}
+
 	artifacts {
 		archives sourcesJar
 		archives javadocJar
