@@ -184,8 +184,8 @@ public class XmppHostnameVerifier implements HostnameVerifier {
     }
 
     private static boolean matchesPerRfc2818(String name, String template) {
-        String[] nameParts = name.toLowerCase(Locale.US).split(".");
-        String[] templateParts = template.toLowerCase(Locale.US).split(".");
+        String[] nameParts = name.toLowerCase(Locale.US).split("\\.");
+        String[] templateParts = template.toLowerCase(Locale.US).split("\\.");
 
         if (nameParts.length != templateParts.length) {
             return false;

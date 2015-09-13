@@ -173,6 +173,7 @@ public final class Socks5TestProxy {
      * @param digest identifying the connection
      * @return socket or null if there is no socket for the given digest
      */
+    @SuppressWarnings("WaitNotInLoop")
     public Socket getSocket(String digest) {
         synchronized(this) {
             if (!startupComplete) {
@@ -180,12 +181,11 @@ public final class Socks5TestProxy {
                     wait(5000);
                 } catch (InterruptedException e) {
                     LOGGER.log(Level.SEVERE, "exception", e);
-                } finally {
-                    if (!startupComplete) {
-                        throw new IllegalStateException("Startup of Socks5TestProxy failed within 5 seconds");
-                    }
                 }
             }
+        }
+        if (!startupComplete) {
+            throw new IllegalStateException("Startup of Socks5TestProxy failed within 5 seconds");
         }
         return this.connectionMap.get(digest);
     }

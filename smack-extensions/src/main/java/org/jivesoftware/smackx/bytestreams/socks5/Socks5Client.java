@@ -75,7 +75,6 @@ class Socks5Client {
      */
     public Socket getSocket(int timeout) throws IOException, XMPPErrorException, InterruptedException,
                     TimeoutException, SmackException, XMPPException {
-
         // wrap connecting in future for timeout
         FutureTask<Socket> futureTask = new FutureTask<Socket>(new Callable<Socket>() {
 

@@ -71,17 +71,18 @@ class HTTPProxySocketConnection implements ProxySocketConnection {
 
         while (true)
         {
-            char c = (char) in.read();
+            int inByte = in.read();
+            if (inByte == -1)
+            {
+                throw new ProxyException(ProxyInfo.ProxyType.HTTP);
+            }
+            char c = (char) inByte;
             got.append(c);
             if (got.length() > 1024)
             {
                 throw new ProxyException(ProxyInfo.ProxyType.HTTP, "Recieved " +
                     "header of >1024 characters from "
                     + proxyhost + ", cancelling connection");
-            }
-            if (c == -1)
-            {
-                throw new ProxyException(ProxyInfo.ProxyType.HTTP);
             }
             if ((nlchars == 0 || nlchars == 2) && c == '\r')
             {

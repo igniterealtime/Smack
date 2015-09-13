@@ -192,8 +192,13 @@ public final class SASLAuthentication {
             else {
                 currentMechanism.authenticate(username, host, xmppServiceDomain, password);
             }
-            // Wait until SASL negotiation finishes
-            wait(connection.getPacketReplyTimeout());
+            final long deadline = System.currentTimeMillis() + connection.getPacketReplyTimeout();
+            while (!authenticationSuccessful && saslException == null) {
+                final long now = System.currentTimeMillis();
+                if (now > deadline) break;
+                // Wait until SASL negotiation finishes
+                wait(deadline - now);
+            }
         }
 
         if (saslException != null){

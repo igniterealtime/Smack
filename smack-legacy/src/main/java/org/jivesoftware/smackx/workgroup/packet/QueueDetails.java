@@ -56,14 +56,7 @@ public final class QueueDetails implements ExtensionElement {
     /**
      * The list of users in the queue.
      */
-    private Set<QueueUser> users;
-
-    /**
-     * Creates a new QueueDetails packet
-     */
-    private QueueDetails() {
-        users = new HashSet<QueueUser>();
-    }
+    private final Set<QueueUser> users = new HashSet<>();
 
     /**
      * Returns the number of users currently in the queue that are waiting to

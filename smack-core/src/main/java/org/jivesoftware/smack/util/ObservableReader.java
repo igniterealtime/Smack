@@ -31,7 +31,7 @@ import java.util.List;
 public class ObservableReader extends Reader {
 
     Reader wrappedReader = null;
-    List<ReaderListener> listeners = new ArrayList<ReaderListener>();
+    final List<ReaderListener> listeners = new ArrayList<ReaderListener>();
 
     public ObservableReader(Reader wrappedReader) {
         this.wrappedReader = wrappedReader;

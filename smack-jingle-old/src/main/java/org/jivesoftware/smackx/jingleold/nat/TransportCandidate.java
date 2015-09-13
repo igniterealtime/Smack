@@ -44,6 +44,7 @@ import org.jxmpp.jid.Jid;
  * @author Thiago Camargo
  * @author Alvaro Saurin
  */
+@SuppressWarnings("EqualsHashCode")
 public abstract class TransportCandidate {
 
 	private static final Logger LOGGER = Logger.getLogger(TransportCandidate.class.getName());

@@ -100,6 +100,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      */
     protected String sessionID = null;
 
+    private boolean notified;
+
     /**
      * Create a HTTP Binding connection to an XMPP server.
      * 
@@ -135,6 +137,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     @Override
     protected void connectInternal() throws SmackException, InterruptedException {
         done = false;
+        notified = false;
         try {
             // Ensure a clean starting state
             if (client != null) {
@@ -179,10 +182,12 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         // Wait for the response from the server
         synchronized (this) {
             if (!connected) {
-                try {
-                    wait(getPacketReplyTimeout());
+                final long deadline = System.currentTimeMillis() + getPacketReplyTimeout();
+                while (!notified) {
+                    final long now = System.currentTimeMillis();
+                    if (now > deadline) break;
+                    wait(deadline - now);
                 }
-                catch (InterruptedException e) {}
             }
         }
 
@@ -439,6 +444,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                 }
             }
             finally {
+                notified = true;
                 synchronized (XMPPBOSHConnection.this) {
                     XMPPBOSHConnection.this.notifyAll();
                 }

@@ -70,7 +70,7 @@ public class DataForm implements ExtensionElement {
 
     private Type type;
     private String title;
-    private List<String> instructions = new ArrayList<String>();
+    private final List<String> instructions = new ArrayList<>();
     private ReportedData reportedData;
     private final List<Item> items = new ArrayList<Item>();
     private final Map<String, FormField> fields = new LinkedHashMap<>();
@@ -197,7 +197,10 @@ public class DataForm implements ExtensionElement {
      * @param instructions list of instructions that explain how to fill out the form.
      */
     public void setInstructions(List<String> instructions) {
-        this.instructions = instructions;
+        synchronized (this.instructions) {
+            this.instructions.clear();
+            this.instructions.addAll(instructions);
+        }
     }
 
     /**

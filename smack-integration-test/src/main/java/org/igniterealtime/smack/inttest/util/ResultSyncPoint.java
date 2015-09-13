@@ -33,7 +33,12 @@ public class ResultSyncPoint<R, E extends Exception> {
             if (exception != null) {
                 throw exception;
             }
-            wait(timeout);
+            final long deadline = System.currentTimeMillis() + timeout;
+            while (result == null && exception == null) {
+                final long now = System.currentTimeMillis();
+                if (now > deadline) break;
+                wait(deadline - now);
+            }
         }
         if (result != null) {
             return result;

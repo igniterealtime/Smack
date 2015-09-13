@@ -50,7 +50,7 @@ import java.util.List;
  */
 public class RosterExchange implements ExtensionElement {
 
-    private List<RemoteRosterEntry> remoteRosterEntries = new ArrayList<RemoteRosterEntry>();
+    private final List<RemoteRosterEntry> remoteRosterEntries = new ArrayList<>();
 
     /**
      * Creates a new empty roster exchange package.

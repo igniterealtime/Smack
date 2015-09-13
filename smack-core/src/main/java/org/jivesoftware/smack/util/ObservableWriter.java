@@ -31,7 +31,7 @@ public class ObservableWriter extends Writer {
     private static final int MAX_STRING_BUILDER_SIZE = 4096;
 
     Writer wrappedWriter = null;
-    List<WriterListener> listeners = new ArrayList<WriterListener>();
+    final List<WriterListener> listeners = new ArrayList<WriterListener>();
     private final StringBuilder stringBuilder = new StringBuilder(MAX_STRING_BUILDER_SIZE);
 
     public ObservableWriter(Writer wrappedWriter) {

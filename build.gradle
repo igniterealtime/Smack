@@ -3,12 +3,14 @@ import org.gradle.plugins.signing.Sign
 buildscript {
     repositories {
         jcenter()
+		maven { url 'https://plugins.gradle.org/m2/' }
         maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
     }
     dependencies {
         classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
 		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.0'
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
+		classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.8'
     }
 }
 apply plugin: 'org.kordamp.gradle.markdown'
@@ -19,6 +21,7 @@ allprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
 	apply plugin: 'jacoco'
+	apply plugin: 'net.ltgt.errorprone'
 
 	ext {
 		gitCommit = getGitCommit()
@@ -127,6 +130,11 @@ allprojects {
 			// e.g. JAVA7_HOME. See SMACK-651.
 			'-Xlint:-options',
 			'-Werror',
+			// Needed because since adding gradle-errorprone-plugin
+			// See https://github.com/tbroyer/gradle-errorprone-plugin/issues/15
+			'-Xlint:-path',
+			// Disable errorprone checks
+			'-Xep:TypeParameterUnusedInFormals:OFF',
 		]
 	}
 

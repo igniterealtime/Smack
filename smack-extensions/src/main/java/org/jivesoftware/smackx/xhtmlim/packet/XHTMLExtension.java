@@ -40,7 +40,7 @@ public class XHTMLExtension implements ExtensionElement {
     public static final String ELEMENT = "html";
     public static final String NAMESPACE = "http://jabber.org/protocol/xhtml-im";
 
-    private List<CharSequence> bodies = new ArrayList<CharSequence>();
+    private final List<CharSequence> bodies = new ArrayList<>();
 
     /**
     * Returns the XML element name of the extension sub-packet root element.

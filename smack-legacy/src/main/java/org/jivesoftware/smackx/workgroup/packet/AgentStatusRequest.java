@@ -47,11 +47,10 @@ public class AgentStatusRequest extends IQ {
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
-    private Set<Item> agents;
+    private final Set<Item> agents = new HashSet<>();
 
     public AgentStatusRequest() {
         super(ELEMENT_NAME, NAMESPACE);
-        agents = new HashSet<Item>();
     }
 
     public int getAgentCount() {

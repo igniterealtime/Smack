@@ -51,7 +51,7 @@ public class AudioReceiver implements ReceiveStreamListener, SessionListener,
 
 	boolean dataReceived = false;
 
-    Object dataSync;
+    final Object dataSync;
     JingleMediaSession jingleMediaSession;
 
     public AudioReceiver(final Object dataSync, final JingleMediaSession jingleMediaSession) {

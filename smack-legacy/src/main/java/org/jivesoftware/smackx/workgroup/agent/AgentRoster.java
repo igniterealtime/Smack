@@ -55,8 +55,8 @@ public class AgentRoster {
 
     private XMPPConnection connection;
     private Jid workgroupJID;
-    private List<String> entries;
-    private List<AgentRosterListener> listeners;
+    private final List<String> entries = new ArrayList<String>();
+    private final List<AgentRosterListener> listeners = new ArrayList<>();
     private final Map<Jid, Map<Resourcepart, Presence>> presenceMap = new HashMap<>();
     // The roster is marked as initialized when at least a single roster packet
     // has been recieved and processed.
@@ -72,8 +72,6 @@ public class AgentRoster {
     AgentRoster(XMPPConnection connection, Jid workgroupJID) throws NotConnectedException, InterruptedException {
         this.connection = connection;
         this.workgroupJID = workgroupJID;
-        entries = new ArrayList<String>();
-        listeners = new ArrayList<AgentRosterListener>();
         // Listen for any roster packets.
         StanzaFilter rosterFilter = new StanzaTypeFilter(AgentStatusRequest.class);
         connection.addAsyncStanzaListener(new AgentStatusListener(), rosterFilter);

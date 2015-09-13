@@ -183,6 +183,7 @@ import org.jxmpp.jid.Jid;
  * @see JingleMediaManager
  * @see BasicTransportManager , STUNTransportManager, BridgedTransportManager, TransportResolver, BridgedResolver, ICEResolver, STUNResolver and BasicResolver.
  */
+@SuppressWarnings("SynchronizeOnNonFinalField")
 public class JingleManager implements JingleSessionListener {
 
 	private static final Logger LOGGER = Logger.getLogger(JingleManager.class.getName());

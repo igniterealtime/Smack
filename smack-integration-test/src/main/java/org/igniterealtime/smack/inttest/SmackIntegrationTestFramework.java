@@ -170,7 +170,7 @@ public class SmackIntegrationTestFramework {
         return testRunResult;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "Finally"})
     private void runTests(Set<Class<? extends AbstractSmackIntTest>> classes)
                     throws NoResponseException, NotConnectedException, InterruptedException {
         for (Class<? extends AbstractSmackIntTest> testClass : classes) {

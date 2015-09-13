@@ -38,7 +38,7 @@ public class OfflineMessageRequest extends IQ {
     public static final String ELEMENT = "offline";
     public static final String NAMESPACE = "http://jabber.org/protocol/offline";
 
-    private List<Item> items = new ArrayList<Item>();
+    private final List<Item> items = new ArrayList<>();
     private boolean purge = false;
     private boolean fetch = false;
 
