@@ -459,7 +459,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         if (!config.allowNullOrEmptyUsername) {
             StringUtils.requireNotNullOrEmpty(username, "Username must not be null or empty");
         }
-        throwNotConnectedExceptionIfAppropriate();
+        throwNotConnectedExceptionIfAppropriate("Did you call connect() before login()?");
         throwAlreadyLoggedInExceptionIfAppropriate();
         usedUsername = username != null ? username.toString() : null;
         usedPassword = password;
@@ -604,8 +604,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected void throwNotConnectedExceptionIfAppropriate() throws NotConnectedException {
+        throwNotConnectedExceptionIfAppropriate(null);
+    }
+
+    protected void throwNotConnectedExceptionIfAppropriate(String optionalHint) throws NotConnectedException {
         if (!isConnected()) {
-            throw new NotConnectedException();
+            throw new NotConnectedException(optionalHint);
         }
     }
 

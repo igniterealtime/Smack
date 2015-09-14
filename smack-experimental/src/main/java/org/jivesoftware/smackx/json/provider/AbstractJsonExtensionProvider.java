@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ public abstract class AbstractJsonExtensionProvider extends ExtensionElementProv
     public AbstractJsonPacketExtension parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException,
                     IOException, SmackException {
         String json = PacketParserUtils.parseElementText(parser);
-        parser.next();
         return from(json);
     }
 

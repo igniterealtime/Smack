@@ -297,7 +297,8 @@ public class PacketParserUtils {
     }
 
     /**
-     * Returns the textual content of an element as String.
+     * Returns the textual content of an element as String. After this method returns the parser
+     * position will be END_TAG, following the established pull parser calling convention.
      * <p>
      * The parser must be positioned on a START_TAG of an element which MUST NOT contain Mixed
      * Content (as defined in XML 3.2.2), or else an XmlPullParserException will be thrown.

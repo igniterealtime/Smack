@@ -164,7 +164,12 @@ public class SmackException extends Exception {
         private static final long serialVersionUID = 9197980400776001173L;
 
         public NotConnectedException() {
-            super("Client is not, or no longer, connected");
+            this(null);
+        }
+
+        public NotConnectedException(String optionalHint) {
+            super("Client is not, or no longer, connected."
+                            + (optionalHint != null ? ' ' + optionalHint : ""));
         }
 
         public NotConnectedException(XMPPConnection connection, String details) {

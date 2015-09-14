@@ -1290,7 +1290,7 @@ public final class Roster extends Manager {
 
                 }
             }
-            if (!isLoaded()) {
+            if (!isLoaded() && rosterLoadedAtLogin) {
                 LOGGER.warning("Roster not loaded while processing presence stanza");
             }
             Presence presence = (Presence) packet;

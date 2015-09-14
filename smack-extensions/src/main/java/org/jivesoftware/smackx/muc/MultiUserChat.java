@@ -192,7 +192,7 @@ public class MultiUserChat {
                     Presence oldPresence = occupantsMap.put(from, presence);
                     if (oldPresence != null) {
                         // Get the previous occupant's affiliation & role
-                        MUCUser mucExtension = MUCUser.from(packet);
+                        MUCUser mucExtension = MUCUser.from(oldPresence);
                         MUCAffiliation oldAffiliation = mucExtension.getItem().getAffiliation();
                         MUCRole oldRole = mucExtension.getItem().getRole();
                         // Get the new occupant's affiliation & role

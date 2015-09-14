@@ -41,6 +41,7 @@ import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.privacy.filter.SetActiveListFilter;
 import org.jivesoftware.smackx.privacy.filter.SetDefaultListFilter;
@@ -270,7 +271,7 @@ public final class PrivacyListManager extends Manager {
 	}
 
     /**
-     * Answer the active privacy list.
+     * Answer the active privacy list. Returns <code>null</code> if there is no active list.
      * 
      * @return the privacy list of the active list.
      * @throws XMPPErrorException 
@@ -281,6 +282,9 @@ public final class PrivacyListManager extends Manager {
     public PrivacyList getActiveList() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         Privacy privacyAnswer = this.getPrivacyWithListNames();
         String listName = privacyAnswer.getActiveName();
+        if (StringUtils.isNullOrEmpty(listName)) {
+            return null;
+        }
         boolean isDefaultAndActive = listName != null && listName.equals(privacyAnswer.getDefaultName());
         return new PrivacyList(true, isDefaultAndActive, listName, getPrivacyListItems(listName));
     }
@@ -303,7 +307,7 @@ public final class PrivacyListManager extends Manager {
     }
 
     /**
-     * Answer the default privacy list.
+     * Answer the default privacy list. Returns <code>null</code> if there is no default list.
      * 
      * @return the privacy list of the default list.
      * @throws XMPPErrorException 
@@ -314,7 +318,10 @@ public final class PrivacyListManager extends Manager {
     public PrivacyList getDefaultList() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Privacy privacyAnswer = this.getPrivacyWithListNames();
         String listName = privacyAnswer.getDefaultName();
-        boolean isDefaultAndActive = listName != null && listName.equals(privacyAnswer.getActiveName());
+        if (StringUtils.isNullOrEmpty(listName)) {
+            return null;
+        }
+        boolean isDefaultAndActive = listName.equals(privacyAnswer.getActiveName());
         return new PrivacyList(isDefaultAndActive, true, listName, getPrivacyListItems(listName));
     }
 
@@ -368,6 +375,7 @@ public final class PrivacyListManager extends Manager {
      * @throws InterruptedException 
      */ 
     private List<PrivacyItem> getPrivacyListItems(String listName) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+        assert StringUtils.isNotEmpty(listName);
         // The request of the list is an privacy message with an empty list
         Privacy request = new Privacy();
         request.setPrivacyList(listName, new ArrayList<PrivacyItem>());
@@ -389,6 +397,7 @@ public final class PrivacyListManager extends Manager {
 	 * @throws InterruptedException 
 	 */ 
 	public PrivacyList getPrivacyList(String listName) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+        listName = StringUtils.requireNotNullOrEmpty(listName, "List name must not be null");
         return new PrivacyList(false, false, listName, getPrivacyListItems(listName));
 	}
 
