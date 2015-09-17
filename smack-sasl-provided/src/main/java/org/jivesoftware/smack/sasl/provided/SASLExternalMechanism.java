@@ -40,6 +40,10 @@ public class SASLExternalMechanism extends SASLMechanism {
 
     @Override
     protected byte[] getAuthenticationText() throws SmackException {
+        if (authorizationId != null) {
+          return toBytes(authorizationId.toString());
+        }
+
         if (StringUtils.isNullOrEmpty(authenticationId)) {
             return null;
         }
@@ -65,6 +69,11 @@ public class SASLExternalMechanism extends SASLMechanism {
     @Override
     public void checkIfSuccessfulOrThrow() throws SmackException {
         // No check performed
+    }
+
+    @Override
+    public boolean authzidSupported() {
+      return true;
     }
 
 }
