@@ -135,6 +135,7 @@ allprojects {
 			'-Xlint:-path',
 			// Disable errorprone checks
 			'-Xep:TypeParameterUnusedInFormals:OFF',
+			'-Xep:TopLevel:OFF',
 		]
 	}
 
