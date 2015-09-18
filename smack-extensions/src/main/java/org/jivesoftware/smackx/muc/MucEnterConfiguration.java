@@ -135,7 +135,6 @@ public final class MucEnterConfiguration {
         /**
          * Request that that MUC is going to sent us no history when joining.
          * 
-         * @return
          * @return a reference to this builder.
          */
         public Builder requestNoHistory() {
