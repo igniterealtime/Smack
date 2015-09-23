@@ -131,9 +131,8 @@ public class Time extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
-        buf.rightAngleBracket();
-
         if (utc != null) {
+            buf.rightAngleBracket();
             buf.append("<utc>").append(utc).append("</utc>");
             buf.append("<tzo>").append(tzo).append("</tzo>");
         } else {
