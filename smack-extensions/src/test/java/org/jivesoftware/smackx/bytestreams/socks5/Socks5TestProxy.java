@@ -146,7 +146,7 @@ public final class Socks5TestProxy {
      * 
      * @return the host address of the local SOCKS5 proxy server
      */
-    public String getAddress() {
+    public static String getAddress() {
         try {
             return InetAddress.getLocalHost().getHostAddress();
         }

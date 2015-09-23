@@ -746,7 +746,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @return a instance of XMPPInputOutputStream or null if no suitable instance was found
      * 
      */
-    private XMPPInputOutputStream maybeGetCompressionHandler(Compress.Feature compression) {
+    private static XMPPInputOutputStream maybeGetCompressionHandler(Compress.Feature compression) {
         for (XMPPInputOutputStream handler : SmackConfiguration.getCompresionHandlers()) {
                 String method = handler.getCompressionMethod();
                 if (compression.getMethods().contains(method))

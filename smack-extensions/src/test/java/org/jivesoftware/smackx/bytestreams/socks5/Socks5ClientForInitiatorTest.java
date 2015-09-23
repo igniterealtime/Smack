@@ -214,7 +214,7 @@ public class Socks5ClientForInitiatorTest {
         socks5Proxy.start();
 
         StreamHost streamHost = new StreamHost(proxyJID,
-                        socks5Proxy.getAddress(), socks5Proxy.getPort());
+                        Socks5TestProxy.getAddress(), socks5Proxy.getPort());
 
         // create digest to get the socket opened by target
         String digest = Socks5Utils.createDigest(sessionID, initiatorJID, targetJID);
@@ -267,7 +267,7 @@ public class Socks5ClientForInitiatorTest {
         socks5Proxy.start();
 
         StreamHost streamHost = new StreamHost(proxyJID,
-                        socks5Proxy.getAddress(), socks5Proxy.getPort());
+                        Socks5TestProxy.getAddress(), socks5Proxy.getPort());
 
         // create digest to get the socket opened by target
         String digest = Socks5Utils.createDigest(sessionID, initiatorJID, targetJID);

@@ -305,17 +305,12 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
             catch(Exception eee)
             {
             }
-            String message="ProxySOCKS5: "+e.toString();
-            if(e instanceof Throwable)
-            {
-                throw new ProxyException(ProxyInfo.ProxyType.SOCKS5,message, 
-                    (Throwable)e);
-            }
-            throw new IOException(message);
+            // TODO convert to IOException(e) when minimum Android API level is 9 or higher
+            throw new IOException(e.getLocalizedMessage());
         }
     }
 
-    private void fill(InputStream in, byte[] buf, int len) 
+    private static void fill(InputStream in, byte[] buf, int len) 
       throws IOException
     {
         int s=0;

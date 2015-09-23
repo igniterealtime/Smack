@@ -37,7 +37,7 @@ public class AMPExtensionTest {
     private InputStream INCORRECT_RECEIVING_STANZA_STREAM;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         CORRECT_SENDING_STANZA_STREAM = getClass().getResourceAsStream("correct_stanza_test.xml");
         INCORRECT_RECEIVING_STANZA_STREAM = getClass().getResourceAsStream("incorrect_stanza_test.xml");
     }
@@ -97,7 +97,7 @@ public class AMPExtensionTest {
     }
 
 
-    private String toString(InputStream stream) throws IOException {
+    private static String toString(InputStream stream) throws IOException {
         byte[] data = new byte[stream.available()];
         stream.read(data);
         stream.close();
