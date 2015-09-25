@@ -19,9 +19,9 @@ package org.jivesoftware.smackx.workgroup.settings;
 
 import java.io.IOException;
 
-import org.jivesoftware.smackx.workgroup.util.ModelUtil;
 import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.StringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -33,7 +33,7 @@ public class OfflineSettings extends SimpleIQ {
     private String subject;
 
     public String getRedirectURL() {
-        if (!ModelUtil.hasLength(redirectURL)) {
+        if (!StringUtils.isNotEmpty(redirectURL)) {
             return "";
         }
         return redirectURL;
@@ -44,7 +44,7 @@ public class OfflineSettings extends SimpleIQ {
     }
 
     public String getOfflineText() {
-        if (!ModelUtil.hasLength(offlineText)) {
+        if (!StringUtils.isNotEmpty(offlineText)) {
             return "";
         }
         return offlineText;
@@ -55,7 +55,7 @@ public class OfflineSettings extends SimpleIQ {
     }
 
     public String getEmailAddress() {
-        if (!ModelUtil.hasLength(emailAddress)) {
+        if (!StringUtils.isNotEmpty(emailAddress)) {
             return "";
         }
         return emailAddress;
@@ -66,7 +66,7 @@ public class OfflineSettings extends SimpleIQ {
     }
 
     public String getSubject() {
-        if (!ModelUtil.hasLength(subject)) {
+        if (!StringUtils.isNotEmpty(subject)) {
             return "";
         }
         return subject;
@@ -77,13 +77,13 @@ public class OfflineSettings extends SimpleIQ {
     }
 
     public boolean redirects() {
-        return (ModelUtil.hasLength(getRedirectURL()));
+        return (StringUtils.isNotEmpty(getRedirectURL()));
     }
 
     public boolean isConfigured(){
-        return ModelUtil.hasLength(getEmailAddress()) &&
-               ModelUtil.hasLength(getSubject()) &&
-               ModelUtil.hasLength(getOfflineText());
+        return StringUtils.isNotEmpty(getEmailAddress()) &&
+               StringUtils.isNotEmpty(getSubject()) &&
+               StringUtils.isNotEmpty(getOfflineText());
     }
 
     /**

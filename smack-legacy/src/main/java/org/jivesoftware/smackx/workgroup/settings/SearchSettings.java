@@ -18,9 +18,9 @@ package org.jivesoftware.smackx.workgroup.settings;
 
 import java.io.IOException;
 
-import org.jivesoftware.smackx.workgroup.util.ModelUtil;
 import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.StringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -29,7 +29,7 @@ public class SearchSettings extends SimpleIQ {
     private String kbLocation;
 
     public boolean isSearchEnabled() {
-        return ModelUtil.hasLength(getForumsLocation()) && ModelUtil.hasLength(getKbLocation());
+        return StringUtils.isNotEmpty(getForumsLocation()) && StringUtils.isNotEmpty(getKbLocation());
     }
 
     public String getForumsLocation() {
@@ -49,11 +49,11 @@ public class SearchSettings extends SimpleIQ {
     }
 
     public boolean hasKB(){
-        return ModelUtil.hasLength(getKbLocation());
+        return StringUtils.isNotEmpty(getKbLocation());
     }
 
     public boolean hasForums(){
-        return ModelUtil.hasLength(getForumsLocation());
+        return StringUtils.isNotEmpty(getForumsLocation());
     }
 
 

@@ -17,9 +17,9 @@
 
 package org.jivesoftware.smackx.workgroup.settings;
 
-import org.jivesoftware.smackx.workgroup.util.ModelUtil;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.StringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -67,7 +67,7 @@ public class GenericSettings extends IQ {
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         buf.append('>');
-        if (ModelUtil.hasLength(getQuery())) {
+        if (StringUtils.isNotEmpty(getQuery())) {
             buf.append("<query>" + getQuery() + "</query>");
         }
         return buf;
