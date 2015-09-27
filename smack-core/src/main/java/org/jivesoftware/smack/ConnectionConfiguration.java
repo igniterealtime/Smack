@@ -316,8 +316,8 @@ public abstract class ConnectionConfiguration {
     public static enum SecurityMode {
 
         /**
-         * Securirty via TLS encryption is required in order to connect. If the server
-         * does not offer TLS or if the TLS negotiaton fails, the connection to the server
+         * Security via TLS encryption is required in order to connect. If the server
+         * does not offer TLS or if the TLS negotiation fails, the connection to the server
          * will fail.
          */
         required,
