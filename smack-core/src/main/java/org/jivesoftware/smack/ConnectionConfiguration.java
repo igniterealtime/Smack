@@ -757,7 +757,7 @@ public abstract class ConnectionConfiguration {
         /**
          * Perform authentication using SASL EXTERNAL. Your XMPP service must support this
          * authentication mechanism. This method also calls {@link #addEnabledSaslMechanism(String)} with "EXTERNAL" as
-         * argument. It also calls {@link #allowEmptyOrNullUsernames()} and {@link #setSecurityMode(SecurityMode)} to
+         * argument. It also calls {@link #allowEmptyOrNullUsernames()} and {@link #setSecurityMode(ConnectionConfiguration.SecurityMode)} to
          * {@link SecurityMode#required}.
          *
          * @return a reference to this builder.
