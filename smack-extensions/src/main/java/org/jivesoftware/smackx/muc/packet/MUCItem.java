@@ -35,32 +35,33 @@ public class MUCItem implements NamedElement {
     private final MUCAffiliation affiliation;
     private final MUCRole role;
     private final Jid actor;
+    private final Resourcepart actorNick;
     private final String reason;
     private final Jid jid;
     private final Resourcepart nick;
 
     public MUCItem(MUCAffiliation affiliation) {
-        this(affiliation, null, null, null, null, null);
+        this(affiliation, null, null, null, null, null, null);
     }
 
     public MUCItem(MUCRole role) {
-        this(null, role, null, null, null, null);
+        this(null, role, null, null, null, null, null);
     }
 
     public MUCItem(MUCRole role, Resourcepart nick) {
-        this(null, role, null, null, null, nick);
+        this(null, role, null, null, null, nick, null);
     }
 
     public MUCItem(MUCAffiliation affiliation, Jid jid, String reason) {
-        this(affiliation, null, null, reason, jid, null);
+        this(affiliation, null, null, reason, jid, null, null);
     }
 
     public MUCItem(MUCAffiliation affiliation, Jid jid) {
-        this(affiliation, null, null, null, jid, null);
+        this(affiliation, null, null, null, jid, null, null);
     }
 
     public MUCItem(MUCRole role, Resourcepart nick, String reason) {
-        this(null, role, null, reason, null, nick);
+        this(null, role, null, reason, null, nick, null);
     }
 
     /**
@@ -72,15 +73,17 @@ public class MUCItem implements NamedElement {
      * @param reason
      * @param jid
      * @param nick
+     * @param actorNick
      */
     public MUCItem(MUCAffiliation affiliation, MUCRole role, Jid actor,
-                    String reason, Jid jid, Resourcepart nick) {
+                    String reason, Jid jid, Resourcepart nick, Resourcepart actorNick) {
         this.affiliation = affiliation;
         this.role = role;
         this.actor = actor;
         this.reason = reason;
         this.jid = jid;
         this.nick = nick;
+        this.actorNick = actorNick;
     }
 
     /**
@@ -90,6 +93,16 @@ public class MUCItem implements NamedElement {
      */
     public Jid getActor() {
         return actor;
+    }
+
+    /**
+     * Get the nickname of the actor.
+     *
+     * @return the nickname of the actor.
+     * @since 4.2
+     */
+    public Resourcepart getActorNick() {
+        return actorNick;
     }
 
     /**

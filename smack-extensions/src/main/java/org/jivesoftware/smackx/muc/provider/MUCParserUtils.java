@@ -37,6 +37,7 @@ public class MUCParserUtils {
         MUCRole role = MUCRole.fromString(parser.getAttributeValue("", "role"));
         Jid jid = ParserUtils.getJidAttribute(parser);
         Jid actor = null;
+        Resourcepart actorNick = null;
         String reason = null;
         outerloop: while (true) {
             int eventType = parser.next();
@@ -46,6 +47,13 @@ public class MUCParserUtils {
                 switch (name) {
                 case "actor":
                     actor = ParserUtils.getJidAttribute(parser);
+                    // TODO change to
+                    // actorNick = Resourcepart.from(parser.getAttributeValue("", "nick"));
+                    // once a newer version of JXMPP is used that supports from(null).
+                    String actorNickString = parser.getAttributeValue("", "nick");
+                    if (actorNickString != null) {
+                        actorNick = Resourcepart.from(actorNickString);
+                    }
                     break;
                 case "reason":
                     reason = parser.nextText();
@@ -59,7 +67,7 @@ public class MUCParserUtils {
                 break;
             }
         }
-        return new MUCItem(affiliation, role, actor, reason, jid, nick);
+        return new MUCItem(affiliation, role, actor, reason, jid, nick, actorNick);
     }
 
     public static Destroy parseDestroy(XmlPullParser parser) throws XmlPullParserException, IOException {
