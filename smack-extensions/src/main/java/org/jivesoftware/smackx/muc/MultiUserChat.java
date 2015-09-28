@@ -96,7 +96,9 @@ import org.jxmpp.util.cache.ExpirationCache;
  * otherwise you may leak the instance.
  * </p>
  *
- * @author Gaston Dombiak, Larry Kirschner
+ * @author Gaston Dombiak
+ * @author Larry Kirschner
+ * @author Florian Schmaus
  */
 public class MultiUserChat {
     private static final Logger LOGGER = Logger.getLogger(MultiUserChat.class.getName());
@@ -362,12 +364,14 @@ public class MultiUserChat {
      * <p>
      * To create an "Instant Room", that means a room with some default configuration that is
      * available for immediate access, the room's owner should send an empty form after creating the
-     * room. {@link #sendConfigurationForm(Form)}
+     * room. Simply call {@link MucCreateConfigFormHandle#makeInstant()} on the returned {@link MucCreateConfigFormHandle}.
+     * </p>
      * <p>
      * To create a "Reserved Room", that means a room manually configured by the room creator before
      * anyone is allowed to enter, the room's owner should complete and send a form after creating
      * the room. Once the completed configuration form is sent to the server, the server will unlock
-     * the room. {@link #sendConfigurationForm(Form)}
+     * the room. You can use the returned {@link MucCreateConfigFormHandle} to configure the room.
+     * </p>
      * 
      * @param nickname the nickname to use.
      * @return a handle to the MUC create configuration form API.
@@ -401,7 +405,7 @@ public class MultiUserChat {
      * Create or join the MUC room with the given nickname.
      * 
      * @param nickname the nickname to use in the MUC room.
-     * @return A {@link MucCreateConfigFormHandle} if the room was created, or {code null} if the room was joined.
+     * @return A {@link MucCreateConfigFormHandle} if the room was created while joining, or {@code null} if the room was just joined.
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws InterruptedException 
@@ -425,7 +429,7 @@ public class MultiUserChat {
      * @param password the password to use.
      * @param history the amount of discussion history to receive while joining a room.
      * @param timeout the amount of time to wait for a reply from the MUC service(in milliseconds).
-     * @return A {@link MucCreateConfigFormHandle} if the room was created, or {code null} if the room was joined.
+     * @return A {@link MucCreateConfigFormHandle} if the room was created while joining, or {@code null} if the room was just joined.
      * @throws XMPPErrorException if the room couldn't be created for some reason (e.g. 405 error if
      *         the user is not allowed to create the room)
      * @throws NoResponseException if there was no response from the server.
@@ -445,13 +449,13 @@ public class MultiUserChat {
     }
 
     /**
-     * Like {@link #create(Resourcepart)}, but will return true if the room creation was acknowledged by
+     * Like {@link #create(Resourcepart)}, but will return a {@link MucCreateConfigFormHandle} if the room creation was acknowledged by
      * the service (with an 201 status code). It's up to the caller to decide, based on the return
-     * value, if he needs to continue sending the room configuration. If false is returned, the room
+     * value, if he needs to continue sending the room configuration. If {@code null} is returned, the room
      * already existed and the user is able to join right away, without sending a form.
      *
      * @param mucEnterConfiguration the configuration used to enter the MUC.
-     * @return A {@link MucCreateConfigFormHandle} if the room was created, or {code null} if the room was joined.
+     * @return A {@link MucCreateConfigFormHandle} if the room was created while joining, or {@code null} if the room was just joined.
      * @throws XMPPErrorException if the room couldn't be created for some reason (e.g. 405 error if
      *         the user is not allowed to create the room)
      * @throws NoResponseException if there was no response from the server.
@@ -526,7 +530,7 @@ public class MultiUserChat {
      *
      * @param nickname the required nickname to use.
      * @param password the optional password required to join
-     * @return A {@link MucCreateConfigFormHandle} if the room was created, or {code null} if the room was joined.
+     * @return A {@link MucCreateConfigFormHandle} if the room was created while joining, or {@code null} if the room was just joined.
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
