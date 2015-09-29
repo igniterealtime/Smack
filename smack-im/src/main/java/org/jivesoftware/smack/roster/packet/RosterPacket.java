@@ -18,14 +18,17 @@
 package org.jivesoftware.smack.roster.packet;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.BareJid;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -33,6 +36,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * Represents XMPP roster packets.
  *
  * @author Matt Tucker
+ * @author Florian Schmaus
  */
 public class RosterPacket extends IQ {
 
@@ -104,29 +108,54 @@ public class RosterPacket extends IQ {
      * A roster item, which consists of a JID, their name, the type of subscription, and
      * the groups the roster item belongs to.
      */
-    public static class Item {
+    public static class Item implements NamedElement {
+
+        /**
+         * The constant value "{@value}".
+         */
+        public static final String ELEMENT = Stanza.ITEM;
 
         public static final String GROUP = "group";
 
         private final BareJid jid;
+
+        /**
+         * TODO describe me. With link to the RFC. Is ask= attribute.
+         */
+        private boolean subscriptionPending;
+
         private String name;
-        private ItemType itemType;
-        private ItemStatus itemStatus;
+        private ItemType itemType = ItemType.none;
         private boolean approved;
         private final Set<String> groupNames;
 
         /**
          * Creates a new roster item.
          *
-         * @param jid the jid.
-         * @param name the user's name.
+         * @param jid
+         * @param name
          */
         public Item(BareJid jid, String name) {
+            this(jid, name, false);
+        }
+
+        /**
+         * Creates a new roster item.
+         *
+         * @param jid the jid.
+         * @param name the user's name.
+         * @param subscriptionPending
+         */
+        public Item(BareJid jid, String name, boolean subscriptionPending) {
             this.jid = Objects.requireNonNull(jid);
             this.name = name;
-            itemType = null;
-            itemStatus = null;
+            this.subscriptionPending = subscriptionPending;
             groupNames = new CopyOnWriteArraySet<String>();
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
         }
 
         /**
@@ -182,27 +211,16 @@ public class RosterPacket extends IQ {
          * @param itemType the roster item type.
          */
         public void setItemType(ItemType itemType) {
-            this.itemType = itemType;
+            this.itemType = Objects.requireNonNull(itemType, "itemType must not be null");
         }
 
-        /**
-         * Returns the roster item status.
-         *
-         * @return the roster item status.
-         */
-        public ItemStatus getItemStatus() {
-            return itemStatus;
+        public void setSubscriptionPending(boolean subscriptionPending) {
+            this.subscriptionPending = subscriptionPending;
         }
 
-        /**
-         * Sets the roster item status.
-         *
-         * @param itemStatus the roster item status.
-         */
-        public void setItemStatus(ItemStatus itemStatus) {
-            this.itemStatus = itemStatus;
+        public boolean isSubscriptionPending() {
+            return subscriptionPending;
         }
-
 
         /**
          * Returns the roster item pre-approval state.
@@ -251,18 +269,20 @@ public class RosterPacket extends IQ {
         }
 
         public XmlStringBuilder toXML() {
-            XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(Stanza.ITEM).attribute("jid", jid);
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.attribute("jid", jid);
             xml.optAttribute("name", name);
             xml.optAttribute("subscription", itemType);
-            xml.optAttribute("ask", itemStatus);
+            if (subscriptionPending) {
+                xml.append(" ask='subscribe'");
+            }
             xml.optBooleanAttribute("approved", approved);
             xml.rightAngleBracket();
 
             for (String groupName : groupNames) {
                 xml.openElement(GROUP).escape(groupName).closeElement(GROUP);
             }
-            xml.closeElement(Stanza.ITEM);
+            xml.closeElement(this);
             return xml;
         }
 
@@ -271,7 +291,7 @@ public class RosterPacket extends IQ {
             final int prime = 31;
             int result = 1;
             result = prime * result + ((groupNames == null) ? 0 : groupNames.hashCode());
-            result = prime * result + ((itemStatus == null) ? 0 : itemStatus.hashCode());
+            result = prime * result + ((subscriptionPending) ? 0 : 1);
             result = prime * result + ((itemType == null) ? 0 : itemType.hashCode());
             result = prime * result + ((name == null) ? 0 : name.hashCode());
             result = prime * result + ((jid == null) ? 0 : jid.hashCode());
@@ -294,7 +314,7 @@ public class RosterPacket extends IQ {
             }
             else if (!groupNames.equals(other.groupNames))
                 return false;
-            if (itemStatus != other.itemStatus)
+            if (subscriptionPending != other.subscriptionPending)
                 return false;
             if (itemType != other.itemType)
                 return false;
@@ -315,37 +335,6 @@ public class RosterPacket extends IQ {
             return true;
         }
 
-    }
-
-    /**
-     * The subscription status of a roster item. An optional element that indicates
-     * the subscription status if a change request is pending.
-     */
-    public static enum ItemStatus {
-        /**
-         * Request to subscribe.
-         */
-        subscribe,
-
-        /**
-         * Request to unsubscribe.
-         */
-        unsubscribe;
-
-        public static final ItemStatus SUBSCRIPTION_PENDING = subscribe;
-        public static final ItemStatus UNSUBSCRIPTION_PENDING = unsubscribe;
-
-        public static ItemStatus fromString(String s) {
-            if (s == null) {
-                return null;
-            }
-            try {
-                return ItemStatus.valueOf(s);
-            }
-            catch (IllegalArgumentException e) {
-                return null;
-            }
-        }
     }
 
     public static enum ItemType {
@@ -378,6 +367,14 @@ public class RosterPacket extends IQ {
         /**
          * The user wishes to stop receiving presence updates from the subscriber.
          */
-        remove
+        remove,
+        ;
+
+        public static ItemType fromString(String string) {
+            if (StringUtils.isNullOrEmpty(string)) {
+                return none;
+            }
+            return ItemType.valueOf(string.toLowerCase(Locale.US));
+        }
     }
 }

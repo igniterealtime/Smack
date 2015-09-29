@@ -37,38 +37,23 @@ import org.jxmpp.jid.BareJid;
  * JID and a name or nickname you assign.
  *
  * @author Matt Tucker
+ * @author Florian Schmaus
  */
 public final class RosterEntry extends Manager {
 
-    /**
-     * The JID of the entity/user.
-     */
-    private final BareJid jid;
-
-    private String name;
-    private RosterPacket.ItemType type;
-    private RosterPacket.ItemStatus status;
-    private final boolean approved;
+    private final RosterPacket.Item item;
     final private Roster roster;
 
     /**
      * Creates a new roster entry.
      *
-     * @param user the user.
-     * @param name the nickname for the entry.
-     * @param type the subscription type.
-     * @param status the subscription status (related to subscriptions pending to be approbed).
-     * @param approved the pre-approval flag.
+     * @param item the Roster Stanza's Item entry.
+     * @param roster The Roster managing this entry.
      * @param connection a connection to the XMPP server.
      */
-    RosterEntry(BareJid user, String name, RosterPacket.ItemType type,
-                RosterPacket.ItemStatus status, boolean approved, Roster roster, XMPPConnection connection) {
+    RosterEntry(RosterPacket.Item item, Roster roster, XMPPConnection connection) {
         super(connection);
-        this.jid = user;
-        this.name = name;
-        this.type = type;
-        this.status = status;
-        this.approved = approved;
+        this.item = item;
         this.roster = roster;
     }
 
@@ -80,7 +65,7 @@ public final class RosterEntry extends Manager {
      */
     @Deprecated
     public String getUser() {
-        return jid.toString();
+        return getJid().toString();
     }
 
     /**
@@ -89,7 +74,7 @@ public final class RosterEntry extends Manager {
      * @return the user associated with this entry.
      */
     public BareJid getJid() {
-        return jid;
+        return item.getJid();
     }
 
     /**
@@ -98,7 +83,7 @@ public final class RosterEntry extends Manager {
      * @return the name.
      */
     public String getName() {
-        return name;
+        return item.getName();
     }
 
     /**
@@ -112,7 +97,7 @@ public final class RosterEntry extends Manager {
      */
     public synchronized void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException, InterruptedException {
         // Do nothing if the name hasn't changed.
-        if (name != null && name.equals(this.name)) {
+        if (name != null && name.equals(getName())) {
             return;
         }
 
@@ -125,7 +110,7 @@ public final class RosterEntry extends Manager {
         connection().createPacketCollectorAndSend(packet).nextResultOrThrow();
 
         // We have received a result response to the IQ set, the name was successfully changed
-        this.name = name;
+        item.setName(name);
     }
 
     /**
@@ -133,12 +118,12 @@ public final class RosterEntry extends Manager {
      *
      * @param name the nickname for the entry.
      * @param type the subscription type.
-     * @param status the subscription status (related to subscriptions pending to be approbed).
+     * @param subscriptionPending TODO
      */
-    void updateState(String name, RosterPacket.ItemType type, RosterPacket.ItemStatus status) {
-        this.name = name;
-        this.type = type;
-        this.status = status;
+    void updateState(String name, RosterPacket.ItemType type, boolean subscriptionPending) {
+        item.setName(name);
+        item.setItemType(type);
+        item.setSubscriptionPending(subscriptionPending);
     }
 
     /**
@@ -147,7 +132,7 @@ public final class RosterEntry extends Manager {
      * @return the pre-approval state.
      */
     public boolean isApproved() {
-        return approved;
+        return item.isApproved();
     }
 
     /**
@@ -176,26 +161,27 @@ public final class RosterEntry extends Manager {
      * @return the type.
      */
     public RosterPacket.ItemType getType() {
-        return type;
+        return item.getItemType();
     }
 
     /**
-     * Returns the roster subscription status of the entry. When the status is
-     * RosterPacket.ItemStatus.SUBSCRIPTION_PENDING, the contact has to answer the
-     * subscription request.
+     * Returns the roster subscription request status of the entry. If
+     * {@code true}, then the contact did not answer the subscription request
+     * yet.
      *
      * @return the status.
+     * @since 4.2
      */
-    public RosterPacket.ItemStatus getStatus() {
-        return status;
+    public boolean isSubscriptionPending() {
+        return item.isSubscriptionPending();
     }
 
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        if (name != null) {
-            buf.append(name).append(": ");
+        if (getName() != null) {
+            buf.append(getName()).append(": ");
         }
-        buf.append(jid);
+        buf.append(getJid());
         Collection<RosterGroup> groups = getGroups();
         if (!groups.isEmpty()) {
             buf.append(" [");
@@ -214,7 +200,7 @@ public final class RosterEntry extends Manager {
 
     @Override
     public int hashCode() {
-        return (jid == null ? 0 : jid.hashCode());
+        return getJid().hashCode();
     }
 
     public boolean equals(Object object) {
@@ -222,7 +208,7 @@ public final class RosterEntry extends Manager {
             return true;
         }
         if (object != null && object instanceof RosterEntry) {
-            return jid.equals(((RosterEntry)object).getUser());
+            return getJid().equals(((RosterEntry)object).getJid());
         }
         else {
             return false;
@@ -246,33 +232,7 @@ public final class RosterEntry extends Manager {
         if (getClass() != obj.getClass())
             return false;
         RosterEntry other = (RosterEntry) obj;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        }
-        else if (!name.equals(other.name))
-            return false;
-        if (status == null) {
-            if (other.status != null)
-                return false;
-        }
-        else if (!status.equals(other.status))
-            return false;
-        if (type == null) {
-            if (other.type != null)
-                return false;
-        }
-        else if (!type.equals(other.type))
-            return false;
-        if (jid == null) {
-            if (other.jid != null)
-                return false;
-        }
-        else if (!jid.equals(other.jid))
-            return false;
-        if (approved != other.approved)
-            return false;
-        return true;
+        return other.item.equals(this.item);
     }
 
     static RosterPacket.Item toRosterItem(RosterEntry entry) {
@@ -282,7 +242,7 @@ public final class RosterEntry extends Manager {
     private static RosterPacket.Item toRosterItem(RosterEntry entry, String name) {
         RosterPacket.Item item = new RosterPacket.Item(entry.getJid(), name);
         item.setItemType(entry.getType());
-        item.setItemStatus(entry.getStatus());
+        item.setSubscriptionPending(entry.isSubscriptionPending());
         item.setApproved(entry.isApproved());
         // Set the correct group names for the item.
         for (RosterGroup group : entry.getGroups()) {

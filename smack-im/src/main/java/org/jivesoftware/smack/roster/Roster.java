@@ -1396,8 +1396,7 @@ public final class Roster extends Manager {
                 }
 
                 for (RosterPacket.Item item : validItems) {
-                    RosterEntry entry = new RosterEntry(item.getJid(), item.getName(),
-                            item.getItemType(), item.getItemStatus(), item.isApproved(), Roster.this, connection);
+                    RosterEntry entry = new RosterEntry(item, Roster.this, connection);
                     addUpdateEntry(addedEntries, updatedEntries, unchangedEntries, item, entry);
                 }
 
@@ -1426,8 +1425,7 @@ public final class Roster extends Manager {
                 // version we presented the server. So we simply load the roster from the store and
                 // await possible further roster pushes.
                 for (RosterPacket.Item item : rosterStore.getEntries()) {
-                    RosterEntry entry = new RosterEntry(item.getJid(), item.getName(),
-                            item.getItemType(), item.getItemStatus(), item.isApproved(), Roster.this, connection);
+                    RosterEntry entry = new RosterEntry(item, Roster.this, connection);
                     addUpdateEntry(addedEntries, updatedEntries, unchangedEntries, item, entry);
                 }
             }
@@ -1496,8 +1494,7 @@ public final class Roster extends Manager {
             // We assured above that the size of items is exaclty 1, therefore we are able to
             // safely retrieve this single item here.
             Item item = items.iterator().next();
-            RosterEntry entry = new RosterEntry(item.getJid(), item.getName(),
-                            item.getItemType(), item.getItemStatus(), item.isApproved(), Roster.this, connection);
+            RosterEntry entry = new RosterEntry(item, Roster.this, connection);
             String version = rosterPacket.getVersion();
 
             if (item.getItemType().equals(RosterPacket.ItemType.remove)) {

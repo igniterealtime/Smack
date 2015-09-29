@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
-import org.jivesoftware.smack.roster.packet.RosterPacket.ItemStatus;
 import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
 import org.junit.After;
 import org.junit.Before;
@@ -106,7 +105,7 @@ public class DirectoryRosterStoreTest {
         assertEquals("ItemType of added entry",
                 item1.getItemType(), storedItem.getItemType());
         assertEquals("ItemStatus of added entry",
-                item1.getItemStatus(), storedItem.getItemStatus());
+                item1.isSubscriptionPending(), storedItem.isSubscriptionPending());
         assertEquals("Approved of added entry",
                 item1.isApproved(), storedItem.isApproved());
 
@@ -115,7 +114,7 @@ public class DirectoryRosterStoreTest {
         final RosterPacket.Item item2 = new Item(userName, "Ursula Example");
         item2.addGroupName("users");
         item2.addGroupName("examples");
-        item2.setItemStatus(ItemStatus.subscribe);
+        item2.setSubscriptionPending(true);
         item2.setItemType(ItemType.none);
         item2.setApproved(true);
         store.addEntry(item2,version2);
@@ -130,7 +129,7 @@ public class DirectoryRosterStoreTest {
         assertEquals("ItemType of added entry",
                 item2.getItemType(), storedItem.getItemType());
         assertEquals("ItemStatus of added entry",
-                item2.getItemStatus(), storedItem.getItemStatus());
+                item2.isSubscriptionPending(), storedItem.isSubscriptionPending());
         assertEquals("Approved of added entry",
                 item2.isApproved(), storedItem.isApproved());
 
@@ -140,13 +139,13 @@ public class DirectoryRosterStoreTest {
         final RosterPacket.Item item3 = new Item(JidTestUtil.BARE_JID_1, "Foo Bar");
         item3.addGroupName("The Foo Fighters");
         item3.addGroupName("Bar Friends");
-        item3.setItemStatus(ItemStatus.unsubscribe);
+        item3.setSubscriptionPending(true);
         item3.setItemType(ItemType.both);
 
         final RosterPacket.Item item4 = new Item(JidTestUtil.BARE_JID_2, "Baba Baz");
         item4.addGroupName("The Foo Fighters");
         item4.addGroupName("Bar Friends");
-        item4.setItemStatus(ItemStatus.subscribe);
+        item4.setSubscriptionPending(false);
         item4.setItemType(ItemType.both);
         item4.setApproved(true);
 
@@ -167,7 +166,7 @@ public class DirectoryRosterStoreTest {
         assertEquals("ItemType of added entry",
                 item3.getItemType(), storedItem.getItemType());
         assertEquals("ItemStatus of added entry",
-                item3.getItemStatus(), storedItem.getItemStatus());
+                item3.isSubscriptionPending(), storedItem.isSubscriptionPending());
         assertEquals("Approved of added entry",
                 item3.isApproved(), storedItem.isApproved());
 
@@ -182,7 +181,7 @@ public class DirectoryRosterStoreTest {
         assertEquals("ItemType of added entry",
                 item4.getItemType(), storedItem.getItemType());
         assertEquals("ItemStatus of added entry",
-                item4.getItemStatus(), storedItem.getItemStatus());
+                item4.isSubscriptionPending(), storedItem.isSubscriptionPending());
         assertEquals("Approved of added entry",
                 item4.isApproved(), storedItem.isApproved());
 

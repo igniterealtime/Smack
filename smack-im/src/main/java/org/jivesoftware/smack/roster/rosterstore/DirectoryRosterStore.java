@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 the original author or authors
+ * Copyright 2013-2015 the original author or authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,10 @@ package org.jivesoftware.smack.roster.rosterstore;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,13 +30,11 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
+import org.jivesoftware.smack.roster.provider.RosterPacketProvider;
 import org.jivesoftware.smack.util.FileUtils;
-import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.stringencoder.Base32;
-import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -44,6 +44,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author Lars Noschinski
  * @author Fabian Schuetz
+ * @author Florian Schmaus
  */
 public final class DirectoryRosterStore implements RosterStore {
 
@@ -179,136 +180,33 @@ public final class DirectoryRosterStore implements RosterStore {
     }
 
     private static Item readEntry(File file) {
-        String s = FileUtils.readFile(file);
-        if (s == null) {
+        Reader reader;
+        try {
+            reader = new FileReader(file);
+        } catch (FileNotFoundException e) {
+            LOGGER.log(Level.FINE, "Roster entry file not found", e);
             return null;
         }
-
-        String parserName;
-        BareJid user = null;
-        String name = null;
-        String type = null;
-        String status = null;
-        String approved = null;
-
-        List<String> groupNames = new ArrayList<String>();
 
         try {
-            XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-            parser.setInput(new StringReader(s));
-
-            boolean done = false;
-            while (!done) {
-                int eventType = parser.next();
-                parserName = parser.getName();
-                if (eventType == XmlPullParser.START_TAG) {
-                    if (parserName.equals("item")) {
-                        user = null;
-                        name = type = status = null;
-                    }
-                    else if (parserName.equals("user")) {
-                        parser.next();
-
-                        String jidString = parser.getText();
-                        user = JidCreate.bareFrom(jidString);
-                    }
-                    else if (parserName.equals("name")) {
-                        parser.next();
-                        name = parser.getText();
-                    }
-                    else if (parserName.equals("type")) {
-                        parser.next();
-                        type = parser.getText();
-                    }
-                    else if (parserName.equals("status")) {
-                        parser.next();
-                        status = parser.getText();
-                    }
-                    else if (parserName.equals("approved")) {
-                        parser.next();
-                        approved = parser.getText();
-                    }
-                    else if (parserName.equals("group")) {
-                        parser.next();
-                        parser.next();
-                        String group = parser.getText();
-                        if (group != null) {
-                            groupNames.add(group);
-                        }
-                        else {
-                            LOGGER.severe("Invalid group entry in store entry file "
-                                    + file);
-                        }
-                    }
-                }
-                else if (eventType == XmlPullParser.END_TAG) {
-                    if (parserName.equals("item")) {
-                        done = true;
-                    }
-                }
+            XmlPullParser parser = PacketParserUtils.getParserFor(reader);
+            Item item = RosterPacketProvider.parseItem(parser);
+            reader.close();
+            return item;
+        } catch (XmlPullParserException | IOException e) {
+            boolean deleted = file.delete();
+            String message = "Exception while parsing roster entry.";
+            if (deleted) {
+                message += " File was deleted.";
             }
-        }
-        catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "readEntry()", e);
+            LOGGER.log(Level.SEVERE, message, e);
             return null;
         }
-        catch (XmlPullParserException e) {
-            LOGGER.log(Level.SEVERE, "Invalid group entry in store entry file", e);
-            return null;
-        }
-
-        if (user == null) {
-            return null;
-        }
-        RosterPacket.Item item = new RosterPacket.Item(user, name);
-        for (String groupName : groupNames) {
-            item.addGroupName(groupName);
-        }
-
-        if (type != null) {
-            try {
-                item.setItemType(RosterPacket.ItemType.valueOf(type));
-            }
-            catch (IllegalArgumentException e) {
-                LOGGER.log(Level.SEVERE, "Invalid type in store entry file " + file, e);
-                return null;
-            }
-            if (status != null) {
-                RosterPacket.ItemStatus itemStatus = RosterPacket.ItemStatus
-                        .fromString(status);
-                if (itemStatus == null) {
-                    LOGGER.severe("Invalid status in store entry file " + file);
-                    return null;
-                }
-                item.setItemStatus(itemStatus);
-            }
-        }
-        if (approved != null) {
-            item.setApproved(Boolean.parseBoolean(approved));
-        }
-
-        return item;
     }
-
 
     private boolean addEntryRaw (Item item) {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.openElement("item");
-        xml.element("user", item.getJid());
-        xml.optElement("name", item.getName());
-        xml.optElement("type", item.getItemType());
-        xml.optElement("status", item.getItemStatus());
-        xml.optElement("approved", Boolean.toString(item.isApproved()));
-        for (String groupName : item.getGroupNames()) {
-            xml.openElement("group");
-            xml.element("groupName", groupName);
-            xml.closeElement("group");
-        }
-        xml.closeElement("item");
-
-        return FileUtils.writeFile(getBareJidFile(item.getJid()), xml.toString());
+        return FileUtils.writeFile(getBareJidFile(item.getJid()), item.toXML());
     }
-
 
     private File getBareJidFile(Jid bareJid) {
         String encodedJid = Base32.encode(bareJid.toString());

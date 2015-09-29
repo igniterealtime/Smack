@@ -43,6 +43,11 @@ public class ParserUtils {
         assert(parser.getEventType() == XmlPullParser.START_TAG);
     }
 
+    public static void assertAtStartTag(XmlPullParser parser, String name) throws XmlPullParserException {
+        assertAtStartTag(parser);
+        assert name.equals(parser.getName());
+    }
+
     public static void assertAtEndTag(XmlPullParser parser) throws XmlPullParserException {
         assert(parser.getEventType() == XmlPullParser.END_TAG);
     }

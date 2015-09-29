@@ -132,13 +132,16 @@ public final class FileUtils {
         return null;
     }
 
-    public static void writeFileOrThrow(File file, String content) throws IOException {
+    public static void writeFileOrThrow(File file, CharSequence content) throws IOException {
         FileWriter writer = new FileWriter(file, false);
-        writer.write(content);
-        writer.close();
+        try {
+            writer.write(content.toString());
+        } finally {
+            writer.close();
+        }
     }
 
-    public static boolean writeFile(File file, String content) {
+    public static boolean writeFile(File file, CharSequence content) {
         try {
             writeFileOrThrow(file, content);
             return true;

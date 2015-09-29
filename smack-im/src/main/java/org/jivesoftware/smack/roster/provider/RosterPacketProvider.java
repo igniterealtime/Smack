@@ -19,6 +19,7 @@ package org.jivesoftware.smack.roster.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -35,8 +36,6 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
     public RosterPacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
                     SmackException {
         RosterPacket roster = new RosterPacket();
-        RosterPacket.Item item = null;
-
         String version = parser.getAttributeValue("", "ver");
         roster.setVersion(version);
 
@@ -47,27 +46,51 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
                 String startTag = parser.getName();
                 switch (startTag) {
                 case "item":
-                    String jidString = parser.getAttributeValue("", "jid");
-                    String name = parser.getAttributeValue("", "name");
-
-                    BareJid jid = JidCreate.bareFrom(jidString);
-
-                    // Create packet.
-                    item = new RosterPacket.Item(jid, name);
-                    // Set status.
-                    String ask = parser.getAttributeValue("", "ask");
-                    RosterPacket.ItemStatus status = RosterPacket.ItemStatus.fromString(ask);
-                    item.setItemStatus(status);
-                    // Set type.
-                    String subscription = parser.getAttributeValue("", "subscription");
-                    RosterPacket.ItemType type = RosterPacket.ItemType.valueOf(subscription != null ? subscription : "none");
-                    item.setItemType(type);
-                    // Set approval status.
-                    boolean approved = ParserUtils.getBooleanAttribute(parser, "approved", false);
-                    item.setApproved(approved);
+                    RosterPacket.Item item = parseItem(parser);
+                    roster.addRosterItem(item);
                     break;
-                case "group":
-                    // TODO item!= null
+                }
+                break;
+            case XmlPullParser.END_TAG:
+                String endTag = parser.getName();
+                switch(endTag) {
+                case IQ.QUERY_ELEMENT:
+                    if (parser.getDepth() == initialDepth) {
+                        break outerloop;
+                    }
+                }
+            }
+        }
+        return roster;
+    }
+
+    public static RosterPacket.Item parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
+        ParserUtils.assertAtStartTag(parser, RosterPacket.Item.ELEMENT);
+        final int initialDepth = parser.getDepth();
+        String jidString = parser.getAttributeValue("", "jid");
+        String itemName = parser.getAttributeValue("", "name");
+        BareJid jid = JidCreate.bareFrom(jidString);
+
+        // Create item.
+        RosterPacket.Item item = new RosterPacket.Item(jid, itemName);
+        // Set status.
+        String ask = parser.getAttributeValue("", "ask");
+        item.setSubscriptionPending("subscribe".equals(ask));
+        // Set type.
+        String subscription = parser.getAttributeValue("", "subscription");
+        RosterPacket.ItemType type = RosterPacket.ItemType.fromString(subscription);
+        item.setItemType(type);
+        // Set approval status.
+        boolean approved = ParserUtils.getBooleanAttribute(parser, "approved", false);
+        item.setApproved(approved);
+
+        outerloop: while(true) {
+            int eventType = parser.next();
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                switch (name) {
+                case RosterPacket.Item.GROUP:
                     final String groupName = parser.nextText();
                     if (groupName != null && groupName.trim().length() > 0) {
                         item.addGroupName(groupName);
@@ -76,17 +99,14 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
                 }
                 break;
             case XmlPullParser.END_TAG:
-                String endTag = parser.getName();
-                switch(endTag) {
-                case "item":
-                    roster.addRosterItem(item);
-                    break;
-                case "query":
+                if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
             }
         }
-        return roster;
+        ParserUtils.assertAtEndTag(parser);
+        assert(item != null);
+        return item;
     }
-
 }
