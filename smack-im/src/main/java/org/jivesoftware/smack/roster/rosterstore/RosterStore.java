@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.roster.rosterstore;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jxmpp.jid.Jid;
@@ -29,10 +30,12 @@ import org.jxmpp.jid.Jid;
 public interface RosterStore {
 
     /**
-     * This method returns a collection of all roster items contained in this store.
-     * @return List of {@link org.jivesoftware.smack.roster.RosterEntry}
+     * This method returns a list of all roster items contained in this store. If there was an error while loading the store, then <code>null</code> is returned.
+     *
+     * @return List of {@link org.jivesoftware.smack.roster.RosterEntry} or <code>null</code>.
      */
-    public Collection<RosterPacket.Item> getEntries();
+    public List<RosterPacket.Item> getEntries();
+
     /**
      * This method returns the roster item in this store for the given JID.
      * @param bareJid The bare JID of the RosterEntry
