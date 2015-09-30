@@ -1424,7 +1424,21 @@ public final class Roster extends Manager {
                 // means that rosterver was used and the roster hasn't changed (much) since the
                 // version we presented the server. So we simply load the roster from the store and
                 // await possible further roster pushes.
-                for (RosterPacket.Item item : rosterStore.getEntries()) {
+                List<RosterPacket.Item> storedItems = rosterStore.getEntries();
+                if (storedItems == null) {
+                    // The roster store was corrupted. Reset the store and reload the roster without using a roster version.
+                    rosterStore.resetStore();
+                    try {
+                        reload();
+                    } catch (NotLoggedInException | NotConnectedException
+                            | InterruptedException e) {
+                        LOGGER.log(Level.FINE,
+                                "Exception while trying to load the roster after the roster store was corrupted",
+                                e);
+                    }
+                    return;
+                }
+                for (RosterPacket.Item item : storedItems) {
                     RosterEntry entry = new RosterEntry(item, Roster.this, connection);
                     addUpdateEntry(addedEntries, updatedEntries, unchangedEntries, item, entry);
                 }

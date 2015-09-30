@@ -70,4 +70,10 @@ public interface RosterStore {
      */
     public boolean removeEntry(Jid bareJid, String version);
 
+    /**
+     * Reset the store by removing all entries and setting the version to the empty String.
+     *
+     * @since 4.2
+     */
+    public void resetStore();
 }

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -124,11 +125,10 @@ public final class DirectoryRosterStore implements RosterStore {
         for (File file : fileDir.listFiles(rosterDirFilter)) {
             Item entry = readEntry(file);
             if (entry == null) {
-                LOGGER.severe("Roster store file '" + file + "' is invalid.");
+                // Roster directory store corrupt. Abort and signal this by returning null.
+                return null;
             }
-            else {
-                entries.add(entry);
-            }
+            entries.add(entry);
         }
 
         return entries;
@@ -179,6 +179,12 @@ public final class DirectoryRosterStore implements RosterStore {
         return setRosterVersion(version);
     }
 
+
+    @Override
+    public void resetStore() {
+        resetEntries(Collections.<Item>emptyList(), "");
+    }
+
     private static Item readEntry(File file) {
         Reader reader;
         try {
@@ -212,4 +218,5 @@ public final class DirectoryRosterStore implements RosterStore {
         String encodedJid = Base32.encode(bareJid.toString());
         return new File(fileDir, ENTRY_PREFIX + encodedJid);
     }
+
 }
