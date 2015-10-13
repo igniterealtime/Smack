@@ -31,7 +31,6 @@ import org.jxmpp.util.XmppStringUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 /**
  * Base class for XMPP Stanzas, which are called Stanza(/Packet) in older versions of Smack (i.e. &lt; 4.1).
@@ -285,7 +284,7 @@ public abstract class Stanza implements TopLevelStreamElement {
     }
 
     /**
-     * Return a set of all extensions with the given element name <em>and</em> namespace.
+     * Return a list of all extensions with the given element name <em>and</em> namespace.
      * <p>
      * Changes to the returned set will update the stanza(/packet) extensions, if the returned set is not the empty set.
      * </p>
@@ -295,7 +294,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @return a set of all matching extensions.
      * @since 4.1
      */
-    public Set<ExtensionElement> getExtensions(String elementName, String namespace) {
+    public List<ExtensionElement> getExtensions(String elementName, String namespace) {
         requireNotNullOrEmpty(elementName, "elementName must not be null or empty");
         requireNotNullOrEmpty(namespace, "namespace must not be null or empty");
         String key = XmppStringUtils.generateKey(elementName, namespace);
@@ -319,12 +318,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      * Returns the first extension that matches the specified element name and
      * namespace, or <tt>null</tt> if it doesn't exist. If the provided elementName is null,
      * only the namespace is matched. Extensions are
-     * are arbitrary XML sub-documents in standard XMPP packets. By default, a 
-     * {@link DefaultExtensionElement} instance will be returned for each extension. However, 
-     * ExtensionElementProvider instances can be registered with the 
-     * {@link org.jivesoftware.smack.provider.ProviderManager ProviderManager}
-     * class to handle custom parsing. In that case, the type of the Object
-     * will be determined by the provider.
+     * are arbitrary XML elements in standard XMPP stanzas.
      *
      * @param elementName the XML element name of the extension. (May be null)
      * @param namespace the XML element namespace of the extension.

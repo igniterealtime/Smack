@@ -45,6 +45,16 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         halfOpenElement(e.getElementName());
     }
 
+    public XmlStringBuilder(ExtensionElement ee, String enclosingNamespace) {
+        this();
+        String namespace = ee.getNamespace();
+        if (namespace.equals(enclosingNamespace)) {
+            halfOpenElement(ee.getElementName());
+        } else {
+            prelude(ee);
+        }
+    }
+
     public XmlStringBuilder escapedElement(String name, String escapedContent) {
         assert escapedContent != null;
         openElement(name);
@@ -349,6 +359,13 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         assert text != null;
         sb.append(StringUtils.escapeForXML(text));
         return this;
+    }
+
+    public XmlStringBuilder optEscape(CharSequence text) {
+        if (text == null) {
+            return this;
+        }
+        return escape(text);
     }
 
     public XmlStringBuilder escape(CharSequence text) {

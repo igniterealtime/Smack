@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * A lightweight implementation of a MultiMap, that is a Map that is able to hold multiple values for every key.
  * <p>
- * This MultiMap uses a LinkedHashMap together with a LinkedHashSet in order to keep the order of its entries.
+ * This MultiMap uses a {@link LinkedHashMap} together with a {@link ArrayList} in order to keep the order of its entries.
  * </p>
  *
  * @param <K> the type of the keys the map uses.
@@ -36,13 +36,13 @@ import java.util.Set;
 public class MultiMap<K,V> {
 
     /**
-     * The constant value '6'.
+     * The constant value {@value}.
      */
     public static final int DEFAULT_MAP_SIZE = 6;
 
-    private static final int ENTRY_SET_SIZE = 3;
+    private static final int ENTRY_LIST_SIZE = 3;
 
-    private final Map<K, Set<V>> map;
+    private final Map<K, List<V>> map;
 
     /**
      * Constructs a new MultiMap with a initial capacity of {@link #DEFAULT_MAP_SIZE}.
@@ -62,8 +62,8 @@ public class MultiMap<K,V> {
 
     public int size() {
         int size = 0;
-        for (Set<V> set : map.values()) {
-            size += set.size();
+        for (List<V> list : map.values()) {
+            size += list.size();
         }
         return size;
     }
@@ -77,8 +77,8 @@ public class MultiMap<K,V> {
     }
 
     public boolean containsValue(Object value) {
-        for (Set<V> set : map.values()) {
-            if (set.contains(value)) {
+        for (List<V> list : map.values()) {
+            if (list.contains(value)) {
                 return true;
             }
         }
@@ -92,7 +92,7 @@ public class MultiMap<K,V> {
      * @return the first value or null.
      */
     public V getFirst(Object key) {
-        Set<V> res = getAll(key);
+        List<V> res = getAll(key);
         if (res.isEmpty()) {
             return null;
         } else {
@@ -109,24 +109,24 @@ public class MultiMap<K,V> {
      * @param key
      * @return all values for the given key.
      */
-    public Set<V> getAll(Object key) {
-        Set<V> res = map.get(key);
+    public List<V> getAll(Object key) {
+        List<V> res = map.get(key);
         if (res == null) {
-            res = Collections.emptySet();
+            res = Collections.emptyList();
         }
         return res;
     }
 
     public boolean put(K key, V value) {
         boolean keyExisted;
-        Set<V> set = map.get(key);
-        if (set == null) {
-            set = new LinkedHashSet<>(ENTRY_SET_SIZE);
-            set.add(value);
-            map.put(key, set);
+        List<V> list = map.get(key);
+        if (list == null) {
+            list = new ArrayList<>(ENTRY_LIST_SIZE);
+            list.add(value);
+            map.put(key, list);
             keyExisted = false;
         } else {
-            set.add(value);
+            list.add(value);
             keyExisted = true;
         }
         return keyExisted;
@@ -139,7 +139,7 @@ public class MultiMap<K,V> {
      * @return the first value of the given key or null.
      */
     public V remove(Object key) {
-        Set<V> res = map.remove(key);
+        List<V> res = map.remove(key);
         if (res == null) {
             return null;
         }
@@ -158,12 +158,12 @@ public class MultiMap<K,V> {
      * @return true if the mapping was removed, false otherwise.
      */
     public boolean removeOne(Object key, V value) {
-        Set<V> set = map.get(key);
-        if (set == null) {
+        List<V> list = map.get(key);
+        if (list == null) {
             return false;
         }
-        boolean res = set.remove(value);
-        if (set.isEmpty()) {
+        boolean res = list.remove(value);
+        if (list.isEmpty()) {
             // Remove the key also if the value set is now empty
             map.remove(key);
         }
@@ -191,15 +191,15 @@ public class MultiMap<K,V> {
      */
     public List<V> values() {
         List<V> values = new ArrayList<>(size());
-        for (Set<V> set : map.values()) {
-            values.addAll(set);
+        for (List<V> list : map.values()) {
+            values.addAll(list);
         }
         return values;
     }
 
     public Set<Map.Entry<K, V>> entrySet() {
         Set<Map.Entry<K, V>> entrySet = new LinkedHashSet<>(size());
-        for (Map.Entry<K, Set<V>> entries : map.entrySet()) {
+        for (Map.Entry<K, List<V>> entries : map.entrySet()) {
             K key = entries.getKey();
             for (V value : entries.getValue()) {
                 entrySet.add(new SimpleMapEntry<>(key, value));

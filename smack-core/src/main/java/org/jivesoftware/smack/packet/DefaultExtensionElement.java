@@ -45,7 +45,9 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * cases, a custom ExtensionElementProvider should be used.
  *
  * @author Matt Tucker
+ * @deprecated use {@link org.jivesoftware.smack.packet.StandardExtensionElement} instead.
  */
+@Deprecated
 public class DefaultExtensionElement implements ExtensionElement {
 
     private String elementName;

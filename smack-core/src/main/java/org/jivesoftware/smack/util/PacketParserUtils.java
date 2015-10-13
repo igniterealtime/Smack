@@ -29,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.compress.packet.Compress;
-import org.jivesoftware.smack.packet.DefaultExtensionElement;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
@@ -42,6 +41,7 @@ import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.UnparsedIQ;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -918,34 +918,8 @@ public class PacketParserUtils {
                 return provider.parse(parser);
         }
 
-        final int initialDepth = parser.getDepth();
         // No providers registered, so use a default extension.
-        DefaultExtensionElement extension = new DefaultExtensionElement(elementName, namespace);
-        outerloop: while (true) {
-            int eventType = parser.next();
-            switch (eventType) {
-            case XmlPullParser.START_TAG:
-                String name = parser.getName();
-                // If an empty element, set the value with the empty string.
-                if (parser.isEmptyElementTag()) {
-                    extension.setValue(name,"");
-                }
-                // Otherwise, get the the element text.
-                else {
-                    eventType = parser.next();
-                    if (eventType == XmlPullParser.TEXT) {
-                        String value = parser.getText();
-                        extension.setValue(name, value);
-                    }
-                }
-                break;
-            case XmlPullParser.END_TAG:
-                if (parser.getDepth() == initialDepth) {
-                    break outerloop;
-                }
-            }
-        }
-        return extension;
+        return StandardExtensionElementProvider.INSTANCE.parse(parser);
     }
 
     public static StartTls parseStartTlsFeature(XmlPullParser parser)
