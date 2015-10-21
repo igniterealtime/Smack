@@ -1086,16 +1086,17 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             if (!smSessionId.equals(resumed.getPrevId())) {
                                 throw new StreamIdDoesNotMatchException(smSessionId, resumed.getPrevId());
                             }
+                            // Mark SM as enabled and resumption as successful.
+                            smResumedSyncPoint.reportSuccess();
+                            smEnabledSyncPoint.reportSuccess();
                             // First, drop the stanzas already handled by the server
                             processHandledCount(resumed.getHandledCount());
                             // Then re-send what is left in the unacknowledged queue
-                            List<Stanza> stanzasToResend = new LinkedList<Stanza>();
-                            stanzasToResend.addAll(unacknowledgedStanzas);
+                            List<Stanza> stanzasToResend = new ArrayList<>(unacknowledgedStanzas.size());
+                            unacknowledgedStanzas.drainTo(stanzasToResend);
                             for (Stanza stanza : stanzasToResend) {
-                                packetWriter.sendStreamElement(stanza);
+                                sendStanzaInternal(stanza);
                             }
-                            smResumedSyncPoint.reportSuccess();
-                            smEnabledSyncPoint.reportSuccess();
                             // If there where stanzas resent, then request a SM ack for them.
                             // Writer's sendStreamElement() won't do it automatically based on
                             // predicates.
