@@ -1460,8 +1460,19 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * Set if Stream Management resumption should be used by default for new connections.
      * 
      * @param useSmResumptionDefault true to use Stream Management resumption for new connections.
+     * @deprecated use {@link #setUseStreamManagementResumptionDefault(boolean)} instead.
      */
+    @Deprecated
     public static void setUseStreamManagementResumptiodDefault(boolean useSmResumptionDefault) {
+        setUseStreamManagementResumptionDefault(useSmResumptionDefault);
+    }
+
+    /**
+     * Set if Stream Management resumption should be used by default for new connections.
+     *
+     * @param useSmResumptionDefault true to use Stream Management resumption for new connections.
+     */
+    public static void setUseStreamManagementResumptionDefault(boolean useSmResumptionDefault) {
         if (useSmResumptionDefault) {
             // Also enable SM is resumption is enabled
             setUseStreamManagementDefault(useSmResumptionDefault);
