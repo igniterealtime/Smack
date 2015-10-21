@@ -1758,7 +1758,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private void processHandledCount(long handledCount) throws StreamManagementCounterError {
         long ackedStanzasCount = SMUtils.calculateDelta(handledCount, serverHandledStanzasCount);
         final List<Stanza> ackedStanzas = new ArrayList<Stanza>(
-                        handledCount <= Integer.MAX_VALUE ? (int) handledCount
+                        ackedStanzasCount <= Integer.MAX_VALUE ? (int) ackedStanzasCount
                                         : Integer.MAX_VALUE);
         for (long i = 0; i < ackedStanzasCount; i++) {
             Stanza ackedStanza = unacknowledgedStanzas.poll();
