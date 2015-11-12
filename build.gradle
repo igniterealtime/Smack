@@ -4,7 +4,7 @@ buildscript {
     repositories {
         jcenter()
 		maven { url 'https://plugins.gradle.org/m2/' }
-        maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
+        maven { url 'https://dl.bintray.com/content/aalmiray/kordamp' }
     }
     dependencies {
         classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
