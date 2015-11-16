@@ -165,6 +165,13 @@ allprojects {
 	tasks.withType(Javadoc) {
 		options.charSet = "UTF-8"
 	}
+
+	// Pin the errorprone version to prevent "unsupported major.minor
+	// version 52.0" error messages caused by the errorprone javac.
+	// See https://github.com/tbroyer/gradle-errorprone-plugin/issues/18 for more information.
+	configurations.errorprone {
+		resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.5'
+	}
 }
 
 gradle.taskGraph.whenReady { taskGraph ->
