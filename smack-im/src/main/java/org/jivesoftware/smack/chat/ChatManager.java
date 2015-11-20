@@ -322,7 +322,10 @@ public final class ChatManager extends Manager{
         Chat match = jidChats.get(userJID);
 
         if (match == null && (matchMode == MatchMode.BARE_JID)) {
-            match = baseJidChats.get(userJID.asEntityBareJidIfPossible());
+            EntityBareJid entityBareJid = userJID.asEntityBareJidIfPossible();
+            if (entityBareJid != null) {
+                match = baseJidChats.get(entityBareJid);
+            }
         }
         return match;
     }
