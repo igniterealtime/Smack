@@ -46,7 +46,29 @@ import org.jxmpp.jid.util.JidUtil;
  * </p>
  */
 public class MucConfigFormManager {
+    /**
+     * The constant String {@value}.
+     *
+     * @see <a href="http://xmpp.org/extensions/xep-0045.html#owner">XEP-0045 § 10. Owner Use Cases</a>
+     */
     public static final String MUC_ROOMCONFIG_ROOMOWNERS = "muc#roomconfig_roomowners";
+
+    /**
+     * The constant String {@value}.
+     */
+    public static final String MUC_ROOMCONFIG_MEMBERSONLY = "muc#roomconfig_membersonly";
+
+    /**
+     * The constant String {@value}.
+     *
+     * @see <a href="http://xmpp.org/extensions/xep-0045.html#enter-pw">XEP-0045 § 7.2.6 Password-Protected Rooms</a>
+     */
+    public static final String MUC_ROOMCONFIG_PASSWORDPROTECTEDROOM = "muc#roomconfig_passwordprotectedroom";
+
+    /**
+     * The constant String {@value}.
+     */
+    public static final String MUC_ROOMCONFIG_ROOMSECRET = "muc#roomconfig_roomsecret";
 
     private final MultiUserChat multiUserChat;
     private final Form answerForm;
@@ -93,10 +115,23 @@ public class MucConfigFormManager {
         }
     }
 
+    /**
+     * Check if the room supports room owners.
+     * @return <code>true</code> if supported, <code>false</code> if not.
+     * @see #MUC_ROOMCONFIG_ROOMOWNERS
+     */
     public boolean supportsRoomOwners() {
         return owners != null;
     }
 
+    /**
+     * Set the owners of the room.
+     *
+     * @param newOwners a collection of JIDs to become the new owners of the room.
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException if the MUC service does not support this option.
+     * @see #MUC_ROOMCONFIG_ROOMOWNERS
+     */
     public MucConfigFormManager setRoomOwners(Collection<? extends Jid> newOwners) throws MucConfigurationNotSupportedException {
         if (!supportsRoomOwners()) {
             throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_ROOMOWNERS);
@@ -106,6 +141,114 @@ public class MucConfigFormManager {
         return this;
     }
 
+    /**
+     * Check if the room supports a members only configuration.
+     *
+     * @return <code>true</code> if supported, <code>false</code> if not.
+     */
+    public boolean supportsMembersOnly() {
+        return answerForm.hasField(MUC_ROOMCONFIG_MEMBERSONLY);
+    }
+
+    /**
+     * Make the room for members only.
+     *
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException
+     */
+    public MucConfigFormManager makeMembersOnly() throws MucConfigurationNotSupportedException {
+        return setMembersOnly(true);
+    }
+
+    /**
+     * Set if the room is members only. Rooms are not members only per default.
+     *
+     * @param isMembersOnly if the room should be members only.
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException
+     */
+    public MucConfigFormManager setMembersOnly(boolean isMembersOnly) throws MucConfigurationNotSupportedException {
+        if (!supportsMembersOnly()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_MEMBERSONLY);
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_MEMBERSONLY, isMembersOnly);
+        return this;
+    }
+
+    /**
+     * Check if the room supports password protection.
+     *
+     * @return <code>true</code> if supported, <code>false</code> if not.
+     */
+    public boolean supportsPasswordProtected() {
+        return answerForm.hasField(MUC_ROOMCONFIG_PASSWORDPROTECTEDROOM);
+    }
+
+    /**
+     * Set a password and make the room password protected. Users will need to supply the password
+     * to join the room.
+     *
+     * @param password the password to set.
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException
+     */
+    public MucConfigFormManager setAndEnablePassword(String password)
+                    throws MucConfigurationNotSupportedException {
+        return setIsPasswordProtected(true).setRoomSecret(password);
+    }
+
+    /**
+     * Make the room password protected.
+     *
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException
+     */
+    public MucConfigFormManager makePasswordProtected() throws MucConfigurationNotSupportedException {
+        return setIsPasswordProtected(true);
+    }
+
+    /**
+     * Set if this room is password protected. Rooms are by default not password protected.
+     *
+     * @param isPasswordProtected
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException
+     */
+    public MucConfigFormManager setIsPasswordProtected(boolean isPasswordProtected)
+                    throws MucConfigurationNotSupportedException {
+        if (!supportsMembersOnly()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_PASSWORDPROTECTEDROOM);
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_PASSWORDPROTECTEDROOM, isPasswordProtected);
+        return this;
+    }
+
+    /**
+     * Set the room secret, aka the room password. If set and enabled, the password is required to
+     * join the room. Note that this does only set it by does not enable password protection. Use
+     * {@link #setAndEnablePassword(String)} to set a password and make the room protected.
+     *
+     * @param secret the secret/password.
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException
+     */
+    public MucConfigFormManager setRoomSecret(String secret)
+                    throws MucConfigurationNotSupportedException {
+        if (!answerForm.hasField(MUC_ROOMCONFIG_ROOMSECRET)) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_ROOMSECRET);
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_ROOMSECRET, secret);
+        return this;
+    }
+
+    /**
+     * Submit the configuration as {@link Form} to the room.
+     *
+     * @throws NoResponseException if there was no response from the room.
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
     public void submitConfigurationForm() throws NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException {
         if (owners != null) {
