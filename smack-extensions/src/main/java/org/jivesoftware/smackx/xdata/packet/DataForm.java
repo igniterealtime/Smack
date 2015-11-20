@@ -219,7 +219,10 @@ public class DataForm implements ExtensionElement {
      */
     public void addField(FormField field) {
         String fieldVariableName = field.getVariable();
-        if (hasField(fieldVariableName)) {
+        // Form field values must be unique unless they are of type 'fixed', in
+        // which case their variable name may be 'null', and therefore could
+        // appear multiple times within the same form.
+        if (fieldVariableName != null && hasField(fieldVariableName)) {
             throw new IllegalArgumentException("This data form already contains a form field with the variable name '"
                             + fieldVariableName + "'");
         }
