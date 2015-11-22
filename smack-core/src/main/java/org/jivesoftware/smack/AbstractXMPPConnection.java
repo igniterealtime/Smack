@@ -27,14 +27,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -75,6 +73,7 @@ import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
+import org.jivesoftware.smack.util.BoundedThreadPoolExecutor;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -233,8 +232,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * important that we use a <b>single threaded ExecutorService</b> in order to guarantee that the
      * PacketListeners are invoked in the same order the stanzas arrived.
      */
-    private final ThreadPoolExecutor executorService = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<Runnable>(100), new SmackExecutorThreadFactory(this, "Incoming Processor"));
+    private final BoundedThreadPoolExecutor executorService = new BoundedThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS,
+                    100, new SmackExecutorThreadFactory(this, "Incoming Processor"));
 
     /**
      * This scheduled thread pool executor is used to remove pending callbacks.
@@ -1002,12 +1001,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * they are a match with the filter.
      *
      * @param stanza the stanza to process.
+     * @throws InterruptedException
      */
-    protected void processStanza(final Stanza stanza) {
+    protected void processStanza(final Stanza stanza) throws InterruptedException {
         assert(stanza != null);
         lastStanzaReceived = System.currentTimeMillis();
         // Deliver the incoming packet to listeners.
-        executorService.submit(new Runnable() {
+        executorService.executeBlocking(new Runnable() {
             @Override
             public void run() {
                 invokePacketCollectorsAndNotifyRecvListeners(stanza);
