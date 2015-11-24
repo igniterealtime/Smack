@@ -35,6 +35,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.delay.packet.DelayInformation;
 
 /**
  * Handles chat state for all chats on a particular XMPPConnection. This class manages both the
@@ -174,6 +175,10 @@ public final class ChatStateManager extends Manager {
             ExtensionElement extension = message.getExtension(NAMESPACE);
             if (extension == null) {
                 return;
+            }
+
+            if (DelayInformation.from(message) != null) {
+               return;
             }
 
             ChatState state;
