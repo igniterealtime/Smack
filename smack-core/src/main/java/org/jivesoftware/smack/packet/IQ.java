@@ -163,9 +163,9 @@ public abstract class IQ extends Stanza {
     }
 
     /**
-     * This method must be overwritten by IQ subclasses to create their child content. It is important that the builder
-     * <b>does not include the final end element</b>. This will be done automatically by IQChildelementXmlStringBuilder
-     * after eventual existing stanza(/packet) extensions have been added.
+     * This method must be overwritten by IQ subclasses to create their child content. It is important you don't use the builder
+     * <b>to add the final end tag</b>. This will be done automatically by {@link IQChildElementXmlStringBuilder}
+     * after eventual existing {@link ExtensionElement}s have been added.
      * <p>
      * For example to create an IQ with a extra attribute and an additional child element
      * </p>
@@ -195,7 +195,7 @@ public abstract class IQ extends Stanza {
      * xml.attribute(&quot;myAttribute&quot;, &quot;myAttributeValue&quot;);
      * xml.setEmptyElement();
      * </pre>
-     * If your IQ does not contain any attributes or child elements (besides stanza(/packet) extensions), consider sub-classing
+     * If your IQ does not contain any attributes or child elements (besides {@link ExtensionElement}s), consider sub-classing
      * {@link SimpleIQ} instead.
      * 
      * @param xml a pre-created builder which already has the child element and the 'xmlns' attribute set.
