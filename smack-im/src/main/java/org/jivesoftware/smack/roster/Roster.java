@@ -1318,7 +1318,7 @@ public final class Roster extends Manager {
                 // Add the new presence, using the resources as a key.
                 userPresences.put(fromResource, presence);
                 // If the user is in the roster, fire an event.
-                if (entries.containsKey(key)) {
+                if (contains(key)) {
                     fireRosterPresenceEvent(presence);
                 }
                 break;
@@ -1339,7 +1339,7 @@ public final class Roster extends Manager {
                     userPresences.put(fromResource, presence);
                 }
                 // If the user is in the roster, fire an event.
-                if (entries.containsKey(key)) {
+                if (contains(key)) {
                     fireRosterPresenceEvent(presence);
                 }
                 break;
@@ -1359,7 +1359,7 @@ public final class Roster extends Manager {
                 // Set the new presence using the empty resource as a key.
                 userPresences.put(Resourcepart.EMPTY, presence);
                 // If the user is in the roster, fire an event.
-                if (entries.containsKey(key)) {
+                if (contains(key)) {
                     fireRosterPresenceEvent(presence);
                 }
                 break;
