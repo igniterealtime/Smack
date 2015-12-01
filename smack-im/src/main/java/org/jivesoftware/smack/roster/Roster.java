@@ -69,6 +69,7 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.util.cache.LruCache;
 
 /**
  * Represents a user's roster, which is the collection of users a person receives
@@ -131,6 +132,10 @@ public final class Roster extends Manager {
      */
     private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.accept_all;
 
+    private static final int INITIAL_DEFAULT_NON_ROSTER_PRESENCE_MAP_SIZE = 1024;
+
+    private static int defaultNonRosterPresenceMapMaxSize = INITIAL_DEFAULT_NON_ROSTER_PRESENCE_MAP_SIZE;
+
     private RosterStore rosterStore;
     private final Map<String, RosterGroup> groups = new ConcurrentHashMap<String, RosterGroup>();
 
@@ -147,6 +152,15 @@ public final class Roster extends Manager {
      * {@link Resourcepart#EMPTY} if there are no other Presences available.
      */
     private final Map<BareJid, Map<Resourcepart, Presence>> presenceMap = new ConcurrentHashMap<>();
+
+    /**
+     * Like {@link presenceMap} but for presences of entities not in our Roster.
+     */
+    // TODO Ideally we want here to use a LRU cache like Map which will evict all superfluous items
+    // if their maximum size is lowered below the current item count. LruCache does not provide
+    // this.
+    private final LruCache<BareJid, Map<Resourcepart, Presence>> nonRosterPresenceMap = new LruCache<>(
+                    defaultNonRosterPresenceMapMaxSize);
 
     /**
      * Listeners called when the Roster was loaded.
@@ -296,6 +310,40 @@ public final class Roster extends Manager {
                 LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
             }
         }
+    }
+
+    /**
+     * Retrieve the user presences (a map from resource to {@link Presence}) for a given XMPP entity represented by their bare JID.
+     *
+     * @param entity the entity
+     * @return the user presences
+     */
+    private Map<Resourcepart, Presence> getPresencesInternal(BareJid entity) {
+        Map<Resourcepart, Presence> entityPresences = presenceMap.get(entity);
+        if (entityPresences == null) {
+            entityPresences = nonRosterPresenceMap.get(entity);
+        }
+        return entityPresences;
+    }
+
+    /**
+     * Retrieve the user presences (a map from resource to {@link Presence}) for a given XMPP entity represented by their bare JID.
+     *
+     * @param entity the entity
+     * @return the user presences
+     */
+    private synchronized Map<Resourcepart, Presence> getOrCreatePresencesInternal(BareJid entity) {
+        Map<Resourcepart, Presence> entityPresences = getPresencesInternal(entity);
+        if (entityPresences == null) {
+            entityPresences = new ConcurrentHashMap<>();
+            if (contains(entity)) {
+                presenceMap.put(entity, entityPresences);
+            }
+            else {
+                nonRosterPresenceMap.put(entity, entityPresences);
+            }
+        }
+        return entityPresences;
     }
 
     /**
@@ -794,8 +842,8 @@ public final class Roster extends Manager {
      * @return the user's current presence, or unavailable presence if the user is offline
      *         or if no presence information is available..
      */
-    public Presence getPresence(Jid jid) {
-        Map<Resourcepart, Presence> userPresences = presenceMap.get(jid);
+    public Presence getPresence(BareJid jid) {
+        Map<Resourcepart, Presence> userPresences = getPresencesInternal(jid);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
             presence.setFrom(jid);
@@ -863,7 +911,7 @@ public final class Roster extends Manager {
     public Presence getPresenceResource(FullJid userWithResource) {
         BareJid key = userWithResource.asBareJid();
         Resourcepart resource = userWithResource.getResourcepart();
-        Map<Resourcepart, Presence> userPresences = presenceMap.get(key);
+        Map<Resourcepart, Presence> userPresences = getPresencesInternal(key);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
             presence.setFrom(userWithResource);
@@ -891,7 +939,7 @@ public final class Roster extends Manager {
      *         presence information is available.
      */
     public List<Presence> getAllPresences(BareJid bareJid) {
-        Map<Resourcepart, Presence> userPresences = presenceMap.get(bareJid);
+        Map<Resourcepart, Presence> userPresences = getPresencesInternal(bareJid);
         List<Presence> res;
         if (userPresences == null) {
             // Create an unavailable presence if none was found
@@ -939,7 +987,7 @@ public final class Roster extends Manager {
      */
     public List<Presence> getPresences(BareJid jid) {
         List<Presence> res;
-        Map<Resourcepart, Presence> userPresences = presenceMap.get(jid);
+        Map<Resourcepart, Presence> userPresences = getPresencesInternal(jid);
         if (userPresences == null) {
             Presence presence = new Presence(Presence.Type.unavailable);
             presence.setFrom(jid);
@@ -1116,7 +1164,10 @@ public final class Roster extends Manager {
             oldEntry = entries.put(item.getJid(), entry);
         }
         if (oldEntry == null) {
-            addedEntries.add(item.getJid());
+            BareJid jid = item.getJid();
+            addedEntries.add(jid);
+            // Move the eventually existing presences from nonRosterPresenceMap to presenceMap.
+            move(jid, nonRosterPresenceMap, presenceMap);
         }
         else {
             RosterPacket.Item oldItem = RosterEntry.toRosterItem(oldEntry);
@@ -1169,10 +1220,11 @@ public final class Roster extends Manager {
     }
 
     private void deleteEntry(Collection<Jid> deletedEntries, RosterEntry entry) {
-        Jid user = entry.getJid();
+        BareJid user = entry.getJid();
         entries.remove(user);
         unfiledEntries.remove(entry);
-        presenceMap.remove(user);
+        // Move the presences from the presenceMap to the nonRosterPresenceMap.
+        move(user, presenceMap, nonRosterPresenceMap);
         deletedEntries.add(user);
 
         for (Entry<String,RosterGroup> e: groups.entrySet()) {
@@ -1183,7 +1235,6 @@ public final class Roster extends Manager {
             }
         }
     }
-
 
     /**
      * Removes all the groups with no entries.
@@ -1199,6 +1250,20 @@ public final class Roster extends Manager {
             if (group.getEntryCount() == 0) {
                 groups.remove(group.getName());
             }
+        }
+    }
+
+    /**
+     * Move presences from 'entity' from one presence map to another.
+     *
+     * @param entity the entity
+     * @param from the map to move presences from
+     * @param to the map to move presences to
+     */
+    private static void move(BareJid entity, Map<BareJid, Map<Resourcepart, Presence>> from, Map<BareJid, Map<Resourcepart, Presence>> to) {
+        Map<Resourcepart, Presence> presences = from.remove(entity);
+        if (presences != null && !presences.isEmpty()) {
+            to.put(entity, presences);
         }
     }
 
@@ -1259,23 +1324,6 @@ public final class Roster extends Manager {
      */
     private class PresencePacketListener implements StanzaListener {
 
-        /**
-         * Retrieve the user presences (a map from resource to {@link Presence}) for a given key (usually a JID without
-         * a resource). If the {@link #presenceMap} does not contain already a user presence map, then it will be
-         * created.
-         * 
-         * @param key the presence map key
-         * @return the user presences
-         */
-        private Map<Resourcepart, Presence> getUserPresences(BareJid key) {
-            Map<Resourcepart, Presence> userPresences = presenceMap.get(key);
-            if (userPresences == null) {
-                userPresences = new ConcurrentHashMap<>();
-                presenceMap.put(key, userPresences);
-            }
-            return userPresences;
-        }
-
         @Override
         public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
             // Try to ensure that the roster is loaded when processing presence stanzas. While the
@@ -1311,7 +1359,7 @@ public final class Roster extends Manager {
             switch (presence.getType()) {
             case available:
                 // Get the user presence map
-                userPresences = getUserPresences(key);
+                userPresences = getOrCreatePresencesInternal(key);
                 // See if an offline presence was being stored in the map. If so, remove
                 // it since we now have an online presence.
                 userPresences.remove(Resourcepart.EMPTY);
@@ -1328,7 +1376,7 @@ public final class Roster extends Manager {
                 // a roster presence flood. In that case, we store it.
                 if (from.hasNoResource()) {
                     // Get the user presence map
-                    userPresences = getUserPresences(key);
+                    userPresences = getOrCreatePresencesInternal(key);
                     userPresences.put(Resourcepart.EMPTY, presence);
                 }
                 // Otherwise, this is a normal offline presence.
@@ -1352,7 +1400,7 @@ public final class Roster extends Manager {
                 if (from == null || !from.isEntityBareJid()) {
                     break;
                 }
-                userPresences = getUserPresences(key);
+                userPresences = getOrCreatePresencesInternal(key);
                 // Any other presence data is invalidated by the error packet.
                 userPresences.clear();
 
@@ -1531,5 +1579,30 @@ public final class Roster extends Manager {
 
             return IQ.createResultIQ(rosterPacket);
         }
+    }
+
+    /**
+     * Set the default maximum size of the non-Roster presence map.
+     * <p>
+     * The roster will only store this many presence entries for entities non in the Roster. The
+     * default is {@value #INITIAL_DEFAULT_NON_ROSTER_PRESENCE_MAP_SIZE}.
+     * </p>
+     *
+     * @param maximumSize the maximum size
+     * @since 4.2
+     */
+    public static void setDefaultNonRosterPresenceMapMaxSize(int maximumSize) {
+        defaultNonRosterPresenceMapMaxSize = maximumSize;
+    }
+
+    /**
+     * Set the maximum size of the non-Roster presence map.
+     *
+     * @param maximumSize
+     * @since 4.2
+     * @see #setDefaultNonRosterPresenceMapMaxSize(int)
+     */
+    public void setNonRosterPresenceMapMaxSize(int maximumSize) {
+        nonRosterPresenceMap.setMaxCacheSize(maximumSize);
     }
 }
