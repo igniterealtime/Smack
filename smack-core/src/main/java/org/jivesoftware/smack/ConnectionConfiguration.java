@@ -173,6 +173,22 @@ public abstract class ConnectionConfiguration {
     }
 
     /**
+     * Returns the hostname used by this configuration.
+     * @return the hostname.
+     */
+    public String getHost() {
+        return host;
+    }
+
+    /**
+     * Returns the port number used by this configuration.
+     * @return the port number.
+     */
+    public int getPort() {
+        return port;
+    }
+
+    /**
      * Returns the TLS security mode used when making the connection. By default,
      * the mode is {@link SecurityMode#ifpossible}.
      *
