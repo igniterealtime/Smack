@@ -31,6 +31,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  */
 public class Affiliation implements ExtensionElement
 {
+    public static final String ELEMENT = "affiliation";
+
 	protected String node;
 	protected Type type;
 	
@@ -63,7 +65,7 @@ public class Affiliation implements ExtensionElement
 	
 	public String getElementName()
 	{
-		return "subscription";
+		return ELEMENT;
 	}
 
 	public String getNamespace()
