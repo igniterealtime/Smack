@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.vcardtemp.provider;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -172,7 +173,12 @@ public class VCardProvider extends IQProvider<VCard> {
                     isWork = false;
                 }
                 else {
-                    if (telLabel != null && "NUMBER".equals(name)) {
+                    if ("NUMBER".equals(name)) {
+                        if (StringUtils.isNullOrEmpty(telLabel)) {
+                            // RFC 2426 § 3.3.1:
+                            // "The default type is 'voice'"
+                            telLabel = "VOICE";
+                        }
                         if (isWork) {
                             vCard.setPhoneWork(telLabel, parser.nextText());
                         }
