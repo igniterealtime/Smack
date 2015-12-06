@@ -1157,6 +1157,16 @@ public final class Roster extends Manager {
         }
     }
 
+    /**
+     * Fires roster error event to roster listeners indicating that
+     * an error occurred.
+     */
+    private void fireRosterChangedEvent(XMPPError error, Stanza packet) {
+        for (RosterListener listener : rosterListeners) {
+            listener.rosterError(error, packet);
+        }
+    }
+
     private void addUpdateEntry(Collection<Jid> addedEntries, Collection<Jid> updatedEntries,
                     Collection<Jid> unchangedEntries, RosterPacket.Item item, RosterEntry entry) {
         RosterEntry oldEntry;
@@ -1424,6 +1434,11 @@ public final class Roster extends Manager {
 
         @Override
         public void processPacket(Stanza packet) {
+            if (packet.getError() != null) {
+                fireRosterChangedEvent(packet.getError(), packet);
+                return;
+            }
+
             final XMPPConnection connection = connection();
             LOGGER.fine("RosterResultListener received stanza");
             Collection<Jid> addedEntries = new ArrayList<>();

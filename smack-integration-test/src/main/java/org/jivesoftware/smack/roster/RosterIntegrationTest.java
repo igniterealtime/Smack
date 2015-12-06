@@ -31,6 +31,8 @@ import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
 import org.jxmpp.jid.Jid;
 
@@ -69,6 +71,9 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
             @Override
             public void entriesUpdated(Collection<Jid> addresses) {
                 checkIfAddedAndSubscribed(addresses);
+            }
+            @Override
+            public void rosterError(XMPPError error, Stanza packet) {
             }
             private void checkIfAddedAndSubscribed(Collection<Jid> addresses) {
                 for (Jid jid : addresses) {
