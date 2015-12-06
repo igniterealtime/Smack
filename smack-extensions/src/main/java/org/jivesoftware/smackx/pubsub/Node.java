@@ -699,12 +699,12 @@ abstract public class Node
 	 */
 	class EventContentFilter extends FlexibleStanzaTypeFilter<Message>
 	{
-		private String firstElement;
-		private String secondElement;
+        private final String firstElement;
+        private final String secondElement;
 
 		EventContentFilter(String elementName)
 		{
-			firstElement = elementName;
+            this(elementName, null);
 		}
 
 		EventContentFilter(String firstLevelEelement, String secondLevelElement)
