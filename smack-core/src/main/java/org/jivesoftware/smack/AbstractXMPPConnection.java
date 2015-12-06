@@ -1049,9 +1049,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         return;
                     }
                     // If the IQ stanza is of type "get" or "set" with no registered IQ request handler, then answer an
-                    // IQ of type "error" with code 501 ("feature-not-implemented")
+                    // IQ of type 'error' with condition 'service-unavailable'.
                     ErrorIQ errorIQ = IQ.createErrorResponse(iq, new XMPPError(
-                                    XMPPError.Condition.feature_not_implemented));
+                                    XMPPError.Condition.service_unavailable));
                     try {
                         sendStanza(errorIQ);
                     }
