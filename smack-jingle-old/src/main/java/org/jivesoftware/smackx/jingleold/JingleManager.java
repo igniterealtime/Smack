@@ -248,7 +248,7 @@ public class JingleManager implements JingleSessionListener {
             }
 
             @Override
-            public void rosterError(XMPPError error, Stanza packet) {
+            public void rosterError(Stanza packet) {
             }
         });
 

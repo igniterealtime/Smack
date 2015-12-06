@@ -19,7 +19,6 @@ package org.jivesoftware.smack.roster;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jxmpp.jid.Jid;
 
 import java.util.Collection;
@@ -83,8 +82,8 @@ public interface RosterListener {
 
     /**
      * Notifies for errors in roster packets.
-     * @param error the error.
      * @param packet the source packet containing the error.
      */
-    public void rosterError(XMPPError error, Stanza packet);
+    public void rosterError(Stanza packet);
+
 }

@@ -732,7 +732,7 @@ public class RosterTest extends InitSmackIm {
             reportInvoked();
         }
 
-        public void rosterError(XMPPError error, Stanza packet) {
+        public void rosterError(Stanza packet) {
         }
 
         /**
