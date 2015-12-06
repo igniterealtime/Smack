@@ -186,6 +186,9 @@ public class VCardProvider extends IQProvider<VCard> {
                                 telLabel = name;
                             }
                         }
+                        // voice as default if type is missing
+                        if (telLabel == null)
+                            telLabel = "VOICE";
                     }
                 }
                 break;
