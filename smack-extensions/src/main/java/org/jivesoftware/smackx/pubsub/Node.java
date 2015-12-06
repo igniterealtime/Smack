@@ -701,6 +701,7 @@ abstract public class Node
 	{
         private final String firstElement;
         private final String secondElement;
+        private final boolean allowEmpty;
 
 		EventContentFilter(String elementName)
 		{
@@ -711,6 +712,8 @@ abstract public class Node
 		{
 			firstElement = firstLevelEelement;
 			secondElement = secondLevelElement;
+            allowEmpty = firstElement.equals(EventElementType.items.toString())
+                            && "item".equals(secondLevelElement);
 		}
 
         public boolean acceptSpecific(Message message) {
@@ -735,6 +738,13 @@ abstract public class Node
 				if (embedEvent instanceof EmbeddedPacketExtension)
 				{
 					List<ExtensionElement> secondLevelList = ((EmbeddedPacketExtension)embedEvent).getExtensions();
+
+                    // XEP-0060 allows no elements on second level for notifications. See schema or
+                    // for example § 4.3:
+                    // "although event notifications MUST include an empty <items/> element;"
+                    if (allowEmpty && secondLevelList.isEmpty()) {
+                        return true;
+                    }
 
 					if (secondLevelList.size() > 0 && secondLevelList.get(0).getElementName().equals(secondElement))
 						return true;
