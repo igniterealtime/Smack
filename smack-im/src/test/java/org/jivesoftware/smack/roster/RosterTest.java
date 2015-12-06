@@ -731,6 +731,9 @@ public class RosterTest extends InitSmackIm {
             reportInvoked();
         }
 
+        public void rosterError(Stanza packet) {
+        }
+
         /**
          * Get a collection of JIDs of the added roster items.
          * 

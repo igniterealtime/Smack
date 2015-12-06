@@ -18,6 +18,7 @@
 package org.jivesoftware.smack.roster;
 
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jxmpp.jid.Jid;
 
 import java.util.Collection;
@@ -78,4 +79,11 @@ public interface RosterListener {
      * @see Roster#getPresence(BareJid)
      */
     public void presenceChanged(Presence presence);
+
+    /**
+     * Notifies for errors in roster packets.
+     * @param packet the source packet containing the error.
+     */
+    public void rosterError(Stanza packet);
+
 }

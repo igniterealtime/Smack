@@ -396,7 +396,8 @@ public final class Roster extends Manager {
         rosterState = RosterState.loading;
         connection.sendIqWithResponseCallback(packet, new RosterResultListener(), new ExceptionCallback() {
             @Override
-            public void processException(Exception exception) {
+            public void processException(Exception exception, Stanza stanza) {
+                fireRosterChangedEvent(stanza);
                 rosterState = RosterState.uninitialized;
                 Level logLevel;
                 if (exception instanceof NotConnectedException) {
@@ -1154,6 +1155,15 @@ public final class Roster extends Manager {
             for (RosterListener listener : rosterListeners) {
                 listener.presenceChanged(presence);
             }
+        }
+    }
+
+    /**
+     * Fires roster error event to roster listeners indicating that an error occurred.
+     */
+    private void fireRosterChangedEvent(Stanza packet) {
+        for (RosterListener listener : rosterListeners) {
+            listener.rosterError(packet);
         }
     }
 

@@ -245,6 +245,10 @@ public class JingleManager implements JingleSessionListener {
                         }
                 }
             }
+
+            @Override
+            public void rosterError(Stanza packet) {
+            }
         });
 
     }

@@ -188,7 +188,7 @@ public final class CarbonManager extends Manager {
         }
         catch (NotConnectedException e) {
             if (exceptionCallback != null) {
-                exceptionCallback.processException(e);
+                exceptionCallback.processException(e, null);
             }
         }
     }
