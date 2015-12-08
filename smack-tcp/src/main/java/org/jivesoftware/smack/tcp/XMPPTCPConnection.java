@@ -180,7 +180,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     /**
      * 
      */
-    private final SynchronizationPoint<XMPPException> compressSyncPoint = new SynchronizationPoint<XMPPException>(
+    private final SynchronizationPoint<SmackException> compressSyncPoint = new SynchronizationPoint<>(
                     this, "stream compression");
 
     /**
@@ -774,11 +774,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * </p>
      *
      * @throws NotConnectedException 
-     * @throws XMPPException 
+     * @throws SmackException
      * @throws NoResponseException 
      * @throws InterruptedException 
      */
-    private void maybeEnableCompression() throws NotConnectedException, NoResponseException, XMPPException, InterruptedException {
+    private void maybeEnableCompression() throws NotConnectedException, NoResponseException, SmackException, InterruptedException {
         if (!config.isCompressionEnabled()) {
             return;
         }
@@ -996,14 +996,14 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             case "urn:ietf:params:xml:ns:xmpp-tls":
                                 // TLS negotiation has failed. The server will close the connection
                                 // TODO Parse failure stanza
-                                throw new XMPPErrorException("TLS negotiation has failed", null);
+                                throw new SmackException("TLS negotiation has failed");
                             case "http://jabber.org/protocol/compress":
                                 // Stream compression has been denied. This is a recoverable
                                 // situation. It is still possible to authenticate and
                                 // use the connection but using an uncompressed connection
                                 // TODO Parse failure stanza
-                                compressSyncPoint.reportFailure(new XMPPErrorException(
-                                                "Could not establish compression", null));
+                                compressSyncPoint.reportFailure(new SmackException(
+                                                "Could not establish compression"));
                                 break;
                             case SaslStreamElements.NAMESPACE:
                                 // SASL authentication has failed. The server may close the connection
@@ -1042,10 +1042,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             if (enabled.isResumeSet()) {
                                 smSessionId = enabled.getId();
                                 if (StringUtils.isNullOrEmpty(smSessionId)) {
+                                    XMPPError.Builder builder = XMPPError.getBuilder(XMPPError.Condition.bad_request);
+                                    builder.setDescriptiveEnText("Stream Management 'enabled' element with resume attribute but without session id received");
                                     XMPPErrorException xmppException = new XMPPErrorException(
-                                                    "Stream Management 'enabled' element with resume attribute but without session id received",
-                                                    new XMPPError(
-                                                                    XMPPError.Condition.bad_request));
+                                                    builder);
                                     smEnabledSyncPoint.reportFailure(xmppException);
                                     throw xmppException;
                                 }
@@ -1061,8 +1061,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             break;
                         case Failed.ELEMENT:
                             Failed failed = ParseStreamManagement.failed(parser);
-                            XMPPError xmppError = new XMPPError(failed.getXMPPErrorCondition());
-                            XMPPException xmppException = new XMPPErrorException("Stream Management failed", xmppError);
+                            XMPPError.Builder xmppError = XMPPError.getBuilder(failed.getXMPPErrorCondition());
+                            XMPPException xmppException = new XMPPErrorException(xmppError);
                             // If only XEP-198 would specify different failure elements for the SM
                             // enable and SM resume failure case. But this is not the case, so we
                             // need to determine if this is a 'Failed' response for either 'Enable'

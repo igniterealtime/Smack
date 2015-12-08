@@ -62,7 +62,7 @@ public class IQResponseTest {
      */
     @Test
     public void testGeneratingValidErrorResponse() throws XmppStringprepException {
-        final XMPPError error = new XMPPError(XMPPError.Condition.bad_request);
+        final XMPPError.Builder error = XMPPError.getBuilder(XMPPError.Condition.bad_request);
         final IQ request = new TestIQ(ELEMENT, NAMESPACE);
 
         request.setType(IQ.Type.set);
@@ -75,7 +75,7 @@ public class IQResponseTest {
         assertNotNull(result.getStanzaId());
         assertEquals(request.getStanzaId(), result.getStanzaId());
         assertEquals(request.getFrom(), result.getTo());
-        assertEquals(error, result.getError());
+        assertEquals(error.build().toXML(), result.getError().toXML());
         // TODO this test was never valid
         // assertEquals(CHILD_ELEMENT, result.getChildElementXML());
     }
@@ -110,7 +110,7 @@ public class IQResponseTest {
      */
     @Test
     public void testGeneratingErrorBasedOnError() throws XmppStringprepException {
-        final XMPPError error = new XMPPError(XMPPError.Condition.bad_request);
+        final XMPPError.Builder error = XMPPError.getBuilder(XMPPError.Condition.bad_request);
         final IQ request = new TestIQ(ELEMENT, NAMESPACE);
 
         request.setType(IQ.Type.error);

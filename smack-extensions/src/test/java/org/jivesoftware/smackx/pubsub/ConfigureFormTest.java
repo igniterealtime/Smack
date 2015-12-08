@@ -62,7 +62,7 @@ public class ConfigureFormTest
 		Node node = mgr.getNode("princely_musings");
 
 		PubSub errorIq = new PubSub();
-		XMPPError error = new XMPPError(Condition.forbidden);
+		XMPPError.Builder error = XMPPError.getBuilder(Condition.forbidden);
 		errorIq.setError(error);
 		con.addIQReply(errorIq);
 

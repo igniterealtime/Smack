@@ -192,7 +192,7 @@ public final class FileTransferNegotiator extends Manager {
 
         if (streamMethodField == null) {
             String errorMessage = "No stream methods contained in stanza.";
-            XMPPError error = XMPPError.from(XMPPError.Condition.bad_request, errorMessage);
+            XMPPError.Builder error = XMPPError.from(XMPPError.Condition.bad_request, errorMessage);
             IQ iqPacket = IQ.createErrorResponse(si, error);
             connection().sendStanza(iqPacket);
             throw new FileTransferException.NoStreamMethodsOfferedException();

@@ -691,7 +691,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @throws InterruptedException 
      */
     protected void replyRejectPacket(IQ packet) throws NotConnectedException, InterruptedException {
-        XMPPError xmppError = new XMPPError(XMPPError.Condition.not_acceptable);
+        XMPPError.Builder xmppError = XMPPError.getBuilder(XMPPError.Condition.not_acceptable);
         IQ errorIQ = IQ.createErrorResponse(packet, xmppError);
         connection().sendStanza(errorIQ);
     }

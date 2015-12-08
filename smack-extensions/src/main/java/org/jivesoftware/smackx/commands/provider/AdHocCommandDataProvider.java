@@ -101,7 +101,7 @@ public class AdHocCommandDataProvider extends IQProvider<AdHocCommandData> {
                     adHocCommandData.addNote(new AdHocCommandNote(type, value));
                 }
                 else if (parser.getName().equals("error")) {
-                    XMPPError error = PacketParserUtils.parseError(parser);
+                    XMPPError.Builder error = PacketParserUtils.parseError(parser);
                     adHocCommandData.setError(error);
                 }
             }

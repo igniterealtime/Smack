@@ -36,7 +36,6 @@ import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.iqlast.packet.LastActivity;
@@ -169,7 +168,7 @@ public final class LastActivityManager extends Manager {
             @Override
             public IQ handleIQRequest(IQ iqRequest) {
                 if (!enabled)
-                    return IQ.createErrorResponse(iqRequest, new XMPPError(Condition.not_acceptable));
+                    return IQ.createErrorResponse(iqRequest, Condition.not_acceptable);
                 LastActivity message = new LastActivity();
                 message.setType(IQ.Type.result);
                 message.setTo(iqRequest.getFrom());

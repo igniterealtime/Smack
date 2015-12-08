@@ -451,7 +451,7 @@ public final class AdHocCommandManager extends Manager {
                     response.setStatus(Status.canceled);
                     executingCommands.remove(sessionId);
                 }
-                return respondError(response, error);
+                return respondError(response, XMPPError.getBuilder(error));
             }
         }
         else {
@@ -561,7 +561,7 @@ public final class AdHocCommandManager extends Manager {
                         response.setStatus(Status.canceled);
                         executingCommands.remove(sessionId);
                     }
-                    return respondError(response, error);
+                    return respondError(response, XMPPError.getBuilder(error));
                 }
             }
         }
@@ -576,7 +576,7 @@ public final class AdHocCommandManager extends Manager {
      */
     private static IQ respondError(AdHocCommandData response,
             XMPPError.Condition condition) {
-        return respondError(response, new XMPPError(condition));
+        return respondError(response, XMPPError.getBuilder(condition));
     }
 
     /**
@@ -590,7 +590,7 @@ public final class AdHocCommandManager extends Manager {
     private static IQ respondError(AdHocCommandData response, XMPPError.Condition condition,
             AdHocCommand.SpecificErrorCondition specificCondition)
     {
-        XMPPError error = new XMPPError(condition, new AdHocCommandData.SpecificError(specificCondition));
+        XMPPError.Builder error = XMPPError.getBuilder(condition).addExtension(new AdHocCommandData.SpecificError(specificCondition));
         return respondError(response, error);
     }
 
@@ -601,7 +601,7 @@ public final class AdHocCommandManager extends Manager {
      * @param error the error to send.
      * @throws NotConnectedException 
      */
-    private static IQ respondError(AdHocCommandData response, XMPPError error) {
+    private static IQ respondError(AdHocCommandData response, XMPPError.Builder error) {
         response.setType(IQ.Type.error);
         response.setError(error);
         return response;
@@ -626,11 +626,11 @@ public final class AdHocCommandManager extends Manager {
             command.setNode(commandInfo.getNode());
         }
         catch (InstantiationException e) {
-            throw new XMPPErrorException(new XMPPError(
+            throw new XMPPErrorException(XMPPError.getBuilder(
                     XMPPError.Condition.internal_server_error));
         }
         catch (IllegalAccessException e) {
-            throw new XMPPErrorException(new XMPPError(
+            throw new XMPPErrorException(XMPPError.getBuilder(
                     XMPPError.Condition.internal_server_error));
         }
         return command;

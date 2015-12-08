@@ -73,6 +73,10 @@ public abstract class XMPPException extends Exception {
         private static final long serialVersionUID = 212790389529249604L;
         private final XMPPError error;
 
+        public XMPPErrorException(XMPPError.Builder xmppErrorBuilder) {
+            this(xmppErrorBuilder.build());
+        }
+
         /**
          * Creates a new XMPPException with the XMPPError that was the root case of the exception.
          * 
@@ -90,7 +94,9 @@ public abstract class XMPPException extends Exception {
          * @param message a description of the exception.
          * @param error the root cause of the exception.
          * @param wrappedThrowable the root cause of the exception.
+         * @deprecated use {@link XMPPErrorException(XMPPError)} instead.
          */
+        @Deprecated
         public XMPPErrorException(String message, XMPPError error, Throwable wrappedThrowable) {
             super(message, wrappedThrowable);
             this.error = error;
@@ -102,7 +108,9 @@ public abstract class XMPPException extends Exception {
          * 
          * @param message a description of the exception.
          * @param error the root cause of the exception.
+         * @deprecated use {@link XMPPErrorException(XMPPError)} instead.
          */
+        @Deprecated
         public XMPPErrorException(String message, XMPPError error) {
             super(message);
             this.error = error;

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -91,17 +92,37 @@ public class XMPPError extends AbstractError {
         CONDITION_TO_TYPE.put(Condition.subscription_required, Type.WAIT);
         CONDITION_TO_TYPE.put(Condition.unexpected_request, Type.MODIFY);
     }
+
     private final Condition condition;
     private final String conditionText;
     private final String errorGenerator;
     private final Type type;
+    private final Stanza stanza;
 
+    // TODO: Deprecated constructors
+    // deprecate in 4.3
+
+    /**
+     * Create a new XMPPError.
+     *
+     * @param condition
+     * @deprecated use {@link Builder} instead.
+     */
+    @Deprecated
     public XMPPError(Condition condition) {
-        this(condition, null, null, null, null, null);
+        this(condition, null, null, null, null, null, null);
     }
 
+    /**
+     * Create a new XMPPError.
+     *
+     * @param condition
+     * @param applicationSpecificCondition
+     * @deprecated use {@link Builder} instead.
+     */
+    @Deprecated
     public XMPPError(Condition condition, ExtensionElement applicationSpecificCondition) {
-        this(condition, null, null, null, null, Arrays.asList(applicationSpecificCondition));
+        this(condition, null, null, null, null, Arrays.asList(applicationSpecificCondition), null);
     }
 
     /**
@@ -114,11 +135,31 @@ public class XMPPError extends AbstractError {
      * @param condition the error condition.
      * @param descriptiveTexts 
      * @param extensions list of stanza(/packet) extensions
+     * @deprecated use {@link Builder} instead.
      */
+    @Deprecated
     public XMPPError(Condition condition, String conditionText, String errorGenerator, Type type, Map<String, String> descriptiveTexts,
             List<ExtensionElement> extensions) {
+        this(condition, conditionText, errorGenerator, type, descriptiveTexts, extensions, null);
+    }
+
+    /**
+     * Creates a new error with the specified type, condition and message.
+     * This constructor is used when the condition is not recognized automatically by XMPPError
+     * i.e. there is not a defined instance of ErrorCondition or it does not apply the default 
+     * specification.
+     * 
+     * @param type the error type.
+     * @param condition the error condition.
+     * @param descriptiveTexts 
+     * @param extensions list of stanza(/packet) extensions
+     * @param stanza the stanza carrying this XMPP error.
+     */
+    public XMPPError(Condition condition, String conditionText, String errorGenerator, Type type, Map<String, String> descriptiveTexts,
+            List<ExtensionElement> extensions, Stanza stanza) {
         super(descriptiveTexts, NAMESPACE, extensions);
-        this.condition = condition;
+        this.condition = Objects.requireNonNull(condition, "condition must not be null");
+        this.stanza = stanza;
         // Some implementations may send the condition as non-empty element containing the empty string, that is
         // <condition xmlns='foo'></condition>, in this case the parser may calls this constructor with the empty string
         // as conditionText, therefore reset it to null if it's the empty string
@@ -176,6 +217,16 @@ public class XMPPError extends AbstractError {
         return conditionText;
     }
 
+    /**
+     * Get the stanza carrying the XMPP error.
+     *
+     * @return the stanza carrying the XMPP error.
+     * @since 4.2
+     */
+    public Stanza getStanza() {
+        return stanza;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("XMPPError: ");
@@ -215,12 +266,81 @@ public class XMPPError extends AbstractError {
         return xml;
     }
 
-    public static XMPPError from(Condition condition, String descriptiveText) {
+    public static XMPPError.Builder from(Condition condition, String descriptiveText) {
         Map<String, String> descriptiveTexts = new HashMap<String, String>();
         descriptiveTexts.put("en", descriptiveText);
-        return new XMPPError(condition, null, null, null, descriptiveTexts, null);
+        return getBuilder().setCondition(condition).setDescriptiveTexts(descriptiveTexts);
     }
 
+    public static Builder getBuilder() {
+        return new Builder();
+    }
+
+    public static Builder getBuilder(Condition condition) {
+        return getBuilder().setCondition(condition);
+    }
+
+    public static Builder getBuilder(XMPPError xmppError) {
+        return getBuilder().copyFrom(xmppError);
+    }
+
+    public static final class Builder extends AbstractError.Builder<Builder> {
+        private Condition condition;
+        private String conditionText;
+        private String errorGenerator;
+        private Type type;
+        private Stanza stanza;
+
+        private Builder() {
+        }
+
+        public Builder setCondition(Condition condition) {
+            this.condition = condition;
+            return this;
+        }
+
+        public Builder setType(Type type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder setConditionText(String conditionText) {
+            this.conditionText = conditionText;
+            return this;
+        }
+
+        public Builder setErrorGenerator(String errorGenerator) {
+            this.errorGenerator = errorGenerator;
+            return this;
+        }
+
+        public Builder setStanza(Stanza stanza) {
+            this.stanza = stanza;
+            return this;
+        }
+
+        public Builder copyFrom(XMPPError xmppError) {
+            setCondition(xmppError.getCondition());
+            setType(xmppError.getType());
+            setConditionText(xmppError.getConditionText());
+            setErrorGenerator(xmppError.getErrorGenerator());
+            setStanza(xmppError.getStanza());
+            setDescriptiveTexts(xmppError.descriptiveTexts);
+            setTextNamespace(xmppError.textNamespace);
+            setExtensions(xmppError.extensions);
+            return this;
+        }
+
+        public XMPPError build() {
+            return new XMPPError(condition, conditionText, errorGenerator, type, descriptiveTexts,
+            extensions, stanza);
+        }
+
+        @Override
+        protected Builder getThis() {
+            return this;
+        }
+    }
     /**
      * A class to represent the type of the Error. The types are:
      *

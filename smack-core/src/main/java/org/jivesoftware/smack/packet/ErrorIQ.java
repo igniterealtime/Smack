@@ -27,13 +27,13 @@ public class ErrorIQ extends SimpleIQ {
      * <p>
      * According to RFC 6120 § 8.3.1 "4. An error stanza MUST contain an <error/> child element.", so the xmppError argument is mandatory.
      * </p>
-     * @param xmppError the XMPPError (required).
+     * @param xmppErrorBuilder the XMPPError builder (required).
      */
-    public ErrorIQ(XMPPError xmppError) {
+    public ErrorIQ(XMPPError.Builder xmppErrorBuilder) {
         super(ELEMENT, null);
-        Objects.requireNonNull(xmppError, "XMPPError must not be null");
+        Objects.requireNonNull(xmppErrorBuilder, "xmppErrorBuilder must not be null");
         setType(IQ.Type.error);
-        setError(xmppError);
+        setError(xmppErrorBuilder);
     }
 
 }

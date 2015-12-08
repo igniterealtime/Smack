@@ -34,10 +34,11 @@ public class IBBPacketUtils {
      * 
      * @param from the senders JID
      * @param to the recipients JID
-     * @param xmppError the XMPP error
+     * @param condition the XMPP error condition
      * @return an error IQ
      */
-    public static IQ createErrorIQ(Jid from, Jid to, XMPPError xmppError) {
+    public static IQ createErrorIQ(Jid from, Jid to, XMPPError.Condition condition) {
+        XMPPError.Builder xmppError = XMPPError.getBuilder(condition);
         IQ errorIQ = new ErrorIQ(xmppError);
         errorIQ.setType(IQ.Type.error);
         errorIQ.setFrom(from);

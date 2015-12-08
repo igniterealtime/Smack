@@ -54,7 +54,6 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.roster.SubscribeListener.SubscribeAnswer;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
@@ -1538,14 +1537,14 @@ public final class Roster extends Manager {
             if (from != null && !from.equals(jid)) {
                 LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid='" + jid + "' from='" + from
                                 + "'");
-                return IQ.createErrorResponse(iqRequest, new XMPPError(Condition.service_unavailable));
+                return IQ.createErrorResponse(iqRequest, Condition.service_unavailable);
             }
 
             // A roster push must contain exactly one entry
             Collection<Item> items = rosterPacket.getRosterItems();
             if (items.size() != 1) {
                 LOGGER.warning("Ignoring roster push with not exaclty one entry. size=" + items.size());
-                return IQ.createErrorResponse(iqRequest, new XMPPError(Condition.bad_request));
+                return IQ.createErrorResponse(iqRequest, Condition.bad_request);
             }
 
             Collection<Jid> addedEntries = new ArrayList<>();

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smack.packet;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -26,9 +28,9 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class AbstractError {
 
-    private final String textNamespace;
+    protected final String textNamespace;
     protected final Map<String, String> descriptiveTexts;
-    private final List<ExtensionElement> extensions;
+    protected final List<ExtensionElement> extensions;
 
 
     protected AbstractError(Map<String, String> descriptiveTexts) {
@@ -107,5 +109,54 @@ public class AbstractError {
         for (ExtensionElement packetExtension : extensions) {
             xml.append(packetExtension.toXML());
         }
+    }
+
+    public static abstract class Builder<B extends Builder<B>> {
+        protected String textNamespace;
+        protected Map<String, String> descriptiveTexts;
+        protected List<ExtensionElement> extensions;
+
+        public B setDescriptiveTexts(Map<String, String> descriptiveTexts) {
+            if (this.descriptiveTexts == null) {
+                this.descriptiveTexts = descriptiveTexts;
+            }
+            else {
+                this.descriptiveTexts.putAll(descriptiveTexts);
+            }
+            return getThis();
+        }
+
+        public B setDescriptiveEnText(String descriptiveEnText) {
+            if (descriptiveTexts == null) {
+                descriptiveTexts = new HashMap<>();
+            }
+            descriptiveTexts.put("en", descriptiveEnText);
+            return getThis();
+        }
+
+        public B setTextNamespace(String textNamespace) {
+            this.textNamespace = textNamespace;
+            return getThis();
+        }
+
+        public B setExtensions(List<ExtensionElement> extensions) {
+            if (this.extensions == null) {
+                this.extensions = extensions;
+            }
+            else {
+                this.extensions.addAll(extensions);
+            }
+            return getThis();
+        }
+
+        public B addExtension(ExtensionElement extension) {
+            if (extensions == null) {
+                extensions = new ArrayList<>();
+            }
+            extensions.add(extension);
+            return getThis();
+        }
+
+        protected abstract B getThis();
     }
 }

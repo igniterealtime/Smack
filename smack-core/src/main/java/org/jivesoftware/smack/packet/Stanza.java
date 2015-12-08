@@ -248,9 +248,24 @@ public abstract class Stanza implements TopLevelStreamElement {
      * Sets the error for this packet.
      *
      * @param error the error to associate with this packet.
+     * @deprecated use {@link #setError(org.jivesoftware.smack.packet.XMPPError.Builder)} instead.
      */
+    @Deprecated
     public void setError(XMPPError error) {
         this.error = error;
+    }
+
+    /**
+     * Sets the error for this stanza.
+     *
+     * @param xmppErrorBuilder the error to associate with this stanza.
+     */
+    public void setError(XMPPError.Builder xmppErrorBuilder) {
+        if (xmppErrorBuilder == null) {
+            return;
+        }
+        xmppErrorBuilder.setStanza(this);
+        error = xmppErrorBuilder.build();
     }
 
     /**

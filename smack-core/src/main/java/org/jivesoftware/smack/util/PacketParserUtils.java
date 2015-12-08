@@ -606,7 +606,7 @@ public class PacketParserUtils {
         ParserUtils.assertAtStartTag(parser);
         final int initialDepth = parser.getDepth();
         IQ iqPacket = null;
-        XMPPError error = null;
+        XMPPError.Builder error = null;
 
         final String id = parser.getAttributeValue("", "id");
         final Jid to = ParserUtils.getJidAttribute(parser, "to");
@@ -846,17 +846,16 @@ public class PacketParserUtils {
      * @return an error sub-packet.
      * @throws Exception 
      */
-    public static XMPPError parseError(XmlPullParser parser)
+    public static XMPPError.Builder parseError(XmlPullParser parser)
                     throws Exception {
         final int initialDepth = parser.getDepth();
         Map<String, String> descriptiveTexts = null;
-        XMPPError.Condition condition = null;
-        String conditionText = null;
         List<ExtensionElement> extensions = new ArrayList<ExtensionElement>();
+        XMPPError.Builder builder = XMPPError.getBuilder();
 
         // Parse the error header
-        XMPPError.Type errorType = XMPPError.Type.fromString(parser.getAttributeValue("", "type"));
-        String errorGenerator = parser.getAttributeValue("", "by");
+        builder.setType(XMPPError.Type.fromString(parser.getAttributeValue("", "type")));
+        builder.setErrorGenerator(parser.getAttributeValue("", "by"));
 
         outerloop: while (true) {
             int eventType = parser.next();
@@ -871,9 +870,9 @@ public class PacketParserUtils {
                         descriptiveTexts = parseDescriptiveTexts(parser, descriptiveTexts);
                         break;
                     default:
-                        condition = XMPPError.Condition.fromString(name);
+                        builder.setCondition(XMPPError.Condition.fromString(name));
                         if (!parser.isEmptyElementTag()) {
-                            conditionText = parser.nextText();
+                            builder.setConditionText(parser.nextText());
                         }
                         break;
                     }
@@ -888,7 +887,8 @@ public class PacketParserUtils {
                 }
             }
         }
-        return new XMPPError(condition, conditionText, errorGenerator, errorType, descriptiveTexts, extensions);
+        builder.setExtensions(extensions).setDescriptiveTexts(descriptiveTexts);
+        return builder;
     }
 
     /**

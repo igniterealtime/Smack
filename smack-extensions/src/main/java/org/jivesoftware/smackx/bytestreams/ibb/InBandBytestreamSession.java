@@ -457,8 +457,8 @@ public class InBandBytestreamSession implements BytestreamSession {
                      * check if sequence was not used already (see XEP-0047 Section 2.2)
                      */
                     if (data.getSeq() <= this.lastSequence) {
-                        IQ unexpectedRequest = IQ.createErrorResponse((IQ) packet, new XMPPError(
-                                        XMPPError.Condition.unexpected_request));
+                        IQ unexpectedRequest = IQ.createErrorResponse((IQ) packet,
+                                        XMPPError.Condition.unexpected_request);
                         connection.sendStanza(unexpectedRequest);
                         return;
 
@@ -467,8 +467,8 @@ public class InBandBytestreamSession implements BytestreamSession {
                     // check if encoded data is valid (see XEP-0047 Section 2.2)
                     if (data.getDecodedData() == null) {
                         // data is invalid; respond with bad-request error
-                        IQ badRequest = IQ.createErrorResponse((IQ) packet, new XMPPError(
-                                        XMPPError.Condition.bad_request));
+                        IQ badRequest = IQ.createErrorResponse((IQ) packet,
+                                        XMPPError.Condition.bad_request);
                         connection.sendStanza(badRequest);
                         return;
                     }

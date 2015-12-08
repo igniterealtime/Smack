@@ -431,11 +431,10 @@ public class Socks5ByteStreamManagerTest {
                         Verification.requestTypeGET);
 
         // build error packet to reject SOCKS5 Bytestream
-        XMPPError xmppError = new XMPPError(XMPPError.Condition.not_acceptable);
-        IQ rejectPacket = new ErrorIQ(xmppError);
+        XMPPError.Builder builder = XMPPError.getBuilder(XMPPError.Condition.not_acceptable);
+        IQ rejectPacket = new ErrorIQ(builder);
         rejectPacket.setFrom(targetJID);
         rejectPacket.setTo(initiatorJID);
-        rejectPacket.setError(xmppError);
 
         // return error packet as response to the bytestream initiation
         protocol.addResponse(rejectPacket, Verification.correspondingSenderReceiver,
@@ -450,7 +449,7 @@ public class Socks5ByteStreamManagerTest {
         }
         catch (XMPPErrorException e) {
             protocol.verifyAll();
-            assertEquals(xmppError, e.getXMPPError());
+            assertEquals(rejectPacket.getError(), e.getXMPPError());
         }
         catch (Exception e) {
             fail(e.getMessage());

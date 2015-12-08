@@ -115,9 +115,8 @@ public class InBandBytestreamManagerTest extends InitExtensions {
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
 
         try {
-            XMPPError xmppError = new XMPPError(
+            IQ errorIQ = IBBPacketUtils.createErrorIQ(targetJID, initiatorJID,
                             XMPPError.Condition.feature_not_implemented);
-            IQ errorIQ = IBBPacketUtils.createErrorIQ(targetJID, initiatorJID, xmppError);
             protocol.addResponse(errorIQ);
 
             // start In-Band Bytestream

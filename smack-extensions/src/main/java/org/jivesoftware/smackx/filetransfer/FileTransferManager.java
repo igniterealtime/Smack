@@ -169,7 +169,7 @@ public final class FileTransferManager extends Manager {
         // Bytestream rejection as specified in XEP-65 5.3.1 Example 13, which says that
         // 'not-acceptable' should be returned. This is done by Smack in
         // Socks5BytestreamManager.replyRejectPacket(IQ).
-        IQ rejection = IQ.createErrorResponse(initiation, new XMPPError(
+        IQ rejection = IQ.createErrorResponse(initiation, XMPPError.getBuilder(
                         XMPPError.Condition.forbidden));
         connection().sendStanza(rejection);
 	}

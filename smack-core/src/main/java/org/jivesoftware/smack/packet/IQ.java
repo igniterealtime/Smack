@@ -241,7 +241,7 @@ public abstract class IQ extends Stanza {
      *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
      * @return a new {@link Type#error IQ.Type.error} IQ based on the originating IQ.
      */
-    public static ErrorIQ createErrorResponse(final IQ request, final XMPPError error) {
+    public static ErrorIQ createErrorResponse(final IQ request, final XMPPError.Builder error) {
         if (!(request.getType() == Type.get || request.getType() == Type.set)) {
             throw new IllegalArgumentException(
                     "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
@@ -250,7 +250,38 @@ public abstract class IQ extends Stanza {
         result.setStanzaId(request.getStanzaId());
         result.setFrom(request.getTo());
         result.setTo(request.getFrom());
+
+        error.setStanza(result);
+
         return result;
+    }
+
+    public static ErrorIQ createErrorResponse(final IQ request, final XMPPError.Condition condition) {
+        return createErrorResponse(request, XMPPError.getBuilder(condition));
+    }
+
+    /**
+     * Convenience method to create a new {@link Type#error IQ.Type.error} IQ
+     * based on a {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}
+     * IQ. The new stanza(/packet) will be initialized with:<ul>
+     *      <li>The sender set to the recipient of the originating IQ.
+     *      <li>The recipient set to the sender of the originating IQ.
+     *      <li>The type set to {@link Type#error IQ.Type.error}.
+     *      <li>The id set to the id of the originating IQ.
+     *      <li>The child element contained in the associated originating IQ.
+     *      <li>The provided {@link XMPPError XMPPError}.
+     * </ul>
+     *
+     * @param request the {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set} IQ packet.
+     * @param error the error to associate with the created IQ packet.
+     * @throws IllegalArgumentException if the IQ stanza(/packet) does not have a type of
+     *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
+     * @return a new {@link Type#error IQ.Type.error} IQ based on the originating IQ.
+     * @deprecated use {@link #createErrorResponse(IQ, org.jivesoftware.smack.packet.XMPPError.Builder)} instead.
+     */
+    @Deprecated
+    public static ErrorIQ createErrorResponse(final IQ request, final XMPPError error) {
+        return createErrorResponse(request, XMPPError.getBuilder(error));
     }
 
     /**

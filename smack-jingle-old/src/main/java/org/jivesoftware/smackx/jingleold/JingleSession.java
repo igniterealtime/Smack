@@ -1039,13 +1039,11 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         IQ errorPacket = null;
         if (jingleError != null) {
             // TODO This is wrong according to XEP-166 § 10, but this jingle implementation is deprecated anyways
-            XMPPError error = new XMPPError(XMPPError.Condition.undefined_condition, jingleError);
+            XMPPError.Builder builder = XMPPError.getBuilder(XMPPError.Condition.undefined_condition);
+            builder.addExtension(jingleError);
 
-            errorPacket = IQ.createErrorResponse(iq, error);
+            errorPacket = IQ.createErrorResponse(iq, builder);
 
-            // Fill in the fields with the info from the Jingle packet
-            errorPacket.setStanzaId(iq.getStanzaId());
-            errorPacket.setError(error);
             //            errorPacket.addExtension(jingleError);
 
             // NO! Let the normal state machinery do all of the sending.
