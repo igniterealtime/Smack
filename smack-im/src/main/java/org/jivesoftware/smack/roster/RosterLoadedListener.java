@@ -35,4 +35,17 @@ public interface RosterLoadedListener {
      */
     public void onRosterLoaded(Roster roster);
 
+    /**
+     * Called when roster loading has failed.
+     * <p>
+     * Note that the reason for the failure could be as trivial as the connection being not
+     * connected, in which case the exception will be a
+     * {@link org.jivesoftware.smack.SmackException.NotConnectedException}.
+     * </p>
+     *
+     * @param exception the exception which caused the failure.
+     * @since 4.2
+     */
+    public void onRosterLoadingFailed(Exception exception);
+
 }

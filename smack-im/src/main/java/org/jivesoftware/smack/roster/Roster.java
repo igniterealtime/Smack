@@ -404,6 +404,9 @@ public final class Roster extends Manager {
                     logLevel = Level.SEVERE;
                 }
                 LOGGER.log(logLevel, "Exception reloading roster" , exception);
+                for (RosterLoadedListener listener : rosterLoadedListeners) {
+                    listener.onRosterLoadingFailed(exception);
+                }
             }
         });
     }
