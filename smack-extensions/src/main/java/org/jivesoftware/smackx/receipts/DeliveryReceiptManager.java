@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -38,6 +39,7 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 /**
@@ -72,6 +74,8 @@ public class DeliveryReceiptManager extends Manager {
                     new StanzaExtensionFilter(new DeliveryReceiptRequest()));
     private static final StanzaFilter MESSAGES_WITH_DELIVERY_RECEIPT = new AndFilter(StanzaTypeFilter.MESSAGE,
                     new StanzaExtensionFilter(DeliveryReceipt.ELEMENT, DeliveryReceipt.NAMESPACE));
+
+    private static final Logger LOGGER = Logger.getLogger(DeliveryReceiptManager.class.getName());
 
     private static Map<XMPPConnection, DeliveryReceiptManager> instances = new WeakHashMap<XMPPConnection, DeliveryReceiptManager>();
 
@@ -159,6 +163,11 @@ public class DeliveryReceiptManager extends Manager {
 
                 final Message messageWithReceiptRequest = (Message) packet;
                 Message ack = receiptMessageFor(messageWithReceiptRequest);
+                if (ack == null) {
+                    LOGGER.warning("Received message stanza with receipt request from '" + from
+                                    + "' without a stanza ID set. Message: " + messageWithReceiptRequest);
+                    return;
+                }
                 connection.sendStanza(ack);
             }
         }, MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST);
@@ -300,14 +309,21 @@ public class DeliveryReceiptManager extends Manager {
 
     /**
      * Create and return a new message including a delivery receipt extension for the given message.
+     * <p>
+     * If {@code messageWithReceiptRequest} does not have a Stanza ID set, then {@code null} will be returned.
+     * </p>
      *
      * @param messageWithReceiptRequest the given message with a receipt request extension.
-     * @return a new message with a receipt.
+     * @return a new message with a receipt or <code>null</code>.
      * @since 4.1
      */
     public static Message receiptMessageFor(Message messageWithReceiptRequest) {
+        String stanzaId = messageWithReceiptRequest.getStanzaId();
+        if (StringUtils.isNullOrEmpty(stanzaId)) {
+            return null;
+        }
         Message message = new Message(messageWithReceiptRequest.getFrom(), messageWithReceiptRequest.getType());
-        message.addExtension(new DeliveryReceipt(messageWithReceiptRequest.getStanzaId()));
+        message.addExtension(new DeliveryReceipt(stanzaId));
         return message;
     }
 }
