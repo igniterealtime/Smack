@@ -141,7 +141,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
             String responseValue = calcResponse(DigestType.ClientResponse);
             // @formatter:off
             // See RFC 2831 2.1.2 digest-response
-            String saslString = "username=\"" + authenticationId + '"'
+            String saslString = "username=\"" + quoteBackslash(authenticationId) + '"'
                                + ",realm=\"" + serviceName + '"'
                                + ",nonce=\"" + nonce + '"'
                                + ",cnonce=\"" + cnonce + '"'
@@ -216,4 +216,18 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
         return responseValue;
     }
 
+    /**
+     * Quote the backslash in the given String. Replaces all occurrences of "\" with "\\".
+     * <p>
+     * According to RFC 2831 § 7.2 a quoted-string consists either of qdtext or quoted-pair. And since quoted-pair is a
+     * backslash followed by a char, every backslash in qdtext must be quoted, since it otherwise would be treated as
+     * qdtext.
+     * </p>
+     *
+     * @param string the input string.
+     * @return the input string where the every backslash is quoted.
+     */
+    public static String quoteBackslash(String string) {
+        return string.replace("\\", "\\\\");
+    }
 }
