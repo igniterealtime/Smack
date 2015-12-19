@@ -30,7 +30,6 @@ package org.jivesoftware.smack.packet;
  * information see <a href="https://tools.ietf.org/html/rfc6120#section-8.4">RFC 6120 § 8.4 Extended Content</a>.
  * </p>
  *
- * @see DefaultExtensionElement
  * @see org.jivesoftware.smack.provider.ExtensionElementProvider
  * @author Matt Tucker
  */

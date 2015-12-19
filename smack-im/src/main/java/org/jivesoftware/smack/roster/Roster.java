@@ -131,7 +131,11 @@ public final class Roster extends Manager {
      */
     private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.accept_all;
 
-    private static final int INITIAL_DEFAULT_NON_ROSTER_PRESENCE_MAP_SIZE = 1024;
+    /**
+     * The initial maximum size of the map holding presence information of entities without an Roster entry. Currently
+     * {@value #INITIAL_DEFAULT_NON_ROSTER_PRESENCE_MAP_SIZE}.
+     */
+    public static final int INITIAL_DEFAULT_NON_ROSTER_PRESENCE_MAP_SIZE = 1024;
 
     private static int defaultNonRosterPresenceMapMaxSize = INITIAL_DEFAULT_NON_ROSTER_PRESENCE_MAP_SIZE;
 

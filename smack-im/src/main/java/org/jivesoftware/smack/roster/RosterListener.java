@@ -75,7 +75,7 @@ public interface RosterListener {
      * presence packets will not cause this method to be called.
      *
      * @param presence the presence that changed.
-     * @see Roster#getPresence(BareJid)
+     * @see Roster#getPresence(org.jxmpp.jid.BareJid)
      */
     public void presenceChanged(Presence presence);
 }
