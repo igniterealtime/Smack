@@ -52,7 +52,7 @@ public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
     @SmackIntegrationTest
     public void testInvalidLogin() throws SmackException, IOException, XMPPException,
                     InterruptedException, KeyManagementException, NoSuchAlgorithmException {
-        final String nonExistentUserString = StringUtils.randomString(24);
+        final String nonExistentUserString = StringUtils.insecureRandomString(24);
         XMPPTCPConnectionConfiguration conf = getConnectionConfiguration().setUsernameAndPassword(
                         nonExistentUserString, "invalidPassword").build();
 

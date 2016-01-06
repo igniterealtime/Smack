@@ -42,8 +42,8 @@ public class IntTestUtil {
     public static UsernameAndPassword registerAccount(XMPPConnection connection)
                     throws NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException {
-        return registerAccount(connection, StringUtils.randomString(12),
-                        StringUtils.randomString(12));
+        return registerAccount(connection, StringUtils.insecureRandomString(12),
+                        StringUtils.insecureRandomString(12));
     }
 
     public static UsernameAndPassword registerAccount(XMPPConnection connection, String username,

@@ -43,7 +43,7 @@ public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
         ftManagerTwo = FileTransferManager.getInstanceFor(conTwo);
     }
 
-    private static final byte[] dataToSend = StringUtils.randomString(1024 * 4 * 5).getBytes();
+    private static final byte[] dataToSend = StringUtils.insecureRandomString(1024 * 4 * 5).getBytes();
 
     @SmackIntegrationTest
     public void fileTransferTest() throws Exception {

@@ -18,6 +18,7 @@
 package org.jivesoftware.smack.util;
 
 import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
@@ -174,7 +175,7 @@ public class StringUtils {
      * @param length the desired length of the random String to return.
      * @return a random String of numbers and letters of the specified length.
      */
-    public static String randomString(int length) {
+    public static String insecureRandomString(int length) {
         if (length < 1) {
             return null;
         }
@@ -184,6 +185,31 @@ public class StringUtils {
             randBuffer[i] = numbersAndLetters[randGen.nextInt(numbersAndLetters.length)];
         }
         return new String(randBuffer);
+    }
+
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
+    public static String randomString(final int length) {
+        if (length < 1) {
+            return null;
+        }
+
+        byte[] randomBytes = new byte[length];
+        SECURE_RANDOM.nextBytes(randomBytes);
+        char[] randomChars = new char[length];
+        for (int i = 0; i < length; i++) {
+            randomChars[i] = getPrintableChar(randomBytes[i]);
+        }
+        return new String(randomChars);
+    }
+
+    private static char getPrintableChar(byte indexByte) {
+        assert(numbersAndLetters.length < Byte.MAX_VALUE * 2);
+
+        // Convert indexByte as it where an unsigned byte by promoting it to int
+        // and masking it with 0xff. Yields results from 0 - 254.
+        int index = indexByte & 0xff;
+        return numbersAndLetters[index % numbersAndLetters.length];
     }
 
     /**

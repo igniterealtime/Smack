@@ -39,7 +39,7 @@ import org.jxmpp.jid.parts.Resourcepart;
 
 public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
 
-    private final String randomString = StringUtils.randomString(6);
+    private final String randomString = StringUtils.insecureRandomString(6);
 
     private final MultiUserChatManager mucManagerOne;
     private final MultiUserChatManager mucManagerTwo;

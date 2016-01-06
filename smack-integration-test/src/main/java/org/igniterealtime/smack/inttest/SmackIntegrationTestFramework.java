@@ -519,7 +519,7 @@ public class SmackIntegrationTestFramework {
             accountUsername = USERNAME_PREFIX + '-' + middlefix + '-' +testRunResult.testRunId;
         }
         if (StringUtils.isNullOrEmpty(accountPassword)) {
-            accountPassword = StringUtils.randomString(16);
+            accountPassword = StringUtils.insecureRandomString(16);
         }
         // @formatter:off
         Builder builder = XMPPTCPConnectionConfiguration.builder()
@@ -584,7 +584,7 @@ public class SmackIntegrationTestFramework {
     }
 
     public static final class TestRunResult {
-        public final String testRunId = StringUtils.randomString(5);
+        public final String testRunId = StringUtils.insecureRandomString(5);
         private final List<SuccessfulTest> successfulTests = Collections.synchronizedList(new LinkedList<SuccessfulTest>());
         private final List<FailedTest> failedIntegrationTests = Collections.synchronizedList(new LinkedList<FailedTest>());
         private final List<TestNotPossible> impossibleTestMethods = Collections.synchronizedList(new LinkedList<TestNotPossible>());
