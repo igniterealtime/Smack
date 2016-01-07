@@ -119,6 +119,7 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -536,7 +537,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
     }
 
-    private void connectUsingConfiguration() throws IOException, ConnectionException {
+    private void connectUsingConfiguration() throws ConnectionException, IOException {
         List<HostAddress> failedAddresses = populateHostAddresses();
         SocketFactory socketFactory = config.getSocketFactory();
         ProxyInfo proxyInfo = config.getProxyInfo();
@@ -545,45 +546,52 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             socketFactory = SocketFactory.getDefault();
         }
         for (HostAddress hostAddress : hostAddresses) {
+            Iterator<InetAddress> inetAddresses = null;
             String host = hostAddress.getFQDN();
             int port = hostAddress.getPort();
             socket = socketFactory.createSocket();
             try {
-                Iterator<InetAddress> inetAddresses = Arrays.asList(InetAddress.getAllByName(host)).iterator();
+                inetAddresses = Arrays.asList(InetAddress.getAllByName(host)).iterator();
                 if (!inetAddresses.hasNext()) {
                     // This should not happen
                     LOGGER.warning("InetAddress.getAllByName() returned empty result array.");
                     throw new UnknownHostException(host);
                 }
-                innerloop: while (inetAddresses.hasNext()) {
-                    final InetAddress inetAddress = inetAddresses.next();
-                    final String inetAddressAndPort = inetAddress + " at port " + port;
-                    LOGGER.finer("Trying to establish TCP connection to " + inetAddressAndPort);
-                    try {
-                        if (proxyInfo == null) {
-                            socket.connect(new InetSocketAddress(inetAddress, port), timeout);
-                        }
-                        else {
-                            proxyInfo.getProxySocketConnection().connect(socket, inetAddress, port, timeout);
-                        }
-                    } catch (Exception e) {
-                        if (inetAddresses.hasNext()) {
-                            continue innerloop;
-                        } else {
-                            throw e;
-                        }
-                    }
-                    LOGGER.finer("Established TCP connection to " + inetAddressAndPort);
-                    // We found a host to connect to, return here
-                    this.host = host;
-                    this.port = port;
-                    return;
-                }
             }
-            catch (Exception e) {
+            catch (UnknownHostException e) {
                 hostAddress.setException(e);
-                failedAddresses.add(hostAddress);
+                // TODO: Change to emptyIterator() once Smack's minimum Android SDK level is >= 19.
+                List<InetAddress> emptyInetAddresses = Collections.emptyList();
+                inetAddresses = emptyInetAddresses.iterator();
+                continue;
             }
+            innerloop: while (inetAddresses.hasNext()) {
+                final InetAddress inetAddress = inetAddresses.next();
+                final String inetAddressAndPort = inetAddress + " at port " + port;
+                LOGGER.finer("Trying to establish TCP connection to " + inetAddressAndPort);
+                try {
+                    if (proxyInfo == null) {
+                        socket.connect(new InetSocketAddress(inetAddress, port), timeout);
+                    }
+                    else {
+                        proxyInfo.getProxySocketConnection().connect(socket, inetAddress, port, timeout);
+                    }
+                } catch (Exception e) {
+                    hostAddress.setException(inetAddress, e);
+                    if (inetAddresses.hasNext()) {
+                        continue innerloop;
+                    }
+                    else {
+                        break innerloop;
+                    }
+                }
+                LOGGER.finer("Established TCP connection to " + inetAddressAndPort);
+                // We found a host to connect to, return here
+                this.host = host;
+                this.port = port;
+                return;
+            }
+            failedAddresses.add(hostAddress);
         }
         // There are no more host addresses to try
         // throw an exception and report all tried
