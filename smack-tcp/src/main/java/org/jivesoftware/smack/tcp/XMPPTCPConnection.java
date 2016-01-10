@@ -545,11 +545,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         if (socketFactory == null) {
             socketFactory = SocketFactory.getDefault();
         }
+        socket = socketFactory.createSocket();
         for (HostAddress hostAddress : hostAddresses) {
             Iterator<InetAddress> inetAddresses = null;
             String host = hostAddress.getFQDN();
             int port = hostAddress.getPort();
-            socket = socketFactory.createSocket();
             try {
                 inetAddresses = Arrays.asList(InetAddress.getAllByName(host)).iterator();
                 if (!inetAddresses.hasNext()) {
