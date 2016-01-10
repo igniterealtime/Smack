@@ -206,7 +206,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private BundleAndDeferCallback bundleAndDeferCallback = defaultBundleAndDeferCallback;
 
-    private static boolean useSmDefault = false;
+    private static boolean useSmDefault = true;
 
     private static boolean useSmResumptionDefault = true;
 
