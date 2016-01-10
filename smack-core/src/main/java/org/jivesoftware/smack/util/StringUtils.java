@@ -151,7 +151,7 @@ public class StringUtils {
      * The Random class is not considered to be cryptographically secure, so
      * only use these random Strings for low to medium security applications.
      */
-    private static Random randGen = new Random();
+    private static final Random randGen = new Random();
 
     /**
      * Array of numbers and letters of mixed case. Numbers appear in the list
@@ -159,7 +159,7 @@ public class StringUtils {
      * We can use the array to get a random number or letter by picking a random
      * array index.
      */
-    private static char[] numbersAndLetters = ("0123456789abcdefghijklmnopqrstuvwxyz" +
+    private static final char[] numbersAndLetters = ("0123456789abcdefghijklmnopqrstuvwxyz" +
                     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
 
     /**
