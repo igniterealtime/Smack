@@ -702,7 +702,7 @@ public final class Roster extends Manager {
      * Add a roster listener and invoke the roster entries with all entries of the roster.
      * <p>
      * The method guarantees that the listener is only invoked after
-     * {@link RosterEntries#rosterEntires(Collection)} has been invoked, and that all roster events
+     * {@link RosterEntries#rosterEntries(Collection)} has been invoked, and that all roster events
      * that happen while <code>rosterEntires(Collection) </code> is called are queued until the
      * method returns.
      * </p>
@@ -720,7 +720,7 @@ public final class Roster extends Manager {
         Objects.requireNonNull(rosterEntries, "rosterEntries must not be null");
 
         synchronized (rosterListenersAndEntriesLock) {
-            rosterEntries.rosterEntires(entries.values());
+            rosterEntries.rosterEntries(entries.values());
             addRosterListener(rosterListener);
         }
     }

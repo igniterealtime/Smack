@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,6 @@ import java.util.Collection;
 
 public interface RosterEntries {
 
-	public void rosterEntires(Collection<RosterEntry> rosterEntries);
+	public void rosterEntries(Collection<RosterEntry> rosterEntries);
 
 }
