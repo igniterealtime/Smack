@@ -244,7 +244,7 @@ public class SmackException extends Exception {
      * ConnectionException is thrown if Smack is unable to connect to all hosts of a given XMPP
      * service. The failed hosts can be retrieved with
      * {@link ConnectionException#getFailedAddresses()}, which will have the exception causing the
-     * connection failure set and retrievable with {@link HostAddress#getException()}.
+     * connection failure set and retrievable with {@link HostAddress#getExceptions()}.
      */
     public static class ConnectionException extends SmackException {
 
