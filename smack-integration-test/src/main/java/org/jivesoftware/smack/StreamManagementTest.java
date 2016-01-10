@@ -31,8 +31,6 @@ import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 public class StreamManagementTest extends AbstractSmackLowLevelIntegrationTest {
 
@@ -47,17 +45,6 @@ public class StreamManagementTest extends AbstractSmackLowLevelIntegrationTest {
                 }
             }
         });
-    }
-
-    @BeforeClass
-    public static void before() {
-        // TODO remove this once stream mangement is enabled per default
-        XMPPTCPConnection.setUseStreamManagementDefault(true);
-    }
-
-    @AfterClass
-    public static void after() {
-        XMPPTCPConnection.setUseStreamManagementDefault(false);
     }
 
     @SmackIntegrationTest
