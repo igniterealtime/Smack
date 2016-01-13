@@ -38,6 +38,7 @@ public class StringUtils {
     public static final String AMP_ENCODE = "&amp;";
     public static final String LT_ENCODE = "&lt;";
     public static final String GT_ENCODE = "&gt;";
+	public static final String CR_ENCODE = "&#13;";
 
     public static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
 
@@ -73,6 +74,9 @@ public class StringUtils {
                 break;
             case '"':
                 toAppend = QUOTE_ENCODE;
+                break;
+			case '\r':
+				toAppend = CR_ENCODE;
                 break;
             case '\'':
                 toAppend = APOS_ENCODE;
