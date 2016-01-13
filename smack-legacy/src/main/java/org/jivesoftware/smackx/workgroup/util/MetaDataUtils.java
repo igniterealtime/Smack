@@ -97,7 +97,7 @@ public class MetaDataUtils {
                 for (Iterator<String> it = value.iterator(); it.hasNext();) {
                     String v = it.next();
                     buf.append("<value name=\"").append(key).append("\">");
-                    buf.append(StringUtils.escapeForXML(v));
+                    buf.append(StringUtils.escapeForXmlText(v));
                     buf.append("</value>");
                 }
             }

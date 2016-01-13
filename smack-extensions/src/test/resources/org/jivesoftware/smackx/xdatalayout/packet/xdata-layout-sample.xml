@@ -7,7 +7,7 @@
     </section>
     <text>PageText - &amp; é á </text>
     <section
-      label='&lt;html&gt;Number of Persons by&lt;br/&gt; Nationality and Status&lt;/html&gt;'>
+      label='&lt;html>Number of Persons by&lt;br/> Nationality and Status&lt;/html>'>
       <reportedref />
     </section>
     <text><![CDATA[<html><font color='red'><em>DO NOT DELAY</em></font><br/>supply further information</html>]]></text>

@@ -85,7 +85,7 @@ public class Macros extends IQ {
         if (getPersonalMacroGroup() != null) {
             // CHECKSTYLE:OFF
         	buf.append("<personalMacro>");
-        	buf.append(StringUtils.escapeForXML(getPersonalMacroGroup().toXML()));
+        	buf.append(StringUtils.escapeForXmlText(getPersonalMacroGroup().toXML()));
         	buf.append("</personalMacro>");
             // CHECKSTYLE:ON
         }

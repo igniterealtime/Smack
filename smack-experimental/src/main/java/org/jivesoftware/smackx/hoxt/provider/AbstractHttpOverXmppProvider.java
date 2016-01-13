@@ -186,7 +186,7 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
                         builder.append('>');
                         startClosed = true;
                     }
-                    builder.append(StringUtils.escapeForXML(parser.getText()));
+                    builder.append(StringUtils.escapeForXmlText(parser.getText()));
                 } else {
                     throw new IllegalArgumentException("unexpected eventType: " + eventType);
                 }
@@ -206,7 +206,7 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
                 builder.append(' ');
                 builder.append(parser.getAttributeName(i));
                 builder.append("=\"");
-                builder.append(StringUtils.escapeForXML(parser.getAttributeValue(i)));
+                builder.append(StringUtils.escapeForXml(parser.getAttributeValue(i)));
                 builder.append('"');
             }
         }

@@ -58,7 +58,7 @@ public class DataLayoutTest {
                     +     "<text>SectionText - &amp; \u00E9 \u00E1 </text>"
                     +   "</section>"
                     +   "<text>PageText - &amp; \u00E9 \u00E1 </text>"
-                    +   "<section label='&lt;html&gt;Number of Persons by&lt;br/&gt; Nationality and Status&lt;/html&gt;'>"
+                    +   "<section label='&lt;html>Number of Persons by&lt;br/> Nationality and Status&lt;/html>'>"
                     +     "<reportedref/>"
                     +   "</section>"
                     +   "<text>&lt;html&gt;&lt;font color=&apos;red&apos;&gt;&lt;em&gt;DO NOT DELAY&lt;/em&gt;&lt;/font&gt;&lt;br/&gt;supply further information&lt;/html&gt;</text>"

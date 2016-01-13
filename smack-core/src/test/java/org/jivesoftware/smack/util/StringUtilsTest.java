@@ -28,43 +28,43 @@ import org.junit.Test;
  */
 public class StringUtilsTest  {
 	@Test
-    public void testEscapeForXML() {
+    public void testEscapeForXml() {
         String input = null;
 
-        assertNull(StringUtils.escapeForXML(null));
+        assertNull(StringUtils.escapeForXml(null));
 
         input = "<b>";
-        assertCharSequenceEquals("&lt;b&gt;", StringUtils.escapeForXML(input));
+        assertCharSequenceEquals("&lt;b&gt;", StringUtils.escapeForXml(input));
 
         input = "\"";
-        assertCharSequenceEquals("&quot;", StringUtils.escapeForXML(input));
+        assertCharSequenceEquals("&quot;", StringUtils.escapeForXml(input));
 
         input = "&";
-        assertCharSequenceEquals("&amp;", StringUtils.escapeForXML(input));
+        assertCharSequenceEquals("&amp;", StringUtils.escapeForXml(input));
 
         input = "<b>\n\t\r</b>";
-        assertCharSequenceEquals("&lt;b&gt;\n\t\r&lt;/b&gt;", StringUtils.escapeForXML(input));
+        assertCharSequenceEquals("&lt;b&gt;\n\t\r&lt;/b&gt;", StringUtils.escapeForXml(input));
 
         input = "   &   ";
-        assertCharSequenceEquals("   &amp;   ", StringUtils.escapeForXML(input));
+        assertCharSequenceEquals("   &amp;   ", StringUtils.escapeForXml(input));
 
         input = "   \"   ";
-        assertCharSequenceEquals("   &quot;   ", StringUtils.escapeForXML(input));
+        assertCharSequenceEquals("   &quot;   ", StringUtils.escapeForXml(input));
 
         input = "> of me <";
-        assertCharSequenceEquals("&gt; of me &lt;", StringUtils.escapeForXML(input));
+        assertCharSequenceEquals("&gt; of me &lt;", StringUtils.escapeForXml(input));
 
         input = "> of me & you<";
-        assertCharSequenceEquals("&gt; of me &amp; you&lt;", StringUtils.escapeForXML(input));
+        assertCharSequenceEquals("&gt; of me &amp; you&lt;", StringUtils.escapeForXml(input));
 
         input = "& <";
-        assertCharSequenceEquals("&amp; &lt;", StringUtils.escapeForXML(input));
+        assertCharSequenceEquals("&amp; &lt;", StringUtils.escapeForXml(input));
 
         input = "&";
-        assertCharSequenceEquals("&amp;", StringUtils.escapeForXML(input));
+        assertCharSequenceEquals("&amp;", StringUtils.escapeForXml(input));
 
         input = "It's a good day today";
-        assertCharSequenceEquals("It&apos;s a good day today", StringUtils.escapeForXML(input));
+        assertCharSequenceEquals("It&apos;s a good day today", StringUtils.escapeForXml(input));
     }
 
 	public static void assertCharSequenceEquals(CharSequence expected, CharSequence actual) {

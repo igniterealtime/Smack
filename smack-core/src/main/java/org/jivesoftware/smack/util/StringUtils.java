@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2016 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,13 +42,81 @@ public class StringUtils {
     public static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
 
     /**
+     * Escape <code>input</code> for XML.
+     *
+     * @param input the input to escape.
+     * @return the XML escaped variant of <code>input</code>.
+     * @deprecated use {@link #escapeForXml(CharSequence)} instead.
+     */
+    // Remove in 4.3.
+    @Deprecated
+    public static CharSequence escapeForXML(CharSequence input) {
+        return escapeForXml(input);
+    }
+
+    /**
+     * Escape <code>input</code> for XML.
+     *
+     * @param input the input to escape.
+     * @return the XML escaped variant of <code>input</code>.
+     */
+    public static CharSequence escapeForXml(CharSequence input) {
+        return escapeForXml(input, XmlEscapeMode.safe);
+    }
+
+    /**
+     * Escape <code>input</code> for XML.
+     *
+     * @param input the input to escape.
+     * @return the XML escaped variant of <code>input</code>.
+     * @since 4.2
+     */
+    public static CharSequence escapeForXmlAttribute(CharSequence input) {
+        return escapeForXml(input, XmlEscapeMode.forAttribute);
+    }
+
+    /**
+     * Escape <code>input</code> for XML.
+     * <p>
+     * This is an optimized variant of {@link #escapeForXmlAttribute(CharSequence)} for XML where the
+     * XML attribute is quoted using ''' (Apos).
+     * </p>
+     *
+     * @param input the input to escape.
+     * @return the XML escaped variant of <code>input</code>.
+     * @since 4.2
+     */
+    public static CharSequence escapeForXmlAttributeApos(CharSequence input) {
+        return escapeForXml(input, XmlEscapeMode.forAttributeApos);
+    }
+
+    /**
+     * Escape <code>input</code> for XML.
+     *
+     * @param input the input to escape.
+     * @return the XML escaped variant of <code>input</code>.
+     * @since 4.2
+     */
+    public static CharSequence escapeForXmlText(CharSequence input) {
+        return escapeForXml(input, XmlEscapeMode.forText);
+    }
+
+    private enum XmlEscapeMode {
+        safe,
+        forAttribute,
+        forAttributeApos,
+        forText,
+        ;
+    };
+
+    /**
      * Escapes all necessary characters in the CharSequence so that it can be used
      * in an XML doc.
      *
      * @param input the CharSequence to escape.
      * @return the string with appropriate characters escaped.
      */
-    public static CharSequence escapeForXML(final CharSequence input) {
+    private static CharSequence escapeForXml(final CharSequence input, final XmlEscapeMode xmlEscapeMode) {
         if (input == null) {
             return null;
         }
@@ -61,23 +129,75 @@ public class StringUtils {
         while (i < len) {
             toAppend = null;
             ch = input.charAt(i);
-            switch(ch) {
-            case '<':
-                toAppend = LT_ENCODE;
+            switch (xmlEscapeMode) {
+            case safe:
+                switch (ch) {
+                case '<':
+                    toAppend = LT_ENCODE;
+                    break;
+                case '>':
+                    toAppend = GT_ENCODE;
+                    break;
+                case '&':
+                    toAppend = AMP_ENCODE;
+                    break;
+                case '"':
+                    toAppend = QUOTE_ENCODE;
+                    break;
+                case '\'':
+                    toAppend = APOS_ENCODE;
+                    break;
+                default:
+                    break;
+                }
                 break;
-            case '>':
-                toAppend = GT_ENCODE;
+            case forAttribute:
+                // No need to escape '>' for attributes.
+                switch(ch) {
+                case '<':
+                    toAppend = LT_ENCODE;
+                    break;
+                case '&':
+                    toAppend = AMP_ENCODE;
+                    break;
+                case '"':
+                    toAppend = QUOTE_ENCODE;
+                    break;
+                case '\'':
+                    toAppend = APOS_ENCODE;
+                    break;
+                default:
+                    break;
+                }
                 break;
-            case '&':
-                toAppend = AMP_ENCODE;
+            case forAttributeApos:
+                // No need to escape '>' and '"' for attributes using '\'' as quote.
+                switch(ch) {
+                case '<':
+                    toAppend = LT_ENCODE;
+                    break;
+                case '&':
+                    toAppend = AMP_ENCODE;
+                    break;
+                case '\'':
+                    toAppend = APOS_ENCODE;
+                    break;
+                default:
+                    break;
+                }
                 break;
-            case '"':
-                toAppend = QUOTE_ENCODE;
-                break;
-            case '\'':
-                toAppend = APOS_ENCODE;
-                break;
-            default:
+            case forText:
+                // No need to escape '"', '\'', and '>' for text.
+                switch(ch) {
+                case '<':
+                    toAppend = LT_ENCODE;
+                    break;
+                case '&':
+                    toAppend = AMP_ENCODE;
+                    break;
+                default:
+                    break;
+                }
                 break;
             }
             if (toAppend != null) {

@@ -525,13 +525,13 @@ public class VCard extends IQ {
     private void updateFN() {
         StringBuilder sb = new StringBuilder();
         if (firstName != null) {
-            sb.append(StringUtils.escapeForXML(firstName)).append(' ');
+            sb.append(StringUtils.escapeForXml(firstName)).append(' ');
         }
         if (middleName != null) {
-            sb.append(StringUtils.escapeForXML(middleName)).append(' ');
+            sb.append(StringUtils.escapeForXml(middleName)).append(' ');
         }
         if (lastName != null) {
-            sb.append(StringUtils.escapeForXML(lastName));
+            sb.append(StringUtils.escapeForXml(lastName));
         }
         setField("FN", sb.toString());
     }

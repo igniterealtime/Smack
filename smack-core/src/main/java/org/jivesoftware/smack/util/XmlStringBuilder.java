@@ -233,7 +233,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     public XmlStringBuilder attribute(String name, String value) {
         assert value != null;
         sb.append(' ').append(name).append("='");
-        escape(value);
+        escapeAttributeValue(value);
         sb.append('\'');
         return this;
     }
@@ -357,7 +357,13 @@ public class XmlStringBuilder implements Appendable, CharSequence {
 
     public XmlStringBuilder escape(String text) {
         assert text != null;
-        sb.append(StringUtils.escapeForXML(text));
+        sb.append(StringUtils.escapeForXml(text));
+        return this;
+    }
+
+    public XmlStringBuilder escapeAttributeValue(String value) {
+        assert value != null;
+        sb.append(StringUtils.escapeForXmlAttributeApos(value));
         return this;
     }
 

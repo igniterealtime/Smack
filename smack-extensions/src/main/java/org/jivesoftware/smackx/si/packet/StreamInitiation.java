@@ -332,7 +332,7 @@ public class StreamInitiation extends IQ {
                     .append(getNamespace()).append("\" ");
 
             if (getName() != null) {
-                buffer.append("name=\"").append(StringUtils.escapeForXML(getName())).append("\" ");
+                buffer.append("name=\"").append(StringUtils.escapeForXmlAttribute(getName())).append("\" ");
             }
 
             if (getSize() > 0) {
@@ -350,7 +350,7 @@ public class StreamInitiation extends IQ {
             if ((desc != null && desc.length() > 0) || isRanged) {
                 buffer.append('>');
                 if (getDesc() != null && desc.length() > 0) {
-                    buffer.append("<desc>").append(StringUtils.escapeForXML(getDesc())).append("</desc>");
+                    buffer.append("<desc>").append(StringUtils.escapeForXmlText(getDesc())).append("</desc>");
                 }
                 if (isRanged()) {
                     buffer.append("<range/>");
