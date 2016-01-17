@@ -51,7 +51,7 @@ public class CapsExtensionProvider extends ExtensionElementProvider<CapsExtensio
         if (hash != null && version != null && node != null) {
             return new CapsExtension(node, version, hash);
         } else {
-            throw new SmackException("Caps elment with missing attributes. Attributes: hash=" + hash + " version="
+            throw new SmackException("Caps element with missing attributes. Attributes: hash=" + hash + " version="
                             + version + " node=" + node);
         }
     }
