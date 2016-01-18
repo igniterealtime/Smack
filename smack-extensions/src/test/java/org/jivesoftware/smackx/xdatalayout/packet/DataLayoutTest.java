@@ -41,8 +41,31 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  */
 public class DataLayoutTest {
-    private static final String TEST_OUTPUT_2 = "<page xmlns='http://jabber.org/protocol/xdata-layout' label='Label'><fieldref var='testField1'/><section label='section Label'><text>SectionText</text></section><text>PageText</text></page>";
-    private static final String TEST_OUTPUT_SPECIAL = "<page xmlns='http://jabber.org/protocol/xdata-layout' label='Label - &amp; \u00E9 \u00E1 '><fieldref var='testField1'/><section label='section Label - &amp; \u00E9 \u00E1 '><text>SectionText - &amp; \u00E9 \u00E1 </text></section><text>PageText - &amp; \u00E9 \u00E1 </text><section label='&lt;html&gt;Number of Persons by&lt;br/&gt; Nationality and Status&lt;/html&gt;'><reportedref/></section><text>&lt;html&gt;&lt;font color=&apos;red&apos;&gt;&lt;em&gt;DO NOT DELAY&lt;/em&gt;&lt;/font&gt;&lt;br/&gt;supply further information&lt;/html&gt;</text></page>";
+    // @formatter:off
+    private static final String TEST_OUTPUT_2 =
+                     "<page xmlns='http://jabber.org/protocol/xdata-layout' label='Label'>"
+                   +    "<fieldref var='testField1'/>"
+                   +    "<section label='section Label'>"
+                   +      "<text>SectionText</text>"
+                   +    "</section>"
+                   +    "<text>PageText</text>"
+                   +  "</page>";
+
+    private static final String TEST_OUTPUT_SPECIAL =
+                      "<page xmlns='http://jabber.org/protocol/xdata-layout' label='Label - &amp; \u00E9 \u00E1 '>"
+                    +   "<fieldref var='testField1'/>"
+                    +   "<section label='section Label - &amp; \u00E9 \u00E1 '>"
+                    +     "<text>SectionText - &amp; \u00E9 \u00E1 </text>"
+                    +   "</section>"
+                    +   "<text>PageText - &amp; \u00E9 \u00E1 </text>"
+                    +   "<section label='&lt;html&gt;Number of Persons by&lt;br/&gt; Nationality and Status&lt;/html&gt;'>"
+                    +     "<reportedref/>"
+                    +   "</section>"
+                    +   "<text>&lt;html&gt;&lt;font color=&apos;red&apos;&gt;&lt;em&gt;DO NOT DELAY&lt;/em&gt;&lt;/font&gt;&lt;br/&gt;supply further information&lt;/html&gt;</text>"
+                    + "</page>";
+
+    // @formatter:on
+
     private static final String TEST_INPUT_1 = "xdata-layout-sample.xml";
 
     @Test
