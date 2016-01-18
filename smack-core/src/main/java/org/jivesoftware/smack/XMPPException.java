@@ -94,7 +94,7 @@ public abstract class XMPPException extends Exception {
          * @param message a description of the exception.
          * @param error the root cause of the exception.
          * @param wrappedThrowable the root cause of the exception.
-         * @deprecated use {@link #XMPPErrorException(XMPPError)} instead.
+         * @deprecated use {@link #XMPPException.XMPPErrorException(XMPPError)} instead.
          */
         @Deprecated
         public XMPPErrorException(String message, XMPPError error, Throwable wrappedThrowable) {
@@ -108,7 +108,7 @@ public abstract class XMPPException extends Exception {
          * 
          * @param message a description of the exception.
          * @param error the root cause of the exception.
-         * @deprecated use {@link #XMPPErrorException(XMPPError)} instead.
+         * @deprecated use {@link #XMPPException.XMPPErrorException(XMPPError)} instead.
          */
         @Deprecated
         public XMPPErrorException(String message, XMPPError error) {
