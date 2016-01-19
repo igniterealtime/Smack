@@ -674,7 +674,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         PasswordCallback pcb = null;
 
         if (context == null) {
-            if(config.getKeystoreType().equals("PKCS11")) {
+            final String keyStoreType = config.getKeystoreType();
+            if ("PKCS11".equals(keyStoreType)) {
                 try {
                     Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
                     String pkcs11Config = "name = SmartCard\nlibrary = "+config.getPKCS11Library();
@@ -687,47 +688,53 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     ks.load(null,pcb.getPassword());
                 }
                 catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "Exception", e);
                     ks = null;
                     pcb = null;
                 }
             }
-            else if(config.getKeystoreType().equals("Apple")) {
+            else if ("Apple".equals(keyStoreType)) {
                 ks = KeyStore.getInstance("KeychainStore","Apple");
                 ks.load(null,null);
                 //pcb = new PasswordCallback("Apple Keychain",false);
                 //pcb.setPassword(null);
             }
-            else {
-                ks = KeyStore.getInstance(config.getKeystoreType());
+            else if (keyStoreType != null){
+                ks = KeyStore.getInstance(keyStoreType);
                 try {
                     pcb = new PasswordCallback("Keystore Password: ",false);
                     config.getCallbackHandler().handle(new Callback[]{pcb});
                     ks.load(new FileInputStream(config.getKeystorePath()), pcb.getPassword());
                 }
                 catch(Exception e) {
+                    LOGGER.log(Level.WARNING, "Exception", e);
                     ks = null;
                     pcb = null;
                 }
             }
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-            try {
-                if(pcb == null) {
-                    kmf.init(ks,null);
-                } else {
-                    kmf.init(ks,pcb.getPassword());
-                    pcb.clearPassword();
-                }
-                kms = kmf.getKeyManagers();
-            } catch (NullPointerException npe) {
-                kms = null;
-            }
-        }
 
-        // If the user didn't specify a SSLContext, use the default one
-        if (context == null) {
+            if (ks != null) {
+                KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+                try {
+                    if (pcb == null) {
+                        kmf.init(ks, null);
+                    }
+                    else {
+                        kmf.init(ks, pcb.getPassword());
+                        pcb.clearPassword();
+                    }
+                    kms = kmf.getKeyManagers();
+                }
+                catch (NullPointerException npe) {
+                    LOGGER.log(Level.WARNING, "NullPointerException", npe);
+                }
+            }
+
+            // If the user didn't specify a SSLContext, use the default one
             context = SSLContext.getInstance("TLS");
             context.init(kms, null, new java.security.SecureRandom());
         }
+
         Socket plain = socket;
         // Secure the plain connection
         socket = context.getSocketFactory().createSocket(plain,
