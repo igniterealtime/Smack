@@ -690,7 +690,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 catch (Exception e) {
                     LOGGER.log(Level.WARNING, "Exception", e);
                     ks = null;
-                    pcb = null;
                 }
             }
             else if ("Apple".equals(keyStoreType)) {
@@ -709,7 +708,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 catch(Exception e) {
                     LOGGER.log(Level.WARNING, "Exception", e);
                     ks = null;
-                    pcb = null;
                 }
             }
 
