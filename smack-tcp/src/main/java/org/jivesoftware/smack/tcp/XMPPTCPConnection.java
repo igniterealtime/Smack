@@ -91,6 +91,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
 
 import java.io.BufferedReader;
@@ -675,6 +676,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         if (context == null) {
             final String keyStoreType = config.getKeystoreType();
+            final CallbackHandler callbackHandler = config.getCallbackHandler();
+            final String keystorePath = config.getKeystorePath();
             if ("PKCS11".equals(keyStoreType)) {
                 try {
                     Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
@@ -684,7 +687,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     Security.addProvider(p);
                     ks = KeyStore.getInstance("PKCS11",p);
                     pcb = new PasswordCallback("PKCS11 Password: ",false);
-                    this.config.getCallbackHandler().handle(new Callback[]{pcb});
+                    callbackHandler.handle(new Callback[]{pcb});
                     ks.load(null,pcb.getPassword());
                 }
                 catch (Exception e) {
@@ -700,14 +703,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
             else if (keyStoreType != null){
                 ks = KeyStore.getInstance(keyStoreType);
-                try {
-                    pcb = new PasswordCallback("Keystore Password: ",false);
-                    config.getCallbackHandler().handle(new Callback[]{pcb});
-                    ks.load(new FileInputStream(config.getKeystorePath()), pcb.getPassword());
-                }
-                catch(Exception e) {
-                    LOGGER.log(Level.WARNING, "Exception", e);
-                    ks = null;
+                if (callbackHandler != null && StringUtils.isNotEmpty(keystorePath)) {
+                    try {
+                        pcb = new PasswordCallback("Keystore Password: ", false);
+                        callbackHandler.handle(new Callback[] { pcb });
+                        ks.load(new FileInputStream(keystorePath), pcb.getPassword());
+                    }
+                    catch (Exception e) {
+                        LOGGER.log(Level.WARNING, "Exception", e);
+                        ks = null;
+                    }
                 }
             }
 
