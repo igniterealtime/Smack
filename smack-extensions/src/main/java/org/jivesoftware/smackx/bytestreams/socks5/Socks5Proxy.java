@@ -387,7 +387,7 @@ public final class Socks5Proxy {
 
                 try {
 
-                    if (Socks5Proxy.this.serverSocket.isClosed()
+                    if (Socks5Proxy.this.serverSocket == null || Socks5Proxy.this.serverSocket.isClosed()
                                     || Thread.currentThread().isInterrupted()) {
                         return;
                     }
