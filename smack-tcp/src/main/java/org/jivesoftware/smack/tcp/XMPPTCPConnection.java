@@ -673,7 +673,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         KeyManager[] kms = null;
         PasswordCallback pcb = null;
 
-        if (context == null) {
+        if(config.getCallbackHandler() == null) {
+            ks = null;
+        } else if (context == null) {
             if(config.getKeystoreType().equals("PKCS11")) {
                 try {
                     Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
