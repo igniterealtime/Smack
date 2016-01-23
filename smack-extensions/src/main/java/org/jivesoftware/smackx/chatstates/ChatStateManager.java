@@ -142,10 +142,10 @@ public final class ChatStateManager extends Manager {
         return false;
     }
 
-    private static void fireNewChatState(Chat chat, ChatState state) {
+    private static void fireNewChatState(Chat chat, ChatState state, Message message) {
         for (ChatMessageListener listener : chat.getListeners()) {
             if (listener instanceof ChatStateListener) {
-                ((ChatStateListener) listener).stateChanged(chat, state);
+                ((ChatStateListener) listener).stateChanged(chat, state, message);
             }
         }
     }
@@ -184,7 +184,7 @@ public final class ChatStateManager extends Manager {
                 return;
             }
 
-            fireNewChatState(chat, state);
+            fireNewChatState(chat, state, message);
         }
     }
 }

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.chatstates;
 
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatMessageListener;
+import org.jivesoftware.smack.packet.Message;
 
 /**
  * Events for when the state of a user in a chat changes.
@@ -32,6 +33,7 @@ public interface ChatStateListener extends ChatMessageListener {
      *
      * @param chat the chat in which the state has changed.
      * @param state the new state of the participant.
+     * @message the message carrying the chat state.
      */
-    void stateChanged(Chat chat, ChatState state);
+    void stateChanged(Chat chat, ChatState state, Message message);
 }
