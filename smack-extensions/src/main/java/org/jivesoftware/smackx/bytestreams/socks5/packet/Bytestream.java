@@ -22,6 +22,8 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.Jid;
 
@@ -283,8 +285,8 @@ public class Bytestream extends IQ {
          * @param address The internet address of the stream host.
          */
         public StreamHost(final Jid JID, final String address, int port) {
-            this.JID = JID;
-            this.addy = address;
+            this.JID = Objects.requireNonNull(JID, "StreamHost JID must not be null");
+            this.addy = StringUtils.requireNotNullOrEmpty(address, "StreamHost address must not be null");
             this.port = port;
         }
 
