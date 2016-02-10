@@ -484,7 +484,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             // closing stream element sent by the server or wait with a timeout for a
             // closing stream element to be received from the server.
             Exception res = closingStreamReceived.checkIfSuccessOrWait();
-            LOGGER.info("closingstream " + res);
         } catch (InterruptedException | NoResponseException e) {
             LOGGER.log(Level.INFO, "Exception while waiting for closing stream element from the server " + this, e);
         }
