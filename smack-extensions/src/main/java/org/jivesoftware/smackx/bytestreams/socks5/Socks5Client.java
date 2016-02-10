@@ -125,8 +125,8 @@ class Socks5Client {
                 }
             }
 
-            // throw generic IO exception if unexpected exception was thrown
-            throw new IOException("Error while connection to SOCKS5 proxy");
+            // throw generic Smack exception if unexpected exception was thrown
+            throw new SmackException("Error while connecting to SOCKS5 proxy", e);
         }
 
     }
