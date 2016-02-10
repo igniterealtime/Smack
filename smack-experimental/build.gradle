@@ -7,5 +7,6 @@ between patch versions."""
 dependencies {
 	compile project(':smack-core')
 	compile project(':smack-extensions')
-	testCompile project(':smack-core').sourceSets.test.runtimeClasspath
+	testCompile project(path: ":smack-core", configuration: "testRuntime")
+	testCompile project(path: ":smack-core", configuration: "archives")
 }

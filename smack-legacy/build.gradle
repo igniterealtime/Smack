@@ -6,5 +6,5 @@ Usually XEPs in the state 'retracted', 'rejected', 'deprecated',
 dependencies {
 	compile project(':smack-core')
 	compile project(':smack-extensions')
-	testCompile project(':smack-core').sourceSets.test.runtimeClasspath
+	testCompile project(path: ":smack-core", configuration: "testRuntime")
 }

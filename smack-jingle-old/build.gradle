@@ -7,5 +7,5 @@ dependencies {
 	compile project(':smack-extensions')
 	compile 'javax.media:jmf:2.1.1e'
 	compile files('libs/jspeex-0.9.7-jfcom.jar', 'libs/jstun.jar', 'libs/Speex.jar')
-	testCompile project(':smack-core').sourceSets.test.runtimeClasspath
+	testCompile project(path: ":smack-core", configuration: "testRuntime")
 }
