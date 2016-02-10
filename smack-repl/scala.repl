@@ -1,0 +1,6 @@
+org.igniterealtime.smack.repl.SmackRepl.init()
+
+import org.jivesoftware.smack._
+import org.jivesoftware.smack.util.TLSUtils
+import org.jivesoftware.smack.tcp._
+import org.jxmpp.jid.impl.JidCreate

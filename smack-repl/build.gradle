@@ -1,0 +1,18 @@
+ext {
+    scalaVersion = '2.11.7'
+}
+
+dependencies {
+    compile project(':smack-tcp')
+	compile project(':smack-bosh')
+	compile project(':smack-java7')
+	compile project(':smack-resolver-minidns')
+    compile project(':smack-extensions')
+	compile project(':smack-experimental')
+	compile project(':smack-legacy')
+    compile "org.scala-lang:scala-compiler:${scalaVersion}"
+}
+
+task printClasspath(dependsOn: assemble) << {
+    println sourceSets.main.runtimeClasspath.asPath
+}

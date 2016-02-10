@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -e
+set -u
+set -o pipefail
+
+while getopts d OPTION "$@"; do
+    case $OPTION in
+	d)
+	    set -x
+	    ;;
+    esac
+done
+
+echo "Compiling and computing classpath (May take a while)"
+# Sadly even with the --quiet option Gradle (or some component of)
+# will print the number of warnings/errors to stdout if there are
+# any. So the result could look like
+# 52 warnings\n1 warning\n12 warnings\n
+# /smack/smack-repl/build/classes/main:/smack/smack-repl/build/
+# resources/main:/smack/smack-tcp/build/libs/smack-tcp-4.2.0-alpha4-SNAPSHOT.jar
+# So perform a "tail -n1" on the output of gradle
+declare -r GRADLE_CLASSPATH="$(gradle :smack-repl:printClasspath --quiet |\
+	tail -n1)"
+echo "Finished, starting REPL"
+
+java \
+	-Dscala.usejavacp=true \
+	-classpath "${GRADLE_CLASSPATH}" \
+	scala.tools.nsc.MainGenericRunner \
+	-i smack-repl/scala.repl
