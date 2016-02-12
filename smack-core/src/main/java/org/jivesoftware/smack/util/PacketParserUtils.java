@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.compress.packet.Compress;
+import org.jivesoftware.smack.packet.CustomAttributesExtension;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
@@ -234,6 +235,12 @@ public class PacketParserUtils {
         }
         else {
             defaultLanguage = Stanza.getDefaultLanguage();
+        }
+
+        // Extract custom attributes and bundle them into an extension
+        CustomAttributesExtension customAttributesExtension = new CustomAttributesExtension.Builder().fromParser(parser).build();
+        if (customAttributesExtension.hasProperties()) {
+            message.addExtension(customAttributesExtension);
         }
 
         // Parse sub-elements. We include extra logic to make sure the values
