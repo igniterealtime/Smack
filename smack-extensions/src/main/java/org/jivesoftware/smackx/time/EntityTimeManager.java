@@ -108,6 +108,8 @@ public class EntityTimeManager extends Manager {
             return null;
 
         Time request = new Time();
+        // TODO Add Time(Jid) constructor and use this constructor instead
+        request.setTo(jid);
         Time response = (Time) connection().createPacketCollectorAndSend(request).nextResultOrThrow();
         return response;
     }
