@@ -18,4 +18,4 @@
 /**
  * A REPL (Read Eval Print Loop) for Smack.
  */
-package org.igniterealtime.smack.repl;
+package org.igniterealtime.smack.smackrepl;

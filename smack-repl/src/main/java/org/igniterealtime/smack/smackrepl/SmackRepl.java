@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.igniterealtime.smack.repl;
+package org.igniterealtime.smack.smackrepl;
 
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.util.dns.javax.JavaxResolver;

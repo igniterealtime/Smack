@@ -1,4 +1,4 @@
-org.igniterealtime.smack.repl.SmackRepl.init()
+org.igniterealtime.smack.smackrepl.SmackRepl.init()
 
 import org.jivesoftware.smack._
 import org.jivesoftware.smack.util.TLSUtils
