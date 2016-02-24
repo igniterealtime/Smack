@@ -14,6 +14,9 @@ dependencies {
 	}.each { project ->
 		compile project
 	}
+
+	// Add the Android jar to the Eclipse .classpath.
+	compile files(androidBootClasspath)
 }
 
 configure (androidProjects) {
