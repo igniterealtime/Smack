@@ -57,6 +57,6 @@ public final class StanzaTypeFilter implements StanzaFilter {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + ": " + packetType.getName();
+        return getClass().getSimpleName() + ": " + packetType.getSimpleName();
     }
 }
