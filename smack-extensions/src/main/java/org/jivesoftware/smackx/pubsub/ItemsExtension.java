@@ -21,14 +21,16 @@ import java.util.List;
 import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
- * This class is used to for multiple purposes.  
+ * This class is used for multiple purposes.
+ * <ul>
  * <li>It can represent an event containing a list of items that have been published
  * <li>It can represent an event containing a list of retracted (deleted) items.
  * <li>It can represent a request to delete a list of items.
  * <li>It can represent a request to get existing items.
+ * </ul>
  * 
  * <p><b>Please note, this class is used for internal purposes, and is not required for usage of 
- * pubsub functionality.</b>
+ * pubsub functionality.</b></p>
  * 
  * @author Robin Collier
  */
@@ -69,7 +71,8 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	/**
 	 * Construct an instance with a list representing items that have been published or deleted.
 	 * 
-	 * <p>Valid scenarios are:
+	 * <p>Valid scenarios are:</p>
+	 * <ul>
 	 * <li>Request items from node - itemsType = {@link ItemsElementType#items}, items = list of {@link Item} and an
 	 * optional value for the <b>max_items</b> attribute.
 	 * <li>Request to delete items - itemsType = {@link ItemsElementType#retract}, items = list of {@link Item} containing
@@ -78,6 +81,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	 * attributeValue = <code>null</code>
 	 * <li>Items deleted event -  itemsType = {@link ItemsElementType#items}, items = list of {@link RetractItem} and 
 	 * attributeValue = <code>null</code> 
+	 * </ul>
 	 * 
 	 * @param itemsType Type of representation
 	 * @param nodeId The node to which the items are being sent or deleted
@@ -93,7 +97,8 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	/**
 	 * Construct an instance with a list representing items that have been published or deleted.
 	 * 
-	 * <p>Valid scenarios are:
+	 * <p>Valid scenarios are:</p>
+	 * <ul>
 	 * <li>Request items from node - itemsType = {@link ItemsElementType#items}, items = list of {@link Item} and an
 	 * optional value for the <b>max_items</b> attribute.
 	 * <li>Request to delete items - itemsType = {@link ItemsElementType#retract}, items = list of {@link Item} containing
@@ -101,7 +106,8 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 	 * <li>Items published event - itemsType = {@link ItemsElementType#items}, items = list of {@link Item} and 
 	 * attributeValue = <code>null</code>
 	 * <li>Items deleted event -  itemsType = {@link ItemsElementType#items}, items = list of {@link RetractItem} and 
-	 * attributeValue = <code>null</code> 
+	 * attributeValue = <code>null</code>
+	 * </ul>
 	 * 
 	 * @param nodeId The node to which the items are being sent or deleted
 	 * @param items The list of {@link Item} or {@link RetractItem}
