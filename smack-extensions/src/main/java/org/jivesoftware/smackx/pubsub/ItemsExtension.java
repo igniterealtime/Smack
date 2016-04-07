@@ -21,14 +21,16 @@ import java.util.List;
 import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
- * This class is used to for multiple purposes.  
+ * This class is used to for multiple purposes.
+ * <ul>
  * <li>It can represent an event containing a list of items that have been published
  * <li>It can represent an event containing a list of retracted (deleted) items.
  * <li>It can represent a request to delete a list of items.
  * <li>It can represent a request to get existing items.
+ * </ul>
  * 
  * <p><b>Please note, this class is used for internal purposes, and is not required for usage of 
- * pubsub functionality.</b>
+ * pubsub functionality.</b></p>
  * 
  * @author Robin Collier
  */
