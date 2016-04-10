@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import de.measite.minidns.Question;
 import de.measite.minidns.Record;
 import de.measite.minidns.Record.CLASS;
 import de.measite.minidns.Record.TYPE;
+import de.measite.minidns.record.Data;
 import de.measite.minidns.record.SRV;
 
 
@@ -81,7 +82,11 @@ public class MiniDnsResolver implements SmackInitializer, DNSResolver {
             return res;
         }
         for (Record record : message.getAnswers()) {
-            SRV srv = (SRV) record.getPayload();
+            Data data = record.getPayload();
+            if (!(data instanceof SRV)) {
+                continue;
+            }
+            SRV srv = (SRV) data;
             res.add(new SRVRecord(srv.getName(), srv.getPort(), srv.getPriority(), srv.getWeight()));
         }
         return res;
