@@ -2,7 +2,7 @@
  *
  * Copyright 2016 Jules Tréhorel
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * All rights reserved. Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParser;
  *
  * @author Jules Tréhorel
  */
-public final class CustomAttributesExtension implements ExtensionElement {
+public class CustomAttributesExtension implements ExtensionElement {
     public final static String NAME = "customAttributes";
     public final static String NAMESPACE = "http://smack.jivesoftware.com";
 
