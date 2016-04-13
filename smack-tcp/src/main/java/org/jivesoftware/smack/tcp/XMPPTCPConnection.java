@@ -741,12 +741,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // Secure the plain connection
         socket = context.getSocketFactory().createSocket(plain,
                 host, plain.getPort(), true);
-        // Initialize the reader and writer with the new secured version
-        initReaderAndWriter();
 
         final SSLSocket sslSocket = (SSLSocket) socket;
         TLSUtils.setEnabledProtocolsAndCiphers(sslSocket, config.getEnabledSSLProtocols(), config.getEnabledSSLCiphers());
 
+        // Initialize the reader and writer with the new secured version
+        initReaderAndWriter();
         // Proceed to do the handshake
         sslSocket.startHandshake();
 
