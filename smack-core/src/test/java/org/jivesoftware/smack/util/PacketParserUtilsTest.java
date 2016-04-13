@@ -32,7 +32,6 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.jivesoftware.smack.packet.CustomAttributesExtension;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
@@ -815,48 +814,6 @@ public class PacketParserUtilsTest {
         XmlPullParser parser = TestUtils.getParser(stanza, "outer");
         CharSequence result = PacketParserUtils.parseElement(parser, true);
         assertXMLEqual(stanza, result.toString());
-    }
-
-    @Test
-    public void parseMessageWithCustomAttributes()
-                    throws FactoryConfigurationError, Exception {
-        final String customAttrName = "customAttrName";
-        final String customAttrValue = "customAttrValue";
-
-        final String stanza = XMLBuilder.create("message")
-            .a("from", "romeo@montague.lit/orchard")
-            .a("to", "juliet@capulet.lit/balcony")
-            .a("id", "zid615d9")
-            .a("type", "chat")
-            .a(customAttrName, customAttrValue)
-            .a("xml:lang", Stanza.getDefaultLanguage())
-            .e("body")
-                .t("This is a test of the custom attributes parsing in message stanza")
-            .asString(outputProperties);
-
-        final String messageXmlResult = XMLBuilder.create("message")
-                .a("from", "romeo@montague.lit/orchard")
-                .a("to", "juliet@capulet.lit/balcony")
-                .a("id", "zid615d9")
-                .a("type", "chat")
-                .a("xml:lang", Stanza.getDefaultLanguage())
-                .element(CustomAttributesExtension.NAME, CustomAttributesExtension.NAMESPACE)
-                    .element(customAttrName, CustomAttributesExtension.NAMESPACE)
-                        .t(customAttrValue)
-                    .up()
-                .up()
-                .e("body")
-                    .t("This is a test of the custom attributes parsing in message stanza")
-                .asString(outputProperties);
-
-        Message message = PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(stanza));
-        CustomAttributesExtension extension = message.getExtension(CustomAttributesExtension.NAME, CustomAttributesExtension.NAMESPACE);
-
-        assertFalse(extension == null);
-        assertTrue(extension.hasProperties());
-        assertTrue(extension.hasProperty(customAttrName));
-        assertEquals(extension.getPropertyValue(customAttrName), customAttrValue);
-        assertXMLEqual(messageXmlResult, message.toXML().toString());
     }
 
     @Test
