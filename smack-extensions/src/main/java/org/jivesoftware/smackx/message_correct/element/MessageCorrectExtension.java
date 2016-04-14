@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.message_correct;
+package org.jivesoftware.smackx.message_correct.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -51,35 +52,21 @@ public class MessageCorrectExtension implements ExtensionElement {
     /**
      * The id of the message to correct.
      */
-    private String idInitialMessage;
+    private final String idInitialMessage;
 
     public MessageCorrectExtension(String idInitialMessage) {
-        this.setIdInitialMessage(idInitialMessage);
+        this.idInitialMessage = StringUtils.requireNotNullOrEmpty(idInitialMessage, "idInitialMessage must not be null");
     }
 
     public String getIdInitialMessage() {
         return idInitialMessage;
     }
 
-    public void setIdInitialMessage(String idInitialMessage) {
-        this.idInitialMessage = idInitialMessage;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jivesoftware.smack.packet.PacketExtension#getElementName()
-     */
     @Override
     public String getElementName() {
         return ELEMENT;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
-     */
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
@@ -88,11 +75,6 @@ public class MessageCorrectExtension implements ExtensionElement {
         return xml;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.jivesoftware.smack.packet.PacketExtension#getNamespace()
-     */
     @Override
     public String getNamespace() {
         return NAMESPACE;

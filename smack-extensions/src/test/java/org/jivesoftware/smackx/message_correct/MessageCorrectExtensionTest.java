@@ -18,12 +18,11 @@ package org.jivesoftware.smackx.message_correct;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class MessageCorrectExtensionTest {
-
-    private Message initialMessage;
 
     private final String idInitialMessage = "bad1";
 
@@ -38,7 +37,7 @@ public class MessageCorrectExtensionTest {
 
     @Test
     public void checkStanzas() throws Exception {
-        initialMessage = (Message) PacketParserUtils.parseStanza(initialMessageXml);
+        Message initialMessage = (Message) PacketParserUtils.parseStanza(initialMessageXml);
         MessageCorrectExtension messageCorrectExtension = new MessageCorrectExtension(idInitialMessage);
 
         Assert.assertEquals(messageCorrectExtension.toXML().toString(), messageCorrectionXml);
