@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketCollector;
@@ -44,8 +43,6 @@ import org.jxmpp.jid.parts.Localpart;
  * @author Matt Tucker
  */
 public final class AccountManager extends Manager {
-
-    private static final Logger LOGGER = Logger.getLogger(AccountManager.class.getName());
 
     private static final Map<XMPPConnection, AccountManager> INSTANCES = new WeakHashMap<XMPPConnection, AccountManager>();
 
@@ -267,9 +264,7 @@ public final class AccountManager extends Manager {
     public void createAccount(Localpart username, String password, Map<String, String> attributes)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (!connection().isSecureConnection() && !allowSensitiveOperationOverInsecureConnection) {
-            // TODO throw exception in newer Smack versions
-            LOGGER.warning("Creating account over insecure connection. "
-                            + "This will throw an exception in future versions of Smack if AccountManager.sensitiveOperationOverInsecureConnection(true) is not set");
+            throw new IllegalStateException("Creating account over insecure connection");
         }
         if (username == null) {
             throw new IllegalArgumentException("Username must not be null");
@@ -299,9 +294,7 @@ public final class AccountManager extends Manager {
      */
     public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (!connection().isSecureConnection() && !allowSensitiveOperationOverInsecureConnection) {
-            // TODO throw exception in newer Smack versions
-            LOGGER.warning("Changing password over insecure connection. "
-                            + "This will throw an exception in future versions of Smack if AccountManager.sensitiveOperationOverInsecureConnection(true) is not set");
+            throw new IllegalStateException("Changing password over insecure connection.");
         }
         Map<String, String> map = new HashMap<String, String>();
         map.put("username",  connection().getUser().getLocalpart().toString());
