@@ -20,8 +20,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
@@ -194,4 +198,17 @@ public class ParserUtils {
         return uri;
     }
 
+    public static Map<String, String> getCustomAttributes(XmlPullParser parser) {
+        Map<String, String> customAttributes = new LinkedHashMap<>();
+        List<String> standardAttributes = Arrays.asList(new String[] {"xml:lang", "id", "to", "from", "type"});
+            for (int i = 0; i < parser.getAttributeCount(); i++) {
+                String attributeName = parser.getAttributeName(i);
+                boolean isLangAttribute = "lang".equals(attributeName) && "xml".equals(parser.getAttributePrefix(i));
+                if (!standardAttributes.contains(attributeName) && !isLangAttribute) {
+                    String attributeValue = parser.getAttributeValue(i);
+                    customAttributes.put(attributeName, attributeValue);
+                }
+        }
+        return customAttributes;
+    }
 }

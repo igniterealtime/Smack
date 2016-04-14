@@ -236,6 +236,10 @@ public class PacketParserUtils {
             defaultLanguage = Stanza.getDefaultLanguage();
         }
 
+        if(Stanza.isCustomAttributesEnabled()) {
+            message.setCustomAttributes(ParserUtils.getCustomAttributes(parser));
+        }
+
         // Parse sub-elements. We include extra logic to make sure the values
         // are only read once. This is because it's possible for the names to appear
         // in arbitrary sub-elements.
@@ -538,6 +542,10 @@ public class PacketParserUtils {
         // CHECKSTYLE:ON
         }
 
+        if(Stanza.isCustomAttributesEnabled()) {
+            presence.setCustomAttributes(ParserUtils.getCustomAttributes(parser));
+        }
+
         // Parse sub-elements
         outerloop: while (true) {
             int eventType = parser.next();
@@ -611,6 +619,7 @@ public class PacketParserUtils {
         final Jid to = ParserUtils.getJidAttribute(parser, "to");
         final Jid from = ParserUtils.getJidAttribute(parser, "from");
         final IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
+        final Map<String, String> customAttributes = ParserUtils.getCustomAttributes(parser);
 
         outerloop: while (true) {
             int eventType = parser.next();
@@ -668,6 +677,9 @@ public class PacketParserUtils {
         iqPacket.setFrom(from);
         iqPacket.setType(type);
         iqPacket.setError(error);
+        if (Stanza.isCustomAttributesEnabled()) {
+            iqPacket.setCustomAttributes(customAttributes);
+        }
 
         return iqPacket;
     }

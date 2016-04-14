@@ -29,8 +29,10 @@ import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Base class for XMPP Stanzas, which are called Stanza(/Packet) in older versions of Smack (i.e. &lt; 4.1).
@@ -55,12 +57,15 @@ public abstract class Stanza implements TopLevelStreamElement {
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase(Locale.US);
 
+    private static boolean customAttributesEnabled = false;
+
     private final MultiMap<String, ExtensionElement> packetExtensions = new MultiMap<>();
 
     private String id = null;
     private Jid to;
     private Jid from;
     private XMPPError error = null;
+    private final LinkedHashMap<String, String> customAttributes = new LinkedHashMap<>();
 
     /**
      * Optional value of the 'xml:lang' attribute of the outermost element of
@@ -91,6 +96,11 @@ public abstract class Stanza implements TopLevelStreamElement {
         // Copy extensions
         for (ExtensionElement pe : p.getExtensions()) {
             addExtension(pe);
+        }
+
+        if (isCustomAttributesEnabled()) {
+            customAttributes.clear();
+            customAttributes.putAll(p.getCustomAttributes());
         }
     }
 
@@ -458,6 +468,144 @@ public abstract class Stanza implements TopLevelStreamElement {
         return removeExtension(extension.getElementName(), extension.getNamespace());
     }
 
+    /**
+     * Returns <tt>true</tt> if custom attributes management is enabled.
+     * @return <tt>true</tt> if custom attributes management is enabled.
+     */
+    public static boolean isCustomAttributesEnabled() {
+        return customAttributesEnabled;
+    }
+
+    /**
+     * Enables the possibility to add custom attributes to the stanza.
+     * <br/><b>Enabling this feature breaks the XMPP standard and may induce unexpected behaviors!
+     * <br/>If your use-case allow it, prefer using ExtensionElement instead, and if not, be sure to triple-check the result.</b>
+     */
+    public static void enableCustomAttributes() {
+        customAttributesEnabled = true;
+    }
+
+    private static void requireCustomAttributesEnabled(String methodName) {
+        if (!isCustomAttributesEnabled()) {
+            throw new IllegalStateException(
+                    "You cannot use " + methodName + " without enabling it first with enableCustomAttributes. " +
+                    "Ensure you are aware of the consequences of doing so.");
+        }
+    }
+
+    /**
+     * Replaces all custom attributes of the stanza.
+     * @param attributes a map (name/value) of all the custom attributes of this stanza. SHould not be {@null}
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public void setCustomAttributes(Map<String, String> attributes) {
+        requireCustomAttributesEnabled("setCustomAttributes");
+        assert attributes != null;
+
+        synchronized (customAttributes) {
+            customAttributes.clear();
+            customAttributes.putAll(attributes);
+        }
+    }
+
+    /**
+     * Adds a custom attribute to the stanza. If a custom attribute with the same name is already present, its value is updated.
+     * @param attributeName the custom attribute name.
+     * @param attributeValue the custom attribute value.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public void setCustomAttribute(String attributeName, String attributeValue) {
+        requireCustomAttributesEnabled("setCustomAttribute");
+        requireNotNullOrEmpty(attributeName, "attributeName must not be null or empty");
+
+        synchronized (customAttributes) {
+            customAttributes.put(attributeName, attributeValue);
+        }
+    }
+
+    /**
+     * Removes all custom attributes of the stanza.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public void removeCustomAttributes() {
+        requireCustomAttributesEnabled("removeCustomAttributes");
+
+        synchronized (customAttributes) {
+            customAttributes.clear();
+        }
+    }
+
+    /**
+     * Removes a custom attribute of the stanza if it exists.
+     * @param attributeName the custom attribute name.
+     * @return the removed custom attribute value or <tt>null</tt> if is was not present.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public String removeCustomAttribute(String attributeName) {
+        requireCustomAttributesEnabled("removeCustomAttribute");
+        requireNotNullOrEmpty(attributeName, "attributeName must not be null or empty");
+
+        synchronized (customAttributes) {
+            return customAttributes.remove(attributeName);
+        }
+    }
+
+    /**
+     * Returns <tt>true</tt> if this stanza contains custom attributes.
+     * @return <tt>true</tt> if this stanza contains custom attributes.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public boolean hasCustomAttributes() {
+        requireCustomAttributesEnabled("hasCustomAttributes");
+
+        synchronized (customAttributes) {
+            return !customAttributes.isEmpty();
+        }
+    }
+
+    /**
+     * Returns <tt>true</tt> if this stanza contains a custom attribute with this name.
+     * @param attributeName the custom attribute name.
+     * @return <tt>true</tt> if this stanza contains a custom attribute with this name.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public boolean hasCustomAttribute(String attributeName) {
+        requireCustomAttributesEnabled("hasCustomAttribute");
+        requireNotNullOrEmpty(attributeName, "attributeName must not be null or empty");
+
+        synchronized (customAttributes) {
+            return customAttributes.containsKey(attributeName);
+        }
+    }
+
+    /**
+     * Returns a map (name/value) of all the custom attributes of this stanza.
+     * @return a map (name/value) of all the custom attributes of this stanza.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public Map<String, String> getCustomAttributes() {
+        requireCustomAttributesEnabled("getCustomAttributes");
+
+        synchronized (customAttributes) {
+            return customAttributes;
+        }
+    }
+
+    /**
+     * Returns the value of a custom attribute, or {@code null} if this stanza does not contain any custom attribute with this name.
+     * @param attributeName the custom attribute name.
+     * @return the value of a custom attribute, or {@code null} if this stanza does not contain any custom attribute with this name.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public String getCustomAttribute(String attributeName) {
+        requireCustomAttributesEnabled("getCustomAttribute");
+        requireNotNullOrEmpty(attributeName, "attributeName must not be null or empty");
+
+        synchronized (customAttributes) {
+            return customAttributes.get(attributeName);
+        }
+    }
+
     @Override
     // NOTE When Smack is using Java 8, then this method should be moved in Element as "Default Method".
     public String toString() {
@@ -499,6 +647,19 @@ public abstract class Stanza implements TopLevelStreamElement {
         xml.optAttribute("from", getFrom());
         xml.optAttribute("id", getStanzaId());
         xml.xmllangAttribute(getLanguage());
+    }
+
+    /**
+     * Add custom attributes
+     *
+     * @param xml
+     */
+    protected void addCustomAttributes(XmlStringBuilder xml) {
+        if(customAttributes != null) {
+            for (Map.Entry<String, String> entry : customAttributes.entrySet()) {
+                xml.optAttribute(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     /**

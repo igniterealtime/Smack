@@ -40,7 +40,9 @@ import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.test.util.XmlUnitUtils;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -48,6 +50,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import com.jamesmurty.utils.XMLBuilder;
 
 public class PacketParserUtilsTest {
+
+	@Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     private static Properties outputProperties = new Properties();
     {
@@ -814,6 +819,41 @@ public class PacketParserUtilsTest {
         XmlPullParser parser = TestUtils.getParser(stanza, "outer");
         CharSequence result = PacketParserUtils.parseElement(parser, true);
         assertXMLEqual(stanza, result.toString());
+    }
+
+    @Test
+    public void parseMessageWithCustomAttributes() throws FactoryConfigurationError, Exception {
+        final String customAttrName = "customAttrName";
+        final String customAttrValue = "customAttrValue";
+
+        final String stanzaString = XMLBuilder.create("message")
+            .a("from", "romeo@montague.lit/orchard")
+            .a("to", "juliet@capulet.lit/balcony")
+            .a("id", "zid615d9")
+            .a("type", "chat")
+            .a(customAttrName, customAttrValue)
+            .a("xml:lang", Stanza.getDefaultLanguage())
+            .e("body")
+                .t("This is a test of the custom attributes parsing in message stanza")
+            .asString(outputProperties);
+
+        Stanza stanza = PacketParserUtils.parseStanza(PacketParserUtils.getParserFor(stanzaString));
+
+        // Should crash because feature was not enabled
+        expectedException.expect(IllegalStateException.class);
+        stanza.getCustomAttributes();
+
+        // Custom attributes not parsed because feature was enabled after the parsing
+        Stanza.enableCustomAttributes();
+        assertFalse(stanza.hasCustomAttributes());
+
+        // Parse again for getting custom attributes
+        stanza = PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(stanzaString));
+        assertTrue(stanza.hasCustomAttributes());
+        assertTrue(stanza.getCustomAttributes().size() == 1);
+        assertTrue(stanza.hasCustomAttribute(customAttrName));
+        assertTrue(stanza.getCustomAttribute(customAttrName).equals(customAttrValue));
+        assertXMLEqual(stanzaString, stanza.toXML().toString());
     }
 
     @Test

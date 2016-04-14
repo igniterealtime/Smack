@@ -117,6 +117,7 @@ public abstract class IQ extends Stanza {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(IQ_ELEMENT);
         addCommonAttributes(buf);
+        addCustomAttributes(buf);
         if (type == null) {
             buf.attribute("type", "get");
         }

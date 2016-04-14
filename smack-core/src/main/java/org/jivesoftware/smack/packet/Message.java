@@ -423,6 +423,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(ELEMENT);
         addCommonAttributes(buf);
+        addCustomAttributes(buf);
         buf.optAttribute("type", type);
         buf.rightAngleBracket();
 
