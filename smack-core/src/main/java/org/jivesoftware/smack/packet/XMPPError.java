@@ -19,6 +19,7 @@ package org.jivesoftware.smack.packet;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -361,13 +362,11 @@ public class XMPPError extends AbstractError {
 
         @Override
         public String toString() {
-            // Locale.US not required, since Type consists only of ASCII chars
-            return name().toLowerCase();
+            return name().toLowerCase(Locale.US);
         }
 
         public static Type fromString(String string) {
-            // Locale.US not required, since Type consists only of ASCII chars
-            string = string.toUpperCase();
+            string = string.toUpperCase(Locale.US);
             return Type.valueOf(string);
         }
     }

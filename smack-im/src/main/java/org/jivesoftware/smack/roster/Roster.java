@@ -1062,6 +1062,18 @@ public final class Roster extends Manager {
     }
 
     /**
+     * Sets if the roster will be loaded from the server when logging in for newly created instances
+     * of {@link Roster}.
+     *
+     * @param rosterLoadedAtLoginDefault if the roster will be loaded from the server when logging in.
+     * @see #setRosterLoadedAtLogin(boolean)
+     * @since 4.1.7
+     */
+    public static void setRosterLoadedAtLoginDefault(boolean rosterLoadedAtLoginDefault) {
+        Roster.rosterLoadedAtLoginDefault = rosterLoadedAtLoginDefault;
+    }
+
+    /**
      * Sets if the roster will be loaded from the server when logging in. This
      * is the common behaviour for clients but sometimes clients may want to differ this
      * or just never do it if not interested in rosters.
