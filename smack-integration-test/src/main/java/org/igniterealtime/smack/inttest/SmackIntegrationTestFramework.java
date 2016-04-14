@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ import org.reflections.scanners.MethodParameterScanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 
-import eu.geekplace.javapinning.JavaPinning;
+import eu.geekplace.javapinning.java7.Java7Pinning;
 
 public class SmackIntegrationTestFramework {
 
@@ -529,7 +529,7 @@ public class SmackIntegrationTestFramework {
                         .setSecurityMode(config.securityMode);
         // @formatter:on
         if (StringUtils.isNotEmpty(config.serviceTlsPin)) {
-            SSLContext sc = JavaPinning.forPin(config.serviceTlsPin);
+            SSLContext sc = Java7Pinning.forPin(config.serviceTlsPin);
             builder.setCustomSSLContext(sc);
         }
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
@@ -554,7 +554,7 @@ public class SmackIntegrationTestFramework {
                     SmackException, IOException, XMPPException {
         XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
         if (config.serviceTlsPin != null) {
-            SSLContext sc = JavaPinning.forPin(config.serviceTlsPin);
+            SSLContext sc = Java7Pinning.forPin(config.serviceTlsPin);
             builder.setCustomSSLContext(sc);
         }
         builder.setSecurityMode(config.securityMode);
