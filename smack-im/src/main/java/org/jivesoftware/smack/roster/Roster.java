@@ -110,6 +110,7 @@ public final class Roster extends Manager {
      * {@link RosterListener}s will throw an IllegalStateException.
      * </p>
      * 
+     * @param connection the connection the roster should be retrieved for.
      * @return the user's roster.
      */
     public static synchronized Roster getInstanceFor(XMPPConnection connection) {
