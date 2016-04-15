@@ -103,7 +103,9 @@ public abstract class Stanza implements TopLevelStreamElement {
             addExtension(pe);
         }
 
-        customAttributes = new LinkedHashMap<>(p.getCustomAttributes());
+        if (p.customAttributes != null) {
+            customAttributes = new LinkedHashMap<>(p.customAttributes);
+        }
     }
 
     /**
