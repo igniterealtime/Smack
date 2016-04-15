@@ -28,11 +28,15 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Base class for XMPP Stanzas, which are called Stanza(/Packet) in older versions of Smack (i.e. &lt; 4.1).
@@ -53,6 +57,7 @@ public abstract class Stanza implements TopLevelStreamElement {
 
     public static final String TEXT = "text";
     public static final String ITEM = "item";
+    public static final Set<String> REGISTERED_ATTRIBUTES = new HashSet<String>(Arrays.asList("xml:lang", "id", "to", "from", "type"));
 
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase(Locale.US);
@@ -65,7 +70,7 @@ public abstract class Stanza implements TopLevelStreamElement {
     private Jid to;
     private Jid from;
     private XMPPError error = null;
-    private final LinkedHashMap<String, String> customAttributes = new LinkedHashMap<>();
+    private LinkedHashMap<String, String> customAttributes;
 
     /**
      * Optional value of the 'xml:lang' attribute of the outermost element of
@@ -98,10 +103,7 @@ public abstract class Stanza implements TopLevelStreamElement {
             addExtension(pe);
         }
 
-        if (isCustomAttributesEnabled()) {
-            customAttributes.clear();
-            customAttributes.putAll(p.getCustomAttributes());
-        }
+        customAttributes = new LinkedHashMap<>(p.getCustomAttributes());
     }
 
     /**
@@ -472,7 +474,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      * Returns <tt>true</tt> if custom attributes management is enabled.
      * @return <tt>true</tt> if custom attributes management is enabled.
      */
-    public static boolean isCustomAttributesEnabled() {
+    public static boolean customAttributesEnabled() {
         return customAttributesEnabled;
     }
 
@@ -485,27 +487,41 @@ public abstract class Stanza implements TopLevelStreamElement {
         customAttributesEnabled = true;
     }
 
-    private static void requireCustomAttributesEnabled(String methodName) {
-        if (!isCustomAttributesEnabled()) {
+    private static void requireCustomAttributesEnabled() {
+        if (!customAttributesEnabled()) {
             throw new IllegalStateException(
-                    "You cannot use " + methodName + " without enabling it first with enableCustomAttributes. " +
+                    "You need to enable this feature first by calling enableCustomAttributes. " +
                     "Ensure you are aware of the consequences of doing so.");
+        }
+    }
+
+    private void requireCustomAttributes() {
+        if (customAttributes == null) {
+            customAttributes = new LinkedHashMap<>();
+        }
+    }
+
+    private void failIfRegistered(String attributeName) {
+        if (REGISTERED_ATTRIBUTES.contains(attributeName)) {
+            throw new IllegalArgumentException(attributeName + " is a registered attribute.");
         }
     }
 
     /**
      * Replaces all custom attributes of the stanza.
-     * @param attributes a map (name/value) of all the custom attributes of this stanza. SHould not be {@null}
+     * @param attributes a map (name/value) of all the custom attributes of this stanza. Should not be {@null}
      * @throws IllegalStateException if custom attributes management is not enabled.
      */
     public void setCustomAttributes(Map<String, String> attributes) {
-        requireCustomAttributesEnabled("setCustomAttributes");
+        requireCustomAttributesEnabled();
         assert attributes != null;
-
-        synchronized (customAttributes) {
-            customAttributes.clear();
-            customAttributes.putAll(attributes);
+        for (String attr : attributes.keySet()) {
+            failIfRegistered(attr);
         }
+        requireCustomAttributes();
+
+        customAttributes.clear();
+        customAttributes.putAll(attributes);
     }
 
     /**
@@ -515,12 +531,12 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @throws IllegalStateException if custom attributes management is not enabled.
      */
     public void setCustomAttribute(String attributeName, String attributeValue) {
-        requireCustomAttributesEnabled("setCustomAttribute");
+        requireCustomAttributesEnabled();
         requireNotNullOrEmpty(attributeName, "attributeName must not be null or empty");
+        failIfRegistered(attributeName);
+        requireCustomAttributes();
 
-        synchronized (customAttributes) {
-            customAttributes.put(attributeName, attributeValue);
-        }
+        customAttributes.put(attributeName, attributeValue);
     }
 
     /**
@@ -528,11 +544,10 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @throws IllegalStateException if custom attributes management is not enabled.
      */
     public void removeCustomAttributes() {
-        requireCustomAttributesEnabled("removeCustomAttributes");
+        requireCustomAttributesEnabled();
+        requireCustomAttributes();
 
-        synchronized (customAttributes) {
-            customAttributes.clear();
-        }
+        customAttributes.clear();
     }
 
     /**
@@ -542,12 +557,11 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @throws IllegalStateException if custom attributes management is not enabled.
      */
     public String removeCustomAttribute(String attributeName) {
-        requireCustomAttributesEnabled("removeCustomAttribute");
+        requireCustomAttributesEnabled();
         requireNotNullOrEmpty(attributeName, "attributeName must not be null or empty");
+        requireCustomAttributes();
 
-        synchronized (customAttributes) {
-            return customAttributes.remove(attributeName);
-        }
+        return customAttributes.remove(attributeName);
     }
 
     /**
@@ -556,11 +570,10 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @throws IllegalStateException if custom attributes management is not enabled.
      */
     public boolean hasCustomAttributes() {
-        requireCustomAttributesEnabled("hasCustomAttributes");
+        requireCustomAttributesEnabled();
+        requireCustomAttributes();
 
-        synchronized (customAttributes) {
-            return !customAttributes.isEmpty();
-        }
+        return !customAttributes.isEmpty();
     }
 
     /**
@@ -570,25 +583,23 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @throws IllegalStateException if custom attributes management is not enabled.
      */
     public boolean hasCustomAttribute(String attributeName) {
-        requireCustomAttributesEnabled("hasCustomAttribute");
+        requireCustomAttributesEnabled();
         requireNotNullOrEmpty(attributeName, "attributeName must not be null or empty");
+        requireCustomAttributes();
 
-        synchronized (customAttributes) {
-            return customAttributes.containsKey(attributeName);
-        }
+        return customAttributes.containsKey(attributeName);
     }
 
     /**
      * Returns a map (name/value) of all the custom attributes of this stanza.
-     * @return a map (name/value) of all the custom attributes of this stanza.
+     * @return an unmodifiable map (name/value) of all the custom attributes of this stanza.
      * @throws IllegalStateException if custom attributes management is not enabled.
      */
     public Map<String, String> getCustomAttributes() {
-        requireCustomAttributesEnabled("getCustomAttributes");
+        requireCustomAttributesEnabled();
+        requireCustomAttributes();
 
-        synchronized (customAttributes) {
-            return customAttributes;
-        }
+        return Collections.unmodifiableMap(customAttributes);
     }
 
     /**
@@ -598,12 +609,11 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @throws IllegalStateException if custom attributes management is not enabled.
      */
     public String getCustomAttribute(String attributeName) {
-        requireCustomAttributesEnabled("getCustomAttribute");
+        requireCustomAttributesEnabled();
         requireNotNullOrEmpty(attributeName, "attributeName must not be null or empty");
+        requireCustomAttributes();
 
-        synchronized (customAttributes) {
-            return customAttributes.get(attributeName);
-        }
+        return customAttributes.get(attributeName);
     }
 
     @Override
@@ -642,23 +652,18 @@ public abstract class Stanza implements TopLevelStreamElement {
      *
      * @param xml
      */
-    protected void addCommonAttributes(XmlStringBuilder xml) {
+    protected void addAttributes(XmlStringBuilder xml) {
         xml.optAttribute("to", getTo());
         xml.optAttribute("from", getFrom());
         xml.optAttribute("id", getStanzaId());
         xml.xmllangAttribute(getLanguage());
-    }
 
-    /**
-     * Add custom attributes
-     *
-     * @param xml
-     */
-    protected void addCustomAttributes(XmlStringBuilder xml) {
-        if(customAttributes != null) {
-            for (Map.Entry<String, String> entry : customAttributes.entrySet()) {
-                xml.optAttribute(entry.getKey(), entry.getValue());
-            }
+        if(customAttributes == null) {
+            return;
+        }
+
+        for (Map.Entry<String, String> entry : customAttributes.entrySet()) {
+            xml.attribute(entry.getKey(), entry.getValue());
         }
     }
 

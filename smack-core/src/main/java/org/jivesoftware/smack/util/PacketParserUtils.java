@@ -236,7 +236,7 @@ public class PacketParserUtils {
             defaultLanguage = Stanza.getDefaultLanguage();
         }
 
-        if(Stanza.isCustomAttributesEnabled()) {
+        if(Stanza.customAttributesEnabled()) {
             message.setCustomAttributes(ParserUtils.getCustomAttributes(parser));
         }
 
@@ -542,7 +542,7 @@ public class PacketParserUtils {
         // CHECKSTYLE:ON
         }
 
-        if(Stanza.isCustomAttributesEnabled()) {
+        if(Stanza.customAttributesEnabled()) {
             presence.setCustomAttributes(ParserUtils.getCustomAttributes(parser));
         }
 
@@ -619,7 +619,11 @@ public class PacketParserUtils {
         final Jid to = ParserUtils.getJidAttribute(parser, "to");
         final Jid from = ParserUtils.getJidAttribute(parser, "from");
         final IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
-        final Map<String, String> customAttributes = ParserUtils.getCustomAttributes(parser);
+
+        Map<String, String> customAttributes = null;
+        if (Stanza.customAttributesEnabled()) {
+            customAttributes = ParserUtils.getCustomAttributes(parser);
+        }
 
         outerloop: while (true) {
             int eventType = parser.next();
@@ -677,7 +681,7 @@ public class PacketParserUtils {
         iqPacket.setFrom(from);
         iqPacket.setType(type);
         iqPacket.setError(error);
-        if (Stanza.isCustomAttributesEnabled()) {
+        if (Stanza.customAttributesEnabled()) {
             iqPacket.setCustomAttributes(customAttributes);
         }
 
