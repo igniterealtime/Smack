@@ -1,5 +1,26 @@
+Smack Onion Companion
+=====================
+
+This is a fork of the powerfull [Smack] XMPP library adapted to .onion servers.
+The main problem in the original library is due to the use of InetAddress objects that makes the autoDNS resolution of host names raising errors.
+
+Added the new class XMPPTCPOnioncOmpanion and modified the XMPPTCPConnetcionConfiguration and XMPPTCPConnection class.
+
+Code Snippet:
+
+xmppConfiguration = XMPPTCPConnectionConfiguration.builder().
+                        setUsernameAndPassword("test1","12345").
+                        setHost("YOURHIDDENSERVICE.onion").
+                        setPort(5222).
+                        build();
+
+xmppConnection = new XMPPTCPConnection(xmppConfiguration,new XMPPTCPOnionCompanion("127.0.0.1",onionPort));
+
+xmppConnection.connect();
+
+
 Smack
-=====
+====
 
 [![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)  [![Coverage Status](https://coveralls.io/repos/igniterealtime/Smack/badge.svg)](https://coveralls.io/r/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smackxmpp/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smackxmpp) [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/thing/3480125)  [![Visit our IRC channel](https://kiwiirc.com/buttons/irc.freenode.net/smack.png)](https://kiwiirc.com/client/irc.freenode.net/smack)
 

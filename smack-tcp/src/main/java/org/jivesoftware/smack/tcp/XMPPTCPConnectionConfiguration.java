@@ -76,6 +76,20 @@ public final class XMPPTCPConnectionConfiguration extends ConnectionConfiguratio
         return connectTimeout;
     }
 
+    /**
+     * Return String Host Name.
+     *
+     * @return hostName
+     */
+    public String getHost(){return host;}
+
+    /**
+     * Return Int Host Port.
+     *
+     * @return hostPort
+     */
+    public int getPort(){return port;}
+
     public static Builder builder() {
         return new Builder();
     }
