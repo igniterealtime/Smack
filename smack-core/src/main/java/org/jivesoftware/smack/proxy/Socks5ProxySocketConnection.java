@@ -19,7 +19,6 @@ package org.jivesoftware.smack.proxy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -37,7 +36,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
     }
 
     @Override
-    public void connect(Socket socket, InetAddress inetAddress, int port, int timeout)
+    public void connect(Socket socket, String host, int port, int timeout)
                     throws IOException {
         InputStream in = null;
         OutputStream out = null;
@@ -211,7 +210,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
             buf[index++]=1;       // CONNECT
             buf[index++]=0;
 
-            byte[] hostb= inetAddress.getCanonicalHostName().getBytes();
+            byte[] hostb= host.getBytes();
             int len=hostb.length;
             buf[index++]=3;      // DOMAINNAME
             buf[index++]=(byte)(len);

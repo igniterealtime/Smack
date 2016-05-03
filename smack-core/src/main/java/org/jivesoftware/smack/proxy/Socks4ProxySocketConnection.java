@@ -37,7 +37,7 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
     }
 
     @Override
-    public void connect(Socket socket, InetAddress inetAddress, int port, int timeout)
+    public void connect(Socket socket, String host, int port, int timeout)
                     throws IOException {
         InputStream in = null;
         OutputStream out = null;
@@ -80,6 +80,7 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
             buf[index++]=(byte)(port>>>8);
             buf[index++]=(byte)(port&0xff);
 
+            InetAddress inetAddress = InetAddress.getByName(proxy_host);
             byte[] byteAddress = inetAddress.getAddress();
             for (int i = 0; i < byteAddress.length; i++)
             {

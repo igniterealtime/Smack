@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -45,12 +44,12 @@ class HTTPProxySocketConnection implements ProxySocketConnection {
     }
 
     @Override
-    public void connect(Socket socket, InetAddress inetAddress, int port, int timeout)
+    public void connect(Socket socket, String host, int port, int timeout)
                     throws IOException {
         String proxyhost = proxy.getProxyAddress();
         int proxyPort = proxy.getProxyPort();
         socket.connect(new InetSocketAddress(proxyhost, proxyPort));
-        String hostport = "CONNECT " + inetAddress.getCanonicalHostName() + ":" + port;
+        String hostport = "CONNECT " + host + ":" + port;
         String proxyLine;
         String username = proxy.getProxyUsername();
         if (username == null)
