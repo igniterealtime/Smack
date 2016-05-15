@@ -99,14 +99,7 @@ public class Nick implements ExtensionElement {
         @Override
         public Nick parse(XmlPullParser parser, int initialDepth)
                         throws XmlPullParserException, IOException {
-
-            parser.next();
-			final String name = parser.getText();
-
-			// Advance to end of extension.
-			while(parser.getEventType() != XmlPullParser.END_TAG) {
-				parser.next();
-			}
+			final String name = parser.nextText();
 
 			return new Nick(name);
 		}
