@@ -37,7 +37,7 @@ service=example.org
 
 ```bash
 service=example.org
-serviceTlsPin=serviceTlsPin=CERTSHA256:2F:92:C9:4D:30:58:E1:05:21:9A:57:59:5F:6E:25:9A:0F:BF:FF:64:1A:C3:4B:EC:06:7D:4A:6F:0A:D5:21:85
+serviceTlsPin=CERTSHA256:2F:92:C9:4D:30:58:E1:05:21:9A:57:59:5F:6E:25:9A:0F:BF:FF:64:1A:C3:4B:EC:06:7D:4A:6F:0A:D5:21:85
 debug=true
 ```
 
@@ -66,7 +66,7 @@ Package `org.igniterealtime.smack.inttest`
 ### `SmackIntegrationTestFramework`
 
 Contains `public static void main` method, i.e. the entry point for the framework.
-Here the available integration tests are discovered by means of reflections, the configured is read and a `IntegrationTestEnvironment` instance created, include the XMPPConnections.
+Here the available integration tests are discovered by means of reflection, the configuration is read and a `IntegrationTestEnvironment` instance created, which includes the XMPPConnections.
 
 ### `AbstractSmackIntegrationTest`
 
@@ -74,7 +74,7 @@ The base class that integration tests need to subclass.
 
 ### `AbstractSmackLowLevelIntegrationTest`
 
-Allows low level integration test, i.e. ever test method will have it's on exclusive XMPPTCPConnection instances.
+Allows low level integration test, i.e. ever test method will have its on exclusive XMPPTCPConnection instances.
 
 ### `IntegrationTestEnvironment`
 
