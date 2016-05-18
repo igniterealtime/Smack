@@ -375,10 +375,6 @@ public final class ChatManager extends Manager{
                 interceptor.getKey().processMessage(message);
             }
         }
-        // Ensure that messages being sent have a proper FROM value
-        if (message.getFrom() == null) {
-            message.setFrom(connection().getUser());
-        }
         connection().sendStanza(message);
     }
 
