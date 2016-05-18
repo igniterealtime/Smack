@@ -55,7 +55,7 @@ import org.jxmpp.jid.Jid;
  * commands offered by a service and for processing commands requests.
  *
  * Pass in an XMPPConnection instance to
- * {@link #getAddHocCommandsManager(org.jivesoftware.smack.XMPPConnection)} in order to
+ * {@link #getAddHocCommandsManager(XMPPConnection)} in order to
  * get an instance of this class. 
  * 
  * @author Gabriel Guardincerri
