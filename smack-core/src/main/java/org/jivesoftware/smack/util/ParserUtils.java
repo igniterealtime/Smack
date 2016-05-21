@@ -21,8 +21,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 
+import org.jivesoftware.smack.packet.Stanza;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -194,4 +197,16 @@ public class ParserUtils {
         return uri;
     }
 
+    public static Map<String, String> getCustomAttributes(XmlPullParser parser) {
+        Map<String, String> customAttributes = new LinkedHashMap<>();
+        for (int i = 0; i < parser.getAttributeCount(); i++) {
+            String attributeName = parser.getAttributeName(i);
+            boolean isLangAttribute = "lang".equals(attributeName) && "xml".equals(parser.getAttributePrefix(i));
+            if (!Stanza.REGISTERED_ATTRIBUTES.contains(attributeName) && !isLangAttribute) {
+                String attributeValue = parser.getAttributeValue(i);
+                customAttributes.put(attributeName, attributeValue);
+            }
+        }
+        return customAttributes;
+    }
 }

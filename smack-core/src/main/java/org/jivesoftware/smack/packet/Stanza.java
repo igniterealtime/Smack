@@ -28,9 +28,15 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Base class for XMPP Stanzas, which are called Stanza(/Packet) in older versions of Smack (i.e. &lt; 4.1).
@@ -51,9 +57,12 @@ public abstract class Stanza implements TopLevelStreamElement {
 
     public static final String TEXT = "text";
     public static final String ITEM = "item";
+    public static final Set<String> REGISTERED_ATTRIBUTES = new HashSet<String>(Arrays.asList("xml:lang", "id", "to", "from", "type"));
 
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase(Locale.US);
+
+    private static boolean customAttributesEnabled = false;
 
     private final MultiMap<String, ExtensionElement> packetExtensions = new MultiMap<>();
 
@@ -61,6 +70,7 @@ public abstract class Stanza implements TopLevelStreamElement {
     private Jid to;
     private Jid from;
     private XMPPError error = null;
+    private LinkedHashMap<String, String> customAttributes;
 
     /**
      * Optional value of the 'xml:lang' attribute of the outermost element of
@@ -91,6 +101,10 @@ public abstract class Stanza implements TopLevelStreamElement {
         // Copy extensions
         for (ExtensionElement pe : p.getExtensions()) {
             addExtension(pe);
+        }
+
+        if (p.customAttributes != null) {
+            customAttributes = new LinkedHashMap<>(p.customAttributes);
         }
     }
 
@@ -458,6 +472,152 @@ public abstract class Stanza implements TopLevelStreamElement {
         return removeExtension(extension.getElementName(), extension.getNamespace());
     }
 
+    /**
+     * Returns <tt>true</tt> if custom attributes management is enabled.
+     * @return <tt>true</tt> if custom attributes management is enabled.
+     */
+    public static boolean customAttributesEnabled() {
+        return customAttributesEnabled;
+    }
+
+    /**
+     * Enables the possibility to add custom attributes to the stanza.
+     * <br/><b>Enabling this feature breaks the XMPP standard and may induce unexpected behaviors!
+     * <br/>If your use-case allow it, prefer using ExtensionElement instead, and if not, be sure to triple-check the result.</b>
+     */
+    public static void enableCustomAttributes() {
+        customAttributesEnabled = true;
+    }
+
+    private static void requireCustomAttributesEnabled() {
+        if (!customAttributesEnabled()) {
+            throw new IllegalStateException(
+                    "You need to enable this feature first by calling enableCustomAttributes. " +
+                    "Ensure you are aware of the consequences of doing so.");
+        }
+    }
+
+    private void requireCustomAttributes() {
+        if (customAttributes == null) {
+            customAttributes = new LinkedHashMap<>();
+        }
+    }
+
+    private void failIfRegistered(String attributeName) {
+        if (REGISTERED_ATTRIBUTES.contains(attributeName)) {
+            throw new IllegalArgumentException(attributeName + " is a registered attribute.");
+        }
+    }
+
+    /**
+     * Replaces all custom attributes of the stanza.
+     * @param attributes a map (name/value) of all the custom attributes of this stanza. Should not be {@null}
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public void setCustomAttributes(Map<String, String> attributes) {
+        requireCustomAttributesEnabled();
+        assert attributes != null;
+        for (String attr : attributes.keySet()) {
+            failIfRegistered(attr);
+        }
+        requireCustomAttributes();
+
+        customAttributes.clear();
+        customAttributes.putAll(attributes);
+    }
+
+    /**
+     * Adds a custom attribute to the stanza. If a custom attribute with the same name is already present, its value is updated.
+     * @param attributeName the custom attribute name.
+     * @param attributeValue the custom attribute value.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public void setCustomAttribute(String attributeName, String attributeValue) {
+        requireCustomAttributesEnabled();
+        requireNotNullOrEmpty(attributeName, "attributeName must not be null or empty");
+        failIfRegistered(attributeName);
+        requireCustomAttributes();
+
+        customAttributes.put(attributeName, attributeValue);
+    }
+
+    /**
+     * Removes all custom attributes of the stanza.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public void removeCustomAttributes() {
+        requireCustomAttributesEnabled();
+        requireCustomAttributes();
+
+        customAttributes.clear();
+    }
+
+    /**
+     * Removes a custom attribute of the stanza if it exists.
+     * @param attributeName the custom attribute name.
+     * @return the removed custom attribute value or <tt>null</tt> if is was not present.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public String removeCustomAttribute(String attributeName) {
+        requireCustomAttributesEnabled();
+        requireNotNullOrEmpty(attributeName, "attributeName must not be null or empty");
+        requireCustomAttributes();
+
+        return customAttributes.remove(attributeName);
+    }
+
+    /**
+     * Returns <tt>true</tt> if this stanza contains custom attributes.
+     * @return <tt>true</tt> if this stanza contains custom attributes.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public boolean hasCustomAttributes() {
+        requireCustomAttributesEnabled();
+        requireCustomAttributes();
+
+        return !customAttributes.isEmpty();
+    }
+
+    /**
+     * Returns <tt>true</tt> if this stanza contains a custom attribute with this name.
+     * @param attributeName the custom attribute name.
+     * @return <tt>true</tt> if this stanza contains a custom attribute with this name.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public boolean hasCustomAttribute(String attributeName) {
+        requireCustomAttributesEnabled();
+        requireNotNullOrEmpty(attributeName, "attributeName must not be null or empty");
+        requireCustomAttributes();
+
+        return customAttributes.containsKey(attributeName);
+    }
+
+    /**
+     * Returns a map (name/value) of all the custom attributes of this stanza.
+     * @return an unmodifiable map (name/value) of all the custom attributes of this stanza.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public Map<String, String> getCustomAttributes() {
+        requireCustomAttributesEnabled();
+        requireCustomAttributes();
+
+        return Collections.unmodifiableMap(customAttributes);
+    }
+
+    /**
+     * Returns the value of a custom attribute, or {@code null} if this stanza does not contain any custom attribute with this name.
+     * @param attributeName the custom attribute name.
+     * @return the value of a custom attribute, or {@code null} if this stanza does not contain any custom attribute with this name.
+     * @throws IllegalStateException if custom attributes management is not enabled.
+     */
+    public String getCustomAttribute(String attributeName) {
+        requireCustomAttributesEnabled();
+        requireNotNullOrEmpty(attributeName, "attributeName must not be null or empty");
+        requireCustomAttributes();
+
+        return customAttributes.get(attributeName);
+    }
+
     @Override
     // NOTE When Smack is using Java 8, then this method should be moved in Element as "Default Method".
     public String toString() {
@@ -494,11 +654,19 @@ public abstract class Stanza implements TopLevelStreamElement {
      *
      * @param xml
      */
-    protected void addCommonAttributes(XmlStringBuilder xml) {
+    protected void addAttributes(XmlStringBuilder xml) {
         xml.optAttribute("to", getTo());
         xml.optAttribute("from", getFrom());
         xml.optAttribute("id", getStanzaId());
         xml.xmllangAttribute(getLanguage());
+
+        if(customAttributes == null) {
+            return;
+        }
+
+        for (Map.Entry<String, String> entry : customAttributes.entrySet()) {
+            xml.attribute(entry.getKey(), entry.getValue());
+        }
     }
 
     /**
