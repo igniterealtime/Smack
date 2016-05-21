@@ -179,6 +179,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * Returns the priority of the presence, or Integer.MIN_VALUE if no priority has been set.
      *
      * @return the priority.
+     * @see <a href="https://tools.ietf.org/html/rfc6121#section-4.7.2.3">RFC 6121 § 4.7.2.3. Priority Element</a>
      */
     public int getPriority() {
         return priority;
@@ -189,6 +190,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      *
      * @param priority the priority of the presence.
      * @throws IllegalArgumentException if the priority is outside the valid range.
+     * @see <a href="https://tools.ietf.org/html/rfc6121#section-4.7.2.3">RFC 6121 § 4.7.2.3. Priority Element</a>
      */
     public void setPriority(int priority) {
         if (priority < -128 || priority > 127) {
