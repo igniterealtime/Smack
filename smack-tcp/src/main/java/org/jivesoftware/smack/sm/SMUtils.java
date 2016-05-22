@@ -47,6 +47,9 @@ public class SMUtils {
      * @return the delta
      */
     public static long calculateDelta(long reportedHandledCount, long lastKnownHandledCount) {
+        if (lastKnownHandledCount > reportedHandledCount) {
+            throw new IllegalStateException("Illegal Stream Management State: Last known handled count (" + lastKnownHandledCount + ") is greater than reported handled count (" + reportedHandledCount + ')');
+        }
         return (reportedHandledCount - lastKnownHandledCount) & MASK_32_BIT;
     }
 }
