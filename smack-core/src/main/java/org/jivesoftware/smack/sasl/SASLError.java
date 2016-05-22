@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,11 @@ package org.jivesoftware.smack.sasl;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The SASL error condition.
+ *
+ * @see <a href="https://tools.ietf.org/html/rfc6120#section-6.5">RFC 6120 § 6.5, SASL Errors</a>
+ */
 public enum SASLError {
 
     aborted,
