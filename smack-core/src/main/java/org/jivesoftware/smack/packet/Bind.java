@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2015-2016 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.jxmpp.jid.parts.Resourcepart;
  *
  * @author Gaston Dombiak
  */
-public class Bind extends IQ {
+public final class Bind extends IQ {
 
     public static final String ELEMENT = "bind";
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-bind";
@@ -39,7 +39,7 @@ public class Bind extends IQ {
     private final Resourcepart resource;
     private final EntityFullJid jid;
 
-    public Bind(Resourcepart resource, EntityFullJid jid) {
+    private Bind(Resourcepart resource, EntityFullJid jid) {
         super(ELEMENT, NAMESPACE);
         this.resource = resource;
         this.jid = jid;
