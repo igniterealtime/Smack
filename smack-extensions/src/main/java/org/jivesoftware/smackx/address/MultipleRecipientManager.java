@@ -311,6 +311,11 @@ public class MultipleRecipientManager {
             return text;
         }
 
+        @Override
+        public String toString() {
+            return toXML().toString();
+        }
+
     }
 
 }

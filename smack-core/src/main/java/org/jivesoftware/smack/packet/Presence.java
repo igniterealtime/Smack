@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -220,6 +221,25 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      */
     public void setMode(Mode mode) {
         this.mode = mode;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Presence Stanza [");
+        logCommonAttributes(sb);
+        sb.append("type=").append(type).append(',');
+        if (mode != null) {
+            sb.append("mode=").append(mode).append(',');
+        }
+        if (!StringUtils.isNullOrEmpty(status)) {
+            sb.append("status=").append(status).append(',');
+        }
+        if (priority != Integer.MIN_VALUE) {
+            sb.append("prio=").append(priority).append(',');
+        }
+        sb.append(']');
+        return sb.toString();
     }
 
     @Override

@@ -113,6 +113,18 @@ public abstract class IQ extends Stanza {
     }
 
     @Override
+    public final String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("IQ Stanza (");
+            sb.append(getChildElementName()).append(' ').append(getChildElementNamespace());
+            sb.append(") [");
+            logCommonAttributes(sb);
+            sb.append("type=").append(type).append(',');
+            sb.append(']');
+            return sb.toString();
+    }
+
+    @Override
     public final XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(IQ_ELEMENT);

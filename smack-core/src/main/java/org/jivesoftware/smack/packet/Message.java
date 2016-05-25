@@ -419,6 +419,18 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     }
 
     @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Message Stanza [");
+        logCommonAttributes(sb);
+        if (type != null) {
+            sb.append("type=").append(type).append(',');
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+
+    @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(ELEMENT);

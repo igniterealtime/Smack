@@ -206,5 +206,10 @@ public class PacketCollectorTest
 		{
 			return "<packetId>" + getStanzaId() + "</packetId>";
 		}
+
+        @Override
+        public String toString() {
+            return toXML();
+        }
 	}
 }

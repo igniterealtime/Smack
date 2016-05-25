@@ -458,11 +458,11 @@ public abstract class Stanza implements TopLevelStreamElement {
         return removeExtension(extension.getElementName(), extension.getNamespace());
     }
 
+    /**
+     * Returns a short String describing the Stanza. This method is suited for log purposes.
+     */
     @Override
-    // NOTE When Smack is using Java 8, then this method should be moved in Element as "Default Method".
-    public String toString() {
-        return toXML().toString();
-    }
+    public abstract String toString();
 
     /**
      * Returns the extension sub-packets (including properties data) as an XML
@@ -499,6 +499,18 @@ public abstract class Stanza implements TopLevelStreamElement {
         xml.optAttribute("from", getFrom());
         xml.optAttribute("id", getStanzaId());
         xml.xmllangAttribute(getLanguage());
+    }
+
+    protected void logCommonAttributes(StringBuilder sb) {
+        if (getTo() != null) {
+            sb.append("to=").append(to).append(',');
+        }
+        if (getFrom() != null) {
+            sb.append("from=").append(from).append(',');
+        }
+        if (hasStanzaIdSet()) {
+            sb.append("id=").append(id).append(',');
+        }
     }
 
     /**
