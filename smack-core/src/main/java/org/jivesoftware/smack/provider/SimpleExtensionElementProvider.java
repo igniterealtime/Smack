@@ -20,7 +20,7 @@ public class SimpleExtensionElementProvider extends ExtensionElementProvider {
 
     @Override
     public Element parse(XmlPullParser xmlPullParser, int i) throws XmlPullParserException, IOException, SmackException {
-        SimpleExtensionElement element = SimpleExtensionElement.getInstance(xmlPullParser.getName(), xmlPullParser.getNamespace());
+        SimpleExtensionElement element = new SimpleExtensionElement(xmlPullParser.getName(), xmlPullParser.getNamespace());
         for (int x = 0; x < xmlPullParser.getAttributeCount(); x++) {
             element.setAttribute(xmlPullParser.getAttributeName(x), xmlPullParser.getAttributeValue(x));
         }

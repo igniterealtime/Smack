@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * Created by Sakib Sami on 5/19/16.
- * <p>
+ * <p/>
  * SimpleExtensionElement provides support
  * to add custom attribute to extension
  * alone with custom element support
@@ -20,13 +20,9 @@ public class SimpleExtensionElement implements ExtensionElement {
     private Map<String, String> attributes = new LinkedHashMap<>();
     private Map<String, String> elements = new LinkedHashMap<>();
 
-    private SimpleExtensionElement(String ELEMENT_NAME, String NAMESPACE) {
+    public SimpleExtensionElement(String ELEMENT_NAME, String NAMESPACE) {
         this.ELEMENT_NAME = ELEMENT_NAME;
         this.NAMESPACE = NAMESPACE;
-    }
-
-    public static SimpleExtensionElement getInstance(String ELEMENT_NAME, String NAMESPACE) {
-        return new SimpleExtensionElement(ELEMENT_NAME, NAMESPACE);
     }
 
     public void setAttribute(String name, String value) {
