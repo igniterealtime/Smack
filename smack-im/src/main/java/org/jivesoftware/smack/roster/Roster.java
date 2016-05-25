@@ -1358,7 +1358,7 @@ public final class Roster extends Manager {
                 }
             }
             if (!isLoaded() && rosterLoadedAtLogin) {
-                LOGGER.warning("Roster not loaded while processing presence stanza");
+                LOGGER.warning("Roster not loaded while processing " + packet);
             }
             Presence presence = (Presence) packet;
             Jid from = presence.getFrom();
