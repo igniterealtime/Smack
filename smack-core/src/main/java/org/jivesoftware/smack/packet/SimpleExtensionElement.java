@@ -1,6 +1,5 @@
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.LinkedHashMap;

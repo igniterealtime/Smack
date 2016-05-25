@@ -2,10 +2,9 @@ package org.jivesoftware.smack.provider;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Element;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.packet.SimpleExtensionElement;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import thegrunetwork.extensions.SimpleExtensionElement;
 
 import java.io.IOException;
 
