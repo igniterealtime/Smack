@@ -13,7 +13,7 @@ import java.util.Set;
  * <p>
  * SimpleExtensionElement provides support
  * to add custom attribute to extension
- * alone with custom element support
+ * alone with element support
  */
 
 public class SimpleExtensionElement extends DefaultExtensionElement {
