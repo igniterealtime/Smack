@@ -1,0 +1,55 @@
+<?xml version="1.0"?> 
+<!-- Providers for workgroup extensions -->
+<smackProviders>
+
+    <!-- XEP-0332 HTTP over XMPP transport -->
+    <iqProvider>
+        <elementName>req</elementName>
+        <namespace>urn:xmpp:http</namespace>
+        <className>org.jivesoftware.smackx.hoxt.provider.HttpOverXmppReqProvider</className>
+    </iqProvider>
+    <iqProvider>
+        <elementName>resp</elementName>
+        <namespace>urn:xmpp:http</namespace>
+        <className>org.jivesoftware.smackx.hoxt.provider.HttpOverXmppRespProvider</className>
+    </iqProvider>
+    <extensionProvider>
+        <elementName>chunk</elementName>
+        <namespace>urn:xmpp:http</namespace>
+        <className>org.jivesoftware.smackx.hoxt.provider.Base64BinaryChunkProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0280 Message Carbons -->
+    <extensionProvider>
+        <elementName>sent</elementName>
+        <namespace>urn:xmpp:carbons:2</namespace>
+        <className>org.jivesoftware.smackx.carbons.provider.CarbonManagerProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>received</elementName>
+        <namespace>urn:xmpp:carbons:2</namespace>
+        <className>org.jivesoftware.smackx.carbons.provider.CarbonManagerProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0352 Client State Indication -->
+    <streamFeatureProvider>
+        <elementName>csi</elementName>
+        <namespace>urn:xmpp:csi:0</namespace>
+        <className>org.jivesoftware.smackx.csi.provider.ClientStateIndicationFeatureProvider</className>
+    </streamFeatureProvider>
+
+    <!-- XEP-0335 JSON Containers -->
+    <extensionProvider>
+        <elementName>json</elementName>
+        <namespace>urn:xmpp:json:0</namespace>
+        <className>org.jivesoftware.smackx.json.provider.JsonExtensionProvider</className>
+    </extensionProvider>
+
+    <!-- GCM JSON payload -->
+    <extensionProvider>
+        <elementName>gcm</elementName>
+        <namespace>google:mobile:data</namespace>
+        <className>org.jivesoftware.smackx.gcm.provider.GcmExtensionProvider</className>
+    </extensionProvider>
+
+</smackProviders>

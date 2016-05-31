@@ -1,0 +1,5 @@
+<smack>
+    <startupClasses>
+        <className>org.jivesoftware.smackx.hoxt.HOXTManager</className>
+    </startupClasses>
+</smack>

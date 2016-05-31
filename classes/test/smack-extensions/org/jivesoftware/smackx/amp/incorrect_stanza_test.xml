@@ -1,0 +1,13 @@
+<amp xmlns='http://jabber.org/protocol/amp'
+     status='alert'
+     from='bernardo@hamlet.lit/elsinore'
+     to='francisco@hamlet.lit'>
+    <rule action='test' condition='deliver' value='direct'/>
+    <rule action='drop' condition='deliver' value='forwarded'/>
+    <rule action='error' condition='delivered' value='gateway'/>
+    <rule action='notify' value='none'/>
+    <rule action='notify' condition='deliver'/>
+    <rule condition='expire-at' value='2004-09-10T08:33:14Z'/>
+    <rule condition='expire-at' />
+    <rule action='notify' condition='match-resource' value='anys'/>
+</amp>

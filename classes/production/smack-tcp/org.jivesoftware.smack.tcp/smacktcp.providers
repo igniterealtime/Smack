@@ -1,0 +1,11 @@
+<?xml version="1.0"?> 
+<smackProviders>
+
+    <!-- XEP-0198: Stream Management -->
+    <streamFeatureProvider>
+        <elementName>sm</elementName>
+        <namespace>urn:xmpp:sm:3</namespace>
+        <className>org.jivesoftware.smack.sm.provider.StreamManagementStreamFeatureProvider</className>
+    </streamFeatureProvider>
+
+</smackProviders>
