@@ -36,7 +36,7 @@ public class DiscoverInfoProvider extends IQProvider<DiscoverInfo> {
         boolean done = false;
         DiscoverInfo.Identity identity = null;
         String category = "";
-        String name = "";
+        String identityName = "";
         String type = "";
         String variable = "";
         String lang = "";
@@ -44,16 +44,22 @@ public class DiscoverInfoProvider extends IQProvider<DiscoverInfo> {
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("identity")) {
-                    // Initialize the variables from the parsed XML
-                    category = parser.getAttributeValue("", "category");
-                    name = parser.getAttributeValue("", "name");
-                    type = parser.getAttributeValue("", "type");
-                    lang = parser.getAttributeValue(parser.getNamespace("xml"), "lang");
-                }
-                else if (parser.getName().equals("feature")) {
-                    // Initialize the variables from the parsed XML
-                    variable = parser.getAttributeValue("", "var");
+                final String name = parser.getName();
+                final String namespace = parser.getNamespace();
+                if (namespace.equals(DiscoverInfo.NAMESPACE)) {
+                    switch (name) {
+                    case "identity":
+                        // Initialize the variables from the parsed XML
+                        category = parser.getAttributeValue("", "category");
+                        identityName = parser.getAttributeValue("", "name");
+                        type = parser.getAttributeValue("", "type");
+                        lang = parser.getAttributeValue(parser.getNamespace("xml"), "lang");
+                        break;
+                    case "feature":
+                        // Initialize the variables from the parsed XML
+                        variable = parser.getAttributeValue("", "var");
+                        break;
+                    }
                 }
                 // Otherwise, it must be a packet extension.
                 else {
@@ -62,7 +68,7 @@ public class DiscoverInfoProvider extends IQProvider<DiscoverInfo> {
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("identity")) {
                     // Create a new identity and add it to the discovered info.
-                    identity = new DiscoverInfo.Identity(category, type, name, lang);
+                    identity = new DiscoverInfo.Identity(category, type, identityName, lang);
                     discoverInfo.addIdentity(identity);
                 }
                 if (parser.getName().equals("feature")) {
