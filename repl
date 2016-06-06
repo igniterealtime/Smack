@@ -3,6 +3,7 @@ set -e
 set -u
 set -o pipefail
 
+
 while getopts d OPTION "$@"; do
     case $OPTION in
 	d)
@@ -10,6 +11,9 @@ while getopts d OPTION "$@"; do
 	    ;;
     esac
 done
+
+PROJECT_ROOT=$(dirname "${BASH_SOURCE[0]}")
+cd "${PROJECT_ROOT}"
 
 echo "Compiling and computing classpath (May take a while)"
 # Sadly even with the --quiet option Gradle (or some component of)
@@ -19,7 +23,7 @@ echo "Compiling and computing classpath (May take a while)"
 # /smack/smack-repl/build/classes/main:/smack/smack-repl/build/
 # resources/main:/smack/smack-tcp/build/libs/smack-tcp-4.2.0-alpha4-SNAPSHOT.jar
 # So perform a "tail -n1" on the output of gradle
-declare -r GRADLE_CLASSPATH="$(gradle :smack-repl:printClasspath --quiet |\
+GRADLE_CLASSPATH="$(gradle :smack-repl:printClasspath --quiet |\
 	tail -n1)"
 echo "Finished, starting REPL"
 
