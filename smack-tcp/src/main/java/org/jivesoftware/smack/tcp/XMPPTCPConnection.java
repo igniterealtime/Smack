@@ -476,8 +476,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // First shutdown the writer, this will result in a closing stream element getting send to
         // the server
         if (packetWriter != null) {
+            LOGGER.finer("PacketWriter shutdown()");
             packetWriter.shutdown(instant);
         }
+        LOGGER.finer("PacketWriter has been shut down");
 
         try {
             // After we send the closing stream element, check if there was already a
@@ -490,8 +492,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
 
         if (packetReader != null) {
+            LOGGER.finer("PacketReader shutdown()");
                 packetReader.shutdown();
         }
+        LOGGER.finer("PacketReader has been shut down");
 
         try {
                 socket.close();
