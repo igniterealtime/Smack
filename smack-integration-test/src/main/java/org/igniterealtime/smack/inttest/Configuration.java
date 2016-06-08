@@ -122,6 +122,11 @@ public final class Configuration {
         }
 
         public Builder setService(String service) throws XmppStringprepException {
+            if (service == null) {
+                // Do nothing if user did not specify the XMPP service domain. When the builder
+                // builds a configuration using build() it will throw a meaningful exception.
+                return this;
+            }
             return setService(JidCreate.domainBareFrom(service));
         }
 
