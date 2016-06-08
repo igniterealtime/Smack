@@ -4,7 +4,7 @@ Smack's Integration Test Framework
 Introduction
 ------------
 
-Smack's Integration Test Framwork is used ot run a set of tests against a real XMPP service.
+Smack's Integration Test Framwork is used to run a set of tests against a real XMPP service.
 The framework discovers on startup the available tests by reflection.
 
 Quickstart
@@ -15,6 +15,8 @@ You can run the framework against an XMPP service with
 ```bash
 $ gradle integrationTest -Dsinttest.service=my.xmppservice.org
 ```
+
+Note that the service needs to have In-Band Registration (IBR) enabled.
 
 Configuration
 -------------
@@ -46,8 +48,8 @@ debug=true
 | Name                 |                                           |
 |----------------------|-------------------------------------------|
 | service              | XMPP service to run the tests on          |
-| serviceTlsPin        | TLS Pin (used by java-pinning)            |
-| securityMode         | Either 'required' or disabled'            |
+| serviceTlsPin        | TLS Pin (used by [java-pinning](https://github.com/Flowdalic/java-pinning))            |
+| securityMode         | Either 'required' or 'disabled'           |
 | replyTimeout         | In milliseconds                           |
 | accountOneUsername   | Username of the first XMPP account        |
 | accountOnePassword   | Password of the first XMPP account        |
@@ -58,6 +60,9 @@ debug=true
 | disabledTests        | List of disabled tests                    |
 | testPackages         | List of packages with tests               |
 
+### Where to place the properties file
+
+The framework will first load the properties file from `~/.config/smack-integration-test/properties`
 Overview of the components
 --------------------------
 
@@ -96,10 +101,10 @@ Running the integration tests
 Smack's Gradle build system is configured with a special task called `integrationTest`, which means you can run the tests simply with
 
 ```bash
-$ gradle integrationTest
+$ gradle integrationTest -Dsinttest.service=my.xmppservice.org
 ```
-If one of `accountOneUsername`, `accountOnePassword`, `accountTwoUsername` or `accountTwoPassword` is not configured, then the framework will automatically create the accounts on the service (if account registration is supported and enabled).
-If the accounts got created, then they will also be deleted at the end of the test.
+If one of `accountOneUsername`, `accountOnePassword`, `accountTwoUsername` or `accountTwoPassword` is not configured, then the framework will automatically create the accounts on the service. Of course this requires account registration (IBR) to be enabled.
+If the accounts got created automatically by the framework, then they will also be deleted at the end of the test.
 
 Implementing Integration Tests
 ------------------------------
@@ -120,7 +125,7 @@ It must be possible to run the tests in parallel.
 ### Why are there two mechanisms to signal that the test is not possible?
 
 Because the XMPP service may provide a component that is required to perform a certain integration test, but that component may not support all features.
-For example, the XMPP service may provides a PubSub (XEP-60) component, but this component may not support all features of XEP-60.
+For example, the XMPP service may provides a PubSub (XEP-0060) component, but this component may not support all features of XEP-0060.
 
 ### Low-Level Integration Tests
 
@@ -132,7 +137,7 @@ After the test is finished, the connections will be unregistered with the XMPP s
 Running your own integration tests
 ----------------------------------
 
-The framework can be used to run your own tests.
+The framework can be used to run your own tests residing outside of the framework's default package scope.
 Simply set the `testPackages` property to a comma separated list of package names where the framework should look for integration tests.
 
 Example:
