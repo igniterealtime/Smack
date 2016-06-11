@@ -879,6 +879,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 (packetWriter == null || packetWriter.done())) return;
 
         // Closes the connection temporary. A reconnection is possible
+        // Note that a connection listener of XMPPTCPConnection will drop the SM state in
+        // case the Exception is a StreamErrorException.
         instantShutdown();
 
         // Notify connection listeners of the error.
