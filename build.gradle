@@ -439,6 +439,19 @@ def getGitCommit() {
 	def proc = cmd.execute()
 	def gitCommit = proc.text.trim()
 	assert !gitCommit.isEmpty()
+
+    def srCmd = 'git symbolic-ref --short HEAD'
+    def srProc = srCmd.execute()
+    srProc.waitForOrKill(10 * 1000)
+    if (srProc.exitValue() == 0) {
+        // Only add the information if the git command was
+        // successful. There may be no symbolic reference for HEAD if
+        // e.g. in detached mode.
+        def symbolicReference = srProc.text.trim()
+        assert !symbolicReference.isEmpty()
+        gitCommit += "-$symbolicReference"
+    }
+
 	gitCommit
 }
 
