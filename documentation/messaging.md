@@ -41,7 +41,8 @@ before sending it, use the `Chat.createMessage()` and
 ```
 Message newMessage = new Message();
 newMessage.setBody("Howdy!");
-message.setProperty("favoriteColor", "red");
+// Additional modifications to the message Stanza.
+JivePropertiesManager.addProperty(newMessage, "favoriteColor", "red");
 newChat.sendMessage(newMessage);
 ```
 
