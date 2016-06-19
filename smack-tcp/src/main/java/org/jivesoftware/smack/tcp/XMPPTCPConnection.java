@@ -579,6 +579,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     throw new UnknownHostException(host);
                 }
                 innerloop: while (inetAddresses.hasNext()) {
+                    // Create a *new* Socket before every connection attempt, i.e. connect() call, since Sockets are not
+                    // re-usable after a failed connection attempt. See also SMACK-724.
+                    socket = socketFactory.createSocket();
+
                     final InetAddress inetAddress = inetAddresses.next();
                     final String inetAddressAndPort = inetAddress + " at port " + port;
                     LOGGER.finer("Trying to establish TCP connection to " + inetAddressAndPort);
