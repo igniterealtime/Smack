@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -584,7 +585,14 @@ public class SmackIntegrationTestFramework {
     }
 
     public static final class TestRunResult {
-        public final String testRunId = StringUtils.insecureRandomString(5);
+
+        /**
+         * A short String of lowercase characters and numbers used to identify a integration test
+         * run. We use lowercase characters because this string will eventually be part of the
+         * localpart of the used JIDs (and the localpart is case insensitive).
+         */
+        public final String testRunId = StringUtils.insecureRandomString(5).toLowerCase(Locale.US);
+
         private final List<SuccessfulTest> successfulTests = Collections.synchronizedList(new LinkedList<SuccessfulTest>());
         private final List<FailedTest> failedIntegrationTests = Collections.synchronizedList(new LinkedList<FailedTest>());
         private final List<TestNotPossible> impossibleTestMethods = Collections.synchronizedList(new LinkedList<TestNotPossible>());
