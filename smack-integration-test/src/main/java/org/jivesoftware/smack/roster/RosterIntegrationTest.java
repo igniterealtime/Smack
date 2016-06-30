@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
 public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
@@ -47,7 +48,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
 
     @SmackIntegrationTest
     public void subscribeRequestListenerTest() throws TimeoutException, Exception {
-        ensureBothAccountsAreNotInEachOthersRoster();
+        ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
 
         rosterTwo.setSubscribeListener(new SubscribeListener() {
             @Override
@@ -92,14 +93,14 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         assertTrue(addedAndSubscribed.waitForResult(2 * connection.getPacketReplyTimeout()));
     }
 
-    private void ensureBothAccountsAreNotInEachOthersRoster() throws NotLoggedInException,
+    public static void ensureBothAccountsAreNotInEachOthersRoster(XMPPConnection conOne, XMPPConnection conTwo) throws NotLoggedInException,
                     NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException {
         notInRoster(conOne, conTwo);
         notInRoster(conTwo, conOne);
     }
 
-    private void notInRoster(XMPPConnection c1, XMPPConnection c2) throws NotLoggedInException,
+    private static void notInRoster(XMPPConnection c1, XMPPConnection c2) throws NotLoggedInException,
                     NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException {
         Roster roster = Roster.getInstanceFor(c1);
@@ -108,5 +109,47 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
             return;
         }
         roster.removeEntry(c2Entry);
+    }
+
+    public static void ensureBothAccountsAreSubscribedToEachOther(XMPPConnection conOne, XMPPConnection conTwo, long timeout) throws TimeoutException, Exception {
+        ensureSubscribedTo(conOne, conTwo, timeout);
+        ensureSubscribedTo(conTwo, conOne, timeout);
+    }
+
+    private static void ensureSubscribedTo(final XMPPConnection conOne, final XMPPConnection conTwo, long timeout) throws TimeoutException, Exception {
+        Roster rosterOne = Roster.getInstanceFor(conOne);
+        Roster rosterTwo = Roster.getInstanceFor(conTwo);
+
+        if (rosterOne.isSubscribedToMyPresence(conTwo.getUser())) {
+            return;
+        }
+
+        rosterOne.setSubscribeListener(new SubscribeListener() {
+            @Override
+            public SubscribeAnswer processSubscribe(Jid from, Presence subscribeRequest) {
+                if (from.equals(conTwo.getUser().asBareJid())) {
+                    return SubscribeAnswer.Approve;
+                }
+                return SubscribeAnswer.Deny;
+            }
+        });
+
+        final SimpleResultSyncPoint syncPoint = new SimpleResultSyncPoint();
+        rosterTwo.addPresenceEventListener(new AbstractPresenceEventListener() {
+            @Override
+            public void presenceSubscribed(BareJid address, Presence subscribedPresence) {
+                if (!address.equals(conOne.getUser().asBareJid())) {
+                    return;
+                }
+                syncPoint.signal();
+            }
+        });
+        rosterTwo.sendSubscriptionRequest(conOne.getUser().asBareJid());
+
+        try {
+            syncPoint.waitForResult(timeout);
+        } finally {
+            rosterOne.setSubscribeListener(null);
+        }
     }
 }

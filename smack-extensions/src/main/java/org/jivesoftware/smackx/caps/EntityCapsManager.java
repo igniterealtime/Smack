@@ -27,9 +27,10 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.roster.AbstractPresenceEventListener;
+import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -47,6 +48,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.cache.LruCache;
 
@@ -95,8 +97,6 @@ public final class EntityCapsManager extends Manager {
 
     private static final StanzaFilter PRESENCES_WITH_CAPS = new AndFilter(new StanzaTypeFilter(Presence.class), new StanzaExtensionFilter(
                     ELEMENT, NAMESPACE));
-    private static final StanzaFilter PRESENCES_WITHOUT_CAPS = new AndFilter(new StanzaTypeFilter(Presence.class), new NotFilter(new StanzaExtensionFilter(
-                    ELEMENT, NAMESPACE)));
 
     /**
      * Map of "node + '#' + hash" to DiscoverInfo data
@@ -328,15 +328,12 @@ public final class EntityCapsManager extends Manager {
 
         }, PRESENCES_WITH_CAPS);
 
-        connection.addAsyncStanzaListener(new StanzaListener() {
+        Roster.getInstanceFor(connection).addPresenceEventListener(new AbstractPresenceEventListener() {
             @Override
-            public void processPacket(Stanza packet) {
-                // always remove the JID from the map, even if entityCaps are
-                // disabled
-                Jid from = packet.getFrom();
+            public void presenceUnavailable(FullJid from, Presence presence) {
                 JID_TO_NODEVER_CACHE.remove(from);
             }
-        }, PRESENCES_WITHOUT_CAPS);
+        });
 
         connection.addPacketSendingListener(new StanzaListener() {
             @Override

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2016 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -151,6 +151,8 @@ public final class Roster extends Manager {
     private final Set<RosterEntry> unfiledEntries = new CopyOnWriteArraySet<>();
     private final Set<RosterListener> rosterListeners = new LinkedHashSet<>();
 
+    private final Set<PresenceEventListener> presenceEventListeners = new CopyOnWriteArraySet<>();
+
     /**
      * A map of JIDs to another Map of Resourceparts to Presences. The 'inner' map may contain
      * {@link Resourcepart#EMPTY} if there are no other Presences available.
@@ -289,6 +291,11 @@ public final class Roster extends Manager {
                 if (resumed) {
                     return;
                 }
+
+                // Ensure that all available presences received so far in a eventually existing previous session are
+                // marked 'offline'.
+                setOfflinePresencesAndResetLoaded();
+
                 try {
                     Roster.this.reload();
                 }
@@ -532,6 +539,14 @@ public final class Roster extends Manager {
         }
     }
 
+    public boolean addPresenceEventListener(PresenceEventListener presenceEventListener) {
+        return presenceEventListeners.add(presenceEventListener);
+    }
+
+    public boolean removePresenceEventListener(PresenceEventListener presenceEventListener) {
+        return presenceEventListeners.remove(presenceEventListener);
+    }
+
     /**
      * Creates a new group.
      * <p>
@@ -584,10 +599,7 @@ public final class Roster extends Manager {
         rosterPacket.addRosterItem(item);
         connection.createPacketCollectorAndSend(rosterPacket).nextResultOrThrow();
 
-        // Create a presence subscription packet and send.
-        Presence presencePacket = new Presence(Presence.Type.subscribe);
-        presencePacket.setTo(user);
-        connection.sendStanza(presencePacket);
+        sendSubscriptionRequest(user);
     }
 
     /**
@@ -621,7 +633,7 @@ public final class Roster extends Manager {
      * @throws FeatureNotSupportedException if pre-approving is not supported.
      * @since 4.2
      */
-    public void preApprove(Jid user) throws NotLoggedInException, NotConnectedException, InterruptedException, FeatureNotSupportedException {
+    public void preApprove(BareJid user) throws NotLoggedInException, NotConnectedException, InterruptedException, FeatureNotSupportedException {
         final XMPPConnection connection = connection();
         if (!isSubscriptionPreApprovalSupported()) {
             throw new FeatureNotSupportedException("Pre-approving");
@@ -642,6 +654,15 @@ public final class Roster extends Manager {
     public boolean isSubscriptionPreApprovalSupported() throws NotLoggedInException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
         return connection.hasFeature(SubscriptionPreApproval.ELEMENT, SubscriptionPreApproval.NAMESPACE);
+    }
+
+    public void sendSubscriptionRequest(BareJid jid) throws NotLoggedInException, NotConnectedException, InterruptedException {
+        final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
+
+        // Create a presence subscription packet and send.
+        Presence presencePacket = new Presence(Presence.Type.subscribe);
+        presencePacket.setTo(jid);
+        connection.sendStanza(presencePacket);
     }
 
     /**
@@ -1363,12 +1384,21 @@ public final class Roster extends Manager {
             Presence presence = (Presence) packet;
             Jid from = presence.getFrom();
             Resourcepart fromResource = Resourcepart.EMPTY;
+            BareJid bareFrom = null;
+            FullJid fullFrom = null;
             if (from != null) {
                 fromResource = from.getResourceOrNull();
                 if (fromResource == null) {
                     fromResource = Resourcepart.EMPTY;
+                    bareFrom = from.asBareJid();
+                }
+                else {
+                    fullFrom = from.asFullJidIfPossible();
+                    // We know that this must be a full JID in this case.
+                    assert (fullFrom != null);
                 }
             }
+
             BareJid key = from != null ? from.asBareJid() : null;
             Map<Resourcepart, Presence> userPresences;
 
@@ -1387,6 +1417,9 @@ public final class Roster extends Manager {
                 // If the user is in the roster, fire an event.
                 if (contains(key)) {
                     fireRosterPresenceEvent(presence);
+                }
+                for (PresenceEventListener presenceEventListener : presenceEventListeners) {
+                    presenceEventListener.presenceAvailable(fullFrom, presence);
                 }
                 break;
             // If an "unavailable" packet.
@@ -1409,6 +1442,23 @@ public final class Roster extends Manager {
                 if (contains(key)) {
                     fireRosterPresenceEvent(presence);
                 }
+
+                // Ensure that 'from' is a full JID before invoking the presence unavailable
+                // listeners. Usually unavailable presences always have a resourcepart, i.e. are
+                // full JIDs, but RFC 6121 § 4.5.4 has an implementation note that unavailable
+                // presences from a bare JID SHOULD be treated as applying to all resources. I don't
+                // think any client or server ever implemented that, I do think that this
+                // implementation note is a terrible idea since it adds another corner case in
+                // client code, instead of just having the invariant
+                // "unavailable presences are always from the full JID".
+                if (fullFrom != null) {
+                    for (PresenceEventListener presenceEventListener : presenceEventListeners) {
+                        presenceEventListener.presenceUnavailable(fullFrom, presence);
+                    }
+                } else {
+                    LOGGER.fine("Unavailable presence from bare JID: " + presence);
+                }
+
                 break;
             // Error presence packets from a bare JID mean we invalidate all existing
             // presence info for the user.
@@ -1428,6 +1478,19 @@ public final class Roster extends Manager {
                 // If the user is in the roster, fire an event.
                 if (contains(key)) {
                     fireRosterPresenceEvent(presence);
+                }
+                for (PresenceEventListener presenceEventListener : presenceEventListeners) {
+                    presenceEventListener.presenceError(from, presence);
+                }
+                break;
+            case subscribed:
+                for (PresenceEventListener presenceEventListener : presenceEventListeners) {
+                    presenceEventListener.presenceSubscribed(bareFrom, presence);
+                }
+                break;
+            case unsubscribed:
+                for (PresenceEventListener presenceEventListener : presenceEventListeners) {
+                    presenceEventListener.presenceUnsubscribed(bareFrom, presence);
                 }
                 break;
             default:
@@ -1624,4 +1687,5 @@ public final class Roster extends Manager {
     public void setNonRosterPresenceMapMaxSize(int maximumSize) {
         nonRosterPresenceMap.setMaxCacheSize(maximumSize);
     }
+
 }
