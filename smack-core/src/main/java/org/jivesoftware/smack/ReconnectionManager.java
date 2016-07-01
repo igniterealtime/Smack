@@ -250,6 +250,12 @@ public final class ReconnectionManager {
                         // Successfully reconnected.
                         attempts = 0;
                     }
+                    catch (SmackException.AlreadyLoggedInException e) {
+                        // This can happen if another thread concurrently triggers a reconnection
+                        // and/or login. Obviously it should not be handled as a reconnection
+                        // failure. See also SMACK-725.
+                        LOGGER.log(Level.FINER, "Reconnection not required, was already logged in", e);
+                    }
                     catch (SmackException | IOException | XMPPException | InterruptedException e) {
                         // Fires the failed reconnection notification
                         for (ConnectionListener listener : connection.connectionListeners) {
