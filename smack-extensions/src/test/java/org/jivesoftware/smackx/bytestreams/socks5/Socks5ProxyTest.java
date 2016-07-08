@@ -42,6 +42,8 @@ import org.junit.Test;
  */
 public class Socks5ProxyTest {
 
+    static final String loopbackAddress = InetAddress.getLoopbackAddress().getHostAddress();
+
     /**
      * The SOCKS5 proxy should be a singleton used by all XMPP connections.
      */
@@ -199,7 +201,7 @@ public class Socks5ProxyTest {
         proxy.start();
 
         @SuppressWarnings("resource")
-        Socket socket = new Socket(proxy.getLocalAddresses().get(0), proxy.getPort());
+        Socket socket = new Socket(loopbackAddress, proxy.getPort());
 
         OutputStream out = socket.getOutputStream();
         out.write(new byte[] { 1, 2, 3 });
@@ -230,7 +232,7 @@ public class Socks5ProxyTest {
         proxy.start();
 
         @SuppressWarnings("resource")
-        Socket socket = new Socket(proxy.getLocalAddresses().get(0), proxy.getPort());
+        Socket socket = new Socket(loopbackAddress, proxy.getPort());
 
         OutputStream out = socket.getOutputStream();
 
@@ -261,7 +263,7 @@ public class Socks5ProxyTest {
         proxy.start();
 
         @SuppressWarnings("resource")
-        Socket socket = new Socket(proxy.getLocalAddresses().get(0), proxy.getPort());
+        Socket socket = new Socket(loopbackAddress, proxy.getPort());
 
         OutputStream out = socket.getOutputStream();
         out.write(new byte[] { (byte) 0x05, (byte) 0x01, (byte) 0x00 });
@@ -309,7 +311,7 @@ public class Socks5ProxyTest {
         proxy.addTransfer(digest);
 
         @SuppressWarnings("resource")
-        Socket socket = new Socket(proxy.getLocalAddresses().get(0), proxy.getPort());
+        Socket socket = new Socket(loopbackAddress, proxy.getPort());
 
         OutputStream out = socket.getOutputStream();
         out.write(new byte[] { (byte) 0x05, (byte) 0x01, (byte) 0x00 });

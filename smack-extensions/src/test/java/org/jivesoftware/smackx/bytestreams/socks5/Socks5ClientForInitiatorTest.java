@@ -24,6 +24,7 @@ import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import org.jivesoftware.smack.SmackException;
@@ -58,7 +59,8 @@ public class Socks5ClientForInitiatorTest {
     static final EntityFullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
     static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
     static final DomainBareJid proxyJID = JidTestUtil.MUC_EXAMPLE_ORG;
-    String proxyAddress = "127.0.0.1";
+    static final String loopbackAddress = InetAddress.getLoopbackAddress().getHostAddress();
+
     int proxyPort = 7890;
     String sessionID = "session_id";
 
@@ -82,7 +84,6 @@ public class Socks5ClientForInitiatorTest {
 
         // create mocked XMPP connection
         connection = ConnectionUtils.createMockedConnection(protocol, initiatorJID, xmppServer);
-
     }
 
     /**
@@ -100,7 +101,7 @@ public class Socks5ClientForInitiatorTest {
 
         // build stream host information for local SOCKS5 proxy
         StreamHost streamHost = new StreamHost(connection.getUser(),
-                        socks5Proxy.getLocalAddresses().get(0),
+                        loopbackAddress,
                         socks5Proxy.getPort());
 
         // create digest to get the socket opened by target
@@ -147,7 +148,7 @@ public class Socks5ClientForInitiatorTest {
 
         // build stream host information
         final StreamHost streamHost = new StreamHost(connection.getUser(),
-                        socks5Proxy.getLocalAddresses().get(0),
+                        loopbackAddress,
                         socks5Proxy.getPort());
 
         // target connects to local SOCKS5 proxy
@@ -213,7 +214,7 @@ public class Socks5ClientForInitiatorTest {
         socks5Proxy.start();
 
         StreamHost streamHost = new StreamHost(proxyJID,
-                        Socks5TestProxy.getAddress(), socks5Proxy.getPort());
+                        loopbackAddress, socks5Proxy.getPort());
 
         // create digest to get the socket opened by target
         String digest = Socks5Utils.createDigest(sessionID, initiatorJID, targetJID);
@@ -266,7 +267,7 @@ public class Socks5ClientForInitiatorTest {
         socks5Proxy.start();
 
         StreamHost streamHost = new StreamHost(proxyJID,
-                        Socks5TestProxy.getAddress(), socks5Proxy.getPort());
+                        loopbackAddress, socks5Proxy.getPort());
 
         // create digest to get the socket opened by target
         String digest = Socks5Utils.createDigest(sessionID, initiatorJID, targetJID);
