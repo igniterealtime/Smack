@@ -28,6 +28,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.util.NetworkUtil;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 import org.junit.After;
 import org.junit.Before;
@@ -43,8 +44,8 @@ import org.jxmpp.jid.JidTestUtil;
 public class Socks5ClientTest {
 
     // settings
-    private String serverAddress = "127.0.0.1";
-    private int serverPort = 7890;
+    private int serverPort;
+    private String serverAddress;
     private DomainBareJid proxyJID = JidTestUtil.MUC_EXAMPLE_ORG;
     private String digest = "digest";
     private ServerSocket serverSocket;
@@ -57,7 +58,9 @@ public class Socks5ClientTest {
     @Before
     public void setup() throws Exception {
         // create SOCKS5 proxy server socket
-        serverSocket = new ServerSocket(serverPort);
+        serverSocket = NetworkUtil.getSocketOnLoopback();
+        serverAddress = serverSocket.getInetAddress().getHostAddress();
+        serverPort = serverSocket.getLocalPort();
     }
 
     /**
@@ -330,6 +333,9 @@ public class Socks5ClientTest {
      */
     @After
     public void cleanup() throws Exception {
-        serverSocket.close();
+        // Avoid NPE if serverSocket could not get created for whateve reason.
+        if (serverSocket != null) {
+            serverSocket.close();
+        }
     }
 }
