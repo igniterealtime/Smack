@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,9 @@ import org.jxmpp.jid.parts.Resourcepart;
 /**
  * The configuration used to enter a MUC room. This configuration is usually used when joining an
  * existing room. When creating a new room, only the Nickname setting is relevant.
+ * <p>
+ * A builder for this can be obtained by calling {@link MultiUserChat#getEnterConfigurationBuilder(Resourcepart)}.
+ * </p>
  * 
  * @author Florian Schmaus
  * @since 4.2
