@@ -50,7 +50,6 @@ import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
@@ -166,6 +165,7 @@ public class SmackIntegrationTestFramework {
             // Ensure that the accounts are deleted and disconnected before we continue
             disconnectAndMaybeDelete(environment.conOne);
             disconnectAndMaybeDelete(environment.conTwo);
+            disconnectAndMaybeDelete(environment.conThree);
         }
 
         return testRunResult;
@@ -173,16 +173,16 @@ public class SmackIntegrationTestFramework {
 
     @SuppressWarnings({"unchecked", "Finally"})
     private void runTests(Set<Class<? extends AbstractSmackIntTest>> classes)
-                    throws NoResponseException, NotConnectedException, InterruptedException {
+                    throws NoResponseException, InterruptedException {
         for (Class<? extends AbstractSmackIntTest> testClass : classes) {
             final String testClassName = testClass.getName();
 
-            if (config.enabledTests != null && !config.enabledTests.contains(testClassName)) {
+            if (config.enabledTests != null && !isInSet(testClass, config.enabledTests)) {
                 LOGGER.info("Skipping test class " + testClassName + " because it is not enabled");
                 continue;
             }
 
-            if (config.disabledTests != null && config.disabledTests.contains(testClassName)) {
+            if (isInSet(testClass, config.disabledTests)) {
                 LOGGER.info("Skipping test class " + testClassName + " because it is disalbed");
                 continue;
             }
@@ -233,9 +233,8 @@ public class SmackIntegrationTestFramework {
             while (it.hasNext()) {
                 final Method method = it.next();
                 final String methodName = method.getName();
-                final String className = method.getDeclaringClass().getName();
-                if (config.enabledTests != null && !config.enabledTests.contains(methodName)
-                                && !config.enabledTests.contains(className)) {
+                if (config.enabledTests != null && !(config.enabledTests.contains(methodName)
+                                || isInSet(testClass, config.enabledTests))) {
                     LOGGER.fine("Skipping test method " + methodName + " because it is not enabled");
                     it.remove();
                     continue;
@@ -472,26 +471,33 @@ public class SmackIntegrationTestFramework {
                     NoSuchAlgorithmException {
         XMPPTCPConnection conOne = null;
         XMPPTCPConnection conTwo = null;
+        XMPPTCPConnection conThree = null;
         try {
             conOne = getConnectedConnectionFor(AccountNum.One);
             conTwo = getConnectedConnectionFor(AccountNum.Two);
+            conThree = getConnectedConnectionFor(AccountNum.Three);
         }
         catch (Exception e) {
+            // TODO Reverse the order, i.e. conThree should be disconnected first.
             if (conOne != null) {
                 conOne.disconnect();
             }
             if (conTwo != null) {
                 conTwo.disconnect();
             }
+            if (conThree != null) {
+                conThree.disconnect();
+            }
             throw e;
         }
 
-        return new SmackIntegrationTestEnvironment(conOne, conTwo, testRunResult.testRunId, config);
+        return new SmackIntegrationTestEnvironment(conOne, conTwo, conThree, testRunResult.testRunId, config);
     }
 
     enum AccountNum {
         One,
         Two,
+        Three,
     }
 
     private static final String USERNAME_PREFIX = "smack-inttest";
@@ -512,6 +518,11 @@ public class SmackIntegrationTestFramework {
             accountUsername = config.accountTwoUsername;
             accountPassword = config.accountTwoPassword;
             middlefix = "two";
+            break;
+        case Three:
+            accountUsername = config.accountThreeUsername;
+            accountPassword = config.accountThreePassword;
+            middlefix = "three";
             break;
         default:
             throw new IllegalStateException();
@@ -582,6 +593,15 @@ public class SmackIntegrationTestFramework {
             throw (Error) e;
         }
         return (Exception) e;
+    }
+
+    private static boolean isInSet(Class<?> clz, Set<String> classes) {
+        if (classes == null) {
+            return false;
+        }
+        final String className = clz.getName();
+        final String unqualifiedClassName = clz.getSimpleName();
+        return (classes.contains(className) || classes.contains(unqualifiedClassName));
     }
 
     public static final class TestRunResult {

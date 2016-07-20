@@ -24,7 +24,7 @@ public class SmackIntegrationTestUnitTestUtil {
         // @formatter:off
         Configuration configuration = Configuration.builder()
                         .setService(JidTestUtil.DOMAIN_BARE_JID_1)
-                        .setUsernamesAndPassword("dummy1", "dummy1pass", "dummy2", "dummy2pass")
+                        .setUsernamesAndPassword("dummy1", "dummy1pass", "dummy2", "dummy2pass", "dummy3", "dummy3pass")
                         .addEnabledTest(unitTest).build();
         // @formatter:on
         return new DummySmackIntegrationTestFramework(configuration);

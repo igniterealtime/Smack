@@ -176,6 +176,39 @@ public final class RosterEntry extends Manager {
         return item.isSubscriptionPending();
     }
 
+    /**
+     * Check if the contact is subscribed to "my" presence. This allows the contact to see the presence information.
+     *
+     * @return true if the contact has a presence subscription.
+     * @since 4.2
+     */
+    public boolean canSeeMyPresence() {
+        switch (getType()) {
+        case from:
+        case both:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    /**
+     * Check if we are subscribed to the contact's presence. If <code>true</code> then the contact has allowed us to
+     * receive presence information.
+     *
+     * @return true if we are subscribed to the contact's presence.
+     * @since 4.2
+     */
+    public boolean canSeeHisPresence() {
+        switch (getType()) {
+        case to:
+        case both:
+            return true;
+        default:
+            return false;
+        }
+    }
+
     public String toString() {
         StringBuilder buf = new StringBuilder();
         if (getName() != null) {

@@ -23,6 +23,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
+import org.jivesoftware.smack.SmackException;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -120,6 +121,14 @@ public class ParserUtils {
         else {
             return bool;
         }
+    }
+
+    public static int getIntegerAttributeOrThrow(XmlPullParser parser, String name, String throwMessage) throws SmackException {
+        Integer res = getIntegerAttribute(parser, name);
+        if (res == null) {
+            throw new SmackException(throwMessage);
+        }
+        return res;
     }
 
     public static Integer getIntegerAttribute(XmlPullParser parser, String name) {

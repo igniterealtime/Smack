@@ -26,7 +26,7 @@ public class DummySmackIntegrationTestFramework extends SmackIntegrationTestFram
 
     @Override
     protected SmackIntegrationTestEnvironment prepareEnvironment() {
-        return new SmackIntegrationTestEnvironment(null, null, testRunResult.getTestRunId(), config);
+        return new SmackIntegrationTestEnvironment(null, null, null, testRunResult.getTestRunId(), config);
     }
 
     @Override

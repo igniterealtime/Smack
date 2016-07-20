@@ -31,6 +31,11 @@ public abstract class AbstractSmackIntegrationTest extends AbstractSmackIntTest 
     protected final XMPPConnection conTwo;
 
     /**
+     * The third connection.
+     */
+    protected final XMPPConnection conThree;
+
+    /**
      * An alias for the first connection {@link #conOne}.
      */
     protected final XMPPConnection connection;
@@ -42,6 +47,7 @@ public abstract class AbstractSmackIntegrationTest extends AbstractSmackIntTest 
     public AbstractSmackIntegrationTest(SmackIntegrationTestEnvironment environment) {
         this.connection = this.conOne = environment.conOne;
         this.conTwo = environment.conTwo;
+        this.conThree = environment.conThree;
         if (environment.configuration.replyTimeout > 0) {
             this.defaultTimeout = environment.configuration.replyTimeout;
         } else {

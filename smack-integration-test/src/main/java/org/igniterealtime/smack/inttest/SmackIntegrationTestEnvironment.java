@@ -24,14 +24,17 @@ public class SmackIntegrationTestEnvironment {
 
     public final XMPPTCPConnection conTwo;
 
+    public final XMPPTCPConnection conThree;
+
     public final String testRunId;
 
     public final Configuration configuration;
 
-    SmackIntegrationTestEnvironment(XMPPTCPConnection conOne, XMPPTCPConnection conTwo, String testRunId,
+    SmackIntegrationTestEnvironment(XMPPTCPConnection conOne, XMPPTCPConnection conTwo, XMPPTCPConnection conThree, String testRunId,
                     Configuration configuration) {
         this.conOne = conOne;
         this.conTwo = conTwo;
+        this.conThree = conThree;
         this.testRunId = testRunId;
         this.configuration = configuration;
     }

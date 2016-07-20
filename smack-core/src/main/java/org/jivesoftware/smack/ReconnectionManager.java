@@ -238,7 +238,11 @@ public final class ReconnectionManager {
                     // Makes a reconnection attempt
                     try {
                         if (isReconnectionPossible(connection)) {
-                            connection.connect();
+                            try {
+                                connection.connect();
+                            } catch (SmackException.AlreadyConnectedException e) {
+                                LOGGER.log(Level.FINER, "Connection was already connected on reconnection attempt", e);
+                            }
                         }
                         // TODO Starting with Smack 4.2, connect() will no
                         // longer login automatically. So change this and the

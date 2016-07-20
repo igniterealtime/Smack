@@ -10,6 +10,7 @@ dependencies {
     compile project(':smack-extensions')
 	compile project(':smack-experimental')
 	compile project(':smack-legacy')
+	compile project(':smack-integration-test')
     compile "com.lihaoyi:ammonite-repl_$scalaVersion:0.5.5"
     testCompile project(path: ":smack-core", configuration: "testRuntime")
     testCompile project(path: ":smack-core", configuration: "archives")

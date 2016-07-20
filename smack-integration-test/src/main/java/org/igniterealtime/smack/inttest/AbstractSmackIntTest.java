@@ -16,10 +16,13 @@
  */
 package org.igniterealtime.smack.inttest;
 
+import java.util.Random;
 import java.util.logging.Logger;
 
 public abstract class AbstractSmackIntTest {
 
     protected static final Logger LOGGER = Logger.getLogger(AbstractSmackIntTest.class.getName());
+
+    protected static final Random INSECURE_RANDOM = new Random();
 
 }

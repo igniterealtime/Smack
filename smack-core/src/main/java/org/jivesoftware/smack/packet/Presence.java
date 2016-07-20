@@ -73,6 +73,8 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * @param type the type.
      */
     public Presence(Type type) {
+        // Ensure that the stanza ID is set by calling super().
+        super();
         setType(type);
     }
 
@@ -85,6 +87,8 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * @param mode the mode type for this presence update.
      */
     public Presence(Type type, String status, int priority, Mode mode) {
+        // Ensure that the stanza ID is set by calling super().
+        super();
         setType(type);
         setStatus(status);
         setPriority(priority);

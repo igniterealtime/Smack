@@ -238,6 +238,10 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return this;
     }
 
+    public XmlStringBuilder attribute(String name, boolean bool) {
+        return attribute(name, Boolean.toString(bool));
+    }
+
     /**
      * Add a new attribute to this builder, with the {@link java.util.Date} instance as its value,
      * which will get formated with {@link XmppDateTime#formatXEP0082Date(Date)}.

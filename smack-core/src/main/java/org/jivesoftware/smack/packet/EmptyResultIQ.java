@@ -25,13 +25,7 @@ public class EmptyResultIQ extends IQ {
 
     public EmptyResultIQ(IQ request) {
         this();
-        if (!(request.getType() == Type.get || request.getType() == Type.set)) {
-            throw new IllegalArgumentException(
-                    "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
-        }
-        setStanzaId(request.getStanzaId());
-        setFrom(request.getTo());
-        setTo(request.getFrom());
+        initialzeAsResultFor(request);
     }
 
     @Override

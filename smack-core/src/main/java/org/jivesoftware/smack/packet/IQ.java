@@ -215,6 +215,17 @@ public abstract class IQ extends Stanza {
      */
     protected abstract IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml);
 
+    protected final void initialzeAsResultFor(IQ request) {
+        if (!(request.getType() == Type.get || request.getType() == Type.set)) {
+            throw new IllegalArgumentException(
+                    "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
+        }
+        setStanzaId(request.getStanzaId());
+        setFrom(request.getTo());
+        setTo(request.getFrom());
+        setType(Type.result);
+    }
+
     /**
      * Convenience method to create a new empty {@link Type#result IQ.Type.result}
      * IQ based on a {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}
@@ -289,9 +300,7 @@ public abstract class IQ extends Stanza {
      * @throws IllegalArgumentException if the IQ stanza(/packet) does not have a type of
      *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
      * @return a new {@link Type#error IQ.Type.error} IQ based on the originating IQ.
-     * @deprecated use {@link #createErrorResponse(IQ, org.jivesoftware.smack.packet.XMPPError.Builder)} instead.
      */
-    @Deprecated
     public static ErrorIQ createErrorResponse(final IQ request, final XMPPError error) {
         return createErrorResponse(request, XMPPError.getBuilder(error));
     }

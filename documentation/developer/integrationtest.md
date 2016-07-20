@@ -55,6 +55,8 @@ debug=true
 | accountOnePassword   | Password of the first XMPP account        |
 | accountTwoUsername   | Username of the second XMPP account       |
 | accountTwoPassword   | Password of the second XMPP account       |
+| accountThreeUsername | Username of the third XMPP account        |
+| accountThreePassword | Password of the third XMPP account        |
 | debug                | 'true' to enable debug output             |
 | enabledTests         | List of enabled tests                     |
 | disabledTests        | List of disabled tests                    |

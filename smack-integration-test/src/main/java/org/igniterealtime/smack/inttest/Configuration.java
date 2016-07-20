@@ -53,6 +53,10 @@ public final class Configuration {
 
     public final String accountTwoPassword;
 
+    public final String accountThreeUsername;
+
+    public final String accountThreePassword;
+
     public final boolean debug;
 
     public final Set<String> enabledTests;
@@ -63,7 +67,7 @@ public final class Configuration {
 
     private Configuration(DomainBareJid service, String serviceTlsPin, SecurityMode securityMode, int replyTimeout,
                     boolean debug, String accountOneUsername, String accountOnePassword, String accountTwoUsername,
-                    String accountTwoPassword, Set<String> enabledTests, Set<String> disabledTests,
+                    String accountTwoPassword, String accountThreeUsername, String accountThreePassword, Set<String> enabledTests, Set<String> disabledTests,
                     Set<String> testPackages) {
         this.service = Objects.requireNonNull(service,
                         "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
@@ -83,6 +87,8 @@ public final class Configuration {
         this.accountOnePassword = accountOnePassword;
         this.accountTwoUsername = accountTwoUsername;
         this.accountTwoPassword = accountTwoPassword;
+        this.accountThreeUsername = accountThreeUsername;
+        this.accountThreePassword = accountThreePassword;
         this.enabledTests = enabledTests;
         this.disabledTests = disabledTests;
         this.testPackages = testPackages;
@@ -109,6 +115,10 @@ public final class Configuration {
         private String accountTwoUsername;
 
         private String accountTwoPassword;
+
+        public String accountThreeUsername;
+
+        public String accountThreePassword;
 
         private boolean debug;
 
@@ -153,11 +163,13 @@ public final class Configuration {
         }
 
         public Builder setUsernamesAndPassword(String accountOneUsername, String accountOnePassword,
-                        String accountTwoUsername, String accountTwoPassword) {
-            this.accountOneUsername = accountOneUsername;
-            this.accountOnePassword = accountOnePassword;
-            this.accountTwoUsername = accountTwoUsername;
-            this.accountTwoPassword = accountTwoPassword;
+                        String accountTwoUsername, String accountTwoPassword, String accountThreeUsername, String accountThreePassword) {
+            this.accountOneUsername = StringUtils.requireNotNullOrEmpty(accountOneUsername, "accountOneUsername must not be null or empty");
+            this.accountOnePassword = StringUtils.requireNotNullOrEmpty(accountOnePassword, "accountOnePassword must not be null or empty");
+            this.accountTwoUsername = StringUtils.requireNotNullOrEmpty(accountTwoUsername, "accountTwoUsername must not be null or empty");
+            this.accountTwoPassword = StringUtils.requireNotNullOrEmpty(accountTwoPassword, "accountTwoPasswordmust not be null or empty");
+            this.accountThreeUsername = StringUtils.requireNotNullOrEmpty(accountThreeUsername, "accountThreeUsername must not be null or empty");
+            this.accountThreePassword = StringUtils.requireNotNullOrEmpty(accountThreePassword, "accountThreePassword must not be null or empty");
             return this;
         }
 
@@ -213,7 +225,7 @@ public final class Configuration {
 
         public Configuration build() {
             return new Configuration(service, serviceTlsPin, securityMode, replyTimeout, debug, accountOneUsername,
-                            accountOnePassword, accountTwoUsername, accountTwoPassword, enabledTests, disabledTests,
+                            accountOnePassword, accountTwoUsername, accountTwoPassword, accountThreeUsername, accountThreePassword, enabledTests, disabledTests,
                             testPackages);
         }
     }
@@ -252,7 +264,9 @@ public final class Configuration {
         String accountOnePassword = properties.getProperty("accountOnePassword");
         String accountTwoUsername = properties.getProperty("accountTwoUsername");
         String accountTwoPassword = properties.getProperty("accountTwoPassword");
-        builder.setUsernamesAndPassword(accountOneUsername, accountOnePassword, accountTwoUsername, accountTwoPassword);
+        String accountThreeUsername = properties.getProperty("accountThreeUsername");
+        String accountThreePassword = properties.getProperty("accountThreePassword");
+        builder.setUsernamesAndPassword(accountOneUsername, accountOnePassword, accountTwoUsername, accountTwoPassword, accountThreeUsername, accountThreePassword);
 
         builder.setDebug(properties.getProperty("debug"));
         builder.setEnabledTests(properties.getProperty("enabledTests"));
@@ -262,7 +276,7 @@ public final class Configuration {
         return builder.build();
     }
 
-    private static File findPropertiesFile() throws IOException {
+    private static File findPropertiesFile() {
         List<String> possibleLocations = new LinkedList<>();
         possibleLocations.add("properties");
         String userHome = System.getProperty("user.home");
