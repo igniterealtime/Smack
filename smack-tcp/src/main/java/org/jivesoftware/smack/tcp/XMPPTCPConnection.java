@@ -16,84 +16,6 @@
  */
 package org.jivesoftware.smack.tcp;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
-import org.jivesoftware.smack.AbstractXMPPConnection;
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
-import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
-import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.SmackException.ConnectionException;
-import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
-import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
-import org.jivesoftware.smack.SmackException.SecurityRequiredException;
-import org.jivesoftware.smack.SynchronizationPoint;
-import org.jivesoftware.smack.XMPPException.StreamErrorException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.compress.packet.Compressed;
-import org.jivesoftware.smack.compression.XMPPInputOutputStream;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.compress.packet.Compress;
-import org.jivesoftware.smack.packet.Element;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.StreamOpen;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.StartTls;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Challenge;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
-import org.jivesoftware.smack.sm.SMUtils;
-import org.jivesoftware.smack.sm.StreamManagementException;
-import org.jivesoftware.smack.sm.StreamManagementException.StreamIdDoesNotMatchException;
-import org.jivesoftware.smack.sm.StreamManagementException.StreamManagementCounterError;
-import org.jivesoftware.smack.sm.StreamManagementException.StreamManagementNotEnabledException;
-import org.jivesoftware.smack.sm.packet.StreamManagement;
-import org.jivesoftware.smack.sm.packet.StreamManagement.AckAnswer;
-import org.jivesoftware.smack.sm.packet.StreamManagement.AckRequest;
-import org.jivesoftware.smack.sm.packet.StreamManagement.Enable;
-import org.jivesoftware.smack.sm.packet.StreamManagement.Enabled;
-import org.jivesoftware.smack.sm.packet.StreamManagement.Failed;
-import org.jivesoftware.smack.sm.packet.StreamManagement.Resume;
-import org.jivesoftware.smack.sm.packet.StreamManagement.Resumed;
-import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature;
-import org.jivesoftware.smack.sm.predicates.Predicate;
-import org.jivesoftware.smack.sm.provider.ParseStreamManagement;
-import org.jivesoftware.smack.packet.Nonza;
-import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.proxy.ProxyInfo;
-import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
-import org.jivesoftware.smack.util.Async;
-import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.TLSUtils;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smack.util.dns.HostAddress;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.jid.parts.Resourcepart;
-import org.jxmpp.stringprep.XmppStringprepException;
-import org.jxmpp.util.XmppStringUtils;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import javax.net.SocketFactory;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.PasswordCallback;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -135,6 +57,84 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.PasswordCallback;
+
+import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
+import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
+import org.jivesoftware.smack.SmackException.ConnectionException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
+import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
+import org.jivesoftware.smack.SmackException.SecurityRequiredException;
+import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.SynchronizationPoint;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.StreamErrorException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.compress.packet.Compress;
+import org.jivesoftware.smack.compress.packet.Compressed;
+import org.jivesoftware.smack.compression.XMPPInputOutputStream;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Nonza;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StartTls;
+import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.proxy.ProxyInfo;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Challenge;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
+import org.jivesoftware.smack.sm.SMUtils;
+import org.jivesoftware.smack.sm.StreamManagementException;
+import org.jivesoftware.smack.sm.StreamManagementException.StreamIdDoesNotMatchException;
+import org.jivesoftware.smack.sm.StreamManagementException.StreamManagementCounterError;
+import org.jivesoftware.smack.sm.StreamManagementException.StreamManagementNotEnabledException;
+import org.jivesoftware.smack.sm.packet.StreamManagement;
+import org.jivesoftware.smack.sm.packet.StreamManagement.AckAnswer;
+import org.jivesoftware.smack.sm.packet.StreamManagement.AckRequest;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Enable;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Enabled;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Failed;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Resume;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Resumed;
+import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature;
+import org.jivesoftware.smack.sm.predicates.Predicate;
+import org.jivesoftware.smack.sm.provider.ParseStreamManagement;
+import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
+import org.jivesoftware.smack.util.Async;
+import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.TLSUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
+import org.jxmpp.util.XmppStringUtils;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Creates a socket connection to an XMPP server. This is the default connection
@@ -380,6 +380,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // Authenticate using SASL
         saslAuthentication.authenticate(username, password, config.getAuthzid());
 
+        afterAuth(resource);
+    }
+
+    private void afterAuth(Resourcepart resource) throws NotConnectedException, NoResponseException, SmackException,
+            InterruptedException, XMPPErrorException, XMPPException {
         // If compression is enabled then request the server to use stream compression. XEP-170
         // recommends to perform stream compression before resource binding.
         maybeEnableCompression();
@@ -436,6 +441,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
 
         afterSuccessfulLogin(false);
+    }
+
+    @Override
+    protected void loginInternal(String token, Resourcepart resource)
+            throws XMPPException, SmackException, IOException, InterruptedException {
+        // Authenticate using SASL
+        saslAuthentication.authenticate(token);
+
+        afterAuth(resource);
     }
 
     @Override

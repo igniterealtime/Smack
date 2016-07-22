@@ -231,4 +231,9 @@ public class DummyConnection extends AbstractXMPPConnection {
             }
         }
     }
+
+    @Override
+    protected void loginInternal(String token, Resourcepart resource) throws XMPPException, SmackException, IOException, InterruptedException {
+        // TODO Auto-generated method stub
+    }
 }

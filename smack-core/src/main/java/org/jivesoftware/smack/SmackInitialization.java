@@ -33,8 +33,11 @@ import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.provider.BindIQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
+import org.jivesoftware.smack.sasl.core.SASLXOAUTHMechanism;
 import org.jivesoftware.smack.sasl.core.SASLXOauth2Mechanism;
 import org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism;
+import org.jivesoftware.smack.tbr.element.TBRTokensIQ;
+import org.jivesoftware.smack.tbr.provider.TBRTokensProvider;
 import org.jivesoftware.smack.util.FileUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -140,7 +143,10 @@ public final class SmackInitialization {
         SASLAuthentication.registerSASLMechanism(new SASLXOauth2Mechanism());
         SASLAuthentication.registerSASLMechanism(new SASLAnonymous());
 
+        SASLAuthentication.registerXOAUTHSASLMechanism(new SASLXOAUTHMechanism());
+
         ProviderManager.addIQProvider(Bind.ELEMENT, Bind.NAMESPACE, new BindIQProvider());
+        ProviderManager.addIQProvider(TBRTokensIQ.ELEMENT, TBRTokensIQ.NAMESPACE, new TBRTokensProvider());
 
         SmackConfiguration.smackInitialized = true;
     }

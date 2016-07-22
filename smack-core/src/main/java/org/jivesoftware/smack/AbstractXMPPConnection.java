@@ -58,15 +58,15 @@ import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.ErrorIQ;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Session;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StartTls;
-import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
@@ -287,6 +287,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private final Map<String, IQRequestHandler> getIqRequestHandler = new HashMap<>();
 
     /**
+     * Indicates the last refresh token received via the X-OAUTH mechanism.
+     */
+    protected String refreshTokenXOAUTH;
+
+    /**
      * Create a new XMPPConnection to an XMPP server.
      * 
      * @param configuration The configuration which is used to establish the connection.
@@ -384,12 +389,19 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected abstract void connectInternal() throws SmackException, IOException, XMPPException, InterruptedException;
 
-    private String usedUsername, usedPassword;
+    private String usedUsername, usedPassword, usedToken;
 
     /**
      * The resourcepart used for this connection. May not be the resulting resourcepart if it's null or overridden by the XMPP service.
      */
     private Resourcepart usedResource;
+
+    /**
+     * Method to avoid reconnection using token.
+     */
+    public void avoidTokenReconnection() {
+        usedToken = null;
+    }
 
     /**
      * Logs in to the server using the strongest SASL mechanism supported by
@@ -420,7 +432,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         CharSequence username = usedUsername != null ? usedUsername : config.getUsername();
         String password = usedPassword != null ? usedPassword : config.getPassword();
         Resourcepart resource = usedResource != null ? usedResource : config.getResource();
-        login(username, password, resource);
+
+        if (usedToken != null) {
+            login(usedToken, resource);
+        } else {
+            login(username, password, resource);
+        }
     }
 
     /**
@@ -466,8 +483,34 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         loginInternal(usedUsername, usedPassword, usedResource);
     }
 
+    /**
+     * Login with the given token. Calling this method Smack will try to login
+     * using the X-OAUTH mechanism.
+     * 
+     * @param token
+     * @param resource
+     * @throws XMPPException
+     * @throws SmackException
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public synchronized void login(String token, Resourcepart resource)
+            throws XMPPException, SmackException, IOException, InterruptedException {
+
+        StringUtils.requireNotNullOrEmpty(token, "Token must not be null or empty");
+
+        throwNotConnectedExceptionIfAppropriate("Did you call connect() before login()?");
+        throwAlreadyLoggedInExceptionIfAppropriate();
+        usedToken = token;
+        usedResource = resource;
+        loginInternal(token, resource);
+    }
+
     protected abstract void loginInternal(String username, String password, Resourcepart resource)
                     throws XMPPException, SmackException, IOException, InterruptedException;
+
+    protected abstract void loginInternal(String token, Resourcepart resource)
+            throws XMPPException, SmackException, IOException, InterruptedException;
 
     @Override
     public final boolean isConnected() {
@@ -555,15 +598,34 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
+    /**
+     * Get the X-OAUTH last refresh token.
+     * 
+     * @return the X-OAUTH last refresh token
+     */
+    @Override
+    public String getXOAUTHLastRefreshToken() {
+        return refreshTokenXOAUTH;
+    }
+
+    /**
+     * Set the X-OAUTH last refresh token.
+     */
+    @Override
+    public void setXOAUTHLastRefreshToken(String token) {
+        refreshTokenXOAUTH = token;
+    }
+
     @Override
     public final boolean isAnonymous() {
         return isAuthenticated() && SASLAnonymous.NAME.equals(getUsedSaslMechansism());
     }
 
     /**
-     * Get the name of the SASL mechanism that was used to authenticate this connection. This returns the name of
-     * mechanism which was used the last time this conneciton was authenticated, and will return <code>null</code> if
-     * this connection was not authenticated before.
+     * Get the name of the SASL mechanism that was used to authenticate this
+     * connection. This returns the name of mechanism which was used the last
+     * time this connection was authenticated, and will return <code>null</code>
+     * if this connection was not authenticated before.
      * 
      * @return the name of the used SASL mechanism.
      * @since 4.2
