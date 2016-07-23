@@ -30,10 +30,10 @@ import org.junit.Assert;
 
 public class RetrieveFormFieldsTest extends MamTest {
 
-    String retrieveFormFieldStanza = "<iq id='sarasa' type='get'>" + "<query xmlns='" + MamElements.NAMESPACE
+    private static final String retrieveFormFieldStanza = "<iq id='sarasa' type='get'>" + "<query xmlns='" + MamElements.NAMESPACE
             + "' queryid='testid'></query>" + "</iq>";
 
-    String additionalFieldsStanza = "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>"
+    private static final String additionalFieldsStanza = "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>"
             + "<value>" + MamElements.NAMESPACE + "</value>" + "</field>"
             + "<field var='urn:example:xmpp:free-text-search' type='text-single'>" + "<value>Hi</value>" + "</field>"
             + "<field var='urn:example:xmpp:stanza-content' type='jid-single'>" + "<value>Hi2</value>" + "</field>"
@@ -41,10 +41,7 @@ public class RetrieveFormFieldsTest extends MamTest {
 
     @Test
     public void checkRetrieveFormFieldsStanza() throws Exception {
-        Method methodPrepareMamQueryIQGet = MamManager.class.getDeclaredMethod("prepareMamQueryIQGet", String.class);
-        methodPrepareMamQueryIQGet.setAccessible(true);
-
-        MamQueryIQ mamQueryIQ = (MamQueryIQ) methodPrepareMamQueryIQGet.invoke(mamManager, queryId);
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId);
         mamQueryIQ.setStanzaId("sarasa");
 
         Assert.assertEquals(mamQueryIQ.toXML().toString(), retrieveFormFieldStanza);

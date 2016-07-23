@@ -16,15 +16,17 @@
  */
 package org.jivesoftware.smackx.mam.provider;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
+import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * MAM Preferences IQ Provider class.
@@ -37,9 +39,13 @@ import org.xmlpull.v1.XmlPullParser;
 public class MamPrefsIQProvider extends IQProvider<MamPrefsIQ> {
 
     @Override
-    public MamPrefsIQ parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public MamPrefsIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         String iqType = parser.getAttributeValue("", "type");
-        String defaultField = parser.getAttributeValue("", "default");
+        String defaultBehaviorString = parser.getAttributeValue("", "default");
+        DefaultBehavior defaultBehavior = null;
+        if (defaultBehaviorString != null) {
+            defaultBehavior = DefaultBehavior.valueOf(defaultBehaviorString);
+        }
 
         if (iqType == null) {
             iqType = "result";
@@ -49,40 +55,52 @@ public class MamPrefsIQProvider extends IQProvider<MamPrefsIQ> {
         List<Jid> neverJids = null;
 
         outerloop: while (true) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("always")) {
+            final int eventType = parser.next();
+            final String name = parser.getName();
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                switch (name) {
+                case "always":
                     alwaysJids = iterateJids(parser);
-                }
-                if (parser.getName().equals("never")) {
+                    break;
+                case "never":
                     neverJids = iterateJids(parser);
+                    break;
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+                break;
+            case XmlPullParser.END_TAG:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
             }
         }
 
-        return new MamPrefsIQ(Type.fromString(iqType), alwaysJids, neverJids, defaultField);
+        return new MamPrefsIQ(alwaysJids, neverJids, defaultBehavior);
     }
 
-    private List<Jid> iterateJids(XmlPullParser parser) throws Exception {
+    private static List<Jid> iterateJids(XmlPullParser parser) throws XmlPullParserException, IOException {
         List<Jid> jids = new ArrayList<>();
 
         int initialDepth = parser.getDepth();
 
         outerloop: while (true) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals("jid")) {
+            final int eventType = parser.next();
+            final String name = parser.getName();
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                switch (name) {
+                case "jid":
                     parser.next();
                     jids.add(JidCreate.from(parser.getText()));
+                    break;
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+                break;
+            case  XmlPullParser.END_TAG:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
             }
         }
 

@@ -39,16 +39,22 @@ public class MamQueryIQProvider extends IQProvider<MamQueryIQ> {
         String node = parser.getAttributeValue("", "node");
 
         outerloop: while (true) {
-            int eventType = parser.next();
+            final int eventType = parser.next();
+            final String name = parser.getName();
 
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals(DataForm.ELEMENT)) {
-                    dataForm = new DataFormProvider().parse(parser);
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                switch (name) {
+                case DataForm.ELEMENT:
+                    dataForm = DataFormProvider.INSTANCE.parse(parser);
+                    break;
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+                break;
+            case XmlPullParser.END_TAG:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
             }
         }
 

@@ -31,7 +31,7 @@ import org.jivesoftware.smackx.mam.element.MamQueryIQ;
  */
 public class MamResultFilter extends FlexibleStanzaTypeFilter<Message> {
 
-    private String queryId;
+    private final String queryId;
 
     public MamResultFilter(MamQueryIQ mamQueryIQ) {
         super(Message.class);

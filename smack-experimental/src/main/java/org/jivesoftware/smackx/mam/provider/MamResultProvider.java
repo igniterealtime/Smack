@@ -39,15 +39,21 @@ public class MamResultProvider extends ExtensionElementProvider<MamResultExtensi
         String id = parser.getAttributeValue("", "id");
 
         outerloop: while (true) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals(Forwarded.ELEMENT)) {
-                    forwarded = new ForwardedProvider().parse(parser);
+            final int eventType = parser.next();
+            final String name = parser.getName();
+            switch (eventType) {
+            case XmlPullParser.START_TAG:
+                switch (name) {
+                case Forwarded.ELEMENT:
+                    forwarded = ForwardedProvider.INSTANCE.parse(parser);
+                    break;
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+                break;
+            case XmlPullParser.END_TAG:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
             }
         }
 

@@ -33,6 +33,13 @@ import org.jxmpp.jid.Jid;
  */
 public class MamPrefsIQ extends IQ {
 
+    public enum DefaultBehavior {
+        always,
+        never,
+        roster,
+        ;
+    }
+
     /**
      * the preferences element.
      */
@@ -44,64 +51,43 @@ public class MamPrefsIQ extends IQ {
     public static final String NAMESPACE = MamElements.NAMESPACE;
 
     /**
-     * true if it is a request for update preferences.
-     */
-    private boolean isUpdate;
-
-    /**
-     * true if it is a result preferences.
-     */
-    private boolean isResult;
-
-    /**
      * list of always.
      */
-    private List<Jid> alwaysJids;
+    private final List<Jid> alwaysJids;
 
     /**
      * list of never.
      */
-    private List<Jid> neverJids;
+    private final List<Jid> neverJids;
 
     /**
      * default field.
      */
-    private String defaultField;
+    private final DefaultBehavior defaultBehavior;
+
+    /**
+     * Construct a new MAM {@code <prefs/>} IQ retrieval request (IQ type 'get').
+     */
+    public MamPrefsIQ() {
+        super(ELEMENT, NAMESPACE);
+        alwaysJids = null;
+        neverJids = null;
+        defaultBehavior = null;
+    }
 
     /**
      * MAM preferences IQ constructor.
      * 
-     * @param type
      * @param alwaysJids
      * @param neverJids
-     * @param defaultField
+     * @param defaultBehavior
      */
-    public MamPrefsIQ(Type type, List<Jid> alwaysJids, List<Jid> neverJids, String defaultField) {
+    public MamPrefsIQ(List<Jid> alwaysJids, List<Jid> neverJids, DefaultBehavior defaultBehavior) {
         super(ELEMENT, NAMESPACE);
-        this.setType(type);
-        this.isUpdate = this.getType().equals(Type.set);
-        this.isResult = this.getType().equals(Type.result);
+        setType(Type.set);
         this.alwaysJids = alwaysJids;
         this.neverJids = neverJids;
-        this.defaultField = defaultField;
-    }
-
-    /**
-     * True if it is a request for update preferences.
-     * 
-     * @return the update preferences boolean
-     */
-    public boolean isUpdate() {
-        return isUpdate;
-    }
-
-    /**
-     * True if it is a result.
-     * 
-     * @return the result preferences boolean
-     */
-    public boolean isResult() {
-        return isUpdate;
+        this.defaultBehavior = defaultBehavior;
     }
 
     /**
@@ -123,19 +109,24 @@ public class MamPrefsIQ extends IQ {
     }
 
     /**
-     * Get the default field.
+     * Get the default behavior.
      * 
-     * @return the default field
+     * @return the default behavior.
      */
-    public String getDefault() {
-        return defaultField;
+    public DefaultBehavior getDefault() {
+        return defaultBehavior;
     }
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
 
-        if (isUpdate || isResult) {
-            xml.attribute("default", defaultField);
+        if (getType().equals(IQ.Type.set) || getType().equals(IQ.Type.result)) {
+            xml.attribute("default", defaultBehavior);
+        }
+
+        if (alwaysJids == null && neverJids == null) {
+            xml.setEmptyElement();
+            return xml;
         }
 
         xml.rightAngleBracket();

@@ -50,20 +50,20 @@ public class MamPrefIQProviderTest extends MamTest {
         XmlPullParser parser1 = PacketParserUtils.getParserFor(exampleMamPrefsIQ1);
         MamPrefsIQ mamPrefIQ1 = new MamPrefsIQProvider().parse(parser1);
 
-        Assert.assertTrue(mamPrefIQ1.isUpdate());
+        Assert.assertEquals(IQ.Type.set, mamPrefIQ1.getType());
         Assert.assertEquals(mamPrefIQ1.getAlwaysJids().get(0), "romeo@montague.lit");
         Assert.assertEquals(mamPrefIQ1.getNeverJids().get(0), "montague@montague.lit");
 
         XmlPullParser parser2 = PacketParserUtils.getParserFor(exampleMamPrefsIQ2);
         MamPrefsIQ mamPrefIQ2 = new MamPrefsIQProvider().parse(parser2);
-        Assert.assertTrue(mamPrefIQ2.isUpdate());
+        Assert.assertEquals(IQ.Type.set, mamPrefIQ2.getType());
         Assert.assertEquals(mamPrefIQ2.getAlwaysJids().get(0), "romeo@montague.lit");
         Assert.assertEquals(mamPrefIQ2.getAlwaysJids().get(1), "montague@montague.lit");
         Assert.assertTrue(mamPrefIQ2.getNeverJids().isEmpty());
 
         XmlPullParser parser3 = PacketParserUtils.getParserFor(exampleMamPrefsIQ3);
         MamPrefsIQ mamPrefIQ3 = new MamPrefsIQProvider().parse(parser3);
-        Assert.assertFalse(mamPrefIQ3.isUpdate());
+        Assert.assertEquals(IQ.Type.set, mamPrefIQ3.getType());
     }
 
     @Test

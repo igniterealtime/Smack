@@ -28,15 +28,9 @@ import org.xmlpull.v1.XmlPullParser;
 
 public class MamFinProviderTest extends MamTest {
 
-    String exmapleMamFinXml = "<fin xmlns='urn:xmpp:mam:1' stable='true'>"
+    static final String exmapleMamFinXml = "<fin xmlns='urn:xmpp:mam:1' stable='true'>"
             + "<set xmlns='http://jabber.org/protocol/rsm'>" + "<max>10</max>" + "<after>09af3-cc343-b409f</after>"
             + "</set>" + "</fin>";
-
-    private String getIQLimitedResultsExample() {
-        return "<iq type='result' id='u29303'>" + "<fin xmlns='urn:xmpp:mam:1' complete='true'>"
-                + "<set xmlns='http://jabber.org/protocol/rsm'>" + "<first index='0'>23452-4534-1</first>"
-                + "<last>390-2342-22</last>" + "<count>16</count>" + "</set>" + "</fin>" + "</iq>";
-    }
 
     @Test
     public void checkMamFinProvider() throws Exception {
@@ -54,7 +48,18 @@ public class MamFinProviderTest extends MamTest {
 
     @Test
     public void checkQueryLimitedResults() throws Exception {
-        IQ iq = (IQ) PacketParserUtils.parseStanza(getIQLimitedResultsExample());
+        // @formatter:off
+        final String IQ_LIMITED_RESULTS_EXAMPLE = "<iq type='result' id='u29303'>"
+                        + "<fin xmlns='urn:xmpp:mam:1' complete='true'>"
+                        + "<set xmlns='http://jabber.org/protocol/rsm'>"
+                        + "<first index='0'>23452-4534-1</first>"
+                        + "<last>390-2342-22</last>" + "<count>16</count>"
+                        + "</set>"
+                        + "</fin>"
+                        + "</iq>";
+        // @formatter:on
+
+        IQ iq = (IQ) PacketParserUtils.parseStanza(IQ_LIMITED_RESULTS_EXAMPLE);
 
         MamFinIQ mamFinIQ = (MamFinIQ) iq;
         Assert.assertEquals(mamFinIQ.getType(), Type.result);

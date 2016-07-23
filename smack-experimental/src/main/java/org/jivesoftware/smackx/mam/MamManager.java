@@ -34,13 +34,14 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamFinIQ;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
+import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.mam.filter.MamResultFilter;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
@@ -50,11 +51,12 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppDateTime;
 
 /**
- * Message Archive Management Manager class.
+ * A Manager for Message Archive Management (XEP-0313).
  * 
  * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
  *      Archive Management</a>
- * @author Fernando Ramirez and Florian Schmaus
+ * @author Florian Schmaus
+ * @author Fernando Ramirez
  * 
  */
 public final class MamManager extends Manager {
@@ -223,7 +225,9 @@ public final class MamManager extends Manager {
             addAdditionalFields(additionalFields, dataForm);
         }
 
-        MamQueryIQ mamQueryIQ = prepareMamQueryIQSet(dataForm, queryId);
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
+        mamQueryIQ.setType(IQ.Type.set);
+
         addResultsLimit(max, mamQueryIQ);
         return queryArchive(mamQueryIQ);
     }
@@ -273,11 +277,6 @@ public final class MamManager extends Manager {
         dataForm.addField(formField);
     }
 
-    private void preparePageQuery(MamQueryIQ mamQueryIQ, RSMSet rsmSet) {
-        mamQueryIQ.setType(IQ.Type.set);
-        mamQueryIQ.addExtension(rsmSet);
-    }
-
     /**
      * Returns a page of the archive.
      * 
@@ -293,7 +292,8 @@ public final class MamManager extends Manager {
     public MamQueryResult page(DataForm dataForm, RSMSet rsmSet) throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
         MamQueryIQ mamQueryIQ = new MamQueryIQ(UUID.randomUUID().toString(), dataForm);
-        preparePageQuery(mamQueryIQ, rsmSet);
+        mamQueryIQ.setType(IQ.Type.set);
+        mamQueryIQ.addExtension(rsmSet);
         return queryArchive(mamQueryIQ);
     }
 
@@ -373,20 +373,11 @@ public final class MamManager extends Manager {
     public List<FormField> retrieveFormFields() throws NoResponseException, XMPPErrorException, NotConnectedException,
             InterruptedException, NotLoggedInException {
         String queryId = UUID.randomUUID().toString();
-        MamQueryIQ mamQueryIQ = prepareMamQueryIQGet(queryId);
-        return queryFormFields(mamQueryIQ);
-    }
+        MamQueryIQ mamQueryIq = new MamQueryIQ(queryId);
 
-    private MamQueryIQ prepareMamQueryIQSet(DataForm dataForm, String queryId) {
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
-        mamQueryIQ.setType(IQ.Type.set);
-        return mamQueryIQ;
-    }
+        MamQueryIQ mamResponseQueryIq = connection().createPacketCollectorAndSend(mamQueryIq).nextResultOrThrow();
 
-    private MamQueryIQ prepareMamQueryIQGet(String queryId) {
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, null);
-        mamQueryIQ.setType(IQ.Type.get);
-        return mamQueryIQ;
+        return mamResponseQueryIq.getDataForm().getFields();
     }
 
     private MamQueryResult queryArchive(MamQueryIQ mamQueryIq) throws NoResponseException, XMPPErrorException,
@@ -435,23 +426,6 @@ public final class MamManager extends Manager {
         }
     }
 
-    private List<FormField> queryFormFields(MamQueryIQ mamQueryIq) throws NoResponseException, XMPPErrorException,
-            NotConnectedException, InterruptedException, NotLoggedInException {
-        final XMPPConnection connection = connection();
-        MamQueryIQ mamResponseQueryIQ = null;
-        PacketCollector mamResponseQueryIQCollector = connection
-                .createPacketCollector(new IQReplyFilter(mamQueryIq, connection));
-
-        try {
-            connection.sendStanza(mamQueryIq);
-            mamResponseQueryIQ = mamResponseQueryIQCollector.nextResultOrThrow();
-        } finally {
-            mamResponseQueryIQCollector.cancel();
-        }
-
-        return mamResponseQueryIQ.getDataForm().getFields();
-    }
-
     /**
      * Returns true if Message Archive Management is supported by the server.
      * 
@@ -466,7 +440,7 @@ public final class MamManager extends Manager {
         return ServiceDiscoveryManager.getInstanceFor(connection()).serverSupportsFeature(MamElements.NAMESPACE);
     }
 
-    private DataForm getNewMamForm() {
+    private static DataForm getNewMamForm() {
         FormField field = new FormField(FormField.FORM_TYPE);
         field.setType(FormField.Type.hidden);
         field.addValue(MamElements.NAMESPACE);
@@ -487,13 +461,8 @@ public final class MamManager extends Manager {
      */
     public MamPrefsResult retrieveArchivingPreferences() throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
-        MamPrefsIQ mamPrefIQ = prepareRetrievePreferencesStanza();
+        MamPrefsIQ mamPrefIQ = new MamPrefsIQ();
         return queryMamPrefs(mamPrefIQ);
-    }
-
-    private MamPrefsIQ prepareRetrievePreferencesStanza() {
-        MamPrefsIQ mamPrefIQ = new MamPrefsIQ(Type.get, null, null, null);
-        return mamPrefIQ;
     }
 
     /**
@@ -505,9 +474,8 @@ public final class MamManager extends Manager {
      * @param neverJids
      *            is the list of JIDs that should never have messages to/from
      *            archived in the user's store
-     * @param defaultField
-     *            can be "roster", "always", "never" (look at the XEP-0313
-     *            documentation)
+     * @param defaultBehavior
+     *            can be "roster", "always", "never" (see XEP-0313)
      * @return the MAM preferences result
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -515,16 +483,12 @@ public final class MamManager extends Manager {
      * @throws InterruptedException
      * @throws NotLoggedInException
      */
-    public MamPrefsResult updateArchivingPreferences(List<Jid> alwaysJids, List<Jid> neverJids, String defaultField)
+    public MamPrefsResult updateArchivingPreferences(List<Jid> alwaysJids, List<Jid> neverJids, DefaultBehavior defaultBehavior)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException,
             NotLoggedInException {
-        MamPrefsIQ mamPrefIQ = prepareUpdatePreferencesStanza(alwaysJids, neverJids, defaultField);
+        Objects.requireNonNull(defaultBehavior, "Default behavior must be set");
+        MamPrefsIQ mamPrefIQ = new MamPrefsIQ(alwaysJids, neverJids, defaultBehavior);
         return queryMamPrefs(mamPrefIQ);
-    }
-
-    private MamPrefsIQ prepareUpdatePreferencesStanza(List<Jid> alwaysJids, List<Jid> neverJids, String defaultField) {
-        MamPrefsIQ mamPrefIQ = new MamPrefsIQ(Type.set, alwaysJids, neverJids, defaultField);
-        return mamPrefIQ;
     }
 
     /**
@@ -544,16 +508,8 @@ public final class MamManager extends Manager {
     private MamPrefsResult queryMamPrefs(MamPrefsIQ mamPrefsIQ) throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
-        MamPrefsIQ mamPrefsResultIQ = null;
-        PacketCollector prefsResultIQCollector = connection
-                .createPacketCollector(new IQReplyFilter(mamPrefsIQ, connection));
 
-        try {
-            connection.sendStanza(mamPrefsIQ);
-            mamPrefsResultIQ = prefsResultIQCollector.nextResultOrThrow();
-        } finally {
-            prefsResultIQCollector.cancel();
-        }
+        MamPrefsIQ mamPrefsResultIQ = connection.createPacketCollectorAndSend(mamPrefsIQ).nextResultOrThrow();
 
         return new MamPrefsResult(mamPrefsResultIQ, DataForm.from(mamPrefsIQ));
     }

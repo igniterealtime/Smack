@@ -149,6 +149,19 @@ public abstract class Stanza implements TopLevelStreamElement {
     }
 
     /**
+     * Set the stanza id if none is set.
+     * 
+     * @return the stanza id.
+     * @since 4.2
+     */
+    public String setStanzaId() {
+        if (!hasStanzaIdSet()) {
+            setStanzaId(StanzaIdUtil.newStanzaId());
+        }
+        return getStanzaId();
+    }
+
+    /**
      * Returns who the stanza(/packet) is being sent "to", or <tt>null</tt> if
      * the value is not set. The XMPP protocol often makes the "to"
      * attribute optional, so it does not always need to be set.<p>

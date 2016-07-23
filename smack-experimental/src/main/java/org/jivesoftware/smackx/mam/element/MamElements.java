@@ -153,7 +153,7 @@ public class MamElements {
         /**
          * list of JIDs.
          */
-        private List<Jid> alwaysJids;
+        private final List<Jid> alwaysJids;
 
         /**
          * Always JID list element constructor.

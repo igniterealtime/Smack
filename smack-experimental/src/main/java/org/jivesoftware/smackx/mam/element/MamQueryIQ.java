@@ -51,6 +51,7 @@ public class MamQueryIQ extends IQ {
      */
     public MamQueryIQ(String queryId) {
         this(queryId, null, null);
+        setType(IQ.Type.get);
     }
 
     /**

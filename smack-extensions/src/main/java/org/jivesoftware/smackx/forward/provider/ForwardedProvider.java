@@ -36,6 +36,8 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class ForwardedProvider extends ExtensionElementProvider<Forwarded> {
 
+    public static final ForwardedProvider INSTANCE = new ForwardedProvider();
+
     private static final Logger LOGGER = Logger.getLogger(ForwardedProvider.class.getName());
 
     @Override

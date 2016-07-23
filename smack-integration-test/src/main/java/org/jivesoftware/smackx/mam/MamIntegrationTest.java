@@ -16,8 +16,9 @@
  */
 package org.jivesoftware.smackx.mam;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
-import java.util.UUID;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
@@ -30,8 +31,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.MamManager.MamQueryResult;
-import org.junit.Assert;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.EntityBareJid;
 
 public class MamIntegrationTest extends AbstractSmackIntegrationTest {
 
@@ -49,8 +49,19 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
 
     }
 
-    private Message getConTwoLastMessageSentFrom(Jid userOne) throws NoResponseException, XMPPErrorException,
-            NotConnectedException, InterruptedException, NotLoggedInException {
+    @SmackIntegrationTest
+    public void mamTest() throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException,
+                    NotLoggedInException {
+        EntityBareJid userOne = conOne.getUser().asEntityBareJid();
+        EntityBareJid userTwo = conTwo.getUser().asEntityBareJid();
+
+        Message message = new Message(userTwo);
+        String messageId = message.setStanzaId();
+        String messageBody = "test message";
+        message.setBody(messageBody);
+
+        conOne.sendStanza(message);
+
         int pageSize = 20;
         MamQueryResult mamQueryResult = mamManagerConTwo.queryArchive(pageSize, null, null, userOne, null);
 
@@ -59,35 +70,12 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
         }
 
         List<Forwarded> forwardedMessages = mamQueryResult.forwardedMessages;
-        Message messageFromMAM = (Message) forwardedMessages.get(forwardedMessages.size() - 1).getForwardedStanza();
-        return messageFromMAM;
-    }
+        Message mamMessage = (Message) forwardedMessages.get(forwardedMessages.size() - 1).getForwardedStanza();
 
-    private Message prepareMessage(Jid to, String messageId, String body) {
-        Message message = new Message();
-        message.setTo(to);
-        message.setStanzaId(messageId);
-        message.setBody(body);
-        return message;
-    }
-
-    @SmackIntegrationTest
-    public void mamTest() throws Exception {
-        Jid userOne = conOne.getUser().asEntityBareJid();
-        Jid userTwo = conTwo.getUser().asEntityBareJid();
-
-        String messageId = UUID.randomUUID().toString();
-        String messageBody = "test message";
-
-        Message message = prepareMessage(userTwo, messageId, messageBody);
-        conOne.sendStanza(message);
-
-        Message mamMessage = getConTwoLastMessageSentFrom(userOne);
-
-        Assert.assertEquals(messageId, mamMessage.getStanzaId());
-        Assert.assertEquals(messageBody, mamMessage.getBody());
-        Assert.assertEquals(conOne.getUser(), mamMessage.getFrom());
-        Assert.assertEquals(userTwo, mamMessage.getTo());
+        assertEquals(messageId, mamMessage.getStanzaId());
+        assertEquals(messageBody, mamMessage.getBody());
+        assertEquals(conOne.getUser(), mamMessage.getFrom());
+        assertEquals(userTwo, mamMessage.getTo());
     }
 
 }
