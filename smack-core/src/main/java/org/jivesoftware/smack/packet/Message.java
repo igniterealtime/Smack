@@ -27,6 +27,8 @@ import java.util.Set;
 import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Represents XMPP message packets. A message can be one of several types:
@@ -99,6 +101,17 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     public Message(Jid to, String body) {
         this(to);
         setBody(body);
+    }
+
+    /**
+     * Creates a new message to the specified recipient and with the specified body.
+     *
+     * @param to the user to send the message to.
+     * @param body the body of the message.
+     * @throws XmppStringprepException if 'to' is not a valid XMPP address.
+     */
+    public Message(String to, String body) throws XmppStringprepException {
+        this(JidCreate.from(to), body);
     }
 
     /**
