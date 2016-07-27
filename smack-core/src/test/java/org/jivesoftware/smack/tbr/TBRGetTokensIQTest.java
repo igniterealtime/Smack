@@ -27,7 +27,7 @@ import org.jxmpp.jid.impl.JidCreate;
 public class TBRGetTokensIQTest {
 
     String getTokensIQExample = "<iq to='alice@wonderland.com' id='123' type='get'>"
-            + "<query xmlns='erlang-solutions.com:xmpp:token-auth:0'></query>" + "</iq>";
+            + "<query xmlns='erlang-solutions.com:xmpp:token-auth:0'/>" + "</iq>";
 
     String tokensResponseExample = "<iq to='alice@wonderland.com/resource' from='alice@wonderland.com' id='123' type='result'>"
             + "<items xmlns='erlang-solutions.com:xmpp:token-auth:0'>"
