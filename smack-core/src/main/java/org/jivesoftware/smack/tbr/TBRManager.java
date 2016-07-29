@@ -26,8 +26,6 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.IQReplyFilter;
-import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.tbr.element.TBRGetTokensIQ;
 import org.jivesoftware.smack.tbr.element.TBRTokensIQ;
@@ -87,9 +85,8 @@ public final class TBRManager extends Manager {
     public TBRTokens getTokens()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         TBRGetTokensIQ getTokensIQ = new TBRGetTokensIQ(connection().getUser().asBareJid());
-        StanzaFilter responseFilter = new IQReplyFilter(getTokensIQ, connection());
 
-        IQ responseIq = connection().createPacketCollectorAndSend(responseFilter, getTokensIQ).nextResultOrThrow();
+        IQ responseIq = connection().createPacketCollectorAndSend(getTokensIQ).nextResultOrThrow();
         TBRTokensIQ tokensIQ = (TBRTokensIQ) responseIq;
 
         return new TBRTokens(tokensIQ.getAccessToken(), tokensIQ.getRefreshToken());
