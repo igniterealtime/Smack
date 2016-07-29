@@ -21,7 +21,10 @@ package org.jivesoftware.smackx.muc.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -81,44 +84,44 @@ public class MUCUserProvider extends ExtensionElementProvider<MUCUser> {
     }
 
     private static MUCUser.Invite parseInvite(XmlPullParser parser) throws XmlPullParserException, IOException {
-        boolean done = false;
-        MUCUser.Invite invite = new MUCUser.Invite();
-        invite.setFrom(parser.getAttributeValue("", "from"));
-        invite.setTo(parser.getAttributeValue("", "to"));
-        while (!done) {
+        String reason = null;
+        EntityBareJid to = ParserUtils.getBareJidAttribute(parser, "to");
+        EntityFullJid from = ParserUtils.getFullJidAttribute(parser, "from");
+
+        outerloop: while (true) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("reason")) {
-                    invite.setReason(parser.nextText());
+                    reason = parser.nextText();
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("invite")) {
-                    done = true;
+                    break outerloop;
                 }
             }
         }
-        return invite;
+        return new MUCUser.Invite(reason, from, to);
     }
 
     private static MUCUser.Decline parseDecline(XmlPullParser parser) throws XmlPullParserException, IOException {
-        boolean done = false;
-        MUCUser.Decline decline = new MUCUser.Decline();
-        decline.setFrom(parser.getAttributeValue("", "from"));
-        decline.setTo(parser.getAttributeValue("", "to"));
-        while (!done) {
+        String reason = null;
+        EntityBareJid to = ParserUtils.getBareJidAttribute(parser, "to");
+        EntityBareJid from = ParserUtils.getBareJidAttribute(parser, "from");
+
+        outerloop: while (true) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("reason")) {
-                    decline.setReason(parser.nextText());
+                    reason = parser.nextText();
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {
                 if (parser.getName().equals("decline")) {
-                    done = true;
+                    break outerloop;
                 }
             }
         }
-        return decline;
+        return new MUCUser.Decline(reason, from, to);
     }
 }

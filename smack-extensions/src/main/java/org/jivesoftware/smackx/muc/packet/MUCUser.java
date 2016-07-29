@@ -27,6 +27,8 @@ import java.util.Set;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
 
 /**
  * Represents extended presence information about roles, affiliations, full JIDs,
@@ -244,9 +246,23 @@ public class MUCUser implements ExtensionElement {
     public static class Invite implements NamedElement {
         public static final String ELEMENT ="invite";
 
-        private String reason;
-        private String from;
-        private String to;
+        private final String reason;
+        private final EntityFullJid from;
+        private final EntityBareJid to;
+
+        public Invite(String reason, EntityFullJid from) {
+            this(reason, from, null);
+        }
+
+        public Invite(String reason, EntityBareJid to) {
+            this(reason, null, to);
+        }
+
+        public Invite(String reason, EntityFullJid from, EntityBareJid to) {
+            this.reason = reason;
+            this.from = from;
+            this.to = to;
+        }
 
         /**
          * Returns the bare JID of the inviter or, optionally, the room JID. (e.g.
@@ -254,7 +270,7 @@ public class MUCUser implements ExtensionElement {
          *
          * @return the room's occupant that sent the invitation.
          */
-        public String getFrom() {
+        public EntityFullJid getFrom() {
             return from;
         }
 
@@ -272,36 +288,8 @@ public class MUCUser implements ExtensionElement {
          *
          * @return the bare JID of the invitee.
          */
-        public String getTo() {
+        public EntityBareJid getTo() {
             return to;
-        }
-
-        /**
-         * Sets the bare JID of the inviter or, optionally, the room JID. (e.g.
-         * 'crone1@shakespeare.lit/desktop')
-         *
-         * @param from the bare JID of the inviter or, optionally, the room JID.
-         */
-        public void setFrom(String from) {
-            this.from = from;
-        }
-
-        /**
-         * Sets the message explaining the invitation.
-         *
-         * @param reason the message explaining the invitation.
-         */
-        public void setReason(String reason) {
-            this.reason = reason;
-        }
-
-        /**
-         * Sets the bare JID of the invitee. (e.g. 'hecate@shakespeare.lit')
-         *
-         * @param to the bare JID of the invitee.
-         */
-        public void setTo(String to) {
-            this.to = to;
         }
 
         @Override
@@ -330,17 +318,27 @@ public class MUCUser implements ExtensionElement {
     public static class Decline implements NamedElement {
         public static final String ELEMENT = "decline";
 
-        private String reason;
-        private String from;
-        private String to;
+        private final String reason;
+        private final EntityBareJid from;
+        private final EntityBareJid to;
+
+        public Decline(String reason, EntityBareJid to) {
+            this(reason, null, to);
+        }
+
+        public Decline(String reason, EntityBareJid from, EntityBareJid to) {
+            this.reason = reason;
+            this.from = from;
+            this.to = to;
+        }
 
         /**
          * Returns the bare JID of the invitee that rejected the invitation. (e.g.
-         * 'crone1@shakespeare.lit/desktop').
+         * 'crone1@shakespeare.lit').
          *
          * @return the bare JID of the invitee that rejected the invitation.
          */
-        public String getFrom() {
+        public EntityBareJid getFrom() {
             return from;
         }
 
@@ -358,36 +356,8 @@ public class MUCUser implements ExtensionElement {
          *
          * @return the bare JID of the inviter.
          */
-        public String getTo() {
+        public EntityBareJid getTo() {
             return to;
-        }
-
-        /**
-         * Sets the bare JID of the invitee that rejected the invitation. (e.g.
-         * 'crone1@shakespeare.lit/desktop').
-         *
-         * @param from the bare JID of the invitee that rejected the invitation.
-         */
-        public void setFrom(String from) {
-            this.from = from;
-        }
-
-        /**
-         * Sets the message explaining why the invitation was rejected.
-         *
-         * @param reason the message explaining the reason for the rejection.
-         */
-        public void setReason(String reason) {
-            this.reason = reason;
-        }
-
-        /**
-         * Sets the bare JID of the inviter. (e.g. 'hecate@shakespeare.lit')
-         *
-         * @param to the bare JID of the inviter.
-         */
-        public void setTo(String to) {
-            this.to = to;
         }
 
         @Override
