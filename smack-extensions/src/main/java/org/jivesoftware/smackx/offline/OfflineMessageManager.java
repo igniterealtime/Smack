@@ -26,6 +26,7 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -228,6 +229,7 @@ public class OfflineMessageManager {
      */
     public void deleteMessages(List<String> nodes) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         OfflineMessageRequest request = new OfflineMessageRequest();
+        request.setType(IQ.Type.set);
         for (String node : nodes) {
             OfflineMessageRequest.Item item = new OfflineMessageRequest.Item(node);
             item.setAction("remove");
@@ -247,6 +249,7 @@ public class OfflineMessageManager {
      */
     public void deleteMessages() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         OfflineMessageRequest request = new OfflineMessageRequest();
+        request.setType(IQ.Type.set);
         request.setPurge(true);
         connection.createPacketCollectorAndSend(request).nextResultOrThrow();
     }
