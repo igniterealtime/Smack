@@ -266,7 +266,11 @@ public final class Configuration {
         String accountTwoPassword = properties.getProperty("accountTwoPassword");
         String accountThreeUsername = properties.getProperty("accountThreeUsername");
         String accountThreePassword = properties.getProperty("accountThreePassword");
-        builder.setUsernamesAndPassword(accountOneUsername, accountOnePassword, accountTwoUsername, accountTwoPassword, accountThreeUsername, accountThreePassword);
+        if (accountOneUsername != null || accountOnePassword != null || accountTwoUsername != null
+                        || accountTwoPassword != null || accountThreeUsername != null || accountThreePassword != null) {
+            builder.setUsernamesAndPassword(accountOneUsername, accountOnePassword, accountTwoUsername,
+                            accountTwoPassword, accountThreeUsername, accountThreePassword);
+        }
 
         builder.setDebug(properties.getProperty("debug"));
         builder.setEnabledTests(properties.getProperty("enabledTests"));
