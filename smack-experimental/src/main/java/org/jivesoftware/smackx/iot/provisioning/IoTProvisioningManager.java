@@ -151,7 +151,7 @@ public final class IoTProvisioningManager extends Manager {
                         });
 
         roster = Roster.getInstanceFor(connection);
-        roster.setSubscribeListener(new SubscribeListener() {
+        roster.addSubscribeListener(new SubscribeListener() {
             @Override
             public SubscribeAnswer processSubscribe(Jid from, Presence subscribeRequest) {
                 // First check if the subscription request comes from a known registry and accept the request if so.

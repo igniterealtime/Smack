@@ -199,7 +199,9 @@ public final class Roster extends Manager {
 
     private SubscriptionMode subscriptionMode = getDefaultSubscriptionMode();
 
-    private SubscribeListener subscribeListener;
+    private final Set<SubscribeListener> subscribeListeners = new CopyOnWriteArraySet<>();
+
+    private SubscriptionMode previousSubscriptionMode;
 
     /**
      * Returns the default subscription processing mode to use when a new Roster is created. The
@@ -249,11 +251,12 @@ public final class Roster extends Manager {
                 SubscribeAnswer subscribeAnswer = null;
                 switch (subscriptionMode) {
                 case manual:
-                    final SubscribeListener subscribeListener = Roster.this.subscribeListener;
-                    if (subscribeListener == null) {
-                        return;
+                    for (SubscribeListener subscribeListener : subscribeListeners) {
+                        subscribeAnswer = subscribeListener.processSubscribe(from, presence);
+                        if (subscribeAnswer != null) {
+                            break;
+                        }
                     }
-                    subscribeAnswer = subscribeListener.processSubscribe(from, presence);
                     if (subscribeAnswer == null) {
                         return;
                     }
@@ -666,19 +669,37 @@ public final class Roster extends Manager {
     }
 
     /**
-     * Set the subscribe listener, which is invoked on incoming subscription requests and if
-     * {@link SubscriptionMode} is set to {@link SubscriptionMode#manual}. If
-     * <code>subscribeListener</code> is not <code>null</code>, then this also sets subscription
+     * Add a subscribe listener, which is invoked on incoming subscription requests and if
+     * {@link SubscriptionMode} is set to {@link SubscriptionMode#manual}. This also sets subscription
      * mode to {@link SubscriptionMode#manual}.
      * 
-     * @param subscribeListener the subscribe listener to set.
+     * @param subscribeListener the subscribe listener to add.
+     * @return <code>true</code> if the listener was not already added.
      * @since 4.2
      */
-    public void setSubscribeListener(SubscribeListener subscribeListener) {
-        if (subscribeListener != null) {
-            setSubscriptionMode(SubscriptionMode.manual);
+    public boolean addSubscribeListener(SubscribeListener subscribeListener) {
+        Objects.requireNonNull(subscribeListener, "SubscribeListener argument must not be null");
+        if (subscriptionMode != SubscriptionMode.manual) {
+            previousSubscriptionMode = subscriptionMode;
         }
-        this.subscribeListener = subscribeListener;
+        return subscribeListeners.add(subscribeListener);
+    }
+
+    /**
+     * Remove a subscribe listener. Also restores the previous subscription mode
+     * state, if the last listener got removed.
+     *
+     * @param subscribeListener
+     *            the subscribe listener to remove.
+     * @return <code>true</code> if the listener registered and got removed.
+     * @since 4.2
+     */
+    public boolean removeSubscribeListener(SubscribeListener subscribeListener) {
+        boolean removed = subscribeListeners.remove(subscribeListener);
+        if (removed && subscribeListeners.isEmpty()) {
+            setSubscriptionMode(previousSubscriptionMode);
+        }
+        return removed;
     }
 
     /**

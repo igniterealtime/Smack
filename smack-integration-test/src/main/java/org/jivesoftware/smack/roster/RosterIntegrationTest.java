@@ -50,7 +50,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
     public void subscribeRequestListenerTest() throws TimeoutException, Exception {
         ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
 
-        rosterTwo.setSubscribeListener(new SubscribeListener() {
+        final SubscribeListener subscribeListener = new SubscribeListener() {
             @Override
             public SubscribeAnswer processSubscribe(Jid from, Presence subscribeRequest) {
                 if (from.equals(conOne.getUser().asBareJid())) {
@@ -58,7 +58,8 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
                 }
                 return SubscribeAnswer.Deny;
             }
-        });
+        };
+        rosterTwo.addSubscribeListener(subscribeListener);
 
         final String conTwosRosterName = "ConTwo " + testRunId;
         final SimpleResultSyncPoint addedAndSubscribed = new SimpleResultSyncPoint();
@@ -88,9 +89,15 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
                 }
             }
         });
-        rosterOne.createEntry(conTwo.getUser().asBareJid(), conTwosRosterName, null);
 
-        assertTrue(addedAndSubscribed.waitForResult(2 * connection.getPacketReplyTimeout()));
+        try {
+            rosterOne.createEntry(conTwo.getUser().asBareJid(), conTwosRosterName, null);
+
+            assertTrue(addedAndSubscribed.waitForResult(2 * connection.getPacketReplyTimeout()));
+        }
+        finally {
+            rosterTwo.removeSubscribeListener(subscribeListener);
+        }
     }
 
     public static void ensureBothAccountsAreNotInEachOthersRoster(XMPPConnection conOne, XMPPConnection conTwo) throws NotLoggedInException,
@@ -124,7 +131,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
             return;
         }
 
-        rosterOne.setSubscribeListener(new SubscribeListener() {
+        final SubscribeListener subscribeListener = new SubscribeListener() {
             @Override
             public SubscribeAnswer processSubscribe(Jid from, Presence subscribeRequest) {
                 if (from.equals(conTwo.getUser().asBareJid())) {
@@ -132,7 +139,8 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
                 }
                 return SubscribeAnswer.Deny;
             }
-        });
+        };
+        rosterOne.addSubscribeListener(subscribeListener);
 
         final SimpleResultSyncPoint syncPoint = new SimpleResultSyncPoint();
         rosterTwo.addPresenceEventListener(new AbstractPresenceEventListener() {
@@ -149,7 +157,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         try {
             syncPoint.waitForResult(timeout);
         } finally {
-            rosterOne.setSubscribeListener(null);
+            rosterOne.removeSubscribeListener(subscribeListener);
         }
     }
 }
