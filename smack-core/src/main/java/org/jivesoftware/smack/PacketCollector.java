@@ -192,15 +192,16 @@ public class PacketCollector {
     }
 
     /**
-     * Returns the next available packet. The method call will block until a stanza(/packet) is available or
-     * the connections reply timeout has elapsed. If the timeout elapses without a result,
-     * <tt>null</tt> will be returned. This method does also cancel the PacketCollector.
+     * Returns the next available stanza. The method in equivalent to
+     * {@link #nextResultOrThrow(long)} where the timeout argument is the default reply timeout of
+     * the connection associated with this collector.
      * 
-     * @return the next available packet.
-     * @throws XMPPErrorException in case an error response.
+     * @return the next available stanza.
+     * @throws XMPPErrorException in case an error response was received.
      * @throws NoResponseException if there was no response from the server.
-     * @throws InterruptedException 
-     * @throws NotConnectedException 
+     * @throws InterruptedException
+     * @throws NotConnectedException
+     * @see #nextResultOrThrow(long)
      */
     public <P extends Stanza> P nextResultOrThrow() throws NoResponseException, XMPPErrorException,
                     InterruptedException, NotConnectedException {
@@ -208,15 +209,38 @@ public class PacketCollector {
     }
 
     /**
-     * Returns the next available packet. The method call will block until a stanza(/packet) is available or
-     * the <tt>timeout</tt> has elapsed. This method does also cancel the PacketCollector.
-     * 
-     * @param timeout the amount of time to wait for the next stanza(/packet) (in milleseconds).
-     * @return the next available packet.
+     * Returns the next available stanza. The method call will block until a stanza is
+     * available or the <tt>timeout</tt> has elapsed. This method does also cancel the
+     * collector in every case.
+     * <p>
+     * Three things can happen when waiting for an response:
+     * </p>
+     * <ol>
+     * <li>A result response arrives.</li>
+     * <li>An error response arrives.</li>
+     * <li>An timeout occurs.</li>
+     * <li>The thread is interrupted</li>
+     * </ol>
+     * <p>
+     * in which this method will
+     * </p>
+     * <ol>
+     * <li>return with the result.</li>
+     * <li>throw an {@link XMPPErrorException}.</li>
+     * <li>throw an {@link NoResponseException}.</li>
+     * <li>throw an {@link InterruptedException}.</li>
+     * </ol>
+     * <p>
+     * Additionally the method will throw a {@link NotConnectedException} if no response was
+     * received and the connection got disconnected.
+     * </p>
+     *
+     * @param timeout the amount of time to wait for the next stanza in milliseconds.
+     * @return the next available stanza.
      * @throws NoResponseException if there was no response from the server.
-     * @throws XMPPErrorException in case an error response.
-     * @throws InterruptedException 
-     * @throws NotConnectedException 
+     * @throws XMPPErrorException in case an error response was received.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotConnectedException if there was no response and the connection got disconnected.
      */
     public <P extends Stanza> P nextResultOrThrow(long timeout) throws NoResponseException,
                     XMPPErrorException, InterruptedException, NotConnectedException {
