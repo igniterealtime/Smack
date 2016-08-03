@@ -36,6 +36,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.iot.Thing;
@@ -202,7 +203,7 @@ public final class IoTDiscoveryManager extends Manager {
     /**
      * Try to find an XMPP IoT registry.
      *
-     * @return the JID of a Thing Registry if one could be found.
+     * @return the JID of a Thing Registry if one could be found, <code>null</code> otherwise.
      * @throws InterruptedException
      * @throws NotConnectedException
      * @throws XMPPErrorException
@@ -373,9 +374,11 @@ public final class IoTDiscoveryManager extends Manager {
     // Registry utility methods
 
     public boolean isRegistry(BareJid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        Objects.requireNonNull(jid, "JID argument must not be null");
         // At some point 'usedRegistries' will also contain the registry returned by findRegistry(), but since this is
         // not the case from the beginning, we perform findRegistry().equals(jid) too.
-        if (findRegistry().equals(jid)) {
+        Jid registry = findRegistry();
+        if (jid.equals(registry)) {
             return true;
         }
         if (usedRegistries.contains(jid)) {

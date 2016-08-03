@@ -155,13 +155,28 @@ hr {
 
 <p>
 Thank you for downloading Smack! This version of Smack is compatible
-with JVMs @targetCompatibility@ or higher. If you dont' use a
+with JVMs @targetCompatibility@ or higher. Using a build system which
+is able to consume Maven artifacts, like gradle or Maven, is highly
+recommended when using Smack.
+</p>
+
+<p>
+  <b>This is not the real README.</b> Please visit
+  <center>
+	<a href="https://www.igniterealtime.org/projects/smack/readme">https://www.igniterealtime.org/projects/smack/readme</a>
+  </center>
+  for the README of the current stable Smack version.
+</p>
+
+<p>
+If you dont' use a
 dependency resolution system, like gradle or maven, then you will need
 to download at least
 the <a href="http://www.extreme.indiana.edu/xgws/xsoap/xpp/mxp1/">Xml
 Pull Parser 3rd Edition (XPP3) library</a> or any other library that
 implements the XmlPullParser interface
-(like <a href="http://kxml.org/">kXML</a>).
+(like <a href="http://kxml.org/">kXML</a>) and the set of
+<a href="http://jxmpp.org">jXMPP libraries</a>.
 </p>
 
 <p>
@@ -174,21 +189,14 @@ fixes to the code, please visit the
 <a href="https://community.igniterealtime.org">online forum</a>.
 </p>
 
-<p><b>About the Distribution</b></p>
-
-The <tt>smack-core.jar</tt> file in the main distribution folder. The optional
-<tt>smack-extensions.jar</tt> contains the <a href="documentation/extensions/index.html">Smack extensions</a> 
-while <tt>smack-debug.jar</tt> contains an enhanced debugger.<p>
-
 <p><b>Changelog and Upgrading</b><p>
 
 View the <a href="changelog.html">changelog</a> for a list of changes since the 
 last release.
-If you are upgrading from Smack 3 to Smack 4, then please consult the <a href="https://community.igniterealtime.org/docs/DOC-2703">Smack 4 Readme and Upgrade Guide</a>
 
 <p><b>License Agreements</b><p>
 <ul>
-<li>Use of the Smack source code is governed by the Apache License:
+<li>Use of the Smack source code is governed by the Apache License Version 2.0:
 <pre>
  Copyright 2002-2008 Jive Software.
 

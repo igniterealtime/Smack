@@ -40,6 +40,8 @@ import java.util.List;
  */
 public class DataFormProvider extends ExtensionElementProvider<DataForm> {
 
+    public static final DataFormProvider INSTANCE = new DataFormProvider();
+
     @Override
     public DataForm parse(XmlPullParser parser, int initialDepth) throws
                     Exception {
