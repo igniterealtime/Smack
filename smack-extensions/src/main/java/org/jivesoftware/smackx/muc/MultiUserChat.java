@@ -251,14 +251,16 @@ public class MultiUserChat {
         // rejection listeners if the message includes an invitation rejection.
         declinesListener = new StanzaListener() {
             public void processPacket(Stanza packet) {
+                Message message = (Message) packet;
                 // Get the MUC User extension
                 MUCUser mucUser = MUCUser.from(packet);
+                MUCUser.Decline rejection = mucUser.getDecline();
                 // Check if the MUCUser informs that the invitee has declined the invitation
-                if (mucUser.getDecline() == null) {
+                if (rejection == null) {
                     return;
                 }
                 // Fire event for invitation rejection listeners
-                fireInvitationRejectionListeners(mucUser.getDecline().getFrom(), mucUser.getDecline().getReason());
+                fireInvitationRejectionListeners(message, rejection);
             }
         };
 
@@ -874,7 +876,7 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void invite(String user, String reason) throws NotConnectedException, InterruptedException {
+    public void invite(EntityBareJid user, String reason) throws NotConnectedException, InterruptedException {
         invite(new Message(), user, reason);
     }
 
@@ -891,15 +893,13 @@ public class MultiUserChat {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void invite(Message message, String user, String reason) throws NotConnectedException, InterruptedException {
+    public void invite(Message message, EntityBareJid user, String reason) throws NotConnectedException, InterruptedException {
         // TODO listen for 404 error code when inviter supplies a non-existent JID
         message.setTo(room);
 
         // Create the MUCUser packet that will include the invitation
         MUCUser mucUser = new MUCUser();
-        MUCUser.Invite invite = new MUCUser.Invite();
-        invite.setTo(user);
-        invite.setReason(reason);
+        MUCUser.Invite invite = new MUCUser.Invite(reason, user);
         mucUser.setInvite(invite);
         // Add the MUCUser packet that includes the invitation to the message
         message.addExtension(mucUser);
@@ -935,14 +935,16 @@ public class MultiUserChat {
      * @param invitee the user being invited.
      * @param reason the reason for the rejection
      */
-    private void fireInvitationRejectionListeners(String invitee, String reason) {
+    private void fireInvitationRejectionListeners(Message message, MUCUser.Decline rejection) {
+        EntityBareJid invitee = rejection.getFrom();
+        String reason = rejection.getReason();
         InvitationRejectionListener[] listeners;
         synchronized (invitationRejectionListeners) {
             listeners = new InvitationRejectionListener[invitationRejectionListeners.size()];
             invitationRejectionListeners.toArray(listeners);
         }
         for (InvitationRejectionListener listener : listeners) {
-            listener.invitationDeclined(invitee, reason);
+            listener.invitationDeclined(invitee, reason, message, rejection);
         }
     }
 

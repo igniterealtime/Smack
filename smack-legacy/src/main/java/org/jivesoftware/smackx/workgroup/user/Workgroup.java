@@ -58,6 +58,7 @@ import org.jivesoftware.smackx.workgroup.settings.WorkgroupProperties;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
@@ -132,8 +133,8 @@ public class Workgroup {
         MultiUserChatManager.getInstanceFor(connection).addInvitationListener(
                 new org.jivesoftware.smackx.muc.InvitationListener() {
                     @Override
-                    public void invitationReceived(XMPPConnection conn, org.jivesoftware.smackx.muc.MultiUserChat room, String inviter,
-                                                   String reason, String password, Message message) {
+                    public void invitationReceived(XMPPConnection conn, org.jivesoftware.smackx.muc.MultiUserChat room, EntityFullJid inviter,
+                                                   String reason, String password, Message message, MUCUser.Invite invitation) {
                         inQueue = false;
                         queuePosition = -1;
                         queueRemainingTime = -1;

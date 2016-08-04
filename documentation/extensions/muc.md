@@ -17,6 +17,19 @@ text-based conference rooms.
 
 **XEP related:** [XEP-45](http://www.xmpp.org/extensions/xep-0045.html)
 
+For all examples in this document, assume that the following variables exists:
+
+```java
+// Create the XMPP address (JID) of the MUC.
+EntityBareJid mucJid = JidCreate.bareFrom("myroom@conference.jabber.org");
+
+// Create the nickname.
+Resourcepart nickname = Resourcepart.from("testbot");
+
+// A other use (we may invite him to a MUC).
+FullJid otherJid = JidCreate.fullFromm("user3@host.org/Smack");
+```
+
 Create a new Room
 -----------------
 
@@ -52,10 +65,10 @@ In this example we can see how to create an instant room:
 MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
 // Get a MultiUserChat using MultiUserChatManager
-MultiUserChat muc = manager.getMultiUserChat("myroom@conference.jabber.org");
+MultiUserChat muc = manager.getMultiUserChat(mucJid);
 
 // Create the room and send an empty configuration form to make this an instant room
-muc.create("testbot").makeInstant();
+muc.create(nickname).makeInstant();
 ```
 
 In this example we can see how to create a reserved room. The form is
@@ -66,13 +79,13 @@ completed with default values:
 MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
 // Create a MultiUserChat using an XMPPConnection for a room
-MultiUserChat muc = = manager.getMultiUserChat("myroom@conference.jabber.org");
+MultiUserChat muc = = manager.getMultiUserChat(mucJid);
 
 // Prepare a list of owners of the new room
 Set<Jid> owners = JidUtil.jidSetFrom(new String[] { "me@example.org", "juliet@example.org" });
 
 // Create the room
-muc.create("testbot")
+muc.create(nickname)
   .getConfigFormManger()
   .setRoomOwners(owners)
   .submitConfigurationForm();
@@ -116,11 +129,11 @@ In this example we can see how to join a room with a given nickname:
 MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
 // Create a MultiUserChat using an XMPPConnection for a room
-MultiUserChat muc2 = manager.getMultiUserChat("myroom@conference.jabber.org");
+MultiUserChat muc2 = manager.getMultiUserChat(mucJid);
 
 // User2 joins the new room
 // The room service will decide the amount of history to send
-muc2.join("testbot2");
+muc2.join(nickname);
 ```
 
 In this example we can see how to join a room with a given nickname and
@@ -131,11 +144,11 @@ password:
 MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
 // Create a MultiUserChat using an XMPPConnection for a room
-MultiUserChat muc2 = manager.getMultiUserChat("myroom@conference.jabber.org");
+MultiUserChat muc2 = manager.getMultiUserChat(mucJid);
 
 // User2 joins the new room using a password
 // The room service will decide the amount of history to send
-muc2.join("testbot2", "password");
+muc2.join(nickname, "password");
 ```
 
 In this example we can see how to join a room with a given nickname specifying
@@ -146,13 +159,13 @@ the amount of history to receive:
 MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
 // Create a MultiUserChat using an XMPPConnection for a room
-MultiUserChat muc2 = manager.getMultiUserChat("myroom@conference.jabber.org");
+MultiUserChat muc2 = manager.getMultiUserChat(mucJid);
 
 // User2 joins the new room using a password and specifying
 // the amount of history to receive. In this example we are requesting the last 5 messages.
 DiscussionHistory history = new DiscussionHistory();
 history.setMaxStanzas(5);
-muc2.join("testbot2", "password", history, conn1.getPacketReplyTimeout());
+muc2.join(nickname, "password", history, conn1.getPacketReplyTimeout());
 ```
 
 Manage room invitations
@@ -193,9 +206,9 @@ for possible rejections:
 MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
 // Create a MultiUserChat using an XMPPConnection for a room
-MultiUserChat muc2 = manager.getMultiUserChat("myroom@conference.jabber.org");
+MultiUserChat muc2 = manager.getMultiUserChat(mucJid);
 
-muc2.join("testbot2");
+muc2.join(nickname);
 // User2 listens for invitation rejections
 muc2.addInvitationRejectionListener(new InvitationRejectionListener() {
 	public void invitationDeclined(String invitee, String reason) {
@@ -203,7 +216,7 @@ muc2.addInvitationRejectionListener(new InvitationRejectionListener() {
 	}
 });
 // User2 invites user3 to join to the room
-muc2.invite("user3@host.org/Smack", "Meet me in this excellent room");
+muc2.invite(otherJid, "Meet me in this excellent room");
 ```
 
 In this example we can see how to listen for room invitations and decline
@@ -212,9 +225,9 @@ invitations:
 ```java
 // User3 listens for MUC invitations
 MultiUserChatManager.getInstanceFor(connection).addInvitationListener(new InvitationListener() {
-	public void invitationReceived(XMPPConnection conn, String room, String inviter, String reason, String password) {
+	public void invitationReceived(XMPPConnection conn, String room, EntityFullJid inviter, String reason, String password) {
 		// Reject the invitation
-		MultiUserChat.decline(conn, room, inviter, "I'm busy right now");
+		MultiUserChat.decline(conn, room, inviter.asBareJid()s, "I'm busy right now");
 	}
 });
 ```
@@ -241,7 +254,7 @@ In this example we can see how to discover support of MUC:
 
 ```java
 // Discover whether user3@host.org supports MUC or not
-boolean supports = MultiUserChatManager.getInstanceFor(connection).isServiceEnabled("user3@host.org/Smack");
+boolean supports = MultiUserChatManager.getInstanceFor(connection).isServiceEnabled(otherJid);
 ```
 
 Discover joined rooms

@@ -25,6 +25,7 @@ import java.util.Locale;
 
 import org.jivesoftware.smack.SmackException;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -83,6 +84,18 @@ public class ParserUtils {
             return null;
         }
         return JidCreate.entityBareFrom(jidString);
+    }
+
+    public static EntityFullJid getFullJidAttribute(XmlPullParser parser) throws XmppStringprepException {
+        return getFullJidAttribute(parser, JID);
+    }
+
+    public static EntityFullJid getFullJidAttribute(XmlPullParser parser, String name) throws XmppStringprepException {
+        final String jidString = parser.getAttributeValue("", name);
+        if (jidString == null) {
+            return null;
+        }
+        return JidCreate.entityFullFrom(jidString);
     }
 
     public static Resourcepart getResourcepartAttribute(XmlPullParser parser, String name) throws XmppStringprepException {
