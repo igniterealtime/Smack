@@ -23,6 +23,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
@@ -78,6 +80,14 @@ public class RosterUtil {
             lock.unlock();
             // Make sure the listener is removed, so we don't leak it.
             roster.removeRosterListener(rosterListener);
+        }
+    }
+
+    public static void askForSubscriptionIfRequired(Roster roster, BareJid jid)
+            throws NotLoggedInException, NotConnectedException, InterruptedException {
+        RosterEntry entry = roster.getEntry(jid);
+        if (entry == null || !(entry.canSeeHisPresence() || entry.isSubscriptionPending())) {
+            roster.sendSubscriptionRequest(jid);
         }
     }
 }
