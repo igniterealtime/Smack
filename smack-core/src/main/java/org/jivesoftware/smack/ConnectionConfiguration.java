@@ -32,6 +32,7 @@ import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -481,7 +482,7 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
-         * Set the service name of this XMPP service (i.e., the XMPP domain).
+         * Set the XMPP domain. The XMPP domain is what follows after the '@' sign in XMPP addresses (JIDs).
          *
          * @param serviceName the service name
          * @return a reference to this builder.
@@ -493,13 +494,25 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
-         * Set the service name of this XMPP service (i.e., the XMPP domain).
+         * Set the XMPP domain. The XMPP domain is what follows after the '@' sign in XMPP addresses (JIDs).
          *
-         * @param xmppServiceDomain the service name
+         * @param xmppDomain the XMPP domain.
          * @return a reference to this builder.
          */
-        public B setXmppDomain(DomainBareJid xmppServiceDomain) {
-            this.xmppServiceDomain = xmppServiceDomain;
+        public B setXmppDomain(DomainBareJid xmppDomain) {
+            this.xmppServiceDomain = xmppDomain;
+            return getThis();
+        }
+
+        /**
+         * Set the XMPP domain. The XMPP domain is what follows after the '@' sign in XMPP addresses (JIDs).
+         *
+         * @param xmppServiceDomain the XMPP domain.
+         * @return a reference to this builder.
+         * @throws XmppStringprepException if the given string is not a domain bare JID.
+         */
+        public B setXmppDomain(String xmppServiceDomain) throws XmppStringprepException {
+            this.xmppServiceDomain = JidCreate.domainBareFrom(xmppServiceDomain);
             return getThis();
         }
 
