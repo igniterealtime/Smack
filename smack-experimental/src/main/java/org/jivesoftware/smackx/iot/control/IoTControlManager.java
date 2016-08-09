@@ -123,7 +123,7 @@ public final class IoTControlManager extends Manager {
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public IoTSetResponse setUsingIq(FullJid jid, Collection<SetData> data) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public IoTSetResponse setUsingIq(FullJid jid, Collection<? extends SetData> data) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         IoTSetRequest request = new IoTSetRequest(data);
         request.setTo(jid);
         IoTSetResponse response = connection().createPacketCollectorAndSend(request).nextResultOrThrow();
