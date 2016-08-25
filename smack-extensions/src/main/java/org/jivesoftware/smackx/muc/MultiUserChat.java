@@ -316,7 +316,7 @@ public class MultiUserChat {
         connection.addSyncStanzaListener(presenceListener, new AndFilter(fromRoomFilter,
                         StanzaTypeFilter.PRESENCE));
         connection.addSyncStanzaListener(subjectListener, new AndFilter(fromRoomFilter,
-                        MessageWithSubjectFilter.INSTANCE));
+                        MessageWithSubjectFilter.INSTANCE, new NotFilter(MessageTypeFilter.ERROR)));
         connection.addSyncStanzaListener(declinesListener, new AndFilter(new StanzaExtensionFilter(MUCUser.ELEMENT,
                         MUCUser.NAMESPACE), new NotFilter(MessageTypeFilter.ERROR)));
         connection.addPacketInterceptor(presenceInterceptor, new AndFilter(new ToFilter(room),
