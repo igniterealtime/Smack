@@ -33,9 +33,6 @@ public class FileTransferNegotiatorTest extends InitExtensions {
 
     @Before
     public void setUp() throws Exception {
-        // Uncomment this to enable debug output
-        // SmackConfiguration.DEBUG = true;
-
         connection = new DummyConnection();
         connection.connect();
         connection.login();
@@ -54,7 +51,7 @@ public class FileTransferNegotiatorTest extends InitExtensions {
         try {
             fileNeg.negotiateOutgoingTransfer(JidTestUtil.DUMMY_AT_EXAMPLE_ORG, "streamid", "file", 1024, null, 10);
         } catch (NoResponseException e) {
-            // Ignore
+            // We do not expect an answer. This unit test only checks the request sent.
         }
         Stanza packet = connection.getSentPacket();
         String xml = packet.toXML().toString();
