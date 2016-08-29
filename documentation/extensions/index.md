@@ -69,6 +69,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Last Message Correction                     | [XEP-0308](http://xmpp.org/extensions/xep-0308.html) | Provides a method for indicating that a message is a correction of the last sent message. |
 | [Group Chat Invitations](invitation.md)   | n/a                                                      | Send invitations to other users to join a group chat room. |
 | [Jive Properties](properties.md)          | n/a                                                      | TODO |
+| [Blocking Command](blockingcommand.md)      | [XEP-0191](http://xmpp.org/extensions/xep-0191.html) | Communications blocking that is intended to be simpler than privacy lists (XEP-0016). |
 
 
 Experimental Smack Extensions and currently supported XEPs of smack-experimental
@@ -85,7 +86,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | [Internet of Things - Discovery](iot.md)    | [XEP-0347](http://xmpp.org/extensions/xep-0347.html) | Describes how Things can be installed and discovered by their owners. |
 | Google GCM JSON payload                     | n/a                                                  | Semantically the same as XEP-0335: JSON Containers |
 | Client State Indication                     | [XEP-0352](http://xmpp.org/extensions/xep-0352.html) | A way for the client to indicate its active/inactive state. |
-| [Message Archive Management](mam.md)                  | [XEP-0313](http://xmpp.org/extensions/xep-0313.html) | Query and control an archive of messages stored on a server. |
+| [Message Archive Management](mam.md)        | [XEP-0313](http://xmpp.org/extensions/xep-0313.html) | Query and control an archive of messages stored on a server. |
 
 
 Legacy Smack Extensions and currently supported XEPs of smack-legacy
