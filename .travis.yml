@@ -18,7 +18,7 @@ before_install:
   - export PATH="$(pwd)/gradle-${GRADLE_VERSION}/bin:$PATH"
 
 install: gradle assemble --stacktrace
-script: gradle check
+script: gradle check --stacktrace
 
 after_success:
 - JAVAC_VERSION=$((javac -version) 2>&1)
