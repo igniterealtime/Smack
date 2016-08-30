@@ -514,5 +514,23 @@
         <namespace>urn:xmpp:message-correct:0</namespace>
         <className>org.jivesoftware.smackx.message_correct.provider.MessageCorrectProvider</className>
     </extensionProvider>
+    
+     <!-- XEP-0191 Blocking Command -->
+    <iqProvider>
+        <elementName>blocklist</elementName>
+        <namespace>urn:xmpp:blocking</namespace>
+        <className>org.jivesoftware.smackx.blocking.provider.BlockListIQProvider</className>
+    </iqProvider>
+    <iqProvider>
+        <elementName>block</elementName>
+        <namespace>urn:xmpp:blocking</namespace>
+        <className>org.jivesoftware.smackx.blocking.provider.BlockContactsIQProvider</className>
+    </iqProvider>
+    <iqProvider>
+        <elementName>unblock</elementName>
+        <namespace>urn:xmpp:blocking</namespace>
+        <className>org.jivesoftware.smackx.blocking.provider.UnblockContactsIQProvider</className>
+    </iqProvider>
+    
 
 </smackProviders>
