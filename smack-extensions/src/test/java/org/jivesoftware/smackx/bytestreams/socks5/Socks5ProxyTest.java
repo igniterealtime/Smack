@@ -156,39 +156,6 @@ public class Socks5ProxyTest {
     }
 
     /**
-     * There should be only one thread executing the SOCKS5 proxy process.
-     */
-    @Test
-    public void shouldOnlyStartOneServerThread() {
-        int threadCount = Thread.activeCount();
-
-        Socks5Proxy.setLocalSocks5ProxyPort(7890);
-        Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
-        proxy.start();
-
-        assertTrue(proxy.isRunning());
-        assertEquals(threadCount + 1, Thread.activeCount());
-
-        proxy.start();
-
-        assertTrue(proxy.isRunning());
-        assertEquals(threadCount + 1, Thread.activeCount());
-
-        proxy.stop();
-
-        assertFalse(proxy.isRunning());
-        assertEquals(threadCount, Thread.activeCount());
-
-        proxy.start();
-
-        assertTrue(proxy.isRunning());
-        assertEquals(threadCount + 1, Thread.activeCount());
-
-        proxy.stop();
-
-    }
-
-    /**
      * If the SOCKS5 proxy accepts a connection that is not a SOCKS5 connection it should close the
      * corresponding socket.
      * 
