@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2016 Fernando Ramirez, Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.jxmpp.jid.Jid;
  * Unblock contact IQ class.
  * 
  * @author Fernando Ramirez
+ * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0191.html">XEP-0191: Blocking
  *      Command</a>
  */
@@ -52,6 +53,13 @@ public class UnblockContactsIQ extends IQ {
         super(ELEMENT, NAMESPACE);
         this.setType(Type.set);
         this.jids = jids;
+    }
+
+    /**
+     * Constructs a new unblock IQ which will unblock <b>all</b> JIDs. 
+     */
+    public UnblockContactsIQ() {
+        this(null);
     }
 
     /**

@@ -53,7 +53,7 @@ public class GetBlockingListTest {
 
         IQ iq2 = (IQ) PacketParserUtils.parseStanza(emptyBlockListIQExample);
         BlockListIQ emptyBlockListIQ = (BlockListIQ) iq2;
-        Assert.assertNull(emptyBlockListIQ.getJids());
+        Assert.assertEquals(0, emptyBlockListIQ.getJids().size());
     }
 
 }

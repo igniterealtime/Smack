@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.blocking.element;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -50,6 +51,9 @@ public class BlockListIQ extends IQ {
      */
     public BlockListIQ(List<Jid> jids) {
         super(ELEMENT, NAMESPACE);
+        if (jids == null) {
+            jids = Collections.emptyList();
+        }
         this.jids = jids;
     }
 
@@ -71,10 +75,8 @@ public class BlockListIQ extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-
-        if (jids == null) {
+        if (jids.isEmpty()) {
             xml.setEmptyElement();
-
         } else {
             xml.rightAngleBracket();
 

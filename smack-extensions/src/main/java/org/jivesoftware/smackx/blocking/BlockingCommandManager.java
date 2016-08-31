@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2016 Fernando Ramirez, Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ import org.jxmpp.jid.Jid;
  * Blocking command manager class.
  * 
  * @author Fernando Ramirez
+ * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0191.html">XEP-0191: Blocking
  *      Command</a>
  */
@@ -96,7 +97,7 @@ public final class BlockingCommandManager extends Manager {
                         }
 
                         List<Jid> blockedJids = blockContactIQ.getJids();
-                        addToBlockList(blockedJids);
+                        blockListCached.addAll(blockedJids);
 
                         return IQ.createResultIQ(blockContactIQ);
                     }
@@ -117,7 +118,7 @@ public final class BlockingCommandManager extends Manager {
                 if (unblockedJids == null) { // remove all
                     blockListCached.clear();
                 } else { // remove only some
-                    removeFromBlockList(unblockedJids);
+                    blockListCached.removeAll(unblockedJids);
                 }
 
                 return IQ.createResultIQ(unblockContactIQ);
@@ -134,33 +135,6 @@ public final class BlockingCommandManager extends Manager {
                 blockListCached = null;
             }
         });
-    }
-
-    private void addToBlockList(List<Jid> blockedJids) {
-        for (Jid jid : blockedJids) {
-            if (searchJid(jid) == -1) {
-                blockListCached.add(jid);
-            }
-        }
-    }
-
-    private void removeFromBlockList(List<Jid> unblockedJids) {
-        for (Jid jid : unblockedJids) {
-            int position = searchJid(jid);
-            if (position != -1) {
-                blockListCached.remove(position);
-            }
-        }
-    }
-
-    private int searchJid(Jid jid) {
-        int i = -1;
-        for (int j = 0; j < blockListCached.size(); j++) {
-            if (blockListCached.get(j).equals(jid)) {
-                i = j;
-            }
-        }
-        return i;
     }
 
     /**
@@ -197,8 +171,7 @@ public final class BlockingCommandManager extends Manager {
         BlockListIQ blockListIQResult = connection().createPacketCollectorAndSend(blockListIQ).nextResultOrThrow();
         blockListCached = blockListIQResult.getJids();
 
-        List<Jid> emptyList = Collections.emptyList();
-        return (blockListCached == null) ? emptyList : Collections.unmodifiableList(blockListCached);
+        return Collections.unmodifiableList(blockListCached);
     }
 
     /**
@@ -241,7 +214,7 @@ public final class BlockingCommandManager extends Manager {
      */
     public void unblockAll()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        UnblockContactsIQ unblockContactIQ = new UnblockContactsIQ(null);
+        UnblockContactsIQ unblockContactIQ = new UnblockContactsIQ();
         connection().createPacketCollectorAndSend(unblockContactIQ).nextResultOrThrow();
     }
 
