@@ -63,6 +63,9 @@ public class VCardProvider extends IQProvider<VCard> {
         "ISDN",
         "PCS",
         "PREF",
+        "NUMBER",
+        "WORK",
+        "HOME"
     };
     // @formatter:on
 
@@ -161,39 +164,31 @@ public class VCardProvider extends IQProvider<VCard> {
 
     private static void parseTel(XmlPullParser parser, VCard vCard) throws XmlPullParserException, IOException {
         final int initialDepth = parser.getDepth();
-        boolean isWork = true;
-        String telLabel = null;
-
+        String telType = null;
+        
         outerloop: while (true) {
             int eventType = parser.next();
             switch (eventType) {
             case XmlPullParser.START_TAG:
                 String name = parser.getName();
-                if ("HOME".equals(name)) {
-                    isWork = false;
+                
+                for (String t: TEL) {
+                	if (t.equalsIgnoreCase(name)) {
+                		telType = t;
+                		break;
+                	}
                 }
-                else {
-                    if ("NUMBER".equals(name)) {
-                        if (StringUtils.isNullOrEmpty(telLabel)) {
-                            // RFC 2426 § 3.3.1:
-                            // "The default type is 'voice'"
-                            telLabel = "VOICE";
-                        }
-                        if (isWork) {
-                            vCard.setPhoneWork(telLabel, parser.nextText());
-                        }
-                        else {
-                            vCard.setPhoneHome(telLabel, parser.nextText());
-                        }
-                    }
-                    else {
-                        for (String tel : TEL) {
-                            if (tel.equals(name)) {
-                                telLabel = name;
-                            }
-                        }
-                    }
+                
+                String val = parser.nextText();
+                if (telType != null) {
+	                if ("HOME".equals(telType)) {
+	                	vCard.setPhoneHome(telType, val);
+	                }  else {
+	                    vCard.setPhoneWork(telType, val);
+	                }
                 }
+                
+                telType = null;
                 break;
             case XmlPullParser.END_TAG:
                 if (parser.getDepth() == initialDepth) {
