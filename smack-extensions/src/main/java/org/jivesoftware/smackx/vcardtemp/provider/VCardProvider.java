@@ -18,7 +18,6 @@ package org.jivesoftware.smackx.vcardtemp.provider;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -165,29 +164,26 @@ public class VCardProvider extends IQProvider<VCard> {
     private static void parseTel(XmlPullParser parser, VCard vCard) throws XmlPullParserException, IOException {
         final int initialDepth = parser.getDepth();
         String telType = null;
-        
+
         outerloop: while (true) {
             int eventType = parser.next();
             switch (eventType) {
             case XmlPullParser.START_TAG:
                 String name = parser.getName();
-                
                 for (String t: TEL) {
-                	if (t.equalsIgnoreCase(name)) {
-                		telType = t;
-                		break;
-                	}
+                    if (t.equalsIgnoreCase(name)) {
+                        telType = t;
+                        break;
+                    }
                 }
-                
                 String val = parser.nextText();
                 if (telType != null) {
-	                if ("HOME".equals(telType)) {
-	                	vCard.setPhoneHome(telType, val);
-	                }  else {
-	                    vCard.setPhoneWork(telType, val);
-	                }
+                    if ("HOME".equals(telType)) {
+                        vCard.setPhoneHome(telType, val);
+                        }  else {
+                            vCard.setPhoneWork(telType, val);
+                        }
                 }
-                
                 telType = null;
                 break;
             case XmlPullParser.END_TAG:

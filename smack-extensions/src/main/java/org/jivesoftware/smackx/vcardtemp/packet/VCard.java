@@ -636,40 +636,39 @@ public class VCard extends IQ {
             xml.element("USERID", emailHome);
             xml.closeElement("EMAIL");
         }
-        
+
         if(!workPhones.isEmpty() || !homePhones.isEmpty()){
-        	if(!workPhones.isEmpty()){
-        		xml.openElement("TEL");
-        		xml.emptyElement("WORK");
-        		for (Entry<String, String> phone : workPhones.entrySet()) {
-        			final String number = phone.getValue();
-        			if (!phone.getKey().equals("WORK") ) {
-						if (number == null || number.equals(""))
-							xml.emptyElement(phone.getKey());
-						else
-							xml.element(phone.getKey(), number);
-					}
-        		}
-        		xml.closeElement("TEL");
-        	}
-        	
-        	if(!homePhones.isEmpty()){
-        		xml.openElement("TEL");
-        		xml.emptyElement("HOME");
-        		for (Entry<String, String> phone : homePhones.entrySet()) {
-        			final String number = phone.getValue();
-        			if (!phone.getKey().equals("HOME")) {
-						if (number == null || number.equals(""))
-							xml.emptyElement(phone.getKey());
-						else
-							xml.element(phone.getKey(), number);
-					}
-        		}
-        		xml.closeElement("TEL");
-        	}
+            if(!workPhones.isEmpty()){
+                xml.openElement("TEL");
+                xml.emptyElement("WORK");
+                for (Entry<String, String> phone : workPhones.entrySet()) {
+                    final String number = phone.getValue();
+                    if (!phone.getKey().equals("WORK") ) {
+                        if (number == null || number.equals(""))
+                            xml.emptyElement(phone.getKey());
+                        else
+                            xml.element(phone.getKey(), number);
+                     }
+                }
+                xml.closeElement("TEL");
+            }
+            if(!homePhones.isEmpty()){
+                xml.openElement("TEL");
+                xml.emptyElement("HOME");
+                for (Entry<String, String> phone : homePhones.entrySet()) {
+                    final String number = phone.getValue();
+                    if (!phone.getKey().equals("HOME")) {
+                        if (number == null || number.equals(""))
+                            xml.emptyElement(phone.getKey());
+                        else
+                            xml.element(phone.getKey(), number);
+                    }
+                }
+                xml.closeElement("TEL");
+            }
         }else
-        	xml.emptyElement("TEL");
-        
+            xml.emptyElement("TEL");
+
         if (!workAddr.isEmpty()) {
             xml.openElement("ADR");
             xml.emptyElement("WORK");
