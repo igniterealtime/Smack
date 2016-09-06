@@ -643,7 +643,7 @@ public class VCard extends IQ {
         		xml.emptyElement("WORK");
         		for (Entry<String, String> phone : workPhones.entrySet()) {
         			final String number = phone.getValue();
-        			if (phone.getKey() != "WORK" ) {
+        			if (!phone.getKey().equals("WORK") ) {
 						if (number == null || number.equals(""))
 							xml.emptyElement(phone.getKey());
 						else
@@ -658,7 +658,7 @@ public class VCard extends IQ {
         		xml.emptyElement("HOME");
         		for (Entry<String, String> phone : homePhones.entrySet()) {
         			final String number = phone.getValue();
-        			if (phone.getKey() != "HOME") {
+        			if (!phone.getKey().equals("HOME")) {
 						if (number == null || number.equals(""))
 							xml.emptyElement(phone.getKey());
 						else
