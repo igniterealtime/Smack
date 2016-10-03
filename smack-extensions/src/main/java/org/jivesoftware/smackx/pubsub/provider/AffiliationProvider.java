@@ -53,7 +53,10 @@ public class AffiliationProvider extends ExtensionElementProvider<Affiliation> {
             affiliation = new Affiliation(jid, affiliationType, namespace);
         }
         else {
-            throw new SmackException("Invalid affililation");
+            throw new SmackException("Invalid affililation. Either one of 'node' or 'jid' must be set"
+                    + ". Node: " + node
+                    + ". Jid: " + jid
+                    + '.');
         }
         return affiliation;
     }
