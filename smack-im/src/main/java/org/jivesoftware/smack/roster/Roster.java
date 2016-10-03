@@ -1515,7 +1515,7 @@ public final class Roster extends Manager {
     }
 
     /**
-     * Handles roster reults as described in RFC 6121 2.1.4
+     * Handles Roster results as described in <a href="https://tools.ietf.org/html/rfc6121#section-2.1.4">RFC 6121 2.1.4</a>.
      */
     private class RosterResultListener implements StanzaListener {
 
