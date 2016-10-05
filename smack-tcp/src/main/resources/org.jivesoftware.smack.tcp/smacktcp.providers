@@ -8,4 +8,11 @@
         <className>org.jivesoftware.smack.sm.provider.StreamManagementStreamFeatureProvider</className>
     </streamFeatureProvider>
 
+    <!-- XEP-xxxx: Instant Stream Resumption -->
+    <streamFeatureProvider>
+        <elementName>isr</elementName>
+        <namespace>urn:xmpp:isr:0</namespace>
+        <className>org.jivesoftware.smack.isr.provider.InstantStreamResumptionFeatureProvider</className>
+    </streamFeatureProvider>
+
 </smackProviders>

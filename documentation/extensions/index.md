@@ -22,6 +22,7 @@ Currently supported XEPs of smack-tcp
 | Name                                        | XEP                                                      | Description |
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | [Stream Management](streammanagement.md)  | [XEP-0198](http://xmpp.org/extensions/xep-0198.html) | Allows active management of an XML Stream between two XMPP entities (stanza acknowledgement, stream resumption). |
+| Instant Stream Resumption 				| [XEP-xxxx](http://xmpp.org/extensions/inbox/isr.html) | Allows XMPP entities to instantaneously resume an XMPP stream.. |
 
 
 Smack Extensions and currently supported XEPs of smack-extensions
