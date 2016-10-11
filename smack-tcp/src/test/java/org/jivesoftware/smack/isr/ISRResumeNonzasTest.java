@@ -27,24 +27,24 @@ import org.xmlpull.v1.XmlPullParser;
 public class ISRResumeNonzasTest {
 
     private static final String resumeNonza = "<inst-resume " + "xmlns='urn:xmpp:isr:0' " + "previd='some-long-sm-id' "
-            + "h='42'>" + "<hmac>" + "<hash xmlns='urn:xmpp:hashes:1' algo='sha-256'>" + "initator-hmac" + "</hash>"
+            + "h='42'>" + "<hmac>" + "<hash xmlns='urn:xmpp:hashes:1' algo='sha256'>" + "initator-hmac" + "</hash>"
             + "</hmac>" + "</inst-resume>";
 
     private static final String resumedNonza = "<inst-resumed " + "xmlns='urn:xmpp:isr:0' "
             + "key='006b1a29-c549-41c7-a12c-2a931822f8c0' " + "h='21'>" + "<hmac>"
-            + "<hash xmlns='urn:xmpp:hashes:1' algo='sha-256'>" + "responder-hmac" + "</hash>" + "</hmac>"
+            + "<hash xmlns='urn:xmpp:hashes:1' algo='sha256'>" + "responder-hmac" + "</hash>" + "</hmac>"
             + "</inst-resumed>";
 
     @Test
     public void checkResumeNonza() throws Exception {
-        InstResume instResume = new InstResume("some-long-sm-id", 42, "initator-hmac", "sha-256");
+        InstResume instResume = new InstResume("some-long-sm-id", 42, "initator-hmac", "sha256");
         Assert.assertEquals(resumeNonza, instResume.toXML().toString());
     }
 
     @Test
     public void checkResumedNonza() throws Exception {
         InstResumed instResumed = new InstResumed("006b1a29-c549-41c7-a12c-2a931822f8c0", 21, "responder-hmac",
-                "sha-256");
+                "sha256");
         Assert.assertEquals(resumedNonza, instResumed.toXML().toString());
     }
 

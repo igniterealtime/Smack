@@ -36,7 +36,7 @@ public class ISRUtilsTest {
 
     private static final String isrResumedNonza = "<inst-resumed " + "xmlns='urn:xmpp:isr:0' "
             + "key='006b1a29-c549-41c7-a12c-2a931822f8c0' " + "h='21'>" + "<hmac>"
-            + "<hash xmlns='urn:xmpp:hashes:1' algo='sha-256'>" + "responder-hmac" + "</hash>" + "</hmac>"
+            + "<hash xmlns='urn:xmpp:hashes:1' algo='sha256'>" + "responder-hmac" + "</hash>" + "</hmac>"
             + "</inst-resumed>";
 
     private static final String smFailedNonza = "<failed xmlns='urn:xmpp:sm:3'>"
@@ -86,6 +86,32 @@ public class ISRUtilsTest {
 
         XmlPullParser parserSMResumedNonza = PacketParserUtils.getParserFor(smResumedNonza);
         Assert.assertFalse(ISRUtils.isISRNonza(parserSMResumedNonza));
+    }
+
+    @Test
+    public void checkHMACDigest() throws Exception {
+        String msg = "Initiator";
+        String token = "006b1a29-c549-41c7-a12c-2a931822f8c0";
+
+        String sha256DigestResult = "e5e6241898f631342111958a51b61a1d75d492c782c8620b4efd0d9f172b55ca";
+        String sha1DigestResult = "583ff09b098c3f0bb3dbbc8cb0ef279755db7cde";
+        String md5DigestResult = "14b8db2ba5cdb9088e92a640485207a3";
+
+        String hmacDigest = HMAC.hmacDigest(msg, token, "SHA256");
+        Assert.assertEquals(sha256DigestResult, hmacDigest);
+
+        hmacDigest = HMAC.hmacDigest(msg, token, "sha256");
+        Assert.assertEquals(sha256DigestResult, hmacDigest);
+
+        hmacDigest = HMAC.hmacDigest(msg, token, "SHA1");
+        Assert.assertEquals(sha1DigestResult, hmacDigest);
+
+        hmacDigest = HMAC.hmacDigest(msg, token, "md5");
+        Assert.assertEquals(md5DigestResult, hmacDigest);
+
+        hmacDigest = HMAC.hmacDigest(msg, token, "hMACmd5");
+        Assert.assertEquals(md5DigestResult, hmacDigest);
+
     }
 
 }

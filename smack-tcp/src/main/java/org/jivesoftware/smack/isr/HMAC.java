@@ -33,11 +33,27 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class HMAC {
 
+    /**
+     * Get the HMAC digest.
+     * 
+     * @param msg
+     * @param keyString
+     * @param algo
+     * @return the HMAC digest
+     */
     public static String hmacDigest(String msg, String keyString, String algo) {
         String digest = null;
         try {
             SecretKeySpec key = new SecretKeySpec((keyString).getBytes("UTF-8"), algo);
-            Mac mac = Mac.getInstance(algo);
+
+            String algorithm;
+            if (!algo.toLowerCase().startsWith("hmac")) {
+                algorithm = "hmac" + algo.toLowerCase();
+            } else {
+                algorithm = algo.toLowerCase();
+            }
+
+            Mac mac = Mac.getInstance(algorithm);
             mac.init(key);
 
             byte[] bytes = mac.doFinal(msg.getBytes("ASCII"));
@@ -52,7 +68,7 @@ public class HMAC {
             }
             digest = hash.toString();
         } catch (UnsupportedEncodingException | InvalidKeyException | NoSuchAlgorithmException e) {
-            throw new IllegalStateException("HMAC digest couldn't be done correctly.");
+            throw new IllegalStateException("HMAC digest could not be obtained correctly.", e);
         }
         return digest;
     }
