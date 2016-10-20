@@ -206,7 +206,7 @@ public class EnhancedDebugger implements SmackDebugger {
         // the GUI. This is what we call "interpreted" packet data, since it's the packet
         // data as Smack sees it and not as it's coming in as raw XML.
         packetReaderListener = new StanzaListener() {
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss:SS aaa");
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss:SS");
 
             public void processPacket(final Stanza packet) {
                 SwingUtilities.invokeLater(new Runnable() {
@@ -221,7 +221,7 @@ public class EnhancedDebugger implements SmackDebugger {
         // Create a thread that will listen for all outgoing packets and write them to
         // the GUI.
         packetWriterListener = new StanzaListener() {
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss:SS aaa");
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss:SS");
 
             public void processPacket(final Stanza packet) {
                 SwingUtilities.invokeLater(new Runnable() {
@@ -669,7 +669,7 @@ public class EnhancedDebugger implements SmackDebugger {
         connPanel.add(
                 label,
                 new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, 21, 0, new Insets(0, 0, 0, 0), 0, 0));
-        field = new JFormattedTextField(new SimpleDateFormat("yyyy.MM.dd hh:mm:ss:SS aaa"));
+        field = new JFormattedTextField(new SimpleDateFormat("yyyy.MM.dd HH:mm:ss:SS"));
         field.setMinimumSize(new java.awt.Dimension(150, 20));
         field.setMaximumSize(new java.awt.Dimension(150, 20));
         field.setValue(creationTime);
