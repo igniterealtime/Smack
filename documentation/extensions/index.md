@@ -61,6 +61,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Data Forms Layout                           | [XEP-0141](http://xmpp.org/extensions/xep-0141.html) | Enables an application to specify form layouts. |
 | Personal Eventing Protocol                  | [XEP-0163](http://xmpp.org/extensions/xep-0163.html) | Using the XMPP publish-subscribe protocol to broadcast state change events associated with an XMPP account. |
 | Message Delivery Receipts                   | [XEP-0184](http://xmpp.org/extensions/xep-0184.html) | Extension for message delivery receipts. The sender can request notification that the message has been delivered. |
+| [Blocking Command](blockingcommand.md)      | [XEP-0191](http://xmpp.org/extensions/xep-0191.html) | Communications blocking that is intended to be simpler than privacy lists (XEP-0016). |
 | XMPP Ping                                   | [XEP-0199](http://xmpp.org/extensions/xep-0199.html) | Sending application-level pings over XML streams.
 | Entity Time                                 | [XEP-0202](http://xmpp.org/extensions/xep-0202.html) | Allows entities to communicate their local time |
 | Delayed Delivery                            | [XEP-0203](http://xmpp.org/extensions/xep-0203.html) | Extension for communicating the fact that an XML stanza has been delivered with a delay. |
@@ -69,7 +70,6 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Last Message Correction                     | [XEP-0308](http://xmpp.org/extensions/xep-0308.html) | Provides a method for indicating that a message is a correction of the last sent message. |
 | [Group Chat Invitations](invitation.md)   | n/a                                                      | Send invitations to other users to join a group chat room. |
 | [Jive Properties](properties.md)          | n/a                                                      | TODO |
-| [Blocking Command](blockingcommand.md)      | [XEP-0191](http://xmpp.org/extensions/xep-0191.html) | Communications blocking that is intended to be simpler than privacy lists (XEP-0016). |
 
 
 Experimental Smack Extensions and currently supported XEPs of smack-experimental
@@ -77,16 +77,16 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 
 | Name                                        | XEP                                                      | Description |
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| Message Carbons                             | [XEP-0280](http://xmpp.org/extensions/xep-0280.html) | Keep all IM clients for a user engaged in a conversation, by carbon-copy outbound messages to all interested resources.
+| Message Carbons                             | [XEP-0280](http://xmpp.org/extensions/xep-0280.html) | Keep all IM clients for a user engaged in a conversation, by carbon-copy outbound messages to all interested resources. |
+| [Message Archive Management](mam.md)        | [XEP-0313](http://xmpp.org/extensions/xep-0313.html) | Query and control an archive of messages stored on a server. |
 | [Internet of Things - Sensor Data](iot.md)  | [XEP-0323](http://xmpp.org/extensions/xep-0323.html) | Sensor data interchange over XMPP. |
 | [Internet of Things - Provisioning](iot.md) | [XEP-0324](http://xmpp.org/extensions/xep-0324.html) | Provisioning, access rights and user priviliges for the Internet of Things. |
 | [Internet of Things - Control](iot.md)      | [XEP-0325](http://xmpp.org/extensions/xep-0325.html) | Describes how to control devices or actuators in an XMPP-based sensor netowrk. |
 | [HTTP over XMPP transport](hoxt.md)         | [XEP-0332](http://xmpp.org/extensions/xep-0332.html) | Allows to transport HTTP communication over XMPP peer-to-peer networks. |
 | JSON Containers                             | [XEP-0335](http://xmpp.org/extensions/xep-0335.html) | Encapsulation of JSON data within XMPP Stanzas. |
 | [Internet of Things - Discovery](iot.md)    | [XEP-0347](http://xmpp.org/extensions/xep-0347.html) | Describes how Things can be installed and discovered by their owners. |
-| Google GCM JSON payload                     | n/a                                                  | Semantically the same as XEP-0335: JSON Containers |
 | Client State Indication                     | [XEP-0352](http://xmpp.org/extensions/xep-0352.html) | A way for the client to indicate its active/inactive state. |
-| [Message Archive Management](mam.md)        | [XEP-0313](http://xmpp.org/extensions/xep-0313.html) | Query and control an archive of messages stored on a server. |
+| Google GCM JSON payload                     | n/a                                                  | Semantically the same as XEP-0335: JSON Containers |
 
 
 Legacy Smack Extensions and currently supported XEPs of smack-legacy
@@ -97,5 +97,4 @@ If a XEP becomes 'Deprecated' or 'Obsolete' the code will be moved to the *smack
 | Name                                        | XEP                                                      | Description |
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | [Message Events](messageevents.md)        | [XEP-0022](http://xmpp.org/extensions/xep-0022.html) | Requests and responds to message events. |
-
 | [Roster Item Exchange](rosterexchange.md) | [XEP-0093](http://xmpp.org/extensions/xep-0093.html) | Allows roster data to be shared between users. |
