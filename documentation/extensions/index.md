@@ -97,5 +97,4 @@ If a XEP becomes 'Deprecated' or 'Obsolete' the code will be moved to the *smack
 | Name                                        | XEP                                                      | Description |
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | [Message Events](messageevents.md)        | [XEP-0022](http://xmpp.org/extensions/xep-0022.html) | Requests and responds to message events. |
-
 | [Roster Item Exchange](rosterexchange.md) | [XEP-0093](http://xmpp.org/extensions/xep-0093.html) | Allows roster data to be shared between users. |
