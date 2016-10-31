@@ -377,7 +377,10 @@ public final class PingManager extends Manager {
                     res = pingMyServer(false);
                 }
                 catch (InterruptedException | SmackException e) {
-                    LOGGER.log(Level.WARNING, "Exception while pinging server", e);
+                    // Note that we log the connection here, so that it is not GC'ed between the call to isAuthenticated
+                    // a few lines above and the usage of the connection within pingMyServer(). In order to prevent:
+                    // https://community.igniterealtime.org/thread/59369
+                    LOGGER.log(Level.WARNING, "Exception while pinging server of " + connection, e);
                     res = false;
                 }
                 // stop when we receive a pong back

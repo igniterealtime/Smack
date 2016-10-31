@@ -268,7 +268,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @throws InterruptedException 
      */
     public final void challengeReceived(String challengeString, boolean finalChallenge) throws SmackException, NotConnectedException, InterruptedException {
-        byte[] challenge = Base64.decode(challengeString);
+        byte[] challenge = Base64.decode((challengeString != null && challengeString.equals("=")) ? "" : challengeString);
         byte[] response = evaluateChallenge(challenge);
         if (finalChallenge) {
             return;

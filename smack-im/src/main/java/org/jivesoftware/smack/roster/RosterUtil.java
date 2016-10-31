@@ -23,6 +23,9 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
@@ -80,4 +83,32 @@ public class RosterUtil {
             roster.removeRosterListener(rosterListener);
         }
     }
+
+    public static void askForSubscriptionIfRequired(Roster roster, BareJid jid)
+            throws NotLoggedInException, NotConnectedException, InterruptedException {
+        RosterEntry entry = roster.getEntry(jid);
+        if (entry == null || !(entry.canSeeHisPresence() || entry.isSubscriptionPending())) {
+            roster.sendSubscriptionRequest(jid);
+        }
+    }
+
+    public static void ensureNotSubscribedToEachOther(XMPPConnection connectionOne, XMPPConnection connectionTwo)
+            throws NotConnectedException, InterruptedException {
+        final Roster rosterOne = Roster.getInstanceFor(connectionOne);
+        final BareJid jidOne = connectionOne.getUser().asBareJid();
+        final Roster rosterTwo = Roster.getInstanceFor(connectionTwo);
+        final BareJid jidTwo = connectionTwo.getUser().asBareJid();
+
+        ensureNotSubscribed(rosterOne, jidTwo);
+        ensureNotSubscribed(rosterTwo, jidOne);
+    }
+
+    public static void ensureNotSubscribed(Roster roster, BareJid jid)
+            throws NotConnectedException, InterruptedException {
+        RosterEntry entry = roster.getEntry(jid);
+        if (entry != null && entry.canSeeMyPresence()) {
+            entry.cancelSubscription();
+        }
+    }
+
 }

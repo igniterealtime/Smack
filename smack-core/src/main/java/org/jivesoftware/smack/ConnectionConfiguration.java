@@ -32,12 +32,14 @@ import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.X509TrustManager;
 import javax.security.auth.callback.CallbackHandler;
 
 /**
@@ -96,6 +98,10 @@ public abstract class ConnectionConfiguration {
     private final boolean legacySessionDisabled;
     private final SecurityMode securityMode;
 
+    private final DnssecMode dnssecMode;
+
+    private final X509TrustManager customX509TrustManager;
+
     /**
      * 
      */
@@ -134,6 +140,10 @@ public abstract class ConnectionConfiguration {
         proxy = builder.proxy;
         socketFactory = builder.socketFactory;
 
+        dnssecMode = builder.dnssecMode;
+
+        customX509TrustManager = builder.customX509TrustManager;
+
         securityMode = builder.securityMode;
         keystoreType = builder.keystoreType;
         keystorePath = builder.keystorePath;
@@ -150,6 +160,11 @@ public abstract class ConnectionConfiguration {
 
         // If the enabledSaslmechanisms are set, then they must not be empty
         assert(enabledSaslMechanisms != null ? !enabledSaslMechanisms.isEmpty() : true);
+
+        if (dnssecMode != DnssecMode.disabled && customSSLContext != null) {
+            throw new IllegalStateException("You can not use a custom SSL context with DNSSEC enabled");
+        }
+
     }
 
     /**
@@ -180,6 +195,14 @@ public abstract class ConnectionConfiguration {
      */
     public SecurityMode getSecurityMode() {
         return securityMode;
+    }
+
+    public DnssecMode getDnssecMode() {
+        return dnssecMode;
+    }
+
+    public X509TrustManager getCustomX509TrustManager() {
+        return customX509TrustManager;
     }
 
     /**
@@ -342,6 +365,37 @@ public abstract class ConnectionConfiguration {
     }
 
     /**
+     * Determines the requested DNSSEC security mode.
+     * <b>Note that Smack's support for DNSSEC/DANE is experimental!</b>
+     * <p>
+     * The default '{@link #disabled}' means that neither DNSSEC nor DANE verification will be performed. When
+     * '{@link #needsDnssec}' is used, then the connection will not be established if the resource records used to connect
+     * to the XMPP service are not authenticated by DNSSEC. Additionally, if '{@link #needsDnssecAndDane}' is used, then
+     * the XMPP service's TLS certificate is verified using DANE.
+     *
+     */
+    public enum DnssecMode {
+
+        /**
+         * Do not perform any DNSSEC authentication or DANE verification.
+         */
+        disabled,
+
+        /**
+         * <b>Experimental!</b>
+         * Require all DNS information to be authenticated by DNSSEC.
+         */
+        needsDnssec,
+
+        /**
+         * <b>Experimental!</b>
+         * Require all DNS information to be authenticated by DNSSEC and require the XMPP service's TLS certificate to be verified using DANE.
+         */
+        needsDnssecAndDane,
+
+    }
+
+    /**
      * Returns the username to use when trying to reconnect to the server.
      *
      * @return the username to use when trying to reconnect to the server.
@@ -436,6 +490,7 @@ public abstract class ConnectionConfiguration {
      */
     public static abstract class Builder<B extends Builder<B, C>, C extends ConnectionConfiguration> {
         private SecurityMode securityMode = SecurityMode.ifpossible;
+        private DnssecMode dnssecMode = DnssecMode.disabled;
         private String keystorePath = System.getProperty("javax.net.ssl.keyStore");
         private String keystoreType = "jks";
         private String pkcs11Library = "pkcs11.config";
@@ -459,6 +514,7 @@ public abstract class ConnectionConfiguration {
         private boolean allowEmptyOrNullUsername = false;
         private boolean saslMechanismsSealed;
         private Set<String> enabledSaslMechanisms;
+        private X509TrustManager customX509TrustManager;
 
         protected Builder() {
         }
@@ -481,7 +537,7 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
-         * Set the service name of this XMPP service (i.e., the XMPP domain).
+         * Set the XMPP domain. The XMPP domain is what follows after the '@' sign in XMPP addresses (JIDs).
          *
          * @param serviceName the service name
          * @return a reference to this builder.
@@ -493,13 +549,25 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
-         * Set the service name of this XMPP service (i.e., the XMPP domain).
+         * Set the XMPP domain. The XMPP domain is what follows after the '@' sign in XMPP addresses (JIDs).
          *
-         * @param xmppServiceDomain the service name
+         * @param xmppDomain the XMPP domain.
          * @return a reference to this builder.
          */
-        public B setXmppDomain(DomainBareJid xmppServiceDomain) {
-            this.xmppServiceDomain = xmppServiceDomain;
+        public B setXmppDomain(DomainBareJid xmppDomain) {
+            this.xmppServiceDomain = xmppDomain;
+            return getThis();
+        }
+
+        /**
+         * Set the XMPP domain. The XMPP domain is what follows after the '@' sign in XMPP addresses (JIDs).
+         *
+         * @param xmppServiceDomain the XMPP domain.
+         * @return a reference to this builder.
+         * @throws XmppStringprepException if the given string is not a domain bare JID.
+         */
+        public B setXmppDomain(String xmppServiceDomain) throws XmppStringprepException {
+            this.xmppServiceDomain = JidCreate.domainBareFrom(xmppServiceDomain);
             return getThis();
         }
 
@@ -553,6 +621,16 @@ public abstract class ConnectionConfiguration {
          */
         public B setCallbackHandler(CallbackHandler callbackHandler) {
             this.callbackHandler = callbackHandler;
+            return getThis();
+        }
+
+        public B setDnssecMode(DnssecMode dnssecMode) {
+            this.dnssecMode = Objects.requireNonNull(dnssecMode, "DNSSEC mode must not be null");
+            return getThis();
+        }
+
+        public B setCustomX509TrustManager(X509TrustManager x509TrustManager) {
+            this.customX509TrustManager = x509TrustManager;
             return getThis();
         }
 

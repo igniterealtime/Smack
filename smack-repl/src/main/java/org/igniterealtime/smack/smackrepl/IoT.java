@@ -17,9 +17,11 @@
 package org.igniterealtime.smack.smackrepl;
 
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterUtil;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -41,6 +43,7 @@ import org.jivesoftware.smackx.iot.data.element.IoTFieldsExtension;
 import org.jivesoftware.smackx.iot.discovery.AbstractThingStateChangeListener;
 import org.jivesoftware.smackx.iot.discovery.IoTDiscoveryManager;
 import org.jivesoftware.smackx.iot.discovery.ThingState;
+import org.jivesoftware.smackx.iot.provisioning.BecameFriendListener;
 import org.jivesoftware.smackx.iot.provisioning.IoTProvisioningManager;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -51,24 +54,23 @@ public class IoT {
     // A 10 minute timeout.
     private static final long TIMEOUT = 10 * 60 * 1000;
 
+    private interface IotScenario {
+        void iotScenario(XMPPTCPConnection dataThingConnection, XMPPTCPConnection readinThingConnection) throws XMPPException, SmackException, IOException, InterruptedException, TimeoutException, Exception;
+    }
+
     public static void iotScenario(String dataThingJidString, String dataThingPassword, String readingThingJidString,
-                    String readingThingPassword)
-                    throws TimeoutException, Exception {
+            String readingThingPassword, IotScenario scenario) throws TimeoutException, Exception {
         final EntityBareJid dataThingJid = JidCreate.entityBareFrom(dataThingJidString);
         final EntityBareJid readingThingJid = JidCreate.entityBareFrom(readingThingJidString);
 
         final XMPPTCPConnectionConfiguration dataThingConnectionConfiguration = XMPPTCPConnectionConfiguration.builder()
-                        .setUsernameAndPassword(dataThingJid.getLocalpart(), dataThingPassword)
-                        .setXmppDomain(dataThingJid.asDomainBareJid())
-                        .setSecurityMode(SecurityMode.disabled)
-                        .setDebuggerEnabled(true)
-                        .build();
-        final XMPPTCPConnectionConfiguration readingThingConnectionConfiguration = XMPPTCPConnectionConfiguration.builder()
-                        .setUsernameAndPassword(readingThingJid.getLocalpart(), readingThingPassword)
-                        .setXmppDomain(readingThingJid.asDomainBareJid())
-                        .setSecurityMode(SecurityMode.disabled)
-                        .setDebuggerEnabled(true)
-                        .build();
+                .setUsernameAndPassword(dataThingJid.getLocalpart(), dataThingPassword)
+                .setXmppDomain(dataThingJid.asDomainBareJid()).setSecurityMode(SecurityMode.disabled)
+                .setDebuggerEnabled(true).build();
+        final XMPPTCPConnectionConfiguration readingThingConnectionConfiguration = XMPPTCPConnectionConfiguration
+                .builder().setUsernameAndPassword(readingThingJid.getLocalpart(), readingThingPassword)
+                .setXmppDomain(readingThingJid.asDomainBareJid()).setSecurityMode(SecurityMode.disabled)
+                .setDebuggerEnabled(true).build();
 
         final XMPPTCPConnection dataThingConnection = new XMPPTCPConnection(dataThingConnectionConfiguration);
         final XMPPTCPConnection readingThingConnection = new XMPPTCPConnection(readingThingConnectionConfiguration);
@@ -76,49 +78,115 @@ public class IoT {
         dataThingConnection.setPacketReplyTimeout(TIMEOUT);
         readingThingConnection.setPacketReplyTimeout(TIMEOUT);
 
+        dataThingConnection.setUseStreamManagement(false);
+        readingThingConnection.setUseStreamManagement(false);
+
         try {
-            iotScenario(dataThingConnection, readingThingConnection);
-        }
-        finally {
+            dataThingConnection.connect().login();
+            readingThingConnection.connect().login();
+            scenario.iotScenario(dataThingConnection, readingThingConnection);
+        } finally {
             dataThingConnection.disconnect();
             readingThingConnection.disconnect();
         }
     }
 
-    public static void iotScenario(XMPPTCPConnection dataThingConnection, XMPPTCPConnection readingThingConnection)
-                    throws TimeoutException, Exception {
-        dataThingConnection.connect().login();
-        readingThingConnection.connect().login();
-        ThingState dataThingState = actAsDataThing(dataThingConnection);
-
-        final SimpleResultSyncPoint syncPoint = new SimpleResultSyncPoint();
-        dataThingState.setThingStateChangeListener(new AbstractThingStateChangeListener() {
-            @Override
-            public void owned(BareJid jid) {
-                syncPoint.signal();
-            }
-        });
-        // Wait until the thing is owned.
-        syncPoint.waitForResult(TIMEOUT);
-        printStatus("OWNED - Thing now onwed by " + dataThingState.getOwner());
-
-        // Make sure things are befriended.
-        IoTProvisioningManager readingThingProvisioningManager = IoTProvisioningManager.getInstanceFor(readingThingConnection);
-        readingThingProvisioningManager.sendFriendshipRequestIfRequired(dataThingConnection.getUser().asBareJid());
-
-        Roster dataThingRoster = Roster.getInstanceFor(dataThingConnection);
-        RosterUtil.waitUntilOtherEntityIsSubscribed(dataThingRoster, readingThingConnection.getUser().asBareJid(), TIMEOUT);
-        printStatus("FRIENDSHIP ACCEPTED - Trying to read out data");
-
-        IoTDataManager readingThingDataManager = IoTDataManager.getInstanceFor(readingThingConnection);
-        List<IoTFieldsExtension> values = readingThingDataManager.requestMomentaryValuesReadOut(dataThingConnection.getUser());
-        if (values.size() != 1) {
-            throw new IllegalStateException("Unexpected number of values returned: " + values.size());
-        }
-        IoTFieldsExtension field = values.get(0);
-        printStatus("DATA READ-OUT SUCCESS: " + field.toXML());
-        printStatus("IoT SCENARIO FINISHED SUCCESSFULLY");
+    public static void iotReadOutScenario(String dataThingJidString, String dataThingPassword, String readingThingJidString,
+                    String readingThingPassword)
+                    throws Exception {
+        iotScenario(dataThingJidString, dataThingPassword, readingThingJidString, readingThingPassword, READ_OUT_SCENARIO);
     }
+
+    public static final IotScenario READ_OUT_SCENARIO = new IotScenario() {
+        @Override
+        public void iotScenario(XMPPTCPConnection dataThingConnection, XMPPTCPConnection readingThingConnection) throws TimeoutException, Exception {
+            ThingState dataThingState = actAsDataThing(dataThingConnection);
+
+            final SimpleResultSyncPoint syncPoint = new SimpleResultSyncPoint();
+            dataThingState.setThingStateChangeListener(new AbstractThingStateChangeListener() {
+                @Override
+                public void owned(BareJid jid) {
+                    syncPoint.signal();
+                }
+            });
+            // Wait until the thing is owned.
+            syncPoint.waitForResult(TIMEOUT);
+            printStatus("OWNED - Thing now onwed by " + dataThingState.getOwner());
+
+            // Make sure things are befriended.
+            IoTProvisioningManager readingThingProvisioningManager = IoTProvisioningManager.getInstanceFor(readingThingConnection);
+            readingThingProvisioningManager.sendFriendshipRequestIfRequired(dataThingConnection.getUser().asBareJid());
+
+            Roster dataThingRoster = Roster.getInstanceFor(dataThingConnection);
+            RosterUtil.waitUntilOtherEntityIsSubscribed(dataThingRoster, readingThingConnection.getUser().asBareJid(), TIMEOUT);
+            printStatus("FRIENDSHIP ACCEPTED - Trying to read out data");
+
+            IoTDataManager readingThingDataManager = IoTDataManager.getInstanceFor(readingThingConnection);
+            List<IoTFieldsExtension> values = readingThingDataManager.requestMomentaryValuesReadOut(dataThingConnection.getUser());
+            if (values.size() != 1) {
+                throw new IllegalStateException("Unexpected number of values returned: " + values.size());
+            }
+            IoTFieldsExtension field = values.get(0);
+            printStatus("DATA READ-OUT SUCCESS: " + field.toXML());
+            printStatus("IoT SCENARIO FINISHED SUCCESSFULLY");
+        }
+    };
+
+    public static void iotOwnerApprovesFriendScenario(String dataThingJidString, String dataThingPassword,
+            String readingThingJidString, String readingThingPassword) throws Exception {
+        iotScenario(dataThingJidString, dataThingPassword, readingThingJidString, readingThingPassword,
+                OWNER_APPROVES_FRIEND_SCENARIO);
+    }
+
+    public static final IotScenario OWNER_APPROVES_FRIEND_SCENARIO = new IotScenario() {
+        @Override
+        public void iotScenario(XMPPTCPConnection dataThingConnection, XMPPTCPConnection readingThingConnection) throws TimeoutException, Exception {
+            // First ensure that the two XMPP entities are not already subscribed to each other presences.
+            RosterUtil.ensureNotSubscribedToEachOther(dataThingConnection, readingThingConnection);
+
+            final BareJid dataThingBareJid = dataThingConnection.getUser().asBareJid();
+            final BareJid readingThingBareJid = readingThingConnection.getUser().asBareJid();
+            final ThingState dataThingState = actAsDataThing(dataThingConnection);
+
+            printStatus("WAITING for 'claimed' notification. Please claim thing now");
+            final SimpleResultSyncPoint syncPoint = new SimpleResultSyncPoint();
+            dataThingState.setThingStateChangeListener(new AbstractThingStateChangeListener() {
+                @Override
+                public void owned(BareJid jid) {
+                    syncPoint.signal();
+                }
+            });
+            // Wait until the thing is owned.
+            syncPoint.waitForResult(TIMEOUT);
+            printStatus("OWNED - Thing now onwed by " + dataThingState.getOwner());
+
+            // Now, ReadingThing sends a friendship request to data thing, which
+            // will proxy the request to its provisioning service, which will
+            // likely return that both a not friends since the owner did not
+            // authorize the friendship yet.
+            final SimpleResultSyncPoint friendshipApprovedSyncPoint = new SimpleResultSyncPoint();
+            final IoTProvisioningManager readingThingProvisioningManager = IoTProvisioningManager.getInstanceFor(readingThingConnection);
+            final BecameFriendListener becameFriendListener = new BecameFriendListener() {
+                @Override
+                public void becameFriend(BareJid jid, Presence presence) {
+                    if (jid.equals(dataThingBareJid)) {
+                        friendshipApprovedSyncPoint.signal();
+                    }
+                }
+            };
+            readingThingProvisioningManager.addBecameFriendListener(becameFriendListener);
+
+            try {
+                readingThingProvisioningManager
+                        .sendFriendshipRequestIfRequired(dataThingConnection.getUser().asBareJid());
+                friendshipApprovedSyncPoint.waitForResult(TIMEOUT);
+            } finally {
+                readingThingProvisioningManager.removeBecameFriendListener(becameFriendListener);
+            }
+
+            printStatus("FRIENDSHIP APPROVED - ReadingThing " + readingThingBareJid + " is now a friend of DataThing " + dataThingBareJid);
+        }
+    };
 
     private static ThingState actAsDataThing(XMPPTCPConnection connection) throws XMPPException, SmackException, InterruptedException {
         final String key = StringUtils.randomString(12);
@@ -126,7 +194,7 @@ public class IoT {
         Thing dataThing = Thing.builder()
                         .setKey(key)
                         .setSerialNumber(sn)
-                        .setManufacturer("Ignite Realtime")
+                        .setManufacturer("IgniteRealtime")
                         .setModel("Smack")
                         .setVersion("0.1")
                         .setMomentaryReadOutRequestHandler(new ThingMomentaryReadOutRequest() {
@@ -153,6 +221,7 @@ public class IoT {
         if (args.length != 4) {
             throw new IllegalArgumentException();
         }
-        iotScenario(args[0], args[1], args[2], args[3]);
+        iotOwnerApprovesFriendScenario(args[0], args[1], args[2], args[3]);
     }
+
 }

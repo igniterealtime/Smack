@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2013-2014 Florian Schmaus
+ * Copyright © 2013-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.net.InetAddress;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -30,6 +31,7 @@ public class HostAddress {
     private final String fqdn;
     private final int port;
     private final Map<InetAddress, Exception> exceptions = new LinkedHashMap<>();
+    private final List<InetAddress> inetAddresses;
 
     /**
      * Creates a new HostAddress with the given FQDN. The port will be set to the default XMPP client port: 5222
@@ -37,9 +39,9 @@ public class HostAddress {
      * @param fqdn Fully qualified domain name.
      * @throws IllegalArgumentException If the fqdn is null.
      */
-    public HostAddress(String fqdn) {
+    public HostAddress(String fqdn, List<InetAddress> inetAddresses) {
         // Set port to the default port for XMPP client communication
-        this(fqdn, 5222);
+        this(fqdn, 5222, inetAddresses);
     }
 
     /**
@@ -49,7 +51,7 @@ public class HostAddress {
      * @param port The port to connect on.
      * @throws IllegalArgumentException If the fqdn is null or port is out of valid range (0 - 65535).
      */
-    public HostAddress(String fqdn, int port) {
+    public HostAddress(String fqdn, int port, List<InetAddress> inetAddresses) {
         Objects.requireNonNull(fqdn, "FQDN is null");
         if (port < 0 || port > 65535)
             throw new IllegalArgumentException(
@@ -61,6 +63,24 @@ public class HostAddress {
             this.fqdn = fqdn;
         }
         this.port = port;
+        if (inetAddresses.isEmpty()) {
+            throw new IllegalArgumentException("Must provide at least one InetAddress");
+        }
+        this.inetAddresses = inetAddresses;
+    }
+
+    /**
+     * Constructs a new failed HostAddress. This constructor is usually used when the DNS resolution of the domain name
+     * failed for some reason.
+     *
+     * @param fqdn the domain name of the host.
+     * @param e the exception causing the failure.
+     */
+    public HostAddress(String fqdn, Exception e) {
+        this.fqdn = fqdn;
+        this.port = 5222;
+        inetAddresses = Collections.emptyList();
+        setException(e);
     }
 
     public String getFQDN() {
@@ -89,6 +109,10 @@ public class HostAddress {
      */
     public Map<InetAddress, Exception> getExceptions() {
         return Collections.unmodifiableMap(exceptions);
+    }
+
+    public List<InetAddress> getInetAddresses() {
+        return Collections.unmodifiableList(inetAddresses);
     }
 
     @Override

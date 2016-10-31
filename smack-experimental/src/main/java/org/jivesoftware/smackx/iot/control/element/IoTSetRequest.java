@@ -28,7 +28,7 @@ public class IoTSetRequest extends IQ {
 
     private final Collection<SetData> setData;
 
-    public IoTSetRequest(Collection<SetData> setData) {
+    public IoTSetRequest(Collection<? extends SetData> setData) {
         super(ELEMENT, NAMESPACE);
         setType(Type.set);
         this.setData = Collections.unmodifiableCollection(setData);
