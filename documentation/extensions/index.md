@@ -86,6 +86,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | JSON Containers                             | [XEP-0335](http://xmpp.org/extensions/xep-0335.html) | Encapsulation of JSON data within XMPP Stanzas. |
 | [Internet of Things - Discovery](iot.md)    | [XEP-0347](http://xmpp.org/extensions/xep-0347.html) | Describes how Things can be installed and discovered by their owners. |
 | Client State Indication                     | [XEP-0352](http://xmpp.org/extensions/xep-0352.html) | A way for the client to indicate its active/inactive state. |
+| [Push Notifications](pushnotifications.md)  | [XEP-0357](http://xmpp.org/extensions/xep-0357.html) |  Defines a way to manage push notifications from an XMPP Server. |
 | Google GCM JSON payload                     | n/a                                                  | Semantically the same as XEP-0335: JSON Containers |
 
 
