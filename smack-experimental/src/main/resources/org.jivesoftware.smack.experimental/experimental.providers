@@ -171,5 +171,12 @@
       <namespace>urn:xmpp:iot:control</namespace>
       <className>org.jivesoftware.smackx.iot.control.provider.IoTSetResponseProvider</className>
     </iqProvider>
-    
+
+    <!-- XEP-0357 Push Notifications -->
+    <extensionProvider>
+        <elementName>pubsub</elementName>
+        <namespace>http://jabber.org/protocol/pubsub</namespace>
+        <className>org.jivesoftware.smackx.push_notifications.provider.RemoteDisablingProvider</className>
+    </extensionProvider>
+
 </smackProviders>
