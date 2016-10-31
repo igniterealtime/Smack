@@ -133,6 +133,11 @@
       <className>org.jivesoftware.smackx.iot.provisioning.provider.ClearCacheResponseProvider</className>
     </iqProvider>
     <extensionProvider>
+        <elementName>friend</elementName>
+        <namespace>urn:xmpp:iot:provisioning</namespace>
+        <className>org.jivesoftware.smackx.iot.provisioning.provider.FriendProvider</className>
+    </extensionProvider>
+    <extensionProvider>
         <elementName>unfriend</elementName>
         <namespace>urn:xmpp:iot:provisioning</namespace>
         <className>org.jivesoftware.smackx.iot.provisioning.provider.UnfriendProvider</className>

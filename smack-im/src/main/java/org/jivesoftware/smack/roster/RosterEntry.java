@@ -28,6 +28,8 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jxmpp.jid.BareJid;
 
@@ -41,7 +43,7 @@ import org.jxmpp.jid.BareJid;
  */
 public final class RosterEntry extends Manager {
 
-    private final RosterPacket.Item item;
+    private RosterPacket.Item item;
     final private Roster roster;
 
     /**
@@ -120,10 +122,9 @@ public final class RosterEntry extends Manager {
      * @param type the subscription type.
      * @param subscriptionPending TODO
      */
-    void updateState(String name, RosterPacket.ItemType type, boolean subscriptionPending) {
-        item.setName(name);
-        item.setItemType(type);
-        item.setSubscriptionPending(subscriptionPending);
+    void updateItem(RosterPacket.Item item) {
+        assert(item != null);
+        this.item = item;
     }
 
     /**
@@ -207,6 +208,18 @@ public final class RosterEntry extends Manager {
         default:
             return false;
         }
+    }
+
+    /**
+     * Cancel the presence subscription the XMPP entity representing this roster entry has with us.
+     * 
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.2
+     */
+    public void cancelSubscription() throws NotConnectedException, InterruptedException {
+        Presence unsubscribed = new Presence(item.getJid(), Type.unsubscribed);
+        connection().sendStanza(unsubscribed);
     }
 
     public String toString() {
