@@ -19,6 +19,7 @@ package org.jivesoftware.smack.tcp;
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackConfiguration;
@@ -72,11 +73,14 @@ import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.Async;
+import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jivesoftware.smack.util.dns.SmackDaneProvider;
+import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -90,6 +94,8 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
@@ -107,20 +113,18 @@ import java.lang.reflect.Constructor;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
+import java.security.SecureRandom;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -559,20 +563,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             String host = hostAddress.getFQDN();
             int port = hostAddress.getPort();
             if (proxyInfo == null) {
-                try {
-                    inetAddresses = Arrays.asList(InetAddress.getAllByName(host)).iterator();
-                    if (!inetAddresses.hasNext()) {
-                        // This should not happen
-                        LOGGER.warning("InetAddress.getAllByName() returned empty result array.");
-                        throw new UnknownHostException(host);
-                    }
-                } catch (UnknownHostException e) {
-                    hostAddress.setException(e);
-                    // TODO: Change to emptyIterator() once Smack's minimum Android SDK level is >= 19.
-                    List<InetAddress> emptyInetAddresses = Collections.emptyList();
-                    inetAddresses = emptyInetAddresses.iterator();
-                    continue;
-                }
+                inetAddresses = hostAddress.getInetAddresses().iterator();
+                assert(inetAddresses.hasNext());
+
                 innerloop: while (inetAddresses.hasNext()) {
                     // Create a *new* Socket before every connection attempt, i.e. connect() call, since Sockets are not
                     // re-usable after a failed connection attempt. See also SMACK-724.
@@ -689,6 +682,18 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         KeyStore ks = null;
         KeyManager[] kms = null;
         PasswordCallback pcb = null;
+        SmackDaneVerifier daneVerifier = null;
+
+        if (config.getDnssecMode() == DnssecMode.needsDnssecAndDane) {
+            SmackDaneProvider daneProvider = DNSUtil.getDaneProvider();
+            if (daneProvider == null) {
+                throw new UnsupportedOperationException("DANE enabled but no SmackDaneProvider configured");
+            }
+            daneVerifier = daneProvider.newInstance();
+            if (daneVerifier == null) {
+                throw new IllegalStateException("DANE requested but DANE provider did not return a DANE verifier");
+            }
+        }
 
         if (context == null) {
             final String keyStoreType = config.getKeystoreType();
@@ -753,7 +758,20 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
             // If the user didn't specify a SSLContext, use the default one
             context = SSLContext.getInstance("TLS");
-            context.init(kms, null, new java.security.SecureRandom());
+
+            final SecureRandom secureRandom = new java.security.SecureRandom();
+            X509TrustManager customTrustManager = config.getCustomX509TrustManager();
+
+            if (daneVerifier != null) {
+                // User requested DANE verification.
+                daneVerifier.init(context, kms, customTrustManager, secureRandom);
+            } else {
+                TrustManager[] customTrustManagers = null;
+                if (customTrustManager != null) {
+                    customTrustManagers = new TrustManager[] { customTrustManager };
+                }
+                context.init(kms, customTrustManagers, secureRandom);
+            }
         }
 
         Socket plain = socket;
@@ -772,6 +790,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // Proceed to do the handshake
         sslSocket.startHandshake();
+
+        if (daneVerifier != null) {
+            daneVerifier.finish(sslSocket);
+        }
 
         final HostnameVerifier verifier = getConfiguration().getHostnameVerifier();
         if (verifier == null) {

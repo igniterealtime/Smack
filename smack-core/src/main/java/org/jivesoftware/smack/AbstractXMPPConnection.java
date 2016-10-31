@@ -586,11 +586,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // N.B.: Important to use config.serviceName and not AbstractXMPPConnection.serviceName
         if (config.host != null) {
             hostAddresses = new ArrayList<HostAddress>(1);
-            HostAddress hostAddress;
-            hostAddress = new HostAddress(config.host, config.port);
+            HostAddress hostAddress = DNSUtil.getDNSResolver().lookupHostAddress(config.host, failedAddresses, config.getDnssecMode());
             hostAddresses.add(hostAddress);
         } else {
-            hostAddresses = DNSUtil.resolveXMPPServiceDomain(config.getXMPPServiceDomain().toString(), failedAddresses);
+            hostAddresses = DNSUtil.resolveXMPPServiceDomain(config.getXMPPServiceDomain().toString(), failedAddresses, config.getDnssecMode());
         }
         // If we reach this, then hostAddresses *must not* be empty, i.e. there is at least one host added, either the
         // config.host one or the host representing the service name by DNSUtil

@@ -16,80 +16,146 @@
  */
 package org.jivesoftware.smack.util.dns.minidns;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.DNSResolver;
+import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SRVRecord;
-import org.jxmpp.util.cache.ExpirationCache;
 
-import de.measite.minidns.Client;
 import de.measite.minidns.DNSCache;
-import de.measite.minidns.DNSMessage;
+import de.measite.minidns.DNSMessage.RESPONSE_CODE;
 import de.measite.minidns.Question;
-import de.measite.minidns.Record;
-import de.measite.minidns.Record.CLASS;
-import de.measite.minidns.Record.TYPE;
-import de.measite.minidns.record.Data;
+import de.measite.minidns.cache.LRUCache;
+import de.measite.minidns.dnssec.DNSSECClient;
+import de.measite.minidns.hla.ResolutionUnsuccessfulException;
+import de.measite.minidns.hla.ResolverApi;
+import de.measite.minidns.hla.ResolverResult;
+import de.measite.minidns.record.A;
+import de.measite.minidns.record.AAAA;
 import de.measite.minidns.record.SRV;
+import de.measite.minidns.recursive.ReliableDNSClient;
 
 
 /**
- * This implementation uses the <a href="https://github.com/rtreffer/minidns/">minidns</a> implementation for
+ * This implementation uses the <a href="https://github.com/rtreffer/minidns/">MiniDNS</a> implementation for
  * resolving DNS addresses.
  */
-public class MiniDnsResolver implements SmackInitializer, DNSResolver {
+public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
 
-    private static final long ONE_DAY = 24*60*60*1000;
-    private static final MiniDnsResolver instance = new MiniDnsResolver();
-    private static final ExpirationCache<Question, DNSMessage> cache = new ExpirationCache<Question, DNSMessage>(10, ONE_DAY);
-    private final Client client; 
+    private static final MiniDnsResolver INSTANCE = new MiniDnsResolver();
 
-    public MiniDnsResolver() {
-        client = new Client(new DNSCache() {
+    private static final DNSCache CACHE = new LRUCache(128);
 
-            @Override
-            public DNSMessage get(Question question) {
-                return cache.get(question);
-            }
+    private static final ResolverApi DNSSEC_RESOLVER = new ResolverApi(new DNSSECClient(CACHE));
 
-            @Override
-            public void put(Question question, DNSMessage message) {
-                long expirationTime = ONE_DAY;
-                for (Record record : message.getAnswers()) {
-                    if (record.isAnswer(question)) {
-                        expirationTime = record.getTtl();
-                        break;
-                    }
-                }
-                cache.put(question, message, expirationTime);
-            }
-
-        });
-    }
+    private static final ResolverApi NON_DNSSEC_RESOLVER = new ResolverApi(new ReliableDNSClient(CACHE));
 
     public static DNSResolver getInstance() {
-        return instance;
+        return INSTANCE;
+    }
+
+    public MiniDnsResolver() {
+        super(true);
     }
 
     @Override
-    public List<SRVRecord> lookupSRVRecords(String name) {
-        List<SRVRecord> res = new LinkedList<SRVRecord>();
-        DNSMessage message = client.query(name, TYPE.SRV, CLASS.IN);
-        if (message == null) {
-            return res;
+    protected List<SRVRecord> lookupSRVRecords0(final String name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+        final ResolverApi resolver = getResolver(dnssecMode);
+
+        ResolverResult<SRV> result;
+        try {
+            result = resolver.resolve(name, SRV.class);
+        } catch (IOException e) {
+            failedAddresses.add(new HostAddress(name, e));
+            return null;
         }
-        for (Record record : message.getAnswers()) {
-            Data data = record.getPayload();
-            if (!(data instanceof SRV)) {
+
+        // TODO: Use ResolverResult.getResolutionUnsuccessfulException() found in newer MiniDNS versions.
+        if (!result.wasSuccessful()) {
+            ResolutionUnsuccessfulException resolutionUnsuccessfulException = getExceptionFrom(result);
+            failedAddresses.add(new HostAddress(name, resolutionUnsuccessfulException));
+            return null;
+        }
+
+        if (shouldAbortIfNotAuthentic(name, dnssecMode, result, failedAddresses)) {
+            return null;
+        }
+
+        List<SRVRecord> res = new LinkedList<SRVRecord>();
+        for (SRV srv : result.getAnswers()) {
+            String hostname = srv.name.ace;
+            List<InetAddress> hostAddresses = lookupHostAddress0(hostname, failedAddresses, dnssecMode);
+            if (hostAddresses == null) {
                 continue;
             }
-            SRV srv = (SRV) data;
-            res.add(new SRVRecord(srv.getName(), srv.getPort(), srv.getPriority(), srv.getWeight()));
+
+            SRVRecord srvRecord = new SRVRecord(hostname, srv.port, srv.priority, srv.weight, hostAddresses);
+            res.add(srvRecord);
         }
+
         return res;
+    }
+
+    @Override
+    protected List<InetAddress> lookupHostAddress0(final String name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+        final ResolverApi resolver = getResolver(dnssecMode);
+
+        final ResolverResult<A> aResult;
+        final ResolverResult<AAAA> aaaaResult;
+
+        try {
+            aResult = resolver.resolve(name, A.class);
+            aaaaResult = resolver.resolve(name, AAAA.class);
+        } catch (IOException e) {
+            failedAddresses.add(new HostAddress(name, e));
+            return null;
+        }
+
+        if (!aResult.wasSuccessful() && !aaaaResult.wasSuccessful()) {
+            // Both results where not successful.
+            failedAddresses.add(new HostAddress(name, getExceptionFrom(aResult)));
+            failedAddresses.add(new HostAddress(name, getExceptionFrom(aaaaResult)));
+            return null;
+        }
+
+        if (shouldAbortIfNotAuthentic(name, dnssecMode, aResult, failedAddresses)
+                        || shouldAbortIfNotAuthentic(name, dnssecMode, aaaaResult, failedAddresses)) {
+            return null;
+        }
+
+        List<InetAddress> inetAddresses = new ArrayList<>(aResult.getAnswers().size()
+                        + aaaaResult.getAnswers().size());
+
+        for (A a : aResult.getAnswers()) {
+            InetAddress inetAddress;
+            try {
+                inetAddress = InetAddress.getByAddress(a.getIp());
+            }
+            catch (UnknownHostException e) {
+                continue;
+            }
+            inetAddresses.add(inetAddress);
+        }
+        for (AAAA aaaa : aaaaResult.getAnswers()) {
+            InetAddress inetAddress;
+            try {
+                inetAddress = InetAddress.getByAddress(name, aaaa.getIp());
+            }
+            catch (UnknownHostException e) {
+                continue;
+            }
+            inetAddresses.add(inetAddress);
+        }
+
+        return inetAddresses;
     }
 
     public static void setup() {
@@ -99,7 +165,43 @@ public class MiniDnsResolver implements SmackInitializer, DNSResolver {
     @Override
     public List<Exception> initialize() {
         setup();
+        MiniDnsDane.setup();
         return null;
     }
 
+    private static ResolverApi getResolver(DnssecMode dnssecMode) {
+        if (dnssecMode == DnssecMode.disabled) {
+            return NON_DNSSEC_RESOLVER;
+        } else {
+            return DNSSEC_RESOLVER;
+        }
+    }
+
+    private static boolean shouldAbortIfNotAuthentic(String name, DnssecMode dnssecMode,
+                    ResolverResult<?> result, List<HostAddress> failedAddresses) {
+        switch (dnssecMode) {
+        case needsDnssec:
+        case needsDnssecAndDane:
+            // Check if the result is authentic data, i.e. there a no reasons the result is unverified.
+            // TODO: Use ResolverResult.getDnssecResultNotAuthenticException() of newer MiniDNS versions.
+            if (!result.isAuthenticData()) {
+                Exception exception = new Exception("DNSSEC verification failed: " + result.getUnverifiedReasons().iterator().next().getReasonString());
+                failedAddresses.add(new HostAddress(name, exception));
+                return true;
+            }
+            break;
+        case disabled:
+            break;
+        default:
+            throw new IllegalStateException("Unknown DnssecMode: " + dnssecMode);
+        }
+        return false;
+    }
+
+    private static ResolutionUnsuccessfulException getExceptionFrom(ResolverResult<?> result) {
+        Question question = result.getQuestion();
+        RESPONSE_CODE responseCode = result.getResponseCode();
+        ResolutionUnsuccessfulException resolutionUnsuccessfulException = new ResolutionUnsuccessfulException(question, responseCode);
+        return resolutionUnsuccessfulException;
+    }
 }
