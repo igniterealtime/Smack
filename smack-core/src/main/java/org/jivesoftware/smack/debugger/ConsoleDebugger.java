@@ -37,7 +37,7 @@ import java.util.Date;
  * @author Gaston Dombiak
  */
 public class ConsoleDebugger extends AbstractDebugger {
-    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aaa");
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss");
 
     public ConsoleDebugger(XMPPConnection connection, Writer writer, Reader reader) {
         super(connection, writer, reader);

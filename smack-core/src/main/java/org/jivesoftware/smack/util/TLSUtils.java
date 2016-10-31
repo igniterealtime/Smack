@@ -118,7 +118,7 @@ public class TLSUtils {
      * @param builder a connection configuration builder.
      * @return the given builder.
      */
-    public static <B extends ConnectionConfiguration.Builder<B,?>> B disableHostnameVerificationForTlsCertificicates(B builder) {
+    public static <B extends ConnectionConfiguration.Builder<B,?>> B disableHostnameVerificationForTlsCertificates(B builder) {
         builder.setHostnameVerifier(DOES_NOT_VERIFY_VERIFIER);
         return builder;
     }

@@ -115,6 +115,18 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     }
 
     /**
+     * Creates a new message with the specified recipient and extension element.
+     *
+     * @param to
+     * @param extensionElement
+     * @since 4.2
+     */
+    public Message(Jid to, ExtensionElement extensionElement) {
+        this(to);
+        addExtension(extensionElement);
+    }
+
+    /**
      * Copy constructor.
      * <p>
      * This does not perform a deep clone, as extension elements are shared between the new and old

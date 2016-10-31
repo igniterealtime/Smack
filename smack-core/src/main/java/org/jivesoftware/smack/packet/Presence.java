@@ -24,6 +24,7 @@ import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jxmpp.jid.Jid;
 
 /**
  * Represents XMPP presence packets. Every presence stanza(/packet) has a type, which is one of
@@ -76,6 +77,18 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         // Ensure that the stanza ID is set by calling super().
         super();
         setType(type);
+    }
+
+    /**
+     * Creates a new presence with the given type and using the given XMPP address as recipient.
+     *
+     * @param to the recipient.
+     * @param type the type.
+     * @since 4.2
+     */
+    public Presence(Jid to, Type type) {
+        this(type);
+        setTo(to);
     }
 
     /**

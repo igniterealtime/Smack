@@ -681,6 +681,7 @@ public final class Roster extends Manager {
         Objects.requireNonNull(subscribeListener, "SubscribeListener argument must not be null");
         if (subscriptionMode != SubscriptionMode.manual) {
             previousSubscriptionMode = subscriptionMode;
+            subscriptionMode = SubscriptionMode.manual;
         }
         return subscribeListeners.add(subscribeListener);
     }
@@ -1228,6 +1229,7 @@ public final class Roster extends Manager {
             RosterPacket.Item oldItem = RosterEntry.toRosterItem(oldEntry);
             if (!oldEntry.equalsDeep(entry) || !item.getGroupNames().equals(oldItem.getGroupNames())) {
                 updatedEntries.add(item.getJid());
+                oldEntry.updateItem(item);
             } else {
                 // Record the entry as unchanged, so that it doesn't end up as deleted entry
                 unchangedEntries.add(item.getJid());
@@ -1515,7 +1517,7 @@ public final class Roster extends Manager {
     }
 
     /**
-     * Handles roster reults as described in RFC 6121 2.1.4
+     * Handles Roster results as described in <a href="https://tools.ietf.org/html/rfc6121#section-2.1.4">RFC 6121 2.1.4</a>.
      */
     private class RosterResultListener implements StanzaListener {
 

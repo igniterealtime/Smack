@@ -18,7 +18,9 @@ package org.jivesoftware.smackx.iot.provisioning;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +43,7 @@ import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.roster.AbstractPresenceEventListener;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.SubscribeListener;
@@ -50,6 +53,7 @@ import org.jivesoftware.smackx.iot.discovery.IoTDiscoveryManager;
 import org.jivesoftware.smackx.iot.provisioning.element.ClearCache;
 import org.jivesoftware.smackx.iot.provisioning.element.ClearCacheResponse;
 import org.jivesoftware.smackx.iot.provisioning.element.Constants;
+import org.jivesoftware.smackx.iot.provisioning.element.Friend;
 import org.jivesoftware.smackx.iot.provisioning.element.IoTIsFriend;
 import org.jivesoftware.smackx.iot.provisioning.element.IoTIsFriendResponse;
 import org.jivesoftware.smackx.iot.provisioning.element.Unfriend;
@@ -68,6 +72,8 @@ public final class IoTProvisioningManager extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(IoTProvisioningManager.class.getName());
 
+    private static final StanzaFilter FRIEND_MESSAGE = new AndFilter(StanzaTypeFilter.MESSAGE,
+            new StanzaExtensionFilter(Friend.ELEMENT, Friend.NAMESPACE));
     private static final StanzaFilter UNFRIEND_MESSAGE = new AndFilter(StanzaTypeFilter.MESSAGE,
                     new StanzaExtensionFilter(Unfriend.ELEMENT, Unfriend.NAMESPACE));
 
@@ -99,6 +105,13 @@ public final class IoTProvisioningManager extends Manager {
 
     private final Roster roster;
     private final LruCache<Jid, LruCache<BareJid, Void>> negativeFriendshipRequestCache = new LruCache<>(8);
+    private final LruCache<BareJid, Void> friendshipDeniedCache = new LruCache<>(16);
+
+    private final LruCache<BareJid, Void> friendshipRequestedCache = new LruCache<>(16);
+
+    private final Set<BecameFriendListener> becameFriendListeners = new CopyOnWriteArraySet<>();
+
+    private final Set<WasUnfriendedListener> wasUnfriendedListeners = new CopyOnWriteArraySet<>();
 
     private Jid configuredProvisioningServer;
 
@@ -128,6 +141,47 @@ public final class IoTProvisioningManager extends Manager {
                 connection.sendStanza(unsubscribed);
             }
         }, UNFRIEND_MESSAGE);
+
+        // Stanza listener for XEP-0324 § 3.2.4.
+        connection.addAsyncStanzaListener(new StanzaListener() {
+            @Override
+            public void processPacket(final Stanza stanza) throws NotConnectedException, InterruptedException {
+                final Message friendMessage = (Message) stanza;
+                final Friend friend = Friend.from(friendMessage);
+                final BareJid friendJid = friend.getFriend();
+
+                if (isFromProvisioningService(friendMessage)) {
+                    // We received a recommendation from a provisioning server.
+                    // Notify the recommended friend that we will now accept his
+                    // friendship requests.
+                    final XMPPConnection connection = connection();
+                    Friend friendNotifiacation = new Friend(connection.getUser().asBareJid());
+                    Message notificationMessage = new Message(friendJid, friendNotifiacation);
+                    connection.sendStanza(notificationMessage);
+                } else {
+                    // Check is the message was send from a thing we previously
+                    // tried to become friends with. If this is the case, then
+                    // thing is likely telling us that we can become now
+                    // friends.
+                    Jid from = friendMessage.getFrom();
+                    if (!friendshipDeniedCache.containsKey(from)) {
+                        return;
+                    }
+
+                    BareJid bareFrom = from.asBareJid();
+                    // Sanity check: If a thing recommends us itself as friend,
+                    // which should be the case once we reach this code, then
+                    // the bare 'from' JID should be equals to the JID of the
+                    // recommended friend.
+                    if (!bareFrom.equals(friendJid)) {
+                        return;
+                    }
+
+                    // Re-try the friendship request.
+                    sendFriendshipRequest(friendJid);
+                }
+            }
+        }, FRIEND_MESSAGE);
 
         connection.registerIQRequestHandler(
                         new AbstractIqRequestHandler(ClearCache.ELEMENT, ClearCache.NAMESPACE, Type.set, Mode.async) {
@@ -190,6 +244,25 @@ public final class IoTProvisioningManager extends Manager {
                 }
                 else {
                     return SubscribeAnswer.Deny;
+                }
+            }
+        });
+
+        roster.addPresenceEventListener(new AbstractPresenceEventListener() {
+            @Override
+            public void presenceSubscribed(BareJid address, Presence subscribedPresence) {
+                friendshipRequestedCache.remove(address);
+                for (BecameFriendListener becameFriendListener : becameFriendListeners) {
+                    becameFriendListener.becameFriend(address, subscribedPresence);
+                }
+            }
+            @Override
+            public void presenceUnsubscribed(BareJid address, Presence unsubscribedPresence) {
+                if (friendshipRequestedCache.containsKey(address)) {
+                    friendshipDeniedCache.put(address, null);
+                }
+                for (WasUnfriendedListener wasUnfriendedListener : wasUnfriendedListeners) {
+                    wasUnfriendedListener.wasUnfriendedListener(address, unsubscribedPresence);
                 }
             }
         });
@@ -272,6 +345,9 @@ public final class IoTProvisioningManager extends Manager {
     public void sendFriendshipRequest(BareJid bareJid) throws NotConnectedException, InterruptedException {
         Presence presence = new Presence(Presence.Type.subscribe);
         presence.setTo(bareJid);
+
+        friendshipRequestedCache.put(bareJid, null);
+
         connection().sendStanza(presence);
     }
 
@@ -293,6 +369,22 @@ public final class IoTProvisioningManager extends Manager {
             presence.setTo(friend);
             connection().sendStanza(presence);
         }
+    }
+
+    public boolean addBecameFriendListener(BecameFriendListener becameFriendListener) {
+        return becameFriendListeners.add(becameFriendListener);
+    }
+
+    public boolean removeBecameFriendListener(BecameFriendListener becameFriendListener) {
+        return becameFriendListeners.remove(becameFriendListener);
+    }
+
+    public boolean addWasUnfriendedListener(WasUnfriendedListener wasUnfriendedListener) {
+        return wasUnfriendedListeners.add(wasUnfriendedListener);
+    }
+
+    public boolean removeWasUnfriendedListener(WasUnfriendedListener wasUnfriendedListener) {
+        return wasUnfriendedListeners.remove(wasUnfriendedListener);
     }
 
     private boolean isFromProvisioningService(Stanza stanza) {

@@ -18,6 +18,9 @@ package org.jivesoftware.smack;
 
 import static org.junit.Assert.assertEquals;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,14 +31,20 @@ import org.junit.Test;
 public class SmackExceptionTest {
 
     @Test
-    public void testConnectionException() {
+    public void testConnectionException() throws UnknownHostException {
         List<HostAddress> failedAddresses = new LinkedList<HostAddress>();
 
-        HostAddress hostAddress = new HostAddress("foo.bar.example", 1234);
+        String host = "foo.bar.example";
+        InetAddress inetAddress = InetAddress.getByAddress(host, new byte[] { 0, 0, 0, 0 });
+        List<InetAddress> inetAddresses = Collections.singletonList(inetAddress);
+        HostAddress hostAddress = new HostAddress(host, 1234, inetAddresses);
         hostAddress.setException(new Exception("Failed for some reason"));
         failedAddresses.add(hostAddress);
 
-        hostAddress = new HostAddress("barz.example", 5678);
+        host = "barz.example";
+        inetAddress = InetAddress.getByAddress(host, new byte[] { 0, 0, 0, 0 });
+        inetAddresses = Collections.singletonList(inetAddress);
+        hostAddress = new HostAddress(host, 5678, inetAddresses);
         hostAddress.setException(new Exception("Failed for some other reason"));
         failedAddresses.add(hostAddress);
 
