@@ -15,6 +15,8 @@ Currently supported XEPs of Smack (all subprojects)
 | Name                                        | XEP                                                      | Description |
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | Nonzas  | [XEP-0360](http://xmpp.org/extensions/xep-0360.html) | Defines the term "Nonza", describing every top level stream element that is not a Stanza.                                         |
+| [Token-based reconnection](tokenreconnection.md)  | [XEP-xxxx](http://www.xmpp.org/extensions/inbox/token-reconnection.html) | Defines a token-based session authentication mechanism.                                         |
+
 
 Currently supported XEPs of smack-tcp
 -------------------------------------

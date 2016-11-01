@@ -17,18 +17,6 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.Mechanisms;
-import org.jivesoftware.smack.sasl.SASLErrorException;
-import org.jivesoftware.smack.sasl.SASLMechanism;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
-import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.EntityBareJid;
-
-import javax.security.auth.callback.CallbackHandler;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +27,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import javax.security.auth.callback.CallbackHandler;
+
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.Mechanisms;
+import org.jivesoftware.smack.sasl.SASLErrorException;
+import org.jivesoftware.smack.sasl.SASLMechanism;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityBareJid;
 
 /**
  * <p>This class is responsible authenticating the user using SASL, binding the resource
@@ -63,6 +63,8 @@ public final class SASLAuthentication {
 
     private static final List<SASLMechanism> REGISTERED_MECHANISMS = new ArrayList<SASLMechanism>();
 
+    private static SASLMechanism XOAUTH_REGISTERED_MECHANISM;
+
     private static final Set<String> BLACKLISTED_MECHANISMS = new HashSet<String>();
 
     /**
@@ -75,6 +77,15 @@ public final class SASLAuthentication {
             REGISTERED_MECHANISMS.add(mechanism);
             Collections.sort(REGISTERED_MECHANISMS);
         }
+    }
+
+    /**
+     * Register a new X-OAUTH SASL mechanism.
+     * 
+     * @param mechanism
+     */
+    public static void registerXOAUTHSASLMechanism(SASLMechanism mechanism) {
+        XOAUTH_REGISTERED_MECHANISM = mechanism;
     }
 
     /**
@@ -203,13 +214,53 @@ public final class SASLAuthentication {
             }
         }
 
-        if (saslException != null){
+        afterAuthenticate();
+    }
+
+    /**
+     * Authenticate with a given token.
+     * 
+     * @param token
+     * @throws XMPPErrorException
+     * @throws SASLErrorException
+     * @throws IOException
+     * @throws SmackException
+     * @throws InterruptedException
+     */
+    public void authenticate(String token)
+            throws XMPPErrorException, SASLErrorException, IOException, SmackException, InterruptedException {
+        currentMechanism = selectXOAUTHMechanism();
+
+        if (currentMechanism == null) {
+            return;
+        }
+
+        final CallbackHandler callbackHandler = configuration.getCallbackHandler();
+
+        synchronized (this) {
+            currentMechanism.authenticate(token, callbackHandler);
+
+            final long deadline = System.currentTimeMillis() + connection.getPacketReplyTimeout();
+            while (!authenticationSuccessful && saslException == null) {
+                final long now = System.currentTimeMillis();
+                if (now > deadline)
+                    break;
+                // Wait until SASL negotiation finishes
+                wait(deadline - now);
+            }
+        }
+
+        afterAuthenticate();
+    }
+
+    private void afterAuthenticate() throws SmackException, SASLErrorException, NoResponseException {
+        if (saslException != null) {
             if (saslException instanceof SmackException) {
                 throw (SmackException) saslException;
             } else if (saslException instanceof SASLErrorException) {
                 throw (SASLErrorException) saslException;
             } else {
-                throw new IllegalStateException("Unexpected exception type" , saslException);
+                throw new IllegalStateException("Unexpected exception type", saslException);
             }
         }
 
@@ -219,12 +270,13 @@ public final class SASLAuthentication {
     }
 
     /**
-     * Wrapper for {@link #challengeReceived(String, boolean)}, with <code>finalChallenge</code> set
-     * to <code>false</code>.
+     * Wrapper for {@link #challengeReceived(String, boolean)}, with
+     * <code>finalChallenge</code> set to <code>false</code>.
      * 
-     * @param challenge a base64 encoded string representing the challenge.
+     * @param challenge
+     *            a base64 encoded string representing the challenge.
      * @throws SmackException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public void challengeReceived(String challenge) throws SmackException, InterruptedException {
         challengeReceived(challenge, false);
@@ -314,6 +366,24 @@ public final class SASLAuthentication {
         return lastUsedMech.getName();
     }
 
+    private SASLMechanism selectXOAUTHMechanism() throws SmackException {
+        SASLMechanism mechanism = XOAUTH_REGISTERED_MECHANISM;
+
+        final List<String> serverMechanisms = getServerMechanisms();
+        if (serverMechanisms.isEmpty()) {
+            LOGGER.warning("Server did not report any SASL mechanisms");
+        }
+
+        String mechanismName = mechanism.getName();
+
+        if (serverMechanisms.contains(mechanismName)) {
+            return mechanism.instanceForAuthentication(connection);
+        } else {
+            return null;
+        }
+
+    }
+
     private SASLMechanism selectMechanism(EntityBareJid authzid) throws SmackException {
         Iterator<SASLMechanism> it = REGISTERED_MECHANISMS.iterator();
         final List<String> serverMechanisms = getServerMechanisms();
@@ -345,6 +415,8 @@ public final class SASLAuthentication {
         }
 
         synchronized (BLACKLISTED_MECHANISMS) {
+            List<SASLMechanism> mechanisms = REGISTERED_MECHANISMS;
+            mechanisms.add(XOAUTH_REGISTERED_MECHANISM);
             // @formatter:off
             throw new SmackException(
                             "No supported and enabled SASL Mechanism provided by server. " +

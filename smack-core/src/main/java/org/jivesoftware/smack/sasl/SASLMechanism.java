@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.sasl;
 
+import javax.security.auth.callback.CallbackHandler;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -26,8 +28,6 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
-
-import javax.security.auth.callback.CallbackHandler;
 
 /**
  * Base class for SASL mechanisms. Subclasses must implement these methods:
@@ -73,6 +73,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     public static final String EXTERNAL = "EXTERNAL";
     public static final String GSSAPI = "GSSAPI";
     public static final String PLAIN = "PLAIN";
+    public static final String XOAUTH = "X-OAUTH";
 
     // TODO Remove once Smack's min Android API is 9, where java.text.Normalizer is available
     private static StringTransformer saslPrepTransformer;
@@ -182,6 +183,19 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     }
 
     /**
+     * Authenticate with token.
+     * 
+     * @param token
+     * @param cbh
+     * @throws SmackException
+     * @throws InterruptedException
+     */
+    public final void authenticate(String token, CallbackHandler cbh) throws SmackException, InterruptedException {
+        authenticateInternal(cbh);
+        authenticateXOAUTH(token);
+    }
+
+    /**
      * @throws SmackException
      */
     protected void authenticateInternal() throws SmackException {
@@ -227,6 +241,10 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         }
         // Send the authentication to the server
         connection.sendNonza(new AuthMechanism(getName(), authenticationText));
+    }
+
+    private void authenticateXOAUTH(String token) throws NotConnectedException, InterruptedException {
+        connection.sendNonza(new AuthMechanism(getName(), token));
     }
 
     /**
