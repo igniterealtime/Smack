@@ -211,4 +211,26 @@
         <className>org.jivesoftware.smackx.push_notifications.provider.RemoteDisablingProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0333: Chat Markers -->
+    <extensionProvider>
+      <elementName>markable</elementName>
+      <namespace>urn:xmpp:chat-markers:0</namespace>
+      <className>org.jivesoftware.smackx.chat_markers.provider.MarkableProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+      <elementName>received</elementName>
+      <namespace>urn:xmpp:chat-markers:0</namespace>
+      <className>org.jivesoftware.smackx.chat_markers.provider.ReceivedProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+      <elementName>displayed</elementName>
+      <namespace>urn:xmpp:chat-markers:0</namespace>
+      <className>org.jivesoftware.smackx.chat_markers.provider.DisplayedProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+      <elementName>acknowledged</elementName>
+      <namespace>urn:xmpp:chat-markers:0</namespace>
+      <className>org.jivesoftware.smackx.chat_markers.provider.AcknowledgedProvider</className>
+    </extensionProvider>
+    
 </smackProviders>
