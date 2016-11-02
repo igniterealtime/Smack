@@ -51,6 +51,38 @@
         <namespace>google:mobile:data</namespace>
         <className>org.jivesoftware.smackx.gcm.provider.GcmExtensionProvider</className>
     </extensionProvider>
+    
+    <!-- XEP-xxxx: Multi-User Chat Light -->
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>urn:xmpp:muclight:0#info</namespace>
+        <className>org.jivesoftware.smackx.muclight.provider.MUCLightInfoIQProvider</className>
+    </iqProvider>
+    <extensionProvider>
+        <elementName>x</elementName>
+        <namespace>urn:xmpp:muclight:0#affiliations</namespace>
+        <className>org.jivesoftware.smackx.muclight.provider.MUCLightAffiliationsChangeProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>x</elementName>
+        <namespace>urn:xmpp:muclight:0#configuration</namespace>
+        <className>org.jivesoftware.smackx.muclight.provider.MUCLightConfigurationsChangeProvider</className>
+    </extensionProvider>
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>urn:xmpp:muclight:0#configuration</namespace>
+        <className>org.jivesoftware.smackx.muclight.provider.MUCLightConfigurationIQProvider</className>
+    </iqProvider>
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>urn:xmpp:muclight:0#affiliations</namespace>
+        <className>org.jivesoftware.smackx.muclight.provider.MUCLightAffiliationsIQProvider</className>
+    </iqProvider>
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>urn:xmpp:muclight:0#blocking</namespace>
+        <className>org.jivesoftware.smackx.muclight.provider.MUCLightBlockingIQProvider</className>
+    </iqProvider>
 
 	<!-- XEP-0313 Message Archive Management -->
     <iqProvider>
