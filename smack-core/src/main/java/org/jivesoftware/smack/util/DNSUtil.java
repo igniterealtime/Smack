@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2005 Jive Software.
+ * Copyright 2003-2005 Jive Software, 2016 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,9 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.util.dns.DNSResolver;
+import org.jivesoftware.smack.util.dns.SmackDaneProvider;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SRVRecord;
 
@@ -33,11 +35,13 @@ import org.jivesoftware.smack.util.dns.SRVRecord;
  * Utility class to perform DNS lookups for XMPP services.
  *
  * @author Matt Tucker
+ * @author Florian Schmaus
  */
 public class DNSUtil {
 
     private static final Logger LOGGER = Logger.getLogger(DNSUtil.class.getName());
     private static DNSResolver dnsResolver = null;
+    private static SmackDaneProvider daneProvider;
 
     /**
      * International Domain Name transformer.
@@ -62,7 +66,7 @@ public class DNSUtil {
      * @param resolver
      */
     public static void setDNSResolver(DNSResolver resolver) {
-        dnsResolver = resolver;
+        dnsResolver = Objects.requireNonNull(resolver);
     }
 
     /**
@@ -74,6 +78,23 @@ public class DNSUtil {
         return dnsResolver;
     }
 
+    /**
+     * Set the DANE provider that should be used when DANE is enabled.
+     *
+     * @param daneProvider
+     */
+    public static void setDaneProvider(SmackDaneProvider daneProvider) {
+        daneProvider = Objects.requireNonNull(daneProvider);
+    }
+
+    /**
+     * Returns the currently active DANE provider used when DANE is enabled.
+     *
+     * @return the active DANE provider
+     */
+    public static SmackDaneProvider getDaneProvider() {
+        return daneProvider;
+    }
 
     /**
      * Set the IDNA (Internationalizing Domain Names in Applications, RFC 3490) transformer.
@@ -109,15 +130,10 @@ public class DNSUtil {
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
      */
-    public static List<HostAddress> resolveXMPPServiceDomain(String domain, List<HostAddress> failedAddresses) {
+    public static List<HostAddress> resolveXMPPServiceDomain(String domain, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         domain = idnaTransformer.transform(domain);
-        if (dnsResolver == null) {
-            LOGGER.warning("No DNS Resolver active in Smack, will be unable to perform DNS SRV lookups");
-            List<HostAddress> addresses = new ArrayList<HostAddress>(1);
-            addresses.add(new HostAddress(domain, 5222));
-            return addresses;
-        }
-        return resolveDomain(domain, DomainType.Client, failedAddresses);
+
+        return resolveDomain(domain, DomainType.Client, failedAddresses, dnssecMode);
     }
 
     /**
@@ -134,25 +150,25 @@ public class DNSUtil {
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
      */
-    public static List<HostAddress> resolveXMPPServerDomain(String domain, List<HostAddress> failedAddresses) {
+    public static List<HostAddress> resolveXMPPServerDomain(String domain, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         domain = idnaTransformer.transform(domain);
-        if (dnsResolver == null) {
-            LOGGER.warning("No DNS Resolver active in Smack, will be unable to perform DNS SRV lookups");
-            List<HostAddress> addresses = new ArrayList<HostAddress>(1);
-            addresses.add(new HostAddress(domain, 5269));
-            return addresses;
-        }
-        return resolveDomain(domain, DomainType.Server, failedAddresses);
+
+        return resolveDomain(domain, DomainType.Server, failedAddresses, dnssecMode);
     }
 
     /**
      * 
      * @param domain the domain.
      * @param domainType the XMPP domain type, server or client.
-     * @param failedAddresses on optional list that will be populated with host addresses that failed to resolve.
+     * @param failedAddresses a list that will be populated with host addresses that failed to resolve.
      * @return a list of resolver host addresses for this domain.
      */
-    private static List<HostAddress> resolveDomain(String domain, DomainType domainType, List<HostAddress> failedAddresses) {
+    private static List<HostAddress> resolveDomain(String domain, DomainType domainType,
+                    List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+        if (dnsResolver == null) {
+            throw new IllegalStateException("No DNS Resolver active in Smack");
+        }
+
         List<HostAddress> addresses = new ArrayList<HostAddress>();
 
         // Step one: Do SRV lookups
@@ -167,8 +183,9 @@ public class DNSUtil {
         default:
             throw new AssertionError();
         }
-        try {
-            List<SRVRecord> srvRecords = dnsResolver.lookupSRVRecords(srvDomain);
+
+        List<SRVRecord> srvRecords = dnsResolver.lookupSRVRecords(srvDomain, failedAddresses, dnssecMode);
+        if (srvRecords != null) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 String logMessage = "Resolved SRV RR for " + srvDomain + ":";
                 for (SRVRecord r : srvRecords)
@@ -178,18 +195,12 @@ public class DNSUtil {
             List<HostAddress> sortedRecords = sortSRVRecords(srvRecords);
             addresses.addAll(sortedRecords);
         }
-        catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Exception while resovling SRV records for " + domain
-                            + ". Consider adding '_xmpp-(server|client)._tcp' DNS SRV Records", e);
-            if (failedAddresses != null) {
-                HostAddress failedHostAddress = new HostAddress(srvDomain);
-                failedHostAddress.setException(e);
-                failedAddresses.add(failedHostAddress);
-            }
-        }
 
         // Step two: Add the hostname to the end of the list
-        addresses.add(new HostAddress(domain));
+        HostAddress hostAddress = dnsResolver.lookupHostAddress(domain, failedAddresses, dnssecMode);
+        if (hostAddress != null) {
+            addresses.add(hostAddress);
+        }
 
         return addresses;
     }

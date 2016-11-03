@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Florian Schmaus
+ * Copyright 2013-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,15 @@
  */
 package org.jivesoftware.smack.util.dns.dnsjava;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.DNSResolver;
+import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SRVRecord;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
@@ -32,7 +35,7 @@ import org.xbill.DNS.Type;
  * This implementation uses the <a href="http://www.dnsjava.org/">dnsjava</a> implementation for resolving DNS addresses.
  *
  */
-public class DNSJavaResolver implements SmackInitializer, DNSResolver {
+public class DNSJavaResolver extends DNSResolver implements SmackInitializer {
 
     private static DNSJavaResolver instance = new DNSJavaResolver();
 
@@ -40,11 +43,22 @@ public class DNSJavaResolver implements SmackInitializer, DNSResolver {
         return instance;
     }
 
+    public DNSJavaResolver() {
+        super(false);
+    }
+
     @Override
-    public List<SRVRecord> lookupSRVRecords(String name) throws TextParseException {
+    protected List<SRVRecord> lookupSRVRecords0(String name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         List<SRVRecord> res = new ArrayList<SRVRecord>();
 
-        Lookup lookup = new Lookup(name, Type.SRV);
+        Lookup lookup;
+        try {
+            lookup = new Lookup(name, Type.SRV);
+        }
+        catch (TextParseException e) {
+            throw new IllegalStateException(e);
+        }
+
         Record[] recs = lookup.run();
         if (recs == null)
             return res;
@@ -57,7 +71,12 @@ public class DNSJavaResolver implements SmackInitializer, DNSResolver {
                 int priority = srvRecord.getPriority();
                 int weight = srvRecord.getWeight();
 
-                SRVRecord r = new SRVRecord(host, port, priority, weight);
+                List<InetAddress> hostAddresses = lookupHostAddress0(host, failedAddresses, dnssecMode);
+                if (hostAddresses == null) {
+                    continue;
+                }
+
+                SRVRecord r = new SRVRecord(host, port, priority, weight, hostAddresses);
                 res.add(r);
             }
         }

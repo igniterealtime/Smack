@@ -108,6 +108,7 @@ public class RosterPacket extends IQ {
      * A roster item, which consists of a JID, their name, the type of subscription, and
      * the groups the roster item belongs to.
      */
+    // TODO Make this class immutable.
     public static class Item implements NamedElement {
 
         /**
@@ -124,6 +125,7 @@ public class RosterPacket extends IQ {
          */
         private boolean subscriptionPending;
 
+        // TODO Make immutable. 
         private String name;
         private ItemType itemType = ItemType.none;
         private boolean approved;
