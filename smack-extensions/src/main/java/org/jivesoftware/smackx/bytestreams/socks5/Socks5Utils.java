@@ -61,7 +61,7 @@ class Socks5Utils {
         in.readFully(header, 0, 5);
 
         if (header[3] != (byte) 0x03) {
-            throw new SmackException("Unsupported SOCKS5 address type");
+            throw new SmackException("Unsupported SOCKS5 address type: " + header[3] + " (expected: 0x03)");
         }
 
         int addressLength = header[4];
