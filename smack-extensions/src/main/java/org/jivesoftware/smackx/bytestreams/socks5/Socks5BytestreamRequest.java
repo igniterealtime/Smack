@@ -239,13 +239,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
                 break;
 
             }
-            catch (TimeoutException e) {
-                incrementConnectionFailures(address);
-            }
-            catch (IOException e) {
-                incrementConnectionFailures(address);
-            }
-            catch (XMPPException e) {
+            catch (TimeoutException | IOException | SmackException | XMPPException e) {
                 incrementConnectionFailures(address);
             }
 
