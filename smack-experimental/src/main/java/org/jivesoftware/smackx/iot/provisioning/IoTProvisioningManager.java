@@ -142,7 +142,9 @@ public final class IoTProvisioningManager extends Manager {
             }
         }, UNFRIEND_MESSAGE);
 
-        // Stanza listener for XEP-0324 § 3.2.4.
+        // Stanza listener for XEP-0324 § 3.2.4 "Recommending Friendships".
+        // Also includes business logic for thing-to-thing friendship recommendations, which is not
+        // (yet) part of the XEP.
         connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
             public void processPacket(final Stanza stanza) throws NotConnectedException, InterruptedException {
@@ -163,12 +165,14 @@ public final class IoTProvisioningManager extends Manager {
                     // tried to become friends with. If this is the case, then
                     // thing is likely telling us that we can become now
                     // friends.
-                    Jid from = friendMessage.getFrom();
-                    if (!friendshipDeniedCache.containsKey(from)) {
+                    BareJid bareFrom = friendMessage.getFrom().asBareJid();
+                    if (!friendshipDeniedCache.containsKey(bareFrom)) {
+                        LOGGER.log(Level.WARNING, "Ignoring friendship recommendation "
+                                        + friendMessage
+                                        + " because friendship to this JID was not previously denied.");
                         return;
                     }
 
-                    BareJid bareFrom = from.asBareJid();
                     // Sanity check: If a thing recommends us itself as friend,
                     // which should be the case once we reach this code, then
                     // the bare 'from' JID should be equals to the JID of the
