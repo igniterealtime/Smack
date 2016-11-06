@@ -26,8 +26,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.StanzaListener;
@@ -44,6 +46,7 @@ import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -55,8 +58,24 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.jid.EntityJid;
 
+/**
+ * A manager for Multi-User Chat rooms.
+ * <p>
+ * Use {@link #getMultiUserChat(EntityBareJid)} to retrieve an object representing a Multi-User Chat room.
+ * </p>
+ * <p>
+ * <b>Automatic rejoin:</b> The manager supports automatic rejoin of MultiUserChat rooms once the connection got
+ * re-established. This mechanism is disabled by default. To enable it, use {@link #setAutoJoinOnReconnect(boolean)}.
+ * You can set a {@link AutoJoinFailedCallback} via {@link #setAutoJoinFailedCallback(AutoJoinFailedCallback)} to get
+ * notified if this mechanism failed for some reason. Note that as soon as rejoining for a single room failed, no
+ * further attempts will be made for the other rooms.
+ * </p>
+ * 
+ * @see <a href="http://xmpp.org/extensions/xep-0045.html">XEP-0045: Multi-User Chat</a>
+ */
 public final class MultiUserChatManager extends Manager {
     private final static String DISCO_NODE = MUCInitialPresence.NAMESPACE + "#rooms";
 
@@ -122,6 +141,10 @@ public final class MultiUserChatManager extends Manager {
      */
     private final Map<EntityBareJid, WeakReference<MultiUserChat>> multiUserChats = new HashMap<>();
 
+    private boolean autoJoinOnReconnect;
+
+    private AutoJoinFailedCallback autoJoinFailedCallback;
+
     private MultiUserChatManager(XMPPConnection connection) {
         super(connection);
         // Listens for all messages that include a MUCUser extension and fire the invitation
@@ -152,6 +175,55 @@ public final class MultiUserChatManager extends Manager {
             }
         };
         connection.addAsyncStanzaListener(invitationPacketListener, INVITATION_FILTER);
+
+        connection.addConnectionListener(new AbstractConnectionListener() {
+            @Override
+            public void authenticated(XMPPConnection connection, boolean resumed) {
+                if (resumed) return;
+                if (!autoJoinOnReconnect) return;
+
+                final Set<EntityBareJid> mucs = getJoinedRooms();
+                if (mucs.isEmpty()) return;
+
+                Async.go(new Runnable() {
+                    @Override
+                    public void run() {
+                        final AutoJoinFailedCallback failedCallback = autoJoinFailedCallback;
+                        for (EntityBareJid mucJid : mucs) {
+                            MultiUserChat muc = getMultiUserChat(mucJid);
+
+                            if (!muc.isJoined()) return;
+
+                            Resourcepart nickname = muc.getNickname();
+                            if (nickname == null) return;
+
+                            try {
+                                muc.leave();
+                            } catch (NotConnectedException | InterruptedException e) {
+                                if (failedCallback != null) {
+                                    failedCallback.autoJoinFailed(muc, e);
+                                } else {
+                                    LOGGER.log(Level.WARNING, "Could not leave room", e);
+                                }
+                                return;
+                            }
+                            try {
+                                muc.join(nickname);
+                            } catch (NotAMucServiceException | NoResponseException | XMPPErrorException
+                                    | NotConnectedException | InterruptedException e) {
+                                if (failedCallback != null) {
+                                    failedCallback.autoJoinFailed(muc, e);
+                                } else {
+                                    LOGGER.log(Level.WARNING, "Could not leave room", e);
+                                }
+                                return;
+                            }
+                        }
+                    }
+
+                });
+            }
+        });
     }
 
     /**
@@ -352,6 +424,29 @@ public final class MultiUserChatManager extends Manager {
      */
     public void removeInvitationListener(InvitationListener listener) {
         invitationsListeners.remove(listener);
+    }
+
+    /**
+     * If automatic join on reconnect is enabled, then the manager will try to auto join MUC rooms after the connection
+     * got re-established.
+     *
+     * @param autoJoin <code>true</code> to enable, <code>false</code> to disable.
+     */
+    public void setAutoJoinOnReconnect(boolean autoJoin) {
+        autoJoinOnReconnect = autoJoin;
+    }
+
+    /**
+     * Set a callback invoked by this manager when automatic join on reconnect failed. If failedCallback is not
+     * <code>null</code>,then automatic rejoin get also enabled.
+     *
+     * @param failedCallback the callback.
+     */
+    public void setAutoJoinFailedCallback(AutoJoinFailedCallback failedCallback) {
+        autoJoinFailedCallback = failedCallback;
+        if (failedCallback != null) {
+            setAutoJoinOnReconnect(true);
+        }
     }
 
     void addJoinedRoom(EntityBareJid room) {
