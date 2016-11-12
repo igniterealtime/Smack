@@ -362,6 +362,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         // Perform the actual connection to the XMPP service
         connectInternal();
+
         return this;
     }
 
