@@ -289,6 +289,8 @@ public class PacketParserUtils {
                     break outerloop;
                 }
                 break;
+            case XmlPullParser.TEXT:
+                throw new IllegalStateException("Invalid Stanza: Must not contain text or mixed content as direct child of <message/>");
             }
         }
 
@@ -589,6 +591,8 @@ public class PacketParserUtils {
                     break outerloop;
                 }
                 break;
+            case XmlPullParser.TEXT:
+                throw new IllegalStateException("Invalid Stanza: Must not contain text or mixed content as direct child of <presence/>");
             }
         }
         return presence;
@@ -645,6 +649,8 @@ public class PacketParserUtils {
                     break outerloop;
                 }
                 break;
+            case XmlPullParser.TEXT:
+                throw new IllegalStateException("Invalid Stanza: Must not contain text or mixed content as direct child of <iq/>");
             }
         }
         // Decide what to do when an IQ packet was not understood
