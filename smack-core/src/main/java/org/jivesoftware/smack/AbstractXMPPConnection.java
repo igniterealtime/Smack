@@ -369,6 +369,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         // Perform the actual connection to the XMPP service
         connectInternal();
+
+        // Wait with SASL auth until the SASL mechanisms have been received
+        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
+
+        // Make note of the fact that we're now connected.
+        connected = true;
+        callConnectionConnectedListener();
+
         return this;
     }
 

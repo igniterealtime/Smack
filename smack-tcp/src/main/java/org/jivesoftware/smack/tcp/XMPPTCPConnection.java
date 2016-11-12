@@ -885,13 +885,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // We connected successfully to the servers TCP port
         initConnection();
-
-        // Wait with SASL auth until the SASL mechanisms have been received
-        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
-
-        // Make note of the fact that we're now connected.
-        connected = true;
-        callConnectionConnectedListener();
     }
 
     /**
