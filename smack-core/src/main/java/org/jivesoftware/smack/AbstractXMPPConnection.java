@@ -378,6 +378,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // from the server and throw an error. First check if we've already negotiated TLS
         // and are secure, however (features get parsed a second time after TLS is established).
         if (!isSecureConnection() && getConfiguration().getSecurityMode() == SecurityMode.required) {
+            shutdown();
             throw new SecurityRequiredByClientException();
         }
 
