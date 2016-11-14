@@ -107,7 +107,7 @@ public class StringUtils {
         forAttributeApos,
         forText,
         ;
-    };
+    }
 
     /**
      * Escapes all necessary characters in the CharSequence so that it can be used

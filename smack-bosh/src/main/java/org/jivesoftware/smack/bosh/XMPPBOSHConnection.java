@@ -198,11 +198,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                     + getHost() + ":" + getPort() + ".";
             throw new SmackException(errorMessage);
         }
-
-        // Wait with SASL auth until the SASL mechanisms have been received
-        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
-
-        callConnectionConnectedListener();
     }
 
     public boolean isSecureConnection() {
