@@ -90,6 +90,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     @Override
     protected void connectInternal() {
         connected = true;
+        saslFeatureReceived.reportSuccess();
         streamId = "dummy-" + new Random(new Date().getTime()).nextInt();
 
         if (reconnect) {

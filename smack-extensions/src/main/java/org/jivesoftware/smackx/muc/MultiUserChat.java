@@ -135,6 +135,9 @@ public class MultiUserChat {
     private final StanzaListener messageListener;
     private final StanzaListener presenceListener;
     private final StanzaListener subjectListener;
+
+    private static final StanzaFilter DECLINE_FILTER = new AndFilter(MessageTypeFilter.NORMAL,
+                    new StanzaExtensionFilter(MUCUser.ELEMENT, MUCUser.NAMESPACE));
     private final StanzaListener declinesListener;
 
     private String subject;
@@ -317,8 +320,7 @@ public class MultiUserChat {
                         StanzaTypeFilter.PRESENCE));
         connection.addSyncStanzaListener(subjectListener, new AndFilter(fromRoomFilter,
                         MessageWithSubjectFilter.INSTANCE, new NotFilter(MessageTypeFilter.ERROR)));
-        connection.addSyncStanzaListener(declinesListener, new AndFilter(new StanzaExtensionFilter(MUCUser.ELEMENT,
-                        MUCUser.NAMESPACE), new NotFilter(MessageTypeFilter.ERROR)));
+        connection.addSyncStanzaListener(declinesListener, DECLINE_FILTER);
         connection.addPacketInterceptor(presenceInterceptor, new AndFilter(new ToFilter(room),
                         StanzaTypeFilter.PRESENCE));
         messageCollector = connection.createPacketCollector(fromRoomGroupchatFilter);

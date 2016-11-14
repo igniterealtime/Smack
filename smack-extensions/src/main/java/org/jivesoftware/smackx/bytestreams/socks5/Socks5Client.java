@@ -28,6 +28,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -42,6 +44,8 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
  * @author Henning Staib
  */
 class Socks5Client {
+
+    private static final Logger LOGGER = Logger.getLogger(Socks5Client.class.getName());
 
     /* stream host containing network settings and name of the SOCKS5 proxy */
     protected StreamHost streamHost;
@@ -86,23 +90,22 @@ class Socks5Client {
                                 streamHost.getPort());
                 socket.connect(socketAddress);
 
-                boolean res;
                 // initialize connection to SOCKS5 proxy
                 try {
-                    res = establish(socket);
+                    establish(socket);
                 }
                 catch (SmackException e) {
-                    socket.close();
+                    if (!socket.isClosed()) {
+                        try {
+                            socket.close();
+                        } catch (IOException e2) {
+                            LOGGER.log(Level.WARNING, "Could not close SOCKS5 socket", e2);
+                        }
+                    }
                     throw e;
                 }
 
-                if (res) {
-                    return socket;
-                }
-                else {
-                    socket.close();
-                    throw new SmackException("SOCKS5 negotiation failed");
-                }
+                return socket;
             }
 
         });
@@ -135,17 +138,12 @@ class Socks5Client {
      * Initializes the connection to the SOCKS5 proxy by negotiating authentication method and
      * requesting a stream for the given digest. Currently only the no-authentication method is
      * supported by the Socks5Client.
-     * <p>
-     * Returns <code>true</code> if a stream could be established, otherwise <code>false</code>. If
-     * <code>false</code> is returned the given Socket should be closed.
      * 
      * @param socket connected to a SOCKS5 proxy
-     * @return <code>true</code> if if a stream could be established, otherwise <code>false</code>.
-     *         If <code>false</code> is returned the given Socket should be closed.
      * @throws SmackException 
      * @throws IOException 
      */
-    protected boolean establish(Socket socket) throws SmackException, IOException {
+    protected void establish(Socket socket) throws SmackException, IOException {
 
         byte[] connectionRequest;
         byte[] connectionResponse;
@@ -171,7 +169,7 @@ class Socks5Client {
 
         // check if server responded with correct version and no-authentication method
         if (response[0] != (byte) 0x05 || response[1] != (byte) 0x00) {
-            return false;
+            throw new SmackException("Remote SOCKS5 server responsed with unexpected version: " + response[0] + ' ' + response[1] + ". Should be 0x05 0x00.");
         }
 
         // request SOCKS5 connection with given address/digest
@@ -184,7 +182,12 @@ class Socks5Client {
 
         // verify response
         connectionRequest[1] = (byte) 0x00; // set expected return status to 0
-        return Arrays.equals(connectionRequest, connectionResponse);
+        if (!Arrays.equals(connectionRequest, connectionResponse)) {
+            throw new SmackException(
+                            "Connection request does not equal connection reponse. Response: "
+                                            + Arrays.toString(connectionResponse) + ". Request: "
+                                            + Arrays.toString(connectionRequest));
+        }
     }
 
     /**
