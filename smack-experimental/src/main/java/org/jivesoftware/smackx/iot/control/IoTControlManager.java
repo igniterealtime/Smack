@@ -22,14 +22,13 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.iot.IoTManager;
 import org.jivesoftware.smackx.iot.Thing;
 import org.jivesoftware.smackx.iot.control.element.IoTSetRequest;
 import org.jivesoftware.smackx.iot.control.element.IoTSetResponse;
@@ -43,7 +42,7 @@ import org.jxmpp.jid.FullJid;
  * @author Florian Schmaus {@literal <flo@geekplace.eu>}
  * @see <a href="http://xmpp.org/extensions/xep-0325.html">XEP-0323: Internet of Things - Control</a>
  */
-public final class IoTControlManager extends Manager {
+public final class IoTControlManager extends IoTManager {
 
     private static final Map<XMPPConnection, IoTControlManager> INSTANCES = new WeakHashMap<>();
 
@@ -66,9 +65,10 @@ public final class IoTControlManager extends Manager {
 
     private IoTControlManager(XMPPConnection connection) {
         super(connection);
-        connection.registerIQRequestHandler(new AbstractIqRequestHandler(IoTSetRequest.ELEMENT, IoTSetRequest.NAMESPACE, IQ.Type.set, Mode.async) {
+
+        connection.registerIQRequestHandler(new IoTIqRequestHandler(IoTSetRequest.ELEMENT, IoTSetRequest.NAMESPACE, IQ.Type.set, Mode.async) {
             @Override
-            public IQ handleIQRequest(IQ iqRequest) {
+            public IQ handleIoTIqRequest(IQ iqRequest) {
                 // TODO Lookup thing and provide data.
                 IoTSetRequest iotSetRequest = (IoTSetRequest) iqRequest;
 
@@ -101,7 +101,7 @@ public final class IoTControlManager extends Manager {
      *
      * @param jid
      * @param data
-     * @return
+     * @return a IoTSetResponse
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
