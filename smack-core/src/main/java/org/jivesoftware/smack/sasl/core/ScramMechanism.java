@@ -28,6 +28,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.ByteUtils;
 import org.jivesoftware.smack.util.SHA1;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jxmpp.util.cache.Cache;
 import org.jxmpp.util.cache.LruCache;
@@ -145,7 +146,8 @@ public abstract class ScramMechanism extends SASLMechanism {
             // Parsing and error checking is done, we can now begin to calculate the values
 
             // First the client-final-message-without-proof
-            String clientFinalMessageWithoutProof = "c=" + Base64.encode(getGS2Header()) + ",r=" + rvalue;
+            String channelBinding = "c=" + Base64.encodeToString(getCBindInput());
+            String clientFinalMessageWithoutProof = channelBinding + ",r=" + rvalue;
 
             // AuthMessage := client-first-message-bare + "," + server-first-message + "," +
             // client-final-message-without-proof
@@ -154,7 +156,9 @@ public abstract class ScramMechanism extends SASLMechanism {
 
             // RFC 5802 § 5.1 "Note that a client implementation MAY cache ClientKey&ServerKey … for later reauthentication …
             // as it is likely that the server is going to advertise the same salt value upon reauthentication."
-            final String cacheKey = password + ',' + salt;
+            // Note that we also mangle the mechanism's name into the cache key, since the cache is used by multiple
+            // mechanisms.
+            final String cacheKey = password + ',' + salt + ',' + getName();
             byte[] serverKey, clientKey;
             Keys keys = CACHE.get(cacheKey);
             if (keys == null) {
@@ -211,7 +215,40 @@ public abstract class ScramMechanism extends SASLMechanism {
         if (authorizationId != null) {
             authzidPortion = "a=" + authorizationId;
         }
-        return "n," + authzidPortion + ",";
+
+        String cbName = getChannelBindingName();
+        assert(StringUtils.isNotEmpty(cbName));
+
+        return cbName + ',' + authzidPortion + ",";
+    }
+
+    private final byte[] getCBindInput() throws SmackException {
+        byte[] cbindData = getChannelBindingData();
+        byte[] gs2Header = toBytes(getGS2Header());
+
+        if (cbindData == null) {
+            return gs2Header;
+        }
+
+        return ByteUtils.concact(gs2Header, cbindData);
+    }
+
+    protected String getChannelBindingName() {
+        if (sslSession != null && connectionConfiguration.isEnabledSaslMechanism(getName() + "-PLUS")) {
+            // Announce that we support Channel Binding, i.e., the '-PLUS' flavor of this SASL mechanism, but that we
+            // believe the server does not.
+            return "y";
+        }
+        return "n";
+    }
+
+    /**
+     * 
+     * @return the Channel Binding data.
+     * @throws SmackException
+     */
+    protected byte[] getChannelBindingData() throws SmackException {
+        return null;
     }
 
     private static Map<Character, String> parseAttributes(String string) throws SmackException {

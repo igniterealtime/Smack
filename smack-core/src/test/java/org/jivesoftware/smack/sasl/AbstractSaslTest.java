@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@
 package org.jivesoftware.smack.sasl;
 
 import org.jivesoftware.smack.DummyConnection;
-import org.jivesoftware.smack.XMPPConnection;
 
 public class AbstractSaslTest {
 
-    protected final XMPPConnection xmppConnection = new DummyConnection();
+    protected final DummyConnection xmppConnection = new DummyConnection();
     protected final SASLMechanism saslMechanism;
 
     protected AbstractSaslTest(SASLMechanism saslMechanism) {
-        this.saslMechanism = saslMechanism.instanceForAuthentication(xmppConnection);
+        this.saslMechanism = saslMechanism.instanceForAuthentication(xmppConnection, xmppConnection.getConfiguration());
     }
 
 }

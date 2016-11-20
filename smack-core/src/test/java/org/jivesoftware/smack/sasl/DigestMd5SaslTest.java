@@ -43,7 +43,7 @@ public class DigestMd5SaslTest extends AbstractSaslTest {
         if (useAuthzid) {
             authzid = JidCreate.entityBareFrom("shazbat@xmpp.org");
         }
-        saslMechanism.authenticate("florian", "irrelevant", JidCreate.domainBareFrom("xmpp.org"), "secret", authzid);
+        saslMechanism.authenticate("florian", "irrelevant", JidCreate.domainBareFrom("xmpp.org"), "secret", authzid, null);
         byte[] response = saslMechanism.evaluateChallenge(challengeBytes);
         String responseString = new String(response);
         String[] responseParts = responseString.split(",");

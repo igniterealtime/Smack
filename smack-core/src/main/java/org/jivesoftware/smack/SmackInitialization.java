@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
 import org.jivesoftware.smack.sasl.core.SASLXOauth2Mechanism;
 import org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism;
+import org.jivesoftware.smack.sasl.core.ScramSha1PlusMechanism;
 import org.jivesoftware.smack.util.FileUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -137,6 +138,7 @@ public final class SmackInitialization {
         }
 
         SASLAuthentication.registerSASLMechanism(new SCRAMSHA1Mechanism());
+        SASLAuthentication.registerSASLMechanism(new ScramSha1PlusMechanism());
         SASLAuthentication.registerSASLMechanism(new SASLXOauth2Mechanism());
         SASLAuthentication.registerSASLMechanism(new SASLAnonymous());
 

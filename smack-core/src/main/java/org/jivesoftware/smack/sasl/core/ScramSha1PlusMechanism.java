@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2016 Florian Schmaus
+ * Copyright 2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,18 @@
  */
 package org.jivesoftware.smack.sasl.core;
 
-import java.security.InvalidKeyException;
-
 import org.jivesoftware.smack.sasl.SASLMechanism;
-import org.jivesoftware.smack.util.MAC;
 
-public class SCRAMSHA1Mechanism extends ScramMechanism {
+public class ScramSha1PlusMechanism extends ScramPlusMechanism {
 
     static {
-        SHA_1_SCRAM_HMAC = new ScramHmac() {
-            @Override
-            public String getHmacName() {
-                return "SHA-1";
-            }
-            @Override
-            public byte[] hmac(byte[] key, byte[] str) throws InvalidKeyException {
-                return MAC.hmacsha1(key, str);
-            }
-        };
-        NAME = (new SCRAMSHA1Mechanism()).getName();
+        NAME = (new ScramSha1PlusMechanism()).getName();
     }
 
     public static final String NAME;
 
-    static final ScramHmac SHA_1_SCRAM_HMAC;
-
-    public SCRAMSHA1Mechanism() {
-        super(SHA_1_SCRAM_HMAC);
+    public ScramSha1PlusMechanism() {
+        super(SCRAMSHA1Mechanism.SHA_1_SCRAM_HMAC);
     }
 
     @Override
@@ -52,7 +37,7 @@ public class SCRAMSHA1Mechanism extends ScramMechanism {
 
     @Override
     protected SASLMechanism newInstance() {
-        return new SCRAMSHA1Mechanism();
+        return new ScramSha1PlusMechanism();
     }
 
 }
