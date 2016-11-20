@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class SCRAMSHA1MechanismTest extends SmackTestSuite {
 
         mech.authenticate(USERNAME, "unusedFoo", JidTestUtil.DOMAIN_BARE_JID_1, PASSWORD, null);
         AuthMechanism authMechanism = con.getSentPacket();
-        assertEquals(SCRAMSHA1Mechanism.NAME, authMechanism.getMechanism());
+        assertEquals((new SCRAMSHA1Mechanism().getName()), authMechanism.getMechanism());
         assertEquals(CLIENT_FIRST_MESSAGE, saslLayerString(authMechanism.getAuthenticationText()));
 
         mech.challengeReceived(Base64.encode(SERVER_FIRST_MESSAGE), false);
