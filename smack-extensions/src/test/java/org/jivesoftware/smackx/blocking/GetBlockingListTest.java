@@ -47,13 +47,13 @@ public class GetBlockingListTest {
     public void checkBlockListIQ() throws Exception {
         IQ iq = (IQ) PacketParserUtils.parseStanza(blockListIQExample);
         BlockListIQ blockListIQ = (BlockListIQ) iq;
-        Assert.assertEquals(2, blockListIQ.getJids().size());
-        Assert.assertEquals(JidCreate.from("romeo@montague.net"), blockListIQ.getJids().get(0));
-        Assert.assertEquals(JidCreate.from("iago@shakespeare.lit"), blockListIQ.getJids().get(1));
+        Assert.assertEquals(2, blockListIQ.getBlockedJids().size());
+        Assert.assertEquals(JidCreate.from("romeo@montague.net"), blockListIQ.getBlockedJids().get(0));
+        Assert.assertEquals(JidCreate.from("iago@shakespeare.lit"), blockListIQ.getBlockedJids().get(1));
 
         IQ iq2 = (IQ) PacketParserUtils.parseStanza(emptyBlockListIQExample);
         BlockListIQ emptyBlockListIQ = (BlockListIQ) iq2;
-        Assert.assertEquals(0, emptyBlockListIQ.getJids().size());
+        Assert.assertEquals(0, emptyBlockListIQ.getBlockedJids().size());
     }
 
 }
