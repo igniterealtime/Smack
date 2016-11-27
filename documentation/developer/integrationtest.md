@@ -18,6 +18,19 @@ $ gradle integrationTest -Dsinttest.service=my.xmppservice.org
 
 Note that the service needs to have In-Band Registration (IBR) enabled.
 
+A better alternative to IBR is using XEP-0133: Service Administration
+to create the throw away accounts used by the integration test
+framework. Simply use
+
+```bash
+$ gradle integrationTest -Dsinttest.service=my.xmppservice.org \
+                         -Dsinttest.adminAccountUsername=admin \
+						 -Dsinttest.adminAccountPassword=aeR0Wuub
+```
+
+to run Smack's integration test framework against `my.xmppservice.org`
+with an admin account named `admin` and `aeR0Wuub` as password.
+
 Configuration
 -------------
 
@@ -51,6 +64,8 @@ debug=true
 | serviceTlsPin        | TLS Pin (used by [java-pinning](https://github.com/Flowdalic/java-pinning))            |
 | securityMode         | Either 'required' or 'disabled'           |
 | replyTimeout         | In milliseconds                           |
+| adminAccountUsername | Username of the XEP-0133 Admin account    |
+| adminAccountPassword | Password of the XEP-0133 Admin account    |
 | accountOneUsername   | Username of the first XMPP account        |
 | accountOnePassword   | Password of the first XMPP account        |
 | accountTwoUsername   | Username of the second XMPP account       |

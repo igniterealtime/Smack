@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,12 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 public final class Configuration {
 
+    public enum AccountRegistration {
+        disabled,
+        inBandRegistration,
+        serviceAdministration,
+    }
+
     public final DomainBareJid service;
 
     public final String serviceTlsPin;
@@ -43,7 +49,11 @@ public final class Configuration {
 
     public final int replyTimeout;
 
-    public final boolean registerAccounts;
+    public final AccountRegistration accountRegistration;
+
+    public final String adminAccountUsername;
+
+    public final String adminAccountPassword;
 
     public final String accountOneUsername;
 
@@ -68,21 +78,27 @@ public final class Configuration {
     private Configuration(DomainBareJid service, String serviceTlsPin, SecurityMode securityMode, int replyTimeout,
                     boolean debug, String accountOneUsername, String accountOnePassword, String accountTwoUsername,
                     String accountTwoPassword, String accountThreeUsername, String accountThreePassword, Set<String> enabledTests, Set<String> disabledTests,
-                    Set<String> testPackages) {
+                    Set<String> testPackages, String adminAccountUsername, String adminAccountPassword) {
         this.service = Objects.requireNonNull(service,
                         "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
         this.serviceTlsPin = serviceTlsPin;
         this.securityMode = securityMode;
         this.replyTimeout = replyTimeout;
         this.debug = debug;
-        if (StringUtils.isNullOrEmpty(accountOneUsername) || StringUtils.isNullOrEmpty(accountOnePassword)
-                        || StringUtils.isNullOrEmpty(accountTwoUsername)
-                        || StringUtils.isNullOrEmpty(accountTwoPassword)) {
-            registerAccounts = true;
+        if (StringUtils.isNotEmpty(adminAccountUsername, adminAccountPassword)) {
+            accountRegistration = AccountRegistration.serviceAdministration;
+        }
+        else if (StringUtils.isNotEmpty(accountOneUsername, accountOnePassword, accountTwoUsername, accountTwoPassword,
+                        accountThreeUsername, accountThreePassword)) {
+            accountRegistration = AccountRegistration.disabled;
         }
         else {
-            registerAccounts = false;
+            accountRegistration = AccountRegistration.inBandRegistration;
         }
+
+        this.adminAccountUsername = adminAccountUsername;
+        this.adminAccountPassword = adminAccountPassword;
+
         this.accountOneUsername = accountOneUsername;
         this.accountOnePassword = accountOnePassword;
         this.accountTwoUsername = accountTwoUsername;
@@ -92,6 +108,10 @@ public final class Configuration {
         this.enabledTests = enabledTests;
         this.disabledTests = disabledTests;
         this.testPackages = testPackages;
+    }
+
+    public boolean isAccountRegistrationPossible() {
+        return accountRegistration != AccountRegistration.disabled;
     }
 
     public static Builder builder() {
@@ -107,6 +127,10 @@ public final class Configuration {
         private SecurityMode securityMode;
 
         private int replyTimeout;
+
+        private String adminAccountUsername;
+
+        private String adminAccountPassword;
 
         private String accountOneUsername;
 
@@ -159,6 +183,12 @@ public final class Configuration {
                 testPackages = new HashSet<>();
             }
             testPackages.add(testPackage);
+            return this;
+        }
+
+        public Builder setAdminAccountUsernameAndPassword(String adminAccountUsername, String adminAccountPassword) {
+            this.adminAccountUsername = StringUtils.requireNotNullOrEmpty(adminAccountUsername, "adminAccountUsername must not be null or empty");
+            this.adminAccountPassword = StringUtils.requireNotNullOrEmpty(adminAccountPassword, "adminAccountPassword must no be null or empty");
             return this;
         }
 
@@ -226,7 +256,7 @@ public final class Configuration {
         public Configuration build() {
             return new Configuration(service, serviceTlsPin, securityMode, replyTimeout, debug, accountOneUsername,
                             accountOnePassword, accountTwoUsername, accountTwoPassword, accountThreeUsername, accountThreePassword, enabledTests, disabledTests,
-                            testPackages);
+                            testPackages, adminAccountUsername, adminAccountPassword);
         }
     }
 
@@ -259,6 +289,12 @@ public final class Configuration {
         builder.setServiceTlsPin(properties.getProperty("serviceTlsPin"));
         builder.setSecurityMode(properties.getProperty("securityMode"));
         builder.setReplyTimeout(properties.getProperty("replyTimeout", "60000"));
+
+        String adminAccountUsername = properties.getProperty("adminAccountUsername");
+        String adminAccountPassword = properties.getProperty("adminAccountPassword");
+        if (StringUtils.isNotEmpty(adminAccountUsername, adminAccountPassword)) {
+            builder.setAdminAccountUsernameAndPassword(adminAccountUsername, adminAccountPassword);
+        }
 
         String accountOneUsername = properties.getProperty("accountOneUsername");
         String accountOnePassword = properties.getProperty("accountOnePassword");
