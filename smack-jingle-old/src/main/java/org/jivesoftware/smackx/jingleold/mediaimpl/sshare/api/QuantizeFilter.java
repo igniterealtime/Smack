@@ -163,7 +163,7 @@ public class QuantizeFilter extends WholeImageFilter {
 		}
 	}
 
-	protected int[] filterPixels( int width, int height, int[] inPixels, Rectangle transformedSpace ) {
+	protected int[] filterPixels(int width, int height, int[] inPixels, Rectangle transformedSpace) {
 		int[] outPixels = new int[width*height];
 
 		quantize(inPixels, outPixels, width, height, numColors, dither, serpentine);

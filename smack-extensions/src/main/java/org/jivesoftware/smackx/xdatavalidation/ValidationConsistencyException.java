@@ -36,6 +36,6 @@ public class ValidationConsistencyException extends IllegalArgumentException {
      * @param message
      */
     public ValidationConsistencyException(String message) {
-        super( message);
+        super(message);
     }
 }

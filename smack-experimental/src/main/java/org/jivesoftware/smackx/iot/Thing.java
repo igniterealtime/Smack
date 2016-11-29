@@ -83,7 +83,7 @@ public final class Thing {
     public String toString() {
         if (toStringCache == null) {
             StringBuilder sb = new StringBuilder();
-            sb.append( "Thing " + nodeInfo + " [");
+            sb.append("Thing " + nodeInfo + " [");
             Iterator<Tag> it = metaTags.values().iterator();
             while (it.hasNext()) {
                 Tag tag = it.next();

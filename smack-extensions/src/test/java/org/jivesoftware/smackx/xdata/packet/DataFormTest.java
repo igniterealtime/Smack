@@ -55,7 +55,7 @@ public class DataFormTest {
         FormField field = new FormField("testField1");
         df.addField(field);
 
-        assertNotNull( df.toXML());
+        assertNotNull(df.toXML());
         String output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_1, output);
 
@@ -65,10 +65,10 @@ public class DataFormTest {
 
         assertNotNull(df);
         assertNotNull(df.getFields());
-        assertEquals(1 , df.getFields().size() );
+        assertEquals(1 , df.getFields().size());
         assertEquals(1 , df.getInstructions().size());
 
-        assertNotNull( df.toXML());
+        assertNotNull(df.toXML());
         output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_1, output);
     }
@@ -93,7 +93,7 @@ public class DataFormTest {
         df.addExtensionElement(layout);
 
 
-        assertNotNull( df.toXML());
+        assertNotNull(df.toXML());
         String output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_2, output);
 
@@ -103,14 +103,14 @@ public class DataFormTest {
 
         assertNotNull(df);
         assertNotNull(df.getExtensionElements());
-        assertEquals(1 , df.getExtensionElements().size() );
+        assertEquals(1 , df.getExtensionElements().size());
         Element element = df.getExtensionElements().get(0);
         assertNotNull(element);
         layout = (DataLayout) element;
 
         assertEquals(3 , layout.getPageLayout().size());
 
-        assertNotNull( df.toXML());
+        assertNotNull(df.toXML());
         output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_2, output);
     }
@@ -127,7 +127,7 @@ public class DataFormTest {
         ValidateElement dv = new RangeValidateElement("xs:integer","1111", "9999");
         field.setValidateElement(dv);
 
-        assertNotNull( df.toXML());
+        assertNotNull(df.toXML());
         String output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_3, output);
 
@@ -137,14 +137,14 @@ public class DataFormTest {
 
         assertNotNull(df);
         assertNotNull(df.getFields());
-        assertEquals(1 , df.getFields().size() );
+        assertEquals(1 , df.getFields().size());
         Element element = df.getFields().get(0).getValidateElement();
         assertNotNull(element);
         dv = (ValidateElement) element;
 
         assertEquals("xs:integer" , dv.getDatatype());
 
-        assertNotNull( df.toXML());
+        assertNotNull(df.toXML());
         output = df.toXML().toString();
         assertEquals(TEST_OUTPUT_3, output);
     }

@@ -29,6 +29,7 @@ import java.util.logging.Logger;
  * @author rob@iharder.net
  * @version 2.2.1
  */
+// CHECKSTYLE:OFF
 public final class Base64
 {
     private static final Logger LOGGER = Logger.getLogger(Base64.class.getName());
@@ -1682,4 +1683,4 @@ public final class Base64
 
 
 }   // end class Base64
-
+// CHECKSTYLE:ON
