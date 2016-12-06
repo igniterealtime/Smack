@@ -710,8 +710,8 @@ public class PacketParserUtilsTest {
         try {
             PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
             fail("Exception should be thrown");
-        } catch(XmlPullParserException e) {
-            assertTrue(e.getMessage().contains("end tag name </body>"));
+        } catch(IllegalStateException e) {
+            assertTrue(e.getMessage().contains("Invalid Stanza"));
         }
 
         invalidControl = validControl.replace("Good Message Body", "Bad </message> Body");

@@ -30,7 +30,6 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityFullJid;
@@ -113,8 +112,7 @@ public class ConnectionUtils {
             public Stanza answer(InvocationOnMock invocation) throws Throwable {
                 Stanza packet = protocol.getResponses().poll();
                 if (packet == null) return packet;
-                XMPPError xmppError = packet.getError();
-                if (xmppError != null) throw new XMPPErrorException(xmppError);
+                XMPPErrorException.ifHasErrorThenThrow(packet);
                 return packet;
             }
         };

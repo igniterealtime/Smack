@@ -327,7 +327,7 @@ public final class FileTransferNegotiator extends Manager {
 
             }
             else {
-                throw new XMPPErrorException(iqResponse.getError());
+                throw new XMPPErrorException(iqResponse, iqResponse.getError());
             }
         }
         else {

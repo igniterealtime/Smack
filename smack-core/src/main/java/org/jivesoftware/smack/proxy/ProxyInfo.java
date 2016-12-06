@@ -39,7 +39,7 @@ public class ProxyInfo
     private ProxyType proxyType;
     private final ProxySocketConnection proxySocketConnection;
 
-    public ProxyInfo(   ProxyType pType, String pHost, int pPort, String pUser, 
+    public ProxyInfo(ProxyType pType, String pHost, int pPort, String pUser, 
                         String pPass)
     {
         this.proxyType = pType;

@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -34,10 +33,10 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smackx.iot.IoTManager;
 import org.jivesoftware.smackx.iot.Thing;
 import org.jivesoftware.smackx.iot.data.element.IoTDataField;
 import org.jivesoftware.smackx.iot.data.element.IoTDataReadOutAccepted;
@@ -53,7 +52,7 @@ import org.jxmpp.jid.EntityFullJid;
  * @author Florian Schmaus {@literal <flo@geekplace.eu>}
  * @see <a href="http://xmpp.org/extensions/xep-0323.html">XEP-0323: Internet of Things - Sensor Data</a>
  */
-public final class IoTDataManager extends Manager {
+public final class IoTDataManager extends IoTManager {
 
     private static final Logger LOGGER = Logger.getLogger(IoTDataManager.class.getName());
 
@@ -89,13 +88,10 @@ public final class IoTDataManager extends Manager {
 
     private IoTDataManager(XMPPConnection connection) {
         super(connection);
-
-        connection.registerIQRequestHandler(new AbstractIqRequestHandler(IoTDataRequest.ELEMENT,
+        connection.registerIQRequestHandler(new IoTIqRequestHandler(IoTDataRequest.ELEMENT,
                         IoTDataRequest.NAMESPACE, IQ.Type.get, Mode.async) {
             @Override
-            public IQ handleIQRequest(IQ iqRequest) {
-                // TODO Verify that iqRequest.from is friend?
-
+            public IQ handleIoTIqRequest(IQ iqRequest) {
                 final IoTDataRequest dataRequest = (IoTDataRequest) iqRequest;
 
                 if (!dataRequest.isMomentary()) {
