@@ -76,9 +76,9 @@ public class DataLayoutTest {
         Section section = new Section("section Label");
         section.getSectionLayout().add(new Text("SectionText"));
         layout.getPageLayout().add(section);
-        layout.getPageLayout().add(new Text( "PageText"));
+        layout.getPageLayout().add(new Text("PageText"));
 
-        assertNotNull( layout.toXML());
+        assertNotNull(layout.toXML());
         String output = layout.toXML().toString();
         assertEquals(TEST_OUTPUT_2, output);
 
@@ -89,7 +89,7 @@ public class DataLayoutTest {
         assertEquals(3 , layout.getPageLayout().size());
         assertEquals("Label", layout.getLabel());
 
-        assertNotNull( layout.toXML());
+        assertNotNull(layout.toXML());
         output = layout.toXML().toString();
         assertEquals(TEST_OUTPUT_2, output);
     }
@@ -101,18 +101,18 @@ public class DataLayoutTest {
         Fieldref reffield = new Fieldref("testField1");
         layout.getPageLayout().add(reffield);
         Section section = new Section("section Label - & \u00E9 \u00E1 ");
-        section.getSectionLayout().add(new Text( "SectionText - & \u00E9 \u00E1 "));
+        section.getSectionLayout().add(new Text("SectionText - & \u00E9 \u00E1 "));
         layout.getPageLayout().add(section);
-        layout.getPageLayout().add(new Text( "PageText - & \u00E9 \u00E1 "));
+        layout.getPageLayout().add(new Text("PageText - & \u00E9 \u00E1 "));
 
         section = new Section("<html>Number of Persons by<br/> Nationality and Status</html>");
         section.getSectionLayout().add(new Reportedref());
         layout.getPageLayout().add(section);
 
-        layout.getPageLayout().add(new Text( "<html><font color='red'><em>DO NOT DELAY</em></font><br/>supply further information</html>"));
+        layout.getPageLayout().add(new Text("<html><font color='red'><em>DO NOT DELAY</em></font><br/>supply further information</html>"));
 
 
-        assertNotNull( layout.toXML());
+        assertNotNull(layout.toXML());
         String output = layout.toXML().toString();
         assertEquals(TEST_OUTPUT_SPECIAL, output);
 
@@ -132,7 +132,7 @@ public class DataLayoutTest {
         assertEquals("<html><font color='red'><em>DO NOT DELAY</em></font><br/>supply further information</html>", text.getText());
 
 
-        assertNotNull( layout.toXML());
+        assertNotNull(layout.toXML());
         output = layout.toXML().toString();
         assertEquals(TEST_OUTPUT_SPECIAL, output);
     }
@@ -146,7 +146,7 @@ public class DataLayoutTest {
         parser.next();
 
         DataForm form = pr.parse(parser);
-        assertNotNull( form);
+        assertNotNull(form);
         assertEquals(1 , form.getExtensionElements().size());
 
         DataLayout layout = (DataLayout) form.getExtensionElements().get(0);
@@ -163,7 +163,7 @@ public class DataLayoutTest {
         assertEquals("<html><font color='red'><em>DO NOT DELAY</em></font><br/>supply further information</html>", text.getText());
 
 
-        assertNotNull( layout.toXML());
+        assertNotNull(layout.toXML());
         String output = layout.toXML().toString();
         assertEquals(TEST_OUTPUT_SPECIAL, output);
     }

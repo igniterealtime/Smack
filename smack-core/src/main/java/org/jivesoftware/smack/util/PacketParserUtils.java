@@ -289,6 +289,8 @@ public class PacketParserUtils {
                     break outerloop;
                 }
                 break;
+            case XmlPullParser.TEXT:
+                throw new IllegalStateException("Invalid Stanza: Must not contain text or mixed content as direct child of <message/>");
             }
         }
 
@@ -589,6 +591,8 @@ public class PacketParserUtils {
                     break outerloop;
                 }
                 break;
+            case XmlPullParser.TEXT:
+                throw new IllegalStateException("Invalid Stanza: Must not contain text or mixed content as direct child of <presence/>");
             }
         }
         return presence;
@@ -645,6 +649,8 @@ public class PacketParserUtils {
                     break outerloop;
                 }
                 break;
+            case XmlPullParser.TEXT:
+                throw new IllegalStateException("Invalid Stanza: Must not contain text or mixed content as direct child of <iq/>");
             }
         }
         // Decide what to do when an IQ packet was not understood
@@ -977,9 +983,9 @@ public class PacketParserUtils {
     private static String getLanguageAttribute(XmlPullParser parser) {
     // CHECKSTYLE:OFF
     	for (int i = 0; i < parser.getAttributeCount(); i++) {
-    // CHECKSTYLE:ON
             String attributeName = parser.getAttributeName(i);
             if ( "xml:lang".equals(attributeName) ||
+    // CHECKSTYLE:ON
                     ("lang".equals(attributeName) &&
                             "xml".equals(parser.getAttributePrefix(i)))) {
     // CHECKSTYLE:OFF

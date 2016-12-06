@@ -16,27 +16,62 @@
  */
 package org.jivesoftware.smackx.iot;
 
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smackx.iot.provisioning.IoTProvisioningManager;
+import org.jxmpp.jid.Jid;
 
-public final class IoTManager extends Manager {
+public abstract class IoTManager extends Manager {
 
-    private static final Map<XMPPConnection, IoTManager> INSTANCES = new WeakHashMap<>();
+    private static final Logger LOGGER = Logger.getLogger(IoTManager.class.getName());
 
-    public static synchronized IoTManager getInstanceFor(XMPPConnection connection) {
-        IoTManager manager = INSTANCES.get(connection);
-        if (manager == null) {
-            manager = new IoTManager(connection);
-            INSTANCES.put(connection, manager);
-        }
-        return manager;
-    }
+    private final IoTProvisioningManager ioTProvisioningManager;
 
-    private IoTManager(XMPPConnection connection) {
+    private boolean allowNonFriends;
+
+    protected IoTManager(XMPPConnection connection) {
         super(connection);
+
+        ioTProvisioningManager = IoTProvisioningManager.getInstanceFor(connection);
     }
 
+    /**
+     * Set whether or not non friends should be able to use the services provided by this manager. Those non-friend
+     * entities still need to know the full JID for IQ based requests.
+     *
+     * @param allowNonFriends true to allow everyone to use the services.
+     */
+    public void setAllowNonFriends(boolean allowNonFriends) {
+        this.allowNonFriends = allowNonFriends;
+    }
+
+    protected boolean isAllowed(Jid jid) {
+        if (allowNonFriends) return true;
+
+        return ioTProvisioningManager.isMyFriend(jid);
+    }
+
+    protected abstract class IoTIqRequestHandler extends AbstractIqRequestHandler {
+
+        protected IoTIqRequestHandler(String element, String namespace, Type type, Mode mode) {
+            super(element, namespace, type, mode);
+        }
+
+        @Override
+        public final IQ handleIQRequest(IQ iqRequest) {
+            if (!isAllowed(iqRequest.getFrom())) {
+                LOGGER.warning("Ignoring IQ request " + iqRequest);
+                return null;
+            }
+
+            return handleIoTIqRequest(iqRequest);
+        }
+
+        protected abstract IQ handleIoTIqRequest(IQ iqRequest);
+    }
 }

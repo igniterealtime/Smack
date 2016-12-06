@@ -469,7 +469,7 @@ public class Workgroup {
     }
 
     private void fireInvitationEvent(WorkgroupInvitation invitation) {
-        for (WorkgroupInvitationListener listener : invitationListeners ){
+        for (WorkgroupInvitationListener listener : invitationListeners) {
             // CHECKSTYLE:OFF
     	    listener.invitationReceived(invitation);
             // CHECKSTYLE:ON

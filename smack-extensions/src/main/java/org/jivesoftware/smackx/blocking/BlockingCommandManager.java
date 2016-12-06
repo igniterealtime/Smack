@@ -169,7 +169,7 @@ public final class BlockingCommandManager extends Manager {
 
         BlockListIQ blockListIQ = new BlockListIQ();
         BlockListIQ blockListIQResult = connection().createPacketCollectorAndSend(blockListIQ).nextResultOrThrow();
-        blockListCached = blockListIQResult.getJids();
+        blockListCached = blockListIQResult.getBlockedJidsCopy();
 
         return Collections.unmodifiableList(blockListCached);
     }

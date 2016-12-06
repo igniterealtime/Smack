@@ -346,37 +346,62 @@ public class RosterPacket extends IQ {
          * have a subscription to the user's presence; this is the default value, so if the
          * subscription attribute is not included then the state is to be understood as "none".
          */
-        none,
+        none('⊥'),
 
         /**
          * The user has a subscription to the contact's presence, but the contact does not have a
          * subscription to the user's presence.
          */
-        to,
+        to('←'),
 
         /**
          * The contact has a subscription to the user's presence, but the user does not have a
          * subscription to the contact's presence.
          */
-        from,
+        from('→'),
 
         /**
          * The user and the contact have subscriptions to each other's presence (also called a
          * "mutual subscription").
          */
-        both,
+        both('↔'),
 
         /**
          * The user wishes to stop receiving presence updates from the subscriber.
          */
-        remove,
+        remove('⚡'),
         ;
+
+
+        private static final char ME = '●';
+
+        private final String symbol;
+
+        private ItemType(char secondSymbolChar) {
+            StringBuilder sb = new StringBuilder(2);
+            sb.append(ME).append(secondSymbolChar);
+            symbol = sb.toString();
+        }
 
         public static ItemType fromString(String string) {
             if (StringUtils.isNullOrEmpty(string)) {
                 return none;
             }
             return ItemType.valueOf(string.toLowerCase(Locale.US));
+        }
+
+        /**
+         * Get a String containing symbols representing the item type. The first symbol in the
+         * string is a big dot, representing the local entity. The second symbol represents the
+         * established subscription relation and is typically an arrow. The head(s) of the arrow
+         * point in the direction presence messages are sent. For example, if there is only a head
+         * pointing to the big dot, then the local user will receive presence information from the
+         * remote entity.
+         * 
+         * @return the symbolic representation of this item type.
+         */
+        public String asSymbol() {
+            return symbol;
         }
     }
 }

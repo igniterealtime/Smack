@@ -350,6 +350,13 @@ public final class IoTProvisioningManager extends Manager {
         return isFriend;
     }
 
+    public boolean iAmFriendOf(BareJid otherJid) {
+        RosterEntry entry = roster.getEntry(otherJid);
+        if (entry == null) return false;
+
+        return entry.canSeeHisPresence();
+    }
+
     public void sendFriendshipRequest(BareJid bareJid) throws NotConnectedException, InterruptedException {
         Presence presence = new Presence(Presence.Type.subscribe);
         presence.setTo(bareJid);
@@ -360,19 +367,17 @@ public final class IoTProvisioningManager extends Manager {
     }
 
     public void sendFriendshipRequestIfRequired(BareJid jid) throws NotConnectedException, InterruptedException {
-        RosterEntry entry = roster.getEntry(jid);
-        if (entry != null && entry.canSeeHisPresence()) {
-            return;
-        }
+        if (iAmFriendOf(jid)) return;
+
         sendFriendshipRequest(jid);
     }
 
-    public boolean isBefriended(Jid friendInQuestion) {
+    public boolean isMyFriend(Jid friendInQuestion) {
         return roster.isSubscribedToMyPresence(friendInQuestion);
     }
 
     public void unfriend(Jid friend) throws NotConnectedException, InterruptedException {
-        if (isBefriended(friend)) {
+        if (isMyFriend(friend)) {
             Presence presence = new Presence(Presence.Type.unsubscribed);
             presence.setTo(friend);
             connection().sendStanza(presence);

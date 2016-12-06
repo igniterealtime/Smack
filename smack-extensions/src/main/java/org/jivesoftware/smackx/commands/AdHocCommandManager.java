@@ -615,6 +615,7 @@ public final class AdHocCommandManager extends Manager {
      * @return the command instance to execute.
      * @throws XMPPErrorException if there is problem creating the new instance.
      */
+    @SuppressWarnings("deprecation")
     private LocalCommand newInstanceOfCmd(String commandNode, String sessionID) throws XMPPErrorException
     {
         AdHocCommandInfo commandInfo = commands.get(commandNode);

@@ -84,10 +84,12 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | [Internet of Things - Provisioning](iot.md) | [XEP-0324](http://xmpp.org/extensions/xep-0324.html) | Provisioning, access rights and user priviliges for the Internet of Things. |
 | [Internet of Things - Control](iot.md)      | [XEP-0325](http://xmpp.org/extensions/xep-0325.html) | Describes how to control devices or actuators in an XMPP-based sensor netowrk. |
 | [HTTP over XMPP transport](hoxt.md)         | [XEP-0332](http://xmpp.org/extensions/xep-0332.html) | Allows to transport HTTP communication over XMPP peer-to-peer networks. |
+| Chat Markers         			  			  | [XEP-0333](http://xmpp.org/extensions/xep-0333.html) | A solution of marking the last received, displayed and acknowledged message in a chat. |
 | JSON Containers                             | [XEP-0335](http://xmpp.org/extensions/xep-0335.html) | Encapsulation of JSON data within XMPP Stanzas. |
 | [Internet of Things - Discovery](iot.md)    | [XEP-0347](http://xmpp.org/extensions/xep-0347.html) | Describes how Things can be installed and discovered by their owners. |
 | Client State Indication                     | [XEP-0352](http://xmpp.org/extensions/xep-0352.html) | A way for the client to indicate its active/inactive state. |
 | [Push Notifications](pushnotifications.md)  | [XEP-0357](http://xmpp.org/extensions/xep-0357.html) |  Defines a way to manage push notifications from an XMPP Server. |
+| [Multi-User Chat Light](muclight.md)        | [XEP-xxxx](http://mongooseim.readthedocs.io/en/latest/open-extensions/xeps/xep-muc-light.html) | Multi-User Chats for mobile XMPP applications and specific enviroment. |
 | Google GCM JSON payload                     | n/a                                                  | Semantically the same as XEP-0335: JSON Containers |
 
 

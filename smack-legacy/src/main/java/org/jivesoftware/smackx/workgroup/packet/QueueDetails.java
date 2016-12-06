@@ -165,7 +165,7 @@ public final class QueueDetails implements ExtensionElement {
 
                     eventType = parser.next();
                     while ((eventType != XmlPullParser.END_TAG)
-                                || (! "user".equals(parser.getName())))
+                                || (!"user".equals(parser.getName())))
                     {
                         if ("position".equals(parser.getName())) {
                             position = Integer.parseInt(parser.nextText());
@@ -180,7 +180,7 @@ public final class QueueDetails implements ExtensionElement {
                                 throw new SmackException(e);
                             }
                         }
-                        else if( parser.getName().equals( "waitTime" ) ) {
+                        else if(parser.getName().equals("waitTime")) {
                             Date wait;
                             try {
                                 wait = dateFormat.parse(parser.nextText());
