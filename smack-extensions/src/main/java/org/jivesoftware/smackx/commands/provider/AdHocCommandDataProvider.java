@@ -95,8 +95,14 @@ public class AdHocCommandDataProvider extends IQProvider<AdHocCommandData> {
                     adHocCommandData.setForm(dataFormProvider.parse(parser));
                 }
                 else if (parser.getName().equals("note")) {
-                    AdHocCommandNote.Type type = AdHocCommandNote.Type.valueOf(
-                            parser.getAttributeValue("", "type"));
+                    String typeString = parser.getAttributeValue("", "type");
+                    AdHocCommandNote.Type type;
+                    if (typeString != null) {
+                        type = AdHocCommandNote.Type.valueOf(typeString);
+                    } else {
+                        // Type is optional and 'info' if not present.
+                        type = AdHocCommandNote.Type.info;
+                    }
                     String value = parser.nextText();
                     adHocCommandData.addNote(new AdHocCommandNote(type, value));
                 }

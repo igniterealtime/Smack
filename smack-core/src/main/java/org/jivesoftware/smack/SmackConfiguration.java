@@ -149,7 +149,7 @@ public final class SmackConfiguration {
      * @param mech the SASL mechanism to be added
      */
     public static void addSaslMech(String mech) {
-        if(! defaultMechs.contains(mech) ) {
+        if(!defaultMechs.contains(mech)) {
             defaultMechs.add(mech);
         }
     }

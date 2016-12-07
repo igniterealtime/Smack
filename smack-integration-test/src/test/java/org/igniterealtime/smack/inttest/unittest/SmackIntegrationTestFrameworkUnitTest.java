@@ -35,6 +35,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.TestRunRes
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -97,8 +98,9 @@ public class SmackIntegrationTestFrameworkUnitTest {
 
         @SmackIntegrationTest
         public void throwRuntimeExceptionTest() throws XMPPErrorException {
-            throw new XMPPException.XMPPErrorException(
-                            XMPPError.from(XMPPError.Condition.bad_request, DESCRIPTIVE_TEXT));
+            Message message = new Message();
+            throw new XMPPException.XMPPErrorException(message,
+                            XMPPError.from(XMPPError.Condition.bad_request, DESCRIPTIVE_TEXT).build());
         }
     }
 

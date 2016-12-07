@@ -983,9 +983,9 @@ public class PacketParserUtils {
     private static String getLanguageAttribute(XmlPullParser parser) {
     // CHECKSTYLE:OFF
     	for (int i = 0; i < parser.getAttributeCount(); i++) {
-    // CHECKSTYLE:ON
             String attributeName = parser.getAttributeName(i);
             if ( "xml:lang".equals(attributeName) ||
+    // CHECKSTYLE:ON
                     ("lang".equals(attributeName) &&
                             "xml".equals(parser.getAttributePrefix(i)))) {
     // CHECKSTYLE:OFF

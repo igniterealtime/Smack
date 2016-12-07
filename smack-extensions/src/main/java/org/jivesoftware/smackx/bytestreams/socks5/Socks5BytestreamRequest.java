@@ -280,7 +280,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
         XMPPError.Builder error = XMPPError.from(XMPPError.Condition.item_not_found, errorMessage);
         IQ errorIQ = IQ.createErrorResponse(this.bytestreamRequest, error);
         this.manager.getConnection().sendStanza(errorIQ);
-        throw new XMPPErrorException(error);
+        throw new XMPPErrorException(errorIQ, error.build());
     }
 
     /**

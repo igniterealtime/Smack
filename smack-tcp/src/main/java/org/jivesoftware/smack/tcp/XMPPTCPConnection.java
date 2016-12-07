@@ -31,10 +31,10 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
 import org.jivesoftware.smack.SynchronizationPoint;
+import org.jivesoftware.smack.XMPPException.FailedNonzaException;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.compress.packet.Compressed;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.filter.StanzaFilter;
@@ -67,7 +67,6 @@ import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature
 import org.jivesoftware.smack.sm.predicates.Predicate;
 import org.jivesoftware.smack.sm.provider.ParseStreamManagement;
 import org.jivesoftware.smack.packet.Nonza;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.Async;
@@ -221,10 +220,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private String smSessionId;
 
-    private final SynchronizationPoint<XMPPException> smResumedSyncPoint = new SynchronizationPoint<XMPPException>(
+    private final SynchronizationPoint<FailedNonzaException> smResumedSyncPoint = new SynchronizationPoint<>(
                     this, "stream resumed element");
 
-    private final SynchronizationPoint<XMPPException> smEnabledSyncPoint = new SynchronizationPoint<XMPPException>(
+    private final SynchronizationPoint<SmackException> smEnabledSyncPoint = new SynchronizationPoint<>(
                     this, "stream enabled element");
 
     /**
@@ -1096,10 +1095,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             if (enabled.isResumeSet()) {
                                 smSessionId = enabled.getId();
                                 if (StringUtils.isNullOrEmpty(smSessionId)) {
-                                    XMPPError.Builder builder = XMPPError.getBuilder(XMPPError.Condition.bad_request);
-                                    builder.setDescriptiveEnText("Stream Management 'enabled' element with resume attribute but without session id received");
-                                    XMPPErrorException xmppException = new XMPPErrorException(
-                                                    builder);
+                                    SmackException xmppException = new SmackException("Stream Management 'enabled' element with resume attribute but without session id received");
                                     smEnabledSyncPoint.reportFailure(xmppException);
                                     throw xmppException;
                                 }
@@ -1115,8 +1111,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             break;
                         case Failed.ELEMENT:
                             Failed failed = ParseStreamManagement.failed(parser);
-                            XMPPError.Builder xmppError = XMPPError.getBuilder(failed.getXMPPErrorCondition());
-                            XMPPException xmppException = new XMPPErrorException(xmppError);
+                            FailedNonzaException xmppException = new FailedNonzaException(failed, failed.getXMPPErrorCondition());
                             // If only XEP-198 would specify different failure elements for the SM
                             // enable and SM resume failure case. But this is not the case, so we
                             // need to determine if this is a 'Failed' response for either 'Enable'
@@ -1128,7 +1123,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 if (!smEnabledSyncPoint.requestSent()) {
                                     throw new IllegalStateException("Failed element received but SM was not previously enabled");
                                 }
-                                smEnabledSyncPoint.reportFailure(xmppException);
+                                smEnabledSyncPoint.reportFailure(new SmackException(xmppException));
                                 // Report success for last lastFeaturesReceived so that in case a
                                 // failed resumption, we can continue with normal resource binding.
                                 // See text of XEP-198 5. below Example 11.
