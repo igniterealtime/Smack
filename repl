@@ -30,5 +30,5 @@ echo "Finished, starting REPL"
 java \
 	-Dscala.usejavacp=true \
 	-classpath "${GRADLE_CLASSPATH}" \
-	ammonite.repl.Main \
+	ammonite.Main \
 	-f smack-repl/scala.repl
