@@ -179,7 +179,7 @@ public final class MessageEventManager extends Manager {
                 method.invoke(listener, new Object[] { from, packetID, this });
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error while invoking MessageEventRequestListener", e);
+            LOGGER.log(Level.SEVERE, "Error while invoking MessageEventRequestListener's  " + methodName, e);
         }
     }
 
@@ -199,7 +199,7 @@ public final class MessageEventManager extends Manager {
                 method.invoke(listener, new Object[] { from, packetID });
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error while invoking MessageEventNotificationListener", e);
+            LOGGER.log(Level.SEVERE, "Error while invoking MessageEventNotificationListener's " + methodName, e);
         }
     }
 
