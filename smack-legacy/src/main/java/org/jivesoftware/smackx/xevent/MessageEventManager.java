@@ -174,7 +174,7 @@ public final class MessageEventManager extends Manager {
             Method method =
                 MessageEventRequestListener.class.getDeclaredMethod(
                     methodName,
-                    new Class<?>[] { String.class, String.class, MessageEventManager.class });
+                    new Class<?>[] { Jid.class, String.class, MessageEventManager.class });
             for (MessageEventRequestListener listener : messageEventRequestListeners) {
                 method.invoke(listener, new Object[] { from, packetID, this });
             }
