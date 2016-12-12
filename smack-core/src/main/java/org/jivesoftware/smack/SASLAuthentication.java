@@ -17,6 +17,9 @@
 
 package org.jivesoftware.smack;
 
+import javax.net.ssl.SSLSession;
+import javax.security.auth.callback.CallbackHandler;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,13 +31,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.security.auth.callback.CallbackHandler;
-
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.sasl.SASLErrorException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
+import org.jivesoftware.smack.sasl.core.ScramSha1PlusMechanism;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jxmpp.jid.DomainBareJid;
@@ -66,6 +68,11 @@ public final class SASLAuthentication {
     private static SASLMechanism XOAUTH_REGISTERED_MECHANISM;
 
     private static final Set<String> BLACKLISTED_MECHANISMS = new HashSet<String>();
+
+    static {
+        // Blacklist SCRAM-SHA-1-PLUS for now.
+        blacklistSASLMechanism(ScramSha1PlusMechanism.NAME);
+    }
 
     /**
      * Registers a new SASL mechanism.
@@ -148,9 +155,7 @@ public final class SASLAuthentication {
     }
 
     public static Set<String> getBlacklistedSASLMechanisms() {
-        synchronized(BLACKLISTED_MECHANISMS) {
-            return new HashSet<String>(BLACKLISTED_MECHANISMS);
-        }
+        return Collections.unmodifiableSet(BLACKLISTED_MECHANISMS);
     }
 
     private final AbstractXMPPConnection connection;
@@ -184,13 +189,14 @@ public final class SASLAuthentication {
      * @param username the username that is authenticating with the server.
      * @param password the password to send to the server.
      * @param authzid the authorization identifier (typically null).
+     * @param sslSession the optional SSL/TLS session (if one was established)
      * @throws XMPPErrorException
      * @throws SASLErrorException
      * @throws IOException
      * @throws SmackException
      * @throws InterruptedException
      */
-    public void authenticate(String username, String password, EntityBareJid authzid)
+    public void authenticate(String username, String password, EntityBareJid authzid, SSLSession sslSession)
                     throws XMPPErrorException, SASLErrorException, IOException,
                     SmackException, InterruptedException {
         currentMechanism = selectMechanism(authzid);
@@ -200,10 +206,10 @@ public final class SASLAuthentication {
 
         synchronized (this) {
             if (callbackHandler != null) {
-                currentMechanism.authenticate(host, xmppServiceDomain, callbackHandler, authzid);
+                currentMechanism.authenticate(host, xmppServiceDomain, callbackHandler, authzid, sslSession);
             }
             else {
-                currentMechanism.authenticate(username, host, xmppServiceDomain, password, authzid);
+                currentMechanism.authenticate(username, host, xmppServiceDomain, password, authzid, sslSession);
             }
             final long deadline = System.currentTimeMillis() + connection.getPacketReplyTimeout();
             while (!authenticationSuccessful && saslException == null) {
@@ -377,7 +383,7 @@ public final class SASLAuthentication {
         String mechanismName = mechanism.getName();
 
         if (serverMechanisms.contains(mechanismName)) {
-            return mechanism.instanceForAuthentication(connection);
+            return mechanism.instanceForAuthentication(connection, configuration);
         } else {
             return null;
         }
@@ -410,7 +416,7 @@ public final class SASLAuthentication {
             }
             if (serverMechanisms.contains(mechanismName)) {
                 // Create a new instance of the SASLMechanism for every authentication attempt.
-                return mechanism.instanceForAuthentication(connection);
+                return mechanism.instanceForAuthentication(connection, configuration);
             }
         }
 

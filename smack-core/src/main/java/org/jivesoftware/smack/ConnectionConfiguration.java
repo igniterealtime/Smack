@@ -462,9 +462,9 @@ public abstract class ConnectionConfiguration {
      * @return true if the given SASL mechanism is enabled, false otherwise.
      */
     public boolean isEnabledSaslMechanism(String saslMechanism) {
-        // If enabledSaslMechanisms is not set, then all mechanisms are enabled per default
+        // If enabledSaslMechanisms is not set, then all mechanisms which are not blacklisted are enabled per default.
         if (enabledSaslMechanisms == null) {
-            return true;
+            return !SASLAuthentication.getBlacklistedSASLMechanisms().contains(saslMechanism);
         }
         return enabledSaslMechanisms.contains(saslMechanism);
     }

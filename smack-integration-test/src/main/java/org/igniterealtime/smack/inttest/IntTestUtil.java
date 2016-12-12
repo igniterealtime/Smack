@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,17 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.igniterealtime.smack.inttest.Configuration.AccountRegistration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.admin.ServiceAdministrationManager;
 import org.jivesoftware.smackx.iqregister.AccountManager;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -39,14 +43,52 @@ public class IntTestUtil {
 
     private static final Logger LOGGER = Logger.getLogger(IntTestUtil.class.getName());
 
-    public static UsernameAndPassword registerAccount(XMPPConnection connection)
+
+    public static UsernameAndPassword registerAccount(XMPPTCPConnection connection, Configuration config) throws InterruptedException, XMPPException, SmackException, IOException {
+        return registerAccount(connection, StringUtils.insecureRandomString(12), StringUtils.insecureRandomString(12), config);
+    }
+
+    public static UsernameAndPassword registerAccount(XMPPTCPConnection connection, String accountUsername, String accountPassword,
+                    Configuration config) throws InterruptedException, XMPPException, SmackException, IOException {
+        switch (config.accountRegistration) {
+        case inBandRegistration:
+            return registerAccountViaIbr(connection, accountUsername, accountPassword);
+        case serviceAdministration:
+            return registerAccountViaAdmin(connection, accountUsername, accountPassword, config.adminAccountUsername, config.adminAccountPassword);
+        default:
+            throw new AssertionError();
+        }
+    }
+
+//    public static UsernameAndPassword registerAccountViaAdmin(XMPPTCPConnection connection) throws XmppStringprepException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+//        return registerAccountViaAdmin(connection, StringUtils.insecureRandomString(12),
+//                        StringUtils.insecureRandomString(12));
+//    }
+
+    public static UsernameAndPassword registerAccountViaAdmin(XMPPTCPConnection connection, String username,
+                    String password, String adminAccountUsername, String adminAccountPassword) throws InterruptedException, XMPPException, SmackException, IOException {
+        connection.login(adminAccountUsername, adminAccountPassword);
+
+        ServiceAdministrationManager adminManager = ServiceAdministrationManager.getInstanceFor(connection);
+
+        EntityBareJid userJid = JidCreate.entityBareFrom(Localpart.from(username), connection.getServiceName());
+        adminManager.addUser(userJid, password);
+
+        connection.disconnect();
+        connection.connect();
+
+        return new UsernameAndPassword(username, password);
+
+    }
+
+    public static UsernameAndPassword registerAccountViaIbr(XMPPConnection connection)
                     throws NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException {
-        return registerAccount(connection, StringUtils.insecureRandomString(12),
+        return registerAccountViaIbr(connection, StringUtils.insecureRandomString(12),
                         StringUtils.insecureRandomString(12));
     }
 
-    public static UsernameAndPassword registerAccount(XMPPConnection connection, String username,
+    public static UsernameAndPassword registerAccountViaIbr(XMPPConnection connection, String username,
                     String password) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
         AccountManager accountManager = AccountManager.getInstance(connection);
@@ -82,7 +124,73 @@ public class IntTestUtil {
         }
     }
 
-    public static void disconnectAndMaybeDelete(XMPPTCPConnection connection, boolean delete)
+
+    public static void disconnectAndMaybeDelete(XMPPTCPConnection connection, Configuration config) throws InterruptedException {
+        try {
+            if (!config.isAccountRegistrationPossible()) {
+                return;
+            }
+
+            Configuration.AccountRegistration accountDeletionMethod = config.accountRegistration;
+
+            AccountManager accountManager = AccountManager.getInstance(connection);
+            try {
+                if (accountManager.isSupported()) {
+                    accountDeletionMethod = AccountRegistration.inBandRegistration;
+                }
+            }
+            catch (NoResponseException | XMPPErrorException | NotConnectedException e) {
+                LOGGER.log(Level.WARNING, "Could not test if XEP-0077 account deletion is possible", e);
+            }
+
+            switch (accountDeletionMethod) {
+            case inBandRegistration:
+                deleteViaIbr(connection);
+                break;
+            case serviceAdministration:
+                deleteViaServiceAdministration(connection, config);
+                break;
+            default:
+                throw new AssertionError();
+            }
+        }
+        finally {
+            connection.disconnect();
+        }
+    }
+
+    public static void deleteViaServiceAdministration(XMPPTCPConnection connection, Configuration config) {
+        EntityBareJid accountToDelete = connection.getUser().asEntityBareJid();
+
+        final int maxAttempts = 3;
+
+        int attempts;
+        for (attempts = 0; attempts < maxAttempts; attempts++) {
+            connection.disconnect();
+
+            try {
+                connection.connect().login(config.adminAccountUsername, config.adminAccountPassword);
+            }
+            catch (XMPPException | SmackException | IOException | InterruptedException e) {
+                LOGGER.log(Level.WARNING, "Exception deleting account for " + connection, e);
+                continue;
+            }
+
+            ServiceAdministrationManager adminManager = ServiceAdministrationManager.getInstanceFor(connection);
+            try {
+                adminManager.deleteUser(accountToDelete);
+            }
+            catch (NoResponseException | XMPPErrorException | NotConnectedException | InterruptedException e) {
+                LOGGER.log(Level.WARNING, "Exception deleting account for " + connection, e);
+                continue;
+            }
+        }
+        if (attempts > maxAttempts) {
+            LOGGER.log(Level.SEVERE, "Could not delete account for connection: " + connection);
+        }
+    }
+
+    public static void deleteViaIbr(XMPPTCPConnection connection)
                     throws InterruptedException {
         // If the connection is disconnected, then re-reconnect and login. This could happen when
         // (low-level) integration tests disconnect the connection, e.g. to test disconnection
@@ -95,39 +203,35 @@ public class IntTestUtil {
                 LOGGER.log(Level.WARNING, "Exception reconnection account for deletion", e);
             }
         }
-        try {
-            if (delete) {
-                final int maxAttempts = 3;
-                AccountManager am = AccountManager.getInstance(connection);
-                int attempts;
-                for (attempts = 0; attempts < maxAttempts; attempts++) {
-                    try {
-                        am.deleteAccount();
-                    }
-                    catch (XMPPErrorException | NoResponseException e) {
-                        LOGGER.log(Level.WARNING, "Exception deleting account for " + connection, e);
-                        continue;
-                    }
-                    catch (NotConnectedException e) {
-                        LOGGER.log(Level.WARNING, "Exception deleting account for " + connection, e);
-                        try {
-                            connection.connect().login();
-                        }
-                        catch (XMPPException | SmackException | IOException e2) {
-                            LOGGER.log(Level.WARNING, "Exception while trying to re-connect " + connection, e);
-                        }
-                        continue;
-                    }
-                    LOGGER.info("Successfully deleted account of " + connection);
-                    break;
-                }
-                if (attempts > maxAttempts) {
-                    LOGGER.log(Level.SEVERE, "Could not delete account for connection: " + connection);
-                }
+
+        final int maxAttempts = 3;
+        AccountManager am = AccountManager.getInstance(connection);
+        int attempts;
+        for (attempts = 0; attempts < maxAttempts; attempts++) {
+            try {
+                am.deleteAccount();
             }
+            catch (XMPPErrorException | NoResponseException e) {
+                LOGGER.log(Level.WARNING, "Exception deleting account for " + connection, e);
+                continue;
+            }
+            catch (NotConnectedException e) {
+                LOGGER.log(Level.WARNING, "Exception deleting account for " + connection, e);
+                try {
+                    connection.connect().login();
+                }
+                catch (XMPPException | SmackException | IOException e2) {
+                    LOGGER.log(Level.WARNING, "Exception while trying to re-connect " + connection, e);
+                }
+                continue;
+            }
+            LOGGER.info("Successfully deleted account of " + connection);
+            break;
         }
-        finally {
-            connection.disconnect();
+        if (attempts > maxAttempts) {
+            LOGGER.log(Level.SEVERE, "Could not delete account for connection: " + connection);
         }
+
     }
+
 }

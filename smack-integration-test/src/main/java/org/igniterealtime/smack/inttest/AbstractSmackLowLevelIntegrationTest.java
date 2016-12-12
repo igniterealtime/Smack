@@ -60,7 +60,7 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
         try {
             callback.connectionCallback(connection);
         } finally {
-            IntTestUtil.disconnectAndMaybeDelete(connection, true);
+            IntTestUtil.disconnectAndMaybeDelete(connection, configuration);
         }
     }
 

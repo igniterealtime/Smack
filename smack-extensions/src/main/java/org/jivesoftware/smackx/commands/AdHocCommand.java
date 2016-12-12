@@ -327,6 +327,16 @@ public abstract class AdHocCommand {
     }
 
     /**
+     * Check if this command has been completed successfully.
+     * 
+     * @return <code>true</code> if this command is completed.
+     * @since 4.2
+     */
+    public boolean isCompleted() {
+        return getStatus() == Status.completed;
+    }
+
+    /**
      * Sets the data of the current stage. This should not used.
      * 
      * @param data the data.

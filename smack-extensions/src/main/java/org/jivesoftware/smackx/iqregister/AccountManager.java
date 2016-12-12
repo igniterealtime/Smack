@@ -32,8 +32,10 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.iqregister.packet.Registration;
 import org.jxmpp.jid.parts.Localpart;
 
@@ -116,6 +118,7 @@ public final class AccountManager extends Manager {
      *
      * @param accountCreationSupported true if the server supports In-Band Registration.
      */
+    // TODO: Remove this method and the accountCreationSupported boolean.
     void setSupportsAccountCreation(boolean accountCreationSupported) {
         this.accountCreationSupported = accountCreationSupported;
     }
@@ -132,6 +135,8 @@ public final class AccountManager extends Manager {
      * @throws InterruptedException 
      */
     public boolean supportsAccountCreation() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        // TODO: Replace this body with isSupported() and possible deprecate this method.
+
         // Check if we already know that the server supports creating new accounts
         if (accountCreationSupported) {
             return true;
@@ -324,6 +329,18 @@ public final class AccountManager extends Manager {
         reg.setType(IQ.Type.set);
         reg.setTo(connection().getXMPPServiceDomain());
         createPacketCollectorAndSend(reg).nextResultOrThrow();
+    }
+
+    public boolean isSupported()
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        XMPPConnection connection = connection();
+
+        ExtensionElement extensionElement = connection.getFeature(Registration.ELEMENT, Registration.NAMESPACE);
+        if (extensionElement != null) {
+            return true;
+        }
+
+        return ServiceDiscoveryManager.getInstanceFor(connection).serverSupportsFeature(Registration.NAMESPACE);
     }
 
     /**

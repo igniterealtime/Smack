@@ -174,12 +174,12 @@ public final class MessageEventManager extends Manager {
             Method method =
                 MessageEventRequestListener.class.getDeclaredMethod(
                     methodName,
-                    new Class<?>[] { String.class, String.class, MessageEventManager.class });
+                    new Class<?>[] { Jid.class, String.class, MessageEventManager.class });
             for (MessageEventRequestListener listener : messageEventRequestListeners) {
                 method.invoke(listener, new Object[] { from, packetID, this });
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error while invoking MessageEventRequestListener", e);
+            LOGGER.log(Level.SEVERE, "Error while invoking MessageEventRequestListener's  " + methodName, e);
         }
     }
 
@@ -194,12 +194,12 @@ public final class MessageEventManager extends Manager {
             Method method =
                 MessageEventNotificationListener.class.getDeclaredMethod(
                     methodName,
-                    new Class<?>[] { String.class, String.class });
+                    new Class<?>[] { Jid.class, String.class });
             for (MessageEventNotificationListener listener : messageEventNotificationListeners) {
                 method.invoke(listener, new Object[] { from, packetID });
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error while invoking MessageEventNotificationListener", e);
+            LOGGER.log(Level.SEVERE, "Error while invoking MessageEventNotificationListener's " + methodName, e);
         }
     }
 

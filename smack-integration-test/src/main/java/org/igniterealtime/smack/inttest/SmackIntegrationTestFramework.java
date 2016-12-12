@@ -436,7 +436,7 @@ public class SmackIntegrationTestFramework {
         final int numberOfConnections = testMethod.getParameterTypes().length;
         XMPPTCPConnection[] connections = null;
         try {
-            if (numberOfConnections > 0 && !config.registerAccounts) {
+            if (numberOfConnections > 0 && !config.isAccountRegistrationPossible()) {
                 throw new TestNotPossibleException(
                                 "Must create accounts for this test, but it's not enabled");
             }
@@ -457,13 +457,13 @@ public class SmackIntegrationTestFramework {
         }
         finally {
             for (int i = 0; i < numberOfConnections; ++i) {
-                IntTestUtil.disconnectAndMaybeDelete(connections[i], true);
+                IntTestUtil.disconnectAndMaybeDelete(connections[i], config);
             }
         }
     }
 
     protected void disconnectAndMaybeDelete(XMPPTCPConnection connection) throws InterruptedException {
-        IntTestUtil.disconnectAndMaybeDelete(connection, config.registerAccounts);
+        IntTestUtil.disconnectAndMaybeDelete(connection, config);
     }
 
     protected SmackIntegrationTestEnvironment prepareEnvironment() throws SmackException,
@@ -546,8 +546,8 @@ public class SmackIntegrationTestFramework {
         }
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
         connection.connect();
-        if (config.registerAccounts) {
-            IntTestUtil.registerAccount(connection, accountUsername, accountPassword);
+        if (config.isAccountRegistrationPossible()) {
+            IntTestUtil.registerAccount(connection, accountUsername, accountPassword, config);
 
             // TODO is this still required?
             // Some servers, e.g. Openfire, do not support a login right after the account was
@@ -573,7 +573,7 @@ public class SmackIntegrationTestFramework {
         builder.setXmppDomain(config.service);
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
         connection.connect();
-        UsernameAndPassword uap = IntTestUtil.registerAccount(connection);
+        UsernameAndPassword uap = IntTestUtil.registerAccount(connection, config);
         connection.login(uap.username, uap.password);
         return connection;
     }

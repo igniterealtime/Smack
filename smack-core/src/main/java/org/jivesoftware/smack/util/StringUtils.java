@@ -358,6 +358,36 @@ public class StringUtils {
     }
 
     /**
+     * Returns true if all given CharSequences are not empty.
+     *
+     * @param css the CharSequences to test.
+     * @return true if all given CharSequences are not empty.
+     */
+    public static boolean isNotEmpty(CharSequence... css) {
+        for (CharSequence cs : css) {
+            if (StringUtils.isNullOrEmpty(cs)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns true if all given CharSequences are either null or empty.
+     *
+     * @param css the CharSequences to test.
+     * @return true if all given CharSequences are null or empty.
+     */
+    public static boolean isNullOrEmpty(CharSequence... css) {
+        for (CharSequence cs : css) {
+            if (StringUtils.isNotEmpty(cs)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Returns true if the given CharSequence is empty.
      * 
      * @param cs
