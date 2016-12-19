@@ -290,7 +290,7 @@ public class SmackIntegrationTestFramework {
                 Constructor<? extends AbstractSmackLowLevelIntegrationTest> cons;
                 try {
                     cons = ((Class<? extends AbstractSmackLowLevelIntegrationTest>) testClass).getConstructor(
-                                    Configuration.class, String.class);
+                                    SmackIntegrationTestEnvironment.class);
                 }
                 catch (NoSuchMethodException | SecurityException e) {
                     LOGGER.log(Level.WARNING,
@@ -300,7 +300,7 @@ public class SmackIntegrationTestFramework {
                 }
 
                 try {
-                    test = cons.newInstance(config, testRunResult.testRunId);
+                    test = cons.newInstance(environment);
                 }
                 catch (InvocationTargetException e) {
                     Throwable cause = e.getCause();
@@ -442,7 +442,7 @@ public class SmackIntegrationTestFramework {
             }
             connections = new XMPPTCPConnection[numberOfConnections];
             for (int i = 0; i < numberOfConnections; ++i) {
-                connections[i] = getConnectedConnection(config);
+                connections[i] = getConnectedConnection(environment, i);
             }
         }
         catch (Exception e) {
@@ -563,9 +563,10 @@ public class SmackIntegrationTestFramework {
         return connection;
     }
 
-    static XMPPTCPConnection getConnectedConnection(Configuration config)
+    static XMPPTCPConnection getConnectedConnection(SmackIntegrationTestEnvironment environment, int connectionId)
                     throws KeyManagementException, NoSuchAlgorithmException, InterruptedException,
                     SmackException, IOException, XMPPException {
+        Configuration config = environment.configuration;
         XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
         if (config.serviceTlsPin != null) {
             SSLContext sc = Java7Pinning.forPin(config.serviceTlsPin);
@@ -575,7 +576,7 @@ public class SmackIntegrationTestFramework {
         builder.setXmppDomain(config.service);
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
         connection.connect();
-        UsernameAndPassword uap = IntTestUtil.registerAccount(connection, config);
+        UsernameAndPassword uap = IntTestUtil.registerAccount(connection, environment, connectionId);
         connection.login(uap.username, uap.password);
         return connection;
     }

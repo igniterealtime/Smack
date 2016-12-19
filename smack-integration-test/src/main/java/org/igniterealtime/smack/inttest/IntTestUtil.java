@@ -44,8 +44,9 @@ public class IntTestUtil {
     private static final Logger LOGGER = Logger.getLogger(IntTestUtil.class.getName());
 
 
-    public static UsernameAndPassword registerAccount(XMPPTCPConnection connection, Configuration config) throws InterruptedException, XMPPException, SmackException, IOException {
-        return registerAccount(connection, StringUtils.insecureRandomString(12), StringUtils.insecureRandomString(12), config);
+    public static UsernameAndPassword registerAccount(XMPPTCPConnection connection, SmackIntegrationTestEnvironment environment, int connectionId) throws InterruptedException, XMPPException, SmackException, IOException {
+        String username = "sinttest-" + environment.testRunId + "-" + connectionId;
+        return registerAccount(connection, username, StringUtils.insecureRandomString(12), environment.configuration);
     }
 
     public static UsernameAndPassword registerAccount(XMPPTCPConnection connection, String accountUsername, String accountPassword,

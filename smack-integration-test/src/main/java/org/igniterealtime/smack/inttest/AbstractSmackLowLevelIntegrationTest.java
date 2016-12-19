@@ -29,6 +29,8 @@ import eu.geekplace.javapinning.java7.Java7Pinning;
 
 public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmackIntTest {
 
+    private final SmackIntegrationTestEnvironment environment;
+
     /**
      * The configuration
      */
@@ -38,9 +40,10 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
 
     protected final DomainBareJid service;
 
-    public AbstractSmackLowLevelIntegrationTest(Configuration configuration, String testRunId) {
-        this.configuration = configuration;
-        this.testRunId = testRunId;
+    public AbstractSmackLowLevelIntegrationTest(SmackIntegrationTestEnvironment environment) {
+        this.environment = environment;
+        this.configuration = environment.configuration;
+        this.testRunId = environment.testRunId;
         this.service = configuration.service;
     }
 
@@ -56,7 +59,7 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
     }
 
     protected void performCheck(ConnectionCallback callback) throws Exception {
-        XMPPTCPConnection connection = SmackIntegrationTestFramework.getConnectedConnection(configuration);
+        XMPPTCPConnection connection = SmackIntegrationTestFramework.getConnectedConnection(environment, -1);
         try {
             callback.connectionCallback(connection);
         } finally {
