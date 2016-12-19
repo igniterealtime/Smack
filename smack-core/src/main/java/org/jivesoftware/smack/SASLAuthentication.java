@@ -203,7 +203,7 @@ public final class SASLAuthentication {
             final long deadline = System.currentTimeMillis() + connection.getPacketReplyTimeout();
             while (!authenticationSuccessful && saslException == null) {
                 final long now = System.currentTimeMillis();
-                if (now > deadline) break;
+                if (now >= deadline) break;
                 // Wait until SASL negotiation finishes
                 wait(deadline - now);
             }

@@ -185,7 +185,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                 final long deadline = System.currentTimeMillis() + getPacketReplyTimeout();
                 while (!notified) {
                     final long now = System.currentTimeMillis();
-                    if (now > deadline) break;
+                    if (now >= deadline) break;
                     wait(deadline - now);
                 }
             }
