@@ -547,16 +547,18 @@ public class SmackIntegrationTestFramework {
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
         connection.connect();
         if (config.isAccountRegistrationPossible()) {
-            IntTestUtil.registerAccount(connection, accountUsername, accountPassword, config);
+            UsernameAndPassword uap = IntTestUtil.registerAccount(connection, accountUsername, accountPassword, config);
 
             // TODO is this still required?
             // Some servers, e.g. Openfire, do not support a login right after the account was
             // created, so disconnect and re-connection the connection first.
             connection.disconnect();
             connection.connect();
-        }
 
-        connection.login();
+            connection.login(uap.username, uap.password);
+        } else {
+            connection.login();
+        }
 
         return connection;
     }
