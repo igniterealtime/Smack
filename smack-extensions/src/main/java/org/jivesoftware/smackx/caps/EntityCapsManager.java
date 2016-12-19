@@ -101,7 +101,7 @@ public final class EntityCapsManager extends Manager {
     /**
      * Map of "node + '#' + hash" to DiscoverInfo data
      */
-    private static final LruCache<String, DiscoverInfo> CAPS_CACHE = new LruCache<String, DiscoverInfo>(1000);
+    static final LruCache<String, DiscoverInfo> CAPS_CACHE = new LruCache<String, DiscoverInfo>(1000);
 
     /**
      * Map of Full JID -&gt; DiscoverInfo/null. In case of c2s connection the
@@ -109,7 +109,7 @@ public final class EntityCapsManager extends Manager {
      * link-local connection the key is formed as user@host (no resource) In
      * case of a server or component the key is formed as domain
      */
-    private static final LruCache<Jid, NodeVerHash> JID_TO_NODEVER_CACHE = new LruCache<>(10000);
+    static final LruCache<Jid, NodeVerHash> JID_TO_NODEVER_CACHE = new LruCache<>(10000);
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -159,7 +159,7 @@ public final class EntityCapsManager extends Manager {
      *            the user (Full JID)
      * @return the node version (node#ver) or null
      */
-    public static String getNodeVersionByJid(String jid) {
+    public static String getNodeVersionByJid(Jid jid) {
         NodeVerHash nvh = JID_TO_NODEVER_CACHE.get(jid);
         if (nvh != null) {
             return nvh.nodeVer;

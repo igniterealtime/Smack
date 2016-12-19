@@ -36,14 +36,12 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
      */
     protected final Configuration configuration;
 
-    protected final String testRunId;
-
     protected final DomainBareJid service;
 
     public AbstractSmackLowLevelIntegrationTest(SmackIntegrationTestEnvironment environment) {
+        super(environment.testRunId, environment.configuration.replyTimeout);
         this.environment = environment;
         this.configuration = environment.configuration;
-        this.testRunId = environment.testRunId;
         this.service = configuration.service;
     }
 

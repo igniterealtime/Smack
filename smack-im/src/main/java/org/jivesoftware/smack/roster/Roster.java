@@ -1100,6 +1100,25 @@ public final class Roster extends Manager {
     }
 
     /**
+     * Check if the XMPP entity this roster belongs to is subscribed to the presence of the given JID.
+     *
+     * @param jid the jid to check.
+     * @return <code>true</code> if we are subscribed to the presence of the given jid.
+     * @since 4.2
+     */
+    public boolean iAmSubscribedTo(Jid jid) {
+        if (jid == null) {
+            return false;
+        }
+        BareJid bareJid = jid.asBareJid();
+        RosterEntry entry = getEntry(bareJid);
+        if (entry == null) {
+            return false;
+        }
+        return entry.canSeeHisPresence();
+    }
+
+    /**
      * Sets if the roster will be loaded from the server when logging in for newly created instances
      * of {@link Roster}.
      *

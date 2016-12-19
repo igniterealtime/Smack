@@ -95,9 +95,14 @@ public class SmackIntegrationTestFramework {
             LOGGER.info("Could not run " + testNotPossible.testMethod.getName() + " because: "
                             + testNotPossible.testNotPossibleException.getMessage());
         }
+        final int successfulTests = testRunResult.successfulTests.size();
+        final int availableTests = testRunResult.getNumberOfAvailableTests();
+        final int possibleTests = testRunResult.getNumberOfPossibleTests();
         LOGGER.info("SmackIntegrationTestFramework[" + testRunResult.testRunId + ']' + ": Finished ["
-                        + testRunResult.successfulTests.size() + '/' + testRunResult.numberOfTests + ']');
+                        + successfulTests + '/' + possibleTests + "] (of " + availableTests + " available tests)");
         if (!testRunResult.failedIntegrationTests.isEmpty()) {
+            final int failedTests = testRunResult.failedIntegrationTests.size();
+            LOGGER.warning("The following " + failedTests + " tests failed!");
             for (FailedTest failedTest : testRunResult.failedIntegrationTests) {
                 final Method method = failedTest.testMethod;
                 final String className = method.getDeclaringClass().getName();
@@ -106,6 +111,8 @@ public class SmackIntegrationTestFramework {
                 LOGGER.severe(className + CLASS_METHOD_SEP + methodName + " failed: " + cause);
             }
             System.exit(2);
+        } else {
+            LOGGER.info("All possible Smack Integration Tests completed successfully. \\o/");
         }
         System.exit(0);
     }
@@ -251,7 +258,9 @@ public class SmackIntegrationTestFramework {
                 continue;
             }
 
-            testRunResult.numberOfTests.addAndGet(smackIntegrationTestMethods.size());
+            final int detectedTestMethodsCount = smackIntegrationTestMethods.size();
+            testRunResult.numberOfAvailableTests.addAndGet(detectedTestMethodsCount);
+            testRunResult.numberOfPossibleTests.addAndGet(detectedTestMethodsCount);
 
             AbstractSmackIntTest test;
             switch (testType) {
@@ -274,6 +283,7 @@ public class SmackIntegrationTestFramework {
                     Throwable cause = e.getCause();
                     if (cause instanceof TestNotPossibleException) {
                         testRunResult.impossibleTestClasses.put(testClass, cause.getMessage());
+                        testRunResult.numberOfPossibleTests.addAndGet(-detectedTestMethodsCount);
                     }
                     else {
                         throwFatalException(cause);
@@ -306,6 +316,7 @@ public class SmackIntegrationTestFramework {
                     Throwable cause = e.getCause();
                     if (cause instanceof TestNotPossibleException) {
                         testRunResult.impossibleTestClasses.put(testClass, cause.getMessage());
+                        testRunResult.numberOfPossibleTests.addAndGet(-detectedTestMethodsCount);
                     }
                     else {
                         throwFatalException(cause);
@@ -622,7 +633,8 @@ public class SmackIntegrationTestFramework {
         private final List<FailedTest> failedIntegrationTests = Collections.synchronizedList(new LinkedList<FailedTest>());
         private final List<TestNotPossible> impossibleTestMethods = Collections.synchronizedList(new LinkedList<TestNotPossible>());
         private final Map<Class<? extends AbstractSmackIntTest>, String> impossibleTestClasses = new HashMap<>();
-        private final AtomicInteger numberOfTests = new AtomicInteger();
+        private final AtomicInteger numberOfAvailableTests = new AtomicInteger();
+        private final AtomicInteger numberOfPossibleTests = new AtomicInteger();
 
         private TestRunResult() {
         }
@@ -631,8 +643,12 @@ public class SmackIntegrationTestFramework {
             return testRunId;
         }
 
-        public int getNumberOfTests() {
-            return numberOfTests.get();
+        public int getNumberOfAvailableTests() {
+            return numberOfAvailableTests.get();
+        }
+
+        public int getNumberOfPossibleTests() {
+            return numberOfPossibleTests.get();
         }
 
         public List<SuccessfulTest> getSuccessfulTests() {
