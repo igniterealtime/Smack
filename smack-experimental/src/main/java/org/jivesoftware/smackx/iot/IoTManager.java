@@ -34,6 +34,16 @@ public abstract class IoTManager extends Manager {
 
     private boolean allowNonFriends;
 
+    private static boolean autoEnable;
+
+    public static void setAutoEnableIoTManagers(boolean autoEnable) {
+        IoTManager.autoEnable = autoEnable;
+    }
+
+    public static boolean isAutoEnableActive() {
+        return autoEnable;
+    }
+
     protected IoTManager(XMPPConnection connection) {
         super(connection);
 

@@ -49,6 +49,7 @@ import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.SubscribeListener;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.iot.IoTManager;
 import org.jivesoftware.smackx.iot.discovery.IoTDiscoveryManager;
 import org.jivesoftware.smackx.iot.provisioning.element.ClearCache;
 import org.jivesoftware.smackx.iot.provisioning.element.ClearCacheResponse;
@@ -83,6 +84,7 @@ public final class IoTProvisioningManager extends Manager {
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(XMPPConnection connection) {
+                if (!IoTManager.isAutoEnableActive()) return;
                 getInstanceFor(connection);
             }
         });
