@@ -327,7 +327,7 @@ public class SmackIntegrationTestFramework {
                 Set<Method> beforeClassMethods = getAllMethods(testClass,
                                 withAnnotation(BeforeClass.class), withReturnType(Void.TYPE),
                                 withParametersCount(0), withModifier(Modifier.PUBLIC
-                                                | Modifier.STATIC));
+                                                ));
 
                 // See if there are any methods that have the @BeforeClassAnnotation but a wrong signature
                 Set<Method> allBeforeClassMethods =  getAllMethods(testClass, withAnnotation(BeforeClass.class));
@@ -340,7 +340,7 @@ public class SmackIntegrationTestFramework {
                     Method beforeClassMethod = beforeClassMethods.iterator().next();
                     LOGGER.info("Executing @BeforeClass method of " + testClass);
                     try {
-                        beforeClassMethod.invoke(null);
+                        beforeClassMethod.invoke(test);
                     }
                     catch (InvocationTargetException | IllegalAccessException e) {
                         LOGGER.log(Level.SEVERE, "Exception executing @BeforeClass method", e);
@@ -404,7 +404,7 @@ public class SmackIntegrationTestFramework {
                 Set<Method> afterClassMethods = getAllMethods(testClass,
                                 withAnnotation(AfterClass.class), withReturnType(Void.TYPE),
                                 withParametersCount(0), withModifier(Modifier.PUBLIC
-                                                | Modifier.STATIC));
+                                                ));
 
                 // See if there are any methods that have the @AfterClassAnnotation but a wrong signature
                 Set<Method> allAfterClassMethods =  getAllMethods(testClass, withAnnotation(AfterClass.class));
@@ -417,7 +417,7 @@ public class SmackIntegrationTestFramework {
                     Method afterClassMethod = afterClassMethods.iterator().next();
                     LOGGER.info("Executing @AfterClass method of " + testClass);
                     try {
-                        afterClassMethod.invoke(null);
+                        afterClassMethod.invoke(test);
                     }
                     catch (InvocationTargetException | IllegalAccessException e) {
                         LOGGER.log(Level.SEVERE, "Exception executing @AfterClass method", e);

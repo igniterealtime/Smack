@@ -124,12 +124,12 @@ public class SmackIntegrationTestFrameworkUnitTest {
         }
 
         @BeforeClass
-        public static void setUp() {
+        public void setUp() {
             beforeClassInvoked = true;
         }
 
         @AfterClass
-        public static void tearDown() {
+        public void tearDown() {
             afterClassInvoked = true;
         }
 
