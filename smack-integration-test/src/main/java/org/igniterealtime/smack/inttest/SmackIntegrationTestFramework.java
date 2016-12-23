@@ -342,7 +342,7 @@ public class SmackIntegrationTestFramework {
                         beforeClassMethod.invoke(null);
                     }
                     catch (InvocationTargetException | IllegalAccessException e) {
-                        LOGGER.log(Level.SEVERE, "Exception executing @AfterClass method", e);
+                        LOGGER.log(Level.SEVERE, "Exception executing @BeforeClass method", e);
                     }
                     catch (IllegalArgumentException e) {
                         throw new AssertionError(e);
