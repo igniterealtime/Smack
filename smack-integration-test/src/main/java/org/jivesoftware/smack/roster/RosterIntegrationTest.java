@@ -32,6 +32,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
@@ -77,7 +78,17 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
                     if (!jid.equals(conTwo.getUser().asBareJid())) {
                         continue;
                     }
-                    RosterEntry rosterEntry = rosterOne.getEntry(conTwo.getUser().asBareJid());
+                    BareJid bareJid = conTwo.getUser().asBareJid();
+                    RosterEntry rosterEntry = rosterOne.getEntry(bareJid);
+                    if (rosterEntry == null) {
+                        addedAndSubscribed.signalFailure("No roster entry for " + bareJid);
+                        return;
+                    }
+                    String name = rosterEntry.getName();
+                    if (StringUtils.isNullOrEmpty(name)) {
+                        addedAndSubscribed.signalFailure("Roster entry without name");
+                        return;
+                    }
                     if (!rosterEntry.getName().equals(conTwosRosterName)) {
                         addedAndSubscribed.signalFailure("Roster name does not match");
                         return;
