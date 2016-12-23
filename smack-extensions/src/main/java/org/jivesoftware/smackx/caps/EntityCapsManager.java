@@ -340,7 +340,7 @@ public final class EntityCapsManager extends Manager {
             public void processPacket(Stanza packet) {
                 presenceSend = (Presence) packet;
             }
-        }, PresenceTypeFilter.AVAILABLE);
+        }, PresenceTypeFilter.OUTGOING_PRESENCE_BROADCAST);
 
         // Intercept presence packages and add caps data when intended.
         // XEP-0115 specifies that a client SHOULD include entity capabilities
