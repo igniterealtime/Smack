@@ -338,6 +338,7 @@ public class SmackIntegrationTestFramework {
 
                 if (beforeClassMethods.size() == 1) {
                     Method beforeClassMethod = beforeClassMethods.iterator().next();
+                    LOGGER.info("Executing @BeforeClass method of " + testClass);
                     try {
                         beforeClassMethod.invoke(null);
                     }
@@ -414,6 +415,7 @@ public class SmackIntegrationTestFramework {
 
                 if (afterClassMethods.size() == 1) {
                     Method afterClassMethod = afterClassMethods.iterator().next();
+                    LOGGER.info("Executing @AfterClass method of " + testClass);
                     try {
                         afterClassMethod.invoke(null);
                     }
