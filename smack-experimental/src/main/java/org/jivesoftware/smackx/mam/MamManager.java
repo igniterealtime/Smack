@@ -319,6 +319,27 @@ public final class MamManager extends Manager {
     }
 
     /**
+     * Returns the previous page of the archive.
+     * 
+     * @param mamQueryResult
+     *            is the previous query result
+     * @param count
+     *            is the amount of messages that a page contains
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws NotLoggedInException
+     */
+    public MamQueryResult pagePrevious(MamQueryResult mamQueryResult, int count) throws NoResponseException,
+            XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
+        RSMSet previousResultRsmSet = mamQueryResult.mamFin.getRSMSet();
+        RSMSet requestRsmSet = new RSMSet(count, previousResultRsmSet.getFirst(), RSMSet.PageDirection.before);
+        return page(mamQueryResult.form, requestRsmSet);
+    }
+
+    /**
      * Obtain page before the first message saved (specific chat).
      *
      * @param chatJid
@@ -358,6 +379,23 @@ public final class MamManager extends Manager {
         DataForm dataForm = getNewMamForm();
         addWithJid(chatJid, dataForm);
         return page(dataForm, rsmSet);
+    }
+
+    /**
+     * Obtain the most recent page of a chat.
+     *
+     * @param chatJid
+     * @param max
+     * @return the MAM query result
+     * @throws XMPPErrorException
+     * @throws NotLoggedInException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws NoResponseException
+     */
+    public MamQueryResult mostRecentPage(Jid chatJid, int max) throws XMPPErrorException, NotLoggedInException,
+            NotConnectedException, InterruptedException, NoResponseException {
+        return pageBefore(chatJid, "", max);
     }
 
     /**
