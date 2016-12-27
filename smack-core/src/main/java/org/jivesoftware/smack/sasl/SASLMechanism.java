@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.sasl;
 
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -27,44 +28,21 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 
+import javax.net.ssl.SSLSession;
 import javax.security.auth.callback.CallbackHandler;
 
 /**
- * Base class for SASL mechanisms. Subclasses must implement these methods:
- * <ul>
- *  <li>{@link #getName()} -- returns the common name of the SASL mechanism.</li>
- * </ul>
+ * Base class for SASL mechanisms.
  * Subclasses will likely want to implement their own versions of these methods:
- *  <li>{@link #authenticate(String, String, DomainBareJid, String, EntityBareJid)} -- Initiate authentication stanza using the
+ *  <li>{@link #authenticate(String, String, DomainBareJid, String, EntityBareJid, SSLSession)} -- Initiate authentication stanza using the
  *  deprecated method.</li>
- *  <li>{@link #authenticate(String, DomainBareJid, CallbackHandler, EntityBareJid)} -- Initiate authentication stanza
+ *  <li>{@link #authenticate(String, DomainBareJid, CallbackHandler, EntityBareJid, SSLSession)} -- Initiate authentication stanza
  *  using the CallbackHandler method.</li>
  *  <li>{@link #challengeReceived(String, boolean)} -- Handle a challenge from the server.</li>
  * </ul>
- * 
- * Basic XMPP SASL authentication steps:
- * 1. Client authentication initialization, stanza sent to the server (Base64 encoded): 
- *    <auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='DIGEST-MD5'/>
- * 2. Server sends back to the client the challenge response (Base64 encoded)
- *    sample: 
- *    realm=<sasl server realm>,nonce="OA6MG9tEQGm2hh",qop="auth",charset=utf-8,algorithm=md5-sess
- * 3. The client responds back to the server (Base 64 encoded):
- *    sample:
- *    username=<userid>,realm=<sasl server realm from above>,nonce="OA6MG9tEQGm2hh",
- *    cnonce="OA6MHXh6VqTrRk",nc=00000001,qop=auth,
- *    digest-uri=<digesturi>,
- *    response=d388dad90d4bbd760a152321f2143af7,
- *    charset=utf-8,
- *    authzid=<id>
- * 4. The server evaluates if the user is present and contained in the REALM
- *    if successful it sends: <response xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/> (Base64 encoded)
- *    if not successful it sends:
- *    sample:
- *    <challenge xmlns='urn:ietf:params:xml:ns:xmpp-sasl'>
- *        cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==
- *    </challenge>
  *
  * @author Jay Kline
+ * @author Florian Schmaus
  */
 public abstract class SASLMechanism implements Comparable<SASLMechanism> {
 
@@ -91,6 +69,8 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     }
 
     protected XMPPConnection connection;
+
+    protected ConnectionConfiguration connectionConfiguration;
 
     /**
      * Then authentication identity (authcid). RFC 6120 § 6.3.7 informs us that some SASL mechanisms use this as a
@@ -121,9 +101,14 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     protected String host;
 
     /**
+     * The used SSL/TLS session (if any).
+     */
+    protected SSLSession sslSession;
+
+    /**
      * Builds and sends the <tt>auth</tt> stanza to the server. Note that this method of
      * authentication is not recommended, since it is very inflexible. Use
-     * {@link #authenticate(String, DomainBareJid, CallbackHandler, EntityBareJid)} whenever possible.
+     * {@link #authenticate(String, DomainBareJid, CallbackHandler, EntityBareJid, SSLSession)} whenever possible.
      * 
      * Explanation of auth stanza:
      * 
@@ -165,17 +150,20 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * serviceName format is: host [ "/" serv-name ] as per RFC-2831
      * @param password the password for this account.
      * @param authzid the optional authorization identity.
+     * @param sslSession the optional SSL/TLS session (if one was established)
      * @throws SmackException If a network error occurs while authenticating.
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public final void authenticate(String username, String host, DomainBareJid serviceName, String password, EntityBareJid authzid)
+    public final void authenticate(String username, String host, DomainBareJid serviceName, String password,
+                    EntityBareJid authzid, SSLSession sslSession)
                     throws SmackException, NotConnectedException, InterruptedException {
         this.authenticationId = username;
         this.host = host;
         this.serviceName = serviceName;
         this.password = password;
         this.authorizationId = authzid;
+        this.sslSession = sslSession;
         assert(authorizationId == null || authzidSupported());
         authenticateInternal();
         authenticate();
@@ -195,15 +183,17 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param serviceName the xmpp service location
      * @param cbh      the CallbackHandler to obtain user information.
      * @param authzid the optional authorization identity.
+     * @param sslSession the optional SSL/TLS session (if one was established)
      * @throws SmackException
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void authenticate(String host, DomainBareJid serviceName, CallbackHandler cbh, EntityBareJid authzid)
+    public void authenticate(String host, DomainBareJid serviceName, CallbackHandler cbh, EntityBareJid authzid, SSLSession sslSession)
                     throws SmackException, NotConnectedException, InterruptedException {
         this.host = host;
         this.serviceName = serviceName;
         this.authorizationId = authzid;
+        this.sslSession = sslSession;
         assert(authorizationId == null || authzidSupported());
         authenticateInternal(cbh);
         authenticate();
@@ -290,9 +280,10 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
 
     public abstract void checkIfSuccessfulOrThrow() throws SmackException;
 
-    public SASLMechanism instanceForAuthentication(XMPPConnection connection) {
+    public SASLMechanism instanceForAuthentication(XMPPConnection connection, ConnectionConfiguration connectionConfiguration) {
         SASLMechanism saslMechansim = newInstance();
         saslMechansim.connection = connection;
+        saslMechansim.connectionConfiguration = connectionConfiguration;
         return saslMechansim;
     }
 

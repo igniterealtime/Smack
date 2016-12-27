@@ -16,14 +16,13 @@
  */
 package org.jivesoftware.smackx.muc;
 
-
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
 import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
-import org.igniterealtime.smack.inttest.Configuration;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -39,8 +38,8 @@ import org.jxmpp.jid.parts.Resourcepart;
 
 public class MultiUserChatLowLevelIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
 
-    public MultiUserChatLowLevelIntegrationTest(Configuration configuration, String testRunId) throws Exception {
-        super(configuration, testRunId);
+    public MultiUserChatLowLevelIntegrationTest(SmackIntegrationTestEnvironment environment) throws Exception {
+        super(environment);
         performCheck(new ConnectionCallback() {
             @Override
             public void connectionCallback(XMPPTCPConnection connection) throws Exception {

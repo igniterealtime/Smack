@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2016 Florian Schmaus
+ * Copyright 2015 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.sasl;
 
-import org.jivesoftware.smack.DummyConnection;
-
-public class AbstractSaslTest {
-
-    protected final DummyConnection xmppConnection = new DummyConnection();
-    protected final SASLMechanism saslMechanism;
-
-    protected AbstractSaslTest(SASLMechanism saslMechanism) {
-        this.saslMechanism = saslMechanism.instanceForAuthentication(xmppConnection, xmppConnection.getConfiguration());
-    }
-
-}
+/**
+ * Smack's API for XEP-0133: Service Administration.
+ */
+package org.jivesoftware.smackx.admin;

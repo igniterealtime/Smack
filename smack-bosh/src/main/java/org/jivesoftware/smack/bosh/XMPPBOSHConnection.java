@@ -185,7 +185,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                 final long deadline = System.currentTimeMillis() + getPacketReplyTimeout();
                 while (!notified) {
                     final long now = System.currentTimeMillis();
-                    if (now > deadline) break;
+                    if (now >= deadline) break;
                     wait(deadline - now);
                 }
             }
@@ -214,7 +214,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     protected void loginInternal(String username, String password, Resourcepart resource) throws XMPPException,
                     SmackException, IOException, InterruptedException {
         // Authenticate using SASL
-        saslAuthentication.authenticate(username, password, config.getAuthzid());
+        saslAuthentication.authenticate(username, password, config.getAuthzid(), null);
 
         bindResourceAndEstablishSession(resource);
 

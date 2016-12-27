@@ -143,11 +143,18 @@ public class RemoteCommand extends AdHocCommand {
             data.setForm(form.getDataFormToSend());
         }
 
-        AdHocCommandData responseData = (AdHocCommandData) connection.createPacketCollectorAndSend(
-                        data).nextResultOrThrow();
+        AdHocCommandData responseData = null;
+        try {
+            responseData = connection.createPacketCollectorAndSend(data).nextResultOrThrow();
+        }
+        finally {
+            // We set the response data in a 'finally' block, so that it also gets set even if an error IQ was returned.
+            if (responseData != null) {
+                this.sessionID = responseData.getSessionID();
+                super.setData(responseData);
+            }
+        }
 
-        this.sessionID = responseData.getSessionID();
-        super.setData(responseData);
     }
 
     @Override

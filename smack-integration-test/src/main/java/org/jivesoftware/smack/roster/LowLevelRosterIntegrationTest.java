@@ -20,8 +20,8 @@ package org.jivesoftware.smack.roster;
 import java.util.concurrent.TimeoutException;
 
 import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
-import org.igniterealtime.smack.inttest.Configuration;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
@@ -29,8 +29,8 @@ import org.jxmpp.jid.FullJid;
 
 public class LowLevelRosterIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
 
-    public LowLevelRosterIntegrationTest(Configuration configuration, String testRunId) {
-        super(configuration, testRunId);
+    public LowLevelRosterIntegrationTest(SmackIntegrationTestEnvironment environment) {
+        super(environment);
     }
 
     @SmackIntegrationTest

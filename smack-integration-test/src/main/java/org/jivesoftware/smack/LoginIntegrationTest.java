@@ -24,8 +24,8 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
-import org.igniterealtime.smack.inttest.Configuration;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.sasl.SASLErrorException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
@@ -34,8 +34,8 @@ import org.jivesoftware.smack.util.StringUtils;
 
 public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
 
-    public LoginIntegrationTest(Configuration configuration, String testRunId) {
-        super(configuration, testRunId);
+    public LoginIntegrationTest(SmackIntegrationTestEnvironment environment) {
+        super(environment);
     }
 
     /**

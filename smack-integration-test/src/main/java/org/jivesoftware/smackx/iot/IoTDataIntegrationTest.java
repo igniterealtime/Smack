@@ -73,7 +73,7 @@ public class IoTDataIntegrationTest extends AbstractSmackIntegrationTest {
 
         List<IoTFieldsExtension> values;
         try {
-            RosterIntegrationTest.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, defaultTimeout);
+            RosterIntegrationTest.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
             values = iotDataManagerTwo.requestMomentaryValuesReadOut(conOne.getUser());
         }

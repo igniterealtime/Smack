@@ -61,6 +61,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -167,7 +168,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private boolean disconnectedButResumeable = false;
 
-    private boolean usingTLS = false;
+    private SSLSocket secureSocket;
 
     /**
      * Protected access level because of unit test purposes
@@ -394,7 +395,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     protected synchronized void loginInternal(String username, String password, Resourcepart resource) throws XMPPException,
                     SmackException, IOException, InterruptedException {
         // Authenticate using SASL
-        saslAuthentication.authenticate(username, password, config.getAuthzid());
+        SSLSession sslSession = secureSocket != null ? secureSocket.getSession() : null;
+        saslAuthentication.authenticate(username, password, config.getAuthzid(), sslSession);
 
         // If compression is enabled then request the server to use stream compression. XEP-170
         // recommends to perform stream compression before resource binding.
@@ -465,7 +467,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     @Override
     public boolean isSecureConnection() {
-        return usingTLS;
+        return secureSocket != null;
     }
 
     /**
@@ -542,7 +544,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
         authenticated = false;
         connected = false;
-        usingTLS = false;
+        secureSocket = null;
         reader = null;
         writer = null;
 
@@ -824,7 +826,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
 
         // Set that TLS was successful
-        usingTLS = true;
+        secureSocket = sslSocket;
     }
 
     /**

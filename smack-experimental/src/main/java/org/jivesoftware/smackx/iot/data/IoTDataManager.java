@@ -62,6 +62,7 @@ public final class IoTDataManager extends IoTManager {
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(XMPPConnection connection) {
+                if (!isAutoEnableActive()) return;
                 getInstanceFor(connection);
             }
         });

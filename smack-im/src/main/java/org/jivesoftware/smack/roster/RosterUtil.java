@@ -26,6 +26,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.packet.Presence;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
@@ -111,4 +112,46 @@ public class RosterUtil {
         }
     }
 
+    public static void ensureSubscribed(XMPPConnection connectionOne, XMPPConnection connectionTwo, long timeout)
+                    throws NotLoggedInException, NotConnectedException, InterruptedException, TimeoutException {
+        ensureSubscribedTo(connectionOne, connectionTwo, timeout);
+        ensureSubscribedTo(connectionTwo, connectionOne, timeout);
+    }
+
+    public static void ensureSubscribedTo(XMPPConnection connectionOne, XMPPConnection connectionTwo, long timeout)
+                    throws NotLoggedInException, NotConnectedException, InterruptedException, TimeoutException {
+        Date deadline = new Date(System.currentTimeMillis() + timeout);
+        ensureSubscribedTo(connectionOne, connectionTwo, deadline);
+    }
+
+    public static void ensureSubscribedTo(final XMPPConnection connectionOne, final XMPPConnection connectionTwo,
+                    final Date deadline)
+                    throws NotLoggedInException, NotConnectedException, InterruptedException, TimeoutException {
+        final Roster rosterOne = Roster.getInstanceFor(connectionOne);
+        final BareJid jidTwo = connectionTwo.getUser().asBareJid();
+
+        if (rosterOne.iAmSubscribedTo(jidTwo))
+            return;
+
+        final BareJid jidOne = connectionOne.getUser().asBareJid();
+        final SubscribeListener subscribeListener = new SubscribeListener() {
+            @Override
+            public SubscribeAnswer processSubscribe(Jid from, Presence subscribeRequest) {
+                if (from.equals(jidOne)) {
+                    return SubscribeAnswer.Approve;
+                }
+                return null;
+            }
+        };
+        final Roster rosterTwo = Roster.getInstanceFor(connectionTwo);
+
+        rosterTwo.addSubscribeListener(subscribeListener);
+        try {
+            rosterOne.sendSubscriptionRequest(jidTwo);
+            waitUntilOtherEntityIsSubscribed(rosterTwo, jidOne, deadline);
+        }
+        finally {
+            rosterTwo.removeSubscribeListener(subscribeListener);
+        }
+    }
 }

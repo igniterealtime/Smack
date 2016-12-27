@@ -95,9 +95,14 @@ public class SmackIntegrationTestFramework {
             LOGGER.info("Could not run " + testNotPossible.testMethod.getName() + " because: "
                             + testNotPossible.testNotPossibleException.getMessage());
         }
+        final int successfulTests = testRunResult.successfulTests.size();
+        final int availableTests = testRunResult.getNumberOfAvailableTests();
+        final int possibleTests = testRunResult.getNumberOfPossibleTests();
         LOGGER.info("SmackIntegrationTestFramework[" + testRunResult.testRunId + ']' + ": Finished ["
-                        + testRunResult.successfulTests.size() + '/' + testRunResult.numberOfTests + ']');
+                        + successfulTests + '/' + possibleTests + "] (of " + availableTests + " available tests)");
         if (!testRunResult.failedIntegrationTests.isEmpty()) {
+            final int failedTests = testRunResult.failedIntegrationTests.size();
+            LOGGER.warning("The following " + failedTests + " tests failed!");
             for (FailedTest failedTest : testRunResult.failedIntegrationTests) {
                 final Method method = failedTest.testMethod;
                 final String className = method.getDeclaringClass().getName();
@@ -106,6 +111,8 @@ public class SmackIntegrationTestFramework {
                 LOGGER.severe(className + CLASS_METHOD_SEP + methodName + " failed: " + cause);
             }
             System.exit(2);
+        } else {
+            LOGGER.info("All possible Smack Integration Tests completed successfully. \\o/");
         }
         System.exit(0);
     }
@@ -251,7 +258,9 @@ public class SmackIntegrationTestFramework {
                 continue;
             }
 
-            testRunResult.numberOfTests.addAndGet(smackIntegrationTestMethods.size());
+            final int detectedTestMethodsCount = smackIntegrationTestMethods.size();
+            testRunResult.numberOfAvailableTests.addAndGet(detectedTestMethodsCount);
+            testRunResult.numberOfPossibleTests.addAndGet(detectedTestMethodsCount);
 
             AbstractSmackIntTest test;
             switch (testType) {
@@ -274,6 +283,7 @@ public class SmackIntegrationTestFramework {
                     Throwable cause = e.getCause();
                     if (cause instanceof TestNotPossibleException) {
                         testRunResult.impossibleTestClasses.put(testClass, cause.getMessage());
+                        testRunResult.numberOfPossibleTests.addAndGet(-detectedTestMethodsCount);
                     }
                     else {
                         throwFatalException(cause);
@@ -290,7 +300,7 @@ public class SmackIntegrationTestFramework {
                 Constructor<? extends AbstractSmackLowLevelIntegrationTest> cons;
                 try {
                     cons = ((Class<? extends AbstractSmackLowLevelIntegrationTest>) testClass).getConstructor(
-                                    Configuration.class, String.class);
+                                    SmackIntegrationTestEnvironment.class);
                 }
                 catch (NoSuchMethodException | SecurityException e) {
                     LOGGER.log(Level.WARNING,
@@ -300,12 +310,13 @@ public class SmackIntegrationTestFramework {
                 }
 
                 try {
-                    test = cons.newInstance(config, testRunResult.testRunId);
+                    test = cons.newInstance(environment);
                 }
                 catch (InvocationTargetException e) {
                     Throwable cause = e.getCause();
                     if (cause instanceof TestNotPossibleException) {
                         testRunResult.impossibleTestClasses.put(testClass, cause.getMessage());
+                        testRunResult.numberOfPossibleTests.addAndGet(-detectedTestMethodsCount);
                     }
                     else {
                         throwFatalException(cause);
@@ -327,7 +338,7 @@ public class SmackIntegrationTestFramework {
                 Set<Method> beforeClassMethods = getAllMethods(testClass,
                                 withAnnotation(BeforeClass.class), withReturnType(Void.TYPE),
                                 withParametersCount(0), withModifier(Modifier.PUBLIC
-                                                | Modifier.STATIC));
+                                                ));
 
                 // See if there are any methods that have the @BeforeClassAnnotation but a wrong signature
                 Set<Method> allBeforeClassMethods =  getAllMethods(testClass, withAnnotation(BeforeClass.class));
@@ -338,11 +349,12 @@ public class SmackIntegrationTestFramework {
 
                 if (beforeClassMethods.size() == 1) {
                     Method beforeClassMethod = beforeClassMethods.iterator().next();
+                    LOGGER.info("Executing @BeforeClass method of " + testClass);
                     try {
-                        beforeClassMethod.invoke(null);
+                        beforeClassMethod.invoke(test);
                     }
                     catch (InvocationTargetException | IllegalAccessException e) {
-                        LOGGER.log(Level.SEVERE, "Exception executing @AfterClass method", e);
+                        LOGGER.log(Level.SEVERE, "Exception executing @BeforeClass method", e);
                     }
                     catch (IllegalArgumentException e) {
                         throw new AssertionError(e);
@@ -403,7 +415,7 @@ public class SmackIntegrationTestFramework {
                 Set<Method> afterClassMethods = getAllMethods(testClass,
                                 withAnnotation(AfterClass.class), withReturnType(Void.TYPE),
                                 withParametersCount(0), withModifier(Modifier.PUBLIC
-                                                | Modifier.STATIC));
+                                                ));
 
                 // See if there are any methods that have the @AfterClassAnnotation but a wrong signature
                 Set<Method> allAfterClassMethods =  getAllMethods(testClass, withAnnotation(AfterClass.class));
@@ -414,8 +426,9 @@ public class SmackIntegrationTestFramework {
 
                 if (afterClassMethods.size() == 1) {
                     Method afterClassMethod = afterClassMethods.iterator().next();
+                    LOGGER.info("Executing @AfterClass method of " + testClass);
                     try {
-                        afterClassMethod.invoke(null);
+                        afterClassMethod.invoke(test);
                     }
                     catch (InvocationTargetException | IllegalAccessException e) {
                         LOGGER.log(Level.SEVERE, "Exception executing @AfterClass method", e);
@@ -436,13 +449,13 @@ public class SmackIntegrationTestFramework {
         final int numberOfConnections = testMethod.getParameterTypes().length;
         XMPPTCPConnection[] connections = null;
         try {
-            if (numberOfConnections > 0 && !config.registerAccounts) {
+            if (numberOfConnections > 0 && !config.isAccountRegistrationPossible()) {
                 throw new TestNotPossibleException(
                                 "Must create accounts for this test, but it's not enabled");
             }
             connections = new XMPPTCPConnection[numberOfConnections];
             for (int i = 0; i < numberOfConnections; ++i) {
-                connections[i] = getConnectedConnection(config);
+                connections[i] = getConnectedConnection(environment, i);
             }
         }
         catch (Exception e) {
@@ -457,13 +470,13 @@ public class SmackIntegrationTestFramework {
         }
         finally {
             for (int i = 0; i < numberOfConnections; ++i) {
-                IntTestUtil.disconnectAndMaybeDelete(connections[i], true);
+                IntTestUtil.disconnectAndMaybeDelete(connections[i], config);
             }
         }
     }
 
     protected void disconnectAndMaybeDelete(XMPPTCPConnection connection) throws InterruptedException {
-        IntTestUtil.disconnectAndMaybeDelete(connection, config.registerAccounts);
+        IntTestUtil.disconnectAndMaybeDelete(connection, config);
     }
 
     protected SmackIntegrationTestEnvironment prepareEnvironment() throws SmackException,
@@ -546,24 +559,27 @@ public class SmackIntegrationTestFramework {
         }
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
         connection.connect();
-        if (config.registerAccounts) {
-            IntTestUtil.registerAccount(connection, accountUsername, accountPassword);
+        if (config.isAccountRegistrationPossible()) {
+            UsernameAndPassword uap = IntTestUtil.registerAccount(connection, accountUsername, accountPassword, config);
 
             // TODO is this still required?
             // Some servers, e.g. Openfire, do not support a login right after the account was
             // created, so disconnect and re-connection the connection first.
             connection.disconnect();
             connection.connect();
-        }
 
-        connection.login();
+            connection.login(uap.username, uap.password);
+        } else {
+            connection.login();
+        }
 
         return connection;
     }
 
-    static XMPPTCPConnection getConnectedConnection(Configuration config)
+    static XMPPTCPConnection getConnectedConnection(SmackIntegrationTestEnvironment environment, int connectionId)
                     throws KeyManagementException, NoSuchAlgorithmException, InterruptedException,
                     SmackException, IOException, XMPPException {
+        Configuration config = environment.configuration;
         XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
         if (config.serviceTlsPin != null) {
             SSLContext sc = Java7Pinning.forPin(config.serviceTlsPin);
@@ -573,7 +589,7 @@ public class SmackIntegrationTestFramework {
         builder.setXmppDomain(config.service);
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
         connection.connect();
-        UsernameAndPassword uap = IntTestUtil.registerAccount(connection);
+        UsernameAndPassword uap = IntTestUtil.registerAccount(connection, environment, connectionId);
         connection.login(uap.username, uap.password);
         return connection;
     }
@@ -617,7 +633,8 @@ public class SmackIntegrationTestFramework {
         private final List<FailedTest> failedIntegrationTests = Collections.synchronizedList(new LinkedList<FailedTest>());
         private final List<TestNotPossible> impossibleTestMethods = Collections.synchronizedList(new LinkedList<TestNotPossible>());
         private final Map<Class<? extends AbstractSmackIntTest>, String> impossibleTestClasses = new HashMap<>();
-        private final AtomicInteger numberOfTests = new AtomicInteger();
+        private final AtomicInteger numberOfAvailableTests = new AtomicInteger();
+        private final AtomicInteger numberOfPossibleTests = new AtomicInteger();
 
         private TestRunResult() {
         }
@@ -626,8 +643,12 @@ public class SmackIntegrationTestFramework {
             return testRunId;
         }
 
-        public int getNumberOfTests() {
-            return numberOfTests.get();
+        public int getNumberOfAvailableTests() {
+            return numberOfAvailableTests.get();
+        }
+
+        public int getNumberOfPossibleTests() {
+            return numberOfPossibleTests.get();
         }
 
         public List<SuccessfulTest> getSuccessfulTests() {

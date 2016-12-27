@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2016 Florian Schmaus
+ * Copyright 2016 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.sasl;
+package org.jivesoftware.smack.sasl.core;
 
-import org.jivesoftware.smack.DummyConnection;
+import java.security.InvalidKeyException;
 
-public class AbstractSaslTest {
+public interface ScramHmac {
 
-    protected final DummyConnection xmppConnection = new DummyConnection();
-    protected final SASLMechanism saslMechanism;
+    String getHmacName();
 
-    protected AbstractSaslTest(SASLMechanism saslMechanism) {
-        this.saslMechanism = saslMechanism.instanceForAuthentication(xmppConnection, xmppConnection.getConfiguration());
-    }
+    /**
+     * RFC 5802 § 2.2 HMAC(key, str).
+     * 
+     * @param key
+     * @param str
+     * @return the HMAC-SHA1 value of the input.
+     * @throws InvalidKeyException
+     */
+    byte[] hmac(byte[] key, byte[] str) throws InvalidKeyException;
 
 }
