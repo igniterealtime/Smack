@@ -196,8 +196,17 @@ public class DNSUtil {
             addresses.addAll(sortedRecords);
         }
 
+        int defaultPort = -1;
+        switch (domainType) {
+        case Client:
+            defaultPort = 5222;
+            break;
+        case Server:
+            defaultPort = 5269;
+            break;
+        }
         // Step two: Add the hostname to the end of the list
-        HostAddress hostAddress = dnsResolver.lookupHostAddress(domain, failedAddresses, dnssecMode);
+        HostAddress hostAddress = dnsResolver.lookupHostAddress(domain, defaultPort, failedAddresses, dnssecMode);
         if (hostAddress != null) {
             addresses.add(hostAddress);
         }

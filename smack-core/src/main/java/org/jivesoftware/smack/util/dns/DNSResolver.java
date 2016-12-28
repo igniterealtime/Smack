@@ -47,13 +47,13 @@ public abstract class DNSResolver {
 
     protected abstract List<SRVRecord> lookupSRVRecords0(String name, List<HostAddress> failedAddresses, DnssecMode dnssecMode);
 
-    public final HostAddress lookupHostAddress(String name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    public final HostAddress lookupHostAddress(String name, int port, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         checkIfDnssecRequestedAndSupported(dnssecMode);
         List<InetAddress> inetAddresses = lookupHostAddress0(name, failedAddresses, dnssecMode);
         if (inetAddresses == null) {
             return null;
         }
-        return new HostAddress(name, inetAddresses);
+        return new HostAddress(name, port, inetAddresses);
     }
 
     protected List<InetAddress> lookupHostAddress0(String name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {

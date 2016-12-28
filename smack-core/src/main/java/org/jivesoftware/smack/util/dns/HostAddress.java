@@ -37,17 +37,6 @@ public class HostAddress {
      * Creates a new HostAddress with the given FQDN. The port will be set to the default XMPP client port: 5222
      * 
      * @param fqdn Fully qualified domain name.
-     * @throws IllegalArgumentException If the fqdn is null.
-     */
-    public HostAddress(String fqdn, List<InetAddress> inetAddresses) {
-        // Set port to the default port for XMPP client communication
-        this(fqdn, 5222, inetAddresses);
-    }
-
-    /**
-     * Creates a new HostAddress with the given FQDN. The port will be set to the default XMPP client port: 5222
-     * 
-     * @param fqdn Fully qualified domain name.
      * @param port The port to connect on.
      * @throws IllegalArgumentException If the fqdn is null or port is out of valid range (0 - 65535).
      */
@@ -67,6 +56,10 @@ public class HostAddress {
             throw new IllegalArgumentException("Must provide at least one InetAddress");
         }
         this.inetAddresses = inetAddresses;
+    }
+
+    public HostAddress(int port, InetAddress hostAddress) {
+        this("", port, Collections.singletonList(hostAddress));
     }
 
     /**
