@@ -128,9 +128,9 @@ public final class Roster extends Manager {
 
     /**
      * The default subscription processing mode to use when a Roster is created. By default
-     * all subscription requests are automatically accepted.
+     * all subscription requests are automatically rejected.
      */
-    private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.accept_all;
+    private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.reject_all;
 
     /**
      * The initial maximum size of the map holding presence information of entities without an Roster entry. Currently
