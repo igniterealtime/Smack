@@ -333,6 +333,23 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     }
 
     /**
+     * Sets the body of the message.
+     *
+     * @param body the body of the message.
+     * @see #setBody(String)
+     * @since 4.2
+     */
+    public void setBody(CharSequence body) {
+        String bodyString;
+        if (body != null) {
+            bodyString = body.toString();
+        } else {
+            bodyString = null;
+        }
+        setBody(bodyString);
+    }
+
+    /**
      * Sets the body of the message. The body is the main message contents.
      *
      * @param body the body of the message.
