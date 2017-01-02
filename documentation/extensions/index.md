@@ -68,6 +68,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Delayed Delivery                            | [XEP-0203](http://xmpp.org/extensions/xep-0203.html) | Extension for communicating the fact that an XML stanza has been delivered with a delay. |
 | XMPP Over BOSH                              | [XEP-0206](http://xmpp.org/extensions/xep-0206.html) | Use Bidirectional-streams Over Synchronous HTTP (BOSH) to transport XMPP stanzas. |
 | Attention                                   | [XEP-0224](http://xmpp.org/extensions/xep-0224.html) | Getting attention of another user. |
+| Bits of Binary                              | [XEP-0231](http://xmpp.org/extensions/xep-0231.html) | Including or referring to small bits of binary data in an XML stanza. |
 | Last Message Correction                     | [XEP-0308](http://xmpp.org/extensions/xep-0308.html) | Provides a method for indicating that a message is a correction of the last sent message. |
 | [Group Chat Invitations](invitation.md)   | n/a                                                      | Send invitations to other users to join a group chat room. |
 | [Jive Properties](properties.md)          | n/a                                                      | TODO |
