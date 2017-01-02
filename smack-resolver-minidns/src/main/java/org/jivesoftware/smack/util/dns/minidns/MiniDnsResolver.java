@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2016 Florian Schmaus
+ * Copyright 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,18 +30,15 @@ import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SRVRecord;
 
-import de.measite.minidns.DNSCache;
 import de.measite.minidns.DNSMessage.RESPONSE_CODE;
 import de.measite.minidns.Question;
-import de.measite.minidns.cache.LRUCache;
-import de.measite.minidns.dnssec.DNSSECClient;
+import de.measite.minidns.hla.DnssecResolverApi;
 import de.measite.minidns.hla.ResolutionUnsuccessfulException;
 import de.measite.minidns.hla.ResolverApi;
 import de.measite.minidns.hla.ResolverResult;
 import de.measite.minidns.record.A;
 import de.measite.minidns.record.AAAA;
 import de.measite.minidns.record.SRV;
-import de.measite.minidns.recursive.ReliableDNSClient;
 
 
 /**
@@ -52,11 +49,9 @@ public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
 
     private static final MiniDnsResolver INSTANCE = new MiniDnsResolver();
 
-    private static final DNSCache CACHE = new LRUCache(128);
+    private static final ResolverApi DNSSEC_RESOLVER = DnssecResolverApi.INSTANCE;
 
-    private static final ResolverApi DNSSEC_RESOLVER = new ResolverApi(new DNSSECClient(CACHE));
-
-    private static final ResolverApi NON_DNSSEC_RESOLVER = new ResolverApi(new ReliableDNSClient(CACHE));
+    private static final ResolverApi NON_DNSSEC_RESOLVER = ResolverApi.INSTANCE;
 
     public static DNSResolver getInstance() {
         return INSTANCE;
