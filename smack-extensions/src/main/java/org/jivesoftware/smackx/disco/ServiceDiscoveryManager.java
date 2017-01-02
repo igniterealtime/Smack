@@ -730,7 +730,7 @@ public final class ServiceDiscoveryManager extends Manager {
         List<DiscoverInfo> serviceDiscoInfo = null;
         DomainBareJid serviceName = connection().getXMPPServiceDomain();
         if (useCache) {
-            serviceDiscoInfo = services.get(feature);
+            serviceDiscoInfo = services.lookup(feature);
             if (serviceDiscoInfo != null) {
                 return serviceDiscoInfo;
             }

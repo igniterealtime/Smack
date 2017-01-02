@@ -193,7 +193,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
         String u1ver = EntityCapsManager.getNodeVersionByJid(conTwo.getUser());
         assertNotNull(u1ver);
 
-        DiscoverInfo entityInfo = EntityCapsManager.CAPS_CACHE.get(u1ver);
+        DiscoverInfo entityInfo = EntityCapsManager.CAPS_CACHE.lookup(u1ver);
         assertNotNull(entityInfo);
 
         assertEquals(info.toXML(), entityInfo.toXML());

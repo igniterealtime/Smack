@@ -160,7 +160,7 @@ public final class EntityCapsManager extends Manager {
      * @return the node version (node#ver) or null
      */
     public static String getNodeVersionByJid(Jid jid) {
-        NodeVerHash nvh = JID_TO_NODEVER_CACHE.get(jid);
+        NodeVerHash nvh = JID_TO_NODEVER_CACHE.lookup(jid);
         if (nvh != null) {
             return nvh.nodeVer;
         } else {
@@ -169,7 +169,7 @@ public final class EntityCapsManager extends Manager {
     }
 
     public static NodeVerHash getNodeVerHashByJid(Jid jid) {
-        return JID_TO_NODEVER_CACHE.get(jid);
+        return JID_TO_NODEVER_CACHE.lookup(jid);
     }
 
     /**
@@ -182,7 +182,7 @@ public final class EntityCapsManager extends Manager {
      * @return the discovered info
      */
     public static DiscoverInfo getDiscoverInfoByUser(Jid user) {
-        NodeVerHash nvh = JID_TO_NODEVER_CACHE.get(user);
+        NodeVerHash nvh = JID_TO_NODEVER_CACHE.lookup(user);
         if (nvh == null)
             return null;
 
@@ -198,7 +198,7 @@ public final class EntityCapsManager extends Manager {
      * @return The corresponding DiscoverInfo or null if none is known.
      */
     public static DiscoverInfo getDiscoveryInfoByNodeVer(String nodeVer) {
-        DiscoverInfo info = CAPS_CACHE.get(nodeVer);
+        DiscoverInfo info = CAPS_CACHE.lookup(nodeVer);
 
         // If it was not in CAPS_CACHE, try to retrieve the information from persistentCache
         if (info == null && persistentCache != null) {

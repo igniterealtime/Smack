@@ -204,7 +204,7 @@ public final class IoTProvisioningManager extends Manager {
 
                                 // Handle <clearCache/> request.
                                 Jid from = iqRequest.getFrom();
-                                LruCache<BareJid, Void> cache = negativeFriendshipRequestCache.get(from);
+                                LruCache<BareJid, Void> cache = negativeFriendshipRequestCache.lookup(from);
                                 if (cache != null) {
                                     cache.clear();
                                 }
@@ -329,7 +329,7 @@ public final class IoTProvisioningManager extends Manager {
      * @throws InterruptedException
      */
     public boolean isFriend(Jid provisioningServer, BareJid friendInQuestion) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        LruCache<BareJid, Void> cache = negativeFriendshipRequestCache.get(provisioningServer);
+        LruCache<BareJid, Void> cache = negativeFriendshipRequestCache.lookup(provisioningServer);
         if (cache != null && cache.containsKey(friendInQuestion)) {
             // We hit a cached negative isFriend response for this provisioning server.
             return false;
