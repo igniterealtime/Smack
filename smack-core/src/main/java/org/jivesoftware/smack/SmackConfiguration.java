@@ -297,6 +297,18 @@ public final class SmackConfiguration {
         disabledSmackClasses.add(className);
     }
 
+    /**
+     * Add the given class names to the list of disabled Smack classes.
+     *
+     * @param classNames the Smack classes to disable.
+     * @see #addDisabledSmackClass(String)
+     */
+    public static void addDisabledSmackClasses(String... classNames) {
+        for (String className : classNames) {
+            addDisabledSmackClass(className);
+        }
+    }
+
     public static boolean isDisabledSmackClass(String className) {
         for (String disabledClassOrPackage : disabledSmackClasses) {
             if (disabledClassOrPackage.equals(className)) {
