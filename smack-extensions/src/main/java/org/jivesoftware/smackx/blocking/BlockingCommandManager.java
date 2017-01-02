@@ -163,13 +163,11 @@ public final class BlockingCommandManager extends Manager {
     public List<Jid> getBlockList()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
 
-        if (blockListCached != null) {
-            return Collections.unmodifiableList(blockListCached);
+        if (blockListCached == null) {
+            BlockListIQ blockListIQ = new BlockListIQ();
+            BlockListIQ blockListIQResult = connection().createPacketCollectorAndSend(blockListIQ).nextResultOrThrow();
+            blockListCached = blockListIQResult.getBlockedJidsCopy();
         }
-
-        BlockListIQ blockListIQ = new BlockListIQ();
-        BlockListIQ blockListIQResult = connection().createPacketCollectorAndSend(blockListIQ).nextResultOrThrow();
-        blockListCached = blockListIQResult.getBlockedJidsCopy();
 
         return Collections.unmodifiableList(blockListCached);
     }
