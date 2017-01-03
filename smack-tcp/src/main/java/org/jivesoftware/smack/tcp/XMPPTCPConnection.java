@@ -484,14 +484,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
         LOGGER.finer("PacketWriter has been shut down");
 
-        try {
-            // After we send the closing stream element, check if there was already a
-            // closing stream element sent by the server or wait with a timeout for a
-            // closing stream element to be received from the server.
-            @SuppressWarnings("unused")
-            Exception res = closingStreamReceived.checkIfSuccessOrWait();
-        } catch (InterruptedException | NoResponseException e) {
-            LOGGER.log(Level.INFO, "Exception while waiting for closing stream element from the server " + this, e);
+        if (!instant) {
+            try {
+                // After we send the closing stream element, check if there was already a
+                // closing stream element sent by the server or wait with a timeout for a
+                // closing stream element to be received from the server.
+                @SuppressWarnings("unused")
+                Exception res = closingStreamReceived.checkIfSuccessOrWait();
+            } catch (InterruptedException | NoResponseException e) {
+                LOGGER.log(Level.INFO, "Exception while waiting for closing stream element from the server " + this, e);
+            }
         }
 
         if (packetReader != null) {
