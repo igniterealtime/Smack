@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -147,7 +147,7 @@ public class AgentSession {
                         new StanzaTypeFilter(Message.class));
 
         packetListener = new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 try {
                     handlePacket(packet);
                 }
@@ -335,7 +335,7 @@ public class AgentSession {
             presence.addExtension(new StandardExtensionElement(AgentStatus.ELEMENT_NAME,
                     AgentStatus.NAMESPACE));
 
-            PacketCollector collector = this.connection.createPacketCollectorAndSend(new AndFilter(
+            StanzaCollector collector = this.connection.createStanzaCollectorAndSend(new AndFilter(
                             new StanzaTypeFilter(Presence.class), FromMatchesFilter.create(workgroupJID)), presence);
 
             presence = (Presence)collector.nextResultOrThrow();
@@ -437,7 +437,7 @@ public class AgentSession {
         presence.addExtension(builder.build());
         presence.addExtension(new MetaData(this.metaData));
 
-        PacketCollector collector = this.connection.createPacketCollectorAndSend(new AndFilter(
+        StanzaCollector collector = this.connection.createStanzaCollectorAndSend(new AndFilter(
                         new StanzaTypeFilter(Presence.class),
                         FromMatchesFilter.create(workgroupJID)), presence);
 
@@ -482,7 +482,7 @@ public class AgentSession {
         }
         presence.addExtension(new MetaData(this.metaData));
 
-        PacketCollector collector = this.connection.createPacketCollectorAndSend(new AndFilter(new StanzaTypeFilter(Presence.class),
+        StanzaCollector collector = this.connection.createStanzaCollectorAndSend(new AndFilter(new StanzaTypeFilter(Presence.class),
                 FromMatchesFilter.create(workgroupJID)), presence);
 
         collector.nextResultOrThrow();
@@ -581,7 +581,7 @@ public class AgentSession {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        OccupantsInfo response = (OccupantsInfo) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+        OccupantsInfo response = (OccupantsInfo) connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
         return response;
     }
 
@@ -837,7 +837,7 @@ public class AgentSession {
         notes.setTo(workgroupJID);
         notes.setSessionID(sessionID);
         notes.setNotes(note);
-        connection.createPacketCollectorAndSend(notes).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(notes).nextResultOrThrow();
     }
 
     /**
@@ -856,7 +856,7 @@ public class AgentSession {
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 
-        ChatNotes response = (ChatNotes) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+        ChatNotes response = (ChatNotes) connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
         return response;
     }
 
@@ -882,7 +882,7 @@ public class AgentSession {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        AgentChatHistory response = connection.createPacketCollectorAndSend(
+        AgentChatHistory response = connection.createStanzaCollectorAndSend(
                         request).nextResult();
 
         return response;
@@ -902,7 +902,7 @@ public class AgentSession {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        SearchSettings response = (SearchSettings) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+        SearchSettings response = (SearchSettings) connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
         return response;
     }
 
@@ -922,7 +922,7 @@ public class AgentSession {
         request.setTo(workgroupJID);
         request.setPersonal(!global);
 
-        Macros response = (Macros) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+        Macros response = (Macros) connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
         return response.getRootGroup();
     }
 
@@ -942,7 +942,7 @@ public class AgentSession {
         request.setPersonal(true);
         request.setPersonalMacroGroup(group);
 
-        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
     }
 
     /**
@@ -960,7 +960,7 @@ public class AgentSession {
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 
-        ChatMetadata response = connection.createPacketCollectorAndSend(request).nextResult();
+        ChatMetadata response = connection.createStanzaCollectorAndSend(request).nextResult();
 
         return response.getMetadata();
     }
@@ -1002,7 +1002,7 @@ public class AgentSession {
         iq.setTo(workgroupJID);
         iq.setFrom(connection.getUser());
 
-        connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
     }
 
     /**
@@ -1040,7 +1040,7 @@ public class AgentSession {
         iq.setTo(workgroupJID);
         iq.setFrom(connection.getUser());
 
-        connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
     }
 
     /**
@@ -1059,7 +1059,7 @@ public class AgentSession {
         setting.setType(IQ.Type.get);
         setting.setTo(workgroupJID);
 
-        GenericSettings response = (GenericSettings) connection.createPacketCollectorAndSend(
+        GenericSettings response = (GenericSettings) connection.createStanzaCollectorAndSend(
                         setting).nextResultOrThrow();
         return response;
     }
@@ -1069,7 +1069,7 @@ public class AgentSession {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        MonitorPacket response = (MonitorPacket) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+        MonitorPacket response = (MonitorPacket) connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
         return response.isMonitor();
     }
 
@@ -1079,6 +1079,6 @@ public class AgentSession {
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 
-        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
     }
 }

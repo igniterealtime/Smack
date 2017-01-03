@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2016-2017 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,20 +27,20 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Stanza;
 
 /**
- * Provides a mechanism to collect packets into a result queue that pass a
- * specified filter. The collector lets you perform blocking and polling
- * operations on the result queue. So, a PacketCollector is more suitable to
+ * Provides a mechanism to collect Stanzas into a result queue that pass a
+ * specified filter/matcher. The collector lets you perform blocking and polling
+ * operations on the result queue. So, a StanzaCollector is more suitable to
  * use than a {@link StanzaListener} when you need to wait for a specific
  * result.<p>
  *
  * Each stanza(/packet) collector will queue up a configured number of packets for processing before
  * older packets are automatically dropped.  The default number is retrieved by 
- * {@link SmackConfiguration#getPacketCollectorSize()}.
+ * {@link SmackConfiguration#getStanzaCollectorSize()}.
  *
- * @see XMPPConnection#createPacketCollector(StanzaFilter)
+ * @see XMPPConnection#createStanzaCollector(StanzaFilter)
  * @author Matt Tucker
  */
-public class PacketCollector {
+public class StanzaCollector {
 
     private final StanzaFilter packetFilter;
 
@@ -49,7 +49,7 @@ public class PacketCollector {
     /**
      * The stanza(/packet) collector which timeout for the next result will get reset once this collector collects a stanza.
      */
-    private final PacketCollector collectorToReset;
+    private final StanzaCollector collectorToReset;
 
     private final XMPPConnection connection;
 
@@ -62,7 +62,7 @@ public class PacketCollector {
      * @param connection the connection the collector is tied to.
      * @param configuration the configuration used to construct this collector
      */
-    protected PacketCollector(XMPPConnection connection, Configuration configuration) {
+    protected StanzaCollector(XMPPConnection connection, Configuration configuration) {
         this.connection = connection;
         this.packetFilter = configuration.packetFilter;
         this.resultQueue = new ArrayBlockingQueue<>(configuration.size);
@@ -78,7 +78,7 @@ public class PacketCollector {
         // If the packet collector has already been cancelled, do nothing.
         if (!cancelled) {
             cancelled = true;
-            connection.removePacketCollector(this);
+            connection.removeStanzaCollector(this);
         }
     }
 
@@ -274,7 +274,7 @@ public class PacketCollector {
      *
      * @param packet the stanza(/packet) to process.
      */
-    protected void processPacket(Stanza packet) {
+    protected void processStanza(Stanza packet) {
         if (packetFilter == null || packetFilter.accept(packet)) {
             // CHECKSTYLE:OFF
         	while (!resultQueue.offer(packet)) {
@@ -305,8 +305,8 @@ public class PacketCollector {
 
     public static final class Configuration {
         private StanzaFilter packetFilter;
-        private int size = SmackConfiguration.getPacketCollectorSize();
-        private PacketCollector collectorToReset;
+        private int size = SmackConfiguration.getStanzaCollectorSize();
+        private StanzaCollector collectorToReset;
 
         private Configuration() {
         }
@@ -355,7 +355,7 @@ public class PacketCollector {
          * @param collector
          * @return a reference to this configuration.
          */
-        public Configuration setCollectorToReset(PacketCollector collector) {
+        public Configuration setCollectorToReset(StanzaCollector collector) {
             this.collectorToReset = collector;
             return this;
         }

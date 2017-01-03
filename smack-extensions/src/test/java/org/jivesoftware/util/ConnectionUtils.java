@@ -23,7 +23,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -49,11 +49,11 @@ public class ConnectionUtils {
      * form the protocol instance.
      * <p>
      * This mocked connection can used to collect packets that require a reply using a
-     * PacketCollector.
+     * StanzaCollector.
      * 
      * <pre>
      * <code>
-     *   PacketCollector collector = connection.createPacketCollector(new PacketFilter());
+     *   StanzaCollector collector = connection.createStanzaCollector(new PacketFilter());
      *   connection.sendStanza(packet);
      *   Stanza(/Packet) reply = collector.nextResult();
      * </code>
@@ -76,19 +76,19 @@ public class ConnectionUtils {
         when(connection.getXMPPServiceDomain()).thenReturn(xmppServer);
 
         // mock packet collector
-        final PacketCollector collector = mock(PacketCollector.class);
-        when(connection.createPacketCollector(isA(StanzaFilter.class))).thenReturn(
+        final StanzaCollector collector = mock(StanzaCollector.class);
+        when(connection.createStanzaCollector(isA(StanzaFilter.class))).thenReturn(
                         collector);
-        Answer<PacketCollector> collectorAndSend = new Answer<PacketCollector>() {
+        Answer<StanzaCollector> collectorAndSend = new Answer<StanzaCollector>() {
             @Override
-            public PacketCollector answer(InvocationOnMock invocation) throws Throwable {
+            public StanzaCollector answer(InvocationOnMock invocation) throws Throwable {
                 Stanza packet = (Stanza) invocation.getArguments()[0];
                 protocol.getRequests().add(packet);
                 return collector;
             }
 
         };
-        when(connection.createPacketCollectorAndSend(isA(IQ.class))).thenAnswer(collectorAndSend);
+        when(connection.createStanzaCollectorAndSend(isA(IQ.class))).thenAnswer(collectorAndSend);
 
         // mock send method
         Answer<Object> addIncoming = new Answer<Object>() {

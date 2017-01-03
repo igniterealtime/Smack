@@ -317,7 +317,7 @@ public final class EntityCapsManager extends Manager {
             // Listen for remote presence stanzas with the caps extension
             // If we receive such a stanza, record the JID and nodeVer
             @Override
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 if (!entityCapsEnabled())
                     return;
 
@@ -337,7 +337,7 @@ public final class EntityCapsManager extends Manager {
 
         connection.addPacketSendingListener(new StanzaListener() {
             @Override
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 presenceSend = (Presence) packet;
             }
         }, PresenceTypeFilter.OUTGOING_PRESENCE_BROADCAST);
@@ -346,7 +346,7 @@ public final class EntityCapsManager extends Manager {
         // XEP-0115 specifies that a client SHOULD include entity capabilities
         // with every presence notification it sends.
         StanzaListener packetInterceptor = new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 if (!entityCapsEnabled) {
                     // Be sure to not send stanzas with the caps extension if it's not enabled
                     packet.removeExtension(CapsExtension.ELEMENT, CapsExtension.NAMESPACE);

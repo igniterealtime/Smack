@@ -68,7 +68,7 @@ public abstract class AbstractDebugger implements SmackDebugger {
         // the GUI. This is what we call "interpreted" packet data, since it's the packet
         // data as Smack sees it and not as it's coming in as raw XML.
         listener = new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 if (printInterpreted) {
                     log("RCV PKT (" + connection.getConnectionCounter() + "): " + packet.toXML());
                 }

@@ -67,7 +67,7 @@ public class ChatTest extends AbstractSmackIntegrationTest {
     @SmackIntegrationTest
     public void testProperties() throws XmppStringprepException, NotConnectedException, Exception {
         Chat newChat = chatManagerOne.createChat(conTwo.getUser());
-        PacketCollector collector = conTwo.createPacketCollector(new ThreadFilter(newChat.getThreadID()));
+        StanzaCollector collector = conTwo.createStanzaCollector(new ThreadFilter(newChat.getThreadID()));
 
         Message msg = new Message();
 

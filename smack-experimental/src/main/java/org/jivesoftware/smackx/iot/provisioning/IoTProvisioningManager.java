@@ -122,7 +122,7 @@ public final class IoTProvisioningManager extends Manager {
         // Stanza listener for XEP-0324 § 3.2.3.
         connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
-            public void processPacket(Stanza stanza) throws NotConnectedException, InterruptedException {
+            public void processStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
                 if (!isFromProvisioningService(stanza, true)) {
                     return;
                 }
@@ -148,7 +148,7 @@ public final class IoTProvisioningManager extends Manager {
         // (yet) part of the XEP.
         connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
-            public void processPacket(final Stanza stanza) throws NotConnectedException, InterruptedException {
+            public void processStanza(final Stanza stanza) throws NotConnectedException, InterruptedException {
                 final Message friendMessage = (Message) stanza;
                 final Friend friend = Friend.from(friendMessage);
                 final BareJid friendJid = friend.getFriend();
@@ -337,7 +337,7 @@ public final class IoTProvisioningManager extends Manager {
 
         IoTIsFriend iotIsFriend = new IoTIsFriend(friendInQuestion);
         iotIsFriend.setTo(provisioningServer);
-        IoTIsFriendResponse response = connection().createPacketCollectorAndSend(iotIsFriend).nextResultOrThrow();
+        IoTIsFriendResponse response = connection().createStanzaCollectorAndSend(iotIsFriend).nextResultOrThrow();
         assert (response.getJid().equals(friendInQuestion));
         boolean isFriend = response.getIsFriendResult();
         if (!isFriend) {

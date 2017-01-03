@@ -244,7 +244,7 @@ public final class Roster extends Manager {
 
         connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
-            public void processPacket(Stanza stanza) throws NotConnectedException,
+            public void processStanza(Stanza stanza) throws NotConnectedException,
                             InterruptedException {
                 Presence presence = (Presence) stanza;
                 Jid from = presence.getFrom();
@@ -318,7 +318,7 @@ public final class Roster extends Manager {
 
         connection.addPacketSendingListener(new StanzaListener() {
             @Override
-            public void processPacket(Stanza stanzav) throws NotConnectedException, InterruptedException {
+            public void processStanza(Stanza stanzav) throws NotConnectedException, InterruptedException {
                 // Once we send an unavailable presence, the server is allowed to suppress sending presence status
                 // information to us as optimization (RFC 6121 § 4.4.2). Thus XMPP clients which are unavailable, should
                 // consider the presence information of their contacts as not up-to-date. We make the user obvious of
@@ -614,7 +614,7 @@ public final class Roster extends Manager {
             }
         }
         rosterPacket.addRosterItem(item);
-        connection.createPacketCollectorAndSend(rosterPacket).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(rosterPacket).nextResultOrThrow();
 
         sendSubscriptionRequest(user);
     }
@@ -744,7 +744,7 @@ public final class Roster extends Manager {
         // Set the item type as REMOVE so that the server will delete the entry
         item.setItemType(RosterPacket.ItemType.remove);
         packet.addRosterItem(item);
-        connection.createPacketCollectorAndSend(packet).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(packet).nextResultOrThrow();
     }
 
     /**
@@ -1189,11 +1189,11 @@ public final class Roster extends Manager {
                     }
                     packetUnavailable.setFrom(JidCreate.fullFrom(bareUserJid, resource));
                     try {
-                        presencePacketListener.processPacket(packetUnavailable);
+                        presencePacketListener.processStanza(packetUnavailable);
                     }
                     catch (NotConnectedException e) {
                         throw new IllegalStateException(
-                                        "presencePakcetListener should never throw a NotConnectedException when processPacket is called with a presence of type unavailable",
+                                        "presencePakcetListener should never throw a NotConnectedException when processStanza is called with a presence of type unavailable",
                                         e);
                     }
                     catch (InterruptedException e) {
@@ -1422,7 +1422,7 @@ public final class Roster extends Manager {
     private class PresencePacketListener implements StanzaListener {
 
         @Override
-        public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
+        public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
             // Try to ensure that the roster is loaded when processing presence stanzas. While the
             // presence listener is synchronous, the roster result listener is not, which means that
             // the presence listener may be invoked with a not yet loaded roster.
@@ -1562,7 +1562,7 @@ public final class Roster extends Manager {
     private class RosterResultListener implements StanzaListener {
 
         @Override
-        public void processPacket(Stanza packet) {
+        public void processStanza(Stanza packet) {
             final XMPPConnection connection = connection();
             LOGGER.fine("RosterResultListener received stanza");
             Collection<Jid> addedEntries = new ArrayList<>();

@@ -180,7 +180,7 @@ public class DummyConnection extends AbstractXMPPConnection {
      * @param packet the stanza(/packet) to process.
      */
     public void processStanza(Stanza packet) {
-        invokePacketCollectorsAndNotifyRecvListeners(packet);
+        invokeStanzaCollectorsAndNotifyRecvListeners(packet);
     }
 
     /**

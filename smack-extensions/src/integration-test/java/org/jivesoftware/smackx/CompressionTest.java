@@ -59,7 +59,7 @@ public class CompressionTest extends SmackTestCase {
         version.setTo(getXMPPServiceDomain());
 
         // Create a packet collector to listen for a response.
-        PacketCollector collector = connection.createPacketCollector(new PacketIDFilter(version.getStanzaId()));
+        StanzaCollector collector = connection.createStanzaCollector(new PacketIDFilter(version.getStanzaId()));
 
         connection.sendStanza(version);
 

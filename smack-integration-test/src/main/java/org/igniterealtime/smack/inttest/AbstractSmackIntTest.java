@@ -20,7 +20,7 @@ import java.util.Random;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -44,9 +44,9 @@ public abstract class AbstractSmackIntTest {
 
     protected void performActionAndWaitUntilStanzaReceived(Runnable action, XMPPConnection connection, StanzaFilter filter)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PacketCollector.Configuration configuration = PacketCollector.newConfiguration().setStanzaFilter(
+        StanzaCollector.Configuration configuration = StanzaCollector.newConfiguration().setStanzaFilter(
                         filter).setSize(1);
-        PacketCollector collector = connection.createPacketCollector(configuration);
+        StanzaCollector collector = connection.createStanzaCollector(configuration);
 
         try {
             action.run();

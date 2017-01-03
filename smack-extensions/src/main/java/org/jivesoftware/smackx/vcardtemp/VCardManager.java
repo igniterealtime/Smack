@@ -102,7 +102,7 @@ public final class VCardManager extends Manager {
         // Also make sure to generate a new stanza id (the given vcard could be a vcard result), in which case we don't
         // want to use the same stanza id again (although it wouldn't break if we did)
         vcard.setStanzaId(StanzaIdUtil.newStanzaId());
-        connection().createPacketCollectorAndSend(vcard).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(vcard).nextResultOrThrow();
     }
 
     /**
@@ -128,7 +128,7 @@ public final class VCardManager extends Manager {
     public VCard loadVCard(EntityBareJid bareJid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         VCard vcardRequest = new VCard();
         vcardRequest.setTo(bareJid);
-        VCard result = connection().createPacketCollectorAndSend(vcardRequest).nextResultOrThrow();
+        VCard result = connection().createStanzaCollectorAndSend(vcardRequest).nextResultOrThrow();
         return result;
     }
 

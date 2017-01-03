@@ -134,7 +134,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
         conOne.addPacketSendingListener(new StanzaListener() {
 
             @Override
-            public void processPacket(Stanza stanza) {
+            public void processStanza(Stanza stanza) {
                 discoInfoSend = true;
             }
 

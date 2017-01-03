@@ -274,7 +274,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
         dataMessage.addExtension(dpe);
 
         // add data packets
-        listener.processPacket(dataMessage);
+        listener.processStanza(dataMessage);
 
         // read until exception is thrown
         try {
@@ -313,7 +313,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
             Message dataMessage = new Message();
             dataMessage.addExtension(dpe);
-            listener.processPacket(dataMessage);
+            listener.processStanza(dataMessage);
         }
 
         byte[] bytes = new byte[3 * blockSize];
@@ -358,7 +358,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
             Message dataMessage = new Message();
             dataMessage.addExtension(dpe);
-            listener.processPacket(dataMessage);
+            listener.processStanza(dataMessage);
         }
 
         // read data

@@ -14,7 +14,7 @@
  */
 package org.jivesoftware.smackx.jingle.provider;
 
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
@@ -70,7 +70,7 @@ public class JingleProviderTest extends SmackTestCase {
 
 		// Create a filter and a collector...
 		PacketFilter filter = new StanzaTypeFilter(IQ.class);
-		PacketCollector collector = getConnection(0).createPacketCollector(filter);
+		StanzaCollector collector = getConnection(0).createStanzaCollector(filter);
 
 		System.out.println("Testing if a Jingle IQ can be sent and received...");
 

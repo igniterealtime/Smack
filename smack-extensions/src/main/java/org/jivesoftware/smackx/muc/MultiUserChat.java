@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
@@ -143,7 +143,7 @@ public class MultiUserChat {
     private String subject;
     private Resourcepart nickname;
     private boolean joined = false;
-    private PacketCollector messageCollector;
+    private StanzaCollector messageCollector;
 
     MultiUserChat(XMPPConnection connection, EntityBareJid room, MultiUserChatManager multiUserChatManager) {
         this.connection = connection;
@@ -155,7 +155,7 @@ public class MultiUserChat {
 
         messageListener = new StanzaListener() {
             @Override
-            public void processPacket(Stanza packet) throws NotConnectedException {
+            public void processStanza(Stanza packet) throws NotConnectedException {
                 Message message = (Message) packet;
                 for (MessageListener listener : messageListeners) {
                     listener.processMessage(message);
@@ -165,7 +165,7 @@ public class MultiUserChat {
 
         // Create a listener for subject updates.
         subjectListener = new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 Message msg = (Message) packet;
                 EntityFullJid from = msg.getFrom().asEntityFullJidIfPossible();
                 if (from == null) {
@@ -183,7 +183,7 @@ public class MultiUserChat {
 
         // Create a listener for all presence updates.
         presenceListener = new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 Presence presence = (Presence) packet;
                 final EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
                 if (from == null) {
@@ -253,7 +253,7 @@ public class MultiUserChat {
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // rejection listeners if the message includes an invitation rejection.
         declinesListener = new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 Message message = (Message) packet;
                 // Get the MUC User extension
                 MUCUser mucUser = MUCUser.from(packet);
@@ -269,7 +269,7 @@ public class MultiUserChat {
 
         presenceInterceptor = new StanzaListener() {
             @Override
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 Presence presence = (Presence) packet;
                 for (PresenceListener interceptor : presenceInterceptors) {
                     interceptor.processPresence(presence);
@@ -323,7 +323,7 @@ public class MultiUserChat {
         connection.addSyncStanzaListener(declinesListener, DECLINE_FILTER);
         connection.addPacketInterceptor(presenceInterceptor, new AndFilter(new ToFilter(room),
                         StanzaTypeFilter.PRESENCE));
-        messageCollector = connection.createPacketCollector(fromRoomGroupchatFilter);
+        messageCollector = connection.createStanzaCollector(fromRoomGroupchatFilter);
 
         // Wait for a presence packet back from the server.
         // Use a bare JID filter, since the room may rewrite the nickname.
@@ -331,7 +331,7 @@ public class MultiUserChat {
                         Presence.class), MUCUserStatusCodeFilter.STATUS_110_PRESENCE_TO_SELF);
         Presence presence;
         try {
-            presence = connection.createPacketCollectorAndSend(responseFilter, joinPresence).nextResultOrThrow(conf.getTimeout());
+            presence = connection.createStanzaCollectorAndSend(responseFilter, joinPresence).nextResultOrThrow(conf.getTimeout());
         }
         catch (InterruptedException | NoResponseException | XMPPErrorException e) {
             // Ensure that all callbacks are removed if there is an exception
@@ -758,7 +758,7 @@ public class MultiUserChat {
         iq.setTo(room);
         iq.setType(IQ.Type.get);
 
-        IQ answer = connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+        IQ answer = connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
         return Form.getFormFrom(answer);
     }
 
@@ -778,7 +778,7 @@ public class MultiUserChat {
         iq.setType(IQ.Type.set);
         iq.addExtension(form.getDataFormToSend());
 
-        connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
     }
 
     /**
@@ -803,7 +803,7 @@ public class MultiUserChat {
         reg.setType(IQ.Type.get);
         reg.setTo(room);
 
-        IQ result = connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
+        IQ result = connection.createStanzaCollectorAndSend(reg).nextResultOrThrow();
         return Form.getFormFrom(result);
     }
 
@@ -830,7 +830,7 @@ public class MultiUserChat {
         reg.setTo(room);
         reg.addExtension(form.getDataFormToSend());
 
-        connection.createPacketCollectorAndSend(reg).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(reg).nextResultOrThrow();
     }
 
     /**
@@ -857,7 +857,7 @@ public class MultiUserChat {
         Destroy destroy = new Destroy(alternateJID, reason);
         iq.setDestroy(destroy);
 
-        connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
 
         // Reset occupant information.
         occupantsMap.clear();
@@ -1082,7 +1082,7 @@ public class MultiUserChat {
             new AndFilter(
                 FromMatchesFilter.createFull(jid),
                 new StanzaTypeFilter(Presence.class));
-        PacketCollector response = connection.createPacketCollectorAndSend(responseFilter, joinPresence);
+        StanzaCollector response = connection.createStanzaCollectorAndSend(responseFilter, joinPresence);
         // Wait up to a certain number of seconds for a reply. If there is a negative reply, an
         // exception will be thrown
         response.nextResultOrThrow();
@@ -1563,7 +1563,7 @@ public class MultiUserChat {
         MUCItem item = new MUCItem(affiliation, jid, reason);
         iq.addItem(item);
 
-        connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
     }
 
     private void changeAffiliationByAdmin(Collection<? extends Jid> jids, MUCAffiliation affiliation)
@@ -1577,7 +1577,7 @@ public class MultiUserChat {
             iq.addItem(item);
         }
 
-        connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
     }
 
     private void changeRole(Resourcepart nickname, MUCRole role, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -1588,7 +1588,7 @@ public class MultiUserChat {
         MUCItem item = new MUCItem(role, nickname, reason);
         iq.addItem(item);
 
-        connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
     }
 
     private void changeRole(Collection<Resourcepart> nicknames, MUCRole role) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
@@ -1601,7 +1601,7 @@ public class MultiUserChat {
             iq.addItem(item);
         }
 
-        connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
     }
 
     /**
@@ -1759,7 +1759,7 @@ public class MultiUserChat {
         MUCItem item = new MUCItem(affiliation);
         iq.addItem(item);
 
-        MUCAdmin answer = (MUCAdmin) connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+        MUCAdmin answer = (MUCAdmin) connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
 
         // Get the list of affiliates from the server's answer
         List<Affiliate> affiliates = new ArrayList<Affiliate>();
@@ -1814,7 +1814,7 @@ public class MultiUserChat {
         MUCItem item = new MUCItem(role);
         iq.addItem(item);
 
-        MUCAdmin answer = (MUCAdmin) connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+        MUCAdmin answer = (MUCAdmin) connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
         // Get the list of participants from the server's answer
         List<Occupant> participants = new ArrayList<Occupant>();
         for (MUCItem mucadminItem : answer.getItems()) {
@@ -1975,13 +1975,13 @@ public class MultiUserChat {
                 return subject.equals(msg.getSubject());
             }
         });
-        PacketCollector response = connection.createPacketCollectorAndSend(responseFilter, message);
+        StanzaCollector response = connection.createStanzaCollectorAndSend(responseFilter, message);
         // Wait up to a certain number of seconds for a reply.
         response.nextResultOrThrow();
     }
 
     /**
-     * Remove the connection callbacks (PacketListener, PacketInterceptor, PacketCollector) used by this MUC from the
+     * Remove the connection callbacks (PacketListener, PacketInterceptor, StanzaCollector) used by this MUC from the
      * connection.
      */
     private void removeConnectionCallbacks() {

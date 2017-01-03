@@ -208,7 +208,7 @@ public class EnhancedDebugger implements SmackDebugger {
         packetReaderListener = new StanzaListener() {
             SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss:SS");
 
-            public void processPacket(final Stanza packet) {
+            public void processStanza(final Stanza packet) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         addReadPacketToTable(dateFormatter, packet);
@@ -223,7 +223,7 @@ public class EnhancedDebugger implements SmackDebugger {
         packetWriterListener = new StanzaListener() {
             SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss:SS");
 
-            public void processPacket(final Stanza packet) {
+            public void processStanza(final Stanza packet) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         addSentPacketToTable(dateFormatter, packet);

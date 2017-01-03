@@ -230,7 +230,7 @@ public final class MultiUserChatLightManager extends Manager {
         mucLightBlockingIQ.setTo(mucLightService);
 
         StanzaFilter responseFilter = new IQReplyFilter(mucLightBlockingIQ, connection());
-        IQ responseIq = connection().createPacketCollectorAndSend(responseFilter, mucLightBlockingIQ)
+        IQ responseIq = connection().createStanzaCollectorAndSend(responseFilter, mucLightBlockingIQ)
                 .nextResultOrThrow();
         MUCLightBlockingIQ muclIghtBlockingIQResult = (MUCLightBlockingIQ) responseIq;
 
@@ -278,7 +278,7 @@ public final class MultiUserChatLightManager extends Manager {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, null);
         mucLightBlockingIQ.setType(Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
-        connection().createPacketCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
     }
 
     /**
@@ -322,7 +322,7 @@ public final class MultiUserChatLightManager extends Manager {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, users);
         mucLightBlockingIQ.setType(Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
-        connection().createPacketCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
     }
 
     /**
@@ -366,7 +366,7 @@ public final class MultiUserChatLightManager extends Manager {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, null);
         mucLightBlockingIQ.setType(Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
-        connection().createPacketCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
     }
 
     /**
@@ -410,7 +410,7 @@ public final class MultiUserChatLightManager extends Manager {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, users);
         mucLightBlockingIQ.setType(Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
-        connection().createPacketCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
     }
 
 }

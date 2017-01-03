@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx;
 
 import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -77,9 +77,9 @@ public class FormTest extends SmackTestCase {
 
         // Create the chats between the two participants
         Chat chat = getConnection(0).getChatManager().createChat(getBareJID(1), null);
-        PacketCollector collector = getConnection(0).createPacketCollector(
+        StanzaCollector collector = getConnection(0).createStanzaCollector(
                 new ThreadFilter(chat.getThreadID()));
-        PacketCollector collector2 = getConnection(1).createPacketCollector(
+        StanzaCollector collector2 = getConnection(1).createStanzaCollector(
                 new ThreadFilter(chat.getThreadID()));
 
         Message msg = new Message();

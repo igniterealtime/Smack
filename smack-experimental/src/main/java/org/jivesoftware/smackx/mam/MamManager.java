@@ -25,7 +25,7 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
@@ -413,7 +413,7 @@ public final class MamManager extends Manager {
         String queryId = UUID.randomUUID().toString();
         MamQueryIQ mamQueryIq = new MamQueryIQ(queryId);
 
-        MamQueryIQ mamResponseQueryIq = connection().createPacketCollectorAndSend(mamQueryIq).nextResultOrThrow();
+        MamQueryIQ mamResponseQueryIq = connection().createStanzaCollectorAndSend(mamQueryIq).nextResultOrThrow();
 
         return mamResponseQueryIq.getDataForm().getFields();
     }
@@ -423,11 +423,11 @@ public final class MamManager extends Manager {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
         MamFinIQ mamFinIQ = null;
 
-        PacketCollector mamFinIQCollector = connection.createPacketCollector(new IQReplyFilter(mamQueryIq, connection));
+        StanzaCollector mamFinIQCollector = connection.createStanzaCollector(new IQReplyFilter(mamQueryIq, connection));
 
-        PacketCollector.Configuration resultCollectorConfiguration = PacketCollector.newConfiguration()
+        StanzaCollector.Configuration resultCollectorConfiguration = StanzaCollector.newConfiguration()
                 .setStanzaFilter(new MamResultFilter(mamQueryIq)).setCollectorToReset(mamFinIQCollector);
-        PacketCollector resultCollector = connection.createPacketCollector(resultCollectorConfiguration);
+        StanzaCollector resultCollector = connection.createStanzaCollector(resultCollectorConfiguration);
 
         try {
             connection.sendStanza(mamQueryIq);
@@ -547,7 +547,7 @@ public final class MamManager extends Manager {
             NotConnectedException, InterruptedException, NotLoggedInException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
 
-        MamPrefsIQ mamPrefsResultIQ = connection.createPacketCollectorAndSend(mamPrefsIQ).nextResultOrThrow();
+        MamPrefsIQ mamPrefsResultIQ = connection.createStanzaCollectorAndSend(mamPrefsIQ).nextResultOrThrow();
 
         return new MamPrefsResult(mamPrefsResultIQ, DataForm.from(mamPrefsIQ));
     }

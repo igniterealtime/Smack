@@ -143,8 +143,8 @@ XHTML bodies of any received message.
 ```
 // Create a listener for the chat and display any XHTML content
 PacketListener packetListener = new PacketListener() {
-public void processPacket(Stanza packet) {
-    Message message = (Message) packet;
+public void processStanza(Stanza stanza) {
+    Message message = (Message) stanza;
     // Obtain the XHTML bodies of the message
     List<CharSequence> bodies = XHTMLManager.getBodies(message);
     if (bodies != null) {

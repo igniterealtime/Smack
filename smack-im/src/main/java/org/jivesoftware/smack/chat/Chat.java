@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack.chat;
 
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
@@ -155,14 +155,14 @@ public class Chat {
     }
 
     /**
-     * Creates a {@link org.jivesoftware.smack.PacketCollector} which will accumulate the Messages
-     * for this chat. Always cancel PacketCollectors when finished with them as they will accumulate
+     * Creates a {@link org.jivesoftware.smack.StanzaCollector} which will accumulate the Messages
+     * for this chat. Always cancel StanzaCollectors when finished with them as they will accumulate
      * messages indefinitely.
      *
-     * @return the PacketCollector which returns Messages for this chat.
+     * @return the StanzaCollector which returns Messages for this chat.
      */
-    public PacketCollector createCollector() {
-        return chatManager.createPacketCollector(this);
+    public StanzaCollector createCollector() {
+        return chatManager.createStanzaCollector(this);
     }
 
     /**

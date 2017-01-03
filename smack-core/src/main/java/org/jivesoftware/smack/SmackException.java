@@ -93,7 +93,7 @@ public class SmackException extends Exception {
         }
 
         public static NoResponseException newWith(XMPPConnection connection,
-                        PacketCollector collector) {
+                        StanzaCollector collector) {
             return newWith(connection, collector.getStanzaFilter());
         }
 

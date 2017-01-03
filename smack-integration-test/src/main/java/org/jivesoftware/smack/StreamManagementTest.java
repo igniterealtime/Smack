@@ -53,7 +53,7 @@ public class StreamManagementTest extends AbstractSmackLowLevelIntegrationTest {
         final String body2 = "Hi, what's up? I've been just instantly shutdown" + testRunId;
         final String body3 = "Hi, what's up? I've been just resumed" + testRunId;
 
-        final PacketCollector collector = conTwo.createPacketCollector(new AndFilter(
+        final StanzaCollector collector = conTwo.createStanzaCollector(new AndFilter(
                         MessageWithBodiesFilter.INSTANCE,
                         FromMatchesFilter.createFull(conOne.getUser())));
 
@@ -84,7 +84,7 @@ public class StreamManagementTest extends AbstractSmackLowLevelIntegrationTest {
         from.sendStanza(message);
     }
 
-    private static void assertMessageWithBodyReceived(String body, PacketCollector collector) throws InterruptedException {
+    private static void assertMessageWithBodyReceived(String body, StanzaCollector collector) throws InterruptedException {
         Message message = collector.nextResult();
         assertNotNull(message);
         assertEquals(body, message.getBody());

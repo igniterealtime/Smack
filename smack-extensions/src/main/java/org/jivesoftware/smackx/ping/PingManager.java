@@ -167,7 +167,7 @@ public final class PingManager extends Manager {
         }
         Ping ping = new Ping(jid);
         try {
-            connection.createPacketCollectorAndSend(ping).nextResultOrThrow(pingTimeout);
+            connection.createStanzaCollectorAndSend(ping).nextResultOrThrow(pingTimeout);
         }
         catch (XMPPException exc) {
             return jid.equals(connection.getXMPPServiceDomain());

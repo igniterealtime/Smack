@@ -105,7 +105,7 @@ abstract public class Node
 	{
         PubSub packet = createPubsubPacket(Type.set, new FormNode(FormNodeType.CONFIGURE_OWNER,
                         getId(), submitForm), PubSubNamespace.OWNER);
-        pubSubManager.getConnection().createPacketCollectorAndSend(packet).nextResultOrThrow();
+        pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
 	}
 
 	/**
@@ -122,7 +122,7 @@ abstract public class Node
 		DiscoverInfo info = new DiscoverInfo();
 		info.setTo(pubSubManager.getServiceJid());
 		info.setNode(getId());
-		return pubSubManager.getConnection().createPacketCollectorAndSend(info).nextResultOrThrow();
+		return pubSubManager.getConnection().createStanzaCollectorAndSend(info).nextResultOrThrow();
 	}
 
 	/**
@@ -609,7 +609,7 @@ abstract public class Node
 		}
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-        public void processPacket(Stanza packet)
+        public void processStanza(Stanza packet)
 		{
 // CHECKSTYLE:OFF
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
@@ -635,7 +635,7 @@ abstract public class Node
 			listener = eventListener;
 		}
 
-		public void processPacket(Stanza packet)
+		public void processStanza(Stanza packet)
 		{
 // CHECKSTYLE:OFF
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
@@ -680,7 +680,7 @@ abstract public class Node
 			listener = eventListener;
 		}
 
-		public void processPacket(Stanza packet)
+		public void processStanza(Stanza packet)
 		{
 // CHECKSTYLE:OFF
 	        EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());

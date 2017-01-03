@@ -1857,7 +1857,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     for (Stanza ackedStanza : ackedStanzas) {
                         for (StanzaListener listener : stanzaAcknowledgedListeners) {
                             try {
-                                listener.processPacket(ackedStanza);
+                                listener.processStanza(ackedStanza);
                             }
                             catch (InterruptedException | NotConnectedException e) {
                                 LOGGER.log(Level.FINER, "Received exception", e);
@@ -1870,7 +1870,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         StanzaListener listener = stanzaIdAcknowledgedListeners.remove(id);
                         if (listener != null) {
                             try {
-                                listener.processPacket(ackedStanza);
+                                listener.processStanza(ackedStanza);
                             }
                             catch (InterruptedException | NotConnectedException e) {
                                 LOGGER.log(Level.FINER, "Received exception", e);

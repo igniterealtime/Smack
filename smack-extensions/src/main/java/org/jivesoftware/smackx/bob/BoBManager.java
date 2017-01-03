@@ -147,7 +147,7 @@ public final class BoBManager extends Manager {
         requestBoBIQ.setTo(to);
 
         XMPPConnection connection = getAuthenticatedConnectionOrThrow();
-        BoBIQ responseBoBIQ = connection.createPacketCollectorAndSend(requestBoBIQ).nextResultOrThrow();
+        BoBIQ responseBoBIQ = connection.createStanzaCollectorAndSend(requestBoBIQ).nextResultOrThrow();
 
         bobData = responseBoBIQ.getBoBData();
         BOB_CACHE.put(bobHash, bobData);

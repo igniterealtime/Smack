@@ -29,7 +29,7 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.TCPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -453,7 +453,7 @@ public class MultiUserChatTest extends SmackTestCase {
 
             // Start a private chat with another participant            
             Chat chat = muc2.createPrivateChat(room + "/testbot", null);
-            PacketCollector collector = chat.createCollector();
+            StanzaCollector collector = chat.createCollector();
             chat.sendMessage("Hello there");
 
             Message response = (Message) collector.nextResult(2000);

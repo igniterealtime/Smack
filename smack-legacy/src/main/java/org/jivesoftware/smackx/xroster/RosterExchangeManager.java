@@ -78,7 +78,7 @@ public class RosterExchangeManager {
         weakRefConnection = new WeakReference<XMPPConnection>(connection);
         // Listens for all roster exchange packets and fire the roster exchange listeners.
         packetListener = new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 Message message = (Message) packet;
                 RosterExchange rosterExchange =
                     (RosterExchange) message.getExtension(ELEMENT, NAMESPACE);

@@ -28,7 +28,7 @@ public class WaitForPacketListener implements StanzaListener {
     private CountDownLatch latch = new CountDownLatch(1);
 
     @Override
-    public void processPacket(Stanza packet) throws NotConnectedException {
+    public void processStanza(Stanza packet) throws NotConnectedException {
         reportInvoked();
     }
 

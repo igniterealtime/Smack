@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx;
 
 import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -98,7 +98,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
             assertEquals("Wrong number of offline messages", 2, offlineManager.getMessageCount());
 
             // User2 becomes available again
-            PacketCollector collector = getConnection(1).createPacketCollector(
+            StanzaCollector collector = getConnection(1).createStanzaCollector(
                     new MessageTypeFilter(Message.Type.chat));
             getConnection(1).sendStanza(new Presence(Presence.Type.available));
 
@@ -156,7 +156,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
             assertEquals("Wrong number of offline messages", 2, offlineManager.getMessageCount());
 
             // User2 becomes available again
-            PacketCollector collector = getConnection(1).createPacketCollector(
+            StanzaCollector collector = getConnection(1).createStanzaCollector(
                     new MessageTypeFilter(Message.Type.chat));
             getConnection(1).sendStanza(new Presence(Presence.Type.available));
 

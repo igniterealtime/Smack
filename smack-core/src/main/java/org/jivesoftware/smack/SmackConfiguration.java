@@ -129,7 +129,7 @@ public final class SmackConfiguration {
      * 
      * @return The number of packets to queue before deleting older packets.
      */
-    public static int getPacketCollectorSize() {
+    public static int getStanzaCollectorSize() {
         return packetCollectorSize;
     }
 
@@ -139,7 +139,7 @@ public final class SmackConfiguration {
      * 
      * @param collectorSize the number of packets to queue before deleting older packets.
      */
-    public static void setPacketCollectorSize(int collectorSize) {
+    public static void setStanzaCollectorSize(int collectorSize) {
         packetCollectorSize = collectorSize;
     }
 

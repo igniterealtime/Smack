@@ -678,7 +678,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         LOGGER.fine("UpdatePacketListener");
 
         packetListener = new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 try {
                     receivePacketAndRespond((IQ) packet);
                 } catch (Exception e) {

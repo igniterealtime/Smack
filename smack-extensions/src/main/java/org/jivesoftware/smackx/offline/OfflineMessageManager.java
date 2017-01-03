@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.offline;
 
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -158,9 +158,9 @@ public class OfflineMessageManager {
                 return nodes.contains(info.getNode());
             }
         });
-        PacketCollector messageCollector = connection.createPacketCollector(messageFilter);
+        StanzaCollector messageCollector = connection.createStanzaCollector(messageFilter);
         try {
-            connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+            connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
             // Collect the received offline messages
             Message message = messageCollector.nextResult();
             while (message != null) {
@@ -191,9 +191,9 @@ public class OfflineMessageManager {
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setFetch(true);
 
-        PacketCollector resultCollector = connection.createPacketCollectorAndSend(request);
-        PacketCollector.Configuration messageCollectorConfiguration = PacketCollector.newConfiguration().setStanzaFilter(PACKET_FILTER).setCollectorToReset(resultCollector);
-        PacketCollector messageCollector = connection.createPacketCollector(messageCollectorConfiguration);
+        StanzaCollector resultCollector = connection.createStanzaCollectorAndSend(request);
+        StanzaCollector.Configuration messageCollectorConfiguration = StanzaCollector.newConfiguration().setStanzaFilter(PACKET_FILTER).setCollectorToReset(resultCollector);
+        StanzaCollector messageCollector = connection.createStanzaCollector(messageCollectorConfiguration);
 
         List<Message> messages = null;
         try {
@@ -235,7 +235,7 @@ public class OfflineMessageManager {
             item.setAction("remove");
             request.addItem(item);
         }
-        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
     }
 
     /**
@@ -251,6 +251,6 @@ public class OfflineMessageManager {
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setType(IQ.Type.set);
         request.setPurge(true);
-        connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
     }
 }

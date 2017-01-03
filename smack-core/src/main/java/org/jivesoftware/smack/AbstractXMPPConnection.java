@@ -111,17 +111,17 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             new CopyOnWriteArraySet<ConnectionListener>();
 
     /**
-     * A collection of PacketCollectors which collects packets for a specified filter
+     * A collection of StanzaCollectors which collects packets for a specified filter
      * and perform blocking and polling operations on the result queue.
      * <p>
      * We use a ConcurrentLinkedQueue here, because its Iterator is weakly
-     * consistent and we want {@link #invokePacketCollectors(Stanza)} for-each
-     * loop to be lock free. As drawback, removing a PacketCollector is O(n).
+     * consistent and we want {@link #invokeStanzaCollectorsAndNotifyRecvListeners(Stanza)} for-each
+     * loop to be lock free. As drawback, removing a StanzaCollector is O(n).
      * The alternative would be a synchronized HashSet, but this would mean a
      * synchronized block around every usage of <code>collectors</code>.
      * </p>
      */
-    private final Collection<PacketCollector> collectors = new ConcurrentLinkedQueue<PacketCollector>();
+    private final Collection<StanzaCollector> collectors = new ConcurrentLinkedQueue<>();
 
     /**
      * List of PacketListeners that will be notified synchronously when a new stanza(/packet) was received.
@@ -531,7 +531,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Note that we can not use IQReplyFilter here, since the users full JID is not yet
         // available. It will become available right after the resource has been successfully bound.
         Bind bindResource = Bind.newSet(resource);
-        PacketCollector packetCollector = createPacketCollectorAndSend(new StanzaIdFilter(bindResource), bindResource);
+        StanzaCollector packetCollector = createStanzaCollectorAndSend(new StanzaIdFilter(bindResource), bindResource);
         Bind response = packetCollector.nextResultOrThrow();
         // Set the connections user to the result of resource binding. It is important that we don't infer the user
         // from the login() arguments and the configurations service name, as, for example, when SASL External is used,
@@ -547,7 +547,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         boolean legacySessionDisabled = getConfiguration().isLegacySessionDisabled();
         if (sessionFeature != null && !sessionFeature.isOptional() && !legacySessionDisabled) {
             Session session = new Session();
-            packetCollector = createPacketCollectorAndSend(new StanzaIdFilter(session), session);
+            packetCollector = createStanzaCollectorAndSend(new StanzaIdFilter(session), session);
             packetCollector.nextResultOrThrow();
         }
     }
@@ -743,18 +743,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public PacketCollector createPacketCollectorAndSend(IQ packet) throws NotConnectedException, InterruptedException {
+    public StanzaCollector createStanzaCollectorAndSend(IQ packet) throws NotConnectedException, InterruptedException {
         StanzaFilter packetFilter = new IQReplyFilter(packet, this);
         // Create the packet collector before sending the packet
-        PacketCollector packetCollector = createPacketCollectorAndSend(packetFilter, packet);
+        StanzaCollector packetCollector = createStanzaCollectorAndSend(packetFilter, packet);
         return packetCollector;
     }
 
     @Override
-    public PacketCollector createPacketCollectorAndSend(StanzaFilter packetFilter, Stanza packet)
+    public StanzaCollector createStanzaCollectorAndSend(StanzaFilter packetFilter, Stanza packet)
                     throws NotConnectedException, InterruptedException {
         // Create the packet collector before sending the packet
-        PacketCollector packetCollector = createPacketCollector(packetFilter);
+        StanzaCollector packetCollector = createStanzaCollector(packetFilter);
         try {
             // Now we can send the packet as the collector has been created
             sendStanza(packet);
@@ -767,21 +767,21 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public PacketCollector createPacketCollector(StanzaFilter packetFilter) {
-        PacketCollector.Configuration configuration = PacketCollector.newConfiguration().setStanzaFilter(packetFilter);
-        return createPacketCollector(configuration);
+    public StanzaCollector createStanzaCollector(StanzaFilter packetFilter) {
+        StanzaCollector.Configuration configuration = StanzaCollector.newConfiguration().setStanzaFilter(packetFilter);
+        return createStanzaCollector(configuration);
     }
 
     @Override
-    public PacketCollector createPacketCollector(PacketCollector.Configuration configuration) {
-        PacketCollector collector = new PacketCollector(this, configuration);
+    public StanzaCollector createStanzaCollector(StanzaCollector.Configuration configuration) {
+        StanzaCollector collector = new StanzaCollector(this, configuration);
         // Add the collector to the list of active collectors.
         collectors.add(collector);
         return collector;
     }
 
     @Override
-    public void removePacketCollector(PacketCollector collector) {
+    public void removeStanzaCollector(StanzaCollector collector) {
         collectors.remove(collector);
     }
 
@@ -878,7 +878,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             public void run() {
                 for (StanzaListener listener : listenersToNotify) {
                     try {
-                        listener.processPacket(packet);
+                        listener.processStanza(packet);
                     }
                     catch (Exception e) {
                         LOGGER.log(Level.WARNING, "Sending listener threw exception", e);
@@ -926,7 +926,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
         for (StanzaListener interceptor : interceptorsToInvoke) {
             try {
-                interceptor.processPacket(packet);
+                interceptor.processStanza(packet);
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Packet interceptor threw exception", e);
             }
@@ -1033,18 +1033,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         executorService.executeBlocking(new Runnable() {
             @Override
             public void run() {
-                invokePacketCollectorsAndNotifyRecvListeners(stanza);
+                invokeStanzaCollectorsAndNotifyRecvListeners(stanza);
             }
         });
     }
 
     /**
-     * Invoke {@link PacketCollector#processPacket(Stanza)} for every
-     * PacketCollector with the given packet. Also notify the receive listeners with a matching stanza(/packet) filter about the packet.
+     * Invoke {@link StanzaCollector#processStanza(Stanza)} for every
+     * StanzaCollector with the given packet. Also notify the receive listeners with a matching stanza(/packet) filter about the packet.
      *
-     * @param packet the stanza(/packet) to notify the PacketCollectors and receive listeners about.
+     * @param packet the stanza(/packet) to notify the StanzaCollectors and receive listeners about.
      */
-    protected void invokePacketCollectorsAndNotifyRecvListeners(final Stanza packet) {
+    protected void invokeStanzaCollectorsAndNotifyRecvListeners(final Stanza packet) {
         if (packet instanceof IQ) {
             final IQ iq = (IQ) packet;
             final IQ.Type type = iq.getType();
@@ -1140,7 +1140,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 @Override
                 public void run() {
                     try {
-                        listener.processPacket(packet);
+                        listener.processStanza(packet);
                     } catch (Exception e) {
                         LOGGER.log(Level.SEVERE, "Exception in async packet listener", e);
                     }
@@ -1149,8 +1149,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
 
         // Loop through all collectors and notify the appropriate ones.
-        for (PacketCollector collector: collectors) {
-            collector.processPacket(packet);
+        for (StanzaCollector collector: collectors) {
+            collector.processStanza(packet);
         }
 
         // Notify the receive listeners interested in the packet
@@ -1170,7 +1170,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             public void run() {
                 for (StanzaListener listener : listenersToNotify) {
                     try {
-                        listener.processPacket(packet);
+                        listener.processStanza(packet);
                     } catch(NotConnectedException e) {
                         LOGGER.log(Level.WARNING, "Got not connected exception, aborting", e);
                         break;
@@ -1471,10 +1471,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         final StanzaListener packetListener = new StanzaListener() {
             @Override
-            public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
+            public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
                 try {
                     XMPPErrorException.ifHasErrorThenThrow(packet);
-                    callback.processPacket(packet);
+                    callback.processStanza(packet);
                 }
                 catch (XMPPErrorException e) {
                     if (exceptionCallback != null) {
@@ -1532,9 +1532,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     public void addOneTimeSyncCallback(final StanzaListener callback, final StanzaFilter packetFilter) {
         final StanzaListener packetListener = new StanzaListener() {
             @Override
-            public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
+            public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
                 try {
-                    callback.processPacket(packet);
+                    callback.processStanza(packet);
                 } finally {
                     removeSyncStanzaListener(this);
                 }

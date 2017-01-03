@@ -48,8 +48,8 @@ public class MessageTest extends SmackTestCase {
         presence.setTo(getBareJID(1));
         getConnection(0).sendStanza(presence);
 
-        PacketCollector collector = getConnection(0)
-                .createPacketCollector(new MessageTypeFilter(Message.Type.chat));
+        StanzaCollector collector = getConnection(0)
+                .createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
         try {
             getConnection(1).getChatManager().createChat(getBareJID(0), null).sendMessage("Test 1");
         }
@@ -77,7 +77,7 @@ public class MessageTest extends SmackTestCase {
 
             // User1 sends some messages to User2 which is not available at the moment
             Chat chat = getConnection(0).getChatManager().createChat(getBareJID(1), null);
-            PacketCollector collector = getConnection(1).createPacketCollector(
+            StanzaCollector collector = getConnection(1).createStanzaCollector(
                     new MessageTypeFilter(Message.Type.chat));
             chat.sendMessage("Test 1");
             chat.sendMessage("Test 2");
@@ -119,7 +119,7 @@ public class MessageTest extends SmackTestCase {
 
             // User1 sends some messages to User2 which is not available at the moment
             Chat chat = getConnection(0).getChatManager().createChat(getBareJID(1), null);
-            PacketCollector collector = getConnection(1).createPacketCollector(
+            StanzaCollector collector = getConnection(1).createStanzaCollector(
                     new MessageTypeFilter(Message.Type.chat));
             chat.sendMessage("Test \f 1");
             chat.sendMessage("Test \r 1");
@@ -153,7 +153,7 @@ public class MessageTest extends SmackTestCase {
         getConnection(0).sendStanza(new Presence(Presence.Type.available));
         getConnection(1).sendStanza(new Presence(Presence.Type.available));
         // User2 becomes available again
-        PacketCollector collector = getConnection(1).createPacketCollector(
+        StanzaCollector collector = getConnection(1).createStanzaCollector(
                 new MessageTypeFilter(Message.Type.chat));
 
         // Create message with a body of 4K characters
@@ -210,8 +210,8 @@ public class MessageTest extends SmackTestCase {
         Thread.sleep(200);
 
         // User0 listen in both connected clients
-        PacketCollector collector = getConnection(0).createPacketCollector(new MessageTypeFilter(Message.Type.chat));
-        PacketCollector coll3 = conn3.createPacketCollector(new MessageTypeFilter(Message.Type.chat));
+        StanzaCollector collector = getConnection(0).createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
+        StanzaCollector coll3 = conn3.createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
 
         // User1 sends a message to the bare JID of User0 
         Chat chat = getConnection(1).getChatManager().createChat(getBareJID(0), null);
@@ -259,8 +259,8 @@ public class MessageTest extends SmackTestCase {
         Thread.sleep(200);
 
         // User0 listen in both connected clients
-        PacketCollector collector = getConnection(0).createPacketCollector(new MessageTypeFilter(Message.Type.chat));
-        PacketCollector coll3 = conn3.createPacketCollector(new MessageTypeFilter(Message.Type.chat));
+        StanzaCollector collector = getConnection(0).createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
+        StanzaCollector coll3 = conn3.createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
 
         // User1 sends a message to the bare JID of User0
         Chat chat = getConnection(1).getChatManager().createChat(getBareJID(0), null);
@@ -321,9 +321,9 @@ public class MessageTest extends SmackTestCase {
         Thread.sleep(200);
 
         // User0 listen in both connected clients
-        PacketCollector collector = getConnection(0).createPacketCollector(new MessageTypeFilter(Message.Type.chat));
-        PacketCollector coll3 = conn3.createPacketCollector(new MessageTypeFilter(Message.Type.chat));
-        PacketCollector coll4 = conn4.createPacketCollector(new MessageTypeFilter(Message.Type.chat));
+        StanzaCollector collector = getConnection(0).createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
+        StanzaCollector coll3 = conn3.createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
+        StanzaCollector coll4 = conn4.createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
 
         // Send a message from this resource to indicate most recent activity 
         conn3.sendStanza(new Message("admin@" + getXMPPServiceDomain()));
@@ -368,7 +368,7 @@ public class MessageTest extends SmackTestCase {
         Thread.sleep(200);
 
         // User0 listen for incoming traffic
-        PacketCollector collector = getConnection(0).createPacketCollector(new MessageTypeFilter(Message.Type.chat));
+        StanzaCollector collector = getConnection(0).createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
 
         // User1 sends a message to the bare JID of User0
         Chat chat = getConnection(1).getChatManager().createChat(getBareJID(0), null);

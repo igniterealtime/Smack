@@ -536,7 +536,7 @@ public final class ServiceDiscoveryManager extends Manager {
         disco.setTo(entityID);
         disco.setNode(node);
 
-        Stanza result = connection().createPacketCollectorAndSend(disco).nextResultOrThrow();
+        Stanza result = connection().createStanzaCollectorAndSend(disco).nextResultOrThrow();
 
         return (DiscoverInfo) result;
     }
@@ -575,7 +575,7 @@ public final class ServiceDiscoveryManager extends Manager {
         disco.setTo(entityID);
         disco.setNode(node);
 
-        Stanza result = connection().createPacketCollectorAndSend(disco).nextResultOrThrow();
+        Stanza result = connection().createStanzaCollectorAndSend(disco).nextResultOrThrow();
         return (DiscoverItems) result;
     }
 
@@ -647,7 +647,7 @@ public final class ServiceDiscoveryManager extends Manager {
         discoverItems.setTo(entityID);
         discoverItems.setNode(node);
 
-        connection().createPacketCollectorAndSend(discoverItems).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(discoverItems).nextResultOrThrow();
     }
 
     /**
