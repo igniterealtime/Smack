@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2017 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -315,6 +315,19 @@ public final class Roster extends Manager {
             }
 
         });
+
+        connection.addPacketSendingListener(new StanzaListener() {
+            @Override
+            public void processPacket(Stanza stanzav) throws NotConnectedException, InterruptedException {
+                // Once we send an unavailable presence, the server is allowed to suppress sending presence status
+                // information to us as optimization (RFC 6121 § 4.4.2). Thus XMPP clients which are unavailable, should
+                // consider the presence information of their contacts as not up-to-date. We make the user obvious of
+                // this situation by setting the presences of all contacts to unavailable (while keeping the roster
+                // state).
+                setOfflinePresences();
+            }
+        }, PresenceTypeFilter.UNAVAILABLE);
+
         // If the connection is already established, call reload
         if (connection.isAuthenticated()) {
             try {
@@ -324,6 +337,7 @@ public final class Roster extends Manager {
                 LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
             }
         }
+
     }
 
     /**
@@ -1159,11 +1173,9 @@ public final class Roster extends Manager {
 
     /**
      * Changes the presence of available contacts offline by simulating an unavailable
-     * presence sent from the server. After a disconnection, every Presence is set
-     * to offline.
-     * @throws NotConnectedException 
+     * presence sent from the server.
      */
-    private void setOfflinePresencesAndResetLoaded() {
+    private void setOfflinePresences() {
         Presence packetUnavailable;
         outerloop: for (Jid user : presenceMap.keySet()) {
             Map<Resourcepart, Presence> resources = presenceMap.get(user);
@@ -1190,6 +1202,15 @@ public final class Roster extends Manager {
                 }
             }
         }
+    }
+
+    /**
+     * Changes the presence of available contacts offline by simulating an unavailable
+     * presence sent from the server. After a disconnection, every Presence is set
+     * to offline.
+     */
+    private void setOfflinePresencesAndResetLoaded() {
+        setOfflinePresences();
         rosterState = RosterState.uninitialized;
     }
 
