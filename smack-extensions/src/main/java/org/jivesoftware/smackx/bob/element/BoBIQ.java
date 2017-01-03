@@ -84,13 +84,13 @@ public class BoBIQ extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.attribute("cid", bobHash.toCid());
+        xml.attribute("cid", bobHash.getCid());
 
         if (bobData != null) {
-            xml.attribute("max-age", String.valueOf(bobData.getMaxAge()));
+            xml.optIntAttribute("max_age", bobData.getMaxAge());
             xml.attribute("type", bobData.getType());
             xml.rightAngleBracket();
-            xml.escape(bobData.getBase64Encoded());
+            xml.escape(bobData.getContentBase64Encoded());
         } else {
             xml.setEmptyElement();
         }

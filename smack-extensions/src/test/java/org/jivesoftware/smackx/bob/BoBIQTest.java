@@ -20,11 +20,9 @@ import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
-import org.jivesoftware.smackx.bob.provider.BoBIQProvider;
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
 
 public class BoBIQTest extends SmackTestSuite {
 
@@ -37,12 +35,6 @@ public class BoBIQTest extends SmackTestSuite {
 
     @Test
     public void checkBoBIQRequest() throws Exception {
-        XmlPullParser parser = PacketParserUtils.getParserFor(sampleBoBIQRequest);
-        BoBIQ bobIQ = new BoBIQProvider().parse(parser);
-        bobIQ.setStanzaId("sarasa");
-        bobIQ.setTo(JidCreate.from("ladymacbeth@shakespeare.lit/castle"));
-        bobIQ.setType(Type.get);
-
         BoBHash bobHash = new BoBHash("8f35fef110ffc5df08d579a50083ff9308fb6242", "sha1");
 
         BoBIQ createdBoBIQ = new BoBIQ(bobHash);
@@ -55,14 +47,10 @@ public class BoBIQTest extends SmackTestSuite {
 
     @Test
     public void checkBoBIQResponse() throws Exception {
-        XmlPullParser parser = PacketParserUtils.getParserFor(sampleBoBIQResponse);
-        BoBIQ bobIQ = new BoBIQProvider().parse(parser);
-        bobIQ.setStanzaId("sarasa");
-        bobIQ.setTo(JidCreate.from("doctor@shakespeare.lit/pda"));
-        bobIQ.setType(Type.result);
+        BoBIQ bobIQ = PacketParserUtils.parseStanza(sampleBoBIQResponse);
 
         BoBHash bobHash = new BoBHash("8f35fef110ffc5df08d579a50083ff9308fb6242", "sha1");
-        BoBData bobData = new BoBData(86400, "image/png", "sarasade2354j2".getBytes());
+        BoBData bobData = new BoBData("image/png", "sarasade2354j2".getBytes(), 86400);
 
         BoBIQ createdBoBIQ = new BoBIQ(bobHash, bobData);
         createdBoBIQ.setStanzaId("sarasa");
@@ -73,7 +61,7 @@ public class BoBIQTest extends SmackTestSuite {
         Assert.assertEquals(bobIQ.getBoBHash().getHashType(), createdBoBIQ.getBoBHash().getHashType());
         Assert.assertEquals(bobIQ.getBoBData().getMaxAge(), createdBoBIQ.getBoBData().getMaxAge());
         Assert.assertEquals(bobIQ.getBoBData().getType(), createdBoBIQ.getBoBData().getType());
-        Assert.assertEquals(bobIQ.getBoBData().getBase64Encoded(), createdBoBIQ.getBoBData().getBase64Encoded());
+        Assert.assertEquals(bobIQ.getBoBData().getContentBase64Encoded(), createdBoBIQ.getBoBData().getContentBase64Encoded());
         Assert.assertEquals(bobIQ.toXML().toString(), createdBoBIQ.toXML().toString());
     }
 

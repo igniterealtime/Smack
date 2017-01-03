@@ -538,11 +538,6 @@
     </extensionProvider>
     
     <!-- XEP-0231: Bits of Binary -->
-    <extensionProvider>
-        <elementName>html</elementName>
-        <namespace>http://jabber.org/protocol/xhtml-im</namespace>
-        <className>org.jivesoftware.smackx.bob.provider.BoBExtensionProvider</className>
-    </extensionProvider>
     <iqProvider>
         <elementName>data</elementName>
         <namespace>urn:xmpp:bob</namespace>

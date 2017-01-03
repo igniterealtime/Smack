@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2016-2017 Fernando Ramirez, Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,34 +16,50 @@
  */
 package org.jivesoftware.smackx.bob;
 
-import java.io.UnsupportedEncodingException;
-
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
 /**
  * Bits of Binary data class.
  * 
  * @author Fernando Ramirez
+ * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0231.html">XEP-0231: Bits of
  *      Binary</a>
  */
 public class BoBData {
 
-    private final long maxAge;
+    private final int maxAge;
     private final String type;
-    private final byte[] content;
+
+    private byte[] contentBinary;
+    private String contentString;
+
+    public BoBData(String type, byte[] content) {
+        this(type, content, -1);
+    }
 
     /**
      * BoB data constructor.
      * 
-     * @param maxAge
      * @param type
      * @param content
+     * @param maxAge
      */
-    public BoBData(long maxAge, String type, byte[] content) {
-        this.maxAge = maxAge;
+    public BoBData(String type, byte[] content, int maxAge) {
         this.type = type;
-        this.content = content;
+        this.contentBinary = content;
+        this.maxAge = maxAge;
+    }
+
+    public BoBData(String type, String content) {
+        this(type, content, -1);
+    }
+
+    public BoBData(String type, String content, int maxAge) {
+        this.type = type;
+        this.contentString = content;
+        this.maxAge = maxAge;
     }
 
     /**
@@ -51,7 +67,7 @@ public class BoBData {
      * 
      * @return the max age
      */
-    public long getMaxAge() {
+    public int getMaxAge() {
         return maxAge;
     }
 
@@ -64,13 +80,21 @@ public class BoBData {
         return type;
     }
 
+    private void setContentBinaryIfRequired() {
+        if (contentBinary == null) {
+            assert(StringUtils.isNotEmpty(contentString));
+            contentBinary = Base64.decode(contentString);
+        }
+    }
+
     /**
      * Get the content.
      * 
      * @return the content
      */
     public byte[] getContent() {
-        return content;
+        setContentBinaryIfRequired();
+        return contentBinary.clone();
     }
 
     /**
@@ -78,13 +102,20 @@ public class BoBData {
      * 
      * @return the content in a Base64 encoded String
      */
-    public String getBase64Encoded() {
-        byte[] bytes = Base64.encode(content);
-        try {
-            return new String(bytes, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 is not supported.");
+    public String getContentBase64Encoded() {
+        if (contentString == null) {
+            contentString = Base64.encodeToString(getContent());
         }
+        return contentString;
     }
 
+    /**
+     * Check if the data is of reasonable size. XEP-0231 suggest that the size should not be more than 8 KiB.
+     *
+     * @return true if the data if of reasonable size.
+     */
+    public boolean isOfReasonableSize() {
+        setContentBinaryIfRequired();
+        return contentBinary.length <= 8 * 1024;
+    }
 }

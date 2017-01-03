@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.bob.provider;
 
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.stringencoder.Base64;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.bob.BoBData;
 import org.jivesoftware.smackx.bob.BoBHash;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
 /**
  * Bits of Binary IQ provider class.
  * 
- * @author Fernando Ramirez
+ * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0231.html">XEP-0231: Bits of
  *      Binary</a>
  */
@@ -34,34 +34,19 @@ public class BoBIQProvider extends IQProvider<BoBIQ> {
 
     @Override
     public BoBIQ parse(XmlPullParser parser, int initialDepth) throws Exception {
-        BoBHash bobHash = null;
-        BoBData bobData = null;
+        String cid = parser.getAttributeValue("", "cid");
+        BoBHash bobHash = BoBHash.fromCid(cid);
 
-        parser.next();
+        String dataType = parser.getAttributeValue("", "type");
+        int maxAge = ParserUtils.getIntegerAttribute(parser, "max-age", -1);
 
-        if (parser.getName().equals(BoBIQ.ELEMENT)) {
-            String cid = parser.getAttributeValue("", "cid");
-            bobHash = BoBHash.fromCid(cid);
+        String base64EncodedData = parser.nextText();
 
-            String dataType = parser.getAttributeValue("", "type");
-            String maxAgeString = parser.getAttributeValue("", "max-age");
-
-            long maxAge = 0;
-            if (maxAgeString != null) {
-                maxAge = Long.parseLong(maxAgeString);
-            }
-
-            String base64EncodedData = null;
-            try {
-                base64EncodedData = parser.nextText();
-            } catch (Exception e) {
-            }
-
-            if (base64EncodedData != null && dataType != null) {
-                byte[] base64EncodedDataBytes = base64EncodedData.getBytes();
-                bobData = new BoBData(maxAge, dataType, Base64.decode(base64EncodedDataBytes));
-            }
-
+        BoBData bobData;
+        if (dataType != null) {
+            bobData = new BoBData(dataType, base64EncodedData, maxAge);
+        } else {
+            bobData = null;
         }
 
         return new BoBIQ(bobHash, bobData);

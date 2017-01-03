@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,31 +16,23 @@
  */
 package org.jivesoftware.smackx.bob;
 
-import java.util.HashMap;
+import java.util.Set;
 
-/**
- * Default Bits of Binary Saver Manager class.
- * 
- * @author Fernando Ramirez
- *
- */
-public class DefaultBoBSaverManager implements BoBSaverManager {
+public class BoBInfo {
 
-    HashMap<BoBHash, BoBData> bobs = new HashMap<>();
+    private final Set<BoBHash> hashes;
+    private final BoBData data;
 
-    @Override
-    public void addBoB(BoBHash bobHash, BoBData bobData) {
-        bobs.put(bobHash, bobData);
+    BoBInfo(Set<BoBHash> hashes, BoBData data) {
+        this.hashes = hashes;
+        this.data = data;
     }
 
-    @Override
-    public void removeBoB(BoBHash bobHash) {
-        bobs.remove(bobHash);
+    public Set<BoBHash> getHashes() {
+        return hashes;
     }
 
-    @Override
-    public BoBData getBoB(BoBHash bobHash) {
-        return bobs.get(bobHash);
+    public BoBData getData() {
+        return data;
     }
-
 }

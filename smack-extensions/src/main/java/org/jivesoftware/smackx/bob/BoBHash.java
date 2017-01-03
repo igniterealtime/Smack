@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2016-2017 Fernando Ramirez, Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,13 @@
  */
 package org.jivesoftware.smackx.bob;
 
+import org.jivesoftware.smack.util.StringUtils;
+
 /**
  * Bits of Binary hash class.
  * 
  * @author Fernando Ramirez
+ * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0231.html">XEP-0231: Bits of
  *      Binary</a>
  */
@@ -27,6 +30,7 @@ public class BoBHash {
 
     private final String hash;
     private final String hashType;
+    private final String cid;
 
     /**
      * BoB hash constructor.
@@ -35,8 +39,9 @@ public class BoBHash {
      * @param hashType
      */
     public BoBHash(String hash, String hashType) {
-        this.hash = hash;
-        this.hashType = hashType;
+        this.hash = StringUtils.requireNotNullOrEmpty(hash, "hash must not be null or empty");
+        this.hashType = StringUtils.requireNotNullOrEmpty(hashType, "hashType must not be null or empty");
+        this.cid = this.hashType + '+' + this.hash + "@bob.xmpp.org";
     }
 
     /**
@@ -63,7 +68,7 @@ public class BoBHash {
      * @return src attribute string
      */
     public String toSrc() {
-        return "cid:" + toCid();
+        return "cid:" + getCid();
     }
 
     /**
@@ -71,8 +76,22 @@ public class BoBHash {
      * 
      * @return cid attribute string
      */
-    public String toCid() {
-        return this.hashType + "+" + this.hash + "@bob.xmpp.org";
+    public String getCid() {
+        return cid;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof BoBHash) {
+            BoBHash otherBob = (BoBHash) other;
+            return cid.equals(otherBob.cid);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return cid.hashCode();
     }
 
     /**
