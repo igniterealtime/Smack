@@ -173,6 +173,7 @@ public interface XMPPConnection {
      * @throws InterruptedException 
      * @deprecated use {@link #sendStanza(Stanza)} instead.
      */
+    // TODO Remove in 4.3.
     @Deprecated
     public void sendPacket(Stanza packet) throws NotConnectedException, InterruptedException;
 
@@ -294,6 +295,7 @@ public interface XMPPConnection {
      * @deprecated use {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)} or
      *             {@link #addSyncStanzaListener(StanzaListener, StanzaFilter)}.
      */
+    // TODO Remove in 4.3.
     @Deprecated
     public void addPacketListener(StanzaListener packetListener, StanzaFilter packetFilter);
 
@@ -304,6 +306,7 @@ public interface XMPPConnection {
      * @return true if the stanza(/packet) listener was removed
      * @deprecated use {@link #removeAsyncStanzaListener(StanzaListener)} or {@link #removeSyncStanzaListener(StanzaListener)}.
      */
+    // TODO Remove in 4.3.
     @Deprecated
     public boolean removePacketListener(StanzaListener packetListener);
 
