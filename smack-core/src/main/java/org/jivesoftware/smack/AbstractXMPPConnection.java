@@ -188,6 +188,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected Writer writer;
 
+    protected final SynchronizationPoint<SmackException> tlsHandled = new SynchronizationPoint<>(this, "establishing TLS");
+
     /**
      * Set to success if the last features stanza from the server has been parsed. A XMPP connection
      * handshake can invoke multiple features stanzas, e.g. when TLS is activated a second feature
@@ -198,9 +200,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     AbstractXMPPConnection.this, "last stream features received from server");
 
     /**
-     * Set to success if the sasl feature has been received.
+     * Set to success if the SASL feature has been received.
      */
-    protected final SynchronizationPoint<SmackException> saslFeatureReceived = new SynchronizationPoint<SmackException>(
+    protected final SynchronizationPoint<XMPPException> saslFeatureReceived = new SynchronizationPoint<>(
                     AbstractXMPPConnection.this, "SASL mechanisms stream feature from server");
 
     /**
@@ -368,10 +370,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         saslAuthentication.init();
         saslFeatureReceived.init();
         lastFeaturesReceived.init();
+        tlsHandled.init();
         streamId = null;
 
         // Perform the actual connection to the XMPP service
         connectInternal();
+
+        // TLS handled will be successful either if TLS was established, or if it was not mandatory.
+        tlsHandled.checkIfSuccessOrWaitOrThrow();
 
         // Wait with SASL auth until the SASL mechanisms have been received
         saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
@@ -1407,6 +1413,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             // Only proceed with SASL auth if TLS is disabled or if the server doesn't announce it
             if (!hasFeature(StartTls.ELEMENT, StartTls.NAMESPACE)
                             || config.getSecurityMode() == SecurityMode.disabled) {
+                tlsHandled.reportSuccess();
                 saslFeatureReceived.reportSuccess();
             }
         }

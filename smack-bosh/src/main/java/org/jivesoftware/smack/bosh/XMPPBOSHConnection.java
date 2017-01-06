@@ -198,6 +198,9 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                     + getHost() + ":" + getPort() + ".";
             throw new SmackException(errorMessage);
         }
+
+        tlsHandled.reportSuccess();
+        saslFeatureReceived.reportSuccess();
     }
 
     public boolean isSecureConnection() {
