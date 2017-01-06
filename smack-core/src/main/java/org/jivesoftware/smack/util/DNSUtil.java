@@ -250,14 +250,16 @@ public class DNSUtil {
             List<SRVRecord> bucket = buckets.get(priority);
             int bucketSize;
             while ((bucketSize = bucket.size()) > 0) {
-                int[] totals = new int[bucket.size()];
+                int[] totals = new int[bucketSize];
                 int running_total = 0;
                 int count = 0;
                 int zeroWeight = 1;
 
                 for (SRVRecord r : bucket) {
-                    if (r.getWeight() > 0)
+                    if (r.getWeight() > 0) {
                         zeroWeight = 0;
+                        break;
+                    }
                 }
 
                 for (SRVRecord r : bucket) {
