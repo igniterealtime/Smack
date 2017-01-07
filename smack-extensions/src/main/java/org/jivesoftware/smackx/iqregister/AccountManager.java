@@ -335,7 +335,8 @@ public final class AccountManager extends Manager {
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         XMPPConnection connection = connection();
 
-        ExtensionElement extensionElement = connection.getFeature(Registration.ELEMENT, Registration.NAMESPACE);
+        ExtensionElement extensionElement = connection.getFeature(Registration.Feature.ELEMENT,
+                        Registration.Feature.NAMESPACE);
         if (extensionElement != null) {
             return true;
         }
