@@ -594,6 +594,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
                 failedAddresses.add(hostAddress);
             } else {
+                socket = socketFactory.createSocket();
                 StringUtils.requireNotNullOrEmpty(host, "Host of HostAddress " + hostAddress + " must not be null when using a Proxy");
                 final String hostAndPort = host + " at port " + port;
                 LOGGER.finer("Trying to establish TCP connection via Proxy to " + hostAndPort);
