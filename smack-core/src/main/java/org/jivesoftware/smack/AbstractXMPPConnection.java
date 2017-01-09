@@ -602,7 +602,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected List<HostAddress> hostAddresses;
 
     /**
-     * Populates {@link #hostAddresses} with at least one host address.
+     * Populates {@link #hostAddresses} with the resolved addresses or with the configured host address. If no host
+     * address was configured and all lookups failed, for example with NX_DOMAIN, then {@link #hostAddresses} will be
+     * populated with the empty list.
      *
      * @return a list of host addresses where DNS (SRV) RR resolution failed.
      */
@@ -616,14 +618,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         else if (config.host != null) {
             hostAddresses = new ArrayList<HostAddress>(1);
             HostAddress hostAddress = DNSUtil.getDNSResolver().lookupHostAddress(config.host, config.port, failedAddresses, config.getDnssecMode());
-            hostAddresses.add(hostAddress);
+            if (hostAddress != null) {
+                hostAddresses.add(hostAddress);
+            }
         } else {
             // N.B.: Important to use config.serviceName and not AbstractXMPPConnection.serviceName
             hostAddresses = DNSUtil.resolveXMPPServiceDomain(config.getXMPPServiceDomain().toString(), failedAddresses, config.getDnssecMode());
         }
-        // If we reach this, then hostAddresses *must not* be empty, i.e. there is at least one host added, either the
-        // config.host one or the host representing the service name by DNSUtil
-        assert(!hostAddresses.isEmpty());
+        // Either the populated host addresses are not empty *or* there must be at least one failed address.
+        assert(!hostAddresses.isEmpty() || !failedAddresses.isEmpty());
         return failedAddresses;
     }
 
