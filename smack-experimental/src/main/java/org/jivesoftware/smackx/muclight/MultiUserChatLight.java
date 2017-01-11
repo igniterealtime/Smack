@@ -28,8 +28,6 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.chat.Chat;
-import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatMessageListener;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
@@ -146,8 +144,10 @@ public class MultiUserChatLight {
      *            for the newly created chat.
      * @return new Chat for sending private messages to a given room occupant.
      */
-    public Chat createPrivateChat(EntityJid occupant, ChatMessageListener listener) {
-        return ChatManager.getInstanceFor(connection).createChat(occupant, listener);
+    @Deprecated
+    // Do not re-use Chat API, which was designed for XMPP-IM 1:1 chats and not MUClight private chats.
+    public org.jivesoftware.smack.chat.Chat createPrivateChat(EntityJid occupant, ChatMessageListener listener) {
+        return org.jivesoftware.smack.chat.ChatManager.getInstanceFor(connection).createChat(occupant, listener);
     }
 
     /**

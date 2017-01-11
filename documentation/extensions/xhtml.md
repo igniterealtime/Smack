@@ -97,8 +97,8 @@ done. The last step is to send the message as you do with any other message.
 
 An XHTML message is like any regular message, therefore to send the message
 you can follow the usual steps you do in order to send a message. For example,
-to send a message as part of a chat just use the message **#send(Message)** of
-_**Chat**_ or you can use the message **#send(Stanza)** of
+to send a message as part of a chat just use the message **#sendMessage(Message)** of
+_**Chat**_ or you can use the message **#sendStanza(Stanza)** of
 _**XMPPConnection**_.
 
 **Example**
@@ -142,19 +142,20 @@ XHTML bodies of any received message.
 
 ```
 // Create a listener for the chat and display any XHTML content
-PacketListener packetListener = new PacketListener() {
-public void processStanza(Stanza stanza) {
-    Message message = (Message) stanza;
+IncomingChatMessageListener listener = new IncomingChatMessageListener() {
+public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
     // Obtain the XHTML bodies of the message
     List<CharSequence> bodies = XHTMLManager.getBodies(message);
-    if (bodies != null) {
-	    // Display the bodies on the console
-        for (CharSequence body : bodies) {
-		    System.out.println(body);
-        }
+    if (bodies == null) {
+        return;
+
+    // Display the bodies on the console
+    for (CharSequence body : bodies) {
+        System.out.println(body);
     }
+}
 };
-chat.addMessageListener(packetListener);
+chatManager.addListener(listener);
 ```
 
 Discover support for XHTML Messages

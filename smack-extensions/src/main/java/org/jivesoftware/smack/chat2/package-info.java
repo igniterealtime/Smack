@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,7 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smack.chat;
-
 /**
- * A listener for chat related events.
- *
- * @author Alexander Wenckus
+ * Smack's new improved API for 1:1 chats.
  */
-public interface ChatManagerListener {
-
-    /**
-     * Event fired when a new chat is created.
-     *
-     * @param chat the chat that was created.
-     * @param createdLocally true if the chat was created by the local user and false if it wasn't.
-     */
-    @SuppressWarnings("deprecation")
-    void chatCreated(Chat chat, boolean createdLocally);
-}
+package org.jivesoftware.smack.chat2;

@@ -52,7 +52,9 @@ import org.jxmpp.jid.EntityJid;
  * made aware of new chats, register a listener by calling {@link #addChatListener(ChatManagerListener)}.
  *
  * @author Alexander Wenckus
+ * @deprecated use <code>org.jivesoftware.smack.chat2.ChatManager</code> from <code>smack-extensions</code> instead.
  */
+@Deprecated
 public final class ChatManager extends Manager{
 
     private static final Logger LOGGER = Logger.getLogger(ChatManager.class.getName());

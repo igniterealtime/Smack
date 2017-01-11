@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2017 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jivesoftware.smack.chat2;
 
-package org.jivesoftware.smack.chat;
+import org.jivesoftware.smack.packet.Message;
+import org.jxmpp.jid.EntityBareJid;
 
-/**
- * A listener for chat related events.
- *
- * @author Alexander Wenckus
- */
-public interface ChatManagerListener {
+public interface OutgoingChatMessageListener {
 
-    /**
-     * Event fired when a new chat is created.
-     *
-     * @param chat the chat that was created.
-     * @param createdLocally true if the chat was created by the local user and false if it wasn't.
-     */
-    @SuppressWarnings("deprecation")
-    void chatCreated(Chat chat, boolean createdLocally);
+    void newOutgoingMessage(EntityBareJid to, Message message, Chat chat);
+
 }

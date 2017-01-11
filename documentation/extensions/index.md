@@ -69,6 +69,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | XMPP Over BOSH                              | [XEP-0206](http://xmpp.org/extensions/xep-0206.html) | Use Bidirectional-streams Over Synchronous HTTP (BOSH) to transport XMPP stanzas. |
 | Attention                                   | [XEP-0224](http://xmpp.org/extensions/xep-0224.html) | Getting attention of another user. |
 | Bits of Binary                              | [XEP-0231](http://xmpp.org/extensions/xep-0231.html) | Including or referring to small bits of binary data in an XML stanza. |
+| Best Practices for Resource Locking         | [XEP-0296](https://xmpp.org/extensions/xep-0296.html) | Specifies best practices to be followed by Jabber/XMPP clients about when to lock into, and unlock away from, resources. |
 | Last Message Correction                     | [XEP-0308](http://xmpp.org/extensions/xep-0308.html) | Provides a method for indicating that a message is a correction of the last sent message. |
 | [Group Chat Invitations](invitation.md)   | n/a                                                      | Send invitations to other users to join a group chat room. |
 | [Jive Properties](properties.md)          | n/a                                                      | TODO |
