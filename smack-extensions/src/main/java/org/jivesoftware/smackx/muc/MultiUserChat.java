@@ -355,7 +355,7 @@ public class MultiUserChat {
      * @since 4.2
      */
     public MucEnterConfiguration.Builder getEnterConfigurationBuilder(Resourcepart nickname) {
-        return new MucEnterConfiguration.Builder(nickname, connection.getPacketReplyTimeout());
+        return new MucEnterConfiguration.Builder(nickname, connection.getReplyTimeout());
     }
 
     /**

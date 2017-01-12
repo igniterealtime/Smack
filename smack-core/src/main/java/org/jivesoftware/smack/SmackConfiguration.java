@@ -101,8 +101,32 @@ public final class SmackConfiguration {
      * the server. The default value is 5000 ms.
      * 
      * @return the milliseconds to wait for a response from the server
+     * @deprecated use {@link #getDefaultReplyTimeout()} instead.
      */
+    @Deprecated
     public static int getDefaultPacketReplyTimeout() {
+        return getDefaultReplyTimeout();
+    }
+
+    /**
+     * Sets the number of milliseconds to wait for a response from
+     * the server.
+     * 
+     * @param timeout the milliseconds to wait for a response from the server
+     * @deprecated use {@link #setDefaultReplyTimeout(int)} instead.
+     */
+    @Deprecated
+    public static void setDefaultPacketReplyTimeout(int timeout) {
+        setDefaultReplyTimeout(timeout);
+    }
+
+    /**
+     * Returns the number of milliseconds to wait for a response from
+     * the server. The default value is 5000 ms.
+     * 
+     * @return the milliseconds to wait for a response from the server
+     */
+    public static int getDefaultReplyTimeout() {
         // The timeout value must be greater than 0 otherwise we will answer the default value
         if (defaultPacketReplyTimeout <= 0) {
             defaultPacketReplyTimeout = 5000;
@@ -116,7 +140,7 @@ public final class SmackConfiguration {
      * 
      * @param timeout the milliseconds to wait for a response from the server
      */
-    public static void setDefaultPacketReplyTimeout(int timeout) {
+    public static void setDefaultReplyTimeout(int timeout) {
         if (timeout <= 0) {
             throw new IllegalArgumentException();
         }

@@ -161,7 +161,7 @@ public class StanzaCollector {
      * @throws InterruptedException 
      */
     public <P extends Stanza> P nextResult() throws InterruptedException {
-        return nextResult(connection.getPacketReplyTimeout());
+        return nextResult(connection.getReplyTimeout());
     }
 
     private volatile long waitStart;
@@ -205,7 +205,7 @@ public class StanzaCollector {
      */
     public <P extends Stanza> P nextResultOrThrow() throws NoResponseException, XMPPErrorException,
                     InterruptedException, NotConnectedException {
-        return nextResultOrThrow(connection.getPacketReplyTimeout());
+        return nextResultOrThrow(connection.getReplyTimeout());
     }
 
     /**

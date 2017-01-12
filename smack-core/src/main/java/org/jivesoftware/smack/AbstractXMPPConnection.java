@@ -169,9 +169,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected String streamId;
 
     /**
-     * 
+     * The timeout to wait for a reply in milliseconds.
      */
-    private long packetReplyTimeout = SmackConfiguration.getDefaultPacketReplyTimeout();
+    private long replyTimeout = SmackConfiguration.getDefaultReplyTimeout();
 
     /**
      * The SmackDebugger allows to log and debug XML traffic.
@@ -969,14 +969,26 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public long getPacketReplyTimeout() {
-        return packetReplyTimeout;
+        return getReplyTimeout();
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void setPacketReplyTimeout(long timeout) {
+        setReplyTimeout(timeout);
     }
 
     @Override
-    public void setPacketReplyTimeout(long timeout) {
-        packetReplyTimeout = timeout;
+    public long getReplyTimeout() {
+        return replyTimeout;
+    }
+
+    @Override
+    public void setReplyTimeout(long timeout) {
+        replyTimeout = timeout;
     }
 
     private static boolean replyToUnknownIqDefault = true;
@@ -1466,7 +1478,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     StanzaListener callback, ExceptionCallback exceptionCallback)
                     throws NotConnectedException, InterruptedException {
         sendStanzaWithResponseCallback(stanza, replyFilter, callback, exceptionCallback,
-                        getPacketReplyTimeout());
+                        getReplyTimeout());
     }
 
     @Override
@@ -1527,7 +1539,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback,
                     ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException {
-        sendIqWithResponseCallback(iqRequest, callback, exceptionCallback, getPacketReplyTimeout());
+        sendIqWithResponseCallback(iqRequest, callback, exceptionCallback, getReplyTimeout());
     }
 
     @Override
@@ -1556,7 +1568,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             public void run() {
                 removeSyncStanzaListener(packetListener);
             }
-        }, getPacketReplyTimeout(), TimeUnit.MILLISECONDS);
+        }, getReplyTimeout(), TimeUnit.MILLISECONDS);
     }
 
     @Override

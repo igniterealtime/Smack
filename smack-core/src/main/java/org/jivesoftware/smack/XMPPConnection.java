@@ -407,7 +407,9 @@ public interface XMPPConnection {
      * XMPPConnection instance.
      *
      * @return the stanza(/packet) reply timeout in milliseconds
+     * @deprecated use {@link #getReplyTimeout()} instead.
      */
+    @Deprecated
     public long getPacketReplyTimeout();
 
     /**
@@ -415,8 +417,26 @@ public interface XMPPConnection {
      * {@link NoResponseException} if no reply to a request was received within the timeout period.
      *
      * @param timeout the stanza(/packet) reply timeout in milliseconds
+     * @deprecated use {@link #setReplyTimeout(long)} instead.
      */
+    @Deprecated
     public void setPacketReplyTimeout(long timeout);
+
+    /**
+     * Returns the current value of the reply timeout in milliseconds for request for this
+     * XMPPConnection instance.
+     *
+     * @return the reply timeout in milliseconds
+     */
+    public long getReplyTimeout();
+
+    /**
+     * Set the stanza(/packet) reply timeout in milliseconds. In most cases, Smack will throw a
+     * {@link NoResponseException} if no reply to a request was received within the timeout period.
+     *
+     * @param timeout for a reply in milliseconds
+     */
+    public void setReplyTimeout(long timeout);
 
     /**
      * Get the connection counter of this XMPPConnection instance. Those can be used as ID to
