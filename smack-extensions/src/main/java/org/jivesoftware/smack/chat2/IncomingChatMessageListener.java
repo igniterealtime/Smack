@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2017 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.iot.data.element;
+package org.jivesoftware.smack.chat2;
 
-public class Constants {
+import org.jivesoftware.smack.packet.Message;
+import org.jxmpp.jid.EntityBareJid;
 
-    public static final String IOT_SENSORDATA_NAMESPACE = "urn:xmpp:iot:sensordata";
+public interface IncomingChatMessageListener {
+
+    void newIncomingMessage(EntityBareJid from, Message message, Chat chat);
 
 }

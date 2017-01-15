@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.initializer.SmackInitializer;
@@ -126,10 +128,28 @@ public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
             return null;
         }
 
-        List<InetAddress> inetAddresses = new ArrayList<>(aResult.getAnswers().size()
-                        + aaaaResult.getAnswers().size());
+        // TODO: Use ResolverResult.getAnswersOrEmptySet() once we updated MiniDNS.
+        Set<A> aResults;
+        if (aResult.wasSuccessful()) {
+            aResults = aResult.getAnswers();
+        }
+        else {
+            aResults = Collections.emptySet();
+        }
 
-        for (A a : aResult.getAnswers()) {
+        // TODO: Use ResolverResult.getAnswersOrEmptySet() once we updated MiniDNS.
+        Set<AAAA> aaaaResults;
+        if (aaaaResult.wasSuccessful()) {
+            aaaaResults = aaaaResult.getAnswers();
+        }
+        else {
+            aaaaResults = Collections.emptySet();
+        }
+
+        List<InetAddress> inetAddresses = new ArrayList<>(aResults.size()
+                        + aaaaResults.size());
+
+        for (A a : aResults) {
             InetAddress inetAddress;
             try {
                 inetAddress = InetAddress.getByAddress(a.getIp());
@@ -139,7 +159,7 @@ public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
             }
             inetAddresses.add(inetAddress);
         }
-        for (AAAA aaaa : aaaaResult.getAnswers()) {
+        for (AAAA aaaa : aaaaResults) {
             InetAddress inetAddress;
             try {
                 inetAddress = InetAddress.getByAddress(name, aaaa.getIp());

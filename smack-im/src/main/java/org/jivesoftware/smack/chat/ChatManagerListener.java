@@ -30,5 +30,6 @@ public interface ChatManagerListener {
      * @param chat the chat that was created.
      * @param createdLocally true if the chat was created by the local user and false if it wasn't.
      */
+    @SuppressWarnings("deprecation")
     void chatCreated(Chat chat, boolean createdLocally);
 }

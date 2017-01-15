@@ -104,7 +104,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         try {
             rosterOne.createEntry(conTwo.getUser().asBareJid(), conTwosRosterName, null);
 
-            assertTrue(addedAndSubscribed.waitForResult(2 * connection.getPacketReplyTimeout()));
+            assertTrue(addedAndSubscribed.waitForResult(2 * connection.getReplyTimeout()));
         }
         finally {
             rosterTwo.removeSubscribeListener(subscribeListener);

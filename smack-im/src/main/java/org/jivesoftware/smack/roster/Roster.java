@@ -473,7 +473,7 @@ public final class Roster extends Manager {
     }
 
     protected boolean waitUntilLoaded() throws InterruptedException {
-        long waitTime = connection().getPacketReplyTimeout();
+        long waitTime = connection().getReplyTimeout();
         long start = System.currentTimeMillis();
         while (!isLoaded()) {
             if (waitTime <= 0) {

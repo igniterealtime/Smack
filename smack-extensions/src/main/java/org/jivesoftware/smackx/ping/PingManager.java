@@ -186,7 +186,7 @@ public final class PingManager extends Manager {
      * @throws InterruptedException 
      */
     public boolean ping(Jid jid) throws NotConnectedException, NoResponseException, InterruptedException {
-        return ping(jid, connection().getPacketReplyTimeout());
+        return ping(jid, connection().getReplyTimeout());
     }
 
     /**
@@ -231,7 +231,7 @@ public final class PingManager extends Manager {
      * @throws InterruptedException 
      */
     public boolean pingMyServer(boolean notifyListeners) throws NotConnectedException, InterruptedException {
-        return pingMyServer(notifyListeners, connection().getPacketReplyTimeout());
+        return pingMyServer(notifyListeners, connection().getReplyTimeout());
     }
 
     /**

@@ -169,9 +169,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected String streamId;
 
     /**
-     * 
+     * The timeout to wait for a reply in milliseconds.
      */
-    private long packetReplyTimeout = SmackConfiguration.getDefaultPacketReplyTimeout();
+    private long replyTimeout = SmackConfiguration.getDefaultReplyTimeout();
 
     /**
      * The SmackDebugger allows to log and debug XML traffic.
@@ -188,6 +188,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected Writer writer;
 
+    protected final SynchronizationPoint<SmackException> tlsHandled = new SynchronizationPoint<>(this, "establishing TLS");
+
     /**
      * Set to success if the last features stanza from the server has been parsed. A XMPP connection
      * handshake can invoke multiple features stanzas, e.g. when TLS is activated a second feature
@@ -198,9 +200,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     AbstractXMPPConnection.this, "last stream features received from server");
 
     /**
-     * Set to success if the sasl feature has been received.
+     * Set to success if the SASL feature has been received.
      */
-    protected final SynchronizationPoint<SmackException> saslFeatureReceived = new SynchronizationPoint<SmackException>(
+    protected final SynchronizationPoint<XMPPException> saslFeatureReceived = new SynchronizationPoint<>(
                     AbstractXMPPConnection.this, "SASL mechanisms stream feature from server");
 
     /**
@@ -368,10 +370,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         saslAuthentication.init();
         saslFeatureReceived.init();
         lastFeaturesReceived.init();
+        tlsHandled.init();
         streamId = null;
 
         // Perform the actual connection to the XMPP service
         connectInternal();
+
+        // TLS handled will be successful either if TLS was established, or if it was not mandatory.
+        tlsHandled.checkIfSuccessOrWaitOrThrow();
 
         // Wait with SASL auth until the SASL mechanisms have been received
         saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
@@ -596,7 +602,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected List<HostAddress> hostAddresses;
 
     /**
-     * Populates {@link #hostAddresses} with at least one host address.
+     * Populates {@link #hostAddresses} with the resolved addresses or with the configured host address. If no host
+     * address was configured and all lookups failed, for example with NX_DOMAIN, then {@link #hostAddresses} will be
+     * populated with the empty list.
      *
      * @return a list of host addresses where DNS (SRV) RR resolution failed.
      */
@@ -610,14 +618,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         else if (config.host != null) {
             hostAddresses = new ArrayList<HostAddress>(1);
             HostAddress hostAddress = DNSUtil.getDNSResolver().lookupHostAddress(config.host, config.port, failedAddresses, config.getDnssecMode());
-            hostAddresses.add(hostAddress);
+            if (hostAddress != null) {
+                hostAddresses.add(hostAddress);
+            }
         } else {
             // N.B.: Important to use config.serviceName and not AbstractXMPPConnection.serviceName
             hostAddresses = DNSUtil.resolveXMPPServiceDomain(config.getXMPPServiceDomain().toString(), failedAddresses, config.getDnssecMode());
         }
-        // If we reach this, then hostAddresses *must not* be empty, i.e. there is at least one host added, either the
-        // config.host one or the host representing the service name by DNSUtil
-        assert(!hostAddresses.isEmpty());
+        // Either the populated host addresses are not empty *or* there must be at least one failed address.
+        assert(!hostAddresses.isEmpty() || !failedAddresses.isEmpty());
         return failedAddresses;
     }
 
@@ -960,14 +969,26 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public long getPacketReplyTimeout() {
-        return packetReplyTimeout;
+        return getReplyTimeout();
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void setPacketReplyTimeout(long timeout) {
+        setReplyTimeout(timeout);
     }
 
     @Override
-    public void setPacketReplyTimeout(long timeout) {
-        packetReplyTimeout = timeout;
+    public long getReplyTimeout() {
+        return replyTimeout;
+    }
+
+    @Override
+    public void setReplyTimeout(long timeout) {
+        replyTimeout = timeout;
     }
 
     private static boolean replyToUnknownIqDefault = true;
@@ -1407,6 +1428,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             // Only proceed with SASL auth if TLS is disabled or if the server doesn't announce it
             if (!hasFeature(StartTls.ELEMENT, StartTls.NAMESPACE)
                             || config.getSecurityMode() == SecurityMode.disabled) {
+                tlsHandled.reportSuccess();
                 saslFeatureReceived.reportSuccess();
             }
         }
@@ -1456,7 +1478,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     StanzaListener callback, ExceptionCallback exceptionCallback)
                     throws NotConnectedException, InterruptedException {
         sendStanzaWithResponseCallback(stanza, replyFilter, callback, exceptionCallback,
-                        getPacketReplyTimeout());
+                        getReplyTimeout());
     }
 
     @Override
@@ -1517,7 +1539,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback,
                     ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException {
-        sendIqWithResponseCallback(iqRequest, callback, exceptionCallback, getPacketReplyTimeout());
+        sendIqWithResponseCallback(iqRequest, callback, exceptionCallback, getReplyTimeout());
     }
 
     @Override
@@ -1546,7 +1568,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             public void run() {
                 removeSyncStanzaListener(packetListener);
             }
-        }, getPacketReplyTimeout(), TimeUnit.MILLISECONDS);
+        }, getReplyTimeout(), TimeUnit.MILLISECONDS);
     }
 
     @Override

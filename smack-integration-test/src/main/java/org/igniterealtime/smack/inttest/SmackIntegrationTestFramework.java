@@ -133,7 +133,7 @@ public class SmackIntegrationTestFramework {
             SmackConfiguration.DEBUG = true;
         }
         if (config.replyTimeout > 0) {
-            SmackConfiguration.setDefaultPacketReplyTimeout(config.replyTimeout);
+            SmackConfiguration.setDefaultReplyTimeout(config.replyTimeout);
         }
         if (config.securityMode != SecurityMode.required) {
             AccountManager.sensitiveOperationOverInsecureConnectionDefault(true);

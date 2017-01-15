@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smackx.chatstates;
 
-import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatMessageListener;
 import org.jivesoftware.smack.packet.Message;
 
@@ -35,5 +34,7 @@ public interface ChatStateListener extends ChatMessageListener {
      * @param state the new state of the participant.
      * @param message the message carrying the chat state.
      */
-    void stateChanged(Chat chat, ChatState state, Message message);
+    // TODO Migrate to new chat2 API on Smack 4.3.
+    @SuppressWarnings("deprecation")
+    void stateChanged(org.jivesoftware.smack.chat.Chat chat, ChatState state, Message message);
 }

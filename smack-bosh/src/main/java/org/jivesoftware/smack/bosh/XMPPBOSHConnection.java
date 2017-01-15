@@ -182,7 +182,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         // Wait for the response from the server
         synchronized (this) {
             if (!connected) {
-                final long deadline = System.currentTimeMillis() + getPacketReplyTimeout();
+                final long deadline = System.currentTimeMillis() + getReplyTimeout();
                 while (!notified) {
                     final long now = System.currentTimeMillis();
                     if (now >= deadline) break;
@@ -198,6 +198,9 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                     + getHost() + ":" + getPort() + ".";
             throw new SmackException(errorMessage);
         }
+
+        tlsHandled.reportSuccess();
+        saslFeatureReceived.reportSuccess();
     }
 
     public boolean isSecureConnection() {

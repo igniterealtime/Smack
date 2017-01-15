@@ -28,7 +28,7 @@ public class SmackConfigurationTest {
     @Test
     public void testSmackConfiguration() {
         try {
-            SmackConfiguration.getDefaultPacketReplyTimeout();
+            SmackConfiguration.getDefaultReplyTimeout();
         } catch (Throwable t) {
             fail("SmackConfiguration threw Throwable");
         }
@@ -40,7 +40,7 @@ public class SmackConfigurationTest {
     @Ignore
     @Test
     public void smackConfigurationShouldNotCauseInitializationTest() {
-        SmackConfiguration.getDefaultPacketReplyTimeout();
+        SmackConfiguration.getDefaultReplyTimeout();
 
         // Only a call to SmackConfiguration.getVersion() should cause Smack to become initialized.
         assertFalse(SmackConfiguration.isSmackInitialized());

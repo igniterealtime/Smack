@@ -36,7 +36,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * sender.
  * 
  * @author Matt Tucker
+ * @deprecated use <code>org.jivesoftware.smack.chat2.Chat</code> from <code>smack-extensions</code> instead.
  */
+@Deprecated
 public class Chat {
 
     private ChatManager chatManager;

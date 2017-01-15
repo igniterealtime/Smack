@@ -248,7 +248,7 @@ public class PingTest extends InitExtensions {
      */
     private static DummyConnection getAuthenticatedDummyConnectionWithoutIqReplies() throws SmackException, IOException, XMPPException, InterruptedException {
         DummyConnection con = new DummyConnection();
-        con.setPacketReplyTimeout(500);
+        con.setReplyTimeout(500);
         con.connect();
         con.login();
         return con;

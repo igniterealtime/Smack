@@ -26,8 +26,6 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaCollector;
-import org.jivesoftware.smack.chat.Chat;
-import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -51,7 +49,8 @@ public class FormTest extends AbstractSmackIntegrationTest {
      * @throws InterruptedException 
      * @throws NotConnectedException 
      */
-    @SmackIntegrationTest
+    @SuppressWarnings("deprecation")
+	@SmackIntegrationTest
     public void testFilloutForm() throws NotConnectedException, InterruptedException {
         Form formToSend = new Form(DataForm.Type.form);
         formToSend.setInstructions(
@@ -88,7 +87,7 @@ public class FormTest extends AbstractSmackIntegrationTest {
         formToSend.addField(field);
 
         // Create the chats between the two participants
-        Chat chat = ChatManager.getInstanceFor(conOne).createChat(conTwo.getUser(), null);
+        org.jivesoftware.smack.chat.Chat chat = org.jivesoftware.smack.chat.ChatManager.getInstanceFor(conOne).createChat(conTwo.getUser(), null);
         StanzaCollector collector = conOne.createStanzaCollector(
                 new ThreadFilter(chat.getThreadID()));
         StanzaCollector collector2 = conTwo.createStanzaCollector(

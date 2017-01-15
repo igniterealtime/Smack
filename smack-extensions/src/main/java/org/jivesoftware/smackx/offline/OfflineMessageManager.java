@@ -158,12 +158,14 @@ public class OfflineMessageManager {
                 return nodes.contains(info.getNode());
             }
         });
+        int pendingNodes = nodes.size();
         StanzaCollector messageCollector = connection.createStanzaCollector(messageFilter);
         try {
             connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
             // Collect the received offline messages
             Message message = messageCollector.nextResult();
-            while (message != null) {
+            while (message != null && pendingNodes > 0) {
+                pendingNodes--;
                 messages.add(message);
                 message = messageCollector.nextResult();
             }

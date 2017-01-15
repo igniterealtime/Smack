@@ -37,8 +37,6 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.chat.Chat;
-import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatMessageListener;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
@@ -357,7 +355,7 @@ public class MultiUserChat {
      * @since 4.2
      */
     public MucEnterConfiguration.Builder getEnterConfigurationBuilder(Resourcepart nickname) {
-        return new MucEnterConfiguration.Builder(nickname, connection.getPacketReplyTimeout());
+        return new MucEnterConfiguration.Builder(nickname, connection.getReplyTimeout());
     }
 
     /**
@@ -1847,8 +1845,11 @@ public class MultiUserChat {
      * created chat.
      * @return new Chat for sending private messages to a given room occupant.
      */
-    public Chat createPrivateChat(EntityFullJid occupant, ChatMessageListener listener) {
-        return ChatManager.getInstanceFor(connection).createChat(occupant, listener);
+    // TODO This should be made new not using chat.Chat. Private MUC chats are different from XMPP-IM 1:1 chats in to many ways.
+    // API sketch: PrivateMucChat createPrivateChat(Resourcepart nick)
+    @SuppressWarnings("deprecation")
+    public org.jivesoftware.smack.chat.Chat createPrivateChat(EntityFullJid occupant, ChatMessageListener listener) {
+        return org.jivesoftware.smack.chat.ChatManager.getInstanceFor(connection).createChat(occupant, listener);
     }
 
     /**

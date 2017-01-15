@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.iot.data.element;
 
-public class Constants {
-
-    public static final String IOT_SENSORDATA_NAMESPACE = "urn:xmpp:iot:sensordata";
-
-}
+/**
+ * Smack's new improved API for 1:1 chats.
+ */
+package org.jivesoftware.smack.chat2;

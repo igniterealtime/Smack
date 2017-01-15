@@ -96,7 +96,7 @@ public abstract class StreamNegotiator {
         final String eventKey = initiation.getFrom().toString() + '\t' + initiation.getSessionID();
         IQ streamMethodInitiation;
         try {
-            streamMethodInitiation = initationSetEvents.performActionAndWaitForEvent(eventKey, connection.getPacketReplyTimeout(), new Callback<NotConnectedException>() {
+            streamMethodInitiation = initationSetEvents.performActionAndWaitForEvent(eventKey, connection.getReplyTimeout(), new Callback<NotConnectedException>() {
                 @Override
                 public void action() throws NotConnectedException {
                     try {

@@ -335,12 +335,19 @@ public final class AccountManager extends Manager {
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         XMPPConnection connection = connection();
 
-        ExtensionElement extensionElement = connection.getFeature(Registration.ELEMENT, Registration.NAMESPACE);
+        ExtensionElement extensionElement = connection.getFeature(Registration.Feature.ELEMENT,
+                        Registration.Feature.NAMESPACE);
         if (extensionElement != null) {
             return true;
         }
 
-        return ServiceDiscoveryManager.getInstanceFor(connection).serverSupportsFeature(Registration.NAMESPACE);
+        // Fallback to disco#info only if this connection is authenticated, as otherwise we won't have an full JID and
+        // won't be able to do IQs.
+        if (connection.isAuthenticated()) {
+            return ServiceDiscoveryManager.getInstanceFor(connection).serverSupportsFeature(Registration.NAMESPACE);
+        }
+
+        return false;
     }
 
     /**

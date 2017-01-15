@@ -89,7 +89,7 @@ public class TlsTest {
 
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
 
-        connection.setPacketReplyTimeout(20000);
+        connection.setReplyTimeout(20000);
 
         try {
             connection.connect().login();
