@@ -178,17 +178,17 @@
     <!-- XEP-0323: Internet of Things - Data -->
     <iqProvider>
       <elementName>req</elementName>
-      <namespace>urn:xmpp:iot:data</namespace>
+      <namespace>urn:xmpp:iot:sensordata</namespace>
       <className>org.jivesoftware.smackx.iot.data.provider.IoTDataRequestProvider</className>
     </iqProvider>
     <iqProvider>
       <elementName>accepted</elementName>
-      <namespace>urn:xmpp:iot:data</namespace>
+      <namespace>urn:xmpp:iot:sensordata</namespace>
       <className>org.jivesoftware.smackx.iot.data.provider.IoTDataReadOutAcceptedProvider</className>
     </iqProvider>
     <extensionProvider>
       <elementName>fields</elementName>
-      <namespace>urn:xmpp:iot:data</namespace>
+      <namespace>urn:xmpp:iot:sensordata</namespace>
       <className>org.jivesoftware.smackx.iot.data.provider.IoTFieldsExtensionProvider</className>
     </extensionProvider>
 
