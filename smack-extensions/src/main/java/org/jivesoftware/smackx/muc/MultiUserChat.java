@@ -331,7 +331,7 @@ public class MultiUserChat {
         try {
             presence = connection.createStanzaCollectorAndSend(responseFilter, joinPresence).nextResultOrThrow(conf.getTimeout());
         }
-        catch (InterruptedException | NoResponseException | XMPPErrorException e) {
+        catch (NotConnectedException | InterruptedException | NoResponseException | XMPPErrorException e) {
             // Ensure that all callbacks are removed if there is an exception
             removeConnectionCallbacks();
             throw e;
