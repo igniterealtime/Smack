@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2016 Florian Schmaus
+ * Copyright © 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,6 @@ import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceExceptio
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -165,7 +164,7 @@ public final class MultiUserChatManager extends Manager {
                     final MultiUserChat muc = getMultiUserChat(mucJid);
                     final XMPPConnection connection = connection();
                     final MUCUser.Invite invite = mucUser.getInvite();
-                    final EntityFullJid from = invite.getFrom();
+                    final EntityJid from = invite.getFrom();
                     final String reason = invite.getReason();
                     final String password = mucUser.getPassword();
                     for (final InvitationListener listener : invitationsListeners) {
