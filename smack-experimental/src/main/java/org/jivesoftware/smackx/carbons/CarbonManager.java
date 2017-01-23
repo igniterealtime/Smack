@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Georg Lukas
+ * Copyright 2013-2014 Georg Lukas, 2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@
 package org.jivesoftware.smackx.carbons;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.ExceptionCallback;
 import org.jivesoftware.smack.AbstractConnectionListener;
@@ -31,23 +33,37 @@ import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromMatchesFilter;
+import org.jivesoftware.smack.filter.OrFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.packet.Carbon;
+import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Direction;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Private;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.forward.packet.Forwarded;
 
 /**
- * Stanza(/Packet) extension for XEP-0280: Message Carbons. This class implements
- * the manager for registering {@link CarbonExtension} support, enabling and disabling
- * message carbons.
- *
- * You should call enableCarbons() before sending your first undirected
- * presence.
+ * Manager for XEP-0280: Message Carbons. This class implements the manager for registering {@link CarbonExtension}
+ * support, enabling and disabling message carbons, and for {@link CarbonCopyReceivedListener}.
+ * <p>
+ * Note that <b>it is important to match the 'from' attribute of the message wrapping a carbon copy</b>, as otherwise it would
+ * may be possible for others to impersonate users. Smack's CarbonManager takes care of that in
+ * {@link CarbonCopyReceivedListener}s which where registered with
+ * {@link #addCarbonCopyReceivedListener(CarbonCopyReceivedListener)}.
+ * </p>
+ * <p>
+ * You should call enableCarbons() before sending your first undirected presence (aka. the "initial presence").
+ * </p>
  *
  * @author Georg Lukas
+ * @author Florian Schmaus
  */
 public final class CarbonManager extends Manager {
 
@@ -60,6 +76,19 @@ public final class CarbonManager extends Manager {
             }
         });
     }
+
+    private static final StanzaFilter CARBON_EXTENSION_FILTER = 
+                    // @formatter:off
+                    new AndFilter(
+                        new OrFilter(
+                            new StanzaExtensionFilter(CarbonExtension.Direction.sent.name(), CarbonExtension.NAMESPACE),
+                            new StanzaExtensionFilter(CarbonExtension.Direction.received.name(), CarbonExtension.NAMESPACE)
+                        ),
+                        StanzaTypeFilter.MESSAGE
+                    );
+                    // @formatter:on
+
+    private final Set<CarbonCopyReceivedListener> listeners = new CopyOnWriteArraySet<>();
 
     private volatile boolean enabled_state = false;
 
@@ -83,6 +112,24 @@ public final class CarbonManager extends Manager {
                 }
             }
         });
+
+        connection.addSyncStanzaListener(new StanzaListener() {
+            @Override
+            public void processStanza(final Stanza stanza) throws NotConnectedException, InterruptedException {
+                final Message wrappingMessage = (Message) stanza;
+                final CarbonExtension carbonExtension = CarbonExtension.from(wrappingMessage);
+                final Direction direction = carbonExtension.getDirection();
+                final Forwarded forwarded = carbonExtension.getForwarded();
+                final Message carbonCopy = (Message) forwarded.getForwardedStanza();
+                for (CarbonCopyReceivedListener listener : listeners) {
+                    listener.onCarbonCopyReceived(direction, carbonCopy, wrappingMessage);
+                }
+            }
+            // XEP-0280 § 11. Security Considerations "Any forwarded copies received by a Carbons-enabled client MUST be
+            // from that user's bare JID; any copies that do not meet this requirement MUST be ignored." Otherwise, if
+            // those copies do not get ignored, malicious users may be able to impersonate other users. That is why the
+            // 'from' matcher is important here.
+        }, new AndFilter(CARBON_EXTENSION_FILTER, FromMatchesFilter.createBare(connection.getUser())));
     }
 
     /**
@@ -111,6 +158,28 @@ public final class CarbonManager extends Manager {
             request = new Carbon.Disable();
         }
         return request;
+    }
+
+    /**
+     * Add a carbon copy received listener.
+     *
+     * @param listener the listener to register.
+     * @return <code>true</code> if the filter was not already registered.
+     * @since 4.2
+     */
+    public boolean addCarbonCopyReceivedListener(CarbonCopyReceivedListener listener) {
+        return listeners.add(listener);
+    }
+
+    /**
+     * Remove a carbon copy received listener.
+     *
+     * @param listener the listener to register.
+     * @return <code>true</code> if the filter was registered.
+     * @since 4.2
+     */
+    public boolean removeCarbonCopyReceivedListener(CarbonCopyReceivedListener listener) {
+        return listeners.remove(listener);
     }
 
     /**
