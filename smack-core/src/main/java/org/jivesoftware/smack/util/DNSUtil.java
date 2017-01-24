@@ -194,6 +194,8 @@ public class DNSUtil {
             }
             List<HostAddress> sortedRecords = sortSRVRecords(srvRecords);
             addresses.addAll(sortedRecords);
+        } else {
+            LOGGER.info("Could not resolve DNS SRV resource records for " + srvDomain + ". Consider adding those.");
         }
 
         int defaultPort = -1;
