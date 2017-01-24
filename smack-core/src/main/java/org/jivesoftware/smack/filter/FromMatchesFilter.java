@@ -76,7 +76,6 @@ public class FromMatchesFilter implements StanzaFilter {
      *        have a from address.
      */
     public static FromMatchesFilter createBare(Jid address) {
-        address = (address == null) ? null : address;
         return new FromMatchesFilter(address, true);
     }
 
