@@ -46,7 +46,7 @@ import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.filter.ToFilter;
+import org.jivesoftware.smack.filter.ToMatchesFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
@@ -319,7 +319,7 @@ public class MultiUserChat {
         connection.addSyncStanzaListener(subjectListener, new AndFilter(fromRoomFilter,
                         MessageWithSubjectFilter.INSTANCE, new NotFilter(MessageTypeFilter.ERROR)));
         connection.addSyncStanzaListener(declinesListener, DECLINE_FILTER);
-        connection.addPacketInterceptor(presenceInterceptor, new AndFilter(new ToFilter(room),
+        connection.addPacketInterceptor(presenceInterceptor, new AndFilter(ToMatchesFilter.create(room),
                         StanzaTypeFilter.PRESENCE));
         messageCollector = connection.createStanzaCollector(fromRoomGroupchatFilter);
 
