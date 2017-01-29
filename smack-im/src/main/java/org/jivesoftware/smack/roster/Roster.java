@@ -46,9 +46,11 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.filter.ToMatchesFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
@@ -123,6 +125,8 @@ public final class Roster extends Manager {
     }
 
     private static final StanzaFilter PRESENCE_PACKET_FILTER = StanzaTypeFilter.PRESENCE;
+
+    private static final StanzaFilter OUTGOING_USER_UNAVAILABLE_PRESENCE = new AndFilter(PresenceTypeFilter.UNAVAILABLE, ToMatchesFilter.MATCH_NO_TO_SET);
 
     private static boolean rosterLoadedAtLoginDefault = true;
 
@@ -326,7 +330,7 @@ public final class Roster extends Manager {
                 // state).
                 setOfflinePresences();
             }
-        }, PresenceTypeFilter.UNAVAILABLE);
+        }, OUTGOING_USER_UNAVAILABLE_PRESENCE);
 
         // If the connection is already established, call reload
         if (connection.isAuthenticated()) {
