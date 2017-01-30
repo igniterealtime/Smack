@@ -91,7 +91,7 @@ public final class PEPManager extends Manager {
     private PEPManager(XMPPConnection connection) {
         super(connection);
         StanzaListener packetListener = new StanzaListener() {
-            public void processPacket(Stanza stanza) {
+            public void processStanza(Stanza stanza) {
                 Message message = (Message) stanza;
                 EventElement event = EventElement.from(stanza);
                 assert(event != null);

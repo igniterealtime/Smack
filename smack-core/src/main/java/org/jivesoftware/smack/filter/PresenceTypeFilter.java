@@ -35,6 +35,8 @@ public final class PresenceTypeFilter extends FlexibleStanzaTypeFilter<Presence>
     public static final PresenceTypeFilter ERROR = new PresenceTypeFilter(Type.error);
     public static final PresenceTypeFilter PROBE = new PresenceTypeFilter(Type.probe);
 
+    public static final StanzaFilter OUTGOING_PRESENCE_BROADCAST = new AndFilter(AVAILABLE, EmptyToMatcher.INSTANCE);
+
     private final Presence.Type type;
 
     private PresenceTypeFilter(Presence.Type type) {

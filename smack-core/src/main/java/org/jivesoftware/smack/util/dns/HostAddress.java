@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2013-2016 Florian Schmaus
+ * Copyright © 2013-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jivesoftware.smack.SmackException.ConnectionException;
-import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.StringUtils;
 
 public class HostAddress {
     private final String fqdn;
@@ -34,29 +34,17 @@ public class HostAddress {
     private final List<InetAddress> inetAddresses;
 
     /**
-     * Creates a new HostAddress with the given FQDN. The port will be set to the default XMPP client port: 5222
+     * Creates a new HostAddress with the given FQDN.
      * 
-     * @param fqdn Fully qualified domain name.
-     * @throws IllegalArgumentException If the fqdn is null.
-     */
-    public HostAddress(String fqdn, List<InetAddress> inetAddresses) {
-        // Set port to the default port for XMPP client communication
-        this(fqdn, 5222, inetAddresses);
-    }
-
-    /**
-     * Creates a new HostAddress with the given FQDN. The port will be set to the default XMPP client port: 5222
-     * 
-     * @param fqdn Fully qualified domain name.
+     * @param fqdn the optional fully qualified domain name (FQDN).
      * @param port The port to connect on.
-     * @throws IllegalArgumentException If the fqdn is null or port is out of valid range (0 - 65535).
+     * @throws IllegalArgumentException If the port is out of valid range (0 - 65535).
      */
     public HostAddress(String fqdn, int port, List<InetAddress> inetAddresses) {
-        Objects.requireNonNull(fqdn, "FQDN is null");
         if (port < 0 || port > 65535)
             throw new IllegalArgumentException(
                     "Port must be a 16-bit unsiged integer (i.e. between 0-65535. Port was: " + port);
-        if (fqdn.charAt(fqdn.length() - 1) == '.') {
+        if (StringUtils.isNotEmpty(fqdn) && fqdn.charAt(fqdn.length() - 1) == '.') {
             this.fqdn = fqdn.substring(0, fqdn.length() - 1);
         }
         else {
@@ -67,6 +55,10 @@ public class HostAddress {
             throw new IllegalArgumentException("Must provide at least one InetAddress");
         }
         this.inetAddresses = inetAddresses;
+    }
+
+    public HostAddress(int port, InetAddress hostAddress) {
+        this(null, port, Collections.singletonList(hostAddress));
     }
 
     /**

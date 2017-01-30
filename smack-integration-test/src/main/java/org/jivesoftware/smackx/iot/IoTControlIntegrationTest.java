@@ -81,7 +81,7 @@ public class IoTControlIntegrationTest extends AbstractSmackIntegrationTest {
         IoTControlManagerOne.installThing(controlThing);
 
         try {
-            RosterIntegrationTest.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, defaultTimeout);
+            RosterIntegrationTest.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
             SetData data = new SetBoolData(testRunId, true);
             IoTSetResponse response = IoTControlManagerTwo.setUsingIq(conOne.getUser(), data);
@@ -92,6 +92,6 @@ public class IoTControlIntegrationTest extends AbstractSmackIntegrationTest {
             RosterIntegrationTest.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
 
-        syncPoint.waitForResult(defaultTimeout);
+        syncPoint.waitForResult(timeout);
     }
 }

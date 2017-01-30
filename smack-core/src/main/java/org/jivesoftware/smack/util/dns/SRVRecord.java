@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2016 Florian Schmaus
+ * Copyright 2013-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package org.jivesoftware.smack.util.dns;
 
 import java.net.InetAddress;
 import java.util.List;
+
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * A DNS SRV RR.
@@ -43,6 +45,7 @@ public class SRVRecord extends HostAddress implements Comparable<SRVRecord> {
      */
     public SRVRecord(String fqdn, int port, int priority, int weight, List<InetAddress> inetAddresses) {
         super(fqdn, port, inetAddresses);
+        StringUtils.requireNotNullOrEmpty(fqdn, "The FQDN must not be null");
         if (weight < 0 || weight > 65535)
             throw new IllegalArgumentException(
                     "DNS SRV records weight must be a 16-bit unsiged integer (i.e. between 0-65535. Weight was: "

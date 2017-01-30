@@ -283,7 +283,7 @@ public class AgentRoster {
      * Listens for all presence packets and processes them.
      */
     private class PresencePacketListener implements StanzaListener {
-        public void processPacket(Stanza packet) {
+        public void processStanza(Stanza packet) {
             Presence presence = (Presence)packet;
             EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
             if (from == null) {
@@ -359,7 +359,7 @@ public class AgentRoster {
      */
     private class AgentStatusListener implements StanzaListener {
 
-        public void processPacket(Stanza packet) {
+        public void processStanza(Stanza packet) {
             if (packet instanceof AgentStatusRequest) {
                 AgentStatusRequest statusRequest = (AgentStatusRequest)packet;
                 for (Iterator<AgentStatusRequest.Item> i = statusRequest.getAgents().iterator(); i.hasNext();) {

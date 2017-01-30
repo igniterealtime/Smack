@@ -467,7 +467,7 @@ public class JingleManager implements JingleSessionListener {
 
         // Start a packet listener for session initiation requests
         connection.addAsyncStanzaListener(new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 triggerSessionRequested((Jingle) packet);
             }
         }, initRequestFilter);

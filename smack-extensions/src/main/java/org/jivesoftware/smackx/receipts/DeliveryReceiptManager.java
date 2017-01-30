@@ -136,7 +136,7 @@ public final class DeliveryReceiptManager extends Manager {
         // Add the packet listener to handling incoming delivery receipts
         connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
-            public void processPacket(Stanza packet) throws NotConnectedException {
+            public void processStanza(Stanza packet) throws NotConnectedException {
                 DeliveryReceipt dr = DeliveryReceipt.from((Message) packet);
                 // notify listeners of incoming receipt
                 for (ReceiptReceivedListener l : receiptReceivedListeners) {
@@ -148,7 +148,7 @@ public final class DeliveryReceiptManager extends Manager {
         // Add the packet listener to handle incoming delivery receipt requests
         connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
-            public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
+            public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
                 final Jid from = packet.getFrom();
                 final XMPPConnection connection = connection();
                 switch (autoReceiptMode) {
@@ -261,7 +261,7 @@ public final class DeliveryReceiptManager extends Manager {
 
     private static final StanzaListener AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER = new StanzaListener() {
         @Override
-        public void processPacket(Stanza packet) throws NotConnectedException {
+        public void processStanza(Stanza packet) throws NotConnectedException {
             Message message = (Message) packet;
             DeliveryReceiptRequest.addTo(message);
         }

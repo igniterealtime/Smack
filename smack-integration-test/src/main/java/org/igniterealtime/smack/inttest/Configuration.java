@@ -83,7 +83,11 @@ public final class Configuration {
                         "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
         this.serviceTlsPin = serviceTlsPin;
         this.securityMode = securityMode;
-        this.replyTimeout = replyTimeout;
+        if (replyTimeout > 0) {
+            this.replyTimeout = replyTimeout;
+        } else {
+            this.replyTimeout = 60000;
+        }
         this.debug = debug;
         if (StringUtils.isNotEmpty(adminAccountUsername, adminAccountPassword)) {
             accountRegistration = AccountRegistration.serviceAdministration;

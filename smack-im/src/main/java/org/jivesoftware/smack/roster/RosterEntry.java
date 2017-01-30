@@ -109,7 +109,7 @@ public final class RosterEntry extends Manager {
         // Create a new roster item with the current RosterEntry and the *new* name. Note that we can't set the name of
         // RosterEntry right away, as otherwise the updated event wont get fired, because equalsDeep would return true.
         packet.addRosterItem(toRosterItem(this, name));
-        connection().createPacketCollectorAndSend(packet).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
 
         // We have received a result response to the IQ set, the name was successfully changed
         item.setName(name);

@@ -163,13 +163,11 @@ public final class BlockingCommandManager extends Manager {
     public List<Jid> getBlockList()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
 
-        if (blockListCached != null) {
-            return Collections.unmodifiableList(blockListCached);
+        if (blockListCached == null) {
+            BlockListIQ blockListIQ = new BlockListIQ();
+            BlockListIQ blockListIQResult = connection().createStanzaCollectorAndSend(blockListIQ).nextResultOrThrow();
+            blockListCached = blockListIQResult.getBlockedJidsCopy();
         }
-
-        BlockListIQ blockListIQ = new BlockListIQ();
-        BlockListIQ blockListIQResult = connection().createPacketCollectorAndSend(blockListIQ).nextResultOrThrow();
-        blockListCached = blockListIQResult.getBlockedJidsCopy();
 
         return Collections.unmodifiableList(blockListCached);
     }
@@ -186,7 +184,7 @@ public final class BlockingCommandManager extends Manager {
     public void blockContacts(List<Jid> jids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         BlockContactsIQ blockContactIQ = new BlockContactsIQ(jids);
-        connection().createPacketCollectorAndSend(blockContactIQ).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(blockContactIQ).nextResultOrThrow();
     }
 
     /**
@@ -201,7 +199,7 @@ public final class BlockingCommandManager extends Manager {
     public void unblockContacts(List<Jid> jids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         UnblockContactsIQ unblockContactIQ = new UnblockContactsIQ(jids);
-        connection().createPacketCollectorAndSend(unblockContactIQ).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(unblockContactIQ).nextResultOrThrow();
     }
 
     /**
@@ -215,7 +213,7 @@ public final class BlockingCommandManager extends Manager {
     public void unblockAll()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         UnblockContactsIQ unblockContactIQ = new UnblockContactsIQ();
-        connection().createPacketCollectorAndSend(unblockContactIQ).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(unblockContactIQ).nextResultOrThrow();
     }
 
 }

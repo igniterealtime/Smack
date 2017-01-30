@@ -1,8 +1,4 @@
 <%--
-  - $RCSfile$
-  - $Revision$
-  - $Date$
-  -
   - Copyright (C) 2002-2003 Jive Software. 
   - 
   - The Jive Software License (based on Apache Software License, Version 1.1)

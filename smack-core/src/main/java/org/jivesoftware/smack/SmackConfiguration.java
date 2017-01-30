@@ -101,8 +101,32 @@ public final class SmackConfiguration {
      * the server. The default value is 5000 ms.
      * 
      * @return the milliseconds to wait for a response from the server
+     * @deprecated use {@link #getDefaultReplyTimeout()} instead.
      */
+    @Deprecated
     public static int getDefaultPacketReplyTimeout() {
+        return getDefaultReplyTimeout();
+    }
+
+    /**
+     * Sets the number of milliseconds to wait for a response from
+     * the server.
+     * 
+     * @param timeout the milliseconds to wait for a response from the server
+     * @deprecated use {@link #setDefaultReplyTimeout(int)} instead.
+     */
+    @Deprecated
+    public static void setDefaultPacketReplyTimeout(int timeout) {
+        setDefaultReplyTimeout(timeout);
+    }
+
+    /**
+     * Returns the number of milliseconds to wait for a response from
+     * the server. The default value is 5000 ms.
+     * 
+     * @return the milliseconds to wait for a response from the server
+     */
+    public static int getDefaultReplyTimeout() {
         // The timeout value must be greater than 0 otherwise we will answer the default value
         if (defaultPacketReplyTimeout <= 0) {
             defaultPacketReplyTimeout = 5000;
@@ -116,7 +140,7 @@ public final class SmackConfiguration {
      * 
      * @param timeout the milliseconds to wait for a response from the server
      */
-    public static void setDefaultPacketReplyTimeout(int timeout) {
+    public static void setDefaultReplyTimeout(int timeout) {
         if (timeout <= 0) {
             throw new IllegalArgumentException();
         }
@@ -129,7 +153,7 @@ public final class SmackConfiguration {
      * 
      * @return The number of packets to queue before deleting older packets.
      */
-    public static int getPacketCollectorSize() {
+    public static int getStanzaCollectorSize() {
         return packetCollectorSize;
     }
 
@@ -139,7 +163,7 @@ public final class SmackConfiguration {
      * 
      * @param collectorSize the number of packets to queue before deleting older packets.
      */
-    public static void setPacketCollectorSize(int collectorSize) {
+    public static void setStanzaCollectorSize(int collectorSize) {
         packetCollectorSize = collectorSize;
     }
 
@@ -295,6 +319,18 @@ public final class SmackConfiguration {
      */
     public static void addDisabledSmackClass(String className) {
         disabledSmackClasses.add(className);
+    }
+
+    /**
+     * Add the given class names to the list of disabled Smack classes.
+     *
+     * @param classNames the Smack classes to disable.
+     * @see #addDisabledSmackClass(String)
+     */
+    public static void addDisabledSmackClasses(String... classNames) {
+        for (String className : classNames) {
+            addDisabledSmackClass(className);
+        }
     }
 
     public static boolean isDisabledSmackClass(String className) {

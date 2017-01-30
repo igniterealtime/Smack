@@ -29,7 +29,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -402,7 +402,7 @@ public class RTPBridge extends IQ {
         RTPBridge rtpPacket = new RTPBridge(sessionID);
         rtpPacket.setTo(RTPBridge.NAME + "." + connection.getXMPPServiceDomain());
 
-        PacketCollector collector = connection.createPacketCollectorAndSend(rtpPacket);
+        StanzaCollector collector = connection.createStanzaCollectorAndSend(rtpPacket);
 
         RTPBridge response = collector.nextResult();
 
@@ -479,7 +479,7 @@ public class RTPBridge extends IQ {
 
         // LOGGER.debug("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
 
-        PacketCollector collector = connection.createPacketCollectorAndSend(rtpPacket);
+        StanzaCollector collector = connection.createStanzaCollectorAndSend(rtpPacket);
 
         RTPBridge response = collector.nextResult();
 
@@ -510,7 +510,7 @@ public class RTPBridge extends IQ {
 
         // LOGGER.debug("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
 
-        PacketCollector collector = xmppConnection.createPacketCollectorAndSend(rtpPacket);
+        StanzaCollector collector = xmppConnection.createStanzaCollectorAndSend(rtpPacket);
 
         RTPBridge response = collector.nextResult();
 

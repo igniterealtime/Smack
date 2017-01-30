@@ -86,7 +86,7 @@ public final class TBRManager extends Manager {
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         TBRGetTokensIQ getTokensIQ = new TBRGetTokensIQ(connection().getUser().asBareJid());
 
-        IQ responseIq = connection().createPacketCollectorAndSend(getTokensIQ).nextResultOrThrow();
+        IQ responseIq = connection().createStanzaCollectorAndSend(getTokensIQ).nextResultOrThrow();
         TBRTokensIQ tokensIQ = (TBRTokensIQ) responseIq;
 
         return new TBRTokens(tokensIQ.getAccessToken(), tokensIQ.getRefreshToken());

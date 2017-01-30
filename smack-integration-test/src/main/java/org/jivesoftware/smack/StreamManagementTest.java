@@ -22,8 +22,8 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 
 import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
-import org.igniterealtime.smack.inttest.Configuration;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -34,9 +34,8 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 
 public class StreamManagementTest extends AbstractSmackLowLevelIntegrationTest {
 
-    public StreamManagementTest(Configuration configuration, String testRunId)
-                    throws Exception {
-        super(configuration, testRunId);
+    public StreamManagementTest(SmackIntegrationTestEnvironment environment) throws Exception {
+        super(environment);
         performCheck(new ConnectionCallback() {
             @Override
             public void connectionCallback(XMPPTCPConnection connection) throws Exception {
@@ -54,7 +53,7 @@ public class StreamManagementTest extends AbstractSmackLowLevelIntegrationTest {
         final String body2 = "Hi, what's up? I've been just instantly shutdown" + testRunId;
         final String body3 = "Hi, what's up? I've been just resumed" + testRunId;
 
-        final PacketCollector collector = conTwo.createPacketCollector(new AndFilter(
+        final StanzaCollector collector = conTwo.createStanzaCollector(new AndFilter(
                         MessageWithBodiesFilter.INSTANCE,
                         FromMatchesFilter.createFull(conOne.getUser())));
 
@@ -85,7 +84,7 @@ public class StreamManagementTest extends AbstractSmackLowLevelIntegrationTest {
         from.sendStanza(message);
     }
 
-    private static void assertMessageWithBodyReceived(String body, PacketCollector collector) throws InterruptedException {
+    private static void assertMessageWithBodyReceived(String body, StanzaCollector collector) throws InterruptedException {
         Message message = collector.nextResult();
         assertNotNull(message);
         assertEquals(body, message.getBody());

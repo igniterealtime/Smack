@@ -315,7 +315,7 @@ public final class FileTransferNegotiator extends Manager {
         si.setTo(userID);
         si.setType(IQ.Type.set);
 
-        Stanza siResponse = connection().createPacketCollectorAndSend(si).nextResultOrThrow(
+        Stanza siResponse = connection().createStanzaCollectorAndSend(si).nextResultOrThrow(
                         responseTimeout);
 
         if (siResponse instanceof IQ) {

@@ -135,7 +135,7 @@ public final class LastActivityManager extends Manager {
 
         // Listen to all the sent messages to reset the idle time on each one
         connection.addPacketSendingListener(new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 Presence presence = (Presence) packet;
                 Presence.Mode mode = presence.getMode();
                 if (mode == null) return;
@@ -154,7 +154,7 @@ public final class LastActivityManager extends Manager {
 
         connection.addPacketSendingListener(new StanzaListener() {
             @Override
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 Message message = (Message) packet;
                 // if it's not an error message, reset the idle time
                 if (message.getType() == Message.Type.error) return;
@@ -237,7 +237,7 @@ public final class LastActivityManager extends Manager {
     public LastActivity getLastActivity(Jid jid) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
         LastActivity activity = new LastActivity(jid);
-        return (LastActivity) connection().createPacketCollectorAndSend(activity).nextResultOrThrow();
+        return (LastActivity) connection().createStanzaCollectorAndSend(activity).nextResultOrThrow();
     }
 
     /**

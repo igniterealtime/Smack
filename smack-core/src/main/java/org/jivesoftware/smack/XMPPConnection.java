@@ -173,6 +173,7 @@ public interface XMPPConnection {
      * @throws InterruptedException 
      * @deprecated use {@link #sendStanza(Stanza)} instead.
      */
+    // TODO Remove in 4.3.
     @Deprecated
     public void sendPacket(Stanza packet) throws NotConnectedException, InterruptedException;
 
@@ -225,11 +226,11 @@ public interface XMPPConnection {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public PacketCollector createPacketCollectorAndSend(IQ packet) throws NotConnectedException, InterruptedException;
+    public StanzaCollector createStanzaCollectorAndSend(IQ packet) throws NotConnectedException, InterruptedException;
 
     /**
      * Creates a new stanza(/packet) collector for this connection. A stanza(/packet) filter determines
-     * which packets will be accumulated by the collector. A PacketCollector is
+     * which packets will be accumulated by the collector. A StanzaCollector is
      * more suitable to use than a {@link StanzaListener} when you need to wait for
      * a specific result.
      * 
@@ -239,46 +240,46 @@ public interface XMPPConnection {
      * @throws InterruptedException 
      * @throws NotConnectedException 
      */
-    public PacketCollector createPacketCollectorAndSend(StanzaFilter packetFilter, Stanza packet)
+    public StanzaCollector createStanzaCollectorAndSend(StanzaFilter packetFilter, Stanza packet)
                     throws NotConnectedException, InterruptedException;
 
     /**
      * Creates a new stanza(/packet) collector for this connection. A stanza(/packet) filter
      * determines which packets will be accumulated by the collector. A
-     * PacketCollector is more suitable to use than a {@link StanzaListener}
+     * StanzaCollector is more suitable to use than a {@link StanzaListener}
      * when you need to wait for a specific result.
      * <p>
      * <b>Note:</b> If you send a Stanza(/Packet) right after using this method, then
      * consider using
-     * {@link #createPacketCollectorAndSend(StanzaFilter, Stanza)} instead.
-     * Otherwise make sure cancel the PacketCollector in every case, e.g. even
-     * if an exception is thrown, or otherwise you may leak the PacketCollector.
+     * {@link #createStanzaCollectorAndSend(StanzaFilter, Stanza)} instead.
+     * Otherwise make sure cancel the StanzaCollector in every case, e.g. even
+     * if an exception is thrown, or otherwise you may leak the StanzaCollector.
      * </p>
      * 
      * @param packetFilter the stanza(/packet) filter to use.
      * @return a new stanza(/packet) collector.
      */
-    public PacketCollector createPacketCollector(StanzaFilter packetFilter);
+    public StanzaCollector createStanzaCollector(StanzaFilter packetFilter);
 
     /**
      * Create a new stanza(/packet) collector with the given stanza(/packet) collector configuration.
      * <p>
      * Please make sure to cancel the collector when it is no longer required. See also
-     * {@link #createPacketCollector(StanzaFilter)}.
+     * {@link #createStanzaCollector(StanzaFilter)}.
      * </p>
      * 
      * @param configuration the stanza(/packet) collector configuration.
      * @return a new stanza(/packet) collector.
      * @since 4.1
      */
-    public PacketCollector createPacketCollector(PacketCollector.Configuration configuration);
+    public StanzaCollector createStanzaCollector(StanzaCollector.Configuration configuration);
 
     /**
      * Remove a stanza(/packet) collector of this connection.
      * 
      * @param collector a stanza(/packet) collectors which was created for this connection.
      */
-    public void removePacketCollector(PacketCollector collector);
+    public void removeStanzaCollector(StanzaCollector collector);
 
     /**
      * Registers a stanza(/packet) listener with this connection.
@@ -294,6 +295,7 @@ public interface XMPPConnection {
      * @deprecated use {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)} or
      *             {@link #addSyncStanzaListener(StanzaListener, StanzaFilter)}.
      */
+    // TODO Remove in 4.3.
     @Deprecated
     public void addPacketListener(StanzaListener packetListener, StanzaFilter packetFilter);
 
@@ -304,6 +306,7 @@ public interface XMPPConnection {
      * @return true if the stanza(/packet) listener was removed
      * @deprecated use {@link #removeAsyncStanzaListener(StanzaListener)} or {@link #removeSyncStanzaListener(StanzaListener)}.
      */
+    // TODO Remove in 4.3.
     @Deprecated
     public boolean removePacketListener(StanzaListener packetListener);
 
@@ -316,7 +319,7 @@ public interface XMPPConnection {
      * incoming stanzas. Only use this kind of stanza(/packet) filter if it does not perform any XMPP activity that waits for a
      * response. Consider using {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)} when possible, i.e. when
      * the invocation order doesn't have to be the same as the order of the arriving packets. If the order of the
-     * arriving packets, consider using a {@link PacketCollector} when possible.
+     * arriving packets, consider using a {@link StanzaCollector} when possible.
      * </p>
      *
      * @param packetListener the stanza(/packet) listener to notify of new received packets.
@@ -407,7 +410,9 @@ public interface XMPPConnection {
      * XMPPConnection instance.
      *
      * @return the stanza(/packet) reply timeout in milliseconds
+     * @deprecated use {@link #getReplyTimeout()} instead.
      */
+    @Deprecated
     public long getPacketReplyTimeout();
 
     /**
@@ -415,8 +420,26 @@ public interface XMPPConnection {
      * {@link NoResponseException} if no reply to a request was received within the timeout period.
      *
      * @param timeout the stanza(/packet) reply timeout in milliseconds
+     * @deprecated use {@link #setReplyTimeout(long)} instead.
      */
+    @Deprecated
     public void setPacketReplyTimeout(long timeout);
+
+    /**
+     * Returns the current value of the reply timeout in milliseconds for request for this
+     * XMPPConnection instance.
+     *
+     * @return the reply timeout in milliseconds
+     */
+    public long getReplyTimeout();
+
+    /**
+     * Set the stanza(/packet) reply timeout in milliseconds. In most cases, Smack will throw a
+     * {@link NoResponseException} if no reply to a request was received within the timeout period.
+     *
+     * @param timeout for a reply in milliseconds
+     */
+    public void setReplyTimeout(long timeout);
 
     /**
      * Get the connection counter of this XMPPConnection instance. Those can be used as ID to

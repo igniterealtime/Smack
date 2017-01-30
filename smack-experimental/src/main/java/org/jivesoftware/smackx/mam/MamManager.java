@@ -25,7 +25,7 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
@@ -319,6 +319,27 @@ public final class MamManager extends Manager {
     }
 
     /**
+     * Returns the previous page of the archive.
+     * 
+     * @param mamQueryResult
+     *            is the previous query result
+     * @param count
+     *            is the amount of messages that a page contains
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws NotLoggedInException
+     */
+    public MamQueryResult pagePrevious(MamQueryResult mamQueryResult, int count) throws NoResponseException,
+            XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
+        RSMSet previousResultRsmSet = mamQueryResult.mamFin.getRSMSet();
+        RSMSet requestRsmSet = new RSMSet(count, previousResultRsmSet.getFirst(), RSMSet.PageDirection.before);
+        return page(mamQueryResult.form, requestRsmSet);
+    }
+
+    /**
      * Obtain page before the first message saved (specific chat).
      *
      * @param chatJid
@@ -361,6 +382,23 @@ public final class MamManager extends Manager {
     }
 
     /**
+     * Obtain the most recent page of a chat.
+     *
+     * @param chatJid
+     * @param max
+     * @return the MAM query result
+     * @throws XMPPErrorException
+     * @throws NotLoggedInException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws NoResponseException
+     */
+    public MamQueryResult mostRecentPage(Jid chatJid, int max) throws XMPPErrorException, NotLoggedInException,
+            NotConnectedException, InterruptedException, NoResponseException {
+        return pageBefore(chatJid, "", max);
+    }
+
+    /**
      * Get the form fields supported by the server.
      * 
      * @return the list of form fields.
@@ -375,7 +413,7 @@ public final class MamManager extends Manager {
         String queryId = UUID.randomUUID().toString();
         MamQueryIQ mamQueryIq = new MamQueryIQ(queryId);
 
-        MamQueryIQ mamResponseQueryIq = connection().createPacketCollectorAndSend(mamQueryIq).nextResultOrThrow();
+        MamQueryIQ mamResponseQueryIq = connection().createStanzaCollectorAndSend(mamQueryIq).nextResultOrThrow();
 
         return mamResponseQueryIq.getDataForm().getFields();
     }
@@ -385,11 +423,11 @@ public final class MamManager extends Manager {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
         MamFinIQ mamFinIQ = null;
 
-        PacketCollector mamFinIQCollector = connection.createPacketCollector(new IQReplyFilter(mamQueryIq, connection));
+        StanzaCollector mamFinIQCollector = connection.createStanzaCollector(new IQReplyFilter(mamQueryIq, connection));
 
-        PacketCollector.Configuration resultCollectorConfiguration = PacketCollector.newConfiguration()
+        StanzaCollector.Configuration resultCollectorConfiguration = StanzaCollector.newConfiguration()
                 .setStanzaFilter(new MamResultFilter(mamQueryIq)).setCollectorToReset(mamFinIQCollector);
-        PacketCollector resultCollector = connection.createPacketCollector(resultCollectorConfiguration);
+        StanzaCollector resultCollector = connection.createStanzaCollector(resultCollectorConfiguration);
 
         try {
             connection.sendStanza(mamQueryIq);
@@ -509,7 +547,7 @@ public final class MamManager extends Manager {
             NotConnectedException, InterruptedException, NotLoggedInException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
 
-        MamPrefsIQ mamPrefsResultIQ = connection.createPacketCollectorAndSend(mamPrefsIQ).nextResultOrThrow();
+        MamPrefsIQ mamPrefsResultIQ = connection.createStanzaCollectorAndSend(mamPrefsIQ).nextResultOrThrow();
 
         return new MamPrefsResult(mamPrefsResultIQ, DataForm.from(mamPrefsIQ));
     }

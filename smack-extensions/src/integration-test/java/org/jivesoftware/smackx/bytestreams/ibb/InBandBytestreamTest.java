@@ -19,7 +19,7 @@ import java.util.Random;
 import java.util.concurrent.SynchronousQueue;
 
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.Packet;
@@ -61,7 +61,7 @@ public class InBandBytestreamTest extends SmackTestCase {
         open.setFrom(initiatorConnection.getUser());
         open.setTo(targetConnection.getUser());
 
-        PacketCollector collector = initiatorConnection.createPacketCollector(new PacketIDFilter(
+        StanzaCollector collector = initiatorConnection.createStanzaCollector(new PacketIDFilter(
                         open.getStanzaId()));
         initiatorConnection.sendStanza(open);
         Packet result = collector.nextResult();

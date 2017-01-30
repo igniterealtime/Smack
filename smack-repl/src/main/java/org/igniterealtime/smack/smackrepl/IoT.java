@@ -75,8 +75,8 @@ public class IoT {
         final XMPPTCPConnection dataThingConnection = new XMPPTCPConnection(dataThingConnectionConfiguration);
         final XMPPTCPConnection readingThingConnection = new XMPPTCPConnection(readingThingConnectionConfiguration);
 
-        dataThingConnection.setPacketReplyTimeout(TIMEOUT);
-        readingThingConnection.setPacketReplyTimeout(TIMEOUT);
+        dataThingConnection.setReplyTimeout(TIMEOUT);
+        readingThingConnection.setReplyTimeout(TIMEOUT);
 
         dataThingConnection.setUseStreamManagement(false);
         readingThingConnection.setUseStreamManagement(false);

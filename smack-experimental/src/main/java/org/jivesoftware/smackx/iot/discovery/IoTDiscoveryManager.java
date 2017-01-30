@@ -39,6 +39,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.iot.IoTManager;
 import org.jivesoftware.smackx.iot.Thing;
 import org.jivesoftware.smackx.iot.control.IoTControlManager;
 import org.jivesoftware.smackx.iot.data.IoTDataManager;
@@ -74,6 +75,7 @@ public final class IoTDiscoveryManager extends Manager {
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             public void connectionCreated(XMPPConnection connection) {
+                if (!IoTManager.isAutoEnableActive()) return;
                 getInstanceFor(connection);
             }
         });
@@ -239,7 +241,7 @@ public final class IoTDiscoveryManager extends Manager {
         final XMPPConnection connection = connection();
         IoTRegister iotRegister = new IoTRegister(thing.getMetaTags(), thing.getNodeInfo(), thing.isSelfOwened());
         iotRegister.setTo(registry);
-        IQ result = connection.createPacketCollectorAndSend(iotRegister).nextResultOrThrow();
+        IQ result = connection.createStanzaCollectorAndSend(iotRegister).nextResultOrThrow();
         if (result instanceof IoTClaimed) {
             IoTClaimed iotClaimedResult = (IoTClaimed) result;
             throw new IoTClaimedException(iotClaimedResult);
@@ -286,7 +288,7 @@ public final class IoTDiscoveryManager extends Manager {
 
         IoTMine iotMine = new IoTMine(metaTags, publicThing);
         iotMine.setTo(registry);
-        IoTClaimed iotClaimed = connection().createPacketCollectorAndSend(iotMine).nextResultOrThrow();
+        IoTClaimed iotClaimed = connection().createStanzaCollectorAndSend(iotMine).nextResultOrThrow();
 
         // The 'jid' attribute of the <claimed/> response now represents the XMPP address of the thing we just successfully claimed.
         Jid thing = iotClaimed.getJid();
@@ -315,7 +317,7 @@ public final class IoTDiscoveryManager extends Manager {
 
         IoTRemove iotRemove = new IoTRemove(thing, nodeInfo);
         iotRemove.setTo(registry);
-        connection().createPacketCollectorAndSend(iotRemove).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(iotRemove).nextResultOrThrow();
 
         // We no not update the ThingState here, as this is done in the <removed/> IQ handler above.;
     }
@@ -339,7 +341,7 @@ public final class IoTDiscoveryManager extends Manager {
 
         IoTUnregister iotUnregister = new IoTUnregister(nodeInfo);
         iotUnregister.setTo(registry);
-        connection().createPacketCollectorAndSend(iotUnregister).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(iotUnregister).nextResultOrThrow();
 
         ThingState state = getStateFor(nodeInfo);
         state.setUnregistered();
@@ -368,7 +370,7 @@ public final class IoTDiscoveryManager extends Manager {
 
         IoTDisown iotDisown = new IoTDisown(thing, nodeInfo);
         iotDisown.setTo(registry);
-        connection().createPacketCollectorAndSend(iotDisown).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(iotDisown).nextResultOrThrow();
     }
 
     // Registry utility methods

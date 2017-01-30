@@ -24,8 +24,6 @@ import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.chat.Chat;
-import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatManagerListener;
 import org.jivesoftware.smack.chat.ChatMessageListener;
 import org.jivesoftware.smack.filter.NotFilter;
@@ -49,6 +47,8 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  * @see org.jivesoftware.smackx.chatstates.ChatState
  * @see org.jivesoftware.smackx.chatstates.packet.ChatStateExtension
  */
+// TODO Migrate to new chat2 API on Smack 4.3.
+@SuppressWarnings("deprecation")
 public final class ChatStateManager extends Manager {
     public static final String NAMESPACE = "http://jabber.org/protocol/chatstates";
 
@@ -79,13 +79,13 @@ public final class ChatStateManager extends Manager {
     /**
      * Maps chat to last chat state.
      */
-    private final Map<Chat, ChatState> chatStates = new WeakHashMap<Chat, ChatState>();
+    private final Map<org.jivesoftware.smack.chat.Chat, ChatState> chatStates = new WeakHashMap<>();
 
-    private final ChatManager chatManager;
+    private final org.jivesoftware.smack.chat.ChatManager chatManager;
 
     private ChatStateManager(XMPPConnection connection) {
         super(connection);
-        chatManager = ChatManager.getInstanceFor(connection);
+        chatManager = org.jivesoftware.smack.chat.ChatManager.getInstanceFor(connection);
         chatManager.addOutgoingMessageInterceptor(outgoingInterceptor, filter);
         chatManager.addChatListener(incomingInterceptor);
 
@@ -104,7 +104,7 @@ public final class ChatStateManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void setCurrentState(ChatState newState, Chat chat) throws NotConnectedException, InterruptedException {
+    public void setCurrentState(ChatState newState, org.jivesoftware.smack.chat.Chat chat) throws NotConnectedException, InterruptedException {
         if(chat == null || newState == null) {
             throw new IllegalArgumentException("Arguments cannot be null.");
         }
@@ -133,7 +133,7 @@ public final class ChatStateManager extends Manager {
         return connection().hashCode();
     }
 
-    private synchronized boolean updateChatState(Chat chat, ChatState newState) {
+    private synchronized boolean updateChatState(org.jivesoftware.smack.chat.Chat chat, ChatState newState) {
         ChatState lastChatState = chatStates.get(chat);
         if (lastChatState != newState) {
             chatStates.put(chat, newState);
@@ -142,7 +142,7 @@ public final class ChatStateManager extends Manager {
         return false;
     }
 
-    private static void fireNewChatState(Chat chat, ChatState state, Message message) {
+    private static void fireNewChatState(org.jivesoftware.smack.chat.Chat chat, ChatState state, Message message) {
         for (ChatMessageListener listener : chat.getListeners()) {
             if (listener instanceof ChatStateListener) {
                 ((ChatStateListener) listener).stateChanged(chat, state, message);
@@ -154,7 +154,7 @@ public final class ChatStateManager extends Manager {
 
         @Override
         public void processMessage(Message message) {
-            Chat chat = chatManager.getThreadChat(message.getThread());
+            org.jivesoftware.smack.chat.Chat chat = chatManager.getThreadChat(message.getThread());
             if (chat == null) {
                 return;
             }
@@ -166,11 +166,11 @@ public final class ChatStateManager extends Manager {
 
     private class IncomingMessageInterceptor implements ChatManagerListener, ChatMessageListener {
 
-        public void chatCreated(final Chat chat, boolean createdLocally) {
+        public void chatCreated(final org.jivesoftware.smack.chat.Chat chat, boolean createdLocally) {
             chat.addMessageListener(this);
         }
 
-        public void processMessage(Chat chat, Message message) {
+        public void processMessage(org.jivesoftware.smack.chat.Chat chat, Message message) {
             ExtensionElement extension = message.getExtension(NAMESPACE);
             if (extension == null) {
                 return;

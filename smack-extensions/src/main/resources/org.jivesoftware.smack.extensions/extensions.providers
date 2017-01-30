@@ -531,6 +531,17 @@
         <namespace>urn:xmpp:blocking</namespace>
         <className>org.jivesoftware.smackx.blocking.provider.UnblockContactsIQProvider</className>
     </iqProvider>
+    <extensionProvider>
+        <elementName>blocked</elementName>
+        <namespace>urn:xmpp:blocking:errors</namespace>
+        <className>org.jivesoftware.smackx.blocking.provider.BlockedErrorExtensionProvider</className>
+    </extensionProvider>
     
+    <!-- XEP-0231: Bits of Binary -->
+    <iqProvider>
+        <elementName>data</elementName>
+        <namespace>urn:xmpp:bob</namespace>
+        <className>org.jivesoftware.smackx.bob.provider.BoBIQProvider</className>
+    </iqProvider>
 
 </smackProviders>

@@ -58,7 +58,7 @@ public class LeafNode extends Node
 		DiscoverItems items = new DiscoverItems();
 		items.setTo(pubSubManager.getServiceJid());
 		items.setNode(getId());
-        return pubSubManager.getConnection().createPacketCollectorAndSend(items).nextResultOrThrow();
+        return pubSubManager.getConnection().createStanzaCollectorAndSend(items).nextResultOrThrow();
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class LeafNode extends Node
     private <T extends Item> List<T> getItems(PubSub request,
                     List<ExtensionElement> returnedExtensions) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub result = pubSubManager.getConnection().createPacketCollectorAndSend(request).nextResultOrThrow();
+        PubSub result = pubSubManager.getConnection().createStanzaCollectorAndSend(request).nextResultOrThrow();
         ItemsExtension itemsElem = result.getExtension(PubSubElementType.ITEMS);
         if (returnedExtensions != null) {
             returnedExtensions.addAll(result.getExtensions());
@@ -289,7 +289,7 @@ public class LeafNode extends Node
 	{
 		PubSub packet = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PUBLISH, getId()));
 
-		pubSubManager.getConnection().createPacketCollectorAndSend(packet).nextResultOrThrow();
+		pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
 	}
 
 	/**
@@ -346,7 +346,7 @@ public class LeafNode extends Node
 	{
 		PubSub packet = createPubsubPacket(Type.set, new PublishItem<T>(getId(), items));
 
-		pubSubManager.getConnection().createPacketCollectorAndSend(packet).nextResultOrThrow();
+		pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
 	}
 
 	/**
@@ -363,7 +363,7 @@ public class LeafNode extends Node
 	{
 		PubSub request = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PURGE_OWNER, getId()), PubSubElementType.PURGE_OWNER.getNamespace());
 
-		pubSubManager.getConnection().createPacketCollectorAndSend(request).nextResultOrThrow();
+		pubSubManager.getConnection().createStanzaCollectorAndSend(request).nextResultOrThrow();
 	}
 
 	/**
@@ -400,6 +400,6 @@ public class LeafNode extends Node
 			items.add(new Item(id));
 		}
 		PubSub request = createPubsubPacket(Type.set, new ItemsExtension(ItemsExtension.ItemsElementType.retract, getId(), items));
-		pubSubManager.getConnection().createPacketCollectorAndSend(request).nextResultOrThrow();
+		pubSubManager.getConnection().createStanzaCollectorAndSend(request).nextResultOrThrow();
 	}
 }

@@ -88,7 +88,7 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
         mucAsSeenByTwo.join(Resourcepart.from("two-" + randomString));
 
         mucAsSeenByOne.sendMessage(mucMessage);
-        resultSyncPoint.waitForResult(defaultTimeout);
+        resultSyncPoint.waitForResult(timeout);
 
         mucAsSeenByOne.leave();
         mucAsSeenByTwo.leave();

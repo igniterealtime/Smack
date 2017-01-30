@@ -128,8 +128,9 @@ public class PacketParserUtils {
         return parser;
     }
 
-    public static Stanza parseStanza(String stanza) throws Exception {
-        return parseStanza(getParserFor(stanza));
+    @SuppressWarnings("unchecked")
+    public static <S extends Stanza> S parseStanza(String stanza) throws Exception {
+        return (S) parseStanza(getParserFor(stanza));
     }
 
     /**

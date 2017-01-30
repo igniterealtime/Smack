@@ -316,7 +316,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
         String base64Data = Base64.encode("Data");
         DataPacketExtension dpe = new DataPacketExtension(sessionID, 0, base64Data);
         Data data = new Data(dpe);
-        listener.processPacket(data);
+        listener.processStanza(data);
 
         // verify no packet send
         protocol.verifyAll();
@@ -352,7 +352,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
         DataPacketExtension dpe = new DataPacketExtension(sessionID, 0, base64Data);
         Data data = new Data(dpe);
 
-        listener.processPacket(data);
+        listener.processStanza(data);
 
         protocol.verifyAll();
 
@@ -392,8 +392,8 @@ public class InBandBytestreamSessionTest extends InitExtensions {
         Data data2 = new Data(dpe);
 
         // notify listener
-        listener.processPacket(data1);
-        listener.processPacket(data2);
+        listener.processStanza(data1);
+        listener.processStanza(data2);
 
         protocol.verifyAll();
 
@@ -428,7 +428,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
         Data data = new Data(dpe);
 
         // notify listener
-        listener.processPacket(data);
+        listener.processStanza(data);
 
         protocol.verifyAll();
 
@@ -463,7 +463,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
         Data data = new Data(dpe);
 
         // add data packets
-        listener.processPacket(data);
+        listener.processStanza(data);
 
         // read until exception is thrown
         try {
@@ -504,7 +504,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
             String base64Data = Base64.encodeToString(controlData, i * blockSize, blockSize);
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
             Data data = new Data(dpe);
-            listener.processPacket(data);
+            listener.processStanza(data);
         }
 
         byte[] bytes = new byte[3 * blockSize];
@@ -551,7 +551,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
             String base64Data = Base64.encodeToString(controlData, i * blockSize, blockSize);
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
             Data data = new Data(dpe);
-            listener.processPacket(data);
+            listener.processStanza(data);
         }
 
         // read data
@@ -592,7 +592,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
         Data data = new Data(dpe);
 
         // add data packets
-        listener.processPacket(data);
+        listener.processStanza(data);
 
         inputStream.close();
 
@@ -635,7 +635,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
         Data data = new Data(dpe);
 
         // add data packets
-        listener.processPacket(data);
+        listener.processStanza(data);
 
         Thread closer = new Thread(new Runnable() {
 

@@ -464,7 +464,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
             Bytestream initiation = createBytestreamInitiation(sessionID, targetJID, streamHosts);
 
             // send initiation packet
-            Stanza response = connection.createPacketCollectorAndSend(initiation).nextResultOrThrow(
+            Stanza response = connection.createStanzaCollectorAndSend(initiation).nextResultOrThrow(
                             getTargetResponseTimeout());
 
             // extract used stream host from response
@@ -590,7 +590,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
         for (Jid proxy : proxies) {
             Bytestream streamHostRequest = createStreamHostRequest(proxy);
             try {
-                Bytestream response = (Bytestream) connection.createPacketCollectorAndSend(
+                Bytestream response = (Bytestream) connection.createStanzaCollectorAndSend(
                                 streamHostRequest).nextResultOrThrow();
                 streamHosts.addAll(response.getStreamHosts());
             }
