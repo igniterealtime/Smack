@@ -1494,7 +1494,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         final StanzaListener packetListener = new StanzaListener() {
             @Override
             public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
-                removeAsyncStanzaListener(this);
+                boolean removed = removeAsyncStanzaListener(this);
+                if (!removed) {
+                    // We lost a race against the "no response" handling runnable. Avoid calling the callback, as the
+                    // exception callback will be invoked (if any).
+                    return;
+                }
                 try {
                     XMPPErrorException.ifHasErrorThenThrow(packet);
                     callback.processStanza(packet);
