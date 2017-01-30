@@ -1568,7 +1568,7 @@ public final class Roster extends Manager {
         @Override
         public void processStanza(Stanza packet) {
             final XMPPConnection connection = connection();
-            LOGGER.fine("RosterResultListener received stanza");
+            LOGGER.log(Level.FINE, "RosterResultListener received {}", packet);
             Collection<Jid> addedEntries = new ArrayList<>();
             Collection<Jid> updatedEntries = new ArrayList<>();
             Collection<Jid> deletedEntries = new ArrayList<>();
