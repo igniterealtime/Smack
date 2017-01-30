@@ -1494,6 +1494,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         final StanzaListener packetListener = new StanzaListener() {
             @Override
             public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
+                removeAsyncStanzaListener(this);
                 try {
                     XMPPErrorException.ifHasErrorThenThrow(packet);
                     callback.processStanza(packet);
@@ -1502,9 +1503,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     if (exceptionCallback != null) {
                         exceptionCallback.processException(e);
                     }
-                }
-                finally {
-                    removeAsyncStanzaListener(this);
                 }
             }
         };
