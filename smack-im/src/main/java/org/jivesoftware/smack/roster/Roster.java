@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2017 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,9 +128,9 @@ public final class Roster extends Manager {
 
     /**
      * The default subscription processing mode to use when a Roster is created. By default
-     * all subscription requests are automatically accepted.
+     * all subscription requests are automatically rejected.
      */
-    private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.accept_all;
+    private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.reject_all;
 
     /**
      * The initial maximum size of the map holding presence information of entities without an Roster entry. Currently
@@ -244,7 +244,7 @@ public final class Roster extends Manager {
 
         connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
-            public void processPacket(Stanza stanza) throws NotConnectedException,
+            public void processStanza(Stanza stanza) throws NotConnectedException,
                             InterruptedException {
                 Presence presence = (Presence) stanza;
                 Jid from = presence.getFrom();
@@ -315,6 +315,19 @@ public final class Roster extends Manager {
             }
 
         });
+
+        connection.addPacketSendingListener(new StanzaListener() {
+            @Override
+            public void processStanza(Stanza stanzav) throws NotConnectedException, InterruptedException {
+                // Once we send an unavailable presence, the server is allowed to suppress sending presence status
+                // information to us as optimization (RFC 6121 § 4.4.2). Thus XMPP clients which are unavailable, should
+                // consider the presence information of their contacts as not up-to-date. We make the user obvious of
+                // this situation by setting the presences of all contacts to unavailable (while keeping the roster
+                // state).
+                setOfflinePresences();
+            }
+        }, PresenceTypeFilter.UNAVAILABLE);
+
         // If the connection is already established, call reload
         if (connection.isAuthenticated()) {
             try {
@@ -324,6 +337,7 @@ public final class Roster extends Manager {
                 LOGGER.log(Level.SEVERE, "Could not reload Roster", e);
             }
         }
+
     }
 
     /**
@@ -335,7 +349,7 @@ public final class Roster extends Manager {
     private Map<Resourcepart, Presence> getPresencesInternal(BareJid entity) {
         Map<Resourcepart, Presence> entityPresences = presenceMap.get(entity);
         if (entityPresences == null) {
-            entityPresences = nonRosterPresenceMap.get(entity);
+            entityPresences = nonRosterPresenceMap.lookup(entity);
         }
         return entityPresences;
     }
@@ -459,7 +473,7 @@ public final class Roster extends Manager {
     }
 
     protected boolean waitUntilLoaded() throws InterruptedException {
-        long waitTime = connection().getPacketReplyTimeout();
+        long waitTime = connection().getReplyTimeout();
         long start = System.currentTimeMillis();
         while (!isLoaded()) {
             if (waitTime <= 0) {
@@ -600,7 +614,7 @@ public final class Roster extends Manager {
             }
         }
         rosterPacket.addRosterItem(item);
-        connection.createPacketCollectorAndSend(rosterPacket).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(rosterPacket).nextResultOrThrow();
 
         sendSubscriptionRequest(user);
     }
@@ -730,7 +744,7 @@ public final class Roster extends Manager {
         // Set the item type as REMOVE so that the server will delete the entry
         item.setItemType(RosterPacket.ItemType.remove);
         packet.addRosterItem(item);
-        connection.createPacketCollectorAndSend(packet).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(packet).nextResultOrThrow();
     }
 
     /**
@@ -1159,11 +1173,9 @@ public final class Roster extends Manager {
 
     /**
      * Changes the presence of available contacts offline by simulating an unavailable
-     * presence sent from the server. After a disconnection, every Presence is set
-     * to offline.
-     * @throws NotConnectedException 
+     * presence sent from the server.
      */
-    private void setOfflinePresencesAndResetLoaded() {
+    private void setOfflinePresences() {
         Presence packetUnavailable;
         outerloop: for (Jid user : presenceMap.keySet()) {
             Map<Resourcepart, Presence> resources = presenceMap.get(user);
@@ -1177,11 +1189,11 @@ public final class Roster extends Manager {
                     }
                     packetUnavailable.setFrom(JidCreate.fullFrom(bareUserJid, resource));
                     try {
-                        presencePacketListener.processPacket(packetUnavailable);
+                        presencePacketListener.processStanza(packetUnavailable);
                     }
                     catch (NotConnectedException e) {
                         throw new IllegalStateException(
-                                        "presencePakcetListener should never throw a NotConnectedException when processPacket is called with a presence of type unavailable",
+                                        "presencePakcetListener should never throw a NotConnectedException when processStanza is called with a presence of type unavailable",
                                         e);
                     }
                     catch (InterruptedException e) {
@@ -1190,6 +1202,15 @@ public final class Roster extends Manager {
                 }
             }
         }
+    }
+
+    /**
+     * Changes the presence of available contacts offline by simulating an unavailable
+     * presence sent from the server. After a disconnection, every Presence is set
+     * to offline.
+     */
+    private void setOfflinePresencesAndResetLoaded() {
+        setOfflinePresences();
         rosterState = RosterState.uninitialized;
     }
 
@@ -1401,7 +1422,7 @@ public final class Roster extends Manager {
     private class PresencePacketListener implements StanzaListener {
 
         @Override
-        public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
+        public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
             // Try to ensure that the roster is loaded when processing presence stanzas. While the
             // presence listener is synchronous, the roster result listener is not, which means that
             // the presence listener may be invoked with a not yet loaded roster.
@@ -1541,7 +1562,7 @@ public final class Roster extends Manager {
     private class RosterResultListener implements StanzaListener {
 
         @Override
-        public void processPacket(Stanza packet) {
+        public void processStanza(Stanza packet) {
             final XMPPConnection connection = connection();
             LOGGER.fine("RosterResultListener received stanza");
             Collection<Jid> addedEntries = new ArrayList<>();

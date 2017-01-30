@@ -5,6 +5,6 @@ javax.naming API (e.g. Android)."""
 
 dependencies {
 	compile project(path: ':smack-core')
-	compile 'de.measite.minidns:minidns-hla:0.2.0-beta1'
+	compile 'de.measite.minidns:minidns-hla:[0.2,0.3)'
 	compile "org.jxmpp:jxmpp-util-cache:$jxmppVersion"
 }

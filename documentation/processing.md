@@ -29,13 +29,13 @@ PacketCollector myCollector = connection.createPacketCollector(filter);
 // Normally, you'd do something with the collector, like wait for new packets.
 
 // Next, create a packet listener. We use an anonymous inner class for brevity.
-PacketListener myListener = new PacketListener() {
-		**public** **void** processPacket(Packet packet) {
-			// Do something with the incoming packet here._
+StanzaListener myListener = new StanzaListener() {
+		**public** **void** processStanza(Stanza stanza) {
+			// Do something with the incoming stanza here._
 		}
 	};
 // Register the listener._
-connection.addPacketListener(myListener, filter);
+connection.addStanzaListener(myListener, filter);
 ```
 
 Standard Stanza Filters

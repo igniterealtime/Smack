@@ -426,7 +426,7 @@ public final class InBandBytestreamManager implements BytestreamManager {
         byteStreamRequest.setTo(targetJID);
 
         // sending packet will throw exception on timeout or error reply
-        connection.createPacketCollectorAndSend(byteStreamRequest).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(byteStreamRequest).nextResultOrThrow();
 
         InBandBytestreamSession inBandBytestreamSession = new InBandBytestreamSession(
                         this.connection, byteStreamRequest, targetJID);

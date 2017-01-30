@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2016 Florian Schmaus
+ * Copyright 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.initializer.SmackInitializer;
@@ -30,18 +32,15 @@ import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SRVRecord;
 
-import de.measite.minidns.DNSCache;
 import de.measite.minidns.DNSMessage.RESPONSE_CODE;
 import de.measite.minidns.Question;
-import de.measite.minidns.cache.LRUCache;
-import de.measite.minidns.dnssec.DNSSECClient;
+import de.measite.minidns.hla.DnssecResolverApi;
 import de.measite.minidns.hla.ResolutionUnsuccessfulException;
 import de.measite.minidns.hla.ResolverApi;
 import de.measite.minidns.hla.ResolverResult;
 import de.measite.minidns.record.A;
 import de.measite.minidns.record.AAAA;
 import de.measite.minidns.record.SRV;
-import de.measite.minidns.recursive.ReliableDNSClient;
 
 
 /**
@@ -52,11 +51,9 @@ public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
 
     private static final MiniDnsResolver INSTANCE = new MiniDnsResolver();
 
-    private static final DNSCache CACHE = new LRUCache(128);
+    private static final ResolverApi DNSSEC_RESOLVER = DnssecResolverApi.INSTANCE;
 
-    private static final ResolverApi DNSSEC_RESOLVER = new ResolverApi(new DNSSECClient(CACHE));
-
-    private static final ResolverApi NON_DNSSEC_RESOLVER = new ResolverApi(new ReliableDNSClient(CACHE));
+    private static final ResolverApi NON_DNSSEC_RESOLVER = ResolverApi.INSTANCE;
 
     public static DNSResolver getInstance() {
         return INSTANCE;
@@ -131,10 +128,28 @@ public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
             return null;
         }
 
-        List<InetAddress> inetAddresses = new ArrayList<>(aResult.getAnswers().size()
-                        + aaaaResult.getAnswers().size());
+        // TODO: Use ResolverResult.getAnswersOrEmptySet() once we updated MiniDNS.
+        Set<A> aResults;
+        if (aResult.wasSuccessful()) {
+            aResults = aResult.getAnswers();
+        }
+        else {
+            aResults = Collections.emptySet();
+        }
 
-        for (A a : aResult.getAnswers()) {
+        // TODO: Use ResolverResult.getAnswersOrEmptySet() once we updated MiniDNS.
+        Set<AAAA> aaaaResults;
+        if (aaaaResult.wasSuccessful()) {
+            aaaaResults = aaaaResult.getAnswers();
+        }
+        else {
+            aaaaResults = Collections.emptySet();
+        }
+
+        List<InetAddress> inetAddresses = new ArrayList<>(aResults.size()
+                        + aaaaResults.size());
+
+        for (A a : aResults) {
             InetAddress inetAddress;
             try {
                 inetAddress = InetAddress.getByAddress(a.getIp());
@@ -144,7 +159,7 @@ public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
             }
             inetAddresses.add(inetAddress);
         }
-        for (AAAA aaaa : aaaaResult.getAnswers()) {
+        for (AAAA aaaa : aaaaResults) {
             InetAddress inetAddress;
             try {
                 inetAddress = InetAddress.getByAddress(name, aaaa.getIp());

@@ -234,7 +234,7 @@ public class SynchronizationPoint<E extends Exception> {
      * @throws InterruptedException 
      */
     private void waitForConditionOrTimeout() throws InterruptedException {
-        long remainingWait = TimeUnit.MILLISECONDS.toNanos(connection.getPacketReplyTimeout());
+        long remainingWait = TimeUnit.MILLISECONDS.toNanos(connection.getReplyTimeout());
         while (state == State.RequestSent || state == State.Initial) {
             if (remainingWait <= 0) {
                 state = State.NoResponse;

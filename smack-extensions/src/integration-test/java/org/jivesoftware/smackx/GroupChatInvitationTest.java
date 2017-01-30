@@ -30,7 +30,7 @@ import org.jivesoftware.smack.filter.StanzaExtensionFilter;
  */
 public class GroupChatInvitationTest extends SmackTestCase {
 
-    private PacketCollector collector = null;
+    private StanzaCollector collector = null;
 
     /**
      * Constructor for GroupChatInvitationTest.
@@ -68,7 +68,7 @@ public class GroupChatInvitationTest extends SmackTestCase {
         super.setUp();
         // Register listener for groupchat invitations.
         PacketFilter filter = new StanzaExtensionFilter("x", "jabber:x:conference");
-        collector = getConnection(1).createPacketCollector(filter);
+        collector = getConnection(1).createStanzaCollector(filter);
     }
 
     protected void tearDown() throws Exception {

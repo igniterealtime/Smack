@@ -91,6 +91,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     protected void connectInternal() {
         connected = true;
         saslFeatureReceived.reportSuccess();
+        tlsHandled.reportSuccess();
         streamId = "dummy-" + new Random(new Date().getTime()).nextInt();
 
         if (reconnect) {
@@ -180,7 +181,7 @@ public class DummyConnection extends AbstractXMPPConnection {
      * @param packet the stanza(/packet) to process.
      */
     public void processStanza(Stanza packet) {
-        invokePacketCollectorsAndNotifyRecvListeners(packet);
+        invokeStanzaCollectorsAndNotifyRecvListeners(packet);
     }
 
     /**

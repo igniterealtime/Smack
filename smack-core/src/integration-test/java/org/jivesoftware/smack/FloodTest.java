@@ -34,15 +34,15 @@ public class FloodTest extends SmackTestCase {
     public void testMessageFlood() {
         try {
             Chat chat11 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
-            PacketCollector chat12 = getConnection(1).createPacketCollector(
+            StanzaCollector chat12 = getConnection(1).createStanzaCollector(
                     new ThreadFilter(chat11.getThreadID()));
 
             Chat chat21 = getConnection(0).getChatManager().createChat(getBareJID(2), null);
-            PacketCollector chat22 = getConnection(2).createPacketCollector(
+            StanzaCollector chat22 = getConnection(2).createStanzaCollector(
                     new ThreadFilter(chat21.getThreadID()));
 
             Chat chat31 = getConnection(0).getChatManager().createChat(getBareJID(3), null);
-            PacketCollector chat32 = getConnection(3).createPacketCollector(
+            StanzaCollector chat32 = getConnection(3).createStanzaCollector(
                     new ThreadFilter(chat31.getThreadID()));
 
             for (int i=0; i<500; i++) {

@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx;
 
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
@@ -45,12 +45,12 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
      */
     public void testSending() throws XMPPException {
 
-        PacketCollector collector1 =
-                getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
-        PacketCollector collector2 =
-                getConnection(2).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
-        PacketCollector collector3 =
-                getConnection(3).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
+        StanzaCollector collector1 =
+                getConnection(1).createStanzaCollector(new MessageTypeFilter(Message.Type.normal));
+        StanzaCollector collector2 =
+                getConnection(2).createStanzaCollector(new MessageTypeFilter(Message.Type.normal));
+        StanzaCollector collector3 =
+                getConnection(3).createStanzaCollector(new MessageTypeFilter(Message.Type.normal));
 
         Message message = new Message();
         message.setBody("Hola");
@@ -110,14 +110,14 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
      * Ensures that replying to packets is ok.
      */
     public void testReplying() throws XMPPException {
-        PacketCollector collector0 =
-                getConnection(0).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
-        PacketCollector collector1 =
-                getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
-        PacketCollector collector2 =
-                getConnection(2).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
-        PacketCollector collector3 =
-                getConnection(3).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
+        StanzaCollector collector0 =
+                getConnection(0).createStanzaCollector(new MessageTypeFilter(Message.Type.normal));
+        StanzaCollector collector1 =
+                getConnection(1).createStanzaCollector(new MessageTypeFilter(Message.Type.normal));
+        StanzaCollector collector2 =
+                getConnection(2).createStanzaCollector(new MessageTypeFilter(Message.Type.normal));
+        StanzaCollector collector3 =
+                getConnection(3).createStanzaCollector(new MessageTypeFilter(Message.Type.normal));
 
         // Send the intial message with multiple recipients
         Message message = new Message();
@@ -192,12 +192,12 @@ public class MultipleRecipientManagerTest extends SmackTestCase {
      * Ensures that replying is not allowed when disabled.
      */
     public void testNoReply() throws XMPPException {
-        PacketCollector collector1 =
-                getConnection(1).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
-        PacketCollector collector2 =
-                getConnection(2).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
-        PacketCollector collector3 =
-                getConnection(3).createPacketCollector(new MessageTypeFilter(Message.Type.normal));
+        StanzaCollector collector1 =
+                getConnection(1).createStanzaCollector(new MessageTypeFilter(Message.Type.normal));
+        StanzaCollector collector2 =
+                getConnection(2).createStanzaCollector(new MessageTypeFilter(Message.Type.normal));
+        StanzaCollector collector3 =
+                getConnection(3).createStanzaCollector(new MessageTypeFilter(Message.Type.normal));
 
         // Send the intial message with multiple recipients
         Message message = new Message();

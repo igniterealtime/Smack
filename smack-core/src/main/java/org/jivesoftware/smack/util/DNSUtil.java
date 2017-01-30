@@ -196,8 +196,17 @@ public class DNSUtil {
             addresses.addAll(sortedRecords);
         }
 
+        int defaultPort = -1;
+        switch (domainType) {
+        case Client:
+            defaultPort = 5222;
+            break;
+        case Server:
+            defaultPort = 5269;
+            break;
+        }
         // Step two: Add the hostname to the end of the list
-        HostAddress hostAddress = dnsResolver.lookupHostAddress(domain, failedAddresses, dnssecMode);
+        HostAddress hostAddress = dnsResolver.lookupHostAddress(domain, defaultPort, failedAddresses, dnssecMode);
         if (hostAddress != null) {
             addresses.add(hostAddress);
         }
@@ -241,14 +250,16 @@ public class DNSUtil {
             List<SRVRecord> bucket = buckets.get(priority);
             int bucketSize;
             while ((bucketSize = bucket.size()) > 0) {
-                int[] totals = new int[bucket.size()];
+                int[] totals = new int[bucketSize];
                 int running_total = 0;
                 int count = 0;
                 int zeroWeight = 1;
 
                 for (SRVRecord r : bucket) {
-                    if (r.getWeight() > 0)
+                    if (r.getWeight() > 0) {
                         zeroWeight = 0;
+                        break;
+                    }
                 }
 
                 for (SRVRecord r : bucket) {

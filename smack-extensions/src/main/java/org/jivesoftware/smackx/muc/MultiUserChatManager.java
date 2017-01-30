@@ -150,7 +150,7 @@ public final class MultiUserChatManager extends Manager {
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // listeners if the message includes an invitation.
         StanzaListener invitationPacketListener = new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 final Message message = (Message) packet;
                 // Get the MUCUser extension
                 final MUCUser mucUser = MUCUser.from(message);

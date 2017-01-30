@@ -181,7 +181,7 @@ public final class CarbonManager extends Manager {
 
         try {
             connection().sendIqWithResponseCallback(setIQ, new StanzaListener() {
-                public void processPacket(Stanza packet) {
+                public void processStanza(Stanza packet) {
                     enabled_state = use;
                 }
             }, exceptionCallback);
@@ -214,7 +214,7 @@ public final class CarbonManager extends Manager {
 
         IQ setIQ = carbonsEnabledIQ(new_state);
 
-        connection().createPacketCollectorAndSend(setIQ).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(setIQ).nextResultOrThrow();
         enabled_state = new_state;
     }
 

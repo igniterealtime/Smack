@@ -200,7 +200,7 @@ public final class SASLAuthentication {
             else {
                 currentMechanism.authenticate(username, host, xmppServiceDomain, password, authzid, sslSession);
             }
-            final long deadline = System.currentTimeMillis() + connection.getPacketReplyTimeout();
+            final long deadline = System.currentTimeMillis() + connection.getReplyTimeout();
             while (!authenticationSuccessful && saslException == null) {
                 final long now = System.currentTimeMillis();
                 if (now >= deadline) break;

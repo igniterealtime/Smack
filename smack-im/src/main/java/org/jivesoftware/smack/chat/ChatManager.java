@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -52,7 +52,9 @@ import org.jxmpp.jid.EntityJid;
  * made aware of new chats, register a listener by calling {@link #addChatListener(ChatManagerListener)}.
  *
  * @author Alexander Wenckus
+ * @deprecated use <code>org.jivesoftware.smack.chat2.ChatManager</code> from <code>smack-extensions</code> instead.
  */
+@Deprecated
 public final class ChatManager extends Manager{
 
     private static final Logger LOGGER = Logger.getLogger(ChatManager.class.getName());
@@ -149,7 +151,7 @@ public final class ChatManager extends Manager{
         // Add a listener for all message packets so that we can deliver
         // messages to the best Chat instance available.
         connection.addSyncStanzaListener(new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 Message message = (Message) packet;
                 Chat chat;
                 if (message.getThread() == null) {
@@ -378,8 +380,8 @@ public final class ChatManager extends Manager{
         connection().sendStanza(message);
     }
 
-    PacketCollector createPacketCollector(Chat chat) {
-        return connection().createPacketCollector(new AndFilter(new ThreadFilter(chat.getThreadID()), 
+    StanzaCollector createStanzaCollector(Chat chat) {
+        return connection().createStanzaCollector(new AndFilter(new ThreadFilter(chat.getThreadID()), 
                         FromMatchesFilter.create(chat.getParticipant())));
     }
 

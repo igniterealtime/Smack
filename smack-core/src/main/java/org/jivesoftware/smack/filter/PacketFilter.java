@@ -37,10 +37,10 @@ package org.jivesoftware.smack.filter;
  *     }
  * };
  * // Create a new stanza(/packet) collector using the filter we created.
- * PacketCollector myCollector = packetReader.createPacketCollector(myFilter);
+ * StanzaCollector myCollector = packetReader.createStanzaCollector(myFilter);
  * </pre>
  *
- * @see org.jivesoftware.smack.PacketCollector
+ * @see org.jivesoftware.smack.StanzaCollector
  * @see org.jivesoftware.smack.StanzaListener
  * @author Matt Tucker
  * @deprecated use {@link StanzaFilter}

@@ -61,7 +61,7 @@ public class SubscriptionPreApprovalTest extends InitSmackIm {
         rosterListener = new TestRosterListener();
         roster = Roster.getInstanceFor(connection);
         roster.addRosterListener(rosterListener);
-        connection.setPacketReplyTimeout(1000 * 60 * 5);
+        connection.setReplyTimeout(1000 * 60 * 5);
     }
 
     @After

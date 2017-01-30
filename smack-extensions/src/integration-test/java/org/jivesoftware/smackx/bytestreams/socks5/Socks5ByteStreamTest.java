@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketIDFilter;
@@ -82,7 +82,7 @@ public class Socks5ByteStreamTest extends SmackTestCase {
                         initiatorConnection.getUser(), targetConnection.getUser(), "session_id");
         bytestreamInitiation.addStreamHost("proxy.localhost", "127.0.0.1", 7777);
 
-        PacketCollector collector = initiatorConnection.createPacketCollector(new PacketIDFilter(
+        StanzaCollector collector = initiatorConnection.createStanzaCollector(new PacketIDFilter(
                         bytestreamInitiation.getStanzaId()));
         initiatorConnection.sendStanza(bytestreamInitiation);
         Packet result = collector.nextResult();

@@ -70,7 +70,7 @@ created, such as the ability to disable or require encryption. See
 
 Once you've created a connection, you should login with the
 `XMPPConnection.login()` method. Once you've logged in, you can being
-chatting with other users by creating new `Chat` or `GroupChat`
+chatting with other users by creating new `Chat` or `MultiUserChat`
 objects.
 
 Working with the Roster
@@ -98,18 +98,18 @@ your presence to let people know you're unavailable and "out fishing":
 // Create a new presence. Pass in false to indicate we're unavailable._
 Presence presence = new Presence(Presence.Type.unavailable);
 presence.setStatus("Gone fishing");
-// Send the packet (assume we have an XMPPConnection instance called "con").
+// Send the stanza (assume we have an XMPPConnection instance called "con").
 con.sendStanza(presence);
 ```
 
-Smack provides two ways to read incoming packets: `PacketListener`, and
-`PacketCollector`. Both use `StanzaFilter` instances to determine which
-packets should be processed. A packet listener is used for event style
-programming, while a packet collector has a result queue of packets that you
-can do polling and blocking operations on. So, a packet listener is useful
-when you want to take some action whenever a packet happens to come in, while
-a packet collector is useful when you want to wait for a specific packet to
-arrive. Packet collectors and listeners can be created using an Connection
+Smack provides two ways to read incoming packets: `StanzaListener`, and
+`StanzaCollector`. Both use `StanzaFilter` instances to determine which
+stanzas should be processed. A stanza listener is used for event style
+programming, while a stanza collector has a result queue of packets that you
+can do polling and blocking operations on. So, a stanza listener is useful
+when you want to take some action whenever a stanza happens to come in, while
+a stanza collector is useful when you want to wait for a specific packet to
+arrive. Stanza collectors and listeners can be created using an Connection
 instance.
 
 Copyright (C) Jive Software 2002-2008

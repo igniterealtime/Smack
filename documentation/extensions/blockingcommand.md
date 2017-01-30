@@ -8,6 +8,7 @@ Allows to manage communications blocking.
   * Block contact
   * Unblock contact
   * Unblock all
+  * Check if a message has a blocked error
 
 
 **XEP related:** [XEP-0191](http://xmpp.org/extensions/xep-0191.html)
@@ -61,3 +62,13 @@ Unblock all
 ```
 blockingCommandManager.unblockAll();
 ```
+
+
+Check if a message has a blocked error
+--------------------------------------
+
+```
+BlockedErrorExtension.isInside(message));
+```
+*message* is a `Message`
+

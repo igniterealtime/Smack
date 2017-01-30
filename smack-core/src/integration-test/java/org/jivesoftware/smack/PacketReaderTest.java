@@ -82,7 +82,7 @@ public class PacketReaderTest extends SmackTestCase {
         iqPacket.setType(IQ.Type.get);
 
         // Send the IQ and wait for the answer
-        PacketCollector collector = getConnection(0).createPacketCollector(
+        StanzaCollector collector = getConnection(0).createStanzaCollector(
                 new PacketIDFilter(iqPacket.getStanzaId()));
         getConnection(0).sendStanza(iqPacket);
         IQ response = (IQ) collector.nextResult(SmackConfiguration.getPacketReplyTimeout());
@@ -100,7 +100,7 @@ public class PacketReaderTest extends SmackTestCase {
     public void testRemoveListener() {
 
         PacketListener listener = new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processStanza(Packet packet) {
                 // Do nothing
             }
         };
@@ -135,7 +135,7 @@ public class PacketReaderTest extends SmackTestCase {
 
         // User1 will always reply to user0 when a message is received
         getConnection(1).addAsyncPacketListener(new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processStanza(Packet packet) {
                 System.out.println(new Date() + " " + packet);
 
                 Message message = new Message(packet.getFrom());
@@ -146,7 +146,7 @@ public class PacketReaderTest extends SmackTestCase {
         }, new StanzaTypeFilter(Message.class));
 
         // User0 listen for replies from user1
-        PacketCollector collector = getConnection(0).createPacketCollector(
+        StanzaCollector collector = getConnection(0).createStanzaCollector(
                 new FromMatchesFilter(getFullJID(1)));
         // User0 sends the regular message to user1
         getConnection(0).sendStanza(packet);
@@ -176,7 +176,7 @@ public class PacketReaderTest extends SmackTestCase {
         for (int j = 0; j < repeat; j++) {
 
             PacketListener listener0 = new PacketListener() {
-                public void processPacket(Packet packet) {
+                public void processStanza(Packet packet) {
                     System.out.println("Packet Captured");
                     incCounter();
                 }
@@ -190,7 +190,7 @@ public class PacketReaderTest extends SmackTestCase {
             };
 
             PacketListener listener1 = new PacketListener() {
-                public void processPacket(Packet packet) {
+                public void processStanza(Packet packet) {
                     System.out.println("Packet Captured");
                     incCounter();
                 }

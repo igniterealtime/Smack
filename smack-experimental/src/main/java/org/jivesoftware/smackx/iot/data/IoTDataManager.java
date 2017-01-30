@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -177,14 +177,14 @@ public final class IoTDataManager extends IoTManager {
         StanzaFilter dataFilter = new IoTFieldsExtensionFilter(seqNr, false);
 
         // Setup the IoTFieldsExtension message collectors before sending the IQ to avoid a data race.
-        PacketCollector doneCollector = connection.createPacketCollector(doneFilter);
+        StanzaCollector doneCollector = connection.createStanzaCollector(doneFilter);
 
-        PacketCollector.Configuration dataCollectorConfiguration = PacketCollector.newConfiguration().setStanzaFilter(
+        StanzaCollector.Configuration dataCollectorConfiguration = StanzaCollector.newConfiguration().setStanzaFilter(
                         dataFilter).setCollectorToReset(doneCollector);
-        PacketCollector dataCollector = connection.createPacketCollector(dataCollectorConfiguration);
+        StanzaCollector dataCollector = connection.createStanzaCollector(dataCollectorConfiguration);
 
         try {
-            connection.createPacketCollectorAndSend(iotDataRequest).nextResultOrThrow();
+            connection.createStanzaCollectorAndSend(iotDataRequest).nextResultOrThrow();
             // Wait until a message with an IoTFieldsExtension and the done flag comes in.
             doneCollector.nextResult();
         }

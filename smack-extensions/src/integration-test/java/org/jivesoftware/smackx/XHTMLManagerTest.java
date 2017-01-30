@@ -90,7 +90,7 @@ public class XHTMLManagerTest extends SmackTestCase {
     public void testSendSimpleXHTMLMessageAndDisplayReceivedXHTMLMessage() {
         // Create a chat for each connection
         Chat chat1 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
-        final PacketCollector chat2 = getConnection(1).createPacketCollector(
+        final StanzaCollector chat2 = getConnection(1).createStanzaCollector(
                     new ThreadFilter(chat1.getThreadID()));
 
         // User1 creates a message to send to user2
@@ -150,7 +150,7 @@ public class XHTMLManagerTest extends SmackTestCase {
     public void testSendComplexXHTMLMessageAndDisplayReceivedXHTMLMessage() {
         // Create a chat for each connection
         Chat chat1 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
-        final PacketCollector chat2 = getConnection(1).createPacketCollector(
+        final StanzaCollector chat2 = getConnection(1).createStanzaCollector(
                     new ThreadFilter(chat1.getThreadID()));
 
         // User1 creates a message to send to user2

@@ -144,7 +144,7 @@ public final class VersionManager extends Manager {
         if (!isSupported(jid)) {
             return null;
         }
-        return connection().createPacketCollectorAndSend(new Version(jid)).nextResultOrThrow();
+        return connection().createStanzaCollectorAndSend(new Version(jid)).nextResultOrThrow();
     }
 
     private static Version generateVersionFrom(String name, String version, String os) {

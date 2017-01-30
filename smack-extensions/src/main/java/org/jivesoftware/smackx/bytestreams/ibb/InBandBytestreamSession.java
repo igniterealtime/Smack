@@ -211,7 +211,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             Close close = new Close(this.byteStreamRequest.getSessionID());
             close.setTo(this.remoteJID);
             try {
-                connection.createPacketCollectorAndSend(close).nextResultOrThrow();
+                connection.createStanzaCollectorAndSend(close).nextResultOrThrow();
             }
             catch (Exception e) {
                 // Sadly we are unable to use the IOException(Throwable) constructor because this
@@ -449,7 +449,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
                 private long lastSequence = -1;
 
-                public void processPacket(Stanza packet) throws NotConnectedException, InterruptedException {
+                public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
                     // get data packet extension
                     DataPacketExtension data = ((Data) packet).getDataPacketExtension();
 
@@ -510,7 +510,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         protected StanzaListener getDataPacketListener() {
             return new StanzaListener() {
 
-                public void processPacket(Stanza packet) {
+                public void processStanza(Stanza packet) {
                     // get data packet extension
                     DataPacketExtension data = (DataPacketExtension) packet.getExtension(
                                     DataPacketExtension.ELEMENT,
@@ -781,7 +781,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             iq.setTo(remoteJID);
 
             try {
-                connection.createPacketCollectorAndSend(iq).nextResultOrThrow();
+                connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
             }
             catch (Exception e) {
                 // close session unless it is already closed
@@ -824,7 +824,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      * @throws InterruptedException 
      */
     public void processIQPacket(Data data) throws NotConnectedException, InterruptedException {
-        inputStream.dataPacketListener.processPacket(data);
+        inputStream.dataPacketListener.processStanza(data);
     }
 
 }

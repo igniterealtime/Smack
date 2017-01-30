@@ -23,18 +23,18 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.junit.Test;
 
-public class PacketCollectorTest
+public class StanzaCollectorTest
 {
 
 	@Test
 	public void verifyRollover() throws InterruptedException
 	{
-		TestPacketCollector collector = new TestPacketCollector(null, new OKEverything(), 5);
+		TestStanzaCollector collector = new TestStanzaCollector(null, new OKEverything(), 5);
 
 		for (int i=0; i<6; i++)
 		{
 			Stanza testPacket = new TestPacket(i);
-			collector.processPacket(testPacket);
+			collector.processStanza(testPacket);
 		}
 
 		// Assert that '0' has rolled off
@@ -48,7 +48,7 @@ public class PacketCollectorTest
 		for (int i=10; i<15; i++)
 		{
 			Stanza testPacket = new TestPacket(i);
-			collector.processPacket(testPacket);
+			collector.processStanza(testPacket);
 		}
 
 		assertEquals("10", collector.nextResultBlockForever().getStanzaId());
@@ -69,7 +69,7 @@ public class PacketCollectorTest
 	public void verifyThreadSafety()
 	{
 		int insertCount = 500;
-		final TestPacketCollector collector = new TestPacketCollector(null, new OKEverything(), insertCount);
+		final TestStanzaCollector collector = new TestStanzaCollector(null, new OKEverything(), insertCount);
 
 		Thread consumer1 = new Thread(new Runnable()
 		{
@@ -158,7 +158,7 @@ public class PacketCollectorTest
 
 		for(int i=0; i<insertCount; i++)
 		{
-			collector.processPacket(new TestPacket(i));
+			collector.processStanza(new TestPacket(i));
 		}
 
 		try
@@ -186,11 +186,11 @@ public class PacketCollectorTest
 
 	}
 
-	class TestPacketCollector extends PacketCollector 
+	class TestStanzaCollector extends StanzaCollector 
 	{
-		protected TestPacketCollector(XMPPConnection conection, StanzaFilter packetFilter, int size)
+		protected TestStanzaCollector(XMPPConnection conection, StanzaFilter packetFilter, int size)
 		{
-			super(conection, PacketCollector.newConfiguration().setStanzaFilter(packetFilter).setSize(size));
+			super(conection, StanzaCollector.newConfiguration().setStanzaFilter(packetFilter).setSize(size));
 		}
 	}
 

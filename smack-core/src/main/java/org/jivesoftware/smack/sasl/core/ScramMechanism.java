@@ -160,7 +160,7 @@ public abstract class ScramMechanism extends SASLMechanism {
             // mechanisms.
             final String cacheKey = password + ',' + salt + ',' + getName();
             byte[] serverKey, clientKey;
-            Keys keys = CACHE.get(cacheKey);
+            Keys keys = CACHE.lookup(cacheKey);
             if (keys == null) {
                 // SaltedPassword := Hi(Normalize(password), salt, i)
                 byte[] saltedPassword = hi(saslPrep(password), Base64.decode(salt), iterations);

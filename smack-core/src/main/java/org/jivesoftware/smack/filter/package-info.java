@@ -16,6 +16,6 @@
  */
 
 /**
- * Allows {@link org.jivesoftware.smack.PacketCollector} and {@link org.jivesoftware.smack.StanzaListener} instances to filter for stanzas with particular attributes.
+ * Allows {@link org.jivesoftware.smack.StanzaCollector} and {@link org.jivesoftware.smack.StanzaListener} instances to filter for stanzas with particular attributes.
  */
 package org.jivesoftware.smack.filter;

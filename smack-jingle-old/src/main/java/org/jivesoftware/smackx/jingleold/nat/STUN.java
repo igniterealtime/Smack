@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -185,7 +185,7 @@ public class STUN extends SimpleIQ {
         STUN stunPacket = new STUN();
         stunPacket.setTo(DOMAIN + "." + connection.getXMPPServiceDomain());
 
-        PacketCollector collector = connection.createPacketCollectorAndSend(stunPacket);
+        StanzaCollector collector = connection.createStanzaCollectorAndSend(stunPacket);
 
         STUN response = collector.nextResult();
 

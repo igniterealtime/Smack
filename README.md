@@ -8,10 +8,10 @@ Instructions how to use Smack in your Java or Android project are provided in th
 About
 -----
 
-[Smack] is an open source, cross-platform, easy to use, Java XMPP client library.
+[Smack] is an open source, highly modular, easy to use, XMPP client library written in Java for JVMs and Android.
 
 A pure Java library, it can be embedded into your applications to create anything from a full XMPP client to simple XMPP integrations such as sending notification messages and presence-enabling devices.
-Smack and XMPP allows you to easily exchange data, in various ways e.g. fire-and-forget, publish-subscribe, between human and non-human endpoints.
+Smack and XMPP allows you to easily exchange data, in various ways e.g. fire-and-forget, publish-subscribe, between human and non-human endpoints (M2M, IoT, …).
 
 Confused? Have a look at the [Overview](documentation/overview.md).
 
@@ -23,7 +23,7 @@ Bug Reporting
 Only a few users have access for for filling bugs in the tracker. New
 users should:
 
-1. Read ["How to ask for help or report an issue"](https://github.com/igniterealtime/Smack/wiki/How-to-ask-for-help-or-report-an-issue)
+1. Read ["How to ask for help or report an issue"](https://github.com/igniterealtime/Smack/wiki/How-to-ask-for-help,-report-an-issue-and-possible-solve-the-problem-yourself)
 2. [Create a forums account](https://community.igniterealtime.org/login!input.jspa?registerOnly=true) (only e-mail is a requirement, you can skip all the other fields).
 3. Login to the forum account
 4. Press New in your toolbar and choose Discussion
@@ -53,7 +53,7 @@ Resources
 - Nightly Builds: http://www.igniterealtime.org/downloads/nightly_smack.jsp
 - Nightly Javadoc: http://www.igniterealtime.org/builds/smack/dailybuilds/javadoc/
 - Nightly Documentation: http://www.igniterealtime.org/builds/smack/dailybuilds/documentation/
-- User Forum: http://community.igniterealtime.org/community/support/smack_users
+- User Forum: https://community.igniterealtime.org/community/support/smack-support
 - Dev Forum: http://community.igniterealtime.org/community/developers/smack
 - Maven Releases: https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/
 - Maven Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/

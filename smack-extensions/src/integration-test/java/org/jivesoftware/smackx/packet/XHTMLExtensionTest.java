@@ -20,7 +20,7 @@ package org.jivesoftware.smackx.packet;
 import java.util.Iterator;
 
 import org.jivesoftware.smack.Chat;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
@@ -83,7 +83,7 @@ public class XHTMLExtensionTest extends SmackTestCase {
     public void testSendSimpleXHTMLMessageAndDisplayReceivedXHTMLMessage() {
 	// Create a chat for each connection
 	Chat chat1 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
-	final PacketCollector chat2 = getConnection(1).createPacketCollector(
+	final StanzaCollector chat2 = getConnection(1).createStanzaCollector(
 		new ThreadFilter(chat1.getThreadID()));
 
 	// User1 creates a message to send to user2
@@ -136,7 +136,7 @@ public class XHTMLExtensionTest extends SmackTestCase {
     public void testSendComplexXHTMLMessageAndDisplayReceivedXHTMLMessage() {
 	// Create a chat for each connection
 	Chat chat1 = getConnection(0).getChatManager().createChat(getBareJID(1), null);
-	final PacketCollector chat2 = getConnection(1).createPacketCollector(
+	final StanzaCollector chat2 = getConnection(1).createStanzaCollector(
 		new ThreadFilter(chat1.getThreadID()));
 
 	// Create a Listener that listens for Messages with the extension 
@@ -146,7 +146,7 @@ public class XHTMLExtensionTest extends SmackTestCase {
 	    new StanzaExtensionFilter("html", "http://jabber.org/protocol/xhtml-im");
 	PacketListener packetListener = new PacketListener() {
 	    @Override
-	    public void processPacket(Packet packet) {
+	    public void processStanza(Packet packet) {
 
 	    }
 	};

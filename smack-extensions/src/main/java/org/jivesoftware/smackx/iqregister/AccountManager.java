@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -283,7 +283,7 @@ public final class AccountManager extends Manager {
         Registration reg = new Registration(attributes);
         reg.setType(IQ.Type.set);
         reg.setTo(connection().getXMPPServiceDomain());
-        createPacketCollectorAndSend(reg).nextResultOrThrow();
+        createStanzaCollectorAndSend(reg).nextResultOrThrow();
     }
 
     /**
@@ -307,7 +307,7 @@ public final class AccountManager extends Manager {
         Registration reg = new Registration(map);
         reg.setType(IQ.Type.set);
         reg.setTo(connection().getXMPPServiceDomain());
-        createPacketCollectorAndSend(reg).nextResultOrThrow();
+        createStanzaCollectorAndSend(reg).nextResultOrThrow();
     }
 
     /**
@@ -328,19 +328,26 @@ public final class AccountManager extends Manager {
         Registration reg = new Registration(attributes);
         reg.setType(IQ.Type.set);
         reg.setTo(connection().getXMPPServiceDomain());
-        createPacketCollectorAndSend(reg).nextResultOrThrow();
+        createStanzaCollectorAndSend(reg).nextResultOrThrow();
     }
 
     public boolean isSupported()
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         XMPPConnection connection = connection();
 
-        ExtensionElement extensionElement = connection.getFeature(Registration.ELEMENT, Registration.NAMESPACE);
+        ExtensionElement extensionElement = connection.getFeature(Registration.Feature.ELEMENT,
+                        Registration.Feature.NAMESPACE);
         if (extensionElement != null) {
             return true;
         }
 
-        return ServiceDiscoveryManager.getInstanceFor(connection).serverSupportsFeature(Registration.NAMESPACE);
+        // Fallback to disco#info only if this connection is authenticated, as otherwise we won't have an full JID and
+        // won't be able to do IQs.
+        if (connection.isAuthenticated()) {
+            return ServiceDiscoveryManager.getInstanceFor(connection).serverSupportsFeature(Registration.NAMESPACE);
+        }
+
+        return false;
     }
 
     /**
@@ -356,11 +363,11 @@ public final class AccountManager extends Manager {
     private synchronized void getRegistrationInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Registration reg = new Registration();
         reg.setTo(connection().getXMPPServiceDomain());
-        info = createPacketCollectorAndSend(reg).nextResultOrThrow();
+        info = createStanzaCollectorAndSend(reg).nextResultOrThrow();
     }
 
-    private PacketCollector createPacketCollectorAndSend(IQ req) throws NotConnectedException, InterruptedException {
-        PacketCollector collector = connection().createPacketCollectorAndSend(new StanzaIdFilter(req.getStanzaId()), req);
+    private StanzaCollector createStanzaCollectorAndSend(IQ req) throws NotConnectedException, InterruptedException {
+        StanzaCollector collector = connection().createStanzaCollectorAndSend(new StanzaIdFilter(req.getStanzaId()), req);
         return collector;
     }
 }

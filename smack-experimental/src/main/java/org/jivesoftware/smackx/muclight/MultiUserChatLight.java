@@ -22,14 +22,12 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.chat.Chat;
-import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatMessageListener;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
@@ -86,7 +84,7 @@ public class MultiUserChatLight {
 
     private final StanzaListener messageListener;
 
-    private PacketCollector messageCollector;
+    private StanzaCollector messageCollector;
 
     MultiUserChatLight(XMPPConnection connection, EntityJid room) {
         this.connection = connection;
@@ -97,7 +95,7 @@ public class MultiUserChatLight {
 
         messageListener = new StanzaListener() {
             @Override
-            public void processPacket(Stanza packet) throws NotConnectedException {
+            public void processStanza(Stanza packet) throws NotConnectedException {
                 Message message = (Message) packet;
                 for (MessageListener listener : messageListeners) {
                     listener.processMessage(message);
@@ -146,8 +144,10 @@ public class MultiUserChatLight {
      *            for the newly created chat.
      * @return new Chat for sending private messages to a given room occupant.
      */
-    public Chat createPrivateChat(EntityJid occupant, ChatMessageListener listener) {
-        return ChatManager.getInstanceFor(connection).createChat(occupant, listener);
+    @Deprecated
+    // Do not re-use Chat API, which was designed for XMPP-IM 1:1 chats and not MUClight private chats.
+    public org.jivesoftware.smack.chat.Chat createPrivateChat(EntityJid occupant, ChatMessageListener listener) {
+        return org.jivesoftware.smack.chat.ChatManager.getInstanceFor(connection).createChat(occupant, listener);
     }
 
     /**
@@ -263,10 +263,10 @@ public class MultiUserChatLight {
             throws Exception {
         MUCLightCreateIQ createMUCLightIQ = new MUCLightCreateIQ(room, roomName, occupants);
 
-        messageCollector = connection.createPacketCollector(fromRoomGroupchatFilter);
+        messageCollector = connection.createStanzaCollector(fromRoomGroupchatFilter);
 
         try {
-            connection.createPacketCollectorAndSend(createMUCLightIQ).nextResultOrThrow();
+            connection.createStanzaCollectorAndSend(createMUCLightIQ).nextResultOrThrow();
         } catch (InterruptedException | NoResponseException | XMPPErrorException e) {
             removeConnectionCallbacks();
             throw e;
@@ -297,7 +297,7 @@ public class MultiUserChatLight {
         affiliations.put(connection.getUser(), MUCLightAffiliation.none);
 
         MUCLightChangeAffiliationsIQ changeAffiliationsIQ = new MUCLightChangeAffiliationsIQ(room, affiliations);
-        IQ responseIq = connection.createPacketCollectorAndSend(changeAffiliationsIQ).nextResultOrThrow();
+        IQ responseIq = connection.createStanzaCollectorAndSend(changeAffiliationsIQ).nextResultOrThrow();
         boolean roomLeft = responseIq.getType().equals(IQ.Type.result);
 
         if (roomLeft) {
@@ -319,7 +319,7 @@ public class MultiUserChatLight {
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightGetInfoIQ mucLightGetInfoIQ = new MUCLightGetInfoIQ(room, version);
 
-        IQ responseIq = connection.createPacketCollectorAndSend(mucLightGetInfoIQ).nextResultOrThrow();
+        IQ responseIq = connection.createStanzaCollectorAndSend(mucLightGetInfoIQ).nextResultOrThrow();
         MUCLightInfoIQ mucLightInfoResponseIQ = (MUCLightInfoIQ) responseIq;
 
         return new MUCLightRoomInfo(mucLightInfoResponseIQ.getVersion(), room,
@@ -353,7 +353,7 @@ public class MultiUserChatLight {
     public MUCLightRoomConfiguration getConfiguration(String version)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightGetConfigsIQ mucLightGetConfigsIQ = new MUCLightGetConfigsIQ(room, version);
-        IQ responseIq = connection.createPacketCollectorAndSend(mucLightGetConfigsIQ).nextResultOrThrow();
+        IQ responseIq = connection.createStanzaCollectorAndSend(mucLightGetConfigsIQ).nextResultOrThrow();
         MUCLightConfigurationIQ mucLightConfigurationIQ = (MUCLightConfigurationIQ) responseIq;
         return mucLightConfigurationIQ.getConfiguration();
     }
@@ -386,7 +386,7 @@ public class MultiUserChatLight {
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightGetAffiliationsIQ mucLightGetAffiliationsIQ = new MUCLightGetAffiliationsIQ(room, version);
 
-        IQ responseIq = connection.createPacketCollectorAndSend(mucLightGetAffiliationsIQ).nextResultOrThrow();
+        IQ responseIq = connection.createStanzaCollectorAndSend(mucLightGetAffiliationsIQ).nextResultOrThrow();
         MUCLightAffiliationsIQ mucLightAffiliationsIQ = (MUCLightAffiliationsIQ) responseIq;
 
         return mucLightAffiliationsIQ.getAffiliations();
@@ -418,7 +418,7 @@ public class MultiUserChatLight {
     public void changeAffiliations(HashMap<Jid, MUCLightAffiliation> affiliations)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightChangeAffiliationsIQ changeAffiliationsIQ = new MUCLightChangeAffiliationsIQ(room, affiliations);
-        connection.createPacketCollectorAndSend(changeAffiliationsIQ).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(changeAffiliationsIQ).nextResultOrThrow();
     }
 
     /**
@@ -431,7 +431,7 @@ public class MultiUserChatLight {
      */
     public void destroy() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightDestroyIQ mucLightDestroyIQ = new MUCLightDestroyIQ(room);
-        IQ responseIq = connection.createPacketCollectorAndSend(mucLightDestroyIQ).nextResultOrThrow();
+        IQ responseIq = connection.createStanzaCollectorAndSend(mucLightDestroyIQ).nextResultOrThrow();
         boolean roomDestroyed = responseIq.getType().equals(IQ.Type.result);
 
         if (roomDestroyed) {
@@ -451,7 +451,7 @@ public class MultiUserChatLight {
     public void changeSubject(String subject)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightSetConfigsIQ mucLightSetConfigIQ = new MUCLightSetConfigsIQ(room, null, subject, null);
-        connection.createPacketCollectorAndSend(mucLightSetConfigIQ).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(mucLightSetConfigIQ).nextResultOrThrow();
     }
 
     /**
@@ -466,7 +466,7 @@ public class MultiUserChatLight {
     public void changeRoomName(String roomName)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightSetConfigsIQ mucLightSetConfigIQ = new MUCLightSetConfigsIQ(room, roomName, null);
-        connection.createPacketCollectorAndSend(mucLightSetConfigIQ).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(mucLightSetConfigIQ).nextResultOrThrow();
     }
 
     /**
@@ -496,7 +496,7 @@ public class MultiUserChatLight {
     public void setRoomConfigs(String roomName, HashMap<String, String> customConfigs)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightSetConfigsIQ mucLightSetConfigIQ = new MUCLightSetConfigsIQ(room, roomName, customConfigs);
-        connection.createPacketCollectorAndSend(mucLightSetConfigIQ).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(mucLightSetConfigIQ).nextResultOrThrow();
     }
 
 }

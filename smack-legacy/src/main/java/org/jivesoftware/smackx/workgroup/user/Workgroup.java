@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.PacketCollector;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -145,7 +145,7 @@ public class Workgroup {
         StanzaFilter typeFilter = new StanzaTypeFilter(Message.class);
 
         connection.addAsyncStanzaListener(new StanzaListener() {
-            public void processPacket(Stanza packet) {
+            public void processStanza(Stanza packet) {
                 handlePacket(packet);
             }
         }, typeFilter);
@@ -184,7 +184,7 @@ public class Workgroup {
         directedPresence.setTo(workgroupJID);
         StanzaFilter typeFilter = new StanzaTypeFilter(Presence.class);
         StanzaFilter fromFilter = FromMatchesFilter.create(workgroupJID);
-        PacketCollector collector = connection.createPacketCollectorAndSend(new AndFilter(fromFilter,
+        StanzaCollector collector = connection.createStanzaCollectorAndSend(new AndFilter(fromFilter,
                 typeFilter), directedPresence);
 
         Presence response = (Presence)collector.nextResultOrThrow();
@@ -342,7 +342,7 @@ public class Workgroup {
 
         JoinQueuePacket joinPacket = new JoinQueuePacket(workgroupJID, answerForm, userID);
 
-        connection.createPacketCollectorAndSend(joinPacket).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(joinPacket).nextResultOrThrow();
         // Notify listeners that we've joined the queue.
         fireQueueJoinedEvent();
     }
@@ -424,7 +424,7 @@ public class Workgroup {
         }
 
         DepartQueuePacket departPacket = new DepartQueuePacket(this.workgroupJID);
-        connection.createPacketCollectorAndSend(departPacket).nextResultOrThrow();
+        connection.createStanzaCollectorAndSend(departPacket).nextResultOrThrow();
 
         // Notify listeners that we're no longer in the queue.
         fireQueueDepartedEvent();
@@ -649,7 +649,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        ChatSettings response = (ChatSettings) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+        ChatSettings response = (ChatSettings) connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
 
         return response;
     }
@@ -689,7 +689,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        OfflineSettings response = (OfflineSettings) connection.createPacketCollectorAndSend(
+        OfflineSettings response = (OfflineSettings) connection.createStanzaCollectorAndSend(
                         request).nextResultOrThrow();
         return response;
     }
@@ -708,7 +708,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        SoundSettings response = (SoundSettings) connection.createPacketCollectorAndSend(request).nextResultOrThrow();
+        SoundSettings response = (SoundSettings) connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
         return response;
     }
 
@@ -726,7 +726,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        WorkgroupProperties response = (WorkgroupProperties) connection.createPacketCollectorAndSend(
+        WorkgroupProperties response = (WorkgroupProperties) connection.createStanzaCollectorAndSend(
                         request).nextResultOrThrow();
         return response;
     }
@@ -747,7 +747,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        WorkgroupProperties response = (WorkgroupProperties) connection.createPacketCollectorAndSend(
+        WorkgroupProperties response = (WorkgroupProperties) connection.createStanzaCollectorAndSend(
                         request).nextResultOrThrow();
         return response;
     }
@@ -769,7 +769,7 @@ public class Workgroup {
         workgroupForm.setType(IQ.Type.get);
         workgroupForm.setTo(workgroupJID);
 
-        WorkgroupForm response = (WorkgroupForm) connection.createPacketCollectorAndSend(
+        WorkgroupForm response = (WorkgroupForm) connection.createStanzaCollectorAndSend(
                         workgroupForm).nextResultOrThrow();
         return Form.getFormFrom(response);
     }

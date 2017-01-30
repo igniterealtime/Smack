@@ -126,7 +126,7 @@ public final class PrivacyListManager extends Manager {
         // cached(Active|Default)ListName handling
         connection.addPacketSendingListener(new StanzaListener() {
             @Override
-            public void processPacket(Stanza packet) throws NotConnectedException {
+            public void processStanza(Stanza packet) throws NotConnectedException {
                 XMPPConnection connection = connection();
                 Privacy privacy = (Privacy) packet;
                 StanzaFilter iqResultReplyFilter = new IQResultReplyFilter(privacy, connection);
@@ -134,7 +134,7 @@ public final class PrivacyListManager extends Manager {
                 final boolean declinceActiveList = privacy.isDeclineActiveList();
                 connection.addOneTimeSyncCallback(new StanzaListener() {
                     @Override
-                    public void processPacket(Stanza packet) throws NotConnectedException {
+                    public void processStanza(Stanza packet) throws NotConnectedException {
                             if (declinceActiveList) {
                                 cachedActiveListName = null;
                             }
@@ -148,7 +148,7 @@ public final class PrivacyListManager extends Manager {
         }, SetActiveListFilter.INSTANCE);
         connection.addPacketSendingListener(new StanzaListener() {
             @Override
-            public void processPacket(Stanza packet) throws NotConnectedException {
+            public void processStanza(Stanza packet) throws NotConnectedException {
                 XMPPConnection connection = connection();
                 Privacy privacy = (Privacy) packet;
                 StanzaFilter iqResultReplyFilter = new IQResultReplyFilter(privacy, connection);
@@ -156,7 +156,7 @@ public final class PrivacyListManager extends Manager {
                 final boolean declinceDefaultList = privacy.isDeclineDefaultList();
                 connection.addOneTimeSyncCallback(new StanzaListener() {
                     @Override
-                    public void processPacket(Stanza packet) throws NotConnectedException {
+                    public void processStanza(Stanza packet) throws NotConnectedException {
                             if (declinceDefaultList) {
                                 cachedDefaultListName = null;
                             }
@@ -170,7 +170,7 @@ public final class PrivacyListManager extends Manager {
         }, SetDefaultListFilter.INSTANCE);
         connection.addSyncStanzaListener(new StanzaListener() {
             @Override
-            public void processPacket(Stanza packet) throws NotConnectedException {
+            public void processStanza(Stanza packet) throws NotConnectedException {
                 Privacy privacy = (Privacy) packet;
                 // If a privacy IQ result stanza has an active or default list name set, then we use that
                 // as cached list name.
@@ -231,7 +231,7 @@ public final class PrivacyListManager extends Manager {
 		// The request is a get iq type
 		requestPrivacy.setType(Privacy.Type.get);
 
-        return connection().createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();
+        return connection().createStanzaCollectorAndSend(requestPrivacy).nextResultOrThrow();
 	}
 
     /**
@@ -250,7 +250,7 @@ public final class PrivacyListManager extends Manager {
         // The request is a get iq type
         requestPrivacy.setType(Privacy.Type.set);
 
-        return connection().createPacketCollectorAndSend(requestPrivacy).nextResultOrThrow();
+        return connection().createStanzaCollectorAndSend(requestPrivacy).nextResultOrThrow();
     }
 
 	/**

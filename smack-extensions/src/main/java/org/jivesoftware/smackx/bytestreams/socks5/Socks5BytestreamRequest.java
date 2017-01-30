@@ -304,7 +304,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * @param address the address the connection failure counter should be increased
      */
     private static void incrementConnectionFailures(String address) {
-        Integer count = ADDRESS_BLACKLIST.get(address);
+        Integer count = ADDRESS_BLACKLIST.lookup(address);
         ADDRESS_BLACKLIST.put(address, count == null ? 1 : count + 1);
     }
 
@@ -315,7 +315,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * @return number of connection failures
      */
     private static int getConnectionFailures(String address) {
-        Integer count = ADDRESS_BLACKLIST.get(address);
+        Integer count = ADDRESS_BLACKLIST.lookup(address);
         return count != null ? count : 0;
     }
 

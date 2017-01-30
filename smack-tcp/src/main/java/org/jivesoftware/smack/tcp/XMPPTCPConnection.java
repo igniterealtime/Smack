@@ -109,6 +109,7 @@ import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.proxy.ProxyInfo;
+import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Challenge;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
@@ -508,14 +509,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
         LOGGER.finer("PacketWriter has been shut down");
 
-        try {
-            // After we send the closing stream element, check if there was already a
-            // closing stream element sent by the server or wait with a timeout for a
-            // closing stream element to be received from the server.
-            @SuppressWarnings("unused")
-            Exception res = closingStreamReceived.checkIfSuccessOrWait();
-        } catch (InterruptedException | NoResponseException e) {
-            LOGGER.log(Level.INFO, "Exception while waiting for closing stream element from the server " + this, e);
+        if (!instant) {
+            try {
+                // After we send the closing stream element, check if there was already a
+                // closing stream element sent by the server or wait with a timeout for a
+                // closing stream element to be received from the server.
+                @SuppressWarnings("unused")
+                Exception res = closingStreamReceived.checkIfSuccessOrWait();
+            } catch (InterruptedException | NoResponseException e) {
+                LOGGER.log(Level.INFO, "Exception while waiting for closing stream element from the server " + this, e);
+            }
         }
 
         if (packetReader != null) {
@@ -615,6 +618,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
                 failedAddresses.add(hostAddress);
             } else {
+                socket = socketFactory.createSocket();
+                StringUtils.requireNotNullOrEmpty(host, "Host of HostAddress " + hostAddress + " must not be null when using a Proxy");
                 final String hostAndPort = host + " at port " + port;
                 LOGGER.finer("Trying to establish TCP connection via Proxy to " + hostAndPort);
                 try {
@@ -944,13 +949,19 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         StartTls startTlsFeature = getFeature(StartTls.ELEMENT, StartTls.NAMESPACE);
         if (startTlsFeature != null) {
             if (startTlsFeature.required() && config.getSecurityMode() == SecurityMode.disabled) {
-                notifyConnectionError(new SecurityRequiredByServerException());
+                SmackException smackException = new SecurityRequiredByServerException();
+                tlsHandled.reportFailure(smackException);
+                notifyConnectionError(smackException);
                 return;
             }
 
             if (config.getSecurityMode() != ConnectionConfiguration.SecurityMode.disabled) {
                 sendNonza(new StartTls());
+            } else {
+                tlsHandled.reportSuccess();
             }
+        } else {
+            tlsHandled.reportSuccess();
         }
 
         if (getSASLAuthentication().authenticationSuccessful()) {
@@ -1049,7 +1060,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             }
                             break;
                         case "error":
-                            throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
+                            StreamError streamError = PacketParserUtils.parseStreamError(parser);
+                            saslFeatureReceived.reportFailure(new StreamErrorException(streamError));
+                            // Mark the tlsHandled sync point as success, we will use the saslFeatureReceived sync
+                            // point to report the error, which is checked immediately after tlsHandled in
+                            // connectInternal().
+                            tlsHandled.reportSuccess();
+                            throw new StreamErrorException(streamError);
                         case "features":
                             parseFeatures(parser);
                             break;
@@ -1061,9 +1078,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 openStream();
                             }
                             catch (Exception e) {
-                                // We report any failure regarding TLS in the second stage of XMPP
-                                // connection establishment, namely the SASL authentication
-                                saslFeatureReceived.reportFailure(new SmackException(e));
+                                SmackException smackException = new SmackException(e);
+                                tlsHandled.reportFailure(smackException);
                                 throw e;
                             }
                             break;
@@ -1952,7 +1968,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     for (Stanza ackedStanza : ackedStanzas) {
                         for (StanzaListener listener : stanzaAcknowledgedListeners) {
                             try {
-                                listener.processPacket(ackedStanza);
+                                listener.processStanza(ackedStanza);
                             }
                             catch (InterruptedException | NotConnectedException e) {
                                 LOGGER.log(Level.FINER, "Received exception", e);
@@ -1965,7 +1981,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         StanzaListener listener = stanzaIdAcknowledgedListeners.remove(id);
                         if (listener != null) {
                             try {
-                                listener.processPacket(ackedStanza);
+                                listener.processStanza(ackedStanza);
                             }
                             catch (InterruptedException | NotConnectedException e) {
                                 LOGGER.log(Level.FINER, "Received exception", e);

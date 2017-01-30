@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack;
 
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,6 +63,7 @@ public abstract class ConnectionConfiguration {
      */
     protected final DomainBareJid xmppServiceDomain;
 
+    protected final InetAddress hostAddress;
     protected final String host;
     protected final int port;
 
@@ -134,6 +136,7 @@ public abstract class ConnectionConfiguration {
         if (xmppServiceDomain == null) {
             throw new IllegalArgumentException("Must define the XMPP domain");
         }
+        hostAddress = builder.hostAddress;
         host = builder.host;
         port = builder.port;
 
@@ -509,6 +512,7 @@ public abstract class ConnectionConfiguration {
         private boolean debuggerEnabled = SmackConfiguration.DEBUG;
         private SocketFactory socketFactory;
         private DomainBareJid xmppServiceDomain;
+        private InetAddress hostAddress;
         private String host;
         private int port = 5222;
         private boolean allowEmptyOrNullUsername = false;
@@ -599,12 +603,37 @@ public abstract class ConnectionConfiguration {
             return setResource(Resourcepart.from(resource.toString()));
         }
 
+        /**
+         * Set the Internet address of the host providing the XMPP service. If set, then this will overwrite anything
+         * set via {@link #setHost(String)}.
+         *
+         * @param address the Internet address of the host providing the XMPP service.
+         * @return a reference to this builder.
+         * @since 4.2
+         */
+        public B setHostAddress(InetAddress address) {
+            this.hostAddress = address;
+            return getThis();
+        }
+
+        /**
+         * Set the name of the host providing the XMPP service. Note that this method does only allow DNS names and not
+         * IP addresses. Use {@link #setHostAddress(InetAddress)} if you want to explicitly set the Internet address of
+         * the host providing the XMPP service.
+         *
+         * @param host the DNS name of the host providing the XMPP service.
+         * @return a reference to this builder.
+         */
         public B setHost(String host) {
             this.host = host;
             return getThis();
         }
 
         public B setPort(int port) {
+            if (port < 0 || port > 65535) {
+                throw new IllegalArgumentException(
+                        "Port must be a 16-bit unsiged integer (i.e. between 0-65535. Port was: " + port);
+            }
             this.port = port;
             return getThis();
         }

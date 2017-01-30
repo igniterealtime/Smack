@@ -145,7 +145,7 @@ public class RemoteCommand extends AdHocCommand {
 
         AdHocCommandData responseData = null;
         try {
-            responseData = connection.createPacketCollectorAndSend(data).nextResultOrThrow();
+            responseData = connection.createStanzaCollectorAndSend(data).nextResultOrThrow();
         }
         finally {
             // We set the response data in a 'finally' block, so that it also gets set even if an error IQ was returned.

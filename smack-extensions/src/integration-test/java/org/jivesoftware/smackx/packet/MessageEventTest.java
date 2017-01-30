@@ -85,7 +85,7 @@ public class MessageEventTest extends SmackTestCase {
         // This listener will listen on the conn2 and answer an ACK if everything is ok
         PacketFilter packetFilter = new StanzaExtensionFilter("x", "jabber:x:event");
         PacketListener packetListener = new PacketListener() {
-            public void processPacket(Packet packet) {
+            public void processStanza(Packet packet) {
                 Message message = (Message) packet;
                 try {
                     MessageEvent messageEvent =
