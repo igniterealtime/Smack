@@ -21,15 +21,15 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.jivesoftware.smack.ExceptionCallback;
 import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.ExceptionCallback;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -42,12 +42,13 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.packet.Carbon;
+import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Direction;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Private;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
+import org.jxmpp.jid.EntityFullJid;
 
 /**
  * Manager for XEP-0280: Message Carbons. This class implements the manager for registering {@link CarbonExtension}
@@ -92,28 +93,14 @@ public final class CarbonManager extends Manager {
 
     private volatile boolean enabled_state = false;
 
+    private final StanzaListener carbonsListener;
+
     private CarbonManager(XMPPConnection connection) {
         super(connection);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(CarbonExtension.NAMESPACE);
-        connection.addConnectionListener(new AbstractConnectionListener() {
-            @Override
-            public void connectionClosed() {
-                // Reset the state if the connection was cleanly closed. Note that this is not strictly necessary,
-                // because we also reset in authenticated() if the stream got not resumed, but for maximum correctness,
-                // also reset here.
-                enabled_state = false;
-            }
-            @Override
-            public void authenticated(XMPPConnection connection, boolean resumed) {
-                if (!resumed) {
-                    // Non-resumed XMPP sessions always start with disabled carbons
-                    enabled_state = false;
-                }
-            }
-        });
 
-        connection.addSyncStanzaListener(new StanzaListener() {
+        carbonsListener = new StanzaListener() {
             @Override
             public void processStanza(final Stanza stanza) throws NotConnectedException, InterruptedException {
                 final Message wrappingMessage = (Message) stanza;
@@ -125,11 +112,45 @@ public final class CarbonManager extends Manager {
                     listener.onCarbonCopyReceived(direction, carbonCopy, wrappingMessage);
                 }
             }
-            // XEP-0280 § 11. Security Considerations "Any forwarded copies received by a Carbons-enabled client MUST be
-            // from that user's bare JID; any copies that do not meet this requirement MUST be ignored." Otherwise, if
-            // those copies do not get ignored, malicious users may be able to impersonate other users. That is why the
-            // 'from' matcher is important here.
-        }, new AndFilter(CARBON_EXTENSION_FILTER, FromMatchesFilter.createBare(connection.getUser())));
+        };
+
+        connection.addConnectionListener(new AbstractConnectionListener() {
+            @Override
+            public void connectionClosed() {
+                // Reset the state if the connection was cleanly closed. Note that this is not strictly necessary,
+                // because we also reset in authenticated() if the stream got not resumed, but for maximum correctness,
+                // also reset here.
+                enabled_state = false;
+                boolean removed = connection().removeSyncStanzaListener(carbonsListener);
+                assert(removed);
+            }
+            @Override
+            public void authenticated(XMPPConnection connection, boolean resumed) {
+                if (!resumed) {
+                    // Non-resumed XMPP sessions always start with disabled carbons
+                    enabled_state = false;
+                }
+                addCarbonsListener(connection);
+            }
+        });
+
+        addCarbonsListener(connection);
+    }
+
+    private void addCarbonsListener(XMPPConnection connection) {
+        EntityFullJid localAddress = connection.getUser();
+        if (localAddress == null) {
+            // We where not connected yet and thus we don't know our XMPP address at the moment, which we need to match incoming
+            // carbons securely. Abort here. The ConnectionListener above will eventually setup the carbons listener.
+            return;
+        }
+
+        // XEP-0280 § 11. Security Considerations "Any forwarded copies received by a Carbons-enabled client MUST be
+        // from that user's bare JID; any copies that do not meet this requirement MUST be ignored." Otherwise, if
+        // those copies do not get ignored, malicious users may be able to impersonate other users. That is why the
+        // 'from' matcher is important here.
+        connection.addSyncStanzaListener(carbonsListener, new AndFilter(CARBON_EXTENSION_FILTER,
+                        FromMatchesFilter.createBare(localAddress)));
     }
 
     /**
