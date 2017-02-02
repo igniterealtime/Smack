@@ -266,7 +266,9 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     }
 
     public final int compareTo(SASLMechanism other) {
-        return getPriority() - other.getPriority();
+        // Switch to Integer.compare(int, int) once Smack is on Android 19 or higher.
+        Integer ourPriority = new Integer(getPriority());
+        return ourPriority.compareTo(other.getPriority());
     }
 
     /**
