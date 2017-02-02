@@ -69,7 +69,7 @@ public final class ChatManager extends Manager {
     // @FORMATTER:OFF
     private static final StanzaFilter MESSAGE_FILTER = new AndFilter(
                     MessageTypeFilter.NORMAL_OR_CHAT,
-                    new OrFilter(MessageWithBodiesFilter.INSTANCE), new StanzaExtensionFilter(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE)
+                    new OrFilter(MessageWithBodiesFilter.INSTANCE, new StanzaExtensionFilter(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE))
                     );
 
     private static final StanzaFilter OUTGOING_MESSAGE_FILTER = new AndFilter(
