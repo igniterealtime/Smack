@@ -32,9 +32,9 @@ import java.util.logging.Logger;
  */
 public class ICECandidate extends TransportCandidate implements Comparable<ICECandidate> {
 
-	private static final Logger LOGGER = Logger.getLogger(ICECandidate.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ICECandidate.class.getName());
 
-	private String id; // An identification
+    private String id; // An identification
 
     private String username;
 
@@ -415,14 +415,14 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
      *         object is less than, equal to, or greater than the specified
      *         object
      */
-	public int compareTo(ICECandidate arg) {
-		if (getPreference() < arg.getPreference()) {
-			return -1;
-		} else if (getPreference() > arg.getPreference()) {
-			return 1;
-		}
-		return 0;
-	}
+    public int compareTo(ICECandidate arg) {
+        if (getPreference() < arg.getPreference()) {
+            return -1;
+        } else if (getPreference() > arg.getPreference()) {
+            return 1;
+        }
+        return 0;
+    }
 
 }
 

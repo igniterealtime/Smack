@@ -46,9 +46,9 @@ import org.jivesoftware.smackx.jingleold.packet.JingleError;
  */
 public class MediaNegotiator extends JingleNegotiator {
 
-	private static final Logger LOGGER = Logger.getLogger(MediaNegotiator.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MediaNegotiator.class.getName());
 
-	//private JingleSession session; // The session this negotiation
+    //private JingleSession session; // The session this negotiation
 
     private final JingleMediaManager mediaManager;
 

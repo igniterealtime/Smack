@@ -23,11 +23,11 @@ package org.jivesoftware.smackx.filetransfer;
  * @author Alexander Wenckus
  */
 public interface FileTransferListener {
-	/**
-	 * A request to send a file has been recieved from another user.
-	 * 
-	 * @param request
-	 *            The request from the other user.
-	 */
-	public void fileTransferRequest(final FileTransferRequest request);
+    /**
+     * A request to send a file has been recieved from another user.
+     * 
+     * @param request
+     *            The request from the other user.
+     */
+    public void fileTransferRequest(final FileTransferRequest request);
 }

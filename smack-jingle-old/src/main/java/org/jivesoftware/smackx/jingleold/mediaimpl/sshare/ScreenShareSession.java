@@ -50,9 +50,9 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
  */
 public class ScreenShareSession extends JingleMediaSession {
 
-	private static final Logger LOGGER = Logger.getLogger(ScreenShareSession.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ScreenShareSession.class.getName());
 
-	private ImageTransmitter transmitter = null;
+    private ImageTransmitter transmitter = null;
     private ImageReceiver receiver = null;
     private int width = 600;
     private int height = 600;

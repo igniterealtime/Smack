@@ -119,8 +119,8 @@ public class JingleError implements ExtensionElement {
     }
 
     public String getNamespace() {
-		return NAMESPACE;
-	}
+        return NAMESPACE;
+    }
 
     public static class Provider extends ExtensionElementProvider<ExtensionElement> {
 

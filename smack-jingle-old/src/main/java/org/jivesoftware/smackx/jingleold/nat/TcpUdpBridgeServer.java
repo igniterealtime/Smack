@@ -35,9 +35,9 @@ import java.util.logging.Logger;
  */
 public class TcpUdpBridgeServer {
 
-	private static final Logger LOGGER = Logger.getLogger(TcpUdpBridgeServer.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TcpUdpBridgeServer.class.getName());
 
-	private String remoteTcpHost = null;
+    private String remoteTcpHost = null;
     private String remoteUdpHost = null;
     private int remoteTcpPort = -1;
     private int remoteUdpPort = -1;

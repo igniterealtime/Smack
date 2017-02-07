@@ -24,21 +24,21 @@ package org.jivesoftware.smackx.pubsub;
  */
 public enum EventElementType
 {
-	/** A node has been associated or dissassociated with a collection node. */
-	collection,
+    /** A node has been associated or dissassociated with a collection node. */
+    collection,
 
-	/** A node has had its configuration changed. */
-	configuration,
+    /** A node has had its configuration changed. */
+    configuration,
 
-	/** A node has been deleted. */
-	delete,
+    /** A node has been deleted. */
+    delete,
 
-	/** Items have been published to a node. */
-	items,
+    /** Items have been published to a node. */
+    items,
 
-	/** All items have been purged from a node. */
-	purge,
+    /** All items have been purged from a node. */
+    purge,
 
-	/** A node has been subscribed to. */
-	subscription
+    /** A node has been subscribed to. */
+    subscription
 }

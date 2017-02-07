@@ -47,9 +47,9 @@ import org.jivesoftware.smackx.jingleold.media.JingleMediaSession;
 public class AudioReceiver implements ReceiveStreamListener, SessionListener,
         ControllerListener {
 
-	private static final Logger LOGGER = Logger.getLogger(AudioReceiver.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AudioReceiver.class.getName());
 
-	boolean dataReceived = false;
+    boolean dataReceived = false;
 
     final Object dataSync;
     JingleMediaSession jingleMediaSession;

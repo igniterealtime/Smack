@@ -28,7 +28,7 @@ import org.junit.Test;
  */
 public class SHA1Test  {
 
-	@Test
+    @Test
     public void testHash() {
         // Test null
         // @TODO - should the StringUtils.hash(String) method be fixed to handle null input?

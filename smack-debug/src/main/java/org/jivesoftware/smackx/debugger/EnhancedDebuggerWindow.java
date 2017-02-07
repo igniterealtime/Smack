@@ -203,7 +203,7 @@ public final class EnhancedDebuggerWindow {
      * a tab panel for each connection that is being debugged.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	private void createDebug() {
+    private void createDebug() {
 
         frame = new JFrame("Smack Debug Window");
 

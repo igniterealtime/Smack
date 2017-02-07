@@ -40,9 +40,9 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
  */
 public class AudioMediaSession extends JingleMediaSession {
 
-	private static final Logger LOGGER = Logger.getLogger(AudioMediaSession.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AudioMediaSession.class.getName());
 
-	private AudioChannel audioChannel;
+    private AudioChannel audioChannel;
 
     /**
      * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates.

@@ -283,12 +283,12 @@ public abstract class JingleContentDescription implements ExtensionElement {
                 StringBuilder buf = new StringBuilder();
                 PayloadType pt = getPayloadType();
                 if (pt instanceof PayloadType.Audio) {
-					PayloadType.Audio pta = (PayloadType.Audio) pt;
+                    PayloadType.Audio pta = (PayloadType.Audio) pt;
 
-					buf.append(" clockrate=\"").append(pta.getClockRate()).append("\" ");
-				}
-				return buf.toString();
-			}
-		}
-	}
+                    buf.append(" clockrate=\"").append(pta.getClockRate()).append("\" ");
+                }
+                return buf.toString();
+            }
+        }
+    }
 }

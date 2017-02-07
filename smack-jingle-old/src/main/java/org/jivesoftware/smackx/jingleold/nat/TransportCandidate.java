@@ -47,9 +47,9 @@ import org.jxmpp.jid.Jid;
 @SuppressWarnings("EqualsHashCode")
 public abstract class TransportCandidate {
 
-	private static final Logger LOGGER = Logger.getLogger(TransportCandidate.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TransportCandidate.class.getName());
 
-	private String name;
+    private String name;
 
     private String ip; // IP address
 
@@ -359,7 +359,7 @@ public abstract class TransportCandidate {
 
                 try {
                     // CHECKSTYLE:OFF
-                	InetAddress candAddress = InetAddress.getByName(getIp());
+                    InetAddress candAddress = InetAddress.getByName(getIp());
                     // CHECKSTYLE:ON
                     isUsable = true;//candAddress.isReachable(TransportResolver.CHECK_TIMEOUT);
                 }
@@ -771,8 +771,8 @@ public abstract class TransportCandidate {
 
                                 // CHECKSTYLE:OFF
                                 if (pass.equals(password) 
-                                		&& transportCandidate.getIp().indexOf(ip) != -1 
-                                		&& transportCandidate.getPort() == Integer.parseInt(pt)) {
+                                        && transportCandidate.getIp().indexOf(ip) != -1 
+                                        && transportCandidate.getPort() == Integer.parseInt(pt)) {
                                     // CHECKSTYLE:ON
                                     LOGGER.fine("ECHO OK: " + candidate.getIp() + ":" + candidate.getPort() + " <-> " + transportCandidate.getIp() + ":" + transportCandidate.getPort());
                                     TestResult testResult = new TestResult();

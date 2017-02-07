@@ -40,9 +40,9 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
  */
 public class JmfMediaManager extends JingleMediaManager {
 
-	private static final Logger LOGGER = Logger.getLogger(JmfMediaManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JmfMediaManager.class.getName());
 
-	public static final String MEDIA_NAME = "JMF";
+    public static final String MEDIA_NAME = "JMF";
 
 
     private List<PayloadType> payloads = new ArrayList<PayloadType>();

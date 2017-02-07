@@ -30,8 +30,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  */
 public class AffiliationsExtension extends NodeExtension
 {
-	protected List<Affiliation> items = Collections.emptyList();
-	private final String node;
+    protected List<Affiliation> items = Collections.emptyList();
+    private final String node;
 
     public AffiliationsExtension() {
         this(null, null);
@@ -47,20 +47,20 @@ public class AffiliationsExtension extends NodeExtension
         this.node = node;
     }
 
-	public List<Affiliation> getAffiliations()
-	{
-		return items;
-	}
+    public List<Affiliation> getAffiliations()
+    {
+        return items;
+    }
 
-	@Override
-	public CharSequence toXML()
-	{
-		if ((items == null) || (items.size() == 0))
-		{
-			return super.toXML();
-		}
-		else
-		{
+    @Override
+    public CharSequence toXML()
+    {
+        if ((items == null) || (items.size() == 0))
+        {
+            return super.toXML();
+        }
+        else
+        {
             // Can't use XmlStringBuilder(this), because we don't want the namespace to be included
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.openElement(getElementName());
@@ -69,6 +69,6 @@ public class AffiliationsExtension extends NodeExtension
             xml.append(items);
             xml.closeElement(this);
             return xml;
-		}
-	}
+        }
+    }
 }

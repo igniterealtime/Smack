@@ -103,7 +103,7 @@ public class JingleContentInfoProvider {
         public static class Ringing extends Audio {
             public Ringing() {
                 super(new JingleContentInfo.Audio.Ringing());
-			}
-		}
-	}
+            }
+        }
+    }
 }

@@ -35,12 +35,12 @@ public final class IQTypeFilter extends FlexibleStanzaTypeFilter<IQ> {
     public static final StanzaFilter ERROR = new IQTypeFilter(Type.error);
     public static final StanzaFilter GET_OR_SET = new OrFilter(GET, SET);
 
-	private final IQ.Type type;
+    private final IQ.Type type;
 
-	private IQTypeFilter(IQ.Type type) {
+    private IQTypeFilter(IQ.Type type) {
         super(IQ.class);
-		this.type = Objects.requireNonNull(type, "Type must not be null");
-	}
+        this.type = Objects.requireNonNull(type, "Type must not be null");
+    }
 
     @Override
     protected boolean acceptSpecific(IQ iq) {

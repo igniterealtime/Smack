@@ -22,6 +22,6 @@ import org.jxmpp.jid.Jid;
 
 public interface JidsBlockedListener {
 
-	void onJidsBlocked(List<Jid> blockedJids);
+    void onJidsBlocked(List<Jid> blockedJids);
 
 }

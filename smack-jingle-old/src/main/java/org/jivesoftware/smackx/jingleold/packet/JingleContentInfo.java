@@ -148,7 +148,7 @@ public class JingleContentInfo implements ExtensionElement {
         public static class Ringing extends Audio {
             public Ringing() {
                 super(ContentInfo.Audio.RINGING);
-			}
-		}
-	}
+            }
+        }
+    }
 }

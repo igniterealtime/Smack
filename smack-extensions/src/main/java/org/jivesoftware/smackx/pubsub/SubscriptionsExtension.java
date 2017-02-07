@@ -26,74 +26,74 @@ import java.util.List;
  */
 public class SubscriptionsExtension extends NodeExtension
 {
-	protected List<Subscription> items = Collections.emptyList();
+    protected List<Subscription> items = Collections.emptyList();
 
-	/**
-	 * Subscriptions to the root node.
-	 * 
-	 * @param subList The list of subscriptions
-	 */
-	public SubscriptionsExtension(List<Subscription> subList)
-	{
-		super(PubSubElementType.SUBSCRIPTIONS);
+    /**
+     * Subscriptions to the root node.
+     * 
+     * @param subList The list of subscriptions
+     */
+    public SubscriptionsExtension(List<Subscription> subList)
+    {
+        super(PubSubElementType.SUBSCRIPTIONS);
 
-		if (subList != null)
-			items = subList;
-	}
+        if (subList != null)
+            items = subList;
+    }
 
-	/**
-	 * Subscriptions to the specified node.
-	 * 
-	 * @param nodeId The node subscribed to
-	 * @param subList The list of subscriptions
-	 */
-	public SubscriptionsExtension(String nodeId, List<Subscription> subList)
-	{
-		super(PubSubElementType.SUBSCRIPTIONS, nodeId);
+    /**
+     * Subscriptions to the specified node.
+     * 
+     * @param nodeId The node subscribed to
+     * @param subList The list of subscriptions
+     */
+    public SubscriptionsExtension(String nodeId, List<Subscription> subList)
+    {
+        super(PubSubElementType.SUBSCRIPTIONS, nodeId);
 
-		if (subList != null)
-			items = subList;
-	}
+        if (subList != null)
+            items = subList;
+    }
 
-	/**
-	 * Gets the list of subscriptions.
-	 * 
-	 * @return List of subscriptions
-	 */
-	public List<Subscription> getSubscriptions()
-	{
-		return items;
-	}
+    /**
+     * Gets the list of subscriptions.
+     * 
+     * @return List of subscriptions
+     */
+    public List<Subscription> getSubscriptions()
+    {
+        return items;
+    }
 
-	@Override
-	public CharSequence toXML()
-	{
-		if ((items == null) || (items.size() == 0))
-		{
-			return super.toXML();
-		}
-		else
-		{
-			StringBuilder builder = new StringBuilder("<");
-			builder.append(getElementName());
+    @Override
+    public CharSequence toXML()
+    {
+        if ((items == null) || (items.size() == 0))
+        {
+            return super.toXML();
+        }
+        else
+        {
+            StringBuilder builder = new StringBuilder("<");
+            builder.append(getElementName());
 
-			if (getNode() != null)
-			{
-				builder.append(" node='");
-				builder.append(getNode());
-				builder.append('\'');
-			}
-			builder.append('>');
+            if (getNode() != null)
+            {
+                builder.append(" node='");
+                builder.append(getNode());
+                builder.append('\'');
+            }
+            builder.append('>');
 
-			for (Subscription item : items)
-			{
-				builder.append(item.toXML());
-			}
+            for (Subscription item : items)
+            {
+                builder.append(item.toXML());
+            }
 
-			builder.append("</");
-			builder.append(getElementName());
-			builder.append('>');
-			return builder.toString();
-		}
-	}
+            builder.append("</");
+            builder.append(getElementName());
+            builder.append('>');
+            return builder.toString();
+        }
+    }
 }

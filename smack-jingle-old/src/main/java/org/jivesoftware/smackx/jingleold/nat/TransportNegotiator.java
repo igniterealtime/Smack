@@ -52,9 +52,9 @@ import org.jivesoftware.smackx.jingleold.packet.JingleTransport.JingleTransportC
  */
 public abstract class TransportNegotiator extends JingleNegotiator {
 
-	private static final Logger LOGGER = Logger.getLogger(TransportNegotiator.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TransportNegotiator.class.getName());
 
-	// The time we give to the candidates check before we accept or decline the
+    // The time we give to the candidates check before we accept or decline the
     // transport (in milliseconds)
     public final static int CANDIDATES_ACCEPT_PERIOD = 4000;
 
@@ -911,12 +911,12 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 int highest = -1;
                 ICECandidate chose = null;
                 for (TransportCandidate transportCandidate : cands) {
-					if (transportCandidate instanceof ICECandidate) {
-						ICECandidate icecandidate = (ICECandidate) transportCandidate;
-						if (icecandidate.getPreference() > highest) {
-							chose = icecandidate;
-							highest = icecandidate.getPreference();
-						}
+                    if (transportCandidate instanceof ICECandidate) {
+                        ICECandidate icecandidate = (ICECandidate) transportCandidate;
+                        if (icecandidate.getPreference() > highest) {
+                            chose = icecandidate;
+                            highest = icecandidate.getPreference();
+                        }
                     }
                 }
                 result = chose;

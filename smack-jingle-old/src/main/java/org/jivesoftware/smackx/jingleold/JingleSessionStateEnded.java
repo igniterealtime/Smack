@@ -29,9 +29,9 @@ import org.jivesoftware.smackx.jingleold.packet.JingleError;
  */
 public class JingleSessionStateEnded extends JingleSessionState {
 
-	private static final Logger LOGGER = Logger.getLogger(JingleSessionStateEnded.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JingleSessionStateEnded.class.getName());
 
-	private static JingleSessionStateEnded INSTANCE = null;
+    private static JingleSessionStateEnded INSTANCE = null;
 
     protected JingleSessionStateEnded() {
         // Prevent instantiation of the class.

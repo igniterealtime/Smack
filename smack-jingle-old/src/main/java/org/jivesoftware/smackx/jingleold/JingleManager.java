@@ -186,9 +186,9 @@ import org.jxmpp.jid.Jid;
 @SuppressWarnings("SynchronizeOnNonFinalField")
 public class JingleManager implements JingleSessionListener {
 
-	private static final Logger LOGGER = Logger.getLogger(JingleManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JingleManager.class.getName());
 
-	// non-static
+    // non-static
 
     final List<JingleSession> jingleSessions = new ArrayList<JingleSession>();
 

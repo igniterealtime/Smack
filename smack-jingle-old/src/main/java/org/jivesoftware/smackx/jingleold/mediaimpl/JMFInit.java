@@ -32,11 +32,11 @@ import com.sun.media.util.Registry;
 
 public class JMFInit extends Frame implements Runnable {
 
-	private static final long serialVersionUID = 6476412003260641680L;
+    private static final long serialVersionUID = 6476412003260641680L;
 
-	private static final Logger LOGGER = Logger.getLogger(JMFInit.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JMFInit.class.getName());
 
-	private String tempDir = "/tmp";
+    private String tempDir = "/tmp";
 
     private boolean done = false;
 

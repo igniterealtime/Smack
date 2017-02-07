@@ -62,9 +62,9 @@ import org.jxmpp.jid.Jid;
  */
 public class JingleSession extends JingleNegotiator implements MediaReceivedListener {
 
-	private static final Logger LOGGER = Logger.getLogger(JingleSession.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JingleSession.class.getName());
 
-	// static
+    // static
     private static final HashMap<XMPPConnection, JingleSession> sessions = new HashMap<XMPPConnection, JingleSession>();
 
     private static final Random randomGenerator = new Random();
@@ -299,13 +299,13 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
                 // Each content negotiator may pass back a list of JingleContent for addition to the response packet.
                 // CHECKSTYLE:OFF
                 for (ContentNegotiator contentNegotiator : contentNegotiators) {
-                	// If at this point the content negotiator isn't started, it's because we sent a session-init jingle
-                	// packet from startOutgoing() and we're waiting for the other side to let us know they're ready
-                	// to take jingle packets.  (This packet might be a session-terminate, but that will get handled
-                	// later.
-                	if (!contentNegotiator.isStarted()) {
-                		contentNegotiator.start();
-                	}
+                    // If at this point the content negotiator isn't started, it's because we sent a session-init jingle
+                    // packet from startOutgoing() and we're waiting for the other side to let us know they're ready
+                    // to take jingle packets.  (This packet might be a session-terminate, but that will get handled
+                    // later.
+                    if (!contentNegotiator.isStarted()) {
+                        contentNegotiator.start();
+                    }
                     responses.addAll(contentNegotiator.dispatchIncomingPacket(iq, responseId));
                 }
                 // CHECKSTYLE:ON
@@ -475,7 +475,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             // The the packet.
             // CHECKSTYLE:OFF
             if ((getConnection() != null) && (getConnection().isConnected()))
-            	getConnection().sendStanza(jout);
+                getConnection().sendStanza(jout);
             // CHECKSTYLE:ON
         }
         return jout;
@@ -649,11 +649,11 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
     private void removeConnectionListener() {
         // CHECKSTYLE:OFF
-    	if (connectionListener != null) {
-    		getConnection().removeConnectionListener(connectionListener);
+        if (connectionListener != null) {
+            getConnection().removeConnectionListener(connectionListener);
 
-    		LOGGER.fine("JINGLE SESSION: REMOVE CONNECTION LISTENER");
-    	}
+            LOGGER.fine("JINGLE SESSION: REMOVE CONNECTION LISTENER");
+        }
         // CHECKSTYLE:ON
     }
 
@@ -830,10 +830,10 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             public void transportEstablished(TransportCandidate local, TransportCandidate remote) throws NotConnectedException, InterruptedException {
                 if (isFullyEstablished()) {
                 // CHECKSTYLE:OFF
-                	// Indicate that this session is active.
-                	setSessionState(JingleSessionStateActive.getInstance());
+                    // Indicate that this session is active.
+                    setSessionState(JingleSessionStateActive.getInstance());
 
-                	for (ContentNegotiator contentNegotiator : contentNegotiators) {
+                    for (ContentNegotiator contentNegotiator : contentNegotiators) {
                 // CHECKSTYLE:ON
                         if (contentNegotiator.getNegotiatorState() == JingleNegotiatorState.SUCCEEDED)
                             contentNegotiator.triggerContentEstablished();

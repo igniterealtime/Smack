@@ -52,9 +52,9 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 
 public class AudioMediaSession extends JingleMediaSession implements MediaSessionListener {
 
-	private static final Logger LOGGER = Logger.getLogger(AudioMediaSession.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AudioMediaSession.class.getName());
 
-	private MediaSession mediaSession;
+    private MediaSession mediaSession;
 
     /**
      * Create a Session using Speex Codec.

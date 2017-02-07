@@ -404,9 +404,9 @@ public class StreamInitiation extends IQ {
             StringBuilder buf = new StringBuilder();
             buf
                     .append("<feature xmlns=\"http://jabber.org/protocol/feature-neg\">");
-			buf.append(data.toXML());
-			buf.append("</feature>");
-			return buf.toString();
-		}
-	}
+            buf.append(data.toXML());
+            buf.append("</feature>");
+            return buf.toString();
+        }
+    }
 }

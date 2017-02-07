@@ -27,7 +27,7 @@ import org.junit.Test;
  * A test case for the StringUtils class.
  */
 public class StringUtilsTest  {
-	@Test
+    @Test
     public void testEscapeForXml() {
         String input = null;
 
@@ -67,11 +67,11 @@ public class StringUtilsTest  {
         assertCharSequenceEquals("It&apos;s a good day today", StringUtils.escapeForXml(input));
     }
 
-	public static void assertCharSequenceEquals(CharSequence expected, CharSequence actual) {
+    public static void assertCharSequenceEquals(CharSequence expected, CharSequence actual) {
         assertEquals(expected.toString(), actual.toString());
-	}
+    }
 
-	@Test
+    @Test
     public void testEncodeHex() {
         String input = "";
         String output = "";
@@ -84,7 +84,7 @@ public class StringUtilsTest  {
                 new String(output.getBytes()));
     }
 
-	@Test
+    @Test
     public void testRandomString() {
         // Boundary test
         String result = StringUtils.randomString(-1);

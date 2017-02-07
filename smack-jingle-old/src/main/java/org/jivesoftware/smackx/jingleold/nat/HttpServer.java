@@ -32,9 +32,9 @@ import java.util.logging.Logger;
  */
 public class HttpServer {
 
-	private static final Logger LOGGER = Logger.getLogger(HttpServer.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(HttpServer.class.getName());
 
-	public HttpServer(int port) {
+    public HttpServer(int port) {
         ServerSocket server_socket;
 
         try {

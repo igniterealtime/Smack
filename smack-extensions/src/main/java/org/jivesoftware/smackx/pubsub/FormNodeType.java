@@ -27,29 +27,29 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
  */
 public enum FormNodeType
 {
-	/** Form for configuring an existing node. */
-	CONFIGURE_OWNER,
+    /** Form for configuring an existing node. */
+    CONFIGURE_OWNER,
 
-	/** Form for configuring a node during creation. */
-	CONFIGURE,
+    /** Form for configuring a node during creation. */
+    CONFIGURE,
 
-	/** Form for configuring subscription options. */
-	OPTIONS,
+    /** Form for configuring subscription options. */
+    OPTIONS,
 
-	/** Form which represents the default node configuration options. */
-	DEFAULT;
+    /** Form which represents the default node configuration options. */
+    DEFAULT;
 
-	public PubSubElementType getNodeElement()
-	{
-		return PubSubElementType.valueOf(toString());
-	}
+    public PubSubElementType getNodeElement()
+    {
+        return PubSubElementType.valueOf(toString());
+    }
 
-	public static FormNodeType valueOfFromElementName(String elem, String configNamespace)
-	{
-		if ("configure".equals(elem) && PubSubNamespace.OWNER.getXmlns().equals(configNamespace))
-		{
-			return CONFIGURE_OWNER;
-		}
-		return valueOf(elem.toUpperCase(Locale.US));
-	}
+    public static FormNodeType valueOfFromElementName(String elem, String configNamespace)
+    {
+        if ("configure".equals(elem) && PubSubNamespace.OWNER.getXmlns().equals(configNamespace))
+        {
+            return CONFIGURE_OWNER;
+        }
+        return valueOf(elem.toUpperCase(Locale.US));
+    }
 }

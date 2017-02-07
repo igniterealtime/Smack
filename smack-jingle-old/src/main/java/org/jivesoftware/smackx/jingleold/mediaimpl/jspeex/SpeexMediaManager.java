@@ -40,9 +40,9 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
  */
 public class SpeexMediaManager extends JingleMediaManager {
 
-	private static final Logger LOGGER = Logger.getLogger(SpeexMediaManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SpeexMediaManager.class.getName());
 
-	public static final String MEDIA_NAME = "Speex";
+    public static final String MEDIA_NAME = "Speex";
 
     private List<PayloadType> payloads = new ArrayList<PayloadType>();
 

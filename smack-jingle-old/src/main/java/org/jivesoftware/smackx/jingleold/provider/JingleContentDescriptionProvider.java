@@ -127,6 +127,6 @@ public abstract class JingleContentDescriptionProvider extends ExtensionElementP
          */
         protected JingleContentDescription getInstance() {
             return new JingleContentDescription.Audio();
-		}
-	}
+        }
+    }
 }

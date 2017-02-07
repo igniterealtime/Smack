@@ -46,9 +46,9 @@ import de.javawi.jstun.test.DiscoveryTest;
  */
 public class STUNResolver extends TransportResolver {
 
-	private static final Logger LOGGER = Logger.getLogger(STUNResolver.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(STUNResolver.class.getName());
 
-	// The filename where the STUN servers are stored.
+    // The filename where the STUN servers are stored.
     public final static String STUNSERVERS_FILENAME = "META-INF/stun-config.xml";
 
     // Current STUN server we are using

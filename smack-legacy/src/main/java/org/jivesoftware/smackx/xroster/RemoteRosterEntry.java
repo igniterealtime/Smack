@@ -51,9 +51,9 @@ public class RemoteRosterEntry {
     public RemoteRosterEntry(Jid user, String name, String [] groups) {
         this.user = user;
         this.name = name;
-		if (groups != null) {
+        if (groups != null) {
             groupNames.addAll(Arrays.asList(groups));
-		}
+        }
     }
 
     /**

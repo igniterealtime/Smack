@@ -32,9 +32,9 @@ import org.jivesoftware.smackx.jingleold.media.PayloadType;
  */
 public abstract class JingleDescription implements ExtensionElement {
 
-	private static final Logger LOGGER = Logger.getLogger(JingleDescription.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JingleDescription.class.getName());
 
-	// static
+    // static
 
     public static final String NODENAME = "description";
 
