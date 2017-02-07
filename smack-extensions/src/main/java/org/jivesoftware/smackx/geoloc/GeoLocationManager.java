@@ -89,27 +89,6 @@ public final class GeoLocationManager extends Manager {
     }
 
     /**
-     * Returns the geolocation node in PubSub.
-     * 
-     * @return the geolocation PubSub node
-     * @throws InterruptedException
-     * @throws NotConnectedException
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     */
-    public LeafNode getNode()
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSubManager pubSubManager = PubSubManager.getInstance(connection());
-
-        try {
-            pubSubManager.createNode(GeoLocation.NAMESPACE);
-        } catch (Exception e) {
-        }
-
-        return pubSubManager.getNode(GeoLocation.NAMESPACE);
-    }
-
-    /**
      * Send geolocation through the PubSub node.
      * 
      * @param geoLocation
@@ -131,10 +110,39 @@ public final class GeoLocationManager extends Manager {
      * @throws XMPPErrorException
      * @throws NoResponseException
      */
-    public void stopSendingGeolocation()
+    public void stopPublishingGeolocation()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         GeoLocation emptyGeolocation = new GeoLocation.Builder().build();
         getNode().send(new PayloadItem<GeoLocation>(emptyGeolocation));
+    }
+
+    /**
+     * Returns the geolocation node in PubSub.
+     * 
+     * @return the geolocation PubSub node
+     * @throws InterruptedException
+     * @throws NotConnectedException
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     */
+    public LeafNode getNode()
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        PubSubManager pubSubManager = PubSubManager.getInstance(connection());
+        LeafNode node;
+
+        try {
+            node = pubSubManager.getNode(GeoLocation.NAMESPACE);
+        } catch (XMPPErrorException notExistsException) {
+            // the node does not exist
+            try {
+                node = pubSubManager.createNode(GeoLocation.NAMESPACE);
+            } catch (XMPPErrorException alreadyCreatedException) {
+                // the node was already created
+                node = pubSubManager.getNode(GeoLocation.NAMESPACE);
+            }
+        }
+
+        return node;
     }
 
 }
