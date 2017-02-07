@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Ishan Khanna
+ * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ public class GeoLocationProviderTest extends InitExtensions {
         +"<geoloc xmlns='http://jabber.org/protocol/geoloc'>"
         +"<accuracy>23</accuracy>"
         +"<alt>1000</alt>"
+        +"<altaccuracy>10</altaccuracy>"
         +"<area>Delhi</area>"
         +"<bearing>10</bearing>"
         +"<building>Small Building</building>"
@@ -72,6 +73,7 @@ public class GeoLocationProviderTest extends InitExtensions {
 
         assertEquals((Double) 23d, geoLocation.getAccuracy());
         assertEquals((Double) 1000d, geoLocation.getAlt());
+        assertEquals((Double) 10d, geoLocation.getAltAccuracy());
         assertEquals("Delhi", geoLocation.getArea());
         assertEquals((Double) 10d, geoLocation.getBearing());
         assertEquals("Small Building", geoLocation.getBuilding());
@@ -105,6 +107,7 @@ public class GeoLocationProviderTest extends InitExtensions {
         +"<geoloc xmlns='http://jabber.org/protocol/geoloc'>"
         +"<accuracy>23</accuracy>"
         +"<alt>1000</alt>"
+        +"<altaccuracy>10</altaccuracy>"
         +"<area>Delhi</area>"
         +"<bearing>10</bearing>"
         +"<building>Small Building</building>"
@@ -139,6 +142,7 @@ public class GeoLocationProviderTest extends InitExtensions {
 
         assertEquals((Double) 23d, geoLocation.getAccuracy());
         assertEquals((Double) 1000d, geoLocation.getAlt());
+        assertEquals((Double) 10d, geoLocation.getAltAccuracy());
         assertEquals("Delhi", geoLocation.getArea());
         assertEquals((Double) 10d, geoLocation.getBearing());
         assertEquals("Small Building", geoLocation.getBuilding());

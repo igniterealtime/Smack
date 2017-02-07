@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Ishan Khanna
+ * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,16 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
+import org.jivesoftware.smackx.pubsub.LeafNode;
+import org.jivesoftware.smackx.pubsub.PayloadItem;
+import org.jivesoftware.smackx.pubsub.PubSubManager;
 import org.jxmpp.jid.Jid;
 
 public final class GeoLocationManager extends Manager {
@@ -81,6 +86,55 @@ public final class GeoLocationManager extends Manager {
      */
     public static boolean isGeoLocationMessage(Message message) {
         return GeoLocation.from(message) != null;
+    }
+
+    /**
+     * Returns the geolocation node in PubSub.
+     * 
+     * @return the geolocation PubSub node
+     * @throws InterruptedException
+     * @throws NotConnectedException
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     */
+    public LeafNode getNode()
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        PubSubManager pubSubManager = PubSubManager.getInstance(connection());
+
+        try {
+            pubSubManager.createNode(GeoLocation.NAMESPACE);
+        } catch (Exception e) {
+        }
+
+        return pubSubManager.getNode(GeoLocation.NAMESPACE);
+    }
+
+    /**
+     * Send geolocation through the PubSub node.
+     * 
+     * @param geoLocation
+     * @throws InterruptedException
+     * @throws NotConnectedException
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     */
+    public void sendGeolocation(GeoLocation geoLocation)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        getNode().send(new PayloadItem<GeoLocation>(geoLocation));
+    }
+
+    /**
+     * Send empty geolocation through the PubSub node.
+     * 
+     * @throws InterruptedException
+     * @throws NotConnectedException
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     */
+    public void stopSendingGeolocation()
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        GeoLocation emptyGeolocation = new GeoLocation.Builder().build();
+        getNode().send(new PayloadItem<GeoLocation>(emptyGeolocation));
     }
 
 }
