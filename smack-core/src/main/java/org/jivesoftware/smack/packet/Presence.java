@@ -407,7 +407,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         dnd,
 
         /**
-         * invisible
+         * Online but hidden.
          */
         invisible;
 
