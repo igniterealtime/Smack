@@ -137,7 +137,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * @return true if the presence type is available.
      */
     public boolean isAvailable() {
-        return type == Type.available && mode!=Mode.invisible;    
+        return type == Type.available && mode != Mode.invisible;
     }
 
     /**
@@ -405,7 +405,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
          * Do not disturb.
          */
         dnd,
-        
+
         /**
          * invisible
          */
