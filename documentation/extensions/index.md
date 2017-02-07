@@ -50,6 +50,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Advanced Message Processing                 | [XEP-0079](http://xmpp.org/extensions/xep-0079.html) | Enables entities to request, and servers to perform, advanced processing of XMPP message stanzas. |
 | User Location                               | [XEP-0080](http://xmpp.org/extensions/xep-0080.html) | Enabled communicating information about the current geographical or physical location of an entity. |
 | XMPP Date Time Profiles                     | [XEP-0082](http://xmpp.org/extensions/xep-0082.html)     | Standardization of Date and Time representation in XMPP. |
+| User Avatar                               | [XEP-0084](http://xmpp.org/extensions/xep-0084.html) | Allows to exchange user avatars, which are small images or icons associated with human users. |
 | Chat State Notifications                    | [XEP-0085](http://xmpp.org/extensions/xep-0085.html) | Communicating the status of a user in a chat session. |
 | [Time Exchange](time.md)                  | [XEP-0090](http://xmpp.org/extensions/xep-0090.html) | Allows local time information to be shared between users. |
 | Software Version                            | [XEP-0092](http://xmpp.org/extensions/xep-0092.html)     | Retrieve and announce the software application of an XMPP entity. |

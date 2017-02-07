@@ -544,4 +544,16 @@
         <className>org.jivesoftware.smackx.bob.provider.BoBIQProvider</className>
     </iqProvider>
 
+    <!-- XEP-0084: User Avatar -->
+    <extensionProvider>
+        <elementName>data</elementName>
+        <namespace>urn:xmpp:avatar:data</namespace>
+        <className>org.jivesoftware.smackx.avatar.provider.DataProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>metadata</elementName>
+        <namespace>urn:xmpp:avatar:metadata</namespace>
+        <className>org.jivesoftware.smackx.avatar.provider.MetadataProvider</className>
+    </extensionProvider>
+
 </smackProviders>
