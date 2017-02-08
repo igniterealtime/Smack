@@ -416,7 +416,15 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
          * @throws NullPointerException if the string is null
          */
         public static Mode fromString(String string) {
-            return Mode.valueOf(string.toLowerCase(Locale.US));
+            try
+            {
+                return Mode.valueOf(string.toLowerCase(Locale.US));
+            }
+            catch(IllegalArgumentException e)
+            {
+                e.printStackTrace();
+                return Mode.available;
+            }
         }
     }
 }
