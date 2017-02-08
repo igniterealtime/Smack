@@ -412,6 +412,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
          * 
          * @param string the String value to covert.
          * @return the corresponding Type.
+         * @throws NullPointerException if the string is null
          */
         public static Mode fromString(String string) {
             try
@@ -420,7 +421,6 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
             }
             catch(IllegalArgumentException e)
             {
-                e.printStackTrace();
                 return Mode.available;
             }
         }
