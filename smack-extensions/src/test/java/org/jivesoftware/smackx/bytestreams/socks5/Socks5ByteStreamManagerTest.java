@@ -604,6 +604,7 @@ public class Socks5ByteStreamManagerTest {
         // return used stream host info as response to the bytestream initiation
         protocol.addResponse(streamHostUsedPacket, new Verification<Bytestream, Bytestream>() {
 
+            @Override
             public void verify(Bytestream request, Bytestream response) {
                 // verify SOCKS5 Bytestream request
                 assertEquals(response.getSessionID(), request.getSessionID());
@@ -698,6 +699,7 @@ public class Socks5ByteStreamManagerTest {
         // return used stream host info as response to the bytestream initiation
         protocol.addResponse(streamHostUsedPacket, new Verification<Bytestream, Bytestream>() {
 
+            @Override
             public void verify(Bytestream request, Bytestream response) {
                 assertEquals(response.getSessionID(), request.getSessionID());
                 assertEquals(1, request.getStreamHosts().size());
@@ -714,6 +716,7 @@ public class Socks5ByteStreamManagerTest {
         // return proxy activation response if proxy should be activated
         protocol.addResponse(activationResponse, new Verification<Bytestream, IQ>() {
 
+            @Override
             public void verify(Bytestream request, IQ response) {
                 assertEquals(targetJID, request.getToActivate().getTarget());
             }
@@ -796,6 +799,7 @@ public class Socks5ByteStreamManagerTest {
         // return used stream host info as response to the bytestream initiation
         protocol.addResponse(streamHostUsedPacket, new Verification<Bytestream, Bytestream>() {
 
+            @Override
             public void verify(Bytestream request, Bytestream response) {
                 assertEquals(response.getSessionID(), request.getSessionID());
                 StreamHost streamHost1 = request.getStreamHosts().get(0);
@@ -862,6 +866,7 @@ public class Socks5ByteStreamManagerTest {
 
         Verification<Bytestream, Bytestream> streamHostUsedVerification1 = new Verification<Bytestream, Bytestream>() {
 
+            @Override
             public void verify(Bytestream request, Bytestream response) {
                 assertEquals(response.getSessionID(), request.getSessionID());
                 assertEquals(2, request.getStreamHosts().size());
@@ -898,6 +903,7 @@ public class Socks5ByteStreamManagerTest {
 
         Verification<Bytestream, Bytestream> streamHostUsedVerification2 = new Verification<Bytestream, Bytestream>() {
 
+            @Override
             public void verify(Bytestream request, Bytestream response) {
                 assertEquals(response.getSessionID(), request.getSessionID());
                 assertEquals(2, request.getStreamHosts().size());
@@ -946,6 +952,7 @@ public class Socks5ByteStreamManagerTest {
 
         Verification<Bytestream, Bytestream> streamHostUsedVerification = new Verification<Bytestream, Bytestream>() {
 
+            @Override
             public void verify(Bytestream request, Bytestream response) {
                 assertEquals(response.getSessionID(), request.getSessionID());
                 assertEquals(2, request.getStreamHosts().size());
@@ -1079,6 +1086,7 @@ public class Socks5ByteStreamManagerTest {
         // return proxy activation response if proxy should be activated
         protocol.addResponse(activationResponse, new Verification<Bytestream, IQ>() {
 
+            @Override
             public void verify(Bytestream request, IQ response) {
                 assertEquals(targetJID, request.getToActivate().getTarget());
             }

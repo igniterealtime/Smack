@@ -60,6 +60,7 @@ public class ContentNegotiator extends JingleNegotiator {
         transportNegotiators = new ArrayList<TransportNegotiator>();
     }
 
+    @Override
     public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException, InterruptedException {
         List<IQ> responses = new ArrayList<IQ>();
 
@@ -139,6 +140,7 @@ public class ContentNegotiator extends JingleNegotiator {
     /**
      * Called from above when starting a new session.
      */
+    @Override
     protected void doStart() {
         // JingleContent result = new JingleContent(creator, name);
 
@@ -154,6 +156,7 @@ public class ContentNegotiator extends JingleNegotiator {
     /**
      * Prepare to close the media manager.
      */
+    @Override
     public void close() {
         destroyMediaNegotiator();
         destroyTransportNegotiator();
@@ -324,6 +327,7 @@ public class ContentNegotiator extends JingleNegotiator {
      * The negotiator state for the ContentNegotiators is a special case.
      * It is a roll-up of the sub-negotiator states.
      */
+    @Override
     public JingleNegotiatorState getNegotiatorState() {
         JingleNegotiatorState result = JingleNegotiatorState.PENDING;
 

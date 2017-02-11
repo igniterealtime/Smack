@@ -163,6 +163,7 @@ public class MultiUserChat {
 
         // Create a listener for subject updates.
         subjectListener = new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 Message msg = (Message) packet;
                 EntityFullJid from = msg.getFrom().asEntityFullJidIfPossible();
@@ -181,6 +182,7 @@ public class MultiUserChat {
 
         // Create a listener for all presence updates.
         presenceListener = new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 Presence presence = (Presence) packet;
                 final EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
@@ -251,6 +253,7 @@ public class MultiUserChat {
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // rejection listeners if the message includes an invitation rejection.
         declinesListener = new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 Message message = (Message) packet;
                 // Get the MUC User extension

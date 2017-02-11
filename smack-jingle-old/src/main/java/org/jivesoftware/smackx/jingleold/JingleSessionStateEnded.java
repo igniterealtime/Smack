@@ -49,12 +49,14 @@ public class JingleSessionStateEnded extends JingleSessionState {
         return INSTANCE;
     }
 
+    @Override
     public void enter() {
         LOGGER.fine("Session Ended");
         LOGGER.fine("-------------------------------------------------------------------");
 
     }
 
+    @Override
     public void exit() {
         // TODO Auto-generated method stub
 
@@ -63,6 +65,7 @@ public class JingleSessionStateEnded extends JingleSessionState {
     /**
      * Pretty much nothing is valid for receiving once we've ended the session.
      */
+    @Override
     public IQ processJingle(JingleSession session, Jingle jingle, JingleActionEnum action) {
         IQ response = null;
 

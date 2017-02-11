@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smackx.commands;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -83,6 +84,7 @@ public final class AdHocCommandManager extends Manager {
      */
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 getAddHocCommandsManager(connection);
             }
@@ -200,8 +202,16 @@ public final class AdHocCommandManager extends Manager {
      */
     public void registerCommand(String node, String name, final Class<? extends LocalCommand> clazz) {
         registerCommand(node, name, new LocalCommandFactory() {
+            @Override
             public LocalCommand getInstance() throws InstantiationException, IllegalAccessException  {
-                return clazz.newInstance();
+                try {
+                    return clazz.getConstructor().newInstance();
+                }
+                catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+                                | SecurityException e) {
+                    // TODO: Throw those method in Smack 4.3.
+                    throw new IllegalStateException(e);
+                }
             }
         });
     }
@@ -393,6 +403,7 @@ public final class AdHocCommandManager extends Manager {
                     // See if the session reaping thread is started. If not, start it.
                     if (sessionsSweeper == null) {
                         sessionsSweeper = new Thread(new Runnable() {
+                            @Override
                             public void run() {
                                 while (true) {
                                     for (String sessionId : executingCommands.keySet()) {

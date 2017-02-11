@@ -707,7 +707,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 try {
                     Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
                     String pkcs11Config = "name = SmartCard\nlibrary = "+config.getPKCS11Library();
-                    ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes());
+                    ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes(StringUtils.UTF8));
                     Provider p = (Provider)c.newInstance(config);
                     Security.addProvider(p);
                     ks = KeyStore.getInstance("PKCS11",p);
@@ -991,6 +991,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             done = false;
 
             Async.go(new Runnable() {
+                @Override
                 public void run() {
                     parsePackets();
                 }

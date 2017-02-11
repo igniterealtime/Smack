@@ -45,16 +45,19 @@ public class RetractItem implements ExtensionElement
         return id;
     }
 
+    @Override
     public String getElementName()
     {
         return "retract";
     }
 
+    @Override
     public String getNamespace()
     {
         return PubSubNamespace.EVENT.getXmlns();
     }
 
+    @Override
     public String toXML()
     {
         return "<retract id='" + id + "'/>";

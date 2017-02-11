@@ -292,12 +292,13 @@ public abstract class FileTransfer {
          */
         cancelled("Cancelled");
 
-        private String status;
+        private final String status;
 
         private Status(String status) {
             this.status = status;
         }
 
+        @Override
         public String toString() {
             return status;
         }
@@ -358,6 +359,7 @@ public abstract class FileTransfer {
             return msg;
         }
 
+        @Override
         public String toString() {
             return msg;
         }

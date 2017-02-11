@@ -58,6 +58,7 @@ public class EventElement implements EmbeddedPacketExtension
         return type;
     }
 
+    @Override
     public List<ExtensionElement> getExtensions()
     {
         return Arrays.asList(new ExtensionElement[]{getEvent()});
@@ -68,11 +69,13 @@ public class EventElement implements EmbeddedPacketExtension
         return ext;
     }
 
+    @Override
     public String getElementName()
     {
         return "event";
     }
 
+    @Override
     public String getNamespace()
     {
         return PubSubNamespace.EVENT.getXmlns();

@@ -176,7 +176,7 @@ public class StanzaCollectorTest
         assertNull(collector.pollResult());
     }
 
-    class OKEverything implements StanzaFilter
+    static class OKEverything implements StanzaFilter
     {
         @Override
         public boolean accept(Stanza packet)
@@ -186,7 +186,7 @@ public class StanzaCollectorTest
 
     }
 
-    class TestStanzaCollector extends StanzaCollector 
+    static class TestStanzaCollector extends StanzaCollector 
     {
         protected TestStanzaCollector(XMPPConnection conection, StanzaFilter packetFilter, int size)
         {
@@ -194,7 +194,7 @@ public class StanzaCollectorTest
         }
     }
 
-    class TestPacket extends Stanza
+    static class TestPacket extends Stanza
     {
         public TestPacket(int i)
         {

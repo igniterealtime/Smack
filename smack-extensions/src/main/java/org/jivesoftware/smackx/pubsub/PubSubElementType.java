@@ -51,8 +51,8 @@ public enum PubSubElementType
     SUBSCRIPTIONS("subscriptions", PubSubNamespace.BASIC), 
     UNSUBSCRIBE("unsubscribe", PubSubNamespace.BASIC);
 
-    private String eName;
-    private PubSubNamespace nSpace;
+    private final String eName;
+    private final PubSubNamespace nSpace;
 
     private PubSubElementType(String elemName, PubSubNamespace ns)
     {

@@ -110,6 +110,7 @@ public class RosterExchange implements ExtensionElement {
     *
     * @return the XML element name of the stanza(/packet) extension.
     */
+    @Override
     public String getElementName() {
         return RosterExchangeManager.ELEMENT;
     }
@@ -121,6 +122,7 @@ public class RosterExchange implements ExtensionElement {
      *
      * @return the XML namespace of the stanza(/packet) extension.
      */
+    @Override
     public String getNamespace() {
         return RosterExchangeManager.NAMESPACE;
     }
@@ -163,6 +165,7 @@ public class RosterExchange implements ExtensionElement {
      * </pre>
      * 
      */
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append('<').append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(

@@ -108,20 +108,24 @@ public class Workgroup {
 
         // Register as a queue listener for internal usage by this instance.
         addQueueListener(new QueueListener() {
+            @Override
             public void joinedQueue() {
                 inQueue = true;
             }
 
+            @Override
             public void departedQueue() {
                 inQueue = false;
                 queuePosition = -1;
                 queueRemainingTime = -1;
             }
 
+            @Override
             public void queuePositionUpdated(int currentPosition) {
                 queuePosition = currentPosition;
             }
 
+            @Override
             public void queueWaitTimeUpdated(int secondsRemaining) {
                 queueRemainingTime = secondsRemaining;
             }
@@ -145,6 +149,7 @@ public class Workgroup {
         StanzaFilter typeFilter = new StanzaTypeFilter(Message.class);
 
         connection.addAsyncStanzaListener(new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 handlePacket(packet);
             }

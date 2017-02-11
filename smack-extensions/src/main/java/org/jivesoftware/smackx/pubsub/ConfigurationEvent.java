@@ -49,6 +49,7 @@ public class ConfigurationEvent extends NodeExtension implements EmbeddedPacketE
         return form;
     }
 
+    @Override
     public List<ExtensionElement> getExtensions()
     {
         if (getConfiguration() == null)

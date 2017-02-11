@@ -48,8 +48,8 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
         /** A retract element, which has an optional <b>notify</b> attribute when publishing deletions. */
         retract(PubSubElementType.RETRACT, "notify");
 
-        private PubSubElementType elem;
-        private String att;
+        private final PubSubElementType elem;
+        private final String att;
 
         private ItemsElementType(PubSubElementType nodeElement, String attribute)
         {
@@ -130,6 +130,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
         return type;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<ExtensionElement> getExtensions()
     {

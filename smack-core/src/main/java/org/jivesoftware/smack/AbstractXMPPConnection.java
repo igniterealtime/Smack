@@ -1616,6 +1616,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     private long lastStanzaReceived;
 
+    @Override
     public long getLastStanzaReceived() {
         return lastStanzaReceived;
     }

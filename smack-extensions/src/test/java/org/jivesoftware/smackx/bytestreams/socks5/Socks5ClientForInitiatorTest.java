@@ -254,6 +254,7 @@ public class Socks5ClientForInitiatorTest {
         protocol.addResponse(activationResponse, Verification.correspondingSenderReceiver,
                         Verification.requestTypeSET, new Verification<Bytestream, IQ>() {
 
+                            @Override
                             public void verify(Bytestream request, IQ response) {
                                 // verify that the correct stream should be activated
                                 assertNotNull(request.getToActivate());

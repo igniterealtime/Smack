@@ -155,6 +155,7 @@ public class SubscriptionPreApprovalTest extends InitSmackIm {
          */
         abstract void verifyPreApprovalRequest(final Presence preApproval);
 
+        @Override
         public void run() {
             try {
                 while (true) {

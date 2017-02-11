@@ -55,6 +55,7 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
         return proxy != null;
     }
 
+    @Override
     public ProxyInfo getProxyInfo() {
         return proxy;
     }

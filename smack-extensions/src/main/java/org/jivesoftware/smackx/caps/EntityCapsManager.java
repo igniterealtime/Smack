@@ -65,6 +65,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -113,6 +114,7 @@ public final class EntityCapsManager extends Manager {
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }
@@ -346,6 +348,7 @@ public final class EntityCapsManager extends Manager {
         // XEP-0115 specifies that a client SHOULD include entity capabilities
         // with every presence notification it sends.
         StanzaListener packetInterceptor = new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 if (!entityCapsEnabled) {
                     // Be sure to not send stanzas with the caps extension if it's not enabled
@@ -403,7 +406,11 @@ public final class EntityCapsManager extends Manager {
      * @param user
      *            the user (Full JID)
      */
+    // TODO: Change parameter type to Jid in Smack 4.3.
+    @SuppressWarnings("CollectionIncompatibleType")
     public static void removeUserCapsNode(String user) {
+        // While JID_TO_NODEVER_CHACHE has the generic types <Jid, NodeVerHash>, it is ok to call remove with String
+        // arguments, since the same Jid and String representations would be equal and have the same hash code.
         JID_TO_NODEVER_CACHE.remove(user);
     }
 
@@ -658,6 +665,7 @@ public final class EntityCapsManager extends Manager {
                 // XEP-0128 data forms, sort the forms by the FORM_TYPE (i.e.,
                 // by the XML character data of the <value/> element).
                 SortedSet<FormField> fs = new TreeSet<FormField>(new Comparator<FormField>() {
+                    @Override
                     public int compare(FormField f1, FormField f2) {
                         return f1.getVariable().compareTo(f2.getVariable());
                     }
@@ -701,9 +709,16 @@ public final class EntityCapsManager extends Manager {
         // encoded using Base64 as specified in Section 4 of RFC 4648
         // (note: the Base64 output MUST NOT include whitespace and MUST set
         // padding bits to zero).
+        byte[] bytes;
+        try {
+            bytes = sb.toString().getBytes(StringUtils.UTF8);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
         byte[] digest;
         synchronized(md) {
-            digest = md.digest(sb.toString().getBytes());
+            digest = md.digest(bytes);
         }
         String version = Base64.encodeToString(digest);
         return new CapsVersionAndHash(version, hash);

@@ -50,10 +50,12 @@ public class MUCUser implements ExtensionElement {
     private String password;
     private Destroy destroy;
 
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }

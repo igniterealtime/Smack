@@ -174,6 +174,7 @@ public class OutgoingFileTransfer extends FileTransfer {
         setFileInfo(fileName, fileSize);
         this.callback = progress;
         transferThread = new Thread(new Runnable() {
+            @Override
             public void run() {
                 try {
                     OutgoingFileTransfer.this.outputStream = negotiateStream(
@@ -192,7 +193,7 @@ public class OutgoingFileTransfer extends FileTransfer {
     }
 
     private void checkTransferThread() {
-        if (transferThread != null && transferThread.isAlive() || isDone()) {
+        if ((transferThread != null && transferThread.isAlive()) || isDone()) {
             throw new IllegalStateException(
                     "File transfer in progress or has already completed.");
         }
@@ -225,6 +226,7 @@ public class OutgoingFileTransfer extends FileTransfer {
         }
 
         transferThread = new Thread(new Runnable() {
+            @Override
             public void run() {
                 try {
                     outputStream = negotiateStream(file.getName(), file
@@ -298,6 +300,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 
         setFileInfo(fileName, fileSize);
         transferThread = new Thread(new Runnable() {
+            @Override
             public void run() {
                 //Create packet filter
                 try {
@@ -398,6 +401,7 @@ public class OutgoingFileTransfer extends FileTransfer {
         return outputStream;
     }
 
+    @Override
     public void cancel() {
         setStatus(Status.cancelled);
     }

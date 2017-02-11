@@ -364,6 +364,7 @@ public class FormField implements NamedElement {
         return ELEMENT;
     }
 
+    @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder buf = new XmlStringBuilder(this);
         // Add attributes
@@ -455,6 +456,7 @@ public class FormField implements NamedElement {
             return ELEMENT;
         }
 
+        @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             // Add attribute

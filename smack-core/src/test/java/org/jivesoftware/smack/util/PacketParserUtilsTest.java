@@ -851,6 +851,7 @@ public class PacketParserUtilsTest {
         XmlUnitUtils.assertSimilar(saslFailureString, saslFailure.toXML());
     }
 
+    @SuppressWarnings("ReferenceEquality")
     private static String determineNonDefaultLanguage() {
         String otherLanguage = "jp";
         Locale[] availableLocales = Locale.getAvailableLocales();

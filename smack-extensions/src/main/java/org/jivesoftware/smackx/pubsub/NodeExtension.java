@@ -65,16 +65,19 @@ public class NodeExtension implements ExtensionElement
         return node;
     }
 
+    @Override
     public String getElementName()
     {
         return element.getElementName();
     }
 
+    @Override
     public String getNamespace()
     {
         return element.getNamespace().getXmlns();
     }
 
+    @Override
     public CharSequence toXML()
     {
         return '<' + getElementName() + (node == null ? "" : " node='" + node + '\'') + "/>";

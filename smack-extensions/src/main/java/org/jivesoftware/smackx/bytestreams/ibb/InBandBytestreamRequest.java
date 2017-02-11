@@ -50,6 +50,7 @@ public class InBandBytestreamRequest implements BytestreamRequest {
      * 
      * @return the sender of the In-Band Bytestream open request
      */
+    @Override
     public Jid getFrom() {
         return this.byteStreamRequest.getFrom();
     }
@@ -59,6 +60,7 @@ public class InBandBytestreamRequest implements BytestreamRequest {
      * 
      * @return the session ID of the In-Band Bytestream open request
      */
+    @Override
     public String getSessionID() {
         return this.byteStreamRequest.getSessionID();
     }
@@ -71,6 +73,7 @@ public class InBandBytestreamRequest implements BytestreamRequest {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @Override
     public InBandBytestreamSession accept() throws NotConnectedException, InterruptedException {
         XMPPConnection connection = this.manager.getConnection();
 
@@ -92,6 +95,7 @@ public class InBandBytestreamRequest implements BytestreamRequest {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @Override
     public void reject() throws NotConnectedException, InterruptedException {
         this.manager.replyRejectPacket(this.byteStreamRequest);
     }

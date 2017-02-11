@@ -63,6 +63,7 @@ public class ICEResolver extends TransportResolver {
         this.setType(Type.ice);
     }
 
+    @Override
     public void initialize() throws XMPPException {
         if (!isResolving() && !isResolved()) {
             LOGGER.fine("Initialized");
@@ -87,6 +88,7 @@ public class ICEResolver extends TransportResolver {
         this.setInitialized();
     }
 
+    @Override
     public void cancel() throws XMPPException {
 
     }
@@ -96,6 +98,7 @@ public class ICEResolver extends TransportResolver {
      * @throws SmackException 
      * @throws InterruptedException 
      */
+    @Override
     public synchronized void resolve(JingleSession session) throws XMPPException, SmackException, InterruptedException {
         this.setResolveInit();
 

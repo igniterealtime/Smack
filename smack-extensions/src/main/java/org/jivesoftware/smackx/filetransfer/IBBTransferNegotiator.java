@@ -58,6 +58,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         this.manager = InBandBytestreamManager.getByteStreamManager(connection);
     }
 
+    @Override
     public OutputStream createOutgoingStream(String streamID, Jid initiator,
                     Jid target) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         InBandBytestreamSession session = this.manager.establishSession(target, streamID);
@@ -65,6 +66,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         return session.getOutputStream();
     }
 
+    @Override
     public InputStream createIncomingStream(StreamInitiation initiation)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         /*
@@ -87,10 +89,12 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         this.manager.ignoreBytestreamRequestOnce(streamID);
     }
 
+    @Override
     public String[] getNamespaces() {
         return new String[] { DataPacketExtension.NAMESPACE };
     }
 
+    @Override
     InputStream negotiateIncomingStream(Stanza streamInitiation) throws NotConnectedException, InterruptedException {
         // build In-Band Bytestream request
         InBandBytestreamRequest request = new ByteStreamRequest(this.manager,

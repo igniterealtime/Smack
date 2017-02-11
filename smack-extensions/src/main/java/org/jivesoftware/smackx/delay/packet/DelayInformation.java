@@ -88,10 +88,12 @@ public class DelayInformation implements ExtensionElement {
         return reason;
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }

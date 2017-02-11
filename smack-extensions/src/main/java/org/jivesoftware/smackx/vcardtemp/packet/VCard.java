@@ -728,6 +728,7 @@ public class VCard extends IQ {
 
     // Used in tests:
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -776,6 +777,7 @@ public class VCard extends IQ {
         return workPhones.equals(vCard.workPhones);
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = homePhones.hashCode();

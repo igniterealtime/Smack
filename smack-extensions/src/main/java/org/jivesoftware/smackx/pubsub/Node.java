@@ -604,6 +604,7 @@ abstract public class Node
             listener = eventListener;
         }
 
+        @Override
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public void processStanza(Stanza packet)
         {
@@ -631,6 +632,7 @@ abstract public class Node
             listener = eventListener;
         }
 
+        @Override
         public void processStanza(Stanza packet)
         {
 // CHECKSTYLE:OFF
@@ -667,7 +669,7 @@ abstract public class Node
      * 
      * @author Robin Collier
      */
-    public class NodeConfigTranslator implements StanzaListener
+    public static class NodeConfigTranslator implements StanzaListener
     {
         private NodeConfigListener listener;
 
@@ -676,12 +678,11 @@ abstract public class Node
             listener = eventListener;
         }
 
+        @Override
         public void processStanza(Stanza packet)
         {
-// CHECKSTYLE:OFF
             EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
             ConfigurationEvent config = (ConfigurationEvent)event.getEvent();
-// CHECKSTYLE:ON
 
             listener.handleNodeConfiguration(config);
         }
@@ -712,6 +713,7 @@ abstract public class Node
                             && "item".equals(secondLevelElement);
         }
 
+        @Override
         public boolean acceptSpecific(Message message) {
             EventElement event = EventElement.from(message);
 

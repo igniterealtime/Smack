@@ -303,6 +303,7 @@ public class RTPBridge extends IQ {
      *
      * @return the Child Element XML of the Packet
      */
+    @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder str) {
         str.attribute("sid", sid);
         str.rightAngleBracket();

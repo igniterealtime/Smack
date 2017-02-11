@@ -47,6 +47,7 @@ public abstract class AbstractFromToMatchesFilter implements StanzaFilter {
         this.ignoreResourcepart = ignoreResourcepart;
     }
 
+    @Override
     public final boolean accept(final Stanza stanza) {
         Jid stanzaAddress = getAddressToCompare(stanza);
 
@@ -63,6 +64,7 @@ public abstract class AbstractFromToMatchesFilter implements StanzaFilter {
 
     protected abstract Jid getAddressToCompare(Stanza stanza);
 
+    @Override
     public final String toString() {
         String matchMode = ignoreResourcepart ? "ignoreResourcepart" : "full";
         return getClass().getSimpleName() + " (" + matchMode + "): " + address;

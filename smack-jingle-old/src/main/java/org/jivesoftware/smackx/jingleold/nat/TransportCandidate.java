@@ -301,6 +301,7 @@ public abstract class TransportCandidate {
       *
       * @see java.lang.Object#equals(java.lang.Object)
       */
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -353,6 +354,7 @@ public abstract class TransportCandidate {
         //candidatesChecking.add(cand);
 
         Thread checkThread = new Thread(new Runnable() {
+            @Override
             public void run() {
                 boolean isUsable;
 
@@ -463,6 +465,7 @@ public abstract class TransportCandidate {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return value;
         }
@@ -551,6 +554,7 @@ public abstract class TransportCandidate {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return value;
         }
@@ -664,6 +668,7 @@ public abstract class TransportCandidate {
 
         }
 
+        @Override
         public void run() {
             try {
                 LOGGER.fine("Listening for ECHO: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort());
@@ -756,9 +761,11 @@ public abstract class TransportCandidate {
 
             Thread thread = new Thread(new Runnable() {
 
+                @Override
                 public void run() {
 
                     DatagramListener listener = new DatagramListener() {
+                        @Override
                         public boolean datagramReceived(DatagramPacket datagramPacket) {
 
                             try {

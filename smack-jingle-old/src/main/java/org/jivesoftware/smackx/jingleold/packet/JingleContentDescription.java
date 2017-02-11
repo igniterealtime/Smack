@@ -51,6 +51,7 @@ public abstract class JingleContentDescription implements ExtensionElement {
      *
      * @return the XML element name of the element.
      */
+    @Override
     public String getElementName() {
         return NODENAME;
     }
@@ -60,6 +61,7 @@ public abstract class JingleContentDescription implements ExtensionElement {
      *
      * @return The namespace
      */
+    @Override
     public abstract String getNamespace();
 
     /**
@@ -144,6 +146,7 @@ public abstract class JingleContentDescription implements ExtensionElement {
      *
      * @return a string with the XML representation
      */
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
 
@@ -183,6 +186,7 @@ public abstract class JingleContentDescription implements ExtensionElement {
             addJinglePayloadType(pt);
         }
 
+        @Override
         public String getNamespace() {
             return NAMESPACE;
         }
@@ -279,6 +283,7 @@ public abstract class JingleContentDescription implements ExtensionElement {
                 super(audio);
             }
 
+            @Override
             protected String getChildAttributes() {
                 StringBuilder buf = new StringBuilder();
                 PayloadType pt = getPayloadType();

@@ -44,6 +44,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         this.version = Objects.requireNonNull(builder.version, "version must not be null");
     }
 
+    @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         IQChildElementXmlStringBuilder builder = getIQHoxtChildElementBuilder(xml);
         builder.optAppend(headers);

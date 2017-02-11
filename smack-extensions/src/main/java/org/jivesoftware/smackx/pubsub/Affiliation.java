@@ -122,6 +122,7 @@ public class Affiliation implements ExtensionElement
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace() {
         return namespace.getXmlns();
     }

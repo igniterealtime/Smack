@@ -102,6 +102,7 @@ public class BookmarkedURL implements SharedBookmark {
         this.isShared = shared;
     }
 
+    @Override
     public boolean isShared() {
         return isShared;
     }

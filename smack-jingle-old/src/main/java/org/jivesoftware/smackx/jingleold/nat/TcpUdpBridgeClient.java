@@ -67,6 +67,7 @@ public class TcpUdpBridgeClient {
 
         final Thread process = new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 try {
                     OutputStream out = localTcpSocket.getOutputStream();
@@ -97,6 +98,7 @@ public class TcpUdpBridgeClient {
 
         new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 try {
 

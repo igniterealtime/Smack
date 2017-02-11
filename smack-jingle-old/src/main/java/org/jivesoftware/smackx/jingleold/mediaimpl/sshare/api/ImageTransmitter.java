@@ -178,6 +178,7 @@ public class ImageTransmitter implements Runnable {
         }
     }
 
+    @Override
     public void run() {
         start();
     }

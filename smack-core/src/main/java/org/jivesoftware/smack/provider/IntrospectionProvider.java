@@ -78,7 +78,7 @@ public class IntrospectionProvider{
                     IOException, IllegalArgumentException, InvocationTargetException,
                     ClassNotFoundException {
         ParserUtils.assertAtStartTag(parser);
-        Object object = objectClass.newInstance();
+        Object object = objectClass.getConstructor().newInstance();
         outerloop: while (true) {
             int eventType = parser.next();
             switch (eventType) {

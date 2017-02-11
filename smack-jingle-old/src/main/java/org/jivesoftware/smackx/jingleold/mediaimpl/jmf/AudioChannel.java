@@ -482,6 +482,7 @@ public class AudioChannel {
 
     class StateListener implements ControllerListener {
 
+        @Override
         public void controllerUpdate(ControllerEvent ce) {
 
             // If there was an error during configure or

@@ -110,6 +110,7 @@ public class Occupant {
         return nick;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if(!(obj instanceof Occupant)) {
             return false;
@@ -118,6 +119,7 @@ public class Occupant {
         return jid.equals(occupant.jid);
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = affiliation.hashCode();

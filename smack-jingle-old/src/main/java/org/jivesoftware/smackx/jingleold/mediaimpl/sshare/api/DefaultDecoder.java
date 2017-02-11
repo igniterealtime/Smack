@@ -26,6 +26,7 @@ import java.io.IOException;
  */
 public class DefaultDecoder implements ImageDecoder {
 
+    @Override
     public BufferedImage decode(ByteArrayInputStream stream) throws IOException {
         return ImageIO.read(stream);
     }

@@ -61,6 +61,7 @@ public class ImageReceiver extends Canvas {
             this.decoder = new DefaultDecoder();
 
             new Thread(new Runnable() {
+                @Override
                 public void run() {
                     byte[] buf = new byte[1024];
                     DatagramPacket p = new DatagramPacket(buf, 1024);
@@ -90,6 +91,7 @@ public class ImageReceiver extends Canvas {
             }).start();
 
             new Thread(new Runnable() {
+                @Override
                 public void run() {
                     byte[] buf = new byte[1024];
                     DatagramPacket p = new DatagramPacket(buf, 1024);
@@ -148,6 +150,7 @@ public class ImageReceiver extends Canvas {
         this.getGraphics().drawImage(bufferedImage, tileWidth * x, tileWidth * y, this);
     }
 
+    @Override
     public void paint(Graphics g) {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {

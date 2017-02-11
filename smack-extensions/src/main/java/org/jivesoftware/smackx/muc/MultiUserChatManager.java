@@ -82,6 +82,7 @@ public final class MultiUserChatManager extends Manager {
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(final XMPPConnection connection) {
                 // Set on every established connection that this client supports the Multi-User
                 // Chat protocol. This information will be used when another client tries to
@@ -149,6 +150,7 @@ public final class MultiUserChatManager extends Manager {
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // listeners if the message includes an invitation.
         StanzaListener invitationPacketListener = new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 final Message message = (Message) packet;
                 // Get the MUCUser extension

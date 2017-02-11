@@ -78,6 +78,7 @@ public final class PrivacyListManager extends Manager {
     static {
         // Create a new PrivacyListManager on every established connection.
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }

@@ -610,6 +610,7 @@ public class ConfigureForm extends Form
      * 
      * @return The node title
      */
+    @Override
     public String getTitle()
     {
         return getFieldValue(ConfigureNodeFields.title);
@@ -620,6 +621,7 @@ public class ConfigureForm extends Form
      * 
      * @param title The node title
      */
+    @Override
     public void setTitle(String title) 
     {
         addField(ConfigureNodeFields.title, FormField.Type.text_single);

@@ -45,11 +45,13 @@ public class SimplePayload implements ExtensionElement
         ns = namespace;
     }
 
+    @Override
     public String getElementName()
     {
         return elemName;
     }
 
+    @Override
     public String getNamespace()
     {
         return ns;

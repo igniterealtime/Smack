@@ -72,6 +72,7 @@ public final class CarbonManager extends Manager {
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }
@@ -271,6 +272,7 @@ public final class CarbonManager extends Manager {
 
         try {
             connection().sendIqWithResponseCallback(setIQ, new StanzaListener() {
+                @Override
                 public void processStanza(Stanza packet) {
                     enabled_state = use;
                 }

@@ -133,6 +133,7 @@ public class Subscription extends NodeExtension
         return configRequired;
     }
 
+    @Override
     public String toXML()
     {
         StringBuilder builder = new StringBuilder("<subscription");

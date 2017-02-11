@@ -67,7 +67,7 @@ public class OfferRevokeProvider extends IQProvider<IQ> {
         return new OfferRevokePacket(userJID, userID, reason, sessionID);
     }
 
-    public class OfferRevokePacket extends IQ {
+    public static class OfferRevokePacket extends IQ {
 
         public static final String ELEMENT = "offer-revoke";
         public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
