@@ -62,6 +62,7 @@ public final class NodeInfo {
     }
 
     @Override
+    @SuppressWarnings("ReferenceEquality")
     public int hashCode() {
         if (this == EMPTY) {
             return 0;

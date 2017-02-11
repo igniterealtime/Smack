@@ -164,6 +164,7 @@ public class InBandBytestreamManagerTest extends InitExtensions {
 
         protocol.addResponse(null, new Verification<Open, IQ>() {
 
+            @Override
             public void verify(Open request, IQ response) {
                 assertEquals(StanzaType.MESSAGE, request.getStanza());
             }

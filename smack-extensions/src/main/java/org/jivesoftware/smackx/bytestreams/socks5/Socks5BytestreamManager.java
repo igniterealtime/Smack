@@ -98,6 +98,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
 
+            @Override
             public void connectionCreated(final XMPPConnection connection) {
                 // create the manager for this connection
                 Socks5BytestreamManager.getBytestreamManager(connection);
@@ -198,6 +199,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * 
      * @param listener the listener to register
      */
+    @Override
     public void addIncomingBytestreamListener(BytestreamListener listener) {
         this.allRequestListeners.add(listener);
     }
@@ -208,6 +210,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * 
      * @param listener the listener to remove
      */
+    @Override
     public void removeIncomingBytestreamListener(BytestreamListener listener) {
         this.allRequestListeners.remove(listener);
     }
@@ -230,6 +233,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @param listener the listener to register
      * @param initiatorJID the JID of the user that wants to establish a SOCKS5 Bytestream
      */
+    @Override
     public void addIncomingBytestreamListener(BytestreamListener listener, Jid initiatorJID) {
         this.userListeners.put(initiatorJID, listener);
     }
@@ -239,6 +243,9 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * 
      * @param initiatorJID the JID of the user the listener should be removed
      */
+    // TODO: Change parameter to Jid in Smack 4.3.
+    @Override
+    @SuppressWarnings("CollectionIncompatibleType")
     public void removeIncomingBytestreamListener(String initiatorJID) {
         this.userListeners.remove(initiatorJID);
     }
@@ -386,6 +393,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @throws InterruptedException if the current thread was interrupted while waiting
      * @throws SmackException if there was no response from the server.
      */
+    @Override
     public Socks5BytestreamSession establishSession(Jid targetJID) throws XMPPException,
                     IOException, InterruptedException, SmackException {
         String sessionID = getNextSessionID();
@@ -405,6 +413,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @throws SmackException if the target does not support SOCKS5.
      * @throws XMPPException 
      */
+    @Override
     public Socks5BytestreamSession establishSession(Jid targetJID, String sessionID)
                     throws IOException, InterruptedException, NoResponseException, SmackException, XMPPException{
         XMPPConnection connection = connection();

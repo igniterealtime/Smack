@@ -62,6 +62,7 @@ public class JingleContent implements ExtensionElement {
      * 
      * @return the XML element name of the element.
      */
+    @Override
     public String getElementName() {
         return NODENAME;
     }
@@ -71,6 +72,7 @@ public class JingleContent implements ExtensionElement {
      * 
      * @return The namespace
      */
+    @Override
     public String getNamespace() {
         // There is no namespace for <content>
         return "";
@@ -157,6 +159,7 @@ public class JingleContent implements ExtensionElement {
      * 
      * @return a string with the XML representation
      */
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
 

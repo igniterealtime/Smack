@@ -570,6 +570,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         }
 
 
+        @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
@@ -578,6 +579,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             return result;
         }
 
+        @Override
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
@@ -632,6 +634,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             return message;
         }
 
+        @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
@@ -640,6 +643,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             return result;
         }
 
+        @Override
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;

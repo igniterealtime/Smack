@@ -47,9 +47,9 @@ import org.jxmpp.jid.Jid;
 @SuppressWarnings("EqualsHashCode")
 public abstract class TransportCandidate {
 
-	private static final Logger LOGGER = Logger.getLogger(TransportCandidate.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TransportCandidate.class.getName());
 
-	private String name;
+    private String name;
 
     private String ip; // IP address
 
@@ -301,6 +301,7 @@ public abstract class TransportCandidate {
       *
       * @see java.lang.Object#equals(java.lang.Object)
       */
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -353,13 +354,14 @@ public abstract class TransportCandidate {
         //candidatesChecking.add(cand);
 
         Thread checkThread = new Thread(new Runnable() {
+            @Override
             public void run() {
                 boolean isUsable;
 
 
                 try {
                     // CHECKSTYLE:OFF
-                	InetAddress candAddress = InetAddress.getByName(getIp());
+                    InetAddress candAddress = InetAddress.getByName(getIp());
                     // CHECKSTYLE:ON
                     isUsable = true;//candAddress.isReachable(TransportResolver.CHECK_TIMEOUT);
                 }
@@ -463,6 +465,7 @@ public abstract class TransportCandidate {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return value;
         }
@@ -551,6 +554,7 @@ public abstract class TransportCandidate {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return value;
         }
@@ -664,6 +668,7 @@ public abstract class TransportCandidate {
 
         }
 
+        @Override
         public void run() {
             try {
                 LOGGER.fine("Listening for ECHO: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort());
@@ -756,9 +761,11 @@ public abstract class TransportCandidate {
 
             Thread thread = new Thread(new Runnable() {
 
+                @Override
                 public void run() {
 
                     DatagramListener listener = new DatagramListener() {
+                        @Override
                         public boolean datagramReceived(DatagramPacket datagramPacket) {
 
                             try {
@@ -771,8 +778,8 @@ public abstract class TransportCandidate {
 
                                 // CHECKSTYLE:OFF
                                 if (pass.equals(password) 
-                                		&& transportCandidate.getIp().indexOf(ip) != -1 
-                                		&& transportCandidate.getPort() == Integer.parseInt(pt)) {
+                                        && transportCandidate.getIp().indexOf(ip) != -1 
+                                        && transportCandidate.getPort() == Integer.parseInt(pt)) {
                                     // CHECKSTYLE:ON
                                     LOGGER.fine("ECHO OK: " + candidate.getIp() + ":" + candidate.getPort() + " <-> " + transportCandidate.getIp() + ":" + transportCandidate.getPort());
                                     TestResult testResult = new TestResult();

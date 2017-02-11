@@ -30,6 +30,7 @@ public class SASLDigestMD5Mechanism extends SASLJavaXMechanism {
       return true;
     }
 
+    @Override
     public String getName() {
         return NAME;
     }

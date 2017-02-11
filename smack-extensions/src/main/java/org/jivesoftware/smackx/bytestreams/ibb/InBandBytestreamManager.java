@@ -103,6 +103,7 @@ public final class InBandBytestreamManager implements BytestreamManager {
      */
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(final XMPPConnection connection) {
                 // create the manager for this connection
                 InBandBytestreamManager.getByteStreamManager(connection);
@@ -236,6 +237,7 @@ public final class InBandBytestreamManager implements BytestreamManager {
      * 
      * @param listener the listener to register
      */
+    @Override
     public void addIncomingBytestreamListener(BytestreamListener listener) {
         this.allRequestListeners.add(listener);
     }
@@ -246,6 +248,7 @@ public final class InBandBytestreamManager implements BytestreamManager {
      * 
      * @param listener the listener to remove
      */
+    @Override
     public void removeIncomingBytestreamListener(BytestreamListener listener) {
         this.allRequestListeners.remove(listener);
     }
@@ -268,6 +271,7 @@ public final class InBandBytestreamManager implements BytestreamManager {
      * @param listener the listener to register
      * @param initiatorJID the JID of the user that wants to establish an In-Band Bytestream
      */
+    @Override
     public void addIncomingBytestreamListener(BytestreamListener listener, Jid initiatorJID) {
         this.userListeners.put(initiatorJID, listener);
     }
@@ -277,6 +281,9 @@ public final class InBandBytestreamManager implements BytestreamManager {
      * 
      * @param initiatorJID the JID of the user the listener should be removed
      */
+    @Override
+    // TODO: Change argument to Jid in Smack 4.3.
+    @SuppressWarnings("CollectionIncompatibleType")
     public void removeIncomingBytestreamListener(String initiatorJID) {
         this.userListeners.remove(initiatorJID);
     }
@@ -402,6 +409,7 @@ public final class InBandBytestreamManager implements BytestreamManager {
      * @throws SmackException if there was no response from the server.
      * @throws InterruptedException 
      */
+    @Override
     public InBandBytestreamSession establishSession(Jid targetJID) throws XMPPException, SmackException, InterruptedException {
         String sessionID = getNextSessionID();
         return establishSession(targetJID, sessionID);
@@ -420,6 +428,7 @@ public final class InBandBytestreamManager implements BytestreamManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @Override
     public InBandBytestreamSession establishSession(Jid targetJID, String sessionID)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Open byteStreamRequest = new Open(sessionID, this.defaultBlockSize, this.stanza);

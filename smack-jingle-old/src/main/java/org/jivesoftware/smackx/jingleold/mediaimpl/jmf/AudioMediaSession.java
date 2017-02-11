@@ -40,9 +40,9 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
  */
 public class AudioMediaSession extends JingleMediaSession {
 
-	private static final Logger LOGGER = Logger.getLogger(AudioMediaSession.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AudioMediaSession.class.getName());
 
-	private AudioChannel audioChannel;
+    private AudioChannel audioChannel;
 
     /**
      * Creates a org.jivesoftware.jingleaudio.jmf.AudioMediaSession with defined payload type, remote and local candidates.
@@ -61,6 +61,7 @@ public class AudioMediaSession extends JingleMediaSession {
     /**
      * Initialize the Audio Channel to make it able to send and receive audio.
      */
+    @Override
     public void initialize() {
 
         String ip;
@@ -90,6 +91,7 @@ public class AudioMediaSession extends JingleMediaSession {
     /**
      * Starts transmission and for NAT Traversal reasons start receiving also.
      */
+    @Override
     public void startTrasmit() {
         audioChannel.start();
     }
@@ -100,6 +102,7 @@ public class AudioMediaSession extends JingleMediaSession {
      *
      * @param active active state
      */
+    @Override
     public void setTrasmit(boolean active) {
         audioChannel.setTrasmit(active);
     }
@@ -107,6 +110,7 @@ public class AudioMediaSession extends JingleMediaSession {
     /**
      * For NAT Reasons this method does nothing. Use startTransmit() to start transmit and receive jmf
      */
+    @Override
     public void startReceive() {
         // Do nothing
     }
@@ -114,6 +118,7 @@ public class AudioMediaSession extends JingleMediaSession {
     /**
      * Stops transmission and for NAT Traversal reasons stop receiving also.
      */
+    @Override
     public void stopTrasmit() {
         if (audioChannel != null)
             audioChannel.stop();
@@ -122,6 +127,7 @@ public class AudioMediaSession extends JingleMediaSession {
     /**
      * For NAT Reasons this method does nothing. Use startTransmit() to start transmit and receive jmf
      */
+    @Override
     public void stopReceive() {
         // Do nothing
     }

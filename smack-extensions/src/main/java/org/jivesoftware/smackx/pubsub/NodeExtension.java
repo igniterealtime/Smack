@@ -28,61 +28,64 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  */
 public class NodeExtension implements ExtensionElement
 {
-	private final PubSubElementType element;
-	private final String node;
+    private final PubSubElementType element;
+    private final String node;
 
-	/**
-	 * Constructs a <tt>NodeExtension</tt> with an element name specified
-	 * by {@link PubSubElementType} and the specified node id.
-	 * 
-	 * @param elem Defines the element name and namespace
-	 * @param nodeId Specifies the id of the node
-	 */
-	public NodeExtension(PubSubElementType elem, String nodeId)
-	{
-		element = elem;
-		this.node = nodeId;
-	}
+    /**
+     * Constructs a <tt>NodeExtension</tt> with an element name specified
+     * by {@link PubSubElementType} and the specified node id.
+     * 
+     * @param elem Defines the element name and namespace
+     * @param nodeId Specifies the id of the node
+     */
+    public NodeExtension(PubSubElementType elem, String nodeId)
+    {
+        element = elem;
+        this.node = nodeId;
+    }
 
-	/**
-	 * Constructs a <tt>NodeExtension</tt> with an element name specified
-	 * by {@link PubSubElementType}.
-	 * 
-	 * @param elem Defines the element name and namespace
-	 */
-	public NodeExtension(PubSubElementType elem)
-	{
-		this(elem, null);
-	}
+    /**
+     * Constructs a <tt>NodeExtension</tt> with an element name specified
+     * by {@link PubSubElementType}.
+     * 
+     * @param elem Defines the element name and namespace
+     */
+    public NodeExtension(PubSubElementType elem)
+    {
+        this(elem, null);
+    }
 
-	/**
-	 * Gets the node id.
-	 * 
-	 * @return The node id
-	 */
-	public String getNode()
-	{
-		return node;
-	}
+    /**
+     * Gets the node id.
+     * 
+     * @return The node id
+     */
+    public String getNode()
+    {
+        return node;
+    }
 
-	public String getElementName()
-	{
-		return element.getElementName();
-	}
+    @Override
+    public String getElementName()
+    {
+        return element.getElementName();
+    }
 
-	public String getNamespace()
-	{
-		return element.getNamespace().getXmlns();
-	}
+    @Override
+    public String getNamespace()
+    {
+        return element.getNamespace().getXmlns();
+    }
 
-	public CharSequence toXML()
-	{
-		return '<' + getElementName() + (node == null ? "" : " node='" + node + '\'') + "/>";
-	}
+    @Override
+    public CharSequence toXML()
+    {
+        return '<' + getElementName() + (node == null ? "" : " node='" + node + '\'') + "/>";
+    }
 
-	@Override
-	public String toString()
-	{
-		return getClass().getName() + " - content [" + toXML() + "]";
-	}
+    @Override
+    public String toString()
+    {
+        return getClass().getName() + " - content [" + toXML() + "]";
+    }
 }

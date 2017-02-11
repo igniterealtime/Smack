@@ -50,7 +50,7 @@ public class FormTest extends AbstractSmackIntegrationTest {
      * @throws NotConnectedException 
      */
     @SuppressWarnings("deprecation")
-	@SmackIntegrationTest
+    @SmackIntegrationTest
     public void testFilloutForm() throws NotConnectedException, InterruptedException {
         Form formToSend = new Form(DataForm.Type.form);
         formToSend.setInstructions(

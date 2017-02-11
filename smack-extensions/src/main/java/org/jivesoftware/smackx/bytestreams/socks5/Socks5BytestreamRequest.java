@@ -170,6 +170,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * 
      * @return the sender of the SOCKS5 Bytestream initialization request.
      */
+    @Override
     public Jid getFrom() {
         return this.bytestreamRequest.getFrom();
     }
@@ -179,6 +180,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * 
      * @return the session ID of the SOCKS5 Bytestream initialization request.
      */
+    @Override
     public String getSessionID() {
         return this.bytestreamRequest.getSessionID();
     }
@@ -195,6 +197,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * @throws XMPPErrorException 
      * @throws SmackException 
      */
+    @Override
     public Socks5BytestreamSession accept() throws InterruptedException, XMPPErrorException, SmackException {
         Collection<StreamHost> streamHosts = this.bytestreamRequest.getStreamHosts();
 
@@ -264,6 +267,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @Override
     public void reject() throws NotConnectedException, InterruptedException {
         this.manager.replyRejectPacket(this.bytestreamRequest);
     }

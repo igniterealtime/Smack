@@ -119,6 +119,7 @@ public final class ChatStateManager extends Manager {
     }
 
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -129,6 +130,7 @@ public final class ChatStateManager extends Manager {
 
     }
 
+    @Override
     public int hashCode() {
         return connection().hashCode();
     }
@@ -164,12 +166,14 @@ public final class ChatStateManager extends Manager {
         }
     }
 
-    private class IncomingMessageInterceptor implements ChatManagerListener, ChatMessageListener {
+    private static class IncomingMessageInterceptor implements ChatManagerListener, ChatMessageListener {
 
+        @Override
         public void chatCreated(final org.jivesoftware.smack.chat.Chat chat, boolean createdLocally) {
             chat.addMessageListener(this);
         }
 
+        @Override
         public void processMessage(org.jivesoftware.smack.chat.Chat chat, Message message) {
             ExtensionElement extension = message.getExtension(NAMESPACE);
             if (extension == null) {

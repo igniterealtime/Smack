@@ -400,6 +400,7 @@ public class XHTMLText {
      * 
      * @return the text of the XHTMLText   
      */
+    @Override
     public String toString() {
         return text.toString();
     }

@@ -36,7 +36,7 @@ public class UnblockContactsIQTest {
             + "<unblock xmlns='urn:xmpp:blocking'>" + "<item jid='romeo@montague.net'/>"
             + "<item jid='pepe@montague.net'/>" + "</unblock>" + "</iq>";
 
-    String unblockAllIQExample = "<iq id='unblock2' type='set'>" + "<unblock xmlns='urn:xmpp:blocking'></unblock>"
+    String unblockAllIQExample = "<iq id='unblock2' type='set'>" + "<unblock xmlns='urn:xmpp:blocking'/>"
             + "</iq>";
 
     String unblockAllPushIQExample = "<iq to='juliet@capulet.com/chamber' type='set' id='push5'>"

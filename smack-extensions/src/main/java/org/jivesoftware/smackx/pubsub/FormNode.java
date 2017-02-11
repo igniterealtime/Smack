@@ -28,75 +28,75 @@ import org.jivesoftware.smackx.xdata.Form;
  */
 public class FormNode extends NodeExtension
 {
-	private Form configForm;
+    private Form configForm;
 
-	/**
-	 * Create a {@link FormNode} which contains the specified form.
-	 * 
-	 * @param formType The type of form being sent
-	 * @param submitForm The form
-	 */
-	public FormNode(FormNodeType formType, Form submitForm)
-	{
-		super(formType.getNodeElement());
+    /**
+     * Create a {@link FormNode} which contains the specified form.
+     * 
+     * @param formType The type of form being sent
+     * @param submitForm The form
+     */
+    public FormNode(FormNodeType formType, Form submitForm)
+    {
+        super(formType.getNodeElement());
 
-		if (submitForm == null)
-			throw new IllegalArgumentException("Submit form cannot be null");
-		configForm = submitForm;
-	}
+        if (submitForm == null)
+            throw new IllegalArgumentException("Submit form cannot be null");
+        configForm = submitForm;
+    }
 
-	/**
-	 * Create a {@link FormNode} which contains the specified form, which is 
-	 * associated with the specified node.
-	 * 
-	 * @param formType The type of form being sent
-	 * @param nodeId The node the form is associated with
-	 * @param submitForm The form
-	 */
-	public FormNode(FormNodeType formType, String nodeId, Form submitForm)
-	{
-		super(formType.getNodeElement(), nodeId);
+    /**
+     * Create a {@link FormNode} which contains the specified form, which is 
+     * associated with the specified node.
+     * 
+     * @param formType The type of form being sent
+     * @param nodeId The node the form is associated with
+     * @param submitForm The form
+     */
+    public FormNode(FormNodeType formType, String nodeId, Form submitForm)
+    {
+        super(formType.getNodeElement(), nodeId);
 
-		if (submitForm == null)
-			throw new IllegalArgumentException("Submit form cannot be null");
-		configForm = submitForm;
-	}
+        if (submitForm == null)
+            throw new IllegalArgumentException("Submit form cannot be null");
+        configForm = submitForm;
+    }
 
-	/**
-	 * Get the Form that is to be sent, or was retrieved from the server.
-	 * 
-	 * @return The form
-	 */
-	public Form getForm()
-	{
-		return configForm;
-	}
+    /**
+     * Get the Form that is to be sent, or was retrieved from the server.
+     * 
+     * @return The form
+     */
+    public Form getForm()
+    {
+        return configForm;
+    }
 
-	@Override
-	public CharSequence toXML()
-	{
-		if (configForm == null)
-		{
-			return super.toXML();
-		}
-		else
-		{
-			StringBuilder builder = new StringBuilder("<");
-			builder.append(getElementName());
+    @Override
+    public CharSequence toXML()
+    {
+        if (configForm == null)
+        {
+            return super.toXML();
+        }
+        else
+        {
+            StringBuilder builder = new StringBuilder("<");
+            builder.append(getElementName());
 
-			if (getNode() != null)
-			{
-				builder.append(" node='");
-				builder.append(getNode());
-				builder.append("'>");
-			}
-			else
-				builder.append('>');
-			builder.append(configForm.getDataFormToSend().toXML());
-			builder.append("</");
-			builder.append(getElementName() + '>');
-			return builder.toString();
-		}
-	}
+            if (getNode() != null)
+            {
+                builder.append(" node='");
+                builder.append(getNode());
+                builder.append("'>");
+            }
+            else
+                builder.append('>');
+            builder.append(configForm.getDataFormToSend().toXML());
+            builder.append("</");
+            builder.append(getElementName() + '>');
+            return builder.toString();
+        }
+    }
 
 }

@@ -158,6 +158,7 @@ public class MUCItem implements NamedElement {
         return role;
     }
 
+    @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.optAttribute("affiliation", getAffiliation());

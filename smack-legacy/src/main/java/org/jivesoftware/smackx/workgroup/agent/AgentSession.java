@@ -77,6 +77,7 @@ import org.jivesoftware.smackx.workgroup.settings.SearchSettings;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * This class embodies the agent's active presence within a given workgroup. The application
@@ -147,6 +148,7 @@ public class AgentSession {
                         new StanzaTypeFilter(Message.class));
 
         packetListener = new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 try {
                     handlePacket(packet);
@@ -609,6 +611,23 @@ public class AgentSession {
      * @return an instance of WorkgroupQueue for the argument queue name, or null if none exists
      */
     public WorkgroupQueue getQueue(String queueName) {
+        Resourcepart queueNameResourcepart;
+        try {
+            queueNameResourcepart = Resourcepart.from(queueName);
+        }
+        catch (XmppStringprepException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return getQueue(queueNameResourcepart);
+    }
+
+    /**
+     * Get queue.
+     *
+     * @param queueName the name of the queue
+     * @return an instance of WorkgroupQueue for the argument queue name, or null if none exists
+     */
+    public WorkgroupQueue getQueue(Resourcepart queueName) {
         return queues.get(queueName);
     }
 

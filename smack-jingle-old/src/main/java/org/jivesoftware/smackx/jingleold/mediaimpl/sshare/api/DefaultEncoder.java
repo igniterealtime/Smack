@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 public class DefaultEncoder implements ImageEncoder{
     private static final Logger LOGGER = Logger.getLogger(DefaultEncoder.class.getName());
 
+    @Override
     public ByteArrayOutputStream encode(BufferedImage bufferedImage) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {

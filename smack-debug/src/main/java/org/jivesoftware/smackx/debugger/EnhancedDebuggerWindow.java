@@ -203,13 +203,14 @@ public final class EnhancedDebuggerWindow {
      * a tab panel for each connection that is being debugged.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	private void createDebug() {
+    private void createDebug() {
 
         frame = new JFrame("Smack Debug Window");
 
         if (!PERSISTED_DEBUGGER) {
             // Add listener for window closing event
             frame.addWindowListener(new WindowAdapter() {
+                @Override
                 public void windowClosing(WindowEvent evt) {
                     rootWindowClosing(evt);
                 }
@@ -280,6 +281,7 @@ public final class EnhancedDebuggerWindow {
         // Add a menu item that allows to close the current selected tab
         JMenuItem menuItem = new JMenuItem("Close");
         menuItem.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 // Remove the selected tab pane if it's not the Smack info pane
                 if (tabbedPane.getSelectedIndex() < tabbedPane.getComponentCount() - 1) {
@@ -301,6 +303,7 @@ public final class EnhancedDebuggerWindow {
         // Add a menu item that allows to close all the tabs that have their connections closed
         menuItem = new JMenuItem("Close All Not Active");
         menuItem.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 ArrayList<EnhancedDebugger> debuggersToRemove = new ArrayList<EnhancedDebugger>();
                 // Remove all the debuggers of which their connections are no longer valid
@@ -348,7 +351,7 @@ public final class EnhancedDebuggerWindow {
             debugger.cancel();
         }
         // Release any reference to the debuggers
-        debuggers.removeAll(debuggers);
+        debuggers.clear();
         // Release the default instance
         instance = null;
     }
@@ -356,7 +359,7 @@ public final class EnhancedDebuggerWindow {
     /**
      * Listens for debug window popup dialog events.
      */
-    private class PopupListener extends MouseAdapter {
+    private static class PopupListener extends MouseAdapter {
 
         JPopupMenu popup;
 
@@ -364,10 +367,12 @@ public final class EnhancedDebuggerWindow {
             popup = popupMenu;
         }
 
+        @Override
         public void mousePressed(MouseEvent e) {
             maybeShowPopup(e);
         }
 
+        @Override
         public void mouseReleased(MouseEvent e) {
             maybeShowPopup(e);
         }

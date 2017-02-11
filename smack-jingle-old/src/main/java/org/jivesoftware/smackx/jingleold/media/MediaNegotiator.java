@@ -46,9 +46,9 @@ import org.jivesoftware.smackx.jingleold.packet.JingleError;
  */
 public class MediaNegotiator extends JingleNegotiator {
 
-	private static final Logger LOGGER = Logger.getLogger(MediaNegotiator.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MediaNegotiator.class.getName());
 
-	//private JingleSession session; // The session this negotiation
+    //private JingleSession session; // The session this negotiation
 
     private final JingleMediaManager mediaManager;
 
@@ -105,6 +105,7 @@ public class MediaNegotiator extends JingleNegotiator {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @Override
     public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, NotConnectedException, InterruptedException {
         List<IQ> responses = new ArrayList<IQ>();
         IQ response = null;
@@ -510,6 +511,7 @@ public class MediaNegotiator extends JingleNegotiator {
     /**
      *  Called from above when starting a new session.
      */
+    @Override
     protected void doStart() {
 
     }
@@ -517,6 +519,7 @@ public class MediaNegotiator extends JingleNegotiator {
     /**
      * Terminate the jmf negotiator.
      */
+    @Override
     public void close() {
         super.close();
         triggerMediaClosed(getBestCommonAudioPt());

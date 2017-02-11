@@ -40,6 +40,7 @@ public class AMPManager {
     // The ServiceDiscoveryManager class should have been already initialized
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 AMPManager.setServiceEnabled(connection, true);
             }

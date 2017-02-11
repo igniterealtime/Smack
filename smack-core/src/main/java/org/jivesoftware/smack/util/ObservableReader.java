@@ -37,6 +37,7 @@ public class ObservableReader extends Reader {
         this.wrappedReader = wrappedReader;
     }
 
+    @Override
     public int read(char[] cbuf, int off, int len) throws IOException {
         int count = wrappedReader.read(cbuf, off, len);
         if (count > 0) {
@@ -54,34 +55,42 @@ public class ObservableReader extends Reader {
         return count;
     }
 
+    @Override
     public void close() throws IOException {
         wrappedReader.close();
     }
 
+    @Override
     public int read() throws IOException {
         return wrappedReader.read();
     }
 
+    @Override
     public int read(char[] cbuf) throws IOException {
         return wrappedReader.read(cbuf);
     }
 
+    @Override
     public long skip(long n) throws IOException {
         return wrappedReader.skip(n);
     }
 
+    @Override
     public boolean ready() throws IOException {
         return wrappedReader.ready();
     }
 
+    @Override
     public boolean markSupported() {
         return wrappedReader.markSupported();
     }
 
+    @Override
     public void mark(int readAheadLimit) throws IOException {
         wrappedReader.mark(readAheadLimit);
     }
 
+    @Override
     public void reset() throws IOException {
         wrappedReader.reset();
     }

@@ -21,13 +21,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.UnsupportedEncodingException;
+
 import org.junit.Test;
 
 /**
  * A test case for the StringUtils class.
  */
 public class StringUtilsTest  {
-	@Test
+    @Test
     public void testEscapeForXml() {
         String input = null;
 
@@ -67,24 +69,24 @@ public class StringUtilsTest  {
         assertCharSequenceEquals("It&apos;s a good day today", StringUtils.escapeForXml(input));
     }
 
-	public static void assertCharSequenceEquals(CharSequence expected, CharSequence actual) {
+    public static void assertCharSequenceEquals(CharSequence expected, CharSequence actual) {
         assertEquals(expected.toString(), actual.toString());
-	}
+    }
 
-	@Test
-    public void testEncodeHex() {
+    @Test
+    public void testEncodeHex() throws UnsupportedEncodingException {
         String input = "";
         String output = "";
-        assertEquals(new String(StringUtils.encodeHex(input.getBytes())),
-                new String(output.getBytes()));
+        assertEquals(new String(StringUtils.encodeHex(input.getBytes(StringUtils.UTF8))),
+                output);
 
         input = "foo bar 123";
         output = "666f6f2062617220313233";
-        assertEquals(new String(StringUtils.encodeHex(input.getBytes())),
-                new String(output.getBytes()));
+        assertEquals(new String(StringUtils.encodeHex(input.getBytes(StringUtils.UTF8))),
+                output);
     }
 
-	@Test
+    @Test
     public void testRandomString() {
         // Boundary test
         String result = StringUtils.randomString(-1);

@@ -46,7 +46,7 @@ import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.filter.ToFilter;
+import org.jivesoftware.smack.filter.ToMatchesFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
@@ -163,6 +163,7 @@ public class MultiUserChat {
 
         // Create a listener for subject updates.
         subjectListener = new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 Message msg = (Message) packet;
                 EntityFullJid from = msg.getFrom().asEntityFullJidIfPossible();
@@ -181,6 +182,7 @@ public class MultiUserChat {
 
         // Create a listener for all presence updates.
         presenceListener = new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 Presence presence = (Presence) packet;
                 final EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
@@ -251,6 +253,7 @@ public class MultiUserChat {
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // rejection listeners if the message includes an invitation rejection.
         declinesListener = new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 Message message = (Message) packet;
                 // Get the MUC User extension
@@ -319,7 +322,7 @@ public class MultiUserChat {
         connection.addSyncStanzaListener(subjectListener, new AndFilter(fromRoomFilter,
                         MessageWithSubjectFilter.INSTANCE, new NotFilter(MessageTypeFilter.ERROR)));
         connection.addSyncStanzaListener(declinesListener, DECLINE_FILTER);
-        connection.addPacketInterceptor(presenceInterceptor, new AndFilter(new ToFilter(room),
+        connection.addPacketInterceptor(presenceInterceptor, new AndFilter(ToMatchesFilter.create(room),
                         StanzaTypeFilter.PRESENCE));
         messageCollector = connection.createStanzaCollector(fromRoomGroupchatFilter);
 
@@ -331,7 +334,7 @@ public class MultiUserChat {
         try {
             presence = connection.createStanzaCollectorAndSend(responseFilter, joinPresence).nextResultOrThrow(conf.getTimeout());
         }
-        catch (InterruptedException | NoResponseException | XMPPErrorException e) {
+        catch (NotConnectedException | InterruptedException | NoResponseException | XMPPErrorException e) {
             // Ensure that all callbacks are removed if there is an exception
             removeConnectionCallbacks();
             throw e;

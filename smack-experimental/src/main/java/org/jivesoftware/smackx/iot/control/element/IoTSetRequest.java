@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.iot.control.element;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -31,7 +32,21 @@ public class IoTSetRequest extends IQ {
     public IoTSetRequest(Collection<? extends SetData> setData) {
         super(ELEMENT, NAMESPACE);
         setType(Type.set);
-        this.setData = Collections.unmodifiableCollection(setData);
+
+        /*
+         * Ugly workaround for the following error prone false positive:
+         * 
+         * IoTSetRequest.java:34: error: incompatible types: Collection<CAP#1> cannot be converted to Collection<SetData>
+         * this.setData = Collections.unmodifiableCollection(setDataA);
+         *                                                  ^
+         * where CAP#1 is a fresh type-variable:
+         * CAP#1 extends SetData from capture of ? extends SetData
+         */
+        Collection<SetData> tmp = new ArrayList<>(setData.size());
+        for (SetData data : setData) {
+            tmp.add(data);
+        }
+        this.setData = Collections.unmodifiableCollection(tmp);
     }
 
     public Collection<SetData> getSetData() {

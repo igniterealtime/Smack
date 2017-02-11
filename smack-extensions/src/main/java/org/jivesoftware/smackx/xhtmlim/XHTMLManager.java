@@ -40,6 +40,7 @@ import java.util.List;
 public class XHTMLManager {
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 // Enable the XHTML support on every established connection
                 XHTMLManager.setServiceEnabled(connection, true);

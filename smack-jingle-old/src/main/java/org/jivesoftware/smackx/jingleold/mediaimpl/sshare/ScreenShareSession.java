@@ -50,9 +50,9 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
  */
 public class ScreenShareSession extends JingleMediaSession {
 
-	private static final Logger LOGGER = Logger.getLogger(ScreenShareSession.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ScreenShareSession.class.getName());
 
-	private ImageTransmitter transmitter = null;
+    private ImageTransmitter transmitter = null;
     private ImageReceiver receiver = null;
     private int width = 600;
     private int height = 600;
@@ -74,6 +74,7 @@ public class ScreenShareSession extends JingleMediaSession {
     /**
      * Initialize the screen share channels.
      */
+    @Override
     public void initialize() {
 
         JingleSession session = getJingleSession();
@@ -97,6 +98,7 @@ public class ScreenShareSession extends JingleMediaSession {
             window.setSize(600, 600);
 
             window.addWindowListener(new WindowAdapter() {
+                @Override
                 public void windowClosed(WindowEvent e) {
                     receiver.stop();
                 }
@@ -120,6 +122,7 @@ public class ScreenShareSession extends JingleMediaSession {
     /**
      * Starts transmission and for NAT Traversal reasons start receiving also.
      */
+    @Override
     public void startTrasmit() {
         new Thread(transmitter).start();
     }
@@ -130,6 +133,7 @@ public class ScreenShareSession extends JingleMediaSession {
      *
      * @param active active state
      */
+    @Override
     public void setTrasmit(boolean active) {
         transmitter.setTransmit(true);
     }
@@ -137,6 +141,7 @@ public class ScreenShareSession extends JingleMediaSession {
     /**
      * For NAT Reasons this method does nothing. Use startTransmit() to start transmit and receive jmf
      */
+    @Override
     public void startReceive() {
         // Do nothing
     }
@@ -144,6 +149,7 @@ public class ScreenShareSession extends JingleMediaSession {
     /**
      * Stops transmission and for NAT Traversal reasons stop receiving also.
      */
+    @Override
     public void stopTrasmit() {
         if (transmitter != null) {
             transmitter.stop();
@@ -153,6 +159,7 @@ public class ScreenShareSession extends JingleMediaSession {
     /**
      * For NAT Reasons this method does nothing. Use startTransmit() to start transmit and receive jmf
      */
+    @Override
     public void stopReceive() {
         if (receiver != null) {
             receiver.stop();

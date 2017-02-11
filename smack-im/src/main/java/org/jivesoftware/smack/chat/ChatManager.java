@@ -151,6 +151,7 @@ public final class ChatManager extends Manager{
         // Add a listener for all message packets so that we can deliver
         // messages to the best Chat instance available.
         connection.addSyncStanzaListener(new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 Message message = (Message) packet;
                 Chat chat;

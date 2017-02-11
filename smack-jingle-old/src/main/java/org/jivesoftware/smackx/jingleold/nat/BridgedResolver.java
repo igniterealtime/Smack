@@ -65,6 +65,7 @@ public class BridgedResolver extends TransportResolver {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @Override
     public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException, InterruptedException {
 
         setResolveInit();
@@ -102,6 +103,7 @@ public class BridgedResolver extends TransportResolver {
         setResolveEnd();
     }
 
+    @Override
     public void initialize() throws SmackException, XMPPErrorException, InterruptedException {
 
         clearCandidates();
@@ -114,6 +116,7 @@ public class BridgedResolver extends TransportResolver {
 
     }
 
+    @Override
     public void cancel() throws XMPPException {
         // Nothing to do here
     }

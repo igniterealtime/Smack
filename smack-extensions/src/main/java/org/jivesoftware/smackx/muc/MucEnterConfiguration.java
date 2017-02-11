@@ -95,15 +95,16 @@ public final class MucEnterConfiguration {
         /**
          * Set the presence used to join the MUC room.
          * <p>
-         * The 'to' value of the given presence will be overridden.
+         * The 'to' value of the given presence will be overridden and the given presence must be of type
+         * 'available', otherwise an {@link IllegalArgumentException} will be thrown.
          * <p>
          *
          * @param presence
          * @return a reference to this builder.
          */
         public Builder withPresence(Presence presence) {
-            if (presence.getType() == Presence.Type.available) {
-                throw new IllegalArgumentException();
+            if (presence.getType() != Presence.Type.available) {
+                throw new IllegalArgumentException("Presence must be of type 'available'");
             }
 
             joinPresence = presence;

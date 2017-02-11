@@ -32,10 +32,10 @@ import org.jivesoftware.smackx.pubsub.ItemsExtension;
 public class ItemsProvider extends EmbeddedExtensionProvider<ItemsExtension>
 {
 
-	@Override
-	protected ItemsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
-	{
+    @Override
+    protected ItemsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
+    {
         return new ItemsExtension(ItemsExtension.ItemsElementType.items, attributeMap.get("node"), content);
-	}
+    }
 
 }

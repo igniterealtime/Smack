@@ -28,10 +28,12 @@ class SLF4JRawXmlListener implements ReaderListener, WriterListener {
         this.logger = Validate.notNull(logger);
     }
 
+    @Override
     public void read(String str) {
         logger.debug("{}: {}", SLF4JSmackDebugger.RECEIVED_TAG, str);
     }
 
+    @Override
     public void write(String str) {
         logger.debug("{}: {}", SLF4JSmackDebugger.SENT_TAG, str);
     }

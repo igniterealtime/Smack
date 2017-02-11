@@ -66,6 +66,7 @@ public class DefaultPrivateData implements PrivateData {
      *
      * @return the XML element name of the stanza(/packet) extension.
      */
+    @Override
     public String getElementName() {
         return elementName;
     }
@@ -75,10 +76,12 @@ public class DefaultPrivateData implements PrivateData {
      *
      * @return the XML namespace of the stanza(/packet) extension.
      */
+    @Override
     public String getNamespace() {
         return namespace;
     }
 
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append('<').append(elementName).append(" xmlns=\"").append(namespace).append("\">");

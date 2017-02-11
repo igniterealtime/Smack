@@ -50,6 +50,7 @@ public class BasicResolver extends TransportResolver {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @Override
     public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException, InterruptedException {
 
         setResolveInit();
@@ -115,10 +116,12 @@ public class BasicResolver extends TransportResolver {
 
     }
 
+    @Override
     public void initialize() throws XMPPException {
         setInitialized();
     }
 
+    @Override
     public void cancel() throws XMPPException {
         // Nothing to do here
     }

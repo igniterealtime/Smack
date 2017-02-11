@@ -27,6 +27,7 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.listeners.CreatedJingleSessionListener;
 import org.jivesoftware.smackx.jingleold.listeners.JingleSessionListener;
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
+import org.jivesoftware.smackx.jingleold.nat.ICECandidate.Type;
 
 public class ICETransportManager extends JingleTransportManager implements JingleSessionListener, CreatedJingleSessionListener {
     private static final Logger LOGGER = Logger.getLogger(ICETransportManager.class.getName());
@@ -43,6 +44,7 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
         }
     }
 
+    @Override
     protected TransportResolver createResolver(JingleSession session) throws SmackException, InterruptedException {
         try {
             iceResolver.resolve(session);
@@ -55,32 +57,39 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
 
     // Implement a Session Listener to relay candidates after establishment
 
+    @Override
     public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) throws NotConnectedException, InterruptedException {
         if (lc instanceof ICECandidate) {
-            if (((ICECandidate) lc).getType().equals("relay")) {
+            if (((ICECandidate) lc).getType().equals(Type.relay)) {
                 RTPBridge rtpBridge = RTPBridge.relaySession(lc.getConnection(), lc.getSessionId(), lc.getPassword(), rc, lc);
             }
         }
     }
 
+    @Override
     public void sessionDeclined(String reason, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionRedirected(String redirection, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionClosed(String reason, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionMediaReceived(JingleSession jingleSession, String participant) {
         // Do Nothing
     }
 
     // Session Created
 
+    @Override
     public void sessionCreated(JingleSession jingleSession) {
         jingleSession.addListener(this);
     }

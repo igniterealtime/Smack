@@ -1494,6 +1494,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         final StanzaListener packetListener = new StanzaListener() {
             @Override
             public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
+                boolean removed = removeAsyncStanzaListener(this);
+                if (!removed) {
+                    // We lost a race against the "no response" handling runnable. Avoid calling the callback, as the
+                    // exception callback will be invoked (if any).
+                    return;
+                }
                 try {
                     XMPPErrorException.ifHasErrorThenThrow(packet);
                     callback.processStanza(packet);
@@ -1502,9 +1508,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     if (exceptionCallback != null) {
                         exceptionCallback.processException(e);
                     }
-                }
-                finally {
-                    removeAsyncStanzaListener(this);
                 }
             }
         };
@@ -1613,6 +1616,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     private long lastStanzaReceived;
 
+    @Override
     public long getLastStanzaReceived() {
         return lastStanzaReceived;
     }

@@ -49,98 +49,98 @@ import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
  */
 public class PayloadItem<E extends ExtensionElement> extends Item
 {
-	private E payload;
+    private E payload;
 
-	/**
-	 * Create an <tt>Item</tt> with no id and a payload  The id will be set by the server.  
-	 * 
-	 * @param payloadExt A {@link ExtensionElement} which represents the payload data.
-	 */
-	public PayloadItem(E payloadExt)
-	{
-		super();
+    /**
+     * Create an <tt>Item</tt> with no id and a payload  The id will be set by the server.  
+     * 
+     * @param payloadExt A {@link ExtensionElement} which represents the payload data.
+     */
+    public PayloadItem(E payloadExt)
+    {
+        super();
 
-		if (payloadExt == null)
-			throw new IllegalArgumentException("payload cannot be 'null'");
-		payload = payloadExt;
-	}
+        if (payloadExt == null)
+            throw new IllegalArgumentException("payload cannot be 'null'");
+        payload = payloadExt;
+    }
 
-	/**
-	 * Create an <tt>Item</tt> with an id and payload.  
-	 * 
-	 * @param itemId The id of this item.  It can be null if we want the server to set the id.
-	 * @param payloadExt A {@link ExtensionElement} which represents the payload data.
-	 */
-	public PayloadItem(String itemId, E payloadExt)
-	{
-		super(itemId);
+    /**
+     * Create an <tt>Item</tt> with an id and payload.  
+     * 
+     * @param itemId The id of this item.  It can be null if we want the server to set the id.
+     * @param payloadExt A {@link ExtensionElement} which represents the payload data.
+     */
+    public PayloadItem(String itemId, E payloadExt)
+    {
+        super(itemId);
 
-		if (payloadExt == null)
-			throw new IllegalArgumentException("payload cannot be 'null'");
-		payload = payloadExt;
-	}
+        if (payloadExt == null)
+            throw new IllegalArgumentException("payload cannot be 'null'");
+        payload = payloadExt;
+    }
 
-	/**
-	 * Create an <tt>Item</tt> with an id, node id and payload.  
-	 * 
-	 * <p>
-	 * <b>Note:</b> This is not valid for publishing an item to a node, only receiving from 
-	 * one as part of {@link Message}.  If used to create an Item to publish 
-	 * (via {@link LeafNode#publish(Item)}, the server <i>may</i> return an
-	 * error for an invalid packet.
-	 * </p>
-	 * 
-	 * @param itemId The id of this item.
-	 * @param nodeId The id of the node the item was published to.
-	 * @param payloadExt A {@link ExtensionElement} which represents the payload data.
-	 */
-	public PayloadItem(String itemId, String nodeId, E payloadExt)
-	{
-		super(itemId, nodeId);
+    /**
+     * Create an <tt>Item</tt> with an id, node id and payload.  
+     * 
+     * <p>
+     * <b>Note:</b> This is not valid for publishing an item to a node, only receiving from 
+     * one as part of {@link Message}.  If used to create an Item to publish 
+     * (via {@link LeafNode#publish(Item)}, the server <i>may</i> return an
+     * error for an invalid packet.
+     * </p>
+     * 
+     * @param itemId The id of this item.
+     * @param nodeId The id of the node the item was published to.
+     * @param payloadExt A {@link ExtensionElement} which represents the payload data.
+     */
+    public PayloadItem(String itemId, String nodeId, E payloadExt)
+    {
+        super(itemId, nodeId);
 
-		if (payloadExt == null)
-			throw new IllegalArgumentException("payload cannot be 'null'");
-		payload = payloadExt;
-	}
+        if (payloadExt == null)
+            throw new IllegalArgumentException("payload cannot be 'null'");
+        payload = payloadExt;
+    }
 
-	/**
-	 * Get the payload associated with this <tt>Item</tt>.  Customising the payload
-	 * parsing from the server can be accomplished as described in {@link ItemProvider}.
-	 * 
-	 * @return The payload as a {@link ExtensionElement}.
-	 */
-	public E getPayload()
-	{
-		return payload;
-	}
+    /**
+     * Get the payload associated with this <tt>Item</tt>.  Customising the payload
+     * parsing from the server can be accomplished as described in {@link ItemProvider}.
+     * 
+     * @return The payload as a {@link ExtensionElement}.
+     */
+    public E getPayload()
+    {
+        return payload;
+    }
 
-	@Override
-	public String toXML()
-	{
-		StringBuilder builder = new StringBuilder("<item");
+    @Override
+    public String toXML()
+    {
+        StringBuilder builder = new StringBuilder("<item");
 
-		if (getId() != null)
-		{
-			builder.append(" id='");
-			builder.append(getId());
-			builder.append('\'');
-		}
+        if (getId() != null)
+        {
+            builder.append(" id='");
+            builder.append(getId());
+            builder.append('\'');
+        }
 
         if (getNode() != null) {
             builder.append(" node='");
             builder.append(getNode());
             builder.append('\'');
         }
-		builder.append('>');
-		builder.append(payload.toXML());
-		builder.append("</item>");
+        builder.append('>');
+        builder.append(payload.toXML());
+        builder.append("</item>");
 
-		return builder.toString();
-	}
+        return builder.toString();
+    }
 
-	@Override
-	public String toString()
-	{
-		return getClass().getName() + " | Content [" + toXML() + "]";
-	}
+    @Override
+    public String toString()
+    {
+        return getClass().getName() + " | Content [" + toXML() + "]";
+    }
 }

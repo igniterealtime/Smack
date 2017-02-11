@@ -24,9 +24,9 @@ package org.jivesoftware.smackx.pubsub;
  */
 public enum ItemReply
 {
-	/** The node owner. */
-	owner,
+    /** The node owner. */
+    owner,
 
-	/** The item publisher. */
-	publisher;
+    /** The item publisher. */
+    publisher;
 }

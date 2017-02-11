@@ -72,10 +72,12 @@ public class MUCInitialPresence implements ExtensionElement {
         }
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }
@@ -282,6 +284,7 @@ public class MUCInitialPresence implements ExtensionElement {
             this.since = since;
         }
 
+        @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.optIntAttribute("maxchars", getMaxChars());

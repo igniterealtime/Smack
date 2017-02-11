@@ -26,44 +26,46 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  */
 public class SimplePayload implements ExtensionElement
 {
-	private final String elemName;
-	private final String ns;
-	private final CharSequence payload;
+    private final String elemName;
+    private final String ns;
+    private final CharSequence payload;
 
-	/**
-	 * Construct a <tt>SimplePayload</tt> object with the specified element name, 
-	 * namespace and content.  The content must be well formed XML.
-	 * 
-	 * @param elementName The root element name (of the payload)
-	 * @param namespace The namespace of the payload, null if there is none
-	 * @param xmlPayload The payload data
-	 */
-	public SimplePayload(String elementName, String namespace, CharSequence xmlPayload)
-	{
-		elemName = elementName;
-		payload = xmlPayload;
-		ns = namespace;
-	}
+    /**
+     * Construct a <tt>SimplePayload</tt> object with the specified element name, 
+     * namespace and content.  The content must be well formed XML.
+     * 
+     * @param elementName The root element name (of the payload)
+     * @param namespace The namespace of the payload, null if there is none
+     * @param xmlPayload The payload data
+     */
+    public SimplePayload(String elementName, String namespace, CharSequence xmlPayload)
+    {
+        elemName = elementName;
+        payload = xmlPayload;
+        ns = namespace;
+    }
 
-	public String getElementName()
-	{
-		return elemName;
-	}
+    @Override
+    public String getElementName()
+    {
+        return elemName;
+    }
 
-	public String getNamespace()
-	{
-		return ns;
-	}
+    @Override
+    public String getNamespace()
+    {
+        return ns;
+    }
 
-	@Override
-	public CharSequence toXML()
-	{
-		return payload;
-	}
+    @Override
+    public CharSequence toXML()
+    {
+        return payload;
+    }
 
-	@Override
-	public String toString()
-	{
-		return getClass().getName() + "payload [" + toXML() + "]";
-	}
+    @Override
+    public String toString()
+    {
+        return getClass().getName() + "payload [" + toXML() + "]";
+    }
 }

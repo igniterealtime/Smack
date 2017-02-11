@@ -91,6 +91,7 @@ public final class ServiceDiscoveryManager extends Manager {
     // Create a new ServiceDiscoveryManager on every established connection
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }

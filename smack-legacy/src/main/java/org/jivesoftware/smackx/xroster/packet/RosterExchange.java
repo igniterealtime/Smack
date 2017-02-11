@@ -78,13 +78,13 @@ public class RosterExchange implements ExtensionElement {
      * @param rosterEntry a roster entry to add.
      */
     public void addRosterEntry(RosterEntry rosterEntry) {
-		// Obtain a String[] from the roster entry groups name 
-		List<String> groupNamesList = new ArrayList<String>();
-		String[] groupNames;
-		for (RosterGroup group : rosterEntry.getGroups()) {
-			groupNamesList.add(group.getName());
-		}
-		groupNames = groupNamesList.toArray(new String[groupNamesList.size()]);
+        // Obtain a String[] from the roster entry groups name 
+        List<String> groupNamesList = new ArrayList<String>();
+        String[] groupNames;
+        for (RosterGroup group : rosterEntry.getGroups()) {
+            groupNamesList.add(group.getName());
+        }
+        groupNames = groupNamesList.toArray(new String[groupNamesList.size()]);
 
         // Create a new Entry based on the rosterEntry and add it to the packet
         RemoteRosterEntry remoteRosterEntry = new RemoteRosterEntry(rosterEntry.getJid(),
@@ -110,6 +110,7 @@ public class RosterExchange implements ExtensionElement {
     *
     * @return the XML element name of the stanza(/packet) extension.
     */
+    @Override
     public String getElementName() {
         return RosterExchangeManager.ELEMENT;
     }
@@ -121,6 +122,7 @@ public class RosterExchange implements ExtensionElement {
      *
      * @return the XML namespace of the stanza(/packet) extension.
      */
+    @Override
     public String getNamespace() {
         return RosterExchangeManager.NAMESPACE;
     }
@@ -163,6 +165,7 @@ public class RosterExchange implements ExtensionElement {
      * </pre>
      * 
      */
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append('<').append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(

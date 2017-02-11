@@ -24,12 +24,12 @@ package org.jivesoftware.smackx.pubsub;
  */
 public enum ChildrenAssociationPolicy
 {
-	/** Anyone may associate leaf nodes with the collection.	 */
-	all,
+    /** Anyone may associate leaf nodes with the collection.     */
+    all,
 
-	/** Only collection node owners may associate leaf nodes with the collection. */
-	owners,
+    /** Only collection node owners may associate leaf nodes with the collection. */
+    owners,
 
-	/** Only those on a whitelist may associate leaf nodes with the collection.	 */
-	whitelist;
+    /** Only those on a whitelist may associate leaf nodes with the collection.  */
+    whitelist;
 }

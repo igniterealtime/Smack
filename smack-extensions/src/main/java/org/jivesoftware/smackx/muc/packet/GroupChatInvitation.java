@@ -92,10 +92,12 @@ public class GroupChatInvitation implements ExtensionElement {
         return roomAddress;
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }

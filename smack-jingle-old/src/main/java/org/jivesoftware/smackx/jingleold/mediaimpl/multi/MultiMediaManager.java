@@ -58,6 +58,7 @@ public class MultiMediaManager extends JingleMediaManager {
      *
      * @return The Payload List
      */
+    @Override
     public List<PayloadType> getPayloads() {
         List<PayloadType> list = new ArrayList<PayloadType>();
         if (preferredPayloadType != null) list.add(preferredPayloadType);
@@ -78,6 +79,7 @@ public class MultiMediaManager extends JingleMediaManager {
      * @param local       local Candidate
      * @return JingleMediaSession JingleMediaSession
      */
+    @Override
     public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, final JingleSession jingleSession) {
         for (JingleMediaManager manager : managers) {
             if (manager.getPayloads().contains(payloadType)) {
@@ -87,6 +89,7 @@ public class MultiMediaManager extends JingleMediaManager {
         return null;
     }
 
+    @Override
     public PayloadType getPreferredPayloadType() {
         if (preferredPayloadType != null) return preferredPayloadType;
         return super.getPreferredPayloadType();
@@ -96,6 +99,7 @@ public class MultiMediaManager extends JingleMediaManager {
         this.preferredPayloadType = preferredPayloadType;
     }
 
+    @Override
     public  String getName() {
         return MEDIA_NAME;
     }

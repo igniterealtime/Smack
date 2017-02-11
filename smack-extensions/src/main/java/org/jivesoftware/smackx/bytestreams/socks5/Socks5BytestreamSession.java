@@ -64,14 +64,17 @@ public class Socks5BytestreamSession implements BytestreamSession {
         return !this.isDirect;
     }
 
+    @Override
     public InputStream getInputStream() throws IOException {
         return this.socket.getInputStream();
     }
 
+    @Override
     public OutputStream getOutputStream() throws IOException {
         return this.socket.getOutputStream();
     }
 
+    @Override
     public int getReadTimeout() throws IOException {
         try {
             return this.socket.getSoTimeout();
@@ -81,6 +84,7 @@ public class Socks5BytestreamSession implements BytestreamSession {
         }
     }
 
+    @Override
     public void setReadTimeout(int timeout) throws IOException {
         try {
             this.socket.setSoTimeout(timeout);
@@ -90,6 +94,7 @@ public class Socks5BytestreamSession implements BytestreamSession {
         }
     }
 
+    @Override
     public void close() throws IOException {
         this.socket.close();
     }

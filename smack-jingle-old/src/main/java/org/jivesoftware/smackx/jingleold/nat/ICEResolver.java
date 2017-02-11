@@ -45,7 +45,7 @@ import de.javawi.jstun.util.UtilityException;
  */
 public class ICEResolver extends TransportResolver {
 
-	private static final Logger LOGGER = Logger.getLogger(ICEResolver.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ICEResolver.class.getName());
 
     XMPPConnection connection;
     Random random = new Random();
@@ -63,6 +63,7 @@ public class ICEResolver extends TransportResolver {
         this.setType(Type.ice);
     }
 
+    @Override
     public void initialize() throws XMPPException {
         if (!isResolving() && !isResolved()) {
             LOGGER.fine("Initialized");
@@ -73,13 +74,13 @@ public class ICEResolver extends TransportResolver {
             // of the STUN server are much, much faster.
             if (negociatorsMap.get(server) == null) {
             // CHECKSTYLE:OFF
-            	ICENegociator iceNegociator = new ICENegociator(server, port, (short) 1);
-            	negociatorsMap.put(server, iceNegociator);
+                ICENegociator iceNegociator = new ICENegociator(server, port, (short) 1);
+                negociatorsMap.put(server, iceNegociator);
 
-            	// gather candidates
-            	iceNegociator.gatherCandidateAddresses();
-            	// priorize candidates
-            	iceNegociator.prioritizeCandidates();
+                // gather candidates
+                iceNegociator.gatherCandidateAddresses();
+                // priorize candidates
+                iceNegociator.prioritizeCandidates();
             // CHECKSTYLE:ON
             }
 
@@ -87,6 +88,7 @@ public class ICEResolver extends TransportResolver {
         this.setInitialized();
     }
 
+    @Override
     public void cancel() throws XMPPException {
 
     }
@@ -96,6 +98,7 @@ public class ICEResolver extends TransportResolver {
      * @throws SmackException 
      * @throws InterruptedException 
      */
+    @Override
     public synchronized void resolve(JingleSession session) throws XMPPException, SmackException, InterruptedException {
         this.setResolveInit();
 
@@ -125,21 +128,21 @@ public class ICEResolver extends TransportResolver {
 
                // JBW/GW - 17JUL08: Figure out the zero-based NIC number for this candidate.
                 short nicNum = 0;
-				try {
-					Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces();
-					short i = 0;
-					NetworkInterface nic = NetworkInterface.getByInetAddress(candidate.getAddress().getInetAddress());
-					while(nics.hasMoreElements()) {
-						NetworkInterface checkNIC = nics.nextElement();
-						if (checkNIC.equals(nic)) {
-							nicNum = i;
-							break;
-						}
-						i++;
-					}
-				} catch (SocketException e1) {
-					LOGGER.log(Level.WARNING, "exeption", e1);
-				}
+                try {
+                    Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces();
+                    short i = 0;
+                    NetworkInterface nic = NetworkInterface.getByInetAddress(candidate.getAddress().getInetAddress());
+                    while(nics.hasMoreElements()) {
+                        NetworkInterface checkNIC = nics.nextElement();
+                        if (checkNIC.equals(nic)) {
+                            nicNum = i;
+                            break;
+                        }
+                        i++;
+                    }
+                } catch (SocketException e1) {
+                    LOGGER.log(Level.WARNING, "exeption", e1);
+                }
 
                 TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress().getHostAddress(), 1, nicNum, String.valueOf(Math.abs(random.nextLong())), candidate.getPort(), "1", candidate.getPriority(), iceType);
                 transportCandidate.setLocalIp(candidate.getBase().getAddress().getInetAddress().getHostAddress());

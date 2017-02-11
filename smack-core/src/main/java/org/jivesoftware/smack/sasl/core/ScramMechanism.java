@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.sasl.core;
 
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.Collections;
@@ -105,7 +106,15 @@ public abstract class ScramMechanism extends SASLMechanism {
 
     @Override
     protected byte[] evaluateChallenge(byte[] challenge) throws SmackException {
-        final String challengeString = new String(challenge);
+        String challengeString;
+        try {
+            // TODO: Where is it specified that this is an UTF-8 encoded string?
+            challengeString = new String(challenge, StringUtils.UTF8);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
+
         switch (state) {
         case AUTH_TEXT_SENT:
             final String serverFirstMessage = challengeString;
@@ -358,14 +367,21 @@ public abstract class ScramMechanism extends SASLMechanism {
      * (PRF) and with dkLen == output length of HMAC() == output length of H().
      * </p>
      * 
-     * @param str
+     * @param normalizedPassword the normalized password.
      * @param salt
      * @param iterations
      * @return the result of the Hi function.
      * @throws SmackException 
      */
-    private byte[] hi(String str, byte[] salt, int iterations) throws SmackException {
-        byte[] key = str.getBytes();
+    private byte[] hi(String normalizedPassword, byte[] salt, int iterations) throws SmackException {
+        byte[] key;
+        try {
+            // According to RFC 5802 § 2.2, the resulting string of the normalization is also in UTF-8.
+            key = normalizedPassword.getBytes(StringUtils.UTF8);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new AssertionError();
+        }
         // U1 := HMAC(str, salt + INT(1))
         byte[] u = hmac(key, ByteUtils.concact(salt, ONE));
         byte[] res = u.clone();

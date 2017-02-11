@@ -40,9 +40,9 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
  */
 public class SpeexMediaManager extends JingleMediaManager {
 
-	private static final Logger LOGGER = Logger.getLogger(SpeexMediaManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SpeexMediaManager.class.getName());
 
-	public static final String MEDIA_NAME = "Speex";
+    public static final String MEDIA_NAME = "Speex";
 
     private List<PayloadType> payloads = new ArrayList<PayloadType>();
 
@@ -60,6 +60,7 @@ public class SpeexMediaManager extends JingleMediaManager {
      * @param local       local Candidate
      * @return JingleMediaSession
      */
+    @Override
     public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, final JingleSession jingleSession) {
         return new AudioMediaSession(payloadType, remote, local, null,null);
     }
@@ -76,6 +77,7 @@ public class SpeexMediaManager extends JingleMediaManager {
      *
      * @return The Payload List
      */
+    @Override
     public List<PayloadType> getPayloads() {
         return payloads;
     }
@@ -125,6 +127,7 @@ public class SpeexMediaManager extends JingleMediaManager {
         // @TODO Implement Linux Pre-Install
     }
 
+    @Override
     public String getName() {
         return MEDIA_NAME;
     }

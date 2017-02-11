@@ -39,6 +39,7 @@ public class NotFilter implements StanzaFilter {
         this.filter = Objects.requireNonNull(filter, "Parameter must not be null.");
     }
 
+    @Override
     public boolean accept(Stanza packet) {
         return !filter.accept(packet);
     }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez, Florian Schmaus
+ * Copyright 2016-2017 Fernando Ramirez, Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -82,6 +84,12 @@ public final class BlockingCommandManager extends Manager {
         return blockingCommandManager;
     }
 
+    private final Set<AllJidsUnblockedListener> allJidsUnblockedListeners = new CopyOnWriteArraySet<>();
+
+    private final Set<JidsBlockedListener> jidsBlockedListeners = new CopyOnWriteArraySet<>();
+
+    private final Set<JidsUnblockedListener> jidsUnblockedListeners = new CopyOnWriteArraySet<>();
+
     private BlockingCommandManager(XMPPConnection connection) {
         super(connection);
 
@@ -98,6 +106,10 @@ public final class BlockingCommandManager extends Manager {
 
                         List<Jid> blockedJids = blockContactIQ.getJids();
                         blockListCached.addAll(blockedJids);
+
+                        for (JidsBlockedListener listener : jidsBlockedListeners) {
+                            listener.onJidsBlocked(blockedJids);
+                        }
 
                         return IQ.createResultIQ(blockContactIQ);
                     }
@@ -117,8 +129,14 @@ public final class BlockingCommandManager extends Manager {
                 List<Jid> unblockedJids = unblockContactIQ.getJids();
                 if (unblockedJids == null) { // remove all
                     blockListCached.clear();
+                    for (AllJidsUnblockedListener listener : allJidsUnblockedListeners) {
+                        listener.onAllJidsUnblocked();
+                    }
                 } else { // remove only some
                     blockListCached.removeAll(unblockedJids);
+                    for (JidsUnblockedListener listener : jidsUnblockedListeners) {
+                        listener.onJidsUnblocked(unblockedJids);
+                    }
                 }
 
                 return IQ.createResultIQ(unblockContactIQ);
@@ -216,4 +234,27 @@ public final class BlockingCommandManager extends Manager {
         connection().createStanzaCollectorAndSend(unblockContactIQ).nextResultOrThrow();
     }
 
+    public void addJidsBlockedListener(JidsBlockedListener jidsBlockedListener) {
+        jidsBlockedListeners.add(jidsBlockedListener);
+    }
+
+    public void removeJidsBlockedListener(JidsBlockedListener jidsBlockedListener) {
+        jidsBlockedListeners.remove(jidsBlockedListener);
+    }
+
+    public void addJidsUnblockedListener(JidsUnblockedListener jidsUnblockedListener) {
+        jidsUnblockedListeners.add(jidsUnblockedListener);
+    }
+
+    public void removeJidsUnblockedListener(JidsUnblockedListener jidsUnblockedListener) {
+        jidsUnblockedListeners.remove(jidsUnblockedListener);
+    }
+
+    public void addAllJidsUnblockedListener(AllJidsUnblockedListener allJidsUnblockedListener) {
+        allJidsUnblockedListeners.add(allJidsUnblockedListener);
+    }
+
+    public void removeAllJidsUnblockedListener(AllJidsUnblockedListener allJidsUnblockedListener) {
+        allJidsUnblockedListeners.remove(allJidsUnblockedListener);
+    }
 }

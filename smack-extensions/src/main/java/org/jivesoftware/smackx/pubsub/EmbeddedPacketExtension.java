@@ -39,10 +39,10 @@ import org.jivesoftware.smack.util.PacketParserUtils;
  */
 public interface EmbeddedPacketExtension extends ExtensionElement
 {
-	/**
-	 * Get the list of embedded {@link ExtensionElement} objects.
-	 *  
-	 * @return List of embedded {@link ExtensionElement}
-	 */
-	List<ExtensionElement> getExtensions();
+    /**
+     * Get the list of embedded {@link ExtensionElement} objects.
+     *  
+     * @return List of embedded {@link ExtensionElement}
+     */
+    List<ExtensionElement> getExtensions();
 }

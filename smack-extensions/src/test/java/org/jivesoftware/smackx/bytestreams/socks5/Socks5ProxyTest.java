@@ -32,6 +32,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.util.StringUtils;
 import org.junit.After;
 import org.junit.Test;
 
@@ -272,7 +273,7 @@ public class Socks5ProxyTest {
         proxy.start();
 
         assertTrue(proxy.isRunning());
-        String digest = new String(new byte[] { (byte) 0xAA });
+        String digest = new String(new byte[] { (byte) 0xAA }, StringUtils.UTF8);
 
         // add digest to allow connection
         proxy.addTransfer(digest);

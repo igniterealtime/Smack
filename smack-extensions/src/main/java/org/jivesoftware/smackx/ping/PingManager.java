@@ -67,6 +67,7 @@ public final class PingManager extends Manager {
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }
@@ -402,6 +403,7 @@ public final class PingManager extends Manager {
     }
 
     private final Runnable pingServerRunnable = new Runnable() {
+        @Override
         public void run() {
             LOGGER.fine("ServerPingTask run()");
             pingServerIfNecessary();
