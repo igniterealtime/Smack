@@ -27,6 +27,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
@@ -132,14 +133,26 @@ public final class GeoLocationManager extends Manager {
 
         try {
             node = pubSubManager.getNode(GeoLocation.NAMESPACE);
-        } catch (XMPPErrorException notExistsException) {
-            // the node does not exist
-            try {
-                node = pubSubManager.createNode(GeoLocation.NAMESPACE);
-            } catch (XMPPErrorException alreadyCreatedException) {
-                // the node was already created
-                node = pubSubManager.getNode(GeoLocation.NAMESPACE);
+        } catch (XMPPErrorException exception) {
+
+            if (exception.getXMPPError().getCondition() == Condition.item_not_found) {
+                // the node does not exist
+                try {
+                    node = pubSubManager.createNode(GeoLocation.NAMESPACE);
+                } catch (XMPPErrorException exception2) {
+
+                    if (exception2.getXMPPError().getCondition() == Condition.conflict) {
+                        // the node was already created
+                        node = pubSubManager.getNode(GeoLocation.NAMESPACE);
+                    } else {
+                        throw exception2;
+                    }
+
+                }
+            } else {
+                throw exception;
             }
+
         }
 
         return node;
