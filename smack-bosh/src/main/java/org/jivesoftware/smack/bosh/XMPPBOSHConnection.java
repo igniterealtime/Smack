@@ -132,7 +132,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void connectInternal() throws SmackException {
+    protected void connectInternal() throws SmackException, XMPPException, IOException {
         done = false;
         try {
             // Ensure a clean starting state
@@ -197,6 +197,18 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
 
         callConnectionConnectedListener();
+
+        // Automatically makes the login if the user was previously connected successfully
+        // to the server and the connection was terminated abruptly
+
+        // in cases for reconnect:
+        // if do this asynchronously in BOSHConnectionListener saslFeatureReceived.check
+        // method doesn't pass
+        // and login flow becomes not clear and complicated.
+        if (wasAuthenticated) {
+            login();
+            notifyReconnection();
+        }
     }
 
     public boolean isSecureConnection() {
@@ -438,17 +450,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                             listener.connectionCreated(XMPPBOSHConnection.this);
                         }
                     }
-                    else {
-                            if (wasAuthenticated) {
-                                try {
-                                    login();
-                                }
-                                catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                            notifyReconnection();
-                    }
                 }
                 else {
                     if (connEvent.isError()) {
@@ -537,7 +538,12 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                                 }
                                 break;
                             case "error":
-                                throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
+                                //Some bosh error isn't stream error.
+                                if ("urn:ietf:params:xml:ns:xmpp-streams".equals(parser.getNamespace(null))) {
+                                    throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
+                                } else {
+                                    throw new XMPPException.XMPPErrorException(PacketParserUtils.parseError(parser));
+                                }
                             }
                             break;
                         }
