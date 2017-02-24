@@ -301,6 +301,8 @@ subprojects {
 		archives sourcesJar
 		archives javadocJar
 		archives testJar
+		// See http://stackoverflow.com/a/21946676/194894
+		testRuntime testJar
 	}
 
 	uploadArchives {
