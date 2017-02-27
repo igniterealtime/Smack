@@ -118,7 +118,7 @@ allprojects {
 		// Some systems may not have set their platform default
 		// converter to 'utf8', but we use unicode in our source
 		// files. Therefore ensure that javac uses unicode
-		options.encoding = "utf8"
+		options.encoding = 'UTF-8'
 		options.compilerArgs = [
 			'-Xlint:all',
 			// Set '-options' because a non-java7 javac will emit a
@@ -164,6 +164,7 @@ allprojects {
 	}
 	tasks.withType(Javadoc) {
 		options.charSet = "UTF-8"
+		options.encoding = 'UTF-8'
 	}
 
 	// Pin the errorprone version to prevent "unsupported major.minor
