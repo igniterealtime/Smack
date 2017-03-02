@@ -21,7 +21,7 @@ ChatManager chatManager = ChatManager.getInstanceFor(connection);
 chatManager.addListener(new IncomingChatMessageListener() {
   @Override
   void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
-    System.out.println("New message from " + from ": " + message.getBody());
+    System.out.println("New message from " + from + ": " + message.getBody());
   }
 });
 EntityBareJid jid = JidCreate.entityBareFrom("jsmith@jivesoftware.com");
@@ -34,14 +34,14 @@ The `Chat.sendMessage(String)` method is a convenience method that creates a
 Message object, sets the body using the String parameter, then sends the
 message. In the case that you wish to set additional values on a Message
 before sending it, use
-`Chat.sendMessage(Message)` method, as in the following code snippet:
+`Chat.send(Message)` method, as in the following code snippet:
 
 ```
 Message newMessage = new Message();
 newMessage.setBody("Howdy!");
 // Additional modifications to the message Stanza.
 JivePropertiesManager.addProperty(newMessage, "favoriteColor", "red");
-chat.sendMessage(newMessage);
+chat.send(newMessage);
 ```
 
 You'll also notice in the example above that we specified an IncomingChatMessageListener.
@@ -53,7 +53,7 @@ as a parrot-bot -- it echoes back everything the other user types.
 // Assume a IncomingChatMessageListener we've setup with a ChatManager
 public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
     // Send back the same text the other user sent us.
-    chat.sendMessage(message.getBody());
+    chat.send(message.getBody());
 }
 ```
 
