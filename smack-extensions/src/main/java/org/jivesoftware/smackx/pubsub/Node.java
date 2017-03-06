@@ -594,7 +594,7 @@ abstract public class Node
      * 
      * @author Robin Collier
      */
-    public class ItemEventTranslator implements StanzaListener
+    public static class ItemEventTranslator implements StanzaListener
     {
         @SuppressWarnings("rawtypes")
         private ItemEventListener listener;
@@ -623,7 +623,7 @@ abstract public class Node
      * 
      * @author Robin Collier
      */
-    public class ItemDeleteTranslator implements StanzaListener
+    public static class ItemDeleteTranslator implements StanzaListener
     {
         private ItemDeleteListener listener;
 

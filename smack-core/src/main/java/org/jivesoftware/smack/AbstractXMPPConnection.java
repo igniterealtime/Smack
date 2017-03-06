@@ -1481,6 +1481,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         getReplyTimeout());
     }
 
+    @SuppressWarnings("FutureReturnValueIgnored")
     @Override
     public void sendStanzaWithResponseCallback(Stanza stanza, final StanzaFilter replyFilter,
                     final StanzaListener callback, final ExceptionCallback exceptionCallback,
@@ -1553,6 +1554,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         sendStanzaWithResponseCallback(iqRequest, replyFilter, callback, exceptionCallback, timeout);
     }
 
+    @SuppressWarnings("FutureReturnValueIgnored")
     @Override
     public void addOneTimeSyncCallback(final StanzaListener callback, final StanzaFilter packetFilter) {
         final StanzaListener packetListener = new StanzaListener() {
