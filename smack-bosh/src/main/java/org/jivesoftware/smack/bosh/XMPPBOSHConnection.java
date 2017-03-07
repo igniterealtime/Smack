@@ -38,6 +38,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -529,7 +530,13 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                                 }
                                 break;
                             case "error":
-                                throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
+                                //Some bosh error isn't stream error.
+                                if ("urn:ietf:params:xml:ns:xmpp-streams".equals(parser.getNamespace(null))) {
+                                    throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
+                                } else {
+                                    XMPPError.Builder builder = PacketParserUtils.parseError(parser);
+                                    throw new XMPPException.XMPPErrorException(null, builder.build());
+                                }
                             }
                             break;
                         }
