@@ -32,9 +32,15 @@ public class FileTooLargeError implements ExtensionElement {
     public static final String NAMESPACE = SlotRequest.NAMESPACE;
 
     private final long maxFileSize;
+    private final String namespace;
 
     public FileTooLargeError(long maxFileSize) {
+        this(maxFileSize, NAMESPACE);
+    }
+
+    protected FileTooLargeError(long maxFileSize, String namespace) {
         this.maxFileSize = maxFileSize;
+        this.namespace = namespace;
     }
 
     public long getMaxFileSize() {
@@ -48,15 +54,15 @@ public class FileTooLargeError implements ExtensionElement {
 
     @Override
     public String getNamespace() {
-        return NAMESPACE;
+        return namespace;
     }
 
     @Override
-    public CharSequence toXML() {
+    public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         xml.element("max-file-size", String.valueOf(maxFileSize));
-        xml.closeElement(ELEMENT);
+        xml.closeElement(this);
         return xml;
     }
 

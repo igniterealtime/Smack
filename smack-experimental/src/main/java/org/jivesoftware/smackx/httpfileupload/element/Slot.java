@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.httpfileupload.element;
 import org.jivesoftware.smack.packet.IQ;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Slot responded by upload service.
@@ -33,12 +35,26 @@ public class Slot extends IQ {
 
     private final URL putUrl;
     private final URL getUrl;
+    private final Map<String, String> headers;
 
     public Slot(URL putUrl, URL getUrl) {
-        super(ELEMENT, NAMESPACE);
+        this(putUrl, getUrl, null);
+    }
+
+    public Slot(URL putUrl, URL getUrl, Map<String, String> headers) {
+        this(putUrl, getUrl, headers, NAMESPACE);
+    }
+
+    protected Slot(URL putUrl, URL getUrl, Map<String, String> headers, String namespace) {
+        super(ELEMENT, namespace);
         setType(Type.result);
         this.putUrl = putUrl;
         this.getUrl = getUrl;
+        if (headers == null) {
+            this.headers = Collections.emptyMap();
+        } else {
+            this.headers = Collections.unmodifiableMap(headers);
+        }
     }
 
     public URL getPutUrl() {
@@ -49,6 +65,9 @@ public class Slot extends IQ {
         return getUrl;
     }
 
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
@@ -56,6 +75,9 @@ public class Slot extends IQ {
 
         xml.element("put", putUrl.toString());
         xml.element("get", getUrl.toString());
+        for (Map.Entry<String, String> entry : getHeaders().entrySet()) {
+            xml.openElement("header").attribute(entry.getKey(), entry.getValue());
+        }
 
         return xml;
     }

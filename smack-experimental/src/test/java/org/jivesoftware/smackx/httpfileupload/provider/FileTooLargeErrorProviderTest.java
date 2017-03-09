@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.httpfileupload;
+package org.jivesoftware.smackx.httpfileupload.provider;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -33,14 +33,14 @@ public class FileTooLargeErrorProviderTest {
             +       "id='step_03' "
             +       "to='romeo@montague.tld/garden' "
             +       "type='error'>"
-            +   "<request xmlns='urn:xmpp:http:upload'>"
+            +   "<request xmlns='urn:xmpp:http:upload:0'>"
             +       "<filename>my_juliet.png</filename>"
             +       "<size>23456</size>"
             +   "</request>"
             +   "<error type='modify'>"
             +       "<not-acceptable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas' />"
             +       "<text xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'>File too large. The maximum file size is 20000 bytes</text>"
-            +       "<file-too-large xmlns='urn:xmpp:http:upload'>"
+            +       "<file-too-large xmlns='urn:xmpp:http:upload:0'>"
             +           "<max-file-size>20000</max-file-size>"
             +       "</file-too-large>"
             +   "</error>"

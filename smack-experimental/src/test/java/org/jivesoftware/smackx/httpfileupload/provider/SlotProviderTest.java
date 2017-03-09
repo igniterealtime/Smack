@@ -14,15 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.httpfileupload;
+package org.jivesoftware.smackx.httpfileupload.provider;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
-import org.jivesoftware.smackx.httpfileupload.provider.SlotProvider;
 import org.junit.Assert;
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
 
 import java.net.URL;
 
@@ -38,7 +36,7 @@ public class SlotProviderTest {
             +       "id='step_03' "
             +       "to='romeo@montague.tld/garden' "
             +       "type='result'>"
-            +   "<slot xmlns='urn:xmpp:http:upload'>"
+            +   "<slot xmlns='urn:xmpp:http:upload:0'>"
             +       "<put>https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png</put>"
             +       "<get>https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png</get>"
             +   "</slot>"
@@ -46,8 +44,7 @@ public class SlotProviderTest {
 
     @Test
     public void checkSlotProvider() throws Exception {
-        XmlPullParser parser = PacketParserUtils.getParserFor(slotExample);
-        Slot slot = new SlotProvider().parse(parser);
+        Slot slot = PacketParserUtils.parseStanza(slotExample);
 
         Assert.assertEquals(IQ.Type.result, slot.getType());
         Assert.assertEquals(new URL("https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png"),

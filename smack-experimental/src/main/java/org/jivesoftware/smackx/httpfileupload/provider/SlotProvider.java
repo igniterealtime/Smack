@@ -18,12 +18,16 @@ package org.jivesoftware.smackx.httpfileupload.provider;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
+import org.jivesoftware.smackx.httpfileupload.element.Slot_V0_2;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Provider for Slot.
@@ -35,8 +39,10 @@ public class SlotProvider extends IQProvider<Slot> {
 
     @Override
     public Slot parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
+        final String namespace = parser.getNamespace();
         URL putUrl = null;
         URL getUrl = null;
+        Map<String, String> headers = null;
 
         outerloop: while (true) {
             int event = parser.next();
@@ -51,6 +57,14 @@ public class SlotProvider extends IQProvider<Slot> {
                         case "get":
                             getUrl = new URL(parser.nextText());
                             break;
+                        case "header":
+                            String headerName = ParserUtils.getRequiredAttribute(parser, "name");
+                            String headerValue = ParserUtils.getRequiredNextText(parser);
+                            if (headers == null) {
+                                headers = new HashMap<>();
+                            }
+                            headers.put(headerName, headerValue);
+                            break;
                     }
                     break;
                 case XmlPullParser.END_TAG:
@@ -61,6 +75,13 @@ public class SlotProvider extends IQProvider<Slot> {
             }
         }
 
-        return new Slot(putUrl, getUrl);
+        switch (namespace) {
+        case Slot.NAMESPACE:
+            return new Slot(putUrl, getUrl, headers);
+        case Slot_V0_2.NAMESPACE:
+            return new Slot_V0_2(putUrl, getUrl);
+        default:
+            throw new AssertionError();
+        }
     }
 }

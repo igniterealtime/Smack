@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.httpfileupload.provider;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError;
+import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError_V0_2;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -30,6 +31,7 @@ public class FileTooLargeErrorProvider extends ExtensionElementProvider<FileTooL
 
     @Override
     public FileTooLargeError parse(XmlPullParser parser, int initialDepth) throws Exception {
+        final String namespace = parser.getNamespace();
         Long maxFileSize = null;
 
         outerloop: while(true) {
@@ -52,6 +54,13 @@ public class FileTooLargeErrorProvider extends ExtensionElementProvider<FileTooL
             }
         }
 
-        return new FileTooLargeError(maxFileSize);
+        switch (namespace) {
+        case FileTooLargeError.NAMESPACE:
+            return new FileTooLargeError(maxFileSize);
+        case FileTooLargeError_V0_2.NAMESPACE:
+            return new FileTooLargeError_V0_2(maxFileSize);
+        default:
+            throw new AssertionError();
+        }
     }
 }

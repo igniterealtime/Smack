@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class FileTooLargeErrorCreateTest {
     String fileTooLargeErrorExtensionExample
-            = "<file-too-large xmlns='urn:xmpp:http:upload'>"
+            = "<file-too-large xmlns='urn:xmpp:http:upload:0'>"
             +   "<max-file-size>20000</max-file-size>"
             + "</file-too-large>";
 

@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.httpfileupload;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
@@ -25,8 +26,10 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.httpfileupload.UploadService.Version;
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
 import org.jivesoftware.smackx.httpfileupload.element.SlotRequest;
+import org.jivesoftware.smackx.httpfileupload.element.SlotRequest_V0_2;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jxmpp.jid.DomainBareJid;
@@ -34,24 +37,33 @@ import org.jxmpp.jid.DomainBareJid;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+
 /**
- * HTTP File Upload manager class.
- * XEP version 0.2.5
+ * A manager for XEP-0363: HTTP File Upload.
  *
  * @author Grigory Fedorov
+ * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
  */
 public final class HttpFileUploadManager extends Manager {
+
+    public static final String NAMESPACE = "urn:xmpp:http:upload:0";
+    public static final String NAMESPACE_0_2 = "urn:xmpp:http:upload";
 
     private static final Logger LOGGER = Logger.getLogger(HttpFileUploadManager.class.getName());
 
@@ -65,8 +77,10 @@ public final class HttpFileUploadManager extends Manager {
     }
 
     private static final Map<XMPPConnection, HttpFileUploadManager> INSTANCES = new WeakHashMap<>();
-    private DomainBareJid defaultUploadService;
-    private Long maxFileSize;
+
+    private UploadService defaultUploadService;
+
+    private SSLSocketFactory tlsSocketFactory;
 
     /**
      * Obtain the HttpFileUploadManager responsible for a connection.
@@ -106,6 +120,40 @@ public final class HttpFileUploadManager extends Manager {
         });
     }
 
+    private static UploadService uploadServiceFrom(DiscoverInfo discoverInfo) {
+        assert(containsHttpFileUploadNamespace(discoverInfo));
+
+        UploadService.Version version;
+        if (discoverInfo.containsFeature(NAMESPACE)) {
+            version = Version.v0_3;
+        } else if (discoverInfo.containsFeature(NAMESPACE_0_2)) {
+            version = Version.v0_2;
+        } else {
+            throw new AssertionError();
+        }
+
+        DomainBareJid address = discoverInfo.getFrom().asDomainBareJid();
+
+        DataForm dataForm = DataForm.from(discoverInfo);
+        if (dataForm == null) {
+            return new UploadService(address, version);
+        }
+
+        FormField field = dataForm.getField("max-file-size");
+        if (field == null) {
+            return new UploadService(address, version);
+        }
+
+        List<String> values = field.getValues();
+        if (values.isEmpty()) {
+            return new UploadService(address, version);
+
+        }
+
+        Long maxFileSize = Long.valueOf(values.get(0));
+        return new UploadService(address, version, maxFileSize);
+    }
+
     /**
      * Discover upload service.
      *
@@ -122,39 +170,20 @@ public final class HttpFileUploadManager extends Manager {
      */
     public boolean discoverUploadService() throws XMPPException.XMPPErrorException, SmackException.NotConnectedException,
             InterruptedException, SmackException.NoResponseException {
-        defaultUploadService = null;
-        maxFileSize = null;
-
-        List<DiscoverInfo> servicesDiscoverInfo = ServiceDiscoveryManager.getInstanceFor(connection())
-                .findServicesDiscoverInfo(SlotRequest.NAMESPACE, true, false);
+        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
+        List<DiscoverInfo> servicesDiscoverInfo = sdm
+                .findServicesDiscoverInfo(NAMESPACE, true, true);
 
         if (servicesDiscoverInfo.isEmpty()) {
-            return false;
+            servicesDiscoverInfo = sdm.findServicesDiscoverInfo(NAMESPACE_0_2, true, true);
+            if (servicesDiscoverInfo.isEmpty()) {
+                return false;
+            }
         }
 
         DiscoverInfo discoverInfo = servicesDiscoverInfo.get(0);
 
-        defaultUploadService = discoverInfo.getFrom().asDomainBareJid();
-
-        if (defaultUploadService == null) {
-            return false;
-        }
-
-        DataForm dataForm = DataForm.from(discoverInfo);
-        if (dataForm == null) {
-            return true;
-        }
-
-        FormField field = dataForm.getField("max-file-size");
-        if (field == null) {
-            return true;
-        }
-
-        List<String> values = field.getValues();
-        if (!values.isEmpty()) {
-            maxFileSize = Long.valueOf(values.get(0));
-        }
-
+        defaultUploadService = uploadServiceFrom(discoverInfo);
         return true;
     }
 
@@ -172,17 +201,8 @@ public final class HttpFileUploadManager extends Manager {
      *
      * @return upload service JID or null if not available
      */
-    public DomainBareJid getDefaultUploadService() {
+    public UploadService getDefaultUploadService() {
         return defaultUploadService;
-    }
-
-    /**
-     * Get max file size allowed by upload service.
-     *
-     * @return max file size in bytes or null if not available
-     */
-    public Long getMaxFileSize() {
-        return maxFileSize;
     }
 
     /**
@@ -204,19 +224,6 @@ public final class HttpFileUploadManager extends Manager {
     }
 
     /**
-     * Callback interface to get upload progress.
-     */
-    public interface UploadProgressListener {
-        /**
-         * Callback for displaying upload progress.
-         *
-         * @param uploadedBytes - number of bytes uploaded at the moment
-         * @param totalBytes - total number of bytes to be uploaded
-         */
-        void onUploadProgress(long uploadedBytes, long totalBytes);
-    }
-
-    /**
      * Request slot and uploaded file to HTTP file upload service with progress callback.
      *
      * You don't need to request slot and upload file separately, this method will do both.
@@ -233,27 +240,26 @@ public final class HttpFileUploadManager extends Manager {
      */
     public URL uploadFile(File file, UploadProgressListener listener) throws InterruptedException,
             XMPPException.XMPPErrorException, SmackException, IOException {
+        if (!file.isFile()) {
+            throw new FileNotFoundException("The path " + file.getAbsolutePath() + " is not a file");
+        }
         final Slot slot = requestSlot(file.getName(), file.length(), "application/octet-stream");
 
-        uploadFile(file, slot.getPutUrl(), listener);
+        uploadFile(file, slot, listener);
 
         return slot.getGetUrl();
     }
 
 
     /**
-     * Request a new upload slot from default upload service (if discovered).
-     *
-     * When you get slot you should upload file to PUT URL and share GET URL.
-     * Note that this is a synchronous call -- Smack must wait for the server response.
+     * Request a new upload slot from default upload service (if discovered). When you get slot you should upload file
+     * to PUT URL and share GET URL. Note that this is a synchronous call -- Smack must wait for the server response.
      *
      * @param filename name of file to be uploaded
-     * @param fileSize file size in bytes -- must be less or equal
-     *                 to {@link HttpFileUploadManager#getMaxFileSize()} (if available)
+     * @param fileSize file size in bytes.
      * @return file upload Slot in case of success
-
-     * @throws IllegalArgumentException if fileSize is less than or equal to zero
-     *                                  or greater than {@link HttpFileUploadManager#getMaxFileSize()}
+     * @throws IllegalArgumentException if fileSize is less than or equal to zero or greater than the maximum size
+     *         supported by the service.
      * @throws InterruptedException
      * @throws XMPPException.XMPPErrorException
      * @throws SmackException.NotConnectedException
@@ -271,13 +277,12 @@ public final class HttpFileUploadManager extends Manager {
      * Note that this is a synchronous call -- Smack must wait for the server response.
      *
      * @param filename name of file to be uploaded
-     * @param fileSize file size in bytes -- must be less or equal
-     *                 to {@link HttpFileUploadManager#getMaxFileSize()} (if available)
+     * @param fileSize file size in bytes.
      * @param contentType file content-type or null
      * @return file upload Slot in case of success
 
-     * @throws IllegalArgumentException if fileSize is less than or equal to zero
-     *                                  or greater than {@link HttpFileUploadManager#getMaxFileSize()}
+     * @throws IllegalArgumentException if fileSize is less than or equal to zero or greater than the maximum size
+     *         supported by the service.
      * @throws SmackException.NotConnectedException
      * @throws InterruptedException
      * @throws XMPPException.XMPPErrorException
@@ -295,81 +300,164 @@ public final class HttpFileUploadManager extends Manager {
      * Note that this is a synchronous call -- Smack must wait for the server response.
      *
      * @param filename name of file to be uploaded
-     * @param fileSize file size in bytes -- must be less or equal
-     *                 to {@link HttpFileUploadManager#getMaxFileSize()} (if available)
+     * @param fileSize file size in bytes.
      * @param contentType file content-type or null
-     * @param uploadService upload service to use or null for default one
+     * @param uploadServiceAddress the address of the upload service to use or null for default one
      * @return file upload Slot in case of success
-     * @throws IllegalArgumentException if fileSize is less than or equal to zero
-     *                                  or greater than {@link HttpFileUploadManager#getMaxFileSize()}
+     * @throws IllegalArgumentException if fileSize is less than or equal to zero or greater than the maximum size
+     *         supported by the service.
      * @throws SmackException
      * @throws InterruptedException
      * @throws XMPPException.XMPPErrorException
      */
-    public Slot requestSlot(String filename, long fileSize, String contentType, DomainBareJid uploadService)
+    public Slot requestSlot(String filename, long fileSize, String contentType, DomainBareJid uploadServiceAddress)
             throws SmackException, InterruptedException, XMPPException.XMPPErrorException {
-        if (defaultUploadService == null && uploadService == null) {
-            throw new SmackException("No upload service specified or discovered.");
-        }
+        final XMPPConnection connection = connection();
+        final UploadService defaultUploadService = this.defaultUploadService;
 
-        if (uploadService == null && maxFileSize != null) {
-            if (fileSize > maxFileSize) {
-                throw new IllegalArgumentException("Requested file size " + fileSize
-                        + " is greater than max allowed size " + maxFileSize);
+        // The upload service we are going to use.
+        UploadService uploadService;
+
+        if (uploadServiceAddress == null) {
+            uploadService = defaultUploadService;
+        } else {
+            if (defaultUploadService != null && defaultUploadService.getAddress().equals(uploadServiceAddress)) {
+                // Avoid performing a service discovery if we already know about the given service.
+                uploadService = defaultUploadService;
+            } else {
+                DiscoverInfo discoverInfo = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(uploadServiceAddress);
+                if (!containsHttpFileUploadNamespace(discoverInfo)) {
+                    throw new IllegalArgumentException("There is no HTTP upload service running at the given address '"
+                                    + uploadServiceAddress + '\'');
+                }
+                uploadService = uploadServiceFrom(discoverInfo);
             }
         }
 
-        SlotRequest slotRequest = new SlotRequest(filename, fileSize, contentType);
-        if (uploadService != null) {
-            slotRequest.setTo(uploadService);
-        } else {
-            slotRequest.setTo(defaultUploadService);
+        if (uploadService == null) {
+            throw new SmackException("No upload service specified and also none discovered.");
         }
 
-        return connection().createStanzaCollectorAndSend(slotRequest).nextResultOrThrow();
+        if (!uploadService.acceptsFileOfSize(fileSize)) {
+            throw new IllegalArgumentException(
+                            "Requested file size " + fileSize + " is greater than max allowed size " + uploadService.getMaxFileSize());
+        }
+
+        SlotRequest slotRequest;
+        switch (uploadService.getVersion()) {
+        case v0_3:
+            slotRequest = new SlotRequest(uploadService.getAddress(), filename, fileSize, contentType);
+            break;
+        case v0_2:
+            slotRequest = new SlotRequest_V0_2(uploadService.getAddress(), filename, fileSize, contentType);
+            break;
+        default:
+            throw new AssertionError();
+        }
+
+        return connection.createStanzaCollectorAndSend(slotRequest).nextResultOrThrow();
     }
 
-    private void uploadFile(File file, URL putUrl, UploadProgressListener listener) throws IOException {
+    public void setTlsContext(SSLContext tlsContext) {
+        if (tlsContext == null) {
+            return;
+        }
+        this.tlsSocketFactory = tlsContext.getSocketFactory();
+    }
+
+    public void useTlsSettingsFrom(ConnectionConfiguration connectionConfiguration) {
+        SSLContext sslContext = connectionConfiguration.getCustomSSLContext();
+        setTlsContext(sslContext);
+    }
+
+    private void uploadFile(final File file, final Slot slot, UploadProgressListener listener) throws IOException {
+        final long fileSize = file.length();
+        // TODO Remove once Smack's minimum Android API level is 19 or higher. See also comment below.
+        if (fileSize >= Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("File size " + fileSize + " must be less than " + Integer.MAX_VALUE);
+        }
+        final int fileSizeInt = (int) fileSize;
+
+        // Construct the FileInputStream first to make sure we can actually read the file.
+        final FileInputStream fis = new FileInputStream(file);
+
+        final URL putUrl = slot.getPutUrl();
+
         final HttpURLConnection urlConnection = (HttpURLConnection) putUrl.openConnection();
+
         urlConnection.setRequestMethod("PUT");
         urlConnection.setUseCaches(false);
         urlConnection.setDoOutput(true);
+        // TODO Change to using fileSize once Smack's minimum Android API level is 19 or higher.
+        urlConnection.setFixedLengthStreamingMode(fileSizeInt);
         urlConnection.setRequestProperty("Content-Type", "application/octet-stream;");
-        OutputStream outputStream = urlConnection.getOutputStream();
-
-        long bytesSend = 0;
-
-        long fileSize = file.length();
-        if (listener != null) {
-            listener.onUploadProgress(0, fileSize);
+        for (Entry<String, String> header : slot.getHeaders().entrySet()) {
+            urlConnection.setRequestProperty(header.getKey(), header.getValue());
         }
 
-        BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+        final SSLSocketFactory tlsSocketFactory = this.tlsSocketFactory;
+        if (tlsSocketFactory != null && urlConnection instanceof HttpsURLConnection) {
+            HttpsURLConnection httpsUrlConnection = (HttpsURLConnection) urlConnection;
+            httpsUrlConnection.setSSLSocketFactory(tlsSocketFactory);
+        }
 
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
-            outputStream.flush();
-            bytesSend += bytesRead;
+        try {
+            OutputStream outputStream = urlConnection.getOutputStream();
+
+            long bytesSend = 0;
 
             if (listener != null) {
-                listener.onUploadProgress(bytesSend, fileSize);
+                listener.onUploadProgress(0, fileSize);
             }
 
+            BufferedInputStream inputStream = new BufferedInputStream(fis);
+
+            // TODO Factor in extra static method (and re-use e.g. in bytestream code).
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            try {
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                    bytesSend += bytesRead;
+
+                    if (listener != null) {
+                        listener.onUploadProgress(bytesSend, fileSize);
+                    }
+                }
+            }
+            finally {
+                try {
+                    inputStream.close();
+                }
+                catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Exception while closing input stream", e);
+                }
+                try {
+                    outputStream.close();
+                }
+                catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Exception while closing output stream", e);
+                }
+            }
+
+            int status = urlConnection.getResponseCode();
+            switch (status) {
+            case HttpURLConnection.HTTP_OK:
+            case HttpURLConnection.HTTP_CREATED:
+            case HttpURLConnection.HTTP_NO_CONTENT:
+                break;
+            default:
+                throw new IOException("Error response " + status + " from server during file upload: "
+                                + urlConnection.getResponseMessage() + ", file size: " + fileSize + ", put URL: "
+                                + putUrl);
+            }
         }
-
-        inputStream.close();
-        outputStream.close();
-
-        int status = urlConnection.getResponseCode();
-        if (status != HttpURLConnection.HTTP_CREATED) {
-            throw new IOException("Error response from server during file upload:"
-                    + " " + urlConnection.getResponseCode()
-                    + " " + urlConnection.getResponseMessage()
-                    + ", file size: " + fileSize
-                    + ", put URL: " + putUrl);
+        finally {
+            urlConnection.disconnect();
         }
     }
 
+    private static boolean containsHttpFileUploadNamespace(DiscoverInfo discoverInfo) {
+        return discoverInfo.containsFeature(NAMESPACE) || discoverInfo.containsFeature(NAMESPACE_0_2);
+    }
 }

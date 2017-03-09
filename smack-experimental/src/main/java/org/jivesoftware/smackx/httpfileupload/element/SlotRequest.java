@@ -17,6 +17,8 @@
 package org.jivesoftware.smackx.httpfileupload.element;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
+import org.jxmpp.jid.DomainBareJid;
 
 /**
  * Upload slot request.
@@ -26,23 +28,31 @@ import org.jivesoftware.smack.packet.IQ;
  */
 public class SlotRequest extends IQ {
     public static final String ELEMENT = "request";
-    public static final String NAMESPACE = "urn:xmpp:http:upload";
+    public static final String NAMESPACE = HttpFileUploadManager.NAMESPACE;
 
     private final String filename;
     private final long size;
     private final String contentType;
 
+    public SlotRequest(DomainBareJid uploadServiceAddress, String filename, long size) {
+        this(uploadServiceAddress, filename, size, null);
+    }
 
     /**
      * Create new slot request.
      *
-     * @throws IllegalArgumentException if size is less than or equal to zero
+     * @param uploadServiceAddress the XMPP address of the service to request the slot from.
      * @param filename name of file
      * @param size size of file in bytes
      * @param contentType file content type or null
+     * @throws IllegalArgumentException if size is less than or equal to zero
      */
-    public SlotRequest(String filename, long size, String contentType) {
-        super(ELEMENT, NAMESPACE);
+    public SlotRequest(DomainBareJid uploadServiceAddress, String filename, long size, String contentType) {
+        this(uploadServiceAddress, filename, size, contentType, NAMESPACE);
+    }
+
+    protected SlotRequest(DomainBareJid uploadServiceAddress, String filename, long size, String contentType, String namespace) {
+        super(ELEMENT, namespace);
 
         if (size <= 0) {
             throw new IllegalArgumentException("File fileSize must be greater than zero.");
@@ -53,10 +63,7 @@ public class SlotRequest extends IQ {
         this.contentType = contentType;
 
         setType(Type.get);
-    }
-
-    public SlotRequest(String filename, long size) {
-        this(filename, size, null);
+        setTo(uploadServiceAddress);
     }
 
     public String getFilename() {
@@ -76,9 +83,7 @@ public class SlotRequest extends IQ {
         xml.rightAngleBracket();
         xml.element("filename", filename);
         xml.element("size", String.valueOf(size));
-        if (contentType != null) {
-            xml.element("content-type", contentType);
-        }
+        xml.optElement("content-type", contentType);
         return xml;
     }
 }
