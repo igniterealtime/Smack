@@ -10,7 +10,6 @@ cache:
   - $HOME/.m2
 
 before_install:
-  - export JAVA_OPTS="-XX:MaxPermSize=512M"
   - export GRADLE_VERSION=2.12
   - wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip
   - unzip -q gradle-${GRADLE_VERSION}-all.zip
