@@ -411,9 +411,12 @@ public final class MamManager extends Manager {
 
     /**
      * Obtain page before the first message saved (specific chat).
+     * <p>
+     * Note that the messageUid is the XEP-0313 UID and <b>not</> the stanza ID of the message.
+     * </p>
      *
      * @param chatJid
-     * @param firstMessageId
+     * @param messageUid the UID of the message of which messages before should be received.
      * @param max
      * @return the MAM query result
      * @throws XMPPErrorException
@@ -422,9 +425,9 @@ public final class MamManager extends Manager {
      * @throws InterruptedException
      * @throws NoResponseException
      */
-    public MamQueryResult pageBefore(Jid chatJid, String firstMessageId, int max) throws XMPPErrorException,
+    public MamQueryResult pageBefore(Jid chatJid, String messageUid, int max) throws XMPPErrorException,
             NotLoggedInException, NotConnectedException, InterruptedException, NoResponseException {
-        RSMSet rsmSet = new RSMSet(null, firstMessageId, -1, -1, null, max, null, -1);
+        RSMSet rsmSet = new RSMSet(null, messageUid, -1, -1, null, max, null, -1);
         DataForm dataForm = getNewMamForm();
         addWithJid(chatJid, dataForm);
         return page(null, dataForm, rsmSet);
@@ -432,9 +435,12 @@ public final class MamManager extends Manager {
 
     /**
      * Obtain page after the last message saved (specific chat).
+     * <p>
+     * Note that the messageUid is the XEP-0313 UID and <b>not</> the stanza ID of the message.
+     * </p>
      *
      * @param chatJid
-     * @param lastMessageId
+     * @param messageUid the UID of the message of which messages after should be received.
      * @param max
      * @return the MAM query result
      * @throws XMPPErrorException
@@ -443,9 +449,9 @@ public final class MamManager extends Manager {
      * @throws InterruptedException
      * @throws NoResponseException
      */
-    public MamQueryResult pageAfter(Jid chatJid, String lastMessageId, int max) throws XMPPErrorException,
+    public MamQueryResult pageAfter(Jid chatJid, String messageUid, int max) throws XMPPErrorException,
             NotLoggedInException, NotConnectedException, InterruptedException, NoResponseException {
-        RSMSet rsmSet = new RSMSet(lastMessageId, null, -1, -1, null, max, null, -1);
+        RSMSet rsmSet = new RSMSet(messageUid, null, -1, -1, null, max, null, -1);
         DataForm dataForm = getNewMamForm();
         addWithJid(chatJid, dataForm);
         return page(null, dataForm, rsmSet);
