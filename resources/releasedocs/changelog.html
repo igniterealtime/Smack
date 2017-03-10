@@ -141,6 +141,140 @@ hr {
 
 	<div id="pageBody">
 
+<h2>4.2.0 -- <span style="font-weight: normal;">2017-03-10</span></h2>
+
+<h2>        Sub-task
+</h2>
+<ul>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-639'>SMACK-639</a>] -         Add support for pre-approved subscription requests (RFC 6121 § 3.4)
+</li>
+</ul>
+
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-306'>SMACK-306</a>] -         loadRosterOnLogin has non-trivial side effect on getRoster
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-416'>SMACK-416</a>] -         Refactor PEP to make it use the existing pubsub API.
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-674'>SMACK-674</a>] -         PubSub Affiliation extension element is missing &#39;jid&#39; attribute, and is using wrong element name &#39;subscription&#39;
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-682'>SMACK-682</a>] -         Add support for &quot;XEP-0360: Nonzas (are not Stanzas)&quot;
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-683'>SMACK-683</a>] -         Using a Proxy with XMPPTCPConnection failes with &quot;SocketException: Unconnected sockets not implemented&quot;
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-691'>SMACK-691</a>] -         Add support for MUCItem&#39;s Actor &#39;nick&#39;
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-705'>SMACK-705</a>] -         PubSub&#39;s Affiliation.getElementName() returns wrong name
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-722'>SMACK-722</a>] -         SASL X-OAUTH2 implementation incorrectly performs Base64 encoding twice
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-723'>SMACK-723</a>] -         Support &quot;Caps Optimizations&quot; (XEP-0115 § 8.4)
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-724'>SMACK-724</a>] -         Do not re-use the Socket after connect() failed.
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-725'>SMACK-725</a>] -         ReconnectionManager should handle AlreadyConnectedException and AlreadyLoggedInException not as failure
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-741'>SMACK-741</a>] -         Ad-hoc command &#39;note&#39; element &#39;type&#39; attribute should be treated as optional
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-745'>SMACK-745</a>] -         Memory leak in MultiUserChat
+</li>
+</ul>
+
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-366'>SMACK-366</a>] -         Add support for DNSSEC.
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-610'>SMACK-610</a>] -         Add support for XEP-0080: User Location
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-619'>SMACK-619</a>] -         Add roomDestroyed to MUC UserStatusListener
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-625'>SMACK-625</a>] -         Add support for XEP-313: Message Archive Management
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-675'>SMACK-675</a>] -         Add support for PubSub affiliation actions as owner
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-677'>SMACK-677</a>] -         Add support for SASL &#39;authzid&#39; (Authorization Identity)
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-690'>SMACK-690</a>] -         Add support for DNS-Based Authentication of Named Entities (DANE, RFC 6698)
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-731'>SMACK-731</a>] -         Add support for XEP-0191: Blocking Command
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-732'>SMACK-732</a>] -         Smack should be able to handle &quot;single equals sign&quot; SASL responses
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-740'>SMACK-740</a>] -         Add support for Multi-User Chat Light
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-742'>SMACK-742</a>] -         Add support for XEP-0133: Service Administration
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-747'>SMACK-747</a>] -         Add support for XEP-0363: HTTP File Upload
+</li>
+</ul>
+
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-638'>SMACK-638</a>] -         Call connection creation listeners from within AbstractXMPPConnection&#39;s constructor
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-644'>SMACK-644</a>] -         Throw exception if account creation or password change is performed over insecure connections
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-655'>SMACK-655</a>] -         Enable StreamManagement by default
+</li>
+</ul>
+
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-372'>SMACK-372</a>] -         Make package protected methods in PEPItem public
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-572'>SMACK-572</a>] -         Rejoin MUC rooms after reconnect
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-628'>SMACK-628</a>] -         Rework Roster handling with anonymous connections
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-629'>SMACK-629</a>] -         Rework how Smack handles anonymous connections
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-631'>SMACK-631</a>] -         Improve ParsingExceptionCallback, allow it to be a functional interface
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-632'>SMACK-632</a>] -         Make Smack interruptible
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-633'>SMACK-633</a>] -         Allow clean and graceful disconnects (stream closing)
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-634'>SMACK-634</a>] -         Use jxmpp-jid, add Jid class to replace String&#39;s being used as JIDs
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-646'>SMACK-646</a>] -         Add support for MUC roomnick rewrite
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-647'>SMACK-647</a>] -         Don&#39;t automatically call login() on connect() if the connection was authenticated before
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-648'>SMACK-648</a>] -         Improve MultiUserChat API
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-657'>SMACK-657</a>] -         Rename RosterEntry.getStatus and RosterPacket.ItemStatus to ItemAskStatus
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-663'>SMACK-663</a>] -         Roster should be fully loaded when Roster.getInstanceFor(XMPPConnection) is called with a authenticated connection
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-665'>SMACK-665</a>] -         Rename &#39;serviceName&#39; to &#39;xmppServiceDomain&#39;
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-666'>SMACK-666</a>] -         Typo in &#39;RosterEntries.rosterEntires()&#39;, change to &#39;RosterEntries.rosterEntries()&#39;
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-703'>SMACK-703</a>] -         Limit the stored presences of entities not in Roster
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-704'>SMACK-704</a>] -         Pass down Message stanza in ChatStateListener
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-711'>SMACK-711</a>] -         Improve the logging of TCP connection attempts.
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-720'>SMACK-720</a>] -         Improve support for Tor and Hidden Services.
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-721'>SMACK-721</a>] -         Report illegal Stream Management states to avoid OOM Exception
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-727'>SMACK-727</a>] -         Add partial support for the IoT XEPs (XEP-0323, -0324, -0325, -0347)
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-733'>SMACK-733</a>] -         Handle outgoing &#39;unavailable&#39; Presences in Roster
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-736'>SMACK-736</a>] -         Add support for Chat Markers (XEP-0333)
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-737'>SMACK-737</a>] -         Add support for Bits of Binary (XEP-0231)
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-738'>SMACK-738</a>] -         Add support for Push Notifications (XEP-0357)
+</li>
+</ul>
 
 <h2>4.1.9 -- <span style="font-weight: normal;">2016-11-19</span></h2>
 
