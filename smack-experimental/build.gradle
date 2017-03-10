@@ -9,4 +9,5 @@ dependencies {
 	compile project(':smack-extensions')
 	testCompile project(path: ":smack-core", configuration: "testRuntime")
 	testCompile project(path: ":smack-core", configuration: "archives")
+	testCompile project(path: ":smack-extensions", configuration: "testRuntime")
 }

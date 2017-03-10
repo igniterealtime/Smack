@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus and Fernando Ramirez
+ * Copyright © 2016-2017 Florian Schmaus, Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.mam;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -25,10 +26,10 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -47,6 +48,8 @@ import org.jivesoftware.smackx.mam.filter.MamResultFilter;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppDateTime;
 
@@ -70,7 +73,7 @@ public final class MamManager extends Manager {
         });
     }
 
-    private static final Map<XMPPConnection, MamManager> INSTANCES = new WeakHashMap<>();
+    private static final Map<XMPPConnection, Map<Jid, MamManager>> INSTANCES = new WeakHashMap<>();
 
     /**
      * Get the singleton instance of MamManager.
@@ -78,19 +81,29 @@ public final class MamManager extends Manager {
      * @param connection
      * @return the instance of MamManager
      */
-    public static synchronized MamManager getInstanceFor(XMPPConnection connection) {
-        MamManager mamManager = INSTANCES.get(connection);
+    public static MamManager getInstanceFor(XMPPConnection connection) {
+        return getInstanceFor(connection, null);
+    }
 
-        if (mamManager == null) {
-            mamManager = new MamManager(connection);
-            INSTANCES.put(connection, mamManager);
+    public static synchronized MamManager getInstanceFor(XMPPConnection connection, Jid archiveAddress) {
+        Map<Jid, MamManager> managers = INSTANCES.get(connection);
+        if (managers == null) {
+            managers = new HashMap<>();
+            INSTANCES.put(connection, managers);
         }
-
+        MamManager mamManager = managers.get(archiveAddress);
+        if (mamManager == null) {
+            mamManager = new MamManager(connection, archiveAddress);
+            managers.put(archiveAddress, mamManager);
+        }
         return mamManager;
     }
 
-    private MamManager(XMPPConnection connection) {
+    private final Jid archiveAddress;
+
+    private MamManager(XMPPConnection connection, Jid archiveAddress) {
         super(connection);
+        this.archiveAddress = archiveAddress;
     }
 
     /**
@@ -106,7 +119,7 @@ public final class MamManager extends Manager {
      */
     public MamQueryResult queryArchive(Integer max) throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
-        return queryArchive(max, null, null, null, null);
+        return queryArchive(null, max, null, null, null, null);
     }
 
     /**
@@ -122,7 +135,7 @@ public final class MamManager extends Manager {
      */
     public MamQueryResult queryArchive(Jid withJid) throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
-        return queryArchive(null, null, null, withJid, null);
+        return queryArchive(null, null, null, null, withJid, null);
     }
 
     /**
@@ -142,7 +155,7 @@ public final class MamManager extends Manager {
      */
     public MamQueryResult queryArchive(Date start, Date end) throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
-        return queryArchive(null, start, end, null, null);
+        return queryArchive(null, null, start, end, null, null);
     }
 
     /**
@@ -158,7 +171,7 @@ public final class MamManager extends Manager {
      */
     public MamQueryResult queryArchive(List<FormField> additionalFields) throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
-        return queryArchive(null, null, null, null, additionalFields);
+        return queryArchive(null, null, null, null, null, additionalFields);
     }
 
     /**
@@ -175,7 +188,7 @@ public final class MamManager extends Manager {
      */
     public MamQueryResult queryArchiveWithStartDate(Date start) throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
-        return queryArchive(null, start, null, null, null);
+        return queryArchive(null, null, start, null, null, null);
     }
 
     /**
@@ -192,8 +205,9 @@ public final class MamManager extends Manager {
      */
     public MamQueryResult queryArchiveWithEndDate(Date end) throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
-        return queryArchive(null, null, end, null, null);
+        return queryArchive(null, null, null, end, null, null);
     }
+
 
     /**
      * Query archive applying filters: max count, start date, end date, from/to
@@ -214,6 +228,32 @@ public final class MamManager extends Manager {
     public MamQueryResult queryArchive(Integer max, Date start, Date end, Jid withJid, List<FormField> additionalFields)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException,
             NotLoggedInException {
+      return queryArchive(null, max, start, end, withJid, additionalFields);
+    }
+
+
+    /**
+     * Query an message archive like a MUC archive or a pubsub node archive, addressed by an archiveAddress, applying
+     * filters: max count, start date, end date, from/to JID and with additional fields. When archiveAddress is null the
+     * default, the server will be requested.
+     * 
+     * @param node The Pubsub node name, can be null
+     * @param max
+     * @param start
+     * @param end
+     * @param withJid
+     * @param additionalFields
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws NotLoggedInException
+     */
+    public MamQueryResult queryArchive(String node, Integer max, Date start, Date end, Jid withJid,
+                    List<FormField> additionalFields)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException,
+            NotLoggedInException {
         DataForm dataForm = null;
         String queryId = UUID.randomUUID().toString();
 
@@ -225,8 +265,9 @@ public final class MamManager extends Manager {
             addAdditionalFields(additionalFields, dataForm);
         }
 
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, node, dataForm);
         mamQueryIQ.setType(IQ.Type.set);
+        mamQueryIQ.setTo(archiveAddress);
 
         addResultsLimit(max, mamQueryIQ);
         return queryArchive(mamQueryIQ);
@@ -290,9 +331,31 @@ public final class MamManager extends Manager {
      * @throws NotLoggedInException
      */
     public MamQueryResult page(DataForm dataForm, RSMSet rsmSet) throws NoResponseException, XMPPErrorException,
+                    NotConnectedException, InterruptedException, NotLoggedInException {
+
+        return page(null, dataForm, rsmSet);
+
+    }
+
+    /**
+     * Returns a page of the archive.
+     * 
+     * @param node The Pubsub node name, can be null
+     * @param dataForm
+     * @param rsmSet
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws NotLoggedInException
+     */
+    public MamQueryResult page(String node, DataForm dataForm, RSMSet rsmSet)
+                    throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(UUID.randomUUID().toString(), dataForm);
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(UUID.randomUUID().toString(), node, dataForm);
         mamQueryIQ.setType(IQ.Type.set);
+        mamQueryIQ.setTo(archiveAddress);
         mamQueryIQ.addExtension(rsmSet);
         return queryArchive(mamQueryIQ);
     }
@@ -315,7 +378,7 @@ public final class MamManager extends Manager {
             XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         RSMSet previousResultRsmSet = mamQueryResult.mamFin.getRSMSet();
         RSMSet requestRsmSet = new RSMSet(count, previousResultRsmSet.getLast(), RSMSet.PageDirection.after);
-        return page(mamQueryResult.form, requestRsmSet);
+        return page(mamQueryResult, requestRsmSet);
     }
 
     /**
@@ -336,14 +399,24 @@ public final class MamManager extends Manager {
             XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         RSMSet previousResultRsmSet = mamQueryResult.mamFin.getRSMSet();
         RSMSet requestRsmSet = new RSMSet(count, previousResultRsmSet.getFirst(), RSMSet.PageDirection.before);
-        return page(mamQueryResult.form, requestRsmSet);
+        return page(mamQueryResult, requestRsmSet);
+    }
+
+    private MamQueryResult page(MamQueryResult mamQueryResult, RSMSet requestRsmSet) throws NoResponseException,
+                    XMPPErrorException, NotConnectedException, NotLoggedInException, InterruptedException {
+        ensureMamQueryResultMatchesThisManager(mamQueryResult);
+
+        return page(mamQueryResult.node, mamQueryResult.form, requestRsmSet);
     }
 
     /**
      * Obtain page before the first message saved (specific chat).
+     * <p>
+     * Note that the messageUid is the XEP-0313 UID and <b>not</> the stanza ID of the message.
+     * </p>
      *
      * @param chatJid
-     * @param firstMessageId
+     * @param messageUid the UID of the message of which messages before should be received.
      * @param max
      * @return the MAM query result
      * @throws XMPPErrorException
@@ -352,19 +425,22 @@ public final class MamManager extends Manager {
      * @throws InterruptedException
      * @throws NoResponseException
      */
-    public MamQueryResult pageBefore(Jid chatJid, String firstMessageId, int max) throws XMPPErrorException,
+    public MamQueryResult pageBefore(Jid chatJid, String messageUid, int max) throws XMPPErrorException,
             NotLoggedInException, NotConnectedException, InterruptedException, NoResponseException {
-        RSMSet rsmSet = new RSMSet(null, firstMessageId, -1, -1, null, max, null, -1);
+        RSMSet rsmSet = new RSMSet(null, messageUid, -1, -1, null, max, null, -1);
         DataForm dataForm = getNewMamForm();
         addWithJid(chatJid, dataForm);
-        return page(dataForm, rsmSet);
+        return page(null, dataForm, rsmSet);
     }
 
     /**
      * Obtain page after the last message saved (specific chat).
+     * <p>
+     * Note that the messageUid is the XEP-0313 UID and <b>not</> the stanza ID of the message.
+     * </p>
      *
      * @param chatJid
-     * @param lastMessageId
+     * @param messageUid the UID of the message of which messages after should be received.
      * @param max
      * @return the MAM query result
      * @throws XMPPErrorException
@@ -373,12 +449,12 @@ public final class MamManager extends Manager {
      * @throws InterruptedException
      * @throws NoResponseException
      */
-    public MamQueryResult pageAfter(Jid chatJid, String lastMessageId, int max) throws XMPPErrorException,
+    public MamQueryResult pageAfter(Jid chatJid, String messageUid, int max) throws XMPPErrorException,
             NotLoggedInException, NotConnectedException, InterruptedException, NoResponseException {
-        RSMSet rsmSet = new RSMSet(lastMessageId, null, -1, -1, null, max, null, -1);
+        RSMSet rsmSet = new RSMSet(messageUid, null, -1, -1, null, max, null, -1);
         DataForm dataForm = getNewMamForm();
         addWithJid(chatJid, dataForm);
-        return page(dataForm, rsmSet);
+        return page(null, dataForm, rsmSet);
     }
 
     /**
@@ -409,9 +485,27 @@ public final class MamManager extends Manager {
      * @throws NotLoggedInException
      */
     public List<FormField> retrieveFormFields() throws NoResponseException, XMPPErrorException, NotConnectedException,
+                    InterruptedException, NotLoggedInException {
+        return retrieveFormFields(null);
+    }
+
+    /**
+     * Get the form fields supported by the server.
+     * 
+     * @param node The Pubsub node name, can be null
+     * @return the list of form fields.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws NotLoggedInException
+     */
+    public List<FormField> retrieveFormFields(String node)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException,
             InterruptedException, NotLoggedInException {
         String queryId = UUID.randomUUID().toString();
-        MamQueryIQ mamQueryIq = new MamQueryIQ(queryId);
+        MamQueryIQ mamQueryIq = new MamQueryIQ(queryId, node, null);
+        mamQueryIq.setTo(archiveAddress);
 
         MamQueryIQ mamResponseQueryIq = connection().createStanzaCollectorAndSend(mamQueryIq).nextResultOrThrow();
 
@@ -445,7 +539,7 @@ public final class MamManager extends Manager {
             forwardedMessages.add(mamResultExtension.getForwarded());
         }
 
-        return new MamQueryResult(forwardedMessages, mamFinIQ, DataForm.from(mamQueryIq));
+        return new MamQueryResult(forwardedMessages, mamFinIQ, mamQueryIq.getNode(), DataForm.from(mamQueryIq));
     }
 
     /**
@@ -455,12 +549,38 @@ public final class MamManager extends Manager {
     public final static class MamQueryResult {
         public final List<Forwarded> forwardedMessages;
         public final MamFinIQ mamFin;
+        private final String node;
         private final DataForm form;
 
-        private MamQueryResult(List<Forwarded> forwardedMessages, MamFinIQ mamFin, DataForm form) {
+        private MamQueryResult(List<Forwarded> forwardedMessages, MamFinIQ mamFin, String node, DataForm form) {
             this.forwardedMessages = forwardedMessages;
             this.mamFin = mamFin;
+            this.node = node;
             this.form = form;
+        }
+    }
+
+    private void ensureMamQueryResultMatchesThisManager(MamQueryResult mamQueryResult) {
+        EntityFullJid localAddress = connection().getUser();
+        EntityBareJid localBareAddress = null;
+        if (localAddress != null) {
+            localBareAddress = localAddress.asEntityBareJid();
+        }
+        boolean isLocalUserArchive = archiveAddress == null || archiveAddress.equals(localBareAddress);
+
+        Jid finIqFrom = mamQueryResult.mamFin.getFrom();
+
+        if (finIqFrom != null) {
+            if (finIqFrom.equals(archiveAddress) || (isLocalUserArchive && finIqFrom.equals(localBareAddress))) {
+                return;
+            }
+            throw new IllegalArgumentException("The given MamQueryResult is from the MAM archive '" + finIqFrom
+                            + "' whereas this MamManager is responsible for '" + archiveAddress + '\'');
+        }
+        else if (!isLocalUserArchive) {
+            throw new IllegalArgumentException(
+                            "The given MamQueryResult is from the local entity (user) MAM archive, whereas this MamManager is responsible for '"
+                                            + archiveAddress + '\'');
         }
     }
 

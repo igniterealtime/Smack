@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2016 Florian Schmaus
+ * Copyright 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import javax.security.auth.callback.CallbackHandler;
 
@@ -41,7 +42,12 @@ public abstract class ScramMechanism extends SASLMechanism {
     private static final byte[] SERVER_KEY_BYTES = toBytes("Server Key");
     private static final byte[] ONE = new byte[] { 0, 0, 0, 1 };
 
-    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final ThreadLocal<SecureRandom> SECURE_RANDOM = new ThreadLocal<SecureRandom>() {
+        @Override
+        protected SecureRandom initialValue() {
+            return new SecureRandom();
+        }
+    };
 
     private static final Cache<String, Keys> CACHE = new LruCache<String, Keys>(10);
 
@@ -292,8 +298,9 @@ public abstract class ScramMechanism extends SASLMechanism {
     String getRandomAscii() {
         int count = 0;
         char[] randomAscii = new char[RANDOM_ASCII_BYTE_COUNT];
+        final Random random = SECURE_RANDOM.get();
         while (count < RANDOM_ASCII_BYTE_COUNT) {
-            int r = RANDOM.nextInt(128);
+            int r = random.nextInt(128);
             char c = (char) r;
             // RFC 5802 § 5.1 specifies 'r:' to exclude the ',' character and to be only printable ASCII characters
             if (!isPrintableNonCommaAsciiChar(c)) {

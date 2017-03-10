@@ -43,7 +43,10 @@ import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.MessageWithSubjectFilter;
 import org.jivesoftware.smack.filter.NotFilter;
+import org.jivesoftware.smack.filter.OrFilter;
+import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.filter.ToMatchesFilter;
@@ -327,9 +330,17 @@ public class MultiUserChat {
         messageCollector = connection.createStanzaCollector(fromRoomGroupchatFilter);
 
         // Wait for a presence packet back from the server.
-        // Use a bare JID filter, since the room may rewrite the nickname.
-        StanzaFilter responseFilter = new AndFilter(FromMatchesFilter.createBare(getRoom()), new StanzaTypeFilter(
-                        Presence.class), MUCUserStatusCodeFilter.STATUS_110_PRESENCE_TO_SELF);
+        // @formatter:off
+        StanzaFilter responseFilter = new AndFilter(StanzaTypeFilter.PRESENCE,
+                        new OrFilter(
+                            // We use a bare JID filter for positive responses, since the MUC service/room may rewrite the nickname.
+                            new AndFilter(FromMatchesFilter.createBare(getRoom()), MUCUserStatusCodeFilter.STATUS_110_PRESENCE_TO_SELF),
+                            // In case there is an error reply, we match on an error presence with the same stanza id and from the full
+                            // JID we send the join presence to.
+                            new AndFilter(FromMatchesFilter.createFull(joinPresence.getTo()), new StanzaIdFilter(joinPresence), PresenceTypeFilter.ERROR)
+                        )
+                    );
+        // @formatter:on
         Presence presence;
         try {
             presence = connection.createStanzaCollectorAndSend(responseFilter, joinPresence).nextResultOrThrow(conf.getTimeout());

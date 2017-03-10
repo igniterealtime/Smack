@@ -16,9 +16,15 @@
  */
 package org.igniterealtime.smack.inttest;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Random;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -37,9 +43,12 @@ public abstract class AbstractSmackIntTest {
 
     protected final long timeout;
 
-    protected AbstractSmackIntTest(String testRunId, long timeout) {
+    protected final Configuration sinttestConfiguration;
+
+    protected AbstractSmackIntTest(String testRunId, Configuration configuration) {
         this.testRunId = testRunId;
-        this.timeout = timeout;
+        this.sinttestConfiguration = configuration;
+        this.timeout = configuration.replyTimeout;
     }
 
     protected void performActionAndWaitUntilStanzaReceived(Runnable action, XMPPConnection connection, StanzaFilter filter)
@@ -70,5 +79,20 @@ public abstract class AbstractSmackIntTest {
 
     protected interface Condition {
         boolean evaluate() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
+    }
+
+    protected File createNewTempFile() throws IOException {
+        File file = File.createTempFile("smack-integration-test-" + testRunId + "-temp-file", null);
+        file.deleteOnExit();
+        return file;
+    }
+
+    protected HttpURLConnection getHttpUrlConnectionFor(URL url) throws IOException {
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        if (sinttestConfiguration.tlsContext != null && urlConnection instanceof HttpsURLConnection) {
+            HttpsURLConnection httpsUrlConnection = (HttpsURLConnection) urlConnection;
+            httpsUrlConnection.setSSLSocketFactory(sinttestConfiguration.tlsContext.getSocketFactory());
+        }
+        return urlConnection;
     }
 }
