@@ -43,13 +43,11 @@ import org.jxmpp.jid.Jid;
  */
 public class Socks5TransferNegotiator extends StreamNegotiator {
 
-    private XMPPConnection connection;
-
     private Socks5BytestreamManager manager;
 
     Socks5TransferNegotiator(XMPPConnection connection) {
-        this.connection = connection;
-        this.manager = Socks5BytestreamManager.getBytestreamManager(this.connection);
+        super(connection);
+        this.manager = Socks5BytestreamManager.getBytestreamManager(connection);
     }
 
     @Override
@@ -75,7 +73,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
          */
         this.manager.ignoreBytestreamRequestOnce(initiation.getSessionID());
 
-        Stanza streamInitiation = initiateIncomingStream(this.connection, initiation);
+        Stanza streamInitiation = initiateIncomingStream(connection(), initiation);
         return negotiateIncomingStream(streamInitiation);
     }
 
