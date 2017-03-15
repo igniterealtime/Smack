@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.filetransfer;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -44,7 +45,7 @@ import org.jxmpp.jid.Jid;
  */
 public class IBBTransferNegotiator extends StreamNegotiator {
 
-    private XMPPConnection connection;
+    private WeakReference<XMPPConnection> connection;
 
     private InBandBytestreamManager manager;
 
@@ -54,7 +55,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
      * @param connection The connection which this negotiator works on.
      */
     protected IBBTransferNegotiator(XMPPConnection connection) {
-        this.connection = connection;
+        this.connection = new WeakReference<>(connection);
         this.manager = InBandBytestreamManager.getByteStreamManager(connection);
     }
 
@@ -75,7 +76,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
          */
         this.manager.ignoreBytestreamRequestOnce(initiation.getSessionID());
 
-        Stanza streamInitiation = initiateIncomingStream(this.connection, initiation);
+        Stanza streamInitiation = initiateIncomingStream(this.connection.get(), initiation);
         return negotiateIncomingStream(streamInitiation);
     }
 

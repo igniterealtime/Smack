@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
+import java.lang.ref.WeakReference;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -43,13 +44,13 @@ import org.jxmpp.jid.Jid;
  */
 public class Socks5TransferNegotiator extends StreamNegotiator {
 
-    private XMPPConnection connection;
+    private WeakReference<XMPPConnection> connection;
 
     private Socks5BytestreamManager manager;
 
     Socks5TransferNegotiator(XMPPConnection connection) {
-        this.connection = connection;
-        this.manager = Socks5BytestreamManager.getBytestreamManager(this.connection);
+        this.connection = new WeakReference<>(connection);
+        this.manager = Socks5BytestreamManager.getBytestreamManager(connection);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
          */
         this.manager.ignoreBytestreamRequestOnce(initiation.getSessionID());
 
-        Stanza streamInitiation = initiateIncomingStream(this.connection, initiation);
+        Stanza streamInitiation = initiateIncomingStream(this.connection.get(), initiation);
         return negotiateIncomingStream(streamInitiation);
     }
 
