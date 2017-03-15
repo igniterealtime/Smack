@@ -681,6 +681,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws SmackException 
      * @throws Exception if an exception occurs.
      */
+    @SuppressWarnings("LiteralClassName")
     private void proceedTLSReceived() throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException, NoSuchProviderException, UnrecoverableKeyException, KeyManagementException, SmackException {
         SSLContext context = this.config.getCustomSSLContext();
         KeyStore ks = null;
@@ -1710,6 +1711,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @return the previous listener for this stanza ID or null.
      * @throws StreamManagementNotEnabledException if Stream Management is not enabled.
      */
+    @SuppressWarnings("FutureReturnValueIgnored")
     public StanzaListener addStanzaIdAcknowledgedListener(final String id, StanzaListener listener) throws StreamManagementNotEnabledException {
         // Prevent users from adding callbacks that will never get removed
         if (!smWasEnabledAtLeastOnce) {

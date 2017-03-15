@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Florian Schmaus
+ * Copyright 2015-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.net.ssl.SSLContext;
-
 import org.igniterealtime.smack.inttest.IntTestUtil.UsernameAndPassword;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackConfiguration;
@@ -63,8 +61,6 @@ import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.MethodParameterScanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
-
-import eu.geekplace.javapinning.java7.Java7Pinning;
 
 public class SmackIntegrationTestFramework {
 
@@ -553,9 +549,8 @@ public class SmackIntegrationTestFramework {
                         .setResource(middlefix + '-' + testRunResult.testRunId)
                         .setSecurityMode(config.securityMode);
         // @formatter:on
-        if (StringUtils.isNotEmpty(config.serviceTlsPin)) {
-            SSLContext sc = Java7Pinning.forPin(config.serviceTlsPin);
-            builder.setCustomSSLContext(sc);
+        if (config.tlsContext != null) {
+            builder.setCustomSSLContext(config.tlsContext);
         }
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
         connection.connect();
@@ -581,9 +576,8 @@ public class SmackIntegrationTestFramework {
                     SmackException, IOException, XMPPException {
         Configuration config = environment.configuration;
         XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
-        if (config.serviceTlsPin != null) {
-            SSLContext sc = Java7Pinning.forPin(config.serviceTlsPin);
-            builder.setCustomSSLContext(sc);
+        if (config.tlsContext != null) {
+            builder.setCustomSSLContext(config.tlsContext);
         }
         builder.setSecurityMode(config.securityMode);
         builder.setXmppDomain(config.service);

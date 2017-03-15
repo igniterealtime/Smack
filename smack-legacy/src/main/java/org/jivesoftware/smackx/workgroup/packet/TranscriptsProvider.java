@@ -38,6 +38,7 @@ import java.util.TimeZone;
  */
 public class TranscriptsProvider extends IQProvider<Transcripts> {
 
+    @SuppressWarnings("SimpleDateFormatConstant")
     private static final SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
     static {
         UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+0"));
@@ -79,12 +80,16 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("joinTime")) {
                     try {
-                        joinTime = UTC_FORMAT.parse(parser.nextText());
+                        synchronized (UTC_FORMAT) {
+                            joinTime = UTC_FORMAT.parse(parser.nextText());
+                        }
                     } catch (ParseException e) {}
                 }
                 else if (parser.getName().equals("leftTime")) {
                     try {
-                        leftTime = UTC_FORMAT.parse(parser.nextText());
+                        synchronized (UTC_FORMAT) {
+                            leftTime = UTC_FORMAT.parse(parser.nextText());
+                        }
                     } catch (ParseException e) {}
                 }
                 else if (parser.getName().equals("agents")) {
@@ -116,12 +121,16 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
                 }
                 else if (parser.getName().equals("joinTime")) {
                     try {
-                        joinTime = UTC_FORMAT.parse(parser.nextText());
+                        synchronized (UTC_FORMAT) {
+                            joinTime = UTC_FORMAT.parse(parser.nextText());
+                        }
                     } catch (ParseException e) {}
                 }
                 else if (parser.getName().equals("leftTime")) {
                     try {
-                        leftTime = UTC_FORMAT.parse(parser.nextText());
+                        synchronized (UTC_FORMAT) {
+                            leftTime = UTC_FORMAT.parse(parser.nextText());
+                        }
                     } catch (ParseException e) {}
                 }
                 else if (parser.getName().equals("agent")) {

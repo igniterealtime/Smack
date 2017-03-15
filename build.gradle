@@ -10,7 +10,7 @@ buildscript {
         classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
 		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.0'
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
-		classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.8'
+		classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.9'
     }
 }
 apply plugin: 'org.kordamp.gradle.markdown'
@@ -55,6 +55,7 @@ allprojects {
 			':smack-resolver-dnsjava',
 			':smack-resolver-javax',
 			':smack-resolver-minidns',
+			':smack-omemo',
 		].collect{ project(it) }
 		projectsWithUnitTests = subprojects - projectsWithoutUnitTests
 		androidProjects = [
@@ -66,6 +67,7 @@ allprojects {
 			':smack-sasl-provided',
 			':smack-extensions',
 			':smack-experimental',
+			':smack-omemo',
 		].collect{ project(it) }
 		androidBootClasspathProjects = [
 			':smack-android',
@@ -118,7 +120,7 @@ allprojects {
 		// Some systems may not have set their platform default
 		// converter to 'utf8', but we use unicode in our source
 		// files. Therefore ensure that javac uses unicode
-		options.encoding = "utf8"
+		options.encoding = 'UTF-8'
 		options.compilerArgs = [
 			'-Xlint:all',
 			// Set '-options' because a non-java7 javac will emit a
@@ -164,13 +166,14 @@ allprojects {
 	}
 	tasks.withType(Javadoc) {
 		options.charSet = "UTF-8"
+		options.encoding = 'UTF-8'
 	}
 
 	// Pin the errorprone version to prevent "unsupported major.minor
 	// version 52.0" error messages caused by the errorprone javac.
 	// See https://github.com/tbroyer/gradle-errorprone-plugin/issues/18 for more information.
 	configurations.errorprone {
-		resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.15'
+		resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.18'
 	}
 }
 
@@ -301,6 +304,8 @@ subprojects {
 		archives sourcesJar
 		archives javadocJar
 		archives testJar
+		// See http://stackoverflow.com/a/21946676/194894
+		testRuntime testJar
 	}
 
 	uploadArchives {

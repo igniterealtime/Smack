@@ -1,0 +1,20 @@
+// Although the osgi plugin is already applied by the root project's
+// subprojects closure, we need to re-apply it here so that the
+// manifest is a OsgiManifest. Possible caused by
+// evaluationDependsOnChildren in the root project.
+apply plugin: 'osgi'
+
+dependencies {
+	compile project(":smack-core")
+	compile project(":smack-im")
+	compile project(":smack-extensions")
+	compile project(":smack-experimental")
+	compile "org.jxmpp:jxmpp-core:$jxmppVersion"
+	compile "org.jxmpp:jxmpp-jid:$jxmppVersion"
+	compile "org.jxmpp:jxmpp-util-cache:$jxmppVersion"
+}
+
+javadoc {
+	enabled = false
+}
+

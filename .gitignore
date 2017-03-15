@@ -10,12 +10,16 @@
 .settings
 .gradle
 gradle.properties
+smack-omemo-signal
 
 build/
 core/build/
 debug/build/
 experimental/build/
 extensions/build/
+
+build.gradle
+settings.gradle
 
 bin/
 core/bin

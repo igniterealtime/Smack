@@ -387,7 +387,7 @@ public class ChatConnectionTest {
         }
     }
 
-    private class TestMessageListener implements ChatMessageListener {
+    private static class TestMessageListener implements ChatMessageListener {
         private Chat msgChat;
         private int counter = 0;
 

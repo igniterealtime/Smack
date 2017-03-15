@@ -3,19 +3,22 @@ Smack
 
 [![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)  [![Coverage Status](https://coveralls.io/repos/igniterealtime/Smack/badge.svg)](https://coveralls.io/r/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smackxmpp/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smackxmpp) [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/thing/3480125)  [![Visit our IRC channel](https://kiwiirc.com/buttons/irc.freenode.net/smack.png)](https://kiwiirc.com/client/irc.freenode.net/smack)
 
-Instructions how to use Smack in your Java or Android project are provided in the [Smack 4.1 Readme and Upgrade Guide](https://github.com/igniterealtime/Smack/wiki/Smack-4.1-Readme-and-Upgrade-Guide).
-
 About
 -----
 
-[Smack] is an open source, highly modular, easy to use, XMPP client library written in Java for JVMs and Android.
+[Smack] is an open source, highly modular, easy to use, XMPP client library written in Java for Java SE compatible JVMs and Android.
 
-A pure Java library, it can be embedded into your applications to create anything from a full XMPP client to simple XMPP integrations such as sending notification messages and presence-enabling devices.
+A pure Java library, it can be embedded into your applications to create anything from a full XMPP instant messaging client to simple XMPP integrations such as sending notification messages and presence-enabling devices.
 Smack and XMPP allows you to easily exchange data, in various ways e.g. fire-and-forget, publish-subscribe, between human and non-human endpoints (M2M, IoT, …).
 
 Confused? Have a look at the [Overview](documentation/overview.md).
 
 [Smack] - an [Ignite Realtime] community project.
+
+Getting started
+---------------
+
+Instructions how to use Smack in your Java or Android project are provided in the [Smack 4.2 Readme and Upgrade Guide](https://github.com/igniterealtime/Smack/wiki/Smack-4.2-Readme-and-Upgrade-Guide).
 
 Bug Reporting
 -------------
@@ -48,7 +51,7 @@ The guidelines also contain development quickstart instructions.
 Resources
 ---------
 
-- Bug Tracker: http://issues.igniterealtime.org/browse/SMACK
+- Bug Tracker: https://issues.igniterealtime.org/browse/SMACK
 - JaCoCo Coverage Reports: https://www.igniterealtime.org/builds/smack/dailybuilds/jacoco/html/
 - Nightly Builds: http://www.igniterealtime.org/downloads/nightly_smack.jsp
 - Nightly Javadoc: http://www.igniterealtime.org/builds/smack/dailybuilds/javadoc/
@@ -57,6 +60,7 @@ Resources
 - Dev Forum: http://community.igniterealtime.org/community/developers/smack
 - Maven Releases: https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/
 - Maven Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
+- Nightly Unique Maven Snapshots: https://igniterealtime.org/repo/
 
 Donate
 ------

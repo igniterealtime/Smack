@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Florian Schmaus
+ * Copyright 2015-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,9 @@ package org.igniterealtime.smack.inttest;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.net.ssl.SSLContext;
-
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.jid.DomainBareJid;
-
-import eu.geekplace.javapinning.java7.Java7Pinning;
 
 public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmackIntTest {
 
@@ -39,7 +35,7 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
     protected final DomainBareJid service;
 
     public AbstractSmackLowLevelIntegrationTest(SmackIntegrationTestEnvironment environment) {
-        super(environment.testRunId, environment.configuration.replyTimeout);
+        super(environment.testRunId, environment.configuration);
         this.environment = environment;
         this.configuration = environment.configuration;
         this.service = configuration.service;
@@ -47,9 +43,8 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
 
     public final XMPPTCPConnectionConfiguration.Builder getConnectionConfiguration() throws KeyManagementException, NoSuchAlgorithmException {
         XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
-        if (configuration.serviceTlsPin != null) {
-            SSLContext sc = Java7Pinning.forPin(configuration.serviceTlsPin);
-            builder.setCustomSSLContext(sc);
+        if (configuration.tlsContext != null) {
+            builder.setCustomSSLContext(configuration.tlsContext);
         }
         builder.setSecurityMode(configuration.securityMode);
         builder.setXmppDomain(service);

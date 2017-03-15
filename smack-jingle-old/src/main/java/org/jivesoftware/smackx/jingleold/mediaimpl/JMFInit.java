@@ -103,6 +103,7 @@ public class JMFInit extends Frame implements Runnable {
         }
     }
 
+    @SuppressWarnings("LiteralClassName")
     private void detectCaptureDevices() {
         // check if JavaSound capture is available
         message("Looking for Audio capturer");

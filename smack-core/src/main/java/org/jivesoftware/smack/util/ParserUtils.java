@@ -235,4 +235,19 @@ public class ParserUtils {
         return uri;
     }
 
+    public static String getRequiredAttribute(XmlPullParser parser, String name) throws IOException {
+        String value = parser.getAttributeValue("", name);
+        if (StringUtils.isNullOrEmpty(value)) {
+            throw new IOException("Attribute " + name + " is null or empty (" + value + ')');
+        }
+        return value;
+    }
+
+    public static String getRequiredNextText(XmlPullParser parser) throws XmlPullParserException, IOException {
+        String text = parser.nextText();
+        if (StringUtils.isNullOrEmpty(text)) {
+            throw new IOException("Next text is null or empty (" + text + ')');
+        }
+        return text;
+    }
 }

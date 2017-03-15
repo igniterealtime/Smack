@@ -66,6 +66,7 @@ import org.jivesoftware.smack.roster.rosterstore.RosterStore;
 import org.jivesoftware.smack.util.Objects;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -1674,9 +1675,16 @@ public final class Roster extends Manager {
             final XMPPConnection connection = connection();
             RosterPacket rosterPacket = (RosterPacket) iqRequest;
 
+            EntityFullJid localAddress = connection.getUser();
+            if (localAddress == null) {
+                LOGGER.warning("Ignoring roster push " + iqRequest + " while " + connection
+                                + " has no bound resource. This may be a server bug.");
+                return null;
+            }
+
             // Roster push (RFC 6121, 2.1.6)
             // A roster push with a non-empty from not matching our address MUST be ignored
-            EntityBareJid jid = connection.getUser().asEntityBareJid();
+            EntityBareJid jid = localAddress.asEntityBareJid();
             Jid from = rosterPacket.getFrom();
             if (from != null && !from.equals(jid)) {
                 LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid='" + jid + "' from='" + from
