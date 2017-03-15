@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.filetransfer;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -40,13 +41,13 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
 
     private final StreamNegotiator primaryNegotiator;
     private final StreamNegotiator secondaryNegotiator;
-    private final XMPPConnection connection;
+    private final WeakReference<XMPPConnection> connection;
 
     public FaultTolerantNegotiator(XMPPConnection connection, StreamNegotiator primary,
             StreamNegotiator secondary) {
         this.primaryNegotiator = primary;
         this.secondaryNegotiator = secondary;
-        this.connection = connection;
+        this.connection = new WeakReference<>(connection);
     }
 
     @Override
@@ -64,7 +65,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
     @Override
     public InputStream createIncomingStream(final StreamInitiation initiation) throws SmackException, XMPPErrorException, InterruptedException {
         // This could be either an xep47 ibb 'open' iq or an xep65 streamhost iq
-        IQ initationSet = initiateIncomingStream(connection, initiation);
+        IQ initationSet = initiateIncomingStream(connection.get(), initiation);
 
         StreamNegotiator streamNegotiator = determineNegotiator(initationSet);
 
