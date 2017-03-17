@@ -39,7 +39,7 @@ public abstract class AbstractJidTypeFilter implements StanzaFilter {
 
     @Override
     public final boolean accept(Stanza stanza) {
-        final Jid jid = stanza.getFrom();
+        final Jid jid = getJidToInspect(stanza);
 
         if (jid == null) {
             return false;
