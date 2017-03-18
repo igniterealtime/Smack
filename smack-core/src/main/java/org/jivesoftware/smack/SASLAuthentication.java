@@ -93,7 +93,7 @@ public final class SASLAuthentication {
         Map<String, String> answer = new LinkedHashMap<String, String>();
         synchronized (REGISTERED_MECHANISMS) {
             for (SASLMechanism mechanism : REGISTERED_MECHANISMS) {
-                answer.put(mechanism.getClass().getName(), mechanism.getName());
+                answer.put(mechanism.getClass().getName(), mechanism.toString());
             }
         }
         return answer;
