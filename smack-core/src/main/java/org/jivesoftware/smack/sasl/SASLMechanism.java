@@ -279,6 +279,11 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      */
     public abstract String getName();
 
+    /**
+     * Get the priority of this SASL mechanism. Lower values mean higher priority.
+     *
+     * @return the priority of this SASL mechanism.
+     */
     public abstract int getPriority();
 
     public abstract void checkIfSuccessfulOrThrow() throws SmackException;
