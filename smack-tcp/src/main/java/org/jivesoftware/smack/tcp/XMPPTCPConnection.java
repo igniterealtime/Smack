@@ -1423,26 +1423,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         // unacknowledgedStanzas is not null.
                         unacknowledgedStanzas = new ArrayBlockingQueue<>(QUEUE_SIZE);
                     }
-                    // Check if the stream element should be put to the unacknowledgedStanza
-                    // queue. Note that we can not do the put() in sendStanzaInternal() and the
-                    // packet order is not stable at this point (sendStanzaInternal() can be
-                    // called concurrently).
-                    if (unacknowledgedStanzas != null && packet != null) {
-                        // If the unacknowledgedStanza queue is nearly full, request an new ack
-                        // from the server in order to drain it
-                        if (unacknowledgedStanzas.size() == 0.8 * XMPPTCPConnection.QUEUE_SIZE) {
-                            writer.write(AckRequest.INSTANCE.toXML().toString());
-                            writer.flush();
-                        }
-                        try {
-                            // It is important the we put the stanza in the unacknowledged stanza
-                            // queue before we put it on the wire
-                            unacknowledgedStanzas.put(packet);
-                        }
-                        catch (InterruptedException e) {
-                            throw new IllegalStateException(e);
-                        }
-                    }
+                    maybeAddToUnacknowledgedStanzas(packet);
 
                     CharSequence elementXml = element.toXML();
                     if (elementXml instanceof XmlStringBuilder) {
@@ -1464,6 +1445,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     try {
                         while (!queue.isEmpty()) {
                             Element packet = queue.remove();
+                            if (packet instanceof Stanza) {
+                                Stanza stanza = (Stanza) packet;
+                                maybeAddToUnacknowledgedStanzas(stanza);
+                            }
                             writer.write(packet.toXML().toString());
                         }
                         writer.flush();
@@ -1519,6 +1504,29 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             for (Element element : elements) {
                 if (element instanceof Stanza) {
                     unacknowledgedStanzas.add((Stanza) element);
+                }
+            }
+        }
+
+        private void maybeAddToUnacknowledgedStanzas(Stanza stanza) throws IOException {
+            // Check if the stream element should be put to the unacknowledgedStanza
+            // queue. Note that we can not do the put() in sendStanzaInternal() and the
+            // packet order is not stable at this point (sendStanzaInternal() can be
+            // called concurrently).
+            if (unacknowledgedStanzas != null && stanza != null) {
+                // If the unacknowledgedStanza queue is nearly full, request an new ack
+                // from the server in order to drain it
+                if (unacknowledgedStanzas.size() == 0.8 * XMPPTCPConnection.QUEUE_SIZE) {
+                    writer.write(AckRequest.INSTANCE.toXML().toString());
+                    writer.flush();
+                }
+                try {
+                    // It is important the we put the stanza in the unacknowledged stanza
+                    // queue before we put it on the wire
+                    unacknowledgedStanzas.put(stanza);
+                }
+                catch (InterruptedException e) {
+                    throw new IllegalStateException(e);
                 }
             }
         }
