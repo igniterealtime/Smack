@@ -314,4 +314,9 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         }
         return string;
     }
+
+    @Override
+    public final String toString() {
+        return "SASL Mech: " + getName() + ", Prio: " + getPriority();
+    }
 }
