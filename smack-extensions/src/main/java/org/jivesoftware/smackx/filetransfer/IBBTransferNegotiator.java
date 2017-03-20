@@ -44,8 +44,6 @@ import org.jxmpp.jid.Jid;
  */
 public class IBBTransferNegotiator extends StreamNegotiator {
 
-    private XMPPConnection connection;
-
     private InBandBytestreamManager manager;
 
     /**
@@ -54,7 +52,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
      * @param connection The connection which this negotiator works on.
      */
     protected IBBTransferNegotiator(XMPPConnection connection) {
-        this.connection = connection;
+        super(connection);
         this.manager = InBandBytestreamManager.getByteStreamManager(connection);
     }
 
@@ -75,7 +73,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
          */
         this.manager.ignoreBytestreamRequestOnce(initiation.getSessionID());
 
-        Stanza streamInitiation = initiateIncomingStream(this.connection, initiation);
+        Stanza streamInitiation = initiateIncomingStream(connection(), initiation);
         return negotiateIncomingStream(streamInitiation);
     }
 

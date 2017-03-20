@@ -40,13 +40,12 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
 
     private final StreamNegotiator primaryNegotiator;
     private final StreamNegotiator secondaryNegotiator;
-    private final XMPPConnection connection;
 
     public FaultTolerantNegotiator(XMPPConnection connection, StreamNegotiator primary,
             StreamNegotiator secondary) {
+        super(connection);
         this.primaryNegotiator = primary;
         this.secondaryNegotiator = secondary;
-        this.connection = connection;
     }
 
     @Override
@@ -64,7 +63,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
     @Override
     public InputStream createIncomingStream(final StreamInitiation initiation) throws SmackException, XMPPErrorException, InterruptedException {
         // This could be either an xep47 ibb 'open' iq or an xep65 streamhost iq
-        IQ initationSet = initiateIncomingStream(connection, initiation);
+        IQ initationSet = initiateIncomingStream(connection(), initiation);
 
         StreamNegotiator streamNegotiator = determineNegotiator(initationSet);
 

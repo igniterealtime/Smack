@@ -472,7 +472,16 @@ public abstract class ConnectionConfiguration {
         return enabledSaslMechanisms.contains(saslMechanism);
     }
 
+    /**
+     * Return the explicitly enabled SASL mechanisms. May return <code>null</code> if no SASL mechanisms where
+     * explicitly enabled, i.e. all SALS mechanisms supported and announced by the service will be considered.
+     *
+     * @return the enabled SASL mechanisms or <code>null</code>.
+     */
     public Set<String> getEnabledSaslMechanisms() {
+        if (enabledSaslMechanisms == null) {
+            return null;
+        }
         return Collections.unmodifiableSet(enabledSaslMechanisms);
     }
 

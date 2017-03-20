@@ -249,6 +249,9 @@ public abstract class ScramMechanism extends SASLMechanism {
     }
 
     protected String getChannelBindingName() {
+        // Check if we are using TLS and if a "-PLUS" variant of this mechanism is enabled. Assuming that the "-PLUS"
+        // variants always have precedence before the non-"-PLUS" variants this means that the server did not announce
+        // the "-PLUS" variant, as otherwise we would have tried it.
         if (sslSession != null && connectionConfiguration.isEnabledSaslMechanism(getName() + "-PLUS")) {
             // Announce that we support Channel Binding, i.e., the '-PLUS' flavor of this SASL mechanism, but that we
             // believe the server does not.

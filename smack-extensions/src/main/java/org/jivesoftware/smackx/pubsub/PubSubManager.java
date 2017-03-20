@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,7 @@ import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -246,18 +249,78 @@ public final class PubSubManager extends Manager {
                 // XEP-60 5.3 states that
                 // "The 'disco#info' result MUST include an identity with a category of 'pubsub' and a type of either 'leaf' or 'collection'."
                 // If this is not the case, then we are dealing with an PubSub implementation that doesn't follow the specification.
-                throw new AssertionError(
-                                "PubSub service '"
-                                                + pubSubService
-                                                + "' returned disco info result for node '"
-                                                + id
-                                                + "', but it did not contain an Identity of type 'leaf' or 'collection' (and category 'pubsub'), which is not allowed according to XEP-60 5.3.");
+                throw new PubSubAssertionError.DiscoInfoNodeAssertionError(pubSubService, id);
             }
             nodeMap.put(id, node);
         }
         @SuppressWarnings("unchecked")
         T res = (T) node;
         return res;
+    }
+
+    /**
+     * Try to get a leaf node and create one if it does not already exist.
+     *
+     * @param id The unique ID of the node.
+     * @return the leaf node.
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws XMPPErrorException
+     * @since 4.2.1
+     */
+    public LeafNode getOrCreateLeafNode(final String id)
+                    throws NoResponseException, NotConnectedException, InterruptedException, XMPPErrorException {
+        try {
+            return getNode(id);
+        }
+        catch (XMPPErrorException e1) {
+            if (e1.getXMPPError().getCondition() == Condition.item_not_found) {
+                try {
+                    return createNode(id);
+                }
+                catch (XMPPErrorException e2) {
+                    if (e2.getXMPPError().getCondition() == Condition.conflict) {
+                        // The node was created in the meantime, re-try getNode(). Note that this case should be rare.
+                        return getNode(id);
+                    }
+                    throw e2;
+                }
+            }
+            throw e1;
+        }
+        catch (PubSubAssertionError.DiscoInfoNodeAssertionError e) {
+            // This could be caused by Prosody bug #805 (see https://prosody.im/issues/issue/805). Prosody does not
+            // answer to disco#info requests on the node ID, which makes it undecidable if a node is a leaf or
+            // collection node.
+            LOGGER.warning("The PubSub service " + pubSubService
+                            + " threw an DiscoInfoNodeAssertionError, trying workaround for Prosody bug #805 (https://prosody.im/issues/issue/805)");
+            return getOrCreateLeafNodeProsodyWorkaround(id);
+        }
+    }
+
+    private LeafNode getOrCreateLeafNodeProsodyWorkaround(final String id)
+                    throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException {
+        try {
+            return createNode(id);
+        }
+        catch (XMPPErrorException e1) {
+            if (e1.getXMPPError().getCondition() == Condition.conflict) {
+                Constructor<?> constructor = LeafNode.class.getDeclaredConstructors()[0];
+                constructor.setAccessible(true);
+                LeafNode res;
+                try {
+                    res = (LeafNode) constructor.newInstance(this, id);
+                }
+                catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                                | InvocationTargetException e2) {
+                    throw new AssertionError(e2);
+                }
+                // TODO: How to verify that this is actually a leafe node and not a conflict with a collection node?
+                return res;
+            }
+            throw e1;
+        }
     }
 
     /**
