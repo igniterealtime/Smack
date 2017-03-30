@@ -96,7 +96,7 @@ public class EnablePushNotificationsIQ extends IQ {
         xml.rightAngleBracket();
 
         if (publishOptions != null) {
-            DataForm dataForm = new DataForm(DataForm.Type.form);
+            DataForm dataForm = new DataForm(DataForm.Type.submit);
 
             FormField formTypeField = new FormField("FORM_TYPE");
             formTypeField.addValue(PubSub.NAMESPACE + "#publish-options");
