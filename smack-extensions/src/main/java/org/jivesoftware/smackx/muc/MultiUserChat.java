@@ -170,10 +170,6 @@ public class MultiUserChat {
             public void processStanza(Stanza packet) {
                 Message msg = (Message) packet;
                 EntityFullJid from = msg.getFrom().asEntityFullJidIfPossible();
-                if (from == null) {
-                    LOGGER.warning("Message subject not changed by a full JID: " + msg.getFrom());
-                    return;
-                }
                 // Update the room subject
                 subject = msg.getSubject();
                 // Fire event for subject updated listeners
