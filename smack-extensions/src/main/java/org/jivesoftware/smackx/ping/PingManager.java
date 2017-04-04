@@ -31,17 +31,20 @@ import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.SmackFuture;
+import org.jivesoftware.smack.SmackFuture.InternalSmackFuture;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.ping.packet.Ping;
@@ -171,6 +174,41 @@ public final class PingManager extends Manager {
         XMPPError.Type type = xmppError.getType();
         XMPPError.Condition condition = xmppError.getCondition();
         return type == XMPPError.Type.CANCEL && condition == XMPPError.Condition.feature_not_implemented;
+    }
+
+    public SmackFuture<Boolean> pingAsync(Jid jid) {
+        return pingAsync(jid, connection().getReplyTimeout());
+    }
+
+    public SmackFuture<Boolean> pingAsync(final Jid jid, long pongTimeout) {
+        final InternalSmackFuture<Boolean> future = new InternalSmackFuture<Boolean>() {
+            @Override
+            public void handleStanza(Stanza packet) throws NotConnectedException, InterruptedException {
+                setResult(true);
+            }
+            @Override
+            public boolean isNonFatalException(Exception exception) {
+                if (exception instanceof XMPPErrorException) {
+                    XMPPErrorException xmppErrorException = (XMPPErrorException) exception;
+                    if (isValidErrorPong(jid, xmppErrorException)) {
+                        setResult(true);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+
+        Ping ping = new Ping(jid);
+        try {
+            XMPPConnection connection = getAuthenticatedConnectionOrThrow();
+            connection.sendIqWithResponseCallback(ping, future, future, pongTimeout);
+        }
+        catch (NotLoggedInException | NotConnectedException | InterruptedException e) {
+            future.processException(e);
+        }
+
+        return future;
     }
 
     /**
