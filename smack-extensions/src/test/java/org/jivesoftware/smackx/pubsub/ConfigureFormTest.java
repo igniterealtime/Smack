@@ -26,7 +26,9 @@ import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
@@ -39,7 +41,7 @@ import org.junit.Test;
  * @author Robin Collier
  *
  */
-public class ConfigureFormTest
+public class ConfigureFormTest extends InitExtensions
 {
     @Test
     public void checkChildrenAssocPolicy()
@@ -55,6 +57,8 @@ public class ConfigureFormTest
         ThreadedDummyConnection con = ThreadedDummyConnection.newInstance();
         PubSubManager mgr = new PubSubManager(con, PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
         DiscoverInfo info = new DiscoverInfo();
+        info.setType(Type.result);
+        info.setFrom(PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
         Identity ident = new Identity("pubsub", null, "leaf");
         info.addIdentity(ident);
         con.addIQReply(info);
@@ -62,6 +66,8 @@ public class ConfigureFormTest
         Node node = mgr.getNode("princely_musings");
 
         PubSub errorIq = new PubSub();
+        errorIq.setType(Type.error);
+        errorIq.setFrom(PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
         XMPPError.Builder error = XMPPError.getBuilder(Condition.forbidden);
         errorIq.setError(error);
         con.addIQReply(errorIq);
