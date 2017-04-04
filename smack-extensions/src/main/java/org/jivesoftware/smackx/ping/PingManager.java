@@ -41,6 +41,7 @@ import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.ping.packet.Ping;
@@ -142,6 +143,36 @@ public final class PingManager extends Manager {
         maybeSchedulePingServerTask();
     }
 
+    private boolean isValidErrorPong(Jid destinationJid, XMPPErrorException xmppErrorException) {
+        // If it is an error error response and the destination was our own service, then this must mean that the
+        // service responded, i.e. is up and pingable.
+        if (destinationJid.equals(connection().getServiceName())) {
+            return true;
+        }
+
+        final XMPPError xmppError = xmppErrorException.getXMPPError();
+
+        // We may received an error response from an intermediate service returning an error like
+        // 'remote-server-not-found' or 'remote-server-timeout' to us (which would fake the 'from' address,
+        // see RFC 6120 § 8.3.1 2.). Or the recipient could became unavailable.
+
+        // Sticking with the current rules of RFC 6120/6121, it is undecidable at this point whether we received an
+        // error response from the pinged entity or not. This is because a service-unavailable error condition is
+        // *required* (as per the RFCs) to be send back in both relevant cases:
+        // 1. When the receiving entity is unaware of the IQ request type. RFC 6120 § 8.4.:
+        //    "If an intended recipient receives an IQ stanza of type "get" or
+        //    "set" containing a child element qualified by a namespace it does
+        //    not understand, then the entity MUST return an IQ stanza of type
+        //    "error" with an error condition of <service-unavailable/>.
+        //  2. When the receiving resource is not available. RFC 6121 § 8.5.3.2.3.
+
+        // Some clients don't obey the first rule and instead send back a feature-not-implement condition with type 'cancel',
+        // which allows us to consider this response as valid "error response" pong.
+        XMPPError.Type type = xmppError.getType();
+        XMPPError.Condition condition = xmppError.getCondition();
+        return type == XMPPError.Type.CANCEL && condition == XMPPError.Condition.feature_not_implemented;
+    }
+
     /**
      * Pings the given jid. This method will return false if an error occurs.  The exception 
      * to this, is a server ping, which will always return true if the server is reachable, 
@@ -168,8 +199,8 @@ public final class PingManager extends Manager {
         try {
             connection.createStanzaCollectorAndSend(ping).nextResultOrThrow(pingTimeout);
         }
-        catch (XMPPException exc) {
-            return jid.equals(connection.getXMPPServiceDomain());
+        catch (XMPPErrorException e) {
+            return isValidErrorPong(jid, e);
         }
         return true;
     }
