@@ -64,6 +64,8 @@ import org.jxmpp.stringprep.XmppStringprepException;
  */
 public final class PubSubManager extends Manager {
 
+    public static final String AUTO_CREATE_FEATURE = "http://jabber.org/protocol/pubsub#auto-create";
+
     private static final Logger LOGGER = Logger.getLogger(PubSubManager.class.getName());
     private static final Map<XMPPConnection, Map<BareJid, PubSubManager>> INSTANCES = new WeakHashMap<>();
 
@@ -325,6 +327,10 @@ public final class PubSubManager extends Manager {
 
     /**
      * Try to publish an item and, if the node with the given ID does not exists, auto-create the node.
+     * <p>
+     * Not every PubSub service supports automatic node creation. You can discover if this service supports it by using
+     * {@link #supportsAutomaticNodeCreation()}.
+     * </p>
      *
      * @param id The unique id of the node.
      * @param item The item to publish.
@@ -462,6 +468,23 @@ public final class PubSubManager extends Manager {
     {
         ServiceDiscoveryManager mgr = ServiceDiscoveryManager.getInstanceFor(connection());
         return mgr.discoverInfo(pubSubService);
+    }
+
+    /**
+     * Check if the PubSub service supports automatic node creation.
+     *
+     * @return true if the PubSub service supports automatic node creation.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.2.1
+     * @see <a href="https://xmpp.org/extensions/xep-0060.html#publisher-publish-autocreate">XEP-0060 § 7.1.4 Automatic Node Creation</a>
+     */
+    public boolean supportsAutomaticNodeCreation()
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
+        return sdm.supportsFeature(pubSubService, AUTO_CREATE_FEATURE);
     }
 
     /**
