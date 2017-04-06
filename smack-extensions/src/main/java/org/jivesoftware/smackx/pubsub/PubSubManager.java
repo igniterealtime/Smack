@@ -324,6 +324,30 @@ public final class PubSubManager extends Manager {
     }
 
     /**
+     * Try to publish an item and, if the node with the given ID does not exists, auto-create the node.
+     *
+     * @param id The unique id of the node.
+     * @param item The item to publish.
+     * @return the LeafNode on which the item was published.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.2.1
+     */
+    public <I extends Item> LeafNode tryToPublishAndPossibleAutoCreate(String id, I item)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        LeafNode leafNode = new LeafNode(this, id);
+        leafNode.send(item);
+
+        // If LeafNode.send() did not throw then we have successfully published an item and possible auto-created
+        // (XEP-0163 § 3., XEP-0060 § 7.1.4) the node. So we can put the node into the nodeMap.
+        nodeMap.put(id, leafNode);
+
+        return leafNode;
+    }
+
+    /**
      * Get all the nodes that currently exist as a child of the specified
      * collection node.  If the service does not support collection nodes
      * then all nodes will be returned.
