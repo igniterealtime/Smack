@@ -207,18 +207,16 @@ public class LeafNode extends Node
      * This is only acceptable for nodes with {@link ConfigureForm#isPersistItems()}=false
      * and {@link ConfigureForm#isDeliverPayloads()}=false.
      * 
-     * This is an asynchronous call which returns as soon as the 
-     * stanza(/packet) has been sent.
-     * 
-     * For synchronous calls use {@link #send() send()}.
      * @throws NotConnectedException 
      * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @deprecated use {@link #publish()} instead.
      */
-    public void publish() throws NotConnectedException, InterruptedException
+    @Deprecated
+    public void send() throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException
     {
-        PubSub packet = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PUBLISH, getId()));
-
-        pubSubManager.getConnection().sendStanza(packet);
+        publish();
     }
 
     /**
@@ -229,21 +227,18 @@ public class LeafNode extends Node
      * Please note that this is not the same as {@link #send()}, which
      * publishes an event with NO item.
      * 
-     * This is an asynchronous call which returns as soon as the 
-     * stanza(/packet) has been sent.
-     * 
-     * For synchronous calls use {@link #send(Item) send(Item))}.
-     * 
      * @param item - The item being sent
      * @throws NotConnectedException 
      * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @deprecated use {@link #publish(Item)} instead.
      */
     @SuppressWarnings("unchecked")
-    public <T extends Item> void publish(T item) throws NotConnectedException, InterruptedException
+    @Deprecated
+    public <T extends Item> void send(T item) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException
     {
-        Collection<T> items = new ArrayList<T>(1);
-        items.add((T)(item == null ? new Item() : item));
-        publish(items);
+        publish(item);
     }
 
     /**
@@ -252,20 +247,17 @@ public class LeafNode extends Node
      * In addition, if {@link ConfigureForm#isPersistItems()}=false, only the last item in the input
      * list will get stored on the node, assuming it stores the last sent item.
      * 
-     * This is an asynchronous call which returns as soon as the 
-     * stanza(/packet) has been sent.
-     * 
-     * For synchronous calls use {@link #send(Collection) send(Collection))}.
-     * 
      * @param items - The collection of items being sent
      * @throws NotConnectedException 
      * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @deprecated use {@link #publish(Collection)} instead.
      */
-    public <T extends Item> void publish(Collection<T> items) throws NotConnectedException, InterruptedException
+    @Deprecated
+    public <T extends Item> void send(Collection<T> items) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException
     {
-        PubSub packet = createPubsubPacket(Type.set, new PublishItem<T>(getId(), items));
-
-        pubSubManager.getConnection().sendStanza(packet);
+        publish(items);
     }
 
     /**
@@ -275,17 +267,13 @@ public class LeafNode extends Node
      * This is only acceptable for nodes with {@link ConfigureForm#isPersistItems()}=false
      * and {@link ConfigureForm#isDeliverPayloads()}=false.
      * 
-     * This is a synchronous call which will throw an exception 
-     * on failure.
-     * 
-     * For asynchronous calls, use {@link #publish() publish()}.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
      * @throws InterruptedException 
      * 
      */
-    public void send() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
+    public void publish() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         PubSub packet = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PUBLISH, getId()));
 
@@ -304,11 +292,6 @@ public class LeafNode extends Node
      * Please note that this is not the same as {@link #send()}, which
      * publishes an event with NO item.
      * 
-     * This is a synchronous call which will throw an exception 
-     * on failure.
-     * 
-     * For asynchronous calls, use {@link #publish(Item) publish(Item)}.
-     * 
      * @param item - The item being sent
      * @throws XMPPErrorException 
      * @throws NoResponseException 
@@ -317,11 +300,11 @@ public class LeafNode extends Node
      * 
      */
     @SuppressWarnings("unchecked")
-    public <T extends Item> void send(T item) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
+    public <T extends Item> void publish(T item) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         Collection<T> items = new ArrayList<T>(1);
         items.add((item == null ? (T)new Item() : item));
-        send(items);
+        publish(items);
     }
 
     /**
@@ -329,11 +312,6 @@ public class LeafNode extends Node
      * 
      * In addition, if {@link ConfigureForm#isPersistItems()}=false, only the last item in the input
      * list will get stored on the node, assuming it stores the last sent item.
-     *  
-     * This is a synchronous call which will throw an exception 
-     * on failure.
-     * 
-     * For asynchronous calls, use {@link #publish(Collection) publish(Collection))}.
      * 
      * @param items - The collection of {@link Item} objects being sent
      * @throws XMPPErrorException 
@@ -342,7 +320,7 @@ public class LeafNode extends Node
      * @throws InterruptedException 
      * 
      */
-    public <T extends Item> void send(Collection<T> items) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
+    public <T extends Item> void publish(Collection<T> items) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         PubSub packet = createPubsubPacket(Type.set, new PublishItem<T>(getId(), items));
 
