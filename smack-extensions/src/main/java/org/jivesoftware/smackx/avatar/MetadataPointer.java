@@ -27,8 +27,8 @@ import java.util.HashMap;
  */
 public class MetadataPointer {
 
-    private String namespace;
-    private HashMap<String, Object> fields;
+    private final String namespace;
+    private final HashMap<String, Object> fields;
 
     /**
      * Metadata Pointer constructor.

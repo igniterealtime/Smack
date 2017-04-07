@@ -33,7 +33,7 @@ public class DataExtension implements ExtensionElement {
     public static final String ELEMENT = "data";
     public static final String NAMESPACE = UserAvatarManager.DATA_NAMESPACE;
 
-    private byte[] data;
+    private final byte[] data;
 
     /**
      * Data Extension constructor.
@@ -47,10 +47,10 @@ public class DataExtension implements ExtensionElement {
     /**
      * Get data.
      * 
-     * @return the data
+     * @return a copy of the immutable data
      */
     public byte[] getData() {
-        return data;
+        return data.clone();
     }
 
     /**

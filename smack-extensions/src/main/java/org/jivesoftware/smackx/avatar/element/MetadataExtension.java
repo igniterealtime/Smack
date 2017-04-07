@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.avatar.element;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,8 +40,8 @@ public class MetadataExtension implements ExtensionElement {
     public static final String ELEMENT = "metadata";
     public static final String NAMESPACE = UserAvatarManager.METADATA_NAMESPACE;
 
-    private List<MetadataInfo> infos;
-    private List<MetadataPointer> pointers;
+    private final List<MetadataInfo> infos;
+    private final List<MetadataPointer> pointers;
 
     /**
      * Metadata Extension constructor.
@@ -48,7 +49,7 @@ public class MetadataExtension implements ExtensionElement {
      * @param infos
      */
     public MetadataExtension(List<MetadataInfo> infos) {
-        this.infos = infos;
+        this(infos, null);
     }
 
     /**
@@ -68,7 +69,7 @@ public class MetadataExtension implements ExtensionElement {
      * @return the info elements list
      */
     public List<MetadataInfo> getInfos() {
-        return infos;
+        return Collections.unmodifiableList(infos);
     }
 
     /**
@@ -77,7 +78,7 @@ public class MetadataExtension implements ExtensionElement {
      * @return the pointer elements list
      */
     public List<MetadataPointer> getPointers() {
-        return pointers;
+        return (pointers == null) ? null : Collections.unmodifiableList(pointers);
     }
 
     @Override

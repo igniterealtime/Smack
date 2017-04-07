@@ -25,12 +25,12 @@ package org.jivesoftware.smackx.avatar;
  */
 public class MetadataInfo {
 
-    private String id;
-    private String url;
-    private long bytes;
-    private String type;
-    private int height;
-    private int width;
+    private final String id;
+    private final String url;
+    private final long bytes;
+    private final String type;
+    private final int height;
+    private final int width;
 
     /**
      * MetadataInfo constructor.

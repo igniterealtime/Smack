@@ -28,7 +28,6 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.util.SHA1;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.avatar.element.DataExtension;
@@ -116,7 +115,7 @@ public final class UserAvatarManager extends Manager {
      */
     public LeafNode getDataNode()
             throws NoResponseException, NotConnectedException, InterruptedException, XMPPErrorException {
-        return getNode(DATA_NAMESPACE);
+        return PubSubManager.getInstance(connection()).getOrCreateLeafNode(DATA_NAMESPACE);
     }
 
     /**
@@ -130,38 +129,7 @@ public final class UserAvatarManager extends Manager {
      */
     public LeafNode getMetadataNode()
             throws NoResponseException, NotConnectedException, InterruptedException, XMPPErrorException {
-        return getNode(METADATA_NAMESPACE);
-    }
-
-    private LeafNode getNode(String nodeName)
-            throws NoResponseException, NotConnectedException, InterruptedException, XMPPErrorException {
-        PubSubManager pubSubManager = PubSubManager.getInstance(connection());
-        LeafNode node;
-
-        try {
-            node = pubSubManager.getNode(nodeName);
-        } catch (XMPPErrorException exception) {
-
-            if (exception.getXMPPError().getCondition() == Condition.item_not_found) {
-                // the node does not exist
-                try {
-                    node = pubSubManager.createNode(nodeName);
-                } catch (XMPPErrorException exception2) {
-
-                    if (exception2.getXMPPError().getCondition() == Condition.conflict) {
-                        // the node was already created
-                        node = pubSubManager.getNode(nodeName);
-                    } else {
-                        throw exception2;
-                    }
-
-                }
-            } else {
-                throw exception;
-            }
-        }
-
-        return node;
+        return PubSubManager.getInstance(connection()).getOrCreateLeafNode(METADATA_NAMESPACE);
     }
 
     /**
@@ -177,7 +145,7 @@ public final class UserAvatarManager extends Manager {
     public void publishAvatarData(byte[] data, String itemId)
             throws NoResponseException, NotConnectedException, XMPPErrorException, InterruptedException {
         DataExtension dataExtension = new DataExtension(data);
-        getDataNode().send(new PayloadItem<DataExtension>(itemId, dataExtension));
+        getDataNode().publish(new PayloadItem<DataExtension>(itemId, dataExtension));
     }
 
     /**
@@ -229,7 +197,7 @@ public final class UserAvatarManager extends Manager {
     public void publishAvatarMetadata(String itemId, List<MetadataInfo> infos, List<MetadataPointer> pointers)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MetadataExtension metadataExtension = new MetadataExtension(infos, pointers);
-        getMetadataNode().send(new PayloadItem<MetadataExtension>(itemId, metadataExtension));
+        getMetadataNode().publish(new PayloadItem<MetadataExtension>(itemId, metadataExtension));
     }
 
     /**
@@ -338,7 +306,7 @@ public final class UserAvatarManager extends Manager {
      */
     public void disableAvatarPublishing()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        getMetadataNode().send(new PayloadItem<MetadataExtension>(new MetadataExtension(null)));
+        getMetadataNode().publish(new PayloadItem<MetadataExtension>(new MetadataExtension(null)));
     }
 
 }
