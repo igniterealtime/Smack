@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,8 +115,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
         switch (state) {
         case INITIAL:
             for (String part : challengeParts) {
-                String[] keyValue = part.split("=");
-                assert (keyValue.length == 2);
+                String[] keyValue = part.split("=", 2);
                 String key = keyValue[0];
                 // RFC 2831 § 7.1 about the formating of the digest-challenge:
                 // "The full form is "<n>#<m>element" indicating at least <n> and
