@@ -27,7 +27,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
@@ -101,7 +100,7 @@ public final class GeoLocationManager extends Manager {
      */
     public void sendGeolocation(GeoLocation geoLocation)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        getNode().send(new PayloadItem<GeoLocation>(geoLocation));
+        getNode().publish(new PayloadItem<GeoLocation>(geoLocation));
     }
 
     /**
@@ -115,48 +114,12 @@ public final class GeoLocationManager extends Manager {
     public void stopPublishingGeolocation()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         GeoLocation emptyGeolocation = new GeoLocation.Builder().build();
-        getNode().send(new PayloadItem<GeoLocation>(emptyGeolocation));
+        getNode().publish(new PayloadItem<GeoLocation>(emptyGeolocation));
     }
 
-    /**
-     * Returns the geolocation node in PubSub.
-     * 
-     * @return the geolocation PubSub node
-     * @throws InterruptedException
-     * @throws NotConnectedException
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     */
-    public LeafNode getNode()
+    private LeafNode getNode()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSubManager pubSubManager = PubSubManager.getInstance(connection());
-        LeafNode node;
-
-        try {
-            node = pubSubManager.getNode(GeoLocation.NAMESPACE);
-        } catch (XMPPErrorException exception) {
-
-            if (exception.getXMPPError().getCondition() == Condition.item_not_found) {
-                // the node does not exist
-                try {
-                    node = pubSubManager.createNode(GeoLocation.NAMESPACE);
-                } catch (XMPPErrorException exception2) {
-
-                    if (exception2.getXMPPError().getCondition() == Condition.conflict) {
-                        // the node was already created
-                        node = pubSubManager.getNode(GeoLocation.NAMESPACE);
-                    } else {
-                        throw exception2;
-                    }
-
-                }
-            } else {
-                throw exception;
-            }
-
-        }
-
-        return node;
+        return PubSubManager.getInstance(connection()).getOrCreateLeafNode(GeoLocation.NAMESPACE);
     }
 
 }
