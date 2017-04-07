@@ -70,6 +70,7 @@ public final class ReconnectionManager {
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 if (connection instanceof AbstractXMPPConnection) {
                     ReconnectionManager.getInstanceFor((AbstractXMPPConnection) connection);
@@ -204,6 +205,7 @@ public final class ReconnectionManager {
             /**
              * The process will try the reconnection until the connection succeed or the user cancel it
              */
+            @Override
             public void run() {
                 final AbstractXMPPConnection connection = weakRefConnection.get();
                 if (connection == null) {

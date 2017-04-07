@@ -58,7 +58,7 @@ import org.jivesoftware.smackx.workgroup.settings.WorkgroupProperties;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
@@ -108,20 +108,24 @@ public class Workgroup {
 
         // Register as a queue listener for internal usage by this instance.
         addQueueListener(new QueueListener() {
+            @Override
             public void joinedQueue() {
                 inQueue = true;
             }
 
+            @Override
             public void departedQueue() {
                 inQueue = false;
                 queuePosition = -1;
                 queueRemainingTime = -1;
             }
 
+            @Override
             public void queuePositionUpdated(int currentPosition) {
                 queuePosition = currentPosition;
             }
 
+            @Override
             public void queueWaitTimeUpdated(int secondsRemaining) {
                 queueRemainingTime = secondsRemaining;
             }
@@ -133,7 +137,7 @@ public class Workgroup {
         MultiUserChatManager.getInstanceFor(connection).addInvitationListener(
                 new org.jivesoftware.smackx.muc.InvitationListener() {
                     @Override
-                    public void invitationReceived(XMPPConnection conn, org.jivesoftware.smackx.muc.MultiUserChat room, EntityFullJid inviter,
+                    public void invitationReceived(XMPPConnection conn, org.jivesoftware.smackx.muc.MultiUserChat room, EntityJid inviter,
                                                    String reason, String password, Message message, MUCUser.Invite invitation) {
                         inQueue = false;
                         queuePosition = -1;
@@ -145,6 +149,7 @@ public class Workgroup {
         StanzaFilter typeFilter = new StanzaTypeFilter(Message.class);
 
         connection.addAsyncStanzaListener(new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 handlePacket(packet);
             }

@@ -394,6 +394,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
          * <a href="http://xmpp.org/extensions/xep-0115.html#ver-proc">XEP-0015 5.4 Processing Method (Step 3.3)</a>.
          *  
          */
+        @Override
         public boolean equals(Object obj) {
             if (obj == null)
                 return false;
@@ -437,6 +438,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
          * @return a negative integer, zero, or a positive integer as this object is less than,
          *         equal to, or greater than the specified object.
          */
+        @Override
         public int compareTo(DiscoverInfo.Identity other) {
             String otherLang = other.lang == null ? "" : other.lang;
             String thisLang = lang == null ? "" : lang;
@@ -512,6 +514,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
             return xml;
         }
 
+        @Override
         public boolean equals(Object obj) {
             if (obj == null)
                 return false;

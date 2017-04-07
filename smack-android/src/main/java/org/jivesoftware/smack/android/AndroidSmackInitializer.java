@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,12 @@ import org.jivesoftware.smack.util.stringencoder.android.AndroidBase64UrlSafeEnc
 
 public class AndroidSmackInitializer implements SmackInitializer {
 
-	@Override
-	public List<Exception> initialize() {
-		SmackConfiguration.setDefaultHostnameVerifier(new StrictHostnameVerifier());
-		Base64.setEncoder(AndroidBase64Encoder.getInstance());
-		Base64UrlSafeEncoder.setEncoder(AndroidBase64UrlSafeEncoder.getInstance());
-		return null;
-	}
+    @Override
+    public List<Exception> initialize() {
+        SmackConfiguration.setDefaultHostnameVerifier(new StrictHostnameVerifier());
+        Base64.setEncoder(AndroidBase64Encoder.getInstance());
+        Base64UrlSafeEncoder.setEncoder(AndroidBase64UrlSafeEncoder.getInstance());
+        return null;
+    }
 
 }

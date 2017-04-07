@@ -52,9 +52,9 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 
 public class AudioMediaSession extends JingleMediaSession implements MediaSessionListener {
 
-	private static final Logger LOGGER = Logger.getLogger(AudioMediaSession.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AudioMediaSession.class.getName());
 
-	private MediaSession mediaSession;
+    private MediaSession mediaSession;
 
     /**
      * Create a Session using Speex Codec.
@@ -112,6 +112,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
     /**
      * Initialize the Audio Channel to make it able to send and receive audio.
      */
+    @Override
     public void initialize() {
 
         String ip;
@@ -155,6 +156,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
     /**
      * Starts transmission and for NAT Traversal reasons start receiving also.
      */
+    @Override
     public void startTrasmit() {
         try {
             LOGGER.fine("start");
@@ -172,6 +174,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
      *
      * @param active active state
      */
+    @Override
     public void setTrasmit(boolean active) {
         // Do nothing
     }
@@ -179,6 +182,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
     /**
      * For NAT Reasons this method does nothing. Use startTransmit() to start transmit and receive jmf
      */
+    @Override
     public void startReceive() {
         // Do nothing
     }
@@ -186,6 +190,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
     /**
      * Stops transmission and for NAT Traversal reasons stop receiving also.
      */
+    @Override
     public void stopTrasmit() {
         if (mediaSession != null)
             mediaSession.close();
@@ -194,16 +199,20 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
     /**
      * For NAT Reasons this method does nothing. Use startTransmit() to start transmit and receive jmf
      */
+    @Override
     public void stopReceive() {
         // Do nothing
     }
 
+    @Override
     public void newStreamIdentified(StreamPlayer streamPlayer) {
     }
 
+    @Override
     public void senderReportReceived(SenderReport report) {
     }
 
+    @Override
     public void streamClosed(StreamPlayer stream, boolean timeout) {
     }
 

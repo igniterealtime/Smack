@@ -131,6 +131,7 @@ public class BookmarkedConference implements SharedBookmark {
         this.isShared = isShared;
     }
 
+    @Override
     public boolean isShared() {
         return isShared;
     }

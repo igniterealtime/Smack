@@ -30,7 +30,7 @@ public abstract class SetData implements NamedElement {
         DOUBLE,
         ;
 
-        private String toStringCache;
+        private final String toStringCache;
 
         private Type() {
             toStringCache = this.name().toLowerCase(Locale.US);

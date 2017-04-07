@@ -185,7 +185,7 @@ public class DNSUtil {
         }
 
         List<SRVRecord> srvRecords = dnsResolver.lookupSRVRecords(srvDomain, failedAddresses, dnssecMode);
-        if (srvRecords != null) {
+        if (srvRecords != null && !srvRecords.isEmpty()) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 String logMessage = "Resolved SRV RR for " + srvDomain + ":";
                 for (SRVRecord r : srvRecords)
@@ -194,6 +194,8 @@ public class DNSUtil {
             }
             List<HostAddress> sortedRecords = sortSRVRecords(srvRecords);
             addresses.addAll(sortedRecords);
+        } else {
+            LOGGER.info("Could not resolve DNS SRV resource records for " + srvDomain + ". Consider adding those.");
         }
 
         int defaultPort = -1;

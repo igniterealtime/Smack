@@ -248,9 +248,11 @@ public class AdHocCommandData extends IQ {
             this.condition = condition;
         }
 
+        @Override
         public String getElementName() {
             return condition.toString();
         }
+        @Override
         public String getNamespace() {
             return namespace;
         }
@@ -259,6 +261,7 @@ public class AdHocCommandData extends IQ {
             return condition;
         }
 
+        @Override
         public String toXML() {
             StringBuilder buf = new StringBuilder();
             buf.append('<').append(getElementName());

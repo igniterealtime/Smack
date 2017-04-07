@@ -472,7 +472,16 @@ public abstract class ConnectionConfiguration {
         return enabledSaslMechanisms.contains(saslMechanism);
     }
 
+    /**
+     * Return the explicitly enabled SASL mechanisms. May return <code>null</code> if no SASL mechanisms where
+     * explicitly enabled, i.e. all SALS mechanisms supported and announced by the service will be considered.
+     *
+     * @return the enabled SASL mechanisms or <code>null</code>.
+     */
     public Set<String> getEnabledSaslMechanisms() {
+        if (enabledSaslMechanisms == null) {
+            return null;
+        }
         return Collections.unmodifiableSet(enabledSaslMechanisms);
     }
 
@@ -576,14 +585,17 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
-         * Set the resource to use.
+         * Set the resource we are requesting from the server.
          * <p>
-         * If <code>resource</code> is <code>null</code>, then the server will automatically create a resource for the
-         * client. Default resource is "Smack".
+         * If <code>resource</code> is <code>null</code>, the default, then the server will automatically create a
+         * resource for the client. Note that XMPP clients only suggest this resource to the server. XMPP servers are
+         * allowed to ignore the client suggested resource and instead assign a completely different
+         * resource (see RFC 6120 § 7.7.1).
          * </p>
          *
          * @param resource the resource to use.
          * @return a reference to this builder.
+         * @see <a href="https://tools.ietf.org/html/rfc6120#section-7.7.1">RFC 6120 § 7.7.1</a>
          */
         public B setResource(Resourcepart resource) {
             this.resource = resource;
@@ -591,7 +603,7 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
-         * Set the resource to use.
+         * Set the resource we are requesting from the server.
          *
          * @param resource the non-null CharSequence to use a resource.
          * @return a reference ot this builder.

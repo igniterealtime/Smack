@@ -61,6 +61,7 @@ public class ScreenShareMediaManager extends JingleMediaManager {
      *
      * @return The Payload List
      */
+    @Override
     public List<PayloadType> getPayloads() {
         return payloads;
     }
@@ -73,6 +74,7 @@ public class ScreenShareMediaManager extends JingleMediaManager {
      * @param local       local Candidate
      * @return JingleMediaSession JingleMediaSession
      */
+    @Override
     public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, final JingleSession jingleSession) {
         ScreenShareSession session = null;
         session = new ScreenShareSession(payloadType, remote, local, "Screen", jingleSession);
@@ -85,6 +87,7 @@ public class ScreenShareMediaManager extends JingleMediaManager {
         return session;
     }
 
+    @Override
     public PayloadType getPreferredPayloadType() {
         return super.getPreferredPayloadType();
     }
@@ -105,6 +108,7 @@ public class ScreenShareMediaManager extends JingleMediaManager {
         this.encoder = encoder;
     }
 
+    @Override
     public  String getName() {
         return MEDIA_NAME;
     }

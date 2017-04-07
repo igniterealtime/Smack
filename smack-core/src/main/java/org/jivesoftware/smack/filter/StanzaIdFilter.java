@@ -47,10 +47,12 @@ public class StanzaIdFilter implements StanzaFilter {
         this.stanzaId = StringUtils.requireNotNullOrEmpty(stanzaID, "Stanza ID must not be null or empty.");
     }
 
+    @Override
     public boolean accept(Stanza stanza) {
         return stanzaId.equals(stanza.getStanzaId());
     }
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + ": id=" + stanzaId;
     }

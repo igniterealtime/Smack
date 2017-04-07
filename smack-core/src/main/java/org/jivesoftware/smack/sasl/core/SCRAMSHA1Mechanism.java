@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2016 Florian Schmaus
+ * Copyright 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.MAC;
 
 public class SCRAMSHA1Mechanism extends ScramMechanism {
+
+    static final int PRIORITY = 110;
 
     static {
         SHA_1_SCRAM_HMAC = new ScramHmac() {
@@ -47,7 +49,7 @@ public class SCRAMSHA1Mechanism extends ScramMechanism {
 
     @Override
     public int getPriority() {
-        return 110;
+        return PRIORITY;
     }
 
     @Override

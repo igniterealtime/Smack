@@ -29,9 +29,9 @@ import org.jivesoftware.smackx.jingleold.packet.JingleError;
  */
 public class JingleSessionStateEnded extends JingleSessionState {
 
-	private static final Logger LOGGER = Logger.getLogger(JingleSessionStateEnded.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JingleSessionStateEnded.class.getName());
 
-	private static JingleSessionStateEnded INSTANCE = null;
+    private static JingleSessionStateEnded INSTANCE = null;
 
     protected JingleSessionStateEnded() {
         // Prevent instantiation of the class.
@@ -49,12 +49,14 @@ public class JingleSessionStateEnded extends JingleSessionState {
         return INSTANCE;
     }
 
+    @Override
     public void enter() {
         LOGGER.fine("Session Ended");
         LOGGER.fine("-------------------------------------------------------------------");
 
     }
 
+    @Override
     public void exit() {
         // TODO Auto-generated method stub
 
@@ -63,6 +65,7 @@ public class JingleSessionStateEnded extends JingleSessionState {
     /**
      * Pretty much nothing is valid for receiving once we've ended the session.
      */
+    @Override
     public IQ processJingle(JingleSession session, Jingle jingle, JingleActionEnum action) {
         IQ response = null;
 

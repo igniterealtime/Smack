@@ -265,8 +265,11 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         return null;
     }
 
+    @Override
     public final int compareTo(SASLMechanism other) {
-        return getPriority() - other.getPriority();
+        // Switch to Integer.compare(int, int) once Smack is on Android 19 or higher.
+        Integer ourPriority = getPriority();
+        return ourPriority.compareTo(other.getPriority());
     }
 
     /**
@@ -276,6 +279,11 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      */
     public abstract String getName();
 
+    /**
+     * Get the priority of this SASL mechanism. Lower values mean higher priority.
+     *
+     * @return the priority of this SASL mechanism.
+     */
     public abstract int getPriority();
 
     public abstract void checkIfSuccessfulOrThrow() throws SmackException;
@@ -298,7 +306,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     }
 
     /**
-     * SASLprep the given String.
+     * SASLprep the given String. The resulting String is in UTF-8.
      * 
      * @param string the String to sasl prep.
      * @return the given String SASL preped
@@ -310,5 +318,10 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
             return stringTransformer.transform(string);
         }
         return string;
+    }
+
+    @Override
+    public final String toString() {
+        return "SASL Mech: " + getName() + ", Prio: " + getPriority();
     }
 }

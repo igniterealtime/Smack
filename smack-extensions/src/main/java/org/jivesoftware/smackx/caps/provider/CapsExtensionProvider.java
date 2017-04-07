@@ -27,6 +27,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 public class CapsExtensionProvider extends ExtensionElementProvider<CapsExtension> {
 
+    @Override
     public CapsExtension parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
             SmackException {
         String hash = null;

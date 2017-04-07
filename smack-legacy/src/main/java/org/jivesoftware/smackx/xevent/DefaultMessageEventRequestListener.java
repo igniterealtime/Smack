@@ -31,6 +31,7 @@ import org.jxmpp.jid.Jid;
  */
 public class DefaultMessageEventRequestListener implements MessageEventRequestListener {
 
+    @Override
     public void deliveredNotificationRequested(Jid from, String packetID,
                 MessageEventManager messageEventManager) throws NotConnectedException, InterruptedException
     {
@@ -38,16 +39,19 @@ public class DefaultMessageEventRequestListener implements MessageEventRequestLi
         messageEventManager.sendDeliveredNotification(from, packetID);
     }
 
+    @Override
     public void displayedNotificationRequested(Jid from, String packetID,
             MessageEventManager messageEventManager)
     {
     }
 
+    @Override
     public void composingNotificationRequested(Jid from, String packetID,
             MessageEventManager messageEventManager)
     {
     }
 
+    @Override
     public void offlineNotificationRequested(Jid from, String packetID,
             MessageEventManager messageEventManager)
     {

@@ -54,6 +54,7 @@ public class FixedResolver extends TransportResolver {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @Override
     public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException, InterruptedException {
         if (!isResolving()) {
             setResolveInit();
@@ -76,10 +77,12 @@ public class FixedResolver extends TransportResolver {
      *
      * @throws XMPPException
      */
+    @Override
     public void initialize() throws XMPPException {
         setInitialized();
     }
 
+    @Override
     public void cancel() throws XMPPException {
         // Nothing to do here
     }

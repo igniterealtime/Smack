@@ -39,6 +39,7 @@ public class MetaDataProvider extends ExtensionElementProvider<MetaData> {
      * @throws IOException 
      * @throws XmlPullParserException 
      */
+    @Override
     public MetaData parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         Map<String, List<String>> metaData = MetaDataUtils.parseMetaData(parser);
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2016-2017 Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,16 @@
  */
 package org.jivesoftware.smackx.mam;
 
-import static org.mockito.Mockito.mock;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smackx.ExperimentalInitializerTest;
+import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Before;
 
-public class MamTest extends ExperimentalInitializerTest {
+public class MamTest extends InitExtensions {
 
     protected XMPPConnection connection;
     protected String queryId;
@@ -35,7 +34,7 @@ public class MamTest extends ExperimentalInitializerTest {
     @Before
     public void setup() {
         // mock connection
-        connection = mock(XMPPConnection.class);
+        connection = new DummyConnection();
 
         // test query id
         queryId = "testid";

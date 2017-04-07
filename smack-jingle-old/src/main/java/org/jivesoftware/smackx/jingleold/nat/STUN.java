@@ -46,9 +46,9 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class STUN extends SimpleIQ {
 
-	private static final Logger LOGGER = Logger.getLogger(STUN.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(STUN.class.getName());
 
-	private List<StunServerAddress> servers = new ArrayList<StunServerAddress>();
+    private List<StunServerAddress> servers = new ArrayList<StunServerAddress>();
 
     private String publicIp = null;
 

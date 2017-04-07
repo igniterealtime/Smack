@@ -87,7 +87,8 @@ public final class FileUtils {
     public static boolean addLines(String url, Set<String> set) throws MalformedURLException, IOException {
         InputStream is = getStreamForUrl(url, null);
         if (is == null) return false;
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        InputStreamReader sr = new InputStreamReader(is, StringUtils.UTF8);
+        BufferedReader br = new BufferedReader(sr);
         String line;
         while ((line = br.readLine()) != null) {
             set.add(line);
@@ -102,6 +103,7 @@ public final class FileUtils {
      * @return the content of file or null in case of an error
      * @throws IOException 
      */
+    @SuppressWarnings("DefaultCharset")
     public static String readFileOrThrow(File file) throws FileNotFoundException, IOException {
         Reader reader = null;
         try {
@@ -132,6 +134,7 @@ public final class FileUtils {
         return null;
     }
 
+    @SuppressWarnings("DefaultCharset")
     public static void writeFileOrThrow(File file, CharSequence content) throws IOException {
         FileWriter writer = new FileWriter(file, false);
         try {

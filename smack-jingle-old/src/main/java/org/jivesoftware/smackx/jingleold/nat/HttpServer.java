@@ -27,14 +27,16 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.util.StringUtils;
+
 /**
  * A very Simple HTTP Server.
  */
 public class HttpServer {
 
-	private static final Logger LOGGER = Logger.getLogger(HttpServer.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(HttpServer.class.getName());
 
-	public HttpServer(int port) {
+    public HttpServer(int port) {
         ServerSocket server_socket;
 
         try {
@@ -73,7 +75,7 @@ public class HttpServer {
         HttpServer httpServer = new HttpServer(Integer.parseInt(args[0]));
     }
 
-    class HttpRequestHandler implements Runnable {
+    static class HttpRequestHandler implements Runnable {
 
         final static String CRLF = "\r\n";
         Socket socket;
@@ -85,9 +87,10 @@ public class HttpServer {
             this.socket = socket;
             this.input = socket.getInputStream();
             this.output = socket.getOutputStream();
-            this.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.br = new BufferedReader(new InputStreamReader(socket.getInputStream(), StringUtils.UTF8));
         }
 
+        @Override
         public void run() {
             try {
                 processRequest();
@@ -115,19 +118,19 @@ public class HttpServer {
                     String contentLengthLine;
                     String statusLine = "HTTP/1.0 200 OK" + CRLF;
                     contentLengthLine = "Content-Length: "
-                            + (new Integer(entityBody.length())).toString() + CRLF;
+                            + entityBody.length() + CRLF;
                     contentTypeLine = "text/html";
 
-                    output.write(statusLine.getBytes());
+                    output.write(statusLine.getBytes(StringUtils.UTF8));
 
-                    output.write(serverLine.getBytes());
+                    output.write(serverLine.getBytes(StringUtils.UTF8));
 
-                    output.write(contentTypeLine.getBytes());
-                    output.write(contentLengthLine.getBytes());
+                    output.write(contentTypeLine.getBytes(StringUtils.UTF8));
+                    output.write(contentLengthLine.getBytes(StringUtils.UTF8));
 
-                    output.write(CRLF.getBytes());
+                    output.write(CRLF.getBytes(StringUtils.UTF8));
 
-                    output.write(entityBody.getBytes());
+                    output.write(entityBody.getBytes(StringUtils.UTF8));
 
                 }
             }

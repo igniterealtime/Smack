@@ -44,39 +44,42 @@ public class EventElement implements EmbeddedPacketExtension
      */
     public static final String NAMESPACE = PubSubNamespace.EVENT.getXmlns();
 
-	private EventElementType type;
-	private NodeExtension ext;
+    private EventElementType type;
+    private NodeExtension ext;
 
-	public EventElement(EventElementType eventType, NodeExtension eventExt)
-	{
-		type = eventType;
-		ext = eventExt;
-	}
+    public EventElement(EventElementType eventType, NodeExtension eventExt)
+    {
+        type = eventType;
+        ext = eventExt;
+    }
 
-	public EventElementType getEventType()
-	{
-		return type;
-	}
+    public EventElementType getEventType()
+    {
+        return type;
+    }
 
-	public List<ExtensionElement> getExtensions()
-	{
-		return Arrays.asList(new ExtensionElement[]{getEvent()});
-	}
+    @Override
+    public List<ExtensionElement> getExtensions()
+    {
+        return Arrays.asList(new ExtensionElement[]{getEvent()});
+    }
 
-	public NodeExtension getEvent()
-	{
-		return ext;
-	}
+    public NodeExtension getEvent()
+    {
+        return ext;
+    }
 
-	public String getElementName()
-	{
-		return "event";
-	}
+    @Override
+    public String getElementName()
+    {
+        return "event";
+    }
 
-	public String getNamespace()
-	{
-		return PubSubNamespace.EVENT.getXmlns();
-	}
+    @Override
+    public String getNamespace()
+    {
+        return PubSubNamespace.EVENT.getXmlns();
+    }
 
     @Override
     public XmlStringBuilder toXML() {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2014 Jive Software.
+ * Copyright 2003-2014 Jive Software, 2017 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Stanza;
@@ -28,14 +27,9 @@ import org.jxmpp.jid.Jid;
  *
  * @author Gaston Dombiak
  */
-public class FromMatchesFilter implements StanzaFilter {
+public final class FromMatchesFilter extends AbstractFromToMatchesFilter {
 
-    private final Jid address;
-
-    /**
-     * Flag that indicates if the checking will be done against bare JID addresses or full JIDs.
-     */
-    private final boolean ignoreResourcepart;
+    public final static FromMatchesFilter MATCH_NO_FROM_SET = create(null);
 
     /**
      * Creates a filter matching on the "from" field. The from address must be the same as the
@@ -47,13 +41,7 @@ public class FromMatchesFilter implements StanzaFilter {
      * @param ignoreResourcepart
      */
     public FromMatchesFilter(Jid address, boolean ignoreResourcepart) {
-        if (address != null && ignoreResourcepart) {
-            this.address = address.asBareJid();
-        }
-        else {
-            this.address = address;
-        }
-        this.ignoreResourcepart = ignoreResourcepart;
+        super(address, ignoreResourcepart);
     }
 
     /**
@@ -61,51 +49,38 @@ public class FromMatchesFilter implements StanzaFilter {
      * the filter address with the bare from address. Otherwise, compares the filter address
      * with the full from address.
      *
-     * @param address The address to filter for. If <code>null</code> is given, the stanza(/packet) must not
+     * @param address The address to filter for. If <code>null</code> is given, the stanza must not
      *        have a from address.
      */
     public static FromMatchesFilter create(Jid address) {
-        return new FromMatchesFilter(address, address.hasNoResource()) ;
+        return new FromMatchesFilter(address, address != null ? address.hasNoResource() : false) ;
     }
 
     /**
      * Creates a filter matching on the "from" field. Compares the bare version of from and filter
      * address.
      *
-     * @param address The address to filter for. If <code>null</code> is given, the stanza(/packet) must not
+     * @param address The address to filter for. If <code>null</code> is given, the stanza must not
      *        have a from address.
      */
     public static FromMatchesFilter createBare(Jid address) {
-        address = (address == null) ? null : address;
         return new FromMatchesFilter(address, true);
     }
 
-
     /**
-     * Creates a filter matching on the "from" field. Compares the full version of from and filter
+     * Creates a filter matching on the "from" field. Compares the full version, if available, of from and filter
      * address.
      *
-     * @param address The address to filter for. If <code>null</code> is given, the stanza(/packet) must not
+     * @param address The address to filter for. If <code>null</code> is given, the stanza must not
      *        have a from address.
      */
     public static FromMatchesFilter createFull(Jid address) {
         return new FromMatchesFilter(address, false);
     }
 
-    public boolean accept(Stanza packet) {
-        Jid from = packet.getFrom();
-        if (from == null) {
-            return address == null;
-        }
-
-        if (ignoreResourcepart) {
-            from = from.asBareJid();
-        }
-        return from.equals(address);
+    @Override
+    protected Jid getAddressToCompare(Stanza stanza) {
+        return stanza.getFrom();
     }
 
-    public String toString() {
-        String matchMode = ignoreResourcepart ? "ignoreResourcepart" : "full";
-        return getClass().getSimpleName() + " (" + matchMode + "): " + address;
-    }
 }

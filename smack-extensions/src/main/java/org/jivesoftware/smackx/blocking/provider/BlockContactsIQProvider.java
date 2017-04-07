@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.blocking.element.BlockContactsIQ;
 import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -36,7 +36,7 @@ public class BlockContactsIQProvider extends IQProvider<BlockContactsIQ> {
 
     @Override
     public BlockContactsIQ parse(XmlPullParser parser, int initialDepth) throws Exception {
-        List<Jid> jids = null;
+        List<Jid> jids = new ArrayList<>();
 
         outerloop: while (true) {
             int eventType = parser.next();
@@ -45,10 +45,8 @@ public class BlockContactsIQProvider extends IQProvider<BlockContactsIQ> {
 
             case XmlPullParser.START_TAG:
                 if (parser.getName().equals("item")) {
-                    if (jids == null) {
-                        jids = new ArrayList<>();
-                    }
-                    jids.add(JidCreate.from(parser.getAttributeValue("", "jid")));
+                    Jid jid = ParserUtils.getJidAttribute(parser);
+                    jids.add(jid);
                 }
                 break;
 

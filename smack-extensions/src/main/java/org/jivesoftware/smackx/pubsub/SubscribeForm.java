@@ -40,202 +40,202 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
  */
 public class SubscribeForm extends Form
 {
-	public SubscribeForm(DataForm configDataForm)
-	{
-		super(configDataForm);
-	}
+    public SubscribeForm(DataForm configDataForm)
+    {
+        super(configDataForm);
+    }
 
-	public SubscribeForm(Form subscribeOptionsForm)
-	{
-		super(subscribeOptionsForm.getDataFormToSend());
-	}
+    public SubscribeForm(Form subscribeOptionsForm)
+    {
+        super(subscribeOptionsForm.getDataFormToSend());
+    }
 
-	public SubscribeForm(DataForm.Type formType)
-	{
-		super(formType);
-	}
+    public SubscribeForm(DataForm.Type formType)
+    {
+        super(formType);
+    }
 
-	/**
-	 * Determines if an entity wants to receive notifications.
-	 * 
-	 * @return true if want to receive, false otherwise
-	 */
-	public boolean isDeliverOn()
-	{
-		return parseBoolean(getFieldValue(SubscribeOptionFields.deliver));
-	}
+    /**
+     * Determines if an entity wants to receive notifications.
+     * 
+     * @return true if want to receive, false otherwise
+     */
+    public boolean isDeliverOn()
+    {
+        return parseBoolean(getFieldValue(SubscribeOptionFields.deliver));
+    }
 
-	/**
-	 * Sets whether an entity wants to receive notifications.
-	 *
-	 * @param deliverNotifications
-	 */
-	public void setDeliverOn(boolean deliverNotifications)
-	{
-		addField(SubscribeOptionFields.deliver, FormField.Type.bool);
-		setAnswer(SubscribeOptionFields.deliver.getFieldName(), deliverNotifications);
-	}
+    /**
+     * Sets whether an entity wants to receive notifications.
+     *
+     * @param deliverNotifications
+     */
+    public void setDeliverOn(boolean deliverNotifications)
+    {
+        addField(SubscribeOptionFields.deliver, FormField.Type.bool);
+        setAnswer(SubscribeOptionFields.deliver.getFieldName(), deliverNotifications);
+    }
 
-	/**
-	 * Determines if notifications should be delivered as aggregations or not.
-	 * 
-	 * @return true to aggregate, false otherwise
-	 */
-	public boolean isDigestOn()
-	{
-		return parseBoolean(getFieldValue(SubscribeOptionFields.digest));
-	}
+    /**
+     * Determines if notifications should be delivered as aggregations or not.
+     * 
+     * @return true to aggregate, false otherwise
+     */
+    public boolean isDigestOn()
+    {
+        return parseBoolean(getFieldValue(SubscribeOptionFields.digest));
+    }
 
-	/**
-	 * Sets whether notifications should be delivered as aggregations or not.
-	 * 
-	 * @param digestOn true to aggregate, false otherwise 
-	 */
-	public void setDigestOn(boolean digestOn)
-	{
-		addField(SubscribeOptionFields.deliver, FormField.Type.bool);
-		setAnswer(SubscribeOptionFields.deliver.getFieldName(), digestOn);
-	}
+    /**
+     * Sets whether notifications should be delivered as aggregations or not.
+     * 
+     * @param digestOn true to aggregate, false otherwise 
+     */
+    public void setDigestOn(boolean digestOn)
+    {
+        addField(SubscribeOptionFields.deliver, FormField.Type.bool);
+        setAnswer(SubscribeOptionFields.deliver.getFieldName(), digestOn);
+    }
 
-	/**
-	 * Gets the minimum number of milliseconds between sending notification digests.
-	 * 
-	 * @return The frequency in milliseconds
-	 */
-	public int getDigestFrequency()
-	{
-		return Integer.parseInt(getFieldValue(SubscribeOptionFields.digest_frequency));
-	}
+    /**
+     * Gets the minimum number of milliseconds between sending notification digests.
+     * 
+     * @return The frequency in milliseconds
+     */
+    public int getDigestFrequency()
+    {
+        return Integer.parseInt(getFieldValue(SubscribeOptionFields.digest_frequency));
+    }
 
-	/**
-	 * Sets the minimum number of milliseconds between sending notification digests.
-	 * 
-	 * @param frequency The frequency in milliseconds
-	 */
-	public void setDigestFrequency(int frequency)
-	{
-		addField(SubscribeOptionFields.digest_frequency, FormField.Type.text_single);
-		setAnswer(SubscribeOptionFields.digest_frequency.getFieldName(), frequency);
-	}
+    /**
+     * Sets the minimum number of milliseconds between sending notification digests.
+     * 
+     * @param frequency The frequency in milliseconds
+     */
+    public void setDigestFrequency(int frequency)
+    {
+        addField(SubscribeOptionFields.digest_frequency, FormField.Type.text_single);
+        setAnswer(SubscribeOptionFields.digest_frequency.getFieldName(), frequency);
+    }
 
-	/**
-	 * Get the time at which the leased subscription will expire, or has expired.
-	 * 
-	 * @return The expiry date
-	 */
-	public Date getExpiry()
-	{
-		String dateTime = getFieldValue(SubscribeOptionFields.expire);
-		try
-		{
-			return XmppDateTime.parseDate(dateTime);
-		}
-		catch (ParseException e)
-		{
-			UnknownFormatConversionException exc = new UnknownFormatConversionException(dateTime);
-			exc.initCause(e);
-			throw exc;
-		}
-	}
+    /**
+     * Get the time at which the leased subscription will expire, or has expired.
+     * 
+     * @return The expiry date
+     */
+    public Date getExpiry()
+    {
+        String dateTime = getFieldValue(SubscribeOptionFields.expire);
+        try
+        {
+            return XmppDateTime.parseDate(dateTime);
+        }
+        catch (ParseException e)
+        {
+            UnknownFormatConversionException exc = new UnknownFormatConversionException(dateTime);
+            exc.initCause(e);
+            throw exc;
+        }
+    }
 
-	/**
-	 * Sets the time at which the leased subscription will expire, or has expired.
-	 * 
-	 * @param expire The expiry date
-	 */
-	public void setExpiry(Date expire)
-	{
-		addField(SubscribeOptionFields.expire, FormField.Type.text_single);
-		setAnswer(SubscribeOptionFields.expire.getFieldName(), XmppDateTime.formatXEP0082Date(expire));
-	}
+    /**
+     * Sets the time at which the leased subscription will expire, or has expired.
+     * 
+     * @param expire The expiry date
+     */
+    public void setExpiry(Date expire)
+    {
+        addField(SubscribeOptionFields.expire, FormField.Type.text_single);
+        setAnswer(SubscribeOptionFields.expire.getFieldName(), XmppDateTime.formatXEP0082Date(expire));
+    }
 
-	/**
-	 * Determines whether the entity wants to receive an XMPP message body in 
-	 * addition to the payload format.
-	 * 
-	 * @return true to receive the message body, false otherwise
-	 */
-	public boolean isIncludeBody()
-	{
-		return parseBoolean(getFieldValue(SubscribeOptionFields.include_body));
-	}
+    /**
+     * Determines whether the entity wants to receive an XMPP message body in 
+     * addition to the payload format.
+     * 
+     * @return true to receive the message body, false otherwise
+     */
+    public boolean isIncludeBody()
+    {
+        return parseBoolean(getFieldValue(SubscribeOptionFields.include_body));
+    }
 
-	/**
-	 * Sets whether the entity wants to receive an XMPP message body in 
-	 * addition to the payload format.
-	 * 
-	 * @param include true to receive the message body, false otherwise
-	 */
-	public void setIncludeBody(boolean include)
-	{
-		addField(SubscribeOptionFields.include_body, FormField.Type.bool);
-		setAnswer(SubscribeOptionFields.include_body.getFieldName(), include);
-	}
+    /**
+     * Sets whether the entity wants to receive an XMPP message body in 
+     * addition to the payload format.
+     * 
+     * @param include true to receive the message body, false otherwise
+     */
+    public void setIncludeBody(boolean include)
+    {
+        addField(SubscribeOptionFields.include_body, FormField.Type.bool);
+        setAnswer(SubscribeOptionFields.include_body.getFieldName(), include);
+    }
 
-	/**
-	 * Gets the {@link PresenceState} for which an entity wants to receive 
-	 * notifications.
-	 * 
-	 * @return the list of states
-	 */
-	public List<PresenceState> getShowValues()
-	{
-		ArrayList<PresenceState> result = new ArrayList<PresenceState>(5);
+    /**
+     * Gets the {@link PresenceState} for which an entity wants to receive 
+     * notifications.
+     * 
+     * @return the list of states
+     */
+    public List<PresenceState> getShowValues()
+    {
+        ArrayList<PresenceState> result = new ArrayList<PresenceState>(5);
 
-		for (String state : getFieldValues(SubscribeOptionFields.show_values))
-		{
-			result.add(PresenceState.valueOf(state));
-		}
-		return result;
-	}
+        for (String state : getFieldValues(SubscribeOptionFields.show_values))
+        {
+            result.add(PresenceState.valueOf(state));
+        }
+        return result;
+    }
 
-	/**
-	 * Sets the list of {@link PresenceState} for which an entity wants
-	 * to receive notifications.
-	 * 
-	 * @param stateValues The list of states
-	 */
-	public void setShowValues(Collection<PresenceState> stateValues)
-	{
-		ArrayList<String> values = new ArrayList<String>(stateValues.size());
+    /**
+     * Sets the list of {@link PresenceState} for which an entity wants
+     * to receive notifications.
+     * 
+     * @param stateValues The list of states
+     */
+    public void setShowValues(Collection<PresenceState> stateValues)
+    {
+        ArrayList<String> values = new ArrayList<String>(stateValues.size());
 
-		for (PresenceState state : stateValues)
-		{
-			values.add(state.toString());
-		}
-		addField(SubscribeOptionFields.show_values, FormField.Type.list_multi);
-		setAnswer(SubscribeOptionFields.show_values.getFieldName(), values);
-	}
+        for (PresenceState state : stateValues)
+        {
+            values.add(state.toString());
+        }
+        addField(SubscribeOptionFields.show_values, FormField.Type.list_multi);
+        setAnswer(SubscribeOptionFields.show_values.getFieldName(), values);
+    }
 
 
-	static private boolean parseBoolean(String fieldValue)
-	{
-		return ("1".equals(fieldValue) || "true".equals(fieldValue));
-	}
+    static private boolean parseBoolean(String fieldValue)
+    {
+        return ("1".equals(fieldValue) || "true".equals(fieldValue));
+    }
 
-	private String getFieldValue(SubscribeOptionFields field)
-	{
-		FormField formField = getField(field.getFieldName());
+    private String getFieldValue(SubscribeOptionFields field)
+    {
+        FormField formField = getField(field.getFieldName());
 
-		return formField.getValues().get(0);
-	}
+        return formField.getValues().get(0);
+    }
 
-	private List<String> getFieldValues(SubscribeOptionFields field)
-	{
-		FormField formField = getField(field.getFieldName());
+    private List<String> getFieldValues(SubscribeOptionFields field)
+    {
+        FormField formField = getField(field.getFieldName());
 
-		return formField.getValues();
-	}
+        return formField.getValues();
+    }
 
-	private void addField(SubscribeOptionFields nodeField, FormField.Type type)
-	{
-		String fieldName = nodeField.getFieldName();
+    private void addField(SubscribeOptionFields nodeField, FormField.Type type)
+    {
+        String fieldName = nodeField.getFieldName();
 
-		if (getField(fieldName) == null)
-		{
-			FormField field = new FormField(fieldName);
-			field.setType(type);
-			addField(field);
-		}
-	}
+        if (getField(fieldName) == null)
+        {
+            FormField field = new FormField(fieldName);
+            field.setType(type);
+            addField(field);
+        }
+    }
 }

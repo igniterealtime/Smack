@@ -33,12 +33,12 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
  */
 public class ConfigEventProvider extends EmbeddedExtensionProvider<ConfigurationEvent>
 {
-	@Override
-	protected ConfigurationEvent createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attMap, List<? extends ExtensionElement> content)
-	{
-		if (content.size() == 0)
-			return new ConfigurationEvent(attMap.get("node"));
-		else
-			return new ConfigurationEvent(attMap.get("node"), new ConfigureForm((DataForm)content.iterator().next()));
-	}
+    @Override
+    protected ConfigurationEvent createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attMap, List<? extends ExtensionElement> content)
+    {
+        if (content.size() == 0)
+            return new ConfigurationEvent(attMap.get("node"));
+        else
+            return new ConfigurationEvent(attMap.get("node"), new ConfigureForm((DataForm)content.iterator().next()));
+    }
 }

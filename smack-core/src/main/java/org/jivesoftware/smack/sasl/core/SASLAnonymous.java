@@ -30,6 +30,7 @@ public class SASLAnonymous extends SASLMechanism {
 
     public static final String NAME = "ANONYMOUS";
 
+    @Override
     public String getName() {
         return NAME;
     }

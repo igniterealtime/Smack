@@ -42,9 +42,9 @@ import org.jivesoftware.smackx.jingleold.listeners.JingleListener;
  */
 public abstract class JingleNegotiator {
 
-	private static final Logger LOGGER = Logger.getLogger(JingleNegotiator.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JingleNegotiator.class.getName());
 
-	//private XMPPConnection connection; // The connection associated
+    //private XMPPConnection connection; // The connection associated
 
     protected JingleSession session;
 
@@ -238,12 +238,12 @@ public abstract class JingleNegotiator {
 
     // CHECKSTYLE:OFF
     public void start() {
-    	isStarted = true;
-    	doStart();
+        isStarted = true;
+        doStart();
     }
 
     public boolean isStarted() {
-    	return isStarted;
+        return isStarted;
     }
     // CHECKSTYLE:ON
 

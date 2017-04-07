@@ -31,11 +31,11 @@ import org.jivesoftware.smackx.pubsub.AffiliationsExtension;
  * @author Robin Collier
  */public class AffiliationsProvider extends EmbeddedExtensionProvider<AffiliationsExtension>
 {
-	@SuppressWarnings("unchecked")
-	@Override
-	protected AffiliationsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
-	{
+    @SuppressWarnings("unchecked")
+    @Override
+    protected AffiliationsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
+    {
         return new AffiliationsExtension((List<Affiliation>)content);
-	}
+    }
 
 }

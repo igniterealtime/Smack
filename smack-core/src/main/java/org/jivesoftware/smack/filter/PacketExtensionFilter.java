@@ -67,6 +67,7 @@ public class PacketExtensionFilter implements StanzaFilter {
         this(packetExtension.getElementName(), packetExtension.getNamespace());
     }
 
+    @Override
     public boolean accept(Stanza packet) {
         return packet.hasExtension(elementName, namespace);
     }

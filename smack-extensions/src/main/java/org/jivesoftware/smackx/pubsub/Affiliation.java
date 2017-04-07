@@ -42,17 +42,17 @@ public class Affiliation implements ExtensionElement
     private final Type affiliation;
     private final PubSubNamespace namespace;
 
-	public enum Type
-	{
-		member, none, outcast, owner, publisher
-	}
+    public enum Type
+    {
+        member, none, outcast, owner, publisher
+    }
 
-	/**
-	 * Constructs an affiliation.
-	 * 
-	 * @param node The node the user is affiliated with.
-	 * @param affiliation the optional affiliation.
-	 */
+    /**
+     * Constructs an affiliation.
+     * 
+     * @param node The node the user is affiliated with.
+     * @param affiliation the optional affiliation.
+     */
     public Affiliation(String node, Type affiliation) {
         this.node = StringUtils.requireNotNullOrEmpty(node, "node must not be null or empty");
         this.affiliation = affiliation;
@@ -122,6 +122,7 @@ public class Affiliation implements ExtensionElement
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace() {
         return namespace.getXmlns();
     }

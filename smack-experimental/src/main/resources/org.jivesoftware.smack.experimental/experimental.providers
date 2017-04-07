@@ -232,5 +232,27 @@
       <namespace>urn:xmpp:chat-markers:0</namespace>
       <className>org.jivesoftware.smackx.chat_markers.provider.AcknowledgedProvider</className>
     </extensionProvider>
-    
+
+    <!-- XEP-0363: HTTP File Upload -->
+    <iqProvider>
+      <elementName>slot</elementName>
+      <namespace>urn:xmpp:http:upload:0</namespace>
+      <className>org.jivesoftware.smackx.httpfileupload.provider.SlotProvider</className>
+    </iqProvider>
+    <extensionProvider>
+      <elementName>file-too-large</elementName>
+      <namespace>urn:xmpp:http:upload:0</namespace>
+      <className>org.jivesoftware.smackx.httpfileupload.provider.FileTooLargeErrorProvider</className>
+    </extensionProvider>
+    <iqProvider>
+      <elementName>slot</elementName>
+      <namespace>urn:xmpp:http:upload</namespace>
+      <className>org.jivesoftware.smackx.httpfileupload.provider.SlotProvider</className>
+    </iqProvider>
+    <extensionProvider>
+      <elementName>file-too-large</elementName>
+      <namespace>urn:xmpp:http:upload</namespace>
+      <className>org.jivesoftware.smackx.httpfileupload.provider.FileTooLargeErrorProvider</className>
+    </extensionProvider>
+
 </smackProviders>

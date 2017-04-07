@@ -48,16 +48,19 @@ public class JingleSessionStateActive extends JingleSessionState {
         return INSTANCE;
     }
 
+    @Override
     public void enter() {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void exit() {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public IQ processJingle(JingleSession session, Jingle jingle, JingleActionEnum action) {
         IQ response = null;
 

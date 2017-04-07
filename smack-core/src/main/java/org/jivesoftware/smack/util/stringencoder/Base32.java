@@ -20,6 +20,9 @@ package org.jivesoftware.smack.util.stringencoder;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Base32 string encoding is useful for when filenames case-insensitive filesystems are encoded.
@@ -53,7 +56,13 @@ public class Base32 {
 
     public static String decode(String str) {
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
-        byte[] raw = str.getBytes();
+        byte[] raw;
+        try {
+            raw = str.getBytes(StringUtils.UTF8);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
         for (int i = 0; i < raw.length; i++) {
             char c = (char) raw[i];
             if (!Character.isWhitespace(c)) {
@@ -106,11 +115,24 @@ public class Base32 {
             }
         }
 
-        return new String(bs.toByteArray());
+        String res;
+        try {
+            res = new String(bs.toByteArray(), StringUtils.UTF8);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
+        return res;
     }
 
     public static String encode(String str) {
-        byte[] b = str.getBytes();
+        byte[] b;
+        try {
+            b = str.getBytes(StringUtils.UTF8);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
         for (int i = 0; i < (b.length + 4) / 5; i++) {
@@ -153,7 +175,14 @@ public class Base32 {
                 os.write(c);
             }
         }
-        return new String(os.toByteArray());
+        String res;
+        try {
+            res = new String(os.toByteArray(), StringUtils.UTF8);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
+        return res;
     }
 
     private static int lenToPadding(int blocklen) {

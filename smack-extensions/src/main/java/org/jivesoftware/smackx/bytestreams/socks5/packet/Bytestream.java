@@ -317,6 +317,7 @@ public class Bytestream extends IQ {
             return port;
         }
 
+        @Override
         public String getElementName() {
             return ELEMENTNAME;
         }
@@ -366,6 +367,7 @@ public class Bytestream extends IQ {
             return JID;
         }
 
+        @Override
         public String getElementName() {
             return ELEMENTNAME;
         }
@@ -408,6 +410,7 @@ public class Bytestream extends IQ {
             return target;
         }
 
+        @Override
         public String getElementName() {
             return ELEMENTNAME;
         }

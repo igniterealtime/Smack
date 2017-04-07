@@ -80,10 +80,12 @@ public class RoomInvitation implements ExtensionElement {
     private RoomInvitation() {
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT_NAME;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }

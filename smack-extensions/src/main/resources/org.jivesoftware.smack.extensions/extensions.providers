@@ -16,35 +16,35 @@
         <className>org.jivesoftware.smackx.time.provider.TimeProvider</className>
     </iqProvider>
 
-    <!-- Chat State -->
+    <!-- XEP-0085: Chat State -->
     <extensionProvider>
         <elementName>active</elementName>
         <namespace>http://jabber.org/protocol/chatstates</namespace>
-        <className>org.jivesoftware.smackx.chatstates.packet.ChatStateExtension$Provider</className>
+        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
     </extensionProvider>
 
     <extensionProvider>
         <elementName>composing</elementName>
         <namespace>http://jabber.org/protocol/chatstates</namespace>
-        <className>org.jivesoftware.smackx.chatstates.packet.ChatStateExtension$Provider</className>
+        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
     </extensionProvider>
 
     <extensionProvider>
         <elementName>paused</elementName>
         <namespace>http://jabber.org/protocol/chatstates</namespace>
-        <className>org.jivesoftware.smackx.chatstates.packet.ChatStateExtension$Provider</className>
+        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
     </extensionProvider>
 
     <extensionProvider>
         <elementName>inactive</elementName>
         <namespace>http://jabber.org/protocol/chatstates</namespace>
-        <className>org.jivesoftware.smackx.chatstates.packet.ChatStateExtension$Provider</className>
+        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
     </extensionProvider>
 
     <extensionProvider>
         <elementName>gone</elementName>
         <namespace>http://jabber.org/protocol/chatstates</namespace>
-        <className>org.jivesoftware.smackx.chatstates.packet.ChatStateExtension$Provider</className>
+        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
     </extensionProvider>
     
     <!-- XHTML -->

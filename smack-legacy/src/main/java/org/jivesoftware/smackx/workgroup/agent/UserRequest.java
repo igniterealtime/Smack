@@ -30,14 +30,17 @@ public class UserRequest extends OfferContent {
         return instance;
     }
 
+    @Override
     boolean isUserRequest() {
         return true;
     }
 
+    @Override
     boolean isInvitation() {
         return false;
     }
 
+    @Override
     boolean isTransfer() {
         return false;
     }

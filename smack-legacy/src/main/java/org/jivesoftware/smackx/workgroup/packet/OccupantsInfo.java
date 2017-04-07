@@ -40,6 +40,7 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class OccupantsInfo extends IQ {
 
+    @SuppressWarnings("SimpleDateFormatConstant")
     private static final SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
 
     static {
@@ -93,7 +94,9 @@ public class OccupantsInfo extends IQ {
                 buf.append("</name>");
                 // Add the date when the occupant joined the room
                 buf.append("<joined>");
-                buf.append(UTC_FORMAT.format(occupant.getJoined()));
+                synchronized (UTC_FORMAT) {
+                    buf.append(UTC_FORMAT.format(occupant.getJoined()));
+                }
                 buf.append("</joined>");
                 buf.append("</occupant>");
             }
@@ -165,7 +168,9 @@ public class OccupantsInfo extends IQ {
                 } else if ((eventType == XmlPullParser.START_TAG) &&
                         ("joined".equals(parser.getName()))) {
                     try {
-                        joined = UTC_FORMAT.parse(parser.nextText());
+                        synchronized (UTC_FORMAT) {
+                            joined = UTC_FORMAT.parse(parser.nextText());
+                        }
                     } catch (ParseException e) {
                         throw new SmackException(e);
                     }

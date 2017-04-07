@@ -145,6 +145,7 @@ public class RosterTest extends InitSmackIm {
 
         // Adding the new roster item
         final RosterUpdateResponder serverSimulator = new RosterUpdateResponder() {
+            @Override
             void verifyUpdateRequest(final RosterPacket updateRequest) {
                 final Item item = updateRequest.getRosterItems().iterator().next();
                 assertEquals("The provided JID doesn't match the requested!",
@@ -216,6 +217,7 @@ public class RosterTest extends InitSmackIm {
 
         // Updating the roster item
         final RosterUpdateResponder serverSimulator = new RosterUpdateResponder() {
+            @Override
             void verifyUpdateRequest(final RosterPacket updateRequest) {
                 final Item item = updateRequest.getRosterItems().iterator().next();
                 assertEquals("The provided JID doesn't match the requested!",
@@ -289,6 +291,7 @@ public class RosterTest extends InitSmackIm {
 
         // Delete a roster item
         final RosterUpdateResponder serverSimulator = new RosterUpdateResponder() {
+            @Override
             void verifyUpdateRequest(final RosterPacket updateRequest) {
                 final Item item = updateRequest.getRosterItems().iterator().next();
                 assertEquals("The provided JID doesn't match the requested!",
@@ -410,6 +413,7 @@ public class RosterTest extends InitSmackIm {
 
         // Adding the new roster item
         final RosterUpdateResponder serverSimulator = new RosterUpdateResponder() {
+            @Override
             void verifyUpdateRequest(final RosterPacket updateRequest) {
                 final Item item = updateRequest.getRosterItems().iterator().next();
                 assertSame("The provided JID doesn't match the requested!",
@@ -656,6 +660,7 @@ public class RosterTest extends InitSmackIm {
          */
         abstract void verifyUpdateRequest(final RosterPacket updateRequest);
 
+        @Override
         public void run() {
             try {
                 while (true) {
@@ -712,21 +717,25 @@ public class RosterTest extends InitSmackIm {
         private final List<Jid> addressesDeleted = new CopyOnWriteArrayList<>();
         private final List<Jid> addressesUpdated = new CopyOnWriteArrayList<>();
 
+        @Override
         public synchronized void entriesAdded(Collection<Jid> addresses) {
             addressesAdded.addAll(addresses);
             reportInvoked();
         }
 
+        @Override
         public synchronized void entriesDeleted(Collection<Jid> addresses) {
             addressesDeleted.addAll(addresses);
             reportInvoked();
         }
 
+        @Override
         public synchronized void entriesUpdated(Collection<Jid> addresses) {
             addressesUpdated.addAll(addresses);
             reportInvoked();
         }
 
+        @Override
         public void presenceChanged(Presence presence) {
             reportInvoked();
         }
@@ -794,6 +803,7 @@ public class RosterTest extends InitSmackIm {
         /**
          * Reset the lists of added, deleted or updated items.
          */
+        @Override
         public synchronized void reset() {
             super.reset();
             addressesAdded.clear();

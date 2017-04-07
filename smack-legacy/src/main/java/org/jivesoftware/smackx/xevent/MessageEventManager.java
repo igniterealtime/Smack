@@ -77,6 +77,7 @@ public final class MessageEventManager extends Manager {
         super(connection);
         // Listens for all message event packets and fire the proper message event listeners.
         connection.addAsyncStanzaListener(new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 Message message = (Message) packet;
                 MessageEvent messageEvent =

@@ -151,6 +151,7 @@ public class Bookmarks implements PrivateData {
      *
      * @return the element name.
      */
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
@@ -160,6 +161,7 @@ public class Bookmarks implements PrivateData {
      *
      * @return the namespace.
      */
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }
@@ -218,6 +220,7 @@ public class Bookmarks implements PrivateData {
             super();
         }
 
+        @Override
         public PrivateData parsePrivateData(XmlPullParser parser) throws XmlPullParserException, IOException {
             Bookmarks storage = new Bookmarks();
 

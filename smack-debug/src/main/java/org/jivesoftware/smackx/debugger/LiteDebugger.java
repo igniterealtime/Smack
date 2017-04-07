@@ -86,6 +86,7 @@ public class LiteDebugger implements SmackDebugger {
 
         // Add listener for window closing event 
         frame.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent evt) {
                 rootWindowClosing(evt);
             }
@@ -114,6 +115,7 @@ public class LiteDebugger implements SmackDebugger {
         JPopupMenu menu = new JPopupMenu();
         JMenuItem menuItem1 = new JMenuItem("Copy");
         menuItem1.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 // Get the clipboard
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -124,6 +126,7 @@ public class LiteDebugger implements SmackDebugger {
 
         JMenuItem menuItem2 = new JMenuItem("Clear");
         menuItem2.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 sentText1.setText("");
                 sentText2.setText("");
@@ -151,6 +154,7 @@ public class LiteDebugger implements SmackDebugger {
         menu = new JPopupMenu();
         menuItem1 = new JMenuItem("Copy");
         menuItem1.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 // Get the clipboard
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -161,6 +165,7 @@ public class LiteDebugger implements SmackDebugger {
 
         menuItem2 = new JMenuItem("Clear");
         menuItem2.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 receivedText1.setText("");
                 receivedText2.setText("");
@@ -188,6 +193,7 @@ public class LiteDebugger implements SmackDebugger {
         menu = new JPopupMenu();
         menuItem1 = new JMenuItem("Copy");
         menuItem1.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 // Get the clipboard
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -198,6 +204,7 @@ public class LiteDebugger implements SmackDebugger {
 
         menuItem2 = new JMenuItem("Clear");
         menuItem2.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 interpretedText1.setText("");
                 interpretedText2.setText("");
@@ -219,6 +226,7 @@ public class LiteDebugger implements SmackDebugger {
         // Create a special Reader that wraps the main Reader and logs data to the GUI.
         ObservableReader debugReader = new ObservableReader(reader);
         readerListener = new ReaderListener() {
+                    @Override
                     public void read(String str) {
                         int index = str.lastIndexOf(">");
                         if (index != -1) {
@@ -242,6 +250,7 @@ public class LiteDebugger implements SmackDebugger {
         // Create a special Writer that wraps the main Writer and logs data to the GUI.
         ObservableWriter debugWriter = new ObservableWriter(writer);
         writerListener = new WriterListener() {
+                    @Override
                     public void write(String str) {
                         sentText1.append(str);
                         sentText2.append(str);
@@ -262,6 +271,7 @@ public class LiteDebugger implements SmackDebugger {
         // the GUI. This is what we call "interpreted" packet data, since it's the packet
         // data as Smack sees it and not as it's coming in as raw XML.
         listener = new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 interpretedText1.append(packet.toXML().toString());
                 interpretedText2.append(packet.toXML().toString());
@@ -286,17 +296,19 @@ public class LiteDebugger implements SmackDebugger {
     /**
      * Listens for debug window popup dialog events.
      */
-    private class PopupListener extends MouseAdapter {
+    private static class PopupListener extends MouseAdapter {
         JPopupMenu popup;
 
         PopupListener(JPopupMenu popupMenu) {
             popup = popupMenu;
         }
 
+        @Override
         public void mousePressed(MouseEvent e) {
             maybeShowPopup(e);
         }
 
+        @Override
         public void mouseReleased(MouseEvent e) {
             maybeShowPopup(e);
         }
@@ -308,6 +320,7 @@ public class LiteDebugger implements SmackDebugger {
         }
     }
 
+    @Override
     public Reader newConnectionReader(Reader newReader) {
         ((ObservableReader)reader).removeReaderListener(readerListener);
         ObservableReader debugReader = new ObservableReader(newReader);
@@ -316,6 +329,7 @@ public class LiteDebugger implements SmackDebugger {
         return reader;
     }
 
+    @Override
     public Writer newConnectionWriter(Writer newWriter) {
         ((ObservableWriter)writer).removeWriterListener(writerListener);
         ObservableWriter debugWriter = new ObservableWriter(newWriter);
@@ -332,18 +346,22 @@ public class LiteDebugger implements SmackDebugger {
         frame.setTitle(title);
     }
 
+    @Override
     public Reader getReader() {
         return reader;
     }
 
+    @Override
     public Writer getWriter() {
         return writer;
     }
 
+    @Override
     public StanzaListener getReaderListener() {
         return listener;
     }
 
+    @Override
     public StanzaListener getWriterListener() {
         return null;
     }

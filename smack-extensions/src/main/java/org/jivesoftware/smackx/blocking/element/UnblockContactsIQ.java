@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez, Florian Schmaus
+ * Copyright 2016-2017 Fernando Ramirez, Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.blocking.element;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -52,7 +53,11 @@ public class UnblockContactsIQ extends IQ {
     public UnblockContactsIQ(List<Jid> jids) {
         super(ELEMENT, NAMESPACE);
         this.setType(Type.set);
-        this.jids = jids;
+        if (jids != null) {
+            this.jids = Collections.unmodifiableList(jids);
+        } else {
+            this.jids = null;
+        }
     }
 
     /**
@@ -63,9 +68,9 @@ public class UnblockContactsIQ extends IQ {
     }
 
     /**
-     * Get the JIDs.
+     * Get the JIDs. This may return null, which means that all JIDs should be or where unblocked.
      * 
-     * @return the list of JIDs
+     * @return the list of JIDs or <code>null</code>.
      */
     public List<Jid> getJids() {
         return jids;
@@ -73,14 +78,16 @@ public class UnblockContactsIQ extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.rightAngleBracket();
+        if (jids == null) {
+            xml.setEmptyElement();
+            return xml;
+        }
 
-        if (jids != null) {
-            for (Jid jid : jids) {
-                xml.halfOpenElement("item");
-                xml.attribute("jid", jid);
-                xml.closeEmptyElement();
-            }
+        xml.rightAngleBracket();
+        for (Jid jid : jids) {
+            xml.halfOpenElement("item");
+            xml.attribute("jid", jid);
+            xml.closeEmptyElement();
         }
 
         return xml;

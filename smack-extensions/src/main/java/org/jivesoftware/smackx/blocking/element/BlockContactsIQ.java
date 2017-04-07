@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.blocking.element;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -51,7 +52,7 @@ public class BlockContactsIQ extends IQ {
     public BlockContactsIQ(List<Jid> jids) {
         super(ELEMENT, NAMESPACE);
         this.setType(Type.set);
-        this.jids = jids;
+        this.jids = Collections.unmodifiableList(jids);
     }
 
     /**

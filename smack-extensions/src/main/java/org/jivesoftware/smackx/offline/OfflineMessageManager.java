@@ -152,6 +152,7 @@ public class OfflineMessageManager {
         }
         // Filter offline messages that were requested by this request
         StanzaFilter messageFilter = new AndFilter(PACKET_FILTER, new StanzaFilter() {
+            @Override
             public boolean accept(Stanza packet) {
                 OfflineMessageInfo info = (OfflineMessageInfo) packet.getExtension("offline",
                         namespace);

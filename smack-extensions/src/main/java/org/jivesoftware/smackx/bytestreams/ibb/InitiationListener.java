@@ -66,6 +66,7 @@ class InitiationListener extends AbstractIqRequestHandler {
     public IQ handleIQRequest(final IQ packet) {
         initiationListenerExecutor.execute(new Runnable() {
 
+            @Override
             public void run() {
                 try {
                     processRequest(packet);

@@ -19,9 +19,7 @@ package org.jivesoftware.smackx.chatstates.packet;
 
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Represents a chat state which is an extension to message packets which is used to indicate
@@ -66,18 +64,4 @@ public class ChatStateExtension implements ExtensionElement {
         return xml;
     }
 
-    public static class Provider extends ExtensionElementProvider<ChatStateExtension> {
-
-        @Override
-        public ChatStateExtension parse(XmlPullParser parser, int initialDepth) {
-            ChatState state;
-            try {
-                state = ChatState.valueOf(parser.getName());
-            }
-            catch (Exception ex) {
-                state = ChatState.active;
-            }
-            return new ChatStateExtension(state);
-        }
-    }
 }

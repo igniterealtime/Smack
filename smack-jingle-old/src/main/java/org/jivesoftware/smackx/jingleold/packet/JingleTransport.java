@@ -123,6 +123,7 @@ public class JingleTransport implements ExtensionElement {
      *
      * @return the XML element name of the element.
      */
+    @Override
     public String getElementName() {
         return NODENAME;
     }
@@ -141,6 +142,7 @@ public class JingleTransport implements ExtensionElement {
      *
      * @return The namespace
      */
+    @Override
     public String getNamespace() {
         return namespace;
     }
@@ -148,6 +150,7 @@ public class JingleTransport implements ExtensionElement {
     /**
      * Return the XML representation for this element.
      */
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
 
@@ -278,6 +281,7 @@ public class JingleTransport implements ExtensionElement {
          *
          * @see org.jivesoftware.smackx.jingleold.packet.JingleTransport#addCandidate(org.jivesoftware.smackx.jingleold.packet.JingleTransport.JingleTransportCandidate)
          */
+        @Override
         public void addCandidate(final JingleTransportCandidate candidate) {
             super.addCandidate(candidate);
         }
@@ -288,6 +292,7 @@ public class JingleTransport implements ExtensionElement {
          *
          * @see org.jivesoftware.smackx.jingleold.packet.JingleTransport#getCandidates()
          */
+        @Override
         public List<JingleTransportCandidate> getCandidatesList() {
             List<JingleTransportCandidate> copy = new ArrayList<JingleTransportCandidate>();
             List<JingleTransportCandidate> superCandidatesList = super.getCandidatesList();
@@ -316,6 +321,7 @@ public class JingleTransport implements ExtensionElement {
             /**
              * Get the elements of this candidate.
              */
+            @Override
             protected String getChildElements() {
                 StringBuilder buf = new StringBuilder();
 
@@ -360,6 +366,7 @@ public class JingleTransport implements ExtensionElement {
          *
          * @see org.jivesoftware.smackx.jingleold.packet.JingleTransport#addCandidate(org.jivesoftware.smackx.jingleold.packet.JingleTransport.JingleTransportCandidate)
          */
+        @Override
         public void addCandidate(final JingleTransportCandidate candidate) {
             candidates.clear();
             super.addCandidate(candidate);
@@ -371,6 +378,7 @@ public class JingleTransport implements ExtensionElement {
          *
          * @see org.jivesoftware.smackx.jingleold.packet.JingleTransport#getCandidates()
          */
+        @Override
         public List<JingleTransportCandidate> getCandidatesList() {
             List<JingleTransportCandidate> copy = new ArrayList<JingleTransportCandidate>();
             List<JingleTransportCandidate> superCandidatesList = super.getCandidatesList();
@@ -402,6 +410,7 @@ public class JingleTransport implements ExtensionElement {
             /**
              * Get the elements of this candidate.
              */
+            @Override
             protected String getChildElements() {
                 StringBuilder buf = new StringBuilder();
 

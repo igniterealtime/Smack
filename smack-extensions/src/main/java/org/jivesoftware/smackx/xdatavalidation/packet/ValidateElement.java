@@ -144,6 +144,7 @@ public abstract class ValidateElement implements ExtensionElement {
             buf.emptyElement(METHOD);
         }
 
+        @Override
         public void checkConsistency(FormField formField) {
             checkListRangeConsistency(formField);
             if (formField.getType() != null) {
@@ -186,6 +187,7 @@ public abstract class ValidateElement implements ExtensionElement {
             buf.emptyElement(METHOD);
         }
 
+        @Override
         public void checkConsistency(FormField formField) {
             checkListRangeConsistency(formField);
             if (formField.getType() != null) {
@@ -253,6 +255,7 @@ public abstract class ValidateElement implements ExtensionElement {
             return max;
         }
 
+        @Override
         public void checkConsistency(FormField formField) {
             checkNonMultiConsistency(formField, METHOD);
             if (getDatatype().equals(ValidateElement.DATATYPE_XS_STRING)) {
@@ -302,6 +305,7 @@ public abstract class ValidateElement implements ExtensionElement {
             buf.element("regex", getRegex());
         }
 
+        @Override
         public void checkConsistency(FormField formField) {
             checkNonMultiConsistency(formField, METHOD);
         }
@@ -340,6 +344,7 @@ public abstract class ValidateElement implements ExtensionElement {
             this.max = max;
         }
 
+        @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder buf = new XmlStringBuilder(this);
             buf.optLongAttribute("min", getMin());

@@ -270,6 +270,7 @@ public class RosterPacket extends IQ {
             groupNames.remove(groupName);
         }
 
+        @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.attribute("jid", jid);

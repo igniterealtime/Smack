@@ -32,11 +32,11 @@ import com.sun.media.util.Registry;
 
 public class JMFInit extends Frame implements Runnable {
 
-	private static final long serialVersionUID = 6476412003260641680L;
+    private static final long serialVersionUID = 6476412003260641680L;
 
-	private static final Logger LOGGER = Logger.getLogger(JMFInit.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JMFInit.class.getName());
 
-	private String tempDir = "/tmp";
+    private String tempDir = "/tmp";
 
     private boolean done = false;
 
@@ -78,6 +78,7 @@ public class JMFInit extends Frame implements Runnable {
            */
     }
 
+    @Override
     public void run() {
         detectDirectAudio();
         detectS8DirectAudio();
@@ -102,13 +103,14 @@ public class JMFInit extends Frame implements Runnable {
         }
     }
 
+    @SuppressWarnings("LiteralClassName")
     private void detectCaptureDevices() {
         // check if JavaSound capture is available
         message("Looking for Audio capturer");
         Class<?> dsauto;
         try {
             dsauto = Class.forName("DirectSoundAuto");
-            dsauto.newInstance();
+            dsauto.getConstructor().newInstance();
             message("Finished detecting DirectSound capturer");
         }
         catch (ThreadDeath td) {
@@ -121,7 +123,7 @@ public class JMFInit extends Frame implements Runnable {
         Class<?> jsauto;
         try {
             jsauto = Class.forName("JavaSoundAuto");
-            jsauto.newInstance();
+            jsauto.getConstructor().newInstance();
             message("Finished detecting javasound capturer");
         }
         catch (ThreadDeath td) {
@@ -194,7 +196,7 @@ public class JMFInit extends Frame implements Runnable {
             // Find the renderer class and instantiate it.
             cls = Class.forName(dar);
 
-            Renderer rend = (Renderer) cls.newInstance();
+            Renderer rend = (Renderer) cls.getConstructor().newInstance();
             try {
                 // Set the format and open the device
                 AudioFormat af = new AudioFormat(AudioFormat.LINEAR, 44100, 16,
@@ -239,7 +241,7 @@ public class JMFInit extends Frame implements Runnable {
             // Find the renderer class and instantiate it.
             cls = Class.forName(dar);
 
-            Renderer rend = (Renderer) cls.newInstance();
+            Renderer rend = (Renderer) cls.getConstructor().newInstance();
 
             if (rend instanceof ExclusiveUse
                     && !((ExclusiveUse) rend).isExclusive()) {

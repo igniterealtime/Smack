@@ -108,6 +108,7 @@ public abstract class JingleContentDescriptionProvider extends ExtensionElementP
         /**
          * Parse an audio payload type.
          */
+        @Override
         public JinglePayloadType parsePayload(final XmlPullParser parser) {
             JinglePayloadType pte = super.parsePayload(parser);
             PayloadType.Audio pt = new PayloadType.Audio(pte.getPayloadType());
@@ -125,8 +126,9 @@ public abstract class JingleContentDescriptionProvider extends ExtensionElementP
         /**
          * Get a new instance of this object.
          */
+        @Override
         protected JingleContentDescription getInstance() {
             return new JingleContentDescription.Audio();
-		}
-	}
+        }
+    }
 }

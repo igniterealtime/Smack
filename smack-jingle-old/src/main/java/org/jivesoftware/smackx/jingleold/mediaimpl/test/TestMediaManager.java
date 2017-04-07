@@ -49,6 +49,7 @@ public class TestMediaManager extends JingleMediaManager {
     *
     * @return The Payload List
     */
+    @Override
     public List<PayloadType> getPayloads() {
         return payloads;
     }
@@ -65,6 +66,7 @@ public class TestMediaManager extends JingleMediaManager {
      * @param local       local Candidate
      * @return JingleMediaSession JingleMediaSession
      */
+    @Override
     public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote,
             final TransportCandidate local, final JingleSession jingleSession) {
         TestMediaSession session = null;
@@ -74,6 +76,7 @@ public class TestMediaManager extends JingleMediaManager {
         return session;
     }
 
+    @Override
     public PayloadType getPreferredPayloadType() {
         if (preferredPayloadType != null)
             return preferredPayloadType;
@@ -84,6 +87,7 @@ public class TestMediaManager extends JingleMediaManager {
         this.preferredPayloadType = preferredPayloadType;
     }
 
+    @Override
     public String getName() {
         return MEDIA_NAME;
     }

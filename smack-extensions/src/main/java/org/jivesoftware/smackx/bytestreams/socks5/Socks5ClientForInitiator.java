@@ -69,6 +69,7 @@ class Socks5ClientForInitiator extends Socks5Client {
         this.target = target;
     }
 
+    @Override
     public Socket getSocket(int timeout) throws IOException, InterruptedException,
                     TimeoutException, XMPPException, SmackException {
         Socket socket = null;

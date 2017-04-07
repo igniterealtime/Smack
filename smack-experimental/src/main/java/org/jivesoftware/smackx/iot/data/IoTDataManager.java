@@ -61,6 +61,7 @@ public final class IoTDataManager extends IoTManager {
     // Ensure a IoTDataManager exists for every connection.
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 if (!isAutoEnableActive()) return;
                 getInstanceFor(connection);
