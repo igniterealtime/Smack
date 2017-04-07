@@ -24,6 +24,7 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
  */
 public class BasicTransportManager extends JingleTransportManager{
 
+    @Override
     protected TransportResolver createResolver(JingleSession session) {
         return new BasicResolver();
     }

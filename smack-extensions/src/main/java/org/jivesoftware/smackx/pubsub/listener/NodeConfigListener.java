@@ -28,11 +28,11 @@ import org.jivesoftware.smackx.pubsub.LeafNode;
  */
 public interface NodeConfigListener
 {
-	/**
-	 * Called whenever the node the listener
-	 * is registered with is configured.
-	 * 
-	 * @param config The configuration details.
-	 */
-	void handleNodeConfiguration(ConfigurationEvent config);
+    /**
+     * Called whenever the node the listener
+     * is registered with is configured.
+     * 
+     * @param config The configuration details.
+     */
+    void handleNodeConfiguration(ConfigurationEvent config);
 }

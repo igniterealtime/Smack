@@ -92,6 +92,7 @@ public class ConnectionUtils {
 
         // mock send method
         Answer<Object> addIncoming = new Answer<Object>() {
+            @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 protocol.getRequests().add((Stanza) invocation.getArguments()[0]);
                 return null;
@@ -101,6 +102,7 @@ public class ConnectionUtils {
 
         // mock receive methods
         Answer<Stanza> answer = new Answer<Stanza>() {
+            @Override
             public Stanza answer(InvocationOnMock invocation) throws Throwable {
                 return protocol.getResponses().poll();
             }

@@ -35,9 +35,9 @@ import org.jxmpp.jid.Jid;
  */
 public class JingleSessionRequest {
 
-	private static final Logger LOGGER = Logger.getLogger(JingleSessionRequest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JingleSessionRequest.class.getName());
 
-	private final Jingle jingle; // The Jingle packet
+    private final Jingle jingle; // The Jingle packet
 
     private final JingleManager manager; // The manager associated to this
 
@@ -130,15 +130,15 @@ public class JingleSessionRequest {
         JingleSession session = null;
         synchronized (manager) {
             try {
-				session = manager.createIncomingJingleSession(this);
-				// Acknowledge the IQ reception
-				session.setSid(this.getSessionID());
-				//session.sendAck(this.getJingle());
-				session.updatePacketListener();
-				session.terminate("Declined");
-			} catch (Exception e) {
-				LOGGER.log(Level.SEVERE, "Exception in reject", e);
-			}
+                session = manager.createIncomingJingleSession(this);
+                // Acknowledge the IQ reception
+                session.setSid(this.getSessionID());
+                //session.sendAck(this.getJingle());
+                session.updatePacketListener();
+                session.terminate("Declined");
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Exception in reject", e);
+            }
         }
      }
 }

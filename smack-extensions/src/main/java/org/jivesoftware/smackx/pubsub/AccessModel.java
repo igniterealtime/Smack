@@ -24,18 +24,18 @@ package org.jivesoftware.smackx.pubsub;
  */
 public enum AccessModel
 {
-	/** Anyone may subscribe and retrieve items.	 */
-	open,
+    /** Anyone may subscribe and retrieve items.     */
+    open,
 
-	/** Subscription request must be approved and only subscribers may retrieve items. */
-	authorize,
+    /** Subscription request must be approved and only subscribers may retrieve items. */
+    authorize,
 
-	/** Anyone with a presence subscription of both or from may subscribe and retrieve items. */
-	presence,
+    /** Anyone with a presence subscription of both or from may subscribe and retrieve items. */
+    presence,
 
-	/** Anyone in the specified roster group(s) may subscribe and retrieve items. */
-	roster,
+    /** Anyone in the specified roster group(s) may subscribe and retrieve items. */
+    roster,
 
-	/** Only those on a whitelist may subscribe and retrieve items. */
-	whitelist;
+    /** Only those on a whitelist may subscribe and retrieve items. */
+    whitelist;
 }

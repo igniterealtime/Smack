@@ -54,10 +54,12 @@ public class PacketIDFilter implements StanzaFilter {
         this.packetID = packetID;
     }
 
+    @Override
     public boolean accept(Stanza packet) {
         return packetID.equals(packet.getStanzaId());
     }
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + ": id=" + packetID;
     }

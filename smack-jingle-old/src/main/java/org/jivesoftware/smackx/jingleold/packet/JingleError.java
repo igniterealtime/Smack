@@ -73,6 +73,7 @@ public class JingleError implements ExtensionElement {
      *
      * @return the error as XML.
      */
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         if (message != null) {
@@ -110,17 +111,20 @@ public class JingleError implements ExtensionElement {
         return null;
     }
 
+    @Override
     public String toString() {
         return getMessage();
     }
 
+    @Override
     public String getElementName() {
         return message;
     }
 
+    @Override
     public String getNamespace() {
-		return NAMESPACE;
-	}
+        return NAMESPACE;
+    }
 
     public static class Provider extends ExtensionElementProvider<ExtensionElement> {
 

@@ -28,8 +28,9 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
-import org.jxmpp.util.XmppStringUtils;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -117,7 +118,14 @@ public class AgentRoster {
                     if (entries.contains(jid)) {
                         // Fire the agent added event
                         listener.agentAdded(jid);
-                        Map<Resourcepart, Presence> userPresences = presenceMap.get(jid);
+                        Jid j;
+                        try {
+                            j = JidCreate.from(jid);
+                        }
+                        catch (XmppStringprepException e) {
+                            throw new IllegalStateException(e);
+                        }
+                        Map<Resourcepart, Presence> userPresences = presenceMap.get(j);
                         if (userPresences != null) {
                             Iterator<Presence> presences = userPresences.values().iterator();
                             while (presences.hasNext()) {
@@ -175,6 +183,7 @@ public class AgentRoster {
      *            or "user@domain/resource").
      * @return true if the XMPP address is an agent in the workgroup.
      */
+    @SuppressWarnings("EqualsIncompatibleType")
     public boolean contains(Jid jid) {
         if (jid == null) {
             return false;
@@ -282,7 +291,9 @@ public class AgentRoster {
     /**
      * Listens for all presence packets and processes them.
      */
+    @SuppressWarnings("EqualsIncompatibleType")
     private class PresencePacketListener implements StanzaListener {
+        @Override
         public void processStanza(Stanza packet) {
             Presence presence = (Presence)packet;
             EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
@@ -359,6 +370,7 @@ public class AgentRoster {
      */
     private class AgentStatusListener implements StanzaListener {
 
+        @Override
         public void processStanza(Stanza packet) {
             if (packet instanceof AgentStatusRequest) {
                 AgentStatusRequest statusRequest = (AgentStatusRequest)packet;
@@ -369,9 +381,14 @@ public class AgentRoster {
 
                         // Removing the user from the roster, so remove any presence information
                         // about them.
-                        String key = XmppStringUtils.parseLocalpart(XmppStringUtils.parseLocalpart(agentJID) + "@" +
-                                XmppStringUtils.parseDomain(agentJID));
-                        presenceMap.remove(key);
+                        Jid agentJid;
+                        try {
+                            agentJid = JidCreate.from(agentJID);
+                        }
+                        catch (XmppStringprepException e) {
+                            throw new IllegalStateException(e);
+                        }
+                        presenceMap.remove(agentJid.asBareJid());
                         // Fire event for roster listeners.
                         fireEvent(EVENT_AGENT_REMOVED, agentJID);
                     }

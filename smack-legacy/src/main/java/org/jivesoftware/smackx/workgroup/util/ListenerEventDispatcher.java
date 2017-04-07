@@ -84,6 +84,7 @@ public class ListenerEventDispatcher implements Runnable {
         return this.hasFinishedDispatching;
     }
 
+    @Override
     public void run() {
         ListIterator<TripletContainer> li = null;
 
@@ -104,7 +105,7 @@ public class ListenerEventDispatcher implements Runnable {
     }
 
 
-    protected class TripletContainer {
+    protected static class TripletContainer {
 
         protected Object listenerInstance;
         protected Method listenerMethod;

@@ -171,10 +171,12 @@ public class DataForm implements ExtensionElement {
         }
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }

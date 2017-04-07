@@ -126,6 +126,7 @@ public class IncomingFileTransfer extends FileTransfer {
         }
 
         Thread transferThread = new Thread(new Runnable() {
+            @Override
             public void run() {
                 try {
                     inputStream = negotiateStream();
@@ -184,6 +185,7 @@ public class IncomingFileTransfer extends FileTransfer {
         FutureTask<InputStream> streamNegotiatorTask = new FutureTask<InputStream>(
                 new Callable<InputStream>() {
 
+                    @Override
                     public InputStream call() throws Exception {
                         return streamNegotiator
                                 .createIncomingStream(recieveRequest.getStreamInitiation());
@@ -220,6 +222,7 @@ public class IncomingFileTransfer extends FileTransfer {
         return inputStream;
     }
 
+    @Override
     public void cancel() {
         setStatus(Status.cancelled);
     }

@@ -88,14 +88,17 @@ public class QueueOverview implements ExtensionElement {
         this.status = status;
     }
 
+    @Override
     public String getElementName () {
         return ELEMENT_NAME;
     }
 
+    @Override
     public String getNamespace () {
         return NAMESPACE;
     }
 
+    @Override
     public String toXML () {
         StringBuilder buf = new StringBuilder();
         buf.append('<').append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");

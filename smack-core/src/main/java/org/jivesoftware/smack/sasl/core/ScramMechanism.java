@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2016 Florian Schmaus
+ * Copyright 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,13 @@
  */
 package org.jivesoftware.smack.sasl.core;
 
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import javax.security.auth.callback.CallbackHandler;
 
@@ -40,7 +42,12 @@ public abstract class ScramMechanism extends SASLMechanism {
     private static final byte[] SERVER_KEY_BYTES = toBytes("Server Key");
     private static final byte[] ONE = new byte[] { 0, 0, 0, 1 };
 
-    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final ThreadLocal<SecureRandom> SECURE_RANDOM = new ThreadLocal<SecureRandom>() {
+        @Override
+        protected SecureRandom initialValue() {
+            return new SecureRandom();
+        }
+    };
 
     private static final Cache<String, Keys> CACHE = new LruCache<String, Keys>(10);
 
@@ -105,7 +112,15 @@ public abstract class ScramMechanism extends SASLMechanism {
 
     @Override
     protected byte[] evaluateChallenge(byte[] challenge) throws SmackException {
-        final String challengeString = new String(challenge);
+        String challengeString;
+        try {
+            // TODO: Where is it specified that this is an UTF-8 encoded string?
+            challengeString = new String(challenge, StringUtils.UTF8);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
+
         switch (state) {
         case AUTH_TEXT_SENT:
             final String serverFirstMessage = challengeString;
@@ -234,6 +249,9 @@ public abstract class ScramMechanism extends SASLMechanism {
     }
 
     protected String getChannelBindingName() {
+        // Check if we are using TLS and if a "-PLUS" variant of this mechanism is enabled. Assuming that the "-PLUS"
+        // variants always have precedence before the non-"-PLUS" variants this means that the server did not announce
+        // the "-PLUS" variant, as otherwise we would have tried it.
         if (sslSession != null && connectionConfiguration.isEnabledSaslMechanism(getName() + "-PLUS")) {
             // Announce that we support Channel Binding, i.e., the '-PLUS' flavor of this SASL mechanism, but that we
             // believe the server does not.
@@ -283,8 +301,9 @@ public abstract class ScramMechanism extends SASLMechanism {
     String getRandomAscii() {
         int count = 0;
         char[] randomAscii = new char[RANDOM_ASCII_BYTE_COUNT];
+        final Random random = SECURE_RANDOM.get();
         while (count < RANDOM_ASCII_BYTE_COUNT) {
-            int r = RANDOM.nextInt(128);
+            int r = random.nextInt(128);
             char c = (char) r;
             // RFC 5802 § 5.1 specifies 'r:' to exclude the ',' character and to be only printable ASCII characters
             if (!isPrintableNonCommaAsciiChar(c)) {
@@ -358,14 +377,21 @@ public abstract class ScramMechanism extends SASLMechanism {
      * (PRF) and with dkLen == output length of HMAC() == output length of H().
      * </p>
      * 
-     * @param str
+     * @param normalizedPassword the normalized password.
      * @param salt
      * @param iterations
      * @return the result of the Hi function.
      * @throws SmackException 
      */
-    private byte[] hi(String str, byte[] salt, int iterations) throws SmackException {
-        byte[] key = str.getBytes();
+    private byte[] hi(String normalizedPassword, byte[] salt, int iterations) throws SmackException {
+        byte[] key;
+        try {
+            // According to RFC 5802 § 2.2, the resulting string of the normalization is also in UTF-8.
+            key = normalizedPassword.getBytes(StringUtils.UTF8);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new AssertionError();
+        }
         // U1 := HMAC(str, salt + INT(1))
         byte[] u = hmac(key, ByteUtils.concact(salt, ONE));
         byte[] res = u.clone();

@@ -226,6 +226,16 @@ public class SynchronizationPoint<E extends Exception> {
         }
     }
 
+    public E getFailureException() {
+        connectionLock.lock();
+        try {
+            return failureException;
+        }
+        finally {
+            connectionLock.unlock();
+        }
+    }
+
     /**
      * Wait for the condition to become something else as {@link State#RequestSent} or {@link State#Initial}.
      * {@link #reportSuccess()}, {@link #reportFailure()} and {@link #reportFailure(Exception)} will either set this

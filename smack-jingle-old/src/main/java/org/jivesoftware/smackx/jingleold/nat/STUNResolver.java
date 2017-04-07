@@ -46,9 +46,9 @@ import de.javawi.jstun.test.DiscoveryTest;
  */
 public class STUNResolver extends TransportResolver {
 
-	private static final Logger LOGGER = Logger.getLogger(STUNResolver.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(STUNResolver.class.getName());
 
-	// The filename where the STUN servers are stored.
+    // The filename where the STUN servers are stored.
     public final static String STUNSERVERS_FILENAME = "META-INF/stun-config.xml";
 
     // Current STUN server we are using
@@ -87,6 +87,7 @@ public class STUNResolver extends TransportResolver {
      *
      * @see TransportResolver#isResolving()
      */
+    @Override
     public boolean isResolving() {
         return super.isResolving() && resolverThread != null;
     }
@@ -266,6 +267,7 @@ public class STUNResolver extends TransportResolver {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
+    @Override
     public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException, InterruptedException {
 
         setResolveInit();
@@ -289,6 +291,7 @@ public class STUNResolver extends TransportResolver {
      *
      * @throws XMPPException
      */
+    @Override
     public void initialize() throws XMPPException {
         LOGGER.fine("Initialized");
         if (!isResolving()&&!isResolved()) {
@@ -302,6 +305,7 @@ public class STUNResolver extends TransportResolver {
                 clearCandidates();
 
                 resolverThread = new Thread(new Runnable() {
+                    @Override
                     public void run() {
                         // Iterate through the list of interfaces, and ask
                         // to the STUN server for our address.
@@ -386,6 +390,7 @@ public class STUNResolver extends TransportResolver {
      *
      * @see TransportResolver#cancel()
      */
+    @Override
     public synchronized void cancel() throws XMPPException {
         if (isResolving()) {
             resolverThread.interrupt();
@@ -398,6 +403,7 @@ public class STUNResolver extends TransportResolver {
      *
      * @see TransportResolver#clear()
      */
+    @Override
     public synchronized void clear() throws XMPPException {
         this.defaultPort = 0;
         super.clear();
@@ -406,7 +412,7 @@ public class STUNResolver extends TransportResolver {
     /**
      * STUN service definition.
      */
-    protected class STUNService {
+    protected static class STUNService {
 
         private String hostname; // The hostname of the service
 

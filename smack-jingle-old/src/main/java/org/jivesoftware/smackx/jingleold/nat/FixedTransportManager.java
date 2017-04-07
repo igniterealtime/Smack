@@ -34,29 +34,37 @@ public class FixedTransportManager extends JingleTransportManager implements Jin
         resolver = inResolver;
     }
 
+    @Override
     protected TransportResolver createResolver(JingleSession session) {
         return resolver;
     }
 
+    @Override
     public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionDeclined(String reason, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionRedirected(String redirection, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionClosed(String reason, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionMediaReceived(JingleSession jingleSession, String participant) {
         // Do Nothing
     }
 
+    @Override
     public void sessionCreated(JingleSession jingleSession) {
         jingleSession.addListener(this);
     }

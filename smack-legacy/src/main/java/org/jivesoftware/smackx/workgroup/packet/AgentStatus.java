@@ -38,6 +38,7 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class AgentStatus implements ExtensionElement {
 
+    @SuppressWarnings("SimpleDateFormatConstant")
     private static final SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
 
     static {
@@ -80,14 +81,17 @@ public class AgentStatus implements ExtensionElement {
         return maxChats;
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT_NAME;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }
 
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
 
@@ -203,7 +207,11 @@ public class AgentStatus implements ExtensionElement {
                 buf.append(" userID=\"").append(userID).append('"');
             }
             if (date != null) {
-                buf.append(" startTime=\"").append(UTC_FORMAT.format(date)).append('"');
+                buf.append(" startTime=\"");
+                synchronized (UTC_FORMAT) {
+                    buf.append(UTC_FORMAT.format(date));
+                }
+                buf.append('"');
             }
             if (email != null) {
                 buf.append(" email=\"").append(email).append('"');
@@ -257,7 +265,9 @@ public class AgentStatus implements ExtensionElement {
             String userID = parser.getAttributeValue("", "userID");
             Date date = null;
             try {
-                date = UTC_FORMAT.parse(parser.getAttributeValue("", "startTime"));
+                synchronized (UTC_FORMAT) {
+                    date = UTC_FORMAT.parse(parser.getAttributeValue("", "startTime"));
+                }
             }
             catch (ParseException e) {
             }

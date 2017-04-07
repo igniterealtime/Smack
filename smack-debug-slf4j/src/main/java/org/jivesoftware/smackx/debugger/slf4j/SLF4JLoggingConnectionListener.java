@@ -40,22 +40,27 @@ class SLF4JLoggingConnectionListener implements ConnectionListener {
         logger.debug("({}) Connection authenticated as {}", connection.hashCode(), connection.getUser());
     }
 
+    @Override
     public void connectionClosed() {
         logger.debug("({}) Connection closed", connection.hashCode());
     }
 
+    @Override
     public void connectionClosedOnError(Exception e) {
         logger.debug("({}) Connection closed due to an exception: {}", connection.hashCode(), e);
     }
 
+    @Override
     public void reconnectionFailed(Exception e) {
         logger.debug("({}) Reconnection failed due to an exception: {}", connection.hashCode(), e);
     }
 
+    @Override
     public void reconnectionSuccessful() {
         logger.debug("({}) Connection reconnected", connection.hashCode());
     }
 
+    @Override
     public void reconnectingIn(int seconds) {
         logger.debug("({}) Connection will reconnect in {}", connection.hashCode(), seconds);
     }

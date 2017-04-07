@@ -78,6 +78,7 @@ public class MessageEvent implements ExtensionElement {
     *
     * @return the XML element name of the stanza(/packet) extension.
     */
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
@@ -88,6 +89,7 @@ public class MessageEvent implements ExtensionElement {
      *
      * @return the XML namespace of the stanza(/packet) extension.
      */
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }
@@ -303,6 +305,7 @@ public class MessageEvent implements ExtensionElement {
      * </pre>
      * 
      */
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append('<').append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(

@@ -48,6 +48,7 @@ public class XHTMLExtension implements ExtensionElement {
     *
     * @return the XML element name of the stanza(/packet) extension.
     */
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
@@ -58,6 +59,7 @@ public class XHTMLExtension implements ExtensionElement {
      *
      * @return the XML namespace of the stanza(/packet) extension.
      */
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }

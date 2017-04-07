@@ -61,6 +61,7 @@ public abstract class JingleSessionState {
     /**
      * For debugging just emit the short name of the class.
      */
+    @Override
     public String toString() {
         return this.getClass().getSimpleName();
     }

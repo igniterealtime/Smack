@@ -38,36 +38,43 @@ public class ObservableWriter extends Writer {
         this.wrappedWriter = wrappedWriter;
     }
 
+    @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
         wrappedWriter.write(cbuf, off, len);
         String str = new String(cbuf, off, len);
         maybeNotifyListeners(str);
     }
 
+    @Override
     public void flush() throws IOException {
         notifyListeners();
         wrappedWriter.flush();
     }
 
+    @Override
     public void close() throws IOException {
         wrappedWriter.close();
     }
 
+    @Override
     public void write(int c) throws IOException {
         wrappedWriter.write(c);
     }
 
+    @Override
     public void write(char[] cbuf) throws IOException {
         wrappedWriter.write(cbuf);
         String str = new String(cbuf);
         maybeNotifyListeners(str);
     }
 
+    @Override
     public void write(String str) throws IOException {
         wrappedWriter.write(str);
         maybeNotifyListeners(str);
     }
 
+    @Override
     public void write(String str, int off, int len) throws IOException {
         wrappedWriter.write(str, off, len);
         str = str.substring(off, off + len);

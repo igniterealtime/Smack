@@ -46,14 +46,17 @@ public class InvitationRequest extends OfferContent {
         return reason;
     }
 
+    @Override
     boolean isUserRequest() {
         return false;
     }
 
+    @Override
     boolean isInvitation() {
         return true;
     }
 
+    @Override
     boolean isTransfer() {
         return false;
     }

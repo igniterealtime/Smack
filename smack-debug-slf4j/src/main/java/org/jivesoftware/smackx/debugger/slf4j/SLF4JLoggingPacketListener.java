@@ -31,6 +31,7 @@ class SLF4JLoggingPacketListener implements StanzaListener {
         this.prefix = Validate.notNull(prefix);
     }
 
+    @Override
     public void processStanza(Stanza packet) {
         if (SLF4JSmackDebugger.printInterpreted.get() && logger.isDebugEnabled()) {
             logger.debug("{}: PKT [{}] '{}'", prefix, packet.getClass().getName(), packet.toXML());

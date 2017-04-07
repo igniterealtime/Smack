@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.bytestreams.socks5;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -34,6 +35,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 
 /**
@@ -82,6 +84,7 @@ class Socks5Client {
         // wrap connecting in future for timeout
         FutureTask<Socket> futureTask = new FutureTask<Socket>(new Callable<Socket>() {
 
+            @Override
             public Socket call() throws IOException, SmackException {
 
                 // initialize socket
@@ -199,7 +202,13 @@ class Socks5Client {
      * @return SOCKS5 connection request message
      */
     private byte[] createSocks5ConnectRequest() {
-        byte[] addr = this.digest.getBytes();
+        byte[] addr;
+        try {
+            addr = digest.getBytes(StringUtils.UTF8);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
 
         byte[] data = new byte[7 + addr.length];
         data[0] = (byte) 0x05; // version (SOCKS5)

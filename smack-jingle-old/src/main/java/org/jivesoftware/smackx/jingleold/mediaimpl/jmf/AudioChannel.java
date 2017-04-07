@@ -69,9 +69,9 @@ import org.jivesoftware.smackx.jingleold.media.JingleMediaSession;
  */
 public class AudioChannel {
 
-	private static final Logger LOGGER = Logger.getLogger(AudioChannel.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AudioChannel.class.getName());
 
-	private MediaLocator locator;
+    private MediaLocator locator;
     private String localIpAddress;
     private String remoteIpAddress;
     private int localPort;
@@ -482,6 +482,7 @@ public class AudioChannel {
 
     class StateListener implements ControllerListener {
 
+        @Override
         public void controllerUpdate(ControllerEvent ce) {
 
             // If there was an error during configure or

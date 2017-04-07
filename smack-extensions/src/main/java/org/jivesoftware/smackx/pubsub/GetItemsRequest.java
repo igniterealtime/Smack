@@ -25,42 +25,42 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  */
 public class GetItemsRequest extends NodeExtension
 {
-	protected final String subId;
-	protected final int maxItems;
+    protected final String subId;
+    protected final int maxItems;
 
-	public GetItemsRequest(String nodeId)
-	{
-		this(nodeId, null, -1);
-	}
+    public GetItemsRequest(String nodeId)
+    {
+        this(nodeId, null, -1);
+    }
 
-	public GetItemsRequest(String nodeId, String subscriptionId)
-	{
+    public GetItemsRequest(String nodeId, String subscriptionId)
+    {
         this(nodeId, subscriptionId, -1);
-	}
+    }
 
-	public GetItemsRequest(String nodeId, int maxItemsToReturn)
-	{
+    public GetItemsRequest(String nodeId, int maxItemsToReturn)
+    {
         this(nodeId, null, maxItemsToReturn);
-	}
+    }
 
-	public GetItemsRequest(String nodeId, String subscriptionId, int maxItemsToReturn)
-	{
+    public GetItemsRequest(String nodeId, String subscriptionId, int maxItemsToReturn)
+    {
         super(PubSubElementType.ITEMS, nodeId);
         maxItems = maxItemsToReturn;
-		subId = subscriptionId;
-	}
+        subId = subscriptionId;
+    }
 
-	public String getSubscriptionId()
-	{
-		return subId;
-	}
+    public String getSubscriptionId()
+    {
+        return subId;
+    }
 
-	public int getMaxItems()
-	{
-		return maxItems;
-	}
+    public int getMaxItems()
+    {
+        return maxItems;
+    }
 
-	@Override
+    @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement(getElementName());

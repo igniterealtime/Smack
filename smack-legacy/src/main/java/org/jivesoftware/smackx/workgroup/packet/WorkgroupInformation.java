@@ -50,14 +50,17 @@ public class WorkgroupInformation implements ExtensionElement {
         return workgroupJID;
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT_NAME;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }
 
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
 

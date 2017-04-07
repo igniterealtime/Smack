@@ -20,7 +20,7 @@ package org.jivesoftware.smackx.muc;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
-import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.EntityJid;
 
 /**
  * A listener that is fired anytime an invitation to join a MUC room is received.
@@ -43,7 +43,7 @@ public interface InvitationListener {
      * @param message the message used by the inviter to send the invitation.
      * @param invitation the raw invitation received with the message.
      */
-    public abstract void invitationReceived(XMPPConnection conn, MultiUserChat room, EntityFullJid inviter, String reason,
+    public abstract void invitationReceived(XMPPConnection conn, MultiUserChat room, EntityJid inviter, String reason,
                                             String password, Message message, MUCUser.Invite invitation);
 
 }

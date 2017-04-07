@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2016 Florian Schmaus
+ * Copyright © 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,6 @@ import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceExceptio
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -83,6 +82,7 @@ public final class MultiUserChatManager extends Manager {
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(final XMPPConnection connection) {
                 // Set on every established connection that this client supports the Multi-User
                 // Chat protocol. This information will be used when another client tries to
@@ -150,6 +150,7 @@ public final class MultiUserChatManager extends Manager {
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // listeners if the message includes an invitation.
         StanzaListener invitationPacketListener = new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 final Message message = (Message) packet;
                 // Get the MUCUser extension
@@ -165,7 +166,7 @@ public final class MultiUserChatManager extends Manager {
                     final MultiUserChat muc = getMultiUserChat(mucJid);
                     final XMPPConnection connection = connection();
                     final MUCUser.Invite invite = mucUser.getInvite();
-                    final EntityFullJid from = invite.getFrom();
+                    final EntityJid from = invite.getFrom();
                     final String reason = invite.getReason();
                     final String password = mucUser.getPassword();
                     for (final InvitationListener listener : invitationsListeners) {

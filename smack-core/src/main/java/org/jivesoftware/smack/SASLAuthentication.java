@@ -34,9 +34,9 @@ import javax.security.auth.callback.CallbackHandler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -90,10 +90,10 @@ public final class SASLAuthentication {
      * @return the registered SASLMechanism sorted by the level of preference.
      */
     public static Map<String, String> getRegisterdSASLMechanisms() {
-        Map<String, String> answer = new HashMap<String, String>();
+        Map<String, String> answer = new LinkedHashMap<String, String>();
         synchronized (REGISTERED_MECHANISMS) {
             for (SASLMechanism mechanism : REGISTERED_MECHANISMS) {
-                answer.put(mechanism.getClass().getName(), mechanism.getName());
+                answer.put(mechanism.getClass().getName(), mechanism.toString());
             }
         }
         return answer;

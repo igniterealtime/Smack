@@ -47,20 +47,20 @@ public class PrivacyProvider extends IQProvider<Privacy> {
             if (eventType == XmlPullParser.START_TAG) {
                 // CHECKSTYLE:OFF
                 if (parser.getName().equals("active")) {
-                	String activeName = parser.getAttributeValue("", "name");
-                	if (activeName == null) {
-                		privacy.setDeclineActiveList(true);
-                	} else {
-                		privacy.setActiveName(activeName);
-                	}
+                    String activeName = parser.getAttributeValue("", "name");
+                    if (activeName == null) {
+                        privacy.setDeclineActiveList(true);
+                    } else {
+                        privacy.setActiveName(activeName);
+                    }
                 }
                 else if (parser.getName().equals("default")) {
-                	String defaultName = parser.getAttributeValue("", "name");
-                	if (defaultName == null) {
-                		privacy.setDeclineDefaultList(true);
-                	} else {
-                		privacy.setDefaultName(defaultName);
-                	}
+                    String defaultName = parser.getAttributeValue("", "name");
+                    if (defaultName == null) {
+                        privacy.setDeclineDefaultList(true);
+                    } else {
+                        privacy.setDefaultName(defaultName);
+                    }
                 }
                 // CHECKSTYLE:ON
                 else if (parser.getName().equals("list")) {
@@ -75,10 +75,10 @@ public class PrivacyProvider extends IQProvider<Privacy> {
         }
 
         return privacy;
-	}
+    }
 
-	// Parse the list complex type
-	private static void parseList(XmlPullParser parser, Privacy privacy) throws XmlPullParserException, IOException, SmackException {
+    // Parse the list complex type
+    private static void parseList(XmlPullParser parser, Privacy privacy) throws XmlPullParserException, IOException, SmackException {
         boolean done = false;
         String listName = parser.getAttributeValue("", "name");
         ArrayList<PrivacyItem> items = new ArrayList<PrivacyItem>();
@@ -87,7 +87,7 @@ public class PrivacyProvider extends IQProvider<Privacy> {
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("item")) {
                     // CHECKSTYLE:OFF
-                	items.add(parseItem(parser));
+                    items.add(parseItem(parser));
                     // CHECKSTYLE:ON
                 }
             }
@@ -100,10 +100,10 @@ public class PrivacyProvider extends IQProvider<Privacy> {
 
         privacy.setPrivacyList(listName, items);
     // CHECKSTYLE:OFF
-	}
+    }
 
-	// Parse the list complex type
-	private static PrivacyItem parseItem(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
+    // Parse the list complex type
+    private static PrivacyItem parseItem(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
     // CHECKSTYLE:ON
         // Retrieves the required attributes
         String actionValue = parser.getAttributeValue("", "action");
@@ -142,7 +142,7 @@ public class PrivacyProvider extends IQProvider<Privacy> {
         parseItemChildElements(parser, item);
         return item;
     // CHECKSTYLE:OFF
-	}
+    }
     // CHECKSTYLE:ON
 
     private static void parseItemChildElements(XmlPullParser parser, PrivacyItem privacyItem) throws XmlPullParserException, IOException {

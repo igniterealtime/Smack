@@ -240,6 +240,7 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
      * @param e the element to add.
      * @throws InterruptedException if interrupted while waiting or if the queue was shut down.
      */
+    @Override
     public void put(E e) throws InterruptedException {
         checkNotNull(e);
         lock.lockInterruptibly();
@@ -452,6 +453,7 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
             }
         }
 
+        @Override
         public boolean hasNext() {
             return nextIndex >= 0;
         }
@@ -469,6 +471,7 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
             }
         }
 
+        @Override
         public E next() {
             lock.lock();
             try {
@@ -486,6 +489,7 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
             }
         }
 
+        @Override
         public void remove() {
             lock.lock();
             try {

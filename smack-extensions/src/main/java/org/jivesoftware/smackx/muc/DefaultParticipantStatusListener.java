@@ -32,48 +32,63 @@ import org.jxmpp.jid.parts.Resourcepart;
  */
 public class DefaultParticipantStatusListener implements ParticipantStatusListener {
 
+    @Override
     public void joined(EntityFullJid participant) {
     }
 
+    @Override
     public void left(EntityFullJid participant) {
     }
 
+    @Override
     public void kicked(EntityFullJid participant, Jid actor, String reason) {
     }
 
+    @Override
     public void voiceGranted(EntityFullJid participant) {
     }
 
+    @Override
     public void voiceRevoked(EntityFullJid participant) {
     }
 
+    @Override
     public void banned(EntityFullJid participant, Jid actor, String reason) {
     }
 
+    @Override
     public void membershipGranted(EntityFullJid participant) {
     }
 
+    @Override
     public void membershipRevoked(EntityFullJid participant) {
     }
 
+    @Override
     public void moderatorGranted(EntityFullJid participant) {
     }
 
+    @Override
     public void moderatorRevoked(EntityFullJid participant) {
     }
 
+    @Override
     public void ownershipGranted(EntityFullJid participant) {
     }
 
+    @Override
     public void ownershipRevoked(EntityFullJid participant) {
     }
 
+    @Override
     public void adminGranted(EntityFullJid participant) {
     }
 
+    @Override
     public void adminRevoked(EntityFullJid participant) {
     }
 
+    @Override
     public void nicknameChanged(EntityFullJid participant, Resourcepart newNickname) {
     }
 

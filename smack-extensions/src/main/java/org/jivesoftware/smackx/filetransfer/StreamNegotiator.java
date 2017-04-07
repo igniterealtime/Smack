@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -42,7 +43,11 @@ import java.io.OutputStream;
  *
  * @author Alexander Wenckus
  */
-public abstract class StreamNegotiator {
+public abstract class StreamNegotiator extends Manager {
+
+    protected StreamNegotiator(XMPPConnection connection) {
+        super(connection);
+    }
 
     /**
      * A event manager for stream initiation requests send to us.

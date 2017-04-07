@@ -44,6 +44,7 @@ public class AndFilter extends AbstractListFilter implements StanzaFilter {
         super(filters);
     }
 
+    @Override
     public boolean accept(Stanza packet) {
         for (StanzaFilter filter : filters) {
             if (!filter.accept(packet)) {

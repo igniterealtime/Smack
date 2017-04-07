@@ -267,7 +267,7 @@ public class MultiUserChatLight {
 
         try {
             connection.createStanzaCollectorAndSend(createMUCLightIQ).nextResultOrThrow();
-        } catch (InterruptedException | NoResponseException | XMPPErrorException e) {
+        } catch (NotConnectedException | InterruptedException | NoResponseException | XMPPErrorException e) {
             removeConnectionCallbacks();
             throw e;
         }

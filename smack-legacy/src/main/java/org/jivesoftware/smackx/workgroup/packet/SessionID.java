@@ -46,14 +46,17 @@ public class SessionID implements ExtensionElement {
         return this.sessionID;
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT_NAME;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }
 
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
 

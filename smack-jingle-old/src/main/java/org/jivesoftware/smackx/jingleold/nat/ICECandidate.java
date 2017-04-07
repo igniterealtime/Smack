@@ -32,9 +32,9 @@ import java.util.logging.Logger;
  */
 public class ICECandidate extends TransportCandidate implements Comparable<ICECandidate> {
 
-	private static final Logger LOGGER = Logger.getLogger(ICECandidate.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ICECandidate.class.getName());
 
-	private String id; // An identification
+    private String id; // An identification
 
     private String username;
 
@@ -219,6 +219,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
      * <p/>
      * ICE Candidate can check connectivity using UDP echo Test.
      */
+    @Override
     public void check(final List<TransportCandidate> localCandidates) {
         //TODO candidate is being checked trigger
         //candidatesChecking.add(cand);
@@ -226,6 +227,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
         final ICECandidate checkingCandidate = this;
 
         Thread checkThread = new Thread(new Runnable() {
+            @Override
             public void run() {
 
                 final TestResult result = new TestResult();
@@ -233,12 +235,13 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
                 // Media Proxy don't have Echo features.
                 // If its a relayed candidate we assumpt that is NOT Valid while other candidates still being checked.
                 // The negotiator MUST add then in the correct situations
-                if (getType().equals("relay")) {
+                if (getType().equals(Type.relay)) {
                     triggerCandidateChecked(false);
                     return;
                 }
 
                 ResultListener resultListener = new ResultListener() {
+                    @Override
                     public void testFinished(TestResult testResult, TransportCandidate candidate) {
                         if (testResult.isReachable() && checkingCandidate.equals(candidate)) {
                             result.setResult(true);
@@ -394,6 +397,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
         return res;
     }
 
+    @Override
     public boolean isNull() {
         if (super.isNull()) {
             return true;
@@ -415,14 +419,15 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
      *         object is less than, equal to, or greater than the specified
      *         object
      */
-	public int compareTo(ICECandidate arg) {
-		if (getPreference() < arg.getPreference()) {
-			return -1;
-		} else if (getPreference() > arg.getPreference()) {
-			return 1;
-		}
-		return 0;
-	}
+    @Override
+    public int compareTo(ICECandidate arg) {
+        if (getPreference() < arg.getPreference()) {
+            return -1;
+        } else if (getPreference() > arg.getPreference()) {
+            return 1;
+        }
+        return 0;
+    }
 
 }
 

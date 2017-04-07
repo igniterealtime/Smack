@@ -35,10 +35,12 @@ public class CapsExtension implements ExtensionElement {
         this.hash = hash;
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }

@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.JidTestUtil;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "ReferenceEquality"})
 public class ChatConnectionTest {
 
     private DummyConnection dc;
@@ -347,7 +347,7 @@ public class ChatConnectionTest {
         waitListener.waitAndReset();
     }
 
-    class TestChatManagerListener extends WaitForPacketListener implements ChatManagerListener {
+    static class TestChatManagerListener extends WaitForPacketListener implements ChatManagerListener {
         private Chat newChat;
         private ChatMessageListener listener;
 
@@ -372,7 +372,7 @@ public class ChatConnectionTest {
         }
     }
 
-    private class TestChatServer extends Thread {
+    private static class TestChatServer extends Thread {
         private Stanza chatPacket;
         private DummyConnection con;
 
@@ -387,7 +387,7 @@ public class ChatConnectionTest {
         }
     }
 
-    private class TestMessageListener implements ChatMessageListener {
+    private static class TestMessageListener implements ChatMessageListener {
         private Chat msgChat;
         private int counter = 0;
 

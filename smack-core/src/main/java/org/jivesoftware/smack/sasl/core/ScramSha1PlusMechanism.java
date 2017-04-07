@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class ScramSha1PlusMechanism extends ScramPlusMechanism {
 
     @Override
     public int getPriority() {
-        return 110;
+        return SCRAMSHA1Mechanism.PRIORITY - 10;
     }
 
     @Override

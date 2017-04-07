@@ -34,25 +34,25 @@ public class SubscriptionProvider extends ExtensionElementProvider<Subscription>
     @Override
     public Subscription parse(XmlPullParser parser, int initialDepth)
                     throws XmlPullParserException, IOException {
-		String jid = parser.getAttributeValue(null, "jid");
-		String nodeId = parser.getAttributeValue(null, "node");
-		String subId = parser.getAttributeValue(null, "subid");
-		String state = parser.getAttributeValue(null, "subscription");
-		boolean isRequired = false;
+        String jid = parser.getAttributeValue(null, "jid");
+        String nodeId = parser.getAttributeValue(null, "node");
+        String subId = parser.getAttributeValue(null, "subid");
+        String state = parser.getAttributeValue(null, "subscription");
+        boolean isRequired = false;
 
-		int tag = parser.next();
+        int tag = parser.next();
 
-		if ((tag == XmlPullParser.START_TAG) && parser.getName().equals("subscribe-options"))
-		{
-			tag = parser.next();
+        if ((tag == XmlPullParser.START_TAG) && parser.getName().equals("subscribe-options"))
+        {
+            tag = parser.next();
 
-			if ((tag == XmlPullParser.START_TAG) && parser.getName().equals("required"))
-				isRequired = true;
+            if ((tag == XmlPullParser.START_TAG) && parser.getName().equals("required"))
+                isRequired = true;
 
-			while (tag != XmlPullParser.END_TAG && !parser.getName().equals("subscribe-options")) tag = parser.next();
-		}
-		while (parser.getEventType() != XmlPullParser.END_TAG) parser.next();
-		return new Subscription(jid, nodeId, subId, (state == null ? null : Subscription.State.valueOf(state)), isRequired);
-	}
+            while (tag != XmlPullParser.END_TAG && !parser.getName().equals("subscribe-options")) tag = parser.next();
+        }
+        while (parser.getEventType() != XmlPullParser.END_TAG) parser.next();
+        return new Subscription(jid, nodeId, subId, (state == null ? null : Subscription.State.valueOf(state)), isRequired);
+    }
 
 }

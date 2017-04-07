@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2012-2015 Florian Schmaus
+ * Copyright 2012-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,10 @@
  */
 package org.jivesoftware.smackx.ping;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -67,6 +66,7 @@ public final class PingManager extends Manager {
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 getInstanceFor(connection);
             }
@@ -104,8 +104,7 @@ public final class PingManager extends Manager {
         defaultPingInterval = interval;
     }
 
-    private final Set<PingFailedListener> pingFailedListeners = Collections
-                    .synchronizedSet(new HashSet<PingFailedListener>());
+    private final Set<PingFailedListener> pingFailedListeners = new CopyOnWriteArraySet<>();
 
     private final ScheduledExecutorService executorService;
 
@@ -402,6 +401,7 @@ public final class PingManager extends Manager {
     }
 
     private final Runnable pingServerRunnable = new Runnable() {
+        @Override
         public void run() {
             LOGGER.fine("ServerPingTask run()");
             pingServerIfNecessary();

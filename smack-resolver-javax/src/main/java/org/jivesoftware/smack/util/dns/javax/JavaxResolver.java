@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2016 Florian Schmaus
+ * Copyright 2013-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,9 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Level;
 
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -80,15 +82,26 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
 
     @Override
     protected List<SRVRecord> lookupSRVRecords0(String name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
-        List<SRVRecord> res = new ArrayList<SRVRecord>();
+        List<SRVRecord> res = null;
 
+        Attribute srvAttribute;
         try {
             Attributes dnsLookup = dirContext.getAttributes(name, new String[] { "SRV" });
-            Attribute srvAttribute = dnsLookup.get("SRV");
+            srvAttribute = dnsLookup.get("SRV");
             if (srvAttribute == null)
-                return res;
+               return null;
+        } catch (NameNotFoundException e) {
+            LOGGER.log(Level.FINEST, "No DNS SRV RR found for " + name, e);
+            return null;
+        } catch (NamingException e) {
+            LOGGER.log(Level.WARNING, "Exception while resolving DNS SRV RR for " + name, e);
+            return null;
+        }
+
+        try {
             @SuppressWarnings("unchecked")
             NamingEnumeration<String> srvRecords = (NamingEnumeration<String>) srvAttribute.getAll();
+            res = new ArrayList<>();
             while (srvRecords.hasMore()) {
                 String srvRecordString = srvRecords.next();
                 String[] srvRecordEntries = srvRecordString.split(" ");
@@ -107,7 +120,7 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
             }
         }
         catch (NamingException e) {
-            throw new IllegalStateException(e);
+            LOGGER.log(Level.SEVERE, "Exception while resolving DNS SRV RR for" + name, e);
         }
 
         return res;

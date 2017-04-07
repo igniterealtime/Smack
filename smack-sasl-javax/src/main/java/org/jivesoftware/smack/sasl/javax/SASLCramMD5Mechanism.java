@@ -25,6 +25,7 @@ public class SASLCramMD5Mechanism extends SASLJavaXMechanism {
 
     public static final String NAME = CRAMMD5;
 
+    @Override
     public String getName() {
         return NAME;
     }

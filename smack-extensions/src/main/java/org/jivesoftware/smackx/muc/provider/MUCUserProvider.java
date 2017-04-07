@@ -24,7 +24,7 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.EntityJid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -86,7 +86,7 @@ public class MUCUserProvider extends ExtensionElementProvider<MUCUser> {
     private static MUCUser.Invite parseInvite(XmlPullParser parser) throws XmlPullParserException, IOException {
         String reason = null;
         EntityBareJid to = ParserUtils.getBareJidAttribute(parser, "to");
-        EntityFullJid from = ParserUtils.getFullJidAttribute(parser, "from");
+        EntityJid from = ParserUtils.getEntityJidAttribute(parser, "from");
 
         outerloop: while (true) {
             int eventType = parser.next();

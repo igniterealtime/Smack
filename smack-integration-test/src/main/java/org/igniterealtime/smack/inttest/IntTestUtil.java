@@ -180,6 +180,7 @@ public class IntTestUtil {
             ServiceAdministrationManager adminManager = ServiceAdministrationManager.getInstanceFor(connection);
             try {
                 adminManager.deleteUser(accountToDelete);
+                break;
             }
             catch (NoResponseException | XMPPErrorException | NotConnectedException | InterruptedException e) {
                 LOGGER.log(Level.WARNING, "Exception deleting account for " + connection, e);

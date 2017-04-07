@@ -40,13 +40,12 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
 
     private final StreamNegotiator primaryNegotiator;
     private final StreamNegotiator secondaryNegotiator;
-    private final XMPPConnection connection;
 
     public FaultTolerantNegotiator(XMPPConnection connection, StreamNegotiator primary,
             StreamNegotiator secondary) {
+        super(connection);
         this.primaryNegotiator = primary;
         this.secondaryNegotiator = secondary;
-        this.connection = connection;
     }
 
     @Override
@@ -55,14 +54,16 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         secondaryNegotiator.newStreamInitiation(from, streamID);
     }
 
+    @Override
     InputStream negotiateIncomingStream(Stanza streamInitiation) {
         throw new UnsupportedOperationException("Negotiation only handled by create incoming " +
                 "stream method.");
     }
 
+    @Override
     public InputStream createIncomingStream(final StreamInitiation initiation) throws SmackException, XMPPErrorException, InterruptedException {
         // This could be either an xep47 ibb 'open' iq or an xep65 streamhost iq
-        IQ initationSet = initiateIncomingStream(connection, initiation);
+        IQ initationSet = initiateIncomingStream(connection(), initiation);
 
         StreamNegotiator streamNegotiator = determineNegotiator(initationSet);
 
@@ -79,6 +80,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         }
     }
 
+    @Override
     public OutputStream createOutgoingStream(String streamID, Jid initiator, Jid target)
                     throws SmackException, XMPPException, InterruptedException {
         OutputStream stream;
@@ -92,6 +94,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         return stream;
     }
 
+    @Override
     public String[] getNamespaces() {
         String[] primary = primaryNegotiator.getNamespaces();
         String[] secondary = secondaryNegotiator.getNamespaces();

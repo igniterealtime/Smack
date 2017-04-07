@@ -29,6 +29,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.EntityJid;
 
 /**
  * Represents extended presence information about roles, affiliations, full JIDs,
@@ -49,10 +50,12 @@ public class MUCUser implements ExtensionElement {
     private String password;
     private Destroy destroy;
 
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }
@@ -247,7 +250,12 @@ public class MUCUser implements ExtensionElement {
         public static final String ELEMENT ="invite";
 
         private final String reason;
-        private final EntityFullJid from;
+
+        /**
+         * From XEP-0045 § 7.8.2: "… whose value is the bare JID, full JID, or occupant JID of the inviter …" 
+         */
+        private final EntityJid from;
+
         private final EntityBareJid to;
 
         public Invite(String reason, EntityFullJid from) {
@@ -258,7 +266,7 @@ public class MUCUser implements ExtensionElement {
             this(reason, null, to);
         }
 
-        public Invite(String reason, EntityFullJid from, EntityBareJid to) {
+        public Invite(String reason, EntityJid from, EntityBareJid to) {
             this.reason = reason;
             this.from = from;
             this.to = to;
@@ -270,7 +278,7 @@ public class MUCUser implements ExtensionElement {
          *
          * @return the room's occupant that sent the invitation.
          */
-        public EntityFullJid getFrom() {
+        public EntityJid getFrom() {
             return from;
         }
 

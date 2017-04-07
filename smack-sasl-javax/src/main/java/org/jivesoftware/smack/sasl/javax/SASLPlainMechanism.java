@@ -25,6 +25,7 @@ public class SASLPlainMechanism extends SASLJavaXMechanism {
 
     public static final String NAME = PLAIN;
 
+    @Override
     public String getName() {
         return NAME;
     }

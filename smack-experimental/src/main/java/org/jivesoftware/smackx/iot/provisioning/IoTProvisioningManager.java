@@ -82,6 +82,7 @@ public final class IoTProvisioningManager extends Manager {
     // Ensure a IoTProvisioningManager exists for every connection.
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 if (!IoTManager.isAutoEnableActive()) return;
                 getInstanceFor(connection);
