@@ -11,12 +11,12 @@ About
 A pure Java library, it can be embedded into your applications to create anything from a full XMPP instant messaging client to simple XMPP integrations such as sending notification messages and presence-enabling devices.
 Smack and XMPP allows you to easily exchange data, in various ways e.g. fire-and-forget, publish-subscribe, between human and non-human endpoints (M2M, IoT, …).
 
-Confused? Have a look at the [Overview](documentation/overview.md).
-
-[Smack] - an [Ignite Realtime] community project.
+More information are provided by the [Overview](documentation/overview.md).
 
 Getting started
 ---------------
+
+Start with having a look at the **[Docmentation]** and the **[Javadoc]**.
 
 Instructions how to use Smack in your Java or Android project are provided in the [Smack 4.2 Readme and Upgrade Guide](https://github.com/igniterealtime/Smack/wiki/Smack-4.2-Readme-and-Upgrade-Guide).
 
@@ -78,8 +78,12 @@ are interested in applying innovative, open-standards-based Real Time Collaborat
 We're aimed at disrupting proprietary, non-open standards-based systems and invite you to participate in what's already one 
 of the biggest and most active Open Source communities.
 
+[Smack] - an [Ignite Realtime] community project.
+
 [Smack]: http://www.igniterealtime.org/projects/smack/index.jsp
 [Ignite Realtime]: http://www.igniterealtime.org
 [XMPP (Jabber)]: http://xmpp.org/
 [Smack Developers Forum]: http://community.igniterealtime.org/community/developers/smack
 [Smack Users Forum]: https://community.igniterealtime.org/community/support/smack_users
+[Docmentation]: https://download.igniterealtime.org/smack/docs/latest/documentation/
+[Javadoc]: https://download.igniterealtime.org/smack/docs/latest/javadoc/
