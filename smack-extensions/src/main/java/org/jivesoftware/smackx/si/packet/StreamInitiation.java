@@ -317,14 +317,17 @@ public class StreamInitiation extends IQ {
             return isRanged;
         }
 
+        @Override
         public String getElementName() {
             return "file";
         }
 
+        @Override
         public String getNamespace() {
             return "http://jabber.org/protocol/si/profile/file-transfer";
         }
 
+        @Override
         public String toXML() {
             StringBuilder buffer = new StringBuilder();
 
@@ -370,7 +373,7 @@ public class StreamInitiation extends IQ {
      * @author Alexander Wenckus
      *
      */
-    public class Feature implements ExtensionElement {
+    public static class Feature implements ExtensionElement {
 
         private final DataForm data;
 
@@ -392,21 +395,24 @@ public class StreamInitiation extends IQ {
             return data;
         }
 
+        @Override
         public String getNamespace() {
             return "http://jabber.org/protocol/feature-neg";
         }
 
+        @Override
         public String getElementName() {
             return "feature";
         }
 
+        @Override
         public String toXML() {
             StringBuilder buf = new StringBuilder();
             buf
                     .append("<feature xmlns=\"http://jabber.org/protocol/feature-neg\">");
-			buf.append(data.toXML());
-			buf.append("</feature>");
-			return buf.toString();
-		}
-	}
+            buf.append(data.toXML());
+            buf.append("</feature>");
+            return buf.toString();
+        }
+    }
 }

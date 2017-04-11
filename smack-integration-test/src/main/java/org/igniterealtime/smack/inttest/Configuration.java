@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Florian Schmaus
+ * Copyright 2015-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package org.igniterealtime.smack.inttest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,12 +28,16 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.net.ssl.SSLContext;
+
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
+
+import eu.geekplace.javapinning.java7.Java7Pinning;
 
 public final class Configuration {
 
@@ -44,6 +50,8 @@ public final class Configuration {
     public final DomainBareJid service;
 
     public final String serviceTlsPin;
+
+    public final SSLContext tlsContext;
 
     public final SecurityMode securityMode;
 
@@ -78,10 +86,16 @@ public final class Configuration {
     private Configuration(DomainBareJid service, String serviceTlsPin, SecurityMode securityMode, int replyTimeout,
                     boolean debug, String accountOneUsername, String accountOnePassword, String accountTwoUsername,
                     String accountTwoPassword, String accountThreeUsername, String accountThreePassword, Set<String> enabledTests, Set<String> disabledTests,
-                    Set<String> testPackages, String adminAccountUsername, String adminAccountPassword) {
+                    Set<String> testPackages, String adminAccountUsername, String adminAccountPassword)
+                    throws KeyManagementException, NoSuchAlgorithmException {
         this.service = Objects.requireNonNull(service,
                         "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
         this.serviceTlsPin = serviceTlsPin;
+        if (serviceTlsPin != null) {
+            tlsContext = Java7Pinning.forPin(serviceTlsPin);
+        } else {
+            tlsContext = null;
+        }
         this.securityMode = securityMode;
         if (replyTimeout > 0) {
             this.replyTimeout = replyTimeout;
@@ -257,7 +271,7 @@ public final class Configuration {
             return this;
         }
 
-        public Configuration build() {
+        public Configuration build() throws KeyManagementException, NoSuchAlgorithmException {
             return new Configuration(service, serviceTlsPin, securityMode, replyTimeout, debug, accountOneUsername,
                             accountOnePassword, accountTwoUsername, accountTwoPassword, accountThreeUsername, accountThreePassword, enabledTests, disabledTests,
                             testPackages, adminAccountUsername, adminAccountPassword);
@@ -266,7 +280,8 @@ public final class Configuration {
 
     private static final String SINTTEST = "sinttest.";
 
-    public static Configuration newConfiguration() throws IOException {
+    public static Configuration newConfiguration()
+                    throws IOException, KeyManagementException, NoSuchAlgorithmException {
         Properties properties = new Properties();
 
         File propertiesFile = findPropertiesFile();

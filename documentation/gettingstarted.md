@@ -55,7 +55,7 @@ XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
   .setUsernameAndPassword("username", "password")
   .setXmppDomain("jabber.org")
   .setHost("earl.jabber.org")
-  .setPort("8222")
+  .setPort(8222)
   .build();
 
 AbstractXMPPConnection conn2 = **new** XMPPTCPConnection(config);

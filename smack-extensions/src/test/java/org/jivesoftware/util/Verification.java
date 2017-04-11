@@ -39,6 +39,7 @@ public interface Verification<T extends Stanza, S extends Stanza> {
      */
     public static Verification<Stanza, Stanza> correspondingSenderReceiver = new Verification<Stanza, Stanza>() {
 
+        @Override
         public void verify(Stanza request, Stanza response) {
             assertEquals(response.getFrom(), request.getTo());
         }
@@ -50,6 +51,7 @@ public interface Verification<T extends Stanza, S extends Stanza> {
      */
     public static Verification<IQ, Stanza> requestTypeGET = new Verification<IQ, Stanza>() {
 
+        @Override
         public void verify(IQ request, Stanza response) {
             assertEquals(IQ.Type.get, request.getType());
         }
@@ -61,6 +63,7 @@ public interface Verification<T extends Stanza, S extends Stanza> {
      */
     public static Verification<IQ, Stanza> requestTypeSET = new Verification<IQ, Stanza>() {
 
+        @Override
         public void verify(IQ request, Stanza response) {
             assertEquals(IQ.Type.set, request.getType());
         }
@@ -72,6 +75,7 @@ public interface Verification<T extends Stanza, S extends Stanza> {
      */
     public static Verification<IQ, Stanza> requestTypeRESULT = new Verification<IQ, Stanza>() {
 
+        @Override
         public void verify(IQ request, Stanza response) {
             assertEquals(IQ.Type.result, request.getType());
         }
@@ -83,6 +87,7 @@ public interface Verification<T extends Stanza, S extends Stanza> {
      */
     public static Verification<IQ, Stanza> requestTypeERROR = new Verification<IQ, Stanza>() {
 
+        @Override
         public void verify(IQ request, Stanza response) {
             assertEquals(IQ.Type.error, request.getType());
         }

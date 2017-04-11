@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.sasl.javax;
 
+import java.io.UnsupportedEncodingException;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.sasl.DigestMd5SaslTest;
@@ -29,12 +31,12 @@ public class SASLDigestMD5Test extends DigestMd5SaslTest {
     }
 
     @Test
-    public void testDigestMD5() throws NotConnectedException, SmackException, InterruptedException, XmppStringprepException {
+    public void testDigestMD5() throws NotConnectedException, SmackException, InterruptedException, XmppStringprepException, UnsupportedEncodingException {
         runTest(false);
     }
 
     @Test
-    public void testDigestMD5Authzid() throws NotConnectedException, SmackException, InterruptedException, XmppStringprepException {
+    public void testDigestMD5Authzid() throws NotConnectedException, SmackException, InterruptedException, XmppStringprepException, UnsupportedEncodingException {
         runTest(true);
     }
 }

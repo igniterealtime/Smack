@@ -36,10 +36,6 @@
 		<property name="message" value="Line containing only whitespace character(s)"/>
 	</module>
 	<module name="RegexpSingleline">
-		<property name="format" value="^ +\t+"/>
-		<property name="message" value="Line containing tab(s) after space"/>
-	</module>
-	<module name="RegexpSingleline">
 		<!-- We use {2,} instead of + here to address the typical case where a file was written
 		   with tabs but javadoc is causing '\t *' -->
 		<property name="format" value="^\t+ {2,}"/>
@@ -88,6 +84,10 @@
 			<property name="format" value="println"/>
 			<property name="message" value="Usage of println"/>
 			<property name="ignoreComments" value="true"/>
+		</module>
+		<module name="RegexpSinglelineJava">
+			<property name="format" value="^\t+"/>
+			<property name="message" value="Indent must not use tab characters. Use space instead."/>
 		</module>
 		<module name="JavadocMethod">
 			<!-- TODO stricten those checks -->

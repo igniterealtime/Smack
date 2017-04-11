@@ -41,6 +41,7 @@ public class STUNTransportManager extends JingleTransportManager {
         }
     }
 
+    @Override
     protected TransportResolver createResolver(JingleSession session) {
         try {
             stunResolver.resolve(session);

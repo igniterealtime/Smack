@@ -99,6 +99,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
          *
          * @return a new TransportNegotiator.Ice instance
          */
+        @Override
         protected JingleTransport getInstance() {
             return new JingleTransport.Ice();
         }
@@ -109,6 +110,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
          * @param parser the structure to parse
          * @return a candidate element
          */
+        @Override
         protected JingleTransportCandidate parseCandidate(XmlPullParser parser) {
             ICECandidate mt = new ICECandidate();
 
@@ -208,6 +210,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
          *
          * @return a new TransportNegotiator.RawUdp instance
          */
+        @Override
         protected JingleTransport getInstance() {
             return new JingleTransport.RawUdp();
         }
@@ -218,6 +221,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
          * @param parser the structure to parse
          * @return a candidate element
          */
+        @Override
         protected JingleTransportCandidate parseCandidate(XmlPullParser parser) {
             TransportCandidate.Fixed mt = new TransportCandidate.Fixed();
 

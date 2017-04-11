@@ -53,14 +53,17 @@ public class MetaData implements ExtensionElement {
         return metaData;
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT_NAME;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }
 
+    @Override
     public String toXML() {
         return MetaDataUtils.serializeMetaData(this.getMetaData());
     }

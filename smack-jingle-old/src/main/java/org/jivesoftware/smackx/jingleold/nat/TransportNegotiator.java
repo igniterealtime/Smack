@@ -36,6 +36,7 @@ import org.jivesoftware.smackx.jingleold.JingleNegotiatorState;
 import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.listeners.JingleListener;
 import org.jivesoftware.smackx.jingleold.listeners.JingleTransportListener;
+import org.jivesoftware.smackx.jingleold.nat.ICECandidate.Type;
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.packet.JingleContent;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
@@ -52,9 +53,9 @@ import org.jivesoftware.smackx.jingleold.packet.JingleTransport.JingleTransportC
  */
 public abstract class TransportNegotiator extends JingleNegotiator {
 
-	private static final Logger LOGGER = Logger.getLogger(TransportNegotiator.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TransportNegotiator.class.getName());
 
-	// The time we give to the candidates check before we accept or decline the
+    // The time we give to the candidates check before we accept or decline the
     // transport (in milliseconds)
     public final static int CANDIDATES_ACCEPT_PERIOD = 4000;
 
@@ -158,6 +159,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     /**
      *  Called from above to start the negotiator during a session-initiate.
      */
+    @Override
     protected void doStart() {
 
         try {
@@ -173,6 +175,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     /**
      * Called from above to session-terminate.
      */
+    @Override
     public void close() {
         super.close();
 
@@ -246,6 +249,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      */
     private void checkRemoteCandidate(final TransportCandidate offeredCandidate) {
         offeredCandidate.addListener(new TransportResolverListener.Checker() {
+            @Override
             public void candidateChecked(TransportCandidate cand, final boolean validCandidate) {
                 if (validCandidate) {
                     if (getNegotiatorState() == JingleNegotiatorState.PENDING)
@@ -253,6 +257,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 }
             }
 
+            @Override
             public void candidateChecking(TransportCandidate cand) {
             }
 
@@ -292,6 +297,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         if (resultThread == null && !getRemoteCandidates().isEmpty()) {
             resultThread = new Thread(new Runnable() {
 
+                @Override
                 public void run() {
 
                     // Sleep for some time, waiting for the candidates checks
@@ -351,7 +357,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                         for (TransportCandidate candidate : remoteCandidates) {
                             if (candidate instanceof ICECandidate) {
                                 ICECandidate iceCandidate = (ICECandidate) candidate;
-                                if (iceCandidate.getType().equals("relay")) {
+                                if (iceCandidate.getType().equals(Type.relay)) {
                                     //TODO Check if the relay is reacheable
                                     addValidRemoteCandidate(iceCandidate);
                                     foundRemoteRelay = true;
@@ -366,7 +372,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                             for (TransportCandidate candidate : offeredCandidates) {
                                 if (candidate instanceof ICECandidate) {
                                     ICECandidate iceCandidate = (ICECandidate) candidate;
-                                    if (iceCandidate.getType().equals("relay")) {
+                                    if (iceCandidate.getType().equals(Type.relay)) {
                                         foundLocalRelay = true;
                                     }
                                 }
@@ -565,13 +571,16 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         if (resolverListener == null) {
             // Add a listener that sends the offer when the resolver finishes...
             resolverListener = new TransportResolverListener.Resolver() {
+                @Override
                 public void candidateAdded(TransportCandidate cand) throws NotConnectedException, InterruptedException {
                     sendTransportCandidateOffer(cand);
                 }
 
+                @Override
                 public void end() {
                 }
 
+                @Override
                 public void init() {
                 }
             };
@@ -597,6 +606,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * @throws SmackException 
      * @throws InterruptedException 
      */
+    @Override
     public final List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException, InterruptedException {
         List<IQ> responses = new ArrayList<IQ>();
         IQ response = null;
@@ -838,6 +848,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         /**
          * Get a TransportNegotiator instance.
          */
+        @Override
         public org.jivesoftware.smackx.jingleold.packet.JingleTransport getJingleTransport(TransportCandidate bestRemote) {
             org.jivesoftware.smackx.jingleold.packet.JingleTransport.RawUdp jt = new org.jivesoftware.smackx.jingleold.packet.JingleTransport.RawUdp();
             jt.addCandidate(new org.jivesoftware.smackx.jingleold.packet.JingleTransport.RawUdp.Candidate(bestRemote));
@@ -850,6 +861,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
          *
          * @return the bestRemoteCandidate
          */
+        @Override
         public TransportCandidate getBestRemoteCandidate() {
             // Hopefully, we only have one validRemoteCandidate
             ArrayList<TransportCandidate> cands = getValidRemoteCandidatesList();
@@ -865,6 +877,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         /**
          * Return true for fixed candidates.
          */
+        @Override
         public boolean acceptableTransportCandidate(TransportCandidate tc, List<TransportCandidate> localCandidates) {
             return tc instanceof TransportCandidate.Fixed;
         }
@@ -892,6 +905,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
          *
          * @param candidate
          */
+        @Override
         public org.jivesoftware.smackx.jingleold.packet.JingleTransport getJingleTransport(TransportCandidate candidate) {
             org.jivesoftware.smackx.jingleold.packet.JingleTransport.Ice jt = new org.jivesoftware.smackx.jingleold.packet.JingleTransport.Ice();
             jt.addCandidate(new org.jivesoftware.smackx.jingleold.packet.JingleTransport.Ice.Candidate(candidate));
@@ -903,6 +917,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
          *
          * @return the bestRemoteCandidate
          */
+        @Override
         public TransportCandidate getBestRemoteCandidate() {
             ICECandidate result = null;
 
@@ -911,18 +926,18 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 int highest = -1;
                 ICECandidate chose = null;
                 for (TransportCandidate transportCandidate : cands) {
-					if (transportCandidate instanceof ICECandidate) {
-						ICECandidate icecandidate = (ICECandidate) transportCandidate;
-						if (icecandidate.getPreference() > highest) {
-							chose = icecandidate;
-							highest = icecandidate.getPreference();
-						}
+                    if (transportCandidate instanceof ICECandidate) {
+                        ICECandidate icecandidate = (ICECandidate) transportCandidate;
+                        if (icecandidate.getPreference() > highest) {
+                            chose = icecandidate;
+                            highest = icecandidate.getPreference();
+                        }
                     }
                 }
                 result = chose;
             }
 
-            if (result != null && result.getType().equals("relay"))
+            if (result != null && result.getType().equals(Type.relay))
                 LOGGER.fine("Relay Type");
 
             return result;
@@ -931,6 +946,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         /**
          * Return true for ICE candidates.
          */
+        @Override
         public boolean acceptableTransportCandidate(TransportCandidate tc, List<TransportCandidate> localCandidates) {
             return tc instanceof ICECandidate;
         }

@@ -185,9 +185,11 @@ public final class DirectoryRosterStore implements RosterStore {
         resetEntries(Collections.<Item>emptyList(), "");
     }
 
+    @SuppressWarnings("DefaultCharset")
     private static Item readEntry(File file) {
         Reader reader;
         try {
+            // TODO: Should use Files.newBufferedReader() but it is not available on Android.
             reader = new FileReader(file);
         } catch (FileNotFoundException e) {
             LOGGER.log(Level.FINE, "Roster entry file not found", e);

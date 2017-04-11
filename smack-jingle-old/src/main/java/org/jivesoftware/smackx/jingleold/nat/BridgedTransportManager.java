@@ -46,6 +46,7 @@ public class BridgedTransportManager extends JingleTransportManager implements J
      * @param session correspondent Jingle Session
      * @return resolver
      */
+    @Override
     protected TransportResolver createResolver(JingleSession session) {
         BridgedResolver bridgedResolver = new BridgedResolver(this.xmppConnection);
         return bridgedResolver;
@@ -53,28 +54,35 @@ public class BridgedTransportManager extends JingleTransportManager implements J
 
     // Implement a Session Listener to relay candidates after establishment
 
+    @Override
     public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) throws NotConnectedException, InterruptedException {
         RTPBridge rtpBridge = RTPBridge.relaySession(lc.getConnection(), lc.getSessionId(), lc.getPassword(), rc, lc);
     }
 
+    @Override
     public void sessionDeclined(String reason, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionRedirected(String redirection, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionClosed(String reason, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionMediaReceived(JingleSession jingleSession, String participant) {
         // Do Nothing
     }
 
     // Session Created
 
+    @Override
     public void sessionCreated(JingleSession jingleSession) {
         jingleSession.addListener(this);
     }

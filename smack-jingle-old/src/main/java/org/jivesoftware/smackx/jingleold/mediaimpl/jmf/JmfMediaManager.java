@@ -40,9 +40,9 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
  */
 public class JmfMediaManager extends JingleMediaManager {
 
-	private static final Logger LOGGER = Logger.getLogger(JmfMediaManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JmfMediaManager.class.getName());
 
-	public static final String MEDIA_NAME = "JMF";
+    public static final String MEDIA_NAME = "JMF";
 
 
     private List<PayloadType> payloads = new ArrayList<PayloadType>();
@@ -75,6 +75,7 @@ public class JmfMediaManager extends JingleMediaManager {
      * @param local       local Candidate
      * @return JingleMediaSession
      */
+    @Override
     public JingleMediaSession createMediaSession(final PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, final JingleSession jingleSession) {
         return new AudioMediaSession(payloadType, remote, local, mediaLocator, jingleSession);
     }
@@ -93,6 +94,7 @@ public class JmfMediaManager extends JingleMediaManager {
      *
      * @return The Payload List
      */
+    @Override
     public List<PayloadType> getPayloads() {
         return payloads;
     }
@@ -160,6 +162,7 @@ public class JmfMediaManager extends JingleMediaManager {
         // @TODO Implement Linux Pre-Install
     }
 
+    @Override
     public  String getName() {
         return MEDIA_NAME;
     }

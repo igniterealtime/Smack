@@ -186,9 +186,9 @@ import org.jxmpp.jid.Jid;
 @SuppressWarnings("SynchronizeOnNonFinalField")
 public class JingleManager implements JingleSessionListener {
 
-	private static final Logger LOGGER = Logger.getLogger(JingleManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JingleManager.class.getName());
 
-	// non-static
+    // non-static
 
     final List<JingleSession> jingleSessions = new ArrayList<JingleSession>();
 
@@ -219,15 +219,19 @@ public class JingleManager implements JingleSessionListener {
 
         Roster.getInstanceFor(connection).addRosterListener(new RosterListener() {
 
+            @Override
             public void entriesAdded(Collection<Jid> addresses) {
             }
 
+            @Override
             public void entriesUpdated(Collection<Jid> addresses) {
             }
 
+            @Override
             public void entriesDeleted(Collection<Jid> addresses) {
             }
 
+            @Override
             public void presenceChanged(Presence presence) {
                 if (!presence.isAvailable()) {
                     Jid xmppAddress = presence.getFrom();
@@ -264,6 +268,7 @@ public class JingleManager implements JingleSessionListener {
         // The ServiceDiscoveryManager class should have been already
         // initialized
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 JingleManager.setServiceEnabled(connection, true);
             }
@@ -411,9 +416,11 @@ public class JingleManager implements JingleSessionListener {
         }
     }
 
+    @Override
     public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) {
     }
 
+    @Override
     public void sessionDeclined(String reason, JingleSession jingleSession) {
         jingleSession.removeListener(this);
         jingleSessions.remove(jingleSession);
@@ -421,21 +428,25 @@ public class JingleManager implements JingleSessionListener {
         LOGGER.severe("Declined:" + reason);
     }
 
+    @Override
     public void sessionRedirected(String redirection, JingleSession jingleSession) {
         jingleSession.removeListener(this);
         jingleSessions.remove(jingleSession);
     }
 
+    @Override
     public void sessionClosed(String reason, JingleSession jingleSession) {
         jingleSession.removeListener(this);
         jingleSessions.remove(jingleSession);
     }
 
+    @Override
     public void sessionClosedOnError(XMPPException e, JingleSession jingleSession) {
         jingleSession.removeListener(this);
         jingleSessions.remove(jingleSession);
     }
 
+    @Override
     public void sessionMediaReceived(JingleSession jingleSession, String participant) {
         // Do Nothing
     }
@@ -447,6 +458,7 @@ public class JingleManager implements JingleSessionListener {
     private void initJingleSessionRequestListeners() {
         StanzaFilter initRequestFilter = new StanzaFilter() {
             // Return true if we accept this packet
+            @Override
             public boolean accept(Stanza pin) {
                 if (pin instanceof IQ) {
                     IQ iq = (IQ) pin;
@@ -467,6 +479,7 @@ public class JingleManager implements JingleSessionListener {
 
         // Start a packet listener for session initiation requests
         connection.addAsyncStanzaListener(new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 triggerSessionRequested((Jingle) packet);
             }

@@ -80,10 +80,12 @@ public class RoomTransfer implements ExtensionElement {
     private RoomTransfer() {
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT_NAME;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }

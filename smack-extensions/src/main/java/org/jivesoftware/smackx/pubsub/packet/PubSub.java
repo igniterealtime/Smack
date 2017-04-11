@@ -33,11 +33,11 @@ public class PubSub extends IQ
     public static final String ELEMENT = "pubsub";
     public static final String NAMESPACE = "http://jabber.org/protocol/pubsub";
 
-	public PubSub() {
+    public PubSub() {
         super(ELEMENT, NAMESPACE);
-	}
+    }
 
-	public PubSub(PubSubNamespace ns) {
+    public PubSub(PubSubNamespace ns) {
         super(ELEMENT, ns.getXmlns());
     }
 
@@ -49,9 +49,9 @@ public class PubSub extends IQ
 
     @SuppressWarnings("unchecked")
     public <PE extends ExtensionElement> PE getExtension(PubSubElementType elem)
-	{
-		return (PE) getExtension(elem.getElementName(), elem.getNamespace().getXmlns());
-	}
+    {
+        return (PE) getExtension(elem.getElementName(), elem.getNamespace().getXmlns());
+    }
 
     /**
      * Returns the XML representation of a pubsub element according the specification.

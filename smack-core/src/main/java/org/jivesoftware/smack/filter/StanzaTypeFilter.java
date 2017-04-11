@@ -51,6 +51,7 @@ public final class StanzaTypeFilter implements StanzaFilter {
         this.packetType = packetType;
     }
 
+    @Override
     public boolean accept(Stanza packet) {
         return packetType.isInstance(packet);
     }

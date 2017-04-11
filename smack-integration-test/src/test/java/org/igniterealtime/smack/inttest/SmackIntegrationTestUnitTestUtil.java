@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,16 @@
  */
 package org.igniterealtime.smack.inttest;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
 import org.jxmpp.jid.JidTestUtil;
 
 public class SmackIntegrationTestUnitTestUtil {
 
-    public static DummySmackIntegrationTestFramework getFrameworkForUnitTest(Class<? extends AbstractSmackIntTest> unitTest) {
+    public static DummySmackIntegrationTestFramework getFrameworkForUnitTest(
+                    Class<? extends AbstractSmackIntTest> unitTest)
+                    throws KeyManagementException, NoSuchAlgorithmException {
         // @formatter:off
         Configuration configuration = Configuration.builder()
                         .setService(JidTestUtil.DOMAIN_BARE_JID_1)

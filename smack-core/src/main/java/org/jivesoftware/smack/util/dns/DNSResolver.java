@@ -20,6 +20,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 
@@ -28,6 +29,8 @@ import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
  *
  */
 public abstract class DNSResolver {
+
+    protected static final Logger LOGGER = Logger.getLogger(DNSResolver.class.getName());
 
     private final boolean supportsDnssec;
 

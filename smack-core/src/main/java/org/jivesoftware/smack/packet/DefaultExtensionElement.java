@@ -70,6 +70,7 @@ public class DefaultExtensionElement implements ExtensionElement {
      *
      * @return the XML element name of the stanza(/packet) extension.
      */
+    @Override
     public String getElementName() {
         return elementName;
     }
@@ -79,6 +80,7 @@ public class DefaultExtensionElement implements ExtensionElement {
      *
      * @return the XML namespace of the stanza(/packet) extension.
      */
+    @Override
     public String getNamespace() {
         return namespace;
     }

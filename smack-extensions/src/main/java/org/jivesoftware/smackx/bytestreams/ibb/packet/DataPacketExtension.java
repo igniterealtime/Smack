@@ -126,10 +126,12 @@ public class DataPacketExtension implements ExtensionElement {
         return this.decodedData;
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }

@@ -41,7 +41,7 @@ public abstract class AbstractSmackIntegrationTest extends AbstractSmackIntTest 
     protected final XMPPConnection connection;
 
     public AbstractSmackIntegrationTest(SmackIntegrationTestEnvironment environment) {
-        super(environment.testRunId, environment.configuration.replyTimeout);
+        super(environment.testRunId, environment.configuration);
         this.connection = this.conOne = environment.conOne;
         this.conTwo = environment.conTwo;
         this.conThree = environment.conThree;

@@ -33,9 +33,9 @@ import java.util.logging.Logger;
  */
 public class TcpUdpBridgeClient {
 
-	private static final Logger LOGGER = Logger.getLogger(TcpUdpBridgeClient.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TcpUdpBridgeClient.class.getName());
 
-	private String remoteTcpHost = null;
+    private String remoteTcpHost = null;
     private String remoteUdpHost = null;
     private int remoteTcpPort = -1;
     private int remoteUdpPort = -1;
@@ -67,6 +67,7 @@ public class TcpUdpBridgeClient {
 
         final Thread process = new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 try {
                     OutputStream out = localTcpSocket.getOutputStream();
@@ -97,6 +98,7 @@ public class TcpUdpBridgeClient {
 
         new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 try {
 

@@ -40,9 +40,9 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
  */
 public abstract class TransportResolver {
 
-	private static final Logger LOGGER = Logger.getLogger(TransportResolver.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TransportResolver.class.getName());
 
-	public enum Type {
+    public enum Type {
 
         rawupd, ice
     }

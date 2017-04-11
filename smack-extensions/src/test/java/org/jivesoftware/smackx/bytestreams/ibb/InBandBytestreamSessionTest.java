@@ -103,6 +103,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
             long lastSeq = 0;
 
+            @Override
             public void verify(Data request, IQ response) {
                 assertEquals(lastSeq++, request.getDataPacketExtension().getSeq());
             }
@@ -267,6 +268,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
         // compares the data of each packet with the control data
         Verification<Data, IQ> dataVerification = new Verification<Data, IQ>() {
 
+            @Override
             public void verify(Data request, IQ response) {
                 byte[] decodedData = request.getDataPacketExtension().getDecodedData();
                 int seq = (int) request.getDataPacketExtension().getSeq();
@@ -372,6 +374,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
         // verify reply to invalid data packet is an error
         protocol.addResponse(null, Verification.requestTypeERROR, new Verification<IQ, IQ>() {
 
+            @Override
             public void verify(IQ request, IQ response) {
                 assertEquals(XMPPError.Condition.unexpected_request,
                                 request.getError().getCondition());
@@ -410,6 +413,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
         // verify reply to invalid data packet is an error
         protocol.addResponse(null, Verification.requestTypeERROR, new Verification<IQ, IQ>() {
 
+            @Override
             public void verify(IQ request, IQ response) {
                 assertEquals(XMPPError.Condition.bad_request,
                                 request.getError().getCondition());
@@ -639,6 +643,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
         Thread closer = new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 try {
                     Thread.sleep(200);

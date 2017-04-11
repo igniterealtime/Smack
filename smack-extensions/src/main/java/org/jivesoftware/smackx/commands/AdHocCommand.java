@@ -457,12 +457,13 @@ public abstract class AdHocCommand {
          */
         sessionExpired("session-expired");
 
-        private String value;
+        private final String value;
 
         SpecificErrorCondition(String value) {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return value;
         }

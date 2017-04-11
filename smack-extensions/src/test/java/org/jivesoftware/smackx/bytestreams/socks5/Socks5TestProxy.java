@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Simple SOCKS5 proxy for testing purposes. It is almost the same as the Socks5Proxy class but the
@@ -206,6 +207,7 @@ public final class Socks5TestProxy {
      */
     class Socks5ServerProcess implements Runnable {
 
+        @Override
         public void run() {
             while (true) {
                 Socket socket = null;
@@ -295,7 +297,7 @@ public final class Socks5TestProxy {
             byte[] connectionRequest = Socks5Utils.receiveSocks5Message(in);
 
             // extract digest
-            String responseDigest = new String(connectionRequest, 5, connectionRequest[4]);
+            String responseDigest = new String(connectionRequest, 5, connectionRequest[4], StringUtils.UTF8);
 
             connectionRequest[1] = (byte) 0x00; // set return status to 0 (success)
             out.write(connectionRequest);

@@ -108,6 +108,7 @@ public final class LastActivityManager extends Manager {
     // Enable the LastActivity support on every established connection
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+            @Override
             public void connectionCreated(XMPPConnection connection) {
                 LastActivityManager.getInstanceFor(connection);
             }
@@ -135,6 +136,7 @@ public final class LastActivityManager extends Manager {
 
         // Listen to all the sent messages to reset the idle time on each one
         connection.addPacketSendingListener(new StanzaListener() {
+            @Override
             public void processStanza(Stanza packet) {
                 Presence presence = (Presence) packet;
                 Presence.Mode mode = presence.getMode();

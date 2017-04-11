@@ -26,45 +26,45 @@ import java.util.Locale;
  */
 public enum PubSubNamespace
 {
-	BASIC(null),
-	ERROR("errors"),
-	EVENT("event"),
-	OWNER("owner");
+    BASIC(null),
+    ERROR("errors"),
+    EVENT("event"),
+    OWNER("owner");
 
     private final String fragment;
     private final String fullNamespace;
 
-	private PubSubNamespace(String fragment)
-	{
-		this.fragment = fragment;
+    private PubSubNamespace(String fragment)
+    {
+        this.fragment = fragment;
         if (fragment != null) {
             fullNamespace = PubSub.NAMESPACE + '#' + fragment;
         }
         else {
             fullNamespace = PubSub.NAMESPACE;
         }
-	}
+    }
 
-	public String getXmlns()
-	{
+    public String getXmlns()
+    {
         return fullNamespace;
-	}
+    }
 
-	public String getFragment()
-	{
-		return fragment;
-	}
+    public String getFragment()
+    {
+        return fragment;
+    }
 
-	public static PubSubNamespace valueOfFromXmlns(String ns)
-	{
-		int index = ns.lastIndexOf('#');
+    public static PubSubNamespace valueOfFromXmlns(String ns)
+    {
+        int index = ns.lastIndexOf('#');
 
-		if (index != -1)
-		{
-			String suffix = ns.substring(ns.lastIndexOf('#')+1);
-			return valueOf(suffix.toUpperCase(Locale.US));
-		}
-		else
-			return BASIC;
-	}
+        if (index != -1)
+        {
+            String suffix = ns.substring(ns.lastIndexOf('#')+1);
+            return valueOf(suffix.toUpperCase(Locale.US));
+        }
+        else
+            return BASIC;
+    }
 }

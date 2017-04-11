@@ -36,6 +36,7 @@ import org.jxmpp.jid.Jid;
  */
 public class Transcripts extends IQ {
 
+    @SuppressWarnings("SimpleDateFormatConstant")
     private static final SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
     static {
         UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+0"));
@@ -169,10 +170,18 @@ public class Transcripts extends IQ {
                     .append("\">");
 
             if (joinTime != null) {
-                buf.append("<joinTime>").append(UTC_FORMAT.format(joinTime)).append("</joinTime>");
+                buf.append("<joinTime>");
+                synchronized (UTC_FORMAT) {
+                    buf.append(UTC_FORMAT.format(joinTime));
+                }
+                buf.append("</joinTime>");
             }
             if (leftTime != null) {
-                buf.append("<leftTime>").append(UTC_FORMAT.format(leftTime)).append("</leftTime>");
+                buf.append("<leftTime>");
+                synchronized (UTC_FORMAT) {
+                    buf.append(UTC_FORMAT.format(leftTime));
+                }
+                buf.append("</leftTime>");
             }
             buf.append("<agents>");
             for (AgentDetail agentDetail : agentDetails) {
@@ -234,10 +243,18 @@ public class Transcripts extends IQ {
                 buf.append("<agentJID>").append(agentJID).append("</agentJID>");
             }
             if (joinTime != null) {
-                buf.append("<joinTime>").append(UTC_FORMAT.format(joinTime)).append("</joinTime>");
+                buf.append("<joinTime>");
+                synchronized (UTC_FORMAT) {
+                    buf.append(UTC_FORMAT.format(joinTime));
+                }
+                buf.append("</joinTime>");
             }
             if (leftTime != null) {
-                buf.append("<leftTime>").append(UTC_FORMAT.format(leftTime)).append("</leftTime>");
+                buf.append("<leftTime>");
+                synchronized (UTC_FORMAT) {
+                    buf.append(UTC_FORMAT.format(leftTime));
+                }
+                buf.append("</leftTime>");
             }
             buf.append("</agent>");
 

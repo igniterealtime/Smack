@@ -103,7 +103,7 @@ public class PacketWriterTest {
         }
     }
 
-    public class BlockingStringWriter extends Writer {
+    public static class BlockingStringWriter extends Writer {
         @Override
         @SuppressWarnings("WaitNotInLoop")
         public void write(char[] cbuf, int off, int len) throws IOException {

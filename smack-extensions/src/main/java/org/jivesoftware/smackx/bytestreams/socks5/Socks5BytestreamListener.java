@@ -32,6 +32,7 @@ import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
  */
 public abstract class Socks5BytestreamListener implements BytestreamListener {
 
+    @Override
     public void incomingBytestreamRequest(BytestreamRequest request) {
         incomingBytestreamRequest((Socks5BytestreamRequest) request);
     }

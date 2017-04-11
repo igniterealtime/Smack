@@ -48,10 +48,12 @@ public class HeadersExtension implements ExtensionElement {
         return headers;
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }

@@ -70,7 +70,7 @@ public class Jingle extends IQ {
         this();
 
         if (contents != null) {
-            contents.addAll(contents);
+            this.contents.addAll(contents);
         }
 
         setContentInfo(mi);
@@ -343,6 +343,7 @@ public class Jingle extends IQ {
      *
      * @return the XML string
      */
+    @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         if (getInitiator() != null) {
             buf.append(" initiator=\"").append(getInitiator()).append('"');

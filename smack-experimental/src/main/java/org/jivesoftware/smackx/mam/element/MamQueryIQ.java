@@ -109,6 +109,15 @@ public class MamQueryIQ extends IQ {
     }
 
     /**
+     * Get the Node name.
+     * 
+     * @return the node
+     */
+    public String getNode() {
+      return node;
+    }
+
+    /**
      * Get the data form.
      *
      * @return the data form

@@ -69,6 +69,7 @@ public class QueueUpdate implements ExtensionElement {
         return remainingTime;
     }
 
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<queue-status xmlns=\"http://jabber.org/protocol/workgroup\">");
@@ -82,10 +83,12 @@ public class QueueUpdate implements ExtensionElement {
         return buf.toString();
     }
 
+    @Override
     public String getElementName() {
         return ELEMENT_NAME;
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }

@@ -59,6 +59,7 @@ public class JingleContentInfo implements ExtensionElement {
     /**
      * Get the element name.
      */
+    @Override
     public String getElementName() {
         // Media info is supposed to be just a single-word command...
         return getMediaInfo().toString();
@@ -76,10 +77,12 @@ public class JingleContentInfo implements ExtensionElement {
     /**
      * Get the publilc namespace.
      */
+    @Override
     public String getNamespace() {
         return namespace;
     }
 
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append('<').append(getElementName()).append(" xmlns=\"");
@@ -100,6 +103,7 @@ public class JingleContentInfo implements ExtensionElement {
             setNamespace(NAMESPACE);
         }
 
+        @Override
         public String getNamespace() {
             return NAMESPACE;
         }
@@ -148,7 +152,7 @@ public class JingleContentInfo implements ExtensionElement {
         public static class Ringing extends Audio {
             public Ringing() {
                 super(ContentInfo.Audio.RINGING);
-			}
-		}
-	}
+            }
+        }
+    }
 }

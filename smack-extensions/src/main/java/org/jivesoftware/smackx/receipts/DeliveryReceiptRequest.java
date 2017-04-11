@@ -36,16 +36,19 @@ public class DeliveryReceiptRequest implements ExtensionElement
 {
     public static final String ELEMENT = "request";
 
+    @Override
     public String getElementName()
     {
         return ELEMENT;
     }
 
+    @Override
     public String getNamespace()
     {
         return DeliveryReceipt.NAMESPACE;
     }
 
+    @Override
     public String toXML()
     {
         return "<request xmlns='" + DeliveryReceipt.NAMESPACE + "'/>";

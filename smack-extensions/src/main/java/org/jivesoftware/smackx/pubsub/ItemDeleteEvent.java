@@ -26,40 +26,40 @@ import java.util.List;
  */
 public class ItemDeleteEvent extends SubscriptionEvent
 {
-	private List<String> itemIds = Collections.emptyList();
+    private List<String> itemIds = Collections.emptyList();
 
-	/**
-	 * Constructs an <tt>ItemDeleteEvent</tt> that indicates the the supplied
-	 * items (by id) have been deleted, and that the event matches the listed
-	 * subscriptions.  The subscriptions would have been created by calling 
-	 * {@link LeafNode#subscribe(String)}.
-	 * 
-	 * @param nodeId The id of the node the event came from
-	 * @param deletedItemIds The item ids of the items that were deleted.
-	 * @param subscriptionIds The subscriptions that match the event.
-	 */
-	public ItemDeleteEvent(String nodeId, List<String> deletedItemIds, List<String> subscriptionIds)
-	{
-		super(nodeId, subscriptionIds);
+    /**
+     * Constructs an <tt>ItemDeleteEvent</tt> that indicates the the supplied
+     * items (by id) have been deleted, and that the event matches the listed
+     * subscriptions.  The subscriptions would have been created by calling 
+     * {@link LeafNode#subscribe(String)}.
+     * 
+     * @param nodeId The id of the node the event came from
+     * @param deletedItemIds The item ids of the items that were deleted.
+     * @param subscriptionIds The subscriptions that match the event.
+     */
+    public ItemDeleteEvent(String nodeId, List<String> deletedItemIds, List<String> subscriptionIds)
+    {
+        super(nodeId, subscriptionIds);
 
-		if (deletedItemIds == null)
-			throw new IllegalArgumentException("deletedItemIds cannot be null");
-		itemIds = deletedItemIds;
-	}
+        if (deletedItemIds == null)
+            throw new IllegalArgumentException("deletedItemIds cannot be null");
+        itemIds = deletedItemIds;
+    }
 
-	/**
-	 * Get the item id's of the items that have been deleted.
-	 * 
-	 * @return List of item id's
-	 */
-	public List<String> getItemIds()
-	{
-		return Collections.unmodifiableList(itemIds);
-	}
+    /**
+     * Get the item id's of the items that have been deleted.
+     * 
+     * @return List of item id's
+     */
+    public List<String> getItemIds()
+    {
+        return Collections.unmodifiableList(itemIds);
+    }
 
-	@Override
-	public String toString()
-	{
-		return getClass().getName() + "  [subscriptions: " + getSubscriptions() + "], [Deleted Items: " + itemIds + ']';
-	}
+    @Override
+    public String toString()
+    {
+        return getClass().getName() + "  [subscriptions: " + getSubscriptions() + "], [Deleted Items: " + itemIds + ']';
+    }
 }

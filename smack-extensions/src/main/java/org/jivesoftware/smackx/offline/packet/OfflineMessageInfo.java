@@ -42,6 +42,7 @@ public class OfflineMessageInfo implements ExtensionElement {
     *
     * @return the XML element name of the stanza(/packet) extension.
     */
+    @Override
     public String getElementName() {
         return "offline";
     }
@@ -52,6 +53,7 @@ public class OfflineMessageInfo implements ExtensionElement {
      *
      * @return the XML namespace of the stanza(/packet) extension.
      */
+    @Override
     public String getNamespace() {
         return "http://jabber.org/protocol/offline";
     }
@@ -78,6 +80,7 @@ public class OfflineMessageInfo implements ExtensionElement {
         this.node = node;
     }
 
+    @Override
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append('<').append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(

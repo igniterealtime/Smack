@@ -32,9 +32,9 @@ import org.jivesoftware.smackx.pubsub.PubSubElementType;
  */
 public class SimpleNodeProvider extends EmbeddedExtensionProvider<NodeExtension>
 {
-	@Override
-	protected NodeExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
-	{
+    @Override
+    protected NodeExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
+    {
         return new NodeExtension(PubSubElementType.valueOfFromElemName(currentElement, currentNamespace), attributeMap.get("node"));
-	}
+    }
 }

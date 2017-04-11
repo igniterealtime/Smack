@@ -1,0 +1,1 @@
+../../../../../../../../smack-experimental/src/main/java/org/jivesoftware/smackx/httpfileupload/package-info.java

@@ -222,6 +222,7 @@ public final class RosterEntry extends Manager {
         connection().sendStanza(unsubscribed);
     }
 
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
         if (getName() != null) {
@@ -249,6 +250,7 @@ public final class RosterEntry extends Manager {
         return getJid().hashCode();
     }
 
+    @Override
     public boolean equals(Object object) {
         if (this == object) {
             return true;

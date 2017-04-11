@@ -53,6 +53,7 @@ import org.jxmpp.jid.Jid;
  *
  * @see <a href="https://xmpp.org/extensions/xep-0296.html">XEP-0296: Best Practices for Resource Locking</a>
  */
+@SuppressWarnings("FunctionalInterfaceClash")
 public final class ChatManager extends Manager {
 
     private static final Map<XMPPConnection, ChatManager> INSTANCES = new WeakHashMap<>();
@@ -69,7 +70,7 @@ public final class ChatManager extends Manager {
     // @FORMATTER:OFF
     private static final StanzaFilter MESSAGE_FILTER = new AndFilter(
                     MessageTypeFilter.NORMAL_OR_CHAT,
-                    new OrFilter(MessageWithBodiesFilter.INSTANCE), new StanzaExtensionFilter(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE)
+                    new OrFilter(MessageWithBodiesFilter.INSTANCE, new StanzaExtensionFilter(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE))
                     );
 
     private static final StanzaFilter OUTGOING_MESSAGE_FILTER = new AndFilter(
@@ -188,20 +189,82 @@ public final class ChatManager extends Manager {
         return true;
     }
 
-    public boolean addListener(IncomingChatMessageListener listener) {
+    /**
+     * Add a new listener for incoming chat messages.
+     *
+     * @param listener the listener to add.
+     * @return <code>true</code> if the listener was not already added.
+     */
+    public boolean addIncomingListener(IncomingChatMessageListener listener) {
         return incomingListeners.add(listener);
     }
 
+    /**
+     * Add a new listener for incoming chat messages.
+     *
+     * @param listener the listener to add.
+     * @return <code>true</code> if the listener was not already added.
+     */
+    @Deprecated
+    @SuppressWarnings("FunctionalInterfaceClash")
+    public boolean addListener(IncomingChatMessageListener listener) {
+        return addIncomingListener(listener);
+    }
+
+    /**
+     * Remove an incoming chat message listener.
+     *
+     * @param listener the listener to remove.
+     * @return <code>true</code> if the listener was active and got removed.
+     */
+    @SuppressWarnings("FunctionalInterfaceClash")
     public boolean removeListener(IncomingChatMessageListener listener) {
         return incomingListeners.remove(listener);
     }
 
-    public boolean addListener(OutgoingChatMessageListener listener) {
+    /**
+     * Add a new listener for outgoing chat messages.
+     *
+     * @param listener the listener to add.
+     * @return <code>true</code> if the listener was not already added.
+     */
+    public boolean addOutgoingListener(OutgoingChatMessageListener listener) {
         return outgoingListeners.add(listener);
     }
 
-    public boolean removeOutoingLIstener(OutgoingChatMessageListener listener) {
+    /**
+     * Add a new listener for incoming chat messages.
+     *
+     * @param listener the listener to add.
+     * @return <code>true</code> if the listener was not already added.
+     * @deprecated use {@link #addOutgoingListener(OutgoingChatMessageListener)} instead.
+     */
+    @Deprecated
+    @SuppressWarnings("FunctionalInterfaceClash")
+    public boolean addListener(OutgoingChatMessageListener listener) {
+        return addOutgoingListener(listener);
+    }
+
+    /**
+     * Remove an outgoing chat message listener.
+     *
+     * @param listener the listener to remove.
+     * @return <code>true</code> if the listener was active and got removed.
+     */
+    public boolean removeListener(OutgoingChatMessageListener listener) {
         return outgoingListeners.remove(listener);
+    }
+
+    /**
+     * Remove an outgoing chat message listener.
+     *
+     * @param listener the listener to remove.
+     * @return <code>true</code> if the listener was active and got removed.
+     * @deprecated use {@link #removeListener(OutgoingChatMessageListener)} instead.
+     */
+    @Deprecated
+    public boolean removeOutoingLIstener(OutgoingChatMessageListener listener) {
+        return removeListener(listener);
     }
 
     /**

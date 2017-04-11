@@ -52,9 +52,9 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class RTPBridge extends IQ {
 
-	private static final Logger LOGGER = Logger.getLogger(RTPBridge.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RTPBridge.class.getName());
 
-	private String sid;
+    private String sid;
     private String pass;
     private String ip;
     private String name;
@@ -303,6 +303,7 @@ public class RTPBridge extends IQ {
      *
      * @return the Child Element XML of the Packet
      */
+    @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder str) {
         str.attribute("sid", sid);
         str.rightAngleBracket();

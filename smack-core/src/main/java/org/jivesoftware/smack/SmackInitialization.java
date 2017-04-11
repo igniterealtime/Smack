@@ -40,6 +40,7 @@ import org.jivesoftware.smack.tbr.element.TBRTokensIQ;
 import org.jivesoftware.smack.tbr.provider.TBRTokensProvider;
 import org.jivesoftware.smack.sasl.core.ScramSha1PlusMechanism;
 import org.jivesoftware.smack.util.FileUtils;
+import org.jivesoftware.smack.util.StringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -63,7 +64,7 @@ public final class SmackInitialization {
     static {
         String smackVersion;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(FileUtils.getStreamForUrl("classpath:org.jivesoftware.smack/version", null)));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(FileUtils.getStreamForUrl("classpath:org.jivesoftware.smack/version", null), StringUtils.UTF8));
             smackVersion = reader.readLine();
             try {
                 reader.close();
@@ -238,7 +239,7 @@ public final class SmackInitialization {
             }
         }
         if (SmackInitializer.class.isAssignableFrom(initClass)) {
-            SmackInitializer initializer = (SmackInitializer) initClass.newInstance();
+            SmackInitializer initializer = (SmackInitializer) initClass.getConstructor().newInstance();
             List<Exception> exceptions = initializer.initialize();
             if (exceptions == null || exceptions.size() == 0) {
                 LOGGER.log(Level.FINE, "Loaded SmackInitializer " + className);

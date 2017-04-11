@@ -19,6 +19,12 @@ package org.jivesoftware.smack.filter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jxmpp.jid.Jid;
 
+/**
+ * Match based on the 'to' attribute of a Stanza.
+ *
+ * @deprecated use {@link ToMatchesFilter} instead.
+ */
+@Deprecated
 public class ToFilter implements StanzaFilter {
 
     private final Jid to;

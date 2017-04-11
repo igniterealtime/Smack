@@ -88,7 +88,7 @@ public class DataValidationTest {
         assertEquals("min-val", rdv.getMin());
         assertEquals("max-val", rdv.getMax());
         assertNotNull(rdv.getListRange());
-        assertEquals(new Long(111), rdv.getListRange().getMin());
+        assertEquals(Long.valueOf(111), rdv.getListRange().getMin());
         assertEquals(999, rdv.getListRange().getMax().intValue());
 
 

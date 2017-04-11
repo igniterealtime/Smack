@@ -71,6 +71,6 @@ public class RegistrationProvider extends IQProvider<Registration> {
         Registration registration = new Registration(instruction, fields);
         registration.addExtensions(packetExtensions);
         return registration;
-	}
+    }
 
 }

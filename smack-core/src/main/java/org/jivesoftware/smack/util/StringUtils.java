@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2017 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -271,7 +271,12 @@ public class StringUtils {
      * The Random class is not considered to be cryptographically secure, so
      * only use these random Strings for low to medium security applications.
      */
-    private static final Random randGen = new Random();
+    private static final ThreadLocal<Random> randGen = new ThreadLocal<Random>() {
+        @Override
+        protected Random initialValue() {
+            return new Random();
+        }
+    };
 
     /**
      * Array of numbers and letters of mixed case. Numbers appear in the list
@@ -299,15 +304,22 @@ public class StringUtils {
         if (length < 1) {
             return null;
         }
+
+        final Random random = randGen.get();
         // Create a char buffer to put random letters and numbers in.
         char [] randBuffer = new char[length];
         for (int i=0; i<randBuffer.length; i++) {
-            randBuffer[i] = numbersAndLetters[randGen.nextInt(numbersAndLetters.length)];
+            randBuffer[i] = numbersAndLetters[random.nextInt(numbersAndLetters.length)];
         }
         return new String(randBuffer);
     }
 
-    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final ThreadLocal<SecureRandom> SECURE_RANDOM = new ThreadLocal<SecureRandom>() {
+        @Override
+        protected SecureRandom initialValue() {
+            return new SecureRandom();
+        }
+    };
 
     public static String randomString(final int length) {
         if (length < 1) {
@@ -315,7 +327,7 @@ public class StringUtils {
         }
 
         byte[] randomBytes = new byte[length];
-        SECURE_RANDOM.nextBytes(randomBytes);
+        SECURE_RANDOM.get().nextBytes(randomBytes);
         char[] randomChars = new char[length];
         for (int i = 0; i < length; i++) {
             randomChars[i] = getPrintableChar(randomBytes[i]);

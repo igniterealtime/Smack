@@ -109,18 +109,22 @@ public class InBandBytestreamSession implements BytestreamSession {
 
     }
 
+    @Override
     public InputStream getInputStream() {
         return this.inputStream;
     }
 
+    @Override
     public OutputStream getOutputStream() {
         return this.outputStream;
     }
 
+    @Override
     public int getReadTimeout() {
         return this.inputStream.readTimeout;
     }
 
+    @Override
     public void setReadTimeout(int timeout) {
         if (timeout < 0) {
             throw new IllegalArgumentException("Timeout must be >= 0");
@@ -151,6 +155,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         this.closeBothStreamsEnabled = closeBothStreamsEnabled;
     }
 
+    @Override
     public void close() throws IOException {
         closeByLocal(true); // close input stream
         closeByLocal(false); // close output stream
@@ -224,7 +229,9 @@ public class InBandBytestreamSession implements BytestreamSession {
             this.inputStream.cleanup();
 
             // remove session from manager
-            InBandBytestreamManager.getByteStreamManager(this.connection).getSessions().remove(this);
+            // Thanks Google Error Prone for finding the bug where remove() was called with 'this' as argument. Changed
+            // now to remove(byteStreamRequest.getSessionID).
+            InBandBytestreamManager.getByteStreamManager(this.connection).getSessions().remove(byteStreamRequest.getSessionID());
         }
 
     }
@@ -283,6 +290,7 @@ public class InBandBytestreamSession implements BytestreamSession {
          */
         protected abstract StanzaFilter getDataPacketFilter();
 
+        @Override
         public synchronized int read() throws IOException {
             checkClosed();
 
@@ -298,6 +306,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             return buffer[bufferPointer++] & 0xff;
         }
 
+        @Override
         public synchronized int read(byte[] b, int off, int len) throws IOException {
             if (b == null) {
                 throw new NullPointerException();
@@ -331,6 +340,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             return len;
         }
 
+        @Override
         public synchronized int read(byte[] b) throws IOException {
             return read(b, 0, b.length);
         }
@@ -405,10 +415,12 @@ public class InBandBytestreamSession implements BytestreamSession {
             }
         }
 
+        @Override
         public boolean markSupported() {
             return false;
         }
 
+        @Override
         public void close() throws IOException {
             if (closeInvoked) {
                 return;
@@ -444,11 +456,13 @@ public class InBandBytestreamSession implements BytestreamSession {
      */
     private class IQIBBInputStream extends IBBInputStream {
 
+        @Override
         protected StanzaListener getDataPacketListener() {
             return new StanzaListener() {
 
                 private long lastSequence = -1;
 
+                @Override
                 public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
                     // get data packet extension
                     DataPacketExtension data = ((Data) packet).getDataPacketExtension();
@@ -491,6 +505,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             };
         }
 
+        @Override
         protected StanzaFilter getDataPacketFilter() {
             /*
              * filter all IQ stanzas having type 'SET' (represented by Data class), containing a
@@ -507,9 +522,11 @@ public class InBandBytestreamSession implements BytestreamSession {
      */
     private class MessageIBBInputStream extends IBBInputStream {
 
+        @Override
         protected StanzaListener getDataPacketListener() {
             return new StanzaListener() {
 
+                @Override
                 public void processStanza(Stanza packet) {
                     // get data packet extension
                     DataPacketExtension data = (DataPacketExtension) packet.getExtension(
@@ -555,6 +572,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      */
     private class IBBDataPacketFilter implements StanzaFilter {
 
+        @Override
         public boolean accept(Stanza packet) {
             // sender equals remote peer
             if (!packet.getFrom().equals(remoteJID)) {
@@ -619,6 +637,7 @@ public class InBandBytestreamSession implements BytestreamSession {
          */
         protected abstract void writeToXML(DataPacketExtension data) throws IOException, NotConnectedException, InterruptedException;
 
+        @Override
         public synchronized void write(int b) throws IOException {
             if (this.isClosed) {
                 throw new IOException("Stream is closed");
@@ -632,6 +651,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             buffer[bufferPointer++] = (byte) b;
         }
 
+        @Override
         public synchronized void write(byte[] b, int off, int len) throws IOException {
             if (b == null) {
                 throw new NullPointerException();
@@ -662,6 +682,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             }
         }
 
+        @Override
         public synchronized void write(byte[] b) throws IOException {
             write(b, 0, b.length);
         }
@@ -698,6 +719,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             bufferPointer += len - available;
         }
 
+        @Override
         public synchronized void flush() throws IOException {
             if (this.isClosed) {
                 throw new IOException("Stream is closed");
@@ -735,6 +757,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
         }
 
+        @Override
         public void close() throws IOException {
             if (isClosed) {
                 return;
