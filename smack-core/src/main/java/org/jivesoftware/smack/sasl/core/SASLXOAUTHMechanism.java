@@ -26,6 +26,7 @@ public class SASLXOAUTHMechanism extends SASLMechanism {
 
     public static final String NAME = XOAUTH;
 
+    @Override
     public String getName() {
         return NAME;
     }
