@@ -139,4 +139,40 @@ public class SmackIntegrationTestFrameworkUnitTest {
             assertFalse("A after class method shouldn't have been executed to this time", afterClassInvoked);
         }
     }
+
+    @Test
+    public void testInvoking() throws KeyManagementException, NoSuchAlgorithmException, SmackException, IOException,
+                    XMPPException, InterruptedException {
+        beforeClassInvoked = false;
+        afterClassInvoked = false;
+
+        DummySmackIntegrationTestFramework sinttest = getFrameworkForUnitTest(BeforeAfterClassTest.class);
+        sinttest.run();
+
+        assertTrue("A before class method should have been executed to this time", beforeClassInvoked);
+        assertTrue("A after class method should have been executed to this time", afterClassInvoked);
+    }
+
+    public static class BeforeAfterClassTest extends AbstractSmackIntegrationTest {
+
+        public BeforeAfterClassTest(SmackIntegrationTestEnvironment environment) {
+            super(environment);
+        }
+
+        @BeforeClass
+        public static void setUp() {
+            beforeClassInvoked = true;
+        }
+
+        @AfterClass
+        public static void tearDown() {
+            afterClassInvoked = true;
+        }
+
+        @SmackIntegrationTest
+        public void test() {
+            assertTrue("A before class method should have been executed to this time", beforeClassInvoked);
+            assertFalse("A after class method shouldn't have been executed to this time", afterClassInvoked);
+        }
+    }
 }
