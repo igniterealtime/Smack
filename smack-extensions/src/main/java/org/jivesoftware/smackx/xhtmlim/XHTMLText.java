@@ -238,6 +238,15 @@ public class XHTMLText {
         text.rightAngleBracket();
         return this;
     }
+    
+    /**
+     * Appends a tag that indicates that a line item section ends.
+     * 
+     */
+    public XHTMLText appendCloseLineItemTag() {
+        text.closeElement(LI);
+        return this;
+    }
 
     /**
      * Appends a tag that indicates that a line item section ends.
