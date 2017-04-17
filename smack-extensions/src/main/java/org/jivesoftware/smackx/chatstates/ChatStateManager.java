@@ -180,6 +180,10 @@ public final class ChatStateManager extends Manager {
                 return;
             }
 
+            if (DelayInformation.from(message) != null) {
+               return;
+            }
+
             ChatState state;
             try {
                 state = ChatState.valueOf(extension.getElementName());
