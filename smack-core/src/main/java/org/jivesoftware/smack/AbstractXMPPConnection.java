@@ -362,7 +362,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @return a reference to this object, to chain <code>connect()</code> with <code>login()</code>.
      * @throws InterruptedException 
      */
-    public synchronized AbstractXMPPConnection connect() throws SmackException, IOException, XMPPException, InterruptedException {
+    public synchronized AbstractXMPPConnection connect() throws SmackException, IOException, XMPPException, SASLErrorException, InterruptedException {
         // Check if not already connected
         throwAlreadyConnectedExceptionIfAppropriate();
 
