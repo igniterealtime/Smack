@@ -16,8 +16,17 @@
  */
 package org.jivesoftware.smack;
 
+import org.jivesoftware.smack.packet.Stanza;
+
 public interface ExceptionCallback {
 
-    public void processException(Exception exception);
+    /**
+     * Exception callback.
+     * @param exception the exception that was encountered.
+     * @param stanza the stanza with the error, can be null if the problem
+     *               is not reported from the server, but internal like parsing
+     *               or being disconnected while waiting for result.
+     */
+    public void processException(Exception exception, Stanza stanza);
 
 }

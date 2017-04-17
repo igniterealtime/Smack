@@ -38,6 +38,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
@@ -738,6 +739,9 @@ public class RosterTest extends InitSmackIm {
         @Override
         public void presenceChanged(Presence presence) {
             reportInvoked();
+        }
+
+        public void rosterError(Stanza packet) {
         }
 
         /**

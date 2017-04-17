@@ -1507,7 +1507,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 }
                 catch (XMPPErrorException e) {
                     if (exceptionCallback != null) {
-                        exceptionCallback.processException(e);
+                        exceptionCallback.processException(e, packet);
                     }
                 }
             }
@@ -1526,7 +1526,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     } else {
                         exception = NoResponseException.newWith(AbstractXMPPConnection.this, replyFilter);
                     }
-                    exceptionCallback.processException(exception);
+                    exceptionCallback.processException(exception, null);
                 }
             }
         }, timeout, TimeUnit.MILLISECONDS);

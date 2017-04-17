@@ -32,6 +32,7 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterListener;
@@ -248,6 +249,10 @@ public class JingleManager implements JingleSessionListener {
                             LOGGER.log(Level.WARNING, "exception", e);
                         }
                 }
+            }
+
+            @Override
+            public void rosterError(Stanza packet) {
             }
         });
 
