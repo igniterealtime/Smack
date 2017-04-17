@@ -196,7 +196,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         if (!connected && !done) {
             done = true;
             String errorMessage = "Timeout reached for the connection to " 
-                    + getHost() + ":" + getPort() + ".";
+                    + config.getHost() + ":" + config.getPort() + ".";
             throw new SmackException(errorMessage);
         }
 
