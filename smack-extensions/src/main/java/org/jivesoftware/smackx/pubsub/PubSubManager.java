@@ -324,7 +324,7 @@ public final class PubSubManager extends Manager {
                 // This could be caused by Prosody bug #805 (see https://prosody.im/issues/issue/805). Prosody does not
                 // answer to disco#info requests on the node ID, which makes it undecidable if a node is a leaf or
                 // collection node.
-                return getLeafNodeProsoydWorkaround(id);
+                return getLeafNodeProsodyWorkaround(id);
             }
             throw e;
         }
@@ -336,7 +336,8 @@ public final class PubSubManager extends Manager {
         throw new PubSubException.NotALeafNodeException(id, pubSubService);
     }
 
-    private LeafNode getLeafNodeProsoydWorkaround(final String id) throws NoResponseException, NotConnectedException, InterruptedException, NotALeafNodeException, XMPPErrorException {
+    private LeafNode getLeafNodeProsodyWorkaround(final String id) throws NoResponseException, NotConnectedException,
+                    InterruptedException, NotALeafNodeException, XMPPErrorException {
         LeafNode leafNode = new LeafNode(this, id);
         try {
             // Try to ensure that this is not a collection node by asking for one item form the node.
@@ -363,7 +364,7 @@ public final class PubSubManager extends Manager {
         }
         catch (XMPPErrorException e1) {
             if (e1.getXMPPError().getCondition() == Condition.conflict) {
-                return getLeafNodeProsoydWorkaround(id);
+                return getLeafNodeProsodyWorkaround(id);
             }
             throw e1;
         }
