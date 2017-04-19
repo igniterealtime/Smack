@@ -289,15 +289,15 @@ public final class PubSubManager extends Manager {
                     throw e2;
                 }
             }
+            if (e1.getXMPPError().getCondition() == Condition.service_unavailable) {
+                // This could be caused by Prosody bug #805 (see https://prosody.im/issues/issue/805). Prosody does not
+                // answer to disco#info requests on the node ID, which makes it undecidable if a node is a leaf or
+                // collection node.
+                LOGGER.warning("The PubSub service " + pubSubService
+                        + " threw an DiscoInfoNodeAssertionError, trying workaround for Prosody bug #805 (https://prosody.im/issues/issue/805)");
+                return getOrCreateLeafNodeProsodyWorkaround(id);
+            }
             throw e1;
-        }
-        catch (PubSubAssertionError.DiscoInfoNodeAssertionError e) {
-            // This could be caused by Prosody bug #805 (see https://prosody.im/issues/issue/805). Prosody does not
-            // answer to disco#info requests on the node ID, which makes it undecidable if a node is a leaf or
-            // collection node.
-            LOGGER.warning("The PubSub service " + pubSubService
-                            + " threw an DiscoInfoNodeAssertionError, trying workaround for Prosody bug #805 (https://prosody.im/issues/issue/805)");
-            return getOrCreateLeafNodeProsodyWorkaround(id);
         }
     }
 
