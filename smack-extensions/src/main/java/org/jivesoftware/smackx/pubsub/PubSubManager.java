@@ -336,23 +336,19 @@ public final class PubSubManager extends Manager {
         throw new PubSubException.NotALeafNodeException(id, pubSubService);
     }
 
-    private LeafNode getLeafNodeProsoydWorkaround(final String id) throws NoResponseException, NotConnectedException, InterruptedException, NotALeafNodeException {
+    private LeafNode getLeafNodeProsoydWorkaround(final String id) throws NoResponseException, NotConnectedException, InterruptedException, NotALeafNodeException, XMPPErrorException {
         LeafNode leafNode = new LeafNode(this, id);
         try {
             // Try to ensure that this is not a collection node by asking for one item form the node.
             leafNode.getItems(1);
         } catch (XMPPErrorException e) {
             Condition condition = e.getXMPPError().getCondition();
-            switch (condition) {
-            // XEP-0060 § 6.5.9.11: Node does not exist
-            case item_not_found:
-                return null;
-            // XEP-0060 § 6.5.9.5: Item retrieval not supported, e.g. because node is a collection node
-            case feature_not_implemented:
+            if (condition == Condition.feature_not_implemented) {
+                // XEP-0060 § 6.5.9.5: Item retrieval not supported, e.g. because node is a collection node
                 throw new PubSubException.NotALeafNodeException(id, pubSubService);
-            default:
-                break;
             }
+
+            throw e;
         }
 
         nodeMap.put(id, leafNode);
