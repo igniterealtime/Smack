@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +40,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.jivesoftware.smackx.pubsub.util.NodeUtils;
@@ -269,10 +268,11 @@ public final class PubSubManager extends Manager {
      * @throws NotConnectedException
      * @throws InterruptedException
      * @throws XMPPErrorException
+     * @throws NotALeafNodeException in case the node already exists as collection node.
      * @since 4.2.1
      */
     public LeafNode getOrCreateLeafNode(final String id)
-                    throws NoResponseException, NotConnectedException, InterruptedException, XMPPErrorException {
+                    throws NoResponseException, NotConnectedException, InterruptedException, XMPPErrorException, NotALeafNodeException {
         try {
             return getNode(id);
         }
@@ -301,25 +301,70 @@ public final class PubSubManager extends Manager {
         }
     }
 
+    /**
+     * Try to get a leaf node with the given node ID.
+     *
+     * @param id the node ID.
+     * @return the requested leaf node.
+     * @throws NotALeafNodeException in case the node exists but is a collection node.
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws XMPPErrorException
+     * @since 4.2.1
+     */
+    public LeafNode getLeafNode(String id) throws NotALeafNodeException, NoResponseException, NotConnectedException,
+                    InterruptedException, XMPPErrorException {
+        Node node;
+        try {
+            node = getNode(id);
+        }
+        catch (XMPPErrorException e) {
+            if (e.getXMPPError().getCondition() == Condition.service_unavailable) {
+
+            }
+            throw e;
+        }
+
+        if (node instanceof LeafNode) {
+            return (LeafNode) node;
+        }
+
+        throw new PubSubException.NotALeafNodeException(id, pubSubService);
+    }
+
+    private LeafNode getLeafNodeProsoydWorkaround(final String id) throws NoResponseException, NotConnectedException, InterruptedException, NotALeafNodeException {
+        LeafNode leafNode = new LeafNode(this, id);
+        try {
+            // Try to ensure that this is not a collection node by asking for one item form the node.
+            leafNode.getItems(1);
+        } catch (XMPPErrorException e) {
+            Condition condition = e.getXMPPError().getCondition();
+            switch (condition) {
+            // XEP-0060 § 6.5.9.11: Node does not exist
+            case item_not_found:
+                return null;
+            // XEP-0060 § 6.5.9.5: Item retrieval not supported, e.g. because node is a collection node
+            case feature_not_implemented:
+                throw new PubSubException.NotALeafNodeException(id, pubSubService);
+            default:
+                break;
+            }
+        }
+
+        nodeMap.put(id, leafNode);
+
+        return leafNode;
+    }
+
     private LeafNode getOrCreateLeafNodeProsodyWorkaround(final String id)
-                    throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException {
+                    throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException, NotALeafNodeException {
         try {
             return createNode(id);
         }
         catch (XMPPErrorException e1) {
             if (e1.getXMPPError().getCondition() == Condition.conflict) {
-                Constructor<?> constructor = LeafNode.class.getDeclaredConstructors()[0];
-                constructor.setAccessible(true);
-                LeafNode res;
-                try {
-                    res = (LeafNode) constructor.newInstance(this, id);
-                }
-                catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                                | InvocationTargetException e2) {
-                    throw new AssertionError(e2);
-                }
-                // TODO: How to verify that this is actually a leafe node and not a conflict with a collection node?
-                return res;
+                return getLeafNodeProsoydWorkaround(id);
             }
             throw e1;
         }
