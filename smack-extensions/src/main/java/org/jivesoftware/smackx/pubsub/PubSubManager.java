@@ -321,7 +321,10 @@ public final class PubSubManager extends Manager {
         }
         catch (XMPPErrorException e) {
             if (e.getXMPPError().getCondition() == Condition.service_unavailable) {
-
+                // This could be caused by Prosody bug #805 (see https://prosody.im/issues/issue/805). Prosody does not
+                // answer to disco#info requests on the node ID, which makes it undecidable if a node is a leaf or
+                // collection node.
+                return getLeafNodeProsoydWorkaround(id);
             }
             throw e;
         }
