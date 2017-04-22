@@ -277,4 +277,11 @@ g
       <className>org.jivesoftware.smackx.httpfileupload.provider.FileTooLargeErrorProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0380: Explicit Message Encryption -->
+    <extensionProvider>
+      <elementName>encryption</elementName>
+      <namespace>urn:xmpp:eme:0</namespace>
+      <className>org.jivesoftware.smackx.eme.provider.ExplicitMessageEncryptionProvider</className>
+    </extensionProvider>
+
 </smackProviders>
