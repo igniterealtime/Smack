@@ -27,7 +27,7 @@ public final class StoreHint extends MessageProcessingHint {
 
     public static final StoreHint INSTANCE = new StoreHint();
 
-    public static final String ELEMENT = "no-store";
+    public static final String ELEMENT = "store";
 
     private StoreHint() {
     }
