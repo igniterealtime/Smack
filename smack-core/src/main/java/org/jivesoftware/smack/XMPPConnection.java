@@ -22,10 +22,10 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Nonza;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityFullJid;
 
@@ -647,5 +647,19 @@ public interface XMPPConnection {
      * @return the timestamp in milliseconds
      */
     public long getLastStanzaReceived();
+
+    /**
+     * Set the X-OAUTH last refresh token.
+     * 
+     * @param token
+     */
+    public void setXOAUTHLastRefreshToken(String token);
+
+    /**
+     * Get the X-OAUTH last refresh token.
+     * 
+     * @return the X-OAUTH last refresh token
+     */
+    public String getXOAUTHLastRefreshToken();
 
 }
