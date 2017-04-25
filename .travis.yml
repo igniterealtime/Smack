@@ -19,6 +19,6 @@ install: gradle assemble --stacktrace
 script: gradle check --stacktrace
 
 after_success:
-- JAVAC_VERSION=$((javac -version) 2>&1)
-# Only run jacocoRootReport in the Java7 build
-- if [[ "$JAVAC_VERSION" = javac\ 1.7.* ]]; then gradle jacocoRootReport coveralls; fi
+  - JAVAC_VERSION=$((javac -version) 2>&1)
+  # Only run jacocoRootReport in the Java 8 build
+  - if [[ "$JAVAC_VERSION" = javac\ 1.8.* ]]; then gradle jacocoRootReport coveralls; fi
