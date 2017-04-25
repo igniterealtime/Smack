@@ -10,7 +10,7 @@ buildscript {
         classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
 		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.0'
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
-		classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.8'
+		classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.10'
     }
 }
 apply plugin: 'org.kordamp.gradle.markdown'
