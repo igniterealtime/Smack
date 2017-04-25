@@ -307,7 +307,7 @@ public class StringUtils {
 
         final Random random = randGen.get();
         // Create a char buffer to put random letters and numbers in.
-        char [] randBuffer = new char[length];
+        char[] randBuffer = new char[length];
         for (int i=0; i<randBuffer.length; i++) {
             randBuffer[i] = numbersAndLetters[random.nextInt(numbersAndLetters.length)];
         }
