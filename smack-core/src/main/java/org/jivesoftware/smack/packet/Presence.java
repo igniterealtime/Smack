@@ -137,7 +137,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * @return true if the presence type is available.
      */
     public boolean isAvailable() {
-        return type == Type.available;    
+        return type == Type.available && mode != Mode.invisible;
     }
 
     /**
@@ -404,11 +404,16 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         /**
          * Do not disturb.
          */
-        dnd;
+        dnd,
+
+        /**
+         * Online but hidden.
+         */
+        invisible;
 
         /**
          * Converts a String into the corresponding types. Valid String values that can be converted
-         * to types are: "chat", "available", "away", "xa", and "dnd".
+         * to types are: "chat", "available", "away", "xa", "dnd" and "invisible".
          * 
          * @param string the String value to covert.
          * @return the corresponding Type.
