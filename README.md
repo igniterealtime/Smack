@@ -20,6 +20,11 @@ Start with having a look at the **[Docmentation]** and the **[Javadoc]**.
 
 Instructions how to use Smack in your Java or Android project are provided in the [Smack 4.2 Readme and Upgrade Guide](https://github.com/igniterealtime/Smack/wiki/Smack-4.2-Readme-and-Upgrade-Guide).
 
+Getting started
+---------------
+
+Instructions how to use Smack in your Java or Android project are provided in the [Smack 4.2 Readme and Upgrade Guide](https://github.com/igniterealtime/Smack/wiki/Smack-4.2-Readme-and-Upgrade-Guide).
+
 Bug Reporting
 -------------
 

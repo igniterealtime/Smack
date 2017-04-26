@@ -55,6 +55,7 @@ allprojects {
 			':smack-resolver-dnsjava',
 			':smack-resolver-javax',
 			':smack-resolver-minidns',
+			':smack-omemo',
 		].collect{ project(it) }
 		projectsWithUnitTests = subprojects - projectsWithoutUnitTests
 		androidProjects = [
@@ -66,6 +67,7 @@ allprojects {
 			':smack-sasl-provided',
 			':smack-extensions',
 			':smack-experimental',
+			':smack-omemo',
 		].collect{ project(it) }
 		androidBootClasspathProjects = [
 			':smack-android',
