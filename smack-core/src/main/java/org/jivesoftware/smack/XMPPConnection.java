@@ -410,6 +410,7 @@ public interface XMPPConnection {
      * @deprecated use {@link #getReplyTimeout()} instead.
      */
     @Deprecated
+    // TODO Remove in Smack 4.3
     public long getPacketReplyTimeout();
 
     /**
@@ -420,6 +421,7 @@ public interface XMPPConnection {
      * @deprecated use {@link #setReplyTimeout(long)} instead.
      */
     @Deprecated
+    // TODO Remove in Smack 4.3
     public void setPacketReplyTimeout(long timeout);
 
     /**
