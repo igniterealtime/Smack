@@ -30,7 +30,7 @@ public interface SubjectUpdatedListener {
      * Called when a MUC room has changed its subject.
      * 
      * @param subject the new room's subject.
-     * @param from the user that changed the room's subject (e.g. room@conference.jabber.org/nick).
+     * @param from the user that changed the room's subject or <code>null</code> if the room itself changed the subject.
      */
     public abstract void subjectUpdated(String subject, EntityFullJid from);
 
