@@ -551,8 +551,15 @@ public class PacketParserUtils {
                     presence.setStatus(parser.nextText());
                     break;
                 case "priority":
-                    int priority = Integer.parseInt(parser.nextText());
-                    presence.setPriority(priority);
+                    String value = parser.nextText();
+                    try {
+                        int priority = Integer.parseInt(value);
+                        presence.setPriority(priority);
+                    } catch (Exception e) {
+                        LOGGER.warning("Invalid priority value '" + value + "' in Presence stanza from '"
+                                        + presence.getFrom() + "' id: '" + presence.getStanzaId()
+                                        + "': \"" + e + "\"");
+                    }
                     break;
                 case "show":
                     String modeText = parser.nextText();
