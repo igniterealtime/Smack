@@ -150,6 +150,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     private static final int QUEUE_SIZE = 500;
     private static final Logger LOGGER = Logger.getLogger(XMPPTCPConnection.class.getName());
+    private XMPPTCPOnionCompanion xmpptcpOnionCompanion = null;
 
     /**
      * The socket which is used for this connection.
@@ -329,6 +330,26 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     public XMPPTCPConnection(CharSequence jid, String password) throws XmppStringprepException {
         this(XmppStringUtils.parseLocalpart(jid.toString()), password, XmppStringUtils.parseDomain(jid.toString()));
+    }
+
+    /**
+     * Adapted Constructor for the Onion.
+     *
+     */
+    public XMPPTCPConnection(XMPPTCPConnectionConfiguration config, XMPPTCPOnionCompanion xmpptcpOnionCompanion){
+        super(config);
+        this.config = config;
+        addConnectionListener(new AbstractConnectionListener() {
+            @Override
+            public void connectionClosedOnError(Exception e) {
+                if (e instanceof XMPPException.StreamErrorException) {
+                    dropSmState();
+                }
+            }
+        });
+
+        this.xmpptcpOnionCompanion = xmpptcpOnionCompanion;
+
     }
 
     /**
@@ -886,7 +907,21 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         closingStreamReceived.init();
         // Establishes the TCP connection to the server and does setup the reader and writer. Throws an exception if
         // there is an error establishing the connection
+
+        if(xmpptcpOnionCompanion == null){
         connectUsingConfiguration();
+        }
+        else {
+            SocketFactory socketFactory = config.getSocketFactory();
+            int timeout = config.getConnectTimeout();
+            if (socketFactory == null) {
+                socketFactory = SocketFactory.getDefault();
+            }
+            socket = socketFactory.createSocket();
+            xmpptcpOnionCompanion.connect(socket,config.getHost(),config.getPort(),config.getConnectTimeout());
+            this.host=config.getHost();
+            this.port=config.getPort();
+        }
 
         // We connected successfully to the servers TCP port
         initConnection();
