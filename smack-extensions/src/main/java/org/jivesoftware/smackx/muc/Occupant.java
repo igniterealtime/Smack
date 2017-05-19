@@ -124,7 +124,7 @@ public class Occupant {
         int result;
         result = affiliation.hashCode();
         result = 17 * result + role.hashCode();
-        result = 17 * result + jid.hashCode();
+        result = 17 * result + (jid != null ? jid.hashCode() : 0);
         result = 17 * result + (nick != null ? nick.hashCode() : 0);
         return result;
     }
