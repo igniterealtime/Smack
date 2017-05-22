@@ -283,14 +283,46 @@ public final class RosterEntry extends Manager {
         return other.item.equals(this.item);
     }
 
+    /**
+     * Convert the RosterEntry to a Roster stanza &lt;item/&gt; element.
+     *
+     * @param entry the roster entry.
+     * @return the roster item.
+     */
     static RosterPacket.Item toRosterItem(RosterEntry entry) {
-        return toRosterItem(entry, entry.getName());
+        return toRosterItem(entry, entry.getName(), false);
     }
 
-    private static RosterPacket.Item toRosterItem(RosterEntry entry, String name) {
+    /**
+     * Convert the RosterEntry to a Roster stanza &lt;item/&gt; element.
+     *
+     * @param entry the roster entry
+     * @param name the name of the roster item.
+     * @return the roster item.
+     */
+    static RosterPacket.Item toRosterItem(RosterEntry entry, String name) {
+        return toRosterItem(entry, name, false);
+    }
+
+    static RosterPacket.Item toRosterItem(RosterEntry entry, boolean includeAskAttribute) {
+        return toRosterItem(entry, entry.getName(), includeAskAttribute);
+    }
+
+    /**
+     * Convert a roster entry with the given name to a roster item. As per RFC 6121 § 2.1.2.2., clients MUST NOT include
+     * the 'ask' attribute, thus set {@code includeAskAttribute} to {@code false}.
+     *
+     * @param entry the roster entry.
+     * @param name the name of the roster item.
+     * @param includeAskAttribute whether or not to include the 'ask' attribute.
+     * @return the roster item.
+     */
+    private static RosterPacket.Item toRosterItem(RosterEntry entry, String name, boolean includeAskAttribute) {
         RosterPacket.Item item = new RosterPacket.Item(entry.getJid(), name);
         item.setItemType(entry.getType());
-        item.setSubscriptionPending(entry.isSubscriptionPending());
+        if (includeAskAttribute) {
+            item.setSubscriptionPending(entry.isSubscriptionPending());
+        }
         item.setApproved(entry.isApproved());
         // Set the correct group names for the item.
         for (RosterGroup group : entry.getGroups()) {
