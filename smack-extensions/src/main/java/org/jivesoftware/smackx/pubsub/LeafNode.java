@@ -242,7 +242,7 @@ public class LeafNode extends Node
     public <T extends Item> void publish(T item) throws NotConnectedException, InterruptedException
     {
         Collection<T> items = new ArrayList<T>(1);
-        items.add((T)(item == null ? new Item() : item));
+        items.add((T) (item == null ? new Item() : item));
         publish(items);
     }
 
@@ -320,7 +320,7 @@ public class LeafNode extends Node
     public <T extends Item> void send(T item) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
         Collection<T> items = new ArrayList<T>(1);
-        items.add((item == null ? (T)new Item() : item));
+        items.add((item == null ? (T) new Item() : item));
         send(items);
     }
 

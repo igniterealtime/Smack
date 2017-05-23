@@ -61,10 +61,10 @@ public class OctTreeQuantizer implements Quantizer {
             if (count == 0)
                 LOGGER.fine(indentStr + index + ": count=" + count);
             else
-                LOGGER.fine(indentStr + index + ": count=" + count + " red=" + (totalRed/count) + " green=" + (totalGreen / count) + " blue=" + (totalBlue / count));
+                LOGGER.fine(indentStr + index + ": count=" + count + " red=" + (totalRed / count) + " green=" + (totalGreen / count) + " blue=" + (totalBlue / count));
             for (int i = 0; i < 8; i++)
                 if (leaf[i] != null)
-                    leaf[i].list(s, level+2);
+                    leaf[i].list(s, level + 2);
         }
     }
 
@@ -77,8 +77,8 @@ public class OctTreeQuantizer implements Quantizer {
 
     public OctTreeQuantizer() {
         setup(256);
-        colorList = new ArrayList<>(MAX_LEVEL+1);
-        for (int i = 0; i < MAX_LEVEL+1; i++)
+        colorList = new ArrayList<>(MAX_LEVEL + 1);
+        for (int i = 0; i < MAX_LEVEL + 1; i++)
             colorList.add(i, new Vector<OctTreeNode>());
         root = new OctTreeNode();
     }
@@ -102,7 +102,7 @@ public class OctTreeQuantizer implements Quantizer {
     @Override
     public void addPixels(int[] pixels, int offset, int count) {
         for (int i = 0; i < count; i++) {
-            insertColor(pixels[i+offset]);
+            insertColor(pixels[i + offset]);
             if (colors > reduceColors)
                 reduceTree(reduceColors);
         }
@@ -203,7 +203,7 @@ public class OctTreeQuantizer implements Quantizer {
     }
 
     private void reduceTree(int numColors) {
-        for (int level = MAX_LEVEL-1; level >= 0; level--) {
+        for (int level = MAX_LEVEL - 1; level >= 0; level--) {
             Vector<OctTreeNode> v = colorList.get(level);
             if (v != null && v.size() > 0) {
                 for (int j = 0; j < v.size(); j++) {
@@ -222,7 +222,7 @@ public class OctTreeQuantizer implements Quantizer {
                                 node.children--;
                                 colors--;
                                 nodes--;
-                                colorList.get(level+1).removeElement(child);
+                                colorList.get(level + 1).removeElement(child);
                             }
                         }
                         node.isLeaf = true;
@@ -273,9 +273,9 @@ public class OctTreeQuantizer implements Quantizer {
         if (node.isLeaf) {
             int count = node.count;
             table[index] = 0xff000000 |
-                ((node.totalRed/count) << 16) |
-                ((node.totalGreen/count) << 8) |
-                node.totalBlue/count;
+                ((node.totalRed / count) << 16) |
+                ((node.totalGreen / count) << 8) |
+                node.totalBlue / count;
             node.index = index++;
         } else {
             for (int i = 0; i < 8; i++) {

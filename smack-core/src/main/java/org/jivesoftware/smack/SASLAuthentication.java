@@ -132,13 +132,13 @@ public final class SASLAuthentication {
     }
 
     public static boolean blacklistSASLMechanism(String mechansim) {
-        synchronized(BLACKLISTED_MECHANISMS) {
+        synchronized (BLACKLISTED_MECHANISMS) {
             return BLACKLISTED_MECHANISMS.add(mechansim);
         }
     }
 
     public static boolean unBlacklistSASLMechanism(String mechanism) {
-        synchronized(BLACKLISTED_MECHANISMS) {
+        synchronized (BLACKLISTED_MECHANISMS) {
             return BLACKLISTED_MECHANISMS.remove(mechanism);
         }
     }
@@ -209,7 +209,7 @@ public final class SASLAuthentication {
             }
         }
 
-        if (saslException != null){
+        if (saslException != null) {
             if (saslException instanceof SmackException) {
                 throw (SmackException) saslException;
             } else if (saslException instanceof SASLErrorException) {

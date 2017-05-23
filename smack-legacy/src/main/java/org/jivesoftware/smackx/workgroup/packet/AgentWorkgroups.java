@@ -88,7 +88,7 @@ public class AgentWorkgroups extends IQ {
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         buf.attribute("jid", agentJID).rightAngleBracket();
 
-        for (Iterator<String> it=workgroups.iterator(); it.hasNext();) {
+        for (Iterator<String> it = workgroups.iterator(); it.hasNext();) {
             String workgroupJID = it.next();
             buf.append("<workgroup jid=\"" + workgroupJID + "\"/>");
         }

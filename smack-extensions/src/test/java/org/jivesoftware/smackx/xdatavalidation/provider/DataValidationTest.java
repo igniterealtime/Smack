@@ -122,7 +122,7 @@ public class DataValidationTest {
         assertEquals(TEST_OUTPUT_RANGE2, output);
     }
 
-    @Test(expected=NumberFormatException.class)
+    @Test(expected = NumberFormatException.class)
     public void testRangeFailure() throws IOException, XmlPullParserException {
             XmlPullParser parser = getParser(TEST_OUTPUT_FAIL);
             DataValidationProvider.parse(parser);

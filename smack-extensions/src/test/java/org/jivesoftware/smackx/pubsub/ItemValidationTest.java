@@ -111,11 +111,11 @@ public class ItemValidationTest extends InitExtensions {
         assertEquals(EventElementType.items, event.getEventType());
         assertEquals(1, event.getExtensions().size());
         assertTrue(event.getExtensions().get(0) instanceof ItemsExtension);
-        assertEquals(1, ((ItemsExtension)event.getExtensions().get(0)).items.size());
+        assertEquals(1, ((ItemsExtension) event.getExtensions().get(0)).items.size());
 
-        ExtensionElement itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
+        ExtensionElement itemExt = ((ItemsExtension) event.getExtensions().get(0)).items.get(0);
         assertTrue(itemExt instanceof Item);
-        assertEquals("testid1", ((Item)itemExt).getId());
+        assertEquals("testid1", ((Item) itemExt).getId());
     }
 
     @Test
@@ -137,10 +137,10 @@ public class ItemValidationTest extends InitExtensions {
         Stanza message = PacketParserUtils.parseMessage(parser);
         ExtensionElement eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
         EventElement event = (EventElement) eventExt;
-        ExtensionElement itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
+        ExtensionElement itemExt = ((ItemsExtension) event.getExtensions().get(0)).items.get(0);
 
         assertTrue(itemExt instanceof PayloadItem<?>);
-        PayloadItem<?> item = (PayloadItem<?>)itemExt;
+        PayloadItem<?> item = (PayloadItem<?>) itemExt;
 
         assertEquals("testid1", item.getId());
         assertTrue(item.getPayload() instanceof SimplePayload);
@@ -184,10 +184,10 @@ public class ItemValidationTest extends InitExtensions {
         Stanza message = PacketParserUtils.parseMessage(parser);
         ExtensionElement eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
         EventElement event = (EventElement) eventExt;
-        ExtensionElement itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
+        ExtensionElement itemExt = ((ItemsExtension) event.getExtensions().get(0)).items.get(0);
 
         assertTrue(itemExt instanceof PayloadItem<?>);
-        PayloadItem<?> item = (PayloadItem<?>)itemExt;
+        PayloadItem<?> item = (PayloadItem<?>) itemExt;
 
         assertEquals("testid1", item.getId());
         assertTrue(item.getPayload() instanceof SimplePayload);
@@ -222,15 +222,15 @@ public class ItemValidationTest extends InitExtensions {
         assertEquals(EventElementType.items, event.getEventType());
         assertEquals(1, event.getExtensions().size());
         assertTrue(event.getExtensions().get(0) instanceof ItemsExtension);
-        assertEquals(1, ((ItemsExtension)event.getExtensions().get(0)).items.size());
+        assertEquals(1, ((ItemsExtension) event.getExtensions().get(0)).items.size());
 
-        ExtensionElement itemExt = ((ItemsExtension)event.getExtensions().get(0)).items.get(0);
+        ExtensionElement itemExt = ((ItemsExtension) event.getExtensions().get(0)).items.get(0);
         assertTrue(itemExt instanceof PayloadItem<?>);
-        PayloadItem<?> item = (PayloadItem<?>)itemExt;
+        PayloadItem<?> item = (PayloadItem<?>) itemExt;
 
         assertEquals("testid1", item.getId());
         assertTrue(item.getPayload() instanceof SimplePayload);
 
-        assertXMLEqual(itemContent, ((SimplePayload)item.getPayload()).toXML().toString());
+        assertXMLEqual(itemContent, ((SimplePayload) item.getPayload()).toXML().toString());
     }
 }

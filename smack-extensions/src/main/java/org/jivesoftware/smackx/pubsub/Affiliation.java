@@ -139,7 +139,7 @@ public class Affiliation implements ExtensionElement
      */
     public boolean isAffiliationModification() {
         if (jid != null && affiliation != null) {
-            assert(node == null && namespace == PubSubNamespace.OWNER);
+            assert (node == null && namespace == PubSubNamespace.OWNER);
             return true;
         }
         return false;

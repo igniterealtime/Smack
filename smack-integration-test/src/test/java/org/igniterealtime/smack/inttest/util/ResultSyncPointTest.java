@@ -44,7 +44,7 @@ public class ResultSyncPointTest {
         assertEquals(result, receivedResult);
     }
 
-    @Test(expected=TestException.class)
+    @Test(expected = TestException.class)
     public void exceptionTestResultSyncPoint() throws InterruptedException, TimeoutException, Exception {
         final CyclicBarrier barrier = new CyclicBarrier(2);
         final ResultSyncPoint<String, TestException> rsp = new ResultSyncPoint<>();

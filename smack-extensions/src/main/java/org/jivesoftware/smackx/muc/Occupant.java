@@ -112,10 +112,10 @@ public class Occupant {
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof Occupant)) {
+        if (!(obj instanceof Occupant)) {
             return false;
         }
-        Occupant occupant = (Occupant)obj;
+        Occupant occupant = (Occupant) obj;
         return jid.equals(occupant.jid);
     }
 

@@ -86,7 +86,7 @@ public class ReportedData {
     }
 
 
-    public ReportedData(){
+    public ReportedData() {
         // Allow for model creation of ReportedData.
     }
 
@@ -94,7 +94,7 @@ public class ReportedData {
      * Adds a new <code>Row</code>.
      * @param row the new row to add.
      */
-    public void addRow(Row row){
+    public void addRow(Row row) {
         rows.add(row);
     }
 
@@ -102,7 +102,7 @@ public class ReportedData {
      * Adds a new <code>Column</code>.
      * @param column the column to add.
      */
-    public void addColumn(Column column){
+    public void addColumn(Column column) {
         columns.add(column);
     }
 
@@ -206,7 +206,7 @@ public class ReportedData {
          * @return the values of the field whose variable matches the requested variable.
          */
         public List<String> getValues(String variable) {
-            for(Field field : getFields()) {
+            for (Field field : getFields()) {
                 if (variable.equalsIgnoreCase(field.getVariable())) {
                     return field.getValues();
                 }

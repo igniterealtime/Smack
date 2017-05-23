@@ -105,10 +105,10 @@ public final class ChatStateManager extends Manager {
      * @throws InterruptedException 
      */
     public void setCurrentState(ChatState newState, org.jivesoftware.smack.chat.Chat chat) throws NotConnectedException, InterruptedException {
-        if(chat == null || newState == null) {
+        if (chat == null || newState == null) {
             throw new IllegalArgumentException("Arguments cannot be null.");
         }
-        if(!updateChatState(chat, newState)) {
+        if (!updateChatState(chat, newState)) {
             return;
         }
         Message message = new Message();

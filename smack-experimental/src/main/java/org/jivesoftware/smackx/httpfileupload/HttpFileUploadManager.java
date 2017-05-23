@@ -121,7 +121,7 @@ public final class HttpFileUploadManager extends Manager {
     }
 
     private static UploadService uploadServiceFrom(DiscoverInfo discoverInfo) {
-        assert(containsHttpFileUploadNamespace(discoverInfo));
+        assert (containsHttpFileUploadNamespace(discoverInfo));
 
         UploadService.Version version;
         if (discoverInfo.containsFeature(NAMESPACE)) {

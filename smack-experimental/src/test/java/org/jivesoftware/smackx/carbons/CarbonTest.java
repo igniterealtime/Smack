@@ -94,7 +94,7 @@ public class CarbonTest extends ExperimentalInitializerTest {
         assertEquals("received", parser.getName());
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected = Exception.class)
     public void carbonEmptyTest() throws Exception {
         XmlPullParser parser;
         String control;

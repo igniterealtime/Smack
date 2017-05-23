@@ -79,11 +79,11 @@ public class AgentChatSession {
         this.sessionID = sessionID;
     }
 
-    public void setQuestion(String question){
+    public void setQuestion(String question) {
         this.question = question;
     }
 
-    public String getQuestion(){
+    public String getQuestion() {
         return question;
     }
 

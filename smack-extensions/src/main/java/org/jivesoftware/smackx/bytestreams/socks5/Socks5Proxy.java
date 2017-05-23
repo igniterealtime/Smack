@@ -280,7 +280,7 @@ public final class Socks5Proxy {
      * @return true if the address was removed.
      */
     public boolean removeLocalAddress(String address) {
-        synchronized(localAddresses) {
+        synchronized (localAddresses) {
             return localAddresses.remove(address);
         }
     }
@@ -311,7 +311,7 @@ public final class Socks5Proxy {
         if (addresses == null) {
             throw new IllegalArgumentException("list must not be null");
         }
-        synchronized(localAddresses) {
+        synchronized (localAddresses) {
             localAddresses.clear();
             localAddresses.addAll(addresses);
         }

@@ -142,7 +142,7 @@ public class RosterVersioningTest {
         // but a shortcut in the test implementation.
         Stanza sentPacket = connection.getSentPacket();
         if (sentPacket instanceof RosterPacket) {
-            RosterPacket sentRP = (RosterPacket)sentPacket;
+            RosterPacket sentRP = (RosterPacket) sentPacket;
             RosterPacket answer = new RosterPacket();
             answer.setStanzaId(sentRP.getStanzaId());
             answer.setType(Type.result);
@@ -254,7 +254,7 @@ public class RosterVersioningTest {
         // but a shortcut in the test implementation.
         Stanza sentPacket = connection.getSentPacket();
         if (sentPacket instanceof RosterPacket) {
-            final IQ emptyIQ = IQ.createResultIQ((RosterPacket)sentPacket);
+            final IQ emptyIQ = IQ.createResultIQ((RosterPacket) sentPacket);
             connection.processStanza(emptyIQ);
         } else {
             assertTrue("Expected to get a RosterPacket ", false);

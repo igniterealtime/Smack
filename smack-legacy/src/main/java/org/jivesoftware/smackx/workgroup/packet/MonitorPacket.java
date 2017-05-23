@@ -64,7 +64,7 @@ public class MonitorPacket extends IQ {
         buf.rightAngleBracket();
 
         if (sessionID != null) {
-            buf.append("<makeOwner sessionID=\""+sessionID+"\"></makeOwner>");
+            buf.append("<makeOwner sessionID=\"" + sessionID + "\"></makeOwner>");
         }
 
         return buf;

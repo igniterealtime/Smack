@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class ParseStreamManagement {
         String name;
         XMPPError.Condition condition = null;
         outerloop:
-        while(true) {
+        while (true) {
             int event = parser.next();
             switch (event) {
             case XmlPullParser.START_TAG:

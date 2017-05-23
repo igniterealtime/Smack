@@ -121,7 +121,7 @@ public class StringUtils {
             return null;
         }
         final int len = input.length();
-        final StringBuilder out = new StringBuilder((int)(len*1.3));
+        final StringBuilder out = new StringBuilder((int) (len * 1.3));
         CharSequence toAppend;
         char ch;
         int last = 0;
@@ -153,7 +153,7 @@ public class StringUtils {
                 break;
             case forAttribute:
                 // No need to escape '>' for attributes.
-                switch(ch) {
+                switch (ch) {
                 case '<':
                     toAppend = LT_ENCODE;
                     break;
@@ -172,7 +172,7 @@ public class StringUtils {
                 break;
             case forAttributeApos:
                 // No need to escape '>' and '"' for attributes using '\'' as quote.
-                switch(ch) {
+                switch (ch) {
                 case '<':
                     toAppend = LT_ENCODE;
                     break;
@@ -188,7 +188,7 @@ public class StringUtils {
                 break;
             case forText:
                 // No need to escape '"', '\'', and '>' for text.
-                switch(ch) {
+                switch (ch) {
                 case '<':
                     toAppend = LT_ENCODE;
                     break;
@@ -308,7 +308,7 @@ public class StringUtils {
         final Random random = randGen.get();
         // Create a char buffer to put random letters and numbers in.
         char[] randBuffer = new char[length];
-        for (int i=0; i<randBuffer.length; i++) {
+        for (int i = 0; i < randBuffer.length; i++) {
             randBuffer[i] = numbersAndLetters[random.nextInt(numbersAndLetters.length)];
         }
         return new String(randBuffer);
@@ -336,7 +336,7 @@ public class StringUtils {
     }
 
     private static char getPrintableChar(byte indexByte) {
-        assert(numbersAndLetters.length < Byte.MAX_VALUE * 2);
+        assert (numbersAndLetters.length < Byte.MAX_VALUE * 2);
 
         // Convert indexByte as it where an unsigned byte by promoting it to int
         // and masking it with 0xff. Yields results from 0 - 254.

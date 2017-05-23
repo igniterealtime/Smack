@@ -79,18 +79,18 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
         /**
          * The master key. Hardcoded for now.
          */
-        byte[] masterKey = new byte[]{(byte) 0xE1, (byte) 0xF9, 0x7A, 0x0D, 0x3E, 0x01, (byte) 0x8B, (byte) 0xE0, (byte) 0xD6, 0x4F, (byte) 0xA3, 0x2C, 0x06, (byte) 0xDE, 0x41, 0x39};
+        byte[] masterKey = new byte[] {(byte) 0xE1, (byte) 0xF9, 0x7A, 0x0D, 0x3E, 0x01, (byte) 0x8B, (byte) 0xE0, (byte) 0xD6, 0x4F, (byte) 0xA3, 0x2C, 0x06, (byte) 0xDE, 0x41, 0x39};
 
         /**
          * The master salt. Hardcoded for now.
          */
-        byte[] masterSalt = new byte[]{0x0E, (byte) 0xC6, 0x75, (byte) 0xAD, 0x49, (byte) 0x8A, (byte) 0xFE, (byte) 0xEB, (byte) 0xB6, (byte) 0x96, 0x0B, 0x3A, (byte) 0xAB, (byte) 0xE6};
+        byte[] masterSalt = new byte[] {0x0E, (byte) 0xC6, 0x75, (byte) 0xAD, 0x49, (byte) 0x8A, (byte) 0xFE, (byte) 0xEB, (byte) 0xB6, (byte) 0x96, 0x0B, 0x3A, (byte) 0xAB, (byte) 0xE6};
 
         DatagramSocket[] localPorts = MediaSession.getLocalPorts(InetAddress.getByName(localhost), localPort);
         MediaSession session = MediaSession.createInstance(remoteHost, remotePort, localPorts, quality, secure, masterKey, masterSalt);
         session.setListener(eventHandler);
 
-        session.setSourceDescription(new SourceDescription[]{new SourceDescription(SourceDescription.SOURCE_DESC_NAME, "Superman", 1, false), new SourceDescription(SourceDescription.SOURCE_DESC_EMAIL, "cdcie.tester@je.jfcom.mil", 1, false), new SourceDescription(SourceDescription.SOURCE_DESC_LOC, InetAddress.getByName(localhost) + " Port " + session.getLocalDataPort(), 1, false), new SourceDescription(SourceDescription.SOURCE_DESC_TOOL, "JFCOM CDCIE Audio Chat", 1, false)});
+        session.setSourceDescription(new SourceDescription[] {new SourceDescription(SourceDescription.SOURCE_DESC_NAME, "Superman", 1, false), new SourceDescription(SourceDescription.SOURCE_DESC_EMAIL, "cdcie.tester@je.jfcom.mil", 1, false), new SourceDescription(SourceDescription.SOURCE_DESC_LOC, InetAddress.getByName(localhost) + " Port " + session.getLocalDataPort(), 1, false), new SourceDescription(SourceDescription.SOURCE_DESC_TOOL, "JFCOM CDCIE Audio Chat", 1, false)});
         return session;
     }
 

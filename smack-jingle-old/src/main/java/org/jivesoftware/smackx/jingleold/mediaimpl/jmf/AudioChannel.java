@@ -213,7 +213,7 @@ public class AudioChannel {
 
         // Wait for it to configure
         boolean result = waitForState(processor, Processor.Configured);
-        if (!result){
+        if (!result) {
             return "Couldn't configure processor";
         }
 
@@ -221,7 +221,7 @@ public class AudioChannel {
         TrackControl[] tracks = processor.getTrackControls();
 
         // Do we have atleast one track?
-        if (tracks == null || tracks.length < 1){
+        if (tracks == null || tracks.length < 1) {
             return "Couldn't find tracks in processor";
         }
 

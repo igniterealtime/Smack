@@ -123,7 +123,7 @@ public final class RosterEntry extends Manager {
      * @param subscriptionPending TODO
      */
     void updateItem(RosterPacket.Item item) {
-        assert(item != null);
+        assert (item != null);
         this.item = item;
     }
 
@@ -145,7 +145,7 @@ public final class RosterEntry extends Manager {
         List<RosterGroup> results = new ArrayList<RosterGroup>();
         // Loop through all roster groups and find the ones that contain this
         // entry. This algorithm should be fine
-        for (RosterGroup group: roster.getGroups()) {
+        for (RosterGroup group : roster.getGroups()) {
             if (group.contains(this)) {
                 results.add(group);
             }
@@ -256,7 +256,7 @@ public final class RosterEntry extends Manager {
             return true;
         }
         if (object != null && object instanceof RosterEntry) {
-            return getJid().equals(((RosterEntry)object).getJid());
+            return getJid().equals(((RosterEntry) object).getJid());
         }
         else {
             return false;

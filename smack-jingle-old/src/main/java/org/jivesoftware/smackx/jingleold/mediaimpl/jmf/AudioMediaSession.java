@@ -54,7 +54,7 @@ public class AudioMediaSession extends JingleMediaSession {
      */
     public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
             final TransportCandidate local, String locator, JingleSession jingleSession) {
-        super(payloadType, remote, local, locator==null?"dsound://":locator,jingleSession);
+        super(payloadType, remote, local, locator == null ? "dsound://" : locator,jingleSession);
         initialize();
     }
 

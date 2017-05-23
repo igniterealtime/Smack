@@ -120,7 +120,7 @@ public final class StandardExtensionElement implements ExtensionElement {
     }
 
     public List<StandardExtensionElement> getElements() {
-        if (elements == null){
+        if (elements == null) {
             return Collections.emptyList();
         }
         return elements.values();

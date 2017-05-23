@@ -42,7 +42,7 @@ public class WorkgroupInformation implements ExtensionElement {
 
     private String workgroupJID;
 
-    public WorkgroupInformation(String workgroupJID){
+    public WorkgroupInformation(String workgroupJID) {
         this.workgroupJID = workgroupJID;
     }
 

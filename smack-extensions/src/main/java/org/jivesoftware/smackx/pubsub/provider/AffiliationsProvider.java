@@ -35,7 +35,7 @@ import org.jivesoftware.smackx.pubsub.AffiliationsExtension;
     @Override
     protected AffiliationsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
     {
-        return new AffiliationsExtension((List<Affiliation>)content);
+        return new AffiliationsExtension((List<Affiliation>) content);
     }
 
 }

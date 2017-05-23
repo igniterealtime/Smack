@@ -80,12 +80,12 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
                 if (parser.getName().equals("joinTime")) {
                     try {
                         joinTime = UTC_FORMAT.parse(parser.nextText());
-                    } catch (ParseException e) {}
+                    } catch (ParseException e) { }
                 }
                 else if (parser.getName().equals("leftTime")) {
                     try {
                         leftTime = UTC_FORMAT.parse(parser.nextText());
-                    } catch (ParseException e) {}
+                    } catch (ParseException e) { }
                 }
                 else if (parser.getName().equals("agents")) {
                     agents = parseAgents(parser);
@@ -117,12 +117,12 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
                 else if (parser.getName().equals("joinTime")) {
                     try {
                         joinTime = UTC_FORMAT.parse(parser.nextText());
-                    } catch (ParseException e) {}
+                    } catch (ParseException e) { }
                 }
                 else if (parser.getName().equals("leftTime")) {
                     try {
                         leftTime = UTC_FORMAT.parse(parser.nextText());
-                    } catch (ParseException e) {}
+                    } catch (ParseException e) { }
                 }
                 else if (parser.getName().equals("agent")) {
                     agentJID =  null;

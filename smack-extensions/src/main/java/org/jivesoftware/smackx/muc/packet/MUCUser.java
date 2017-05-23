@@ -247,7 +247,7 @@ public class MUCUser implements ExtensionElement {
      * @author Gaston Dombiak
      */
     public static class Invite implements NamedElement {
-        public static final String ELEMENT ="invite";
+        public static final String ELEMENT = "invite";
 
         private final String reason;
 

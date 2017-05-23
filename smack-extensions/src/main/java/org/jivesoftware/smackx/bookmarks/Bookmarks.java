@@ -177,7 +177,7 @@ public class Bookmarks implements PrivateData {
         buf.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
 
         for (BookmarkedURL urlStorage : getBookmarkedURLS()) {
-            if(urlStorage.isShared()) {
+            if (urlStorage.isShared()) {
                 continue;
             }
             buf.halfOpenElement("url").attribute("name", urlStorage.getName()).attribute("url", urlStorage.getURL());
@@ -187,7 +187,7 @@ public class Bookmarks implements PrivateData {
 
         // Add Conference additions
         for (BookmarkedConference conference : getBookmarkedConferences()) {
-            if(conference.isShared()) {
+            if (conference.isShared()) {
                 continue;
             }
             buf.halfOpenElement("conference");
@@ -260,7 +260,7 @@ public class Bookmarks implements PrivateData {
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
-            if(eventType == XmlPullParser.START_TAG
+            if (eventType == XmlPullParser.START_TAG
                         && "shared_bookmark".equals(parser.getName())) {
                     urlStore.setShared(true);
             }
@@ -291,7 +291,7 @@ public class Bookmarks implements PrivateData {
             else if (eventType == XmlPullParser.START_TAG && "password".equals(parser.getName())) {
                 conf.setPassword(parser.nextText());
             }
-            else if(eventType == XmlPullParser.START_TAG
+            else if (eventType == XmlPullParser.START_TAG
                         && "shared_bookmark".equals(parser.getName())) {
                     conf.setShared(true);
             }

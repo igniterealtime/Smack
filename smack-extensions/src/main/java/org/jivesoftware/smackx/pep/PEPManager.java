@@ -95,9 +95,9 @@ public final class PEPManager extends Manager {
             public void processStanza(Stanza stanza) {
                 Message message = (Message) stanza;
                 EventElement event = EventElement.from(stanza);
-                assert(event != null);
+                assert (event != null);
                 EntityBareJid from = message.getFrom().asEntityBareJidIfPossible();
-                assert(from != null);
+                assert (from != null);
                 for (PEPListener listener : pepListeners) {
                     listener.eventReceived(from, event, message);
                 }

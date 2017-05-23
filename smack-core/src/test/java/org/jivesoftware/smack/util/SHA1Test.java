@@ -70,7 +70,7 @@ public class SHA1Test  {
      */
     private boolean isValidHash(String result) {
         boolean valid = true;
-        for (int i=0; i<result.length(); i++) {
+        for (int i = 0; i < result.length(); i++) {
             char c = result.charAt(i);
             if (HASH_CHARS.indexOf(c) < 0) {
                 valid = false;

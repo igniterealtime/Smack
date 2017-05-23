@@ -84,7 +84,7 @@ public class ServiceAdministrationManager extends Manager {
         passwordVerifyField.addValue(password);
 
         command.next(answerForm);
-        assert(command.isCompleted());
+        assert (command.isCompleted());
     }
 
     public RemoteCommand deleteUser() {
@@ -112,6 +112,6 @@ public class ServiceAdministrationManager extends Manager {
         accountJids.addValues(JidUtil.toStringList(jidsToDelete));
 
         command.next(answerForm);
-        assert(command.isCompleted());
+        assert (command.isCompleted());
     }
 }

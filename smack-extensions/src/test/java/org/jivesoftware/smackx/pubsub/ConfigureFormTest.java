@@ -82,7 +82,7 @@ public class ConfigureFormTest extends InitExtensions
         }
     }
 
-    @Test (expected=SmackException.class)
+    @Test(expected = SmackException.class)
     public void getConfigFormWithTimeout() throws XMPPException, SmackException, InterruptedException
     {
         ThreadedDummyConnection con = new ThreadedDummyConnection();

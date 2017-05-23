@@ -61,7 +61,7 @@ public class EventElement implements EmbeddedPacketExtension
     @Override
     public List<ExtensionElement> getExtensions()
     {
-        return Arrays.asList(new ExtensionElement[]{getEvent()});
+        return Arrays.asList(new ExtensionElement[] {getEvent()});
     }
 
     public NodeExtension getEvent()

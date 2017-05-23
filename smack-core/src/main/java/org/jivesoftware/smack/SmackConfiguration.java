@@ -174,7 +174,7 @@ public final class SmackConfiguration {
      * @param mech the SASL mechanism to be added
      */
     public static void addSaslMech(String mech) {
-        if(!defaultMechs.contains(mech)) {
+        if (!defaultMechs.contains(mech)) {
             defaultMechs.add(mech);
         }
     }
@@ -185,7 +185,7 @@ public final class SmackConfiguration {
      * @param mechs the Collection of SASL mechanisms to be added
      */
     public static void addSaslMechs(Collection<String> mechs) {
-        for(String mech : mechs) {
+        for (String mech : mechs) {
             addSaslMech(mech);
         }
     }

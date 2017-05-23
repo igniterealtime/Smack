@@ -164,7 +164,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         this.password = password;
         this.authorizationId = authzid;
         this.sslSession = sslSession;
-        assert(authorizationId == null || authzidSupported());
+        assert (authorizationId == null || authzidSupported());
         authenticateInternal();
         authenticate();
     }
@@ -194,7 +194,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         this.serviceName = serviceName;
         this.authorizationId = authzid;
         this.sslSession = sslSession;
-        assert(authorizationId == null || authzidSupported());
+        assert (authorizationId == null || authzidSupported());
         authenticateInternal(cbh);
         authenticate();
     }

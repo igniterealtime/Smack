@@ -51,7 +51,7 @@ public class MiniDnsDaneVerifier implements SmackDaneVerifier {
             throw new IllegalStateException("DaneProvider was initialized before. Use newInstance() instead.");
         }
         expectingTrustManager = new ExpectingTrustManager(tm);
-        context.init(km, new TrustManager[]{expectingTrustManager}, random);
+        context.init(km, new TrustManager[] {expectingTrustManager}, random);
     }
 
     @Override

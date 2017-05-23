@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.sasl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -57,7 +58,7 @@ public class DigestMd5SaslTest extends AbstractSaslTest {
         if (useAuthzid) {
           assertMapValue("authzid", "shazbat@xmpp.org", responsePairs);
         } else {
-          assert(!responsePairs.containsKey("authzid"));
+          assertTrue (!responsePairs.containsKey("authzid"));
         }
         assertMapValue("username", "florian", responsePairs);
         assertMapValue("realm", "xmpp.org", responsePairs);

@@ -627,7 +627,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             hostAddresses = DNSUtil.resolveXMPPServiceDomain(config.getXMPPServiceDomain().toString(), failedAddresses, config.getDnssecMode());
         }
         // Either the populated host addresses are not empty *or* there must be at least one failed address.
-        assert(!hostAddresses.isEmpty() || !failedAddresses.isEmpty());
+        assert (!hostAddresses.isEmpty() || !failedAddresses.isEmpty());
         return failedAddresses;
     }
 
@@ -666,7 +666,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
         Objects.requireNonNull(stanza, "Stanza must not be null");
-        assert(stanza instanceof Message || stanza instanceof Presence || stanza instanceof IQ);
+        assert (stanza instanceof Message || stanza instanceof Presence || stanza instanceof IQ);
 
         throwNotConnectedExceptionIfAppropriate();
         switch (fromMode) {
@@ -895,7 +895,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         continue;
                     }
                 }
-            }});
+            }
+        });
     }
 
     @Override
@@ -1069,7 +1070,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws InterruptedException
      */
     protected void processStanza(final Stanza stanza) throws InterruptedException {
-        assert(stanza != null);
+        assert (stanza != null);
         lastStanzaReceived = System.currentTimeMillis();
         // Deliver the incoming packet to listeners.
         executorService.executeBlocking(new Runnable() {
@@ -1202,7 +1203,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
 
         // Loop through all collectors and notify the appropriate ones.
-        for (StanzaCollector collector: collectors) {
+        for (StanzaCollector collector : collectors) {
             collector.processStanza(packet);
         }
 
@@ -1224,7 +1225,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 for (StanzaListener listener : listenersToNotify) {
                     try {
                         listener.processStanza(packet);
-                    } catch(NotConnectedException e) {
+                    } catch (NotConnectedException e) {
                         LOGGER.log(Level.WARNING, "Got not connected exception, aborting", e);
                         break;
                     } catch (Exception e) {

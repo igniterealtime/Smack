@@ -83,7 +83,7 @@ public class Transcript extends IQ {
                 .append(sessionID)
                 .append("\">");
 
-        for (Iterator<Stanza> it=packets.iterator(); it.hasNext();) {
+        for (Iterator<Stanza> it = packets.iterator(); it.hasNext();) {
             Stanza packet = it.next();
             buf.append(packet.toXML());
         }

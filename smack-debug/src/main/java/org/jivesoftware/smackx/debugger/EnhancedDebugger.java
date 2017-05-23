@@ -263,7 +263,7 @@ public class EnhancedDebugger implements SmackDebugger {
 
             }
             @Override
-            public void reconnectingIn(final int seconds){
+            public void reconnectingIn(final int seconds) {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -301,7 +301,7 @@ public class EnhancedDebugger implements SmackDebugger {
 
         messagesTable =
                 new DefaultTableModel(
-                        new Object[]{"Hide", "Timestamp", "", "", "Message", "Id", "Type", "To", "From"},
+                        new Object[] {"Hide", "Timestamp", "", "", "Message", "Id", "Type", "To", "From"},
                         0) {
                     // CHECKSTYLE:OFF
         			private static final long serialVersionUID = 8136121224474217264L;
@@ -735,9 +735,9 @@ public class EnhancedDebugger implements SmackDebugger {
         packetsPanel.setBorder(BorderFactory.createTitledBorder("Transmitted Packets"));
 
         statisticsTable =
-                new DefaultTableModel(new Object[][]{{"IQ", 0, 0}, {"Message", 0, 0},
+                new DefaultTableModel(new Object[][] { {"IQ", 0, 0}, {"Message", 0, 0},
                         {"Presence", 0, 0}, {"Other", 0, 0}, {"Total", 0, 0}},
-                        new Object[]{"Type", "Received", "Sent"}) {
+                        new Object[] {"Type", "Received", "Sent"}) {
                     // CHECKSTYLE:OFF
         			private static final long serialVersionUID = -6793886085109589269L;
 					@Override
@@ -878,7 +878,7 @@ public class EnhancedDebugger implements SmackDebugger {
                 }
 
                 messagesTable.addRow(
-                        new Object[]{
+                        new Object[] {
                                 formatXML(packet.toXML().toString()),
                                 dateFormatter.format(new Date()),
                                 packetReceivedIcon,
@@ -940,7 +940,7 @@ public class EnhancedDebugger implements SmackDebugger {
                 }
 
                 messagesTable.addRow(
-                        new Object[]{
+                        new Object[] {
                                 formatXML(packet.toXML().toString()),
                                 dateFormatter.format(new Date()),
                                 packetSentIcon,

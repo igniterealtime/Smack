@@ -64,7 +64,7 @@ class DataListener extends AbstractIqRequestHandler {
                 ibbSession.processIQPacket(data);
             }
         }
-        catch (NotConnectedException|InterruptedException e) {
+        catch (NotConnectedException | InterruptedException e) {
             return null;
         }
         return null;

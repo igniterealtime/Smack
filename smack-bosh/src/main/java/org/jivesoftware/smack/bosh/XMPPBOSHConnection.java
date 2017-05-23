@@ -325,7 +325,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         writer = new Writer() {
             @Override
             public void write(char[] cbuf, int off, int len) {
-                /* ignore */}
+                /* ignore */ }
 
             @Override
             public void close() {

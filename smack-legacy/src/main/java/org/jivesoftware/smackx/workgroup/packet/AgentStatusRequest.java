@@ -73,11 +73,11 @@ public class AgentStatusRequest extends IQ {
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         buf.rightAngleBracket();
         synchronized (agents) {
-            for (Iterator<Item> i=agents.iterator(); i.hasNext(); ) {
+            for (Iterator<Item> i = agents.iterator(); i.hasNext(); ) {
                 Item item = i.next();
                 buf.append("<agent jid=\"").append(item.getJID()).append("\">");
                 if (item.getName() != null) {
-                    buf.append("<name xmlns=\""+ AgentInfo.NAMESPACE + "\">");
+                    buf.append("<name xmlns=\"" + AgentInfo.NAMESPACE + "\">");
                     buf.append(item.getName());
                     buf.append("</name>");
                 }

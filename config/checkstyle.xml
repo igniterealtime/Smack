@@ -117,5 +117,75 @@
 										 , INDEX_OP
 										 "/>
 		</module>
+		<module name="WhitespaceAfter">
+		  <property name="tokens" value="TYPECAST
+										 , LITERAL_IF
+										 , LITERAL_ELSE
+										 , LITERAL_WHILE
+										 , LITERAL_DO
+										 , LITERAL_FOR
+										 , DO_WHILE
+										 "/>
+		</module>
+		<module name="WhitespaceAround">
+		  <property
+			  name="ignoreEnhancedForColon"
+			  value="false"
+			  />
+		  <!-- Currently disabled tokens: LCURLY, RCURLY, WILDCARD_TYPE, GENERIC_START, GENERIC_END -->
+		  <property
+			  name="tokens"
+			  value="ASSIGN
+					 , ARRAY_INIT
+					 , BAND
+					 , BAND_ASSIGN
+					 , BOR
+					 , BOR_ASSIGN
+					 , BSR
+					 , BSR_ASSIGN
+					 , BXOR
+					 , BXOR_ASSIGN
+					 , COLON
+					 , DIV
+					 , DIV_ASSIGN
+					 , DO_WHILE
+					 , EQUAL
+					 , GE
+					 , GT
+					 , LAMBDA
+					 , LAND
+					 , LE
+					 , LITERAL_CATCH
+					 , LITERAL_DO
+					 , LITERAL_ELSE
+					 , LITERAL_FINALLY
+					 , LITERAL_FOR
+					 , LITERAL_IF
+					 , LITERAL_RETURN
+					 , LITERAL_SWITCH
+					 , LITERAL_SYNCHRONIZED
+					 , LITERAL_TRY
+					 , LITERAL_WHILE
+					 , LOR
+					 , LT
+					 , MINUS
+					 , MINUS_ASSIGN
+					 , MOD
+					 , MOD_ASSIGN
+					 , NOT_EQUAL
+					 , PLUS
+					 , PLUS_ASSIGN
+					 , QUESTION
+					 , SL
+					 , SLIST
+					 , SL_ASSIGN
+					 , SR
+					 , SR_ASSIGN
+					 , STAR
+					 , STAR_ASSIGN
+					 , LITERAL_ASSERT
+					 , TYPE_EXTENSION_AND
+					 "/>
+		</module>
 	</module>
 </module>

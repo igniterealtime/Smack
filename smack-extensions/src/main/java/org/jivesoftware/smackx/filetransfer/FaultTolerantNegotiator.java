@@ -73,7 +73,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
     private StreamNegotiator determineNegotiator(Stanza streamInitiation) {
         if (streamInitiation instanceof Bytestream) {
             return primaryNegotiator;
-        } else if (streamInitiation instanceof Open){
+        } else if (streamInitiation instanceof Open) {
             return secondaryNegotiator;
         } else {
             throw new IllegalStateException("Unknown stream initation type");

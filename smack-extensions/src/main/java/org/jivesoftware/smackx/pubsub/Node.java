@@ -573,7 +573,7 @@ abstract public class Node
 
     private static List<String> getSubscriptionIds(Stanza packet)
     {
-        HeadersExtension headers = (HeadersExtension)packet.getExtension("headers", "http://jabber.org/protocol/shim");
+        HeadersExtension headers = (HeadersExtension) packet.getExtension("headers", "http://jabber.org/protocol/shim");
         List<String> values = null;
 
         if (headers != null)
@@ -608,10 +608,8 @@ abstract public class Node
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public void processStanza(Stanza packet)
         {
-// CHECKSTYLE:OFF
-            EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
-// CHECKSTYLE:ON
-            ItemsExtension itemsElem = (ItemsExtension)event.getEvent();
+            EventElement event = (EventElement) packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
+            ItemsExtension itemsElem = (ItemsExtension) event.getEvent();
             ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), itemsElem.getItems(), getSubscriptionIds(packet), DelayInformationManager.getDelayTimestamp(packet));
             listener.handlePublishedItems(eventItems);
         }
@@ -681,8 +679,8 @@ abstract public class Node
         @Override
         public void processStanza(Stanza packet)
         {
-            EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
-            ConfigurationEvent config = (ConfigurationEvent)event.getEvent();
+            EventElement event = (EventElement) packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
+            ConfigurationEvent config = (ConfigurationEvent) event.getEvent();
 
             listener.handleNodeConfiguration(config);
         }
@@ -735,7 +733,7 @@ abstract public class Node
 
                 if (embedEvent instanceof EmbeddedPacketExtension)
                 {
-                    List<ExtensionElement> secondLevelList = ((EmbeddedPacketExtension)embedEvent).getExtensions();
+                    List<ExtensionElement> secondLevelList = ((EmbeddedPacketExtension) embedEvent).getExtensions();
 
                     // XEP-0060 allows no elements on second level for notifications. See schema or
                     // for example § 4.3:

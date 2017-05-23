@@ -22,7 +22,7 @@ public class ChatSetting {
     private String value;
     private int type;
 
-    public ChatSetting(String key, String value, int type){
+    public ChatSetting(String key, String value, int type) {
         setKey(key);
         setValue(value);
         setType(type);

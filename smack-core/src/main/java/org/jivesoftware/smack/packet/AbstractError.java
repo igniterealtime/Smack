@@ -68,7 +68,7 @@ public class AbstractError {
         String descriptiveText = getDescriptiveText(defaultLocale);
         if (descriptiveText == null) {
             descriptiveText = getDescriptiveText("en");
-            if(descriptiveText == null) {
+            if (descriptiveText == null) {
                 descriptiveText = getDescriptiveText("");
             }
         }

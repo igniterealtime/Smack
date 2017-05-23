@@ -39,7 +39,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 public class HttpFileUploadIntegrationTest extends AbstractSmackIntegrationTest {
 
-    private static final int FILE_SIZE = 1024*128;
+    private static final int FILE_SIZE = 1024 * 128;
 
     private final HttpFileUploadManager hfumOne;
 

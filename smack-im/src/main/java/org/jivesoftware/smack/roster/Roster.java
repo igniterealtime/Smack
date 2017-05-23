@@ -419,7 +419,7 @@ public final class Roster extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void reload() throws NotLoggedInException, NotConnectedException, InterruptedException{
+    public void reload() throws NotLoggedInException, NotConnectedException, InterruptedException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
 
         RosterPacket packet = new RosterPacket();
@@ -1307,7 +1307,7 @@ public final class Roster extends Manager {
 
         // Remove user from the remaining groups.
         List<String> oldGroupNames = new ArrayList<String>();
-        for (RosterGroup group: getGroups()) {
+        for (RosterGroup group : getGroups()) {
             oldGroupNames.add(group.getName());
         }
         oldGroupNames.removeAll(newGroupNames);
@@ -1329,7 +1329,7 @@ public final class Roster extends Manager {
         move(user, presenceMap, nonRosterPresenceMap);
         deletedEntries.add(user);
 
-        for (Entry<String,RosterGroup> e: groups.entrySet()) {
+        for (Entry<String,RosterGroup> e : groups.entrySet()) {
             RosterGroup group = e.getValue();
             group.removeEntryLocal(entry);
             if (group.getEntryCount() == 0) {

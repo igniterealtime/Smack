@@ -27,7 +27,7 @@ public class MUCLightDestroyTest {
             + "<query xmlns='urn:xmpp:muclight:0#destroy'/>" + "</iq>";
 
     @Test
-    public void checkDestroyMUCLightStanza() throws Exception{
+    public void checkDestroyMUCLightStanza() throws Exception {
         MUCLightDestroyIQ mucLightDestroyIQ = new MUCLightDestroyIQ(JidCreate.from("coven@muclight.shakespeare.lit"));
         mucLightDestroyIQ.setStanzaId("destroy1");
         Assert.assertEquals(mucLightDestroyIQ.toXML().toString(), stanza);

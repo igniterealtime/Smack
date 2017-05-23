@@ -70,7 +70,7 @@ public class SubscriptionPreApprovalTest extends InitSmackIm {
         connection = null;
     }
 
-    @Test(expected=FeatureNotSupportedException.class)
+    @Test(expected = FeatureNotSupportedException.class)
     public void testPreApprovalNotSupported() throws Throwable {
         final Jid contactJID = JidCreate.from("preapproval@example.com");
         roster.preApprove(contactJID.asBareJid());

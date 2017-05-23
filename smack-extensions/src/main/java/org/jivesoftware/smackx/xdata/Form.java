@@ -205,7 +205,7 @@ public class Form {
     }
 
     private static void validateThatFieldIsText(FormField field) {
-        switch(field.getType()) {
+        switch (field.getType()) {
         case text_multi:
         case text_private:
         case text_single:
@@ -444,7 +444,7 @@ public class Form {
         if (isSubmitType()) {
             // Create a new DataForm that contains only the answered fields 
             DataForm dataFormToSend = new DataForm(getType());
-            for(FormField field : getFields()) {
+            for (FormField field : getFields()) {
                 if (!field.getValues().isEmpty()) {
                     dataFormToSend.addField(field);
                 }

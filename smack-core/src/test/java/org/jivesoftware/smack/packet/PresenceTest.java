@@ -60,7 +60,7 @@ public class PresenceTest {
         assertXMLEqual(control, presenceTypeSet.toXML().toString());
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void setNullPresenceTypeTest() {
         getNewPresence().setType(null);
     }
@@ -113,7 +113,7 @@ public class PresenceTest {
         assertXMLEqual(control, presence.toXML().toString());
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void setIllegalPriorityTest() {
         getNewPresence().setPriority(Integer.MIN_VALUE);
     }
