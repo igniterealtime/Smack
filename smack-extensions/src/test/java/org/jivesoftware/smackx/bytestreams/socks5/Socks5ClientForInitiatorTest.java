@@ -61,6 +61,8 @@ public class Socks5ClientForInitiatorTest {
     static final DomainBareJid proxyJID = JidTestUtil.MUC_EXAMPLE_ORG;
     static final String loopbackAddress = InetAddress.getLoopbackAddress().getHostAddress();
 
+    private static final int GET_SOCKET_TIMEOUT = 90 * 1000;
+
     int proxyPort = 7890;
     String sessionID = "session_id";
 
@@ -111,7 +113,7 @@ public class Socks5ClientForInitiatorTest {
                         connection, sessionID, targetJID);
 
         try {
-            socks5Client.getSocket(10000);
+            socks5Client.getSocket(GET_SOCKET_TIMEOUT);
 
             fail("exception should be thrown");
         }
@@ -175,7 +177,7 @@ public class Socks5ClientForInitiatorTest {
         Socks5ClientForInitiator socks5Client = new Socks5ClientForInitiator(streamHost, digest,
                         connection, sessionID, targetJID);
 
-        Socket socket = socks5Client.getSocket(10000);
+        Socket socket = socks5Client.getSocket(GET_SOCKET_TIMEOUT);
 
         // verify test data
         InputStream in = socket.getInputStream();
@@ -224,7 +226,7 @@ public class Socks5ClientForInitiatorTest {
 
         try {
 
-            socks5Client.getSocket(10000);
+            socks5Client.getSocket(GET_SOCKET_TIMEOUT);
 
             fail("exception should be thrown");
         }
