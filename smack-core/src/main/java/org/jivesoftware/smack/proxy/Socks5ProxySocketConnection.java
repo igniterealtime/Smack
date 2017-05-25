@@ -50,13 +50,13 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
         try
         {
             socket.connect(new InetSocketAddress(proxy_host, proxy_port), timeout);
-            in=socket.getInputStream();
-            out=socket.getOutputStream();
+            in = socket.getInputStream();
+            out = socket.getOutputStream();
 
             socket.setTcpNoDelay(true);
 
-            byte[] buf=new byte[1024];
-            int index=0;
+            byte[] buf = new byte[1024];
+            int index = 0;
 
 /*
                    +----+----------+----------+
@@ -79,11 +79,11 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
           o  X'FF' NO ACCEPTABLE METHODS
 */
 
-            buf[index++]=5;
+            buf[index++] = 5;
 
-            buf[index++]=2;
-            buf[index++]=0;           // NO AUTHENTICATION REQUIRED
-            buf[index++]=2;           // USERNAME/PASSWORD
+            buf[index++] = 2;
+            buf[index++] = 0;           // NO AUTHENTICATION REQUIRED
+            buf[index++] = 2;           // USERNAME/PASSWORD
 
             out.write(buf, 0, index);
 
@@ -100,14 +100,14 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
       //in.read(buf, 0, 2);
             fill(in, buf, 2);
 
-            boolean check=false;
-            switch((buf[1])&0xff)
+            boolean check = false;
+            switch ((buf[1]) & 0xff)
             {
                 case 0:                // NO AUTHENTICATION REQUIRED
-                    check=true;
+                    check = true;
                     break;
                 case 2:                // USERNAME/PASSWORD
-                    if(user==null || passwd==null)
+                    if (user == null || passwd == null)
                     {
                         break;
                     }
@@ -131,18 +131,18 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
    PASSWD field that follows. The PASSWD field contains the password
    association with the given UNAME.
 */
-                    index=0;
-                    buf[index++]=1;
-                    buf[index++]=(byte)(user.length());
+                    index = 0;
+                    buf[index++] = 1;
+                    buf[index++] = (byte) (user.length());
                     byte[] userBytes = user.getBytes(StringUtils.UTF8);
                     System.arraycopy(userBytes, 0, buf, index, 
                         user.length());
-                    index+=user.length();
+                    index += user.length();
                     byte[] passwordBytes = user.getBytes(StringUtils.UTF8);
-                    buf[index++]=(byte)(passwordBytes.length);
+                    buf[index++] = (byte) (passwordBytes.length);
                     System.arraycopy(passwordBytes, 0, buf, index, 
                         passwd.length());
-                    index+=passwd.length();
+                    index += passwd.length();
 
                     out.write(buf, 0, index);
 
@@ -162,21 +162,21 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
 */
                     //in.read(buf, 0, 2);
                     fill(in, buf, 2);
-                    if(buf[1]==0)
+                    if (buf[1] == 0)
                     {
-                        check=true;
+                        check = true;
                     }
                     break;
                 default:
             }
 
-            if(!check)
+            if (!check)
             {
                 try
                 {
                     socket.close();
                 }
-                catch(Exception eee)
+                catch (Exception eee)
                 {
                 }
                 throw new ProxyException(ProxyInfo.ProxyType.SOCKS5,
@@ -209,19 +209,19 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
          order
 */
 
-            index=0;
-            buf[index++]=5;
-            buf[index++]=1;       // CONNECT
-            buf[index++]=0;
+            index = 0;
+            buf[index++] = 5;
+            buf[index++] = 1;       // CONNECT
+            buf[index++] = 0;
 
-            byte[] hostb= host.getBytes(StringUtils.UTF8);
-            int len=hostb.length;
-            buf[index++]=3;      // DOMAINNAME
-            buf[index++]=(byte)(len);
+            byte[] hostb = host.getBytes(StringUtils.UTF8);
+            int len = hostb.length;
+            buf[index++] = 3;      // DOMAINNAME
+            buf[index++] = (byte) (len);
             System.arraycopy(hostb, 0, buf, index, len);
-            index+=len;
-            buf[index++]=(byte)(port>>>8);
-            buf[index++]=(byte)(port&0xff);
+            index += len;
+            buf[index++] = (byte) (port >>> 8);
+            buf[index++] = (byte) (port & 0xff);
 
             out.write(buf, 0, index);
 
@@ -263,20 +263,20 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
       //in.read(buf, 0, 4);
             fill(in, buf, 4);
 
-            if(buf[1]!=0)
+            if (buf[1] != 0)
             {
                 try
                 {
                     socket.close();
                 }
-                catch(Exception eee)
+                catch (Exception eee)
                 {
                 }
                 throw new ProxyException(ProxyInfo.ProxyType.SOCKS5, 
-                    "server returns "+buf[1]);
+                    "server returns " + buf[1]);
             }
 
-            switch(buf[3]&0xff)
+            switch (buf[3] & 0xff)
             {
                 case 1:
                     //in.read(buf, 0, 6);
@@ -286,7 +286,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
                     //in.read(buf, 0, 1);
                     fill(in, buf, 1);
                     //in.read(buf, 0, buf[0]+2);
-                    fill(in, buf, (buf[0]&0xff)+2);
+                    fill(in, buf, (buf[0] & 0xff) + 2);
                     break;
                 case 4:
                     //in.read(buf, 0, 18);
@@ -295,17 +295,17 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
                 default:
             }
         }
-        catch(RuntimeException e)
+        catch (RuntimeException e)
         {
             throw e;
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             try
             {
                 socket.close();
             }
-            catch(Exception eee)
+            catch (Exception eee)
             {
             }
             // TODO convert to IOException(e) when minimum Android API level is 9 or higher
@@ -316,16 +316,16 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
     private static void fill(InputStream in, byte[] buf, int len) 
       throws IOException
     {
-        int s=0;
-        while(s<len)
+        int s = 0;
+        while (s < len)
         {
-            int i=in.read(buf, s, len-s);
-            if(i<=0)
+            int i = in.read(buf, s, len - s);
+            if (i <= 0)
             {
                 throw new ProxyException(ProxyInfo.ProxyType.SOCKS5, "stream " +
                     "is closed");
             }
-            s+=i;
+            s += i;
         }
     }
 

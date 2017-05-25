@@ -488,7 +488,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         // Add the subject in other languages
         for (Subject subject : getSubjects()) {
             // Skip the default language
-            if(subject.equals(defaultSubject))
+            if (subject.equals(defaultSubject))
                 continue;
             buf.append(subject.toXML());
         }
@@ -500,7 +500,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         // Add the bodies in other languages
         for (Body body : getBodies()) {
             // Skip the default language
-            if(body.equals(defaultBody))
+            if (body.equals(defaultBody))
                 continue;
             buf.append(body.toXML());
         }

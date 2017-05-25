@@ -80,7 +80,7 @@ public class TcpUdpBridgeClient {
                         localUdpSocket.receive(p);
                         if (p.getLength() == 0) continue;
 
-                        LOGGER.fine("UDP Client Received and Sending to TCP Server:"+new String(p.getData(),0,p.getLength(),"UTF-8"));
+                        LOGGER.fine("UDP Client Received and Sending to TCP Server:" + new String(p.getData(), 0, p.getLength(), "UTF-8"));
 
                         out.write(p.getData(), 0, p.getLength());
                         out.flush();
@@ -112,7 +112,7 @@ public class TcpUdpBridgeClient {
                         int s = in.read(b);
                         //if (s == -1) continue;
 
-                        LOGGER.fine("TCP Client:" +new String(b,0,s,"UTF-8"));
+                        LOGGER.fine("TCP Client:" + new String(b, 0, s, "UTF-8"));
 
                         DatagramPacket udpPacket = new DatagramPacket(b, s);
 

@@ -115,10 +115,10 @@ public class BookmarkedConference implements SharedBookmark {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null || !(obj instanceof BookmarkedConference)) {
+        if (obj == null || !(obj instanceof BookmarkedConference)) {
             return false;
         }
-        BookmarkedConference conference = (BookmarkedConference)obj;
+        BookmarkedConference conference = (BookmarkedConference) obj;
         return conference.getJid().equals(jid);
     }
 

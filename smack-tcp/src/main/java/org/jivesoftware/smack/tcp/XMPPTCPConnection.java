@@ -566,7 +566,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             int port = hostAddress.getPort();
             if (proxyInfo == null) {
                 inetAddresses = hostAddress.getInetAddresses().iterator();
-                assert(inetAddresses.hasNext());
+                assert (inetAddresses.hasNext());
 
                 innerloop: while (inetAddresses.hasNext()) {
                     // Create a *new* Socket before every connection attempt, i.e. connect() call, since Sockets are not
@@ -707,13 +707,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             if ("PKCS11".equals(keyStoreType)) {
                 try {
                     Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
-                    String pkcs11Config = "name = SmartCard\nlibrary = "+config.getPKCS11Library();
+                    String pkcs11Config = "name = SmartCard\nlibrary = " + config.getPKCS11Library();
                     ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes(StringUtils.UTF8));
-                    Provider p = (Provider)c.newInstance(config);
+                    Provider p = (Provider) c.newInstance(config);
                     Security.addProvider(p);
                     ks = KeyStore.getInstance("PKCS11",p);
                     pcb = new PasswordCallback("PKCS11 Password: ",false);
-                    callbackHandler.handle(new Callback[]{pcb});
+                    callbackHandler.handle(new Callback[] {pcb});
                     ks.load(null,pcb.getPassword());
                 }
                 catch (Exception e) {
@@ -727,7 +727,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 //pcb = new PasswordCallback("Apple Keychain",false);
                 //pcb.setPassword(null);
             }
-            else if (keyStoreType != null){
+            else if (keyStoreType != null) {
                 ks = KeyStore.getInstance(keyStoreType);
                 if (callbackHandler != null && StringUtils.isNotEmpty(keystorePath)) {
                     try {
@@ -1034,7 +1034,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             if ("jabber:client".equals(parser.getNamespace(null))) {
                                 streamId = parser.getAttributeValue("", "id");
                                 String reportedServerDomain = parser.getAttributeValue("", "from");
-                                assert(config.getXMPPServiceDomain().equals(reportedServerDomain));
+                                assert (config.getXMPPServiceDomain().equals(reportedServerDomain));
                             }
                             break;
                         case "error":

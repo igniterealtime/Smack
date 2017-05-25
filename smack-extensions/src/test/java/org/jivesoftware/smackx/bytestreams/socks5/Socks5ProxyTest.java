@@ -148,7 +148,7 @@ public class Socks5ProxyTest {
         proxy.addLocalAddress("same");
 
         int sameCount = 0;
-        for(String localAddress : proxy.getLocalAddresses()) {
+        for (String localAddress : proxy.getLocalAddresses()) {
             if ("same".equals(localAddress)) {
                 sameCount++;
             }

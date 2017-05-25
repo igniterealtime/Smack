@@ -225,7 +225,7 @@ public class AgentRoster {
 
             while (it.hasNext()) {
                 p = userPresences.get(it.next());
-                if (presence == null){
+                if (presence == null) {
                     presence = p;
                 }
                 else {
@@ -276,13 +276,13 @@ public class AgentRoster {
         for (int i = 0; i < listeners.length; i++) {
             switch (eventType) {
                 case EVENT_AGENT_ADDED:
-                    listeners[i].agentAdded((String)eventObject);
+                    listeners[i].agentAdded((String) eventObject);
                     break;
                 case EVENT_AGENT_REMOVED:
-                    listeners[i].agentRemoved((String)eventObject);
+                    listeners[i].agentRemoved((String) eventObject);
                     break;
                 case EVENT_PRESENCE_CHANGED:
-                    listeners[i].presenceChanged((Presence)eventObject);
+                    listeners[i].presenceChanged((Presence) eventObject);
                     break;
             }
         }
@@ -295,7 +295,7 @@ public class AgentRoster {
     private class PresencePacketListener implements StanzaListener {
         @Override
         public void processStanza(Stanza packet) {
-            Presence presence = (Presence)packet;
+            Presence presence = (Presence) packet;
             EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
             if (from == null) {
                 // TODO Check if we need to ignore these presences or this is a server bug?
@@ -308,7 +308,7 @@ public class AgentRoster {
             // for a particular user a map with the presence packets saved for each resource.
             if (presence.getType() == Presence.Type.available) {
                 // Ignore the presence packet unless it has an agent status extension.
-                AgentStatus agentStatus = (AgentStatus)presence.getExtension(
+                AgentStatus agentStatus = (AgentStatus) presence.getExtension(
                         AgentStatus.ELEMENT_NAME, AgentStatus.NAMESPACE);
                 if (agentStatus == null) {
                     return;
@@ -373,7 +373,7 @@ public class AgentRoster {
         @Override
         public void processStanza(Stanza packet) {
             if (packet instanceof AgentStatusRequest) {
-                AgentStatusRequest statusRequest = (AgentStatusRequest)packet;
+                AgentStatusRequest statusRequest = (AgentStatusRequest) packet;
                 for (Iterator<AgentStatusRequest.Item> i = statusRequest.getAgents().iterator(); i.hasNext();) {
                     AgentStatusRequest.Item item = i.next();
                     String agentJID = item.getJID();

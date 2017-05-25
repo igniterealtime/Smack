@@ -214,7 +214,7 @@ public class PacketParserUtils {
     public static Message parseMessage(XmlPullParser parser)
                     throws Exception {
         ParserUtils.assertAtStartTag(parser);
-        assert(parser.getName().equals(Message.ELEMENT));
+        assert (parser.getName().equals(Message.ELEMENT));
 
         final int initialDepth = parser.getDepth();
         Message message = new Message();
@@ -247,7 +247,7 @@ public class PacketParserUtils {
             case XmlPullParser.START_TAG:
                 String elementName = parser.getName();
                 String namespace = parser.getNamespace();
-                switch(elementName) {
+                switch (elementName) {
                 case "subject":
                     String xmlLangSubject = getLanguageAttribute(parser);
                     if (xmlLangSubject == null) {
@@ -385,7 +385,7 @@ public class PacketParserUtils {
      */
     public static CharSequence parseContent(XmlPullParser parser)
                     throws XmlPullParserException, IOException {
-        assert(parser.getEventType() == XmlPullParser.START_TAG);
+        assert (parser.getEventType() == XmlPullParser.START_TAG);
         if (parser.isEmptyElementTag()) {
             return "";
         }
@@ -546,7 +546,7 @@ public class PacketParserUtils {
             case XmlPullParser.START_TAG:
                 String elementName = parser.getName();
                 String namespace = parser.getNamespace();
-                switch(elementName) {
+                switch (elementName) {
                 case "status":
                     presence.setStatus(parser.nextText());
                     break;
@@ -620,7 +620,7 @@ public class PacketParserUtils {
             case XmlPullParser.START_TAG:
                 String elementName = parser.getName();
                 String namespace = parser.getNamespace();
-                switch(elementName) {
+                switch (elementName) {
                 case "error":
                     error = PacketParserUtils.parseError(parser);
                     break;
@@ -775,7 +775,7 @@ public class PacketParserUtils {
                     descriptiveTexts = parseDescriptiveTexts(parser, descriptiveTexts);
                 }
                 else {
-                    assert(condition == null);
+                    assert (condition == null);
                     condition = parser.getName();
                 }
                 break;
@@ -945,7 +945,7 @@ public class PacketParserUtils {
                 }
             }
         }
-        assert(parser.getEventType() == XmlPullParser.END_TAG);
+        assert (parser.getEventType() == XmlPullParser.END_TAG);
         return new StartTls(required);
     }
 
@@ -954,7 +954,7 @@ public class PacketParserUtils {
         final int initialDepth = parser.getDepth();
         boolean optional = false;
         if (!parser.isEmptyElementTag()) {
-        outerloop: while(true) {
+        outerloop: while (true) {
             int event = parser.next();
             switch (event) {
             case XmlPullParser.START_TAG:
@@ -1022,7 +1022,7 @@ public class PacketParserUtils {
     }
 
     public static void addExtensionElement(Stanza packet, XmlPullParser parser, String elementName,
-                    String namespace) throws Exception{
+                    String namespace) throws Exception {
         ExtensionElement packetExtension = parseExtensionElement(elementName, namespace, parser);
         packet.addExtension(packetExtension);
     }

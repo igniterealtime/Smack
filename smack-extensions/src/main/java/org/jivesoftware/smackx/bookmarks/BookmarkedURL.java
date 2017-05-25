@@ -86,10 +86,10 @@ public class BookmarkedURL implements SharedBookmark {
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof BookmarkedURL)) {
+        if (!(obj instanceof BookmarkedURL)) {
             return false;
         }
-        BookmarkedURL url = (BookmarkedURL)obj;
+        BookmarkedURL url = (BookmarkedURL) obj;
         return url.getURL().equalsIgnoreCase(URL);
     }
 

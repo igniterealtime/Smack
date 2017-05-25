@@ -172,16 +172,16 @@ public class UserSearch extends SimpleIQ {
                 FormField field = new FormField(name);
 
                 // Handle hard coded values.
-                if(name.equals("first")){
+                if (name.equals("first")) {
                     field.setLabel("First Name");
                 }
-                else if(name.equals("last")){
+                else if (name.equals("last")) {
                     field.setLabel("Last Name");
                 }
-                else if(name.equals("email")){
+                else if (name.equals("email")) {
                     field.setLabel("Email Address");
                 }
-                else if(name.equals("nick")){
+                else if (name.equals("nick")) {
                     field.setLabel("Nickname");
                 }
 

@@ -107,7 +107,7 @@ public final class QueueDetails implements ExtensionElement {
         buf.append('<').append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\">");
 
         synchronized (users) {
-            for (Iterator<QueueUser> i=users.iterator(); i.hasNext(); ) {
+            for (Iterator<QueueUser> i = users.iterator(); i.hasNext(); ) {
                 QueueUser user = i.next();
                 int position = user.getQueuePosition();
                 int timeRemaining = user.getEstimatedRemainingTime();
@@ -183,7 +183,7 @@ public final class QueueDetails implements ExtensionElement {
                                 throw new SmackException(e);
                             }
                         }
-                        else if(parser.getName().equals("waitTime")) {
+                        else if (parser.getName().equals("waitTime")) {
                             Date wait;
                             try {
                                 wait = dateFormat.parse(parser.nextText());

@@ -23,7 +23,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 public abstract class Provider<E extends Element> {
 
-    public final E parse(XmlPullParser parser) throws Exception{
+    public final E parse(XmlPullParser parser) throws Exception {
         // XPP3 calling convention assert: Parser should be at start tag
         ParserUtils.assertAtStartTag(parser);
 

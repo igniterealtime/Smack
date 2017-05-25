@@ -340,7 +340,7 @@ public class AgentSession {
             StanzaCollector collector = this.connection.createStanzaCollectorAndSend(new AndFilter(
                             new StanzaTypeFilter(Presence.class), FromMatchesFilter.create(workgroupJID)), presence);
 
-            presence = (Presence)collector.nextResultOrThrow();
+            presence = (Presence) collector.nextResultOrThrow();
 
             // We can safely update this iv since we didn't get any error
             this.online = online;
@@ -757,7 +757,7 @@ public class AgentSession {
 
     private void handlePacket(Stanza packet) {
         if (packet instanceof Presence) {
-            Presence presence = (Presence)packet;
+            Presence presence = (Presence) packet;
 
             // The workgroup can send us a number of different presence packets. We
             // check for different packet extensions to see what type of presence
@@ -772,7 +772,7 @@ public class AgentSession {
             }
 
             // QueueOverview packet extensions contain basic information about a queue.
-            QueueOverview queueOverview = (QueueOverview)presence.getExtension(QueueOverview.ELEMENT_NAME, QueueOverview.NAMESPACE);
+            QueueOverview queueOverview = (QueueOverview) presence.getExtension(QueueOverview.ELEMENT_NAME, QueueOverview.NAMESPACE);
             if (queueOverview != null) {
                 if (queueOverview.getStatus() == null) {
                     queue.setStatus(WorkgroupQueue.Status.CLOSED);
@@ -791,7 +791,7 @@ public class AgentSession {
 
             // QueueDetails packet extensions contain information about the users in
             // a queue.
-            QueueDetails queueDetails = (QueueDetails)packet.getExtension(QueueDetails.ELEMENT_NAME, QueueDetails.NAMESPACE);
+            QueueDetails queueDetails = (QueueDetails) packet.getExtension(QueueDetails.ELEMENT_NAME, QueueDetails.NAMESPACE);
             if (queueDetails != null) {
                 queue.setUsers(queueDetails.getUsers());
                 // Fire event.
@@ -812,23 +812,23 @@ public class AgentSession {
             }
         }
         else if (packet instanceof Message) {
-            Message message = (Message)packet;
+            Message message = (Message) packet;
 
             // Check if a room invitation was sent and if the sender is the workgroup
-            MUCUser mucUser = (MUCUser)message.getExtension("x",
+            MUCUser mucUser = (MUCUser) message.getExtension("x",
                     "http://jabber.org/protocol/muc#user");
             MUCUser.Invite invite = mucUser != null ? mucUser.getInvite() : null;
             if (invite != null && workgroupJID.equals(invite.getFrom())) {
                 String sessionID = null;
                 Map<String, List<String>> metaData = null;
 
-                SessionID sessionIDExt = (SessionID)message.getExtension(SessionID.ELEMENT_NAME,
+                SessionID sessionIDExt = (SessionID) message.getExtension(SessionID.ELEMENT_NAME,
                         SessionID.NAMESPACE);
                 if (sessionIDExt != null) {
                     sessionID = sessionIDExt.getSessionID();
                 }
 
-                MetaData metaDataExt = (MetaData)message.getExtension(MetaData.ELEMENT_NAME,
+                MetaData metaDataExt = (MetaData) message.getExtension(MetaData.ELEMENT_NAME,
                         MetaData.NAMESPACE);
                 if (metaDataExt != null) {
                     metaData = metaDataExt.getMetaData();

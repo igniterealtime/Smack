@@ -57,9 +57,10 @@ public class ThreadedDummyConnection extends DummyConnection {
                 replyQ.add(replyPacket);
             }
             replyPacket.setStanzaId(packet.getStanzaId());
-            replyPacket.setFrom(packet.getTo());
             replyPacket.setTo(packet.getFrom());
-            replyPacket.setType(Type.result);
+            if (replyPacket.getType() == null) {
+                replyPacket.setType(Type.result);
+            }
 
             new ProcessQueue(replyQ).start();
         }

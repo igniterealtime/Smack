@@ -81,7 +81,7 @@ public class EventManger<K, R, E extends Exception> {
             return false;
         }
         reference.eventResult = eventResult;
-        synchronized(reference) {
+        synchronized (reference) {
             reference.notifyAll();
         }
         return true;

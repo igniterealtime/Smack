@@ -31,7 +31,7 @@ public class ProxyException extends IOException {
 
     public ProxyException(ProxyInfo.ProxyType type, String ex)
     {
-        super("Proxy Exception " + type.toString() + " : "+ex);
+        super("Proxy Exception " + type.toString() + " : " + ex);
     }
 
     public ProxyException(ProxyInfo.ProxyType type)

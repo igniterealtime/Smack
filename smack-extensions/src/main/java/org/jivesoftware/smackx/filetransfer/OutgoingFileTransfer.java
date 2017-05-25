@@ -162,7 +162,7 @@ public class OutgoingFileTransfer extends FileTransfer {
             final long fileSize, final String description,
             final NegotiationProgress progress)
     {
-        if(progress == null) {
+        if (progress == null) {
             throw new IllegalArgumentException("Callback progress cannot be null.");
         }
         checkTransferThread();
@@ -295,7 +295,7 @@ public class OutgoingFileTransfer extends FileTransfer {
      * @param fileSize the size of the file that is transferred
      * @param description a description for the file to transfer.
      */
-    public synchronized void sendStream(final InputStream in, final String fileName, final long fileSize, final String description){
+    public synchronized void sendStream(final InputStream in, final String fileName, final long fileSize, final String description) {
         checkTransferThread();
 
         setFileInfo(fileName, fileSize);
@@ -409,7 +409,7 @@ public class OutgoingFileTransfer extends FileTransfer {
     @Override
     protected boolean updateStatus(Status oldStatus, Status newStatus) {
         boolean isUpdated = super.updateStatus(oldStatus, newStatus);
-        if(callback != null && isUpdated) {
+        if (callback != null && isUpdated) {
             callback.statusUpdated(oldStatus, newStatus);
         }
         return isUpdated;
@@ -419,7 +419,7 @@ public class OutgoingFileTransfer extends FileTransfer {
     protected void setStatus(Status status) {
         Status oldStatus = getStatus();
         super.setStatus(status);
-        if(callback != null) {
+        if (callback != null) {
             callback.statusUpdated(oldStatus, status);
         }
     }
@@ -427,7 +427,7 @@ public class OutgoingFileTransfer extends FileTransfer {
     @Override
     protected void setException(Exception exception) {
         super.setException(exception);
-        if(callback != null) {
+        if (callback != null) {
             callback.errorEstablishingStream(exception);
         }
     }

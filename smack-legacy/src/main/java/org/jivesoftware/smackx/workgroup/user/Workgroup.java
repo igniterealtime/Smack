@@ -192,7 +192,7 @@ public class Workgroup {
         StanzaCollector collector = connection.createStanzaCollectorAndSend(new AndFilter(fromFilter,
                 typeFilter), directedPresence);
 
-        Presence response = (Presence)collector.nextResultOrThrow();
+        Presence response = (Presence) collector.nextResultOrThrow();
         return Presence.Type.available == response.getType();
     }
 
@@ -482,7 +482,7 @@ public class Workgroup {
     }
 
     private void fireQueueJoinedEvent() {
-        for (QueueListener listener : queueListeners){
+        for (QueueListener listener : queueListeners) {
             // CHECKSTYLE:OFF
     	    listener.joinedQueue();
             // CHECKSTYLE:ON
@@ -511,7 +511,7 @@ public class Workgroup {
 
     private void handlePacket(Stanza packet) {
         if (packet instanceof Message) {
-            Message msg = (Message)packet;
+            Message msg = (Message) packet;
             // Check to see if the user left the queue.
             ExtensionElement pe = msg.getExtension("depart-queue", "http://jabber.org/protocol/workgroup");
             ExtensionElement queueStatus = msg.getExtension("queue-status", "http://jabber.org/protocol/workgroup");
@@ -520,7 +520,7 @@ public class Workgroup {
                 fireQueueDepartedEvent();
             }
             else if (queueStatus != null) {
-                QueueUpdate queueUpdate = (QueueUpdate)queueStatus;
+                QueueUpdate queueUpdate = (QueueUpdate) queueStatus;
                 if (queueUpdate.getPosition() != -1) {
                     fireQueuePositionEvent(queueUpdate.getPosition());
                 }
@@ -531,7 +531,7 @@ public class Workgroup {
 
             else {
                 // Check if a room invitation was sent and if the sender is the workgroup
-                MUCUser mucUser = (MUCUser)msg.getExtension("x", "http://jabber.org/protocol/muc#user");
+                MUCUser mucUser = (MUCUser) msg.getExtension("x", "http://jabber.org/protocol/muc#user");
                 MUCUser.Invite invite = mucUser != null ? mucUser.getInvite() : null;
                 if (invite != null && workgroupJID.equals(invite.getFrom())) {
                     String sessionID = null;
@@ -540,13 +540,13 @@ public class Workgroup {
                     pe = msg.getExtension(SessionID.ELEMENT_NAME,
                             SessionID.NAMESPACE);
                     if (pe != null) {
-                        sessionID = ((SessionID)pe).getSessionID();
+                        sessionID = ((SessionID) pe).getSessionID();
                     }
 
                     pe = msg.getExtension(MetaData.ELEMENT_NAME,
                             MetaData.NAMESPACE);
                     if (pe != null) {
-                        metaData = ((MetaData)pe).getMetaData();
+                        metaData = ((MetaData) pe).getMetaData();
                     }
 
                     WorkgroupInvitation inv = new WorkgroupInvitation(connection.getUser(), msg.getFrom(),

@@ -48,11 +48,11 @@ public class SearchSettings extends SimpleIQ {
         this.kbLocation = kbLocation;
     }
 
-    public boolean hasKB(){
+    public boolean hasKB() {
         return StringUtils.isNotEmpty(getKbLocation());
     }
 
-    public boolean hasForums(){
+    public boolean hasForums() {
         return StringUtils.isNotEmpty(getForumsLocation());
     }
 

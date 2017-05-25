@@ -61,7 +61,7 @@ public enum PubSubNamespace
 
         if (index != -1)
         {
-            String suffix = ns.substring(ns.lastIndexOf('#')+1);
+            String suffix = ns.substring(ns.lastIndexOf('#') + 1);
             return valueOf(suffix.toUpperCase(Locale.US));
         }
         else

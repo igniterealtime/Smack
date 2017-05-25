@@ -228,7 +228,7 @@ public class AMPExtension implements ExtensionElement {
         String getName();
         String getValue();
 
-        static final String ATTRIBUTE_NAME="condition";
+        static final String ATTRIBUTE_NAME = "condition";
     }
 
     /**
@@ -265,7 +265,7 @@ public class AMPExtension implements ExtensionElement {
          */
         notify;
 
-        public static final String ATTRIBUTE_NAME="action";
+        public static final String ATTRIBUTE_NAME = "action";
     }
 
     /**

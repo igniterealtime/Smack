@@ -8,9 +8,9 @@ buildscript {
     }
     dependencies {
         classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
-		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.0'
+		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.2'
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
-		classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.9'
+		classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.10'
     }
 }
 apply plugin: 'org.kordamp.gradle.markdown'
@@ -20,6 +20,7 @@ apply from: 'version.gradle'
 allprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
+	apply plugin: 'idea'
 	apply plugin: 'jacoco'
 	apply plugin: 'net.ltgt.errorprone'
 
@@ -266,6 +267,7 @@ subprojects {
 
 	checkstyle {
 		configFile = new File(rootConfigDir, 'checkstyle.xml')
+		toolVersion = '7.7'
 	}
 	task sourcesJar(type: Jar, dependsOn: classes) {
 		classifier = 'sources'

@@ -29,7 +29,7 @@ public class ProviderManagerTest {
      * This test should be run in a clean (e.g. forked) VM
      */
     @Test
-    public void shouldInitializeSmackTest() throws Exception{
+    public void shouldInitializeSmackTest() throws Exception {
         ProviderManager.addIQProvider("foo", "bar", new TestIQProvider());
         assertTrue(SmackConfiguration.isSmackInitialized());
     }

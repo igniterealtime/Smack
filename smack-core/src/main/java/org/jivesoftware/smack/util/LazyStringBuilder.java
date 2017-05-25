@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,12 @@ package org.jivesoftware.smack.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LazyStringBuilder implements Appendable, CharSequence {
+
+    private static final Logger LOGGER = Logger.getLogger(LazyStringBuilder.class.getName());
 
     private final List<CharSequence> list;
 
@@ -69,8 +73,15 @@ public class LazyStringBuilder implements Appendable, CharSequence {
             return cache.length();
         }
         int length = 0;
-        for (CharSequence csq : list) {
-            length += csq.length();
+        try {
+            for (CharSequence csq : list) {
+                length += csq.length();
+            }
+        }
+        catch (NullPointerException npe) {
+            StringBuilder sb = safeToStringBuilder();
+            LOGGER.log(Level.SEVERE, "The following LazyStringBuilder threw a NullPointerException:  " + sb, npe);
+            throw npe;
         }
         return length;
     }
@@ -105,6 +116,14 @@ public class LazyStringBuilder implements Appendable, CharSequence {
             cache = sb.toString();
         }
         return cache;
+    }
+
+    public StringBuilder safeToStringBuilder() {
+        StringBuilder sb = new StringBuilder();
+        for (CharSequence csq : list) {
+            sb.append(csq);
+        }
+        return sb;
     }
 
     /**

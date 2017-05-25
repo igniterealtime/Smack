@@ -26,7 +26,7 @@ public class ResultSyncPoint<R, E extends Exception> {
     private E exception;
 
     public R waitForResult(long timeout) throws E, InterruptedException, TimeoutException {
-        synchronized(this) {
+        synchronized (this) {
             if (result != null) {
                 return result;
             }
@@ -51,14 +51,14 @@ public class ResultSyncPoint<R, E extends Exception> {
 
 
     public void signal(R result) {
-        synchronized(this) {
+        synchronized (this) {
             this.result = Objects.requireNonNull(result);
             notifyAll();
         }
     }
 
     public void signal(E exception) {
-        synchronized(this) {
+        synchronized (this) {
             this.exception = Objects.requireNonNull(exception);
             notifyAll();
         }

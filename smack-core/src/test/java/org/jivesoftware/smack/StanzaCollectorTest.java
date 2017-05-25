@@ -31,7 +31,7 @@ public class StanzaCollectorTest
     {
         TestStanzaCollector collector = new TestStanzaCollector(null, new OKEverything(), 5);
 
-        for (int i=0; i<6; i++)
+        for (int i = 0; i < 6; i++)
         {
             Stanza testPacket = new TestPacket(i);
             collector.processStanza(testPacket);
@@ -45,7 +45,7 @@ public class StanzaCollectorTest
         assertEquals("5", collector.pollResult().getStanzaId());
         assertNull(collector.pollResult());
 
-        for (int i=10; i<15; i++)
+        for (int i = 10; i < 15; i++)
         {
             Stanza testPacket = new TestPacket(i);
             collector.processStanza(testPacket);
@@ -156,7 +156,7 @@ public class StanzaCollectorTest
         consumer2.start();
         consumer3.start();
 
-        for(int i=0; i<insertCount; i++)
+        for (int i = 0; i < insertCount; i++)
         {
             collector.processStanza(new TestPacket(i));
         }

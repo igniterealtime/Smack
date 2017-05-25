@@ -717,7 +717,7 @@ public final class EntityCapsManager extends Manager {
             throw new AssertionError(e);
         }
         byte[] digest;
-        synchronized(md) {
+        synchronized (md) {
             digest = md.digest(bytes);
         }
         String version = Base64.encodeToString(digest);

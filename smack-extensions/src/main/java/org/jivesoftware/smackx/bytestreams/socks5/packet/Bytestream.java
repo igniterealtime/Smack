@@ -224,7 +224,7 @@ public class Bytestream extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        switch(getType()) {
+        switch (getType()) {
         case set:
             xml.optAttribute("sid", getSessionID());
             xml.optAttribute("mode", getMode());

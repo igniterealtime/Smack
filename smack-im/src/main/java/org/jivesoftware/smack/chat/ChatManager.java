@@ -164,7 +164,7 @@ public final class ChatManager extends Manager{
                     chat = getThreadChat(message.getThread());
                 }
 
-                if(chat == null) {
+                if (chat == null) {
                     chat = createChat(message);
                 }
                 // The chat could not be created, abort here
@@ -248,7 +248,7 @@ public final class ChatManager extends Manager{
             thread = nextID();
         }
         Chat chat = threadChats.get(thread);
-        if(chat != null) {
+        if (chat != null) {
             throw new IllegalArgumentException("ThreadID is already used");
         }
         chat = createChat(userJID, thread, true);
@@ -262,7 +262,7 @@ public final class ChatManager extends Manager{
         jidChats.put(userJID, chat);
         baseJidChats.put(userJID.asEntityBareJid(), chat);
 
-        for(ChatManagerListener listener : chatManagerListeners) {
+        for (ChatManagerListener listener : chatManagerListeners) {
             listener.chatCreated(chat, createdLocally);
         }
 
@@ -293,11 +293,11 @@ public final class ChatManager extends Manager{
 
         EntityJid userJID = from.asEntityJidIfPossible();
         if (userJID == null) {
-            LOGGER.warning("Message from JID without localpart: '" +message.toXML() + "'");
+            LOGGER.warning("Message from JID without localpart: '" + message.toXML() + "'");
             return null;
         }
         String threadID = message.getThread();
-        if(threadID == null) {
+        if (threadID == null) {
             threadID = nextID();
         }
 
@@ -372,9 +372,9 @@ public final class ChatManager extends Manager{
     }
 
     void sendMessage(Chat chat, Message message) throws NotConnectedException, InterruptedException {
-        for(Map.Entry<MessageListener, StanzaFilter> interceptor : interceptors.entrySet()) {
+        for (Map.Entry<MessageListener, StanzaFilter> interceptor : interceptors.entrySet()) {
             StanzaFilter filter = interceptor.getValue();
-            if(filter != null && filter.accept(message)) {
+            if (filter != null && filter.accept(message)) {
                 interceptor.getKey().processMessage(message);
             }
         }

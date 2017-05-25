@@ -245,7 +245,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
                     public void testFinished(TestResult testResult, TransportCandidate candidate) {
                         if (testResult.isReachable() && checkingCandidate.equals(candidate)) {
                             result.setResult(true);
-                            LOGGER.fine("Candidate reachable: " + candidate.getIp() + ":" + candidate.getPort() + " from " + getIp() +":" + getPort());
+                            LOGGER.fine("Candidate reachable: " + candidate.getIp() + ":" + candidate.getPort() + " from " + getIp() + ":" + getPort());
                         }
                     }
                 };

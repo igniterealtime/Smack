@@ -87,7 +87,7 @@ public class StreamInitiationProvider extends IQProvider<StreamInitiation> {
                     done = true;
                 } else if (elementName.equals("file")) {
                     long fileSize = 0;
-                    if(size != null && size.trim().length() !=0){
+                    if (size != null && size.trim().length() != 0) {
                         try {
                             fileSize = Long.parseLong(size);
                         }

@@ -126,7 +126,7 @@ public class Chat {
      * @param listener a stanza(/packet) listener.
      */
     public void addMessageListener(ChatMessageListener listener) {
-        if(listener == null) {
+        if (listener == null) {
             return;
         }
         // TODO these references should be weak.
@@ -202,7 +202,7 @@ public class Chat {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Chat
-                && threadID.equals(((Chat)obj).getThreadID())
-                && participant.equals(((Chat)obj).getParticipant());
+                && threadID.equals(((Chat) obj).getThreadID())
+                && participant.equals(((Chat) obj).getParticipant());
     }
 }

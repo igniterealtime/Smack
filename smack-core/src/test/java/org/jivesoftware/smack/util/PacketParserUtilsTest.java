@@ -664,7 +664,7 @@ public class PacketParserUtilsTest {
      * 
      * @throws Exception
      */
-    @Test(expected=XmlPullParserException.class)
+    @Test(expected = XmlPullParserException.class)
     public void invalidMessageBodyContainingTagTest() throws Exception {
         String control = XMLBuilder.create("message")
             .a("from", "romeo@montague.lit/orchard")
@@ -701,7 +701,7 @@ public class PacketParserUtilsTest {
         try {
             PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
             fail("Exception should be thrown");
-        } catch(XmlPullParserException e) {
+        } catch (XmlPullParserException e) {
             assertTrue(e.getMessage().contains("end tag name </span>"));
         }
 
@@ -710,7 +710,7 @@ public class PacketParserUtilsTest {
         try {
             PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
             fail("Exception should be thrown");
-        } catch(XmlPullParserException e) {
+        } catch (XmlPullParserException e) {
             assertTrue(e.getMessage().contains("end tag name </body>"));
         }
 
@@ -719,7 +719,7 @@ public class PacketParserUtilsTest {
         try {
             PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
             fail("Exception should be thrown");
-        } catch(XmlPullParserException e) {
+        } catch (XmlPullParserException e) {
             assertTrue(e.getMessage().contains("end tag name </message>"));
         }
 

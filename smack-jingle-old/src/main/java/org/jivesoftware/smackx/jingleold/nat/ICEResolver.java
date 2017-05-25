@@ -132,7 +132,7 @@ public class ICEResolver extends TransportResolver {
                     Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces();
                     short i = 0;
                     NetworkInterface nic = NetworkInterface.getByInetAddress(candidate.getAddress().getInetAddress());
-                    while(nics.hasMoreElements()) {
+                    while (nics.hasMoreElements()) {
                         NetworkInterface checkNIC = nics.nextElement();
                         if (checkNIC.equals(nic)) {
                             nicNum = i;

@@ -34,13 +34,13 @@ public class FileTooLargeErrorProvider extends ExtensionElementProvider<FileTooL
         final String namespace = parser.getNamespace();
         Long maxFileSize = null;
 
-        outerloop: while(true) {
+        outerloop: while (true) {
             int event = parser.next();
 
             switch (event) {
                 case XmlPullParser.START_TAG:
                     String name = parser.getName();
-                    switch(name) {
+                    switch (name) {
                         case "max-file-size":
                             maxFileSize = Long.valueOf(parser.nextText());
                             break;

@@ -68,7 +68,7 @@ public final class SmackInitialization {
             } catch (IOException e) {
                 LOGGER.log(Level.WARNING, "IOException closing stream", e);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Could not determine Smack version", e);
             smackVersion = "unkown";
         }

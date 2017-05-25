@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +40,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.jivesoftware.smackx.pubsub.util.NodeUtils;
@@ -63,6 +62,8 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * @author Robin Collier
  */
 public final class PubSubManager extends Manager {
+
+    public static final String AUTO_CREATE_FEATURE = "http://jabber.org/protocol/pubsub#auto-create";
 
     private static final Logger LOGGER = Logger.getLogger(PubSubManager.class.getName());
     private static final Map<XMPPConnection, Map<BareJid, PubSubManager>> INSTANCES = new WeakHashMap<>();
@@ -267,10 +268,11 @@ public final class PubSubManager extends Manager {
      * @throws NotConnectedException
      * @throws InterruptedException
      * @throws XMPPErrorException
+     * @throws NotALeafNodeException in case the node already exists as collection node.
      * @since 4.2.1
      */
     public LeafNode getOrCreateLeafNode(final String id)
-                    throws NoResponseException, NotConnectedException, InterruptedException, XMPPErrorException {
+                    throws NoResponseException, NotConnectedException, InterruptedException, XMPPErrorException, NotALeafNodeException {
         try {
             return getNode(id);
         }
@@ -287,40 +289,113 @@ public final class PubSubManager extends Manager {
                     throw e2;
                 }
             }
+            if (e1.getXMPPError().getCondition() == Condition.service_unavailable) {
+                // This could be caused by Prosody bug #805 (see https://prosody.im/issues/issue/805). Prosody does not
+                // answer to disco#info requests on the node ID, which makes it undecidable if a node is a leaf or
+                // collection node.
+                LOGGER.warning("The PubSub service " + pubSubService
+                        + " threw an DiscoInfoNodeAssertionError, trying workaround for Prosody bug #805 (https://prosody.im/issues/issue/805)");
+                return getOrCreateLeafNodeProsodyWorkaround(id);
+            }
             throw e1;
-        }
-        catch (PubSubAssertionError.DiscoInfoNodeAssertionError e) {
-            // This could be caused by Prosody bug #805 (see https://prosody.im/issues/issue/805). Prosody does not
-            // answer to disco#info requests on the node ID, which makes it undecidable if a node is a leaf or
-            // collection node.
-            LOGGER.warning("The PubSub service " + pubSubService
-                            + " threw an DiscoInfoNodeAssertionError, trying workaround for Prosody bug #805 (https://prosody.im/issues/issue/805)");
-            return getOrCreateLeafNodeProsodyWorkaround(id);
         }
     }
 
+    /**
+     * Try to get a leaf node with the given node ID.
+     *
+     * @param id the node ID.
+     * @return the requested leaf node.
+     * @throws NotALeafNodeException in case the node exists but is a collection node.
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws XMPPErrorException
+     * @since 4.2.1
+     */
+    public LeafNode getLeafNode(String id) throws NotALeafNodeException, NoResponseException, NotConnectedException,
+                    InterruptedException, XMPPErrorException {
+        Node node;
+        try {
+            node = getNode(id);
+        }
+        catch (XMPPErrorException e) {
+            if (e.getXMPPError().getCondition() == Condition.service_unavailable) {
+                // This could be caused by Prosody bug #805 (see https://prosody.im/issues/issue/805). Prosody does not
+                // answer to disco#info requests on the node ID, which makes it undecidable if a node is a leaf or
+                // collection node.
+                return getLeafNodeProsodyWorkaround(id);
+            }
+            throw e;
+        }
+
+        if (node instanceof LeafNode) {
+            return (LeafNode) node;
+        }
+
+        throw new PubSubException.NotALeafNodeException(id, pubSubService);
+    }
+
+    private LeafNode getLeafNodeProsodyWorkaround(final String id) throws NoResponseException, NotConnectedException,
+                    InterruptedException, NotALeafNodeException, XMPPErrorException {
+        LeafNode leafNode = new LeafNode(this, id);
+        try {
+            // Try to ensure that this is not a collection node by asking for one item form the node.
+            leafNode.getItems(1);
+        } catch (XMPPErrorException e) {
+            Condition condition = e.getXMPPError().getCondition();
+            if (condition == Condition.feature_not_implemented) {
+                // XEP-0060 § 6.5.9.5: Item retrieval not supported, e.g. because node is a collection node
+                throw new PubSubException.NotALeafNodeException(id, pubSubService);
+            }
+
+            throw e;
+        }
+
+        nodeMap.put(id, leafNode);
+
+        return leafNode;
+    }
+
     private LeafNode getOrCreateLeafNodeProsodyWorkaround(final String id)
-                    throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException {
+                    throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException, NotALeafNodeException {
         try {
             return createNode(id);
         }
         catch (XMPPErrorException e1) {
             if (e1.getXMPPError().getCondition() == Condition.conflict) {
-                Constructor<?> constructor = LeafNode.class.getDeclaredConstructors()[0];
-                constructor.setAccessible(true);
-                LeafNode res;
-                try {
-                    res = (LeafNode) constructor.newInstance(this, id);
-                }
-                catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                                | InvocationTargetException e2) {
-                    throw new AssertionError(e2);
-                }
-                // TODO: How to verify that this is actually a leafe node and not a conflict with a collection node?
-                return res;
+                return getLeafNodeProsodyWorkaround(id);
             }
             throw e1;
         }
+    }
+
+    /**
+     * Try to publish an item and, if the node with the given ID does not exists, auto-create the node.
+     * <p>
+     * Not every PubSub service supports automatic node creation. You can discover if this service supports it by using
+     * {@link #supportsAutomaticNodeCreation()}.
+     * </p>
+     *
+     * @param id The unique id of the node.
+     * @param item The item to publish.
+     * @return the LeafNode on which the item was published.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.2.1
+     */
+    public <I extends Item> LeafNode tryToPublishAndPossibleAutoCreate(String id, I item)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        LeafNode leafNode = new LeafNode(this, id);
+        leafNode.publish(item);
+
+        // If LeafNode.publish() did not throw then we have successfully published an item and possible auto-created
+        // (XEP-0163 § 3., XEP-0060 § 7.1.4) the node. So we can put the node into the nodeMap.
+        nodeMap.put(id, leafNode);
+
+        return leafNode;
     }
 
     /**
@@ -438,6 +513,23 @@ public final class PubSubManager extends Manager {
     {
         ServiceDiscoveryManager mgr = ServiceDiscoveryManager.getInstanceFor(connection());
         return mgr.discoverInfo(pubSubService);
+    }
+
+    /**
+     * Check if the PubSub service supports automatic node creation.
+     *
+     * @return true if the PubSub service supports automatic node creation.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.2.1
+     * @see <a href="https://xmpp.org/extensions/xep-0060.html#publisher-publish-autocreate">XEP-0060 § 7.1.4 Automatic Node Creation</a>
+     */
+    public boolean supportsAutomaticNodeCreation()
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
+        return sdm.supportsFeature(pubSubService, AUTO_CREATE_FEATURE);
     }
 
     /**

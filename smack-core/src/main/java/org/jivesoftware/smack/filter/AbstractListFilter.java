@@ -45,7 +45,7 @@ public abstract class AbstractListFilter implements StanzaFilter {
      */
     protected AbstractListFilter(StanzaFilter... filters) {
         Objects.requireNonNull(filters, "Parameter must not be null.");
-        for(StanzaFilter filter : filters) {
+        for (StanzaFilter filter : filters) {
             Objects.requireNonNull(filter, "Parameter must not be null.");
         }
         this.filters = new ArrayList<StanzaFilter>(Arrays.asList(filters));

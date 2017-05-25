@@ -163,7 +163,7 @@ public class Socks5ByteStreamManagerTest {
         catch (FeatureNotSupportedException e) {
             assertTrue(e.getFeature().equals("SOCKS5 Bytestream"));
             assertTrue(e.getJid().equals(targetJID));
-        } catch(Exception e) {
+        } catch (Exception e) {
             fail(e.getMessage());
         }
 

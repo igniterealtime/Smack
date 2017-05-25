@@ -29,7 +29,7 @@ public class FilterToStringTest {
         andFilter.addFilter(new ThreadFilter("42"));
         andFilter.addFilter(MessageWithBodiesFilter.INSTANCE);
 
-        final String res =andFilter.toString();
+        final String res = andFilter.toString();
         assertEquals("AndFilter: (StanzaIdFilter: id=foo, ThreadFilter: thread=42, MessageWithBodiesFilter)", res);
     }
 }

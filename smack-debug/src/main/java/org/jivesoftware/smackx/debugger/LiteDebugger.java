@@ -289,8 +289,8 @@ public class LiteDebugger implements SmackDebugger {
      */
     public void rootWindowClosing(WindowEvent evt) {
         connection.removeAsyncStanzaListener(listener);
-        ((ObservableReader)reader).removeReaderListener(readerListener);
-        ((ObservableWriter)writer).removeWriterListener(writerListener);
+        ((ObservableReader) reader).removeReaderListener(readerListener);
+        ((ObservableWriter) writer).removeWriterListener(writerListener);
     }
 
     /**
@@ -322,7 +322,7 @@ public class LiteDebugger implements SmackDebugger {
 
     @Override
     public Reader newConnectionReader(Reader newReader) {
-        ((ObservableReader)reader).removeReaderListener(readerListener);
+        ((ObservableReader) reader).removeReaderListener(readerListener);
         ObservableReader debugReader = new ObservableReader(newReader);
         debugReader.addReaderListener(readerListener);
         reader = debugReader;
@@ -331,7 +331,7 @@ public class LiteDebugger implements SmackDebugger {
 
     @Override
     public Writer newConnectionWriter(Writer newWriter) {
-        ((ObservableWriter)writer).removeWriterListener(writerListener);
+        ((ObservableWriter) writer).removeWriterListener(writerListener);
         ObservableWriter debugWriter = new ObservableWriter(newWriter);
         debugWriter.addWriterListener(writerListener);
         writer = debugWriter;

@@ -308,7 +308,7 @@ public abstract class FileTransfer {
      * Return the length of bytes written out to the stream.
      * @return the amount in bytes written out.
      */
-    public long getAmountWritten(){
+    public long getAmountWritten() {
         return amountWritten;
     }
 

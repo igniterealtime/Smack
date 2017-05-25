@@ -93,7 +93,7 @@ public class ForwardedTest {
         assertEquals("forwarded", parser.getName());
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected = Exception.class)
     public void forwardedEmptyTest() throws Exception {
         XmlPullParser parser;
         String control;

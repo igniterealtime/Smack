@@ -325,7 +325,7 @@ public class JingleTransport implements ExtensionElement {
             protected String getChildElements() {
                 StringBuilder buf = new StringBuilder();
 
-                if (transportCandidate != null) {// && transportCandidate instanceof ICECandidate) {
+                if (transportCandidate != null) { // && transportCandidate instanceof ICECandidate) {
                     ICECandidate tci = (ICECandidate) transportCandidate;
 
                     // We convert the transportElement candidate to XML here...

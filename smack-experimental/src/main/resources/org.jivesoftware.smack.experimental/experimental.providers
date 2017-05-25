@@ -233,6 +233,28 @@
       <className>org.jivesoftware.smackx.chat_markers.provider.AcknowledgedProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0334: Message Processing Hints -->
+    <extensionProvider>
+      <elementName>no-copy</elementName>
+      <namespace>urn:xmpp:hints</namespace>
+      <className>org.jivesoftware.smackx.hints.provider.NoCopyHintProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+      <elementName>no-permanent-store</elementName>
+      <namespace>urn:xmpp:hints</namespace>
+      <className>org.jivesoftware.smackx.hints.provider.NoPermanentStoreHintProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+      <elementName>no-store</elementName>
+      <namespace>urn:xmpp:hints</namespace>
+      <className>org.jivesoftware.smackx.hints.provider.NoStoreHintProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+      <elementName>store</elementName>
+      <namespace>urn:xmpp:hints</namespace>
+      <className>org.jivesoftware.smackx.hints.provider.StoreHintProvider</className>
+    </extensionProvider>
+g
     <!-- XEP-0363: HTTP File Upload -->
     <iqProvider>
       <elementName>slot</elementName>
@@ -253,6 +275,13 @@
       <elementName>file-too-large</elementName>
       <namespace>urn:xmpp:http:upload</namespace>
       <className>org.jivesoftware.smackx.httpfileupload.provider.FileTooLargeErrorProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0380: Explicit Message Encryption -->
+    <extensionProvider>
+      <elementName>encryption</elementName>
+      <namespace>urn:xmpp:eme:0</namespace>
+      <className>org.jivesoftware.smackx.eme.provider.ExplicitMessageEncryptionProvider</className>
     </extensionProvider>
 
 </smackProviders>

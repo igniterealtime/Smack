@@ -123,7 +123,7 @@ public abstract class JingleContentDescription implements ExtensionElement {
             JinglePayloadType jpt = jinglePtsIter.next();
             if (jpt instanceof JinglePayloadType.Audio) {
                 JinglePayloadType.Audio jpta = (JinglePayloadType.Audio) jpt;
-                result.add((PayloadType.Audio)jpta.getPayloadType());
+                result.add((PayloadType.Audio) jpta.getPayloadType());
             }
         }
 

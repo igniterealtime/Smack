@@ -34,6 +34,7 @@ import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
+import org.jivesoftware.smack.util.Objects;
 
 /**
  * Represents the configuration of Smack. The configuration is used for:
@@ -173,7 +174,7 @@ public final class SmackConfiguration {
      * @param mech the SASL mechanism to be added
      */
     public static void addSaslMech(String mech) {
-        if(!defaultMechs.contains(mech)) {
+        if (!defaultMechs.contains(mech)) {
             defaultMechs.add(mech);
         }
     }
@@ -184,7 +185,7 @@ public final class SmackConfiguration {
      * @param mechs the Collection of SASL mechanisms to be added
      */
     public static void addSaslMechs(Collection<String> mechs) {
-        for(String mech : mechs) {
+        for (String mech : mechs) {
             addSaslMech(mech);
         }
     }
@@ -370,4 +371,20 @@ public final class SmackConfiguration {
         return defaultHostnameVerififer;
     }
 
+    enum UnknownIqRequestReplyMode {
+        doNotReply,
+        replyFeatureNotImplemented,
+        replyServiceUnavailable,
+    }
+
+    // TODO Change to replyFeatureNotImplemented in Smack 4.3
+    private static UnknownIqRequestReplyMode unknownIqRequestReplyMode = UnknownIqRequestReplyMode.replyServiceUnavailable;
+
+    public static UnknownIqRequestReplyMode getUnknownIqRequestReplyMode() {
+        return unknownIqRequestReplyMode;
+    }
+
+    public static void setUnknownIqRequestReplyMode(UnknownIqRequestReplyMode unknownIqRequestReplyMode) {
+        SmackConfiguration.unknownIqRequestReplyMode = Objects.requireNonNull(unknownIqRequestReplyMode, "Must set mode");
+    }
 }

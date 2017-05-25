@@ -41,6 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
+import org.jivesoftware.smack.SmackConfiguration.UnknownIqRequestReplyMode;
 import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
 import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -626,7 +627,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             hostAddresses = DNSUtil.resolveXMPPServiceDomain(config.getXMPPServiceDomain().toString(), failedAddresses, config.getDnssecMode());
         }
         // Either the populated host addresses are not empty *or* there must be at least one failed address.
-        assert(!hostAddresses.isEmpty() || !failedAddresses.isEmpty());
+        assert (!hostAddresses.isEmpty() || !failedAddresses.isEmpty());
         return failedAddresses;
     }
 
@@ -665,7 +666,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
         Objects.requireNonNull(stanza, "Stanza must not be null");
-        assert(stanza instanceof Message || stanza instanceof Presence || stanza instanceof IQ);
+        assert (stanza instanceof Message || stanza instanceof Presence || stanza instanceof IQ);
 
         throwNotConnectedExceptionIfAppropriate();
         switch (fromMode) {
@@ -894,7 +895,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         continue;
                     }
                 }
-            }});
+            }
+        });
     }
 
     @Override
@@ -991,20 +993,31 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         replyTimeout = timeout;
     }
 
-    private static boolean replyToUnknownIqDefault = true;
-
     /**
      * Set the default value used to determine if new connection will reply to unknown IQ requests. The pre-configured
      * default is 'true'.
      *
      * @param replyToUnkownIqDefault
      * @see #setReplyToUnknownIq(boolean)
+     * @deprecated Use {@link SmackConfiguration#setUnknownIqRequestReplyMode(org.jivesoftware.smack.SmackConfiguration.UnknownIqRequestReplyMode)} instead.
      */
+    @Deprecated
+    // TODO Remove in Smack 4.3
     public static void setReplyToUnknownIqDefault(boolean replyToUnkownIqDefault) {
-        AbstractXMPPConnection.replyToUnknownIqDefault = replyToUnkownIqDefault;
+        SmackConfiguration.UnknownIqRequestReplyMode mode;
+        if (replyToUnkownIqDefault) {
+            mode = SmackConfiguration.UnknownIqRequestReplyMode.replyServiceUnavailable;
+        } else {
+            mode = SmackConfiguration.UnknownIqRequestReplyMode.doNotReply;
+        }
+        SmackConfiguration.setUnknownIqRequestReplyMode(mode);
     }
 
-    private boolean replyToUnkownIq = replyToUnknownIqDefault;
+    private SmackConfiguration.UnknownIqRequestReplyMode unknownIqRequestReplyMode = SmackConfiguration.getUnknownIqRequestReplyMode();
+
+    public void setUnknownIqRequestReplyMode(UnknownIqRequestReplyMode unknownIqRequestReplyMode) {
+        this.unknownIqRequestReplyMode = Objects.requireNonNull(unknownIqRequestReplyMode, "Mode must not be null");
+    }
 
     /**
      * Set if Smack will automatically send
@@ -1012,9 +1025,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * registered {@link IQRequestHandler} is received.
      *
      * @param replyToUnknownIq
+     * @deprecated use {@link #setUnknownIqRequestReplyMode(UnknownIqRequestReplyMode)} instead.
      */
+    @Deprecated
+    // TODO Remove in Smack 4.3
     public void setReplyToUnknownIq(boolean replyToUnknownIq) {
-        this.replyToUnkownIq = replyToUnknownIq;
+        SmackConfiguration.UnknownIqRequestReplyMode mode;
+        if (replyToUnknownIq) {
+            mode = SmackConfiguration.UnknownIqRequestReplyMode.replyServiceUnavailable;
+        } else {
+            mode = SmackConfiguration.UnknownIqRequestReplyMode.doNotReply;
+        }
+        unknownIqRequestReplyMode = mode;
     }
 
     protected void parseAndProcessStanza(XmlPullParser parser) throws Exception {
@@ -1048,7 +1070,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws InterruptedException
      */
     protected void processStanza(final Stanza stanza) throws InterruptedException {
-        assert(stanza != null);
+        assert (stanza != null);
         lastStanzaReceived = System.currentTimeMillis();
         // Deliver the incoming packet to listeners.
         executorService.executeBlocking(new Runnable() {
@@ -1089,13 +1111,24 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     throw new IllegalStateException("Should only encounter IQ type 'get' or 'set'");
                 }
                 if (iqRequestHandler == null) {
-                    if (!replyToUnkownIq) {
+                    XMPPError.Condition replyCondition;
+                    switch (unknownIqRequestReplyMode) {
+                    case doNotReply:
                         return;
+                    case replyFeatureNotImplemented:
+                        replyCondition = XMPPError.Condition.feature_not_implemented;
+                        break;
+                    case replyServiceUnavailable:
+                        replyCondition = XMPPError.Condition.service_unavailable;
+                        break;
+                    default:
+                        throw new AssertionError();
                     }
+
                     // If the IQ stanza is of type "get" or "set" with no registered IQ request handler, then answer an
                     // IQ of type 'error' with condition 'service-unavailable'.
                     ErrorIQ errorIQ = IQ.createErrorResponse(iq, XMPPError.getBuilder((
-                                    XMPPError.Condition.service_unavailable)));
+                                    replyCondition)));
                     try {
                         sendStanza(errorIQ);
                     }
@@ -1170,7 +1203,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
 
         // Loop through all collectors and notify the appropriate ones.
-        for (StanzaCollector collector: collectors) {
+        for (StanzaCollector collector : collectors) {
             collector.processStanza(packet);
         }
 
@@ -1192,7 +1225,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 for (StanzaListener listener : listenersToNotify) {
                     try {
                         listener.processStanza(packet);
-                    } catch(NotConnectedException e) {
+                    } catch (NotConnectedException e) {
                         LOGGER.log(Level.WARNING, "Got not connected exception, aborting", e);
                         break;
                     } catch (Exception e) {

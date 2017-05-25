@@ -232,7 +232,7 @@ public abstract class ScramMechanism extends SASLMechanism {
         }
 
         String cbName = getChannelBindingName();
-        assert(StringUtils.isNotEmpty(cbName));
+        assert (StringUtils.isNotEmpty(cbName));
 
         return cbName + ',' + authzidPortion + ",";
     }

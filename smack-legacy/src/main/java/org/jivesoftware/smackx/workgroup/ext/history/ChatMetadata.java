@@ -58,11 +58,11 @@ public class ChatMetadata extends IQ {
 
     private Map<String, List<String>> map = new HashMap<String, List<String>>();
 
-    public void setMetadata(Map<String, List<String>> metadata){
+    public void setMetadata(Map<String, List<String>> metadata) {
         this.map = metadata;
     }
 
-    public Map<String, List<String>> getMetadata(){
+    public Map<String, List<String>> getMetadata() {
         return map;
     }
 

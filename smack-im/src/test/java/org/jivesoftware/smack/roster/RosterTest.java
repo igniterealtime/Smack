@@ -227,10 +227,10 @@ public class RosterTest extends InitSmackIm {
                         contactName,
                         item.getName());
                 assertTrue("The updated contact doesn't belong to the requested groups ("
-                        + contactGroups[0] +")!",
+                        + contactGroups[0] + ")!",
                         item.getGroupNames().contains(contactGroups[0]));
                 assertTrue("The updated contact doesn't belong to the requested groups ("
-                        + contactGroups[1] +")!",
+                        + contactGroups[1] + ")!",
                         item.getGroupNames().contains(contactGroups[1]));
                 assertSame("The provided group number doesn't match the requested!",
                         contactGroups.length,
@@ -257,10 +257,10 @@ public class RosterTest extends InitSmackIm {
                 contactName,
                 addedEntry.getName());
         assertTrue("The updated contact doesn't belong to the requested groups ("
-                + contactGroups[0] +")!",
+                + contactGroups[0] + ")!",
                 roster.getGroup(contactGroups[0]).contains(addedEntry));
         assertTrue("The updated contact doesn't belong to the requested groups ("
-                + contactGroups[1] +")!",
+                + contactGroups[1] + ")!",
                 roster.getGroup(contactGroups[1]).contains(addedEntry));
         assertSame("The updated contact should be member of two groups!",
                 contactGroups.length,
@@ -399,7 +399,7 @@ public class RosterTest extends InitSmackIm {
      * 
      * @see <a href="http://www.igniterealtime.org/issues/browse/SMACK-294">SMACK-294</a>
      */
-    @Test(timeout=5000)
+    @Test(timeout = 5000)
     public void testAddEmptyGroupEntry() throws Throwable {
         // Constants for the new contact
         final BareJid contactJID = JidCreate.entityBareFrom("nurse@example.com");
@@ -516,9 +516,9 @@ public class RosterTest extends InitSmackIm {
      * @param roster the roster (or buddy list) which should be initialized.
      */
     public static void removeAllRosterEntries(DummyConnection connection, Roster roster) {
-        for(RosterEntry entry : roster.getEntries()) {
+        for (RosterEntry entry : roster.getEntries()) {
             // prepare the roster push packet
-            final RosterPacket rosterPush= new RosterPacket();
+            final RosterPacket rosterPush = new RosterPacket();
             rosterPush.setType(Type.set);
             rosterPush.setTo(connection.getUser());
 

@@ -537,7 +537,7 @@ public class SmackIntegrationTestFramework {
             throw new IllegalStateException();
         }
         if (StringUtils.isNullOrEmpty(accountUsername)) {
-            accountUsername = USERNAME_PREFIX + '-' + middlefix + '-' +testRunResult.testRunId;
+            accountUsername = USERNAME_PREFIX + '-' + middlefix + '-' + testRunResult.testRunId;
         }
         if (StringUtils.isNullOrEmpty(accountPassword)) {
             accountPassword = StringUtils.insecureRandomString(16);

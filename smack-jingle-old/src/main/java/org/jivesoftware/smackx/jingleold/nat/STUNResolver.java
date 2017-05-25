@@ -294,7 +294,7 @@ public class STUNResolver extends TransportResolver {
     @Override
     public void initialize() throws XMPPException {
         LOGGER.fine("Initialized");
-        if (!isResolving()&&!isResolved()) {
+        if (!isResolving() && !isResolved()) {
             // Get the best STUN server available
             if (currentServer.isNull()) {
                 loadSTUNServers();

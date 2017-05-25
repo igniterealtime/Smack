@@ -82,7 +82,7 @@ public class BoBData {
 
     private void setContentBinaryIfRequired() {
         if (contentBinary == null) {
-            assert(StringUtils.isNotEmpty(contentString));
+            assert (StringUtils.isNotEmpty(contentString));
             contentBinary = Base64.decode(contentString);
         }
     }

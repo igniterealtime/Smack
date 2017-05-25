@@ -50,7 +50,7 @@ public class SlotProvider extends IQProvider<Slot> {
             switch (event) {
                 case XmlPullParser.START_TAG:
                     String name = parser.getName();
-                    switch(name) {
+                    switch (name) {
                         case "put":
                             putUrl = new URL(parser.nextText());
                             break;

@@ -135,7 +135,7 @@ public class ProviderFileLoader implements ProviderLoader {
             }
             while (eventType != XmlPullParser.END_DOCUMENT);
         }
-        catch (Exception e){
+        catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Unknown error occurred while parsing provider file", e);
             exceptions.add(e);
         }

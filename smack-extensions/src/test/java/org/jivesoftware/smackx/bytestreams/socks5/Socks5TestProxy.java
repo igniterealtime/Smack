@@ -176,7 +176,7 @@ public final class Socks5TestProxy {
      */
     @SuppressWarnings("WaitNotInLoop")
     public Socket getSocket(String digest) {
-        synchronized(this) {
+        synchronized (this) {
             if (!startupComplete) {
                 try {
                     wait(5000);

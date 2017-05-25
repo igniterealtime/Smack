@@ -140,7 +140,7 @@ public final class ServiceDiscoveryManager extends Manager {
                     response.addItems(nodeInformationProvider.getNodeItems());
                     // Add packet extensions
                     response.addExtensions(nodeInformationProvider.getNodePacketExtensions());
-                } else if(discoverItems.getNode() != null) {
+                } else if (discoverItems.getNode() != null) {
                     // Return <item-not-found/> error since client doesn't contain
                     // the specified node
                     response.setType(IQ.Type.error);
@@ -761,7 +761,7 @@ public final class ServiceDiscoveryManager extends Manager {
         try {
             // Get the disco items and send the disco packet to each server item
             items = discoverItems(serviceName);
-        } catch(XMPPErrorException e) {
+        } catch (XMPPErrorException e) {
             LOGGER.log(Level.WARNING, "Could not discover items about service", e);
             return serviceDiscoInfo;
         }

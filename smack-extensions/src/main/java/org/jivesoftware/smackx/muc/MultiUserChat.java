@@ -41,7 +41,9 @@ import org.jivesoftware.smack.chat.ChatMessageListener;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.filter.MessageWithSubjectFilter;
+import org.jivesoftware.smack.filter.MessageWithThreadFilter;
 import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
@@ -170,10 +172,6 @@ public class MultiUserChat {
             public void processStanza(Stanza packet) {
                 Message msg = (Message) packet;
                 EntityFullJid from = msg.getFrom().asEntityFullJidIfPossible();
-                if (from == null) {
-                    LOGGER.warning("Message subject not changed by a full JID: " + msg.getFrom());
-                    return;
-                }
                 // Update the room subject
                 subject = msg.getSubject();
                 // Fire event for subject updated listeners
@@ -322,8 +320,17 @@ public class MultiUserChat {
         connection.addSyncStanzaListener(messageListener, fromRoomGroupchatFilter);
         connection.addSyncStanzaListener(presenceListener, new AndFilter(fromRoomFilter,
                         StanzaTypeFilter.PRESENCE));
-        connection.addSyncStanzaListener(subjectListener, new AndFilter(fromRoomFilter,
-                        MessageWithSubjectFilter.INSTANCE, new NotFilter(MessageTypeFilter.ERROR)));
+        // @formatter:off
+        connection.addSyncStanzaListener(subjectListener,
+                        new AndFilter(fromRoomFilter,
+                                      MessageWithSubjectFilter.INSTANCE,
+                                      new NotFilter(MessageTypeFilter.ERROR),
+                                      // According to XEP-0045 § 8.1 "A message with a <subject/> and a <body/> or a <subject/> and a <thread/> is a
+                                      // legitimate message, but it SHALL NOT be interpreted as a subject change."
+                                      new NotFilter(MessageWithBodiesFilter.INSTANCE),
+                                      new NotFilter(MessageWithThreadFilter.INSTANCE))
+                        );
+        // @formatter:on
         connection.addSyncStanzaListener(declinesListener, DECLINE_FILTER);
         connection.addPacketInterceptor(presenceInterceptor, new AndFilter(ToMatchesFilter.create(room),
                         StanzaTypeFilter.PRESENCE));

@@ -79,7 +79,7 @@ public class SynchronizationPoint<E extends Exception> {
                 if (request instanceof Stanza) {
                     connection.sendStanza((Stanza) request);
                 }
-                else if (request instanceof Nonza){
+                else if (request instanceof Nonza) {
                     connection.sendNonza((Nonza) request);
                 } else {
                     throw new IllegalStateException("Unsupported element type");

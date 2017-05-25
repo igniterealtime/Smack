@@ -80,7 +80,7 @@ public class OfflineSettings extends SimpleIQ {
         return (StringUtils.isNotEmpty(getRedirectURL()));
     }
 
-    public boolean isConfigured(){
+    public boolean isConfigured() {
         return StringUtils.isNotEmpty(getEmailAddress()) &&
                StringUtils.isNotEmpty(getSubject()) &&
                StringUtils.isNotEmpty(getOfflineText());

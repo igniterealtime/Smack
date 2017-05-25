@@ -36,7 +36,7 @@ public class SubscriptionsProvider extends EmbeddedExtensionProvider<Subscriptio
     @Override
     protected SubscriptionsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
     {
-        return new SubscriptionsExtension(attributeMap.get("node"), (List<Subscription>)content);
+        return new SubscriptionsExtension(attributeMap.get("node"), (List<Subscription>) content);
     }
 
 }

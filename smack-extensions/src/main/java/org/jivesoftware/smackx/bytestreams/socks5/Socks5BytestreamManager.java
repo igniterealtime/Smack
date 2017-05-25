@@ -415,7 +415,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      */
     @Override
     public Socks5BytestreamSession establishSession(Jid targetJID, String sessionID)
-                    throws IOException, InterruptedException, NoResponseException, SmackException, XMPPException{
+                    throws IOException, InterruptedException, NoResponseException, SmackException, XMPPException {
         XMPPConnection connection = connection();
         XMPPErrorException discoveryException = null;
         // check if target supports SOCKS5 Bytestream
@@ -556,7 +556,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
             try {
                 proxyInfo = serviceDiscoveryManager.discoverInfo(item.getEntityID());
             }
-            catch (NoResponseException|XMPPErrorException e) {
+            catch (NoResponseException | XMPPErrorException e) {
                 // blacklist errornous server
                 proxyBlacklist.add(item.getEntityID());
                 continue;

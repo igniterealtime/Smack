@@ -102,7 +102,7 @@ public class FormTest extends AbstractSmackIntegrationTest {
             chat.sendMessage(msg);
 
             // Get the message with the form to fill out
-            Message msg2 = (Message)collector2.nextResult();
+            Message msg2 = (Message) collector2.nextResult();
             assertNotNull("Messge not found", msg2);
             // Retrieve the form to fill out
             Form formToRespond = Form.getFormFrom(msg2);
