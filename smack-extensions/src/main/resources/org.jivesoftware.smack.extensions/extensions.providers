@@ -544,4 +544,35 @@
         <className>org.jivesoftware.smackx.bob.provider.BoBIQProvider</className>
     </iqProvider>
 
+    <!-- XEP-0166: Jingle -->
+    <iqProvider>
+      <elementName>jingle</elementName>
+      <namespace>urn:xmpp:jingle:1</namespace>
+      <className>org.jivesoftware.smackx.jingle.provider.JingleProvider</className>
+    </iqProvider>
+
+    <extensionProvider>
+      <elementName>out-of-order</elementName>
+      <namespace>urn:xmpp:jingle:errors:1</namespace>
+      <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+      <elementName>unknown-session</elementName>
+      <namespace>urn:xmpp:jingle:errors:1</namespace>
+      <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+      <elementName>unsupported-content</elementName>
+      <namespace>urn:xmpp:jingle:errors:1</namespace>
+      <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
+    </extensionProvider>
+
+    <extensionProvider>
+      <elementName>unsupported-transports</elementName>
+      <namespace>urn:xmpp:jingle:errors:1</namespace>
+      <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
+    </extensionProvider>
+
 </smackProviders>

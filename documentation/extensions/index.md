@@ -56,6 +56,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Stream Initation                            | [XEP-0095](http://xmpp.org/extensions/xep-0095.html) | Initiating a data stream between any two XMPP entities. |
 | [SI File Transfer](filetransfer.md)       | [XEP-0096](http://xmpp.org/extensions/xep-0096.html) | Transfer files between two users over XMPP. |
 | [Entity Capabilities](caps.md)            | [XEP-0115](http://xmpp.org/extensions/xep-0115.html) | Broadcasting and dynamic discovery of entity capabilities. |
+| [Jingle](jingle.html)                       | [XEP-0116](http://xmpp.org/extensions/xep-0166.html) | Initiate and manage sessions between two XMPP entities. |
 | Data Forms Validation                       | [XEP-0122](http://xmpp.org/extensions/xep-0122.html) | Enables an application to specify additional validation guidelines . |
 | Service Administration                      | [XEP-0133](http://xmpp.org/extensions/xep-0133.html) | Recommended best practices for service-level administration of servers and components using Ad-Hoc Commands. |
 | Stream Compression                          | [XEP-0138](http://xmpp.org/extensions/xep-0138.html) | Support for optional compression of the XMPP stream.
