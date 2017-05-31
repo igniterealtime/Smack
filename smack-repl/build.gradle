@@ -16,6 +16,8 @@ dependencies {
     testCompile project(path: ":smack-core", configuration: "archives")
 }
 
-task printClasspath(dependsOn: assemble) << {
-    println sourceSets.main.runtimeClasspath.asPath
+task printClasspath(dependsOn: assemble) {
+    doLast {
+        println sourceSets.main.runtimeClasspath.asPath
+    }
 }
