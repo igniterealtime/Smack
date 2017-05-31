@@ -552,6 +552,8 @@ public class PacketParserUtils {
                     break;
                 case "priority":
                     int priority = Integer.parseInt(parser.nextText());
+                    if ( priority < -128 || priority > 127 )
+                        priority = 0;
                     presence.setPriority(priority);
                     break;
                 case "show":
