@@ -23,4 +23,7 @@ include 'smack-core',
 		'smack-android-extensions',
 		'smack-java7',
 		'smack-integration-test',
+		'smack-omemo',
+		'smack-omemo-signal',
+		'smack-omemo-signal-integration-test',
 		'smack-repl'

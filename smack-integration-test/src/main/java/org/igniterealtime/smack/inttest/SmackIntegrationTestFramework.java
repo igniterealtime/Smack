@@ -78,7 +78,7 @@ public class SmackIntegrationTestFramework {
 
     public static void main(String[] args) throws IOException, KeyManagementException,
                     NoSuchAlgorithmException, SmackException, XMPPException, InterruptedException {
-        Configuration config = Configuration.newConfiguration();
+        Configuration config = Configuration.newConfiguration(args);
 
         SmackIntegrationTestFramework sinttest = new SmackIntegrationTestFramework(config);
         TestRunResult testRunResult = sinttest.run();

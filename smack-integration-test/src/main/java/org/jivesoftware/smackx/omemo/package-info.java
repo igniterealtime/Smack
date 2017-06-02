@@ -1,0 +1,1 @@
+../../../../../../../../smack-omemo/src/main/java/org/jivesoftware/smackx/omemo/package-info.java
