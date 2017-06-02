@@ -42,6 +42,7 @@ public class SmackOmemoSignalIntegrationTestFramework {
                     InvalidAlgorithmParameterException, IllegalBlockSizeException,
                     BadPaddingException, NoSuchAlgorithmException, NoSuchProviderException, SmackException,
                     InterruptedException, CorruptedOmemoKeyException, KeyManagementException, IOException, XMPPException {
+        SignalOmemoService.acknowledgeLicense();
         SignalOmemoService.setup();
 
         final String[] smackOmemoPackages = new String[] { "org.jivesoftware.smackx.omemo" };

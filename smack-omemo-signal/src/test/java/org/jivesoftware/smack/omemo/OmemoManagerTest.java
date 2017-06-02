@@ -55,6 +55,7 @@ public class OmemoManagerTest extends SmackTestSuite {
 
     @Test
     public void instantiationTest() throws CorruptedOmemoKeyException, NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException, InterruptedException, XMPPException.XMPPErrorException, NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchProviderException, IllegalBlockSizeException, SmackException {
+        SignalOmemoService.acknowledgeLicense();
         SignalOmemoService.setup();
 
         DummyConnection dummy = new DummyConnection();
