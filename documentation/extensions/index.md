@@ -92,9 +92,10 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | JSON Containers                             | [XEP-0335](http://xmpp.org/extensions/xep-0335.html) | Encapsulation of JSON data within XMPP Stanzas. |
 | [Internet of Things - Discovery](iot.md)    | [XEP-0347](http://xmpp.org/extensions/xep-0347.html) | Describes how Things can be installed and discovered by their owners. |
 | Client State Indication                     | [XEP-0352](http://xmpp.org/extensions/xep-0352.html) | A way for the client to indicate its active/inactive state. |
-| [Push Notifications](pushnotifications.md)  | [XEP-0357](http://xmpp.org/extensions/xep-0357.html) |  Defines a way to manage push notifications from an XMPP Server. |
+| [Push Notifications](pushnotifications.md)  | [XEP-0357](http://xmpp.org/extensions/xep-0357.html) | Defines a way to manage push notifications from an XMPP Server. |
 | HTTP File Upload                            | [XEP-0363](http://xmpp.org/extensions/xep-0363.html) | Protocol to request permissions to upload a file to an HTTP server and get a shareable URL. |
 | [Multi-User Chat Light](muclight.md)        | [XEP-xxxx](http://mongooseim.readthedocs.io/en/latest/open-extensions/xeps/xep-muc-light.html) | Multi-User Chats for mobile XMPP applications and specific enviroment. |
+| [OMEMO End Encryption (omemo.md)            | [XEP-0384](http://xmpp.org/extensions/xep-0384.html) | Encrypt messages using OMEMO encryption (currently only with smack-omemo-signal -> GPLv3). |
 | Google GCM JSON payload                     | n/a                                                  | Semantically the same as XEP-0335: JSON Containers |
 
 

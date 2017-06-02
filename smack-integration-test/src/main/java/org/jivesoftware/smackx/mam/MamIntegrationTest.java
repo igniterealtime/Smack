@@ -31,6 +31,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.MamManager.MamQueryResult;
+import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jxmpp.jid.EntityBareJid;
 
 public class MamIntegrationTest extends AbstractSmackIntegrationTest {
@@ -54,6 +55,9 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
                     NotLoggedInException {
         EntityBareJid userOne = conOne.getUser().asEntityBareJid();
         EntityBareJid userTwo = conTwo.getUser().asEntityBareJid();
+
+        //Make sure MAM is archiving messages
+        mamManagerConTwo.updateArchivingPreferences(null, null, MamPrefsIQ.DefaultBehavior.always);
 
         Message message = new Message(userTwo);
         String messageId = message.setStanzaId();

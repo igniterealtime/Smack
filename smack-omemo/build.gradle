@@ -1,0 +1,14 @@
+// Although the osgi plugin is already applied by the root project's
+// subprojects closure, we need to re-apply it here so that the
+// manifest is a OsgiManifest. Possible caused by
+// evaluationDependsOnChildren in the root project.
+apply plugin: 'osgi'
+
+dependencies {
+	compile project(":smack-im")
+	compile project(":smack-extensions")
+	compile project(":smack-experimental")
+	compile "org.bouncycastle:bcprov-jdk15on:1.57"
+
+	testCompile project(path: ":smack-core", configuration: "testRuntime")
+}
