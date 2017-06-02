@@ -18,6 +18,7 @@ core/build/
 debug/build/
 experimental/build/
 extensions/build/
+out/
 
 bin/
 core/bin
