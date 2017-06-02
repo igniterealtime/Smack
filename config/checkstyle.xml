@@ -8,7 +8,7 @@
 	</module>
 	<module name="SuppressionCommentFilter"/>
 	<module name="Header">
-		<property name="headerFile" value="config/header.txt"/>
+		<property name="headerFile" value="config/${checkstyleLicenseHeader}.txt"/>
 		<property name="ignoreLines" value="3"/>
 		<property name="fileExtensions" value="java"/>
 	</module>

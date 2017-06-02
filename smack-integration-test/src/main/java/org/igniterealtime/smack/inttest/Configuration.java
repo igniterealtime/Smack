@@ -196,10 +196,14 @@ public final class Configuration {
             return addTestPackage(enabledTest.getPackage().getName());
         }
 
-        public Builder addTestPackage(String testPackage) {
+        private void ensureTestPackagesIsSet(int length) {
             if (testPackages == null) {
-                testPackages = new HashSet<>();
+                testPackages = new HashSet<>(length);
             }
+        }
+
+        public Builder addTestPackage(String testPackage) {
+            ensureTestPackagesIsSet(4);
             testPackages.add(testPackage);
             return this;
         }
@@ -260,13 +264,28 @@ public final class Configuration {
             return this;
         }
 
-        public Builder setTestPackages(String testPackagesString) {
+        public Builder addTestPackages(String testPackagesString) {
             if (testPackagesString != null) {
                 String[] testPackagesArray = testPackagesString.split(",");
-                testPackages = new HashSet<>(testPackagesArray.length);
+
+                ensureTestPackagesIsSet(testPackagesArray.length);
+
                 for (String s : testPackagesArray) {
                     testPackages.add(s.trim());
                 }
+            }
+            return this;
+        }
+
+        public Builder addTestPackages(String[] testPackagesString) {
+            if (testPackagesString == null) {
+                return this;
+            }
+
+            ensureTestPackagesIsSet(testPackagesString.length);
+
+            for (String testPackage : testPackagesString) {
+                testPackages.add(testPackage);
             }
             return this;
         }
@@ -280,7 +299,7 @@ public final class Configuration {
 
     private static final String SINTTEST = "sinttest.";
 
-    public static Configuration newConfiguration()
+    public static Configuration newConfiguration(String[] testPackages)
                     throws IOException, KeyManagementException, NoSuchAlgorithmException {
         Properties properties = new Properties();
 
@@ -330,7 +349,9 @@ public final class Configuration {
         builder.setDebug(properties.getProperty("debug"));
         builder.setEnabledTests(properties.getProperty("enabledTests"));
         builder.setDisabledTests(properties.getProperty("disabledTests"));
-        builder.setTestPackages(properties.getProperty("testPackages"));
+
+        builder.addTestPackages(properties.getProperty("testPackages"));
+        builder.addTestPackages(testPackages);
 
         return builder.build();
     }

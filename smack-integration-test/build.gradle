@@ -11,6 +11,7 @@ dependencies {
 	compile project(':smack-tcp')
 	compile project(':smack-extensions')
 	compile project(':smack-experimental')
+	compile project(':smack-omemo')
 	compile 'org.reflections:reflections:0.9.9-RC1'
 	compile 'eu.geekplace.javapinning:java-pinning-java7:1.1.0-alpha1'
 	compile "junit:junit:$junitVersion"

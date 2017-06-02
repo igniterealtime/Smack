@@ -20,5 +20,6 @@
         <className>org.jivesoftware.smack.android.AndroidSmackInitializer</className>
         <className>org.jivesoftware.smack.java7.Java7SmackInitializer</className>
         <className>org.jivesoftware.smack.im.SmackImInitializer</className>
+        <className>org.jivesoftware.smackx.omemo.OmemoInitializer</className>
     </optionalStartupClasses>
 </smack>

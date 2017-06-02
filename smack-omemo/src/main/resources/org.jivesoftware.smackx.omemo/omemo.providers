@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- Providers for OMEMO -->
+<smackProviders>
+    <extensionProvider>
+      <elementName>encrypted</elementName>
+      <namespace>eu.siacs.conversations.axolotl</namespace>
+      <className>org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+      <elementName>list</elementName>
+      <namespace>eu.siacs.conversations.axolotl</namespace>
+      <className>org.jivesoftware.smackx.omemo.provider.OmemoDeviceListVAxolotlProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+      <elementName>bundle</elementName>
+      <namespace>eu.siacs.conversations.axolotl</namespace>
+      <className>org.jivesoftware.smackx.omemo.provider.OmemoBundleVAxolotlProvider</className>
+    </extensionProvider>
+</smackProviders>
