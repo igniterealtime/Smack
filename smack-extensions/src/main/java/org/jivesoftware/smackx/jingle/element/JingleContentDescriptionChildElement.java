@@ -22,7 +22,7 @@ import org.jivesoftware.smack.packet.NamedElement;
  * An element found usually in 'description' elements.
  *
  */
-public abstract class JingleContentDescriptionPayloadType implements NamedElement {
+public abstract class JingleContentDescriptionChildElement implements NamedElement {
 
     public static final String ELEMENT = "payload-type";
 

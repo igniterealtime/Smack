@@ -39,7 +39,7 @@ public final class JingleError implements ExtensionElement {
     /**
      * Creates a new error with the specified code and errorName.
      *
-     * @param message a message describing the error.
+     * @param errorName a name describing the error.
      */
     private JingleError(final String errorName) {
         this.errorName = errorName;

@@ -21,6 +21,6 @@ import org.jivesoftware.smackx.jingle.element.Jingle;
 
 public interface JingleSessionHandler {
 
-    IQ handleRequest(Jingle jingle, String sessionId);
+    IQ handleJingleSessionRequest(Jingle jingle, String sessionId);
 
 }

@@ -96,7 +96,7 @@ public class JingleReason implements NamedElement {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
 
-        xml.emptyElement(reason);
+        xml.emptyElement(reason.asString);
 
         xml.closeElement(this);
         return xml;

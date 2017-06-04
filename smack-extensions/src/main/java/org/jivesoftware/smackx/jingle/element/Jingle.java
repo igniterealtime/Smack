@@ -78,6 +78,7 @@ public final class Jingle extends IQ {
         else {
             this.contents = Collections.emptyList();
         }
+        setType(Type.set);
     }
 
     /**
