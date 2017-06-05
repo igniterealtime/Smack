@@ -140,7 +140,7 @@ public final class JingleContent implements NamedElement {
 
     @Override
     public XmlStringBuilder toXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
+        XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute(CREATOR_ATTRIBUTE_NAME, creator);
         xml.optAttribute(DISPOSITION_ATTRIBUTE_NAME, disposition);
         xml.attribute(NAME_ATTRIBUTE_NAME, name);
