@@ -16,18 +16,18 @@
  */
 package org.jivesoftware.smackx.hashes;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_256;
+import static org.junit.Assert.assertArrayEquals;
+
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.hashes.provider.HashElementProvider;
 import org.junit.Test;
-
-import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_256;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static junit.framework.TestCase.assertEquals;
 
 /**
  * Test toXML and parse of HashElement and HashElementProvider.

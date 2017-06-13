@@ -16,24 +16,6 @@
  */
 package org.jivesoftware.smackx.hashes;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.hashes.element.HashElement;
-
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.WeakHashMap;
-
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.BLAKE2B160;
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.BLAKE2B256;
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.BLAKE2B384;
@@ -48,6 +30,24 @@ import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_224;
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_256;
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_384;
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_512;
+
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Security;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.WeakHashMap;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.hashes.element.HashElement;
 
 /**
  * Manager that can be used to determine support for hash functions.
