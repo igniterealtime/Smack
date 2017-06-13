@@ -28,11 +28,11 @@ public final class JingleError implements ExtensionElement {
 
     public static final JingleError OUT_OF_ORDER = new JingleError("out-of-order");
 
+    public static final JingleError TIE_BREAK = new JingleError("tie-break");
+
     public static final JingleError UNKNOWN_SESSION = new JingleError("unknown-session");
 
-    public static final JingleError UNSUPPORTED_CONTENT = new JingleError("unsupported-content");
-
-    public static final JingleError UNSUPPORTED_TRANSPORTS = new JingleError("unsupported-transports");
+    public static final JingleError UNSUPPORTED_INFO = new JingleError("unsupported-info");
 
     private final String errorName;
 
@@ -71,10 +71,10 @@ public final class JingleError implements ExtensionElement {
             return OUT_OF_ORDER;
         case "unknown-session":
             return UNKNOWN_SESSION;
-        case "unsupported-content":
-            return UNSUPPORTED_CONTENT;
-        case "unsupported-transports":
-            return UNSUPPORTED_TRANSPORTS;
+        case "tie-break":
+            return TIE_BREAK;
+        case "unsupported-info":
+            return UNSUPPORTED_INFO;
         default:
             throw new IllegalArgumentException();
         }

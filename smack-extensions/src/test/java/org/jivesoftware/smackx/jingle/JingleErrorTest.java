@@ -24,7 +24,7 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
 
 /**
- * Test the JingleError class. TODO: Uncomment missing tests once implemented.
+ * Test the JingleError class.
  */
 public class JingleErrorTest extends SmackTestSuite {
 
@@ -32,12 +32,12 @@ public class JingleErrorTest extends SmackTestSuite {
     public void parserTest() {
         assertEquals("<out-of-order xmlns='urn:xmpp:jingle:errors:1'/>",
                 JingleError.fromString("out-of-order").toXML().toString());
-        //assertEquals("<tie-break xmlns='urn:xmpp:jingle:errors:1'/>",
-        //        JingleError.fromString("tie-break").toXML().toString());
+        assertEquals("<tie-break xmlns='urn:xmpp:jingle:errors:1'/>",
+                JingleError.fromString("tie-break").toXML().toString());
         assertEquals("<unknown-session xmlns='urn:xmpp:jingle:errors:1'/>",
                 JingleError.fromString("unknown-session").toXML().toString());
-        //assertEquals("<unsupported-info xmlns='urn:xmpp:jingle:errors:1'/>",
-        //          JingleError.fromString("unsupported-info").toXML().toString());
+        assertEquals("<unsupported-info xmlns='urn:xmpp:jingle:errors:1'/>",
+                  JingleError.fromString("unsupported-info").toXML().toString());
         assertEquals("unknown-session", JingleError.fromString("unknown-session").getMessage());
 
         try {
