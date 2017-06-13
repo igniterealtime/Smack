@@ -16,12 +16,12 @@
  */
 package org.jivesoftware.smackx.jingle;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.fail;
+
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smackx.jingle.element.JingleError;
 import org.junit.Test;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.fail;
 
 /**
  * Test the JingleError class.
