@@ -23,11 +23,11 @@ import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.hashes.provider.HashElementProvider;
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertEquals;
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_256;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static junit.framework.TestCase.assertEquals;
 
 /**
  * Test toXML and parse of HashElement and HashElementProvider.
@@ -37,7 +37,7 @@ public class HashElementTest extends SmackTestSuite {
     @Test
     public void stanzaTest() throws Exception {
         String message = "Hello World!";
-        HashElement element = HashManager.calculateHashElement(SHA_256, message.getBytes(StringUtils.UTF8));
+        HashElement element = HashManager.calculateHashElement(SHA_256, HashManager.utf8(message));
         String expected = "<hash xmlns='urn:xmpp:hashes:2' algo='sha-256'>f4OxZX/x/FO5LcGBSKHWXfwtSx+j1ncoSt3SABJtkGk=</hash>";
         assertEquals(expected, element.toXML().toString());
 
@@ -45,7 +45,7 @@ public class HashElementTest extends SmackTestSuite {
         assertEquals(expected, parsed.toXML().toString());
         assertEquals(SHA_256, parsed.getAlgorithm());
         assertEquals("f4OxZX/x/FO5LcGBSKHWXfwtSx+j1ncoSt3SABJtkGk=", parsed.getHashB64());
-        assertArrayEquals(HashManager.sha_256(message.getBytes(StringUtils.UTF8)), parsed.getHash());
+        assertArrayEquals(HashManager.sha_256(message), parsed.getHash());
 
         assertFalse(parsed.equals(expected));
         assertFalse(parsed.equals(null));
