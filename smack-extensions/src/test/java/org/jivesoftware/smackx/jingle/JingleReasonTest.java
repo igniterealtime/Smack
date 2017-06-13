@@ -31,38 +31,54 @@ public class JingleReasonTest extends SmackTestSuite {
     @Test
     public void parserTest() {
         assertEquals("<reason><success/></reason>",
-                new JingleReason(JingleReason.Reason.success).toXML().toString());
+                JingleReason.Success.toXML().toString());
         assertEquals("<reason><busy/></reason>",
-                new JingleReason(JingleReason.Reason.busy).toXML().toString());
+                JingleReason.Busy.toXML().toString());
         assertEquals("<reason><cancel/></reason>",
-                new JingleReason(JingleReason.Reason.cancel).toXML().toString());
+                JingleReason.Cancel.toXML().toString());
         assertEquals("<reason><connectivity-error/></reason>",
-                new JingleReason(JingleReason.Reason.connectivity_error).toXML().toString());
+                JingleReason.ConnectivityError.toXML().toString());
         assertEquals("<reason><decline/></reason>",
-                new JingleReason(JingleReason.Reason.decline).toXML().toString());
+                JingleReason.Decline.toXML().toString());
         assertEquals("<reason><expired/></reason>",
-                new JingleReason(JingleReason.Reason.expired).toXML().toString());
+                JingleReason.Expired.toXML().toString());
         assertEquals("<reason><unsupported-transports/></reason>",
-                new JingleReason(JingleReason.Reason.unsupported_transports).toXML().toString());
+                JingleReason.UnsupportedTransports.toXML().toString());
         assertEquals("<reason><failed-transport/></reason>",
-                new JingleReason(JingleReason.Reason.failed_transport).toXML().toString());
+                JingleReason.FailedTransport.toXML().toString());
         assertEquals("<reason><general-error/></reason>",
-                new JingleReason(JingleReason.Reason.general_error).toXML().toString());
+                JingleReason.GeneralError.toXML().toString());
         assertEquals("<reason><gone/></reason>",
-                new JingleReason(JingleReason.Reason.gone).toXML().toString());
+                JingleReason.Gone.toXML().toString());
         assertEquals("<reason><media-error/></reason>",
-                new JingleReason(JingleReason.Reason.media_error).toXML().toString());
+                JingleReason.MediaError.toXML().toString());
         assertEquals("<reason><security-error/></reason>",
-                new JingleReason(JingleReason.Reason.security_error).toXML().toString());
+                JingleReason.SecurityError.toXML().toString());
         assertEquals("<reason><unsupported-applications/></reason>",
-                new JingleReason(JingleReason.Reason.unsupported_applications).toXML().toString());
+                JingleReason.UnsupportedApplications.toXML().toString());
         assertEquals("<reason><timeout/></reason>",
-                new JingleReason(JingleReason.Reason.timeout).toXML().toString());
+                JingleReason.Timeout.toXML().toString());
         assertEquals("<reason><failed-application/></reason>",
-                new JingleReason(JingleReason.Reason.failed_application).toXML().toString());
+                JingleReason.FailedApplication.toXML().toString());
         assertEquals("<reason><incompatible-parameters/></reason>",
-                new JingleReason(JingleReason.Reason.incompatible_parameters).toXML().toString());
-        assertEquals(JingleReason.Reason.alternative_session, JingleReason.Reason.fromString("alternative-session"));
+                JingleReason.IncompatibleParameters.toXML().toString());
+        assertEquals("<reason><alternative-session><sid>1234</sid></alternative-session></reason>",
+                JingleReason.AlternativeSession("1234").toXML().toString());
+        // Alternative sessionID must not be empty
+        try {
+            JingleReason.AlternativeSession("");
+            fail();
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        // Alternative sessionID must not be null
+        try {
+            JingleReason.AlternativeSession(null);
+            fail();
+        } catch (NullPointerException e) {
+            // Expected
+        }
+
         try {
             JingleReason.Reason nonExistent = JingleReason.Reason.fromString("illegal-reason");
             fail();
