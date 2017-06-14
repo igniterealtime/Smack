@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.muc;
 
 import org.jivesoftware.smack.SmackException;
+
 import org.jxmpp.jid.DomainBareJid;
 
 public abstract class MultiUserChatException extends SmackException {

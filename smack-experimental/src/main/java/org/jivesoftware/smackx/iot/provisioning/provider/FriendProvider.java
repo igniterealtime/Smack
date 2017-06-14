@@ -18,7 +18,9 @@ package org.jivesoftware.smackx.iot.provisioning.provider;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.iot.provisioning.element.Friend;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.xmlpull.v1.XmlPullParser;

@@ -16,12 +16,12 @@
  */
 package org.jivesoftware.smack.debugger;
 
-import org.jivesoftware.smack.XMPPConnection;
-
 import java.io.Reader;
 import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jivesoftware.smack.XMPPConnection;
 
 /**
  * Very simple debugger that prints to the console (stdout) the sent and received stanzas. Use

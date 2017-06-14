@@ -18,7 +18,9 @@ package org.jivesoftware.smackx.blocking;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.blocking.element.BlockedErrorExtension;
+
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -25,6 +25,7 @@ import org.jivesoftware.smack.sm.packet.StreamManagement.Enabled;
 import org.jivesoftware.smack.sm.packet.StreamManagement.Failed;
 import org.jivesoftware.smack.sm.packet.StreamManagement.Resumed;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

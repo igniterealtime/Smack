@@ -26,9 +26,10 @@ import java.util.Map;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.util.StringUtils;
+
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.jxmpp.jid.EntityBareJid;
 
 public class DigestMd5SaslTest extends AbstractSaslTest {
 

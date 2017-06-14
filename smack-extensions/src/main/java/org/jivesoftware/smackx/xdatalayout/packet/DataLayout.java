@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.xdatalayout.packet;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**

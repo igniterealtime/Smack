@@ -17,16 +17,18 @@
 
 package org.jivesoftware.smackx.workgroup.agent;
 
-import org.jivesoftware.smackx.workgroup.packet.AgentInfo;
-import org.jivesoftware.smackx.workgroup.packet.AgentWorkgroups;
+import java.util.Collection;
+
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jxmpp.jid.Jid;
 
-import java.util.Collection;
+import org.jivesoftware.smackx.workgroup.packet.AgentInfo;
+import org.jivesoftware.smackx.workgroup.packet.AgentWorkgroups;
+
+import org.jxmpp.jid.Jid;
 
 /**
  * The <code>Agent</code> class is used to represent one agent in a Workgroup Queue.

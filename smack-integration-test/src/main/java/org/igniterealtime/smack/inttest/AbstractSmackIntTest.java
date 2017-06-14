@@ -26,9 +26,9 @@ import java.util.logging.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.StanzaFilter;

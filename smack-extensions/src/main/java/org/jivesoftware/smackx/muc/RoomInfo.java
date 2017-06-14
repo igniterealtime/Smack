@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 

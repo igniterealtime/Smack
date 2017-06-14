@@ -17,7 +17,9 @@
 package org.jivesoftware.smackx.eme.provider;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
+
 import org.xmlpull.v1.XmlPullParser;
 
 public class ExplicitMessageEncryptionProvider extends ExtensionElementProvider<ExplicitMessageEncryptionElement> {

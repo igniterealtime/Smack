@@ -16,16 +16,15 @@
  */
 package org.jivesoftware.smack.packet;
 
-import org.junit.Test;
-
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.xml.sax.SAXException;
-
 import java.io.IOException;
+
+import org.junit.Test;
+import org.xml.sax.SAXException;
 
 public class PresenceTest {
     @Test

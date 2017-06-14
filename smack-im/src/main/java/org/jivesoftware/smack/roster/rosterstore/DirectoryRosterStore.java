@@ -35,6 +35,7 @@ import org.jivesoftware.smack.roster.provider.RosterPacketProvider;
 import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.stringencoder.Base32;
+
 import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

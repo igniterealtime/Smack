@@ -17,7 +17,9 @@
 package org.jivesoftware.smackx.chat_markers.provider;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.ReceivedExtension;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

@@ -17,6 +17,11 @@
 
 package org.jivesoftware.smackx.iqprivate;
 
+import java.io.IOException;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -26,18 +31,15 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError.Condition;
 import org.jivesoftware.smack.provider.IQProvider;
+
 import org.jivesoftware.smackx.iqprivate.packet.DefaultPrivateData;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateDataIQ;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
+
 import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 /**
  * Manages private data, which is a mechanism to allow users to store arbitrary XML

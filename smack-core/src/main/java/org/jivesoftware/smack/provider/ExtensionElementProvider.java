@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smack.provider;
 
-
 import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**

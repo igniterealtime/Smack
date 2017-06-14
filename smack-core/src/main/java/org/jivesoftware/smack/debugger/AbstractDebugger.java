@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smack.debugger;
 
+import java.io.Reader;
+import java.io.Writer;
+
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
@@ -24,10 +27,8 @@ import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
 import org.jivesoftware.smack.util.WriterListener;
-import org.jxmpp.jid.EntityFullJid;
 
-import java.io.Reader;
-import java.io.Writer;
+import org.jxmpp.jid.EntityFullJid;
 
 public abstract class AbstractDebugger implements SmackDebugger {
 

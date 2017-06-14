@@ -20,8 +20,11 @@
  */
 package org.jivesoftware.smackx.omemo.signal;
 
+import java.io.File;
+
 import org.jivesoftware.smackx.omemo.FileBasedOmemoStore;
 import org.jivesoftware.smackx.omemo.util.OmemoKeyUtil;
+
 import org.whispersystems.libsignal.IdentityKey;
 import org.whispersystems.libsignal.IdentityKeyPair;
 import org.whispersystems.libsignal.SessionCipher;
@@ -31,8 +34,6 @@ import org.whispersystems.libsignal.state.PreKeyBundle;
 import org.whispersystems.libsignal.state.PreKeyRecord;
 import org.whispersystems.libsignal.state.SessionRecord;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
-
-import java.io.File;
 
 /**
  * Implementation of a FileBasedOmemoStore for the smack-omemo-signal module.

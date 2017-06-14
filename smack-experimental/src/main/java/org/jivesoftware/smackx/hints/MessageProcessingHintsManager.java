@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.hints.element.MessageProcessingHintType;
 import org.jivesoftware.smackx.hints.element.NoCopyHint;
 import org.jivesoftware.smackx.hints.element.NoPermanentStoreHint;

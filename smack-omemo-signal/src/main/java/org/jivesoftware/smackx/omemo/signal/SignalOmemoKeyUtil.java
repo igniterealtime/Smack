@@ -20,6 +20,10 @@
  */
 package org.jivesoftware.smackx.omemo.signal;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+
 import org.jivesoftware.smackx.omemo.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoStore;
@@ -28,6 +32,7 @@ import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.internal.OmemoSession;
 import org.jivesoftware.smackx.omemo.util.OmemoKeyUtil;
+
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.whispersystems.libsignal.IdentityKey;
@@ -42,10 +47,6 @@ import org.whispersystems.libsignal.state.PreKeyRecord;
 import org.whispersystems.libsignal.state.SessionRecord;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
 import org.whispersystems.libsignal.util.KeyHelper;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Concrete implementation of the KeyUtil for an implementation using the Signal library.

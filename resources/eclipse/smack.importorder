@@ -1,0 +1,8 @@
+#Organize Import Order
+#Wed Jun 14 16:42:40 CEST 2017
+5=
+4=org.jivesoftware.smackx
+3=org.jivesoftware.smack
+2=javax
+1=java
+0=\#

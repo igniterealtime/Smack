@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smackx.workgroup.agent;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -29,11 +28,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.StanzaCollector;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaCollector;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -45,9 +44,10 @@ import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.workgroup.MetaData;
@@ -75,6 +75,7 @@ import org.jivesoftware.smackx.workgroup.packet.Transcripts;
 import org.jivesoftware.smackx.workgroup.settings.GenericSettings;
 import org.jivesoftware.smackx.workgroup.settings.SearchSettings;
 import org.jivesoftware.smackx.xdata.Form;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;

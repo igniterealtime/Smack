@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Fieldref;
@@ -30,6 +31,7 @@ import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Reportedref;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Section;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Text;
 import org.jivesoftware.smackx.xdatalayout.provider.DataLayoutProvider;
+
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

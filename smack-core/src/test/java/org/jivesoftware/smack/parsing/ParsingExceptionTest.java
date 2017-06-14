@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smack.parsing;
 
-import static org.junit.Assert.assertThat;
 import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
+import static org.junit.Assert.assertThat;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.ExtensionElement;
@@ -25,6 +25,7 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

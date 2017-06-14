@@ -16,16 +16,18 @@
  */
 package org.jivesoftware.smackx.omemo.util;
 
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jivesoftware.smackx.omemo.OmemoStore;
-import org.jivesoftware.smackx.omemo.element.OmemoVAxolotlElement;
-import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
-import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
-import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
-import org.jivesoftware.smackx.omemo.internal.CiphertextTuple;
-import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
-import org.jivesoftware.smackx.omemo.internal.OmemoSession;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.CIPHERMODE;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYLENGTH;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.PROVIDER;
+
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -35,18 +37,18 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
-import java.util.ArrayList;
 
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.CIPHERMODE;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYLENGTH;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.PROVIDER;
+import org.jivesoftware.smack.util.StringUtils;
+
+import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.OmemoStore;
+import org.jivesoftware.smackx.omemo.element.OmemoVAxolotlElement;
+import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
+import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
+import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
+import org.jivesoftware.smackx.omemo.internal.CiphertextTuple;
+import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
+import org.jivesoftware.smackx.omemo.internal.OmemoSession;
 
 /**
  * Class used to build OMEMO messages.

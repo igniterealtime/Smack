@@ -16,12 +16,6 @@
  */
 package org.jivesoftware.smackx.omemo;
 
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
-import org.jivesoftware.smackx.omemo.internal.CachedDeviceList;
-import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
-import org.jxmpp.jid.BareJid;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -36,6 +30,14 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jivesoftware.smack.util.StringUtils;
+
+import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
+import org.jivesoftware.smackx.omemo.internal.CachedDeviceList;
+import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
+
+import org.jxmpp.jid.BareJid;
 
 /**
  * Like a rocket!

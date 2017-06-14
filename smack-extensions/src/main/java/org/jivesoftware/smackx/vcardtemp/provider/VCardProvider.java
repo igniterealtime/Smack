@@ -16,14 +16,16 @@
  */
 package org.jivesoftware.smackx.vcardtemp.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 
 /**
  * vCard provider.

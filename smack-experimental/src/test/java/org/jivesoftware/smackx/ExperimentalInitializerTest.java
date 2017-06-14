@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.jivesoftware.smack.experimental.ExperimentalInitializer;
+
 import org.junit.Test;
 
 public class ExperimentalInitializerTest {

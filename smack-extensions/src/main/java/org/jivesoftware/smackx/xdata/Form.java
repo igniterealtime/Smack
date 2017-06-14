@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**

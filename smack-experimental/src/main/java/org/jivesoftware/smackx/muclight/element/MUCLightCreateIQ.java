@@ -20,11 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.muclight.MUCLightAffiliation;
 import org.jivesoftware.smackx.muclight.MUCLightRoomConfiguration;
 import org.jivesoftware.smackx.muclight.MultiUserChatLight;
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.ConfigurationElement;
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.OccupantsElement;
+
 import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.Jid;
 

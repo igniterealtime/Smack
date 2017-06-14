@@ -16,13 +16,14 @@
  */
 package org.jivesoftware.smack.util.dns;
 
+import java.security.KeyManagementException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.X509TrustManager;
-import java.security.KeyManagementException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 
 /**
  * Implementations of this interface define a class that is capable of enabling DANE on a connection.

@@ -16,12 +16,12 @@
  */
 package org.jivesoftware.smackx.receipts;
 
+import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
 
 import java.util.Properties;
 
@@ -30,14 +30,15 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.test.util.WaitForPacketListener;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager.AutoReceiptMode;
+
+import com.jamesmurty.utils.XMLBuilder;
 import org.junit.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParser;
-
-import com.jamesmurty.utils.XMLBuilder;
 
 public class DeliveryReceiptTest extends InitExtensions {
 

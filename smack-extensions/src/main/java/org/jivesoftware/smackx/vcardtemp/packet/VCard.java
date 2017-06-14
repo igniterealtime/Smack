@@ -39,7 +39,9 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
+
 import org.jxmpp.jid.EntityBareJid;
 
 /**

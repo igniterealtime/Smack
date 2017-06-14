@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.omemo.listener;
 
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.omemo.internal.CipherAndAuthTag;
 import org.jivesoftware.smackx.omemo.internal.OmemoMessageInformation;
 

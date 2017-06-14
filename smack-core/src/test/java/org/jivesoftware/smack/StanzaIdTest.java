@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.TestIQ;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.junit.Test;
 
 public class StanzaIdTest {

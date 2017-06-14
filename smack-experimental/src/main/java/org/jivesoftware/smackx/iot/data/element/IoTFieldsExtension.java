@@ -23,6 +23,7 @@ import java.util.List;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 
 public class IoTFieldsExtension implements ExtensionElement {

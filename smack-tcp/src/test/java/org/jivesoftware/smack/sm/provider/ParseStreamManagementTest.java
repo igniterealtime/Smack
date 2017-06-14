@@ -18,24 +18,24 @@
 
 package org.jivesoftware.smack.sm.provider;
 
-import com.jamesmurty.utils.XMLBuilder;
-
-import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.sm.packet.StreamManagement;
-import org.jivesoftware.smack.util.PacketParserUtils;
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.Properties;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.Properties;
+
+import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.sm.packet.StreamManagement;
+import org.jivesoftware.smack.util.PacketParserUtils;
+
+import com.jamesmurty.utils.XMLBuilder;
+import org.junit.Test;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class ParseStreamManagementTest {
     private static final Properties outputProperties = initOutputProperties();

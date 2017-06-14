@@ -17,24 +17,26 @@
 
 package org.jivesoftware.smack;
 
+import static org.jivesoftware.smackx.jiveproperties.JivePropertiesManager.addProperty;
+import static org.jivesoftware.smackx.jiveproperties.JivePropertiesManager.getProperty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.jivesoftware.smackx.jiveproperties.JivePropertiesManager.addProperty;
-import static org.jivesoftware.smackx.jiveproperties.JivePropertiesManager.getProperty;
 
 import java.util.Date;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.chat.ChatManagerListener;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.jiveproperties.JivePropertiesManager;
+
+import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 /**

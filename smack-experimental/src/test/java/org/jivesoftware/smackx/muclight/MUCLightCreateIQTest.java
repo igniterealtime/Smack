@@ -21,11 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightCreateIQ;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
-
-import org.junit.Assert;
 
 public class MUCLightCreateIQTest {
 

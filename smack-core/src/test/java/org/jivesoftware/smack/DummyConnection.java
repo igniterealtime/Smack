@@ -25,9 +25,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Nonza;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
+
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.JidTestUtil;
 import org.jxmpp.jid.impl.JidCreate;

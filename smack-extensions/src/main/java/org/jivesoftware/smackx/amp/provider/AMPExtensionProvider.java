@@ -20,10 +20,12 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.amp.AMPDeliverCondition;
 import org.jivesoftware.smackx.amp.AMPExpireAtCondition;
 import org.jivesoftware.smackx.amp.AMPMatchResourceCondition;
 import org.jivesoftware.smackx.amp.packet.AMPExtension;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

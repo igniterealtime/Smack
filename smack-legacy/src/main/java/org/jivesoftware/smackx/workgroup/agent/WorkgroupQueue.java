@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.jivesoftware.smackx.workgroup.QueueUser;
+
 import org.jxmpp.jid.parts.Resourcepart;
 
 /**

@@ -16,17 +16,7 @@
  */
 package org.jivesoftware.smackx.omemo;
 
-import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.roster.RosterEntry;
-import org.jivesoftware.smackx.omemo.element.OmemoBundleVAxolotlElement;
-import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement;
-import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
-import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
-import org.jivesoftware.smackx.omemo.internal.CachedDeviceList;
-import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
-import org.jivesoftware.smackx.omemo.internal.OmemoSession;
-import org.jivesoftware.smackx.omemo.util.OmemoKeyUtil;
-import org.jxmpp.jid.BareJid;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.TARGET_PRE_KEY_COUNT;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -35,7 +25,19 @@ import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.TARGET_PRE_KEY_COUNT;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterEntry;
+
+import org.jivesoftware.smackx.omemo.element.OmemoBundleVAxolotlElement;
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement;
+import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
+import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
+import org.jivesoftware.smackx.omemo.internal.CachedDeviceList;
+import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
+import org.jivesoftware.smackx.omemo.internal.OmemoSession;
+import org.jivesoftware.smackx.omemo.util.OmemoKeyUtil;
+
+import org.jxmpp.jid.BareJid;
 
 /**
  * Class that presents some methods that are used to load/generate/store keys and session data needed for OMEMO.

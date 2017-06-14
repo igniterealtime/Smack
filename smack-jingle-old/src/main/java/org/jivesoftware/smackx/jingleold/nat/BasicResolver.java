@@ -16,16 +16,17 @@
  */
 package org.jivesoftware.smackx.jingleold.nat;
 
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.jingleold.JingleSession;
-
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPException;
+
+import org.jivesoftware.smackx.jingleold.JingleSession;
 
 /**
  * Basic Resolver takes all IP addresses of the interfaces and uses the

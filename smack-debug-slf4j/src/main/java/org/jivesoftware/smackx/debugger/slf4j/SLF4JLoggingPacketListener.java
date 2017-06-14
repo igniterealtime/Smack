@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.debugger.slf4j;
 
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.slf4j.Logger;
 
 

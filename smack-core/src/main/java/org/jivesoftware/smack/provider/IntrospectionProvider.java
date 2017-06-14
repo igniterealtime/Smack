@@ -20,9 +20,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

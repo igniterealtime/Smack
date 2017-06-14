@@ -23,6 +23,7 @@ import java.io.StringReader;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

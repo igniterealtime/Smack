@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.omemo.exceptions;
 
-import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
-
 import java.util.HashSet;
+
+import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 
 /**
  * Exception that is thrown when the user tries to encrypt a message for a undecided device.

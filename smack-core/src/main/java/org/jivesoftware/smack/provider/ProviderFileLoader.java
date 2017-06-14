@@ -24,10 +24,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.xmlpull.v1.XmlPullParserFactory;
+import org.jivesoftware.smack.packet.IQ;
+
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Loads the {@link IQProvider} and {@link ExtensionElementProvider} information from a standard provider file in preparation 

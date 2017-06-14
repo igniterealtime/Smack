@@ -20,7 +20,9 @@ import java.util.Date;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.Objects;
+
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
+
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;

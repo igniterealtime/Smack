@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNull;
 
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.junit.Test;
 
 public class StanzaCollectorTest

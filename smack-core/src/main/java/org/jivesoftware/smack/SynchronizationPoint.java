@@ -22,9 +22,9 @@ import java.util.concurrent.locks.Lock;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.packet.TopLevelStreamElement;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Nonza;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.TopLevelStreamElement;
 
 public class SynchronizationPoint<E extends Exception> {
 

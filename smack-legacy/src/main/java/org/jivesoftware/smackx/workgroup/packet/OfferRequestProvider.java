@@ -17,22 +17,24 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.workgroup.MetaData;
 import org.jivesoftware.smackx.workgroup.agent.InvitationRequest;
 import org.jivesoftware.smackx.workgroup.agent.OfferContent;
 import org.jivesoftware.smackx.workgroup.agent.TransferRequest;
 import org.jivesoftware.smackx.workgroup.agent.UserRequest;
 import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * An IQProvider for agent offer requests.

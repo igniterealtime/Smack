@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.jingleold.listeners;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
 
 /**

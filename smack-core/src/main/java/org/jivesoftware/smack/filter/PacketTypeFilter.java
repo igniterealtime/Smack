@@ -18,8 +18,8 @@
 package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * Filters for packets of a particular type. The type is given as a Class object, so

@@ -19,13 +19,14 @@ package org.jivesoftware.smackx.mam;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.impl.JidCreate;
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
+
 import org.junit.Assert;
+import org.junit.Test;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
 
 public class PreferencesTest {
 

@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.jivesoftware.smack.SmackException;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.EntityJid;

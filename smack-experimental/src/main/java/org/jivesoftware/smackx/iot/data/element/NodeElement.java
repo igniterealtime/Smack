@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 
 public class NodeElement implements NamedElement {

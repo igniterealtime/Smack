@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.push_notifications.element;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jxmpp.jid.Jid;
 
 /**

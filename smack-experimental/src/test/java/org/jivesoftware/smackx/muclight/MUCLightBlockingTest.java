@@ -21,7 +21,9 @@ import java.util.HashMap;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.muclight.element.MUCLightBlockingIQ;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.Jid;

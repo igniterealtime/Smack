@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.muclight;
 
 import java.util.HashMap;
+
 import org.jxmpp.jid.Jid;
 
 /**

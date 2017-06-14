@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.ping.packet;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.SimpleIQ;
+
 import org.jxmpp.jid.Jid;
 
 public class Ping extends SimpleIQ {

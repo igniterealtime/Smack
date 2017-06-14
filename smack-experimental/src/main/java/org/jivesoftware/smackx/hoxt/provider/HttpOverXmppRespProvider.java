@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.hoxt.provider;
 import org.jivesoftware.smackx.hoxt.packet.AbstractHttpOverXmpp;
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppResp;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

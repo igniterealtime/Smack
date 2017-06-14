@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.muc.filter;
 
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 public class MUCUserStatusCodeFilter implements StanzaFilter {

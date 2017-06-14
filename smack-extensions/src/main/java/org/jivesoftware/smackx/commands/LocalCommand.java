@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.commands;
 
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
+
 import org.jxmpp.jid.Jid;
 
 /**

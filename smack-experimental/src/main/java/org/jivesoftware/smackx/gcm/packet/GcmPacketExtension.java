@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.gcm.packet;
 
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.json.packet.AbstractJsonPacketExtension;
 
 /**

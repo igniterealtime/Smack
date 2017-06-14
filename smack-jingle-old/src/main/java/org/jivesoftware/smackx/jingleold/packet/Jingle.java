@@ -17,14 +17,16 @@
 
 package org.jivesoftware.smackx.jingleold.packet;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.jingleold.JingleActionEnum;
-import org.jxmpp.jid.Jid;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.IQ;
+
+import org.jivesoftware.smackx.jingleold.JingleActionEnum;
+
+import org.jxmpp.jid.Jid;
 
 /**
  * An Jingle sub-packet, which is used by XMPP clients to exchange info like

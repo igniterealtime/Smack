@@ -16,11 +16,12 @@
  */
 package org.jivesoftware.smack.omemo;
 
-import org.jivesoftware.smackx.omemo.OmemoFingerprint;
-import org.junit.Test;
-
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotSame;
+
+import org.jivesoftware.smackx.omemo.OmemoFingerprint;
+
+import org.junit.Test;
 
 /**
  * Test the OmemoFingerprint class.

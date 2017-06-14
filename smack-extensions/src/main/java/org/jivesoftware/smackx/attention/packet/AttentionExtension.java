@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.attention.packet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

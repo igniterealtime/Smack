@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.mam.element;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 

@@ -18,14 +18,16 @@
 package org.jivesoftware.smackx.commands.provider;
 
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.commands.AdHocCommand;
 import org.jivesoftware.smackx.commands.AdHocCommand.Action;
-import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.commands.AdHocCommandNote;
+import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

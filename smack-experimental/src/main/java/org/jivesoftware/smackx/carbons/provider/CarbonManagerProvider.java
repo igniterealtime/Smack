@@ -18,10 +18,12 @@ package org.jivesoftware.smackx.carbons.provider;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Direction;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

@@ -17,7 +17,9 @@
 package org.jivesoftware.smackx.muc;
 
 import org.jivesoftware.smack.util.Objects;
+
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+
 import org.jxmpp.jid.EntityBareJid;
 
 /**

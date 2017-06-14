@@ -21,6 +21,7 @@ import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.XMPPError;
+
 import org.jxmpp.jid.Jid;
 
 /**

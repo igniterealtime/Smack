@@ -24,8 +24,10 @@ import java.net.URI;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
+
 import org.junit.Test;
 import org.jxmpp.util.XmppDateTime;
 

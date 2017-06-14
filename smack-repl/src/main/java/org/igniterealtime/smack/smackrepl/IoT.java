@@ -16,22 +16,21 @@
  */
 package org.igniterealtime.smack.smackrepl;
 
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.roster.RosterUtil;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterUtil;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.iot.IoTDiscoveryIntegrationTest;
 import org.jivesoftware.smackx.iot.Thing;
 import org.jivesoftware.smackx.iot.data.IoTDataManager;
@@ -45,6 +44,8 @@ import org.jivesoftware.smackx.iot.discovery.IoTDiscoveryManager;
 import org.jivesoftware.smackx.iot.discovery.ThingState;
 import org.jivesoftware.smackx.iot.provisioning.BecameFriendListener;
 import org.jivesoftware.smackx.iot.provisioning.IoTProvisioningManager;
+
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;

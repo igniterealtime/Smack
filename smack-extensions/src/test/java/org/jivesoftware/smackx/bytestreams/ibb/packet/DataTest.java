@@ -24,11 +24,12 @@ import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
 import org.jivesoftware.smackx.InitExtensions;
-import org.junit.Test;
-import org.jxmpp.jid.impl.JidCreate;
 
 import com.jamesmurty.utils.XMLBuilder;
+import org.junit.Test;
+import org.jxmpp.jid.impl.JidCreate;
 
 /**
  * Test for the Data class.

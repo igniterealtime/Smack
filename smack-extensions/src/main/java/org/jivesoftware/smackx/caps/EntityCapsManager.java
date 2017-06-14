@@ -16,42 +16,9 @@
  */
 package org.jivesoftware.smackx.caps;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.XMPPConnectionRegistry;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.roster.AbstractPresenceEventListener;
-import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.filter.PresenceTypeFilter;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.filter.StanzaExtensionFilter;
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.stringencoder.Base64;
-import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
-import org.jivesoftware.smackx.caps.packet.CapsExtension;
-import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Feature;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
-import org.jivesoftware.smackx.xdata.FormField;
-import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.FullJid;
-import org.jxmpp.jid.Jid;
-import org.jxmpp.util.cache.LruCache;
-
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -65,9 +32,44 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
+import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPConnectionRegistry;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.PresenceTypeFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.roster.AbstractPresenceEventListener;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.stringencoder.Base64;
+
+import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
+import org.jivesoftware.smackx.caps.packet.CapsExtension;
+import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Feature;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
+import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
+
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.util.cache.LruCache;
 
 /**
  * Keeps track of entity capabilities.

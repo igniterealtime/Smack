@@ -21,7 +21,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.blocking.BlockingCommandManager;
+
 import org.jxmpp.jid.Jid;
 
 /**

@@ -20,7 +20,9 @@ package org.jivesoftware.smackx.xevent.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.xevent.packet.MessageEvent;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

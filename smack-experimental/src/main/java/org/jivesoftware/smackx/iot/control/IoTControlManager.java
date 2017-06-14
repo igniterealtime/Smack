@@ -28,12 +28,14 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.iot.IoTManager;
 import org.jivesoftware.smackx.iot.Thing;
 import org.jivesoftware.smackx.iot.control.element.IoTSetRequest;
 import org.jivesoftware.smackx.iot.control.element.IoTSetResponse;
 import org.jivesoftware.smackx.iot.control.element.SetData;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
+
 import org.jxmpp.jid.FullJid;
 
 /**

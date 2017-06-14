@@ -21,11 +21,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.iqregister.packet.Registration;
+
 import org.xmlpull.v1.XmlPullParser;
 
 public class RegistrationProvider extends IQProvider<Registration> {

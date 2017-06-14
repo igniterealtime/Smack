@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smack.sm.packet;
 
-import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 

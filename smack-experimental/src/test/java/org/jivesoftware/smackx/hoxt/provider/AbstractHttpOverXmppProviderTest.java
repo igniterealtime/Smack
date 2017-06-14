@@ -16,22 +16,24 @@
  */
 package org.jivesoftware.smackx.hoxt.provider;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smackx.hoxt.packet.AbstractHttpOverXmpp;
-import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppReq;
-import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppResp;
-import org.jivesoftware.smackx.shim.packet.Header;
-import org.jivesoftware.smackx.shim.packet.HeadersExtension;
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.PacketParserUtils;
+
+import org.jivesoftware.smackx.hoxt.packet.AbstractHttpOverXmpp;
+import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppReq;
+import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppResp;
+import org.jivesoftware.smackx.shim.packet.Header;
+import org.jivesoftware.smackx.shim.packet.HeadersExtension;
+
+import org.junit.Test;
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Tests correct headers and data parsing in 'req' and 'resp' elements.

@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smack.util.stringencoder;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

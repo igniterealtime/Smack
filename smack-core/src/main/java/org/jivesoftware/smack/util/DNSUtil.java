@@ -27,9 +27,9 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.util.dns.DNSResolver;
-import org.jivesoftware.smack.util.dns.SmackDaneProvider;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SRVRecord;
+import org.jivesoftware.smack.util.dns.SmackDaneProvider;
 
 /**
  * Utility class to perform DNS lookups for XMPP services.

@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

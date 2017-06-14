@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.hoxt.packet;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.hoxt.HOXTManager;
 
 /**

@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
@@ -34,7 +34,9 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterGroup;
+
 import org.jivesoftware.smackx.xroster.packet.RosterExchange;
+
 import org.jxmpp.jid.Jid;
 
 /**

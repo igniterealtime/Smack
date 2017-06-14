@@ -16,13 +16,6 @@
  */
 package org.jivesoftware.smackx.omemo.provider;
 
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.jivesoftware.smack.util.stringencoder.Base64;
-import org.jivesoftware.smackx.omemo.element.OmemoVAxolotlElement;
-import org.xmlpull.v1.XmlPullParser;
-
-import java.util.ArrayList;
-
 import static org.jivesoftware.smackx.omemo.element.OmemoElement.ENCRYPTED;
 import static org.jivesoftware.smackx.omemo.element.OmemoElement.HEADER;
 import static org.jivesoftware.smackx.omemo.element.OmemoElement.IV;
@@ -33,6 +26,15 @@ import static org.jivesoftware.smackx.omemo.element.OmemoElement.RID;
 import static org.jivesoftware.smackx.omemo.element.OmemoElement.SID;
 import static org.xmlpull.v1.XmlPullParser.END_TAG;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
+
+import java.util.ArrayList;
+
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.stringencoder.Base64;
+
+import org.jivesoftware.smackx.omemo.element.OmemoVAxolotlElement;
+
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Smack ExtensionProvider that parses incoming OMEMO Message element into OmemoMessageElement objects.

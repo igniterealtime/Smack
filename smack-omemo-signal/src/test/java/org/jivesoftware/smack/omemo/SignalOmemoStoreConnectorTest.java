@@ -20,11 +20,12 @@
  */
 package org.jivesoftware.smack.omemo;
 
-import org.jivesoftware.smackx.omemo.signal.SignalOmemoStoreConnector;
-import org.junit.Test;
-
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
+
+import org.jivesoftware.smackx.omemo.signal.SignalOmemoStoreConnector;
+
+import org.junit.Test;
 
 /**
  * Test some functionality of the SignalOmemoStoreConnector.

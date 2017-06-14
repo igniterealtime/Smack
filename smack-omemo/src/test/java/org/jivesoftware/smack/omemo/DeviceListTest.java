@@ -16,14 +16,15 @@
  */
 package org.jivesoftware.smack.omemo;
 
-import org.jivesoftware.smackx.omemo.internal.CachedDeviceList;
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.jivesoftware.smackx.omemo.internal.CachedDeviceList;
+
+import org.junit.Test;
 
 
 /**

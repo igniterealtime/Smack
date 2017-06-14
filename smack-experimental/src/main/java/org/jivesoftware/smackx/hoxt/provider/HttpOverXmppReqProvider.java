@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.hoxt.provider;
 
 import org.jivesoftware.smackx.hoxt.packet.HttpMethod;
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppReq;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.muclight.element;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.muclight.MUCLightRoomConfiguration;
 import org.jivesoftware.smackx.muclight.MultiUserChatLight;
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.ConfigurationElement;

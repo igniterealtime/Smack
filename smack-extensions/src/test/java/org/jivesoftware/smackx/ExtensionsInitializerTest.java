@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.jivesoftware.smack.extensions.ExtensionsInitializer;
+
 import org.junit.Test;
 
 public class ExtensionsInitializerTest {

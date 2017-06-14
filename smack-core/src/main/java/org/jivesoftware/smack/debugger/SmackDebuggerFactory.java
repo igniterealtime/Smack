@@ -18,10 +18,10 @@
 
 package org.jivesoftware.smack.debugger;
 
-import org.jivesoftware.smack.XMPPConnection;
-
 import java.io.Reader;
 import java.io.Writer;
+
+import org.jivesoftware.smack.XMPPConnection;
 
 public interface SmackDebuggerFactory {
     /**

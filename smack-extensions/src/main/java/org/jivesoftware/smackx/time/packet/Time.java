@@ -16,13 +16,14 @@
  */
 package org.jivesoftware.smackx.time.packet;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jxmpp.util.XmppDateTime;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jivesoftware.smack.packet.IQ;
+
+import org.jxmpp.util.XmppDateTime;
 
 /**
  * A Time IQ packet, which is used by XMPP clients to exchange their respective local

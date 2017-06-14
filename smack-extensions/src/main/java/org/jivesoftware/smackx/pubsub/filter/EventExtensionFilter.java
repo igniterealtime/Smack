@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.pubsub.filter;
 
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+
 import org.jivesoftware.smackx.pubsub.EventElement;
 
 /**

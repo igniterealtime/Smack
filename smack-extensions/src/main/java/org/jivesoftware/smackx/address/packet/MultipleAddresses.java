@@ -17,13 +17,14 @@
 
 package org.jivesoftware.smackx.address.packet;
 
-import org.jivesoftware.smack.packet.NamedElement;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jxmpp.jid.Jid;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
+import org.jxmpp.jid.Jid;
 
 /**
  * Stanza(/Packet) extension that contains the list of addresses that a stanza(/packet) should be sent or was sent.

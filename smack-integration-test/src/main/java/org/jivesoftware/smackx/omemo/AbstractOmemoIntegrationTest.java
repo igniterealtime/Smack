@@ -16,16 +16,17 @@
  */
 package org.jivesoftware.smackx.omemo;
 
+import java.io.File;
+import java.util.logging.Level;
+
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-
-import java.io.File;
-import java.util.logging.Level;
 
 /**
  * Super class for OMEMO integration tests.

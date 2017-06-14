@@ -19,8 +19,10 @@ package org.jivesoftware.smackx.pubsub.provider;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.pubsub.Affiliation;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
+
 import org.jxmpp.jid.BareJid;
 import org.xmlpull.v1.XmlPullParser;
 

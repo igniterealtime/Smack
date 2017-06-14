@@ -21,7 +21,9 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
+
 import org.jivesoftware.smackx.iqversion.packet.Version;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

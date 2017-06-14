@@ -37,6 +37,7 @@ import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.Objects;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.iot.IoTManager;
@@ -55,6 +56,7 @@ import org.jivesoftware.smackx.iot.discovery.element.IoTUnregister;
 import org.jivesoftware.smackx.iot.discovery.element.Tag;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.provisioning.IoTProvisioningManager;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 

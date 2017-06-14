@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 /**

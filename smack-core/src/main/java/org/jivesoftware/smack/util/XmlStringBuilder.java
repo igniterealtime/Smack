@@ -22,8 +22,9 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.Element;
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.NamedElement;
+
 import org.jxmpp.util.XmppDateTime;
 
 public class XmlStringBuilder implements Appendable, CharSequence {

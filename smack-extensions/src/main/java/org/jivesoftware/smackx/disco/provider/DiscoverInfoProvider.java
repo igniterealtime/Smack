@@ -19,7 +19,9 @@ package org.jivesoftware.smackx.disco.provider;
 
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

@@ -16,18 +16,20 @@
  */
 package org.jivesoftware.smackx.xhtmlim.provider;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.util.PacketParserUtils;
+
+import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
+
+import org.junit.Test;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 
 public class XHTMLExtensionProviderTest {

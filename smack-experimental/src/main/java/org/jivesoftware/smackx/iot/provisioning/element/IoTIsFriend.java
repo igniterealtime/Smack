@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.iot.provisioning.element;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jxmpp.jid.Jid;
 
 public class IoTIsFriend extends IQ {

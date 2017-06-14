@@ -24,9 +24,11 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucConfigurationNotSupportedException;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.util.JidUtil;
 

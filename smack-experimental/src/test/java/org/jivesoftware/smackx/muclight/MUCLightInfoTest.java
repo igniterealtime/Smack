@@ -18,8 +18,10 @@ package org.jivesoftware.smackx.muclight;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.muclight.element.MUCLightGetInfoIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightInfoIQ;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;

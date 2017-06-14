@@ -24,6 +24,7 @@ import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jxmpp.jid.Jid;
 
 /**

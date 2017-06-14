@@ -20,7 +20,9 @@ import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.bob.element.BoBIQ;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;

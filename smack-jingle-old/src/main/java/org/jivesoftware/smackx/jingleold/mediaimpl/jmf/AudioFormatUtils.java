@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.jingleold.mediaimpl.jmf;
 
-import org.jivesoftware.smackx.jingleold.media.PayloadType;
-
 import javax.media.format.AudioFormat;
+
+import org.jivesoftware.smackx.jingleold.media.PayloadType;
 
 /**
  * Audio Format Utils.

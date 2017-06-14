@@ -16,9 +16,11 @@
  */
 package org.jivesoftware.smackx.pubsub.packet;
 
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.pubsub.PubSubElementType;
+
 import org.jxmpp.jid.Jid;
 
 /**

@@ -16,14 +16,16 @@
  */
 package org.jivesoftware.smackx.xhtmlim.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 
 /**
  * The XHTMLExtensionProvider parses XHTML packets.

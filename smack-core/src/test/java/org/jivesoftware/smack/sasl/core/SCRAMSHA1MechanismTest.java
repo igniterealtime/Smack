@@ -25,6 +25,7 @@ import org.jivesoftware.smack.sasl.packet.SaslStreamElements.AuthMechanism;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Response;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
 import org.junit.Test;
 import org.jxmpp.jid.JidTestUtil;
 

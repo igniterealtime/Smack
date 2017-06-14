@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.xevent;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+
 import org.jxmpp.jid.Jid;
 
 /**

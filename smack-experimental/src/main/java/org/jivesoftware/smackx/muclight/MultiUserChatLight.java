@@ -22,9 +22,9 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -36,6 +36,7 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.muclight.element.MUCLightAffiliationsIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightChangeAffiliationsIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightConfigurationIQ;
@@ -46,6 +47,7 @@ import org.jivesoftware.smackx.muclight.element.MUCLightGetConfigsIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightGetInfoIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightInfoIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightSetConfigsIQ;
+
 import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.Jid;
 

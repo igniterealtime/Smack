@@ -26,10 +26,10 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.jivesoftware.smack.ConnectionConfiguration.Builder;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.ConnectionConfiguration.Builder;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Stanza;
@@ -39,6 +39,7 @@ import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
 import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
 import org.jivesoftware.smack.roster.rosterstore.DirectoryRosterStore;
 import org.jivesoftware.smack.roster.rosterstore.RosterStore;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;

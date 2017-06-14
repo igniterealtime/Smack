@@ -17,11 +17,11 @@
 
 package org.jivesoftware.smackx.jingleold.media;
 
+import java.util.List;
+
 import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.nat.JingleTransportManager;
 import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
-
-import java.util.List;
 
 /**
  * This class provides necessary Jingle Session jmf methods and behavior.

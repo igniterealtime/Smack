@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -27,13 +30,12 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.EventManger;
 import org.jivesoftware.smack.util.EventManger.Callback;
+
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.jid.Jid;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.jxmpp.jid.Jid;
 
 /**
  * After the file transfer negotiation process is completed according to

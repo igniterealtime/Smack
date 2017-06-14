@@ -16,16 +16,18 @@
  */
 package org.jivesoftware.smackx.hoxt.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.hoxt.packet.AbstractHttpOverXmpp;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 import org.jivesoftware.smackx.shim.provider.HeadersProvider;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 
 /**
  * Abstract parent for Req and Resp stanza(/packet) providers.

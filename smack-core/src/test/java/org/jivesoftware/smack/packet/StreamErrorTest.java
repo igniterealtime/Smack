@@ -22,6 +22,7 @@ import static org.junit.Assert.fail;
 
 import org.jivesoftware.smack.packet.StreamError.Condition;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 

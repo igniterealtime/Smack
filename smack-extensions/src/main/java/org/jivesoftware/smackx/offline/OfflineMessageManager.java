@@ -17,9 +17,12 @@
 
 package org.jivesoftware.smackx.offline;
 
-import org.jivesoftware.smack.StanzaCollector;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -29,15 +32,13 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.offline.packet.OfflineMessageInfo;
 import org.jivesoftware.smackx.offline.packet.OfflineMessageRequest;
 import org.jivesoftware.smackx.xdata.Form;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The OfflineMessageManager helps manage offline messages even before the user has sent an

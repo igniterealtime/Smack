@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.sasl.DigestMd5SaslTest;
+
 import org.junit.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
 

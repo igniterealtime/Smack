@@ -19,9 +19,11 @@ package org.jivesoftware.smackx.mam;
 import java.lang.reflect.Method;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.junit.Assert;
 import org.junit.Test;
 

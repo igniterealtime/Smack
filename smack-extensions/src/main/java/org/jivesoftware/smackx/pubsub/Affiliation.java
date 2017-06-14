@@ -20,7 +20,9 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
+
 import org.jxmpp.jid.BareJid;
 
 /**

@@ -29,10 +29,12 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.push_notifications.element.DisablePushNotificationsIQ;
 import org.jivesoftware.smackx.push_notifications.element.EnablePushNotificationsIQ;
 import org.jivesoftware.smackx.push_notifications.element.PushNotificationsElements;
+
 import org.jxmpp.jid.Jid;
 
 /**

@@ -22,11 +22,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jxmpp.util.XmppDateTime;
+
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.si.packet.StreamInitiation.File;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
+
+import org.jxmpp.util.XmppDateTime;
 import org.xmlpull.v1.XmlPullParser;
 
 /**

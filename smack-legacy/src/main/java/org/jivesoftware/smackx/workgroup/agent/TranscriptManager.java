@@ -17,12 +17,14 @@
 
 package org.jivesoftware.smackx.workgroup.agent;
 
-import org.jivesoftware.smackx.workgroup.packet.Transcript;
-import org.jivesoftware.smackx.workgroup.packet.Transcripts;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+
+import org.jivesoftware.smackx.workgroup.packet.Transcript;
+import org.jivesoftware.smackx.workgroup.packet.Transcripts;
+
 import org.jxmpp.jid.Jid;
 
 /**

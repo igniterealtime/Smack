@@ -36,10 +36,12 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
+
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.BytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+
 import org.jxmpp.jid.Jid;
 
 /**

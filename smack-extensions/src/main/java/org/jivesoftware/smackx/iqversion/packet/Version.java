@@ -17,10 +17,10 @@
 
 package org.jivesoftware.smackx.iqversion.packet;
 
-
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jxmpp.jid.Jid;
 
 /**

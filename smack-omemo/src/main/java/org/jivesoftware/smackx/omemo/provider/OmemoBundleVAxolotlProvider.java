@@ -16,12 +16,6 @@
  */
 package org.jivesoftware.smackx.omemo.provider;
 
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.jivesoftware.smackx.omemo.element.OmemoBundleVAxolotlElement;
-import org.xmlpull.v1.XmlPullParser;
-
-import java.util.HashMap;
-
 import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.BUNDLE;
 import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.IDENTITY_KEY;
 import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.PRE_KEYS;
@@ -32,6 +26,14 @@ import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.SIGNED_PR
 import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.SIGNED_PRE_KEY_SIG;
 import static org.xmlpull.v1.XmlPullParser.END_TAG;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
+
+import java.util.HashMap;
+
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
+import org.jivesoftware.smackx.omemo.element.OmemoBundleVAxolotlElement;
+
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Smack ExtensionProvider that parses OMEMO bundle element into OmemoBundleElement objects.

@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.FormField.Type;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
@@ -30,6 +31,7 @@ import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Section;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Text;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
+
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 

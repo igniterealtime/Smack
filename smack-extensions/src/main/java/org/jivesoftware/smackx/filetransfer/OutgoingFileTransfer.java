@@ -30,6 +30,7 @@ import org.jivesoftware.smack.SmackException.IllegalStateChangeException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.XMPPError;
+
 import org.jxmpp.jid.Jid;
 
 /**

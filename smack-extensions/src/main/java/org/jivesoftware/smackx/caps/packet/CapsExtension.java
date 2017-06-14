@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.caps.packet;
 
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**

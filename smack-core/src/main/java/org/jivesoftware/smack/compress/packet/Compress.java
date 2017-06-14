@@ -19,8 +19,8 @@ package org.jivesoftware.smack.compress.packet;
 import java.util.Collections;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class Compress implements Nonza {

@@ -16,13 +16,14 @@
  */
 package org.jivesoftware.smackx.jingleold.packet;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smackx.jingleold.media.PayloadType;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
+
+import org.jivesoftware.smackx.jingleold.media.PayloadType;
 
 /**
  * Jingle content description.

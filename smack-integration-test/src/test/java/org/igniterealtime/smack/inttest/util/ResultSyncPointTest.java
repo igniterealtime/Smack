@@ -23,6 +23,7 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.util.Async;
+
 import org.junit.Test;
 
 public class ResultSyncPointTest {

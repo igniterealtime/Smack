@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.stringencoder.Base32;
 import org.jivesoftware.smack.util.stringencoder.StringEncoder;
+
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 /**

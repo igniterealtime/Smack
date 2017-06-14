@@ -42,12 +42,14 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.carbons.packet.Carbon;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Direction;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Private;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
+
 import org.jxmpp.jid.EntityFullJid;
 
 /**

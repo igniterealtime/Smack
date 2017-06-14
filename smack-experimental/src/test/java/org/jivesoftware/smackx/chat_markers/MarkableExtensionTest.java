@@ -18,9 +18,11 @@ package org.jivesoftware.smackx.chat_markers;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements;
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.MarkableExtension;
 import org.jivesoftware.smackx.chat_markers.provider.MarkableProvider;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;

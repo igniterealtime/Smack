@@ -21,7 +21,9 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.blocking.element.BlockContactsIQ;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.Jid;

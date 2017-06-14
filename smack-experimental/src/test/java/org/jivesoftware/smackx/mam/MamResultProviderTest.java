@@ -22,9 +22,11 @@ import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 import org.jivesoftware.smackx.mam.provider.MamResultProvider;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;

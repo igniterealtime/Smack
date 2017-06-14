@@ -19,10 +19,12 @@ package org.jivesoftware.smackx.muc.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.muc.MUCAffiliation;
 import org.jivesoftware.smackx.muc.MUCRole;
 import org.jivesoftware.smackx.muc.packet.Destroy;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;

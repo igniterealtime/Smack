@@ -26,9 +26,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -36,6 +36,7 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.iot.IoTManager;
 import org.jivesoftware.smackx.iot.Thing;
 import org.jivesoftware.smackx.iot.data.element.IoTDataField;
@@ -44,6 +45,7 @@ import org.jivesoftware.smackx.iot.data.element.IoTDataRequest;
 import org.jivesoftware.smackx.iot.data.element.IoTFieldsExtension;
 import org.jivesoftware.smackx.iot.data.filter.IoTFieldsExtensionFilter;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
+
 import org.jxmpp.jid.EntityFullJid;
 
 /**

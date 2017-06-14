@@ -22,7 +22,9 @@ import java.util.List;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.blocking.element.BlockListIQ;
+
 import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 

@@ -17,10 +17,11 @@
 
 package org.jivesoftware.smackx.address;
 
-import org.jivesoftware.smackx.address.packet.MultipleAddresses;
-import org.jxmpp.jid.Jid;
-
 import java.util.List;
+
+import org.jivesoftware.smackx.address.packet.MultipleAddresses;
+
+import org.jxmpp.jid.Jid;
 
 /**
  * MultipleRecipientInfo keeps information about the multiple recipients extension included

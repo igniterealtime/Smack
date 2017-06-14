@@ -17,7 +17,9 @@
 package org.jivesoftware.smackx.httpfileupload.element;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
+
 import org.jxmpp.jid.DomainBareJid;
 
 /**

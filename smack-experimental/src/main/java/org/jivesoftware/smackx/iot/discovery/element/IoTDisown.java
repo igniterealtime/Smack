@@ -17,7 +17,9 @@
 package org.jivesoftware.smackx.iot.discovery.element;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.iot.element.NodeInfo;
+
 import org.jxmpp.jid.Jid;
 
 public class IoTDisown extends IQ {

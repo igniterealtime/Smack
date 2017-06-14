@@ -28,6 +28,7 @@ import java.util.List;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
 import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.debugger.slf4j;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.XMPPConnection;
+
 import org.slf4j.Logger;
 
 class SLF4JLoggingConnectionListener implements ConnectionListener {

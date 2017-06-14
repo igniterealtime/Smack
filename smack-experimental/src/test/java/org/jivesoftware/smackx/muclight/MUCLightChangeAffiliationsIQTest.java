@@ -19,7 +19,9 @@ package org.jivesoftware.smackx.muclight;
 import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.muclight.element.MUCLightChangeAffiliationsIQ;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.Jid;

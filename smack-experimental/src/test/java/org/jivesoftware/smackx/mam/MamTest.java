@@ -21,8 +21,10 @@ import java.lang.reflect.Method;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.XMPPConnection;
+
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.junit.Before;
 
 public class MamTest extends InitExtensions {

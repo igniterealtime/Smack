@@ -26,14 +26,15 @@ import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.im.InitSmackIm;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.RosterTest.TestRosterListener;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
 import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
 import org.jivesoftware.smack.roster.packet.SubscriptionPreApproval;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -19,10 +19,10 @@ package org.jivesoftware.smack.test.util;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import net.iharder.Base64;
-
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64.Encoder;
+
+import net.iharder.Base64;
 
 /**
  * The SmackTestSuite takes care of initializing Smack for the unit tests. For example the Base64

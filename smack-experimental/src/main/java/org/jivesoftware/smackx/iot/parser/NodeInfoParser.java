@@ -16,10 +16,11 @@
  */
 package org.jivesoftware.smackx.iot.parser;
 
-import org.jivesoftware.smackx.iot.element.NodeInfo;
-import org.xmlpull.v1.XmlPullParser;
-
 import static org.jivesoftware.smack.util.StringUtils.isNullOrEmpty;
+
+import org.jivesoftware.smackx.iot.element.NodeInfo;
+
+import org.xmlpull.v1.XmlPullParser;
 
 public class NodeInfoParser {
 

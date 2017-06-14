@@ -16,10 +16,11 @@
  */
 package org.jivesoftware.smack.omemo;
 
-import org.jivesoftware.smackx.omemo.util.OmemoKeyUtil;
-import org.junit.Test;
-
 import static junit.framework.TestCase.assertEquals;
+
+import org.jivesoftware.smackx.omemo.util.OmemoKeyUtil;
+
+import org.junit.Test;
 
 /**
  * Test KeyUtil functions.

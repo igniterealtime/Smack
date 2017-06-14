@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.bytestreams.ibb.packet;
 import java.util.Locale;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 
 /**

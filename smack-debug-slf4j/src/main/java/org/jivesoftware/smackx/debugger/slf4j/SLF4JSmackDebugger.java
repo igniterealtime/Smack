@@ -17,19 +17,20 @@
 
 package org.jivesoftware.smackx.debugger.slf4j;
 
-import org.jivesoftware.smack.StanzaListener;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
+
 import org.jxmpp.jid.EntityFullJid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Reader;
-import java.io.Writer;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**

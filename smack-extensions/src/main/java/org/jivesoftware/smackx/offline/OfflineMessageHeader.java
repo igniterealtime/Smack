@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.offline;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+
 import org.jxmpp.jid.Jid;
 
 /**

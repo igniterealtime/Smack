@@ -16,14 +16,15 @@
  */
 package org.jivesoftware.smackx.disco.packet;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jxmpp.jid.Jid;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
+import org.jxmpp.jid.Jid;
 
 /**
  * A DiscoverItems IQ packet, which is used by XMPP clients to request and receive items 

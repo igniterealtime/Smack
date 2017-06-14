@@ -17,10 +17,11 @@
 
 package org.jivesoftware.smack.roster;
 
-import org.jivesoftware.smack.packet.Presence;
-import org.jxmpp.jid.Jid;
-
 import java.util.Collection;
+
+import org.jivesoftware.smack.packet.Presence;
+
+import org.jxmpp.jid.Jid;
 
 /**
  * Provides empty implementations for {@link RosterListener}.

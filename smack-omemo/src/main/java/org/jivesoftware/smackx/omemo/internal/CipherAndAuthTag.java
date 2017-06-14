@@ -16,19 +16,20 @@
  */
 package org.jivesoftware.smackx.omemo.internal;
 
-import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.CIPHERMODE;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.PROVIDER;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.CIPHERMODE;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.PROVIDER;
+import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
 
 /**
  * Encapsulate Cipher and AuthTag.

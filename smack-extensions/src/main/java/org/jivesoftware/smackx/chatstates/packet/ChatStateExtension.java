@@ -17,9 +17,10 @@
 
 package org.jivesoftware.smackx.chatstates.packet;
 
-import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
+import org.jivesoftware.smackx.chatstates.ChatState;
 
 /**
  * Represents a chat state which is an extension to message packets which is used to indicate

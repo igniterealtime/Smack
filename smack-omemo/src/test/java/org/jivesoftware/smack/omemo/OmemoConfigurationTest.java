@@ -16,14 +16,15 @@
  */
 package org.jivesoftware.smack.omemo;
 
-import junit.framework.TestCase;
-import org.jivesoftware.smackx.omemo.OmemoConfiguration;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import org.jivesoftware.smackx.omemo.OmemoConfiguration;
+
+import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * Test the OmemoConfiguration class.

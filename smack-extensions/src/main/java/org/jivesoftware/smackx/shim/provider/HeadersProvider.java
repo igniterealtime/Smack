@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
+
 import org.jivesoftware.smackx.shim.packet.Header;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 

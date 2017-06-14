@@ -19,8 +19,10 @@ package org.jivesoftware.smackx.bytestreams.ibb;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
+
 import org.jxmpp.jid.Jid;
 
 /**

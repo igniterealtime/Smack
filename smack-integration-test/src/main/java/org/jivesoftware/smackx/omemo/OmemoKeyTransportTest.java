@@ -16,30 +16,32 @@
  */
 package org.jivesoftware.smackx.omemo;
 
-import junit.framework.TestCase;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.igniterealtime.smack.inttest.TestNotPossibleException;
-import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.cleanServerSideTraces;
+import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.setUpOmemoManager;
+import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.subscribe;
+import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.unidirectionalTrust;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.internal.CipherAndAuthTag;
 import org.jivesoftware.smackx.omemo.internal.OmemoMessageInformation;
 import org.jivesoftware.smackx.omemo.listener.OmemoMessageListener;
 import org.jivesoftware.smackx.omemo.util.OmemoMessageBuilder;
 
-import java.util.Arrays;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-
-import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.cleanServerSideTraces;
-import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.setUpOmemoManager;
-import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.subscribe;
-import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.unidirectionalTrust;
-import static org.junit.Assert.assertTrue;
+import junit.framework.TestCase;
+import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.TestNotPossibleException;
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
 /**
  * Test keyTransportMessages.

@@ -17,18 +17,19 @@
 
 package org.jivesoftware.smackx.xdata.packet;
 
-import org.jivesoftware.smack.packet.Element;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smackx.xdata.FormField;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
+import org.jivesoftware.smackx.xdata.FormField;
 
 /**
  * Represents a form that could be use for gathering data as well as for reporting data

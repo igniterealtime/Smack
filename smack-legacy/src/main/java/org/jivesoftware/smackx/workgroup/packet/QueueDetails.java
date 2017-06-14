@@ -17,13 +17,6 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
-import org.jivesoftware.smackx.workgroup.QueueUser;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,6 +25,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
+import org.jivesoftware.smackx.workgroup.QueueUser;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Queue details stanza(/packet) extension, which contains details about the users

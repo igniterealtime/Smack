@@ -32,6 +32,7 @@ import org.jivesoftware.smack.util.ByteUtils;
 import org.jivesoftware.smack.util.SHA1;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
 import org.jxmpp.util.cache.Cache;
 import org.jxmpp.util.cache.LruCache;
 

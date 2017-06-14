@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
+
 import org.jivesoftware.smackx.pubsub.FormNode;
 import org.jivesoftware.smackx.pubsub.FormNodeType;
 import org.jivesoftware.smackx.xdata.Form;

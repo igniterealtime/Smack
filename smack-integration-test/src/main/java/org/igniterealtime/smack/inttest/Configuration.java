@@ -33,11 +33,11 @@ import javax.net.ssl.SSLContext;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
+
+import eu.geekplace.javapinning.java7.Java7Pinning;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import eu.geekplace.javapinning.java7.Java7Pinning;
 
 public final class Configuration {
 
