@@ -16,89 +16,6 @@
  */
 package org.jivesoftware.smack.tcp;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
-import org.jivesoftware.smack.AbstractXMPPConnection;
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
-import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
-import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
-import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.SmackException.ConnectionException;
-import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
-import org.jivesoftware.smack.SynchronizationPoint;
-import org.jivesoftware.smack.XMPPException.FailedNonzaException;
-import org.jivesoftware.smack.XMPPException.StreamErrorException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.compress.packet.Compressed;
-import org.jivesoftware.smack.compression.XMPPInputOutputStream;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.compress.packet.Compress;
-import org.jivesoftware.smack.packet.Element;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.StreamOpen;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.StartTls;
-import org.jivesoftware.smack.packet.StreamError;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Challenge;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
-import org.jivesoftware.smack.sm.SMUtils;
-import org.jivesoftware.smack.sm.StreamManagementException;
-import org.jivesoftware.smack.sm.StreamManagementException.StreamIdDoesNotMatchException;
-import org.jivesoftware.smack.sm.StreamManagementException.StreamManagementCounterError;
-import org.jivesoftware.smack.sm.StreamManagementException.StreamManagementNotEnabledException;
-import org.jivesoftware.smack.sm.packet.StreamManagement;
-import org.jivesoftware.smack.sm.packet.StreamManagement.AckAnswer;
-import org.jivesoftware.smack.sm.packet.StreamManagement.AckRequest;
-import org.jivesoftware.smack.sm.packet.StreamManagement.Enable;
-import org.jivesoftware.smack.sm.packet.StreamManagement.Enabled;
-import org.jivesoftware.smack.sm.packet.StreamManagement.Failed;
-import org.jivesoftware.smack.sm.packet.StreamManagement.Resume;
-import org.jivesoftware.smack.sm.packet.StreamManagement.Resumed;
-import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature;
-import org.jivesoftware.smack.sm.predicates.Predicate;
-import org.jivesoftware.smack.sm.provider.ParseStreamManagement;
-import org.jivesoftware.smack.packet.Nonza;
-import org.jivesoftware.smack.proxy.ProxyInfo;
-import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
-import org.jivesoftware.smack.util.Async;
-import org.jivesoftware.smack.util.DNSUtil;
-import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.TLSUtils;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smack.util.dns.HostAddress;
-import org.jivesoftware.smack.util.dns.SmackDaneProvider;
-import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.jid.parts.Resourcepart;
-import org.jxmpp.stringprep.XmppStringprepException;
-import org.jxmpp.util.XmppStringUtils;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import javax.net.SocketFactory;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.PasswordCallback;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -138,6 +55,97 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.PasswordCallback;
+
+import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
+import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
+import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
+import org.jivesoftware.smack.SmackException.ConnectionException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
+import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.SynchronizationPoint;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.FailedNonzaException;
+import org.jivesoftware.smack.XMPPException.StreamErrorException;
+import org.jivesoftware.smack.compress.packet.Compress;
+import org.jivesoftware.smack.compress.packet.Compressed;
+import org.jivesoftware.smack.compression.XMPPInputOutputStream;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.isr.HMAC;
+import org.jivesoftware.smack.isr.ISRUtils;
+import org.jivesoftware.smack.isr.element.InstantStreamResumption;
+import org.jivesoftware.smack.isr.element.InstantStreamResumption.InstResume;
+import org.jivesoftware.smack.isr.element.InstantStreamResumption.InstResumed;
+import org.jivesoftware.smack.isr.element.InstantStreamResumption.InstantStreamResumptionFeature;
+import org.jivesoftware.smack.isr.provider.ParseInstantStreamResumption;
+import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Nonza;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StartTls;
+import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smack.packet.XMPPError.Condition;
+import org.jivesoftware.smack.proxy.ProxyInfo;
+import org.jivesoftware.smack.packet.StreamError;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Challenge;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
+import org.jivesoftware.smack.sm.SMUtils;
+import org.jivesoftware.smack.sm.StreamManagementException;
+import org.jivesoftware.smack.sm.StreamManagementException.StreamIdDoesNotMatchException;
+import org.jivesoftware.smack.sm.StreamManagementException.StreamManagementCounterError;
+import org.jivesoftware.smack.sm.StreamManagementException.StreamManagementNotEnabledException;
+import org.jivesoftware.smack.sm.packet.StreamManagement;
+import org.jivesoftware.smack.sm.packet.StreamManagement.AckAnswer;
+import org.jivesoftware.smack.sm.packet.StreamManagement.AckRequest;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Enable;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Enabled;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Failed;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Resume;
+import org.jivesoftware.smack.sm.packet.StreamManagement.Resumed;
+import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature;
+import org.jivesoftware.smack.sm.predicates.Predicate;
+import org.jivesoftware.smack.sm.provider.ParseStreamManagement;
+import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
+import org.jivesoftware.smack.util.Async;
+import org.jivesoftware.smack.util.DNSUtil;
+import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.TLSUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jivesoftware.smack.util.dns.SmackDaneProvider;
+import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
+import org.jxmpp.util.XmppStringUtils;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Creates a socket connection to an XMPP server. This is the default connection
@@ -220,6 +228,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * {@link #unacknowledgedStanzas}.
      */
     private String smSessionId;
+
+    private String isrKey;
+
+    private String isrAlgo;
+
+    // TODO check again how to use this
+    private String isrHmacHash;
 
     private final SynchronizationPoint<FailedNonzaException> smResumedSyncPoint = new SynchronizationPoint<>(
                     this, "stream resumed element");
@@ -389,7 +404,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         maybeEnableCompression();
 
         if (isSmResumptionPossible()) {
-            smResumedSyncPoint.sendAndWaitForResponse(new Resume(clientHandledStanzasCount, smSessionId));
+
+            if (isrKey != null && isrAlgo != null) {
+                // instant stream resumption
+                smResumedSyncPoint.sendAndWaitForResponse(new InstResume(smSessionId, clientHandledStanzasCount,
+                        HMAC.hmacDigest("Initiator", isrKey, isrAlgo), isrAlgo));
+            } else {
+                // stream management resume
+                smResumedSyncPoint.sendAndWaitForResponse(new Resume(clientHandledStanzasCount, smSessionId));
+            }
+
             if (smResumedSyncPoint.wasSuccessful()) {
                 // We successfully resumed the stream, be done here
                 afterSuccessfulLogin(true);
@@ -1109,31 +1133,57 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             compressSyncPoint.reportSuccess();
                             break;
                         case Enabled.ELEMENT:
-                            Enabled enabled = ParseStreamManagement.enabled(parser);
-                            if (enabled.isResumeSet()) {
-                                smSessionId = enabled.getId();
-                                if (StringUtils.isNullOrEmpty(smSessionId)) {
-                                    SmackException xmppException = new SmackException("Stream Management 'enabled' element with resume attribute but without session id received");
+                            if (ISRUtils.isISRNonza(parser)) {
+                                org.jivesoftware.smack.isr.element.InstantStreamResumption.Enabled enabled = ParseInstantStreamResumption
+                                        .enabled(parser);
+                                isrKey = enabled.getKey();
+                                if (isrKey == null) {
+                                    SmackException xmppException = new SmackException("Instant Stream Resumption 'enabled' element without key");
                                     smEnabledSyncPoint.reportFailure(xmppException);
                                     throw xmppException;
                                 }
-                                smServerMaxResumptimTime = enabled.getMaxResumptionTime();
                             } else {
-                                // Mark this a non-resumable stream by setting smSessionId to null
-                                smSessionId = null;
+                                Enabled enabled = ParseStreamManagement.enabled(parser);
+                                if (enabled.isResumeSet()) {
+                                    smSessionId = enabled.getId();
+                                    if (StringUtils.isNullOrEmpty(smSessionId)) {
+                                        SmackException xmppException = new SmackException("Stream Management 'enabled' element with resume attribute but without session id received");
+                                        smEnabledSyncPoint.reportFailure(xmppException);
+                                        throw xmppException;
+                                    }
+                                    smServerMaxResumptimTime = enabled.getMaxResumptionTime();
+                                } else {
+                                    // Mark this a non-resumable stream by
+                                    // setting smSessionId to null
+                                    smSessionId = null;
+                                }
                             }
+
                             clientHandledStanzasCount = 0;
                             smWasEnabledAtLeastOnce = true;
                             smEnabledSyncPoint.reportSuccess();
                             LOGGER.fine("Stream Management (XEP-198): succesfully enabled");
                             break;
                         case Failed.ELEMENT:
-                            Failed failed = ParseStreamManagement.failed(parser);
-                            FailedNonzaException xmppException = new FailedNonzaException(failed, failed.getXMPPErrorCondition());
-                            // If only XEP-198 would specify different failure elements for the SM
-                            // enable and SM resume failure case. But this is not the case, so we
-                            // need to determine if this is a 'Failed' response for either 'Enable'
-                            // or 'Resume'.
+                            FailedNonzaException xmppException = null;
+
+                            if (ISRUtils.isISRNonza(parser)) {
+                                org.jivesoftware.smack.isr.element.InstantStreamResumption.Failed failed = ParseInstantStreamResumption
+                                        .failed(parser);
+                                processHandledCount(failed.getHandledCount());
+
+                                xmppException = new FailedNonzaException(failed, Condition.undefined_condition);
+                            } else {
+                                Failed failed = ParseStreamManagement.failed(parser);
+                                xmppException = new FailedNonzaException(failed, failed.getXMPPErrorCondition());
+                                // If only XEP-198 would specify different
+                                // failure elements for the SM
+                                // enable and SM resume failure case. But this
+                                // is not the case, so we
+                                // need to determine if this is a 'Failed'
+                                // response for either 'Enable'
+                                // or 'Resume'.
+                            }
                             if (smResumedSyncPoint.requestSent()) {
                                 smResumedSyncPoint.reportFailure(xmppException);
                             }
@@ -1148,24 +1198,59 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 lastFeaturesReceived.reportSuccess();
                             }
                             break;
+                        case InstResumed.ELEMENT:
+                            InstResumed instResumed = ParseInstantStreamResumption.resumed(parser);
+                            isrKey = instResumed.getKey();
+                            isrHmacHash = instResumed.getHash();
+                            isrAlgo = instResumed.getAlgo();
+
+                            // Mark SM as enabled and resumption as
+                            // successful.
+                            smResumedSyncPoint.reportSuccess();
+                            smEnabledSyncPoint.reportSuccess();
+                            // First, drop the stanzas already handled by
+                            // the server
+                            processHandledCount(instResumed.getHandledCount());
+                            // Then re-send what is left in the unacknowledged
+                            // queue
+                            List<Stanza> stanzasListToResend = new ArrayList<>(unacknowledgedStanzas.size());
+                            unacknowledgedStanzas.drainTo(stanzasListToResend);
+                            for (Stanza stanza : stanzasListToResend) {
+                                sendStanzaInternal(stanza);
+                            }
+                            // If there where stanzas resent, then request a SM
+                            // ack for them.
+                            // Writer's sendStreamElement() won't do it
+                            // automatically based on
+                            // predicates.
+                            if (!stanzasListToResend.isEmpty()) {
+                                requestSmAcknowledgementInternal();
+                            }
+                            LOGGER.fine("Stream Management (XEP-198): Stream resumed");
+                            break;
                         case Resumed.ELEMENT:
                             Resumed resumed = ParseStreamManagement.resumed(parser);
                             if (!smSessionId.equals(resumed.getPrevId())) {
                                 throw new StreamIdDoesNotMatchException(smSessionId, resumed.getPrevId());
                             }
-                            // Mark SM as enabled and resumption as successful.
+                            // Mark SM as enabled and resumption as
+                            // successful.
                             smResumedSyncPoint.reportSuccess();
                             smEnabledSyncPoint.reportSuccess();
-                            // First, drop the stanzas already handled by the server
+                            // First, drop the stanzas already handled by
+                            // the server
                             processHandledCount(resumed.getHandledCount());
-                            // Then re-send what is left in the unacknowledged queue
+                            // Then re-send what is left in the unacknowledged
+                            // queue
                             List<Stanza> stanzasToResend = new ArrayList<>(unacknowledgedStanzas.size());
                             unacknowledgedStanzas.drainTo(stanzasToResend);
                             for (Stanza stanza : stanzasToResend) {
                                 sendStanzaInternal(stanza);
                             }
-                            // If there where stanzas resent, then request a SM ack for them.
-                            // Writer's sendStreamElement() won't do it automatically based on
+                            // If there where stanzas resent, then request a SM
+                            // ack for them.
+                            // Writer's sendStreamElement() won't do it
+                            // automatically based on
                             // predicates.
                             if (!stanzasToResend.isEmpty()) {
                                 requestSmAcknowledgementInternal();
@@ -1763,7 +1848,17 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * Returns true if Stream Management was successfully negotiated with the server.
+     * Returns true if Instant Stream Resumption is supported by the server.
+     *
+     * @return true if Instant Stream Resumption is supported by the server.
+     */
+    public boolean isISRAvailable() {
+        return hasFeature(InstantStreamResumptionFeature.ELEMENT, InstantStreamResumption.NAMESPACE);
+    }
+
+    /**
+     * Returns true if Stream Management was successfully negotiated with the
+     * server.
      *
      * @return true if Stream Management was negotiated.
      */
