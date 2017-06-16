@@ -16,22 +16,6 @@
  */
 package org.jivesoftware.smackx.hashes;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.hashes.element.HashElement;
-
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.WeakHashMap;
-
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.BLAKE2B160;
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.BLAKE2B256;
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.BLAKE2B384;
@@ -46,6 +30,24 @@ import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_224;
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_256;
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_384;
 import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_512;
+
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Security;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.WeakHashMap;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.hashes.element.HashElement;
 
 /**
  * Manager that can be used to determine support for hash functions.
@@ -194,6 +196,10 @@ public final class HashManager extends Manager {
         return getMessageDigest(algorithm).digest(data);
     }
 
+    public static byte[] hash(ALGORITHM algorithm, String data) {
+        return hash(algorithm, utf8(data));
+    }
+
     public static MessageDigest getMessageDigest(ALGORITHM algorithm) {
         MessageDigest md;
         try {
@@ -253,56 +259,224 @@ public final class HashManager extends Manager {
         return getMessageDigest(MD5).digest(data);
     }
 
+    public static byte[] md5(String data) {
+        return md5(utf8(data));
+    }
+
+    public static String md5HexString(byte[] data) {
+        return hex(md5(data));
+    }
+
+    public static String md5HexString(String data) {
+        return hex(md5(data));
+    }
+
     public static byte[] sha_1(byte[] data) {
         return getMessageDigest(SHA_1).digest(data);
+    }
+
+    public static byte[] sha_1(String data) {
+        return sha_1(utf8(data));
+    }
+
+    public static String sha_1HexString(byte[] data) {
+        return hex(sha_1(data));
+    }
+
+    public static String sha_1HexString(String data) {
+        return hex(sha_1(data));
     }
 
     public static byte[] sha_224(byte[] data) {
         return getMessageDigest(SHA_224).digest(data);
     }
 
+    public static byte[] sha_224(String data) {
+        return sha_224(utf8(data));
+    }
+
+    public static String sha_224HexString(byte[] data) {
+        return hex(sha_224(data));
+    }
+
+    public static String sha_224HexString(String data) {
+        return hex(sha_224(data));
+    }
+
     public static byte[] sha_256(byte[] data) {
         return getMessageDigest(SHA_256).digest(data);
+    }
+
+    public static byte[] sha_256(String data) {
+        return sha_256(utf8(data));
+    }
+
+    public static String sha_256HexString(byte[] data) {
+        return hex(sha_256(data));
+    }
+
+    public static String sha_256HexString(String data) {
+        return hex(sha_256(data));
     }
 
     public static byte[] sha_384(byte[] data) {
         return getMessageDigest(SHA_384).digest(data);
     }
 
+    public static byte[] sha_384(String data) {
+        return sha_384(utf8(data));
+    }
+
+    public static String sha_384HexString(byte[] data) {
+        return hex(sha_384(data));
+    }
+
+    public static String sha_384HexString(String data) {
+        return hex(sha_384(data));
+    }
+
     public static byte[] sha_512(byte[] data) {
         return getMessageDigest(SHA_512).digest(data);
+    }
+
+    public static byte[] sha_512(String data) {
+        return sha_512(utf8(data));
+    }
+
+    public static String sha_512HexString(byte[] data) {
+        return hex(sha_512(data));
+    }
+
+    public static String sha_512HexString(String data) {
+        return hex(sha_512(data));
     }
 
     public static byte[] sha3_224(byte[] data) {
         return getMessageDigest(SHA3_224).digest(data);
     }
 
+    public static byte[] sha3_224(String data) {
+        return sha3_224(utf8(data));
+    }
+
+    public static String sha3_224HexString(byte[] data) {
+        return hex(sha3_224(data));
+    }
+
+    public static String sha3_224HexString(String data) {
+        return hex(sha3_224(data));
+    }
+
     public static byte[] sha3_256(byte[] data) {
         return getMessageDigest(SHA3_256).digest(data);
+    }
+
+    public static byte[] sha3_256(String data) {
+        return sha3_256(utf8(data));
+    }
+
+    public static String sha3_256HexString(byte[] data) {
+        return hex(sha3_256(data));
+    }
+
+    public static String sha3_256HexString(String data) {
+        return hex(sha3_256(data));
     }
 
     public static byte[] sha3_384(byte[] data) {
         return getMessageDigest(SHA3_384).digest(data);
     }
 
+    public static byte[] sha3_384(String data) {
+        return sha3_384(utf8(data));
+    }
+
+    public static String sha3_384HexString(byte[] data) {
+        return hex(sha3_384(data));
+    }
+
+    public static String sha3_384HexString(String data) {
+        return hex(sha3_384(data));
+    }
+
     public static byte[] sha3_512(byte[] data) {
         return getMessageDigest(SHA3_512).digest(data);
+    }
+
+    public static byte[] sha3_512(String data) {
+        return sha3_512(utf8(data));
+    }
+
+    public static String sha3_512HexString(byte[] data) {
+        return hex(sha3_512(data));
+    }
+
+    public static String sha3_512HexString(String data) {
+        return hex(sha3_512(data));
     }
 
     public static byte[] blake2b160(byte[] data) {
         return getMessageDigest(BLAKE2B160).digest(data);
     }
 
+    public static byte[] blake2b160(String data) {
+        return blake2b160(utf8(data));
+    }
+
+    public static String blake2b160HexString(byte[] data) {
+        return hex(blake2b160(data));
+    }
+
+    public static String blake2b160HexString(String data) {
+        return hex(blake2b160(data));
+    }
+
     public static byte[] blake2b256(byte[] data) {
         return getMessageDigest(BLAKE2B256).digest(data);
+    }
+
+    public static byte[] blake2b256(String data) {
+        return blake2b256(utf8(data));
+    }
+
+    public static String blake2b256HexString(byte[] data) {
+        return hex(blake2b256(data));
+    }
+
+    public static String blake2b256HexString(String data) {
+        return hex(blake2b256(data));
     }
 
     public static byte[] blake2b384(byte[] data) {
         return getMessageDigest(BLAKE2B384).digest(data);
     }
 
+    public static byte[] blake2b384(String data) {
+        return blake2b384(utf8(data));
+    }
+
+    public String blake2b384HexString(byte[] data) {
+        return hex(blake2b384(data));
+    }
+
+    public String blake2b384HexString(String data) {
+        return hex(blake2b384(data));
+    }
+
     public static byte[] blake2b512(byte[] data) {
         return getMessageDigest(BLAKE2B512).digest(data);
+    }
+
+    public static byte[] blake2b512(String data) {
+        return blake2b512(utf8(data));
+    }
+
+    public String blake2b512HexString(byte[] data) {
+        return hex(blake2b512(data));
+    }
+
+    public String blake2b512HexString(String data) {
+        return hex(blake2b512(data));
     }
 
     /**
@@ -312,6 +486,14 @@ public final class HashManager extends Manager {
      */
     public static String hex(byte[] hash) {
         return new BigInteger(1, hash).toString(16);
+    }
+
+    public static byte[] utf8(String data) {
+        try {
+            return data.getBytes(StringUtils.UTF8);
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
     }
 
 }

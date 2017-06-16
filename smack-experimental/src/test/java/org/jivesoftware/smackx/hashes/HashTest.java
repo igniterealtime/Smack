@@ -16,13 +16,10 @@
  */
 package org.jivesoftware.smackx.hashes;
 
-import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.StringUtils;
-import org.junit.Test;
-
-import java.io.UnsupportedEncodingException;
-
 import static junit.framework.TestCase.assertEquals;
+
+import org.jivesoftware.smack.test.util.SmackTestSuite;
+import org.junit.Test;
 
 /**
  * Test HashManager functionality.
@@ -49,11 +46,7 @@ public class HashTest extends SmackTestSuite {
 
     private byte[] array() {
         if (testArray == null) {
-            try {
-                testArray = testString.getBytes(StringUtils.UTF8);
-            } catch (UnsupportedEncodingException e) {
-                throw new AssertionError("UTF8 MUST be supported.");
-            }
+            testArray = HashManager.utf8(testString);
         }
         return testArray;
     }
