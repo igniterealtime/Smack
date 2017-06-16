@@ -198,6 +198,11 @@ public final class Jingle extends IQ {
             return this;
         }
 
+        public Builder setReason(JingleReason reason) {
+            this.reason = reason;
+            return this;
+        }
+
         public Jingle build() {
             return new Jingle(sid, action, initiator, responder, reason, contents);
         }
