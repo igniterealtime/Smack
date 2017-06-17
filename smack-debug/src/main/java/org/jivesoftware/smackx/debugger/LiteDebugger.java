@@ -48,6 +48,7 @@ import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
 import org.jivesoftware.smack.util.WriterListener;
+
 import org.jxmpp.jid.EntityFullJid;
 
 /**

@@ -17,17 +17,19 @@
 
 package org.jivesoftware.smackx.commands.packet;
 
-import org.jivesoftware.smack.packet.IQ;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.commands.AdHocCommand;
 import org.jivesoftware.smackx.commands.AdHocCommand.Action;
 import org.jivesoftware.smackx.commands.AdHocCommand.SpecificErrorCondition;
 import org.jivesoftware.smackx.commands.AdHocCommandNote;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.jid.Jid;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.jxmpp.jid.Jid;
 
 /**
  * Represents the state and the request of the execution of an adhoc command.

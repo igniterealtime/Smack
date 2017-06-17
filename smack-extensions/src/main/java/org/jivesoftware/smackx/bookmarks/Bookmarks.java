@@ -16,18 +16,20 @@
  */
 package org.jivesoftware.smackx.bookmarks;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Bookmarks is used for storing and retrieving URLS and Conference rooms.

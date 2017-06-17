@@ -17,18 +17,19 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.ParserUtils;
-import org.jxmpp.jid.Jid;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.ParserUtils;
+
+import org.jxmpp.jid.Jid;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Represents a request for getting the jid of the workgroups where an agent can work or could

@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.httpfileupload;
 
-
 import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError;
+
 import org.junit.Assert;
 import org.junit.Test;
 

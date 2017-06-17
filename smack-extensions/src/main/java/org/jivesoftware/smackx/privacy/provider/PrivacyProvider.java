@@ -16,16 +16,18 @@
  */
 package org.jivesoftware.smackx.privacy.provider;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.privacy.packet.Privacy;
 import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * The PrivacyProvider parses {@link Privacy} packets. {@link Privacy}

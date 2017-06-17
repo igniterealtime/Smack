@@ -25,8 +25,10 @@ import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.time.packet.Time;
+
 import org.junit.Test;
 import org.jxmpp.util.XmppDateTime;
 

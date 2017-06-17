@@ -26,9 +26,6 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
@@ -42,8 +39,13 @@ import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.RosterUtil;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+
+import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 

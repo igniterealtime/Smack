@@ -17,14 +17,16 @@
 
 package org.jivesoftware.smackx.workgroup.agent;
 
-import org.jivesoftware.smackx.search.ReportedData;
-import org.jivesoftware.smackx.workgroup.packet.TranscriptSearch;
-import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
+
+import org.jivesoftware.smackx.search.ReportedData;
+import org.jivesoftware.smackx.workgroup.packet.TranscriptSearch;
+import org.jivesoftware.smackx.xdata.Form;
+
 import org.jxmpp.jid.DomainBareJid;
 
 /**

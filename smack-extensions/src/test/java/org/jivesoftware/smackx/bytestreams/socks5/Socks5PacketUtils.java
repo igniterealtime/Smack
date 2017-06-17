@@ -18,9 +18,11 @@ package org.jivesoftware.smackx.bytestreams.socks5;
 
 import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+
 import org.jxmpp.jid.Jid;
 
 /**

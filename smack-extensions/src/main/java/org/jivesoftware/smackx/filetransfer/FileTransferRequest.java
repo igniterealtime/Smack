@@ -17,7 +17,9 @@
 package org.jivesoftware.smackx.filetransfer;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
+
 import org.jxmpp.jid.Jid;
 
 /**

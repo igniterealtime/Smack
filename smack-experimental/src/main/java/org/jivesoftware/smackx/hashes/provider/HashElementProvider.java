@@ -17,8 +17,10 @@
 package org.jivesoftware.smackx.hashes.provider;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.hashes.HashManager;
 import org.jivesoftware.smackx.hashes.element.HashElement;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

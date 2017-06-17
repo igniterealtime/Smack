@@ -16,8 +16,16 @@
  */
 package org.jivesoftware.smackx.omemo.internal;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.omemo.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoStore;
@@ -26,12 +34,6 @@ import org.jivesoftware.smackx.omemo.element.OmemoElement.OmemoHeader.Key;
 import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
 import org.jivesoftware.smackx.omemo.exceptions.MultipleCryptoFailedException;
 import org.jivesoftware.smackx.omemo.exceptions.NoRawSessionException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class represents a OMEMO session between us and another device.

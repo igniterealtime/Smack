@@ -17,13 +17,14 @@
 
 package org.jivesoftware.smackx.muc.packet;
 
+import java.util.Date;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jxmpp.util.XmppDateTime;
 
-import java.util.Date;
+import org.jxmpp.util.XmppDateTime;
 
 /**
  * Represents extended presence information whose sole purpose is to signal the ability of 

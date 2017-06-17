@@ -46,6 +46,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.AbstractPresenceEventListener;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.SubscribeListener;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.iot.IoTManager;
@@ -57,6 +58,7 @@ import org.jivesoftware.smackx.iot.provisioning.element.Friend;
 import org.jivesoftware.smackx.iot.provisioning.element.IoTIsFriend;
 import org.jivesoftware.smackx.iot.provisioning.element.IoTIsFriendResponse;
 import org.jivesoftware.smackx.iot.provisioning.element.Unfriend;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;

@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.jingleold.JingleSession;
 
 import de.javawi.jstun.test.demo.ice.Candidate;

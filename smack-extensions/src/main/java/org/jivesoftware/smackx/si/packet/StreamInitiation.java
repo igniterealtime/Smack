@@ -18,11 +18,13 @@ package org.jivesoftware.smackx.si.packet;
 
 import java.util.Date;
 
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jxmpp.util.XmppDateTime;
+
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
+import org.jxmpp.util.XmppDateTime;
 
 /**
  * The process by which two entities initiate a stream.

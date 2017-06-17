@@ -21,10 +21,12 @@ import java.util.List;
 
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.iot.discovery.element.IoTRegister;
 import org.jivesoftware.smackx.iot.discovery.element.Tag;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
+
 import org.xmlpull.v1.XmlPullParser;
 
 public class IoTRegisterProvider extends IQProvider<IoTRegister> {

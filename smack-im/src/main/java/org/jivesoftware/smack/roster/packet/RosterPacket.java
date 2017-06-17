@@ -17,20 +17,21 @@
 
 package org.jivesoftware.smack.roster.packet;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.NamedElement;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.util.Objects;
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jxmpp.jid.BareJid;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
+import org.jxmpp.jid.BareJid;
 
 /**
  * Represents XMPP roster packets.

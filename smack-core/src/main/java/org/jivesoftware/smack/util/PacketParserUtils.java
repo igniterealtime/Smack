@@ -31,21 +31,22 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.ErrorIQ;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Session;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.UnparsedIQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
-import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
+
 import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -975,6 +976,8 @@ public class PacketParserUtils {
         return new Session.Feature(optional);
 
     }
+
+    // TODO Remove this static method and use ParserUtils.getXmlLang(XmlPullParser) instead.
     private static String getLanguageAttribute(XmlPullParser parser) {
     // CHECKSTYLE:OFF
     	for (int i = 0; i < parser.getAttributeCount(); i++) {

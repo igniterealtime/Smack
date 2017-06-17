@@ -16,15 +16,17 @@
  */
 package org.jivesoftware.smackx.search;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.xdata.Form;
-import org.jivesoftware.smackx.xdata.FormField;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.IQ;
+
+import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.FormField;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * SimpleUserSearch is used to support the non-dataform type of XEP 55. This provides

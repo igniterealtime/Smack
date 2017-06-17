@@ -17,15 +17,16 @@
 
 package org.jivesoftware.smackx.workgroup.settings;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.StringUtils;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.StringUtils;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class GenericSettings extends IQ {
 

@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jxmpp.jid.Jid;
 
 public final class EmptyToMatcher implements StanzaFilter {

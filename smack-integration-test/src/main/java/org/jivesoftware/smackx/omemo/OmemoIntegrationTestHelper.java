@@ -16,10 +16,19 @@
  */
 package org.jivesoftware.smackx.omemo;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
+
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
+
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement;
 import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
@@ -28,14 +37,6 @@ import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.pubsub.PubSubAssertionError;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
-
-import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
 
 /**
  * Class containing some helper methods for OmemoIntegrationTests.

@@ -42,12 +42,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.WeakHashMap;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.hashes.element.HashElement;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * Manager that can be used to determine support for hash functions.

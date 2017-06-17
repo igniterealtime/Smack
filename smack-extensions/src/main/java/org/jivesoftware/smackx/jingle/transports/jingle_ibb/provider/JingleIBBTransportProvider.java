@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.jingle.transports.jingle_ibb.provider;
 
 import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
 import org.jivesoftware.smackx.jingle.transports.jingle_ibb.element.JingleIBBTransport;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

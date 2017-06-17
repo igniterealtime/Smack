@@ -21,8 +21,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.muclight.MultiUserChatLight;
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.BlockingElement;
+
 import org.jxmpp.jid.Jid;
 
 /**

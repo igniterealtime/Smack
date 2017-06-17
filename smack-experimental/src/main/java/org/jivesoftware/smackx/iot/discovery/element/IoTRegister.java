@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.iot.discovery.element;
 import java.util.Collection;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 
 public class IoTRegister extends IQ {

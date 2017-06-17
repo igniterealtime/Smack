@@ -16,19 +16,21 @@
  */
 package org.jivesoftware.smack.omemo;
 
-import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.stringencoder.Base64;
-import org.jivesoftware.smackx.omemo.element.OmemoBundleVAxolotlElement;
-import org.jivesoftware.smackx.omemo.provider.OmemoBundleVAxolotlProvider;
-import org.junit.Test;
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
+import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.stringencoder.Base64;
+
+import org.jivesoftware.smackx.omemo.element.OmemoBundleVAxolotlElement;
+import org.jivesoftware.smackx.omemo.provider.OmemoBundleVAxolotlProvider;
+
+import org.junit.Test;
 
 /**
  * Test serialization and parsing of the OmemoBundleVAxolotlElement.

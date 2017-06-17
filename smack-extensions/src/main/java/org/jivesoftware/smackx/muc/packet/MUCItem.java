@@ -19,8 +19,10 @@ package org.jivesoftware.smackx.muc.packet;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.muc.MUCAffiliation;
 import org.jivesoftware.smackx.muc.MUCRole;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 

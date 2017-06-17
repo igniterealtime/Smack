@@ -26,10 +26,12 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+
 import org.jivesoftware.smackx.commands.AdHocCommandManager;
 import org.jivesoftware.smackx.commands.RemoteCommand;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.util.JidUtil;

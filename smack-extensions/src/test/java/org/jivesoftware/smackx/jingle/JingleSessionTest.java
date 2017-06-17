@@ -16,15 +16,16 @@
  */
 package org.jivesoftware.smackx.jingle;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotSame;
+
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.junit.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotSame;
 
 /**
  * Test JingleSession class.

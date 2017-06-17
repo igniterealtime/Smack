@@ -29,11 +29,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPConnection;
+
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jxmpp.jid.Jid;
 
 public class PingIntegrationTest extends AbstractSmackIntegrationTest {

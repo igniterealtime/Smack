@@ -21,6 +21,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.jivesoftware.smack.StanzaListener;
+
 import org.jxmpp.jid.EntityFullJid;
 
 /**

@@ -17,17 +17,19 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
-import org.jivesoftware.smackx.workgroup.agent.WorkgroupQueue;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
+import org.jivesoftware.smackx.workgroup.agent.WorkgroupQueue;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class QueueOverview implements ExtensionElement {
 

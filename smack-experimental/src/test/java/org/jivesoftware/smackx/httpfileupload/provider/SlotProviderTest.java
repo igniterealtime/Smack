@@ -16,13 +16,15 @@
  */
 package org.jivesoftware.smackx.httpfileupload.provider;
 
+import java.net.URL;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.net.URL;
 
 
 public class SlotProviderTest {

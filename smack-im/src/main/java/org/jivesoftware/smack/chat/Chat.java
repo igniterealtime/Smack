@@ -17,15 +17,16 @@
 
 package org.jivesoftware.smack.chat;
 
-import org.jivesoftware.smack.StanzaCollector;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jxmpp.jid.EntityJid;
 
-import java.util.Set;
-import java.util.Collections;
-import java.util.concurrent.CopyOnWriteArraySet;
+import org.jxmpp.jid.EntityJid;
 
 /**
  * A chat is a series of messages sent between two users. Each chat has a unique

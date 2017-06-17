@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2015 Florian Schmaus
+ * Copyright 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,9 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.Element;
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.NamedElement;
+
 import org.jxmpp.util.XmppDateTime;
 
 public class XmlStringBuilder implements Appendable, CharSequence {
@@ -356,6 +357,13 @@ public class XmlStringBuilder implements Appendable, CharSequence {
 
     public XmlStringBuilder xmllangAttribute(String value) {
         optAttribute("xml:lang", value);
+        return this;
+    }
+
+    public XmlStringBuilder optXmlLangAttribute(String lang) {
+        if (lang != null) {
+            xmllangAttribute(lang);
+        }
         return this;
     }
 

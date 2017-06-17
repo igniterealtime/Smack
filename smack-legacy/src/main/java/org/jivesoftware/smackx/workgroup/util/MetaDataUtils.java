@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.workgroup.MetaData;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

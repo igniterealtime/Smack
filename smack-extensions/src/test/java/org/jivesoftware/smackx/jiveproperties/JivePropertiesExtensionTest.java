@@ -21,8 +21,10 @@ import static org.junit.Assert.assertNotNull;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

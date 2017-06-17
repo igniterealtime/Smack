@@ -16,15 +16,17 @@
  */
 package org.jivesoftware.smackx.commands;
 
+import java.util.List;
+
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.XMPPError;
+
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.xdata.Form;
-import org.jxmpp.jid.Jid;
 
-import java.util.List;
+import org.jxmpp.jid.Jid;
 
 /**
  * An ad-hoc command is responsible for executing the provided service and

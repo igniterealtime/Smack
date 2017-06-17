@@ -28,6 +28,7 @@ import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

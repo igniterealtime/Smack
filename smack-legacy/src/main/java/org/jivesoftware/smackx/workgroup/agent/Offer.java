@@ -17,15 +17,16 @@
 
 package org.jivesoftware.smackx.workgroup.agent;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jxmpp.jid.Jid;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import org.jxmpp.jid.Jid;
 
 /**
  * A class embodying the semantic agent chat offer; specific instances allow the acceptance or

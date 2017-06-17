@@ -19,8 +19,10 @@ package org.jivesoftware.smackx.eme.provider;
 import static org.junit.Assert.assertEquals;
 
 import org.jivesoftware.smack.test.util.TestUtils;
+
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol;
+
 import org.junit.Test;
 
 public class ExplicitMessageEncryptionProviderTest {

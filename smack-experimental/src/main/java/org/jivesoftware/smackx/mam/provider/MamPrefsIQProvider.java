@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.provider.IQProvider;
+
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParser;

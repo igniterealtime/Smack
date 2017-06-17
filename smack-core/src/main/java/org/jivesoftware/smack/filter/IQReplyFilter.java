@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;

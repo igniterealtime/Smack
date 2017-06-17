@@ -17,23 +17,28 @@
 
 package org.jivesoftware.smackx.debugger;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
-import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.debugger.SmackDebugger;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.util.ObservableReader;
-import org.jivesoftware.smack.util.ObservableWriter;
-import org.jivesoftware.smack.util.ReaderListener;
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.WriterListener;
-import org.jxmpp.jid.EntityFullJid;
-import org.jxmpp.jid.Jid;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -64,28 +69,24 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.debugger.SmackDebugger;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.ObservableReader;
+import org.jivesoftware.smack.util.ObservableWriter;
+import org.jivesoftware.smack.util.ReaderListener;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.WriterListener;
+
+import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.Jid;
 
 /**
  * The EnhancedDebugger is a debugger that allows to debug sent, received and interpreted messages

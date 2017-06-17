@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;

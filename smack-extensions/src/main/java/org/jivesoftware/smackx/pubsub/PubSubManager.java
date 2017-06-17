@@ -31,12 +31,13 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.packet.IQ.Type;
-import org.jivesoftware.smack.packet.XMPPError.Condition;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.XMPPError.Condition;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
@@ -46,6 +47,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.jivesoftware.smackx.pubsub.util.NodeUtils;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;

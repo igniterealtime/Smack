@@ -16,12 +16,6 @@
  */
 package org.jivesoftware.smackx.disco.packet;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.TypedCloneable;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jxmpp.util.XmppStringUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +23,13 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.TypedCloneable;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
+import org.jxmpp.util.XmppStringUtils;
 
 /**
  * A DiscoverInfo IQ packet, which is used by XMPP clients to request and receive information 

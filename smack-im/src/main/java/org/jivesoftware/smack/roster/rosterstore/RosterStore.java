@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jivesoftware.smack.roster.packet.RosterPacket;
+
 import org.jxmpp.jid.Jid;
 
 /**

@@ -19,7 +19,9 @@ package org.jivesoftware.smackx.blocking;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.blocking.element.BlockListIQ;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;

@@ -32,15 +32,16 @@ import javax.xml.parsers.FactoryConfigurationError;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jxmpp.util.XmppDateTime;
+
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.delay.DelayInformationManager;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import com.jamesmurty.utils.XMLBuilder;
+import org.junit.Test;
+import org.jxmpp.util.XmppDateTime;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class DelayInformationTest extends InitExtensions {
 

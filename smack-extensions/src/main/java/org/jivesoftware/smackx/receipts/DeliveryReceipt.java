@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.receipts;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;

@@ -33,19 +33,19 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.test.util.XmlUnitUtils;
+
+import com.jamesmurty.utils.XMLBuilder;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import com.jamesmurty.utils.XMLBuilder;
 
 public class PacketParserUtilsTest {
 

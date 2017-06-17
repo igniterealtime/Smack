@@ -21,16 +21,17 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+
+import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.TestNotPossibleException;
 
 public class StreamManagementTest extends AbstractSmackLowLevelIntegrationTest {
 

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.hashes;
 import static junit.framework.TestCase.assertEquals;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.junit.Test;
 
 /**

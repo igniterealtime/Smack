@@ -25,8 +25,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
@@ -35,11 +35,13 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
+
 import org.jxmpp.jid.Jid;
 
 /**

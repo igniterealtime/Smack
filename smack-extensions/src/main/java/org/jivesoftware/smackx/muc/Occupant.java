@@ -19,9 +19,11 @@ package org.jivesoftware.smackx.muc;
 
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.packet.Presence;
+
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
-import org.jivesoftware.smack.packet.Presence;
+
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;

@@ -19,6 +19,7 @@ package org.jivesoftware.smack.provider;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.xmlpull.v1.XmlPullParser;
 
 public abstract class Provider<E extends Element> {

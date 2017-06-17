@@ -16,10 +16,11 @@
  */
 package org.jivesoftware.smackx.jingleold.mediaimpl.sshare.api;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 /**
  * Implements a default PNG decoder.

@@ -18,7 +18,9 @@ package org.jivesoftware.smackx.push_notifications;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.push_notifications.element.PushNotificationsElements.RemoteDisablingExtension;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;

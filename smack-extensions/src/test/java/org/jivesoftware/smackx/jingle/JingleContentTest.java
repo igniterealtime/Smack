@@ -16,15 +16,17 @@
  */
 package org.jivesoftware.smackx.jingle;
 
-import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smackx.jingle.element.JingleContent;
-import org.junit.Test;
-
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
+
+import org.jivesoftware.smack.test.util.SmackTestSuite;
+
+import org.jivesoftware.smackx.jingle.element.JingleContent;
+
+import org.junit.Test;
 
 /**
  * Test the JingleContent class.

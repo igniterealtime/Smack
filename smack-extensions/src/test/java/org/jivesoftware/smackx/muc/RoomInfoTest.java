@@ -16,12 +16,12 @@
  */
 package org.jivesoftware.smackx.muc;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 

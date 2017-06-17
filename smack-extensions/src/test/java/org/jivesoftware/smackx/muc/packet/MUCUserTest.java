@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jivesoftware.smackx.muc.packet.MUCUser.Status;
+
 import org.junit.Test;
 
 public class MUCUserTest {

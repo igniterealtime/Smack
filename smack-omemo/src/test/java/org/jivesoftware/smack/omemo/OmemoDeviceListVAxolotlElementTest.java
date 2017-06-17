@@ -16,17 +16,19 @@
  */
 package org.jivesoftware.smack.omemo;
 
-import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smackx.omemo.element.OmemoDeviceListVAxolotlElement;
-import org.jivesoftware.smackx.omemo.provider.OmemoDeviceListVAxolotlProvider;
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
+import org.jivesoftware.smack.test.util.TestUtils;
+
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceListVAxolotlElement;
+import org.jivesoftware.smackx.omemo.provider.OmemoDeviceListVAxolotlProvider;
+
+import org.junit.Test;
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Test serialization and parsing of DeviceListElement.

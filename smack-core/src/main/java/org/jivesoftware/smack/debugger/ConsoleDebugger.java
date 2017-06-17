@@ -16,14 +16,14 @@
  */
 package org.jivesoftware.smack.debugger;
 
-import org.jivesoftware.smack.XMPPConnection;
-
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.jivesoftware.smack.XMPPConnection;
 
 /**
  * Very simple debugger that prints to the console (stdout) the sent and received stanzas. Use

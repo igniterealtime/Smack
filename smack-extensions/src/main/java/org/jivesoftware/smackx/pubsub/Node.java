@@ -21,16 +21,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
 import org.jivesoftware.smack.filter.OrFilter;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.delay.DelayInformationManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.pubsub.listener.ItemDeleteListener;

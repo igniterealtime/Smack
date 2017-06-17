@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jivesoftware.smack.util.Async;
+
 import org.jivesoftware.smackx.iot.element.NodeInfo;
+
 import org.jxmpp.jid.BareJid;
 
 public class ThingState {

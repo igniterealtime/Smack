@@ -20,8 +20,10 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
+
 import org.jxmpp.jid.Jid;
 
 /**

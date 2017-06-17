@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.SmackException;
+
 import org.jxmpp.jid.BareJid;
 
 public abstract class PubSubException extends SmackException {

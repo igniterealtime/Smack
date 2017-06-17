@@ -25,6 +25,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.filetransfer.StreamNegotiator;

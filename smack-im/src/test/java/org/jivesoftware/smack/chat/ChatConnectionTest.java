@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smack.chat;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.jivesoftware.smack.DummyConnection;
@@ -28,6 +28,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.test.util.WaitForPacketListener;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

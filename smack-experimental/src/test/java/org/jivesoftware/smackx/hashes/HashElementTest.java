@@ -25,8 +25,10 @@ import static org.junit.Assert.assertArrayEquals;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.hashes.provider.HashElementProvider;
+
 import org.junit.Test;
 
 /**

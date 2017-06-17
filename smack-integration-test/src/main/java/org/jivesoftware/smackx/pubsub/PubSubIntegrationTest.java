@@ -20,13 +20,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jxmpp.jid.DomainBareJid;
 
 public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {

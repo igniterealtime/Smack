@@ -21,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+
 import org.jxmpp.jid.DomainBareJid;
 
 public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmackIntTest {

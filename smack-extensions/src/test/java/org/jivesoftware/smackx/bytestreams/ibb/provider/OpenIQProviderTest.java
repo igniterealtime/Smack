@@ -25,12 +25,12 @@ import java.util.Properties;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParserFactory;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import com.jamesmurty.utils.XMLBuilder;
+import org.junit.Test;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Test for the OpenIQProvider class.

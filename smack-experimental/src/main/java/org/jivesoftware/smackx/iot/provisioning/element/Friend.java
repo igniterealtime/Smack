@@ -20,6 +20,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jxmpp.jid.BareJid;
 
 public class Friend implements ExtensionElement {

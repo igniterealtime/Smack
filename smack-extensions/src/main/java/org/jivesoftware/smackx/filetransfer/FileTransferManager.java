@@ -16,6 +16,11 @@
  */
 package org.jivesoftware.smackx.filetransfer;
 
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -23,13 +28,10 @@ import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smackx.si.packet.StreamInitiation;
-import org.jxmpp.jid.EntityFullJid;
 
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import org.jivesoftware.smackx.si.packet.StreamInitiation;
+
+import org.jxmpp.jid.EntityFullJid;
 
 /**
  * The file transfer manager class handles the sending and recieving of files.

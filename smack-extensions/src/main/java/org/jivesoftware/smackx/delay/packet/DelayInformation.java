@@ -18,9 +18,10 @@ package org.jivesoftware.smackx.delay.packet;
 
 import java.util.Date;
 
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jxmpp.util.XmppDateTime;
 
 /**

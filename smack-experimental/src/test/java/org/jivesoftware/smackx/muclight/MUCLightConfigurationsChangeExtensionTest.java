@@ -18,7 +18,9 @@ package org.jivesoftware.smackx.muclight;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.ConfigurationsChangeExtension;
+
 import org.junit.Assert;
 import org.junit.Test;
 

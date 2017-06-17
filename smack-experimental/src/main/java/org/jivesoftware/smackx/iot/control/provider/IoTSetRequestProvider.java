@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.provider.IQProvider;
+
 import org.jivesoftware.smackx.iot.control.element.IoTSetRequest;
 import org.jivesoftware.smackx.iot.control.element.SetBoolData;
 import org.jivesoftware.smackx.iot.control.element.SetData;
 import org.jivesoftware.smackx.iot.control.element.SetDoubleData;
 import org.jivesoftware.smackx.iot.control.element.SetIntData;
 import org.jivesoftware.smackx.iot.control.element.SetLongData;
+
 import org.xmlpull.v1.XmlPullParser;
 
 public class IoTSetRequestProvider extends IQProvider<IoTSetRequest> {

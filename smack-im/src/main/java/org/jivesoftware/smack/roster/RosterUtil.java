@@ -27,6 +27,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Presence;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 

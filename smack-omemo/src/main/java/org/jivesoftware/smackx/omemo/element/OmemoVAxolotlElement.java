@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smackx.omemo.element;
 
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smack.util.stringencoder.Base64;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 
 import java.io.UnsupportedEncodingException;
 
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 
 /**
  * An OMEMO (PreKey)WhisperMessage element.

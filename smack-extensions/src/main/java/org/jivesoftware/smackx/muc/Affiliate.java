@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.muc;
 
 import org.jivesoftware.smackx.muc.packet.MUCItem;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 

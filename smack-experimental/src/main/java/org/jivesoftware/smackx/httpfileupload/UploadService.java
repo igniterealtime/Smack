@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.httpfileupload;
 
 import org.jivesoftware.smack.util.Objects;
+
 import org.jxmpp.jid.DomainBareJid;
 
 public class UploadService {

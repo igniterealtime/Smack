@@ -29,12 +29,14 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base32;
 import org.jivesoftware.smack.util.stringencoder.StringEncoder;
+
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.caps.cache.SimpleDirectoryPersistentCache;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;

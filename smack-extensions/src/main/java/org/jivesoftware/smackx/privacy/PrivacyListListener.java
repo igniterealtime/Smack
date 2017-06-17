@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.privacy;
 
-import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
-
 import java.util.List;
+
+import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 
 /**
  * Interface to implement classes to listen for server events about privacy communication. 

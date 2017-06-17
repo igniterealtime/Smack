@@ -16,15 +16,15 @@
  */
 package org.jivesoftware.smackx.jingleold.mediaimpl.multi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingleold.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
 import org.jivesoftware.smackx.jingleold.nat.JingleTransportManager;
 import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implements a MultiMediaManager using other JingleMediaManager implementations.

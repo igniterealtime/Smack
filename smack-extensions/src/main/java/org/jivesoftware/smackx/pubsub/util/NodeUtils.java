@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.pubsub.util;
 
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.pubsub.ConfigureForm;
 import org.jivesoftware.smackx.pubsub.FormNode;
 import org.jivesoftware.smackx.pubsub.PubSubElementType;

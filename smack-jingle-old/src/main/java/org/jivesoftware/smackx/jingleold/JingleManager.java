@@ -23,18 +23,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterListener;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.jingleold.listeners.CreatedJingleSessionListener;
 import org.jivesoftware.smackx.jingleold.listeners.JingleListener;
@@ -47,6 +48,7 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingleold.nat.TransportResolver;
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.provider.JingleProvider;
+
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 

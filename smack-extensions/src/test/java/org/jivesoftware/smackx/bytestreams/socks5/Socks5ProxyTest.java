@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.junit.After;
 import org.junit.Test;
 

@@ -35,8 +35,10 @@ import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.SHA1;
+
 import org.jivesoftware.smackx.bob.element.BoBIQ;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.cache.LruCache;
 

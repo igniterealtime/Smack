@@ -20,13 +20,24 @@
  */
 package org.jivesoftware.smack.omemo;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNotSame;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
+
 import org.jivesoftware.smackx.omemo.element.OmemoBundleVAxolotlElement;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.provider.OmemoBundleVAxolotlProvider;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoKeyUtil;
+
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -36,15 +47,6 @@ import org.whispersystems.libsignal.SignalProtocolAddress;
 import org.whispersystems.libsignal.state.PreKeyBundle;
 import org.whispersystems.libsignal.state.PreKeyRecord;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
-
-import java.util.HashMap;
-import java.util.Iterator;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNotSame;
-import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
 
 /**
  * Test SignalOmemoKeyUtil methods.

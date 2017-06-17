@@ -25,8 +25,10 @@ import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.iqversion.packet.Version;
+
 import org.junit.Test;
 
 public class VersionTest extends InitExtensions {

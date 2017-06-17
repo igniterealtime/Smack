@@ -17,7 +17,11 @@
 package org.jivesoftware.smack.sm.provider;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.jivesoftware.smack.packet.AbstractTextElement;
+import org.jivesoftware.smack.packet.StanzaErrorTextElement;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.sm.packet.StreamManagement.AckAnswer;
 import org.jivesoftware.smack.sm.packet.StreamManagement.AckRequest;
@@ -25,6 +29,7 @@ import org.jivesoftware.smack.sm.packet.StreamManagement.Enabled;
 import org.jivesoftware.smack.sm.packet.StreamManagement.Failed;
 import org.jivesoftware.smack.sm.packet.StreamManagement.Resumed;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -45,6 +50,7 @@ public class ParseStreamManagement {
         ParserUtils.assertAtStartTag(parser);
         String name;
         XMPPError.Condition condition = null;
+        List<StanzaErrorTextElement> textElements = new ArrayList<>(4);
         outerloop:
         while (true) {
             int event = parser.next();
@@ -53,7 +59,14 @@ public class ParseStreamManagement {
                 name = parser.getName();
                 String namespace = parser.getNamespace();
                 if (XMPPError.NAMESPACE.equals(namespace)) {
-                    condition = XMPPError.Condition.fromString(name);
+                    if (name.equals(AbstractTextElement.ELEMENT)) {
+                        String lang = ParserUtils.getXmlLang(parser);
+                        String text = parser.nextText();
+                        StanzaErrorTextElement stanzaErrorTextElement = new StanzaErrorTextElement(text, lang);
+                        textElements.add(stanzaErrorTextElement);
+                    } else {
+                        condition = XMPPError.Condition.fromString(name);
+                    }
                 }
                 break;
             case XmlPullParser.END_TAG:
@@ -65,7 +78,7 @@ public class ParseStreamManagement {
             }
         }
         ParserUtils.assertAtEndTag(parser);
-        return new Failed(condition);
+        return new Failed(condition, textElements);
     }
 
     public static Resumed resumed(XmlPullParser parser) throws XmlPullParserException, IOException {

@@ -17,13 +17,13 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Stanza;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * Represents the conversation transcript that occured in a group chat room between an Agent

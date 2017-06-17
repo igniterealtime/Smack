@@ -18,14 +18,14 @@
 
 package org.jivesoftware.smack.debugger;
 
-import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.XMPPConnection;
-
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.XMPPConnection;
 
 public class ReflectionDebuggerFactory implements SmackDebuggerFactory {
     private static final Logger LOGGER = Logger.getLogger(ReflectionDebuggerFactory.class.getName());

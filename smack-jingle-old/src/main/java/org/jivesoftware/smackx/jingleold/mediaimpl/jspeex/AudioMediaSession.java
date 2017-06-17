@@ -29,15 +29,15 @@ import javax.media.format.UnsupportedFormatException;
 import javax.media.rtp.rtcp.SenderReport;
 import javax.media.rtp.rtcp.SourceDescription;
 
-import mil.jfcom.cie.media.session.MediaSession;
-import mil.jfcom.cie.media.session.MediaSessionListener;
-import mil.jfcom.cie.media.session.StreamPlayer;
-import mil.jfcom.cie.media.srtp.packetizer.SpeexFormat;
-
 import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.media.JingleMediaSession;
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
 import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
+
+import mil.jfcom.cie.media.session.MediaSession;
+import mil.jfcom.cie.media.session.MediaSessionListener;
+import mil.jfcom.cie.media.session.StreamPlayer;
+import mil.jfcom.cie.media.srtp.packetizer.SpeexFormat;
 
 /**
  * This Class implements a complete JingleMediaSession.

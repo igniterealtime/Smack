@@ -18,9 +18,11 @@ package org.jivesoftware.smackx.bob.provider;
 
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.bob.BoBData;
 import org.jivesoftware.smackx.bob.BoBHash;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

@@ -21,8 +21,10 @@ import static org.junit.Assert.assertNotNull;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
+
 import org.junit.Test;
 
 public class RSMSetProviderTest extends InitExtensions {

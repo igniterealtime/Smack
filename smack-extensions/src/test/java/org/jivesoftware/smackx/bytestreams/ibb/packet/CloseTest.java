@@ -16,17 +16,18 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
-import static org.junit.Assert.assertEquals;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.InitExtensions;
-import org.junit.Test;
-import org.jxmpp.jid.impl.JidCreate;
 
 import com.jamesmurty.utils.XMLBuilder;
+import org.junit.Test;
+import org.jxmpp.jid.impl.JidCreate;
 
 /**
  * Test for the Close class.

@@ -22,9 +22,11 @@ import java.util.List;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.junit.Assert;
 import org.junit.Test;
 

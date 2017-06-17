@@ -19,10 +19,10 @@ package org.jivesoftware.smack.provider;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.junit.Assert;
-
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.FileUtils;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 

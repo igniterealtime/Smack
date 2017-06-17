@@ -17,10 +17,10 @@
 
 package org.jivesoftware.smackx.xevent.packet;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * Represents message events relating to the delivery, display, composition and cancellation of 

@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.bob.element;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.bob.BoBHash;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;

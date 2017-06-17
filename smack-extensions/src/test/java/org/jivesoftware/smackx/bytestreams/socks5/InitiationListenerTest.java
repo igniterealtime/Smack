@@ -19,14 +19,17 @@ package org.jivesoftware.smackx.bytestreams.socks5;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
+
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.jxmpp.jid.DomainBareJid;
@@ -42,6 +45,8 @@ import org.powermock.reflect.Whitebox;
  * @author Henning Staib
  */
 public class InitiationListenerTest {
+
+    private final int TIMEOUT = 10000;
 
     static final EntityFullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
     static final EntityFullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
@@ -92,12 +97,9 @@ public class InitiationListenerTest {
         // run the listener with the initiation packet
         initiationListener.handleIQRequest(initBytestream);
 
-        // wait because packet is processed in an extra thread
-        Thread.sleep(200);
-
         // capture reply to the SOCKS5 Bytestream initiation
         ArgumentCaptor<IQ> argument = ArgumentCaptor.forClass(IQ.class);
-        verify(connection).sendStanza(argument.capture());
+        verify(connection, timeout(TIMEOUT)).sendStanza(argument.capture());
 
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());
@@ -122,12 +124,9 @@ public class InitiationListenerTest {
         // run the listener with the initiation packet
         initiationListener.handleIQRequest(initBytestream);
 
-        // wait because packet is processed in an extra thread
-        Thread.sleep(200);
-
         // assert listener is called once
         ArgumentCaptor<BytestreamRequest> byteStreamRequest = ArgumentCaptor.forClass(BytestreamRequest.class);
-        verify(listener).incomingBytestreamRequest(byteStreamRequest.capture());
+        verify(listener, timeout(TIMEOUT)).incomingBytestreamRequest(byteStreamRequest.capture());
 
         // assert that listener is called for the correct request
         assertEquals(initiatorJID, byteStreamRequest.getValue().getFrom());
@@ -150,12 +149,9 @@ public class InitiationListenerTest {
         // run the listener with the initiation packet
         initiationListener.handleIQRequest(initBytestream);
 
-        // wait because packet is processed in an extra thread
-        Thread.sleep(200);
-
         // assert listener is called once
         ArgumentCaptor<BytestreamRequest> byteStreamRequest = ArgumentCaptor.forClass(BytestreamRequest.class);
-        verify(listener).incomingBytestreamRequest(byteStreamRequest.capture());
+        verify(listener, timeout(TIMEOUT)).incomingBytestreamRequest(byteStreamRequest.capture());
 
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, byteStreamRequest.getValue().getFrom());
@@ -178,16 +174,13 @@ public class InitiationListenerTest {
         // run the listener with the initiation packet
         initiationListener.handleIQRequest(initBytestream);
 
-        // wait because packet is processed in an extra thread
-        Thread.sleep(200);
-
         // assert listener is not called
         ArgumentCaptor<BytestreamRequest> byteStreamRequest = ArgumentCaptor.forClass(BytestreamRequest.class);
         verify(listener, never()).incomingBytestreamRequest(byteStreamRequest.capture());
 
         // capture reply to the SOCKS5 Bytestream initiation
         ArgumentCaptor<IQ> argument = ArgumentCaptor.forClass(IQ.class);
-        verify(connection).sendStanza(argument.capture());
+        verify(connection, timeout(TIMEOUT)).sendStanza(argument.capture());
 
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());
@@ -216,12 +209,9 @@ public class InitiationListenerTest {
         // run the listener with the initiation packet
         initiationListener.handleIQRequest(initBytestream);
 
-        // wait because packet is processed in an extra thread
-        Thread.sleep(200);
-
         // assert user request listener is called once
         ArgumentCaptor<BytestreamRequest> byteStreamRequest = ArgumentCaptor.forClass(BytestreamRequest.class);
-        verify(userRequestsListener).incomingBytestreamRequest(byteStreamRequest.capture());
+        verify(userRequestsListener, timeout(TIMEOUT)).incomingBytestreamRequest(byteStreamRequest.capture());
 
         // assert all requests listener is not called
         byteStreamRequest = ArgumentCaptor.forClass(BytestreamRequest.class);
@@ -250,16 +240,15 @@ public class InitiationListenerTest {
         // run the listener with the initiation packet
         initiationListener.handleIQRequest(initBytestream);
 
-        // wait because packet is processed in an extra thread
-        Thread.sleep(200);
-
-        // assert user request listener is not called
         ArgumentCaptor<BytestreamRequest> byteStreamRequest = ArgumentCaptor.forClass(BytestreamRequest.class);
-        verify(userRequestsListener, never()).incomingBytestreamRequest(byteStreamRequest.capture());
 
         // assert all requests listener is called
         byteStreamRequest = ArgumentCaptor.forClass(BytestreamRequest.class);
-        verify(allRequestsListener).incomingBytestreamRequest(byteStreamRequest.capture());
+        verify(allRequestsListener, timeout(TIMEOUT)).incomingBytestreamRequest(byteStreamRequest.capture());
+
+        // assert user request listener is not called
+        verify(userRequestsListener, never()).incomingBytestreamRequest(byteStreamRequest.capture());
+
 
     }
 
@@ -285,9 +274,6 @@ public class InitiationListenerTest {
         // run the listener with the initiation packet
         initiationListener.handleIQRequest(initBytestream);
 
-        // wait because packet is processed in an extra thread
-        Thread.sleep(200);
-
         // assert user request listener is not called
         ArgumentCaptor<BytestreamRequest> byteStreamRequest = ArgumentCaptor.forClass(BytestreamRequest.class);
         verify(userRequestsListener, never()).incomingBytestreamRequest(byteStreamRequest.capture());
@@ -299,11 +285,8 @@ public class InitiationListenerTest {
         // run the listener with the initiation packet again
         initiationListener.handleIQRequest(initBytestream);
 
-        // wait because packet is processed in an extra thread
-        Thread.sleep(200);
-
         // assert user request listener is called on the second request with the same session ID
-        verify(userRequestsListener).incomingBytestreamRequest(byteStreamRequest.capture());
+        verify(userRequestsListener, timeout(TIMEOUT)).incomingBytestreamRequest(byteStreamRequest.capture());
 
         // assert all requests listener is not called
         byteStreamRequest = ArgumentCaptor.forClass(BytestreamRequest.class);

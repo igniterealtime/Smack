@@ -16,22 +16,24 @@
  */
 package org.jivesoftware.smackx.omemo;
 
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.igniterealtime.smack.inttest.TestNotPossibleException;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
+import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.cleanServerSideTraces;
+import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.setUpOmemoManager;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
-import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.cleanServerSideTraces;
-import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.setUpOmemoManager;
+import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.TestNotPossibleException;
 
 public class OmemoInitializationTest extends AbstractOmemoIntegrationTest {
 

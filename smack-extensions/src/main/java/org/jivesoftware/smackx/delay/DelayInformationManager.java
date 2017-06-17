@@ -18,8 +18,9 @@ package org.jivesoftware.smackx.delay;
 
 import java.util.Date;
 
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 
 /**

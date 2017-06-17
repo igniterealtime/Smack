@@ -17,13 +17,14 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
-import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.util.PacketParserUtils;
-import org.xmlpull.v1.XmlPullParser;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.PacketParserUtils;
+
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * An IQProvider for transcripts.

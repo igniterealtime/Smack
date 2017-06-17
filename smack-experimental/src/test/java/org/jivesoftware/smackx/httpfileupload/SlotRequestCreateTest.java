@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.httpfileupload;
 
 import org.jivesoftware.smackx.httpfileupload.element.SlotRequest;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.JidTestUtil;

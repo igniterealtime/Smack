@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.push_notifications;
 import java.util.HashMap;
 
 import org.jivesoftware.smackx.push_notifications.element.EnablePushNotificationsIQ;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;

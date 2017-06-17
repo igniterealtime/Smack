@@ -20,10 +20,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+
 import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 
 public class WaitForClosingStreamElementTest extends AbstractSmackLowLevelIntegrationTest {
 

@@ -16,24 +16,6 @@
  */
 package org.jivesoftware.smackx.httpfileupload;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPConnectionRegistry;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.httpfileupload.UploadService.Version;
-import org.jivesoftware.smackx.httpfileupload.element.Slot;
-import org.jivesoftware.smackx.httpfileupload.element.SlotRequest;
-import org.jivesoftware.smackx.httpfileupload.element.SlotRequest_V0_2;
-import org.jivesoftware.smackx.xdata.FormField;
-import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.jid.DomainBareJid;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,6 +34,26 @@ import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+
+import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPConnectionRegistry;
+import org.jivesoftware.smack.XMPPException;
+
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.httpfileupload.UploadService.Version;
+import org.jivesoftware.smackx.httpfileupload.element.Slot;
+import org.jivesoftware.smackx.httpfileupload.element.SlotRequest;
+import org.jivesoftware.smackx.httpfileupload.element.SlotRequest_V0_2;
+import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
+
+import org.jxmpp.jid.DomainBareJid;
 
 /**
  * A manager for XEP-0363: HTTP File Upload.

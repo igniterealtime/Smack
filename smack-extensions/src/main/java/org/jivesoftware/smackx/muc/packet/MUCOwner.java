@@ -16,11 +16,11 @@
  */
 
 package org.jivesoftware.smackx.muc.packet;
-import org.jivesoftware.smack.packet.IQ;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.IQ;
 
 /**
  * IQ stanza(/packet) that serves for granting and revoking ownership privileges, granting 

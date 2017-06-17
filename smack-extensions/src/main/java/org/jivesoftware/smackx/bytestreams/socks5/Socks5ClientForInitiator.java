@@ -28,8 +28,10 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
+
 import org.jxmpp.jid.Jid;
 
 /**

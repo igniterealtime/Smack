@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingleold;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.packet.JingleError;
 

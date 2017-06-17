@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smackx.hashes.element;
 
+import static org.jivesoftware.smack.util.Objects.requireNonNull;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
-import org.jivesoftware.smackx.hashes.HashManager;
 
-import static org.jivesoftware.smack.util.Objects.requireNonNull;
+import org.jivesoftware.smackx.hashes.HashManager;
 
 /**
  * Represent a hash element.

@@ -22,6 +22,7 @@ package org.jivesoftware.smackx.omemo.signal;
 
 import org.jivesoftware.smackx.omemo.OmemoStore;
 import org.jivesoftware.smackx.omemo.util.OmemoKeyUtil;
+
 import org.whispersystems.libsignal.IdentityKey;
 import org.whispersystems.libsignal.IdentityKeyPair;
 import org.whispersystems.libsignal.SessionCipher;

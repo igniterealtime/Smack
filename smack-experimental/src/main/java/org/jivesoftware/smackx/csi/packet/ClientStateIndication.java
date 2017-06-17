@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.csi.packet;
 
-import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Nonza;
 
 /**
  * Client State Indication.

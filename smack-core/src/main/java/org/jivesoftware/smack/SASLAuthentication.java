@@ -17,20 +17,6 @@
 
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.Mechanisms;
-import org.jivesoftware.smack.sasl.SASLErrorException;
-import org.jivesoftware.smack.sasl.SASLMechanism;
-import org.jivesoftware.smack.sasl.core.ScramSha1PlusMechanism;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
-import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.EntityBareJid;
-
-import javax.net.ssl.SSLSession;
-import javax.security.auth.callback.CallbackHandler;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +27,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import javax.net.ssl.SSLSession;
+import javax.security.auth.callback.CallbackHandler;
+
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.Mechanisms;
+import org.jivesoftware.smack.sasl.SASLErrorException;
+import org.jivesoftware.smack.sasl.SASLMechanism;
+import org.jivesoftware.smack.sasl.core.ScramSha1PlusMechanism;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
+import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
+
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityBareJid;
 
 /**
  * <p>This class is responsible authenticating the user using SASL, binding the resource

@@ -26,6 +26,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackFuture.InternalSmackFuture;
 import org.jivesoftware.smack.SmackFuture.SimpleInternalSmackFuture;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.junit.Test;
 
 public class SmackFutureTest {

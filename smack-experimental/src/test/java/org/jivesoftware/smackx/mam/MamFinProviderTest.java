@@ -19,9 +19,11 @@ package org.jivesoftware.smackx.mam;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.mam.element.MamFinIQ;
 import org.jivesoftware.smackx.mam.provider.MamFinIQProvider;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;

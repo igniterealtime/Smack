@@ -23,7 +23,9 @@ import java.io.IOException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
+
 import org.junit.Test;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;

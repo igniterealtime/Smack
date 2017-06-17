@@ -19,7 +19,9 @@ package org.jivesoftware.smackx.pubsub.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.pubsub.Subscription;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

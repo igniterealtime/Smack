@@ -23,14 +23,15 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
-import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.sasl.SASLErrorException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.StringUtils;
+
+import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 
 public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
 

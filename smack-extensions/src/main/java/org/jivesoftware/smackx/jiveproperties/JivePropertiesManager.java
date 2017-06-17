@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
 
 public class JivePropertiesManager {

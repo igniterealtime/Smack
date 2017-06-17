@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smackx.xhtmlim;
 
+import java.util.List;
+
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -24,11 +26,11 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
-import org.jxmpp.jid.Jid;
 
-import java.util.List;
+import org.jxmpp.jid.Jid;
 
 /**
  * Manages XHTML formatted texts within messages. A XHTMLManager provides a high level access to 

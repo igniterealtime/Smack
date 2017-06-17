@@ -28,6 +28,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AbstractConnectionClosedListener;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -35,19 +37,19 @@ import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.SmackFuture.InternalSmackFuture;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.ping.packet.Ping;
+
 import org.jxmpp.jid.Jid;
 
 /**

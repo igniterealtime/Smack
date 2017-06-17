@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.jingleold.ContentNegotiator;
 import org.jivesoftware.smackx.jingleold.JingleActionEnum;
 import org.jivesoftware.smackx.jingleold.JingleException;

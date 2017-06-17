@@ -19,6 +19,7 @@ package org.jivesoftware.smack.packet;
 import static org.junit.Assert.assertEquals;
 
 import org.jivesoftware.smack.packet.Presence.Mode;
+
 import org.junit.Test;
 import org.jxmpp.jid.JidTestUtil;
 import org.jxmpp.stringprep.XmppStringprepException;

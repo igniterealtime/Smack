@@ -19,8 +19,10 @@ package org.jivesoftware.smackx.caps.provider;
 import static org.junit.Assert.assertNotNull;
 
 import org.jivesoftware.smack.test.util.TestUtils;
+
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
+
 import org.junit.Test;
 
 public class CapsExtensionProviderTest extends InitExtensions {

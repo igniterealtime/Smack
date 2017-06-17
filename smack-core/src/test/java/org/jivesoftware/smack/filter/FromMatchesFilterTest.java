@@ -16,11 +16,12 @@
  */
 package org.jivesoftware.smack.filter;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.junit.Test;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;

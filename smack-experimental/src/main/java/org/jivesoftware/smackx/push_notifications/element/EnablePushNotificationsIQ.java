@@ -21,9 +21,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.jxmpp.jid.Jid;
 
 /**

@@ -23,7 +23,9 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
+
 import org.jivesoftware.smackx.iot.provisioning.IoTProvisioningManager;
+
 import org.jxmpp.jid.Jid;
 
 public abstract class IoTManager extends Manager {

@@ -20,9 +20,11 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
 import org.jivesoftware.smackx.jingleold.packet.JingleContentDescription;
 import org.jivesoftware.smackx.jingleold.packet.JingleContentDescription.JinglePayloadType;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

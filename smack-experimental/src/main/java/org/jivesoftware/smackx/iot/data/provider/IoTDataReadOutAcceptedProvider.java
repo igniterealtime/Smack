@@ -18,7 +18,9 @@ package org.jivesoftware.smackx.iot.data.provider;
 
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.iot.data.element.IoTDataReadOutAccepted;
+
 import org.xmlpull.v1.XmlPullParser;
 
 public class IoTDataReadOutAcceptedProvider extends IQProvider<IoTDataReadOutAccepted> {

@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.filter.jidtype;
 
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jxmpp.jid.Jid;
 
 /**

@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.jivesoftware.smack.SmackException;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.EntityJid;
@@ -249,5 +250,10 @@ public class ParserUtils {
             throw new IOException("Next text is null or empty (" + text + ')');
         }
         return text;
+    }
+
+    public static String getXmlLang(XmlPullParser parser) {
+        String langString = parser.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
+        return langString;
     }
 }

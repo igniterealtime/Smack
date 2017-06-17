@@ -17,7 +17,9 @@
 package org.jivesoftware.smackx.bytestreams.ibb.provider;
 
 import org.jivesoftware.smack.provider.IQProvider;
+
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

@@ -20,6 +20,17 @@
  */
 package org.jivesoftware.smack.omemo;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.powermock.api.mockito.PowerMockito.when;
+
+import java.io.File;
+import java.util.Date;
+
 import org.jivesoftware.smackx.omemo.FileBasedOmemoStore;
 import org.jivesoftware.smackx.omemo.OmemoConfiguration;
 import org.jivesoftware.smackx.omemo.OmemoManager;
@@ -27,6 +38,7 @@ import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.CachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.signal.SignalFileBasedOmemoStore;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,17 +52,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.whispersystems.libsignal.IdentityKey;
 import org.whispersystems.libsignal.IdentityKeyPair;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
-
-import java.io.File;
-import java.util.Date;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertArrayEquals;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * Test the file-based signalOmemoStore.

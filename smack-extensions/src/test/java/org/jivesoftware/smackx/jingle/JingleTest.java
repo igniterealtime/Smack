@@ -16,19 +16,21 @@
  */
 package org.jivesoftware.smackx.jingle;
 
-import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.jingle.element.Jingle;
-import org.jivesoftware.smackx.jingle.element.JingleAction;
-import org.junit.Test;
-import org.jxmpp.jid.FullJid;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
-
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
+
+import org.jivesoftware.smack.test.util.SmackTestSuite;
+import org.jivesoftware.smack.util.StringUtils;
+
+import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.JingleAction;
+
+import org.junit.Test;
+import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Test the Jingle class.

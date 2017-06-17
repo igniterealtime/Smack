@@ -36,6 +36,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 
 /**

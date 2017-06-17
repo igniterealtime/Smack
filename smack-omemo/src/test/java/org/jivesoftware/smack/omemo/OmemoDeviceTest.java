@@ -16,15 +16,16 @@
  */
 package org.jivesoftware.smack.omemo;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test the OmemoDevice class.

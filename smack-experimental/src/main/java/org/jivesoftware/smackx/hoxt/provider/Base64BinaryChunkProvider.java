@@ -19,7 +19,9 @@ package org.jivesoftware.smackx.hoxt.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.hoxt.packet.Base64BinaryChunk;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

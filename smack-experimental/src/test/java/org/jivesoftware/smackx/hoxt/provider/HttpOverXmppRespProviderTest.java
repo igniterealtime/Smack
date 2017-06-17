@@ -22,7 +22,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppResp;
+
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 

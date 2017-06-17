@@ -22,10 +22,12 @@ import java.util.List;
 
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.pubsub.PubSubElementType;
 import org.jivesoftware.smackx.pubsub.Subscription;
 import org.jivesoftware.smackx.pubsub.SubscriptionsExtension;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
+
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 

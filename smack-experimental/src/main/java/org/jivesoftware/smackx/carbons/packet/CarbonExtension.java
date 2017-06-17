@@ -16,9 +16,10 @@
  */
 package org.jivesoftware.smackx.carbons.packet;
 
-import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 
 /**

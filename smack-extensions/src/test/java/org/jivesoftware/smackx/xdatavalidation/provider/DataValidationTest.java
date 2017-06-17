@@ -23,10 +23,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.jivesoftware.smack.test.util.TestUtils;
+
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.BasicValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.ListRange;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
+
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smackx.omemo.element;
 
+import java.util.ArrayList;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
-
-import java.util.ArrayList;
 
 /**
  * Class that represents a OmemoElement.

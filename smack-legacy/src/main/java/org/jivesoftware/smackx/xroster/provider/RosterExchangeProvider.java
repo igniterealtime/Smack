@@ -22,8 +22,10 @@ import java.util.ArrayList;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.xroster.RemoteRosterEntry;
 import org.jivesoftware.smackx.xroster.packet.RosterExchange;
+
 import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

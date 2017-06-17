@@ -24,16 +24,17 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.jidtype.FromJidTypeFilter;
 import org.jivesoftware.smack.filter.jidtype.AbstractJidTypeFilter.JidType;
+import org.jivesoftware.smack.filter.jidtype.FromJidTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.pubsub.EventElement;
 import org.jivesoftware.smackx.pubsub.Item;
@@ -41,6 +42,7 @@ import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.PubSubFeature;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 import org.jivesoftware.smackx.pubsub.filter.EventExtensionFilter;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 

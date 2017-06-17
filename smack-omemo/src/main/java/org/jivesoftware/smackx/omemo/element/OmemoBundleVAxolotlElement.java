@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smackx.omemo.element;
 
-import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smack.util.stringencoder.Base64;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 
 /**
  * OMEMO device bundle as described here:

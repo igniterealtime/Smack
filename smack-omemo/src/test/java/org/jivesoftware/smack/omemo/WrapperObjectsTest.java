@@ -16,8 +16,17 @@
  */
 package org.jivesoftware.smack.omemo;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
 import org.jivesoftware.smackx.omemo.internal.CipherAndAuthTag;
@@ -27,18 +36,11 @@ import org.jivesoftware.smackx.omemo.internal.IdentityKeyWrapper;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.internal.OmemoMessageInformation;
 import org.jivesoftware.smackx.omemo.util.OmemoMessageBuilder;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Test the identityKeyWrapper.

@@ -16,14 +16,6 @@
  */
 package org.jivesoftware.smackx.omemo;
 
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.igniterealtime.smack.inttest.TestNotPossibleException;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
-
-import java.util.Date;
-
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
@@ -32,6 +24,15 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.deletePath;
 import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.setUpOmemoManager;
+
+import java.util.Date;
+
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+
+import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.TestNotPossibleException;
 
 /**
  * Test the OmemoStore.

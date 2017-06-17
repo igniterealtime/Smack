@@ -17,12 +17,13 @@
 package org.jivesoftware.smackx.mam;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.junit.Test;
 
 import org.junit.Assert;
+import org.junit.Test;
 
 public class PagingTest extends MamTest {
 

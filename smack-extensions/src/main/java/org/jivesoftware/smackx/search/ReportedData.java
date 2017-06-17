@@ -16,14 +16,15 @@
  */
 package org.jivesoftware.smackx.search;
 
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smackx.xdata.FormField;
-import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jivesoftware.smackx.xdata.packet.DataForm.Item;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.Stanza;
+
+import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jivesoftware.smackx.xdata.packet.DataForm.Item;
 
 /**
  * Represents a set of data results returned as part of a search. The report is structured 

@@ -17,16 +17,16 @@
 
 package org.jivesoftware.smackx.muc.packet;
 
-import org.jivesoftware.smack.packet.NamedElement;
-import org.jivesoftware.smack.packet.Stanza;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.EntityJid;

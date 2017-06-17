@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.bytestreams.socks5;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +29,9 @@ import java.net.Socket;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.util.NetworkUtil;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

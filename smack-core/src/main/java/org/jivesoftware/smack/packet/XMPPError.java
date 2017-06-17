@@ -62,6 +62,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @author Matt Tucker
  * @see <a href="http://xmpp.org/rfcs/rfc6120.html#stanzas-error-syntax">RFC 6120 - 8.3.2 Syntax: The Syntax of XMPP error stanzas</a>
  */
+// TODO Rename this class to StanzaError (RFC 6120 § 8.3) in Smack 4.3, as this is what this class actually is. SMACK-769
+// TODO Use StanzaErrorTextElement here.
 public class XMPPError extends AbstractError {
 
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-stanzas";

@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smackx.httpfileupload;
 
-
-import org.jivesoftware.smackx.httpfileupload.element.Slot;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.jivesoftware.smackx.httpfileupload.element.Slot;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 public class SlotCreateTest {
     String testSlot

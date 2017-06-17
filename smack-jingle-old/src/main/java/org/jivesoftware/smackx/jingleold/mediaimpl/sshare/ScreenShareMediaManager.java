@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.jingleold.mediaimpl.sshare;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.media.JingleMediaManager;
 import org.jivesoftware.smackx.jingleold.media.JingleMediaSession;
@@ -24,9 +27,6 @@ import org.jivesoftware.smackx.jingleold.mediaimpl.sshare.api.ImageDecoder;
 import org.jivesoftware.smackx.jingleold.mediaimpl.sshare.api.ImageEncoder;
 import org.jivesoftware.smackx.jingleold.nat.JingleTransportManager;
 import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implements a JingleMediaManager for ScreenSharing.

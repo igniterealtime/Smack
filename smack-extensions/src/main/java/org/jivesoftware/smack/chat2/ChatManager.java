@@ -39,7 +39,9 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.AbstractRosterListener;
 import org.jivesoftware.smack.roster.Roster;
+
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;

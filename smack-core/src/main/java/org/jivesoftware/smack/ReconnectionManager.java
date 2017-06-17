@@ -16,10 +16,6 @@
  */
 package org.jivesoftware.smack;
 
-import org.jivesoftware.smack.XMPPException.StreamErrorException;
-import org.jivesoftware.smack.packet.StreamError;
-import org.jivesoftware.smack.util.Async;
-
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -27,6 +23,10 @@ import java.util.Random;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jivesoftware.smack.XMPPException.StreamErrorException;
+import org.jivesoftware.smack.packet.StreamError;
+import org.jivesoftware.smack.util.Async;
 
 /**
  * Handles the automatic reconnection process. Every time a connection is dropped without

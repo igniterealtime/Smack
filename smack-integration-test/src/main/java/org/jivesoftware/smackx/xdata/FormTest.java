@@ -21,14 +21,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
+import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 
 /**
  * Tests the DataForms extensions.

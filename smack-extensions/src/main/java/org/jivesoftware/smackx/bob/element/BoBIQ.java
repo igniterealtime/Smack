@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.bob.element;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.bob.BoBData;
 import org.jivesoftware.smackx.bob.BoBHash;
 import org.jivesoftware.smackx.bob.BoBManager;

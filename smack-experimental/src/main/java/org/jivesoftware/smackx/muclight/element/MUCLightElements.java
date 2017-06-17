@@ -24,10 +24,12 @@ import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.muclight.MUCLightAffiliation;
 import org.jivesoftware.smackx.muclight.MUCLightRoomConfiguration;
 import org.jivesoftware.smackx.muclight.MultiUserChatLight;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.jxmpp.jid.Jid;
 
 public abstract class MUCLightElements {

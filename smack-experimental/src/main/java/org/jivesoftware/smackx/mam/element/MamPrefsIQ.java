@@ -19,8 +19,10 @@ package org.jivesoftware.smackx.mam.element;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.mam.element.MamElements.AlwaysJidListElement;
 import org.jivesoftware.smackx.mam.element.MamElements.NeverJidListElement;
+
 import org.jxmpp.jid.Jid;
 
 /**

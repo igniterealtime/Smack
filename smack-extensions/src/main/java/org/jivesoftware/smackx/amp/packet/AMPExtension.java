@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+
 import org.jivesoftware.smackx.amp.AMPDeliverCondition;
 import org.jivesoftware.smackx.amp.AMPExpireAtCondition;
 import org.jivesoftware.smackx.amp.AMPMatchResourceCondition;

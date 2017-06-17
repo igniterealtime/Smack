@@ -16,15 +16,21 @@
  */
 package org.jivesoftware.smackx.omemo;
 
-import junit.framework.TestCase;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.igniterealtime.smack.inttest.TestNotPossibleException;
-import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotSame;
+import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.cleanServerSideTraces;
+import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.setUpOmemoManager;
+import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.subscribe;
+import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.unidirectionalTrust;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement;
 import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
@@ -35,15 +41,11 @@ import org.jivesoftware.smackx.omemo.internal.OmemoMessageInformation;
 import org.jivesoftware.smackx.omemo.listener.OmemoMessageListener;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 
-import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotSame;
-import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.cleanServerSideTraces;
-import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.setUpOmemoManager;
-import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.subscribe;
-import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.unidirectionalTrust;
+import junit.framework.TestCase;
+import org.igniterealtime.smack.inttest.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.TestNotPossibleException;
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
 /**
  * Test message sending.

@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.workgroup.packet;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jxmpp.jid.Jid;
 
 /**

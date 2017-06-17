@@ -43,7 +43,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.igniterealtime.smack.inttest.IntTestUtil.UsernameAndPassword;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
@@ -53,7 +52,10 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration.Builder;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.iqregister.AccountManager;
+
+import org.igniterealtime.smack.inttest.IntTestUtil.UsernameAndPassword;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.reflections.Reflections;

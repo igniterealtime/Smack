@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.util.dns.HostAddress;
+
 import org.junit.Test;
 
 public class SmackExceptionTest {

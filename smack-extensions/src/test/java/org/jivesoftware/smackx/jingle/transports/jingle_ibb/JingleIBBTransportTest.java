@@ -24,8 +24,10 @@ import static junit.framework.TestCase.assertTrue;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.jingle.transports.jingle_ibb.element.JingleIBBTransport;
 import org.jivesoftware.smackx.jingle.transports.jingle_ibb.provider.JingleIBBTransportProvider;
+
 import org.junit.Test;
 
 /**

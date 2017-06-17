@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.iot.discovery.element;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 
 public class IoTUnregister extends IQ {

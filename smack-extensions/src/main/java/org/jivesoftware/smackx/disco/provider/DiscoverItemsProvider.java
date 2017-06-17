@@ -21,7 +21,9 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+
 import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

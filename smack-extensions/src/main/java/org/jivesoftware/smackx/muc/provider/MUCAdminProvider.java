@@ -20,7 +20,9 @@ package org.jivesoftware.smackx.muc.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.provider.IQProvider;
+
 import org.jivesoftware.smackx.muc.packet.MUCAdmin;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

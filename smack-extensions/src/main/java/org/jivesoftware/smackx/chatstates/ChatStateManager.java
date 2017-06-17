@@ -20,17 +20,18 @@ package org.jivesoftware.smackx.chatstates;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.chat.ChatManagerListener;
 import org.jivesoftware.smack.chat.ChatMessageListener;
 import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 

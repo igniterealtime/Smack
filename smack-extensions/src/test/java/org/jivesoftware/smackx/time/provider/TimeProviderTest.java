@@ -21,7 +21,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.time.packet.Time;
+
 import org.junit.Test;
 
 public class TimeProviderTest {

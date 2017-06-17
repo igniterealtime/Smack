@@ -23,9 +23,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jxmpp.util.XmppStringUtils;
 
 /**

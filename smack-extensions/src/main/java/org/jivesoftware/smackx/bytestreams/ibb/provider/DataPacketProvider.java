@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

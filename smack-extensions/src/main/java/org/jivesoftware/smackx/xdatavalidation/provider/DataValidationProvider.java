@@ -20,12 +20,14 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.BasicValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.ListRange;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.OpenValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RegexValidateElement;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

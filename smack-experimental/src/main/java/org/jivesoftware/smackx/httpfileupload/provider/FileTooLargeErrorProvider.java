@@ -17,8 +17,10 @@
 package org.jivesoftware.smackx.httpfileupload.provider;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError;
 import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError_V0_2;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

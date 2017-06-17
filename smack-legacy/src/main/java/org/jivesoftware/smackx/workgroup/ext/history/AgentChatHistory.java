@@ -17,16 +17,17 @@
 
 package org.jivesoftware.smackx.workgroup.ext.history;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.provider.IQProvider;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * IQ provider used to retrieve individual agent information. Each chat session can be mapped

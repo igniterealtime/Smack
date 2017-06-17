@@ -21,7 +21,9 @@ import java.util.Locale;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.jingleold.media.ContentInfo;
+
 import org.xmlpull.v1.XmlPullParser;
 
 public class JingleError implements ExtensionElement {

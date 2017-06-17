@@ -41,6 +41,7 @@ import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.commands.AdHocCommand.Action;
 import org.jivesoftware.smackx.commands.AdHocCommand.Status;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
@@ -49,6 +50,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.xdata.Form;
+
 import org.jxmpp.jid.Jid;
 
 /**

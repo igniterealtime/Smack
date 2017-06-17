@@ -23,11 +23,10 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-
-import org.jivesoftware.smack.util.stringencoder.Base64;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jivesoftware.smack.util.stringencoder.Base64;
 
 /**
  * HTTP Proxy Socket Connection which connects the socket using a HTTP Proxy.

@@ -19,9 +19,11 @@ package org.jivesoftware.smackx.iot.discovery.provider;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.iot.discovery.element.IoTRemove;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;

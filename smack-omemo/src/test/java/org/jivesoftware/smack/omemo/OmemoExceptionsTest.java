@@ -16,21 +16,22 @@
  */
 package org.jivesoftware.smack.omemo;
 
+import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+
 import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
 import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
 import org.jivesoftware.smackx.omemo.exceptions.MultipleCryptoFailedException;
 import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
+
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import java.util.ArrayList;
-
-import static junit.framework.TestCase.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test Omemo related Exceptions.

@@ -20,10 +20,32 @@
  */
 package org.jivesoftware.smack.omemo;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.CIPHERMODE;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.PROVIDER;
+import static org.junit.Assert.assertArrayEquals;
+
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Security;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.omemo.util.OmemoMessageBuilder;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 import org.whispersystems.libsignal.IdentityKey;
 import org.whispersystems.libsignal.IdentityKeyPair;
@@ -34,25 +56,6 @@ import org.whispersystems.libsignal.state.PreKeyBundle;
 import org.whispersystems.libsignal.state.PreKeyRecord;
 import org.whispersystems.libsignal.state.SessionRecord;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
-
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.CIPHERMODE;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.PROVIDER;
-import static org.junit.Assert.assertArrayEquals;
 
 /**
  * Test the OmemoMessageBuilder.

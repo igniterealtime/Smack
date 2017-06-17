@@ -16,21 +16,22 @@
  */
 package org.jivesoftware.smackx.carbons;
 
+import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
 
 import java.util.Properties;
 
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.ExperimentalInitializerTest;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.carbons.provider.CarbonManagerProvider;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
 
 import com.jamesmurty.utils.XMLBuilder;
+import org.junit.Test;
+import org.xmlpull.v1.XmlPullParser;
 
 public class CarbonTest extends ExperimentalInitializerTest {
 

@@ -17,9 +17,11 @@
 package org.jivesoftware.smackx.omemo.listener;
 
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.omemo.internal.CipherAndAuthTag;
 import org.jivesoftware.smackx.omemo.internal.OmemoMessageInformation;
+
 import org.jxmpp.jid.BareJid;
 
 /**

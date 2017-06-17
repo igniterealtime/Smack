@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.PacketUtil;
+
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.rsm.packet.RSMSet.PageDirection;
 

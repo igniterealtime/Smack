@@ -26,8 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
@@ -36,7 +36,9 @@ import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.xevent.packet.MessageEvent;
+
 import org.jxmpp.jid.Jid;
 
 /**

@@ -24,13 +24,14 @@ import static org.junit.Assert.assertThat;
 import java.util.Properties;
 
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
 
 import com.jamesmurty.utils.XMLBuilder;
+import org.junit.Test;
+import org.xmlpull.v1.XmlPullParser;
 
 public class ForwardedTest {
 

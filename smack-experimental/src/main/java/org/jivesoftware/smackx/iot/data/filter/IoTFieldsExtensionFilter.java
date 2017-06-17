@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.iot.data.filter;
 
 import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.iot.data.element.IoTFieldsExtension;
 
 public class IoTFieldsExtensionFilter extends FlexibleStanzaTypeFilter<Message> {

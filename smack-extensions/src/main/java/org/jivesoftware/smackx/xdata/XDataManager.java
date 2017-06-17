@@ -26,8 +26,10 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.jxmpp.jid.Jid;
 
 public final class XDataManager extends Manager {

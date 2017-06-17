@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.util.dns.HostAddress;
+
 import org.jxmpp.jid.Jid;
 
 /**

@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.jingleold;
 
-
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.jingleold.packet.JingleError;
 
    /**

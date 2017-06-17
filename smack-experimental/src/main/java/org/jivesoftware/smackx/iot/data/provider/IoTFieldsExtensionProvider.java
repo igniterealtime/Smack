@@ -25,12 +25,14 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.iot.data.element.IoTDataField;
 import org.jivesoftware.smackx.iot.data.element.IoTFieldsExtension;
 import org.jivesoftware.smackx.iot.data.element.NodeElement;
 import org.jivesoftware.smackx.iot.data.element.TimestampElement;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
+
 import org.jxmpp.util.XmppDateTime;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

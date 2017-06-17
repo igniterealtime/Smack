@@ -16,18 +16,20 @@
  */
 package org.jivesoftware.smackx.httpfileupload.provider;
 
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.ParserUtils;
-import org.jivesoftware.smackx.httpfileupload.element.Slot;
-import org.jivesoftware.smackx.httpfileupload.element.Slot_V0_2;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.ParserUtils;
+
+import org.jivesoftware.smackx.httpfileupload.element.Slot;
+import org.jivesoftware.smackx.httpfileupload.element.Slot_V0_2;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Provider for Slot.

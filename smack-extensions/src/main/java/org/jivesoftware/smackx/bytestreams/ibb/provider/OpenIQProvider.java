@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.util.Locale;
 
 import org.jivesoftware.smack.provider.IQProvider;
+
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

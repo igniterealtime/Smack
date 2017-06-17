@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.xdatavalidation;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -26,6 +25,7 @@ import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.ListRange;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.OpenValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RegexValidateElement;
+
 import org.junit.Test;
 
 /**

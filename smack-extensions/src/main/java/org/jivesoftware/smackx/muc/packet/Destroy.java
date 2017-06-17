@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jxmpp.jid.EntityBareJid;
 
 /**

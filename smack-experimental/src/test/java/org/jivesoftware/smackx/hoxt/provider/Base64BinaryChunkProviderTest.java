@@ -22,7 +22,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.hoxt.packet.Base64BinaryChunk;
+
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 

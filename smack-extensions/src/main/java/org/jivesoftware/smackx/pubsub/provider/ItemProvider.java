@@ -20,10 +20,12 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.pubsub.Item;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.SimplePayload;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

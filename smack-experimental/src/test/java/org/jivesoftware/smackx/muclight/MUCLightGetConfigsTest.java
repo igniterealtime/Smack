@@ -20,8 +20,10 @@ import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.muclight.element.MUCLightConfigurationIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightGetConfigsIQ;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;

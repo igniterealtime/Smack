@@ -17,12 +17,13 @@
 
 package org.jivesoftware.smackx.muc.provider;
 
-
 import java.io.IOException;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.muc.packet.MUCUser;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityJid;
 import org.xmlpull.v1.XmlPullParser;

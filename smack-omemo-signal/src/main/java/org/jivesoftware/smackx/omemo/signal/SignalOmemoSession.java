@@ -20,6 +20,9 @@
  */
 package org.jivesoftware.smackx.omemo.signal;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoStore;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
@@ -27,6 +30,7 @@ import org.jivesoftware.smackx.omemo.exceptions.NoRawSessionException;
 import org.jivesoftware.smackx.omemo.internal.CiphertextTuple;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.internal.OmemoSession;
+
 import org.whispersystems.libsignal.DuplicateMessageException;
 import org.whispersystems.libsignal.IdentityKey;
 import org.whispersystems.libsignal.IdentityKeyPair;
@@ -47,9 +51,6 @@ import org.whispersystems.libsignal.state.PreKeyBundle;
 import org.whispersystems.libsignal.state.PreKeyRecord;
 import org.whispersystems.libsignal.state.SessionRecord;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Concrete implementation of the OmemoSession using the Signal library.

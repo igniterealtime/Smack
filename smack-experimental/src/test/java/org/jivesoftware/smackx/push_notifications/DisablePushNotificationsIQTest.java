@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.push_notifications;
 
 import org.jivesoftware.smackx.push_notifications.element.DisablePushNotificationsIQ;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;

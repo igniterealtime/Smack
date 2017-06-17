@@ -17,9 +17,11 @@
 package org.jivesoftware.smackx.mam.provider;
 
 import org.jivesoftware.smack.provider.IQProvider;
+
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

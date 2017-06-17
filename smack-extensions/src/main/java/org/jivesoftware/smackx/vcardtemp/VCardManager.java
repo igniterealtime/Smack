@@ -28,8 +28,10 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 

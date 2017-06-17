@@ -17,11 +17,12 @@
 
 package org.jivesoftware.smackx.disco;
 
+import java.util.List;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
+
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
-
-import java.util.List;
 
 
 /**

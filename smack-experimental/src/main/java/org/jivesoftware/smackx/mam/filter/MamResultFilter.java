@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.mam.filter;
 
 import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 

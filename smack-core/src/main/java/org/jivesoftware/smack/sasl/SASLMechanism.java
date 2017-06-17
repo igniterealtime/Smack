@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smack.sasl;
 
+import javax.net.ssl.SSLSession;
+import javax.security.auth.callback.CallbackHandler;
+
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -25,11 +28,9 @@ import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Response;
 import org.jivesoftware.smack.util.StringTransformer;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
-
-import javax.net.ssl.SSLSession;
-import javax.security.auth.callback.CallbackHandler;
 
 /**
  * Base class for SASL mechanisms.

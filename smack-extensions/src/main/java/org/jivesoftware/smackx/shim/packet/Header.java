@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.shim.packet;
 
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**

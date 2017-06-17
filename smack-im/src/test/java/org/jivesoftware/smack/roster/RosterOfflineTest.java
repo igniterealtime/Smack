@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException;
+
 import org.junit.Before;
 import org.junit.Test;
 

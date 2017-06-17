@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.debugger.slf4j;
 
 import org.jivesoftware.smack.util.ReaderListener;
 import org.jivesoftware.smack.util.WriterListener;
+
 import org.slf4j.Logger;
 
 class SLF4JRawXmlListener implements ReaderListener, WriterListener {

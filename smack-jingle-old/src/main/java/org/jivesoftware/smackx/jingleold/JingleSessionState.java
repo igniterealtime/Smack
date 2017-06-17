@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.jingleold;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
 
 /**

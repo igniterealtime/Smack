@@ -17,16 +17,17 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.provider.IQProvider;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Agent status request packet. This stanza(/packet) is used by agents to request the list of

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.bytestreams.ibb;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 

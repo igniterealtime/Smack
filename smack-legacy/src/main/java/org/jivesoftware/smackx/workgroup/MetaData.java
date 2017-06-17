@@ -20,9 +20,9 @@ package org.jivesoftware.smackx.workgroup;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
-
 import org.jivesoftware.smack.packet.ExtensionElement;
+
+import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
 
 /**
  * MetaData stanza(/packet) extension.

@@ -16,12 +16,13 @@
  */
 package org.jivesoftware.smackx.omemo.exceptions;
 
-import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
-import org.jxmpp.jid.BareJid;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
+
+import org.jxmpp.jid.BareJid;
 
 /**
  * Exception gets thrown when we are unable to establish a session with a device for some reason.

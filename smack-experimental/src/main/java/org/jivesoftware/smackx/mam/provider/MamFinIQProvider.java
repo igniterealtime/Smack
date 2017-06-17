@@ -18,9 +18,11 @@ package org.jivesoftware.smackx.mam.provider;
 
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.mam.element.MamFinIQ;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.rsm.provider.RSMSetProvider;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

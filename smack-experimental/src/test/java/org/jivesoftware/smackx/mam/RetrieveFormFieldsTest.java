@@ -24,9 +24,9 @@ import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.junit.Test;
 
 import org.junit.Assert;
+import org.junit.Test;
 
 public class RetrieveFormFieldsTest extends MamTest {
 

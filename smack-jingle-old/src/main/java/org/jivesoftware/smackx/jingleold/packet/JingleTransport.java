@@ -16,14 +16,15 @@
  */
 package org.jivesoftware.smackx.jingleold.packet;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smackx.jingleold.nat.ICECandidate;
-import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
+
+import org.jivesoftware.smackx.jingleold.nat.ICECandidate;
+import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 
 /**
  * A jingle transport extension.

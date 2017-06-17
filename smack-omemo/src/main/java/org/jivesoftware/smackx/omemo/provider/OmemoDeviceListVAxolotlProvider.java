@@ -16,10 +16,6 @@
  */
 package org.jivesoftware.smackx.omemo.provider;
 
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.jivesoftware.smackx.omemo.element.OmemoDeviceListVAxolotlElement;
-import org.xmlpull.v1.XmlPullParser;
-
 import static org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement.DEVICE;
 import static org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement.ID;
 import static org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement.LIST;
@@ -28,6 +24,12 @@ import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceListVAxolotlElement;
+
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Smack ExtensionProvider that parses OMEMO device list element into OmemoDeviceListElement objects.

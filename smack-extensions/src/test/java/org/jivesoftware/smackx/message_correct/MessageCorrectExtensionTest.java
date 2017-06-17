@@ -18,7 +18,9 @@ package org.jivesoftware.smackx.message_correct;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
+
 import org.junit.Assert;
 import org.junit.Test;
 

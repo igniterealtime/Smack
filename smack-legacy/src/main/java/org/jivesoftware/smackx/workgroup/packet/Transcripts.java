@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jxmpp.jid.Jid;
 
 /**

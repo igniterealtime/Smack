@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.muclight;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightDestroyIQ;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;

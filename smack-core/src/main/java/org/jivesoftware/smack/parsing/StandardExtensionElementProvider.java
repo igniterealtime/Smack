@@ -25,6 +25,7 @@ import org.jivesoftware.smack.packet.StandardExtensionElement.Builder;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.Jid;

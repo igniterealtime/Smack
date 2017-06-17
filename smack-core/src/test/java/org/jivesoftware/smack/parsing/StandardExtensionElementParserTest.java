@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.StandardExtensionElement.Builder;
+
 import org.junit.Test;
 
 public class StandardExtensionElementParserTest {

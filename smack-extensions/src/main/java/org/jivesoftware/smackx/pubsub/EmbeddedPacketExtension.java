@@ -18,8 +18,8 @@ package org.jivesoftware.smackx.pubsub;
 
 import java.util.List;
 
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 /**

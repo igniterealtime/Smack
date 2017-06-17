@@ -16,6 +16,22 @@
  */
 package org.jivesoftware.smackx.omemo;
 
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.BODY_OMEMO_HINT;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.PEP_NODE_DEVICE_LIST_NOTIFY;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
@@ -25,6 +41,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
@@ -56,6 +73,7 @@ import org.jivesoftware.smackx.pubsub.ItemsExtension;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -63,22 +81,6 @@ import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.BODY_OMEMO_HINT;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.PEP_NODE_DEVICE_LIST_NOTIFY;
 
 /**
  * Manager that allows sending messages encrypted with OMEMO.

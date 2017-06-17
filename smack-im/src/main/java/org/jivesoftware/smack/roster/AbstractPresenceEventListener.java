@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.roster;
 
 import org.jivesoftware.smack.packet.Presence;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;

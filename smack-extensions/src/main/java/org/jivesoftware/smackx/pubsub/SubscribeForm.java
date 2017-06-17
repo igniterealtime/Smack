@@ -23,10 +23,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UnknownFormatConversionException;
 
-import org.jxmpp.util.XmppDateTime;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
+import org.jxmpp.util.XmppDateTime;
 
 /**
  * A decorator for a {@link Form} to easily enable reading and updating

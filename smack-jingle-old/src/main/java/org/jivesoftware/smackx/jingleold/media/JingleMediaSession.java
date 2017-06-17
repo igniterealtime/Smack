@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smackx.jingleold.media;
 
-import org.jivesoftware.smackx.jingleold.JingleSession;
-import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jivesoftware.smackx.jingleold.JingleSession;
+import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 
 /**
  * Public Abstract Class provides a clear interface between Media Session and Jingle API.

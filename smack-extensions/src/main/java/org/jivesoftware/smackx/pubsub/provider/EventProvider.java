@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
+
 import org.jivesoftware.smackx.pubsub.EventElement;
 import org.jivesoftware.smackx.pubsub.EventElementType;
 import org.jivesoftware.smackx.pubsub.NodeExtension;

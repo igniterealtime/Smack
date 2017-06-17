@@ -25,17 +25,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Random;
 
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
+
 import org.jivesoftware.util.ConnectionUtils;
 import org.jivesoftware.util.Protocol;
 import org.jivesoftware.util.Verification;

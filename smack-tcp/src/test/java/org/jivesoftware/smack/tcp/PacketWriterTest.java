@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.tcp;
 
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.concurrent.BrokenBarrierException;
@@ -24,10 +26,9 @@ import java.util.concurrent.CyclicBarrier;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketWriter;
+
 import org.junit.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import static org.junit.Assert.fail;
 
 public class PacketWriterTest {
     volatile boolean shutdown;

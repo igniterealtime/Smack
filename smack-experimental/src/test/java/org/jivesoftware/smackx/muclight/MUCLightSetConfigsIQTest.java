@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muclight;
 import java.util.HashMap;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightSetConfigsIQ;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;

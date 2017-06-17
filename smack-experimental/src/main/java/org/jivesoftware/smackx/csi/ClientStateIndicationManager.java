@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.csi;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
+
 import org.jivesoftware.smackx.csi.packet.ClientStateIndication;
 
 /**

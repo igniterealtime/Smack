@@ -17,13 +17,13 @@
 
 package org.jivesoftware.smackx.xhtmlim.packet;
 
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * An XHTML sub-packet, which is used by XMPP clients to exchange formatted text. The XHTML 

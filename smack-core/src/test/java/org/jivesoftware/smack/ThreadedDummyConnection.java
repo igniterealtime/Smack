@@ -25,9 +25,9 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.IQ.Type;
 
 /**
  * A threaded dummy connection.

@@ -16,16 +16,16 @@
  */
 package org.jivesoftware.smackx.workgroup.user;
 
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.jivesoftware.smack.StanzaCollector;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaCollector;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -33,11 +33,12 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
@@ -58,8 +59,9 @@ import org.jivesoftware.smackx.workgroup.settings.WorkgroupProperties;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jxmpp.jid.EntityJid;
+
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.Jid;
 
 /**

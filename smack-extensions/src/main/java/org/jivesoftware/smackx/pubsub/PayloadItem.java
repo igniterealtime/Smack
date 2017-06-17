@@ -16,8 +16,9 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
 
 /**

@@ -23,17 +23,19 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.igniterealtime.smack.inttest.Configuration.AccountRegistration;
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.admin.ServiceAdministrationManager;
 import org.jivesoftware.smackx.iqregister.AccountManager;
+
+import org.igniterealtime.smack.inttest.Configuration.AccountRegistration;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;

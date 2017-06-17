@@ -19,8 +19,10 @@ package org.jivesoftware.smackx.muclight.provider;
 import java.util.HashMap;
 
 import org.jivesoftware.smack.provider.IQProvider;
+
 import org.jivesoftware.smackx.muclight.MUCLightRoomConfiguration;
 import org.jivesoftware.smackx.muclight.element.MUCLightConfigurationIQ;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

@@ -24,6 +24,7 @@ import java.util.List;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 
 /**

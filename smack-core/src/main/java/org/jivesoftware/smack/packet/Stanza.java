@@ -19,18 +19,19 @@ package org.jivesoftware.smack.packet;
 
 import static org.jivesoftware.smack.util.StringUtils.requireNotNullOrEmpty;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.PacketUtil;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Base class for XMPP Stanzas, which are called Stanza(/Packet) in older versions of Smack (i.e. &lt; 4.1).

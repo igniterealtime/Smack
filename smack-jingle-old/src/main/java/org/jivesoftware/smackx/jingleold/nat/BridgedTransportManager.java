@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingleold.nat;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+
 import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.listeners.CreatedJingleSessionListener;
 import org.jivesoftware.smackx.jingleold.listeners.JingleSessionListener;

@@ -19,8 +19,10 @@ package org.jivesoftware.smackx.pubsub.provider;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

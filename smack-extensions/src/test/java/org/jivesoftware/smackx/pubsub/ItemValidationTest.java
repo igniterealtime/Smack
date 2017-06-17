@@ -21,11 +21,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.ThreadedDummyConnection;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

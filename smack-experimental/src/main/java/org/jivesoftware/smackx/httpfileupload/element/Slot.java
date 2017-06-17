@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smackx.httpfileupload.element;
 
-import org.jivesoftware.smack.packet.IQ;
-
 import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
+
+import org.jivesoftware.smack.packet.IQ;
 
 /**
  * Slot responded by upload service.

@@ -21,6 +21,7 @@ import javax.security.auth.callback.CallbackHandler;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jxmpp.util.XmppStringUtils;
 
 /**

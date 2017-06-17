@@ -17,9 +17,11 @@
 package org.jivesoftware.smackx.mam.provider;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
+
 import org.xmlpull.v1.XmlPullParser;
 
 /**

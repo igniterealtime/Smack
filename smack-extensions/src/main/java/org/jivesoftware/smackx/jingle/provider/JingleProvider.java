@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
@@ -27,6 +28,7 @@ import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle.element.JingleReason.Reason;
+
 import org.jxmpp.jid.FullJid;
 import org.xmlpull.v1.XmlPullParser;
 

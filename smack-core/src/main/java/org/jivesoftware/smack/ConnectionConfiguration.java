@@ -24,6 +24,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.net.SocketFactory;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.X509TrustManager;
+import javax.security.auth.callback.CallbackHandler;
+
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.sasl.SASLMechanism;
@@ -31,17 +37,12 @@ import org.jivesoftware.smack.sasl.core.SASLAnonymous;
 import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import javax.net.SocketFactory;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.X509TrustManager;
-import javax.security.auth.callback.CallbackHandler;
 
 /**
  * Configuration to use while establishing the connection to the server.

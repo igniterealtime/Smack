@@ -27,7 +27,9 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+
 import org.jivesoftware.smackx.iqprivate.PrivateDataManager;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 

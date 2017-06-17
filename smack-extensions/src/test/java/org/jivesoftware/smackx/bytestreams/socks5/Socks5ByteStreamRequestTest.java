@@ -34,7 +34,9 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
+
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
+
 import org.jivesoftware.util.ConnectionUtils;
 import org.jivesoftware.util.Protocol;
 import org.junit.After;

@@ -17,12 +17,12 @@
 
 package org.jivesoftware.smackx.debugger.slf4j;
 
+import java.io.Reader;
+import java.io.Writer;
+
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
-
-import java.io.Reader;
-import java.io.Writer;
 
 /**
  * Implementation of SmackDebuggerFactory which always creates instance of SLF4JSmackDebugger.

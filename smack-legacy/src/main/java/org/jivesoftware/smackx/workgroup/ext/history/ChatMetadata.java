@@ -17,16 +17,18 @@
 
 package org.jivesoftware.smackx.workgroup.ext.history;
 
-import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.provider.IQProvider;
+
+import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class ChatMetadata extends IQ {
 

@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.util.SHA1;
+
 import org.jxmpp.jid.Jid;
 
 /**
