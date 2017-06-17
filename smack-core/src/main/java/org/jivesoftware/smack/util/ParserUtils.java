@@ -251,4 +251,9 @@ public class ParserUtils {
         }
         return text;
     }
+
+    public static String getXmlLang(XmlPullParser parser) {
+        String langString = parser.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
+        return langString;
+    }
 }

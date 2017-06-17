@@ -976,6 +976,8 @@ public class PacketParserUtils {
         return new Session.Feature(optional);
 
     }
+
+    // TODO Remove this static method and use ParserUtils.getXmlLang(XmlPullParser) instead.
     private static String getLanguageAttribute(XmlPullParser parser) {
     // CHECKSTYLE:OFF
     	for (int i = 0; i < parser.getAttributeCount(); i++) {
