@@ -16,8 +16,12 @@
  */
 package org.jivesoftware.smack.sm.packet;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Nonza;
+import org.jivesoftware.smack.packet.StanzaErrorTextElement;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -189,30 +193,46 @@ public class StreamManagement {
     public static class Failed implements Nonza {
         public static final String ELEMENT = "failed";
 
-        private XMPPError.Condition condition;
+        private final XMPPError.Condition condition;
+
+        private final List<StanzaErrorTextElement> textElements;
+
 
         public Failed() {
+            this(null, null);
         }
 
-        public Failed(XMPPError.Condition condition) {
+        public Failed(XMPPError.Condition condition, List<StanzaErrorTextElement> textElements) {
             this.condition = condition;
+            if (textElements == null) {
+                this.textElements = Collections.emptyList();
+            } else {
+                this.textElements = Collections.unmodifiableList(textElements);
+            }
         }
 
         public XMPPError.Condition getXMPPErrorCondition() {
             return condition;
         }
 
+        public List<StanzaErrorTextElement> getTextElements() {
+            return textElements;
+        }
+
         @Override
         public CharSequence toXML() {
             XmlStringBuilder xml = new XmlStringBuilder(this);
-            if (condition != null) {
-                xml.rightAngleBracket();
-                xml.append(condition.toString());
-                xml.xmlnsAttribute(XMPPError.NAMESPACE);
-                xml.closeElement(ELEMENT);
-            }
-            else {
+            if (condition == null && textElements.isEmpty()) {
                 xml.closeEmptyElement();
+            } else {
+                xml.rightAngleBracket();
+                if (condition != null) {
+                    // TODO This should use StanzaError (formerly XMPPError) in Smack 4.3 (see SMACK-769)
+                    xml.append(condition.toString());
+                    xml.xmlnsAttribute(XMPPError.NAMESPACE);
+                }
+                xml.append(textElements);
+                xml.closeElement(ELEMENT);
             }
             return xml;
         }

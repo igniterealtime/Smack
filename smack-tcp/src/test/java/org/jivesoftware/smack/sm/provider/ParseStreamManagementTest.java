@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Vyacheslav Blinov
+ * Copyright 2014 Vyacheslav Blinov, 2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,10 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
+import org.jivesoftware.smack.packet.StanzaErrorTextElement;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.sm.packet.StreamManagement;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -105,6 +107,30 @@ public class ParseStreamManagementTest {
     }
 
     @Test
+    public void testParseFailedWithTExt() throws XmlPullParserException, IOException {
+        // @formatter:off
+        final String failedNonza = "<failed h='20' xmlns='urn:xmpp:sm:3'>"
+                                   +  "<item-not-found xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>"
+                                   +  "<text xml:lang='en' xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'>"
+                                   +    "Previous session timed out"
+                                   +  "</text>"
+                                   + "</failed>";
+        // @formatter:on
+        XmlPullParser parser = PacketParserUtils.getParserFor(failedNonza);
+
+        StreamManagement.Failed failed = ParseStreamManagement.failed(parser);
+
+        assertEquals(XMPPError.Condition.item_not_found, failed.getXMPPErrorCondition());
+
+        List<StanzaErrorTextElement> textElements = failed.getTextElements();
+        assertEquals(1, textElements.size());
+
+        StanzaErrorTextElement textElement = textElements.get(0);
+        assertEquals("Previous session timed out", textElement.getText());
+        assertEquals("en", textElement.getLang());
+    }
+
+    @Test
     public void testParseResumed() throws Exception {
         long handledPackets = 42;
         String previousID = "zid615d9";
@@ -138,7 +164,6 @@ public class ParseStreamManagementTest {
         assertThat(acknowledgementPacket, is(notNullValue()));
         assertThat(acknowledgementPacket.getHandledCount(), equalTo(handledPackets));
     }
-
 
     private static Properties initOutputProperties() {
         Properties properties = new Properties();
