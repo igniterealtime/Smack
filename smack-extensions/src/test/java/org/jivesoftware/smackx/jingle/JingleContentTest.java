@@ -20,7 +20,6 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.fail;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
@@ -33,25 +32,25 @@ import org.junit.Test;
  */
 public class JingleContentTest extends SmackTestSuite {
 
+    @Test(expected = NullPointerException.class)
+    public void emptyBuilderThrowsTest() {
+        JingleContent.Builder builder = JingleContent.getBuilder();
+        builder.build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void onlyCreatorBuilderThrowsTest() {
+        JingleContent.Builder builder = JingleContent.getBuilder();
+        builder.setCreator(JingleContent.Creator.initiator);
+        builder.build();
+    }
+
     @Test
     public void parserTest() {
 
         JingleContent.Builder builder = JingleContent.getBuilder();
 
-        try {
-            builder.build();
-            fail();
-        } catch (NullPointerException e) {
-            // Expected
-        }
         builder.setCreator(JingleContent.Creator.initiator);
-
-        try {
-            builder.build();
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected
-        }
         builder.setName("A name");
 
         JingleContent content = builder.build();

@@ -19,10 +19,8 @@ package org.jivesoftware.smackx.jingle;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
@@ -37,25 +35,27 @@ import org.jxmpp.stringprep.XmppStringprepException;
  */
 public class JingleTest extends SmackTestSuite {
 
-    @Test
-    public void parserTest() throws XmppStringprepException {
-        String sessionId = StringUtils.randomString(24);
+    @Test(expected = IllegalArgumentException.class)
+    public void emptyBuilderTest() {
+        Jingle.Builder builder = Jingle.getBuilder();
+        builder.build();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void onlySessionIdBuilderTest() {
+        String sessionId = "testSessionId";
 
         Jingle.Builder builder = Jingle.getBuilder();
-        try {
-            builder.build();
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected
-        }
         builder.setSessionId(sessionId);
+        builder.build();
+    }
 
-        try {
-            builder.build();
-            fail();
-        } catch (NullPointerException e) {
-            // Expected
-        }
+    @Test
+    public void parserTest() throws XmppStringprepException {
+        String sessionId = "testSessionId";
+
+        Jingle.Builder builder = Jingle.getBuilder();
+        builder.setSessionId(sessionId);
         builder.setAction(JingleAction.session_initiate);
 
         FullJid romeo = JidCreate.fullFrom("romeo@montague.lit/orchard");

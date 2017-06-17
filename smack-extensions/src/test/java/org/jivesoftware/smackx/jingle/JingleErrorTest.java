@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.jingle;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.fail;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
@@ -41,12 +40,10 @@ public class JingleErrorTest extends SmackTestSuite {
         assertEquals("<unsupported-info xmlns='urn:xmpp:jingle:errors:1'/>",
                   JingleError.fromString("unsupported-info").toXML().toString());
         assertEquals("unknown-session", JingleError.fromString("unknown-session").getMessage());
+    }
 
-        try {
-            JingleError.fromString("inexistent-error");
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void illegalArgumentTest() {
+        JingleError.fromString("inexistent-error");
     }
 }

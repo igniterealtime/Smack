@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.jingle;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.fail;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
@@ -66,26 +65,22 @@ public class JingleReasonTest extends SmackTestSuite {
                 JingleReason.IncompatibleParameters.toXML().toString());
         assertEquals("<reason><alternative-session><sid>1234</sid></alternative-session></reason>",
                 JingleReason.AlternativeSession("1234").toXML().toString());
-        // Alternative sessionID must not be empty
-        try {
-            JingleReason.AlternativeSession("");
-            fail();
-        } catch (NullPointerException e) {
-            // Expected
-        }
-        // Alternative sessionID must not be null
-        try {
-            JingleReason.AlternativeSession(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected
-        }
+    }
 
-        try {
-            JingleReason.Reason nonExistent = JingleReason.Reason.fromString("illegal-reason");
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected
-        }
+    @Test(expected = NullPointerException.class)
+    public void alternativeSessionEmptyStringTest() {
+        // Alternative sessionID must not be empty
+        JingleReason.AlternativeSession("");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void alternativeSessionNullStringTest() {
+        // Alternative sessionID must not be null
+        JingleReason.AlternativeSession(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void illegalArgumentTest() {
+        JingleReason.Reason.fromString("illegal-reason");
     }
 }
