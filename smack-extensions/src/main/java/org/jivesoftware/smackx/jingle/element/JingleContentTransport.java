@@ -74,7 +74,7 @@ public abstract class JingleContentTransport implements ExtensionElement {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         addExtraAttributes(xml);
 
-        if (candidates.isEmpty()) {
+        if (candidates.isEmpty() && infos.isEmpty()) {
             xml.closeEmptyElement();
 
         } else {
@@ -87,5 +87,4 @@ public abstract class JingleContentTransport implements ExtensionElement {
 
         return xml;
     }
-
 }
