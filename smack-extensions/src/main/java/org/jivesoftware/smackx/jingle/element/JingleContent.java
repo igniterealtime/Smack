@@ -16,10 +16,6 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
@@ -70,24 +66,19 @@ public final class JingleContent implements NamedElement {
 
     private final JingleContentDescription description;
 
-    private final List<JingleContentTransport> transports;
+    private final JingleContentTransport transport;
 
     /**
      * Creates a content description..
      */
     private JingleContent(Creator creator, String disposition, String name, Senders senders,
-                    JingleContentDescription description, List<JingleContentTransport> transports) {
+                    JingleContentDescription description, JingleContentTransport transport) {
         this.creator = Objects.requireNonNull(creator, "Jingle content creator must not be null");
         this.disposition = disposition;
         this.name = StringUtils.requireNotNullOrEmpty(name, "Jingle content name must not be null or empty");
         this.senders = senders;
         this.description = description;
-        if (transports != null) {
-            this.transports = Collections.unmodifiableList(transports);
-        }
-        else {
-            this.transports = Collections.emptyList();
-        }
+        this.transport = transport;
     }
 
     public Creator getCreator() {
@@ -120,17 +111,8 @@ public final class JingleContent implements NamedElement {
      * 
      * @return an Iterator for the JingleTransports in the packet.
      */
-    public List<JingleContentTransport> getJingleTransports() {
-        return transports;
-    }
-
-    /**
-     * Returns a count of the JingleTransports in the Jingle packet.
-     * 
-     * @return the number of the JingleTransports in the Jingle packet.
-     */
-    public int getJingleTransportsCount() {
-        return transports.size();
+    public JingleContentTransport getJingleTransport() {
+        return transport;
     }
 
     @Override
@@ -148,8 +130,7 @@ public final class JingleContent implements NamedElement {
         xml.rightAngleBracket();
 
         xml.optAppend(description);
-
-        xml.append(transports);
+        xml.optElement(transport);
 
         xml.closeElement(this);
         return xml;
@@ -170,7 +151,7 @@ public final class JingleContent implements NamedElement {
 
         private JingleContentDescription description;
 
-        private List<JingleContentTransport> transports;
+        private JingleContentTransport transport;
 
         private Builder() {
         }
@@ -203,16 +184,13 @@ public final class JingleContent implements NamedElement {
             return this;
         }
 
-        public Builder addTransport(JingleContentTransport transport) {
-            if (transports == null) {
-                transports = new ArrayList<>(4);
-            }
-            transports.add(transport);
+        public Builder setTransport(JingleContentTransport transport) {
+            this.transport = transport;
             return this;
         }
 
         public JingleContent build() {
-            return new JingleContent(creator, disposition, name, senders, description, transports);
+            return new JingleContent(creator, disposition, name, senders, description, transport);
         }
     }
 }
