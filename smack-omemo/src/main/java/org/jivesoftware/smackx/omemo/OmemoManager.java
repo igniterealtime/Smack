@@ -163,13 +163,13 @@ public final class OmemoManager extends Manager {
             }
         }
 
-        int defaulDeviceId = OmemoService.getInstance().getOmemoStoreBackend().getDefaultDeviceId(user);
-        if (defaulDeviceId < 1) {
-            defaulDeviceId = randomDeviceId();
-            OmemoService.getInstance().getOmemoStoreBackend().setDefaultDeviceId(user, defaulDeviceId);
+        int defaultDeviceId = OmemoService.getInstance().getOmemoStoreBackend().getDefaultDeviceId(user);
+        if (defaultDeviceId < 1) {
+            defaultDeviceId = randomDeviceId();
+            OmemoService.getInstance().getOmemoStoreBackend().setDefaultDeviceId(user, defaultDeviceId);
         }
 
-        return getInstanceFor(connection, defaulDeviceId);
+        return getInstanceFor(connection, defaultDeviceId);
     }
 
     /**
