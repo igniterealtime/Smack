@@ -131,7 +131,7 @@ public class JingleProvider extends IQProvider<Jingle> {
                         break;
                     }
                     JingleContentTransport transport = provider.parse(parser);
-                    builder.addTransport(transport);
+                    builder.setTransport(transport);
                     break;
                 }
                 default:

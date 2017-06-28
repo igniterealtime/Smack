@@ -40,7 +40,7 @@ public class JingleActionTest extends SmackTestSuite {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void nonExistendEnumTest() {
+    public void nonExistentEnumTest() {
         JingleAction.fromString("inexistent-action");
     }
 }

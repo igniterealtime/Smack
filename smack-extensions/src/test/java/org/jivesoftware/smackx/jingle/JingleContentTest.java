@@ -69,9 +69,6 @@ public class JingleContentTest extends SmackTestSuite {
         assertNotSame(content.toXML().toString(), content1.toXML().toString());
         assertEquals(content1.toXML().toString(), builder.build().toXML().toString());
 
-        assertEquals(0, content.getJingleTransportsCount());
-        assertNotNull(content.getJingleTransports());
-
         String xml =
                 "<content creator='initiator' disposition='session' name='A name' senders='both'>" +
                 "</content>";
