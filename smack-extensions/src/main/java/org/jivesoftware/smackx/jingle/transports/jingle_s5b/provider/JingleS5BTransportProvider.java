@@ -83,23 +83,23 @@ public class JingleS5BTransportProvider extends JingleContentTransportProvider<J
                             break;
 
                         case JingleS5BTransportInfo.CandidateActivated.ELEMENT:
-                            builder.addTransportInfo(JingleS5BTransportInfo.CandidateActivated(
+                            builder.setTransportInfo(JingleS5BTransportInfo.CandidateActivated(
                                     parser.getAttributeValue(null,
                                             JingleS5BTransportInfo.CandidateActivated.ATTR_CID)));
                             break;
 
                         case JingleS5BTransportInfo.CandidateUsed.ELEMENT:
-                            builder.addTransportInfo(JingleS5BTransportInfo.CandidateUsed(
+                            builder.setTransportInfo(JingleS5BTransportInfo.CandidateUsed(
                                     parser.getAttributeValue(null,
                                             JingleS5BTransportInfo.CandidateUsed.ATTR_CID)));
                             break;
 
                         case JingleS5BTransportInfo.CandidateError.ELEMENT:
-                            builder.addTransportInfo(JingleS5BTransportInfo.CandidateError());
+                            builder.setTransportInfo(JingleS5BTransportInfo.CandidateError());
                             break;
 
                         case JingleS5BTransportInfo.ProxyError.ELEMENT:
-                            builder.addTransportInfo(JingleS5BTransportInfo.ProxyError());
+                            builder.setTransportInfo(JingleS5BTransportInfo.ProxyError());
                             break;
                     }
                 }
