@@ -1685,11 +1685,12 @@ public final class Roster extends Manager {
 
             // Roster push (RFC 6121, 2.1.6)
             // A roster push with a non-empty from not matching our address MUST be ignored
+            // For backward compatibility with RFC 3921, 7.2 accept the full JID too
             EntityBareJid jid = localAddress.asEntityBareJid();
             Jid from = rosterPacket.getFrom();
-            if (from != null && !from.equals(jid)) {
-                LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid='" + jid + "' from='" + from
-                                + "'");
+            if (from != null && !(from.equals(jid) || from.equals(localAddress))) {
+                LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid='" + localAddress
+                        + "' from='" + from + "'");
                 return IQ.createErrorResponse(iqRequest, Condition.service_unavailable);
             }
 
