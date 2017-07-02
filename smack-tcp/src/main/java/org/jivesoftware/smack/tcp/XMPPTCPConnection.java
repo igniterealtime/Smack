@@ -563,7 +563,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
         for (HostAddress hostAddress : hostAddresses) {
             Iterator<InetAddress> inetAddresses = null;
-            String host = hostAddress.getFQDN();
+            String host = hostAddress.getHost();
             int port = hostAddress.getPort();
             if (proxyInfo == null) {
                 inetAddresses = hostAddress.getInetAddresses().iterator();
