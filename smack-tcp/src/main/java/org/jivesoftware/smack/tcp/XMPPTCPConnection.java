@@ -745,7 +745,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
 
             if (ks != null) {
-                KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+                String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
+                KeyManagerFactory kmf = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);
                 try {
                     if (pcb == null) {
                         kmf.init(ks, null);
