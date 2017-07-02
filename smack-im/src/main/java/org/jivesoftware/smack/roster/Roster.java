@@ -1676,8 +1676,8 @@ public final class Roster extends Manager {
             final XMPPConnection connection = connection();
             RosterPacket rosterPacket = (RosterPacket) iqRequest;
 
-            EntityFullJid localAddress = connection.getUser();
-            if (localAddress == null) {
+            EntityFullJid ourFullJid = connection.getUser();
+            if (ourFullJid == null) {
                 LOGGER.warning("Ignoring roster push " + iqRequest + " while " + connection
                                 + " has no bound resource. This may be a server bug.");
                 return null;
@@ -1685,12 +1685,23 @@ public final class Roster extends Manager {
 
             // Roster push (RFC 6121, 2.1.6)
             // A roster push with a non-empty from not matching our address MUST be ignored
-            EntityBareJid jid = localAddress.asEntityBareJid();
+            EntityBareJid ourBareJid = ourFullJid.asEntityBareJid();
             Jid from = rosterPacket.getFrom();
-            if (from != null && !from.equals(jid)) {
-                LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid='" + jid + "' from='" + from
-                                + "'");
-                return IQ.createErrorResponse(iqRequest, Condition.service_unavailable);
+            if (from != null) {
+                if (from.equals(ourFullJid)) {
+                    // Since RFC 6121 roster pushes are no longer allowed to
+                    // origin from the full JID as it was the case with RFC
+                    // 3921. Log a warning an continue processing the push.
+                    // See also SMACK-773.
+                    LOGGER.warning(
+                            "Received roster push from full JID. This behavior is since RFC 6121 not longer standard compliant. "
+                                    + "Please ask your server vendor to fix this and comply to RFC 6121 § 2.1.6. IQ roster push stanza: "
+                                    + iqRequest);
+                } else if (!from.equals(ourBareJid)) {
+                    LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid='" + ourBareJid + "' from='"
+                            + from + "'");
+                    return IQ.createErrorResponse(iqRequest, Condition.service_unavailable);
+                }
             }
 
             // A roster push must contain exactly one entry
