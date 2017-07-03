@@ -192,6 +192,9 @@ gradle.taskGraph.whenReady { taskGraph ->
 		&& taskGraph.allTasks.any { it instanceof Sign }) {
 		// Use Java 6's console to read from the console (no good for a CI environment)
 		def console = System.console()
+		if (console == null) {
+			throw new Exception("Could not obtain system console (Console is 'null'). Did you build with gradle daemon? Try the same Gradle command with \"--no-daemon\".")
+		}
 		console.printf '\n\nWe have to sign some things in this build.\n\nPlease enter your signing details.\n\n'
 		def password = console.readPassword('GnuPG Private Key Password: ')
 
