@@ -124,6 +124,10 @@ public class JingleReason implements NamedElement {
         return xml;
     }
 
+    public Reason asEnum() {
+        return reason;
+    }
+
 
     public static class AlternativeSession extends JingleReason {
 

@@ -19,6 +19,9 @@ package org.jivesoftware.smackx.jingle;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Manager;
@@ -27,19 +30,27 @@ import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
-
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
+import org.jivesoftware.smackx.jingle.transports.jingle_ibb.JingleIBBTransportManager;
+import org.jivesoftware.smackx.jingle.transports.jingle_s5b.JingleS5BTransportManager;
 
 import org.jxmpp.jid.FullJid;
-import org.jxmpp.jid.Jid;
 
 public final class JingleManager extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(JingleManager.class.getName());
 
     private static final Map<XMPPConnection, JingleManager> INSTANCES = new WeakHashMap<>();
+
+    private static final ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+    public static ExecutorService getThreadPool() {
+        return threadPool;
+    }
 
     public static synchronized JingleManager getInstanceFor(XMPPConnection connection) {
         JingleManager jingleManager = INSTANCES.get(connection);
@@ -54,45 +65,53 @@ public final class JingleManager extends Manager {
 
     private final Map<FullJidAndSessionId, JingleSessionHandler> jingleSessionHandlers = new ConcurrentHashMap<>();
 
+    private final JingleUtil jutil;
+
     private JingleManager(XMPPConnection connection) {
         super(connection);
 
+        jutil = new JingleUtil(connection);
+
         connection.registerIQRequestHandler(
-                        new AbstractIqRequestHandler(Jingle.ELEMENT, Jingle.NAMESPACE, Type.set, Mode.async) {
-                            @Override
-                            public IQ handleIQRequest(IQ iqRequest) {
-                                final Jingle jingle = (Jingle) iqRequest;
+                new AbstractIqRequestHandler(Jingle.ELEMENT, Jingle.NAMESPACE, Type.set, Mode.async) {
+                    @Override
+                    public IQ handleIQRequest(IQ iqRequest) {
+                        final Jingle jingle = (Jingle) iqRequest;
 
-                                if (jingle.getContents().isEmpty()) {
-                                    Jid from = jingle.getFrom();
-                                    assert (from != null);
-                                    FullJid fullFrom = from.asFullJidOrThrow();
-                                    String sid = jingle.getSid();
-                                    FullJidAndSessionId fullJidAndSessionId = new FullJidAndSessionId(fullFrom, sid);
-                                    JingleSessionHandler jingleSessionHandler = jingleSessionHandlers.get(fullJidAndSessionId);
-                                    if (jingleSessionHandler == null) {
-                                        // TODO handle non existing jingle session handler.
-                                        return null;
-                                    }
-                                    return jingleSessionHandler.handleJingleSessionRequest(jingle, sid);
-                                }
+                        FullJid fullFrom = jingle.getFrom().asFullJidOrThrow();
+                        String sid = jingle.getSid();
+                        FullJidAndSessionId fullJidAndSessionId = new FullJidAndSessionId(fullFrom, sid);
 
-                                if (jingle.getContents().size() > 1) {
-                                    LOGGER.severe("Jingle IQs with more then one content element are currently not supported by Smack");
-                                    return null;
-                                }
+                        JingleSessionHandler sessionHandler = jingleSessionHandlers.get(fullJidAndSessionId);
+                        if (sessionHandler != null) {
+                            //Handle existing session
+                            return sessionHandler.handleJingleSessionRequest(jingle);
+                        }
 
-                                JingleContent content = jingle.getContents().get(0);
-                                JingleContentDescription description = content.getDescription();
-                                JingleHandler jingleDescriptionHandler = descriptionHandlers.get(
-                                                description.getNamespace());
-                                if (jingleDescriptionHandler == null) {
-                                    // TODO handle non existing content description handler.
-                                    return null;
-                                }
-                                return jingleDescriptionHandler.handleJingleRequest(jingle);
+                        if (jingle.getAction() == JingleAction.session_initiate) {
+
+                            JingleContent content = jingle.getContents().get(0);
+                            JingleContentDescription description = content.getDescription();
+                            JingleHandler jingleDescriptionHandler = descriptionHandlers.get(
+                                    description.getNamespace());
+
+                            if (jingleDescriptionHandler == null) {
+                                //Unsupported Application
+                                LOGGER.log(Level.WARNING, "Unsupported Jingle application.");
+                                return jutil.createSessionTerminateUnsupportedApplications(fullFrom, sid);
                             }
-                        });
+                            return jingleDescriptionHandler.handleJingleRequest(jingle);
+                        }
+
+                        //Unknown session
+                        LOGGER.log(Level.WARNING, "Unknown session.");
+                        return jutil.createErrorUnknownSession(jingle);
+                    }
+                });
+        //Register transports.
+        JingleTransportMethodManager transportMethodManager = JingleTransportMethodManager.getInstanceFor(connection);
+        transportMethodManager.registerTransportManager(JingleIBBTransportManager.getInstanceFor(connection));
+        transportMethodManager.registerTransportManager(JingleS5BTransportManager.getInstanceFor(connection));
     }
 
     public JingleHandler registerDescriptionHandler(String namespace, JingleHandler handler) {
@@ -109,30 +128,7 @@ public final class JingleManager extends Manager {
         return jingleSessionHandlers.remove(fullJidAndSessionId);
     }
 
-    private static final class FullJidAndSessionId {
-        final FullJid fullJid;
-        final String sessionId;
-
-        private FullJidAndSessionId(FullJid fullJid, String sessionId) {
-            this.fullJid = fullJid;
-            this.sessionId = sessionId;
-        }
-
-        @Override
-        public int hashCode() {
-            int hashCode = 31 * fullJid.hashCode();
-            hashCode = 31 * hashCode + sessionId.hashCode();
-            return hashCode;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (!(other instanceof FullJidAndSessionId)) {
-                return false;
-            }
-            FullJidAndSessionId otherFullJidAndSessionId = (FullJidAndSessionId) other;
-            return fullJid.equals(otherFullJidAndSessionId.fullJid)
-                            && sessionId.equals(otherFullJidAndSessionId.sessionId);
-        }
+    public static String randomId() {
+        return StringUtils.randomString(24);
     }
 }

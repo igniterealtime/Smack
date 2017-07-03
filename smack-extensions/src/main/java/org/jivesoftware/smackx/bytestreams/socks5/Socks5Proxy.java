@@ -348,7 +348,7 @@ public final class Socks5Proxy {
      * 
      * @param digest to be added to the list of allowed transfers
      */
-    protected void addTransfer(String digest) {
+    public void addTransfer(String digest) {
         this.allowedConnections.add(digest);
     }
 

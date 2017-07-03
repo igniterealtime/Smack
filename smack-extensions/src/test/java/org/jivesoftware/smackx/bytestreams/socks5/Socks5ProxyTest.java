@@ -102,10 +102,15 @@ public class Socks5ProxyTest {
     @Test
     public void shouldPreserveAddressOrderOnInsertions() {
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
-        List<String> addresses = new ArrayList<String>(proxy.getLocalAddresses());
-        addresses.add("1");
-        addresses.add("2");
-        addresses.add("3");
+        List<String> addresses = new ArrayList<>(proxy.getLocalAddresses());
+
+        for (int i = 1 ; i <= 3; i++) {
+            String addr = Integer.toString(i);
+            if (!addresses.contains(addr)) {
+                addresses.add(addr);
+            }
+        }
+
         for (String address : addresses) {
             proxy.addLocalAddress(address);
         }

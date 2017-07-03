@@ -46,7 +46,7 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
  * 
  * @author Henning Staib
  */
-class Socks5Client {
+public class Socks5Client {
 
     private static final Logger LOGGER = Logger.getLogger(Socks5Client.class.getName());
 

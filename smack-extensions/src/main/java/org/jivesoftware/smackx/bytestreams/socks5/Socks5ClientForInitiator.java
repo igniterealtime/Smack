@@ -42,7 +42,7 @@ import org.jxmpp.jid.Jid;
  * 
  * @author Henning Staib
  */
-class Socks5ClientForInitiator extends Socks5Client {
+public class Socks5ClientForInitiator extends Socks5Client {
 
     /* the XMPP connection used to communicate with the SOCKS5 proxy */
     private WeakReference<XMPPConnection> connection;

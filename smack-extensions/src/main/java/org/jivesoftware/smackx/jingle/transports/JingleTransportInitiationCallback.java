@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.jingle;
+package org.jivesoftware.smackx.jingle.transports;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 
-public interface JingleSessionHandler {
+/**
+ * Callback for bytestream session creation of TransportManagers.
+ */
+public interface JingleTransportInitiationCallback {
 
-    IQ handleJingleSessionRequest(Jingle jingle);
+    void onSessionInitiated(BytestreamSession bytestreamSession);
+
+    void onException(Exception e);
 
 }

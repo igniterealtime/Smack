@@ -16,28 +16,108 @@
  */
 package org.jivesoftware.smackx.jingle;
 
-import org.jxmpp.jid.Jid;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
-// TODO: Is this class still required? If not, then remove it.
-public class JingleSession {
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.transports.JingleTransportSession;
 
-    private final Jid initiator;
+import org.jxmpp.jid.FullJid;
 
-    private final Jid responder;
+public abstract class JingleSession implements JingleSessionHandler {
+    private static final Logger LOGGER = Logger.getLogger(JingleSession.class.getName());
+    protected HashSet<String> failedTransportMethods = new HashSet<>();
 
-    private final String sid;
+    protected final FullJid local;
 
-    public JingleSession(Jid initiator, Jid responder, String sid) {
-        this.initiator = initiator;
-        this.responder = responder;
+    protected final FullJid remote;
+
+    protected final Role role;
+
+    protected final String sid;
+
+    protected final List<JingleContent> contents = new ArrayList<>();
+
+    protected ArrayList<Future<?>> queued = new ArrayList<>();
+    protected JingleTransportSession<?> transportSession;
+
+    public JingleSession(FullJid initiator, FullJid responder, Role role, String sid) {
+        this(initiator, responder, role, sid, null);
+    }
+
+    public JingleSession(FullJid initiator, FullJid responder, Role role, String sid, List<JingleContent> contents) {
+        if (role == Role.initiator) {
+            this.local = initiator;
+            this.remote = responder;
+        } else {
+            this.local = responder;
+            this.remote = initiator;
+        }
         this.sid = sid;
+        this.role = role;
+
+        if (contents != null) {
+            this.contents.addAll(contents);
+        }
+    }
+
+    public FullJid getInitiator() {
+        return isInitiator() ? local : remote;
+    }
+
+    public boolean isInitiator() {
+        return role == Role.initiator;
+    }
+
+    public FullJid getResponder() {
+        return isResponder() ? local : remote;
+    }
+
+    public boolean isResponder() {
+        return role == Role.responder;
+    }
+
+    public FullJid getRemote() {
+        return remote;
+    }
+
+    public FullJid getLocal() {
+        return local;
+    }
+
+    public String getSessionId() {
+        return sid;
+    }
+
+    public FullJidAndSessionId getFullJidAndSessionId() {
+        return new FullJidAndSessionId(remote, sid);
+    }
+
+    public List<JingleContent> getContents() {
+        return contents;
+    }
+
+    public JingleTransportSession<?> getTransportSession() {
+        return transportSession;
+    }
+
+    protected void setTransportSession(JingleTransportSession<?> transportSession) {
+        this.transportSession = transportSession;
     }
 
     @Override
     public int hashCode() {
-        int hashCode = 31 + initiator.hashCode();
-        hashCode = 31 * hashCode + responder.hashCode();
-        hashCode = 31 * hashCode + sid.hashCode();
+        int hashCode = 31 + getInitiator().hashCode();
+        hashCode = 31 * hashCode + getResponder().hashCode();
+        hashCode = 31 * hashCode + getSessionId().hashCode();
         return hashCode;
     }
 
@@ -48,7 +128,113 @@ public class JingleSession {
         }
 
         JingleSession otherJingleSession = (JingleSession) other;
-        return initiator.equals(otherJingleSession.initiator) && responder.equals(otherJingleSession.responder)
-                        && sid.equals(otherJingleSession.sid);
+        return getInitiator().equals(otherJingleSession.getInitiator())
+                && getResponder().equals(otherJingleSession.getResponder())
+                && sid.equals(otherJingleSession.sid);
     }
+
+    @Override
+    public IQ handleJingleSessionRequest(Jingle jingle) {
+        try {
+            switch (jingle.getAction()) {
+                case content_accept:
+                    return handleContentAccept(jingle);
+                case content_add:
+                    return handleContentAdd(jingle);
+                case content_modify:
+                    return handleContentModify(jingle);
+                case content_reject:
+                    return handleContentReject(jingle);
+                case content_remove:
+                    return handleContentRemove(jingle);
+                case description_info:
+                    return handleDescriptionInfo(jingle);
+                case session_info:
+                    return handleSessionInfo(jingle);
+                case security_info:
+                    return handleSecurityInfo(jingle);
+                case session_accept:
+                    return handleSessionAccept(jingle);
+                case transport_accept:
+                    return handleTransportAccept(jingle);
+                case transport_info:
+                    return transportSession.handleTransportInfo(jingle);
+                case session_initiate:
+                    return handleSessionInitiate(jingle);
+                case transport_reject:
+                    return handleTransportReject(jingle);
+                case session_terminate:
+                    return handleSessionTerminate(jingle);
+                case transport_replace:
+                    return handleTransportReplace(jingle);
+                default:
+                    return IQ.createResultIQ(jingle);
+            }
+        } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException.NotConnectedException | SmackException.NoResponseException e) {
+            return null; //TODO:
+        }
+    }
+
+    protected IQ handleSessionInitiate(Jingle sessionInitiate) throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException {
+        return IQ.createResultIQ(sessionInitiate);
+    }
+
+    protected IQ handleSessionTerminate(Jingle sessionTerminate) {
+        return IQ.createResultIQ(sessionTerminate);
+    }
+
+    protected IQ handleSessionInfo(Jingle sessionInfo) {
+        return IQ.createResultIQ(sessionInfo);
+    }
+
+    protected IQ handleSessionAccept(Jingle sessionAccept) throws SmackException.NotConnectedException, InterruptedException {
+        return IQ.createResultIQ(sessionAccept);
+    }
+
+    protected IQ handleContentAdd(Jingle contentAdd) {
+        return IQ.createResultIQ(contentAdd);
+    }
+
+    protected IQ handleContentAccept(Jingle contentAccept) {
+        return IQ.createResultIQ(contentAccept);
+    }
+
+    protected IQ handleContentModify(Jingle contentModify) {
+        return IQ.createResultIQ(contentModify);
+    }
+
+    protected IQ handleContentReject(Jingle contentReject) {
+        return IQ.createResultIQ(contentReject);
+    }
+
+    protected IQ handleContentRemove(Jingle contentRemove) {
+        return IQ.createResultIQ(contentRemove);
+    }
+
+    protected IQ handleDescriptionInfo(Jingle descriptionInfo) {
+        return IQ.createResultIQ(descriptionInfo);
+    }
+
+    protected IQ handleSecurityInfo(Jingle securityInfo) {
+        return IQ.createResultIQ(securityInfo);
+    }
+
+    protected IQ handleTransportAccept(Jingle transportAccept) throws SmackException.NotConnectedException, InterruptedException {
+        return IQ.createResultIQ(transportAccept);
+    }
+
+    protected IQ handleTransportReplace(Jingle transportReplace)
+            throws InterruptedException, XMPPException.XMPPErrorException,
+            SmackException.NotConnectedException, SmackException.NoResponseException {
+        return IQ.createResultIQ(transportReplace);
+    }
+
+    protected IQ handleTransportReject(Jingle transportReject) {
+        return IQ.createResultIQ(transportReject);
+    }
+
+    public abstract XMPPConnection getConnection();
+
+    public abstract void onTransportMethodFailed(String namespace);
+
 }
