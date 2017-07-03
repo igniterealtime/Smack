@@ -245,11 +245,18 @@ task distributionZip(type: Zip, dependsOn: [javadocAll, prepareReleasedocs, mark
 
 task maybeCheckForSnapshotDependencies {
 	// Don't check for Snapshot dependencies if this is a snapshot.
-	if (isSnapshot) return
-	allprojects { project ->
-		project.configurations.runtime.each {
-			if (it.toString().contains("-SNAPSHOT"))
-				throw new Exception("Release build contains snapshot dependencies: " + it)
+	onlyIf { isReleaseVersion }
+	// Run in the execution phase, not in configuration phase, as the
+	// 'each' forces the runtime configuration to be resovled, which
+	// causes "Cannot change dependencies of configuration after it
+	// has been included in dependency resolution." errors.
+	// See https://discuss.gradle.org/t/23153
+	doLast {
+		allprojects { project ->
+			project.configurations.runtime.each {
+				if (it.toString().contains("-SNAPSHOT"))
+					throw new Exception("Release build contains snapshot dependencies: " + it)
+			}
 		}
 	}
 }
