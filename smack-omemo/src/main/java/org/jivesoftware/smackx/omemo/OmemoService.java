@@ -39,7 +39,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -51,7 +50,6 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
-
 import org.jivesoftware.smackx.carbons.CarbonCopyReceivedListener;
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
@@ -88,6 +86,7 @@ import org.jivesoftware.smackx.pubsub.PubSubManager;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.Jid;
 
 /**
  * This class contains OMEMO related logic and registers listeners etc.
@@ -1177,7 +1176,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      */
     private static OmemoDevice getSender(OmemoManager omemoManager, Stanza stanza) {
         OmemoElement omemoElement = stanza.getExtension(OmemoElement.ENCRYPTED, OMEMO_NAMESPACE_V_AXOLOTL);
-        BareJid sender = stanza.getFrom().asBareJid();
+        Jid sender = stanza.getFrom();
         if (isMucMessage(omemoManager, stanza)) {
             MultiUserChatManager mucm = MultiUserChatManager.getInstanceFor(omemoManager.getConnection());
             MultiUserChat muc = mucm.getMultiUserChat(sender.asEntityBareJidIfPossible());
@@ -1186,7 +1185,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         if (sender == null) {
             throw new AssertionError("Sender is null.");
         }
-        return new OmemoDevice(sender, omemoElement.getHeader().getSid());
+        return new OmemoDevice(sender.asBareJid(), omemoElement.getHeader().getSid());
     }
 
     /**
