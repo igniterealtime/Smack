@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.jingle;
+package org.jivesoftware.smackx.jingle.transports;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.jingle.element.Jingle;
+/**
+ * Created by vanitas on 25.06.17.
+ */
+public abstract class JingleTransportInitiationException extends Exception {
+    private static final long serialVersionUID = 1L;
 
-public interface JingleSessionHandler {
 
-    IQ handleJingleSessionRequest(Jingle jingle);
+    public static class ProxyError extends JingleTransportInitiationException {
+        private static final long serialVersionUID = 1L;
+    }
 
+    public static class CandidateError extends JingleTransportInitiationException {
+        private static final long serialVersionUID = 1L;
+    }
 }

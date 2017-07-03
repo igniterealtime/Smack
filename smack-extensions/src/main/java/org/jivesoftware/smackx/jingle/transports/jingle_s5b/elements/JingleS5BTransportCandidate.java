@@ -54,8 +54,12 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
         Objects.requireNonNull(candidateId);
         Objects.requireNonNull(host);
         Objects.requireNonNull(jid);
+
         if (priority < 0) {
-            throw new IllegalArgumentException("Priority MUST be present and NOT less than 0.");
+            throw new IllegalArgumentException("Priority MUST NOT be less than 0.");
+        }
+        if (port < 0) {
+            throw new IllegalArgumentException("Port MUST NOT be less than 0.");
         }
 
         this.cid = candidateId;
@@ -66,8 +70,8 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
         this.type = type;
     }
 
-    public JingleS5BTransportCandidate(Bytestream.StreamHost streamHost, int priority) {
-        this(StringUtils.randomString(24), streamHost.getAddress(), streamHost.getJID(), streamHost.getPort(), priority, Type.proxy);
+    public JingleS5BTransportCandidate(Bytestream.StreamHost streamHost, int priority, Type type) {
+        this(StringUtils.randomString(24), streamHost.getAddress(), streamHost.getJID(), streamHost.getPort(), priority, type);
     }
 
     public enum Type {

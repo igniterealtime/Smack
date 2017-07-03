@@ -37,7 +37,7 @@ public class Socks5BytestreamSession implements BytestreamSession {
     /* flag to indicate if this session is a direct or mediated connection */
     private final boolean isDirect;
 
-    protected Socks5BytestreamSession(Socket socket, boolean isDirect) {
+    public Socks5BytestreamSession(Socket socket, boolean isDirect) {
         this.socket = socket;
         this.isDirect = isDirect;
     }

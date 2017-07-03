@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.jingle;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.jingle.element.Jingle;
-
-public interface JingleSessionHandler {
-
-    IQ handleJingleSessionRequest(Jingle jingle);
-
-}
+/**
+ * Smack's API for <a href="https://xmpp.org/extensions/xep-0234.html">XEP-0234: Jingle File Transfer</a>.
+ */
+package org.jivesoftware.smackx.jingle_filetransfer;

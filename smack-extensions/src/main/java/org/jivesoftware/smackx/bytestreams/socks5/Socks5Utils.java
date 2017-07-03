@@ -29,7 +29,7 @@ import org.jxmpp.jid.Jid;
  * 
  * @author Henning Staib
  */
-class Socks5Utils {
+public class Socks5Utils {
 
     /**
      * Returns a SHA-1 digest of the given parameters as specified in <a

@@ -122,6 +122,10 @@ public final class Jingle extends IQ {
         return action;
     }
 
+    public JingleReason getReason() {
+        return reason;
+    }
+
     /**
      * Get a List of the contents.
      *

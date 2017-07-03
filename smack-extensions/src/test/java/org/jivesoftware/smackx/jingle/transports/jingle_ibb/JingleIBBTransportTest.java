@@ -69,5 +69,8 @@ public class JingleIBBTransportTest extends SmackTestSuite {
 
         assertEquals(transport3.getNamespace(), JingleIBBTransport.NAMESPACE_V1);
         assertEquals(transport3.getElementName(), "transport");
+
+        JingleIBBTransport transport4 = new JingleIBBTransport("session-id");
+        assertEquals(JingleIBBTransport.DEFAULT_BLOCK_SIZE, transport4.getBlockSize());
     }
 }

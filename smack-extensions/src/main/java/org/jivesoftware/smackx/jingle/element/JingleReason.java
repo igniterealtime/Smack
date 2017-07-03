@@ -104,7 +104,7 @@ public class JingleReason implements NamedElement {
 
     protected final Reason reason;
 
-    protected JingleReason(Reason reason) {
+    public JingleReason(Reason reason) {
         this.reason = reason;
     }
 
@@ -122,6 +122,10 @@ public class JingleReason implements NamedElement {
 
         xml.closeElement(this);
         return xml;
+    }
+
+    public Reason asEnum() {
+        return reason;
     }
 
 

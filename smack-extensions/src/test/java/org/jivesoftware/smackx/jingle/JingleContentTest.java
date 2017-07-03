@@ -22,7 +22,6 @@ import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertNull;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 
 import org.junit.Test;
@@ -46,7 +45,7 @@ public class JingleContentTest extends SmackTestSuite {
     }
 
     @Test
-    public void parserTest() {
+    public void parserTest() throws Exception {
 
         JingleContent.Builder builder = JingleContent.getBuilder();
 
