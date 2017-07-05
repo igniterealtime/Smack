@@ -82,10 +82,10 @@ public class SlotRequest extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+        xml.attribute("filename", filename);
+        xml.attribute("size", String.valueOf(size));
+        xml.optAttribute("content-type", contentType);
         xml.rightAngleBracket();
-        xml.element("filename", filename);
-        xml.element("size", String.valueOf(size));
-        xml.optElement("content-type", contentType);
         return xml;
     }
 }
