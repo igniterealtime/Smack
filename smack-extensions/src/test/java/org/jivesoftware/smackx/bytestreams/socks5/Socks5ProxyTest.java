@@ -30,6 +30,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.jivesoftware.smack.util.StringUtils;
@@ -39,7 +41,7 @@ import org.junit.Test;
 
 /**
  * Test for Socks5Proxy class.
- * 
+ *
  * @author Henning Staib
  */
 public class Socks5ProxyTest {
@@ -73,7 +75,7 @@ public class Socks5ProxyTest {
 
     /**
      * The SOCKS5 proxy should use a free port above the one configured.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -102,13 +104,11 @@ public class Socks5ProxyTest {
     @Test
     public void shouldPreserveAddressOrderOnInsertions() {
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
-        List<String> addresses = new ArrayList<>(proxy.getLocalAddresses());
+
+        LinkedHashSet<String> addresses = new LinkedHashSet<>(proxy.getLocalAddresses());
 
         for (int i = 1 ; i <= 3; i++) {
-            String addr = Integer.toString(i);
-            if (!addresses.contains(addr)) {
-                addresses.add(addr);
-            }
+            addresses.add(Integer.toString(i));
         }
 
         for (String address : addresses) {
@@ -116,8 +116,10 @@ public class Socks5ProxyTest {
         }
 
         List<String> localAddresses = proxy.getLocalAddresses();
+
+        Iterator<String> iterator = addresses.iterator();
         for (int i = 0; i < addresses.size(); i++) {
-            assertEquals(addresses.get(i), localAddresses.get(i));
+            assertEquals(iterator.next(), localAddresses.get(i));
         }
     }
 
@@ -165,7 +167,7 @@ public class Socks5ProxyTest {
     /**
      * If the SOCKS5 proxy accepts a connection that is not a SOCKS5 connection it should close the
      * corresponding socket.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -196,7 +198,7 @@ public class Socks5ProxyTest {
     /**
      * The SOCKS5 proxy should reply with an error message if no supported authentication methods
      * are given in the SOCKS5 request.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -227,7 +229,7 @@ public class Socks5ProxyTest {
     /**
      * The SOCKS5 proxy should respond with an error message if the client is not allowed to connect
      * with the proxy.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -249,7 +251,7 @@ public class Socks5ProxyTest {
 
         // send valid SOCKS5 message
         out.write(new byte[] { (byte) 0x05, (byte) 0x00, (byte) 0x00, (byte) 0x03, (byte) 0x01,
-                        (byte) 0xAA, (byte) 0x00, (byte) 0x00 });
+                (byte) 0xAA, (byte) 0x00, (byte) 0x00 });
 
         // verify error message
         assertEquals((byte) 0x05, (byte) in.read());
@@ -269,7 +271,7 @@ public class Socks5ProxyTest {
 
     /**
      * A Client should successfully establish a connection to the SOCKS5 proxy.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -297,7 +299,7 @@ public class Socks5ProxyTest {
 
         // send valid SOCKS5 message
         out.write(new byte[] { (byte) 0x05, (byte) 0x00, (byte) 0x00, (byte) 0x03, (byte) 0x01,
-                        (byte) 0xAA, (byte) 0x00, (byte) 0x00 });
+                (byte) 0xAA, (byte) 0x00, (byte) 0x00 });
 
         // verify response
         assertEquals((byte) 0x05, (byte) in.read());
