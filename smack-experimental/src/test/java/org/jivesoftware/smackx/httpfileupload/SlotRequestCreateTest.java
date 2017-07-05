@@ -27,17 +27,17 @@ import org.jxmpp.stringprep.XmppStringprepException;
 public class SlotRequestCreateTest {
 
     String testRequest
-            = "<request xmlns='urn:xmpp:http:upload:0'>"
-            +   "<filename>my_juliet.png</filename>"
-            +   "<size>23456</size>"
-            +   "<content-type>image/jpeg</content-type>"
-            + "</request>";
+            = "<request xmlns='urn:xmpp:http:upload:0'"
+            +   " filename='my_juliet.png'"
+            +   " size='23456'"
+            +   " content-type='image/jpeg'"
+            + "/>";
 
     String testRequestWithoutContentType
-            = "<request xmlns='urn:xmpp:http:upload:0'>"
-            +   "<filename>my_romeo.png</filename>"
-            +   "<size>52523</size>"
-            + "</request>";
+            = "<request xmlns='urn:xmpp:http:upload:0'"
+            +   " filename='my_romeo.png'"
+            +   " size='52523'"
+            + "/>";
 
     @Test
     public void checkSlotRequestCreation() throws XmppStringprepException {
