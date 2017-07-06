@@ -69,7 +69,14 @@ public class JingleProvider extends IQProvider<Jingle> {
                 case JingleReason.ELEMENT:
                     parser.next();
                     String reasonString = parser.getName();
-                    Reason reason = Reason.fromString(reasonString);
+                    JingleReason reason;
+                    if (reasonString.equals("alternative-session")) {
+                        parser.next();
+                        String sid = parser.nextText();
+                        reason = new JingleReason.AlternativeSession(sid);
+                    } else {
+                        reason = new JingleReason(Reason.fromString(reasonString));
+                    }
                     builder.setReason(reason);
                     break;
                 default:
