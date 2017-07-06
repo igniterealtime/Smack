@@ -35,7 +35,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * The fault tolerant negotiator takes two stream negotiators, the primary and the secondary
- * negotiator. If the primary negotiator fails during the stream negotiaton process, the second
+ * negotiator. If the primary negotiator fails during the stream negotiation process, the second
  * negotiator is used.
  */
 public class FaultTolerantNegotiator extends StreamNegotiator {
@@ -78,7 +78,7 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
         } else if (streamInitiation instanceof Open) {
             return secondaryNegotiator;
         } else {
-            throw new IllegalStateException("Unknown stream initation type");
+            throw new IllegalStateException("Unknown stream initiation type");
         }
     }
 

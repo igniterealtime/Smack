@@ -34,10 +34,10 @@ import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jxmpp.jid.EntityFullJid;
 
 /**
- * The file transfer manager class handles the sending and recieving of files.
+ * The file transfer manager class handles the sending and receiving of files.
  * To send a file invoke the {@link #createOutgoingFileTransfer(EntityFullJid)} method.
  * <p>
- * And to recieve a file add a file transfer listener to the manager. The
+ * And to receive a file add a file transfer listener to the manager. The
  * listener will notify you when there is a new file transfer request. To create
  * the {@link IncomingFileTransfer} object accept the transfer, or, if the
  * transfer is not desirable reject it.
@@ -135,7 +135,7 @@ public final class FileTransferManager extends Manager {
     /**
      * When the file transfer request is acceptable, this method should be
      * invoked. It will create an IncomingFileTransfer which allows the
-     * transmission of the file to procede.
+     * transmission of the file to proceed.
      * 
      * @param request
      *            The remote request that is being accepted.
@@ -145,7 +145,7 @@ public final class FileTransferManager extends Manager {
     protected IncomingFileTransfer createIncomingFileTransfer(
             FileTransferRequest request) {
         if (request == null) {
-            throw new NullPointerException("RecieveRequest cannot be null");
+            throw new NullPointerException("ReceiveRequest cannot be null");
         }
 
         IncomingFileTransfer transfer = new IncomingFileTransfer(request,

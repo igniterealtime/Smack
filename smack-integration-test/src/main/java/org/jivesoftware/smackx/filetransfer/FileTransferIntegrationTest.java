@@ -76,7 +76,7 @@ public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
                 byte[] dataReceived = null;
                 IncomingFileTransfer ift = request.accept();
                 try {
-                    InputStream is = ift.recieveFile();
+                    InputStream is = ift.receiveFile();
                     ByteArrayOutputStream os = new ByteArrayOutputStream();
                     int nRead;
                     byte[] buf = new byte[1024];

@@ -77,18 +77,18 @@ public abstract class FileTransfer {
     }
 
     /**
-     * Returns the size of the file being transfered.
+     * Returns the size of the file being transferred.
      *
-     * @return Returns the size of the file being transfered.
+     * @return Returns the size of the file being transferred.
      */
     public long getFileSize() {
         return fileSize;
     }
 
     /**
-     * Returns the name of the file being transfered.
+     * Returns the name of the file being transferred.
      *
-     * @return Returns the name of the file being transfered.
+     * @return Returns the name of the file being transferred.
      */
     public String getFileName() {
         return fileName;
@@ -247,7 +247,7 @@ public abstract class FileTransfer {
          * The file transfer is being negotiated with the peer. The party
          * Receiving the file has the option to accept or refuse a file transfer
          * request. If they accept, then the process of stream negotiation will
-         * begin. If they refuse the file will not be transfered.
+         * begin. If they refuse the file will not be transferred.
          *
          * @see #negotiating_stream
          */
@@ -294,7 +294,7 @@ public abstract class FileTransfer {
 
         private final String status;
 
-        private Status(String status) {
+        Status(String status) {
             this.status = status;
         }
 
@@ -337,16 +337,16 @@ public abstract class FileTransfer {
         /**
          * An error occurred over the socket connected to send the file.
          */
-        connection("An error occured over the socket connected to send the file."),
+        connection("An error occurred over the socket connected to send the file."),
 
         /**
          * An error occurred while sending or receiving the file.
          */
-        stream("An error occured while sending or recieving the file.");
+        stream("An error occurred while sending or receiving the file.");
 
         private final String msg;
 
-        private Error(String msg) {
+        Error(String msg) {
             this.msg = msg;
         }
 
