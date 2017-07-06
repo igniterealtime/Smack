@@ -128,7 +128,7 @@ public class OutgoingFileTransfer extends FileTransfer {
             String description) throws XMPPException, SmackException, InterruptedException {
         if (isDone() || outputStream != null) {
             throw new IllegalStateException(
-                    "The negotation process has already"
+                    "The negotiation process has already"
                             + " been attempted on this file transfer");
         }
         try {
@@ -169,7 +169,7 @@ public class OutgoingFileTransfer extends FileTransfer {
         checkTransferThread();
         if (isDone() || outputStream != null) {
             throw new IllegalStateException(
-                    "The negotation process has already"
+                    "The negotiation process has already"
                             + " been attempted for this file transfer");
         }
         setFileInfo(fileName, fileSize);

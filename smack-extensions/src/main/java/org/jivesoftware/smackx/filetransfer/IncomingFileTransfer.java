@@ -43,13 +43,13 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
  * concerned with and they can be handled in different ways depending upon the
  * method that is invoked on this class.
  * <p/>
- * The first way that a file is recieved is by calling the
- * {@link #recieveFile()} method. This method, negotiates the appropriate stream
+ * The first way that a file is received is by calling the
+ * {@link #receiveFile()} method. This method, negotiates the appropriate stream
  * method and then returns the <b><i>InputStream</b></i> to read the file
  * data from.
  * <p/>
- * The second way that a file can be recieved through this class is by invoking
- * the {@link #recieveFile(File)} method. This method returns immediatly and
+ * The second way that a file can be received through this class is by invoking
+ * the {@link #receiveFile(File)} method. This method returns immediately and
  * takes as its parameter a file on the local file system where the file
  * recieved from the transfer will be put.
  *
@@ -59,14 +59,14 @@ public class IncomingFileTransfer extends FileTransfer {
 
     private static final Logger LOGGER = Logger.getLogger(IncomingFileTransfer.class.getName());
 
-    private FileTransferRequest recieveRequest;
+    private FileTransferRequest receiveRequest;
 
     private InputStream inputStream;
 
     protected IncomingFileTransfer(FileTransferRequest request,
             FileTransferNegotiator transferNegotiator) {
         super(request.getRequestor(), request.getStreamID(), transferNegotiator);
-        this.recieveRequest = request;
+        this.receiveRequest = request;
     }
 
     /**
@@ -79,7 +79,7 @@ public class IncomingFileTransfer extends FileTransfer {
      *                       is thrown.
      * @throws InterruptedException 
      */
-    public InputStream recieveFile() throws SmackException, XMPPErrorException, InterruptedException {
+    public InputStream receiveFile() throws SmackException, XMPPErrorException, InterruptedException {
         if (inputStream != null) {
             throw new IllegalStateException("Transfer already negotiated!");
         }
@@ -96,10 +96,10 @@ public class IncomingFileTransfer extends FileTransfer {
     }
 
     /**
-     * This method negotitates the stream and then transfer's the file over the negotiated stream.
-     * The transfered file will be saved at the provided location.
+     * This method negotiates the stream and then transfer's the file over the negotiated stream.
+     * The transferred file will be saved at the provided location.
      * <p/>
-     * This method will return immedialtly, file transfer progress can be monitored through several
+     * This method will return immediately, file transfer progress can be monitored through several
      * methods:
      * <p/>
      * <UL>
@@ -114,7 +114,7 @@ public class IncomingFileTransfer extends FileTransfer {
      * @throws IllegalArgumentException This exception is thrown when the the provided file is
      *         either null, or cannot be written to.
      */
-    public void recieveFile(final File file) throws SmackException, IOException {
+    public void receiveFile(final File file) throws SmackException, IOException {
         if (file == null) {
             throw new IllegalArgumentException("File cannot be null");
         }
@@ -180,7 +180,7 @@ public class IncomingFileTransfer extends FileTransfer {
     private InputStream negotiateStream() throws SmackException, XMPPErrorException, InterruptedException {
         setStatus(Status.negotiating_transfer);
         final StreamNegotiator streamNegotiator = negotiator
-                .selectStreamNegotiator(recieveRequest);
+                .selectStreamNegotiator(receiveRequest);
         setStatus(Status.negotiating_stream);
         FutureTask<InputStream> streamNegotiatorTask = new FutureTask<InputStream>(
                 new Callable<InputStream>() {
@@ -188,7 +188,7 @@ public class IncomingFileTransfer extends FileTransfer {
                     @Override
                     public InputStream call() throws Exception {
                         return streamNegotiator
-                                .createIncomingStream(recieveRequest.getStreamInitiation());
+                                .createIncomingStream(receiveRequest.getStreamInitiation());
                     }
                 });
         streamNegotiatorTask.run();

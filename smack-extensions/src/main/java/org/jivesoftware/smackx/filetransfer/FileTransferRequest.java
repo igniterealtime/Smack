@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jxmpp.jid.Jid;
 
 /**
- * A request to send a file recieved from another user.
+ * A request to send a file received from another user.
  * 
  * @author Alexander Wenckus
  * 
@@ -34,14 +34,14 @@ public class FileTransferRequest {
     private final FileTransferManager manager;
 
     /**
-     * A recieve request is constructed from the Stream Initiation request
-     * received from the initator.
+     * A receive request is constructed from the Stream Initiation request
+     * received from the initiator.
      * 
      * @param manager
      *            The manager handling this file transfer
      * 
      * @param si
-     *            The Stream initiaton recieved from the initiator.
+     *            The Stream initiation received from the initiator.
      */
     public FileTransferRequest(FileTransferManager manager, StreamInitiation si) {
         this.streamInitiation = si;
@@ -67,9 +67,9 @@ public class FileTransferRequest {
     }
 
     /**
-     * Returns the description of the file provided by the requestor.
+     * Returns the description of the file provided by the requester.
      * 
-     * @return Returns the description of the file provided by the requestor.
+     * @return Returns the description of the file provided by the requester.
      */
     public String getDescription() {
         return streamInitiation.getFile().getDesc();
@@ -106,12 +106,12 @@ public class FileTransferRequest {
     }
 
     /**
-     * Returns the stream initiation stanza(/packet) that was sent by the requestor which
+     * Returns the stream initiation stanza(/packet) that was sent by the requester which
      * contains the parameters of the file transfer being transfer and also the
      * methods available to transfer the file.
      * 
      * @return Returns the stream initiation stanza(/packet) that was sent by the
-     *         requestor which contains the parameters of the file transfer
+     *         requester which contains the parameters of the file transfer
      *         being transfer and also the methods available to transfer the
      *         file.
      */
