@@ -156,5 +156,9 @@ public class JingleReason implements NamedElement {
             xml.closeElement(this);
             return xml;
         }
+
+        public String getAlternativeSessionId() {
+            return sessionId;
+        }
     }
 }
