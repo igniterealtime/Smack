@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.omemo;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.util.logging.Level;
 
@@ -65,7 +67,11 @@ public abstract class AbstractOmemoIntegrationTest extends AbstractSmackIntegrat
     public void beforeTest() {
         LOGGER.log(Level.INFO, "START EXECUTION");
         OmemoIntegrationTestHelper.deletePath(storePath);
-        before();
+        try {
+            before();
+        } catch (SmackException.NotLoggedInException e) {
+            fail();
+        }
     }
 
     @AfterClass
@@ -75,7 +81,7 @@ public abstract class AbstractOmemoIntegrationTest extends AbstractSmackIntegrat
         LOGGER.log(Level.INFO, "END EXECUTION");
     }
 
-    public abstract void before();
+    public abstract void before() throws SmackException.NotLoggedInException;
 
     public abstract void after();
 }

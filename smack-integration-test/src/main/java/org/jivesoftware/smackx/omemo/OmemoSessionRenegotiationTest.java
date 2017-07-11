@@ -52,7 +52,7 @@ public class OmemoSessionRenegotiationTest extends AbstractOmemoIntegrationTest 
     }
 
     @Override
-    public void before() {
+    public void before() throws SmackException.NotLoggedInException {
         alice = OmemoManager.getInstanceFor(conOne, 1337);
         bob = OmemoManager.getInstanceFor(conTwo, 1009);
         store = OmemoService.getInstance().getOmemoStoreBackend();

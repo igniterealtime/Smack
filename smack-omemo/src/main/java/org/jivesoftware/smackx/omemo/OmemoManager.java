@@ -32,7 +32,6 @@ import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
@@ -41,7 +40,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
@@ -79,8 +77,6 @@ import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.FullJid;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Manager that allows sending messages encrypted with OMEMO.
@@ -101,6 +97,7 @@ public final class OmemoManager extends Manager {
     private OmemoService<?,?,?,?,?,?,?,?,?>.OmemoStanzaListener omemoStanzaListener;
     private OmemoService<?,?,?,?,?,?,?,?,?>.OmemoCarbonCopyListener omemoCarbonCopyListener;
 
+    private final BareJid ownBareJid;
     private int deviceId;
 
     /**
@@ -108,21 +105,15 @@ public final class OmemoManager extends Manager {
      *
      * @param connection connection
      */
-    private OmemoManager(XMPPConnection connection, int deviceId) {
+    private OmemoManager(XMPPConnection connection, BareJid user, int deviceId) {
         super(connection);
         setConnectionListener();
+        this.ownBareJid = user;
         this.deviceId = deviceId;
         service = OmemoService.getInstance();
     }
 
-    /**
-     * Get an instance of the OmemoManager for the given connection and deviceId.
-     *
-     * @param connection Connection
-     * @param deviceId deviceId of the Manager. If the deviceId is null, a random id will be generated.
-     * @return an OmemoManager
-     */
-    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection, Integer deviceId) {
+    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection, BareJid user, Integer deviceId) {
         WeakHashMap<Integer,OmemoManager> managersOfConnection = INSTANCES.get(connection);
         if (managersOfConnection == null) {
             managersOfConnection = new WeakHashMap<>();
@@ -135,10 +126,29 @@ public final class OmemoManager extends Manager {
 
         OmemoManager manager = managersOfConnection.get(deviceId);
         if (manager == null) {
-            manager = new OmemoManager(connection, deviceId);
+            manager = new OmemoManager(connection, user, deviceId);
             managersOfConnection.put(deviceId, manager);
         }
         return manager;
+    }
+
+    /**
+     * Get an instance of the OmemoManager for the given connection and deviceId.
+     *
+     * @param connection Connection
+     * @param deviceId deviceId of the Manager. If the deviceId is null, a random id will be generated.
+     * @return an OmemoManager
+     */
+    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection, Integer deviceId) throws SmackException.NotLoggedInException {
+        BareJid user;
+        if (connection.getUser() != null) {
+            user = connection.getUser().asBareJid();
+        } else {
+            throw new SmackException.NotLoggedInException("If you want to get an instance of the OmemoManager before " +
+                    "login, you must use OmemoManager.getInstanceFor(connection, barejid, deviceId).");
+        }
+
+        return getInstanceFor(connection, user, deviceId);
     }
 
     /**
@@ -149,27 +159,25 @@ public final class OmemoManager extends Manager {
      * @param connection connection
      * @return OmemoManager
      */
-    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection) {
+    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection) throws SmackException.NotLoggedInException {
         BareJid user;
         if (connection.getUser() != null) {
             user = connection.getUser().asBareJid();
         } else {
-            //This might be dangerous
-            try {
-                user = JidCreate.bareFrom(((AbstractXMPPConnection) connection).getConfiguration().getUsername());
-            } catch (XmppStringprepException e) {
-                throw new AssertionError("Username is not a valid Jid. " +
-                        "Use OmemoManager.gerInstanceFor(Connection, deviceId) instead.");
-            }
+            throw new SmackException.NotLoggedInException("If you want to get an instance of the OmemoManager before " +
+                    "login, you must use OmemoManager.getInstanceFor(connection, barejid).");
         }
+        return getInstanceFor(connection, user);
+    }
 
+    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection, BareJid user) {
         int defaultDeviceId = OmemoService.getInstance().getOmemoStoreBackend().getDefaultDeviceId(user);
         if (defaultDeviceId < 1) {
             defaultDeviceId = randomDeviceId();
             OmemoService.getInstance().getOmemoStoreBackend().setDefaultDeviceId(user, defaultDeviceId);
         }
 
-        return getInstanceFor(connection, defaultDeviceId);
+        return getInstanceFor(connection, user, defaultDeviceId);
     }
 
     /**
@@ -438,7 +446,7 @@ public final class OmemoManager extends Manager {
         }
 
         Message chatMessage = new Message();
-        chatMessage.setFrom(connection().getUser().asBareJid());
+        chatMessage.setFrom(getOwnJid());
         chatMessage.addExtension(encrypted);
 
         if (OmemoConfiguration.getAddOmemoHintBody()) {
@@ -705,9 +713,7 @@ public final class OmemoManager extends Manager {
      * @return bareJid
      */
     public BareJid getOwnJid() {
-        EntityFullJid fullJid = connection().getUser();
-        if (fullJid == null) return null;
-        return fullJid.asBareJid();
+        return ownBareJid;
     }
 
     /**

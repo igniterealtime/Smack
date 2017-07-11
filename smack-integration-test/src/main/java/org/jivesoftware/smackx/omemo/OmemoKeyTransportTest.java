@@ -55,7 +55,7 @@ public class OmemoKeyTransportTest extends AbstractOmemoIntegrationTest {
     }
 
     @Override
-    public void before() {
+    public void before() throws SmackException.NotLoggedInException {
         alice = OmemoManager.getInstanceFor(conOne, 11111);
         bob = OmemoManager.getInstanceFor(conTwo, 222222);
     }
