@@ -35,20 +35,20 @@ public class UndecidedOmemoIdentityException extends Exception {
     }
 
     /**
-     * Return the HashSet of untrusted devices.
+     * Return the HashSet of undecided devices.
      *
-     * @return untrusted devices
+     * @return undecided devices
      */
-    public HashSet<OmemoDevice> getUntrustedDevices() {
+    public HashSet<OmemoDevice> getUndecidedDevices() {
         return this.devices;
     }
 
     /**
-     * Add all untrusted devices of another Exception to this Exceptions HashSet of untrusted devices.
+     * Add all undecided devices of another Exception to this Exceptions HashSet of undecided devices.
      *
      * @param other other Exception
      */
     public void join(UndecidedOmemoIdentityException other) {
-        this.devices.addAll(other.getUntrustedDevices());
+        this.devices.addAll(other.getUndecidedDevices());
     }
 }
