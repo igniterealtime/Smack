@@ -45,18 +45,18 @@ public class OmemoExceptionsTest {
         OmemoDevice mallory = new OmemoDevice(JidCreate.bareFrom("mallory@server.tld"), 9876);
 
         UndecidedOmemoIdentityException u = new UndecidedOmemoIdentityException(alice);
-        assertTrue(u.getUntrustedDevices().contains(alice));
-        assertTrue(u.getUntrustedDevices().size() == 1);
+        assertTrue(u.getUndecidedDevices().contains(alice));
+        assertTrue(u.getUndecidedDevices().size() == 1);
 
         UndecidedOmemoIdentityException v = new UndecidedOmemoIdentityException(bob);
-        v.getUntrustedDevices().add(mallory);
-        assertTrue(v.getUntrustedDevices().size() == 2);
-        assertTrue(v.getUntrustedDevices().contains(bob));
-        assertTrue(v.getUntrustedDevices().contains(mallory));
+        v.getUndecidedDevices().add(mallory);
+        assertTrue(v.getUndecidedDevices().size() == 2);
+        assertTrue(v.getUndecidedDevices().contains(bob));
+        assertTrue(v.getUndecidedDevices().contains(mallory));
 
-        u.getUntrustedDevices().add(bob);
+        u.getUndecidedDevices().add(bob);
         u.join(v);
-        assertTrue(u.getUntrustedDevices().size() == 3);
+        assertTrue(u.getUndecidedDevices().size() == 3);
     }
 
     @Test
