@@ -135,6 +135,25 @@ public final class Jingle extends IQ {
         return contents;
     }
 
+    /**
+     * Get the only jingle content if one exists, or <code>null</code>. This method will throw an
+     * {@link IllegalStateException} if there is more than one jingle content.
+     *
+     * @return a JingleContent instance or <code>null</code>.
+     * @throws IllegalStateException if there is more than one jingle content.
+     */
+    public JingleContent getSoleContentOrThrow() {
+        if (contents.isEmpty()) {
+            return null;
+        }
+
+        if (contents.size() > 1) {
+            throw new IllegalStateException();
+        }
+
+        return contents.get(0);
+    }
+
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.optAttribute(INITIATOR_ATTRIBUTE_NAME, getInitiator());
