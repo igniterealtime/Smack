@@ -41,6 +41,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.Async;
 
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -654,12 +655,18 @@ public final class OmemoManager extends Manager {
                 if (resumed) {
                     return;
                 }
-                try {
-                    initialize();
-                } catch (InterruptedException | CorruptedOmemoKeyException | PubSubException.NotALeafNodeException | SmackException.NotLoggedInException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
-                    LOGGER.log(Level.SEVERE, "connectionListener.authenticated() failed to initialize OmemoManager: "
-                            + e.getMessage());
-                }
+                Async.go(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            initialize();
+                        } catch (InterruptedException | CorruptedOmemoKeyException | PubSubException.NotALeafNodeException | SmackException.NotLoggedInException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
+                            LOGGER.log(Level.SEVERE, "connectionListener.authenticated() failed to initialize OmemoManager: "
+                                    + e.getMessage());
+                        }
+                    }
+                });
+
             }
 
             @Override
