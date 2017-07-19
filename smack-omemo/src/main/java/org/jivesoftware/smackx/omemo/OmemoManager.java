@@ -32,8 +32,8 @@ import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.AbstractXMPPConnection;
-import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -111,8 +111,29 @@ public final class OmemoManager extends Manager {
      */
     private OmemoManager(XMPPConnection connection, int deviceId) {
         super(connection);
-        setConnectionListener();
+
         this.deviceId = deviceId;
+
+        connection.addConnectionListener(new AbstractConnectionListener() {
+            @Override
+            public void authenticated(XMPPConnection connection, boolean resumed) {
+                if (resumed) {
+                    return;
+                }
+                Async.go(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            initialize();
+                        } catch (InterruptedException | CorruptedOmemoKeyException | PubSubException.NotALeafNodeException | SmackException.NotLoggedInException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
+                            LOGGER.log(Level.SEVERE, "connectionListener.authenticated() failed to initialize OmemoManager: "
+                                    + e.getMessage());
+                        }
+                    }
+                });
+            }
+        });
+
         service = OmemoService.getInstance();
     }
 
@@ -640,60 +661,6 @@ public final class OmemoManager extends Manager {
         if (service == null) {
             throw new IllegalStateException("No OmemoService set in OmemoManager.");
         }
-    }
-
-    private void setConnectionListener() {
-        connection().addConnectionListener(new ConnectionListener() {
-            @Override
-            public void connected(XMPPConnection connection) {
-                LOGGER.log(Level.INFO, "connected");
-            }
-
-            @Override
-            public void authenticated(XMPPConnection connection, boolean resumed) {
-                LOGGER.log(Level.INFO, "authenticated. Resumed: " + resumed);
-                if (resumed) {
-                    return;
-                }
-                Async.go(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            initialize();
-                        } catch (InterruptedException | CorruptedOmemoKeyException | PubSubException.NotALeafNodeException | SmackException.NotLoggedInException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
-                            LOGGER.log(Level.SEVERE, "connectionListener.authenticated() failed to initialize OmemoManager: "
-                                    + e.getMessage());
-                        }
-                    }
-                });
-
-            }
-
-            @Override
-            public void connectionClosed() {
-
-            }
-
-            @Override
-            public void connectionClosedOnError(Exception e) {
-                connectionClosed();
-            }
-
-            @Override
-            public void reconnectionSuccessful() {
-
-            }
-
-            @Override
-            public void reconnectingIn(int seconds) {
-
-            }
-
-            @Override
-            public void reconnectionFailed(Exception e) {
-
-            }
-        });
     }
 
     public static int randomDeviceId() {
