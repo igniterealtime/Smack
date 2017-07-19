@@ -50,6 +50,8 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.util.Async;
+
 import org.jivesoftware.smackx.carbons.CarbonCopyReceivedListener;
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
@@ -1308,7 +1310,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         @Override
         public void onCarbonCopyReceived(CarbonExtension.Direction direction, Message carbonCopy, Message wrappingMessage) {
             if (filter.accept(carbonCopy)) {
-                OmemoDevice senderDevice = getSender(omemoManager, carbonCopy);
+                final OmemoDevice senderDevice = getSender(omemoManager, carbonCopy);
                 Message decrypted;
                 MultiUserChatManager mucm = MultiUserChatManager.getInstanceFor(omemoManager.getConnection());
                 OmemoElement omemoMessage = carbonCopy.getExtension(OmemoElement.ENCRYPTED, OMEMO_NAMESPACE_V_AXOLOTL);
@@ -1364,16 +1366,22 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
                     LOGGER.log(Level.WARNING, "internal omemoMessageListener failed to decrypt incoming OMEMO carbon copy: "
                             + e.getMessage());
 
-                } catch (NoRawSessionException e) {
-                    try {
-                        LOGGER.log(Level.INFO, "Received OMEMO carbon copy message with invalid session from " +
-                                senderDevice + ". Send RatchetUpdateMessage.");
-                        service.sendOmemoRatchetUpdateMessage(omemoManager, senderDevice, true);
+                } catch (final NoRawSessionException e) {
+                    Async.go(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                LOGGER.log(Level.INFO, "Received OMEMO carbon copy message with invalid session from " +
+                                        senderDevice + ". Send RatchetUpdateMessage.");
+                                service.sendOmemoRatchetUpdateMessage(omemoManager, senderDevice, true);
 
-                    } catch (UndecidedOmemoIdentityException | CorruptedOmemoKeyException | CannotEstablishOmemoSessionException | CryptoFailedException e1) {
-                        LOGGER.log(Level.WARNING, "internal omemoMessageListener failed to establish a session for incoming OMEMO carbon message: "
-                                + e.getMessage());
-                    }
+                            } catch (UndecidedOmemoIdentityException | CorruptedOmemoKeyException | CannotEstablishOmemoSessionException | CryptoFailedException e1) {
+                                LOGGER.log(Level.WARNING, "internal omemoMessageListener failed to establish a session for incoming OMEMO carbon message: "
+                                        + e.getMessage());
+                            }
+                        }
+                    });
+
                 }
             }
         }
