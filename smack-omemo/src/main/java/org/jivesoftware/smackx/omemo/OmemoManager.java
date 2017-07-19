@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.omemo;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.BODY_OMEMO_HINT;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.PEP_NODE_DEVICE_LIST_NOTIFY;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -79,7 +78,6 @@ import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
-import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -491,24 +489,6 @@ public final class OmemoManager extends Manager {
         getOmemoService().refreshDeviceList(this, contact);
         return !getOmemoService().getOmemoStoreBackend().loadCachedDeviceList(this, contact)
                 .getActiveDevices().isEmpty();
-    }
-
-    /**
-     * Returns true, if the device resource has announced OMEMO support.
-     * Throws an IllegalArgumentException if the provided FullJid does not have a resource part.
-     *
-     * @param fullJid jid of a resource
-     * @return true if resource supports OMEMO
-     * @throws XMPPException.XMPPErrorException     if
-     * @throws SmackException.NotConnectedException something
-     * @throws InterruptedException                 goes
-     * @throws SmackException.NoResponseException   wrong
-     */
-    public boolean resourceSupportsOmemo(FullJid fullJid) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
-        if (fullJid.hasNoResource()) {
-            throw new IllegalArgumentException("Jid " + fullJid + " has no resource part.");
-        }
-        return ServiceDiscoveryManager.getInstanceFor(connection()).discoverInfo(fullJid).containsFeature(PEP_NODE_DEVICE_LIST_NOTIFY);
     }
 
     /**
