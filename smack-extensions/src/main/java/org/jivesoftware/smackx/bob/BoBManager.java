@@ -159,7 +159,7 @@ public final class BoBManager extends Manager {
 
     public BoBInfo addBoB(BoBData bobData) {
         // We only support SHA-1 for now.
-        BoBHash bobHash = new BoBHash("sha1", SHA1.hex(bobData.getContent()));
+        BoBHash bobHash = new BoBHash(SHA1.hex(bobData.getContent()), "sha1");
 
         Set<BoBHash> bobHashes = Collections.singleton(bobHash);
         bobHashes = Collections.unmodifiableSet(bobHashes);
