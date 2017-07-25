@@ -41,7 +41,7 @@ public interface StanzaListener {
     /**
      * Process the next stanza(/packet) sent to this stanza(/packet) listener.
      * <p>
-     * A single thread is responsible for invoking all listeners, so
+     * If this listener is synchronous, then a single thread is responsible for invoking all listeners, so
      * it's very important that implementations of this method not block
      * for any extended period of time.
      * </p>
