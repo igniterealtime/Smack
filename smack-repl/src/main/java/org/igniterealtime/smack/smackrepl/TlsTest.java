@@ -79,7 +79,9 @@ public class TlsTest {
                .setPort(port)
                .setSecurityMode(SecurityMode.required);
         // @formatter:on
-        builder.setDebuggerEnabled(DEBUG);
+        if (DEBUG) {
+            builder.enableDefaultDebugger();
+        }
 
         if (StringUtils.isNotEmpty(tlsPin)) {
             SSLContext sslContext = Java7Pinning.forPin(tlsPin);

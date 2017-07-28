@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Vyacheslav Blinov
+ * Copyright 2014 Vyacheslav Blinov, 2017 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.jivesoftware.smack.debugger;
-
-import java.io.Reader;
-import java.io.Writer;
 
 import org.jivesoftware.smack.XMPPConnection;
 
@@ -27,7 +22,8 @@ public interface SmackDebuggerFactory {
     /**
      * Initialize the new SmackDebugger instance.
      *
+     * @param connection the XMPP connection this debugger is going to get attached to.
      * @throws IllegalArgumentException if the SmackDebugger can't be loaded.
      */
-    SmackDebugger create(XMPPConnection connection, Writer writer, Reader reader) throws IllegalArgumentException;
+    SmackDebugger create(XMPPConnection connection) throws IllegalArgumentException;
 }

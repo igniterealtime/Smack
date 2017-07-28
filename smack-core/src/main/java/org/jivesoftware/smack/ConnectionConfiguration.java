@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2017 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
 import javax.security.auth.callback.CallbackHandler;
 
+import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.sasl.SASLMechanism;
@@ -78,7 +79,7 @@ public abstract class ConnectionConfiguration {
      */
     private final CallbackHandler callbackHandler;
 
-    private final boolean debuggerEnabled;
+    private final SmackDebuggerFactory debuggerFactory;
 
     // Holds the socket factory that is used to generate the socket in the connection
     private final SocketFactory socketFactory;
@@ -158,7 +159,7 @@ public abstract class ConnectionConfiguration {
         hostnameVerifier = builder.hostnameVerifier;
         sendPresence = builder.sendPresence;
         legacySessionDisabled = builder.legacySessionDisabled;
-        debuggerEnabled = builder.debuggerEnabled;
+        debuggerFactory = builder.debuggerFactory;
         allowNullOrEmptyUsername = builder.allowEmptyOrNullUsername;
         enabledSaslMechanisms = builder.enabledSaslMechanisms;
 
@@ -281,13 +282,12 @@ public abstract class ConnectionConfiguration {
     }
 
     /**
-     * Returns true if the new connection about to be establish is going to be debugged. By
-     * default the value of {@link SmackConfiguration#DEBUG} is used.
+     * Returns the Smack debugger factory.
      *
-     * @return true if the new connection about to be establish is going to be debugged.
+     * @return the Smack debugger factory or <code>null</code>
      */
-    public boolean isDebuggerEnabled() {
-        return debuggerEnabled;
+    public SmackDebuggerFactory getDebuggerFactory() {
+        return debuggerFactory;
     }
 
     /**
@@ -519,7 +519,7 @@ public abstract class ConnectionConfiguration {
         private boolean legacySessionDisabled = false;
         private ProxyInfo proxy;
         private CallbackHandler callbackHandler;
-        private boolean debuggerEnabled = SmackConfiguration.DEBUG;
+        private SmackDebuggerFactory debuggerFactory;
         private SocketFactory socketFactory;
         private DomainBareJid xmppServiceDomain;
         private InetAddress hostAddress;
@@ -531,6 +531,9 @@ public abstract class ConnectionConfiguration {
         private X509TrustManager customX509TrustManager;
 
         protected Builder() {
+            if (SmackConfiguration.DEBUG) {
+                enableDefaultDebugger();
+            }
         }
 
         /**
@@ -808,15 +811,20 @@ public abstract class ConnectionConfiguration {
             return getThis();
         }
 
+        public B enableDefaultDebugger() {
+            this.debuggerFactory = SmackConfiguration.getDefaultSmackDebuggerFactory();
+            assert this.debuggerFactory != null;
+            return getThis();
+        }
+
         /**
-         * Sets if the new connection about to be establish is going to be debugged. By
-         * default the value of {@link SmackConfiguration#DEBUG} is used.
-         *
-         * @param debuggerEnabled if the new connection about to be establish is going to be debugged.
+         * Set the Smack debugger factory used to construct Smack debuggers.
+         * 
+         * @param debuggerFactory the Smack debugger factory.
          * @return a reference to this builder.
          */
-        public B setDebuggerEnabled(boolean debuggerEnabled) {
-            this.debuggerEnabled = debuggerEnabled;
+        public B setDebuggerFactory(SmackDebuggerFactory debuggerFactory) {
+            this.debuggerFactory = debuggerFactory;
             return getThis();
         }
 
@@ -965,4 +973,5 @@ public abstract class ConnectionConfiguration {
 
         protected abstract B getThis();
     }
+
 }

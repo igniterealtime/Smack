@@ -54,6 +54,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.debugger.SmackDebugger;
+import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
@@ -178,7 +179,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * The SmackDebugger allows to log and debug XML traffic.
      */
-    protected SmackDebugger debugger = null;
+    protected final SmackDebugger debugger;
 
     /**
      * The Reader which is used for the debugger.
@@ -301,6 +302,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected AbstractXMPPConnection(ConnectionConfiguration configuration) {
         saslAuthentication = new SASLAuthentication(this, configuration);
         config = configuration;
+        SmackDebuggerFactory debuggerFactory = configuration.getDebuggerFactory();
+        if (debuggerFactory != null) {
+            debugger = debuggerFactory.create(this);
+        } else {
+            debugger = null;
+        }
         // Notify listeners that a new connection has been established
         for (ConnectionCreationListener listener : XMPPConnectionRegistry.getConnectionCreationListeners()) {
             listener.connectionCreated(this);
@@ -568,7 +575,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // name we are now logged-in as.
         // If DEBUG was set to true AFTER the connection was created the debugger
         // will be null
-        if (config.isDebuggerEnabled() && debugger != null) {
+        if (debugger != null) {
             debugger.userHasLogged(user);
         }
         callConnectionAuthenticatedListener(resumed);
@@ -872,6 +879,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     @SuppressWarnings("javadoc")
     protected void firePacketSendingListeners(final Stanza packet) {
+        final SmackDebugger debugger = this.debugger;
+        if (debugger != null) {
+            debugger.onOutgoingStreamElement(packet);
+        }
+
         final List<StanzaListener> listenersToNotify = new LinkedList<StanzaListener>();
         synchronized (sendListeners) {
             for (ListenerWrapper listenerWrapper : sendListeners.values()) {
@@ -957,18 +969,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             throw new NullPointerException("Reader or writer isn't initialized.");
         }
         // If debugging is enabled, we open a window and write out all network traffic.
-        if (config.isDebuggerEnabled()) {
-            if (debugger == null) {
-                debugger = SmackConfiguration.createDebugger(this, writer, reader);
-            }
-
-            if (debugger == null) {
-                LOGGER.severe("Debugging enabled but could not find debugger class");
-            } else {
-                // Obtain new reader and writer from the existing debugger
-                reader = debugger.newConnectionReader(reader);
-                writer = debugger.newConnectionWriter(writer);
-            }
+        if (debugger != null) {
+            // Obtain new reader and writer from the existing debugger
+            reader = debugger.newConnectionReader(reader);
+            writer = debugger.newConnectionWriter(writer);
         }
     }
 
@@ -1072,6 +1076,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected void processStanza(final Stanza stanza) throws InterruptedException {
         assert (stanza != null);
+
+        final SmackDebugger debugger = this.debugger;
+        if (debugger != null) {
+            debugger.onIncomingStreamElement(stanza);
+        }
+
         lastStanzaReceived = System.currentTimeMillis();
         // Deliver the incoming packet to listeners.
         executorService.executeBlocking(new Runnable() {

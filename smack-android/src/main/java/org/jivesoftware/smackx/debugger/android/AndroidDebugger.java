@@ -16,9 +16,6 @@
  */
 package org.jivesoftware.smackx.debugger.android;
 
-import java.io.Reader;
-import java.io.Writer;
-
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.AbstractDebugger;
 
@@ -37,8 +34,8 @@ import android.util.Log;
  */
 public class AndroidDebugger extends AbstractDebugger {
 
-    public AndroidDebugger(XMPPConnection connection, Writer writer, Reader reader) {
-        super(connection, writer, reader);
+    public AndroidDebugger(XMPPConnection connection) {
+        super(connection);
     }
 
     @Override

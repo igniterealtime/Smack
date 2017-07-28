@@ -17,8 +17,6 @@
 
 package org.jivesoftware.smack;
 
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,7 +28,6 @@ import javax.net.ssl.HostnameVerifier;
 
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.debugger.ReflectionDebuggerFactory;
-import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
@@ -63,8 +60,6 @@ public final class SmackConfiguration {
 
     static boolean smackInitialized = false;
 
-    private static SmackDebuggerFactory debuggerFactory = new ReflectionDebuggerFactory();
-
     /**
      * Value that indicates whether debugging is enabled. When enabled, a debug
      * window will apear for each new connection that will contain the following
@@ -79,6 +74,8 @@ public final class SmackConfiguration {
      * command line such as "java SomeApp -Dsmack.debugEnabled=true".
      */
     public static boolean DEBUG = false;
+
+    private static SmackDebuggerFactory DEFAULT_DEBUGGER_FACTORY = ReflectionDebuggerFactory.INSTANCE;
 
     /**
      * The default parsing exception callback is {@link ExceptionThrowingCallback} which will
@@ -148,6 +145,14 @@ public final class SmackConfiguration {
         defaultPacketReplyTimeout = timeout;
     }
 
+    public static void setDefaultSmackDebuggerFactory(SmackDebuggerFactory debuggerFactory) {
+        DEFAULT_DEBUGGER_FACTORY = Objects.requireNonNull(debuggerFactory, "Debugger factory must not be null");
+    }
+
+    public static SmackDebuggerFactory getDefaultSmackDebuggerFactory() {
+        return DEFAULT_DEBUGGER_FACTORY;
+    }
+
     /**
      * Gets the default max size of a stanza(/packet) collector before it will delete 
      * the older packets.
@@ -187,43 +192,6 @@ public final class SmackConfiguration {
     public static void addSaslMechs(Collection<String> mechs) {
         for (String mech : mechs) {
             addSaslMech(mech);
-        }
-    }
-
-    /**
-     * Sets Smack debugger factory.
-     *
-     * @param debuggerFactory new debugger factory implementation to be used by Smack
-     */
-    public static void setDebuggerFactory(SmackDebuggerFactory debuggerFactory) {
-        SmackConfiguration.debuggerFactory = debuggerFactory;
-    }
-
-    /**
-     * Get the debugger factory.
-     *
-     * @return a debugger factory or <code>null</code>
-     */
-    public static SmackDebuggerFactory getDebuggerFactory() {
-        return debuggerFactory;
-    }
-
-    /**
-     * Creates new debugger instance with given arguments as parameters. May
-     * return <code>null</code> if no DebuggerFactory is set or if the factory
-     * did not produce a debugger.
-     * 
-     * @param connection
-     * @param writer
-     * @param reader
-     * @return a new debugger or <code>null</code>
-     */
-    public static SmackDebugger createDebugger(XMPPConnection connection, Writer writer, Reader reader) {
-        SmackDebuggerFactory factory = getDebuggerFactory();
-        if (factory == null) {
-            return null;
-        } else {
-            return factory.create(connection, writer, reader);
         }
     }
 

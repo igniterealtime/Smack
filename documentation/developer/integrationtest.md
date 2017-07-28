@@ -53,7 +53,7 @@ service=example.org
 ```bash
 service=example.org
 serviceTlsPin=CERTSHA256:2F:92:C9:4D:30:58:E1:05:21:9A:57:59:5F:6E:25:9A:0F:BF:FF:64:1A:C3:4B:EC:06:7D:4A:6F:0A:D5:21:85
-debug=true
+debugger=console
 ```
 
 ### Framework properties
@@ -72,7 +72,7 @@ debug=true
 | accountTwoPassword   | Password of the second XMPP account       |
 | accountThreeUsername | Username of the third XMPP account        |
 | accountThreePassword | Password of the third XMPP account        |
-| debug                | 'true' to enable debug output             |
+| debugger             | 'console' for console debugger, 'enhanced' for the enhanced debugger  |
 | enabledTests         | List of enabled tests                     |
 | disabledTests        | List of disabled tests                    |
 | testPackages         | List of packages with tests               |

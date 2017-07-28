@@ -67,11 +67,11 @@ public class IoT {
         final XMPPTCPConnectionConfiguration dataThingConnectionConfiguration = XMPPTCPConnectionConfiguration.builder()
                 .setUsernameAndPassword(dataThingJid.getLocalpart(), dataThingPassword)
                 .setXmppDomain(dataThingJid.asDomainBareJid()).setSecurityMode(SecurityMode.disabled)
-                .setDebuggerEnabled(true).build();
+                .enableDefaultDebugger().build();
         final XMPPTCPConnectionConfiguration readingThingConnectionConfiguration = XMPPTCPConnectionConfiguration
                 .builder().setUsernameAndPassword(readingThingJid.getLocalpart(), readingThingPassword)
                 .setXmppDomain(readingThingJid.asDomainBareJid()).setSecurityMode(SecurityMode.disabled)
-                .setDebuggerEnabled(true).build();
+                .enableDefaultDebugger().build();
 
         final XMPPTCPConnection dataThingConnection = new XMPPTCPConnection(dataThingConnectionConfiguration);
         final XMPPTCPConnection readingThingConnection = new XMPPTCPConnection(readingThingConnectionConfiguration);

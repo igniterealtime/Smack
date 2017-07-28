@@ -72,13 +72,14 @@ import javax.xml.transform.stream.StreamSource;
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
+import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
@@ -97,7 +98,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Gaston Dombiak
  */
-public class EnhancedDebugger implements SmackDebugger {
+public class EnhancedDebugger extends SmackDebugger {
 
     private static final Logger LOGGER = Logger.getLogger(EnhancedDebugger.class.getName());
 
@@ -149,10 +150,6 @@ public class EnhancedDebugger implements SmackDebugger {
     private JFormattedTextField userField = null;
     private JFormattedTextField statusField = null;
 
-    private XMPPConnection connection = null;
-
-    private StanzaListener packetReaderListener = null;
-    private StanzaListener packetWriterListener = null;
     private ConnectionListener connListener = null;
 
     private Writer writer;
@@ -177,18 +174,9 @@ public class EnhancedDebugger implements SmackDebugger {
 
     JTabbedPane tabbedPane;
 
-    public EnhancedDebugger(XMPPConnection connection, Writer writer, Reader reader) {
-        this.connection = connection;
-        this.writer = writer;
-        this.reader = reader;
-        createDebug();
-        EnhancedDebuggerWindow.addDebugger(this);
-    }
+    public EnhancedDebugger(XMPPConnection connection) {
+        super(connection);
 
-    /**
-     * Creates the debug process, which is a GUI window that displays XML traffic.
-     */
-    private void createDebug() {
         // We'll arrange the UI into six tabs. The first tab contains all data, the second
         // client generated XML, the third server generated XML, the fourth allows to send 
         // ad-hoc messages and the fifth contains connection information.
@@ -202,41 +190,6 @@ public class EnhancedDebugger implements SmackDebugger {
 
         // Add the connection information panel
         addInformationPanel();
-
-        // Create a thread that will listen for all incoming packets and write them to
-        // the GUI. This is what we call "interpreted" packet data, since it's the packet
-        // data as Smack sees it and not as it's coming in as raw XML.
-        packetReaderListener = new StanzaListener() {
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss:SS");
-
-            @Override
-            public void processStanza(final Stanza packet) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        addReadPacketToTable(dateFormatter, packet);
-                    }
-                });
-
-            }
-        };
-
-        // Create a thread that will listen for all outgoing packets and write them to
-        // the GUI.
-        packetWriterListener = new StanzaListener() {
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss:SS");
-
-            @Override
-            public void processStanza(final Stanza packet) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        addSentPacketToTable(dateFormatter, packet);
-                    }
-                });
-
-            }
-        };
 
         // Create a thread that will listen for any connection closed event
         connListener = new AbstractConnectionListener() {
@@ -294,6 +247,8 @@ public class EnhancedDebugger implements SmackDebugger {
                 });
             }
         };
+
+        EnhancedDebuggerWindow.addDebugger(this);
     }
 
     private void addBasicPanels() {
@@ -793,26 +748,6 @@ public class EnhancedDebugger implements SmackDebugger {
 
     }
 
-    @Override
-    public Reader getReader() {
-        return reader;
-    }
-
-    @Override
-    public Writer getWriter() {
-        return writer;
-    }
-
-    @Override
-    public StanzaListener getReaderListener() {
-        return packetReaderListener;
-    }
-
-    @Override
-    public StanzaListener getWriterListener() {
-        return packetWriterListener;
-    }
-
     /**
      * Updates the statistics table
      */
@@ -839,12 +774,21 @@ public class EnhancedDebugger implements SmackDebugger {
      * @param dateFormatter the SimpleDateFormat to use to format Dates
      * @param packet        the read stanza(/packet) to add to the table
      */
-    private void addReadPacketToTable(final SimpleDateFormat dateFormatter, final Stanza packet) {
+    private void addReadPacketToTable(final SimpleDateFormat dateFormatter, final TopLevelStreamElement packet) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 String messageType;
-                Jid from = packet.getFrom();
+                Jid from;
+                String stanzaId;
+                if (packet instanceof Stanza) {
+                    Stanza stanza = (Stanza) packet;
+                    from = stanza.getFrom();
+                    stanzaId = stanza.getStanzaId();
+                } else {
+                    from = null;
+                    stanzaId = "(Nonza)";
+                }
                 String type = "";
                 Icon packetTypeIcon;
                 receivedPackets++;
@@ -885,7 +829,7 @@ public class EnhancedDebugger implements SmackDebugger {
                                 packetReceivedIcon,
                                 packetTypeIcon,
                                 messageType,
-                                packet.getStanzaId(),
+                                stanzaId,
                                 type,
                                 "",
                                 from});
@@ -901,12 +845,21 @@ public class EnhancedDebugger implements SmackDebugger {
      * @param dateFormatter the SimpleDateFormat to use to format Dates
      * @param packet        the sent stanza(/packet) to add to the table
      */
-    private void addSentPacketToTable(final SimpleDateFormat dateFormatter, final Stanza packet) {
+    private void addSentPacketToTable(final SimpleDateFormat dateFormatter, final TopLevelStreamElement packet) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 String messageType;
-                Jid to = packet.getTo();
+                Jid to;
+                String stanzaId;
+                if (packet instanceof Stanza) {
+                    Stanza stanza = (Stanza) packet;
+                    to = stanza.getTo();
+                    stanzaId = stanza.getStanzaId();
+                } else {
+                    to = null;
+                    stanzaId = "(Nonza)";
+                }
                 String type = "";
                 Icon packetTypeIcon;
                 sentPackets++;
@@ -947,7 +900,7 @@ public class EnhancedDebugger implements SmackDebugger {
                                 packetSentIcon,
                                 packetTypeIcon,
                                 messageType,
-                                packet.getStanzaId(),
+                                stanzaId,
                                 type,
                                 to,
                                 ""});
@@ -1006,8 +959,6 @@ public class EnhancedDebugger implements SmackDebugger {
      */
     void cancel() {
         connection.removeConnectionListener(connListener);
-        connection.removeAsyncStanzaListener(packetReaderListener);
-        connection.removePacketSendingListener(packetWriterListener);
         ((ObservableReader) reader).removeReaderListener(readerListener);
         ((ObservableWriter) writer).removeWriterListener(writerListener);
         messagesTable = null;
@@ -1098,5 +1049,41 @@ public class EnhancedDebugger implements SmackDebugger {
                 messageTextArea.setCaretPosition(0);
             }
         }
+    }
+
+    @Override
+    public void onIncomingStreamElement(final TopLevelStreamElement streamElement) {
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss:SS");
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                addReadPacketToTable(dateFormatter, streamElement);
+            }
+        });
+    }
+
+    @Override
+    public void onOutgoingStreamElement(final TopLevelStreamElement streamElement) {
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss:SS");
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                addSentPacketToTable(dateFormatter, streamElement);
+            }
+        });
+    }
+
+    public static final class Factory implements SmackDebuggerFactory {
+
+        public static final SmackDebuggerFactory INSTANCE = new Factory();
+
+        private Factory() {
+        }
+
+        @Override
+        public SmackDebugger create(XMPPConnection connection) throws IllegalArgumentException {
+            return new EnhancedDebugger(connection);
+        }
+
     }
 }

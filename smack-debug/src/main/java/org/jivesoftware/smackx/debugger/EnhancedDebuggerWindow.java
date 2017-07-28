@@ -114,7 +114,7 @@ public final class EnhancedDebuggerWindow {
      *
      * @return the unique EnhancedDebuggerWindow instance
      */
-    public static EnhancedDebuggerWindow getInstance() {
+    public synchronized static EnhancedDebuggerWindow getInstance() {
         if (instance == null) {
             instance = new EnhancedDebuggerWindow();
         }
@@ -345,7 +345,7 @@ public final class EnhancedDebuggerWindow {
      *
      * @param evt the event that indicates that the root window is closing
      */
-    public void rootWindowClosing(WindowEvent evt) {
+    private synchronized void rootWindowClosing(WindowEvent evt) {
         // Notify to all the debuggers to stop debugging
         for (EnhancedDebugger debugger : debuggers) {
             debugger.cancel();
@@ -354,6 +354,8 @@ public final class EnhancedDebuggerWindow {
         debuggers.clear();
         // Release the default instance
         instance = null;
+        frame = null;
+        notifyAll();
     }
 
     /**
@@ -392,5 +394,15 @@ public final class EnhancedDebuggerWindow {
 
     public boolean isVisible() {
         return frame != null && frame.isVisible();
+    }
+
+    public synchronized void waitUntilClosed() throws InterruptedException {
+        if (frame == null) {
+            return;
+        }
+
+        while (frame != null) {
+            wait();
+        }
     }
 }

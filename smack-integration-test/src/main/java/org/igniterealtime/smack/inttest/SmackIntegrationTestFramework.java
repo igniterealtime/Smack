@@ -48,11 +48,14 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.debugger.ConsoleDebugger;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration.Builder;
 import org.jivesoftware.smack.util.StringUtils;
 
+import org.jivesoftware.smackx.debugger.EnhancedDebugger;
+import org.jivesoftware.smackx.debugger.EnhancedDebuggerWindow;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 
 import org.igniterealtime.smack.inttest.IntTestUtil.UsernameAndPassword;
@@ -98,6 +101,8 @@ public class SmackIntegrationTestFramework {
         final int possibleTests = testRunResult.getNumberOfPossibleTests();
         LOGGER.info("SmackIntegrationTestFramework[" + testRunResult.testRunId + ']' + ": Finished ["
                         + successfulTests + '/' + possibleTests + "] (of " + availableTests + " available tests)");
+
+        int exitStatus;
         if (!testRunResult.failedIntegrationTests.isEmpty()) {
             final int failedTests = testRunResult.failedIntegrationTests.size();
             LOGGER.warning("The following " + failedTests + " tests failed!");
@@ -108,11 +113,21 @@ public class SmackIntegrationTestFramework {
                 final Throwable cause = failedTest.failureReason;
                 LOGGER.severe(className + CLASS_METHOD_SEP + methodName + " failed: " + cause);
             }
-            System.exit(2);
+            exitStatus = 2;
         } else {
             LOGGER.info("All possible Smack Integration Tests completed successfully. \\o/");
+            exitStatus = 0;
         }
-        System.exit(0);
+
+        switch (config.debugger) {
+        case enhanced:
+            EnhancedDebuggerWindow.getInstance().waitUntilClosed();
+            break;
+        default:
+            break;
+        }
+
+        System.exit(exitStatus);
     }
 
     public SmackIntegrationTestFramework(Configuration configuration) {
@@ -123,7 +138,7 @@ public class SmackIntegrationTestFramework {
                     IOException, XMPPException, InterruptedException {
         testRunResult = new TestRunResult();
         LOGGER.info("SmackIntegrationTestFramework [" + testRunResult.testRunId + ']' + ": Starting");
-        if (config.debug) {
+        if (config.debugger != Configuration.Debugger.none) {
             // JUL Debugger will not print any information until configured to print log messages of
             // level FINE
             // TODO configure JUL for log?
@@ -583,6 +598,19 @@ public class SmackIntegrationTestFramework {
         }
         builder.setSecurityMode(config.securityMode);
         builder.setXmppDomain(config.service);
+
+        switch (config.debugger) {
+        case enhanced:
+            builder.setDebuggerFactory(EnhancedDebugger.Factory.INSTANCE);
+            break;
+        case console:
+            builder.setDebuggerFactory(ConsoleDebugger.Factory.INSTANCE);
+            break;
+        case none:
+            // Nothing to do :).
+            break;
+        }
+
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
         connection.connect();
         UsernameAndPassword uap = IntTestUtil.registerAccount(connection, environment, connectionId);

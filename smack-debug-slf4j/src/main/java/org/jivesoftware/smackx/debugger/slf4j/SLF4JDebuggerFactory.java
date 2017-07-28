@@ -17,9 +17,6 @@
 
 package org.jivesoftware.smackx.debugger.slf4j;
 
-import java.io.Reader;
-import java.io.Writer;
-
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
@@ -27,9 +24,15 @@ import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 /**
  * Implementation of SmackDebuggerFactory which always creates instance of SLF4JSmackDebugger.
  */
-public class SLF4JDebuggerFactory implements SmackDebuggerFactory {
+public final class SLF4JDebuggerFactory implements SmackDebuggerFactory {
+
+    public static final SLF4JDebuggerFactory INSTANCE = new SLF4JDebuggerFactory();
+
+    private SLF4JDebuggerFactory() {
+    }
+
     @Override
-    public SmackDebugger create(XMPPConnection connection, Writer writer, Reader reader) throws IllegalArgumentException {
-        return new SLF4JSmackDebugger(connection, writer, reader);
+    public SmackDebugger create(XMPPConnection connection) throws IllegalArgumentException {
+        return new SLF4JSmackDebugger(connection);
     }
 }

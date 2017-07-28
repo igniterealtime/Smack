@@ -20,9 +20,8 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
@@ -30,13 +29,10 @@ import org.jivesoftware.smack.util.WriterListener;
 
 import org.jxmpp.jid.EntityFullJid;
 
-public abstract class AbstractDebugger implements SmackDebugger {
+public abstract class AbstractDebugger extends SmackDebugger {
 
     public static boolean printInterpreted = false;
 
-    private final XMPPConnection connection;
-
-    private final StanzaListener listener;
     private final ConnectionListener connListener;
     private final ReaderListener readerListener;
     private final WriterListener writerListener;
@@ -44,8 +40,8 @@ public abstract class AbstractDebugger implements SmackDebugger {
     private ObservableWriter writer;
     private ObservableReader reader;
 
-    public AbstractDebugger(final XMPPConnection connection, Writer writer, Reader reader) {
-        this.connection = connection;
+    public AbstractDebugger(final XMPPConnection connection) {
+        super(connection);
 
         // Create a special Reader that wraps the main Reader and logs data to the GUI.
         this.reader = new ObservableReader(reader);
@@ -66,18 +62,6 @@ public abstract class AbstractDebugger implements SmackDebugger {
             }
         };
         this.writer.addWriterListener(writerListener);
-
-        // Create a thread that will listen for all incoming packets and write them to
-        // the GUI. This is what we call "interpreted" packet data, since it's the packet
-        // data as Smack sees it and not as it's coming in as raw XML.
-        listener = new StanzaListener() {
-            @Override
-            public void processStanza(Stanza packet) {
-                if (printInterpreted) {
-                    log("RCV PKT (" + connection.getConnectionCounter() + "): " + packet.toXML());
-                }
-            }
-        };
 
         connListener = new ConnectionListener() {
             @Override
@@ -173,22 +157,15 @@ public abstract class AbstractDebugger implements SmackDebugger {
     }
 
     @Override
-    public Reader getReader() {
-        return reader;
+    public void onIncomingStreamElement(TopLevelStreamElement streamElement) {
+        if (printInterpreted) {
+            log("RCV PKT (" + connection.getConnectionCounter() + "): " + streamElement.toXML());
+        }
     }
 
     @Override
-    public Writer getWriter() {
-        return writer;
+    public void onOutgoingStreamElement(TopLevelStreamElement streamElement) {
+        // Does nothing (yet).
     }
 
-    @Override
-    public StanzaListener getReaderListener() {
-        return listener;
-    }
-
-    @Override
-    public StanzaListener getWriterListener() {
-        return null;
-    }
 }

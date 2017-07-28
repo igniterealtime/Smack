@@ -22,9 +22,9 @@ import java.io.Writer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
+import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 
@@ -38,7 +38,8 @@ import org.slf4j.LoggerFactory;
  * Use in conjunction with your SLF4J bindings of choice.
  * See SLF4J manual for more details about bindings usage.
  */
-public class SLF4JSmackDebugger implements SmackDebugger  {
+public class SLF4JSmackDebugger extends SmackDebugger  {
+
     public static final String LOGGER_NAME = "SMACK";
     private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
     public static final AtomicBoolean printInterpreted = new AtomicBoolean(true);
@@ -46,10 +47,6 @@ public class SLF4JSmackDebugger implements SmackDebugger  {
     public static final String SENT_TAG = "SENT";
     public static final String RECEIVED_TAG = "RECV";
 
-    private final XMPPConnection connection;
-
-    private final StanzaListener receivedListener = new SLF4JLoggingPacketListener(logger, RECEIVED_TAG);
-    private final StanzaListener sentListener = new SLF4JLoggingPacketListener(logger, SENT_TAG);
     private final SLF4JRawXmlListener slf4JRawXmlListener = new SLF4JRawXmlListener(logger);
 
     private ObservableWriter writer;
@@ -59,17 +56,16 @@ public class SLF4JSmackDebugger implements SmackDebugger  {
      * Makes Smack use this Debugger.
      */
     public static void enable() {
-        SmackConfiguration.setDebuggerFactory(new SLF4JDebuggerFactory());
+        SmackConfiguration.DEBUG = true;
+        SmackConfiguration.setDefaultSmackDebuggerFactory(SLF4JDebuggerFactory.INSTANCE);
     }
 
     /**
      * Create new SLF4J Smack Debugger instance.
      * @param connection Smack connection to debug
-     * @param writer connection data writer to observe
-     * @param reader connection data reader to observe
      */
-    public SLF4JSmackDebugger(XMPPConnection connection, Writer writer, Reader reader) {
-        this.connection = connection;
+    SLF4JSmackDebugger(XMPPConnection connection) {
+        super(connection);
         this.writer = new ObservableWriter(writer);
         this.writer.addWriterListener(slf4JRawXmlListener);
         this.reader = new ObservableReader(Validate.notNull(reader));
@@ -101,22 +97,17 @@ public class SLF4JSmackDebugger implements SmackDebugger  {
     }
 
     @Override
-    public Reader getReader() {
-        return reader;
+    public void onIncomingStreamElement(TopLevelStreamElement streamElement) {
+        if (SLF4JSmackDebugger.printInterpreted.get() && logger.isDebugEnabled()) {
+            logger.debug("IN {}: {}", streamElement.getClass().getName(), streamElement.toXML());
+        }
     }
 
     @Override
-    public Writer getWriter() {
-        return writer;
+    public void onOutgoingStreamElement(TopLevelStreamElement streamElement) {
+        if (SLF4JSmackDebugger.printInterpreted.get() && logger.isDebugEnabled()) {
+            logger.debug("OUT {}: {}", streamElement.getClass().getName(), streamElement.toXML());
+        }
     }
 
-    @Override
-    public StanzaListener getReaderListener() {
-        return receivedListener;
-    }
-
-    @Override
-    public StanzaListener getWriterListener() {
-        return sentListener;
-    }
 }

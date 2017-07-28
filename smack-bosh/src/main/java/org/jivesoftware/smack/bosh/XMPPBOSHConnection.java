@@ -161,16 +161,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             client.addBOSHClientResponseListener(new BOSHPacketReader());
 
             // Initialize the debugger
-            if (config.isDebuggerEnabled()) {
+            if (debugger != null) {
                 initDebugger();
-                if (isFirstInitialization) {
-                    if (debugger.getReaderListener() != null) {
-                        addAsyncStanzaListener(debugger.getReaderListener(), null);
-                    }
-                    if (debugger.getWriterListener() != null) {
-                        addPacketSendingListener(debugger.getWriterListener(), null);
-                    }
-                }
             }
 
             // Send the session creation request

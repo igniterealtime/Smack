@@ -17,9 +17,7 @@
 package org.jivesoftware.smack.debugger;
 
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -39,8 +37,8 @@ import org.jivesoftware.smack.XMPPConnection;
 public class ConsoleDebugger extends AbstractDebugger {
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss");
 
-    public ConsoleDebugger(XMPPConnection connection, Writer writer, Reader reader) {
-        super(connection, writer, reader);
+    public ConsoleDebugger(XMPPConnection connection) {
+        super(connection);
     }
 
     @Override
@@ -64,4 +62,17 @@ public class ConsoleDebugger extends AbstractDebugger {
         log(logMessage + sw);
     }
 
+    public static final class Factory implements SmackDebuggerFactory {
+
+        public static final SmackDebuggerFactory INSTANCE = new Factory();
+
+        private Factory() {
+        }
+
+        @Override
+        public SmackDebugger create(XMPPConnection connection) throws IllegalArgumentException {
+            return new ConsoleDebugger(connection);
+        }
+
+    }
 }

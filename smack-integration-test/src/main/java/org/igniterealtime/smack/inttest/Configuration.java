@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.net.ssl.SSLContext;
 
@@ -41,10 +42,18 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 public final class Configuration {
 
+    private static final Logger LOGGER = Logger.getLogger(Configuration.class.getName());
+
     public enum AccountRegistration {
         disabled,
         inBandRegistration,
         serviceAdministration,
+    }
+
+    public enum Debugger {
+        none,
+        console,
+        enhanced,
     }
 
     public final DomainBareJid service;
@@ -75,7 +84,7 @@ public final class Configuration {
 
     public final String accountThreePassword;
 
-    public final boolean debug;
+    public final Debugger debugger;
 
     public final Set<String> enabledTests;
 
@@ -84,7 +93,7 @@ public final class Configuration {
     public final Set<String> testPackages;
 
     private Configuration(DomainBareJid service, String serviceTlsPin, SecurityMode securityMode, int replyTimeout,
-                    boolean debug, String accountOneUsername, String accountOnePassword, String accountTwoUsername,
+                    Debugger debugger, String accountOneUsername, String accountOnePassword, String accountTwoUsername,
                     String accountTwoPassword, String accountThreeUsername, String accountThreePassword, Set<String> enabledTests, Set<String> disabledTests,
                     Set<String> testPackages, String adminAccountUsername, String adminAccountPassword)
                     throws KeyManagementException, NoSuchAlgorithmException {
@@ -102,7 +111,7 @@ public final class Configuration {
         } else {
             this.replyTimeout = 60000;
         }
-        this.debug = debug;
+        this.debugger = debugger;
         if (StringUtils.isNotEmpty(adminAccountUsername, adminAccountPassword)) {
             accountRegistration = AccountRegistration.serviceAdministration;
         }
@@ -162,7 +171,7 @@ public final class Configuration {
 
         public String accountThreePassword;
 
-        private boolean debug;
+        private Debugger debugger = Debugger.none;
 
         private Set<String> enabledTests;
 
@@ -247,9 +256,27 @@ public final class Configuration {
             return this;
         }
 
-        public Builder setDebug(String debugString) {
-            if (debugString != null) {
-                debug = Boolean.valueOf(debugString);
+        @SuppressWarnings("fallthrough")
+        public Builder setDebugger(String debuggerString) {
+            if (debuggerString == null) {
+                return this;
+            }
+            switch (debuggerString) {
+            case "false": // For backwards compatibility settings with previous boolean setting.
+                LOGGER.warning("Debug string \"" + debuggerString + "\" is deprecated, please use \"none\" instead");
+            case "none":
+                debugger = Debugger.none;
+                break;
+            case "true": // For backwards compatibility settings with previous boolean setting.
+                LOGGER.warning("Debug string \"" + debuggerString + "\" is deprecated, please use \"console\" instead");
+            case "console":
+                debugger = Debugger.console;
+                break;
+            case "enhanced":
+                debugger = Debugger.enhanced;
+                break;
+            default:
+                throw new IllegalArgumentException("Unrecognized debugger string: " + debuggerString);
             }
             return this;
         }
@@ -291,7 +318,7 @@ public final class Configuration {
         }
 
         public Configuration build() throws KeyManagementException, NoSuchAlgorithmException {
-            return new Configuration(service, serviceTlsPin, securityMode, replyTimeout, debug, accountOneUsername,
+            return new Configuration(service, serviceTlsPin, securityMode, replyTimeout, debugger, accountOneUsername,
                             accountOnePassword, accountTwoUsername, accountTwoPassword, accountThreeUsername, accountThreePassword, enabledTests, disabledTests,
                             testPackages, adminAccountUsername, adminAccountPassword);
         }
@@ -346,7 +373,12 @@ public final class Configuration {
                             accountTwoPassword, accountThreeUsername, accountThreePassword);
         }
 
-        builder.setDebug(properties.getProperty("debug"));
+        String debugString = properties.getProperty("debug");
+        if (debugString != null) {
+            LOGGER.warning("Usage of depreacted 'debug' option detected, please use 'debugger' instead");
+            builder.setDebugger(debugString);
+        }
+        builder.setDebugger(properties.getProperty("debugger"));
         builder.setEnabledTests(properties.getProperty("enabledTests"));
         builder.setDisabledTests(properties.getProperty("disabledTests"));
 

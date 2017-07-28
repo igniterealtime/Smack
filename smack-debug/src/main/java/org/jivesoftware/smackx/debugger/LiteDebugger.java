@@ -40,10 +40,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
-import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
@@ -57,24 +56,22 @@ import org.jxmpp.jid.EntityFullJid;
  * 
  * @author Gaston Dombiak
  */
-public class LiteDebugger implements SmackDebugger {
+public class LiteDebugger extends SmackDebugger {
 
     private static final String NEWLINE = "\n";
 
-    private JFrame frame = null;
-    private XMPPConnection connection = null;
+    private final JTextArea interpretedText1 = new JTextArea();
+    private final JTextArea interpretedText2 = new JTextArea();
 
-    private StanzaListener listener = null;
+    private JFrame frame = null;
 
     private Writer writer;
     private Reader reader;
     private ReaderListener readerListener;
     private WriterListener writerListener;
 
-    public LiteDebugger(XMPPConnection connection, Writer writer, Reader reader) {
-        this.connection = connection;
-        this.writer = writer;
-        this.reader = reader;
+    public LiteDebugger(XMPPConnection connection) {
+        super(connection);
         createDebug();
     }
 
@@ -181,8 +178,6 @@ public class LiteDebugger implements SmackDebugger {
         menu.add(menuItem2);
 
         // Create UI elements for interpreted XML traffic.
-        final JTextArea interpretedText1 = new JTextArea();
-        final JTextArea interpretedText2 = new JTextArea();
         interpretedText1.setEditable(false);
         interpretedText2.setEditable(false);
         interpretedText1.setForeground(new Color(1, 94, 35));
@@ -267,19 +262,6 @@ public class LiteDebugger implements SmackDebugger {
         // and writer will use the debug versions when they are created.
         reader = debugReader;
         writer = debugWriter;
-
-        // Create a thread that will listen for all incoming packets and write them to
-        // the GUI. This is what we call "interpreted" packet data, since it's the packet
-        // data as Smack sees it and not as it's coming in as raw XML.
-        listener = new StanzaListener() {
-            @Override
-            public void processStanza(Stanza packet) {
-                interpretedText1.append(packet.toXML().toString());
-                interpretedText2.append(packet.toXML().toString());
-                interpretedText1.append(NEWLINE);
-                interpretedText2.append(NEWLINE);
-            }
-        };
     }
 
     /**
@@ -289,7 +271,7 @@ public class LiteDebugger implements SmackDebugger {
      * @param evt the event that indicates that the root window is closing 
      */
     public void rootWindowClosing(WindowEvent evt) {
-        connection.removeAsyncStanzaListener(listener);
+        // TODO: Remove debugger from connection.
         ((ObservableReader) reader).removeReaderListener(readerListener);
         ((ObservableWriter) writer).removeWriterListener(writerListener);
     }
@@ -348,22 +330,16 @@ public class LiteDebugger implements SmackDebugger {
     }
 
     @Override
-    public Reader getReader() {
-        return reader;
+    public void onIncomingStreamElement(TopLevelStreamElement streamElement) {
+        interpretedText1.append(streamElement.toXML().toString());
+        interpretedText2.append(streamElement.toXML().toString());
+        interpretedText1.append(NEWLINE);
+        interpretedText2.append(NEWLINE);
     }
 
     @Override
-    public Writer getWriter() {
-        return writer;
+    public void onOutgoingStreamElement(TopLevelStreamElement streamElement) {
+        // Does nothing.
     }
 
-    @Override
-    public StanzaListener getReaderListener() {
-        return listener;
-    }
-
-    @Override
-    public StanzaListener getWriterListener() {
-        return null;
-    }
 }

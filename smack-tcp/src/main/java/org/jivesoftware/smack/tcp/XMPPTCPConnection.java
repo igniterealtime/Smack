@@ -636,15 +636,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         if (isFirstInitialization) {
             packetWriter = new PacketWriter();
             packetReader = new PacketReader();
-
-            // If debugging is enabled, we should start the thread that will listen for
-            // all packets and then log them.
-            if (config.isDebuggerEnabled()) {
-                addAsyncStanzaListener(debugger.getReaderListener(), null);
-                if (debugger.getWriterListener() != null) {
-                    addPacketSendingListener(debugger.getWriterListener(), null);
-                }
-            }
         }
         // Start the packet writer. This will open an XMPP stream to the server
         packetWriter.init();

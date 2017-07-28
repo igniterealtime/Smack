@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Vyacheslav Blinov
+ * Copyright 2014 Vyacheslav Blinov, 2017 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.jivesoftware.smack.debugger;
 
-import java.io.Reader;
-import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,9 +23,14 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 
-public class ReflectionDebuggerFactory implements SmackDebuggerFactory {
+public final class ReflectionDebuggerFactory implements SmackDebuggerFactory {
     private static final Logger LOGGER = Logger.getLogger(ReflectionDebuggerFactory.class.getName());
     private static final String DEBUGGER_CLASS_PROPERTY_NAME = "smack.debuggerClass";
+
+    public static final ReflectionDebuggerFactory INSTANCE = new ReflectionDebuggerFactory();
+
+    private ReflectionDebuggerFactory() {
+    }
 
     /**
      * Possible default debugger implementations. The order of enumeration is the one in which we try
@@ -76,14 +77,14 @@ public class ReflectionDebuggerFactory implements SmackDebuggerFactory {
     }
 
     @Override
-    public SmackDebugger create(XMPPConnection connection, Writer writer, Reader reader) throws IllegalArgumentException {
+    public SmackDebugger create(XMPPConnection connection) throws IllegalArgumentException {
         Class<SmackDebugger> debuggerClass = getDebuggerClass();
         if (debuggerClass != null) {
             // Create a new debugger instance using 3arg constructor
             try {
                 Constructor<SmackDebugger> constructor = debuggerClass
-                        .getConstructor(XMPPConnection.class, Writer.class, Reader.class);
-                return constructor.newInstance(connection, writer, reader);
+                        .getConstructor(XMPPConnection.class);
+                return constructor.newInstance(connection);
             } catch (Exception e) {
                 throw new IllegalArgumentException("Can't initialize the configured debugger!", e);
             }
