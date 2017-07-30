@@ -133,19 +133,19 @@ public class JingleS5BTransport extends JingleContentTransport {
         }
 
         public Builder setCandidateUsed(String candidateId) {
-            return setTransportInfo(JingleS5BTransportInfo.CandidateUsed(candidateId));
+            return setTransportInfo(new JingleS5BTransportInfo.CandidateUsed(candidateId));
         }
 
         public Builder setCandidateActivated(String candidateId) {
-            return setTransportInfo(JingleS5BTransportInfo.CandidateActivated(candidateId));
+            return setTransportInfo(new JingleS5BTransportInfo.CandidateActivated(candidateId));
         }
 
         public Builder setCandidateError() {
-            return setTransportInfo(JingleS5BTransportInfo.CandidateError());
+            return setTransportInfo(JingleS5BTransportInfo.CandidateError.INSTANCE);
         }
 
         public Builder setProxyError() {
-            return setTransportInfo(JingleS5BTransportInfo.ProxyError());
+            return setTransportInfo(JingleS5BTransportInfo.ProxyError.INSTANCE);
         }
 
         public JingleS5BTransport build() {

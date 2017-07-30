@@ -32,6 +32,7 @@ import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportCandidate;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo;
+import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo.JingleS5BCandidateTransportInfo;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -83,23 +84,23 @@ public class JingleS5BTransportProvider extends JingleContentTransportProvider<J
                             break;
 
                         case JingleS5BTransportInfo.CandidateActivated.ELEMENT:
-                            builder.setTransportInfo(JingleS5BTransportInfo.CandidateActivated(
+                            builder.setTransportInfo(new JingleS5BTransportInfo.CandidateActivated(
                                     parser.getAttributeValue(null,
-                                            JingleS5BTransportInfo.CandidateActivated.ATTR_CID)));
+                                            JingleS5BCandidateTransportInfo.ATTR_CID)));
                             break;
 
                         case JingleS5BTransportInfo.CandidateUsed.ELEMENT:
-                            builder.setTransportInfo(JingleS5BTransportInfo.CandidateUsed(
+                            builder.setTransportInfo(new JingleS5BTransportInfo.CandidateUsed(
                                     parser.getAttributeValue(null,
-                                            JingleS5BTransportInfo.CandidateUsed.ATTR_CID)));
+                                            JingleS5BCandidateTransportInfo.ATTR_CID)));
                             break;
 
                         case JingleS5BTransportInfo.CandidateError.ELEMENT:
-                            builder.setTransportInfo(JingleS5BTransportInfo.CandidateError());
+                            builder.setTransportInfo(JingleS5BTransportInfo.CandidateError.INSTANCE);
                             break;
 
                         case JingleS5BTransportInfo.ProxyError.ELEMENT:
-                            builder.setTransportInfo(JingleS5BTransportInfo.ProxyError());
+                            builder.setTransportInfo(JingleS5BTransportInfo.ProxyError.INSTANCE);
                             break;
                     }
                 }

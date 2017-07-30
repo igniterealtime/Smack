@@ -127,7 +127,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
         assertNull(candidateErrorTransport.getDestinationAddress());
         assertNotNull(candidateErrorTransport.getInfo());
         assertEquals("vj3hs98y", candidateErrorTransport.getStreamId());
-        assertEquals(JingleS5BTransportInfo.CandidateError(),
+        assertEquals(JingleS5BTransportInfo.CandidateError.INSTANCE,
                 candidateErrorTransport.getInfo());
         assertEquals(candidateError, candidateErrorTransport.toXML().toString());
 
@@ -141,7 +141,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
         assertNotNull(proxyErrorTransport.getInfo());
         assertNotNull(candidateErrorTransport.getInfo());
         assertEquals("vj3hs98y", proxyErrorTransport.getStreamId());
-        assertEquals(JingleS5BTransportInfo.ProxyError(),
+        assertEquals(JingleS5BTransportInfo.ProxyError.INSTANCE,
                 proxyErrorTransport.getInfo());
         assertEquals(proxyError, proxyErrorTransport.toXML().toString());
 
@@ -152,7 +152,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
         JingleS5BTransport candidateUsedTransport = new JingleS5BTransportProvider()
                 .parse(TestUtils.getParser(candidateUsed));
         assertNotNull(candidateUsedTransport.getInfo());
-        assertEquals(JingleS5BTransportInfo.CandidateUsed("hr65dqyd"),
+        assertEquals(new JingleS5BTransportInfo.CandidateUsed("hr65dqyd"),
                 candidateUsedTransport.getInfo());
         assertEquals("hr65dqyd",
                 ((JingleS5BTransportInfo.CandidateUsed)
@@ -168,7 +168,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
         assertNotNull(candidateActivatedTransport.getInfo());
         assertNotNull(candidateErrorTransport.getInfo());
 
-        assertEquals(JingleS5BTransportInfo.CandidateActivated("hr65dqyd"),
+        assertEquals(new JingleS5BTransportInfo.CandidateActivated("hr65dqyd"),
                 candidateActivatedTransport.getInfo());
         assertEquals("hr65dqyd",
                 ((JingleS5BTransportInfo.CandidateActivated)
