@@ -79,7 +79,7 @@ public final class JingleTransportMethodManager extends Manager {
             return null;
         }
 
-        JingleContentTransport transport = content.getJingleTransport();
+        JingleContentTransport transport = content.getTransport();
         if (transport == null) {
             return null;
         }

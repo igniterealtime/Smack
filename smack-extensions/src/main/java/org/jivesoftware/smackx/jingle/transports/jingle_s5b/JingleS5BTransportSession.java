@@ -189,7 +189,7 @@ public class JingleS5BTransportSession extends JingleTransportSession<JingleS5BT
 
     @Override
     public IQ handleTransportInfo(Jingle transportInfo) {
-        JingleS5BTransportInfo info = (JingleS5BTransportInfo) transportInfo.getContents().get(0).getJingleTransport().getInfo();
+        JingleS5BTransportInfo info = (JingleS5BTransportInfo) transportInfo.getContents().get(0).getTransport().getInfo();
 
         switch (info.getElementName()) {
             case JingleS5BTransportInfo.CandidateUsed.ELEMENT:
@@ -209,7 +209,7 @@ public class JingleS5BTransportSession extends JingleTransportSession<JingleS5BT
     }
 
     public IQ handleCandidateUsed(Jingle jingle) {
-        JingleS5BTransportInfo info = (JingleS5BTransportInfo) jingle.getContents().get(0).getJingleTransport().getInfo();
+        JingleS5BTransportInfo info = (JingleS5BTransportInfo) jingle.getContents().get(0).getTransport().getInfo();
         String candidateId = ((JingleS5BTransportInfo.CandidateUsed) info).getCandidateId();
         theirChoice = new UsedCandidate(ourProposal, ourProposal.getCandidate(candidateId), null);
 

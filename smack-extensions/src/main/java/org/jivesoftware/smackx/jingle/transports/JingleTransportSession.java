@@ -41,7 +41,7 @@ public abstract class JingleTransportSession<T extends JingleContentTransport> {
         }
 
         JingleContent content = jingle.getContents().get(0);
-        JingleContentTransport t = content.getJingleTransport();
+        JingleContentTransport t = content.getTransport();
 
         if (t != null && t.getNamespace().equals(getNamespace())) {
             setTheirProposal(t);

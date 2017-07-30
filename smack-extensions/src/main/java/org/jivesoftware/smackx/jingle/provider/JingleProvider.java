@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.jingle.provider;
 
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -28,6 +30,8 @@ import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle.element.JingleReason.Reason;
+import org.jivesoftware.smackx.jingle.element.UnknownJingleContentDescription;
+import org.jivesoftware.smackx.jingle.element.UnknownJingleContentTransport;
 
 import org.jxmpp.jid.FullJid;
 import org.xmlpull.v1.XmlPullParser;
@@ -122,22 +126,28 @@ public class JingleProvider extends IQProvider<Jingle> {
                 String namespace = parser.getNamespace();
                 switch (tagName) {
                 case JingleContentDescription.ELEMENT: {
+                    JingleContentDescription description;
                     JingleContentDescriptionProvider<?> provider = JingleContentProviderManager.getJingleContentDescriptionProvider(namespace);
                     if (provider == null) {
-                        // TODO handle this case (DefaultExtensionElement wrapped in something?)
-                        break;
+                        StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
+                        description = new UnknownJingleContentDescription(standardExtensionElement);
                     }
-                    JingleContentDescription description = provider.parse(parser);
+                    else {
+                        description = provider.parse(parser);
+                    }
                     builder.setDescription(description);
                     break;
                 }
                 case JingleContentTransport.ELEMENT: {
+                    JingleContentTransport transport;
                     JingleContentTransportProvider<?> provider = JingleContentProviderManager.getJingleContentTransportProvider(namespace);
                     if (provider == null) {
-                        // TODO handle this case (DefaultExtensionElement wrapped in something?)
-                        break;
+                        StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
+                        transport = new UnknownJingleContentTransport(standardExtensionElement);
                     }
-                    JingleContentTransport transport = provider.parse(parser);
+                    else {
+                        transport = provider.parse(parser);
+                    }
                     builder.setTransport(transport);
                     break;
                 }

@@ -190,6 +190,7 @@ public final class Jingle extends IQ {
         }
 
         public Builder setSessionId(String sessionId) {
+            StringUtils.requireNotNullOrEmpty(sessionId, "Session ID must not be null or empty");
             this.sid = sessionId;
             return this;
         }
