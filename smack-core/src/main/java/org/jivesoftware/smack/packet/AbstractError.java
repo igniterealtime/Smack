@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketUtil;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -85,6 +86,7 @@ public class AbstractError {
      * @return the descriptive text or null.
      */
     public String getDescriptiveText(String xmllang) {
+        Objects.requireNonNull(xmllang, "xmllang must not be null");
         return descriptiveTexts.get(xmllang);
     }
 
@@ -105,7 +107,8 @@ public class AbstractError {
             String xmllang = entry.getKey();
             String text = entry.getValue();
             xml.halfOpenElement("text").xmlnsAttribute(textNamespace)
-                    .xmllangAttribute(xmllang).rightAngleBracket();
+                    .optXmlLangAttribute(xmllang)
+                    .rightAngleBracket();
             xml.escape(text);
             xml.closeElement("text");
         }
@@ -120,6 +123,15 @@ public class AbstractError {
         protected List<ExtensionElement> extensions;
 
         public B setDescriptiveTexts(Map<String, String> descriptiveTexts) {
+            if (descriptiveTexts == null) {
+                this.descriptiveTexts = null;
+                return getThis();
+            }
+            for (String key : descriptiveTexts.keySet()) {
+                if (key == null) {
+                    throw new IllegalArgumentException("descriptiveTexts cannot contain null key");
+                }
+            }
             if (this.descriptiveTexts == null) {
                 this.descriptiveTexts = descriptiveTexts;
             }
