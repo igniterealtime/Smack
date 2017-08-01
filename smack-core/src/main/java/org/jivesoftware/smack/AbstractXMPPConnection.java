@@ -1095,6 +1095,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             switch (type) {
             case set:
             case get:
+                // forward the IQ to the debugger so it can log it can show it as interpreted data
+                if (config.isDebuggerEnabled() && debugger != null) {
+                    try {
+                        debugger.getReaderListener().processStanza(packet);
+                    } catch (NotConnectedException | InterruptedException e) {
+                        LOGGER.log(Level.SEVERE, "Debugger threw exception", e);
+                    }
+                }
+
                 final String key = XmppStringUtils.generateKey(iq.getChildElementName(), iq.getChildElementNamespace());
                 IQRequestHandler iqRequestHandler = null;
                 switch (type) {
