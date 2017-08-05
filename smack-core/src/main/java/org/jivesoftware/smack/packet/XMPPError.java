@@ -70,7 +70,7 @@ public class XMPPError extends AbstractError {
     public static final String ERROR = "error";
 
     private static final Logger LOGGER = Logger.getLogger(XMPPError.class.getName());
-    private static final Map<Condition, Type> CONDITION_TO_TYPE = new HashMap<Condition, Type>();
+    static final Map<Condition, Type> CONDITION_TO_TYPE = new HashMap<Condition, Type>();
 
     static {
         CONDITION_TO_TYPE.put(Condition.bad_request, Type.MODIFY);
