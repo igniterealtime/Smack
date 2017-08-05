@@ -348,34 +348,34 @@ public class RosterPacket extends IQ {
          * have a subscription to the user's presence; this is the default value, so if the
          * subscription attribute is not included then the state is to be understood as "none".
          */
-        none('⊥'),
+        none('\u22A5'), //upward tack (upside-down T)
 
         /**
          * The user has a subscription to the contact's presence, but the contact does not have a
          * subscription to the user's presence.
          */
-        to('←'),
+        to('\u2190'), //left arrow
 
         /**
          * The contact has a subscription to the user's presence, but the user does not have a
          * subscription to the contact's presence.
          */
-        from('→'),
+        from('\u2192'), //right arrow
 
         /**
          * The user and the contact have subscriptions to each other's presence (also called a
          * "mutual subscription").
          */
-        both('↔'),
+        both('\u2194'), //left-right arrow
 
         /**
          * The user wishes to stop receiving presence updates from the subscriber.
          */
-        remove('⚡'),
+        remove('\u26A1'), //high voltage sign
         ;
 
 
-        private static final char ME = '●';
+        private static final char ME = '\u25CF'; //black circle
 
         private final String symbol;
 
