@@ -371,7 +371,7 @@ public final class SmackConfiguration {
         return defaultHostnameVerififer;
     }
 
-    enum UnknownIqRequestReplyMode {
+    public enum UnknownIqRequestReplyMode {
         doNotReply,
         replyFeatureNotImplemented,
         replyServiceUnavailable,
