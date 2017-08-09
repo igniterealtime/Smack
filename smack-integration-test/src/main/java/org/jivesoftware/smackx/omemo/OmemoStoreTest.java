@@ -22,6 +22,7 @@ import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
+import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.cleanServerSideTraces;
 import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.deletePath;
 import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.setUpOmemoManager;
 
@@ -154,6 +155,8 @@ public class OmemoStoreTest extends AbstractOmemoIntegrationTest {
 
     @Override
     public void after() {
+        cleanServerSideTraces(alice);
+        cleanServerSideTraces(bob);
         alice.shutdown();
         bob.shutdown();
     }
