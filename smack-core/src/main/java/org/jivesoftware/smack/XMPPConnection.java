@@ -73,18 +73,6 @@ import org.jxmpp.jid.EntityFullJid;
 public interface XMPPConnection {
 
     /**
-     * Returns the name of the service provided by the XMPP server for this connection.
-     * This is also called XMPP domain of the connected server. After
-     * authenticating with the server the returned value may be different.
-     * 
-     * @return the name of the service provided by the XMPP server.
-     // TODO remove this once the java bugs are fixed, causing a warning
-//     * @deprecated use {@link #getXMPPServiceDomain()} instead.
-     */
-//    @Deprecated
-    public DomainBareJid getServiceName();
-
-    /**
      * Returns the XMPP Domain of the service provided by the XMPP server and used for this connection. After
      * authenticating with the server the returned value may be different.
      * 
@@ -164,18 +152,6 @@ public interface XMPPConnection {
      * @return true if network traffic is being compressed.
      */
     public boolean isUsingCompression();
-
-    /**
-     * Sends the specified stanza(/packet) to the server.
-     * 
-     * @param packet the stanza(/packet) to send.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
-     * @deprecated use {@link #sendStanza(Stanza)} instead.
-     */
-    // TODO Remove in 4.3.
-    @Deprecated
-    public void sendPacket(Stanza packet) throws NotConnectedException, InterruptedException;
 
     /**
      * Sends the specified stanza to the server.
@@ -282,35 +258,6 @@ public interface XMPPConnection {
     public void removeStanzaCollector(StanzaCollector collector);
 
     /**
-     * Registers a stanza(/packet) listener with this connection.
-     * <p>
-     * This method has been deprecated. It is important to differentiate between using an asynchronous stanza(/packet) listener
-     * (preferred where possible) and a synchronous stanza(/packet) lister. Refer
-     * {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)} and
-     * {@link #addSyncStanzaListener(StanzaListener, StanzaFilter)} for more information.
-     * </p>
-     *
-     * @param packetListener the stanza(/packet) listener to notify of new received packets.
-     * @param packetFilter the stanza(/packet) filter to use.
-     * @deprecated use {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)} or
-     *             {@link #addSyncStanzaListener(StanzaListener, StanzaFilter)}.
-     */
-    // TODO Remove in 4.3.
-    @Deprecated
-    public void addPacketListener(StanzaListener packetListener, StanzaFilter packetFilter);
-
-    /**
-     * Removes a stanza(/packet) listener for received packets from this connection.
-     * 
-     * @param packetListener the stanza(/packet) listener to remove.
-     * @return true if the stanza(/packet) listener was removed
-     * @deprecated use {@link #removeAsyncStanzaListener(StanzaListener)} or {@link #removeSyncStanzaListener(StanzaListener)}.
-     */
-    // TODO Remove in 4.3.
-    @Deprecated
-    public boolean removePacketListener(StanzaListener packetListener);
-
-    /**
      * Registers a <b>synchronous</b> stanza(/packet) listener with this connection. A stanza(/packet) listener will be invoked only when
      * an incoming stanza(/packet) is received. A stanza(/packet) filter determines which packets will be delivered to the listener. If
      * the same stanza(/packet) listener is added again with a different filter, only the new filter will be used.
@@ -404,28 +351,6 @@ public interface XMPPConnection {
      * @param packetInterceptor the stanza(/packet) interceptor to remove.
      */
     public void removePacketInterceptor(StanzaListener packetInterceptor);
-
-    /**
-     * Returns the current value of the reply timeout in milliseconds for request for this
-     * XMPPConnection instance.
-     *
-     * @return the stanza(/packet) reply timeout in milliseconds
-     * @deprecated use {@link #getReplyTimeout()} instead.
-     */
-    @Deprecated
-    // TODO Remove in Smack 4.3
-    public long getPacketReplyTimeout();
-
-    /**
-     * Set the stanza(/packet) reply timeout in milliseconds. In most cases, Smack will throw a
-     * {@link NoResponseException} if no reply to a request was received within the timeout period.
-     *
-     * @param timeout the stanza(/packet) reply timeout in milliseconds
-     * @deprecated use {@link #setReplyTimeout(long)} instead.
-     */
-    @Deprecated
-    // TODO Remove in Smack 4.3
-    public void setPacketReplyTimeout(long timeout);
 
     /**
      * Returns the current value of the reply timeout in milliseconds for request for this

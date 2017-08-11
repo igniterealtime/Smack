@@ -62,7 +62,7 @@ public class ServiceAdministrationManager extends Manager {
     }
 
     public RemoteCommand addUser() {
-        return addUser(connection().getServiceName());
+        return addUser(connection().getXMPPServiceDomain());
     }
 
     public RemoteCommand addUser(Jid service) {
@@ -90,7 +90,7 @@ public class ServiceAdministrationManager extends Manager {
     }
 
     public RemoteCommand deleteUser() {
-        return deleteUser(connection().getServiceName());
+        return deleteUser(connection().getXMPPServiceDomain());
     }
 
     public RemoteCommand deleteUser(Jid service) {

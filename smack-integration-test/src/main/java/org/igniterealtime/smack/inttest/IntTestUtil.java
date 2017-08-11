@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Florian Schmaus
+ * Copyright 2015-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ public class IntTestUtil {
 
         ServiceAdministrationManager adminManager = ServiceAdministrationManager.getInstanceFor(connection);
 
-        EntityBareJid userJid = JidCreate.entityBareFrom(Localpart.from(username), connection.getServiceName());
+        EntityBareJid userJid = JidCreate.entityBareFrom(Localpart.from(username), connection.getXMPPServiceDomain());
         adminManager.addUser(userJid, password);
 
         connection.disconnect();

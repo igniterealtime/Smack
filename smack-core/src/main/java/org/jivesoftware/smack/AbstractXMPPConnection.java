@@ -323,12 +323,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return config;
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public DomainBareJid getServiceName() {
-        return getXMPPServiceDomain();
-    }
-
     @Override
     public DomainBareJid getXMPPServiceDomain() {
         if (xmppServiceDomain != null) {
@@ -665,12 +659,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
-    @Deprecated
-    @Override
-    public void sendPacket(Stanza packet) throws NotConnectedException, InterruptedException {
-        sendStanza(packet);
-    }
-
     @Override
     public void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
         Objects.requireNonNull(stanza, "Stanza must not be null");
@@ -801,18 +789,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public void removeStanzaCollector(StanzaCollector collector) {
         collectors.remove(collector);
-    }
-
-    @Override
-    @Deprecated
-    public void addPacketListener(StanzaListener packetListener, StanzaFilter packetFilter) {
-        addAsyncStanzaListener(packetListener, packetFilter);
-    }
-
-    @Override
-    @Deprecated
-    public boolean removePacketListener(StanzaListener packetListener) {
-        return removeAsyncStanzaListener(packetListener);
     }
 
     @Override
@@ -974,18 +950,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             reader = debugger.newConnectionReader(reader);
             writer = debugger.newConnectionWriter(writer);
         }
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public long getPacketReplyTimeout() {
-        return getReplyTimeout();
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void setPacketReplyTimeout(long timeout) {
-        setReplyTimeout(timeout);
     }
 
     @Override

@@ -151,7 +151,7 @@ public final class PingManager extends Manager {
     private boolean isValidErrorPong(Jid destinationJid, XMPPErrorException xmppErrorException) {
         // If it is an error error response and the destination was our own service, then this must mean that the
         // service responded, i.e. is up and pingable.
-        if (destinationJid.equals(connection().getServiceName())) {
+        if (destinationJid.equals(connection().getXMPPServiceDomain())) {
             return true;
         }
 
