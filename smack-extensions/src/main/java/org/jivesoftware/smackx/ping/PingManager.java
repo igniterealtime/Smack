@@ -33,9 +33,8 @@ import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.SmackFuture;
-import org.jivesoftware.smack.SmackFuture.InternalSmackFuture;
+import org.jivesoftware.smack.SmackFuture.InternalProcessStanzaSmackFuture;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -45,7 +44,9 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.util.ExceptionCallback;
 import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
+import org.jivesoftware.smack.util.SuccessCallback;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.ping.packet.Ping;
@@ -178,14 +179,14 @@ public final class PingManager extends Manager {
         return type == XMPPError.Type.CANCEL && condition == XMPPError.Condition.feature_not_implemented;
     }
 
-    public SmackFuture<Boolean> pingAsync(Jid jid) {
+    public SmackFuture<Boolean, Exception> pingAsync(Jid jid) {
         return pingAsync(jid, connection().getReplyTimeout());
     }
 
-    public SmackFuture<Boolean> pingAsync(final Jid jid, long pongTimeout) {
-        final InternalSmackFuture<Boolean> future = new InternalSmackFuture<Boolean>() {
+    public SmackFuture<Boolean, Exception> pingAsync(final Jid jid, long pongTimeout) {
+        final InternalProcessStanzaSmackFuture<Boolean, Exception> future = new InternalProcessStanzaSmackFuture<Boolean, Exception>() {
             @Override
-            public void handleStanza(Stanza packet) throws NotConnectedException, InterruptedException {
+            public void handleStanza(Stanza packet) {
                 setResult(true);
             }
             @Override
@@ -202,13 +203,19 @@ public final class PingManager extends Manager {
         };
 
         Ping ping = new Ping(jid);
-        try {
-            XMPPConnection connection = getAuthenticatedConnectionOrThrow();
-            connection.sendIqWithResponseCallback(ping, future, future, pongTimeout);
-        }
-        catch (NotLoggedInException | NotConnectedException | InterruptedException e) {
-            future.processException(e);
-        }
+        connection().sendIqRequestAsync(ping, pongTimeout)
+        .onSuccess(new SuccessCallback<IQ>() {
+            @Override
+            public void onSuccess(IQ result) {
+                future.processStanza(result);
+            }
+        })
+        .onError(new ExceptionCallback<Exception>() {
+            @Override
+            public void processException(Exception exception) {
+                future.processException(exception);
+            }
+        });
 
         return future;
     }

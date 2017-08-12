@@ -16,25 +16,34 @@
  */
 package org.jivesoftware.smack;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.CallbackRecipient;
+import org.jivesoftware.smack.util.ExceptionCallback;
+import org.jivesoftware.smack.util.SuccessCallback;
 
-public abstract class SmackFuture<V> implements Future<V> {
+public abstract class SmackFuture<V, E extends Exception> implements Future<V>, CallbackRecipient<V, E> {
 
     private boolean cancelled;
 
-    private V result;
+    protected V result;
 
-    protected Exception exception;
+    protected E exception;
 
     private SuccessCallback<V> successCallback;
 
-    private ExceptionCallback exceptionCallback;
+    private ExceptionCallback<E> exceptionCallback;
 
     @Override
     public synchronized final boolean cancel(boolean mayInterruptIfRunning) {
@@ -43,6 +52,11 @@ public abstract class SmackFuture<V> implements Future<V> {
         }
 
         cancelled = true;
+
+        if (mayInterruptIfRunning) {
+            notifyAll();
+        }
+
         return true;
     }
 
@@ -56,37 +70,62 @@ public abstract class SmackFuture<V> implements Future<V> {
         return result != null;
     }
 
-    public void onSuccessOrError(SuccessCallback<V> successCallback, ExceptionCallback exceptionCallback) {
+    @Override
+    public CallbackRecipient<V, E> onSuccess(SuccessCallback<V> successCallback) {
         this.successCallback = successCallback;
-        this.exceptionCallback = exceptionCallback;
-
         maybeInvokeCallbacks();
+        return this;
     }
 
-    public void onSuccess(SuccessCallback<V> successCallback) {
-        onSuccessOrError(successCallback, null);
+    @Override
+    public CallbackRecipient<V, E> onError(ExceptionCallback<E> exceptionCallback) {
+        this.exceptionCallback = exceptionCallback;
+        maybeInvokeCallbacks();
+        return this;
     }
 
-    public void onError(ExceptionCallback exceptionCallback) {
-        onSuccessOrError(null, exceptionCallback);
-    }
-
-    private final V getResultOrThrow() throws ExecutionException {
-        assert (result != null || exception != null);
+    private final V getOrThrowExecutionException() throws ExecutionException {
+        assert (result != null || exception != null || cancelled);
         if (result != null) {
             return result;
         }
+        if (exception != null) {
+            throw new ExecutionException(exception);
+        }
 
-        throw new ExecutionException(exception);
+        assert (cancelled);
+        throw new CancellationException();
     }
 
     @Override
     public synchronized final V get() throws InterruptedException, ExecutionException {
-        while (result == null && exception == null) {
+        while (result == null && exception == null && !cancelled) {
             wait();
         }
 
-        return getResultOrThrow();
+        return getOrThrowExecutionException();
+    }
+
+    public synchronized final V getOrThrow() throws E {
+        while (result == null && exception == null && !cancelled) {
+            try {
+                wait();
+            }
+            catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (exception != null) {
+            throw exception;
+        }
+
+        if (cancelled) {
+            throw new CancellationException();
+        }
+
+        assert result != null;
+        return result;
     }
 
     @Override
@@ -100,45 +139,101 @@ public abstract class SmackFuture<V> implements Future<V> {
             }
         }
 
+        if (cancelled) {
+            throw new CancellationException();
+        }
+
         if (result == null || exception == null) {
             throw new TimeoutException();
         }
 
-        return getResultOrThrow();
+        return getOrThrowExecutionException();
     }
 
+    private static final ExecutorService EXECUTOR_SERVICE;
+
+    static {
+        ThreadFactory threadFactory = new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setDaemon(true);
+                thread.setName("SmackFuture Thread");
+                return thread;
+            }
+        };
+        BlockingQueue<Runnable> blockingQueue = new ArrayBlockingQueue<>(128);
+        RejectedExecutionHandler rejectedExecutionHandler = new RejectedExecutionHandler() {
+            @Override
+            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                r.run();
+            }
+        };
+        int cores = Runtime.getRuntime().availableProcessors();
+        int maximumPoolSize = cores <= 4 ? 2 : cores;
+        ExecutorService executorService = new ThreadPoolExecutor(0, maximumPoolSize, 60L, TimeUnit.SECONDS,
+                        blockingQueue, threadFactory, rejectedExecutionHandler);
+
+        EXECUTOR_SERVICE = executorService;
+    }
+
+    @SuppressWarnings("FutureReturnValueIgnored")
     protected final synchronized void maybeInvokeCallbacks() {
+        if (cancelled) {
+            return;
+        }
+
         if (result != null && successCallback != null) {
-            successCallback.onSuccess(result);
-        } else if (exception != null && exceptionCallback != null) {
-            exceptionCallback.processException(exception);
+            EXECUTOR_SERVICE.submit(new Runnable() {
+                @Override
+                public void run() {
+                    successCallback.onSuccess(result);
+                }
+            });
+        }
+        else if (exception != null && exceptionCallback != null) {
+            EXECUTOR_SERVICE.submit(new Runnable() {
+                @Override
+                public void run() {
+                    exceptionCallback.processException(exception);
+                }
+            });
         }
     }
 
-    /**
-     * This method checks if the given exception is <b>not</b> fatal. If this method returns <code>false</code>, then
-     * the future will automatically set the given exception as failure reason and notify potential waiting threads.
-     *
-     * @param exception the exception to check.
-     * @return <code>true</code> if the exception is not fatal, <code>false</code> otherwise.
-     */
-    protected abstract boolean isNonFatalException(Exception exception);
+    public static class InternalSmackFuture<V, E extends Exception> extends SmackFuture<V, E> {
+        public final synchronized void setResult(V result) {
+            this.result = result;
+            this.notifyAll();
 
-    protected abstract void handleStanza(Stanza stanza) throws NotConnectedException, InterruptedException;
+            maybeInvokeCallbacks();
+        }
 
-    protected final void setResult(V result) {
-        assert (Thread.holdsLock(this));
+        public final synchronized void setException(E exception) {
+            this.exception = exception;
+            this.notifyAll();
 
-        this.result = result;
-        this.notifyAll();
-
-        maybeInvokeCallbacks();
+            maybeInvokeCallbacks();
+        }
     }
 
-    public static abstract class InternalSmackFuture<V> extends SmackFuture<V> implements StanzaListener, ExceptionCallback {
+    public static abstract class InternalProcessStanzaSmackFuture<V, E extends Exception> extends InternalSmackFuture<V, E>
+                    implements StanzaListener, ExceptionCallback<E> {
+
+        /**
+         * This method checks if the given exception is <b>not</b> fatal. If this method returns <code>false</code>,
+         * then the future will automatically set the given exception as failure reason and notify potential waiting
+         * threads.
+         *
+         * @param exception the exception to check.
+         * @return <code>true</code> if the exception is not fatal, <code>false</code> otherwise.
+         */
+        protected abstract boolean isNonFatalException(E exception);
+
+        protected abstract void handleStanza(Stanza stanza);
 
         @Override
-        public synchronized final void processException(Exception exception) {
+        public synchronized final void processException(E exception) {
             if (!isNonFatalException(exception)) {
                 this.exception = exception;
                 this.notifyAll();
@@ -151,20 +246,29 @@ public abstract class SmackFuture<V> implements Future<V> {
          * Wrapper method for {@link #handleStanza(Stanza)}. Note that this method is <code>synchronized</code>.
          */
         @Override
-        public synchronized final void processStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
+        public synchronized final void processStanza(Stanza stanza) {
             handleStanza(stanza);
         }
     }
 
     /**
-     * A simple version of InternalSmackFuture which implements {@link #isNonFatalException(Exception)} as always returning <code>false</code> method.
+     * A simple version of InternalSmackFuture which implements isNonFatalException(E) as always returning
+     * <code>false</code> method.
      *
      * @param <V>
      */
-    public static abstract class SimpleInternalSmackFuture<V> extends InternalSmackFuture<V> {
+    public static abstract class SimpleInternalProcessStanzaSmackFuture<V, E extends Exception>
+                    extends InternalProcessStanzaSmackFuture<V, E> {
         @Override
-        protected boolean isNonFatalException(Exception exception) {
+        protected boolean isNonFatalException(E exception) {
             return false;
         }
     }
+
+    public static <V, E extends Exception> SmackFuture<V, E> from(V result) {
+        InternalSmackFuture<V, E> future = new InternalSmackFuture<>();
+        future.setResult(result);
+        return future;
+    }
+
 }

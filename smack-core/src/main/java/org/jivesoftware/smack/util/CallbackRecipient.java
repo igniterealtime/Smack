@@ -14,10 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack;
+package org.jivesoftware.smack.util;
 
-public interface SuccessCallback<T> {
+public interface CallbackRecipient<V,E> {
 
-    public void onSuccess(T result);
+    CallbackRecipient<V, E> onSuccess(SuccessCallback<V> successCallback);
+
+    CallbackRecipient<V, E> onError(ExceptionCallback<E> exceptionCallback);
 
 }
