@@ -50,6 +50,7 @@ import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
@@ -103,9 +104,12 @@ public final class MamManager extends Manager {
 
     private final Jid archiveAddress;
 
+    private final ServiceDiscoveryManager serviceDiscoveryManager;
+
     private MamManager(XMPPConnection connection, Jid archiveAddress) {
         super(connection);
         this.archiveAddress = archiveAddress;
+        serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
     }
 
     /**
@@ -587,6 +591,23 @@ public final class MamManager extends Manager {
     }
 
     /**
+     * Check if MAM is supported for the XMPP connection managed by this MamManager.
+     *
+     * @return true if MAM is supported for the XMPP connection, <code>false</code>otherwhise.
+     *
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.2.1
+     * @see <a href="https://xmpp.org/extensions/xep-0313.html#support">XEP-0313 § 7. Determining support</a>
+     */
+    public boolean isSupported() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        BareJid myBareJid = connection().getUser().asBareJid();
+        return serviceDiscoveryManager.supportsFeature(myBareJid, MamElements.NAMESPACE);
+    }
+
+    /**
      * Returns true if Message Archive Management is supported by the server.
      * 
      * @return true if Message Archive Management is supported by the server.
@@ -594,7 +615,10 @@ public final class MamManager extends Manager {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws InterruptedException
+     * @depreacted use {@link #isSupported()} instead.
      */
+    @Deprecated
+    // TODO Remove in Smack 4.3
     public boolean isSupportedByServer()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).serverSupportsFeature(MamElements.NAMESPACE);
