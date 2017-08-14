@@ -179,7 +179,7 @@ public final class SmackConfiguration {
         }
     }
 
-   /**
+    /**
      * Add a Collection of SASL mechanisms to the list to be used.
      *
      * @param mechs the Collection of SASL mechanisms to be added
@@ -236,7 +236,7 @@ public final class SmackConfiguration {
         defaultMechs.remove(mech);
     }
 
-   /**
+    /**
      * Remove a Collection of SASL mechanisms to the list to be used.
      *
      * @param mechs the Collection of SASL mechanisms to be removed
