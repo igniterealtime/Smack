@@ -412,6 +412,18 @@ configure(integrationTestProjects + project(':smack-repl')) {
 project(':smack-omemo').clirr.enabled = false
 project(':smack-omemo-signal').clirr.enabled = false
 
+configure(
+	[ ':smack-omemo',
+	  ':smack-omemo-signal',
+	  ':smack-omemo-signal-integration-test',
+	].collect{ project(it) }) {
+	uploadArchives {
+		// Only enable uploadArchives for the smack-omemo* projects
+		// for snapshots. Not yet for releases.
+		enabled = isSnapshot
+	}
+}
+
 subprojects*.jar {
    manifest {
        from sharedManifest
