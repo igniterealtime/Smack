@@ -40,6 +40,7 @@ import org.jivesoftware.smackx.omemo.internal.CipherAndAuthTag;
 import org.jivesoftware.smackx.omemo.internal.OmemoMessageInformation;
 import org.jivesoftware.smackx.omemo.listener.OmemoMessageListener;
 import org.jivesoftware.smackx.pubsub.PubSubException;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotAPubSubNodeException;
 
 import junit.framework.TestCase;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
@@ -85,9 +86,15 @@ public class OmemoMessageSendingTest extends AbstractOmemoIntegrationTest {
      * @throws UndecidedOmemoIdentityException
      * @throws NoSuchAlgorithmException
      * @throws CryptoFailedException
+     * @throws NotAPubSubNodeException 
      */
     @SmackIntegrationTest
-    public void messageSendingTest() throws CorruptedOmemoKeyException, InterruptedException, SmackException.NoResponseException, SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NotLoggedInException, PubSubException.NotALeafNodeException, CannotEstablishOmemoSessionException, UndecidedOmemoIdentityException, NoSuchAlgorithmException, CryptoFailedException {
+    public void messageSendingTest()
+                    throws CorruptedOmemoKeyException, InterruptedException, SmackException.NoResponseException,
+                    SmackException.NotConnectedException, XMPPException.XMPPErrorException,
+                    SmackException.NotLoggedInException, PubSubException.NotALeafNodeException,
+                    CannotEstablishOmemoSessionException, UndecidedOmemoIdentityException, NoSuchAlgorithmException,
+                    CryptoFailedException, PubSubException.NotAPubSubNodeException {
         final String alicesSecret = "Hey Bob! I love you!";
         final String bobsSecret = "I love you too, Alice."; //aww <3
 

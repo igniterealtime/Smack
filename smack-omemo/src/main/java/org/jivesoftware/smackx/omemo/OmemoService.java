@@ -82,8 +82,8 @@ import org.jivesoftware.smackx.omemo.util.OmemoMessageBuilder;
 import org.jivesoftware.smackx.pep.PEPManager;
 import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
-import org.jivesoftware.smackx.pubsub.PubSubAssertionError;
 import org.jivesoftware.smackx.pubsub.PubSubException;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotAPubSubNodeException;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -428,11 +428,11 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @throws XMPPException.XMPPErrorException
      * @throws SmackException.NotConnectedException
      * @throws SmackException.NoResponseException
-     * @throws PubSubAssertionError.DiscoInfoNodeAssertionError ejabberd bug: https://github.com/processone/ejabberd/issues/1717
+     * @throws NotAPubSubNodeException 
      */
     static LeafNode fetchDeviceListNode(OmemoManager omemoManager, BareJid contact)
             throws InterruptedException, PubSubException.NotALeafNodeException, XMPPException.XMPPErrorException,
-            SmackException.NotConnectedException, SmackException.NoResponseException, PubSubAssertionError.DiscoInfoNodeAssertionError {
+            SmackException.NotConnectedException, SmackException.NoResponseException, NotAPubSubNodeException {
         return PubSubManager.getInstance(omemoManager.getConnection(), contact).getLeafNode(PEP_NODE_DEVICE_LIST);
     }
 
@@ -447,9 +447,11 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @throws InterruptedException                 goes
      * @throws SmackException.NoResponseException   wrong
      * @throws PubSubException.NotALeafNodeException when the device lists node is not a LeafNode
-     * @throws PubSubAssertionError.DiscoInfoNodeAssertionError ejabberd bug: https://github.com/processone/ejabberd/issues/1717
+     * @throws NotAPubSubNodeException 
      */
-    static OmemoDeviceListElement fetchDeviceList(OmemoManager omemoManager, BareJid contact) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, PubSubException.NotALeafNodeException, PubSubAssertionError.DiscoInfoNodeAssertionError {
+    static OmemoDeviceListElement fetchDeviceList(OmemoManager omemoManager, BareJid contact)
+                    throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
+                    SmackException.NoResponseException, PubSubException.NotALeafNodeException, NotAPubSubNodeException {
         return extractDeviceListFrom(fetchDeviceListNode(omemoManager, contact));
     }
 
@@ -483,9 +485,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
                     e.getMessage());
         }
 
-        catch (PubSubAssertionError.DiscoInfoNodeAssertionError bug) {
+        catch (PubSubException.NotAPubSubNodeException e) {
             LOGGER.log(Level.WARNING, "Caught a PubSubAssertionError when fetching a deviceList node. " +
-                    "This probably means that we're dealing with an ejabberd server and the LeafNode does not exist.");
+                    "This probably means that we're dealing with an ejabberd server and the LeafNode does not exist.", e);
             return true;
         }
         return false;
@@ -507,9 +509,8 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
             LOGGER.log(Level.WARNING, "Could not fetch device list of " + contact + ": " + e, e);
             return;
         }
-        catch (PubSubAssertionError.DiscoInfoNodeAssertionError bug) {
-            LOGGER.log(Level.WARNING, "Caught a PubSubAssertionError when fetching a deviceList node. " +
-                    "This probably means that the LeafNode does not exist.");
+        catch (NotAPubSubNodeException e) {
+            LOGGER.log(Level.WARNING, "Could not fetch device list of " + contact ,e);
             return;
         }
 
@@ -527,9 +528,13 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @throws InterruptedException                 goes
      * @throws SmackException.NoResponseException   wrong
      * @throws PubSubException.NotALeafNodeException when the bundles node is not a LeafNode
+     * @throws NotAPubSubNodeException 
      */
-    static OmemoBundleVAxolotlElement fetchBundle(OmemoManager omemoManager, OmemoDevice contact) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, PubSubException.NotALeafNodeException, PubSubAssertionError.DiscoInfoNodeAssertionError {
-        LeafNode node = PubSubManager.getInstance(omemoManager.getConnection(), contact.getJid()).getLeafNode(PEP_NODE_BUNDLE_FROM_DEVICE_ID(contact.getDeviceId()));
+    static OmemoBundleVAxolotlElement fetchBundle(OmemoManager omemoManager, OmemoDevice contact)
+                    throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
+                    SmackException.NoResponseException, PubSubException.NotALeafNodeException, NotAPubSubNodeException {
+        LeafNode node = PubSubManager.getInstance(omemoManager.getConnection(), contact.getJid()).getLeafNode(
+                        PEP_NODE_BUNDLE_FROM_DEVICE_ID(contact.getDeviceId()));
         return extractBundleFrom(node);
     }
 
@@ -666,7 +671,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         OmemoBundleVAxolotlElement bundle;
         try {
             bundle = fetchBundle(omemoManager, device);
-        } catch (SmackException | XMPPException.XMPPErrorException | InterruptedException | PubSubAssertionError e) {
+        } catch (SmackException | XMPPException.XMPPErrorException | InterruptedException e) {
             throw new CannotEstablishOmemoSessionException(device, e);
         }
 

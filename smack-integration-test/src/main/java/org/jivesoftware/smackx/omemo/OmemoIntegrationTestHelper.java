@@ -34,8 +34,8 @@ import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionExcep
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.CachedDeviceList;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
-import org.jivesoftware.smackx.pubsub.PubSubAssertionError;
 import org.jivesoftware.smackx.pubsub.PubSubException;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotAPubSubNodeException;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 
 /**
@@ -70,26 +70,26 @@ final class OmemoIntegrationTestHelper {
         for (int id : deviceList.getAllDevices()) {
             try {
                 pm.getLeafNode(OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(id)).deleteAllItems();
-            } catch (InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | PubSubException.NotALeafNodeException | XMPPException.XMPPErrorException | PubSubAssertionError.DiscoInfoNodeAssertionError e) {
+            } catch (InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | PubSubException.NotALeafNodeException | XMPPException.XMPPErrorException | NotAPubSubNodeException e) {
                 //Silent
             }
 
             try {
                 pm.deleteNode(OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(id));
-            } catch (SmackException.NoResponseException | InterruptedException | SmackException.NotConnectedException | XMPPException.XMPPErrorException | PubSubAssertionError e) {
+            } catch (SmackException.NoResponseException | InterruptedException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
                 //Silent
             }
         }
 
         try {
             pm.getLeafNode(OmemoConstants.PEP_NODE_DEVICE_LIST).deleteAllItems();
-        } catch (InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | PubSubException.NotALeafNodeException | XMPPException.XMPPErrorException | PubSubAssertionError.DiscoInfoNodeAssertionError e) {
+        } catch (InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | PubSubException.NotALeafNodeException | XMPPException.XMPPErrorException | NotAPubSubNodeException e) {
             //Silent
         }
 
         try {
             pm.deleteNode(OmemoConstants.PEP_NODE_DEVICE_LIST);
-        } catch (SmackException.NoResponseException | InterruptedException | SmackException.NotConnectedException | XMPPException.XMPPErrorException | PubSubAssertionError e) {
+        } catch (SmackException.NoResponseException | InterruptedException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
             //Silent
         }
     }
@@ -147,7 +147,7 @@ final class OmemoIntegrationTestHelper {
 
     }
 
-    static void setUpOmemoManager(OmemoManager omemoManager) throws CorruptedOmemoKeyException, InterruptedException, SmackException.NoResponseException, SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NotLoggedInException, PubSubException.NotALeafNodeException {
+    static void setUpOmemoManager(OmemoManager omemoManager) throws CorruptedOmemoKeyException, InterruptedException, SmackException.NoResponseException, SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NotLoggedInException, PubSubException.NotALeafNodeException, NotAPubSubNodeException {
         omemoManager.initialize();
         OmemoBundleElement bundle = OmemoService.fetchBundle(omemoManager, omemoManager.getOwnDevice());
         assertNotNull("Bundle must not be null.", bundle);

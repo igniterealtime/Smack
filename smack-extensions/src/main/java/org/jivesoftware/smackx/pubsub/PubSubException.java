@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.SmackException;
 
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+
 import org.jxmpp.jid.BareJid;
 
 public abstract class PubSubException extends SmackException {
@@ -27,6 +29,16 @@ public abstract class PubSubException extends SmackException {
      */
     private static final long serialVersionUID = 1L;
 
+    private final String nodeId;
+
+    protected PubSubException(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
     public static class NotALeafNodeException extends PubSubException {
 
         /**
@@ -34,21 +46,35 @@ public abstract class PubSubException extends SmackException {
          */
         private static final long serialVersionUID = 1L;
 
-        private final String nodeId;
         private final BareJid pubSubService;
 
         NotALeafNodeException(String nodeId, BareJid pubSubService) {
-            this.nodeId = nodeId;
+            super(nodeId);
             this.pubSubService = pubSubService;
-        }
-
-        public String getNodeId() {
-            return nodeId;
         }
 
         public BareJid getPubSubService() {
             return pubSubService;
         }
 
+    }
+
+    public static class NotAPubSubNodeException extends PubSubException {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
+        private final DiscoverInfo discoverInfo;
+
+        NotAPubSubNodeException(String nodeId, DiscoverInfo discoverInfo) {
+            super(nodeId);
+            this.discoverInfo = discoverInfo;
+        }
+
+        public DiscoverInfo getDiscoverInfo() {
+            return discoverInfo;
+        }
     }
 }
