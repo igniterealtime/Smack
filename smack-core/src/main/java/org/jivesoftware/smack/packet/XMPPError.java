@@ -39,14 +39,14 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *      <tr><td>conflict</td><td>CANCEL</td><td>8.3.3.2</td></tr>
  *      <tr><td>feature-not-implemented</td><td>CANCEL</td><td>8.3.3.3</td></tr>
  *      <tr><td>forbidden</td><td>AUTH</td><td>8.3.3.4</td></tr>
- *      <tr><td>gone</td><td>MODIFY</td><td>8.3.3.5</td></tr>
+ *      <tr><td>gone</td><td>CANCEL</td><td>8.3.3.5</td></tr>
  *      <tr><td>internal-server-error</td><td>WAIT</td><td>8.3.3.6</td></tr>
  *      <tr><td>item-not-found</td><td>CANCEL</td><td>8.3.3.7</td></tr>
  *      <tr><td>jid-malformed</td><td>MODIFY</td><td>8.3.3.8</td></tr>
- *      <tr><td>not-acceptable</td><td> MODIFY</td><td>8.3.3.9</td></tr>
+ *      <tr><td>not-acceptable</td><td>MODIFY</td><td>8.3.3.9</td></tr>
  *      <tr><td>not-allowed</td><td>CANCEL</td><td>8.3.3.10</td></tr>
  *      <tr><td>not-authorized</td><td>AUTH</td><td>8.3.3.11</td></tr>
- *      <tr><td>policy-violation</td><td>AUTH</td><td>8.3.3.12</td></tr>
+ *      <tr><td>policy-violation</td><td>MODIFY</td><td>8.3.3.12</td></tr>
  *      <tr><td>recipient-unavailable</td><td>WAIT</td><td>8.3.3.13</td></tr>
  *      <tr><td>redirect</td><td>MODIFY</td><td>8.3.3.14</td></tr>
  *      <tr><td>registration-required</td><td>AUTH</td><td>8.3.3.15</td></tr>
@@ -55,7 +55,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *      <tr><td>resource-constraint</td><td>WAIT</td><td>8.3.3.18</td></tr>
  *      <tr><td>service-unavailable</td><td>CANCEL</td><td>8.3.3.19</td></tr>
  *      <tr><td>subscription-required</td><td>AUTH</td><td>8.3.3.20</td></tr>
- *      <tr><td>undefined-condition</td><td>WAIT</td><td>8.3.3.21</td></tr>
+ *      <tr><td>undefined-condition</td><td>MODIFY</td><td>8.3.3.21</td></tr>
  *      <tr><td>unexpected-request</td><td>WAIT</td><td>8.3.3.22</td></tr>
  * </table>
  *
@@ -70,7 +70,7 @@ public class XMPPError extends AbstractError {
     public static final String ERROR = "error";
 
     private static final Logger LOGGER = Logger.getLogger(XMPPError.class.getName());
-    private static final Map<Condition, Type> CONDITION_TO_TYPE = new HashMap<Condition, Type>();
+    static final Map<Condition, Type> CONDITION_TO_TYPE = new HashMap<Condition, Type>();
 
     static {
         CONDITION_TO_TYPE.put(Condition.bad_request, Type.MODIFY);
@@ -91,9 +91,10 @@ public class XMPPError extends AbstractError {
         CONDITION_TO_TYPE.put(Condition.remote_server_not_found, Type.CANCEL);
         CONDITION_TO_TYPE.put(Condition.remote_server_timeout, Type.WAIT);
         CONDITION_TO_TYPE.put(Condition.resource_constraint, Type.WAIT);
-        CONDITION_TO_TYPE.put(Condition.service_unavailable, Type.WAIT);
-        CONDITION_TO_TYPE.put(Condition.subscription_required, Type.WAIT);
-        CONDITION_TO_TYPE.put(Condition.unexpected_request, Type.MODIFY);
+        CONDITION_TO_TYPE.put(Condition.service_unavailable, Type.CANCEL);
+        CONDITION_TO_TYPE.put(Condition.subscription_required, Type.AUTH);
+        CONDITION_TO_TYPE.put(Condition.undefined_condition, Type.MODIFY);
+        CONDITION_TO_TYPE.put(Condition.unexpected_request, Type.WAIT);
     }
 
     private final Condition condition;
