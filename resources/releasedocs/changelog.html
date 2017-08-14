@@ -141,6 +141,57 @@ hr {
 
 	<div id="pageBody">
 
+<h2>4.2.1 -- <span style="font-weight: normal;">2017-08-14</span></h2>
+
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-749'>SMACK-749</a>] -         SCRAM-SHA-1 and SCRAM-SHA-1-PLUS SASL mechanisms have the same priority, causing SASL authentication failures
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-755'>SMACK-755</a>] -         DIGEST-MD5 sometimes causes malformed request server response
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-756'>SMACK-756</a>] -         IoTIsFriendResponse has invalid name and produces invalid XML
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-759'>SMACK-759</a>] -         PubSubManager.getLeafNode() throws PubSubAssertionError.DiscoInfoNodeAssertionError if node exists but its not a PubSub Node
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-764'>SMACK-764</a>] -          NPE in hashCode() in Occupant when jid is null
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-766'>SMACK-766</a>] -         Smack possibly includes &#39;ask&#39; attribute in roster items when sending requests
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-768'>SMACK-768</a>] -         Smack throws NoResponse timeout when waiting for IQ although there was a response
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-771'>SMACK-771</a>] -         XMPPTCPConnection should use  KeyManagerFactory.getDefaultAlgorithm() instead of  KeyManagerFactory.getInstance(&quot;sunX509&quot;);
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-772'>SMACK-772</a>] -         HostAddress must deal with &#39;fqdn&#39; being null.
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-773'>SMACK-773</a>] -         Allow roster pushes from our full JID for backwards compatibility
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-774'>SMACK-774</a>] -         HTTP File Upload&#39;s SlotRequest metadata should be attributes not child elements
+</li>
+</ul>
+
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-746'>SMACK-746</a>] -         Add support for XEP-0380: Explicit Message Encryption
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-758'>SMACK-758</a>] -         Add support for XEP-0334: Message Processing Hints
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-760'>SMACK-760</a>] -         Smack does not allow custom extension elements in SM&#39;s &lt;failed/&gt;
+</li>
+</ul>
+
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-752'>SMACK-752</a>] -         XEP-0357 Push Notification enable IQ uses wrong form type: Should be &#39;submit&#39; instead of &#39;form&#39;
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-754'>SMACK-754</a>] -         Allow MUC room subject changes from the MUCs bare JID
+</li>
+<li>[<a href='https://issues.igniterealtime.org/browse/SMACK-777'>SMACK-777</a>] -         MamManager should use the user&#39;s bare JID to check if MAM is supported
+</li>
+</ul>
+
 <h2>4.2.0 -- <span style="font-weight: normal;">2017-03-10</span></h2>
 
 <h2>        Sub-task

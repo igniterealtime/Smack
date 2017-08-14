@@ -1011,7 +1011,7 @@ public class MultiUserChat {
      *
      * @param presenceInterceptor the stanza(/packet) interceptor to remove.
      */
-    public void removePresenceInterceptor(StanzaListener presenceInterceptor) {
+    public void removePresenceInterceptor(PresenceListener presenceInterceptor) {
         presenceInterceptors.remove(presenceInterceptor);
     }
 

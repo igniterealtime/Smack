@@ -39,6 +39,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.pubsub.EventElement;
 import org.jivesoftware.smackx.pubsub.Item;
 import org.jivesoftware.smackx.pubsub.LeafNode;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotAPubSubNodeException;
 import org.jivesoftware.smackx.pubsub.PubSubFeature;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 import org.jivesoftware.smackx.pubsub.filter.EventExtensionFilter;
@@ -137,9 +138,10 @@ public final class PEPManager extends Manager {
      * @throws InterruptedException
      * @throws XMPPErrorException
      * @throws NoResponseException
+     * @throws NotAPubSubNodeException 
      */
     public void publish(Item item, String node) throws NotConnectedException, InterruptedException,
-                    NoResponseException, XMPPErrorException {
+                    NoResponseException, XMPPErrorException, NotAPubSubNodeException {
         XMPPConnection connection = connection();
         PubSubManager pubSubManager = PubSubManager.getInstance(connection, connection.getUser().asEntityBareJid());
         LeafNode pubSubNode = pubSubManager.getNode(node);

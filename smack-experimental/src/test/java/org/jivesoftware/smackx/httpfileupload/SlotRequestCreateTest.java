@@ -16,49 +16,52 @@
  */
 package org.jivesoftware.smackx.httpfileupload;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+
+import java.io.IOException;
+
 import org.jivesoftware.smackx.httpfileupload.element.SlotRequest;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.JidTestUtil;
-import org.jxmpp.stringprep.XmppStringprepException;
-
+import org.xml.sax.SAXException;
 
 public class SlotRequestCreateTest {
 
     String testRequest
-            = "<request xmlns='urn:xmpp:http:upload:0'>"
-            +   "<filename>my_juliet.png</filename>"
-            +   "<size>23456</size>"
-            +   "<content-type>image/jpeg</content-type>"
-            + "</request>";
+            = "<request xmlns='urn:xmpp:http:upload:0'"
+            +   " filename='my_juliet.png'"
+            +   " size='23456'"
+            +   " content-type='image/jpeg'"
+            + "/>";
 
     String testRequestWithoutContentType
-            = "<request xmlns='urn:xmpp:http:upload:0'>"
-            +   "<filename>my_romeo.png</filename>"
-            +   "<size>52523</size>"
-            + "</request>";
+            = "<request xmlns='urn:xmpp:http:upload:0'"
+            +   " filename='my_romeo.png'"
+            +   " size='52523'"
+            + "/>";
 
     @Test
-    public void checkSlotRequestCreation() throws XmppStringprepException {
+    public void checkSlotRequestCreation() throws SAXException, IOException {
         SlotRequest slotRequest = new SlotRequest(JidTestUtil.DOMAIN_BARE_JID_1, "my_juliet.png", 23456, "image/jpeg");
 
         Assert.assertEquals("my_juliet.png", slotRequest.getFilename());
         Assert.assertEquals(23456, slotRequest.getSize());
         Assert.assertEquals("image/jpeg", slotRequest.getContentType());
 
-        Assert.assertEquals(testRequest, slotRequest.getChildElementXML().toString());
+        assertXMLEqual(testRequest, slotRequest.getChildElementXML().toString());
     }
 
     @Test
-    public void checkSlotRequestCreationWithoutContentType() throws XmppStringprepException {
+    public void checkSlotRequestCreationWithoutContentType() throws SAXException, IOException {
         SlotRequest slotRequest = new SlotRequest(JidTestUtil.DOMAIN_BARE_JID_1, "my_romeo.png", 52523);
 
         Assert.assertEquals("my_romeo.png", slotRequest.getFilename());
         Assert.assertEquals(52523, slotRequest.getSize());
         Assert.assertEquals(null, slotRequest.getContentType());
 
-        Assert.assertEquals(testRequestWithoutContentType, slotRequest.getChildElementXML().toString());
+        assertXMLEqual(testRequestWithoutContentType, slotRequest.getChildElementXML().toString());
     }
 
     @Test(expected = IllegalArgumentException.class)

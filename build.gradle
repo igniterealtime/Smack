@@ -191,7 +191,10 @@ gradle.taskGraph.whenReady { taskGraph ->
 	if (signingRequired
 		&& taskGraph.allTasks.any { it instanceof Sign }) {
 		// Use Java 6's console to read from the console (no good for a CI environment)
-		Console console = System.console()
+		def console = System.console()
+		if (console == null) {
+			throw new Exception("Could not obtain system console (Console is 'null'). Did you build with gradle daemon? Try the same Gradle command with \"--no-daemon\".")
+		}
 		console.printf '\n\nWe have to sign some things in this build.\n\nPlease enter your signing details.\n\n'
 		def password = console.readPassword('GnuPG Private Key Password: ')
 
@@ -245,11 +248,18 @@ task distributionZip(type: Zip, dependsOn: [javadocAll, prepareReleasedocs, mark
 
 task maybeCheckForSnapshotDependencies {
 	// Don't check for Snapshot dependencies if this is a snapshot.
-	if (isSnapshot) return
-	allprojects { project ->
-		project.configurations.runtime.each {
-			if (it.toString().contains("-SNAPSHOT"))
-				throw new Exception("Release build contains snapshot dependencies: " + it)
+	onlyIf { isReleaseVersion }
+	// Run in the execution phase, not in configuration phase, as the
+	// 'each' forces the runtime configuration to be resovled, which
+	// causes "Cannot change dependencies of configuration after it
+	// has been included in dependency resolution." errors.
+	// See https://discuss.gradle.org/t/23153
+	doLast {
+		allprojects { project ->
+			project.configurations.runtime.each {
+				if (it.toString().contains("-SNAPSHOT"))
+					throw new Exception("Release build contains snapshot dependencies: " + it)
+			}
 		}
 	}
 }
@@ -401,6 +411,18 @@ configure(integrationTestProjects + project(':smack-repl')) {
 // Disable clirr on omemo modules
 project(':smack-omemo').clirr.enabled = false
 project(':smack-omemo-signal').clirr.enabled = false
+
+configure(
+	[ ':smack-omemo',
+	  ':smack-omemo-signal',
+	  ':smack-omemo-signal-integration-test',
+	].collect{ project(it) }) {
+	uploadArchives {
+		// Only enable uploadArchives for the smack-omemo* projects
+		// for snapshots. Not yet for releases.
+		enabled = isSnapshot
+	}
+}
 
 subprojects*.jar {
    manifest {

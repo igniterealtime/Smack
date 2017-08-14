@@ -255,7 +255,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private final ExecutorService cachedExecutorService = Executors.newCachedThreadPool(
                     // @formatter:off
                     // CHECKSTYLE:OFF
-                    new SmackExecutorThreadFactory(    // threadFactory
+                    new SmackExecutorThreadFactory(
                                     this,
                                     "Cached Executor"
                                     )

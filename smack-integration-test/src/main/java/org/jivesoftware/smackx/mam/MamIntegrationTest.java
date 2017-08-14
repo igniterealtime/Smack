@@ -46,7 +46,7 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
 
         mamManagerConTwo = MamManager.getInstanceFor(conTwo);
 
-        if (!mamManagerConTwo.isSupportedByServer()) {
+        if (!mamManagerConTwo.isSupported()) {
             throw new TestNotPossibleException("Message Archive Management (XEP-0313) is not supported by the server.");
         }
 

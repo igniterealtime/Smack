@@ -32,9 +32,9 @@ public class SlotRequest extends IQ {
     public static final String ELEMENT = "request";
     public static final String NAMESPACE = HttpFileUploadManager.NAMESPACE;
 
-    private final String filename;
-    private final long size;
-    private final String contentType;
+    protected final String filename;
+    protected final long size;
+    protected final String contentType;
 
     public SlotRequest(DomainBareJid uploadServiceAddress, String filename, long size) {
         this(uploadServiceAddress, filename, size, null);
@@ -82,10 +82,10 @@ public class SlotRequest extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.rightAngleBracket();
-        xml.element("filename", filename);
-        xml.element("size", String.valueOf(size));
-        xml.optElement("content-type", contentType);
+        xml.attribute("filename", filename);
+        xml.attribute("size", String.valueOf(size));
+        xml.optAttribute("content-type", contentType);
+        xml.setEmptyElement();
         return xml;
     }
 }

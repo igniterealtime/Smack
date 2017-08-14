@@ -563,7 +563,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
         for (HostAddress hostAddress : hostAddresses) {
             Iterator<InetAddress> inetAddresses = null;
-            String host = hostAddress.getFQDN();
+            String host = hostAddress.getHost();
             int port = hostAddress.getPort();
             if (proxyInfo == null) {
                 inetAddresses = hostAddress.getInetAddresses().iterator();
@@ -737,7 +737,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
 
             if (ks != null) {
-                KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+                String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
+                KeyManagerFactory kmf = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);
                 try {
                     if (pcb == null) {
                         kmf.init(ks, null);

@@ -42,6 +42,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotAPubSubNodeException;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.jivesoftware.smackx.pubsub.util.NodeUtils;
@@ -229,8 +230,9 @@ public final class PubSubManager extends Manager {
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      * @throws InterruptedException 
+     * @throws NotAPubSubNodeException 
      */
-    public <T extends Node> T getNode(String id) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
+    public <T extends Node> T getNode(String id) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotAPubSubNodeException
     {
         Node node = nodeMap.get(id);
 
@@ -249,10 +251,7 @@ public final class PubSubManager extends Manager {
                 node = new CollectionNode(this, id);
             }
             else {
-                // XEP-60 5.3 states that
-                // "The 'disco#info' result MUST include an identity with a category of 'pubsub' and a type of either 'leaf' or 'collection'."
-                // If this is not the case, then we are dealing with an PubSub implementation that doesn't follow the specification.
-                throw new PubSubAssertionError.DiscoInfoNodeAssertionError(pubSubService, id);
+                throw new PubSubException.NotAPubSubNodeException(id, infoReply);
             }
             nodeMap.put(id, node);
         }
@@ -278,6 +277,9 @@ public final class PubSubManager extends Manager {
         try {
             return getNode(id);
         }
+        catch (NotAPubSubNodeException e) {
+            return createNode(id);
+        }
         catch (XMPPErrorException e1) {
             if (e1.getXMPPError().getCondition() == Condition.item_not_found) {
                 try {
@@ -286,7 +288,13 @@ public final class PubSubManager extends Manager {
                 catch (XMPPErrorException e2) {
                     if (e2.getXMPPError().getCondition() == Condition.conflict) {
                         // The node was created in the meantime, re-try getNode(). Note that this case should be rare.
-                        return getNode(id);
+                        try {
+                            return getNode(id);
+                        }
+                        catch (NotAPubSubNodeException e) {
+                            // Should not happen
+                            throw new IllegalStateException(e);
+                        }
                     }
                     throw e2;
                 }
@@ -313,10 +321,11 @@ public final class PubSubManager extends Manager {
      * @throws NotConnectedException
      * @throws InterruptedException
      * @throws XMPPErrorException
+     * @throws NotAPubSubNodeException 
      * @since 4.2.1
      */
     public LeafNode getLeafNode(String id) throws NotALeafNodeException, NoResponseException, NotConnectedException,
-                    InterruptedException, XMPPErrorException {
+                    InterruptedException, XMPPErrorException, NotAPubSubNodeException {
         Node node;
         try {
             node = getNode(id);

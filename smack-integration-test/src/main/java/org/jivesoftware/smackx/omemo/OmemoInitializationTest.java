@@ -30,6 +30,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.pubsub.PubSubException;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotAPubSubNodeException;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -52,9 +53,10 @@ public class OmemoInitializationTest extends AbstractOmemoIntegrationTest {
 
     /**
      * Tests, if the initialization is done properly.
+     * @throws NotAPubSubNodeException 
      */
     @SmackIntegrationTest
-    public void initializationTest() throws XMPPException.XMPPErrorException, PubSubException.NotALeafNodeException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, SmackException.NotLoggedInException, CorruptedOmemoKeyException {
+    public void initializationTest() throws XMPPException.XMPPErrorException, PubSubException.NotALeafNodeException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, SmackException.NotLoggedInException, CorruptedOmemoKeyException, NotAPubSubNodeException {
         //test keys.
         setUpOmemoManager(alice);
         assertNotNull("IdentityKey must not be null after initialization.", store.loadOmemoIdentityKeyPair(alice));
