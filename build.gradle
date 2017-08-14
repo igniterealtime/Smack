@@ -396,6 +396,12 @@ subprojects {
 	}
 
 	clirr {
+		// 2018-08-14: Disabled Clirr because
+		// - It reports an breaking change in android.jar (seems right, but there is nothing we can do about it)
+		// - Only the first smack-* projects are correctly checked,
+		//   the other ones have the output of a clirr report from a previous project
+		//   (Look at the clirr reports).
+		enabled false
 		semver false
 	}
 }
