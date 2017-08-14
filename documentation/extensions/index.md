@@ -1,4 +1,4 @@
-smackSmack Extensions User Manual
+Smack Extensions User Manual
 ============================
 
 The XMPP protocol includes a base protocol and many optional extensions
@@ -94,7 +94,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | [Push Notifications](pushnotifications.md)  | [XEP-0357](http://xmpp.org/extensions/xep-0357.html) | Defines a way to manage push notifications from an XMPP Server. |
 | HTTP File Upload                            | [XEP-0363](http://xmpp.org/extensions/xep-0363.html) | Protocol to request permissions to upload a file to an HTTP server and get a shareable URL. |
 | [Multi-User Chat Light](muclight.md)        | [XEP-xxxx](http://mongooseim.readthedocs.io/en/latest/open-extensions/xeps/xep-muc-light.html) | Multi-User Chats for mobile XMPP applications and specific enviroment. |
-| [OMEMO End Encryption](omemo.md)            | [XEP-0384](http://xmpp.org/extensions/xep-0384.html) | Encrypt messages using OMEMO encryption (currently only with smack-omemo-signal -> GPLv3). |
+| [OMEMO Multi End Message and Object Encryption](omemo.md)            | [XEP-XXXX](https://conversations.im/omemo/xep-omemo.html) | Encrypt messages using OMEMO encryption (currently only with smack-omemo-signal -> GPLv3). |
 | Google GCM JSON payload                     | n/a                                                  | Semantically the same as XEP-0335: JSON Containers |
 
 
