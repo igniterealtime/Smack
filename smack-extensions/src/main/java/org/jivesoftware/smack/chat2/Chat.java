@@ -42,6 +42,7 @@ public final class Chat extends Manager {
     public void send(CharSequence message) throws NotConnectedException, InterruptedException {
         Message stanza = new Message();
         stanza.setBody(message);
+        stanza.setType(Message.Type.chat);
         send(stanza);
     }
 
