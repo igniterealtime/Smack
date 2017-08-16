@@ -62,7 +62,8 @@ public class HashElement implements ExtensionElement {
 
     /**
      * Return the hash algorithm used in this HashElement.
-     * @return algorithm
+     *
+     * @return algorithm the algorithm.
      */
     public HashManager.ALGORITHM getAlgorithm() {
         return algorithm;
@@ -70,7 +71,8 @@ public class HashElement implements ExtensionElement {
 
     /**
      * Return the checksum as a byte array.
-     * @return
+     *
+     * @return the hash.
      */
     public byte[] getHash() {
         return hash;
@@ -78,7 +80,8 @@ public class HashElement implements ExtensionElement {
 
     /**
      * Return the checksum as a base16 (hex) string.
-     * @return
+     *
+     * @return the hash.
      */
     public String getHashB64() {
         return hashB64;

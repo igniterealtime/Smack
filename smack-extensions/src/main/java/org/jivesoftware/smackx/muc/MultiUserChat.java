@@ -465,7 +465,7 @@ public class MultiUserChat {
      * @deprecated use {@link #createOrJoin(MucEnterConfiguration)} instead.
      */
     @Deprecated
-    public MucCreateConfigFormHandle createOrJoin(Resourcepart nickname, String password, DiscussionHistory history, long timeout)
+    public MucCreateConfigFormHandle createOrJoin(Resourcepart nickname, String password, @SuppressWarnings("deprecation") DiscussionHistory history, long timeout)
                     throws NoResponseException, XMPPErrorException, InterruptedException, MucAlreadyJoinedException, NotConnectedException, NotAMucServiceException {
         MucEnterConfiguration.Builder builder = getEnterConfigurationBuilder(nickname).withPassword(
                         password).timeoutAfter(timeout);
@@ -666,7 +666,7 @@ public class MultiUserChat {
     public void join(
         Resourcepart nickname,
         String password,
-        DiscussionHistory history,
+        @SuppressWarnings("deprecation") DiscussionHistory history,
         long timeout)
         throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException, NotAMucServiceException {
         MucEnterConfiguration.Builder builder = getEnterConfigurationBuilder(nickname).withPassword(

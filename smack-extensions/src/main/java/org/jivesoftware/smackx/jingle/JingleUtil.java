@@ -99,8 +99,7 @@ public class JingleUtil {
                                   JingleContent.Senders contentSenders,
                                   JingleContentDescription description,
                                   JingleContentTransport transport)
-            throws SmackException.NotConnectedException, InterruptedException,
-            XMPPException.XMPPErrorException, SmackException.NoResponseException {
+            throws SmackException.NotConnectedException, InterruptedException {
 
         Jingle jingle = createSessionInitiate(recipient, sessionId, contentCreator, contentName, contentSenders,
                 description, transport);
@@ -142,8 +141,7 @@ public class JingleUtil {
                                 JingleContent.Senders contentSenders,
                                 JingleContentDescription description,
                                 JingleContentTransport transport)
-            throws SmackException.NotConnectedException, InterruptedException,
-            XMPPException.XMPPErrorException, SmackException.NoResponseException {
+            throws SmackException.NotConnectedException, InterruptedException {
 
         Jingle jingle = createSessionAccept(recipient, sessionId, contentCreator, contentName, contentSenders,
                 description, transport);
@@ -166,22 +164,6 @@ public class JingleUtil {
 
     public Jingle createSessionTerminate(FullJid recipient, String sessionId, JingleReason.Reason reason) {
         return createSessionTerminate(recipient, sessionId, new JingleReason(reason));
-    }
-
-    private IQ sendSessionTerminate(FullJid recipient, String sessionId, JingleReason.Reason reason)
-            throws SmackException.NotConnectedException, InterruptedException,
-            XMPPException.XMPPErrorException, SmackException.NoResponseException {
-
-        return sendSessionTerminate(recipient, sessionId, new JingleReason(reason));
-    }
-
-    private IQ sendSessionTerminate(FullJid recipient, String sessionId, JingleReason reason)
-            throws SmackException.NotConnectedException, InterruptedException,
-            XMPPException.XMPPErrorException, SmackException.NoResponseException {
-
-        Jingle jingle = createSessionTerminate(recipient, sessionId, reason);
-
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
     }
 
     public Jingle createSessionTerminateDecline(FullJid recipient, String sessionId) {

@@ -146,6 +146,7 @@ public class MultiUserChatLight {
      *            for the newly created chat.
      * @return new Chat for sending private messages to a given room occupant.
      */
+    @SuppressWarnings("deprecation")
     @Deprecated
     // Do not re-use Chat API, which was designed for XMPP-IM 1:1 chats and not MUClight private chats.
     public org.jivesoftware.smack.chat.Chat createPrivateChat(EntityJid occupant, ChatMessageListener listener) {

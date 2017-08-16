@@ -272,8 +272,8 @@ public final class DeliveryReceiptManager extends Manager {
 
     /**
      * Enables automatic requests of delivery receipts for outgoing messages of
-     * {@link Message.Type#normal}, {@link Message.Type#chat} or {@link Message.Type#headline}, and
-     * with a {@link Message.Body} extension.
+     * {@link org.jivesoftware.smack.packet.Message.Type#normal}, {@link org.jivesoftware.smack.packet.Message.Type#chat} or {@link org.jivesoftware.smack.packet.Message.Type#headline}, and
+     * with a {@link org.jivesoftware.smack.packet.Message.Body} extension.
      * 
      * @since 4.1
      * @see #dontAutoAddDeliveryReceiptRequests()

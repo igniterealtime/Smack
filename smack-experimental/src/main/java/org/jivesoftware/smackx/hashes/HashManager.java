@@ -52,7 +52,10 @@ import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
- * Manager that can be used to determine support for hash functions.
+ * Manager that can be used to determine support for hash functions. By default the Manager announces support for
+ * XEP-0300, as well as for the recommended set of hash algorithms. Those contain SHA256, SHA384, SHA512, SHA3-256,
+ * SHA3-384, SHA3-512, BLAKE2B256, BLAKE2B384 and BLAKE2B512. Those algorithms got recommended here:
+ * <a href="https://xmpp.org/extensions/xep-0300.html#recommendations">https://xmpp.org/extensions/xep-0300.html#recommendations</a>.
  */
 public final class HashManager extends Manager {
 
@@ -88,9 +91,7 @@ public final class HashManager extends Manager {
 
     /**
      * Constructor of the HashManager.
-     * By default the Manager announces support for XEP-0300, as well as for the RECOMMENDED set of hash algorithms.
-     * Those contain SHA256, SHA384, SHA512, SHA3-256, SHA3-384, SHA3-512, BLAKE2B256, BLAKE2B384 and BLAKE2B512.
-     * Those algorithms got recommended here: https://xmpp.org/extensions/xep-0300.html#recommendations
+     *
      * @param connection connection
      */
     private HashManager(XMPPConnection connection) {
@@ -122,9 +123,9 @@ public final class HashManager extends Manager {
     /**
      * Get an instance of the HashManager for the  given connection.
      * @param connection
-     * @return
+     * @return the manager for the given connection.
      */
-    public HashManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized HashManager getInstanceFor(XMPPConnection connection) {
         HashManager hashManager = INSTANCES.get(connection);
         if (hashManager == null) {
             hashManager = new HashManager(connection);
@@ -457,11 +458,11 @@ public final class HashManager extends Manager {
         return blake2b384(utf8(data));
     }
 
-    public String blake2b384HexString(byte[] data) {
+    public static String blake2b384HexString(byte[] data) {
         return hex(blake2b384(data));
     }
 
-    public String blake2b384HexString(String data) {
+    public static  String blake2b384HexString(String data) {
         return hex(blake2b384(data));
     }
 
@@ -473,11 +474,11 @@ public final class HashManager extends Manager {
         return blake2b512(utf8(data));
     }
 
-    public String blake2b512HexString(byte[] data) {
+    public static String blake2b512HexString(byte[] data) {
         return hex(blake2b512(data));
     }
 
-    public String blake2b512HexString(String data) {
+    public static String blake2b512HexString(String data) {
         return hex(blake2b512(data));
     }
 

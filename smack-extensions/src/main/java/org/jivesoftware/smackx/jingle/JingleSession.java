@@ -20,11 +20,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
@@ -33,7 +30,6 @@ import org.jivesoftware.smackx.jingle.transports.JingleTransportSession;
 import org.jxmpp.jid.FullJid;
 
 public abstract class JingleSession implements JingleSessionHandler {
-    private static final Logger LOGGER = Logger.getLogger(JingleSession.class.getName());
     protected HashSet<String> failedTransportMethods = new HashSet<>();
 
     protected final FullJid local;
@@ -135,47 +131,43 @@ public abstract class JingleSession implements JingleSessionHandler {
 
     @Override
     public IQ handleJingleSessionRequest(Jingle jingle) {
-        try {
-            switch (jingle.getAction()) {
-                case content_accept:
-                    return handleContentAccept(jingle);
-                case content_add:
-                    return handleContentAdd(jingle);
-                case content_modify:
-                    return handleContentModify(jingle);
-                case content_reject:
-                    return handleContentReject(jingle);
-                case content_remove:
-                    return handleContentRemove(jingle);
-                case description_info:
-                    return handleDescriptionInfo(jingle);
-                case session_info:
-                    return handleSessionInfo(jingle);
-                case security_info:
-                    return handleSecurityInfo(jingle);
-                case session_accept:
-                    return handleSessionAccept(jingle);
-                case transport_accept:
-                    return handleTransportAccept(jingle);
-                case transport_info:
-                    return transportSession.handleTransportInfo(jingle);
-                case session_initiate:
-                    return handleSessionInitiate(jingle);
-                case transport_reject:
-                    return handleTransportReject(jingle);
-                case session_terminate:
-                    return handleSessionTerminate(jingle);
-                case transport_replace:
-                    return handleTransportReplace(jingle);
-                default:
-                    return IQ.createResultIQ(jingle);
-            }
-        } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException.NotConnectedException | SmackException.NoResponseException e) {
-            return null; //TODO:
+        switch (jingle.getAction()) {
+        case content_accept:
+            return handleContentAccept(jingle);
+        case content_add:
+            return handleContentAdd(jingle);
+        case content_modify:
+            return handleContentModify(jingle);
+        case content_reject:
+            return handleContentReject(jingle);
+        case content_remove:
+            return handleContentRemove(jingle);
+        case description_info:
+            return handleDescriptionInfo(jingle);
+        case session_info:
+            return handleSessionInfo(jingle);
+        case security_info:
+            return handleSecurityInfo(jingle);
+        case session_accept:
+            return handleSessionAccept(jingle);
+        case transport_accept:
+            return handleTransportAccept(jingle);
+        case transport_info:
+            return transportSession.handleTransportInfo(jingle);
+        case session_initiate:
+            return handleSessionInitiate(jingle);
+        case transport_reject:
+            return handleTransportReject(jingle);
+        case session_terminate:
+            return handleSessionTerminate(jingle);
+        case transport_replace:
+            return handleTransportReplace(jingle);
+        default:
+            return IQ.createResultIQ(jingle);
         }
     }
 
-    protected IQ handleSessionInitiate(Jingle sessionInitiate) throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException {
+    protected IQ handleSessionInitiate(Jingle sessionInitiate) {
         return IQ.createResultIQ(sessionInitiate);
     }
 
@@ -187,7 +179,7 @@ public abstract class JingleSession implements JingleSessionHandler {
         return IQ.createResultIQ(sessionInfo);
     }
 
-    protected IQ handleSessionAccept(Jingle sessionAccept) throws SmackException.NotConnectedException, InterruptedException {
+    protected IQ handleSessionAccept(Jingle sessionAccept) {
         return IQ.createResultIQ(sessionAccept);
     }
 
@@ -219,13 +211,11 @@ public abstract class JingleSession implements JingleSessionHandler {
         return IQ.createResultIQ(securityInfo);
     }
 
-    protected IQ handleTransportAccept(Jingle transportAccept) throws SmackException.NotConnectedException, InterruptedException {
+    protected IQ handleTransportAccept(Jingle transportAccept) {
         return IQ.createResultIQ(transportAccept);
     }
 
-    protected IQ handleTransportReplace(Jingle transportReplace)
-            throws InterruptedException, XMPPException.XMPPErrorException,
-            SmackException.NotConnectedException, SmackException.NoResponseException {
+    protected IQ handleTransportReplace(Jingle transportReplace) {
         return IQ.createResultIQ(transportReplace);
     }
 

@@ -189,6 +189,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
     @Test(expected = IllegalArgumentException.class)
     public void transportCandidateIllegalPriorityTest() throws XmppStringprepException {
         FullJid jid = JidCreate.fullFrom("test@test.test/test");
+        @SuppressWarnings("unused")
         JingleS5BTransportCandidate candidate = new JingleS5BTransportCandidate(
                 "cid", "host", jid, 5555, -30, JingleS5BTransportCandidate.Type.proxy);
     }
@@ -196,6 +197,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
     @Test(expected = IllegalArgumentException.class)
     public void transportCandidateIllegalPortTest() throws XmppStringprepException {
         FullJid jid = JidCreate.fullFrom("test@test.test/test");
+        @SuppressWarnings("unused")
         JingleS5BTransportCandidate candidate = new JingleS5BTransportCandidate(
                 "cid", "host", jid, -5555, 30, JingleS5BTransportCandidate.Type.proxy);
     }

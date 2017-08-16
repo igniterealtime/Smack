@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import org.jivesoftware.smack.packet.Presence.Mode;
 
 import org.junit.Test;
 import org.jxmpp.jid.JidTestUtil;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 public class ToStringTest {
 
@@ -43,7 +42,7 @@ public class ToStringTest {
     }
 
     @Test
-    public void iqTest() throws XmppStringprepException {
+    public void iqTest() {
         Bind bindIq = Bind.newResult(JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE);
         bindIq.setStanzaId("bind-id");
         String string = bindIq.toString();

@@ -93,7 +93,7 @@ public class MUCLightInfoIQProvider extends IQProvider<MUCLightInfoIQ> {
         return new MUCLightInfoIQ(version, new MUCLightRoomConfiguration(roomName, subject, customConfigs), occupants);
     }
 
-    private HashMap<Jid, MUCLightAffiliation> iterateOccupants(XmlPullParser parser) throws Exception {
+    private static HashMap<Jid, MUCLightAffiliation> iterateOccupants(XmlPullParser parser) throws Exception {
         HashMap<Jid, MUCLightAffiliation> occupants = new HashMap<>();
         int depth = parser.getDepth();
 

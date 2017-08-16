@@ -25,7 +25,7 @@ public class UploadService {
     enum Version {
         v0_2,
         v0_3,
-    };
+    }
 
     private final DomainBareJid address;
     private final Version version;

@@ -68,7 +68,7 @@ public class MUCLightBlockingIQProvider extends IQProvider<MUCLightBlockingIQ> {
         return mucLightBlockingIQ;
     }
 
-    private HashMap<Jid, Boolean> parseBlocking(XmlPullParser parser, HashMap<Jid, Boolean> map)
+    private static HashMap<Jid, Boolean> parseBlocking(XmlPullParser parser, HashMap<Jid, Boolean> map)
             throws XmppStringprepException, XmlPullParserException, IOException {
         if (map == null) {
             map = new HashMap<>();
