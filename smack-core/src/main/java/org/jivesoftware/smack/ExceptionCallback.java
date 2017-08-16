@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,12 @@
  */
 package org.jivesoftware.smack;
 
+/**
+ * This interface has been deprecated. Please use org.jivesoftware.smack.util.ExceptionCallback instead.
+ *
+ * @deprecated use {@link org.jivesoftware.smack.util.ExceptionCallback} instead.
+ */
+@Deprecated
 public interface ExceptionCallback {
 
     public void processException(Exception exception);

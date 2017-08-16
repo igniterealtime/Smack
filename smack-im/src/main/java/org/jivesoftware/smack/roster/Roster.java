@@ -35,13 +35,13 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.ExceptionCallback;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
@@ -63,7 +63,9 @@ import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
 import org.jivesoftware.smack.roster.packet.RosterVer;
 import org.jivesoftware.smack.roster.packet.SubscriptionPreApproval;
 import org.jivesoftware.smack.roster.rosterstore.RosterStore;
+import org.jivesoftware.smack.util.ExceptionCallback;
 import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.SuccessCallback;
 
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -428,7 +430,11 @@ public final class Roster extends Manager {
             packet.setVersion(rosterStore.getRosterVersion());
         }
         rosterState = RosterState.loading;
-        connection.sendIqWithResponseCallback(packet, new RosterResultListener(), new ExceptionCallback() {
+
+        SmackFuture<IQ, Exception> future = connection.sendIqRequestAsync(packet);
+
+        future.onSuccess(new RosterResultListener()).onError(new ExceptionCallback<Exception>() {
+
             @Override
             public void processException(Exception exception) {
                 rosterState = RosterState.uninitialized;
@@ -438,11 +444,12 @@ public final class Roster extends Manager {
                 } else {
                     logLevel = Level.SEVERE;
                 }
-                LOGGER.log(logLevel, "Exception reloading roster" , exception);
+                LOGGER.log(logLevel, "Exception reloading roster", exception);
                 for (RosterLoadedListener listener : rosterLoadedListeners) {
                     listener.onRosterLoadingFailed(exception);
                 }
             }
+
         });
     }
 
@@ -1565,10 +1572,10 @@ public final class Roster extends Manager {
     /**
      * Handles Roster results as described in <a href="https://tools.ietf.org/html/rfc6121#section-2.1.4">RFC 6121 2.1.4</a>.
      */
-    private class RosterResultListener implements StanzaListener {
+    private class RosterResultListener implements SuccessCallback<IQ> {
 
         @Override
-        public void processStanza(Stanza packet) {
+        public void onSuccess(IQ packet) {
             final XMPPConnection connection = connection();
             LOGGER.log(Level.FINE, "RosterResultListener received {}", packet);
             Collection<Jid> addedEntries = new ArrayList<>();

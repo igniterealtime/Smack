@@ -428,7 +428,6 @@ public interface XMPPConnection {
      */
     public boolean hasFeature(String element, String namespace);
 
-
     /**
      * Send an IQ request asynchronously. The connection's default reply timeout will be used.
      *
@@ -447,7 +446,8 @@ public interface XMPPConnection {
     public SmackFuture<IQ, Exception> sendIqRequestAsync(IQ request, long timeout);
 
     /**
-     * Send a stanza asynchronously, waiting for exactly one response stanza using the given reply filter. The connection's default reply timeout will be used.
+     * Send a stanza asynchronously, waiting for exactly one response stanza using the given reply filter. The
+     * connection's default reply timeout will be used.
      *
      * @param stanza the stanza to send.
      * @param replyFilter the filter used for the response stanza.
@@ -477,9 +477,11 @@ public interface XMPPConnection {
      * @param replyFilter the filter used to determine response stanza (required)
      * @param callback the callback invoked if there is a response (required)
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
+     * @deprecated use {@link #sendAsync(Stanza, StanzaFilter)} instead.
      */
-    // TODO: Mark deprecated in favor of the new SmackFuture based async API.
+    @Deprecated
+    // TODO: Remove in Smack 4.4.
     public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
                     StanzaListener callback) throws NotConnectedException, InterruptedException;
 
@@ -497,10 +499,12 @@ public interface XMPPConnection {
      * @param exceptionCallback the callback invoked if there is an exception (optional)
      * @throws NotConnectedException
      * @throws InterruptedException 
+     * @deprecated use {@link #sendAsync(Stanza, StanzaFilter)} instead.
      */
-    // TODO: Mark deprecated in favor of the new SmackFuture based async API. And do not forget to mark smack.ExceptionCallback deprecated too.
+    @Deprecated
+    // TODO: Remove in Smack 4.4.
     public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter, StanzaListener callback,
-                    ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException;
+                    @SuppressWarnings("deprecation") ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException;
 
     /**
      * Send a stanza and wait asynchronously for a response by using <code>replyFilter</code>.
@@ -517,10 +521,12 @@ public interface XMPPConnection {
      * @param timeout the timeout in milliseconds to wait for a response
      * @throws NotConnectedException
      * @throws InterruptedException 
+     * @deprecated use {@link #sendAsync(Stanza, StanzaFilter, long)} instead.
      */
-    // TODO: Mark deprecated in favor of the new SmackFuture based async API.
+    @Deprecated
+    // TODO: Remove in Smack 4.4.
     public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
-                    final StanzaListener callback, final ExceptionCallback exceptionCallback,
+                    final StanzaListener callback, @SuppressWarnings("deprecation") final ExceptionCallback exceptionCallback,
                     long timeout) throws NotConnectedException, InterruptedException;
 
     /**
@@ -532,8 +538,10 @@ public interface XMPPConnection {
      * @param callback the callback invoked if there is result response (required)
      * @throws NotConnectedException
      * @throws InterruptedException 
+     * @deprecated use {@link #sendIqRequestAsync(IQ)} instead.
      */
-    // TODO: Mark deprecated in favor of the new SmackFuture based async API.
+    @Deprecated
+    // TODO: Remove in Smack 4.4.
     public void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback) throws NotConnectedException, InterruptedException;
 
     /**
@@ -549,10 +557,12 @@ public interface XMPPConnection {
      * @param exceptionCallback the callback invoked if there is an Exception optional
      * @throws NotConnectedException
      * @throws InterruptedException 
+     * @deprecated use {@link #sendIqRequestAsync(IQ)} instead.
      */
-    // TODO: Mark deprecated in favor of the new SmackFuture based async API.
+    @Deprecated
+    // TODO: Remove in Smack 4.4.
     public void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback,
-                    ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException;
+                    @SuppressWarnings("deprecation") ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException;
 
     /**
      * Send a IQ stanza and invoke <code>callback</code> if there is a result of
@@ -568,10 +578,12 @@ public interface XMPPConnection {
      * @param timeout the timeout in milliseconds to wait for a response
      * @throws NotConnectedException
      * @throws InterruptedException 
+     * @deprecated use {@link #sendIqRequestAsync(IQ, long)} instead.
      */
-    // TODO: Mark deprecated in favor of the new SmackFuture based async API.
+    @Deprecated
+    // TODO: Remove in Smack 4.4.
     public void sendIqWithResponseCallback(IQ iqRequest, final StanzaListener callback,
-                    final ExceptionCallback exceptionCallback, long timeout)
+                    @SuppressWarnings("deprecation") final ExceptionCallback exceptionCallback, long timeout)
                     throws NotConnectedException, InterruptedException;
 
     /**

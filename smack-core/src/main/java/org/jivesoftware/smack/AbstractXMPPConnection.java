@@ -1476,12 +1476,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         streamFeatures.put(key, feature);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
                     StanzaListener callback) throws NotConnectedException, InterruptedException {
         sendStanzaWithResponseCallback(stanza, replyFilter, callback, null);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
                     StanzaListener callback, ExceptionCallback exceptionCallback)
@@ -1571,7 +1573,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return future;
     }
 
-    @SuppressWarnings("FutureReturnValueIgnored")
+    @SuppressWarnings({ "FutureReturnValueIgnored", "deprecation" })
     @Override
     public void sendStanzaWithResponseCallback(Stanza stanza, final StanzaFilter replyFilter,
                     final StanzaListener callback, final ExceptionCallback exceptionCallback,
@@ -1624,18 +1626,21 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         sendStanza(stanza);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback)
                     throws NotConnectedException, InterruptedException {
         sendIqWithResponseCallback(iqRequest, callback, null);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback,
                     ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException {
         sendIqWithResponseCallback(iqRequest, callback, exceptionCallback, getReplyTimeout());
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void sendIqWithResponseCallback(IQ iqRequest, final StanzaListener callback,
                     final ExceptionCallback exceptionCallback, long timeout)
