@@ -408,9 +408,7 @@ public final class EntityCapsManager extends Manager {
      * @param user
      *            the user (Full JID)
      */
-    // TODO: Change parameter type to Jid in Smack 4.3.
-    @SuppressWarnings("CollectionIncompatibleType")
-    public static void removeUserCapsNode(String user) {
+    public static void removeUserCapsNode(Jid user) {
         // While JID_TO_NODEVER_CHACHE has the generic types <Jid, NodeVerHash>, it is ok to call remove with String
         // arguments, since the same Jid and String representations would be equal and have the same hash code.
         JID_TO_NODEVER_CACHE.remove(user);

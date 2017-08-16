@@ -345,8 +345,7 @@ public final class SmackConfiguration {
         replyServiceUnavailable,
     }
 
-    // TODO Change to replyFeatureNotImplemented in Smack 4.3
-    private static UnknownIqRequestReplyMode unknownIqRequestReplyMode = UnknownIqRequestReplyMode.replyServiceUnavailable;
+    private static UnknownIqRequestReplyMode unknownIqRequestReplyMode = UnknownIqRequestReplyMode.replyFeatureNotImplemented;
 
     public static UnknownIqRequestReplyMode getUnknownIqRequestReplyMode() {
         return unknownIqRequestReplyMode;

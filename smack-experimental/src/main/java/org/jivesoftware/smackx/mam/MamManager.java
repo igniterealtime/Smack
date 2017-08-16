@@ -607,23 +607,6 @@ public final class MamManager extends Manager {
         return serviceDiscoveryManager.supportsFeature(myBareJid, MamElements.NAMESPACE);
     }
 
-    /**
-     * Returns true if Message Archive Management is supported by the server.
-     * 
-     * @return true if Message Archive Management is supported by the server.
-     * @throws NotConnectedException
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws InterruptedException
-     * @depreacted use {@link #isSupported()} instead.
-     */
-    @Deprecated
-    // TODO Remove in Smack 4.3
-    public boolean isSupportedByServer()
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection()).serverSupportsFeature(MamElements.NAMESPACE);
-    }
-
     private static DataForm getNewMamForm() {
         FormField field = new FormField(FormField.FORM_TYPE);
         field.setType(FormField.Type.hidden);

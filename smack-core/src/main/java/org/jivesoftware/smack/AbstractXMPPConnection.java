@@ -963,50 +963,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         replyTimeout = timeout;
     }
 
-    /**
-     * Set the default value used to determine if new connection will reply to unknown IQ requests. The pre-configured
-     * default is 'true'.
-     *
-     * @param replyToUnkownIqDefault
-     * @see #setReplyToUnknownIq(boolean)
-     * @deprecated Use {@link SmackConfiguration#setUnknownIqRequestReplyMode(org.jivesoftware.smack.SmackConfiguration.UnknownIqRequestReplyMode)} instead.
-     */
-    @Deprecated
-    // TODO Remove in Smack 4.3
-    public static void setReplyToUnknownIqDefault(boolean replyToUnkownIqDefault) {
-        SmackConfiguration.UnknownIqRequestReplyMode mode;
-        if (replyToUnkownIqDefault) {
-            mode = SmackConfiguration.UnknownIqRequestReplyMode.replyServiceUnavailable;
-        } else {
-            mode = SmackConfiguration.UnknownIqRequestReplyMode.doNotReply;
-        }
-        SmackConfiguration.setUnknownIqRequestReplyMode(mode);
-    }
-
     private SmackConfiguration.UnknownIqRequestReplyMode unknownIqRequestReplyMode = SmackConfiguration.getUnknownIqRequestReplyMode();
 
     public void setUnknownIqRequestReplyMode(UnknownIqRequestReplyMode unknownIqRequestReplyMode) {
         this.unknownIqRequestReplyMode = Objects.requireNonNull(unknownIqRequestReplyMode, "Mode must not be null");
-    }
-
-    /**
-     * Set if Smack will automatically send
-     * {@link org.jivesoftware.smack.packet.XMPPError.Condition#feature_not_implemented} when a request IQ without a
-     * registered {@link IQRequestHandler} is received.
-     *
-     * @param replyToUnknownIq
-     * @deprecated use {@link #setUnknownIqRequestReplyMode(UnknownIqRequestReplyMode)} instead.
-     */
-    @Deprecated
-    // TODO Remove in Smack 4.3
-    public void setReplyToUnknownIq(boolean replyToUnknownIq) {
-        SmackConfiguration.UnknownIqRequestReplyMode mode;
-        if (replyToUnknownIq) {
-            mode = SmackConfiguration.UnknownIqRequestReplyMode.replyServiceUnavailable;
-        } else {
-            mode = SmackConfiguration.UnknownIqRequestReplyMode.doNotReply;
-        }
-        unknownIqRequestReplyMode = mode;
     }
 
     protected void parseAndProcessStanza(XmlPullParser parser) throws Exception {

@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.commands;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * A factory for creating local commands. It's useful in cases where instantiation
  * of a command is more complicated than just using the default constructor. For example,
@@ -34,7 +36,11 @@ public interface LocalCommandFactory {
      * @return a LocalCommand instance.
      * @throws InstantiationException if creating an instance failed.
      * @throws IllegalAccessException if creating an instance is not allowed.
+     * @throws SecurityException 
+     * @throws NoSuchMethodException 
+     * @throws InvocationTargetException 
+     * @throws IllegalArgumentException 
      */
-    public LocalCommand getInstance() throws InstantiationException, IllegalAccessException;
+    public LocalCommand getInstance() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 
 }

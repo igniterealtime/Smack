@@ -75,7 +75,7 @@ public interface BytestreamManager {
      * 
      * @param initiatorJID the JID of the user the listener should be removed
      */
-    public void removeIncomingBytestreamListener(String initiatorJID);
+    public void removeIncomingBytestreamListener(Jid initiatorJID);
 
     /**
      * Establishes a bytestream with the given user and returns the session to send/receive data

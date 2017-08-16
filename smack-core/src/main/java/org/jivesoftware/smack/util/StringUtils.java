@@ -46,19 +46,6 @@ public class StringUtils {
      *
      * @param input the input to escape.
      * @return the XML escaped variant of <code>input</code>.
-     * @deprecated use {@link #escapeForXml(CharSequence)} instead.
-     */
-    // Remove in 4.3.
-    @Deprecated
-    public static CharSequence escapeForXML(CharSequence input) {
-        return escapeForXml(input);
-    }
-
-    /**
-     * Escape <code>input</code> for XML.
-     *
-     * @param input the input to escape.
-     * @return the XML escaped variant of <code>input</code>.
      */
     public static CharSequence escapeForXml(CharSequence input) {
         return escapeForXml(input, XmlEscapeMode.safe);

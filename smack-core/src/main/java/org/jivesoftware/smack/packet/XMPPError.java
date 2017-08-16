@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2015 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2015-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smack.packet;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -101,50 +100,6 @@ public class XMPPError extends AbstractError {
     private final String errorGenerator;
     private final Type type;
     private final Stanza stanza;
-
-    // TODO: Deprecated constructors
-    // deprecate in 4.3
-
-    /**
-     * Create a new XMPPError.
-     *
-     * @param condition
-     * @deprecated use {@link Builder} instead.
-     */
-    @Deprecated
-    public XMPPError(Condition condition) {
-        this(condition, null, null, null, null, null, null);
-    }
-
-    /**
-     * Create a new XMPPError.
-     *
-     * @param condition
-     * @param applicationSpecificCondition
-     * @deprecated use {@link Builder} instead.
-     */
-    @Deprecated
-    public XMPPError(Condition condition, ExtensionElement applicationSpecificCondition) {
-        this(condition, null, null, null, null, Arrays.asList(applicationSpecificCondition), null);
-    }
-
-    /**
-     * Creates a new error with the specified type, condition and message.
-     * This constructor is used when the condition is not recognized automatically by XMPPError
-     * i.e. there is not a defined instance of ErrorCondition or it does not apply the default 
-     * specification.
-     * 
-     * @param type the error type.
-     * @param condition the error condition.
-     * @param descriptiveTexts 
-     * @param extensions list of stanza(/packet) extensions
-     * @deprecated use {@link Builder} instead.
-     */
-    @Deprecated
-    public XMPPError(Condition condition, String conditionText, String errorGenerator, Type type, Map<String, String> descriptiveTexts,
-            List<ExtensionElement> extensions) {
-        this(condition, conditionText, errorGenerator, type, descriptiveTexts, extensions, null);
-    }
 
     /**
      * Creates a new error with the specified type, condition and message.

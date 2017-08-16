@@ -205,15 +205,8 @@ public final class AdHocCommandManager extends Manager {
     public void registerCommand(String node, String name, final Class<? extends LocalCommand> clazz) {
         registerCommand(node, name, new LocalCommandFactory() {
             @Override
-            public LocalCommand getInstance() throws InstantiationException, IllegalAccessException  {
-                try {
-                    return clazz.getConstructor().newInstance();
-                }
-                catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-                                | SecurityException e) {
-                    // TODO: Throw those method in Smack 4.3.
-                    throw new IllegalStateException(e);
-                }
+            public LocalCommand getInstance() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException  {
+                return clazz.getConstructor().newInstance();
             }
         });
     }
@@ -361,7 +354,15 @@ public final class AdHocCommandManager extends Manager {
             try {
                 // Create a new instance of the command with the
                 // corresponding sessioid
-                LocalCommand command = newInstanceOfCmd(commandNode, sessionId);
+                LocalCommand command;
+                try {
+                    command = newInstanceOfCmd(commandNode, sessionId);
+                }
+                catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                                | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                    XMPPError.Builder xmppError = XMPPError.getBuilder().setCondition(XMPPError.Condition.internal_server_error).setDescriptiveEnText(e.getMessage());
+                    return respondError(response, xmppError);
+                }
 
                 response.setType(IQ.Type.result);
                 command.setData(response);
@@ -627,26 +628,22 @@ public final class AdHocCommandManager extends Manager {
      * @param sessionID the session id of this execution.
      * @return the command instance to execute.
      * @throws XMPPErrorException if there is problem creating the new instance.
+     * @throws SecurityException 
+     * @throws NoSuchMethodException 
+     * @throws InvocationTargetException 
+     * @throws IllegalArgumentException 
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
      */
-    @SuppressWarnings("deprecation")
-    private LocalCommand newInstanceOfCmd(String commandNode, String sessionID) throws XMPPErrorException
-    {
+    private LocalCommand newInstanceOfCmd(String commandNode, String sessionID)
+                    throws XMPPErrorException, InstantiationException, IllegalAccessException, IllegalArgumentException,
+                    InvocationTargetException, NoSuchMethodException, SecurityException {
         AdHocCommandInfo commandInfo = commands.get(commandNode);
-        LocalCommand command;
-        try {
-            command = commandInfo.getCommandInstance();
-            command.setSessionID(sessionID);
-            command.setName(commandInfo.getName());
-            command.setNode(commandInfo.getNode());
-        }
-        catch (InstantiationException e) {
-            throw new XMPPErrorException(XMPPError.getBuilder(
-                    XMPPError.Condition.internal_server_error));
-        }
-        catch (IllegalAccessException e) {
-            throw new XMPPErrorException(XMPPError.getBuilder(
-                    XMPPError.Condition.internal_server_error));
-        }
+        LocalCommand command = commandInfo.getCommandInstance();
+        command.setSessionID(sessionID);
+        command.setName(commandInfo.getName());
+        command.setNode(commandInfo.getNode());
+
         return command;
     }
 
@@ -680,7 +677,7 @@ public final class AdHocCommandManager extends Manager {
         }
 
         public LocalCommand getCommandInstance() throws InstantiationException,
-                IllegalAccessException
+                IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
         {
             return factory.getInstance();
         }

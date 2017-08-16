@@ -282,9 +282,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * @param initiatorJID the JID of the user the listener should be removed
      */
     @Override
-    // TODO: Change argument to Jid in Smack 4.3.
-    @SuppressWarnings("CollectionIncompatibleType")
-    public void removeIncomingBytestreamListener(String initiatorJID) {
+    public void removeIncomingBytestreamListener(Jid initiatorJID) {
         this.userListeners.remove(initiatorJID);
     }
 
