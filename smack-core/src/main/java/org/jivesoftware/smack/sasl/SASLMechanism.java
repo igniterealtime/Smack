@@ -303,7 +303,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     protected abstract SASLMechanism newInstance();
 
     protected static byte[] toBytes(String string) {
-        return StringUtils.toBytes(string);
+        return StringUtils.toUtf8Bytes(string);
     }
 
     /**

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.hashes;
 import static junit.framework.TestCase.assertEquals;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+import org.jivesoftware.smack.util.StringUtils;
 
 import org.junit.Test;
 
@@ -47,7 +48,7 @@ public class HashTest extends SmackTestSuite {
 
     private byte[] array() {
         if (testArray == null) {
-            testArray = HashManager.utf8(testString);
+            testArray = StringUtils.toUtf8Bytes(testString);
         }
         return testArray;
     }
@@ -56,103 +57,103 @@ public class HashTest extends SmackTestSuite {
 
     @Test
     public void hashTest() {
-        assertEquals(md5sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.MD5, array())));
-        assertEquals(sha1sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.SHA_1, array())));
-        assertEquals(sha224sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.SHA_224, array())));
-        assertEquals(sha256sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.SHA_256, array())));
-        assertEquals(sha384sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.SHA_384, array())));
-        assertEquals(sha512sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.SHA_512, array())));
-        assertEquals(sha3_224sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.SHA3_224, array())));
-        assertEquals(sha3_256sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.SHA3_256, array())));
-        assertEquals(sha3_384sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.SHA3_384, array())));
-        assertEquals(sha3_512sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.SHA3_512, array())));
-        assertEquals(b2_160sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.BLAKE2B160, array())));
-        assertEquals(b2_256sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.BLAKE2B256, array())));
-        assertEquals(b2_384sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.BLAKE2B384, array())));
-        assertEquals(b2_512sum, HashManager.hex(HashManager.hash(HashManager.ALGORITHM.BLAKE2B512, array())));
+        assertEquals(md5sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.MD5, array())));
+        assertEquals(sha1sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.SHA_1, array())));
+        assertEquals(sha224sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.SHA_224, array())));
+        assertEquals(sha256sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.SHA_256, array())));
+        assertEquals(sha384sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.SHA_384, array())));
+        assertEquals(sha512sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.SHA_512, array())));
+        assertEquals(sha3_224sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.SHA3_224, array())));
+        assertEquals(sha3_256sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.SHA3_256, array())));
+        assertEquals(sha3_384sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.SHA3_384, array())));
+        assertEquals(sha3_512sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.SHA3_512, array())));
+        assertEquals(b2_160sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.BLAKE2B160, array())));
+        assertEquals(b2_256sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.BLAKE2B256, array())));
+        assertEquals(b2_384sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.BLAKE2B384, array())));
+        assertEquals(b2_512sum, StringUtils.encodeHex(HashManager.hash(HashManager.ALGORITHM.BLAKE2B512, array())));
     }
 
     @Test
     public void md5Test() {
-        String actual = HashManager.hex(HashManager.md5(array()));
+        String actual = StringUtils.encodeHex(HashManager.md5(array()));
         assertEquals(md5sum, actual);
     }
 
     @Test
     public void sha1Test() {
-        String actual = HashManager.hex(HashManager.sha_1(array()));
+        String actual = StringUtils.encodeHex(HashManager.sha_1(array()));
         assertEquals(sha1sum, actual);
     }
 
     @Test
     public void sha224Test() {
-        String actual = HashManager.hex(HashManager.sha_224(array()));
+        String actual = StringUtils.encodeHex(HashManager.sha_224(array()));
         assertEquals(sha224sum, actual);
     }
 
     @Test
     public void sha256Test() {
-        String actual = HashManager.hex(HashManager.sha_256(array()));
+        String actual = StringUtils.encodeHex(HashManager.sha_256(array()));
         assertEquals(sha256sum, actual);
     }
 
     @Test
     public void sha384Test() {
-        String actual = HashManager.hex(HashManager.sha_384(array()));
+        String actual = StringUtils.encodeHex(HashManager.sha_384(array()));
         assertEquals(sha384sum, actual);
     }
 
     @Test
     public void sha512Test() {
-        String actual = HashManager.hex(HashManager.sha_512(array()));
+        String actual = StringUtils.encodeHex(HashManager.sha_512(array()));
         assertEquals(sha512sum, actual);
     }
 
     @Test
     public void sha3_224Test() {
-        String actual = HashManager.hex(HashManager.sha3_224(array()));
+        String actual = StringUtils.encodeHex(HashManager.sha3_224(array()));
         assertEquals(sha3_224sum, actual);
     }
 
     @Test
     public void sha3_256Test() {
-        String actual = HashManager.hex(HashManager.sha3_256(array()));
+        String actual = StringUtils.encodeHex(HashManager.sha3_256(array()));
         assertEquals(sha3_256sum, actual);
     }
 
     @Test
     public void sha3_384Test() {
-        String actual = HashManager.hex(HashManager.sha3_384(array()));
+        String actual = StringUtils.encodeHex(HashManager.sha3_384(array()));
         assertEquals(sha3_384sum, actual);
     }
 
     @Test
     public void sha3_512Test() {
-        String actual = HashManager.hex(HashManager.sha3_512(array()));
+        String actual = StringUtils.encodeHex(HashManager.sha3_512(array()));
         assertEquals(sha3_512sum, actual);
     }
 
     @Test
     public void blake2b160Test() {
-        String actual = HashManager.hex(HashManager.blake2b160(array()));
+        String actual = StringUtils.encodeHex(HashManager.blake2b160(array()));
         assertEquals(b2_160sum, actual);
     }
 
     @Test
     public void blake2b256Test() {
-        String actual = HashManager.hex(HashManager.blake2b256(array()));
+        String actual = StringUtils.encodeHex(HashManager.blake2b256(array()));
         assertEquals(b2_256sum, actual);
     }
 
     @Test
     public void blake2b384Test() {
-        String actual = HashManager.hex(HashManager.blake2b384(array()));
+        String actual = StringUtils.encodeHex(HashManager.blake2b384(array()));
         assertEquals(b2_384sum, actual);
     }
 
     @Test
     public void blake2b512Test() {
-        String actual = HashManager.hex(HashManager.blake2b512(array()));
+        String actual = StringUtils.encodeHex(HashManager.blake2b512(array()));
         assertEquals(b2_512sum, actual);
     }
 

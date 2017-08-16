@@ -43,7 +43,7 @@ public class SHA1 {
     }
 
     public static byte[] bytes(String string) {
-        return bytes(StringUtils.toBytes(string));
+        return bytes(StringUtils.toUtf8Bytes(string));
     }
 
     public static String hex(byte[] bytes) {
@@ -51,7 +51,7 @@ public class SHA1 {
     }
 
     public static String hex(String string) {
-        return hex(StringUtils.toBytes(string));
+        return hex(StringUtils.toUtf8Bytes(string));
     }
 
 }

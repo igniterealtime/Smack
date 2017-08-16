@@ -34,7 +34,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 public class DigestMd5SaslTest extends AbstractSaslTest {
 
     protected static final String challenge = "realm=\"xmpp.org\",nonce=\"jgGgnz+cQcmyVaAs2n88kQ==\",qop=\"auth\",charset=utf-8,algorithm=md5-sess";
-    protected static final byte[] challengeBytes = StringUtils.toBytes(challenge);
+    protected static final byte[] challengeBytes = StringUtils.toUtf8Bytes(challenge);
 
     public DigestMd5SaslTest(SASLMechanism saslMechanism) {
         super(saslMechanism);

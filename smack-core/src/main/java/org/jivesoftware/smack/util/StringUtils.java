@@ -244,7 +244,7 @@ public class StringUtils {
         return new String(hexChars);
     }
 
-    public static byte[] toBytes(String string) {
+    public static byte[] toUtf8Bytes(String string) {
         try {
             return string.getBytes(StringUtils.UTF8);
         }
