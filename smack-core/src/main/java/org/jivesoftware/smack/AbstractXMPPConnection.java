@@ -1026,12 +1026,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected void invokeStanzaCollectorsAndNotifyRecvListeners(final Stanza packet) {
         if (packet instanceof IQ) {
             final IQ iq = (IQ) packet;
-            final IQ.Type type = iq.getType();
-            switch (type) {
-            case set:
-            case get:
+            if (iq.isRequestIQ()) {
                 final String key = XmppStringUtils.generateKey(iq.getChildElementName(), iq.getChildElementNamespace());
                 IQRequestHandler iqRequestHandler = null;
+                final IQ.Type type = iq.getType();
                 switch (type) {
                 case set:
                     synchronized (setIqRequestHandler) {
@@ -1102,14 +1100,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                             }
                         }
                     });
-                    // The following returns makes it impossible for packet listeners and collectors to
-                    // filter for IQ request stanzas, i.e. IQs of type 'set' or 'get'. This is the
-                    // desired behavior.
-                    return;
                 }
-                break;
-            default:
-                break;
+                // The following returns makes it impossible for packet listeners and collectors to
+                // filter for IQ request stanzas, i.e. IQs of type 'set' or 'get'. This is the
+                // desired behavior.
+                return;
             }
         }
 
