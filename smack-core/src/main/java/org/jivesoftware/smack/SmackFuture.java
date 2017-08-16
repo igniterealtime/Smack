@@ -106,14 +106,9 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
         return getOrThrowExecutionException();
     }
 
-    public synchronized final V getOrThrow() throws E {
+    public synchronized final V getOrThrow() throws E, InterruptedException {
         while (result == null && exception == null && !cancelled) {
-            try {
-                wait();
-            }
-            catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            wait();
         }
 
         if (exception != null) {
