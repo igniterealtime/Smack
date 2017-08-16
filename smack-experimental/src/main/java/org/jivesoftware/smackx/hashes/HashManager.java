@@ -143,26 +143,36 @@ public final class HashManager extends Manager {
         return PREFIX_NS_ALGO + algorithm.toString();
     }
 
-    public enum ALGORITHM {                 // RECOMMENDATION:
-        MD5 ("md5"),                        // MUST NOT use this
-        SHA_1 ("sha-1"),                    // SHOULD NOT use this
-        SHA_224 ("sha-224"),
-        SHA_256 ("sha-256"),                // MUST use this
-        SHA_384 ("sha-384"),
-        SHA_512 ("sha-512"),                // SHOULD use this
-        SHA3_224 ("sha3-224"),
-        SHA3_256 ("sha3-256"),              // MUST use this
-        SHA3_384 ("sha3-384"),
-        SHA3_512 ("sha3-512"),              // SHOULD use this
-        BLAKE2B160("id-blake2b160"),
-        BLAKE2B256("id-blake2b256"),        // MUST use this
-        BLAKE2B384("id-blake2b384"),
-        BLAKE2B512("id-blake2b512");        // SHOULD use this
+    enum AlgorithmRecommendation {
+        unknown,
+        must_not,
+        should_not,
+        should,
+        must,
+    }
+
+    public enum ALGORITHM {
+        MD5 ("md5", AlgorithmRecommendation.must_not),
+        SHA_1 ("sha-1", AlgorithmRecommendation.should_not),
+        SHA_224 ("sha-224", AlgorithmRecommendation.unknown),
+        SHA_256 ("sha-256", AlgorithmRecommendation.must),
+        SHA_384 ("sha-384", AlgorithmRecommendation.unknown),
+        SHA_512 ("sha-512", AlgorithmRecommendation.should),
+        SHA3_224 ("sha3-224", AlgorithmRecommendation.unknown),
+        SHA3_256 ("sha3-256", AlgorithmRecommendation.must),
+        SHA3_384 ("sha3-384", AlgorithmRecommendation.unknown),
+        SHA3_512 ("sha3-512", AlgorithmRecommendation.should),
+        BLAKE2B160("id-blake2b160", AlgorithmRecommendation.unknown),
+        BLAKE2B256("id-blake2b256", AlgorithmRecommendation.must),
+        BLAKE2B384("id-blake2b384", AlgorithmRecommendation.unknown),
+        BLAKE2B512("id-blake2b512", AlgorithmRecommendation.should);
 
         private final String name;
+        private final AlgorithmRecommendation recommendation;
 
-        ALGORITHM(String name) {
+        ALGORITHM(String name, AlgorithmRecommendation recommendation) {
             this.name = name;
+            this.recommendation = recommendation;
         }
 
         /**
@@ -172,6 +182,10 @@ public final class HashManager extends Manager {
         @Override
         public String toString() {
             return this.name;
+        }
+
+        public AlgorithmRecommendation getRecommendation() {
+            return recommendation;
         }
 
         /**
