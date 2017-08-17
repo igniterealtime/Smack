@@ -271,7 +271,19 @@ public class XmlStringBuilder implements Appendable, CharSequence {
         return attribute(name, String.valueOf(value));
     }
 
+    public XmlStringBuilder attribute(String name, long value) {
+        assert name != null;
+        return attribute(name, String.valueOf(value));
+    }
+
     public XmlStringBuilder optAttribute(String name, String value) {
+        if (value != null) {
+            attribute(name, value);
+        }
+        return this;
+    }
+
+    public XmlStringBuilder optAttribute(String name, Long value) {
         if (value != null) {
             attribute(name, value);
         }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,119 +16,272 @@
  */
 package org.jivesoftware.smackx.jingle;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
-import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
+import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.jingle.adapter.JingleDescriptionAdapter;
+import org.jivesoftware.smackx.jingle.adapter.JingleSecurityAdapter;
+import org.jivesoftware.smackx.jingle.adapter.JingleTransportAdapter;
+import org.jivesoftware.smackx.jingle.component.JingleSession;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
-import org.jivesoftware.smackx.jingle.element.JingleContent;
-import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
-import org.jivesoftware.smackx.jingle.transports.jingle_ibb.JingleIBBTransportManager;
-import org.jivesoftware.smackx.jingle.transports.jingle_s5b.JingleS5BTransportManager;
+import org.jivesoftware.smackx.jingle.element.JingleElement;
+import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
+import org.jivesoftware.smackx.jingle.exception.UnsupportedDescriptionException;
+import org.jivesoftware.smackx.jingle.exception.UnsupportedSecurityException;
+import org.jivesoftware.smackx.jingle.exception.UnsupportedTransportException;
+import org.jivesoftware.smackx.jingle.provider.JingleContentDescriptionProvider;
+import org.jivesoftware.smackx.jingle.provider.JingleContentSecurityProvider;
+import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
+import org.jivesoftware.smackx.jingle.util.FullJidAndSessionId;
+import org.jivesoftware.smackx.jingle.util.Role;
 
 import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.Jid;
 
+/**
+ * Manager for Jingle (XEP-0166).
+ */
 public final class JingleManager extends Manager {
-
     private static final Logger LOGGER = Logger.getLogger(JingleManager.class.getName());
+    private static final WeakHashMap<XMPPConnection, JingleManager> INSTANCES = new WeakHashMap<>();
 
-    private static final Map<XMPPConnection, JingleManager> INSTANCES = new WeakHashMap<>();
+    private static final WeakHashMap<String, JingleContentDescriptionProvider<?>> descriptionProviders = new WeakHashMap<>();
+    private static final WeakHashMap<String, JingleContentTransportProvider<?>> transportProviders = new WeakHashMap<>();
+    private static final WeakHashMap<String, JingleContentSecurityProvider<?>> securityProviders = new WeakHashMap<>();
 
-    private static final ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private static final WeakHashMap<String, JingleDescriptionAdapter<?>> descriptionAdapters = new WeakHashMap<>();
+    private static final WeakHashMap<String, JingleTransportAdapter<?>> transportAdapters = new WeakHashMap<>();
+    private static final WeakHashMap<String, JingleSecurityAdapter<?>> securityAdapters = new WeakHashMap<>();
 
-    public static ExecutorService getThreadPool() {
-        return threadPool;
-    }
+    private final WeakHashMap<String, JingleDescriptionManager> descriptionManagers = new WeakHashMap<>();
+    private final WeakHashMap<String, JingleTransportManager> transportManagers = new WeakHashMap<>();
+    private final WeakHashMap<String, JingleSecurityManager> securityManagers = new WeakHashMap<>();
 
-    public static synchronized JingleManager getInstanceFor(XMPPConnection connection) {
-        JingleManager jingleManager = INSTANCES.get(connection);
-        if (jingleManager == null) {
-            jingleManager = new JingleManager(connection);
-            INSTANCES.put(connection, jingleManager);
-        }
-        return jingleManager;
-    }
+    private final ConcurrentHashMap<FullJidAndSessionId, JingleSession> jingleSessions = new ConcurrentHashMap<>();
 
-    private final Map<String, JingleHandler> descriptionHandlers = new ConcurrentHashMap<>();
-
-    private final Map<FullJidAndSessionId, JingleSessionHandler> jingleSessionHandlers = new ConcurrentHashMap<>();
-
-    private final JingleUtil jutil;
-
-    private JingleManager(XMPPConnection connection) {
+    private JingleManager(final XMPPConnection connection) {
         super(connection);
 
-        jutil = new JingleUtil(connection);
-
         connection.registerIQRequestHandler(
-                new AbstractIqRequestHandler(Jingle.ELEMENT, Jingle.NAMESPACE, Type.set, Mode.async) {
+                new AbstractIqRequestHandler(JingleElement.ELEMENT, JingleElement.NAMESPACE, IQ.Type.set, IQRequestHandler.Mode.async) {
                     @Override
                     public IQ handleIQRequest(IQ iqRequest) {
-                        final Jingle jingle = (Jingle) iqRequest;
+                        final JingleElement jingle = (JingleElement) iqRequest;
 
                         FullJid fullFrom = jingle.getFrom().asFullJidOrThrow();
                         String sid = jingle.getSid();
                         FullJidAndSessionId fullJidAndSessionId = new FullJidAndSessionId(fullFrom, sid);
 
-                        JingleSessionHandler sessionHandler = jingleSessionHandlers.get(fullJidAndSessionId);
-                        if (sessionHandler != null) {
-                            //Handle existing session
-                            return sessionHandler.handleJingleSessionRequest(jingle);
-                        }
+                        JingleSession session = jingleSessions.get(fullJidAndSessionId);
 
-                        if (jingle.getAction() == JingleAction.session_initiate) {
+                        // We have not seen this session before.
+                        // Either it is fresh, or unknown.
+                        if (session == null) {
+                            LOGGER.log(Level.INFO, connection().getUser().asFullJidOrThrow() + " received unknown session: " + jingle.getFrom().asFullJidOrThrow() + " " + jingle.getSid());
+                            if (jingle.getAction() == JingleAction.session_initiate) {
+                                //fresh. phew!
+                                try {
+                                    session = JingleSession.fromSessionInitiate(JingleManager.this, jingle);
+                                    jingleSessions.put(fullJidAndSessionId, session);
+                                } catch (UnsupportedDescriptionException e) {
+                                    return JingleElement.createSessionTerminate(jingle.getFrom().asFullJidOrThrow(),
+                                            jingle.getSid(), JingleReasonElement.Reason.unsupported_applications);
+                                } catch (UnsupportedTransportException e) {
+                                    return JingleElement.createSessionTerminate(jingle.getFrom().asFullJidOrThrow(),
+                                            jingle.getSid(), JingleReasonElement.Reason.unsupported_transports);
+                                } catch (UnsupportedSecurityException e) {
+                                    LOGGER.log(Level.SEVERE, "Unsupported Security: " + e, e);
+                                    return null;
+                                }
 
-                            JingleContent content = jingle.getContents().get(0);
-                            JingleContentDescription description = content.getDescription();
-                            JingleHandler jingleDescriptionHandler = descriptionHandlers.get(
-                                    description.getNamespace());
-
-                            if (jingleDescriptionHandler == null) {
-                                //Unsupported Application
-                                LOGGER.log(Level.WARNING, "Unsupported Jingle application.");
-                                return jutil.createSessionTerminateUnsupportedApplications(fullFrom, sid);
+                            } else {
+                                // Unknown session. Error!
+                                return JingleElement.createJingleErrorUnknownSession(jingle);
                             }
-                            return jingleDescriptionHandler.handleJingleRequest(jingle);
                         }
 
-                        //Unknown session
-                        LOGGER.log(Level.WARNING, "Unknown session.");
-                        return jutil.createErrorUnknownSession(jingle);
+                        return session.handleJingleRequest(jingle);
                     }
                 });
-        //Register transports.
-        JingleTransportMethodManager transportMethodManager = JingleTransportMethodManager.getInstanceFor(connection);
-        transportMethodManager.registerTransportManager(JingleIBBTransportManager.getInstanceFor(connection));
-        transportMethodManager.registerTransportManager(JingleS5BTransportManager.getInstanceFor(connection));
     }
 
-    public JingleHandler registerDescriptionHandler(String namespace, JingleHandler handler) {
-        return descriptionHandlers.put(namespace, handler);
+    public static JingleManager getInstanceFor(XMPPConnection connection) {
+        JingleManager manager = INSTANCES.get(connection);
+
+        if (manager == null) {
+            manager = new JingleManager(connection);
+            INSTANCES.put(connection, manager);
+        }
+
+        return manager;
     }
 
-    public JingleSessionHandler registerJingleSessionHandler(FullJid otherJid, String sessionId, JingleSessionHandler sessionHandler) {
-        FullJidAndSessionId fullJidAndSessionId = new FullJidAndSessionId(otherJid, sessionId);
-        return jingleSessionHandlers.put(fullJidAndSessionId, sessionHandler);
+    public static void addJingleDescriptionAdapter(JingleDescriptionAdapter<?> adapter) {
+        descriptionAdapters.put(adapter.getNamespace(), adapter);
     }
 
-    public JingleSessionHandler unregisterJingleSessionHandler(FullJid otherJid, String sessionId, JingleSessionHandler sessionHandler) {
-        FullJidAndSessionId fullJidAndSessionId = new FullJidAndSessionId(otherJid, sessionId);
-        return jingleSessionHandlers.remove(fullJidAndSessionId);
+    public static void addJingleTransportAdapter(JingleTransportAdapter<?> adapter) {
+        transportAdapters.put(adapter.getNamespace(), adapter);
     }
 
-    public static String randomId() {
-        return StringUtils.randomString(24);
+    public static void addJingleSecurityAdapter(JingleSecurityAdapter<?> adapter) {
+        securityAdapters.put(adapter.getNamespace(), adapter);
+    }
+
+    public static JingleDescriptionAdapter<?> getJingleDescriptionAdapter(String namespace) {
+        return descriptionAdapters.get(namespace);
+    }
+
+    public static JingleTransportAdapter<?> getJingleTransportAdapter(String namespace) {
+        return transportAdapters.get(namespace);
+    }
+
+    public static JingleSecurityAdapter<?> getJingleSecurityAdapter(String namespace) {
+        return securityAdapters.get(namespace);
+    }
+
+    public static void addJingleDescriptionProvider(JingleContentDescriptionProvider<?> provider) {
+        descriptionProviders.put(provider.getNamespace(), provider);
+    }
+
+    public static void removeJingleDescriptionProvider(String namespace) {
+        descriptionProviders.remove(namespace);
+    }
+
+    public static JingleContentDescriptionProvider<?> getJingleDescriptionProvider(String namespace) {
+        return descriptionProviders.get(namespace);
+    }
+
+    public static void addJingleTransportProvider(JingleContentTransportProvider<?> provider) {
+        transportProviders.put(provider.getNamespace(), provider);
+    }
+
+    public static void removeJingleTransportProvider(String namespace) {
+        transportProviders.remove(namespace);
+    }
+
+    public static JingleContentTransportProvider<?> getJingleTransportProvider(String namespace) {
+        return transportProviders.get(namespace);
+    }
+
+    public static void addJingleSecurityProvider(JingleContentSecurityProvider<?> provider) {
+        securityProviders.put(provider.getNamespace(), provider);
+    }
+
+    public static void removeJingleSecurityProvider(String namespace) {
+        securityProviders.remove(namespace);
+    }
+
+    public static JingleContentSecurityProvider<?> getJingleSecurityProvider(String namespace) {
+        return securityProviders.get(namespace);
+    }
+
+    public void addJingleDescriptionManager(JingleDescriptionManager manager) {
+        descriptionManagers.put(manager.getNamespace(), manager);
+    }
+
+    public JingleDescriptionManager getDescriptionManager(String namespace) {
+        return descriptionManagers.get(namespace);
+    }
+
+    public void addJingleTransportManager(JingleTransportManager manager) {
+        transportManagers.put(manager.getNamespace(), manager);
+    }
+
+    public JingleTransportManager getTransportManager(String namespace) {
+        return transportManagers.get(namespace);
+    }
+
+    public void addJingleSecurityManager(JingleSecurityManager manager) {
+        securityManagers.put(manager.getNamespace(), manager);
+    }
+
+    public JingleSecurityManager getSecurityManager(String namespace) {
+        return securityManagers.get(namespace);
+    }
+
+    public List<JingleTransportManager> getAvailableTransportManagers(Jid to) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
+        return getAvailableTransportManagers(to, Collections.<String>emptySet());
+    }
+
+    public List<JingleTransportManager> getAvailableTransportManagers(Jid to, Set<String> except) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
+        Set<String> available = new HashSet<>(transportManagers.keySet());
+        available.removeAll(except);
+        List<JingleTransportManager> remaining = new ArrayList<>();
+
+        for (String namespace : available) {
+            if (ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(to, namespace)) {
+                remaining.add(transportManagers.get(namespace));
+            }
+        }
+
+        Collections.sort(remaining, new Comparator<JingleTransportManager>() {
+            @Override
+            public int compare(JingleTransportManager t0, JingleTransportManager t1) {
+                return t1.compareTo(t0); //Invert otherwise ascending order to descending.
+            }
+        });
+
+        return remaining;
+    }
+
+    public JingleTransportManager getBestAvailableTransportManager(Jid to) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
+        return getBestAvailableTransportManager(to, Collections.<String>emptySet());
+    }
+
+    public JingleTransportManager getBestAvailableTransportManager(Jid to, Set<String> except) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
+        List<JingleTransportManager> managers = getAvailableTransportManagers(to, except);
+
+        if (managers.size() > 0) {
+            return managers.get(0);
+        }
+
+        return null;
+    }
+
+    public XMPPConnection getConnection() {
+        return connection();
+    }
+
+    public JingleSession createSession(Role role, FullJid peer) {
+        JingleSession session;
+
+        if (role == Role.initiator) {
+            session = new JingleSession(this, connection().getUser().asFullJidOrThrow(), peer,
+                    role, StringUtils.randomString(24));
+        } else {
+            session = new JingleSession(this, peer, connection().getUser().asFullJidOrThrow(),
+                    role, StringUtils.randomString(24));
+        }
+
+        jingleSessions.put(new FullJidAndSessionId(peer, session.getSessionId()), session);
+        return session;
+    }
+
+    public void addSession(JingleSession session) {
+        if (!jingleSessions.containsValue(session)) {
+            jingleSessions.put(new FullJidAndSessionId(session.getPeer(), session.getSessionId()), session);
+        }
+    }
+
+    public void removeSession(JingleSession session) {
+        jingleSessions.remove(new FullJidAndSessionId(session.getPeer(), session.getSessionId()));
     }
 }

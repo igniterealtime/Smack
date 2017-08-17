@@ -455,4 +455,26 @@ public class Bytestream extends IQ {
             return mode;
         }
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof Bytestream)) {
+            return false;
+        }
+
+        Bytestream o = (Bytestream) other;
+
+        return o.getMode() == getMode() &&
+                o.getSessionID().equals(getSessionID()) &&
+                o.getStreamHosts().equals(getStreamHosts());
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * getStreamHosts().hashCode() + 29 * getSessionID().hashCode() + 23 * getMode().hashCode();
+    }
 }
