@@ -145,6 +145,58 @@ public class JingleSession {
         return JingleElement.createSessionAccept(getInitiator(), getResponder(), getSessionId(), contentElements);
     }
 
+    void onContentFinished(JingleContent jingleContent) {
+        if (contents.get(jingleContent.getName()) == null) {
+            LOGGER.log(Level.WARNING, "Session does not contain content " + jingleContent.getName() + ". Ignore contentFinished.");
+            return;
+        }
+
+        if (contents.size() == 1) {
+            //Only content has finished. End session.
+            terminateSession(JingleReasonElement.Reason.success);
+            return;
+        }
+
+        // Session has still active contents left.
+        /*
+        try {
+            jingleManager.getConnection().createStanzaCollectorAndSend(JingleElement.createSessionTerminateContentCancel(
+                    getPeer(), getSessionId(), jingleContent.getCreator(), jingleContent.getName()));
+        } catch (SmackException.NotConnectedException | InterruptedException e) {
+            LOGGER.log(Level.SEVERE, "Could not send content-cancel: " + e, e);
+        }
+        contents.remove(jingleContent.getName());
+        */
+    }
+
+    void onContentCancel(JingleContent jingleContent) {
+        if (contents.get(jingleContent.getName()) == null) {
+            LOGGER.log(Level.WARNING, "Session does not contain content " + jingleContent.getName() + ". Ignore onContentCancel.");
+            return;
+        }
+
+        if (contents.size() == 1) {
+            terminateSession(JingleReasonElement.Reason.cancel);
+            jingleManager.removeSession(this);
+        } else {
+            try {
+                jingleManager.getConnection().createStanzaCollectorAndSend(JingleElement.createSessionTerminateContentCancel(getPeer(), getSessionId(), jingleContent.getCreator(), jingleContent.getName()));
+            } catch (SmackException.NotConnectedException | InterruptedException e) {
+                LOGGER.log(Level.SEVERE, "Could not send content-cancel: " + e, e);
+            }
+            contents.remove(jingleContent.getName());
+        }
+    }
+
+    public void terminateSession(JingleReasonElement.Reason reason) {
+        try {
+            jingleManager.getConnection().createStanzaCollectorAndSend(JingleElement.createSessionTerminate(getPeer(), getSessionId(), reason));
+        } catch (SmackException.NotConnectedException | InterruptedException e) {
+            LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
+        }
+        jingleManager.removeSession(this);
+    }
+
     public IQ handleJingleRequest(JingleElement request) {
         switch (request.getAction()) {
             case content_modify:
@@ -198,15 +250,29 @@ public class JingleSession {
     }
 
     private IQ handleSessionInitiate(JingleElement request) {
-        JingleDescription<?> description = getSoleContentOrThrow().getDescription();
-        JingleDescriptionManager descriptionManager = jingleManager.getDescriptionManager(description.getNamespace());
+        final JingleDescription<?> description = getSoleContentOrThrow().getDescription();
+        final JingleDescriptionManager descriptionManager = jingleManager.getDescriptionManager(description.getNamespace());
 
         if (descriptionManager == null) {
-            LOGGER.log(Level.WARNING, "Unsupported description type: " + description.getNamespace());
-            return JingleElement.createSessionTerminate(getPeer(), getSessionId(), JingleReasonElement.Reason.unsupported_applications);
-        }
 
-        descriptionManager.notifySessionInitiate(this);
+        }
+        Async.go(new Runnable() {
+            @Override
+            public void run() {
+                if (descriptionManager == null) {
+
+                    LOGGER.log(Level.WARNING, "Unsupported description type: " + description.getNamespace());
+                    try {
+                        jingleManager.getConnection().createStanzaCollectorAndSend(JingleElement.createSessionTerminate(getPeer(), getSessionId(), JingleReasonElement.Reason.unsupported_applications));
+                    } catch (SmackException.NotConnectedException | InterruptedException e) {
+                        LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
+                    }
+
+                } else {
+                    descriptionManager.notifySessionInitiate(JingleSession.this);
+                }
+            }
+        });
 
         return IQ.createResultIQ(request);
     }

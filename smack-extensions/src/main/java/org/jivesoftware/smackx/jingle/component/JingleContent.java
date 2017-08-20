@@ -178,6 +178,7 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
     }
 
     public void handleContentRemove(JingleSession session, XMPPConnection connection) {
+
     }
 
     private IQ handleSecurityInfo(JingleElement request, XMPPConnection connection) {
@@ -210,17 +211,22 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         return transport.handleTransportInfo(content.getTransport().getInfo(), request);
     }
 
-    private IQ handleTransportReject(JingleElement request, XMPPConnection connection) {
+    private IQ handleTransportReject(JingleElement request, final XMPPConnection connection) {
         if (pendingReplacingTransport == null) {
             throw new AssertionError("We didn't try to replace the transport.");
         }
-        transportBlacklist.add(pendingReplacingTransport.getNamespace());
-        pendingReplacingTransport = null;
-        try {
-            replaceTransport(transportBlacklist, connection);
-        } catch (SmackException.NotConnectedException | SmackException.NoResponseException | XMPPException.XMPPErrorException | InterruptedException e) {
-            LOGGER.log(Level.SEVERE, "Could not replace transport: " + e, e);
-        }
+        Async.go(new Runnable() {
+            @Override
+            public void run() {
+                transportBlacklist.add(pendingReplacingTransport.getNamespace());
+                pendingReplacingTransport = null;
+                try {
+                    replaceTransport(transportBlacklist, connection);
+                } catch (SmackException.NotConnectedException | SmackException.NoResponseException | XMPPException.XMPPErrorException | InterruptedException e) {
+                    LOGGER.log(Level.SEVERE, "Could not replace transport: " + e, e);
+                }
+            }
+        });
         return IQ.createResultIQ(request);
     }
 
@@ -458,6 +464,20 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
     @Override
     public void onSecurityFailed(Exception e) {
         LOGGER.log(Level.SEVERE, "Security failed: " + e, e);
+    }
+
+    public void onContentFinished() {
+        JingleSession session = getParent();
+        session.onContentFinished(this);
+    }
+
+    public void onContentFailed(Exception e) {
+
+    }
+
+    public void onContentCancel() {
+        JingleSession session = getParent();
+        session.onContentCancel(this);
     }
 
     private void replaceTransport(Set<String> blacklist, XMPPConnection connection)
