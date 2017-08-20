@@ -28,7 +28,6 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
-
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement;
 import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
@@ -41,11 +40,11 @@ import org.jivesoftware.smackx.pubsub.PubSubManager;
 /**
  * Class containing some helper methods for OmemoIntegrationTests.
  */
-final class OmemoIntegrationTestHelper {
+public final class OmemoIntegrationTestHelper {
 
     private static final Logger LOGGER = Logger.getLogger(OmemoIntegrationTestHelper.class.getSimpleName());
 
-    static void cleanServerSideTraces(OmemoManager omemoManager) {
+    public static void cleanServerSideTraces(OmemoManager omemoManager) {
         cleanUpPubSub(omemoManager);
         cleanUpRoster(omemoManager);
     }
@@ -115,7 +114,7 @@ final class OmemoIntegrationTestHelper {
      * @throws InterruptedException
      * @throws SmackException.NoResponseException
      */
-    static void subscribe(OmemoManager alice, OmemoManager bob, String nick)
+    public static void subscribe(OmemoManager alice, OmemoManager bob, String nick)
             throws SmackException.NotLoggedInException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
@@ -127,7 +126,7 @@ final class OmemoIntegrationTestHelper {
     }
 
 
-    static void unidirectionalTrust(OmemoManager alice, OmemoManager bob) throws SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, CannotEstablishOmemoSessionException {
+    public static void unidirectionalTrust(OmemoManager alice, OmemoManager bob) throws SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, CannotEstablishOmemoSessionException {
         //Fetch deviceList
         alice.requestDeviceListUpdateFor(bob.getOwnJid());
         LOGGER.log(Level.INFO, "Current deviceList state: " + alice.getOwnDevice() + " knows " + bob.getOwnDevice() + ": "
@@ -147,7 +146,7 @@ final class OmemoIntegrationTestHelper {
 
     }
 
-    static void setUpOmemoManager(OmemoManager omemoManager) throws CorruptedOmemoKeyException, InterruptedException, SmackException.NoResponseException, SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NotLoggedInException, PubSubException.NotALeafNodeException, NotAPubSubNodeException {
+    public static void setUpOmemoManager(OmemoManager omemoManager) throws CorruptedOmemoKeyException, InterruptedException, SmackException.NoResponseException, SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NotLoggedInException, PubSubException.NotALeafNodeException, NotAPubSubNodeException {
         omemoManager.initialize();
         OmemoBundleElement bundle = OmemoService.fetchBundle(omemoManager, omemoManager.getOwnDevice());
         assertNotNull("Bundle must not be null.", bundle);

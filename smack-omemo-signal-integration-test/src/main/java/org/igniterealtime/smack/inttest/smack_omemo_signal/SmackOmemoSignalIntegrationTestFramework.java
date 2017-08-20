@@ -48,7 +48,7 @@ public class SmackOmemoSignalIntegrationTestFramework {
         SignalOmemoService.acknowledgeLicense();
         SignalOmemoService.setup();
 
-        final String[] smackOmemoPackages = new String[] { "org.jivesoftware.smackx.omemo" };
+        final String[] smackOmemoPackages = new String[] { "org.jivesoftware.smackx.omemo", "org.jivesoftware.smackx.jet" };
         SmackIntegrationTestFramework.main(smackOmemoPackages);
     }
 
