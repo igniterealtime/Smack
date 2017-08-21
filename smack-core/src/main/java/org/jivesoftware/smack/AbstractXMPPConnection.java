@@ -1106,6 +1106,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 // desired behavior.
                 return;
             }
+            // The following returns makes it impossible for packet listeners and collectors to
+            // filter for IQ request stanzas, i.e. IQs of type 'set' or 'get'. This is the
+            // desired behavior.
+            return;
         }
 
         // First handle the async recv listeners. Note that this code is very similar to what follows a few lines below,
