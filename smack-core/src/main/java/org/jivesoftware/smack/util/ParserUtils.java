@@ -57,7 +57,7 @@ public class ParserUtils {
     }
 
     public static void forwardToEndTagOfDepth(XmlPullParser parser, int depth)
-                    throws XmlPullParserException, IOException {
+            throws XmlPullParserException, IOException {
         int event = parser.getEventType();
         while (!(event == XmlPullParser.END_TAG && parser.getDepth() == depth)) {
             event = parser.next();
@@ -107,7 +107,9 @@ public class ParserUtils {
         }
         Jid jid = JidCreate.from(jidString);
 
-        if (!jid.hasLocalpart()) return null;
+        if (!jid.hasLocalpart()) {
+            return null;
+        }
 
         EntityFullJid fullJid = jid.asEntityFullJidIfPossible();
         if (fullJid != null) {
@@ -128,32 +130,32 @@ public class ParserUtils {
 
     /**
      * Get the boolean value of an argument.
-     * 
+     *
      * @param parser
      * @param name
      * @return the boolean value or null of no argument of the given name exists
      */
     public static Boolean getBooleanAttribute(XmlPullParser parser, String name) {
         String valueString = parser.getAttributeValue("", name);
-        if (valueString == null)
+        if (valueString == null) {
             return null;
+        }
+
         valueString = valueString.toLowerCase(Locale.US);
         if (valueString.equals("true") || valueString.equals("0")) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public static boolean getBooleanAttribute(XmlPullParser parser, String name,
-                    boolean defaultValue) {
+                                              boolean defaultValue) {
         Boolean bool = getBooleanAttribute(parser, name);
         if (bool == null) {
             return defaultValue;
         }
-        else {
-            return bool;
-        }
+        return bool;
     }
 
     public static int getIntegerAttributeOrThrow(XmlPullParser parser, String name, String throwMessage) throws SmackException {
@@ -166,8 +168,9 @@ public class ParserUtils {
 
     public static Integer getIntegerAttribute(XmlPullParser parser, String name) {
         String valueString = parser.getAttributeValue("", name);
-        if (valueString == null)
+        if (valueString == null) {
             return null;
+        }
         return Integer.valueOf(valueString);
     }
 
@@ -176,9 +179,7 @@ public class ParserUtils {
         if (integer == null) {
             return defaultValue;
         }
-        else {
-            return integer;
-        }
+        return integer;
     }
 
     public static int getIntegerFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -188,8 +189,9 @@ public class ParserUtils {
 
     public static Long getLongAttribute(XmlPullParser parser, String name) {
         String valueString = parser.getAttributeValue("", name);
-        if (valueString == null)
+        if (valueString == null) {
             return null;
+        }
         return Long.valueOf(valueString);
     }
 
@@ -198,9 +200,7 @@ public class ParserUtils {
         if (l == null) {
             return defaultValue;
         }
-        else {
-            return l;
-        }
+        return l;
     }
 
     public static double getDoubleFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -210,8 +210,9 @@ public class ParserUtils {
 
     public static Double getDoubleAttribute(XmlPullParser parser, String name) {
         String valueString = parser.getAttributeValue("", name);
-        if (valueString == null)
+        if (valueString == null) {
             return null;
+        }
         return Double.valueOf(valueString);
     }
 
@@ -220,9 +221,23 @@ public class ParserUtils {
         if (d == null) {
             return defaultValue;
         }
-        else {
-            return d;
+        return d;
+    }
+
+    public static Short getShortAttribute(XmlPullParser parser, String name) {
+        String valueString = parser.getAttributeValue("", name);
+        if (valueString == null) {
+            return null;
         }
+        return Short.valueOf(valueString);
+    }
+
+    public static short getShortAttribute(XmlPullParser parser, String name, short defaultValue) {
+        Short s = getShortAttribute(parser, name);
+        if (s == null) {
+            return defaultValue;
+        }
+        return s;
     }
 
     public static Date getDateFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {

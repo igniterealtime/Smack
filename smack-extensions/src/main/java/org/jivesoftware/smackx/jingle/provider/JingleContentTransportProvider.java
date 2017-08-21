@@ -17,15 +17,15 @@
 package org.jivesoftware.smackx.jingle.provider;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-
-import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
+import org.jivesoftware.smackx.jingle.element.JingleContentTransportElement;
 
 import org.xmlpull.v1.XmlPullParser;
 
-public abstract class JingleContentTransportProvider<T extends JingleContentTransport>
+public abstract class JingleContentTransportProvider<T extends JingleContentTransportElement>
                 extends ExtensionElementProvider<T> {
 
     @Override
     public abstract T parse(XmlPullParser parser, int initialDepth) throws Exception;
 
+    public abstract String getNamespace();
 }
