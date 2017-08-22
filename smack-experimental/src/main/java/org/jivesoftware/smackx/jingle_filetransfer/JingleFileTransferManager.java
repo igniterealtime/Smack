@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.jingle_filetransfer;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +41,7 @@ import org.jivesoftware.smackx.jingle.component.JingleContent;
 import org.jivesoftware.smackx.jingle.component.JingleSession;
 import org.jivesoftware.smackx.jingle.component.JingleTransport;
 import org.jivesoftware.smackx.jingle.element.JingleContentElement;
+import org.jivesoftware.smackx.jingle.transport.jingle_ibb.JingleIBBTransport;
 import org.jivesoftware.smackx.jingle.util.Role;
 import org.jivesoftware.smackx.jingle_filetransfer.adapter.JingleFileTransferAdapter;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFile;
@@ -106,25 +108,9 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
             throw new IllegalArgumentException("File MUST NOT be null and MUST exist.");
         }
 
-        if (!ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(to, getNamespace())) {
-            throw new SmackException.FeatureNotSupportedException(getNamespace(), to);
-        }
+        FileInputStream fi = new FileInputStream(file);
 
-        JingleSession session = jingleManager.createSession(Role.initiator, to);
-
-        JingleContent content = new JingleContent(JingleContentElement.Creator.initiator, JingleContentElement.Senders.initiator);
-        session.addContent(content);
-
-        JingleOutgoingFileOffer offer = new JingleOutgoingFileOffer(file, metadata);
-        content.setDescription(offer);
-
-        JingleTransportManager transportManager = jingleManager.getBestAvailableTransportManager(to);
-        JingleTransport<?> transport = transportManager.createTransportForInitiator(content);
-        content.setTransport(transport);
-
-        session.sendInitiate(connection());
-
-        return offer;
+        return sendStream(fi, metadata, to);
     }
 
     public OutgoingFileOfferController sendStream(final InputStream stream, JingleFile metadata, FullJid recipient) throws SmackException.FeatureNotSupportedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
@@ -142,6 +128,10 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
         content.setDescription(outgoingFileOffer);
 
         JingleTransportManager transportManager = jingleManager.getBestAvailableTransportManager(recipient);
+        if (transportManager == null) {
+            //At least Jingle IBB should be supported.
+            throw new SmackException.FeatureNotSupportedException(JingleIBBTransport.NAMESPACE, recipient);
+        }
         JingleTransport<?> transport = transportManager.createTransportForInitiator(content);
         content.setTransport(transport);
 
