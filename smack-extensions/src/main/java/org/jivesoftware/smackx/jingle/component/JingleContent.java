@@ -480,6 +480,10 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         session.onContentCancel(this);
     }
 
+    public void handleContentTerminate(JingleReasonElement.Reason reason) {
+        description.handleContentTerminate(reason);
+    }
+
     private void replaceTransport(Set<String> blacklist, XMPPConnection connection)
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {

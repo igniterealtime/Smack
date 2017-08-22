@@ -145,6 +145,10 @@ public class JingleSession {
         return JingleElement.createSessionAccept(getInitiator(), getResponder(), getSessionId(), contentElements);
     }
 
+    /**
+     * Handle local content finished event. This includes terminating the session.
+     * @param jingleContent content which finished.
+     */
     void onContentFinished(JingleContent jingleContent) {
         if (contents.get(jingleContent.getName()) == null) {
             LOGGER.log(Level.WARNING, "Session does not contain content " + jingleContent.getName() + ". Ignore contentFinished.");
@@ -169,6 +173,11 @@ public class JingleSession {
         */
     }
 
+    /**
+     * Handle local content cancel event. This happens when the local user cancels a content.
+     * If there is only one content in the session, terminate the session, otherwise just cancel the one content.
+     * @param jingleContent content that gets cancelled.
+     */
     void onContentCancel(JingleContent jingleContent) {
         if (contents.get(jingleContent.getName()) == null) {
             LOGGER.log(Level.WARNING, "Session does not contain content " + jingleContent.getName() + ". Ignore onContentCancel.");
@@ -188,6 +197,10 @@ public class JingleSession {
         }
     }
 
+    /**
+     * Send a session terminate and remove the session from the list of active sessions.
+     * @param reason reason of termination.
+     */
     public void terminateSession(JingleReasonElement.Reason reason) {
         try {
             jingleManager.getConnection().createStanzaCollectorAndSend(JingleElement.createSessionTerminate(getPeer(), getSessionId(), reason));
@@ -285,7 +298,12 @@ public class JingleSession {
             throw new AssertionError("Reason MUST not be null! (I guess)...");
         }
 
-        //TODO: Inform client.
+        JingleReasonElement.Reason r = reason.asEnum();
+
+        for (JingleContent content : contents.values()) {
+            content.handleContentTerminate(r);
+        }
+
         jingleManager.removeSession(this);
 
         return IQ.createResultIQ(request);

@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfoElement;
 import org.jivesoftware.smackx.jingle.element.JingleElement;
+import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
 
 /**
@@ -66,6 +67,8 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
 
             byte[] buf = new byte[8192];
 
+            int written = 0;
+
             while (true) {
                 if (getState() == State.cancelled) {
                     break;
@@ -75,6 +78,8 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
                     break;
                 }
                 outputStream.write(buf, 0, r);
+                written += r;
+                percentage = ((float) getMetadata().getSize()) / ((float) written);
             }
 
             outputStream.flush();
@@ -91,7 +96,7 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
             }
         }
 
-        notifyProgressListenersFinished();
+        notifyProgressListenersTerminated(JingleReasonElement.Reason.success);
     }
 
     @Override

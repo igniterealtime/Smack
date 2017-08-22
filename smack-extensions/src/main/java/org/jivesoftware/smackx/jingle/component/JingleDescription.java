@@ -20,6 +20,7 @@ import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionElement;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfoElement;
 import org.jivesoftware.smackx.jingle.element.JingleElement;
+import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
 
 /**
  * Class that represents a contents description component.
@@ -45,4 +46,6 @@ public abstract class JingleDescription<D extends JingleContentDescriptionElemen
     public abstract void onBytestreamReady(BytestreamSession bytestreamSession);
 
     public abstract String getNamespace();
+
+    public abstract void handleContentTerminate(JingleReasonElement.Reason reason);
 }

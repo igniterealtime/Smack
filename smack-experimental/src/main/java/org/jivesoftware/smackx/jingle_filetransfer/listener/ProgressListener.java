@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle_filetransfer.listener;
 
+import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
+
 /**
  * Created by vanitas on 27.07.17.
  */
@@ -23,7 +25,5 @@ public interface ProgressListener {
 
     void started();
 
-    void progress(float percent);
-
-    void finished();
+    void terminated(JingleReasonElement.Reason reason);
 }
