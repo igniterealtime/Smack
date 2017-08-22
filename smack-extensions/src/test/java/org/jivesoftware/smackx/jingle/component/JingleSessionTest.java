@@ -31,6 +31,7 @@ import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionElement;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfoElement;
 import org.jivesoftware.smackx.jingle.element.JingleContentElement;
 import org.jivesoftware.smackx.jingle.element.JingleElement;
+import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
 import org.jivesoftware.smackx.jingle.transport.jingle_ibb.JingleIBBTransport;
 import org.jivesoftware.smackx.jingle.transport.jingle_ibb.element.JingleIBBTransportElement;
 import org.jivesoftware.smackx.jingle.util.Role;
@@ -130,6 +131,11 @@ public class JingleSessionTest extends SmackTestSuite {
             public String getNamespace() {
                 return NAMESPACE;
             }
+
+            @Override
+            public void handleContentTerminate(JingleReasonElement.Reason reason) {
+
+            }
         };
         content.setDescription(description);
 
@@ -225,6 +231,11 @@ public class JingleSessionTest extends SmackTestSuite {
             @Override
             public String getNamespace() {
                 return NAMESPACE;
+            }
+
+            @Override
+            public void handleContentTerminate(JingleReasonElement.Reason reason) {
+
             }
         };
         content.setDescription(description);
