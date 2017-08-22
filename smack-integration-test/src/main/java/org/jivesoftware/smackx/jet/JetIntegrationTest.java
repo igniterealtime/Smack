@@ -30,6 +30,7 @@ import java.util.Random;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
 import org.jivesoftware.smackx.jingle.transport.jingle_ibb.JingleIBBTransportManager;
 import org.jivesoftware.smackx.jingle.transport.jingle_s5b.JingleS5BTransportManager;
 import org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager;
@@ -112,13 +113,10 @@ public class JetIntegrationTest extends AbstractOmemoIntegrationTest {
                         }
 
                         @Override
-                        public void progress(float percent) {
-
-                        }
-
-                        @Override
-                        public void finished() {
-                            received.signal();
+                        public void terminated(JingleReasonElement.Reason reason) {
+                            if (reason == JingleReasonElement.Reason.success) {
+                                received.signal();
+                            }
                         }
                     });
                     offer.accept(conTwo, targetStream);
