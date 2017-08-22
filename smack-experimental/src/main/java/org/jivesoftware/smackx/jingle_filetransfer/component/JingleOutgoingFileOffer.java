@@ -67,6 +67,9 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
             byte[] buf = new byte[8192];
 
             while (true) {
+                if (getState() == State.cancelled) {
+                    break;
+                }
                 int r = source.read(buf);
                 if (r < 0) {
                     break;
@@ -80,7 +83,7 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Exception while sending file: " + e, e);
         } finally {
-
+            state = State.ended;
             try {
                 source.close();
             } catch (IOException e) {

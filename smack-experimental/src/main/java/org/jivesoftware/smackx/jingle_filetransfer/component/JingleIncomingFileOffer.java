@@ -64,13 +64,17 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             throw new IllegalStateException("Target OutputStream is null");
         }
 
-        state = State.active;
+        if (state == State.negotiating) {
+            state = State.active;
+        } else {
+            return;
+        }
 
         HashElement hashElement = metadata.getHashElement();
         MessageDigest digest = null;
         if (hashElement != null) {
             digest = HashManager.getMessageDigest(hashElement.getAlgorithm());
-            LOGGER.log(Level.INFO, "File offer had checksum: " + digest.toString());
+            LOGGER.log(Level.INFO, "File offer had checksum: " + digest.toString() + ": " + hashElement.getHashB64());
         }
 
         LOGGER.log(Level.INFO, "Receive file");
@@ -87,6 +91,9 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             int read = 0;
             byte[] bufbuf = new byte[4096];
             while ((length = inputStream.read(bufbuf)) >= 0) {
+                if (getState() == State.cancelled) {
+                    break;
+                }
                 target.write(bufbuf, 0, length);
                 read += length;
                 LOGGER.log(Level.INFO, "Read " + read + " (" + length + ") of " + metadata.getSize() + " bytes.");
