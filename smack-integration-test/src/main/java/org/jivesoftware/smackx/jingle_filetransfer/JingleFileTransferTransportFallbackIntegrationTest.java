@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5Proxy;
+import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
 import org.jivesoftware.smackx.jingle.transport.jingle_ibb.JingleIBBTransportManager;
 import org.jivesoftware.smackx.jingle.transport.jingle_s5b.JingleS5BTransportManager;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.IncomingFileOfferController;
@@ -105,13 +106,10 @@ public class JingleFileTransferTransportFallbackIntegrationTest extends Abstract
                     }
 
                     @Override
-                    public void progress(float percent) {
-
-                    }
-
-                    @Override
-                    public void finished() {
-                        resultSyncPoint2.signal();
+                    public void terminated(JingleReasonElement.Reason reason) {
+                        if (reason == JingleReasonElement.Reason.success) {
+                            resultSyncPoint2.signal();
+                        }
                     }
                 });
 
@@ -123,7 +121,7 @@ public class JingleFileTransferTransportFallbackIntegrationTest extends Abstract
             }
         });
 
-        OutgoingFileOfferController sending = aftm.sendFile(source, bob);
+        final OutgoingFileOfferController sending = aftm.sendFile(source, bob);
 
         sending.addProgressListener(new ProgressListener() {
             @Override
@@ -132,13 +130,10 @@ public class JingleFileTransferTransportFallbackIntegrationTest extends Abstract
             }
 
             @Override
-            public void progress(float percent) {
-
-            }
-
-            @Override
-            public void finished() {
-                resultSyncPoint1.signal();
+            public void terminated(JingleReasonElement.Reason reason) {
+                if (reason == JingleReasonElement.Reason.success) {
+                    resultSyncPoint1.signal();
+                }
             }
         });
 

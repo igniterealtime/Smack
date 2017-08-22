@@ -36,6 +36,7 @@ import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.jingle.component.JingleSession;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfoElement;
 import org.jivesoftware.smackx.jingle.element.JingleElement;
+import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.IncomingFileOfferController;
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChildElement;
 
@@ -97,6 +98,9 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
                 target.write(bufbuf, 0, length);
                 read += length;
                 LOGGER.log(Level.INFO, "Read " + read + " (" + length + ") of " + metadata.getSize() + " bytes.");
+
+                percentage = ((float) read) / ((float) metadata.getSize());
+
                 if (read == (int) metadata.getSize()) {
                     break;
                 }
@@ -133,7 +137,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
                 LOGGER.log(Level.INFO, "CHECKSUM MATCHED :)");
             }
         }
-        notifyProgressListenersFinished();
+        notifyProgressListenersTerminated(JingleReasonElement.Reason.success);
         getParent().onContentFinished();
     }
 

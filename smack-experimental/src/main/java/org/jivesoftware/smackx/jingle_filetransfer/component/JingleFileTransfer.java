@@ -40,6 +40,7 @@ public abstract class JingleFileTransfer extends JingleDescription<JingleFileTra
 
     protected State state;
     protected JingleFile metadata;
+    protected float percentage;
 
     private final List<ProgressListener> progressListeners = Collections.synchronizedList(new ArrayList<ProgressListener>());
 
@@ -83,27 +84,39 @@ public abstract class JingleFileTransfer extends JingleDescription<JingleFileTra
         getParent().onContentCancel();
     }
 
-    public void notifyProgressListeners(float progress) {
-        for (ProgressListener p : progressListeners) {
-            p.progress(progress);
-        }
-    }
-
-    public void notifyProgressListenersFinished() {
-        for (ProgressListener p : progressListeners) {
-            p.finished();
-        }
-    }
-
     public void notifyProgressListenersStarted() {
         for (ProgressListener p : progressListeners) {
             p.started();
         }
     }
 
+    public void notifyProgressListenersTerminated(JingleReasonElement.Reason reason) {
+        for (ProgressListener p : progressListeners) {
+            p.terminated(reason);
+        }
+    }
+
+    /**
+     * Return progress as a float value between 0 and 1.
+     * If the transmission has not yet started, return -1.
+     * @return -1 or percentage in [0,1]
+     */
+    public float getPercentage() {
+        if (state == State.pending || state == State.negotiating) {
+            return -1f;
+        }
+
+        return percentage;
+    }
+
     @Override
     public String getNamespace() {
         return JingleFileTransfer.NAMESPACE;
+    }
+
+    @Override
+    public void handleContentTerminate(JingleReasonElement.Reason reason) {
+        notifyProgressListenersTerminated(reason);
     }
 
     @Override
