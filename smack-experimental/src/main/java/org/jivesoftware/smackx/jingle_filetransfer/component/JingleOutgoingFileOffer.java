@@ -42,11 +42,13 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
     public JingleOutgoingFileOffer(File file, JingleFile metadata) throws FileNotFoundException {
         super(metadata);
         this.source = new FileInputStream(file);
+        this.state = State.pending;
     }
 
     public JingleOutgoingFileOffer(InputStream inputStream, JingleFile metadata) {
         super(metadata);
         this.source = inputStream;
+        this.state = State.pending;
     }
 
     @Override
@@ -59,6 +61,10 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
         if (source == null) {
             throw new IllegalStateException("Source InputStream is null!");
         }
+
+        state = State.active;
+
+        notifyProgressListenersStarted();
 
         OutputStream outputStream = null;
 

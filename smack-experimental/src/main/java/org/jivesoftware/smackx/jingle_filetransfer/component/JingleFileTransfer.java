@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.jingle_filetransfer.component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -34,6 +36,8 @@ import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
  * Created by vanitas on 22.07.17.
  */
 public abstract class JingleFileTransfer extends JingleDescription<JingleFileTransferElement> implements JingleFileTransferController {
+
+    private static final Logger LOGGER = Logger.getLogger(JingleFileTransfer.class.getName());
 
     public static final String NAMESPACE_V5 = "urn:xmpp:jingle:apps:file-transfer:5";
     public static final String NAMESPACE = NAMESPACE_V5;
@@ -69,19 +73,23 @@ public abstract class JingleFileTransfer extends JingleDescription<JingleFileTra
         switch (state) {
             case pending:
                 if (session.isResponder()) {
+                    LOGGER.log(Level.INFO, "Cancel pending file transfer as responder.");
                     connection.createStanzaCollectorAndSend(JingleElement.createSessionTerminate(session.getPeer(), session.getSessionId(), JingleReasonElement.Reason.decline));
                 } else {
+                    LOGGER.log(Level.INFO, "Cancel pending file transfer as initiator.");
                     connection.createStanzaCollectorAndSend(JingleElement.createSessionTerminate(session.getPeer(), session.getSessionId(), JingleReasonElement.Reason.cancel));
                 }
                 break;
 
             case active:
+                LOGGER.log(Level.INFO, "Cancel active file transfer.");
                 connection.createStanzaCollectorAndSend(JingleElement.createSessionTerminate(session.getPeer(), session.getSessionId(), JingleReasonElement.Reason.cancel));
                 break;
 
             default: break;
         }
         getParent().onContentCancel();
+        state = State.cancelled;
     }
 
     public void notifyProgressListenersStarted() {
