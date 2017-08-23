@@ -67,6 +67,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
 
         if (state == State.negotiating) {
             state = State.active;
+            notifyProgressListenersStarted();
         } else {
             return;
         }
