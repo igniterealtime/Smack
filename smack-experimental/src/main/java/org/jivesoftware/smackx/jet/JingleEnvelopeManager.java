@@ -26,18 +26,44 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jxmpp.jid.FullJid;
 
 /**
- * Classes that implement this interface can be used to encrypt Jingle File Transfers.
+ * Interface that provides methods that need to be implemented by potential JingleEnvelopeManagers.
+ * An JingleEnvelopeManager can be used to secure a JET encrypted Transport.
  */
 public interface JingleEnvelopeManager {
 
+    /**
+     * Encrypt a serialized encryption key (Transport Secret) and return the resulting {@link ExtensionElement} (Envelope).
+     * @param recipient recipient of the transfer.
+     * @param keyData Serialized key. This is referred to in the XEP as Transport Secret.
+     * @return encrypted Transport Secret as Envelope element.
+     * @throws JingleEncryptionException JET encryption fails.
+     * @throws InterruptedException
+     * @throws NoSuchAlgorithmException
+     * @throws SmackException.NotConnectedException
+     * @throws SmackException.NoResponseException
+     */
     ExtensionElement encryptJingleTransfer(FullJid recipient, byte[] keyData)
             throws JingleEncryptionException, InterruptedException, NoSuchAlgorithmException,
             SmackException.NotConnectedException, SmackException.NoResponseException;
 
+    /**
+     * Decrypt a serialized encryption key (Transport Secret) from an {@link ExtensionElement} (Envelope).
+     * @param sender sender of the Envelope.
+     * @param envelope encrypted key as Envelope element.
+     * @return decrypted Transport Secret.
+     * @throws JingleEncryptionException JET encryption fails.
+     * @throws InterruptedException
+     * @throws XMPPException.XMPPErrorException
+     * @throws SmackException.NotConnectedException
+     * @throws SmackException.NoResponseException
+     */
     byte[] decryptJingleTransfer(FullJid sender, ExtensionElement envelope)
             throws JingleEncryptionException, InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException;
 
+    /**
+     * Exception that wraps possible exceptions that might occur during encryption/decryption.
+     */
     class JingleEncryptionException extends Exception {
         private static final long serialVersionUID = 1L;
 
@@ -46,7 +72,15 @@ public interface JingleEnvelopeManager {
         }
     }
 
+    /**
+     * Return the connection of the manager.
+     * @return connection.
+     */
     XMPPConnection getConnection();
 
+    /**
+     * Return the namespace of the Envelope method.
+     * @return namespace.
+     */
     String getJingleEnvelopeNamespace();
 }

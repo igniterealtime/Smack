@@ -16,7 +16,8 @@
  */
 
 /**
- * Smack's API for XEP-XXXX: Jingle Encrypted Transfers</a>.
+ * Smack's API for XEP-XXXX: Jingle Encrypted Transports
+ * @see <a href="https://geekplace.eu/xeps/xep-jet/xep-jet.html">Proto-XEP</a>
  * Elements.
  */
 package org.jivesoftware.smackx.jet.element;

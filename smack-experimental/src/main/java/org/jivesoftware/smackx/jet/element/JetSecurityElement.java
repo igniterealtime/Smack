@@ -22,7 +22,7 @@ import org.jivesoftware.smackx.jet.component.JetSecurity;
 import org.jivesoftware.smackx.jingle.element.JingleContentSecurityElement;
 
 /**
- * Implementation of the Jingle security element as specified in XEP-XXXX (Jingle Encrypted Transfers).
+ * Implementation of the Jingle security element as specified in XEP-XXXX (Jingle Encrypted Transports).
  * <jingle>
  *     <content>
  *         <description/>
@@ -30,6 +30,7 @@ import org.jivesoftware.smackx.jingle.element.JingleContentSecurityElement;
  *         <security/> <- You are here.
  *     </content>
  * </jingle>
+ * @see <a href="https://geekplace.eu/xeps/xep-jet/xep-jet.html">Proto-XEP</a>
  */
 public class JetSecurityElement extends JingleContentSecurityElement {
     public static final String ATTR_CONTENT_NAME = "name";

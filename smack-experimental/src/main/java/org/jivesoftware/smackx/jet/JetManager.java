@@ -17,6 +17,9 @@
 package org.jivesoftware.smackx.jet;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -53,6 +56,7 @@ import org.jxmpp.jid.FullJid;
 
 /**
  * Manager for Jingle Encrypted Transfers (XEP-XXXX).
+ * @see <a href="https://geekplace.eu/xeps/xep-jet/xep-jet.html">Proto-XEP</a>
  */
 public final class JetManager extends Manager implements JingleDescriptionManager {
 
@@ -76,6 +80,11 @@ public final class JetManager extends Manager implements JingleDescriptionManage
         jingleManager.addJingleDescriptionManager(this);
     }
 
+    /**
+     * Return an instance of the JetManager for the given connection.
+     * @param connection connection.
+     * @return instance.
+     */
     public static JetManager getInstanceFor(XMPPConnection connection) {
         JetManager manager = INSTANCES.get(connection);
 
@@ -87,35 +96,60 @@ public final class JetManager extends Manager implements JingleDescriptionManage
         return manager;
     }
 
-    public OutgoingFileOfferController sendEncryptedFile(File file, FullJid recipient, JingleEnvelopeManager envelopeManager) throws Exception {
+    /**
+     * Send a file to recipient, JET encrypted using the method described by envelopeManager.
+     * @param file file
+     * @param recipient recipient
+     * @param envelopeManager {@link JingleEnvelopeManager} (eg. OmemoManager).
+     * @return controller for the outgoing file transfer.
+     */
+    public OutgoingFileOfferController sendEncryptedFile(File file, FullJid recipient, JingleEnvelopeManager envelopeManager)
+            throws IOException, NoSuchAlgorithmException, SmackException.FeatureNotSupportedException,
+            InvalidKeyException, InterruptedException, XMPPException.XMPPErrorException, NoSuchPaddingException,
+            JingleEnvelopeManager.JingleEncryptionException, SmackException.NotConnectedException,
+            SmackException.NoResponseException, NoSuchProviderException, InvalidAlgorithmParameterException {
         return sendEncryptedFile(file, JingleFile.fromFile(file, null, null, null), recipient, envelopeManager);
     }
 
-    public OutgoingFileOfferController sendEncryptedFile(File file, JingleFile metadata, FullJid recipient, JingleEnvelopeManager envelopeManager) throws Exception {
+    /**
+     * Send a file to recipient, JET encrypted using the method described by envelopeManager.
+     * @param file file containing data.
+     * @param metadata custom metadata about the file (like alternative filename...)
+     * @param recipient recipient
+     * @param envelopeManager {@link JingleEnvelopeManager} (eg. OmemoManager).
+     * @return controller for the outgoing file transfer.
+     */
+    public OutgoingFileOfferController sendEncryptedFile(File file, JingleFile metadata, FullJid recipient, JingleEnvelopeManager envelopeManager)
+            throws FileNotFoundException, SmackException.FeatureNotSupportedException, NoSuchAlgorithmException,
+            InvalidKeyException, InterruptedException, XMPPException.XMPPErrorException, NoSuchPaddingException,
+            JingleEnvelopeManager.JingleEncryptionException, SmackException.NotConnectedException,
+            SmackException.NoResponseException, NoSuchProviderException, InvalidAlgorithmParameterException {
         if (file == null || !file.exists()) {
             throw new IllegalArgumentException("File MUST NOT be null and MUST exist.");
         }
 
-        throwIfRecipientLacksSupport(recipient);
-
-        JingleSession session = jingleManager.createSession(Role.initiator, recipient);
-
-        JingleContent content = new JingleContent(JingleContentElement.Creator.initiator, JingleContentElement.Senders.initiator);
-        session.addContent(content);
-
-        JingleOutgoingFileOffer offer = new JingleOutgoingFileOffer(file, metadata);
-        content.setDescription(offer);
-
-        JingleTransportManager transportManager = jingleManager.getBestAvailableTransportManager(recipient);
-        content.setTransport(transportManager.createTransportForInitiator(content));
-
-        JetSecurity security = new JetSecurity(envelopeManager, recipient, content.getName(), Aes256GcmNoPadding.NAMESPACE);
-        content.setSecurity(security);
-        session.sendInitiate(connection());
-
-        return offer;
+        return sendEncryptedStream(new FileInputStream(file), metadata, recipient, envelopeManager);
     }
 
+    /**
+     * Send the content of an InputStream to recipient, JET encrypted via the method described by envelopeManager.
+     * @param inputStream InputStream with data.
+     * @param metadata metadata about the inputstream (filename etc).
+     * @param recipient recipient
+     * @param envelopeManager {@link JingleEnvelopeManager} (eg. OmemoManager).
+     * @return controller for the outgoing file transfer.
+     * @throws XMPPException.XMPPErrorException
+     * @throws SmackException.FeatureNotSupportedException Recipient does not support JET or needed Jingle features.
+     * @throws SmackException.NotConnectedException
+     * @throws InterruptedException
+     * @throws SmackException.NoResponseException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException
+     * @throws JingleEnvelopeManager.JingleEncryptionException JET encryption failed.
+     * @throws NoSuchProviderException
+     * @throws InvalidAlgorithmParameterException
+     */
     public OutgoingFileOfferController sendEncryptedStream(InputStream inputStream, JingleFile metadata, FullJid recipient, JingleEnvelopeManager envelopeManager)
             throws XMPPException.XMPPErrorException, SmackException.FeatureNotSupportedException, SmackException.NotConnectedException,
             InterruptedException, SmackException.NoResponseException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException,
@@ -140,26 +174,53 @@ public final class JetManager extends Manager implements JingleDescriptionManage
         return offer;
     }
 
+    /**
+     * Register an {@link JingleEnvelopeManager}
+     * @param method manager.
+     */
     public void registerEnvelopeManager(JingleEnvelopeManager method) {
         envelopeManagers.put(method.getJingleEnvelopeNamespace(), method);
     }
 
+    /**
+     * Unregister an {@link JingleEnvelopeManager}
+     * @param namespace namespace of the manager.
+     */
     public void unregisterEnvelopeManager(String namespace) {
         envelopeManagers.remove(namespace);
     }
 
+    /**
+     * Return an {@link JingleEnvelopeManager} for the given namespace.
+     * @param namespace namespace.
+     * @return manager or null.
+     */
     public JingleEnvelopeManager getEnvelopeManager(String namespace) {
         return envelopeManagers.get(namespace);
     }
 
+    /**
+     * Register an {@link ExtensionElementProvider} for an envelope element.
+     * @param namespace namespace.
+     * @param provider provider.
+     */
     public static void registerEnvelopeProvider(String namespace, ExtensionElementProvider<?> provider) {
         envelopeProviders.put(namespace, provider);
     }
 
+    /**
+     * Unregister an {@link ExtensionElementProvider} for an envelope element.
+     * @param namespace namespace.
+     */
     public static void unregisterEnvelopeProvider(String namespace) {
         envelopeProviders.remove(namespace);
     }
 
+    /**
+     * Return an {@link ExtensionElementProvider} for an envelope element with the given namespace.
+     * @param namespace namespace.
+     * @return provider.
+     */
     public static ExtensionElementProvider<?> getEnvelopeProvider(String namespace) {
         return envelopeProviders.get(namespace);
     }
@@ -179,6 +240,15 @@ public final class JetManager extends Manager implements JingleDescriptionManage
         JingleFileTransferManager.getInstanceFor(connection()).notifyContentAdd(session, content);
     }
 
+    /**
+     * Throw a {@link org.jivesoftware.smack.SmackException.FeatureNotSupportedException} when recipient doesn't support JET.
+     * @param recipient recipient.
+     * @throws XMPPException.XMPPErrorException
+     * @throws SmackException.NotConnectedException
+     * @throws InterruptedException
+     * @throws SmackException.NoResponseException
+     * @throws SmackException.FeatureNotSupportedException
+     */
     private void throwIfRecipientLacksSupport(FullJid recipient) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, SmackException.FeatureNotSupportedException {
         if (!ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(recipient, getNamespace())) {
             throw new SmackException.FeatureNotSupportedException(getNamespace(), recipient);

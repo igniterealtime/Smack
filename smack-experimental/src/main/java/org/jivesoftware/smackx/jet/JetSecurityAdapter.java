@@ -21,6 +21,9 @@ import org.jivesoftware.smackx.jet.element.JetSecurityElement;
 import org.jivesoftware.smackx.jingle.adapter.JingleSecurityAdapter;
 import org.jivesoftware.smackx.jingle.element.JingleContentSecurityElement;
 
+/**
+ * Adapter to parse JetSecurityElements into JetSecurity components.
+ */
 public class JetSecurityAdapter implements JingleSecurityAdapter<JetSecurity> {
 
     @Override

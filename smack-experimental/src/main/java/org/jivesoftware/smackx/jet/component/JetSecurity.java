@@ -41,7 +41,8 @@ import org.jivesoftware.smackx.jingle.element.JingleElement;
 import org.jxmpp.jid.FullJid;
 
 /**
- * Created by vanitas on 22.07.17.
+ * JetSecurity security component for Jingle Encrypted Transports.
+ * @see <a href="https://geekplace.eu/xeps/xep-jet/xep-jet.html">Proto-XEP</a>
  */
 public class JetSecurity extends JingleSecurity<JetSecurityElement> {
     private static final Logger LOGGER = Logger.getLogger(JetSecurity.class.getName());

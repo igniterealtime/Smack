@@ -26,6 +26,10 @@ import javax.crypto.CipherOutputStream;
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 import org.jivesoftware.smackx.jingle.component.JingleSecurityBytestreamSession;
 
+/**
+ * Wrapper that wraps a the {@link InputStream} and {@link OutputStream} of a {@link BytestreamSession} into a
+ * {@link CipherInputStream} and {@link CipherOutputStream}.
+ */
 public class JetSecurityBytestreamSession extends JingleSecurityBytestreamSession {
     private final Cipher cipher;
 
