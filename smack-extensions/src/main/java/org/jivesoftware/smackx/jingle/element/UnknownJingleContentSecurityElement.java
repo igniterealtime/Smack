@@ -18,7 +18,12 @@ package org.jivesoftware.smackx.jingle.element;
 
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.jingle.provider.JingleContentSecurityProvider;
 
+/**
+ * Default {@link JingleContentSecurityElement}, which gets returned, if there is no suitable
+ * {@link JingleContentSecurityProvider} registered.
+ */
 public final class UnknownJingleContentSecurityElement extends JingleContentSecurityElement {
 
     private final StandardExtensionElement standardExtensionElement;
@@ -48,6 +53,10 @@ public final class UnknownJingleContentSecurityElement extends JingleContentSecu
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Return the {@link StandardExtensionElement} which represents this.
+     * @return element.
+     */
     public StandardExtensionElement getStandardExtensionElement() {
         return standardExtensionElement;
     }

@@ -17,9 +17,10 @@
 package org.jivesoftware.smackx.jingle.element;
 
 import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smackx.jingle.component.JingleTransportCandidate;
 
 /**
- * An element found usually in Jingle 'transport' elements.
+ * {@link NamedElement} representing a {@link JingleTransportCandidate}
  * <jingle>
  *     <content>
  *         <description/>

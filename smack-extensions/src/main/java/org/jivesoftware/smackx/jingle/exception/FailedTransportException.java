@@ -16,8 +16,10 @@
  */
 package org.jivesoftware.smackx.jingle.exception;
 
+import org.jivesoftware.smackx.jingle.component.JingleTransport;
+
 /**
- * Created by vanitas on 25.07.17.
+ * Exception that gets thrown, if we failed to negotiate a {@link JingleTransport}.
  */
 public class FailedTransportException extends Exception {
 

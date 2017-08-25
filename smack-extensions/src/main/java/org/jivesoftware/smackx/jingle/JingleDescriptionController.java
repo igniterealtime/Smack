@@ -16,8 +16,10 @@
  */
 package org.jivesoftware.smackx.jingle;
 
+import org.jivesoftware.smackx.jingle.component.JingleDescription;
+
 /**
- * Created by vanitas on 27.07.17.
+ * User interface which provides methods for the client to use.
  */
 public interface JingleDescriptionController {
 
@@ -29,5 +31,9 @@ public interface JingleDescriptionController {
         ended               //Successfully ended
     }
 
+    /**
+     * Return the state of the {@link JingleDescription}.
+     * @return state.
+     */
     State getState();
 }

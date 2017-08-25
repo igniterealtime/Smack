@@ -18,7 +18,12 @@ package org.jivesoftware.smackx.jingle.element;
 
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.jingle.provider.JingleContentDescriptionProvider;
 
+/**
+ * Default {@link JingleContentDescriptionElement}, which gets returned, if there is no suitable
+ * {@link JingleContentDescriptionProvider} registered.
+ */
 public final class UnknownJingleContentDescriptionElement extends JingleContentDescriptionElement {
 
     private final StandardExtensionElement standardExtensionElement;
@@ -43,6 +48,10 @@ public final class UnknownJingleContentDescriptionElement extends JingleContentD
         return standardExtensionElement.toXML();
     }
 
+    /**
+     * Return the {@link StandardExtensionElement} which represents this.
+     * @return element.
+     */
     public StandardExtensionElement getStandardExtensionElement() {
         return standardExtensionElement;
     }

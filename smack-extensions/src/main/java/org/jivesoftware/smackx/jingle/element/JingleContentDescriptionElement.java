@@ -22,9 +22,10 @@ import java.util.List;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.jingle.component.JingleDescription;
 
 /**
- * Jingle content description.
+ * {@link ExtensionElement} representing a {@link JingleDescription}.
  * <jingle>
  *     <content>
  *         <description/> <- This element is us.

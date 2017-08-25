@@ -25,11 +25,12 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.jingle.component.JingleSession;
 
 import org.jxmpp.jid.FullJid;
 
 /**
- * The Jingle element.
+ * The Jingle element. This represents a {@link JingleSession}.
  * 
  * @author Florian Schmaus
  */
@@ -136,6 +137,12 @@ public final class JingleElement extends IQ {
         return contents;
     }
 
+    /**
+     * If there is only one {@link JingleContentElement}, return it.
+     * If there is none, return null.
+     * Otherwise throw a new {@link IllegalStateException}.
+     * @return jingleContentElement or null.
+     */
     public JingleContentElement getSoleContentOrThrow() {
         if (contents.isEmpty()) {
             return null;

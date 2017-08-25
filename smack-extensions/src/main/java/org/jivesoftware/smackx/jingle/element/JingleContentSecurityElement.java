@@ -17,9 +17,10 @@
 package org.jivesoftware.smackx.jingle.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smackx.jingle.component.JingleSecurity;
 
 /**
- * Jingle security element.
+ * {@link ExtensionElement} representing a {@link JingleSecurity}.
  * <jingle>
  *     <content>
  *         <description/>
