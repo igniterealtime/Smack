@@ -41,8 +41,7 @@ import org.jivesoftware.smackx.jingle_filetransfer.controller.IncomingFileOfferC
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChildElement;
 
 /**
- * Behind the scenes logic of an incoming Jingle file offer.
- * Created by vanitas on 26.07.17.
+ * Behind the scenes logic of an incoming Jingle file offer (They offer a file).
  */
 public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements IncomingFileOfferController {
 

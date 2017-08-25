@@ -31,9 +31,10 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChi
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferElement;
 
 /**
- * Created by vanitas on 28.07.17.
+ * Adapter to convert JingleFileTransferElements (element) to JingleFileTransfer objects (component).
  */
 public class JingleFileTransferAdapter implements JingleDescriptionAdapter<JingleFileTransfer> {
+
     private static final Logger LOGGER = Logger.getLogger(JingleFileTransferAdapter.class.getName());
 
     @Override

@@ -19,9 +19,13 @@ package org.jivesoftware.smackx.jingle_filetransfer.listener;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.IncomingFileRequestController;
 
 /**
- * Created by vanitas on 27.07.17.
+ * Listener for incoming file requests.
  */
 public interface IncomingFileRequestListener {
 
+    /**
+     * Notify the client of an incoming file request.
+     * @param request request.
+     */
     void onIncomingFileRequest(IncomingFileRequestController request);
 }

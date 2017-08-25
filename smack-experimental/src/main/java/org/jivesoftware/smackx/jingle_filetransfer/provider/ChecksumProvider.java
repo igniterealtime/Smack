@@ -36,6 +36,8 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class ChecksumProvider extends ExtensionElementProvider<ChecksumElement> {
 
+    private static HashElementProvider hashProvider = new HashElementProvider();
+
     @Override
     public ChecksumElement parse(XmlPullParser parser, int initialDepth) throws Exception {
         JingleContentElement.Creator creator = null;
@@ -58,7 +60,7 @@ public class ChecksumProvider extends ExtensionElementProvider<ChecksumElement> 
             if (tag == START_TAG) {
                 switch (n) {
                     case HashElement.ELEMENT:
-                        hashElement = new HashElementProvider().parse(parser);
+                        hashElement = hashProvider.parse(parser);
                         break;
 
                     case Range.ELEMENT:

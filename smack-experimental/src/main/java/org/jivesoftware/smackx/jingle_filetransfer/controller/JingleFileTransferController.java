@@ -23,15 +23,33 @@ import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFile;
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
 
 /**
- * User interface for Jingle file transfers.
+ * Interface with methods of a jingle file transfer, that are exposed to the user.
  */
 public interface JingleFileTransferController extends JingleDescriptionController {
 
+    /**
+     * Add a ProgressListener.
+     * @param listener listener
+     */
     void addProgressListener(ProgressListener listener);
 
+    /**
+     * Remove a ProgressListener.
+     * @param listener listener
+     */
     void removeProgressListener(ProgressListener listener);
 
+    /**
+     * Get the JingleFile object containing metadata about the transferred file.
+     * @return metadata
+     */
     JingleFile getMetadata();
 
+    /**
+     * Actively cancel the file transfer.
+     * @param connection connection
+     * @throws SmackException.NotConnectedException
+     * @throws InterruptedException
+     */
     void cancel(XMPPConnection connection) throws SmackException.NotConnectedException, InterruptedException;
 }

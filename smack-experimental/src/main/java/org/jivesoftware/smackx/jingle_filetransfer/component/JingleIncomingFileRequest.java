@@ -24,8 +24,8 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChi
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferElement;
 
 /**
- * Created by vanitas on 27.07.17.
- * TODO: RemoteFile????
+ * Backend logic of an incoming file request (They request a file).
+ * TODO: Implement.
  */
 public class JingleIncomingFileRequest extends AbstractJingleFileRequest implements IncomingFileRequestController {
 

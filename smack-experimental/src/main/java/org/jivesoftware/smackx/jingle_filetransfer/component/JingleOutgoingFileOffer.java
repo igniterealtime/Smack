@@ -32,7 +32,7 @@ import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
 
 /**
- * Created by vanitas on 26.07.17.
+ * Backend logic of an outgoing file offer (We offer a file).
  */
 public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements OutgoingFileOfferController {
     private static final Logger LOGGER = Logger.getLogger(JingleOutgoingFileOffer.class.getName());

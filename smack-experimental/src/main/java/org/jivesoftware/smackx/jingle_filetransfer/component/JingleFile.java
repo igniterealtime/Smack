@@ -29,8 +29,7 @@ import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChildElement;
 
 /**
- * Represent a file sent in a file transfer.
- * This can be both LocalFile (available to the client), or RemoteFile (file not yet available).
+ * Represent a file sent in a file transfer. This class contains metadata of the transferred file.
  */
 public class JingleFile {
 

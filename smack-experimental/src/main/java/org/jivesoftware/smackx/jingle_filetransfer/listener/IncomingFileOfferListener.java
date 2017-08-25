@@ -19,9 +19,13 @@ package org.jivesoftware.smackx.jingle_filetransfer.listener;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.IncomingFileOfferController;
 
 /**
- * Created by vanitas on 26.07.17.
+ * Listener for incoming file offers.
  */
 public interface IncomingFileOfferListener {
 
+    /**
+     * Notify client of an incoming file offer.
+     * @param offer offer.
+     */
     void onIncomingFileOffer(IncomingFileOfferController offer);
 }

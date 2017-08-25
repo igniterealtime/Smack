@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildElement;
 
 /**
- * Content of type File.
+ * Metadata about the transferred file.
  */
 public class JingleFileTransferChildElement extends JingleContentDescriptionChildElement {
 
@@ -43,6 +43,16 @@ public class JingleFileTransferChildElement extends JingleContentDescriptionChil
     private final long size;
     private final Range range;
 
+    /**
+     * Create a new JingleFileTransferChildElement.
+     * @param date last-modified date of the file.
+     * @param desc description of the file.
+     * @param hash hash value of the file (see XEP-0300).
+     * @param mediaType mediaType (https://www.iana.org/assignments/media-types/media-types.xhtml).
+     * @param name name of the file.
+     * @param size size of the file in bytes.
+     * @param range range of the transfer (see https://xmpp.org/extensions/xep-0234.html#range).
+     */
     public JingleFileTransferChildElement(Date date, String desc, HashElement hash, String mediaType, String name, long size, Range range) {
         this.date = date;
         this.desc = desc;
@@ -53,30 +63,58 @@ public class JingleFileTransferChildElement extends JingleContentDescriptionChil
         this.range = range;
     }
 
+    /**
+     * Return the last-modified date of the file.
+     * @return date.
+     */
     public Date getDate() {
         return date;
     }
 
+    /**
+     * Return the description of the file.
+     * @return description.
+     */
     public String getDescription() {
         return desc;
     }
 
+    /**
+     * Return the hash of the file.
+     * @return hash.
+     */
     public HashElement getHash() {
         return hash;
     }
 
+    /**
+     * Return the mediaType of the file (https://www.iana.org/assignments/media-types/media-types.xhtml).
+     * @return media-type.
+     */
     public String getMediaType() {
         return mediaType;
     }
 
+    /**
+     * Return the name of the file.
+     * @return filename.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Return the size of the file in bytes.
+     * @return size.
+     */
     public long getSize() {
         return size;
     }
 
+    /**
+     * In case of a ranged transfer: Return the range of the transmission. Otherwise return null.
+     * @return range of the transfer.
+     */
     public Range getRange() {
         return range;
     }

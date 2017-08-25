@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionElement;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransfer;
 
 /**
- * File element.
+ * Jingle File Transfer Element.
  */
 public class JingleFileTransferElement extends JingleContentDescriptionElement {
 
@@ -34,6 +34,9 @@ public class JingleFileTransferElement extends JingleContentDescriptionElement {
 
     public JingleFileTransferElement(List<JingleContentDescriptionChildElement> payloads) {
         super(payloads);
+        if (payloads.size() != 1) {
+            throw new IllegalArgumentException("Jingle File Transfers only support one payload element.");
+        }
     }
 
     @Override

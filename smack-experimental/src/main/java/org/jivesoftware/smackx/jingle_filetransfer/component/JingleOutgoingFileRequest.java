@@ -22,7 +22,7 @@ import org.jivesoftware.smackx.jingle.element.JingleElement;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileRequestController;
 
 /**
- * Created by vanitas on 27.07.17.
+ * Backend logic of an outgoing file request (We request a file).
  */
 public class JingleOutgoingFileRequest extends AbstractJingleFileRequest implements OutgoingFileRequestController {
 

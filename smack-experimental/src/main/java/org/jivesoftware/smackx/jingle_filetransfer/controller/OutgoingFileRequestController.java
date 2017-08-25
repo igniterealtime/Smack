@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.jingle_filetransfer.controller;
 
 /**
- * Created by vanitas on 27.07.17.
+ * Interface with methods of an outgoing file request, that are exposed to the user.
  */
 public interface OutgoingFileRequestController extends JingleFileTransferController {
     //TODO: Declare methods.
