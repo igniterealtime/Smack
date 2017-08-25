@@ -59,22 +59,33 @@ import org.jivesoftware.smackx.jingle_filetransfer.provider.JingleFileTransferPr
 import org.jxmpp.jid.FullJid;
 
 /**
- * Created by vanitas on 22.07.17.
+ * Manager for XEP-0234 - JingleFileTransfers.
  */
 public final class JingleFileTransferManager extends Manager implements JingleDescriptionManager {
 
     private static final Logger LOGGER = Logger.getLogger(JingleFileTransferManager.class.getName());
 
     private static final WeakHashMap<XMPPConnection, JingleFileTransferManager> INSTANCES = new WeakHashMap<>();
+
+    /**
+     * Reference to the JingleManager of the connection.
+     */
     private final JingleManager jingleManager;
 
+    /**
+     * Listeners for incoming file offers.
+     */
     private final List<IncomingFileOfferListener> offerListeners =
             Collections.synchronizedList(new ArrayList<IncomingFileOfferListener>());
 
+    /**
+     * Listeners for incoming file requests.
+     */
     private final List<IncomingFileRequestListener> requestListeners =
             Collections.synchronizedList(new ArrayList<IncomingFileRequestListener>());
 
     static {
+        // Register adapters and providers.
         JingleManager.addJingleDescriptionAdapter(new JingleFileTransferAdapter());
         JingleManager.addJingleDescriptionProvider(new JingleFileTransferProvider());
     }

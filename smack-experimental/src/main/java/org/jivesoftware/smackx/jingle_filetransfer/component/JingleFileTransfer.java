@@ -33,7 +33,7 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferEle
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
 
 /**
- * Created by vanitas on 22.07.17.
+ * Base class of a Jingle File Transfer.
  */
 public abstract class JingleFileTransfer extends JingleDescription<JingleFileTransferElement> implements JingleFileTransferController {
 
@@ -48,12 +48,24 @@ public abstract class JingleFileTransfer extends JingleDescription<JingleFileTra
 
     private final List<ProgressListener> progressListeners = Collections.synchronizedList(new ArrayList<ProgressListener>());
 
+    /**
+     * Create a new JingleFileTransfer.
+     * @param metadata metadata of the transferred file.
+     */
     JingleFileTransfer(JingleFile metadata) {
         this.metadata = metadata;
     }
 
+    /**
+     * Is this a file offer?
+     * @return file offer?
+     */
     public abstract boolean isOffer();
 
+    /**
+     * Is this a file request?
+     * @return file request?
+     */
     public abstract boolean isRequest();
 
     @Override
@@ -92,12 +104,21 @@ public abstract class JingleFileTransfer extends JingleDescription<JingleFileTra
         state = State.cancelled;
     }
 
+    /**
+     * Notify ProgressListeners, that the transmission has started. This happens after the negotiation is complete,
+     * when the transports are ready.
+     */
     public void notifyProgressListenersStarted() {
         for (ProgressListener p : progressListeners) {
             p.started();
         }
     }
 
+    /**
+     * Notify ProgressListeners, that the transmission has been terminated. This might happen at all times during the
+     * lifetime of the session.
+     * @param reason reason of termination.
+     */
     public void notifyProgressListenersTerminated(JingleReasonElement.Reason reason) {
         for (ProgressListener p : progressListeners) {
             p.terminated(reason);

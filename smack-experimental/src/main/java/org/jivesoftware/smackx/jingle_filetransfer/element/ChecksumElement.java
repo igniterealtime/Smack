@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.jingle.element.JingleContentElement;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransfer;
 
 /**
- * Checksum element.
+ * Checksum element declared in <a href="https://xmpp.org/extensions/xep-0234.html#hash">XEP-0234</a>.
  */
 public class ChecksumElement implements ExtensionElement {
 
@@ -35,6 +35,12 @@ public class ChecksumElement implements ExtensionElement {
     private final String name;
     private final JingleFileTransferChildElement file;
 
+    /**
+     * Create a new ChecksumElement.
+     * @param creator creator of the content (party that added the file to the transmission).
+     * @param name name of the content.
+     * @param file metadata of the file.
+     */
     public ChecksumElement(JingleContentElement.Creator creator, String name, JingleFileTransferChildElement file) {
         this.creator = creator;
         this.name = name;

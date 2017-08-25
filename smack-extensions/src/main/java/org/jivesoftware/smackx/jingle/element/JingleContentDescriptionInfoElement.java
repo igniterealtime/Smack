@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.jingle.element;
 import org.jivesoftware.smack.packet.NamedElement;
 
 /**
- * Created by vanitas on 28.07.17.
+ * Info child element of a Jingle Content Description element.
  */
 public abstract class JingleContentDescriptionInfoElement implements NamedElement {
 

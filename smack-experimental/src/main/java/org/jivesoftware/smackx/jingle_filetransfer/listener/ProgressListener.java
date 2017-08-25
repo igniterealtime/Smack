@@ -19,11 +19,18 @@ package org.jivesoftware.smackx.jingle_filetransfer.listener;
 import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
 
 /**
- * Created by vanitas on 27.07.17.
+ * ProgressListener that listens for progress changes of a file transfer.
  */
 public interface ProgressListener {
 
+    /**
+     * Bytestream transmission has stared. This usually happens after the negotiation is finished.
+     */
     void started();
 
+    /**
+     * Transfer has been terminated. This might happen at all times.
+     * @param reason reason (eg. cancel).
+     */
     void terminated(JingleReasonElement.Reason reason);
 }

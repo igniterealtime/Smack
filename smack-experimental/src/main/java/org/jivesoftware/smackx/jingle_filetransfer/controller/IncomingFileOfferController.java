@@ -25,11 +25,31 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 
 /**
- * User interface for an incoming Jingle file offer.
+ * Interface with methods of an incoming file offer, that are exposed to the user.
  */
 public interface IncomingFileOfferController extends JingleFileTransferController {
 
+    /**
+     * Accept an incoming file offer.
+     * @param connection connection.
+     * @param target file to save the incoming data to.
+     * @throws InterruptedException
+     * @throws XMPPException.XMPPErrorException
+     * @throws SmackException.NotConnectedException
+     * @throws SmackException.NoResponseException
+     * @throws IOException
+     */
     void accept(XMPPConnection connection, File target) throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException, IOException;
 
+    /**
+     * Accept an incoming file offer.
+     * @param connection connection.
+     * @param outputStream outputStream, to stream the incoming data to.
+     * @throws InterruptedException
+     * @throws XMPPException.XMPPErrorException
+     * @throws SmackException.NotConnectedException
+     * @throws SmackException.NoResponseException
+     * @throws IOException
+     */
     void accept(XMPPConnection connection, OutputStream outputStream) throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException, IOException;
 }
