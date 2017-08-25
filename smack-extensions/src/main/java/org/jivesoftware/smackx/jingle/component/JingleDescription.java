@@ -27,25 +27,57 @@ import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
  */
 public abstract class JingleDescription<D extends JingleContentDescriptionElement> {
 
+    /**
+     * Parent {@link JingleContent}.
+     */
     private JingleContent parent;
 
+    /**
+     * Return a {@link JingleContentDescriptionElement} that represents this.
+     * @return element.
+     */
     public abstract D getElement();
 
+    /**
+     * Set the parent {@link JingleContent}.
+     * @param parent content.
+     */
     public void setParent(JingleContent parent) {
         if (this.parent != parent) {
             this.parent = parent;
         }
     }
 
+    /**
+     * Handle a descriptionInfo.
+     * @param info info.
+     * @return result.
+     */
     public abstract JingleElement handleDescriptionInfo(JingleContentDescriptionInfoElement info);
 
+    /**
+     * Return the parent {@link JingleContent} of this description.
+     * @return parent.
+     */
     public JingleContent getParent() {
         return parent;
     }
 
+    /**
+     * Do work once the bytestreams are ready.
+     * @param bytestreamSession established bytestream session.
+     */
     public abstract void onBytestreamReady(BytestreamSession bytestreamSession);
 
+    /**
+     * Return the namespace of the description.
+     * @return namespace.
+     */
     public abstract String getNamespace();
 
+    /**
+     * Handle an incoming session-terminate.
+     * @param reason reason of termination.
+     */
     public abstract void handleContentTerminate(JingleReasonElement.Reason reason);
 }

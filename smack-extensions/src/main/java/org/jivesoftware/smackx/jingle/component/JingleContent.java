@@ -35,8 +35,8 @@ import org.jivesoftware.smackx.jingle.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.adapter.JingleDescriptionAdapter;
 import org.jivesoftware.smackx.jingle.adapter.JingleSecurityAdapter;
 import org.jivesoftware.smackx.jingle.adapter.JingleTransportAdapter;
-import org.jivesoftware.smackx.jingle.callbacks.JingleSecurityCallback;
-import org.jivesoftware.smackx.jingle.callbacks.JingleTransportCallback;
+import org.jivesoftware.smackx.jingle.callback.JingleSecurityCallback;
+import org.jivesoftware.smackx.jingle.callback.JingleTransportCallback;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionElement;
 import org.jivesoftware.smackx.jingle.element.JingleContentElement;
 import org.jivesoftware.smackx.jingle.element.JingleContentSecurityElement;
@@ -64,10 +64,25 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
 
     private final Set<String> transportBlacklist = Collections.synchronizedSet(new HashSet<String>());
 
+    /**
+     * Create an empty JingleContent with random name.
+     * @param creator creator.
+     * @param senders sender.
+     */
     public JingleContent(JingleContentElement.Creator creator, JingleContentElement.Senders senders) {
         this(null, null, null, randomName(), null, creator, senders);
     }
 
+    /**
+     * Create a JingleContent.
+     * @param description description component.
+     * @param transport transport component.
+     * @param security security component.
+     * @param name content name.
+     * @param disposition disposition.
+     * @param creator creator.
+     * @param senders senders.
+     */
     public JingleContent(JingleDescription<?> description, JingleTransport<?> transport, JingleSecurity<?> security, String name, String disposition, JingleContentElement.Creator creator, JingleContentElement.Senders senders) {
         setDescription(description);
         setTransport(transport);
@@ -78,6 +93,11 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         this.senders = senders;
     }
 
+    /**
+     * Create a new JingleContent from a {@link JingleContentElement}.
+     * @param content contentElement.
+     * @return jingleContent.
+     */
     public static JingleContent fromElement(JingleContentElement content) {
         JingleDescription<?> description = null;
         JingleTransport<?> transport = null;
@@ -116,12 +136,23 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         return new JingleContent(description, transport, security, content.getName(), content.getDisposition(), content.getCreator(), content.getSenders());
     }
 
+    /**
+     * Set the senders attribute.
+     * @param senders new value.
+     */
     public void setSenders(JingleContentElement.Senders senders) {
         this.senders = senders;
     }
 
     /* HANDLE_XYZ */
 
+    /**
+     * Handle an incoming jingle request. This method basically routes incoming requests to different methods based on
+     * the value of the request's action attribute.
+     * @param request request.
+     * @param connection connection.
+     * @return result.
+     */
     public IQ handleJingleRequest(JingleElement request, XMPPConnection connection) {
         switch (request.getAction()) {
             case content_modify:
@@ -145,11 +176,21 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         }
     }
 
+    /**
+     * Handle incoming content-accept.
+     * @param request request.
+     * @param connection connection.
+     */
     void handleContentAccept(JingleElement request, XMPPConnection connection) {
         start(connection);
     }
 
-
+    /**
+     * Handle incoming session-accept. This means activating the transport and starting the transmission.
+     * @param request request.
+     * @param connection connection.
+     * @return result.
+     */
     IQ handleSessionAccept(JingleElement request, XMPPConnection connection) {
         LOGGER.log(Level.INFO, "RECEIVED SESSION ACCEPT!");
         JingleContentElement contentElement = null;
@@ -169,26 +210,68 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         return IQ.createResultIQ(request);
     }
 
+    /**
+     * Handle a content-modify request.
+     * TODO: Implement.
+     * @param request request.
+     * @param connection connection.
+     * @return result.
+     */
     private IQ handleContentModify(JingleElement request, XMPPConnection connection) {
         return IQ.createErrorResponse(request, XMPPError.Condition.feature_not_implemented);
     }
 
+    /**
+     * Handle a description-info request.
+     * TODO: Implement.
+     * @param request request.
+     * @param connection connection.
+     * @return result.
+     */
     private IQ handleDescriptionInfo(JingleElement request, XMPPConnection connection) {
         return IQ.createErrorResponse(request, XMPPError.Condition.feature_not_implemented);
+        //return description.handleDescriptionInfo(request.getContents().get(0).getDescription().getDescriptionInfo());
     }
 
+    /**
+     * Handle a content-remove request.
+     * TODO: Implement.
+     * @param session session that has this content as child.
+     * @param connection connection.
+     */
     public void handleContentRemove(JingleSession session, XMPPConnection connection) {
 
     }
 
+    /**
+     * Handle security-info requests.
+     * TODO: Implement.
+     * @param request request.
+     * @param connection connection.
+     * @return result.
+     */
     private IQ handleSecurityInfo(JingleElement request, XMPPConnection connection) {
         return IQ.createErrorResponse(request, XMPPError.Condition.feature_not_implemented);
     }
 
+    /**
+     * Handle session-info requests.
+     * TODO: Implement.
+     * @param request request.
+     * @param connection connection.
+     * @return result.
+     */
     private IQ handleSessionInfo(JingleElement request, XMPPConnection connection) {
         return IQ.createResultIQ(request);
     }
 
+    /**
+     * Handle transport-accept requests.
+     * This includes starting the transport and afterwards starting transmission.
+     * @param request request.
+     * @param connection connection.
+     * @return result.
+     */
     private IQ handleTransportAccept(JingleElement request, XMPPConnection connection) {
 
         if (pendingReplacingTransport == null) {
@@ -204,6 +287,13 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         return IQ.createResultIQ(request);
     }
 
+    /**
+     * Handle transport-info requests.
+     * Pass the request down to the transport.
+     * @param request request.
+     * @param connection connection.
+     * @return result.
+     */
     private IQ handleTransportInfo(JingleElement request, XMPPConnection connection) {
         assert request.getContents().size() == 1;
         JingleContentElement content = request.getContents().get(0);
@@ -211,8 +301,16 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         return transport.handleTransportInfo(content.getTransport().getInfo(), request);
     }
 
+    /**
+     * Handle a transport-reject request.
+     * That includes replacing the transport with the next choice.
+     * @param request request.
+     * @param connection connection.
+     * @return result.
+     */
     private IQ handleTransportReject(JingleElement request, final XMPPConnection connection) {
         if (pendingReplacingTransport == null) {
+            // TODO: Throw other exception?
             throw new AssertionError("We didn't try to replace the transport.");
         }
         Async.go(new Runnable() {
@@ -230,6 +328,14 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         return IQ.createResultIQ(request);
     }
 
+    /**
+     * Handle a transport-replace request.
+     * That includes replacing the transport if suitable and starting the transmission.
+     * Otherwise reject the transport.
+     * @param request request.
+     * @param connection connection.
+     * @return result.
+     */
     private IQ handleTransportReplace(final JingleElement request, final XMPPConnection connection) {
         //Tie Break?
         if (pendingReplacingTransport != null) {
@@ -299,6 +405,10 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
 
     /* MISCELLANEOUS */
 
+    /**
+     * Return a {@link JingleContentElement} representing this {@link JingleContent}.
+     * @return contentElement.
+     */
     public JingleContentElement getElement() {
         JingleContentElement.Builder builder = JingleContentElement.getBuilder()
                 .setName(name)
@@ -321,36 +431,70 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         return builder.build();
     }
 
+    /**
+     * Return the transportBlacklist of this content.
+     * The blacklist contains the namespaces of {@link JingleTransport} classes, that this content will not offer/accept.
+     * @return transport blacklist.
+     */
     public Set<String> getTransportBlacklist() {
         return transportBlacklist;
     }
 
+    /**
+     * Get the creator of the content. The creator is the party that added the content to the session.
+     * @return creator.
+     */
     public JingleContentElement.Creator getCreator() {
         return creator;
     }
 
+    /**
+     * Get the name of the content.
+     * @return content-name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Get the senders of the content.
+     * @return senders.
+     */
     public JingleContentElement.Senders getSenders() {
         return senders;
     }
 
+    /**
+     * Set the parent {@link JingleSession} of the content.
+     * @param session session that has this content as child.
+     */
     public void setParent(JingleSession session) {
         if (this.parent != session) {
             this.parent = session;
         }
     }
 
+    /**
+     * Return the parent {@link JingleSession} of this content.
+     * @return parent session.
+     */
     public JingleSession getParent() {
         return parent;
     }
 
+    /**
+     * Return the {@link JingleDescription} of this content.
+     * @return jingle description component.
+     */
     public JingleDescription<?> getDescription() {
         return description;
     }
 
+    /**
+     * Set the {@link JingleDescription} of this content.
+     * If needed, set the parent of the description to this content.
+     * @param description jingle description component.
+     */
     public void setDescription(JingleDescription<?> description) {
         if (description != null && this.description != description) {
             this.description = description;
@@ -358,10 +502,19 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         }
     }
 
+    /**
+     * Return the {@link JingleTransport} of this content.
+     * @return jingle transport component.
+     */
     public JingleTransport<?> getTransport() {
         return transport;
     }
 
+    /**
+     * Set the {@link JingleTransport} of this content.
+     * If needed, set the parent of the transport component to this content.
+     * @param transport jingle transport component.
+     */
     public void setTransport(JingleTransport<?> transport) {
         if (transport != null && this.transport != transport) {
             this.transport = transport;
@@ -369,10 +522,19 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         }
     }
 
+    /**
+     * Return the {@link JingleSecurity} of this content.
+     * @return jingle security component.
+     */
     public JingleSecurity<?> getSecurity() {
         return security;
     }
 
+    /**
+     * Set the {@link JingleSecurity} of this content.
+     * If needed, set the parent of the security component to this content.
+     * @param security jingle security component.
+     */
     public void setSecurity(JingleSecurity<?> security) {
         if (security != null && this.security != security) {
             this.security = security;
@@ -380,18 +542,30 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         }
     }
 
+    /**
+     * Return true, if we are the sending party. Otherwise return false.
+     * @return true if we are sending.
+     */
     public boolean isSending() {
         return (getSenders() == JingleContentElement.Senders.initiator && getParent().isInitiator()) ||
                 (getSenders() == JingleContentElement.Senders.responder && getParent().isResponder()) ||
                 getSenders() == JingleContentElement.Senders.both;
     }
 
+    /**
+     * Return true if we are the receiving party. Otherwise return false.
+     * @return true if we are receiving.
+     */
     public boolean isReceiving() {
         return (getSenders() == JingleContentElement.Senders.initiator && getParent().isResponder()) ||
                 (getSenders() == JingleContentElement.Senders.responder && getParent().isInitiator()) ||
                 getSenders() == JingleContentElement.Senders.both;
     }
 
+    /**
+     * Prepare the security component (if any) and establish a bytestream session.
+     * @param connection connection
+     */
     public void start(final XMPPConnection connection) {
         transport.prepare(connection);
 
@@ -466,24 +640,48 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         LOGGER.log(Level.SEVERE, "Security failed: " + e, e);
     }
 
+    /**
+     * Content finished locally.
+     */
     public void onContentFinished() {
         JingleSession session = getParent();
         session.onContentFinished(this);
     }
 
+    /**
+     * Content failed locally.
+     * @param e exception.
+     */
     public void onContentFailed(Exception e) {
 
     }
 
+    /**
+     * Content cancelled locally.
+     */
     public void onContentCancel() {
         JingleSession session = getParent();
         session.onContentCancel(this);
     }
 
+    /**
+     * Handle incoming content-terminate.
+     * Pass it down to the description.
+     * @param reason reason.
+     */
     public void handleContentTerminate(JingleReasonElement.Reason reason) {
         description.handleContentTerminate(reason);
     }
 
+    /**
+     * Locally replace the transport method.
+     * @param blacklist ignore all methods on the blacklist.
+     * @param connection connection.
+     * @throws SmackException.NotConnectedException
+     * @throws InterruptedException
+     * @throws XMPPException.XMPPErrorException
+     * @throws SmackException.NoResponseException
+     */
     private void replaceTransport(Set<String> blacklist, XMPPConnection connection)
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
@@ -510,6 +708,10 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
         connection.createStanzaCollectorAndSend(transportReplace).nextResultOrThrow();
     }
 
+    /**
+     * Return a random content name.
+     * @return random name.
+     */
     private static String randomName() {
         return "cont-" + StringUtils.randomString(16);
     }

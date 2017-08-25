@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017 Florian Schmaus, Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.jingle.callbacks;
-
-import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 
 /**
- * Created by vanitas on 27.07.17.
+ * Smack's API for <a href="https://xmpp.org/extensions/xep-0166.html">XEP-0166: Jingle</a>.
+ * Callbacks.
  */
-public interface JingleTransportCallback {
-
-    void onTransportReady(BytestreamSession bytestreamSession);
-
-    void onTransportFailed(Exception e);
-}
+package org.jivesoftware.smackx.jingle.callback;

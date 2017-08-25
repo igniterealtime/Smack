@@ -21,7 +21,7 @@ import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionElement;
 import org.jivesoftware.smackx.jingle.element.JingleContentElement;
 
 /**
- * Adapter that creates a Description object from an element.
+ * Adapter that creates a {@link JingleDescription} object from a {@link JingleContentDescriptionElement}.
  */
 public interface JingleDescriptionAdapter<D extends JingleDescription<?>> {
 

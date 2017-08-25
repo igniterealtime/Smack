@@ -48,11 +48,29 @@ import org.jxmpp.jid.FullJid;
 public class JingleSession {
     private static final Logger LOGGER = Logger.getLogger(JingleSession.class.getName());
 
+    /**
+     * Map of contents in this session.
+     */
     private final ConcurrentHashMap<String, JingleContent> contents = new ConcurrentHashMap<>();
+
+    /**
+     * Map of proposed (added, but not yet accepted contents) in this session.
+     */
     private final ConcurrentHashMap<String, JingleContent> proposedContents = new ConcurrentHashMap<>();
+
+    /**
+     * Reference to jingleManager.
+     */
     private final JingleManager jingleManager;
 
+    /**
+     * Initiator and responder of the session.
+     */
     private final FullJid initiator, responder;
+
+    /**
+     * Our role in the session (initiator or responder).
+     */
     private final Role role;
     private final String sessionId;
 
@@ -63,8 +81,19 @@ public class JingleSession {
         ended       //post-session-terminate
     }
 
+    /**
+     * Current state of the session.
+     */
     private SessionState sessionState;
 
+    /**
+     * Create a new JingleSession.
+     * @param manager jingleManager.
+     * @param initiator initiator of the session.
+     * @param responder responder of the session.
+     * @param role our role in the session.
+     * @param sessionId session id.
+     */
     public JingleSession(JingleManager manager, FullJid initiator, FullJid responder, Role role, String sessionId) {
         this.jingleManager = manager;
         this.initiator = initiator;
@@ -74,6 +103,16 @@ public class JingleSession {
         this.sessionState = SessionState.fresh;
     }
 
+    /**
+     * Parse a {@link JingleSession} from a {@link JingleElement} with action session-initiate.
+     * @param manager jingleManager.
+     * @param initiate {@link JingleElement} with session-initiate action.
+     * @return jingleSession.
+     * TODO: Throw exceptions.
+     * @throws UnsupportedSecurityException
+     * @throws UnsupportedDescriptionException
+     * @throws UnsupportedTransportException
+     */
     public static JingleSession fromSessionInitiate(JingleManager manager, JingleElement initiate)
             throws UnsupportedSecurityException, UnsupportedDescriptionException, UnsupportedTransportException {
         if (initiate.getAction() != JingleAction.session_initiate) {
@@ -92,19 +131,45 @@ public class JingleSession {
         return session;
     }
 
+    /**
+     * Send a session-initiate request to the responder.
+     * This sets the state from fresh to pending.
+     * @param connection connection.
+     * @throws SmackException.NotConnectedException
+     * @throws InterruptedException
+     * @throws XMPPException.XMPPErrorException
+     * @throws SmackException.NoResponseException
+     */
     public void sendInitiate(XMPPConnection connection) throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
         if (this.sessionState != SessionState.fresh) {
             throw new IllegalStateException("Session is not in fresh state.");
+        }
+
+        if (!isInitiator()) {
+            throw new IllegalStateException("We are not the initiator.");
         }
 
         connection.createStanzaCollectorAndSend(createSessionInitiate()).nextResultOrThrow();
         this.sessionState = SessionState.pending;
     }
 
+    /**
+     * Send a session-accept to the initiator.
+     * This sets the state from pending to active.
+     * @param connection connection.
+     * @throws SmackException.NotConnectedException
+     * @throws InterruptedException
+     * @throws XMPPException.XMPPErrorException
+     * @throws SmackException.NoResponseException
+     */
     public void sendAccept(XMPPConnection connection) throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
         LOGGER.log(Level.INFO, "Accepted session.");
         if (this.sessionState != SessionState.pending) {
             throw new IllegalStateException("Session is not in pending state.");
+        }
+
+        if (!isResponder()) {
+            throw new IllegalStateException("We are not the responder.");
         }
 
         if (contents.values().size() == 0) {
@@ -119,6 +184,10 @@ public class JingleSession {
         this.sessionState = SessionState.active;
     }
 
+    /**
+     * Create a session-initiate request.
+     * @return request.
+     */
     public JingleElement createSessionInitiate() {
         if (role != Role.initiator) {
             throw new IllegalStateException("Sessions role is not initiator.");
@@ -132,6 +201,10 @@ public class JingleSession {
         return JingleElement.createSessionInitiate(getInitiator(), getResponder(), getSessionId(), contentElements);
     }
 
+    /**
+     * Create a session-accept request.
+     * @return request.
+     */
     public JingleElement createSessionAccept() {
         if (role != Role.responder) {
             throw new IllegalStateException("Sessions role is not responder.");
@@ -207,9 +280,16 @@ public class JingleSession {
         } catch (SmackException.NotConnectedException | InterruptedException e) {
             LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
         }
+        this.sessionState = SessionState.ended;
         jingleManager.removeSession(this);
     }
 
+    /**
+     * Handle incoming jingle request.
+     * This is a routing function which routes the request to the suitable method based on the value of the action field.
+     * @param request incoming request.
+     * @return result.
+     */
     public IQ handleJingleRequest(JingleElement request) {
         switch (request.getAction()) {
             case content_modify:
@@ -243,8 +323,9 @@ public class JingleSession {
     /* ############## Processed in this class ############## */
 
     /**
-     * Handle incoming session-accept stanza.
-     * @param request session-accept stanza.
+     * Handle incoming session-accept request.
+     * This passes the session-accept to all contents.
+     * @param request session-accept request.
      * @return result.
      */
     private IQ handleSessionAccept(final JingleElement request) {
@@ -262,13 +343,17 @@ public class JingleSession {
         return IQ.createResultIQ(request);
     }
 
+    /**
+     * Handle incoming session-initiate request.
+     * Notifies content listeners of respective descriptions about incoming requests.
+     * @param request request.
+     * @return result.
+     */
     private IQ handleSessionInitiate(JingleElement request) {
         final JingleDescription<?> description = getSoleContentOrThrow().getDescription();
         final JingleDescriptionManager descriptionManager = jingleManager.getDescriptionManager(description.getNamespace());
+        sessionState = SessionState.pending;
 
-        if (descriptionManager == null) {
-
-        }
         Async.go(new Runnable() {
             @Override
             public void run() {
@@ -290,6 +375,13 @@ public class JingleSession {
         return IQ.createResultIQ(request);
     }
 
+    /**
+     * Handle incoming session-terminate request.
+     * This includes passing down the request to child contents, setting the sessionState to ended and removing the session
+     * from the {@link JingleManager}.
+     * @param request request.
+     * @return result.
+     */
     private IQ handleSessionTerminate(JingleElement request) {
         this.sessionState = SessionState.ended;
         JingleReasonElement reason = request.getReason();
@@ -304,17 +396,25 @@ public class JingleSession {
             content.handleContentTerminate(r);
         }
 
+        sessionState = SessionState.ended;
         jingleManager.removeSession(this);
 
         return IQ.createResultIQ(request);
     }
 
+    /**
+     * Handle incoming content-accept request.
+     * This includes moving affected contents from proposedContents to contents and notifying them.
+     * @param request request.
+     * @return result.
+     */
     private IQ handleContentAccept(final JingleElement request) {
         for (JingleContentElement a : request.getContents()) {
             final JingleContent accepted = proposedContents.get(a.getName());
 
             if (accepted == null) {
                 throw new AssertionError("Illegal content name!");
+                //TODO: Throw other exception?
             }
 
             proposedContents.remove(accepted.getName());
@@ -331,6 +431,12 @@ public class JingleSession {
         return IQ.createResultIQ(request);
     }
 
+    /**
+     * Handle a content-add request.
+     * This includes notifying respective {@link JingleDescriptionManager} about the request.
+     * @param request request.
+     * @return result.
+     */
     private IQ handleContentAdd(JingleElement request) {
         final JingleContent proposed = getSoleProposedContentOrThrow(request);
 
@@ -350,6 +456,12 @@ public class JingleSession {
         return IQ.createResultIQ(request);
     }
 
+    /**
+     * Handle incoming content-reject requests.
+     * That includes removing the affected contents from the proposedContents map.
+     * @param request request.
+     * @return result.
+     */
     private IQ handleContentReject(JingleElement request) {
         for (JingleContentElement r : request.getContents()) {
             final JingleContent rejected = proposedContents.get(r.getName());
@@ -373,6 +485,12 @@ public class JingleSession {
         return IQ.createResultIQ(request);
     }
 
+    /**
+     * Handle incoming content-remove requests.
+     * TODO: Implement.
+     * @param request request.
+     * @return result.
+     */
     private IQ handleContentRemove(final JingleElement request) {
         return IQ.createErrorResponse(request, XMPPError.Condition.feature_not_implemented);
         /*
@@ -397,34 +515,66 @@ public class JingleSession {
         */
     }
 
+    /**
+     * Return the {@link FullJid} of the initiator.
+     * @return initiators {@link FullJid}
+     */
     public FullJid getInitiator() {
         return initiator;
     }
 
+    /**
+     * Return the {@link FullJid} of the responder.
+     * @return responders {@link FullJid}
+     */
     public FullJid getResponder() {
         return responder;
     }
 
+    /**
+     * Return the {@link FullJid} of the peer (the other party of the session).
+     * @return peers {@link FullJid}
+     */
     public FullJid getPeer() {
         return role == Role.initiator ? responder : initiator;
     }
 
+    /**
+     * Return our {@link FullJid}.
+     * @return our {@link FullJid}.
+     */
     public FullJid getOurJid() {
         return role == Role.initiator ? initiator : responder;
     }
 
+    /**
+     * Return true, if we are the initiator.
+     * @return initiator?
+     */
     public boolean isInitiator() {
         return role == Role.initiator;
     }
 
+    /**
+     * Return true, if we are the responder.
+     * @return responder?
+     */
     public boolean isResponder() {
         return role == Role.responder;
     }
 
+    /**
+     * Return the SID of this session.
+     * @return sessionId.
+     */
     public String getSessionId() {
         return sessionId;
     }
 
+    /**
+     * Return the {@link JingleManager} of this session.
+     * @return jingleManager.
+     */
     public JingleManager getJingleManager() {
         return jingleManager;
     }
@@ -441,6 +591,15 @@ public class JingleSession {
         return map;
     }
 
+    /**
+     * If the request contains only one {@link JingleContentElement} and this session contains the
+     * related {@link JingleContent}, return that {@link JingleContent}.
+     * If the request contains more than one {@link JingleContentElement}, throw an AssertionError.
+     * If the session does not contain the {@link JingleContent} related to the {@link JingleContentElement} from the
+     * request, throw an AssertionError.
+     * @param request request.
+     * @return the only affected content, or throw.
+     */
     private JingleContent getSoleAffectedContentOrThrow(JingleElement request) {
         if (request.getContents().size() != 1) {
             throw new AssertionError("More/less than 1 content in request!");
@@ -454,6 +613,12 @@ public class JingleSession {
         return content;
     }
 
+    /**
+     * If the request cotains only one {@link JingleContentElement}, parse it in a {@link JingleContent} and return it.
+     * Otherwise throw an AssertionError.
+     * @param request request.
+     * @return sole proposed content or throw.
+     */
     private static JingleContent getSoleProposedContentOrThrow(JingleElement request) {
         if (request.getContents().size() != 1) {
             throw new AssertionError("More/less than 1 content in request!");
@@ -462,6 +627,11 @@ public class JingleSession {
         return JingleContent.fromElement(request.getContents().get(0));
     }
 
+    /**
+     * Add a {@link JingleContent} to the session.
+     * @throws IllegalArgumentException if the session already contains the content.
+     * @param content content.
+     */
     public void addContent(JingleContent content) {
         if (contents.get(content.getName()) != null) {
             throw new IllegalArgumentException("Session already contains a content with the name " + content.getName());
@@ -470,15 +640,32 @@ public class JingleSession {
         content.setParent(this);
     }
 
+    /**
+     * Add a {@link JingleContent}, which gets parsed from the given {@link JingleContentElement} to the session.
+     * @param content contentElement.
+     * @param manager JingleManager.
+     * @throws UnsupportedSecurityException
+     * @throws UnsupportedTransportException
+     * @throws UnsupportedDescriptionException
+     */
     public void addContent(JingleContentElement content, JingleManager manager)
             throws UnsupportedSecurityException, UnsupportedTransportException, UnsupportedDescriptionException {
         addContent(JingleContent.fromElement(content));
     }
 
+    /**
+     * Return the map of {@link JingleContent}s of this session.
+     * @return contents.
+     */
     public ConcurrentHashMap<String, JingleContent> getContents() {
         return contents;
     }
 
+    /**
+     * Return the {@link JingleContent} with the given name, or null if the session does not contain that content.
+     * @param name name.
+     * @return content or null.
+     */
     public JingleContent getContent(String name) {
         return contents.get(name);
     }
@@ -502,6 +689,10 @@ public class JingleSession {
         return contents.values().iterator().next();
     }
 
+    /**
+     * Return the state of the session.
+     * @return state.
+     */
     public SessionState getSessionState() {
         return sessionState;
     }

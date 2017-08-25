@@ -20,7 +20,7 @@ import org.jivesoftware.smackx.jingle.component.JingleSecurity;
 import org.jivesoftware.smackx.jingle.element.JingleContentSecurityElement;
 
 /**
- * Adapter that creates a Security object from an element.
+ * Adapter that creates a {@link JingleSecurity} object from a {@link JingleContentSecurityElement}.
  */
 public interface JingleSecurityAdapter<S extends JingleSecurity<?>> {
 

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.jingle.callbacks;
+package org.jivesoftware.smackx.jingle.callback;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 

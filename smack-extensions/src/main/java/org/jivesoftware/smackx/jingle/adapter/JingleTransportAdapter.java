@@ -20,7 +20,7 @@ import org.jivesoftware.smackx.jingle.component.JingleTransport;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransportElement;
 
 /**
- * Adapter that creates a Transport element from an element.
+ * Adapter that creates a {@link JingleTransport} element from a {@link JingleContentTransportElement}.
  */
 public interface JingleTransportAdapter<T extends JingleTransport<?>> {
 

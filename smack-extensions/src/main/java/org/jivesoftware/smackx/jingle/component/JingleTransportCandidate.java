@@ -23,26 +23,53 @@ import org.jivesoftware.smackx.jingle.element.JingleContentTransportCandidateEle
  */
 public abstract class JingleTransportCandidate<E extends JingleContentTransportCandidateElement> {
 
+    /**
+     * Parent {@link JingleTransport}, which contains this as a child candidate.
+     */
     private JingleTransport<?> parent;
+
+    /**
+     * Priority of this candidate.
+     */
     private int priority;
 
+    /**
+     * Set the parent {@link JingleTransport}.
+     * @param transport parent.
+     */
     public void setParent(JingleTransport<?> transport) {
         if (parent != transport) {
             parent = transport;
         }
     }
 
+    /**
+     * Return the parent {@link JingleTransport}.
+     * @return parent transport.
+     */
     public JingleTransport<?> getParent() {
         return parent;
     }
 
+    /**
+     * Return the priority of this candidate.
+     * @return priority.
+     */
     public int getPriority() {
         return priority;
     }
 
+    /**
+     * Set the priority of this candidate.
+     * @param priority priority.
+     */
     public void setPriority(int priority) {
         this.priority = priority;
     }
 
+    /**
+     * Return an {@link JingleContentTransportCandidateElement} which represents this.
+     * @return element.
+     */
     public abstract E getElement();
 }
