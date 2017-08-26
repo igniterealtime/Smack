@@ -33,7 +33,7 @@ import org.jivesoftware.smackx.ciphers.AesGcmNoPadding;
 import org.jivesoftware.smackx.jet.JetManager;
 import org.jivesoftware.smackx.jet.JingleEnvelopeManager;
 import org.jivesoftware.smackx.jet.element.JetSecurityElement;
-import org.jivesoftware.smackx.jingle.callbacks.JingleSecurityCallback;
+import org.jivesoftware.smackx.jingle.callback.JingleSecurityCallback;
 import org.jivesoftware.smackx.jingle.component.JingleSecurity;
 import org.jivesoftware.smackx.jingle.element.JingleContentSecurityInfoElement;
 import org.jivesoftware.smackx.jingle.element.JingleElement;

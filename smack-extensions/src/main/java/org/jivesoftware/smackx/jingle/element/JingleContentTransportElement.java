@@ -21,9 +21,10 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.jingle.component.JingleTransport;
 
 /**
- * A jingle transport extension.
+ * {@link ExtensionElement} representing a {@link JingleTransport}.
  * <jingle>
  *     <content>
  *         <description/>

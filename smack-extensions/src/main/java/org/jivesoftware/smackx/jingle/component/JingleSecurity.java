@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.jingle.component;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
-import org.jivesoftware.smackx.jingle.callbacks.JingleSecurityCallback;
+import org.jivesoftware.smackx.jingle.callback.JingleSecurityCallback;
 import org.jivesoftware.smackx.jingle.element.JingleContentSecurityElement;
 import org.jivesoftware.smackx.jingle.element.JingleContentSecurityInfoElement;
 import org.jivesoftware.smackx.jingle.element.JingleElement;
@@ -30,27 +30,71 @@ import org.jxmpp.jid.FullJid;
  */
 public abstract class JingleSecurity<D extends JingleContentSecurityElement> {
 
+    /**
+     * Parent of this security component.
+     */
     private JingleContent parent;
 
+    /**
+     * Return a {@link JingleContentSecurityElement} that represents this {@link JingleSecurity} component.
+     * @return element.
+     */
     public abstract D getElement();
 
+    /**
+     * Handle an incoming security-info.
+     * @param element security info.
+     * @param wrapping jingleElement that contains the security info.
+     * @return result.
+     */
     public abstract JingleElement handleSecurityInfo(JingleContentSecurityInfoElement element, JingleElement wrapping);
 
+    /**
+     * Set the parent {@link JingleContent} of this security component.
+     * @param parent parent.
+     */
     public void setParent(JingleContent parent) {
         if (this.parent != parent) {
             this.parent = parent;
         }
     }
 
+    /**
+     * Return the parent {@link JingleContent} of this security component.
+     * @return parent.
+     */
     public JingleContent getParent() {
         return parent;
     }
 
+    /**
+     * Decrypt an incoming bytestream.
+     * This includes wrapping the incoming {@link BytestreamSession} in a {@link JingleSecurityBytestreamSession} and
+     * pass it to the callbacks {@link JingleSecurityCallback#onSecurityReady(BytestreamSession)} method.
+     * @param bytestreamSession encrypted bytestreamSession.
+     * @param callback callback.
+     */
     public abstract void decryptIncomingBytestream(BytestreamSession bytestreamSession, JingleSecurityCallback callback);
 
-    public abstract void encryptOutgoingBytestream(BytestreamSession bytestreamSession, JingleSecurityCallback callbacks);
+    /**
+     * Encrypt an incoming bytestream.
+     * This includes wrapping the incoming {@link BytestreamSession} in a {@link JingleSecurityBytestreamSession} and
+     * pass it to the callbacks {@link JingleSecurityCallback#onSecurityReady(BytestreamSession)} method.
+     * @param bytestreamSession encrypted bytestreamSession.
+     * @param callback callback.
+     */
+    public abstract void encryptOutgoingBytestream(BytestreamSession bytestreamSession, JingleSecurityCallback callback);
 
+    /**
+     * Return the namespace of this security component.
+     * @return namespace.
+     */
     public abstract String getNamespace();
 
-    public abstract void prepare(XMPPConnection connection, FullJid sender);
+    /**
+     * Prepare the security session.
+     * @param connection connection.
+     * @param peer peer.
+     */
+    public abstract void prepare(XMPPConnection connection, FullJid peer);
 }

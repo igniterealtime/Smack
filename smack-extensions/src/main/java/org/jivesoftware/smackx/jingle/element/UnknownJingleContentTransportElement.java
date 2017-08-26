@@ -20,7 +20,12 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
 
+/**
+ * Default {@link JingleContentTransportElement}, which gets returned, if there is no suitable
+ * {@link JingleContentTransportProvider} registered.
+ */
 public final class UnknownJingleContentTransportElement extends JingleContentTransportElement {
 
     private final StandardExtensionElement standardExtensionElement;
@@ -55,6 +60,10 @@ public final class UnknownJingleContentTransportElement extends JingleContentTra
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Return the {@link StandardExtensionElement} which represents this.
+     * @return element.
+     */
     public StandardExtensionElement getStandardExtensionElement() {
         return standardExtensionElement;
     }

@@ -21,11 +21,22 @@ import java.io.IOException;
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 
 /**
- * Created by vanitas on 27.07.17.
+ * Wrapper class that wraps a {@link BytestreamSession} to add a layer of security.
  */
 public abstract class JingleSecurityBytestreamSession implements BytestreamSession {
 
+    /**
+     * Wrapped {@link BytestreamSession}.
+     */
     protected BytestreamSession wrapped;
+
+    /**
+     * Constructor.
+     * @param session {@link BytestreamSession} that will be wrapped.
+     */
+    public JingleSecurityBytestreamSession(BytestreamSession session) {
+        this.wrapped = session;
+    }
 
     @Override
     public int getReadTimeout() throws IOException {
@@ -35,9 +46,5 @@ public abstract class JingleSecurityBytestreamSession implements BytestreamSessi
     @Override
     public void setReadTimeout(int timeout) throws IOException {
         wrapped.setReadTimeout(timeout);
-    }
-
-    public JingleSecurityBytestreamSession(BytestreamSession session) {
-        this.wrapped = session;
     }
 }

@@ -17,16 +17,30 @@
 package org.jivesoftware.smackx.jingle;
 
 import org.jivesoftware.smackx.jingle.component.JingleContent;
+import org.jivesoftware.smackx.jingle.component.JingleDescription;
 import org.jivesoftware.smackx.jingle.component.JingleSession;
 
 /**
- * Manager for JingleDescription components.
+ * Manager for {@link JingleDescription} components.
  */
 public interface JingleDescriptionManager {
 
+    /**
+     * Return the namespace of the {@link JingleDescription}.
+     * @return namespace.
+     */
     String getNamespace();
 
+    /**
+     * Notify about an incoming session-initiate wich contains a suitable {@link JingleDescription}.
+     * @param session initiated jingleSession.
+     */
     void notifySessionInitiate(JingleSession session);
 
+    /**
+     * Notify about a content-add request which tries to add a suitable {@link JingleDescription}.
+     * @param session affected jingleSession.
+     * @param content content which will be added.
+     */
     void notifyContentAdd(JingleSession session, JingleContent content);
 }

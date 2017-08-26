@@ -17,6 +17,6 @@
 
 /**
  * Smack's API for <a href="https://xmpp.org/extensions/xep-0166.html">XEP-0166: Jingle</a>.
- * Adapters.
+ * Content adapters.
  */
 package org.jivesoftware.smackx.jingle.adapter;

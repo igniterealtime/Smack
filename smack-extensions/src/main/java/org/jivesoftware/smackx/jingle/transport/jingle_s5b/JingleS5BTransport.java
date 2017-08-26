@@ -33,7 +33,7 @@ import org.jivesoftware.smackx.bytestreams.socks5.Socks5Proxy;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5Utils;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.jingle.JingleManager;
-import org.jivesoftware.smackx.jingle.callbacks.JingleTransportCallback;
+import org.jivesoftware.smackx.jingle.callback.JingleTransportCallback;
 import org.jivesoftware.smackx.jingle.component.JingleSession;
 import org.jivesoftware.smackx.jingle.component.JingleTransport;
 import org.jivesoftware.smackx.jingle.component.JingleTransportCandidate;
