@@ -213,7 +213,7 @@ public final class Roster extends Manager {
      * Returns the default subscription processing mode to use when a new Roster is created. The
      * subscription processing mode dictates what action Smack will take when subscription
      * requests from other users are made. The default subscription mode
-     * is {@link SubscriptionMode#accept_all}.
+     * is {@link SubscriptionMode#reject_all}.
      *
      * @return the default subscription mode to use for new Rosters
      */
@@ -225,7 +225,7 @@ public final class Roster extends Manager {
      * Sets the default subscription processing mode to use when a new Roster is created. The
      * subscription processing mode dictates what action Smack will take when subscription
      * requests from other users are made. The default subscription mode
-     * is {@link SubscriptionMode#accept_all}.
+     * is {@link SubscriptionMode#reject_all}.
      *
      * @param subscriptionMode the default subscription mode to use for new Rosters.
      */
@@ -383,7 +383,7 @@ public final class Roster extends Manager {
     /**
      * Returns the subscription processing mode, which dictates what action
      * Smack will take when subscription requests from other users are made.
-     * The default subscription mode is {@link SubscriptionMode#accept_all}.
+     * The default subscription mode is {@link SubscriptionMode#reject_all}.
      * <p>
      * If using the manual mode, a PacketListener should be registered that
      * listens for Presence packets that have a type of
@@ -399,7 +399,7 @@ public final class Roster extends Manager {
     /**
      * Sets the subscription processing mode, which dictates what action
      * Smack will take when subscription requests from other users are made.
-     * The default subscription mode is {@link SubscriptionMode#accept_all}.
+     * The default subscription mode is {@link SubscriptionMode#reject_all}.
      * <p>
      * If using the manual mode, a PacketListener should be registered that
      * listens for Presence packets that have a type of
@@ -1402,14 +1402,14 @@ public final class Roster extends Manager {
     public enum SubscriptionMode {
 
         /**
-         * Automatically accept all subscription and unsubscription requests. This is
-         * the default mode and is suitable for simple client. More complex client will
+         * Automatically accept all subscription and unsubscription requests.
+         * This is suitable for simple clients. More complex clients will
          * likely wish to handle subscription requests manually.
          */
         accept_all,
 
         /**
-         * Automatically reject all subscription requests.
+         * Automatically reject all subscription requests. This is the default mode.
          */
         reject_all,
 
