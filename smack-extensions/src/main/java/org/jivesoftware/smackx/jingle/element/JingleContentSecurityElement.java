@@ -21,6 +21,8 @@ import org.jivesoftware.smackx.jingle.component.JingleSecurity;
 
 /**
  * {@link ExtensionElement} representing a {@link JingleSecurity}.
+ *  <pre> {@code
+ *
  * <jingle>
  *     <content>
  *         <description/>
@@ -28,6 +30,9 @@ import org.jivesoftware.smackx.jingle.component.JingleSecurity;
  *         <security/> <- That's me :)
  *     </content>
  * </jingle>
+ *
+ * } </pre>
+ *
  */
 public abstract class JingleContentSecurityElement implements ExtensionElement {
 

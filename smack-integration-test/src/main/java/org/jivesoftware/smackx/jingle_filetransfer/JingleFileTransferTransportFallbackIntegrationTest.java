@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -97,8 +96,6 @@ public class JingleFileTransferTransportFallbackIntegrationTest extends Abstract
         bftm.addIncomingFileOfferListener(new IncomingFileOfferListener() {
             @Override
             public void onIncomingFileOffer(IncomingFileOfferController offer) {
-                LOGGER.log(Level.INFO, "INCOMING FILE TRANSFER!");
-
                 offer.addProgressListener(new ProgressListener() {
                     @Override
                     public void started() {
@@ -149,12 +146,10 @@ public class JingleFileTransferTransportFallbackIntegrationTest extends Abstract
             fi = new FileInputStream(target);
             fi.read(tBytes);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not read files.");
-            fail();
+            fail("Could not read files: " + e.toString() + " " + e.getMessage());
         }
 
         assertArrayEquals(sBytes, tBytes);
-        LOGGER.log(Level.INFO, "SUCCESSFULLY SENT AND RECEIVED");
     }
 
     @After

@@ -24,11 +24,15 @@ import org.jivesoftware.smackx.jingle.component.JingleContent;
 
 /**
  * {@link NamedElement} representing a {@link JingleContent}.
+ * <pre> {@code
+ *
  * <jingle>
  *     <content> <- Me.
  *         ...
  *     </content>
  * </jingle>
+ *
+ * } </pre>
  */
 public final class JingleContentElement implements NamedElement {
 

@@ -163,7 +163,7 @@ public class JingleSession {
      * @throws SmackException.NoResponseException
      */
     public void sendAccept(XMPPConnection connection) throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
-        LOGGER.log(Level.INFO, "Accepted session.");
+        LOGGER.log(Level.FINE, "Accepted session.");
         if (this.sessionState != SessionState.pending) {
             throw new IllegalStateException("Session is not in pending state.");
         }
@@ -233,17 +233,6 @@ public class JingleSession {
             terminateSession(JingleReasonElement.Reason.success);
             return;
         }
-
-        // Session has still active contents left.
-        /*
-        try {
-            jingleManager.getConnection().createStanzaCollectorAndSend(JingleElement.createSessionTerminateContentCancel(
-                    getPeer(), getSessionId(), jingleContent.getCreator(), jingleContent.getName()));
-        } catch (SmackException.NotConnectedException | InterruptedException e) {
-            LOGGER.log(Level.SEVERE, "Could not send content-cancel: " + e, e);
-        }
-        contents.remove(jingleContent.getName());
-        */
     }
 
     /**
@@ -253,7 +242,8 @@ public class JingleSession {
      */
     void onContentCancel(JingleContent jingleContent) {
         if (contents.get(jingleContent.getName()) == null) {
-            LOGGER.log(Level.WARNING, "Session does not contain content " + jingleContent.getName() + ". Ignore onContentCancel.");
+            LOGGER.log(Level.WARNING, "Session does not contain content " + jingleContent.getName() +
+                    ". Ignore onContentCancel.");
             return;
         }
 
@@ -261,10 +251,13 @@ public class JingleSession {
             terminateSession(JingleReasonElement.Reason.cancel);
             jingleManager.removeSession(this);
         } else {
+            JingleElement cancel = JingleElement.createSessionTerminateContentCancel(
+                    getPeer(), getSessionId(), jingleContent.getCreator(), jingleContent.getName());
             try {
-                jingleManager.getConnection().createStanzaCollectorAndSend(JingleElement.createSessionTerminateContentCancel(getPeer(), getSessionId(), jingleContent.getCreator(), jingleContent.getName()));
-            } catch (SmackException.NotConnectedException | InterruptedException e) {
-                LOGGER.log(Level.SEVERE, "Could not send content-cancel: " + e, e);
+                jingleManager.getConnection().createStanzaCollectorAndSend(cancel).nextResultOrThrow();
+            } catch (SmackException.NotConnectedException | InterruptedException | XMPPException.XMPPErrorException |
+                    SmackException.NoResponseException e) {
+                LOGGER.log(Level.SEVERE, "Could not send content-cancel.", e);
             }
             contents.remove(jingleContent.getName());
         }
@@ -275,10 +268,11 @@ public class JingleSession {
      * @param reason reason of termination.
      */
     public void terminateSession(JingleReasonElement.Reason reason) {
+        JingleElement terminate = JingleElement.createSessionTerminate(getPeer(), getSessionId(), reason);
         try {
-            jingleManager.getConnection().createStanzaCollectorAndSend(JingleElement.createSessionTerminate(getPeer(), getSessionId(), reason));
+            jingleManager.getConnection().sendStanza(terminate);
         } catch (SmackException.NotConnectedException | InterruptedException e) {
-            LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
+            LOGGER.log(Level.SEVERE, "Could not send session-terminate.", e);
         }
         this.sessionState = SessionState.ended;
         jingleManager.removeSession(this);
@@ -360,10 +354,13 @@ public class JingleSession {
                 if (descriptionManager == null) {
 
                     LOGGER.log(Level.WARNING, "Unsupported description type: " + description.getNamespace());
+                    JingleElement terminate = JingleElement.createSessionTerminate(getPeer(), getSessionId(),
+                            JingleReasonElement.Reason.unsupported_applications);
                     try {
-                        jingleManager.getConnection().createStanzaCollectorAndSend(JingleElement.createSessionTerminate(getPeer(), getSessionId(), JingleReasonElement.Reason.unsupported_applications));
-                    } catch (SmackException.NotConnectedException | InterruptedException e) {
-                        LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
+                        jingleManager.getConnection().createStanzaCollectorAndSend(terminate).nextResultOrThrow();
+                    } catch (SmackException.NotConnectedException | InterruptedException | XMPPException.XMPPErrorException |
+                            SmackException.NoResponseException e) {
+                        LOGGER.log(Level.SEVERE, "Could not send session-terminate.", e);
                     }
 
                 } else {
@@ -440,7 +437,8 @@ public class JingleSession {
     private IQ handleContentAdd(JingleElement request) {
         final JingleContent proposed = getSoleProposedContentOrThrow(request);
 
-        final JingleDescriptionManager descriptionManager = jingleManager.getDescriptionManager(proposed.getDescription().getNamespace());
+        final JingleDescriptionManager descriptionManager = jingleManager.getDescriptionManager(proposed.getDescription()
+                .getNamespace());
 
         if (descriptionManager == null) {
             throw new AssertionError("DescriptionManager is null: " + proposed.getDescription().getNamespace());
@@ -493,26 +491,6 @@ public class JingleSession {
      */
     private IQ handleContentRemove(final JingleElement request) {
         return IQ.createErrorResponse(request, XMPPError.Condition.feature_not_implemented);
-        /*
-        for (JingleContentElement r : request.getContents()) {
-            final JingleContent removed = contents.get(r.getName());
-
-            if (removed == null) {
-                throw new AssertionError("Illegal content name!");
-            }
-
-            contents.remove(removed.getName());
-
-            Async.go(new Runnable() {
-                @Override
-                public void run() {
-                    removed.handleContentRemove(JingleSession.this, jingleManager.getConnection());
-                }
-            });
-        }
-
-        return IQ.createResultIQ(request);
-        */
     }
 
     /**

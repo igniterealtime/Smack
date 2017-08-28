@@ -20,6 +20,8 @@ import org.jivesoftware.smack.packet.NamedElement;
 
 /**
  * An element found usually in 'description' elements.
+ * <pre> {@code
+ *
  * <jingle>
  *     <content>
  *         <description>
@@ -29,7 +31,6 @@ import org.jivesoftware.smack.packet.NamedElement;
  *         <security/>
  *     </content>
  * </jingle>
- *
  */
 public abstract class JingleContentDescriptionChildElement implements NamedElement {
 

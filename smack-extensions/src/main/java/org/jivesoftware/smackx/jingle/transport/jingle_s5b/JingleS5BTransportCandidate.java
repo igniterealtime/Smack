@@ -103,12 +103,12 @@ public class JingleS5BTransportCandidate extends JingleTransportCandidate<Jingle
                     if (dstAddr == null) {
                         dstAddr = Socks5Utils.createDigest(transport.getStreamId(), transport.getParent().getParent().getPeer(), transport.getParent().getParent().getOurJid());
                     }
-                    LOGGER.log(Level.INFO, "Connect to foreign candidate " + getCandidateId() + " using " + dstAddr);
-                    LOGGER.log(Level.INFO, getStreamHost().getAddress() + ":" + getStreamHost().getPort() + " " + getStreamHost().getJID().toString() + " " + getType());
+                    LOGGER.log(Level.FINE, "Connect to foreign candidate " + getCandidateId() + " using " + dstAddr);
+                    LOGGER.log(Level.FINE, getStreamHost().getAddress() + ":" + getStreamHost().getPort() + " " + getStreamHost().getJID().toString() + " " + getType());
                     client = new Socks5Client(getStreamHost(), dstAddr);
                 } else {
-                    LOGGER.log(Level.INFO, "Connect to our candidate " + getCandidateId() + " using " + transport.getOurDstAddr());
-                    LOGGER.log(Level.INFO, getStreamHost().getAddress() + ":" + getStreamHost().getPort() + " " + getStreamHost().getJID().toString() + " " + getType());
+                    LOGGER.log(Level.FINE, "Connect to our candidate " + getCandidateId() + " using " + transport.getOurDstAddr());
+                    LOGGER.log(Level.FINE, getStreamHost().getAddress() + ":" + getStreamHost().getPort() + " " + getStreamHost().getJID().toString() + " " + getType());
                     JingleContent content = transport.getParent();
                     JingleSession session = content.getParent();
                     client = new Socks5ClientForInitiator(getStreamHost(), transport.getOurDstAddr(), session.getJingleManager().getConnection(), transport.getStreamId(), session.getPeer());
@@ -117,7 +117,7 @@ public class JingleS5BTransportCandidate extends JingleTransportCandidate<Jingle
                 break;
 
             default:
-                LOGGER.log(Level.INFO, "Unsupported candidate type: " + getType());
+                LOGGER.log(Level.FINE, "Unsupported candidate type: " + getType());
                 break;
         }
 

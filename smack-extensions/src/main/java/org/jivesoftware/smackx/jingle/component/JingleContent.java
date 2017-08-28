@@ -182,6 +182,7 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
      * @param connection connection.
      */
     void handleContentAccept(JingleElement request, XMPPConnection connection) {
+        LOGGER.log(Level.FINE, "Received content-accept from " + request.getFrom() + " for session " + request.getSid() + " and content " + getName());
         start(connection);
     }
 
@@ -192,7 +193,7 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
      * @return result.
      */
     IQ handleSessionAccept(JingleElement request, XMPPConnection connection) {
-        LOGGER.log(Level.INFO, "RECEIVED SESSION ACCEPT!");
+        LOGGER.log(Level.FINE, "Received session-accept from " + request.getResponder() + " for session " + request.getSid());
         JingleContentElement contentElement = null;
         for (JingleContentElement c : request.getContents()) {
             if (c.getName().equals(getName())) {
@@ -310,9 +311,10 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
      */
     private IQ handleTransportReject(JingleElement request, final XMPPConnection connection) {
         if (pendingReplacingTransport == null) {
-            // TODO: Throw other exception?
-            throw new AssertionError("We didn't try to replace the transport.");
+            LOGGER.log(Level.WARNING, "Received transport-reject, but apparently we did not try to replace the transport.");
+            return JingleElement.createJingleErrorOutOfOrder(request);
         }
+
         Async.go(new Runnable() {
             @Override
             public void run() {
@@ -321,10 +323,11 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
                 try {
                     replaceTransport(transportBlacklist, connection);
                 } catch (SmackException.NotConnectedException | SmackException.NoResponseException | XMPPException.XMPPErrorException | InterruptedException e) {
-                    LOGGER.log(Level.SEVERE, "Could not replace transport: " + e, e);
+                    LOGGER.log(Level.SEVERE, "Could not replace transport.", e);
                 }
             }
         });
+
         return IQ.createResultIQ(request);
     }
 
@@ -343,9 +346,11 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
                 @Override
                 public void run() {
                     try {
-                        connection.createStanzaCollectorAndSend(JingleElement.createJingleErrorTieBreak(request)).nextResultOrThrow();
-                    } catch (SmackException.NoResponseException | SmackException.NotConnectedException | InterruptedException | XMPPException.XMPPErrorException e) {
-                        LOGGER.log(Level.SEVERE, "Could not send tie-break: " + e, e);
+                        connection.createStanzaCollectorAndSend(JingleElement.createJingleErrorTieBreak(request))
+                                .nextResultOrThrow();
+                    } catch (SmackException.NoResponseException | SmackException.NotConnectedException |
+                            InterruptedException | XMPPException.XMPPErrorException e) {
+                        LOGGER.log(Level.SEVERE, "Could not send tie-break.", e);
                     }
                 }
             });
@@ -374,10 +379,13 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
             Async.go(new Runnable() {
                 @Override
                 public void run() {
+                    JingleElement reject = JingleElement.createTransportReject(session.getOurJid(),
+                            session.getPeer(), session.getSessionId(), getCreator(), getName(), transportElement);
                     try {
-                        getParent().getJingleManager().getConnection().createStanzaCollectorAndSend(JingleElement.createTransportReject(session.getOurJid(), session.getPeer(), session.getSessionId(), getCreator(), getName(), transportElement));
-                    } catch (SmackException.NotConnectedException | InterruptedException e) {
-                        LOGGER.log(Level.SEVERE, "Could not send transport-reject: " + e, e);
+                        connection.createStanzaCollectorAndSend(reject).nextResultOrThrow();
+                    } catch (SmackException.NotConnectedException | InterruptedException |
+                            XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
+                        LOGGER.log(Level.SEVERE, "Could not send transport-reject.", e);
                     }
                 }
             });
@@ -390,10 +398,11 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
             Async.go(new Runnable() {
                 @Override
                 public void run() {
+                    JingleElement accept = JingleElement.createTransportAccept(session.getOurJid(), session.getPeer(), session.getSessionId(), getCreator(), getName(), transport.getElement());
                     try {
-                        getParent().getJingleManager().getConnection().createStanzaCollectorAndSend(JingleElement.createTransportAccept(session.getOurJid(), session.getPeer(), session.getSessionId(), getCreator(), getName(), transport.getElement()));
-                    } catch (SmackException.NotConnectedException | InterruptedException e) {
-                        LOGGER.log(Level.SEVERE, "Could not send transport-accept: " + e, e);
+                        getParent().getJingleManager().getConnection().createStanzaCollectorAndSend(accept).nextResultOrThrow();
+                    } catch (SmackException.NotConnectedException | InterruptedException | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
+                        LOGGER.log(Level.SEVERE, "Could not send transport-accept.", e);
                     }
                 }
             });
@@ -579,17 +588,17 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
             public void run() {
                 try {
                     if (isReceiving()) {
-                        LOGGER.log(Level.INFO, "Establish incoming bytestream.");
+                        LOGGER.log(Level.FINE, "Establish incoming bytestream.");
                         getTransport().establishIncomingBytestreamSession(connection, JingleContent.this, getParent());
                     } else if (isSending()) {
-                        LOGGER.log(Level.INFO, "Establish outgoing bytestream.");
+                        LOGGER.log(Level.FINE, "Establish outgoing bytestream.");
                         getTransport().establishOutgoingBytestreamSession(connection, JingleContent.this, getParent());
                     } else {
-                        LOGGER.log(Level.INFO, "Neither receiving, nor sending. Assume receiving.");
+                        LOGGER.log(Level.FINE, "Neither receiving, nor sending. Assume receiving.");
                         getTransport().establishIncomingBytestreamSession(connection, JingleContent.this, getParent());
                     }
                 } catch (SmackException.NotConnectedException | InterruptedException e) {
-                    LOGGER.log(Level.SEVERE, "Error establishing connection: " + e, e);
+                    LOGGER.log(Level.SEVERE, "Error establishing connection.", e);
                 }
             }
         });
@@ -597,17 +606,17 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
 
     @Override
     public void onTransportReady(BytestreamSession bytestreamSession) {
-        LOGGER.log(Level.INFO, "TransportReady: " + (isReceiving() ? "Receive" : "Send"));
+        LOGGER.log(Level.FINE, "TransportReady: " + (isReceiving() ? "Receive" : "Send"));
         if (bytestreamSession == null) {
             throw new AssertionError("bytestreamSession MUST NOT be null at this point.");
         }
 
         if (security != null) {
             if (isReceiving()) {
-                LOGGER.log(Level.INFO, "Decrypt incoming Bytestream.");
+                LOGGER.log(Level.FINE, "Decrypt incoming Bytestream.");
                 getSecurity().decryptIncomingBytestream(bytestreamSession, this);
             } else if (isSending()) {
-                LOGGER.log(Level.INFO, "Encrypt outgoing Bytestream.");
+                LOGGER.log(Level.FINE, "Encrypt outgoing Bytestream.");
                 getSecurity().encryptOutgoingBytestream(bytestreamSession, this);
             }
         } else {
@@ -625,7 +634,7 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
             try {
                 replaceTransport(getTransportBlacklist(), getParent().getJingleManager().getConnection());
             } catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException | XMPPException.XMPPErrorException e1) {
-                LOGGER.log(Level.SEVERE, "Could not send transport-replace: " + e, e);
+                LOGGER.log(Level.SEVERE, "Could not send transport-replace.", e);
             }
         }
     }
@@ -637,7 +646,7 @@ public class JingleContent implements JingleTransportCallback, JingleSecurityCal
 
     @Override
     public void onSecurityFailed(Exception e) {
-        LOGGER.log(Level.SEVERE, "Security failed: " + e, e);
+        LOGGER.log(Level.SEVERE, "Security failed.", e);
     }
 
     /**
