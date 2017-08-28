@@ -133,7 +133,7 @@ public class JetSecurity extends JingleSecurity<JetSecurityElement> {
         try {
             decryptEncryptionKey(method, sender);
         } catch (InterruptedException | NoSuchPaddingException | InvalidKeyException | NoSuchProviderException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException | JingleEnvelopeManager.JingleEncryptionException e) {
-            LOGGER.log(Level.SEVERE, "Could not decrypt security key: " + e, e);
+            LOGGER.log(Level.SEVERE, "Could not decrypt security key.", e);
         }
     }
 

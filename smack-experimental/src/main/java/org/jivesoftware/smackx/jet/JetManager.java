@@ -27,8 +27,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.HashMap;
 import java.util.WeakHashMap;
-import java.util.logging.Logger;
-
 import javax.crypto.NoSuchPaddingException;
 
 import org.jivesoftware.smack.Manager;
@@ -59,8 +57,6 @@ import org.jxmpp.jid.FullJid;
  * @see <a href="https://geekplace.eu/xeps/xep-jet/xep-jet.html">Proto-XEP</a>
  */
 public final class JetManager extends Manager implements JingleDescriptionManager {
-
-    private static final Logger LOGGER = Logger.getLogger(JetManager.class.getName());
 
     private static final WeakHashMap<XMPPConnection, JetManager> INSTANCES = new WeakHashMap<>();
     private static final HashMap<String, JingleEnvelopeManager> envelopeManagers = new HashMap<>();
