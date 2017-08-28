@@ -136,7 +136,7 @@ public final class JingleManager extends Manager {
                             if (jingle.getAction() == JingleAction.session_initiate) {
                                 //fresh. phew!
                                 try {
-                                    LOGGER.log(Level.INFO, "Create new session with " + jingle.getFrom() + ": " + jingle.getSid());
+                                    LOGGER.log(Level.FINE, "Create new session with " + jingle.getFrom() + ": " + jingle.getSid());
                                     session = JingleSession.fromSessionInitiate(JingleManager.this, jingle);
                                     jingleSessions.put(fullJidAndSessionId, session);
                                 } catch (UnsupportedDescriptionException e) {

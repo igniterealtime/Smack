@@ -88,11 +88,11 @@ public class JingleIBBTransport extends JingleTransport<JingleIBBTransportElemen
     @Override
     public void establishIncomingBytestreamSession(final XMPPConnection connection, final JingleTransportCallback callback, final JingleSession session) {
         final InBandBytestreamManager inBandBytestreamManager = InBandBytestreamManager.getByteStreamManager(connection);
-        LOGGER.log(Level.INFO, "Listen for incoming IBB transports from " + session.getPeer() + ":" + getStreamId());
+        LOGGER.log(Level.FINE, "Listen for incoming IBB transports from " + session.getPeer() + ":" + getStreamId());
         InBandBytestreamListener bytestreamListener = new InBandBytestreamListener() {
             @Override
             public void incomingBytestreamRequest(InBandBytestreamRequest request) {
-                LOGGER.log(Level.INFO, "Incoming IBB stream: " + request.getFrom().asFullJidIfPossible() + ":" + request.getSessionID());
+                LOGGER.log(Level.FINE, "Incoming IBB stream: " + request.getFrom().asFullJidIfPossible() + ":" + request.getSessionID());
                 if (request.getFrom().asFullJidIfPossible().equals(session.getPeer())
                         && request.getSessionID().equals(getStreamId())) {
 

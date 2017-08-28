@@ -22,6 +22,8 @@ import org.jivesoftware.smack.packet.NamedElement;
  * Abstract JingleContentTransportInfo element.
  * The JingleContentTransportInfo element can have certain states defined by the respective Transport XEP.
  * Examples are Jingle Socks5Bytestream's <candidate-used/> (Example 5), <candidate-error/> (Example 7) etc.
+ *
+ * <pre> {@code
  * <jingle>
  *     <content>
  *         <description/>
@@ -31,6 +33,7 @@ import org.jivesoftware.smack.packet.NamedElement;
  *         <security/>
  *     </content>
  * </jingle>
+ * } </pre>
  */
 public abstract class JingleContentTransportInfoElement implements NamedElement {
 

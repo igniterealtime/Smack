@@ -168,7 +168,7 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
     }
 
     public void notifyIncomingFileOfferListeners(JingleIncomingFileOffer offer) {
-        LOGGER.log(Level.INFO, "Incoming File transfer: [" + offer.getNamespace() + ", "
+        LOGGER.log(Level.FINE, "Incoming File transfer: [" + offer.getNamespace() + ", "
                 + offer.getParent().getTransport().getNamespace() + ", "
                 + (offer.getParent().getSecurity() != null ? offer.getParent().getSecurity().getNamespace() : "") + "]");
         for (IncomingFileOfferListener l : offerListeners) {

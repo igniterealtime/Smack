@@ -276,7 +276,7 @@ public final class JingleS5BTransportManager extends Manager implements JingleTr
                     localStreamHosts = queryLocalStreamHosts();
                     availableStreamHosts = queryServersStreamHosts();
                 } catch (InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
-                    LOGGER.log(Level.WARNING, "Could not query available StreamHosts: " + e, e);
+                    LOGGER.log(Level.WARNING, "Could not query available StreamHosts.", e);
                 }
             }
         }

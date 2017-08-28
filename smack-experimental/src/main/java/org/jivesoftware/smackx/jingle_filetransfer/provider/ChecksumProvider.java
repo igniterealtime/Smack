@@ -36,7 +36,7 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class ChecksumProvider extends ExtensionElementProvider<ChecksumElement> {
 
-    private static HashElementProvider hashProvider = new HashElementProvider();
+    private static final HashElementProvider hashProvider = new HashElementProvider();
 
     @Override
     public ChecksumElement parse(XmlPullParser parser, int initialDepth) throws Exception {

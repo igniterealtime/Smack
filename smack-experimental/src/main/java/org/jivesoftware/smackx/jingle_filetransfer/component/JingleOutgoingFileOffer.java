@@ -92,13 +92,13 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
             outputStream.close();
 
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Exception while sending file: " + e, e);
+            LOGGER.log(Level.SEVERE, "Exception while sending file.", e);
         } finally {
             state = State.ended;
             try {
                 source.close();
             } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Could not close FileInputStream: " + e, e);
+                LOGGER.log(Level.SEVERE, "Could not close FileInputStream.", e);
             }
         }
 

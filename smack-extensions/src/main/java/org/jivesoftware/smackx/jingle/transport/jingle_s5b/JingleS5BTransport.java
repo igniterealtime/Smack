@@ -219,7 +219,7 @@ public class JingleS5BTransport extends JingleTransport<JingleS5BTransportElemen
     @Override
     public void establishIncomingBytestreamSession(XMPPConnection connection, JingleTransportCallback callback, JingleSession session)
             throws SmackException.NotConnectedException, InterruptedException {
-        LOGGER.log(Level.INFO, "Establishing incoming bytestream.");
+        LOGGER.log(Level.FINE, "Establishing incoming bytestream.");
         this.callback = callback;
         establishBytestreamSession(connection);
     }
@@ -227,7 +227,7 @@ public class JingleS5BTransport extends JingleTransport<JingleS5BTransportElemen
     @Override
     public void establishOutgoingBytestreamSession(XMPPConnection connection, JingleTransportCallback callback, JingleSession session)
             throws SmackException.NotConnectedException, InterruptedException {
-        LOGGER.log(Level.INFO, "Establishing outgoing bytestream.");
+        LOGGER.log(Level.FINE, "Establishing outgoing bytestream.");
         this.callback = callback;
         establishBytestreamSession(connection);
     }
@@ -255,7 +255,7 @@ public class JingleS5BTransport extends JingleTransport<JingleS5BTransportElemen
     private JingleS5BTransportCandidate connectToCandidates(int timeout) {
 
         if (getTheirCandidates().size() == 0) {
-            LOGGER.log(Level.INFO, "They provided 0 candidates.");
+            LOGGER.log(Level.FINE, "They provided 0 candidates.");
             return CANDIDATE_FAILURE;
         }
 
@@ -265,7 +265,7 @@ public class JingleS5BTransport extends JingleTransport<JingleS5BTransportElemen
             try {
                 return candidate.connect(_timeout, true);
             } catch (IOException | TimeoutException | InterruptedException | SmackException | XMPPException e) {
-                LOGGER.log(Level.WARNING, "Exception while connecting to candidate: " + e, e);
+                LOGGER.log(Level.FINE, "Exception while connecting to candidate: " + e, e);
             }
         }
 
@@ -284,17 +284,17 @@ public class JingleS5BTransport extends JingleTransport<JingleS5BTransportElemen
 
         if (ourSelectedCandidate == null || theirSelectedCandidate == null) {
             // Not yet ready if we or peer did not yet decide on a candidate.
-            LOGGER.log(Level.INFO, "Not ready.");
+            LOGGER.log(Level.FINEST, "Not ready.");
             return;
         }
 
         if (ourSelectedCandidate == CANDIDATE_FAILURE && theirSelectedCandidate == CANDIDATE_FAILURE) {
-            LOGGER.log(Level.INFO, "Failure.");
+            LOGGER.log(Level.FINE, "Failure.");
             callback.onTransportFailed(new FailedTransportException(null));
             return;
         }
 
-        LOGGER.log(Level.INFO, (session.isInitiator() ? "Initiator" : "Responder") + " is ready.");
+        LOGGER.log(Level.FINE, (session.isInitiator() ? "Initiator" : "Responder") + " is ready.");
 
         //Determine nominated candidate.
         JingleS5BTransportCandidate nominated;
@@ -318,7 +318,7 @@ public class JingleS5BTransport extends JingleTransport<JingleS5BTransportElemen
 
         if (nominated == theirSelectedCandidate) {
 
-            LOGGER.log(Level.INFO, "Their choice, so our proposed candidate is used.");
+            LOGGER.log(Level.FINE, "Their choice, so our proposed candidate is used.");
 
             try {
                 nominated = nominated.connect(MAX_TIMEOUT, false);
@@ -331,7 +331,7 @@ public class JingleS5BTransport extends JingleTransport<JingleS5BTransportElemen
                         try {
                             session.getJingleManager().getConnection().createStanzaCollectorAndSend(JingleS5BTransportManager.createProxyError(JingleS5BTransport.this));
                         } catch (SmackException.NotConnectedException | InterruptedException e1) {
-                            LOGGER.log(Level.SEVERE, "Could not send proxy error: " + e, e);
+                            LOGGER.log(Level.SEVERE, "Could not send proxy error.", e);
                         }
                     }
                 });
@@ -341,7 +341,7 @@ public class JingleS5BTransport extends JingleTransport<JingleS5BTransportElemen
             }
 
             if (isProxy) {
-                LOGGER.log(Level.INFO, "Send candidate-activate.");
+                LOGGER.log(Level.FINE, "Send candidate-activate.");
                 JingleElement candidateActivate = JingleS5BTransportManager.createCandidateActivated((JingleS5BTransport) nominated.getParent(), nominated);
 
                 try {
@@ -354,20 +354,20 @@ public class JingleS5BTransport extends JingleTransport<JingleS5BTransportElemen
                 }
             }
 
-            LOGGER.log(Level.INFO, "Start transmission on " + nominated.getCandidateId());
+            LOGGER.log(Level.FINE, "Start transmission on " + nominated.getCandidateId());
             this.bytestreamSession = new Socks5BytestreamSession(nominated.getSocket(), !isProxy);
             callback.onTransportReady(this.bytestreamSession);
 
         }
         //Our choice
         else {
-            LOGGER.log(Level.INFO, "Our choice, so their candidate was used.");
+            LOGGER.log(Level.FINE, "Our choice, so their candidate was used.");
             if (!isProxy) {
-                LOGGER.log(Level.INFO, "Start transmission on " + nominated.getCandidateId());
+                LOGGER.log(Level.FINE, "Start transmission on " + nominated.getCandidateId());
                 this.bytestreamSession = new Socks5BytestreamSession(nominated.getSocket(), true);
                 callback.onTransportReady(this.bytestreamSession);
             } else {
-                LOGGER.log(Level.INFO, "Our choice was their external proxy. wait for candidate-activate.");
+                LOGGER.log(Level.FINE, "Our choice was their external proxy. wait for candidate-activate.");
             }
         }
     }
@@ -419,7 +419,7 @@ public class JingleS5BTransport extends JingleTransport<JingleS5BTransportElemen
                 jingleManager.getConnection().sendStanza(JingleElement.createJingleErrorOutOfOrder(wrapping));
                 //jingleManager.getConnection().createStanzaCollectorAndSend(JingleElement.createJingleErrorOutOfOrder(wrapping));
             } catch (SmackException.NotConnectedException | InterruptedException e) {
-                LOGGER.log(Level.SEVERE, "Could not respond to candidate-used transport-info: " + e, e);
+                LOGGER.log(Level.SEVERE, "Could not respond to candidate-used transport-info.", e);
             }
             return;
         }
@@ -432,8 +432,9 @@ public class JingleS5BTransport extends JingleTransport<JingleS5BTransportElemen
         }
 
         if (theirSelectedCandidate == null) {
-            LOGGER.log(Level.SEVERE, "ILLEGAL CANDIDATE ID!!!");
+            LOGGER.log(Level.SEVERE, "Unknown candidateID.");
             //TODO: Alert! Illegal candidateId!
+            return;
         }
 
         connectIfReady();
