@@ -26,6 +26,8 @@ import org.jivesoftware.smackx.jingle.component.JingleDescription;
 
 /**
  * {@link ExtensionElement} representing a {@link JingleDescription}.
+ * <pre> {@code
+ *
  * <jingle>
  *     <content>
  *         <description/> <- This element is us.
@@ -34,6 +36,7 @@ import org.jivesoftware.smackx.jingle.component.JingleDescription;
  *     </content>
  * </jingle>
  *
+ * } </pre>
  */
 public abstract class JingleContentDescriptionElement implements ExtensionElement {
 

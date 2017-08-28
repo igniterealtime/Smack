@@ -111,7 +111,6 @@ public class JingleTransportIntegrationTest extends AbstractSmackIntegrationTest
         rTransport.establishIncomingBytestreamSession(rSession.getJingleManager().getConnection(), new JingleTransportCallback() {
             @Override
             public void onTransportReady(final BytestreamSession bytestreamSession) {
-                LOGGER.log(Level.INFO, "Receiving!");
                 Async.go(new Runnable() {
                     @Override
                     public void run() {
@@ -128,11 +127,7 @@ public class JingleTransportIntegrationTest extends AbstractSmackIntegrationTest
                                 } else {
                                     break;
                                 }
-                                LOGGER.log(Level.INFO, "Read " + r + " bytes (" + read + " of " + size + ")");
                             }
-
-                            LOGGER.log(Level.INFO, "Success!");
-
                             bytestreamSession.getInputStream().close();
                             recvPoint.signal();
                         } catch (IOException e) {
@@ -144,15 +139,13 @@ public class JingleTransportIntegrationTest extends AbstractSmackIntegrationTest
 
             @Override
             public void onTransportFailed(Exception e) {
-                LOGGER.log(Level.SEVERE, e.toString());
-                recvPoint.signal();
+                recvPoint.signalFailure(e.toString());
             }
         }, rSession);
 
         sTransport.establishOutgoingBytestreamSession(sSession.getJingleManager().getConnection(), new JingleTransportCallback() {
             @Override
             public void onTransportReady(final BytestreamSession bytestreamSession) {
-                LOGGER.log(Level.INFO, "Sending!");
                 Async.go(new Runnable() {
                     @Override
                     public void run() {
@@ -164,7 +157,6 @@ public class JingleTransportIntegrationTest extends AbstractSmackIntegrationTest
                         } catch (IOException e) {
                             fail(e.toString());
                         }
-                        LOGGER.log(Level.INFO, "Sending finished!");
                     }
                 });
             }

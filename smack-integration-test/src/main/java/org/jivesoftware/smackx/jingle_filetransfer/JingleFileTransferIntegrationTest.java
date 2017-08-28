@@ -23,9 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -83,12 +80,9 @@ public class JingleFileTransferIntegrationTest extends AbstractSmackIntegrationT
         JingleFileTransferManager aftm = JingleFileTransferManager.getInstanceFor(conOne);
         JingleFileTransferManager bftm = JingleFileTransferManager.getInstanceFor(conTwo);
 
-        final ArrayList<Future<Void>> receiveFuture = new ArrayList<>(); //Uglaay
-
         bftm.addIncomingFileOfferListener(new IncomingFileOfferListener() {
             @Override
             public void onIncomingFileOffer(IncomingFileOfferController offer) {
-                LOGGER.log(Level.INFO, "INCOMING FILE TRANSFER!");
 
                 offer.addProgressListener(new ProgressListener() {
                     @Override
@@ -140,12 +134,10 @@ public class JingleFileTransferIntegrationTest extends AbstractSmackIntegrationT
             fi = new FileInputStream(target);
             fi.read(tBytes);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not read files.");
-            fail();
+            fail("Could not read files: " + e.toString() + " " + e.getMessage());
         }
 
         assertArrayEquals(sBytes, tBytes);
-        LOGGER.log(Level.INFO, "SUCCESSFULLY SENT AND RECEIVED");
 
     }
 

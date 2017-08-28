@@ -31,6 +31,7 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChi
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferElement;
 import org.jivesoftware.smackx.jingle_filetransfer.element.Range;
 
+import org.jxmpp.util.XmppDateTime;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -54,8 +55,7 @@ public class JingleFileTransferProvider
             if (tag == START_TAG) {
                 switch (elem) {
                     case JingleFileTransferChildElement.ELEM_DATE:
-                        //builder.setDate(XmppDateTime.parseXEP0082Date(parser.nextText()));
-                        parser.nextText();
+                        builder.setDate(XmppDateTime.parseXEP0082Date(parser.nextText()));
                         break;
 
                     case JingleFileTransferChildElement.ELEM_DESC:

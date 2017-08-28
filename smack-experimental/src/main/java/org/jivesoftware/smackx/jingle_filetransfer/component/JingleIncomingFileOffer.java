@@ -75,10 +75,10 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
         MessageDigest digest = null;
         if (hashElement != null) {
             digest = HashManager.getMessageDigest(hashElement.getAlgorithm());
-            LOGGER.log(Level.INFO, "File offer had checksum: " + digest.toString() + ": " + hashElement.getHashB64());
+            LOGGER.log(Level.FINE, "File offer had checksum: " + digest.toString() + ": " + hashElement.getHashB64());
         }
 
-        LOGGER.log(Level.INFO, "Receive file");
+        LOGGER.log(Level.FINE, "Receive file");
 
         InputStream inputStream = null;
         try {
@@ -97,7 +97,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
                 }
                 target.write(bufbuf, 0, length);
                 read += length;
-                LOGGER.log(Level.INFO, "Read " + read + " (" + length + ") of " + metadata.getSize() + " bytes.");
+                LOGGER.log(Level.FINER, "Read " + read + " (" + length + ") of " + metadata.getSize() + " bytes.");
 
                 percentage = ((float) read) / ((float) metadata.getSize());
 
@@ -105,26 +105,26 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
                     break;
                 }
             }
-            LOGGER.log(Level.INFO, "Reading/Writing finished.");
+            LOGGER.log(Level.FINE, "Reading/Writing finished.");
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Cannot get InputStream from BytestreamSession: " + e, e);
+            LOGGER.log(Level.SEVERE, "Cannot get InputStream from BytestreamSession.", e);
         } finally {
             state = State.ended;
             if (inputStream != null) {
                 try {
                     inputStream.close();
-                    LOGGER.log(Level.INFO, "CipherInputStream closed.");
+                    LOGGER.log(Level.FINER, "CipherInputStream closed.");
                 } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Could not close InputStream: " + e, e);
+                    LOGGER.log(Level.SEVERE, "Could not close InputStream.", e);
                 }
             }
 
             if (target != null) {
                 try {
                     target.close();
-                    LOGGER.log(Level.INFO, "FileOutputStream closed.");
+                    LOGGER.log(Level.FINER, "FileOutputStream closed.");
                 } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Could not close OutputStream: " + e, e);
+                    LOGGER.log(Level.SEVERE, "Could not close OutputStream.", e);
                 }
             }
         }
@@ -134,7 +134,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             if (!Arrays.equals(hashElement.getHash(), mDigest)) {
                 LOGGER.log(Level.WARNING, "CHECKSUM MISMATCH!");
             } else {
-                LOGGER.log(Level.INFO, "CHECKSUM MATCHED :)");
+                LOGGER.log(Level.FINE, "CHECKSUM MATCHED :)");
             }
         }
         notifyProgressListenersTerminated(JingleReasonElement.Reason.success);

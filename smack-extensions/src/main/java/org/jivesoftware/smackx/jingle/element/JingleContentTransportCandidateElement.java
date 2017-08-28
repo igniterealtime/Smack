@@ -21,6 +21,8 @@ import org.jivesoftware.smackx.jingle.component.JingleTransportCandidate;
 
 /**
  * {@link NamedElement} representing a {@link JingleTransportCandidate}
+ *
+ *  <pre> {@code
  * <jingle>
  *     <content>
  *         <description/>
@@ -30,6 +32,7 @@ import org.jivesoftware.smackx.jingle.component.JingleTransportCandidate;
  *         </transport>
  *     </content>
  * </jingle>
+ * } </pre>
  *
  */
 public abstract class JingleContentTransportCandidateElement implements NamedElement {

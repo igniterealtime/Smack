@@ -136,7 +136,7 @@ public final class JingleManager extends Manager {
                             if (jingle.getAction() == JingleAction.session_initiate) {
                                 //fresh. phew!
                                 try {
-                                    LOGGER.log(Level.INFO, "Create new session with " + jingle.getFrom() + ": " + jingle.getSid());
+                                    LOGGER.log(Level.FINE, "Create new session with " + jingle.getFrom() + ": " + jingle.getSid());
                                     session = JingleSession.fromSessionInitiate(JingleManager.this, jingle);
                                     jingleSessions.put(fullJidAndSessionId, session);
                                 } catch (UnsupportedDescriptionException e) {
@@ -306,7 +306,7 @@ public final class JingleManager extends Manager {
 
     /**
      * Add a {@link JingleDescriptionManager}.
-     * @param manager
+     * @param manager manager
      */
     public void addJingleDescriptionManager(JingleDescriptionManager manager) {
         descriptionManagers.put(manager.getNamespace(), manager);
@@ -323,7 +323,7 @@ public final class JingleManager extends Manager {
 
     /**
      * Add a {@link JingleTransportManager}.
-     * @param manager
+     * @param manager manager
      */
     public void addJingleTransportManager(JingleTransportManager manager) {
         transportManagers.put(manager.getNamespace(), manager);
@@ -340,7 +340,7 @@ public final class JingleManager extends Manager {
 
     /**
      * Add a {@link JingleSecurityManager}.
-     * @param manager
+     * @param manager manager
      */
     public void addJingleSecurityManager(JingleSecurityManager manager) {
         securityManagers.put(manager.getNamespace(), manager);

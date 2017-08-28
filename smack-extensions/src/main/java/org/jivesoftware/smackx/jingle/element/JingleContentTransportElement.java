@@ -25,6 +25,8 @@ import org.jivesoftware.smackx.jingle.component.JingleTransport;
 
 /**
  * {@link ExtensionElement} representing a {@link JingleTransport}.
+ *
+ *  <pre> {@code
  * <jingle>
  *     <content>
  *         <description/>
@@ -32,6 +34,7 @@ import org.jivesoftware.smackx.jingle.component.JingleTransport;
  *         <security/>
  *     </content>
  * </jingle>
+ * } </pre>
  *
  */
 public abstract class JingleContentTransportElement implements ExtensionElement {
