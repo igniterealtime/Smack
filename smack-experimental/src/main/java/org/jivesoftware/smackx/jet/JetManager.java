@@ -171,7 +171,7 @@ public final class JetManager extends Manager implements JingleDescriptionManage
     }
 
     /**
-     * Register an {@link JingleEnvelopeManager}
+     * Register an {@link JingleEnvelopeManager}.
      * @param method manager.
      */
     public void registerEnvelopeManager(JingleEnvelopeManager method) {
@@ -179,7 +179,7 @@ public final class JetManager extends Manager implements JingleDescriptionManage
     }
 
     /**
-     * Unregister an {@link JingleEnvelopeManager}
+     * Unregister an {@link JingleEnvelopeManager}.
      * @param namespace namespace of the manager.
      */
     public void unregisterEnvelopeManager(String namespace) {
