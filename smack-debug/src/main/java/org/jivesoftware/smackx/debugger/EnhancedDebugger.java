@@ -31,8 +31,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -61,13 +59,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ConnectionListener;
@@ -85,6 +76,7 @@ import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.WriterListener;
+import org.jivesoftware.smack.util.XmlUtil;
 
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
@@ -824,7 +816,7 @@ public class EnhancedDebugger extends SmackDebugger {
 
                 messagesTable.addRow(
                         new Object[] {
-                                formatXML(packet.toXML().toString()),
+                                XmlUtil.prettyFormatXml(packet.toXML().toString()),
                                 dateFormatter.format(new Date()),
                                 packetReceivedIcon,
                                 packetTypeIcon,
@@ -895,7 +887,7 @@ public class EnhancedDebugger extends SmackDebugger {
 
                 messagesTable.addRow(
                         new Object[] {
-                                formatXML(packet.toXML().toString()),
+                                XmlUtil.prettyFormatXml(packet.toXML().toString()),
                                 dateFormatter.format(new Date()),
                                 packetSentIcon,
                                 packetTypeIcon,
@@ -909,40 +901,6 @@ public class EnhancedDebugger extends SmackDebugger {
                 updateStatistics();
             }
         });
-    }
-
-    private String formatXML(String str) {
-        try {
-            // Use a Transformer for output
-            TransformerFactory tFactory = TransformerFactory.newInstance();
-            // Surround this setting in a try/catch for compatibility with Java 1.4. This setting is required
-            // for Java 1.5
-            try {
-                tFactory.setAttribute("indent-number", 2);
-            }
-            catch (IllegalArgumentException e) {
-                // Ignore
-            }
-            Transformer transformer = tFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-
-            // Transform the requested string into a nice formatted XML string
-            StreamSource source = new StreamSource(new StringReader(str));
-            StringWriter sw = new StringWriter();
-            StreamResult result = new StreamResult(sw);
-            transformer.transform(source, result);
-            return sw.toString();
-
-        }
-        catch (TransformerConfigurationException tce) {
-            LOGGER.log(Level.SEVERE, "Transformer Factory error", tce);
-        }
-        catch (TransformerException te) {
-            LOGGER.log(Level.SEVERE, "Transformation error", te);
-        }
-        return str;
     }
 
     /**
