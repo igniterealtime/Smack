@@ -16,7 +16,7 @@ More information are provided by the [Overview](documentation/overview.md).
 Getting started
 ---------------
 
-Start with having a look at the **[Docmentation]** and the **[Javadoc]**.
+Start with having a look at the **[Documentation]** and the **[Javadoc]**.
 
 Instructions how to use Smack in your Java or Android project are provided in the [Smack 4.2 Readme and Upgrade Guide](https://github.com/igniterealtime/Smack/wiki/Smack-4.2-Readme-and-Upgrade-Guide).
 
@@ -85,5 +85,5 @@ of the biggest and most active Open Source communities.
 [XMPP (Jabber)]: http://xmpp.org/
 [Smack Developers Forum]: http://community.igniterealtime.org/community/developers/smack
 [Smack Users Forum]: https://community.igniterealtime.org/community/support/smack_users
-[Docmentation]: https://download.igniterealtime.org/smack/docs/latest/documentation/
+[Documentation]: https://download.igniterealtime.org/smack/docs/latest/documentation/
 [Javadoc]: https://download.igniterealtime.org/smack/docs/latest/javadoc/
