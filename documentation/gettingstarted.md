@@ -47,7 +47,7 @@ server. Below are code examples for making a connection:
 
 ```
 // Create a connection to the jabber.org server.
-AbstractXMPPConnection conn1 = **new** XMPPTCPConnection("username", "password" "jabber.org");
+AbstractXMPPConnection conn1 = **new** XMPPTCPConnection("username", "password", "jabber.org");
 conn1.connect();
 
 // Create a connection to the jabber.org server on a specific port.
