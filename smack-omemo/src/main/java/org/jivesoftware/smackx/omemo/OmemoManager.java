@@ -814,16 +814,23 @@ public final class OmemoManager extends Manager {
                     Set<Integer> deviceListIds = omemoDeviceListElement.copyDeviceIds();
                     //enroll at the deviceList
                     deviceListIds.add(ourDeviceId);
-                    omemoDeviceListElement = new OmemoDeviceListVAxolotlElement(deviceListIds);
+                    final OmemoDeviceListVAxolotlElement newOmemoDeviceListElement = new OmemoDeviceListVAxolotlElement(deviceListIds);
 
-                    try {
-                        OmemoService.publishDeviceIds(OmemoManager.this, omemoDeviceListElement);
-                    } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
-                        //TODO: It might be dangerous NOT to retry publishing our deviceId
-                        LOGGER.log(Level.SEVERE,
-                                "Could not publish our device list after an update without our id was received: "
-                                        + e.getMessage());
-                    }
+                    // PEPListener is a synchronous listener. Avoid any deadlocks by using an async task to update the device list.
+                    Async.go(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                OmemoService.publishDeviceIds(OmemoManager.this, newOmemoDeviceListElement);
+                            }
+                            catch (SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
+                                // TODO: It might be dangerous NOT to retry publishing our deviceId
+                                LOGGER.log(Level.SEVERE,
+                                                "Could not publish our device list after an update without our id was received: "
+                                                                + e.getMessage());
+                            }
+                        }
+                    });
                 }
             }
         }
