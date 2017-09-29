@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.omemo;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.PEP_NODE_DEVICE_LIST;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.PEP_NODE_DEVICE_LIST_NOTIFY;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
@@ -55,7 +54,6 @@ import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smackx.carbons.CarbonCopyReceivedListener;
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
@@ -79,7 +77,6 @@ import org.jivesoftware.smackx.omemo.internal.OmemoMessageInformation;
 import org.jivesoftware.smackx.omemo.internal.OmemoSession;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.omemo.util.OmemoMessageBuilder;
-import org.jivesoftware.smackx.pep.PEPManager;
 import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException;
@@ -228,7 +225,6 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         publishDeviceIdIfNeeded(omemoManager, false, mustPublishId);
         publishBundle(omemoManager);
 
-        subscribeToDeviceLists(omemoManager);
         registerOmemoMessageStanzaListeners(omemoManager);  //Wait for new OMEMO messages
         getOmemoStoreBackend().initializeOmemoSessions(omemoManager);   //Preload existing OMEMO sessions
     }
@@ -589,16 +585,6 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
     }
 
     /**
-     * Subscribe to the device lists of our contacts using PEP.
-     *
-     * @param omemoManager omemoManager we want to subscribe with
-     */
-    private static void subscribeToDeviceLists(OmemoManager omemoManager) {
-        registerDeviceListListener(omemoManager);
-        ServiceDiscoveryManager.getInstanceFor(omemoManager.getConnection()).addFeature(PEP_NODE_DEVICE_LIST_NOTIFY);
-    }
-
-    /**
      * Build sessions for all devices of the contact that we do not have a session with yet.
      *
      * @param omemoManager omemoManager
@@ -693,16 +679,6 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @throws CorruptedOmemoKeyException
      */
     protected abstract void processBundle(OmemoManager omemoManager, T_Bundle bundle, OmemoDevice device) throws CorruptedOmemoKeyException;
-
-    /**
-     * Register a PEPListener that listens for deviceList updates.
-     *
-     * @param omemoManager omemoManager we want to register with.
-     */
-    private static void registerDeviceListListener(final OmemoManager omemoManager) {
-        PEPManager.getInstanceFor(omemoManager.getConnection()).removePEPListener(omemoManager.deviceListUpdateListener);
-        PEPManager.getInstanceFor(omemoManager.getConnection()).addPEPListener(omemoManager.deviceListUpdateListener);
-    }
 
     /**
      * Process a received message. Try to decrypt it in case we are a recipient device. If we are not a recipient
