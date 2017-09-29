@@ -749,6 +749,12 @@ public class PacketParserUtils {
             descriptiveTexts = new HashMap<String, String>();
         }
         String xmllang = getLanguageAttribute(parser);
+        if (xmllang == null) {
+            // XMPPError assumes the default locale, 'en', or the empty string.
+            // Establish the invariant that there is never null as a key.
+            xmllang = "";
+        }
+
         String text = parser.nextText();
         String previousValue = descriptiveTexts.put(xmllang, text);
         assert (previousValue == null);

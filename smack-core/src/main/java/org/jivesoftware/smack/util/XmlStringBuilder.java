@@ -361,7 +361,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
     }
 
     public XmlStringBuilder optXmlLangAttribute(String lang) {
-        if (lang != null) {
+        if (!StringUtils.isNullOrEmpty(lang)) {
             xmllangAttribute(lang);
         }
         return this;
