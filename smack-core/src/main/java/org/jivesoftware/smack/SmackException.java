@@ -131,6 +131,10 @@ public class SmackException extends Exception {
         public NotLoggedInException() {
             super("Client is not logged in");
         }
+
+        public NotLoggedInException(String message) {
+            super("Client is not logged in. " + message);
+        }
     }
 
     public static class AlreadyLoggedInException extends SmackException {

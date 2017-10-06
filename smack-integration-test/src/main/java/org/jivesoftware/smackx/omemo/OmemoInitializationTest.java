@@ -42,7 +42,7 @@ public class OmemoInitializationTest extends AbstractOmemoIntegrationTest {
     private OmemoStore<?,?,?,?,?,?,?,?,?> store;
 
     @Override
-    public void before() {
+    public void before() throws SmackException.NotLoggedInException {
         alice = OmemoManager.getInstanceFor(conOne, 666);
         store = OmemoService.getInstance().getOmemoStoreBackend();
     }
