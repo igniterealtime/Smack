@@ -52,6 +52,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.cache.Cache;
 import org.jxmpp.util.cache.ExpirationCache;
@@ -678,6 +679,41 @@ public final class ServiceDiscoveryManager extends Manager {
                     throws NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException {
         return supportsFeatures(connection().getXMPPServiceDomain(), features);
+    }
+
+    /**
+     * Check if the given features are supported by the connection account. This means that the discovery information
+     * lookup will be performed on the bare JID of the connection managed by this ServiceDiscoveryManager.
+     *
+     * @param features the features to check
+     * @return <code>true</code> if all features are supported by the connection account, <code>false</code> otherwise
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.2.2
+     */
+    public boolean accountSupportsFeatures(CharSequence... features)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return accountSupportsFeatures(Arrays.asList(features));
+    }
+
+    /**
+     * Check if the given collection of features are supported by the connection account. This means that the discovery
+     * information lookup will be performed on the bare JID of the connection managed by this ServiceDiscoveryManager.
+     *
+     * @param features a collection of features
+     * @return <code>true</code> if all features are supported by the connection account, <code>false</code> otherwise
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.2.2
+     */
+    public boolean accountSupportsFeatures(Collection<? extends CharSequence> features)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        EntityBareJid accountJid = connection().getUser().asEntityBareJid();
+        return supportsFeatures(accountJid, features);
     }
 
     /**

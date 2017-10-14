@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.omemo;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.BODY_OMEMO_HINT;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.PEP_NODE_DEVICE_LIST_NOTIFY;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -131,6 +132,9 @@ public final class OmemoManager extends Manager {
                 });
             }
         });
+
+        PEPManager.getInstanceFor(connection).addPEPListener(deviceListUpdateListener);
+        ServiceDiscoveryManager.getInstanceFor(connection).addFeature(PEP_NODE_DEVICE_LIST_NOTIFY);
 
         service = OmemoService.getInstance();
     }
@@ -810,16 +814,23 @@ public final class OmemoManager extends Manager {
                     Set<Integer> deviceListIds = omemoDeviceListElement.copyDeviceIds();
                     //enroll at the deviceList
                     deviceListIds.add(ourDeviceId);
-                    omemoDeviceListElement = new OmemoDeviceListVAxolotlElement(deviceListIds);
+                    final OmemoDeviceListVAxolotlElement newOmemoDeviceListElement = new OmemoDeviceListVAxolotlElement(deviceListIds);
 
-                    try {
-                        OmemoService.publishDeviceIds(OmemoManager.this, omemoDeviceListElement);
-                    } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
-                        //TODO: It might be dangerous NOT to retry publishing our deviceId
-                        LOGGER.log(Level.SEVERE,
-                                "Could not publish our device list after an update without our id was received: "
-                                        + e.getMessage());
-                    }
+                    // PEPListener is a synchronous listener. Avoid any deadlocks by using an async task to update the device list.
+                    Async.go(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                OmemoService.publishDeviceIds(OmemoManager.this, newOmemoDeviceListElement);
+                            }
+                            catch (SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
+                                // TODO: It might be dangerous NOT to retry publishing our deviceId
+                                LOGGER.log(Level.SEVERE,
+                                                "Could not publish our device list after an update without our id was received: "
+                                                                + e.getMessage());
+                            }
+                        }
+                    });
                 }
             }
         }
