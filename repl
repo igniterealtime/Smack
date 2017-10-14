@@ -3,14 +3,28 @@ set -e
 set -u
 set -o pipefail
 
+JDWP=false
+JDWP_PORT=8000
 
-while getopts d OPTION "$@"; do
+while getopts djp: OPTION "$@"; do
     case $OPTION in
 	d)
 	    set -x
 	    ;;
+	j)
+		JDWP=true
+		;;
+	p)
+		JDWP_PORT=$OPTARG
+		;;
     esac
 done
+
+EXTRA_JAVA_ARGS=()
+if $JDWP; then
+	EXTRA_JAVA_ARGS+=("-Xdebug")
+	EXTRA_JAVA_ARGS+=("-Xrunjdwp:server=y,transport=dt_socket,address=${JDWP_PORT},suspend=n")
+fi
 
 PROJECT_ROOT=$(dirname "${BASH_SOURCE[0]}")
 cd "${PROJECT_ROOT}"
@@ -27,7 +41,7 @@ GRADLE_CLASSPATH="$(gradle :smack-repl:printClasspath --quiet |\
 	tail -n1)"
 echo "Finished, starting REPL"
 
-java \
+java "${EXTRA_JAVA_ARGS[@]}" \
 	-Dscala.usejavacp=true \
 	-classpath "${GRADLE_CLASSPATH}" \
 	ammonite.Main \
