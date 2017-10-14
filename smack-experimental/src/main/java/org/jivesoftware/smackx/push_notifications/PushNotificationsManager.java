@@ -87,11 +87,30 @@ public final class PushNotificationsManager extends Manager {
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @deprecated Use {@link #isSupported()} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.3
     public boolean isSupportedByServer()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection())
                 .serverSupportsFeature(PushNotificationsElements.NAMESPACE);
+    }
+
+    /**
+     * Returns true if Push Notifications are supported by this account.
+     *
+     * @return true if Push Notifications are supported by this account.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.2.2
+     */
+    public boolean isSupported()
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return ServiceDiscoveryManager.getInstanceFor(connection()).accountSupportsFeatures(
+                        PushNotificationsElements.NAMESPACE);
     }
 
     /**
