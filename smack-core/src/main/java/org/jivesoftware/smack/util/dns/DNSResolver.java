@@ -59,6 +59,20 @@ public abstract class DNSResolver {
         return new HostAddress(name, port, inetAddresses);
     }
 
+    /**
+     * Lookup the IP addresses of a given host name. Returns <code>null</code> if there was an error, in which the error
+     * reason will be added in form of a <code>HostAddress</code> to <code>failedAddresses</code>. Returns a empty list
+     * in case the DNS name exists but has no associated A or AAAA resource records. Otherwise, if the resolution was
+     * successful <em>and</em> there is at least one A or AAAA resource record, then a non-empty list will be returned.
+     * <p>
+     * Concrete DNS resolver implementations are free to overwrite this, but have to stick to the interface contract.
+     * </p>
+     *
+     * @param name the DNS name to lookup
+     * @param failedAddresses a list with the failed addresses
+     * @param dnssecMode the selected DNSSEC mode
+     * @return A list, either empty or non-empty, or <code>null</code>
+     */
     protected List<InetAddress> lookupHostAddress0(String name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         // Default implementation of a DNS name lookup for A/AAAA records. It is assumed that this method does never
         // support DNSSEC. Subclasses are free to override this method.
