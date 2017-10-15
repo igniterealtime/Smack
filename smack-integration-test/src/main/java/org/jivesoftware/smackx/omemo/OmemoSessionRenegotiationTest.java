@@ -52,7 +52,7 @@ public class OmemoSessionRenegotiationTest extends AbstractOmemoIntegrationTest 
     }
 
     @Override
-    public void before() {
+    public void before() throws SmackException.NotLoggedInException {
         alice = OmemoManager.getInstanceFor(conOne, 1337);
         bob = OmemoManager.getInstanceFor(conTwo, 1009);
         store = OmemoService.getInstance().getOmemoStoreBackend();
@@ -61,7 +61,6 @@ public class OmemoSessionRenegotiationTest extends AbstractOmemoIntegrationTest 
     @SmackIntegrationTest
     public void sessionRenegotiationTest() throws Exception {
 
-        final boolean[] phaseTwo = new boolean[1];
         final SimpleResultSyncPoint sp1 = new SimpleResultSyncPoint();
         final SimpleResultSyncPoint sp2 = new SimpleResultSyncPoint();
         final SimpleResultSyncPoint sp3 = new SimpleResultSyncPoint();

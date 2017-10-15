@@ -33,7 +33,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
-import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -42,7 +41,6 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Async;
-
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
@@ -79,8 +77,6 @@ import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Manager that allows sending messages encrypted with OMEMO.
@@ -101,6 +97,7 @@ public final class OmemoManager extends Manager {
     private OmemoService<?,?,?,?,?,?,?,?,?>.OmemoStanzaListener omemoStanzaListener;
     private OmemoService<?,?,?,?,?,?,?,?,?>.OmemoCarbonCopyListener omemoCarbonCopyListener;
 
+    private final BareJid ownJid;
     private int deviceId;
 
     /**
@@ -108,10 +105,11 @@ public final class OmemoManager extends Manager {
      *
      * @param connection connection
      */
-    private OmemoManager(XMPPConnection connection, int deviceId) {
+    private OmemoManager(XMPPConnection connection, BareJid ownJid, int deviceId) {
         super(connection);
 
         this.deviceId = deviceId;
+        this.ownJid = ownJid;
 
         connection.addConnectionListener(new AbstractConnectionListener() {
             @Override
@@ -139,15 +137,9 @@ public final class OmemoManager extends Manager {
         service = OmemoService.getInstance();
     }
 
-    /**
-     * Get an instance of the OmemoManager for the given connection and deviceId.
-     *
-     * @param connection Connection
-     * @param deviceId deviceId of the Manager. If the deviceId is null, a random id will be generated.
-     * @return an OmemoManager
-     */
-    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection, Integer deviceId) {
-        WeakHashMap<Integer,OmemoManager> managersOfConnection = INSTANCES.get(connection);
+    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection, BareJid ownJid, Integer deviceId) {
+        WeakHashMap<Integer, OmemoManager> managersOfConnection = INSTANCES.get(connection);
+
         if (managersOfConnection == null) {
             managersOfConnection = new WeakHashMap<>();
             INSTANCES.put(connection, managersOfConnection);
@@ -159,9 +151,44 @@ public final class OmemoManager extends Manager {
 
         OmemoManager manager = managersOfConnection.get(deviceId);
         if (manager == null) {
-            manager = new OmemoManager(connection, deviceId);
+            manager = new OmemoManager(connection, ownJid, deviceId);
             managersOfConnection.put(deviceId, manager);
         }
+        return manager;
+    }
+
+    /**
+     * Get an instance of the OmemoManager for the given connection and deviceId.
+     *
+     * @param connection Connection
+     * @param deviceId deviceId of the Manager. If the deviceId is null, a random id will be generated.
+     * @return an OmemoManager
+     */
+    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection, Integer deviceId)
+            throws SmackException.NotLoggedInException {
+
+        if (deviceId == null || deviceId < 1) {
+            deviceId = randomDeviceId();
+        }
+
+        WeakHashMap<Integer, OmemoManager> managers = INSTANCES.get(connection);
+        if (managers == null) {
+            managers = new WeakHashMap<>();
+            INSTANCES.put(connection, managers);
+        }
+
+        OmemoManager manager = managers.get(deviceId);
+
+        if (manager == null) {
+            if (!connection.isAuthenticated()) {
+                throw new SmackException.NotLoggedInException("At this point we don't know our BareJid for certain. " +
+                        "Use getInstanceFor(connection, bareJid, deviceId) instead.");
+            } else {
+                manager = new OmemoManager(connection, connection.getUser().asBareJid(), deviceId);
+                managers.put(deviceId, manager);
+            }
+        }
+
         return manager;
     }
 
@@ -173,27 +200,23 @@ public final class OmemoManager extends Manager {
      * @param connection connection
      * @return OmemoManager
      */
-    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection) {
-        BareJid user;
-        if (connection.getUser() != null) {
-            user = connection.getUser().asBareJid();
-        } else {
-            //This might be dangerous
-            try {
-                user = JidCreate.bareFrom(((AbstractXMPPConnection) connection).getConfiguration().getUsername());
-            } catch (XmppStringprepException e) {
-                throw new AssertionError("Username is not a valid Jid. " +
-                        "Use OmemoManager.gerInstanceFor(Connection, deviceId) instead.");
-            }
+    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection)
+            throws SmackException.NotLoggedInException {
+
+        if (!connection.isAuthenticated()) {
+            throw new SmackException.NotLoggedInException("At this point we don't know our BareJid for certain. " +
+                    "Use getInstanceFor(connection, bareJid, deviceId) instead.");
         }
 
-        int defaultDeviceId = OmemoService.getInstance().getOmemoStoreBackend().getDefaultDeviceId(user);
+        BareJid ownJid = connection.getUser().asBareJid();
+
+        int defaultDeviceId = OmemoService.getInstance().getOmemoStoreBackend().getDefaultDeviceId(ownJid);
         if (defaultDeviceId < 1) {
             defaultDeviceId = randomDeviceId();
-            OmemoService.getInstance().getOmemoStoreBackend().setDefaultDeviceId(user, defaultDeviceId);
+            OmemoService.getInstance().getOmemoStoreBackend().setDefaultDeviceId(ownJid, defaultDeviceId);
         }
 
-        return getInstanceFor(connection, defaultDeviceId);
+        return getInstanceFor(connection, ownJid, defaultDeviceId);
     }
 
     /**
@@ -663,9 +686,7 @@ public final class OmemoManager extends Manager {
      * @return bareJid
      */
     public BareJid getOwnJid() {
-        EntityFullJid fullJid = connection().getUser();
-        if (fullJid == null) return null;
-        return fullJid.asBareJid();
+        return ownJid;
     }
 
     /**
@@ -724,7 +745,7 @@ public final class OmemoManager extends Manager {
      * @param omemoInformation information about the encryption of the message
      */
     void notifyOmemoMucMessageReceived(MultiUserChat muc, BareJid from, String decryptedBody, Message message,
-                                               Message wrappingMessage, OmemoMessageInformation omemoInformation) {
+                                       Message wrappingMessage, OmemoMessageInformation omemoInformation) {
         for (OmemoMucMessageListener l : omemoMucMessageListeners) {
             l.onOmemoMucMessageReceived(muc, from, decryptedBody, message,
                     wrappingMessage, omemoInformation);
@@ -835,8 +856,6 @@ public final class OmemoManager extends Manager {
             }
         }
     };
-
-
 
     OmemoService<?,?,?,?,?,?,?,?,?>.OmemoStanzaListener getOmemoStanzaListener() {
         if (omemoStanzaListener == null) {
