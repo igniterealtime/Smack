@@ -9,9 +9,8 @@ smack-extensions and smack-experimental."""
 dependencies {
 	// androidProjects lists all projects that are checked to compile against android.jar
 	// Filter out the optional Smack dependencies from androidProjects
-	androidProjects.findAll {
-		![':smack-tcp', ':smack-extensions', ':smack-experimental', ':smack-bosh'].contains(it.getPath())
-	}.each { project ->
+	(androidProjects - androidOptionalProjects)
+	.each { project ->
 		compile project
 	}
 
