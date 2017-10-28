@@ -27,10 +27,10 @@ Only a few users have access for for filling bugs in the tracker. New
 users should:
 
 1. Read ["How to ask for help or report an issue"](https://github.com/igniterealtime/Smack/wiki/How-to-ask-for-help,-report-an-issue-and-possible-solve-the-problem-yourself)
-2. [Create a forums account](https://community.igniterealtime.org/login!input.jspa?registerOnly=true) (only e-mail is a requirement, you can skip all the other fields).
+2. [Create a discourse account](https://discourse.igniterealtime.org/signup) (you can also sign up with your google account).
 3. Login to the forum account
 4. Press New in your toolbar and choose Discussion
-5. Choose the [Smack Developers Forum] of Smack and add the tag 'bug_report' to your new post
+5. Choose the [Smack Users Forum] and add the tag 'Smack Support' to your new post
 
 Please search for your issues in the bug tracker before reporting.
 
@@ -56,8 +56,8 @@ Resources
 - Nightly Builds: http://www.igniterealtime.org/downloads/nightly_smack.jsp
 - Nightly Javadoc: http://www.igniterealtime.org/builds/smack/dailybuilds/javadoc/
 - Nightly Documentation: http://www.igniterealtime.org/builds/smack/dailybuilds/documentation/
-- User Forum: https://community.igniterealtime.org/community/support/smack-support
-- Dev Forum: http://community.igniterealtime.org/community/developers/smack
+- User Forum: https://discourse.igniterealtime.org/c/smack/smack-support
+- Dev Forum: https://discourse.igniterealtime.org/c/smack/smack-dev
 - Maven Releases: https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/
 - Maven Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
 - Nightly Unique Maven Snapshots: https://igniterealtime.org/repo/
@@ -80,10 +80,10 @@ of the biggest and most active Open Source communities.
 
 [Smack] - an [Ignite Realtime] community project.
 
-[Smack]: http://www.igniterealtime.org/projects/smack/index.jsp
+[Smack]: https://www.igniterealtime.org/projects/smack/index.jsp
 [Ignite Realtime]: http://www.igniterealtime.org
 [XMPP (Jabber)]: http://xmpp.org/
-[Smack Developers Forum]: http://community.igniterealtime.org/community/developers/smack
-[Smack Users Forum]: https://community.igniterealtime.org/community/support/smack_users
+[Smack Developers Forum]: https://discourse.igniterealtime.org/c/smack/smack-dev
+[Smack Users Forum]: https://discourse.igniterealtime.org/c/smack/smack-support
 [Documentation]: https://download.igniterealtime.org/smack/docs/latest/documentation/
 [Javadoc]: https://download.igniterealtime.org/smack/docs/latest/javadoc/
