@@ -20,6 +20,15 @@ Start with having a look at the **[Documentation]** and the **[Javadoc]**.
 
 Instructions how to use Smack in your Java or Android project are provided in the [Smack 4.2 Readme and Upgrade Guide](https://github.com/igniterealtime/Smack/wiki/Smack-4.2-Readme-and-Upgrade-Guide).
 
+Professional Services
+---------------------
+
+Smack is a collaborative effort of many open source, professionally and spare-time, paid and unpaid, contributors.
+While we try to provide the best possible XMPP library for Android and Java SE compatible execution environments by following state of the art software engineering practices, the API may not always perfectly fit your requirements.
+We welcome contributions and encourage discussion about how Smack can be further improved.
+We also provide **paid services** ranging from **XMPP/Smack related consulting** to **designing and developing features** in order to accommodate your needs.
+Please contact [Florian Schmaus](mailto:flo@geekplace.eu) for futher information.
+
 Bug Reporting
 -------------
 
@@ -29,10 +38,17 @@ users should:
 1. Read ["How to ask for help or report an issue"](https://github.com/igniterealtime/Smack/wiki/How-to-ask-for-help,-report-an-issue-and-possible-solve-the-problem-yourself)
 2. [Create a discourse account](https://discourse.igniterealtime.org/signup) (you can also sign up with your google account).
 3. Login to the forum account
-4. Press New in your toolbar and choose Discussion
-5. Choose the [Smack Users Forum] and add the tag 'Smack Support' to your new post
+4. Press "New Topic" in your toolbar and choose the 'Smack Support' sub-category.
 
 Please search for your issues in the bug tracker before reporting.
+
+Donate
+------
+
+If you find Smack useful and feel like donating, then you can use one of the following systems:
+
+- Donate via Bitcoin: 1LiU78z3498wu3jwRPKbvovKAHjTcpVbuK
+- [Donate via Flattr](https://flattr.com/thing/3480125)
 
 Contact
 -------
@@ -40,7 +56,7 @@ Contact
 The developers hang around in `#smack` (freenode, IRC) and `open_chat@conference.igniterealtime.org` (XMPP MUC room).
 Remember that it may take some time (~hours) to get a response.
  
-You can also reach us via the [Smack Users Forum] if you have questions or need support, or the [Smack Developers Forum] if you want to discuss Smack development.
+You can also reach us via the [Smack Support Forum] if you have questions or need support, or the [Smack Developers Forum] if you want to discuss Smack development.
 
 Contributing
 ------------
@@ -51,9 +67,9 @@ The guidelines also contain development quickstart instructions.
 Resources
 ---------
 
+- Current Readme: https://igniterealtime.org/projects/smack/readme
 - Bug Tracker: https://issues.igniterealtime.org/browse/SMACK
 - JaCoCo Coverage Reports: https://www.igniterealtime.org/builds/smack/dailybuilds/jacoco/html/
-- Nightly Builds: http://www.igniterealtime.org/downloads/nightly_smack.jsp
 - Nightly Javadoc: http://www.igniterealtime.org/builds/smack/dailybuilds/javadoc/
 - Nightly Documentation: http://www.igniterealtime.org/builds/smack/dailybuilds/documentation/
 - User Forum: https://discourse.igniterealtime.org/c/smack/smack-support
@@ -61,14 +77,6 @@ Resources
 - Maven Releases: https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/
 - Maven Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
 - Nightly Unique Maven Snapshots: https://igniterealtime.org/repo/
-
-Donate
-------
-
-If you find Smack useful and feel like donating, then you can use one of the following systems:
-
-- Donate via Bitcoin: 1LiU78z3498wu3jwRPKbvovKAHjTcpVbuK
-- [Donate via Flattr](https://flattr.com/thing/3480125)
 
 Ignite Realtime
 ===============
@@ -81,9 +89,9 @@ of the biggest and most active Open Source communities.
 [Smack] - an [Ignite Realtime] community project.
 
 [Smack]: https://www.igniterealtime.org/projects/smack/index.jsp
-[Ignite Realtime]: http://www.igniterealtime.org
-[XMPP (Jabber)]: http://xmpp.org/
+[Ignite Realtime]: https://www.igniterealtime.org
+[XMPP (Jabber)]: https://xmpp.org/
 [Smack Developers Forum]: https://discourse.igniterealtime.org/c/smack/smack-dev
-[Smack Users Forum]: https://discourse.igniterealtime.org/c/smack/smack-support
+[Smack Support Forum]: https://discourse.igniterealtime.org/c/smack/smack-support
 [Documentation]: https://download.igniterealtime.org/smack/docs/latest/documentation/
 [Javadoc]: https://download.igniterealtime.org/smack/docs/latest/javadoc/
