@@ -2011,6 +2011,7 @@ public class MultiUserChat {
     private void removeConnectionCallbacks() {
         connection.removeSyncStanzaListener(messageListener);
         connection.removeSyncStanzaListener(presenceListener);
+        connection.removeSyncStanzaListener(subjectListener);
         connection.removeSyncStanzaListener(declinesListener);
         connection.removePacketInterceptor(presenceInterceptor);
         if (messageCollector != null) {
