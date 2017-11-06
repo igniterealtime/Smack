@@ -46,6 +46,7 @@ import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
 import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.SmackException.ResourceBindingNotOfferedException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredException;
@@ -1527,7 +1528,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         final StanzaListener packetListener = new StanzaListener() {
             @Override
-            public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
+            public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException, NotLoggedInException {
                 boolean removed = removeAsyncStanzaListener(this);
                 if (!removed) {
                     // We lost a race against the "no response" handling runnable. Avoid calling the callback, as the
@@ -1591,7 +1592,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     public void addOneTimeSyncCallback(final StanzaListener callback, final StanzaFilter packetFilter) {
         final StanzaListener packetListener = new StanzaListener() {
             @Override
-            public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
+            public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException, NotLoggedInException {
                 try {
                     callback.processStanza(packet);
                 } finally {

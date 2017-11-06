@@ -249,9 +249,10 @@ public final class Roster extends Manager {
         connection.addSyncStanzaListener(presencePacketListener, PRESENCE_PACKET_FILTER);
 
         connection.addAsyncStanzaListener(new StanzaListener() {
+            @SuppressWarnings("fallthrough")
             @Override
             public void processStanza(Stanza stanza) throws NotConnectedException,
-                            InterruptedException {
+                            InterruptedException, NotLoggedInException {
                 Presence presence = (Presence) stanza;
                 Jid from = presence.getFrom();
                 SubscribeAnswer subscribeAnswer = null;
@@ -277,13 +278,26 @@ public final class Roster extends Manager {
                     break;
                 }
 
+                if (subscribeAnswer == null) {
+                    return;
+                }
+
                 Presence response;
-                if (subscribeAnswer == SubscribeAnswer.Approve) {
+                switch (subscribeAnswer) {
+                case ApproveAndAlsoRequestIfRequired:
+                    BareJid bareFrom = from.asBareJid();
+                    RosterUtil.askForSubscriptionIfRequired(Roster.this, bareFrom);
+                    // The fall through is intended.
+                case Approve:
                     response = new Presence(Presence.Type.subscribed);
-                }
-                else {
+                    break;
+                case Deny:
                     response = new Presence(Presence.Type.unsubscribed);
+                    break;
+                default:
+                    throw new AssertionError();
                 }
+
                 response.setTo(presence.getFrom());
                 connection.sendStanza(response);
             }

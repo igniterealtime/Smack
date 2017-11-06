@@ -81,6 +81,7 @@ import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SynchronizationPoint;
@@ -1887,7 +1888,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             try {
                                 listener.processStanza(ackedStanza);
                             }
-                            catch (InterruptedException | NotConnectedException e) {
+                            catch (InterruptedException | NotConnectedException | NotLoggedInException e) {
                                 LOGGER.log(Level.FINER, "Received exception", e);
                             }
                         }
@@ -1900,7 +1901,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             try {
                                 listener.processStanza(ackedStanza);
                             }
-                            catch (InterruptedException | NotConnectedException e) {
+                            catch (InterruptedException | NotConnectedException | NotLoggedInException e) {
                                 LOGGER.log(Level.FINER, "Received exception", e);
                             }
                         }

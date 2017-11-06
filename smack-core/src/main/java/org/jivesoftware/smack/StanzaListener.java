@@ -18,6 +18,7 @@
 package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.packet.Stanza;
 
 /**
@@ -49,7 +50,8 @@ public interface StanzaListener {
      * @param packet the stanza(/packet) to process.
      * @throws NotConnectedException
      * @throws InterruptedException 
+     * @throws NotLoggedInException 
      */
-    public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException;
+    public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException, NotLoggedInException;
 
 }
