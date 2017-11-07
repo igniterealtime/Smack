@@ -737,9 +737,6 @@ public class MultiUserChat {
         leavePresence.setTo(JidCreate.fullFrom(room, nickname));
         connection.sendStanza(leavePresence);
         // Reset occupant information.
-        occupantsMap.clear();
-        nickname = null;
-        joined = false;
         userHasLeft();
     }
 
@@ -881,9 +878,6 @@ public class MultiUserChat {
         connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
 
         // Reset occupant information.
-        occupantsMap.clear();
-        nickname = null;
-        joined = false;
         userHasLeft();
     }
 
@@ -2024,6 +2018,9 @@ public class MultiUserChat {
      * Remove all callbacks and resources necessary when the user has left the room for some reason.
      */
     private synchronized void userHasLeft() {
+        occupantsMap.clear();
+        nickname = null;
+        joined = false;
         // Update the list of joined rooms
         multiUserChatManager.removeJoinedRoom(room);
         removeConnectionCallbacks();
@@ -2341,14 +2338,11 @@ public class MultiUserChat {
         if (statusCodes.contains(Status.KICKED_307)) {
             // Check if this occupant was kicked
             if (isUserModification) {
-                joined = false;
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.kicked(mucUser.getItem().getActor(), mucUser.getItem().getReason());
                 }
 
                 // Reset occupant information.
-                occupantsMap.clear();
-                nickname = null;
                 userHasLeft();
             }
             else {
