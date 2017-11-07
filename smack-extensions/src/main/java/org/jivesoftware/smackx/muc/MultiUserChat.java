@@ -735,12 +735,16 @@ public class MultiUserChat {
         // field is in the form "roomName@service/nickname"
         Presence leavePresence = new Presence(Presence.Type.unavailable);
         leavePresence.setTo(JidCreate.fullFrom(room, nickname));
-        connection.sendStanza(leavePresence);
-        // Reset occupant information.
-        occupantsMap.clear();
-        nickname = null;
-        joined = false;
-        userHasLeft();
+        try
+        {
+            connection.sendStanza(leavePresence);
+        } finally {
+            // Reset occupant information.
+            occupantsMap.clear();
+            nickname = null;
+            joined = false;
+            userHasLeft();
+        }
     }
 
     /**
@@ -878,13 +882,15 @@ public class MultiUserChat {
         Destroy destroy = new Destroy(alternateJID, reason);
         iq.setDestroy(destroy);
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
-
-        // Reset occupant information.
-        occupantsMap.clear();
-        nickname = null;
-        joined = false;
-        userHasLeft();
+        try {
+            connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        } finally {
+            // Reset occupant information.
+            occupantsMap.clear();
+            nickname = null;
+            joined = false;
+            userHasLeft();
+        }
     }
 
     /**
