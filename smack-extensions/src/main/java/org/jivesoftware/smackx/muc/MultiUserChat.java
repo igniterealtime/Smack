@@ -2338,12 +2338,12 @@ public class MultiUserChat {
         if (statusCodes.contains(Status.KICKED_307)) {
             // Check if this occupant was kicked
             if (isUserModification) {
+                // Reset occupant information.
+                userHasLeft();
+
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.kicked(mucUser.getItem().getActor(), mucUser.getItem().getReason());
                 }
-
-                // Reset occupant information.
-                userHasLeft();
             }
             else {
                 for (ParticipantStatusListener listener : participantStatusListeners) {
