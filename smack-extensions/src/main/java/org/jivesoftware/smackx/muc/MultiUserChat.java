@@ -727,17 +727,19 @@ public class MultiUserChat {
      * @throws InterruptedException 
      */
     public synchronized void leave() throws NotConnectedException, InterruptedException {
-        // If not joined already, do nothing.
-        if (!joined) {
-            return;
-        }
+        //  Note that this method is intentionally not guarded by
+        // "if  (!joined) return" because it should be always be possible to leave the room in case the instance's
+        // state does not reflect the actual state.
+
+        // Reset occupant information first so that we are assume that we left the room even if sendStanza() would
+        // throw.
+        userHasLeft();
+
         // We leave a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
         Presence leavePresence = new Presence(Presence.Type.unavailable);
         leavePresence.setTo(JidCreate.fullFrom(room, nickname));
         connection.sendStanza(leavePresence);
-        // Reset occupant information.
-        userHasLeft();
     }
 
     /**
@@ -875,7 +877,19 @@ public class MultiUserChat {
         Destroy destroy = new Destroy(alternateJID, reason);
         iq.setDestroy(destroy);
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        try {
+            connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        }
+        catch (XMPPErrorException e) {
+            // Note that we do not call userHasLeft() here because an XMPPErrorException would usually indicate that the
+            // room was not destroyed and we therefore we also did not leave the room.
+            throw e;
+        }
+        catch (NoResponseException | NotConnectedException | InterruptedException e) {
+            // Reset occupant information.
+            userHasLeft();
+            throw e;
+        }
 
         // Reset occupant information.
         userHasLeft();
@@ -2018,8 +2032,10 @@ public class MultiUserChat {
      * Remove all callbacks and resources necessary when the user has left the room for some reason.
      */
     private synchronized void userHasLeft() {
+        // We do not reset nickname here, in case this method has been called erroneously, it should still be possible
+        // to call leave() in order to resync the state. And leave() requires the nickname to send the unsubscribe
+        // presence.
         occupantsMap.clear();
-        nickname = null;
         joined = false;
         // Update the list of joined rooms
         multiUserChatManager.removeJoinedRoom(room);
