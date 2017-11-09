@@ -271,9 +271,13 @@ public class XMPPError extends AbstractError {
     }
 
     public static XMPPError.Builder from(Condition condition, String descriptiveText) {
-        Map<String, String> descriptiveTexts = new HashMap<String, String>();
-        descriptiveTexts.put("en", descriptiveText);
-        return getBuilder().setCondition(condition).setDescriptiveTexts(descriptiveTexts);
+        XMPPError.Builder builder = getBuilder().setCondition(condition);
+        if (descriptiveText != null) {
+            Map<String, String> descriptiveTexts = new HashMap<>();
+            descriptiveTexts.put("en", descriptiveText);
+            builder.setDescriptiveTexts(descriptiveTexts);
+        }
+        return builder;
     }
 
     public static Builder getBuilder() {
