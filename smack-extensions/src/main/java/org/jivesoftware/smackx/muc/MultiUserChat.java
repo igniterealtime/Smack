@@ -333,7 +333,7 @@ public class MultiUserChat {
                                       new NotFilter(MessageWithThreadFilter.INSTANCE))
                         );
         // @formatter:on
-        connection.addSyncStanzaListener(declinesListener, DECLINE_FILTER);
+        connection.addSyncStanzaListener(declinesListener, new AndFilter(fromRoomFilter, DECLINE_FILTER));
         connection.addPacketInterceptor(presenceInterceptor, new AndFilter(ToMatchesFilter.create(room),
                         StanzaTypeFilter.PRESENCE));
         messageCollector = connection.createStanzaCollector(fromRoomGroupchatFilter);
