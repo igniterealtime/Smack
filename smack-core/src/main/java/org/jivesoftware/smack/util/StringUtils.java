@@ -301,17 +301,7 @@ public class StringUtils {
      * @return a random String of numbers and letters of the specified length.
      */
     public static String insecureRandomString(int length) {
-        if (length < 1) {
-            return null;
-        }
-
-        final Random random = randGen.get();
-        // Create a char buffer to put random letters and numbers in.
-        char[] randBuffer = new char[length];
-        for (int i = 0; i < randBuffer.length; i++) {
-            randBuffer[i] = numbersAndLetters[random.nextInt(numbersAndLetters.length)];
-        }
-        return new String(randBuffer);
+        return randomString(length, randGen.get());
     }
 
     private static final ThreadLocal<SecureRandom> SECURE_RANDOM = new ThreadLocal<SecureRandom>() {
@@ -322,12 +312,16 @@ public class StringUtils {
     };
 
     public static String randomString(final int length) {
+        return randomString(length, SECURE_RANDOM.get());
+    }
+
+    private static String randomString(final int length, Random random) {
         if (length < 1) {
             return null;
         }
 
         byte[] randomBytes = new byte[length];
-        SECURE_RANDOM.get().nextBytes(randomBytes);
+        random.nextBytes(randomBytes);
         char[] randomChars = new char[length];
         for (int i = 0; i < length; i++) {
             randomChars[i] = getPrintableChar(randomBytes[i]);
