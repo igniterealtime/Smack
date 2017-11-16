@@ -1146,9 +1146,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             if (!smSessionId.equals(resumed.getPrevId())) {
                                 throw new StreamIdDoesNotMatchException(smSessionId, resumed.getPrevId());
                             }
-                            // Mark SM as enabled and resumption as successful.
-                            smResumedSyncPoint.reportSuccess();
-                            smEnabledSyncPoint.reportSuccess();
                             // First, drop the stanzas already handled by the server
                             processHandledCount(resumed.getHandledCount());
                             // Then re-send what is left in the unacknowledged queue
@@ -1163,6 +1160,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             if (!stanzasToResend.isEmpty()) {
                                 requestSmAcknowledgementInternal();
                             }
+                            // Mark SM as enabled and resumption as successful.
+                            smResumedSyncPoint.reportSuccess();
+                            smEnabledSyncPoint.reportSuccess();
                             LOGGER.fine("Stream Management (XEP-198): Stream resumed");
                             break;
                         case AckAnswer.ELEMENT:
