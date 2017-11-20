@@ -79,7 +79,7 @@ public class OmemoKeyTransportTest extends AbstractOmemoIntegrationTest {
         bob.addOmemoMessageListener(new OmemoMessageListener() {
             @Override
             public void onOmemoMessageReceived(String decryptedBody, Message encryptedMessage, Message wrappingMessage, OmemoMessageInformation omemoInformation) {
-                //Don't care
+                // Don't care
             }
 
             @Override

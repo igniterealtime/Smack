@@ -532,7 +532,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                                 }
                                 break;
                             case "error":
-                                //Some bosh error isn't stream error.
+                                // Some BOSH error isn't stream error.
                                 if ("urn:ietf:params:xml:ns:xmpp-streams".equals(parser.getNamespace(null))) {
                                     throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
                                 } else {

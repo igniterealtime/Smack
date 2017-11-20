@@ -124,7 +124,7 @@ public class PingTest extends InitExtensions {
     @Test
     public void checkFailedPingToEntityError() throws Exception {
         ThreadedDummyConnection threadedCon = getAuthentiactedDummyConnection();
-        //@formatter:off
+        // @formatter:off
         String reply = 
                 "<iq type='error' id='qrzSp-16' to='test@myserver.com'>" +
                         "<ping xmlns='urn:xmpp:ping'/>" +
@@ -132,7 +132,7 @@ public class PingTest extends InitExtensions {
                             "<service-unavailable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
                         "</error>" + 
                  "</iq>";
-        //@formatter:on
+        // @formatter:on
         IQ serviceUnavailable = (IQ) PacketParserUtils.parseStanza(reply);
         threadedCon.addIQReply(serviceUnavailable);
 
@@ -160,7 +160,7 @@ public class PingTest extends InitExtensions {
     @Test
     public void checkPingToServerError() throws Exception {
         ThreadedDummyConnection con = getAuthentiactedDummyConnection();
-        //@formatter:off
+        // @formatter:off
         String reply = 
                 "<iq type='error' id='qrzSp-16' to='test@myserver.com' from='" + con.getXMPPServiceDomain() + "'>" +
                         "<ping xmlns='urn:xmpp:ping'/>" +
@@ -168,7 +168,7 @@ public class PingTest extends InitExtensions {
                             "<service-unavailable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
                         "</error>" + 
                  "</iq>";
-        //@formatter:on
+        // @formatter:on
         IQ serviceUnavailable = (IQ) PacketParserUtils.parseStanza(reply);
         con.addIQReply(serviceUnavailable);
 
@@ -194,13 +194,13 @@ public class PingTest extends InitExtensions {
         DiscoverInfo info = new DiscoverInfo();
         info.addFeature(Ping.NAMESPACE);
 
-        //@formatter:off
+        // @formatter:off
         String reply = 
                 "<iq type='result' id='qrzSp-16' to='test@myserver.com'>" +
                         "<query xmlns='http://jabber.org/protocol/disco#info'><identity category='client' type='pc' name='Pidgin'/>" +
                             "<feature var='urn:xmpp:ping'/>" +
                         "</query></iq>";
-        //@formatter:on
+        // @formatter:on
         IQ discoReply = (IQ) PacketParserUtils.parseStanza(reply);
         con.addIQReply(discoReply);
 
@@ -216,13 +216,13 @@ public class PingTest extends InitExtensions {
         DiscoverInfo info = new DiscoverInfo();
         info.addFeature(Ping.NAMESPACE);
 
-        //@formatter:off
+        // @formatter:off
         String reply = 
                 "<iq type='result' id='qrzSp-16' to='test@myserver.com'>" +
                         "<query xmlns='http://jabber.org/protocol/disco#info'><identity category='client' type='pc' name='Pidgin'/>" +
                             "<feature var='urn:xmpp:noping'/>" +
                         "</query></iq>";
-        //@formatter:on
+        // @formatter:on
         IQ discoReply = (IQ) PacketParserUtils.parseStanza(reply);
         con.addIQReply(discoReply);
 

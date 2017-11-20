@@ -840,7 +840,6 @@ public final class ServiceDiscoveryManager extends Manager {
             }
             if (info.containsFeature(feature)) {
                 serviceDiscoInfo.add(info);
-                //serviceAddresses.add(item.getEntityID().asDomainBareJid());
                 if (stopOnFirst) {
                     break;
                 }

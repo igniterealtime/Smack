@@ -55,8 +55,8 @@ public class VersionTest extends InitExtensions {
         assertTrue(replyPacket instanceof Version);
 
         Version reply = (Version) replyPacket;
-        //getFrom check is pending for SMACK-547
-        //assertEquals("juliet@capulet.lit/balcony", reply.getFrom());
+        // getFrom check is pending for SMACK-547
+        // assertEquals("juliet@capulet.lit/balcony", reply.getFrom());
         assertThat("capulet.lit", equalsCharSequence(reply.getTo()));
         assertEquals("s2c1", reply.getStanzaId());
         assertEquals(IQ.Type.result, reply.getType());

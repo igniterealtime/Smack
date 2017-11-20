@@ -725,8 +725,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             else if ("Apple".equals(keyStoreType)) {
                 ks = KeyStore.getInstance("KeychainStore","Apple");
                 ks.load(null,null);
-                //pcb = new PasswordCallback("Apple Keychain",false);
-                //pcb.setPassword(null);
+                // pcb = new PasswordCallback("Apple Keychain",false);
+                // pcb.setPassword(null);
             }
             else if (keyStoreType != null) {
                 ks = KeyStore.getInstance(keyStoreType);

@@ -58,7 +58,7 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
         EntityBareJid userOne = conOne.getUser().asEntityBareJid();
         EntityBareJid userTwo = conTwo.getUser().asEntityBareJid();
 
-        //Make sure MAM is archiving messages
+        // Make sure MAM is archiving messages.
         mamManagerConTwo.updateArchivingPreferences(null, null, MamPrefsIQ.DefaultBehavior.always);
 
         Message message = new Message(userTwo);

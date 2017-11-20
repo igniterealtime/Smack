@@ -144,7 +144,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
             return;
         }
 
-        //Encrypt message body
+        // Encrypt message body
         SecretKey secretKey = new SecretKeySpec(messageKey, KEYTYPE);
         IvParameterSpec ivSpec = new IvParameterSpec(initializationVector);
         Cipher cipher = Cipher.getInstance(CIPHERMODE, PROVIDER);
@@ -194,12 +194,12 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
 
         if (session != null) {
             if (!ignoreTrust && !omemoStore.isDecidedOmemoIdentity(omemoManager, device, session.getIdentityKey())) {
-                //Warn user of undecided device
+                // Warn user of undecided device
                 throw new UndecidedOmemoIdentityException(device);
             }
 
             if (!ignoreTrust && omemoStore.isTrustedOmemoIdentity(omemoManager, device, session.getIdentityKey())) {
-                //Encrypt key and save to header
+                // Encrypt key and save to header
                 CiphertextTuple encryptedKey = session.encryptMessageKey(messageKey);
                 keys.add(new OmemoVAxolotlElement.OmemoHeader.Key(encryptedKey.getCiphertext(), device.getDeviceId(), encryptedKey.isPreKeyMessage()));
             }

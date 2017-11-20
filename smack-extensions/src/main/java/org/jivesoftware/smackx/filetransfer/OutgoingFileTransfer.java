@@ -303,7 +303,7 @@ public class OutgoingFileTransfer extends FileTransfer {
         transferThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                //Create packet filter
+                // Create packet filter.
                 try {
                     outputStream = negotiateStream(fileName, fileSize, description);
                 } catch (XMPPErrorException e) {

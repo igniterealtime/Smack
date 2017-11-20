@@ -210,7 +210,7 @@ public class SignalOmemoKeyUtil extends OmemoKeyUtil<IdentityKeyPair, IdentityKe
     @Override
     public OmemoFingerprint getFingerprint(IdentityKey identityKey) {
         String fp = identityKey.getFingerprint();
-        //Cut "(byte)0x" prefixes, remove spaces and commas, cut first two digits.
+        // Cut "(byte)0x" prefixes, remove spaces and commas, cut first two digits.
         fp = fp.replace("(byte)0x", "").replace(",", "").replace(" ", "").substring(2);
         return new OmemoFingerprint(fp);
     }

@@ -56,7 +56,7 @@ public class OmemoStoreTest extends AbstractOmemoIntegrationTest {
     @SmackIntegrationTest
     public void storeTest() throws Exception {
 
-        //########### PRE-INITIALIZATION ############
+        // ########### PRE-INITIALIZATION ############
 
         assertEquals("Creating an OmemoManager without MUST have set the default deviceId.", alice.getDeviceId(), OmemoService.getInstance().getOmemoStoreBackend().getDefaultDeviceId(alice.getOwnJid()));
         assertEquals("OmemoManager must be equal, since both got created without giving a deviceId.", alice, bob);
@@ -69,11 +69,11 @@ public class OmemoStoreTest extends AbstractOmemoIntegrationTest {
 
         OmemoStore<?,?,?,?,?,?,?,?,?> store = OmemoService.getInstance().getOmemoStoreBackend();
         OmemoFingerprint finger = new OmemoFingerprint("FINGER");
-        //DefaultDeviceId
+        // DefaultDeviceId
         store.setDefaultDeviceId(alice.getOwnJid(), 777);
         assertEquals("defaultDeviceId setting/getting must equal.", 777, store.getDefaultDeviceId(alice.getOwnJid()));
 
-        //Trust/Distrust/Decide
+        // Trust/Distrust/Decide
         bob.shutdown();
         bob = OmemoManager.getInstanceFor(conTwo, 998);
         assertFalse("Bobs device MUST be undecided at this point",
@@ -89,7 +89,7 @@ public class OmemoStoreTest extends AbstractOmemoIntegrationTest {
         assertFalse("Bobs device MUST be untrusted at this point.",
                 store.isTrustedOmemoIdentity(alice, bob.getOwnDevice(), finger));
 
-        //Dates
+        // Dates
         assertNull("Date of last received message must be null when no message was received ever.",
                 store.getDateOfLastReceivedMessage(alice, bob.getOwnDevice()));
         Date now = new Date();
@@ -102,7 +102,7 @@ public class OmemoStoreTest extends AbstractOmemoIntegrationTest {
         assertEquals("Date of last signed prekey renewal must match our date.",
                 now, store.getDateOfLastSignedPreKeyRenewal(alice));
 
-        //Keys
+        // Keys
         assertNull("IdentityKeyPair must be null at this point.",
                 store.loadOmemoIdentityKeyPair(alice));
         assertNull("IdentityKey of contact must be null at this point.",
@@ -118,7 +118,7 @@ public class OmemoStoreTest extends AbstractOmemoIntegrationTest {
                 100, store.generateOmemoPreKeys(1, 100).size());
 
 
-        //LastPreKeyId
+        // LastPreKeyId
         assertEquals("LastPreKeyId must be 0 at this point.",
                 0, store.loadLastPreKeyId(alice));
         store.storeLastPreKeyId(alice, 1234);
@@ -126,7 +126,7 @@ public class OmemoStoreTest extends AbstractOmemoIntegrationTest {
         assertEquals("LastPreKeyId set/get must equal.", 1234, store.loadLastPreKeyId(alice));
         store.storeLastPreKeyId(alice, 0);
 
-        //CurrentSignedPreKeyId
+        // CurrentSignedPreKeyId
         assertEquals("CurrentSignedPreKeyId must be 0 at this point.",
                 0, store.loadCurrentSignedPreKeyId(alice));
         store.storeCurrentSignedPreKeyId(alice, 554);
@@ -137,10 +137,10 @@ public class OmemoStoreTest extends AbstractOmemoIntegrationTest {
 
         deletePath(alice);
 
-        //################# POST-INITIALIZATION #################
+        // ################# POST-INITIALIZATION #################
         setUpOmemoManager(alice);
 
-        //Keys
+        // Keys
         assertNotNull("IdentityKeyPair must not be null after initialization",
                 store.loadOmemoIdentityKeyPair(alice));
         assertNotSame("LastPreKeyId must not be 0 after initialization.",

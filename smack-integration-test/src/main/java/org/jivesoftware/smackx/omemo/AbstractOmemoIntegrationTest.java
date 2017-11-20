@@ -55,7 +55,7 @@ public abstract class AbstractOmemoIntegrationTest extends AbstractSmackIntegrat
             throw new TestNotPossibleException("Server does not support OMEMO (PubSub)");
         }
 
-        //Check for OmemoService
+        // Check for OmemoService
         if (!OmemoService.isServiceRegistered()) {
             throw new TestNotPossibleException("No OmemoService registered.");
         }

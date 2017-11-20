@@ -61,7 +61,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     public final static int CANDIDATES_ACCEPT_PERIOD = 4000;
 
     // The session this nenotiator belongs to
-    //private final JingleSession session;
+    // private final JingleSession session;
 
     // The transport manager
     private final TransportResolver resolver;
@@ -137,7 +137,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      */
     private void setAcceptedLocalCandidate(TransportCandidate bestLocalCandidate) {
         for (int i = 0; i < resolver.getCandidateCount(); i++) {
-            //TODO FIX The EQUAL Sentence
+            // TODO FIX The EQUAL Sentence
             if (resolver.getCandidate(i).getIp().equals(bestLocalCandidate.getIp())
                     && resolver.getCandidate(i).getPort() == bestLocalCandidate.getPort()) {
                 acceptedLocalCandidate = resolver.getCandidate(i);
@@ -145,7 +145,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
             }
         }
         LOGGER.fine("BEST: ip=" + bestLocalCandidate.getIp() + " port=" + bestLocalCandidate.getPort() + " has not been offered.");
-        //throw new XMPPException("Local transport candidate has not be offered.");
+        // throw new XMPPException("Local transport candidate has not be offered.");
     }
 
     /**
@@ -316,7 +316,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                         // Once we are in pending state, look for any valid remote
                         // candidate, and send an "accept" if we have one...
                         TransportCandidate bestRemote = getBestRemoteCandidate();
-                        //State state = getState();
+                        // State state = getState();
 
                         if ((bestRemote != null)
                                 && ((getNegotiatorState() == JingleNegotiatorState.PENDING))) {
@@ -359,7 +359,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                             if (candidate instanceof ICECandidate) {
                                 ICECandidate iceCandidate = (ICECandidate) candidate;
                                 if (iceCandidate.getType().equals(Type.relay)) {
-                                    //TODO Check if the relay is reacheable
+                                    // TODO Check if the relay is reacheable.
                                     addValidRemoteCandidate(iceCandidate);
                                     foundRemoteRelay = true;
                                 }
@@ -409,7 +409,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                         }
 
                         bestRemote = getBestRemoteCandidate();
-                        //State state = getState();
+                        // State state = getState();
                         if ((bestRemote != null)
                                 && ((getNegotiatorState() == JingleNegotiatorState.PENDING))) {
                             if (!acceptedRemoteCandidates.contains(bestRemote)) {
@@ -699,7 +699,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         IQ response = null;
 
         // Parse the Jingle and get any proposed transport candidates
-        //addRemoteCandidates(obtainCandidatesList(jin));
+        // addRemoteCandidates(obtainCandidatesList(jin));
 
         // Start offering candidates
         sendTransportCandidatesOffer();
@@ -723,7 +723,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         IQ response = null;
 
         // Parse the Jingle and get any proposed transport candidates
-        //addRemoteCandidates(obtainCandidatesList(jin));
+        // addRemoteCandidates(obtainCandidatesList(jin));
 
         //        // Start offering candidates
         //        sendTransportCandidatesOffer();
@@ -771,7 +771,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
             if (isEstablished()) {
                 LOGGER.fine(cand.getIp() + " is set active");
-                //setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
+                // setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
             }
         }
         return response;
@@ -785,9 +785,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         IQ response = null;
 
         LOGGER.fine("Transport stabilished");
-        //triggerTransportEstablished(getAcceptedLocalCandidate(), getBestRemoteCandidate());
+        // triggerTransportEstablished(getAcceptedLocalCandidate(), getBestRemoteCandidate());
 
-        //setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
+        // setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
 
         return response;
     }

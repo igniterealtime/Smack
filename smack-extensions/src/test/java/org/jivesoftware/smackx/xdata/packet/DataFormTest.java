@@ -50,7 +50,7 @@ public class DataFormTest {
 
     @Test
     public void test() throws Exception {
-        //Build a Form
+        // Build a Form.
         DataForm df = new DataForm(DataForm.Type.submit);
         String instruction = "InstructionTest1";
         df.addInstruction(instruction);
@@ -77,7 +77,7 @@ public class DataFormTest {
 
     @Test
     public void testLayout() throws Exception {
-        //Build a Form
+        // Build a Form.
         DataForm df = new DataForm(DataForm.Type.submit);
         String instruction = "InstructionTest1";
         df.addInstruction(instruction);
@@ -119,7 +119,7 @@ public class DataFormTest {
 
     @Test
     public void testValidation() throws Exception {
-        //Build a Form
+        // Build a Form.
         DataForm df = new DataForm(DataForm.Type.submit);
         String instruction = "InstructionTest1";
         df.addInstruction(instruction);

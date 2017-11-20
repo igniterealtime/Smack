@@ -63,7 +63,7 @@ final class OmemoIntegrationTestHelper {
         try {
             omemoManager.requestDeviceListUpdateFor(omemoManager.getOwnJid());
         } catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException e) {
-            //ignore
+            // ignore
         }
 
         CachedDeviceList deviceList = OmemoService.getInstance().getOmemoStoreBackend().loadCachedDeviceList(omemoManager, omemoManager.getOwnJid());
@@ -71,26 +71,26 @@ final class OmemoIntegrationTestHelper {
             try {
                 pm.getLeafNode(OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(id)).deleteAllItems();
             } catch (InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | PubSubException.NotALeafNodeException | XMPPException.XMPPErrorException | NotAPubSubNodeException e) {
-                //Silent
+                // Silent
             }
 
             try {
                 pm.deleteNode(OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(id));
             } catch (SmackException.NoResponseException | InterruptedException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
-                //Silent
+                // Silent
             }
         }
 
         try {
             pm.getLeafNode(OmemoConstants.PEP_NODE_DEVICE_LIST).deleteAllItems();
         } catch (InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | PubSubException.NotALeafNodeException | XMPPException.XMPPErrorException | NotAPubSubNodeException e) {
-            //Silent
+            // Silent
         }
 
         try {
             pm.deleteNode(OmemoConstants.PEP_NODE_DEVICE_LIST);
         } catch (SmackException.NoResponseException | InterruptedException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
-            //Silent
+            // Silent
         }
     }
 
@@ -100,7 +100,7 @@ final class OmemoIntegrationTestHelper {
             try {
                 roster.removeEntry(r);
             } catch (InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException | SmackException.NotLoggedInException e) {
-                //Silent
+                // Silent
             }
         }
     }
@@ -128,7 +128,7 @@ final class OmemoIntegrationTestHelper {
 
 
     static void unidirectionalTrust(OmemoManager alice, OmemoManager bob) throws SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, CannotEstablishOmemoSessionException {
-        //Fetch deviceList
+        // Fetch deviceList
         alice.requestDeviceListUpdateFor(bob.getOwnJid());
         LOGGER.log(Level.INFO, "Current deviceList state: " + alice.getOwnDevice() + " knows " + bob.getOwnDevice() + ": "
                 + OmemoService.getInstance().getOmemoStoreBackend().loadCachedDeviceList(alice, bob.getOwnJid()));
@@ -136,12 +136,12 @@ final class OmemoIntegrationTestHelper {
                 alice.getOmemoService().getOmemoStoreBackend().loadCachedDeviceList(alice, bob.getOwnJid())
                         .getActiveDevices().contains(bob.getDeviceId()));
 
-        //Create sessions
+        // Create sessions
         alice.buildSessionsWith(bob.getOwnJid());
         assertTrue("Trusting party must have a session with the other end at this point.",
                 !alice.getOmemoService().getOmemoStoreBackend().loadAllRawSessionsOf(alice, bob.getOwnJid()).isEmpty());
 
-        //Trust the other party
+        // Trust the other party
         alice.getOmemoService().getOmemoStoreBackend().trustOmemoIdentity(alice, bob.getOwnDevice(),
                 alice.getOmemoService().getOmemoStoreBackend().getFingerprint(alice, bob.getOwnDevice()));
 

@@ -101,23 +101,23 @@ public class OmemoMessageSendingTest extends AbstractOmemoIntegrationTest {
         final SimpleResultSyncPoint messageOneSyncPoint = new SimpleResultSyncPoint();
         final SimpleResultSyncPoint messageTwoSyncPoint = new SimpleResultSyncPoint();
 
-        //Subscribe to one another
+        // Subscribe to one another
         subscribe(alice, bob, "Bob");
         subscribe(bob, alice,"Alice");
 
-        //initialize OmemoManagers
+        // initialize OmemoManagers
         setUpOmemoManager(alice);
         setUpOmemoManager(bob);
 
-        //Save initial bundles
+        // Save initial bundles
         OmemoBundleElement aliceBundle = store.packOmemoBundle(alice);
         OmemoBundleElement bobsBundle = store.packOmemoBundle(bob);
 
-        //Trust
+        // Trust
         unidirectionalTrust(alice, bob);
         unidirectionalTrust(bob, alice);
 
-        //Register messageListeners
+        // Register messageListeners
         bob.addOmemoMessageListener(new OmemoMessageListener() {
             @Override
             public void onOmemoMessageReceived(String decryptedBody, Message encryptedMessage, Message wrappingMessage, OmemoMessageInformation omemoInformation) {
@@ -151,7 +151,7 @@ public class OmemoMessageSendingTest extends AbstractOmemoIntegrationTest {
             }
         });
 
-        //Prepare Alice message for Bob
+        // Prepare Alice message for Bob
         Message encryptedA = alice.encrypt(bob.getOwnJid(), alicesSecret);
         ChatManager.getInstanceFor(alice.getConnection()).chatWith(bob.getOwnJid().asEntityBareJidIfPossible())
                 .send(encryptedA);
@@ -163,11 +163,11 @@ public class OmemoMessageSendingTest extends AbstractOmemoIntegrationTest {
             TestCase.fail("Bob must have received Alice message.");
         }
 
-        //Check if Bob published a new Bundle
+        // Check if Bob published a new Bundle
         assertNotSame("Bob must have published another bundle at this point, since we used a PreKeyMessage.",
                 bobsBundle, OmemoService.fetchBundle(alice, bob.getOwnDevice()));
 
-        //Prepare Bobs response
+        // Prepare Bobs response
         Message encryptedB = bob.encrypt(alice.getOwnJid(), bobsSecret);
         ChatManager.getInstanceFor(bob.getConnection()).chatWith(alice.getOwnJid().asEntityBareJidIfPossible())
                 .send(encryptedB);

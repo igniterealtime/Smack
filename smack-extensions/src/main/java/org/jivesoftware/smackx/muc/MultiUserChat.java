@@ -2408,7 +2408,7 @@ public class MultiUserChat {
                 listener.nicknameChanged(from, mucUser.getItem().getNick());
             }
         }
-        //The room has been destroyed
+        // The room has been destroyed.
         if (mucUser.getDestroy() != null) {
             MultiUserChat alternateMUC = multiUserChatManager.getMultiUserChat(mucUser.getDestroy().getJid());
             for (UserStatusListener listener : userStatusListeners) {
