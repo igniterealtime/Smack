@@ -62,7 +62,7 @@
 	</module>
 	<module name="RegexpSingleline">
 		<property name="format" value="^\s*//[^\s]"/>
-		<property name="message" value="Comment start ('\\') followed by non-space character. You would not continue after a punctuation without a space, would you?"/>
+		<property name="message" value="Comment start ('//') followed by non-space character. You would not continue after a punctuation without a space, would you?"/>
 	</module>
 	<module name="JavadocPackage"/>
 	<module name="TreeWalker">
