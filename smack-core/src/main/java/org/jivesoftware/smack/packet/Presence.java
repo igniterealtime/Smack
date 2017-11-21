@@ -209,6 +209,9 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * @see <a href="https://tools.ietf.org/html/rfc6121#section-4.7.2.3">RFC 6121 § 4.7.2.3. Priority Element</a>
      */
     public int getPriority() {
+        if (priority == Integer.MIN_VALUE) {
+            return 0;
+        }
         return priority;
     }
 
