@@ -310,7 +310,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         addConnectionListener(new AbstractConnectionListener() {
             @Override
             public void connectionClosedOnError(Exception e) {
-                if (e instanceof XMPPException.StreamErrorException) {
+                if (e instanceof XMPPException.StreamErrorException || e instanceof StreamManagementException) {
                     dropSmState();
                 }
             }
