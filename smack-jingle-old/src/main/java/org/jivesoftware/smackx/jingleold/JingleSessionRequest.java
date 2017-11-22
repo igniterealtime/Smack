@@ -118,7 +118,7 @@ public class JingleSessionRequest {
             session = manager.createIncomingJingleSession(this);
             // Acknowledge the IQ reception
             session.setSid(this.getSessionID());
-            //session.sendAck(this.getJingle());
+            // session.sendAck(this.getJingle());
             session.updatePacketListener();
             session.receivePacketAndRespond(this.getJingle());
         }
@@ -135,7 +135,7 @@ public class JingleSessionRequest {
                 session = manager.createIncomingJingleSession(this);
                 // Acknowledge the IQ reception
                 session.setSid(this.getSessionID());
-                //session.sendAck(this.getJingle());
+                // session.sendAck(this.getJingle());
                 session.updatePacketListener();
                 session.terminate("Declined");
             } catch (Exception e) {

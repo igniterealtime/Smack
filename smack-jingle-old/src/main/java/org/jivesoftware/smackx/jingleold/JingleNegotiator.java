@@ -45,7 +45,7 @@ public abstract class JingleNegotiator {
 
     private static final Logger LOGGER = Logger.getLogger(JingleNegotiator.class.getName());
 
-    //private XMPPConnection connection; // The connection associated
+    // private XMPPConnection connection; // The connection associated
 
     protected JingleSession session;
 

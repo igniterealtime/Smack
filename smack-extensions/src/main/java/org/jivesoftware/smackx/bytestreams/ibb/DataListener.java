@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.bytestreams.ibb;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
 
@@ -65,7 +66,7 @@ class DataListener extends AbstractIqRequestHandler {
                 ibbSession.processIQPacket(data);
             }
         }
-        catch (NotConnectedException | InterruptedException e) {
+        catch (NotConnectedException | InterruptedException | NotLoggedInException e) {
             return null;
         }
         return null;

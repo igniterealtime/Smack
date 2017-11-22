@@ -117,7 +117,7 @@ public class JMFInit extends Frame implements Runnable {
             throw td;
         }
         catch (Throwable t) {
-            //Do nothing
+            // Do nothing.
         }
 
         Class<?> jsauto;
@@ -226,7 +226,7 @@ public class JMFInit extends Frame implements Runnable {
             }
         }
         catch (Throwable tt) {
-            //Do nothing
+            // Do nothing.
         }
     }
 
@@ -270,7 +270,7 @@ public class JMFInit extends Frame implements Runnable {
             }
         }
         catch (Throwable tt) {
-            //Do nothing
+            // Do nothing.
         }
     }
 

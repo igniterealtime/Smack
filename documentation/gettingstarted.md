@@ -6,24 +6,24 @@ Smack: Getting Started
 This document will introduce you to the Smack API and provide an overview of
 important classes and concepts.
 
-JAR Files and Requirements
---------------------------
+Smack Modules and Requirements
+-------------------------------
 
 Smack is meant to be easily embedded into any existing Java application. The
-library ships as several JAR files to provide more flexibility over which
+library ships as several modulesto provide more flexibility over which
 features applications require:
 
-  * `smack-core.jar` -- provides core XMPP functionality. All XMPP features that are part of the XMPP RFCs are included.
-  * `smack-im.jar` -- provides functinoality defined in RFC 6121 (XMPP-IM), like the Roster.
-  * `smack-tcp.jar` -- support for XMPP over TCP. Includes XMPPTCPConnection class, which you usually want to use
-  * `smack-extensions.jar` -- support for many of the extensions (XEPs) defined by the XMPP Standards Foundation, including multi-user chat, file transfer, user search, etc. The extensions are documented in the [extensions manual](extensions/index.md).
-  * `smack-experimental.jar` -- support for experimental extensions (XEPs) defined by the XMPP Standards Foundation. The API and functionality of those extensions should be considered as unstable.
-  * `smack-legacy.jar` -- support for legacy extensions (XEPs) defined by the XMPP Standards Foundation.
-  * `smack-bosh.jar` -- support for BOSH (XEP-0124). This code should be considered as beta.
-  * `smack-jingle.jar` -- support for Jingle. This code is old and currenlty unmaintained.
-  * `smack-resolver-dnsjava.jar` -- support for resolving DNS SRV records with the help of dnsjava. Ideal for platforms that do not support the javax.naming API.
-  * `smack-resolver-javax.jar` -- support for resolving DNS SRV records with the javax namespace API.
-  * `smack-debug.jar` -- an enhanced GUI debugger for protocol traffic. It will automatically be used when found in the classpath and when [debugging](debugging.md) is enabled.
+  * `smack-core` -- provides core XMPP functionality. All XMPP features that are part of the XMPP RFCs are included.
+  * `smack-im` -- provides functinoality defined in RFC 6121 (XMPP-IM), like the Roster.
+  * `smack-tcp` -- support for XMPP over TCP. Includes XMPPTCPConnection class, which you usually want to use
+  * `smack-extensions` -- support for many of the extensions (XEPs) defined by the XMPP Standards Foundation, including multi-user chat, file transfer, user search, etc. The extensions are documented in the [extensions manual](extensions/index.md).
+  * `smack-experimental` -- support for experimental extensions (XEPs) defined by the XMPP Standards Foundation. The API and functionality of those extensions should be considered as unstable.
+  * `smack-legacy` -- support for legacy extensions (XEPs) defined by the XMPP Standards Foundation.
+  * `smack-bosh` -- support for BOSH (XEP-0124). This code should be considered as beta.
+  * `smack-resolver-minidns` -- support for resolving DNS SRV records with the help of MiniDNS. Ideal for platforms that do not support the javax.naming API. Also supports [DNSSEC](dnssec.md).
+  * `smack-resolver-dnsjava` -- support for resolving DNS SRV records with the help of dnsjava.
+  * `smack-resolver-javax` -- support for resolving DNS SRV records with the javax namespace API.
+  * `smack-debug` -- an enhanced GUI debugger for protocol traffic. It will automatically be used when found in the classpath and when [debugging](debugging.md) is enabled.
 
 Configuration
 -------------
@@ -46,10 +46,14 @@ The `XMPPTCPConnection` class is used to create a connection to an XMPP
 server. Below are code examples for making a connection:
 
 ```
-// Create a connection to the jabber.org server.
-AbstractXMPPConnection conn1 = **new** XMPPTCPConnection("username", "password", "jabber.org");
-conn1.connect();
+// Create a connection and login to the example.org XMPP service.
+AbstractXMPPConnection connection = new XMPPTCPConnection("username", "password" "example.org");
+conn1.connect().login();
+```
 
+Further connection parameters can be configured by using a configuration builder:
+
+```
 // Create a connection to the jabber.org server on a specific port.
 XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
   .setUsernameAndPassword("username", "password")
@@ -59,7 +63,7 @@ XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
   .build();
 
 AbstractXMPPConnection conn2 = **new** XMPPTCPConnection(config);
-conn2.connect();
+conn2.connect().login();
 ```
 
 Note that maximum security will be used when connecting to the server by

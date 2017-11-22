@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -766,6 +765,25 @@ public final class ServiceDiscoveryManager extends Manager {
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(String feature, boolean stopOnFirst, boolean useCache)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return findServicesDiscoverInfo(feature, stopOnFirst, useCache, null);
+    }
+
+    /**
+     * Find all services under the users service that provide a given feature.
+     *
+     * @param feature the feature to search for
+     * @param stopOnFirst if true, stop searching after the first service was found
+     * @param useCache if true, query a cache first to avoid network I/O
+     * @param encounteredExceptions an optional map which will be filled with the exceptions encountered
+     * @return a possible empty list of services providing the given feature
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.2.2
+     */
+    public List<DiscoverInfo> findServicesDiscoverInfo(String feature, boolean stopOnFirst, boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         List<DiscoverInfo> serviceDiscoInfo = null;
         DomainBareJid serviceName = connection().getXMPPServiceDomain();
         if (useCache) {
@@ -780,8 +798,9 @@ public final class ServiceDiscoveryManager extends Manager {
         try {
             info = discoverInfo(serviceName);
         } catch (XMPPErrorException e) {
-            // Be extra robust here: Return the empty linked list and log this situation
-            LOGGER.log(Level.WARNING, "Could not discover information about service", e);
+            if (encounteredExceptions != null) {
+                encounteredExceptions.put(serviceName, e);
+            }
             return serviceDiscoInfo;
         }
         // Check if the server supports the feature
@@ -800,25 +819,27 @@ public final class ServiceDiscoveryManager extends Manager {
             // Get the disco items and send the disco packet to each server item
             items = discoverItems(serviceName);
         } catch (XMPPErrorException e) {
-            LOGGER.log(Level.WARNING, "Could not discover items about service", e);
+            if (encounteredExceptions != null) {
+                encounteredExceptions.put(serviceName, e);
+            }
             return serviceDiscoInfo;
         }
         for (DiscoverItems.Item item : items.getItems()) {
+            Jid address = item.getEntityID();
             try {
                 // TODO is it OK here in all cases to query without the node attribute?
                 // MultipleRecipientManager queried initially also with the node attribute, but this
                 // could be simply a fault instead of intentional.
-                info = discoverInfo(item.getEntityID());
+                info = discoverInfo(address);
             }
             catch (XMPPErrorException | NoResponseException e) {
-                // Don't throw this exceptions if one of the server's items fail
-                LOGGER.log(Level.WARNING, "Exception while discovering info for feature " + feature
-                                + " of " + item.getEntityID() + " node: " + item.getNode(), e);
+                if (encounteredExceptions != null) {
+                    encounteredExceptions.put(address, e);
+                }
                 continue;
             }
             if (info.containsFeature(feature)) {
                 serviceDiscoInfo.add(info);
-                //serviceAddresses.add(item.getEntityID().asDomainBareJid());
                 if (stopOnFirst) {
                     break;
                 }

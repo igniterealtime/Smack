@@ -232,7 +232,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
             String name = parser.getAttributeValue("", "name");
             String port = parser.getAttributeValue("", "port");
 
-            //LOGGER.debug();
+            // LOGGER.debug();
 
             if (generation != null) {
                 try {

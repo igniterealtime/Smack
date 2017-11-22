@@ -221,8 +221,8 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
      */
     @Override
     public void check(final List<TransportCandidate> localCandidates) {
-        //TODO candidate is being checked trigger
-        //candidatesChecking.add(cand);
+        // TODO candidate is being checked trigger
+        // candidatesChecking.add(cand);
 
         final ICECandidate checkingCandidate = this;
 
@@ -287,8 +287,8 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
 
                 triggerCandidateChecked(result.isReachable());
 
-                //TODO candidate is being checked trigger
-                //candidatesChecking.remove(cand);
+                // TODO candidate is being checked trigger
+                // candidatesChecking.remove(cand);
             }
         }, "Transport candidate check");
 

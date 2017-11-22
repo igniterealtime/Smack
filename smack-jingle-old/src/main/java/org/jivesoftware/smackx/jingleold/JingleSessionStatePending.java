@@ -93,7 +93,7 @@ public class JingleSessionStatePending extends JingleSessionState {
 
             default:
                 // Anything other action is an error.
-                //response = createJingleError(inJingle, JingleError.OUT_OF_ORDER);
+                // response = createJingleError(inJingle, JingleError.OUT_OF_ORDER);
                 break;
         }
 
@@ -106,8 +106,8 @@ public class JingleSessionStatePending extends JingleSessionState {
     private IQ receiveContentAcceptAction(Jingle inJingle) {
 
         // According to XEP-167 the only thing we can do is ack.
-        //setSessionState(JingleSessionStateEnum.ACTIVE);
-        //return createAck(inJingle);
+        // setSessionState(JingleSessionStateEnum.ACTIVE);
+        // return createAck(inJingle);
 
         // This is now handled by the media negotiator for the matching <content> segment.
         return null;

@@ -178,7 +178,7 @@ public final class OmemoManager extends Manager {
         if (connection.getUser() != null) {
             user = connection.getUser().asBareJid();
         } else {
-            //This might be dangerous
+            // This might be dangerous
             try {
                 user = JidCreate.bareFrom(((AbstractXMPPConnection) connection).getConfiguration().getUsername());
             } catch (XmppStringprepException e) {
@@ -406,7 +406,7 @@ public final class OmemoManager extends Manager {
      * @throws CorruptedOmemoKeyException
      */
     public void regenerate() throws SmackException, InterruptedException, XMPPException.XMPPErrorException, CorruptedOmemoKeyException {
-        //create a new identity and publish new keys to the server
+        // create a new identity and publish new keys to the server
         getOmemoService().regenerate(this, null);
         getOmemoService().publishDeviceIdIfNeeded(this,false);
         getOmemoService().publishBundle(this);
@@ -622,9 +622,9 @@ public final class OmemoManager extends Manager {
      * @throws PubSubException.NotALeafNodeException if the bundle node on the server is a CollectionNode
      */
     public void rotateSignedPreKey() throws CorruptedOmemoKeyException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException, PubSubException.NotALeafNodeException {
-        //generate key
+        // generate key
         getOmemoService().getOmemoStoreBackend().changeSignedPreKey(this);
-        //publish
+        // publish
         getOmemoService().publishDeviceIdIfNeeded(this, false);
         getOmemoService().publishBundle(this);
     }
@@ -788,31 +788,31 @@ public final class OmemoManager extends Manager {
                         continue;
                     }
 
-                    //Device List <list>
+                    // Device List <list>
                     OmemoDeviceListVAxolotlElement omemoDeviceListElement = (OmemoDeviceListVAxolotlElement) payloadItem.getPayload();
                     int ourDeviceId = getDeviceId();
                     getOmemoService().getOmemoStoreBackend().mergeCachedDeviceList(OmemoManager.this, from, omemoDeviceListElement);
 
                     if (from == null) {
-                        //Unknown sender, no more work to do.
-                        //TODO: This DOES happen for some reason. Figure out when...
+                        // Unknown sender, no more work to do.
+                        // TODO: This DOES happen for some reason. Figure out when...
                         continue;
                     }
 
                     if (!from.equals(getOwnJid())) {
-                        //Not our deviceList, so nothing more to do
+                        // Not our deviceList, so nothing more to do
                         continue;
                     }
 
                     if (omemoDeviceListElement.getDeviceIds().contains(ourDeviceId)) {
-                        //We are on the list. Nothing more to do
+                        // We are on the list. Nothing more to do
                         continue;
                     }
 
-                    //Our deviceList and we are not on it! We don't want to miss all the action!!!
+                    // Our deviceList and we are not on it! We don't want to miss all the action!!!
                     LOGGER.log(Level.INFO, "Our deviceId was not on the list!");
                     Set<Integer> deviceListIds = omemoDeviceListElement.copyDeviceIds();
-                    //enroll at the deviceList
+                    // enroll at the deviceList
                     deviceListIds.add(ourDeviceId);
                     final OmemoDeviceListVAxolotlElement newOmemoDeviceListElement = new OmemoDeviceListVAxolotlElement(deviceListIds);
 

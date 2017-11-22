@@ -148,7 +148,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     public JingleSession(XMPPConnection conn, JingleSessionRequest request, Jid initiator, Jid responder,
             List<JingleMediaManager> jingleMediaManagers) {
         this(conn, initiator, responder, generateSessionId(), jingleMediaManagers);
-        //sessionRequest = request; // unused
+        // sessionRequest = request; // unused
     }
 
     /**
@@ -317,7 +317,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
             // Acknowledge the IQ reception
             // Not anymore.  The state machine generates an appropriate response IQ that
             // gets sent back at the end of this routine.
-            //sendAck(iq);
+            // sendAck(iq);
 
         } catch (JingleException e) {
             // Send an error message, if present
@@ -829,7 +829,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
                     addExpectedId(jout.getStanzaId());
                     sendStanza(jout);
 
-                    //triggerSessionEstablished();
+                    // triggerSessionEstablished();
 
                 }
             }
@@ -1143,7 +1143,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      */
     public void startIncoming() {
 
-        //updatePacketListener();
+        // updatePacketListener();
     }
 
     @Override

@@ -60,6 +60,10 @@
 		<property name="format" value="^\s*[\S&amp;&amp;[^\*/]]+\s+$"/>
 		<property name="message" value="Line containing trailing whitespace character(s)"/>
 	</module>
+	<module name="RegexpSingleline">
+		<property name="format" value="^\s*//[^\s]"/>
+		<property name="message" value="Comment start ('//') followed by non-space character. You would not continue after a punctuation without a space, would you?"/>
+	</module>
 	<module name="JavadocPackage"/>
 	<module name="TreeWalker">
 		<module name="FinalClass"/>

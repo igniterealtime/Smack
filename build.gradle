@@ -79,6 +79,14 @@ allprojects {
 			':smack-android',
 			':smack-android-extensions',
 		].collect{ project(it) }
+		androidOptionalProjects = [
+			':smack-tcp',
+			':smack-extensions',
+			':smack-experimental',
+			':smack-bosh',
+			':smack-omemo',
+			':smack-omemo-signal',
+		].collect{ project(it) }
 		gplLicensedProjects = [
 			':smack-omemo-signal',
 			':smack-omemo-signal-integration-test',

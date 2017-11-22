@@ -107,7 +107,7 @@ public class OmemoConfigurationTest {
             OmemoConfiguration.setMaxNumberOfStoredSignedPreKeys(0);
             TestCase.fail("OmemoConfiguration.setMaxNumberOfStoredSignedPreKeys should not accept values <= 0");
         } catch (IllegalArgumentException e) {
-            //Expected
+            // Expected
         }
     }
 }

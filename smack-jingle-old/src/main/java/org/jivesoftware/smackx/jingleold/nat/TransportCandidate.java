@@ -352,8 +352,8 @@ public abstract class TransportCandidate {
      * Subclasses should provide better methods if they can...
      */
     public void check(final List<TransportCandidate> localCandidates) {
-        //TODO candidate is being checked trigger
-        //candidatesChecking.add(cand);
+        // TODO candidate is being checked trigger
+        // candidatesChecking.add(cand);
 
         Thread checkThread = new Thread(new Runnable() {
             @Override
@@ -372,8 +372,8 @@ public abstract class TransportCandidate {
                 }
                 triggerCandidateChecked(isUsable);
 
-                //TODO candidate is being checked trigger
-                //candidatesChecking.remove(cand);
+                // TODO candidate is being checked trigger
+                // candidatesChecking.remove(cand);
             }
         }, "Transport candidate check");
 
@@ -680,7 +680,7 @@ public abstract class TransportCandidate {
 
                     socket.receive(packet);
 
-                    //LOGGER.fine("ECHO Packet Received in: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort() + " From: " + packet.getAddress().getHostAddress() + ":" + packet.getPort());
+                    // LOGGER.fine("ECHO Packet Received in: " + socket.getLocalAddress().getHostAddress() + ":" + socket.getLocalPort() + " From: " + packet.getAddress().getHostAddress() + ":" + packet.getPort());
 
                     boolean accept = false;
 

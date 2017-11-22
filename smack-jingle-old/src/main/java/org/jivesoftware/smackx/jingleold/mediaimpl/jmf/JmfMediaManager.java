@@ -152,9 +152,9 @@ public class JmfMediaManager extends JingleMediaManager {
         // should be and put it there.
         runLinuxPreInstall();
 
-        //if (jmfProperties.length() == 0) {
+        // if (jmfProperties.length() == 0) {
         new JMFInit(null, false);
-        //}
+        // }
 
     }
 

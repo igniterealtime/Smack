@@ -704,7 +704,7 @@ public class VCard extends IQ {
     }
 
     private boolean hasContent() {
-        //noinspection OverlyComplexBooleanExpression
+        // noinspection OverlyComplexBooleanExpression
         return hasNameField()
                 || hasOrganizationFields()
                 || emailHome != null

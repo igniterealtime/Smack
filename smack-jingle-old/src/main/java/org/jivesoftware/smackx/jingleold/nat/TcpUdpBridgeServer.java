@@ -112,7 +112,7 @@ public class TcpUdpBridgeServer {
                         byte[] b = new byte[500];
 
                         int s = in.read(b);
-                        //if (s == -1) continue;
+                        // if (s == -1) continue;
 
                         LOGGER.fine("TCP Server:" + new String(b, 0, s, "UTF-8"));
 

@@ -57,14 +57,14 @@ public class OmemoInitializationTest extends AbstractOmemoIntegrationTest {
      */
     @SmackIntegrationTest
     public void initializationTest() throws XMPPException.XMPPErrorException, PubSubException.NotALeafNodeException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, SmackException.NotLoggedInException, CorruptedOmemoKeyException, NotAPubSubNodeException {
-        //test keys.
+        // test keys.
         setUpOmemoManager(alice);
         assertNotNull("IdentityKey must not be null after initialization.", store.loadOmemoIdentityKeyPair(alice));
         assertTrue("We must have " + OmemoConstants.TARGET_PRE_KEY_COUNT + " preKeys.",
                 store.loadOmemoPreKeys(alice).size() == OmemoConstants.TARGET_PRE_KEY_COUNT);
         assertNotNull("Our signedPreKey must not be null.", store.loadCurrentSignedPreKeyId(alice));
 
-        //Is deviceId published?
+        // Is deviceId published?
         assertTrue("Published deviceList must contain our deviceId.",
                 OmemoService.fetchDeviceList(alice, alice.getOwnJid())
                         .getDeviceIds().contains(alice.getDeviceId()));

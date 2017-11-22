@@ -96,8 +96,8 @@ public class SignalOmemoStoreConnector
 
     @Override
     public boolean isTrustedIdentity(SignalProtocolAddress signalProtocolAddress, IdentityKey identityKey) {
-        //Disable internal trust management. Instead we use OmemoStore.isTrustedOmemoIdentity() before encrypting for a
-        //recipient.
+        // Disable internal trust management. Instead we use OmemoStore.isTrustedOmemoIdentity() before encrypting for a
+        // recipient.
         return true;
     }
 

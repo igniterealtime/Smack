@@ -49,7 +49,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
     private static final Logger LOGGER = Logger.getLogger(MediaNegotiator.class.getName());
 
-    //private JingleSession session; // The session this negotiation
+    // private JingleSession session; // The session this negotiation
 
     private final JingleMediaManager mediaManager;
 
@@ -252,7 +252,7 @@ public class MediaNegotiator extends JingleNegotiator {
         // If there are suitable/matching payload types then accept this content.
         if (bestCommonAudioPt != null) {
             // Let thre transport negotiators sort-out connectivity and content-accept instead.
-            //response = createAudioPayloadTypesOffer();
+            // response = createAudioPayloadTypesOffer();
             setNegotiatorState(JingleNegotiatorState.PENDING);
         } else {
             // Don't really know what to send here.  XEP-166 is not clear.
@@ -291,7 +291,7 @@ public class MediaNegotiator extends JingleNegotiator {
                 // and send an accept if we have an agreement...
                 ptChange = !bestCommonAudioPt.equals(oldBestCommonAudioPt);
                 if (oldBestCommonAudioPt == null || ptChange) {
-                    //response = createAcceptMessage();
+                    // response = createAcceptMessage();
                 }
             } else {
                 throw new JingleException(JingleError.NO_COMMON_PAYLOAD);
@@ -319,7 +319,7 @@ public class MediaNegotiator extends JingleNegotiator {
         if (bestCommonAudioPt == null) {
             // Update the best common audio PT
             bestCommonAudioPt = calculateBestCommonAudioPt(remoteAudioPts);
-            //response = createAcceptMessage();
+            // response = createAcceptMessage();
         }
 
         offeredPayloads = description.getAudioPayloadTypesList();

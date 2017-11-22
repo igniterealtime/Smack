@@ -97,7 +97,6 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
                          | 1  |   1    |
                          +----+--------+
 */
-      //in.read(buf, 0, 2);
             fill(in, buf, 2);
 
             boolean check = false;
@@ -160,7 +159,6 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
    `failure' (STATUS value other than X'00') status, it MUST close the
    connection.
 */
-                    //in.read(buf, 0, 2);
                     fill(in, buf, 2);
                     if (buf[1] == 0)
                     {
@@ -260,7 +258,6 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
     o  BND.PORT       server bound port in network octet order
 */
 
-      //in.read(buf, 0, 4);
             fill(in, buf, 4);
 
             if (buf[1] != 0)
@@ -279,17 +276,13 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
             switch (buf[3] & 0xff)
             {
                 case 1:
-                    //in.read(buf, 0, 6);
                     fill(in, buf, 6);
                     break;
                 case 3:
-                    //in.read(buf, 0, 1);
                     fill(in, buf, 1);
-                    //in.read(buf, 0, buf[0]+2);
                     fill(in, buf, (buf[0] & 0xff) + 2);
                     break;
                 case 4:
-                    //in.read(buf, 0, 18);
                     fill(in, buf, 18);
                     break;
                 default:

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,29 @@ import org.jxmpp.jid.Jid;
 
 
 /**
- * Handle incoming requests to subscribe to our presence.
+ * Handle incoming requests to subscribe to our presence. The
+ * {@link #processSubscribe(Jid, Presence)} method may return a subscribe
+ * answer. If no subscribe answer is returned, the next listener will be
+ * notified and asked. If no listener returns an answer, then nothing happens.
  *
  */
 public interface SubscribeListener {
 
     public enum SubscribeAnswer {
+        /**
+         * Approve the subscription request.
+         */
         Approve,
+
+        /**
+         * Approve the subscription request and also request subscription from the other party if not already subscribed.
+         * @since 4.2.2
+         */
+        ApproveAndAlsoRequestIfRequired,
+
+        /**
+         * Deny the subscription request.
+         */
         Deny,
     }
 

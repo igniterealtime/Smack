@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.offline;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -57,6 +59,8 @@ import org.jivesoftware.smackx.xdata.Form;
  * @author Gaston Dombiak
  */
 public class OfflineMessageManager {
+
+    private static final Logger LOGGER = Logger.getLogger(OfflineMessageManager.class.getName());
 
     private final static String namespace = "http://jabber.org/protocol/offline";
 
@@ -144,7 +148,7 @@ public class OfflineMessageManager {
      * @throws InterruptedException 
      */
     public List<Message> getMessages(final List<String> nodes) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        List<Message> messages = new ArrayList<Message>();
+        List<Message> messages = new ArrayList<Message>(nodes.size());
         OfflineMessageRequest request = new OfflineMessageRequest();
         for (String node : nodes) {
             OfflineMessageRequest.Item item = new OfflineMessageRequest.Item(node);
@@ -165,12 +169,17 @@ public class OfflineMessageManager {
         try {
             connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
             // Collect the received offline messages
-            Message message = messageCollector.nextResult();
-            while (message != null && pendingNodes > 0) {
-                pendingNodes--;
-                messages.add(message);
+            Message message;
+            do {
                 message = messageCollector.nextResult();
-            }
+                if (message != null) {
+                    messages.add(message);
+                    pendingNodes--;
+                } else if (message == null && pendingNodes > 0) {
+                    LOGGER.log(Level.WARNING,
+                                    "Did not receive all expected offline messages. " + pendingNodes + " are missing.");
+                }
+            } while (message != null && pendingNodes > 0);
         }
         finally {
             // Stop queuing offline messages

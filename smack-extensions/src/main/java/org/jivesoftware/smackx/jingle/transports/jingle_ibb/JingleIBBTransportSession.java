@@ -105,7 +105,7 @@ public class JingleIBBTransportSession extends JingleTransportSession<JingleIBBT
     @Override
     public IQ handleTransportInfo(Jingle transportInfo) {
         return IQ.createResultIQ(transportInfo);
-        //TODO
+        // TODO
     }
 
     @Override

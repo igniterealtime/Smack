@@ -84,7 +84,7 @@ public final class JingleManager extends Manager {
 
                         JingleSessionHandler sessionHandler = jingleSessionHandlers.get(fullJidAndSessionId);
                         if (sessionHandler != null) {
-                            //Handle existing session
+                            // Handle existing session
                             return sessionHandler.handleJingleSessionRequest(jingle);
                         }
 
@@ -96,19 +96,19 @@ public final class JingleManager extends Manager {
                                     description.getNamespace());
 
                             if (jingleDescriptionHandler == null) {
-                                //Unsupported Application
+                                // Unsupported Application
                                 LOGGER.log(Level.WARNING, "Unsupported Jingle application.");
                                 return jutil.createSessionTerminateUnsupportedApplications(fullFrom, sid);
                             }
                             return jingleDescriptionHandler.handleJingleRequest(jingle);
                         }
 
-                        //Unknown session
+                        // Unknown session
                         LOGGER.log(Level.WARNING, "Unknown session.");
                         return jutil.createErrorUnknownSession(jingle);
                     }
                 });
-        //Register transports.
+        // Register transports.
         JingleTransportMethodManager transportMethodManager = JingleTransportMethodManager.getInstanceFor(connection);
         transportMethodManager.registerTransportManager(JingleIBBTransportManager.getInstanceFor(connection));
         transportMethodManager.registerTransportManager(JingleS5BTransportManager.getInstanceFor(connection));

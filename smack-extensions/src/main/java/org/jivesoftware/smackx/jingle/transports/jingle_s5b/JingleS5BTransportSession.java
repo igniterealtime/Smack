@@ -77,7 +77,7 @@ public class JingleS5BTransportSession extends JingleTransportSession<JingleS5BT
                 .setStreamId(sid).setMode(mode).setDestinationAddress(
                         Socks5Utils.createDigest(sid, jingleSession.getLocal(), jingleSession.getRemote()));
 
-        //Local host
+        // Local host
         if (JingleS5BTransportManager.isUseLocalCandidates()) {
             for (Bytestream.StreamHost host : transportManager().getLocalStreamHosts()) {
                 jb.addTransportCandidate(new JingleS5BTransportCandidate(host, 100, JingleS5BTransportCandidate.Type.direct));
@@ -204,7 +204,7 @@ public class JingleS5BTransportSession extends JingleTransportSession<JingleS5BT
             case JingleS5BTransportInfo.ProxyError.ELEMENT:
                 return handleProxyError(transportInfo);
         }
-        //We should never go here, but lets be gracious...
+        // We should never go here, but lets be gracious...
         return IQ.createResultIQ(transportInfo);
     }
 
@@ -239,7 +239,7 @@ public class JingleS5BTransportSession extends JingleTransportSession<JingleS5BT
     }
 
     public IQ handleProxyError(Jingle jingle) {
-        //TODO
+        // TODO
         return IQ.createResultIQ(jingle);
     }
 
@@ -265,7 +265,7 @@ public class JingleS5BTransportSession extends JingleTransportSession<JingleS5BT
 
         LOGGER.log(Level.INFO, "Ready.");
 
-        //Determine nominated candidate.
+        // Determine nominated candidate.
         UsedCandidate nominated;
         if (ourChoice != CANDIDATE_FAILURE && theirChoice != CANDIDATE_FAILURE) {
             if (ourChoice.candidate.getPriority() > theirChoice.candidate.getPriority()) {
@@ -288,7 +288,7 @@ public class JingleS5BTransportSession extends JingleTransportSession<JingleS5BT
                 nominated = connectToOurCandidate(nominated.candidate);
             } catch (InterruptedException | IOException | XMPPException | SmackException | TimeoutException e) {
                 LOGGER.log(Level.INFO, "Could not connect to our candidate.", e);
-                //TODO: Proxy-Error
+                // TODO: Proxy-Error
                 return;
             }
 
@@ -326,7 +326,7 @@ public class JingleS5BTransportSession extends JingleTransportSession<JingleS5BT
             callback.onSessionInitiated(bs);
 
         }
-        //Our choice
+        // Our choice
         else {
             LOGGER.log(Level.INFO, "Our choice, so their candidate was used.");
             boolean isProxy = nominated.candidate.getType() == JingleS5BTransportCandidate.Type.proxy;

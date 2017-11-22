@@ -23,6 +23,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -83,6 +84,33 @@ public class RosterUtil {
             lock.unlock();
             // Make sure the listener is removed, so we don't leak it.
             roster.removeRosterListener(rosterListener);
+        }
+    }
+
+    /**
+     * Pre-approve the subscription if it is required and possible.
+     *
+     * @param roster The roster which should be used for the pre-approval.
+     * @param jid The XMPP address which should be pre-approved.
+     * @throws NotLoggedInException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.2.2
+     */
+    public static void preApproveSubscriptionIfRequiredAndPossible(Roster roster, BareJid jid)
+            throws NotLoggedInException, NotConnectedException, InterruptedException {
+        if (!roster.isSubscriptionPreApprovalSupported()) {
+            return;
+        }
+
+        RosterEntry entry = roster.getEntry(jid);
+        if (entry == null || (!entry.canSeeMyPresence() && !entry.isApproved())) {
+            try {
+                roster.preApprove(jid);
+            } catch (FeatureNotSupportedException e) {
+                // Should never happen since we checked for the feature above.
+                throw new AssertionError(e);
+            }
         }
     }
 

@@ -317,7 +317,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
                 preKeys.put(Integer.parseInt(f.getName()), p);
 
             } catch (IOException e) {
-                //Do nothing
+                // Do nothing.
             }
         }
         return preKeys;
@@ -355,7 +355,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
                 signedPreKeys.put(Integer.parseInt(f.getName()), p);
 
             } catch (IOException e) {
-                //Do nothing
+                // Do nothing.
             }
         }
         return signedPreKeys;
@@ -414,7 +414,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
                 sessions.put(id, s);
 
             } catch (IOException e) {
-                //Do nothing
+                // Do nothing.
             }
         }
         return sessions;
@@ -469,7 +469,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             return null;
         }
 
-        //active
+        // active
         File activeDevicesPath = hierarchy.getContactsActiveDevicesPath(omemoManager, contact);
         try {
             cachedDeviceList.getActiveDevices().addAll(readIntegers(activeDevicesPath));
@@ -477,12 +477,12 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             // Don't worry...
         }
 
-        //inactive
+        // inactive
         File inactiveDevicesPath = hierarchy.getContactsInactiveDevicesPath(omemoManager, contact);
         try {
             cachedDeviceList.getInactiveDevices().addAll(readIntegers(inactiveDevicesPath));
         } catch (IOException e) {
-            //It's ok :)
+            // It's ok :)
         }
 
         return cachedDeviceList;
@@ -631,7 +631,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             throw new IOException("Could not write bytes to null-path.");
         }
 
-        //Create file
+        // Create file
         FileHierarchy.createFile(target);
 
         IOException io = null;
@@ -730,7 +730,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
                     integers.add(in.readInt());
                 }
             } catch (EOFException e) {
-                //Reached end of the list.
+                // Reached end of the list.
             }
 
         } catch (IOException e) {
