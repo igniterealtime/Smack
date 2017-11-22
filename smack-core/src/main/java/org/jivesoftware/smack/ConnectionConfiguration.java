@@ -18,6 +18,7 @@
 package org.jivesoftware.smack;
 
 import java.net.InetAddress;
+import java.security.KeyStore;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -505,7 +506,7 @@ public abstract class ConnectionConfiguration {
         private SecurityMode securityMode = SecurityMode.ifpossible;
         private DnssecMode dnssecMode = DnssecMode.disabled;
         private String keystorePath = System.getProperty("javax.net.ssl.keyStore");
-        private String keystoreType = "jks";
+        private String keystoreType = KeyStore.getDefaultType();
         private String pkcs11Library = "pkcs11.config";
         private SSLContext customSSLContext;
         private String[] enabledSSLProtocols;
