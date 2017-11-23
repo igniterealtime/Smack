@@ -749,19 +749,28 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
             if (ks != null) {
                 String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
-                KeyManagerFactory kmf = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);
+                KeyManagerFactory kmf = null;
                 try {
-                    if (pcb == null) {
-                        kmf.init(ks, null);
-                    }
-                    else {
-                        kmf.init(ks, pcb.getPassword());
-                        pcb.clearPassword();
-                    }
-                    kms = kmf.getKeyManagers();
+                    kmf = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);
                 }
-                catch (NullPointerException npe) {
-                    LOGGER.log(Level.WARNING, "NullPointerException", npe);
+                catch (NoSuchAlgorithmException e) {
+                    LOGGER.log(Level.FINE, "Could get the default KeyManagerFactory for the '"
+                                    + keyManagerFactoryAlgorithm + "' algorithm", e);
+                }
+                if (kmf != null) {
+                    try {
+                        if (pcb == null) {
+                            kmf.init(ks, null);
+                        }
+                        else {
+                            kmf.init(ks, pcb.getPassword());
+                            pcb.clearPassword();
+                        }
+                        kms = kmf.getKeyManagers();
+                    }
+                    catch (NullPointerException npe) {
+                        LOGGER.log(Level.WARNING, "NullPointerException", npe);
+                    }
                 }
             }
 
