@@ -684,10 +684,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws Exception if an exception occurs.
      */
     private void proceedTLSReceived() throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException, NoSuchProviderException, UnrecoverableKeyException, KeyManagementException, SmackException {
-        SSLContext context = this.config.getCustomSSLContext();
-        KeyStore ks = null;
-        KeyManager[] kms = null;
-        PasswordCallback pcb = null;
         SmackDaneVerifier daneVerifier = null;
 
         if (config.getDnssecMode() == DnssecMode.needsDnssecAndDane) {
@@ -700,6 +696,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 throw new IllegalStateException("DANE requested but DANE provider did not return a DANE verifier");
             }
         }
+
+        SSLContext context = this.config.getCustomSSLContext();
+        KeyStore ks = null;
+        PasswordCallback pcb = null;
 
         if (context == null) {
             final String keyStoreType = config.getKeystoreType();
@@ -744,6 +744,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     ks.load(null, null);
                 }
             }
+
+            KeyManager[] kms = null;
 
             if (ks != null) {
                 String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
