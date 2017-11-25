@@ -88,6 +88,7 @@ public class DummyConnection extends AbstractXMPPConnection {
         user = getUserJid();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void connectInternal() {
         connected = true;
@@ -95,6 +96,7 @@ public class DummyConnection extends AbstractXMPPConnection {
         tlsHandled.reportSuccess();
         streamId = "dummy-" + new Random(new Date().getTime()).nextInt();
 
+        // TODO: Remove in Smack 4.3, and likely the suppression of the deprecation warning.
         if (reconnect) {
             notifyReconnection();
         }

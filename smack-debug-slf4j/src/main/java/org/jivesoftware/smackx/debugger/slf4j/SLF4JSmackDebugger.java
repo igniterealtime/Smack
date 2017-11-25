@@ -21,6 +21,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ReconnectionManager;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
@@ -39,6 +41,9 @@ import org.slf4j.LoggerFactory;
  * See SLF4J manual for more details about bindings usage.
  */
 public class SLF4JSmackDebugger implements SmackDebugger  {
+
+    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(SLF4JSmackDebugger.class.getName());
+
     public static final String LOGGER_NAME = "SMACK";
     private static final Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
     public static final AtomicBoolean printInterpreted = new AtomicBoolean(true);
@@ -74,7 +79,17 @@ public class SLF4JSmackDebugger implements SmackDebugger  {
         this.writer.addWriterListener(slf4JRawXmlListener);
         this.reader = new ObservableReader(Validate.notNull(reader));
         this.reader.addReaderListener(slf4JRawXmlListener);
-        this.connection.addConnectionListener(new SLF4JLoggingConnectionListener(connection, logger));
+
+        final SLF4JLoggingConnectionListener loggingConnectionListener = new SLF4JLoggingConnectionListener(connection, logger);
+        this.connection.addConnectionListener(loggingConnectionListener);
+
+        if (connection instanceof AbstractXMPPConnection) {
+            AbstractXMPPConnection abstractXmppConnection = (AbstractXMPPConnection) connection;
+            ReconnectionManager.getInstanceFor(abstractXmppConnection).addReconnectionListener(loggingConnectionListener);
+        } else {
+            LOGGER.info("The connection instance " + connection
+                            + " is not an instance of AbstractXMPPConnection, thus we can not install the ReconnectionListener");
+        }
     }
 
     @Override

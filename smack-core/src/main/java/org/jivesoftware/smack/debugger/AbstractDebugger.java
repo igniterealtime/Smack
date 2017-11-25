@@ -18,8 +18,13 @@ package org.jivesoftware.smack.debugger;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.util.logging.Logger;
 
+import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.ReconnectionListener;
+import org.jivesoftware.smack.ReconnectionManager;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Stanza;
@@ -32,12 +37,15 @@ import org.jxmpp.jid.EntityFullJid;
 
 public abstract class AbstractDebugger implements SmackDebugger {
 
+    private static final Logger LOGGER = Logger.getLogger(AbstractDebugger.class.getName());
+
     public static boolean printInterpreted = false;
 
     private final XMPPConnection connection;
 
     private final StanzaListener listener;
     private final ConnectionListener connListener;
+    private final ReconnectionListener reconnectionListener;
     private final ReaderListener readerListener;
     private final WriterListener writerListener;
 
@@ -79,7 +87,7 @@ public abstract class AbstractDebugger implements SmackDebugger {
             }
         };
 
-        connListener = new ConnectionListener() {
+        connListener = new AbstractConnectionListener() {
             @Override
             public void connected(XMPPConnection connection) {
                 log("XMPPConnection connected ("
@@ -100,7 +108,6 @@ public abstract class AbstractDebugger implements SmackDebugger {
                         connection +
                         ")");
             }
-
             @Override
             public void connectionClosedOnError(Exception e) {
                 log(
@@ -108,19 +115,15 @@ public abstract class AbstractDebugger implements SmackDebugger {
                         connection +
                         ")", e);
             }
+        };
+
+        reconnectionListener = new ReconnectionListener() {
             @Override
             public void reconnectionFailed(Exception e) {
                 log(
                         "Reconnection failed due to an exception (" +
                         connection +
                         ")", e);
-            }
-            @Override
-            public void reconnectionSuccessful() {
-                log(
-                        "XMPPConnection reconnected (" +
-                        connection +
-                        ")");
             }
             @Override
             public void reconnectingIn(int seconds) {
@@ -130,6 +133,14 @@ public abstract class AbstractDebugger implements SmackDebugger {
                         ") will reconnect in " + seconds);
             }
         };
+
+        if (connection instanceof AbstractXMPPConnection) {
+            AbstractXMPPConnection abstractXmppConnection = (AbstractXMPPConnection) connection;
+            ReconnectionManager.getInstanceFor(abstractXmppConnection).addReconnectionListener(reconnectionListener);
+        } else {
+            LOGGER.info("The connection instance " + connection
+                            + " is not an instance of AbstractXMPPConnection, thus we can not install the ReconnectionListener");
+        }
     }
 
     protected abstract void log(String logMessage);

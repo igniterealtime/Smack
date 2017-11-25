@@ -120,8 +120,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
                     }
 
                     @Override
-                    public void reconnectionSuccessful() {
-                        // re-create the manager for this connection
+                    public void connected(XMPPConnection connection) {
                         InBandBytestreamManager.getByteStreamManager(connection);
                     }
 

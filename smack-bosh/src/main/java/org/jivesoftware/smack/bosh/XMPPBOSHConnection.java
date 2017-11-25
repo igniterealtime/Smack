@@ -440,7 +440,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                                     throw new RuntimeException(e);
                                 }
                             }
-                            notifyReconnection();
                     }
                 }
                 else {

@@ -70,7 +70,10 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.ReconnectionListener;
+import org.jivesoftware.smack.ReconnectionManager;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
@@ -154,6 +157,7 @@ public class EnhancedDebugger implements SmackDebugger {
     private StanzaListener packetReaderListener = null;
     private StanzaListener packetWriterListener = null;
     private ConnectionListener connListener = null;
+    private final ReconnectionListener reconnectionListener;
 
     private Writer writer;
     private Reader reader;
@@ -183,6 +187,36 @@ public class EnhancedDebugger implements SmackDebugger {
         this.reader = reader;
         createDebug();
         EnhancedDebuggerWindow.addDebugger(this);
+
+        reconnectionListener = new ReconnectionListener() {
+            @Override
+            public void reconnectingIn(final int seconds) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        statusField.setValue("Attempt to reconnect in " + seconds + " seconds");
+                    }
+                });
+            }
+
+            @Override
+            public void reconnectionFailed(Exception e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        statusField.setValue("Reconnection failed");
+                    }
+                });
+            }
+        };
+
+        if (connection instanceof AbstractXMPPConnection) {
+            AbstractXMPPConnection abstractXmppConnection = (AbstractXMPPConnection) connection;
+            ReconnectionManager.getInstanceFor(abstractXmppConnection).addReconnectionListener(reconnectionListener);
+        } else {
+            LOGGER.info("The connection instance " + connection
+                            + " is not an instance of AbstractXMPPConnection, thus we can not install the ReconnectionListener");
+        }
     }
 
     /**
@@ -263,37 +297,8 @@ public class EnhancedDebugger implements SmackDebugger {
                 });
 
             }
-            @Override
-            public void reconnectingIn(final int seconds) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        statusField.setValue("Attempt to reconnect in " + seconds + " seconds");
-                    }
-                });
-            }
-
-            @Override
-            public void reconnectionSuccessful() {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        statusField.setValue("Reconnection stablished");
-                        EnhancedDebuggerWindow.connectionEstablished(EnhancedDebugger.this);
-                    }
-                });
-            }
-
-            @Override
-            public void reconnectionFailed(Exception e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        statusField.setValue("Reconnection failed");
-                    }
-                });
-            }
         };
+
     }
 
     private void addBasicPanels() {
