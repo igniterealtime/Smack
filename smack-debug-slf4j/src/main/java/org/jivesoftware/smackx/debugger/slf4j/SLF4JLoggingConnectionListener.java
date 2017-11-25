@@ -17,12 +17,15 @@
 
 package org.jivesoftware.smackx.debugger.slf4j;
 
-import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.ReconnectionListener;
 import org.jivesoftware.smack.XMPPConnection;
 
 import org.slf4j.Logger;
 
-class SLF4JLoggingConnectionListener implements ConnectionListener {
+// TODO: The suppression of deprecated API can be removed in Smack 4.3.
+@SuppressWarnings("deprecation")
+class SLF4JLoggingConnectionListener extends AbstractConnectionListener implements ReconnectionListener {
     private final XMPPConnection connection;
     private final Logger logger;
 
@@ -54,11 +57,6 @@ class SLF4JLoggingConnectionListener implements ConnectionListener {
     @Override
     public void reconnectionFailed(Exception e) {
         logger.debug("({}) Reconnection failed due to an exception: {}", connection.hashCode(), e);
-    }
-
-    @Override
-    public void reconnectionSuccessful() {
-        logger.debug("({}) Connection reconnected", connection.hashCode());
     }
 
     @Override

@@ -61,7 +61,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.ReconnectionListener;
+import org.jivesoftware.smack.ReconnectionManager;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.debugger.SmackDebugger;
@@ -143,6 +146,7 @@ public class EnhancedDebugger extends SmackDebugger {
     private JFormattedTextField statusField = null;
 
     private ConnectionListener connListener = null;
+    private final ReconnectionListener reconnectionListener;
 
     private Writer writer;
     private Reader reader;
@@ -168,6 +172,36 @@ public class EnhancedDebugger extends SmackDebugger {
 
     public EnhancedDebugger(XMPPConnection connection) {
         super(connection);
+
+        reconnectionListener = new ReconnectionListener() {
+            @Override
+            public void reconnectingIn(final int seconds) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        statusField.setValue("Attempt to reconnect in " + seconds + " seconds");
+                    }
+                });
+            }
+
+            @Override
+            public void reconnectionFailed(Exception e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        statusField.setValue("Reconnection failed");
+                    }
+                });
+            }
+        };
+
+        if (connection instanceof AbstractXMPPConnection) {
+            AbstractXMPPConnection abstractXmppConnection = (AbstractXMPPConnection) connection;
+            ReconnectionManager.getInstanceFor(abstractXmppConnection).addReconnectionListener(reconnectionListener);
+        } else {
+            LOGGER.info("The connection instance " + connection
+                            + " is not an instance of AbstractXMPPConnection, thus we can not install the ReconnectionListener");
+        }
 
         // We'll arrange the UI into six tabs. The first tab contains all data, the second
         // client generated XML, the third server generated XML, the fourth allows to send 
@@ -207,36 +241,6 @@ public class EnhancedDebugger extends SmackDebugger {
                     }
                 });
 
-            }
-            @Override
-            public void reconnectingIn(final int seconds) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        statusField.setValue("Attempt to reconnect in " + seconds + " seconds");
-                    }
-                });
-            }
-
-            @Override
-            public void reconnectionSuccessful() {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        statusField.setValue("Reconnection stablished");
-                        EnhancedDebuggerWindow.connectionEstablished(EnhancedDebugger.this);
-                    }
-                });
-            }
-
-            @Override
-            public void reconnectionFailed(Exception e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        statusField.setValue("Reconnection failed");
-                    }
-                });
             }
         };
 

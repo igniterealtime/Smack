@@ -676,10 +676,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     @SuppressWarnings("LiteralClassName")
     private void proceedTLSReceived() throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException, NoSuchProviderException, UnrecoverableKeyException, KeyManagementException, SmackException {
-        SSLContext context = this.config.getCustomSSLContext();
-        KeyStore ks = null;
-        KeyManager[] kms = null;
-        PasswordCallback pcb = null;
         SmackDaneVerifier daneVerifier = null;
 
         if (config.getDnssecMode() == DnssecMode.needsDnssecAndDane) {
@@ -692,6 +688,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 throw new IllegalStateException("DANE requested but DANE provider did not return a DANE verifier");
             }
         }
+
+        SSLContext context = this.config.getCustomSSLContext();
+        KeyStore ks = null;
+        PasswordCallback pcb = null;
 
         if (context == null) {
             final String keyStoreType = config.getKeystoreType();
@@ -737,21 +737,32 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
             }
 
+            KeyManager[] kms = null;
+
             if (ks != null) {
                 String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
-                KeyManagerFactory kmf = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);
+                KeyManagerFactory kmf = null;
                 try {
-                    if (pcb == null) {
-                        kmf.init(ks, null);
-                    }
-                    else {
-                        kmf.init(ks, pcb.getPassword());
-                        pcb.clearPassword();
-                    }
-                    kms = kmf.getKeyManagers();
+                    kmf = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);
                 }
-                catch (NullPointerException npe) {
-                    LOGGER.log(Level.WARNING, "NullPointerException", npe);
+                catch (NoSuchAlgorithmException e) {
+                    LOGGER.log(Level.FINE, "Could get the default KeyManagerFactory for the '"
+                                    + keyManagerFactoryAlgorithm + "' algorithm", e);
+                }
+                if (kmf != null) {
+                    try {
+                        if (pcb == null) {
+                            kmf.init(ks, null);
+                        }
+                        else {
+                            kmf.init(ks, pcb.getPassword());
+                            pcb.clearPassword();
+                        }
+                        kms = kmf.getKeyManagers();
+                    }
+                    catch (NullPointerException npe) {
+                        LOGGER.log(Level.WARNING, "NullPointerException", npe);
+                    }
                 }
             }
 

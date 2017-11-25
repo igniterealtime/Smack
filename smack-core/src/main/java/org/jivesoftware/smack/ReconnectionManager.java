@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -103,6 +105,8 @@ public final class ReconnectionManager {
         return enabledPerDefault;
     }
 
+    private final Set<ReconnectionListener> reconnectionListeners = new CopyOnWriteArraySet<>();
+
     // Holds the connection to the server
     private final WeakReference<AbstractXMPPConnection> weakRefConnection;
     private final int randomBase = new Random().nextInt(13) + 2; // between 2 and 15 seconds
@@ -132,6 +136,27 @@ public final class ReconnectionManager {
      */
     public static void setDefaultReconnectionPolicy(ReconnectionPolicy reconnectionPolicy) {
         defaultReconnectionPolicy = reconnectionPolicy;
+    }
+
+    /**
+     * Add a new reconnection listener.
+     *
+     * @param listener the listener to add
+     * @return <code>true</code> if the listener was not already added
+     * @since 4.2.2
+     */
+    public boolean addReconnectionListener(ReconnectionListener listener) {
+        return reconnectionListeners.add(listener);
+    }
+
+    /**
+     * Remove a reconnection listener.
+     * @param listener the listener to remove
+     * @return <code>true</code> if the listener was active and got removed.
+     * @since 4.2.2
+     */
+    public boolean removeReconnectionListener(ReconnectionListener listener) {
+        return reconnectionListeners.remove(listener);
     }
 
     /**
@@ -208,6 +233,7 @@ public final class ReconnectionManager {
             /**
              * The process will try the reconnection until the connection succeed or the user cancel it
              */
+            @SuppressWarnings("deprecation")
             @Override
             public void run() {
                 final AbstractXMPPConnection connection = weakRefConnection.get();
@@ -233,6 +259,9 @@ public final class ReconnectionManager {
                         try {
                             Thread.sleep(1000);
                             remainingSeconds--;
+                            for (ReconnectionListener listener : reconnectionListeners) {
+                                listener.reconnectingIn(remainingSeconds);
+                            }
                             for (ConnectionListener listener : connection.connectionListeners) {
                                 listener.reconnectingIn(remainingSeconds);
                             }
@@ -244,6 +273,9 @@ public final class ReconnectionManager {
                         }
                     }
 
+                    for (ReconnectionListener listener : reconnectionListeners) {
+                        listener.reconnectingIn(0);
+                    }
                     for (ConnectionListener listener : connection.connectionListeners) {
                         listener.reconnectingIn(0);
                     }
@@ -269,6 +301,9 @@ public final class ReconnectionManager {
                     }
                     catch (SmackException | IOException | XMPPException e) {
                         // Fires the failed reconnection notification
+                        for (ReconnectionListener listener : reconnectionListeners) {
+                            listener.reconnectionFailed(e);
+                        }
                         for (ConnectionListener listener : connection.connectionListeners) {
                             listener.reconnectionFailed(e);
                         }

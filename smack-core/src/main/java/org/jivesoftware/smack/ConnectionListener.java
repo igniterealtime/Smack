@@ -64,7 +64,10 @@ public interface ConnectionListener {
     /**
      * The connection has reconnected successfully to the server. Connections will
      * reconnect to the server when the previous socket connection was abruptly closed.
+     * @deprecated use {@link #connected(XMPPConnection)} or {@link #authenticated(XMPPConnection, boolean)} instead.
      */
+    // TODO: Remove in Smack 4.3
+    @Deprecated
     public void reconnectionSuccessful();
 
     // The next two methods *must* only be invoked by ReconnectionManager
@@ -78,6 +81,8 @@ public interface ConnectionListener {
      * 
      * @param seconds remaining seconds before attempting a reconnection.
      */
+    // TODO: Remove in Smack 4.3
+    @Deprecated
     public void reconnectingIn(int seconds);
 
     /**
@@ -90,5 +95,7 @@ public interface ConnectionListener {
      *
      * @param e the exception that caused the reconnection to fail.
      */
+    // TODO: Remove in Smack 4.3
+    @Deprecated
     public void reconnectionFailed(Exception e);
 }

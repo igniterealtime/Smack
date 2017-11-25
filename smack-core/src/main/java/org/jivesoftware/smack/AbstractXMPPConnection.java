@@ -1241,6 +1241,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * Sends a notification indicating that the connection was reconnected successfully.
      */
+    // TODO: Remove in Smack 4.3
+    @Deprecated
     protected void notifyReconnection() {
         // Notify connection listeners of the reconnection.
         for (ConnectionListener listener : connectionListeners) {
