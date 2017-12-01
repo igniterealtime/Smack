@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.initializer.SmackInitializer;
@@ -91,13 +90,7 @@ public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
         for (SRV srv : result.getAnswers()) {
             String hostname = srv.name.ace;
             List<InetAddress> hostAddresses = lookupHostAddress0(hostname, failedAddresses, dnssecMode);
-            if (hostAddresses == null || hostAddresses.isEmpty()) {
-                // If hostAddresses is not null but empty, then the DNS resolution was successful but the domain did not
-                // have any A or AAAA resource records.
-                if (hostAddresses.isEmpty()) {
-                    LOGGER.log(Level.INFO, "The DNS name " + name + ", points to a hostname (" + hostname
-                            + ") which has neither A or AAAA resource records. This is an indication of a broken DNS setup.");
-                }
+            if (shouldContinue(name, hostname, hostAddresses)) {
                 continue;
             }
 

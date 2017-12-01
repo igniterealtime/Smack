@@ -20,6 +20,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
@@ -89,6 +90,22 @@ public abstract class DNSResolver {
         }
 
         return Arrays.asList(inetAddressArray);
+    }
+
+    protected final boolean shouldContinue(CharSequence name, CharSequence hostname, List<InetAddress> hostAddresses) {
+        if (hostAddresses == null) {
+            return true;
+        }
+
+        // If hostAddresses is not null but empty, then the DNS resolution was successful but the domain did not
+        // have any A or AAAA resource records.
+        if (hostAddresses.isEmpty()) {
+            LOGGER.log(Level.INFO, "The DNS name " + name + ", points to a hostname (" + hostname
+                            + ") which has neither A or AAAA resource records. This is an indication of a broken DNS setup.");
+            return true;
+        }
+
+        return false;
     }
 
     private final void checkIfDnssecRequestedAndSupported(DnssecMode dnssecMode) {
