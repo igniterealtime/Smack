@@ -63,7 +63,7 @@ public class AffiliationsExtension extends NodeExtension
         {
             // Can't use XmlStringBuilder(this), because we don't want the namespace to be included
             XmlStringBuilder xml = new XmlStringBuilder();
-            xml.openElement(getElementName());
+            xml.halfOpenElement(getElementName());
             xml.optAttribute("node", node);
             xml.rightAngleBracket();
             xml.append(items);
