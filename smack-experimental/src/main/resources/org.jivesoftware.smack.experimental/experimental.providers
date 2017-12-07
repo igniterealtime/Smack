@@ -254,7 +254,7 @@
       <namespace>urn:xmpp:hints</namespace>
       <className>org.jivesoftware.smackx.hints.provider.StoreHintProvider</className>
     </extensionProvider>
-g
+
     <!-- XEP-0363: HTTP File Upload -->
     <iqProvider>
       <elementName>slot</elementName>
