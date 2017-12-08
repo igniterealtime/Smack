@@ -259,7 +259,7 @@ g
     <iqProvider>
       <elementName>slot</elementName>
       <namespace>urn:xmpp:http:upload:0</namespace>
-      <className>org.jivesoftware.smackx.httpfileupload.provider.SlotProvider</className>
+      <className>org.jivesoftware.smackx.httpfileupload.provider.SlotProvider_V0</className>
     </iqProvider>
     <extensionProvider>
       <elementName>file-too-large</elementName>

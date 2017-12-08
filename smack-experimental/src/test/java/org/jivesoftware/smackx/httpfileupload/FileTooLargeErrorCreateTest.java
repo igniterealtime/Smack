@@ -17,23 +17,35 @@
 package org.jivesoftware.smackx.httpfileupload;
 
 import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError;
+import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError_V0;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 public class FileTooLargeErrorCreateTest {
-    String fileTooLargeErrorExtensionExample
+    private static final String fileTooLargeErrorExtensionExample_vBase
+            = "<file-too-large xmlns='urn:xmpp:http:upload'>"
+            +   "<max-file-size>20000</max-file-size>"
+            + "</file-too-large>";
+
+    private static final String fileTooLargeErrorExtensionExample_v0
             = "<file-too-large xmlns='urn:xmpp:http:upload:0'>"
             +   "<max-file-size>20000</max-file-size>"
             + "</file-too-large>";
 
     @Test
-    public void checkFileTooLargeErrorExtensionCreation() {
+    public void checkFileTooLargeErrorExtensionCreation_v0() {
+        FileTooLargeError_V0 fileTooLargeError = new FileTooLargeError_V0(20000);
+
+        Assert.assertEquals(20000, fileTooLargeError.getMaxFileSize());
+        Assert.assertEquals(fileTooLargeErrorExtensionExample_v0, fileTooLargeError.toXML().toString());
+    }
+
+    @Test
+    public void checkFileTooLargeErrorExtensionCreation_vBase() {
         FileTooLargeError fileTooLargeError = new FileTooLargeError(20000);
 
         Assert.assertEquals(20000, fileTooLargeError.getMaxFileSize());
-        Assert.assertEquals(fileTooLargeErrorExtensionExample, fileTooLargeError.toXML().toString());
-
+        Assert.assertEquals(fileTooLargeErrorExtensionExample_vBase, fileTooLargeError.toXML().toString());
     }
-
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017 Grigory Fedorov
+ * Copyright 2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,28 +17,18 @@
 package org.jivesoftware.smackx.httpfileupload.element;
 
 import org.jivesoftware.smack.packet.IQ;
-
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 
 import org.jxmpp.jid.DomainBareJid;
 
-/**
- * Upload slot request.
-
- * @author Grigory Fedorov
- * @see <a href="http://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
- */
 public class SlotRequest extends IQ {
-    public static final String ELEMENT = "request";
+
     public static final String NAMESPACE = HttpFileUploadManager.NAMESPACE;
+    public static final String ELEMENT = "request";
 
-    protected final String filename;
-    protected final long size;
-    protected final String contentType;
-
-    public SlotRequest(DomainBareJid uploadServiceAddress, String filename, long size) {
-        this(uploadServiceAddress, filename, size, null);
-    }
+    private final String filename;
+    private final long size;
+    private final String contentType;
 
     /**
      * Create new slot request.
@@ -49,11 +39,7 @@ public class SlotRequest extends IQ {
      * @param contentType file content type or null
      * @throws IllegalArgumentException if size is less than or equal to zero
      */
-    public SlotRequest(DomainBareJid uploadServiceAddress, String filename, long size, String contentType) {
-        this(uploadServiceAddress, filename, size, contentType, NAMESPACE);
-    }
-
-    protected SlotRequest(DomainBareJid uploadServiceAddress, String filename, long size, String contentType, String namespace) {
+    SlotRequest(DomainBareJid uploadServiceAddress, String filename, long size, String contentType, String namespace) {
         super(ELEMENT, namespace);
 
         if (size <= 0) {
@@ -66,6 +52,14 @@ public class SlotRequest extends IQ {
 
         setType(Type.get);
         setTo(uploadServiceAddress);
+    }
+
+    public SlotRequest(DomainBareJid uploadServiceAddress, String filename, long size) {
+        this(uploadServiceAddress, filename, size, null);
+    }
+
+    public SlotRequest(DomainBareJid uploadServiceAddress, String filename, long size, String contentType) {
+        this(uploadServiceAddress, filename, size, contentType, NAMESPACE);
     }
 
     public String getFilename() {
@@ -82,10 +76,10 @@ public class SlotRequest extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.attribute("filename", filename);
-        xml.attribute("size", String.valueOf(size));
-        xml.optAttribute("content-type", contentType);
-        xml.setEmptyElement();
+        xml.rightAngleBracket();
+        xml.element("filename", getFilename());
+        xml.element("size", String.valueOf(getSize()));
+        xml.optElement("content-type", getContentType());
         return xml;
     }
 }

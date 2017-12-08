@@ -38,7 +38,7 @@ public class FileTooLargeError implements ExtensionElement {
         this(maxFileSize, NAMESPACE);
     }
 
-    protected FileTooLargeError(long maxFileSize, String namespace) {
+    FileTooLargeError(long maxFileSize, String namespace) {
         this.maxFileSize = maxFileSize;
         this.namespace = namespace;
     }
@@ -71,6 +71,7 @@ public class FileTooLargeError implements ExtensionElement {
         if (error == null) {
             return null;
         }
-        return error.getExtension(ELEMENT, NAMESPACE);
+        FileTooLargeError_V0 v0_error = error.getExtension(ELEMENT, FileTooLargeError_V0.NAMESPACE);
+        return v0_error != null ? v0_error : (FileTooLargeError) error.getExtension(ELEMENT, NAMESPACE);
     }
 }
