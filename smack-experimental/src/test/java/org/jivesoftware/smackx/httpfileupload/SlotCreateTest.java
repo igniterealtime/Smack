@@ -16,23 +16,26 @@
  */
 package org.jivesoftware.smackx.httpfileupload;
 
-import java.net.MalformedURLException;
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+
+import java.io.IOException;
 import java.net.URL;
 
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 public class SlotCreateTest {
     String testSlot
             = "<slot xmlns='urn:xmpp:http:upload:0'>"
-            +     "<put>https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png</put>"
-            +     "<get>https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png</get>"
+            +     "<put url='https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png'></put>"
+            +     "<get url='https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png'></get>"
             + "</slot>";
 
     @Test
-    public void checkSlotRequestCreation() throws MalformedURLException {
+    public void checkSlotRequestCreation() throws SAXException, IOException {
         Slot slot = new Slot(new URL("https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png"),
                 new URL("https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png"));
 
@@ -41,6 +44,6 @@ public class SlotCreateTest {
         Assert.assertEquals(new URL("https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png"),
                 slot.getGetUrl());
 
-        Assert.assertEquals(testSlot, slot.getChildElementXML().toString());
+        assertXMLEqual(testSlot, slot.getChildElementXML().toString());
     }
 }

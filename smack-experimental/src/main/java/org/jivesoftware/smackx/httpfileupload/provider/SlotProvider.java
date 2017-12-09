@@ -25,6 +25,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
+import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
+import org.jivesoftware.smackx.httpfileupload.UploadService;
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
 import org.jivesoftware.smackx.httpfileupload.element.Slot_V0_2;
 
@@ -42,6 +44,10 @@ public class SlotProvider extends IQProvider<Slot> {
     @Override
     public Slot parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         final String namespace = parser.getNamespace();
+
+        final UploadService.Version version = HttpFileUploadManager.namespaceToVersion(namespace);
+        assert version != null;
+
         URL putUrl = null;
         URL getUrl = null;
         Map<String, String> headers = null;
@@ -53,11 +59,34 @@ public class SlotProvider extends IQProvider<Slot> {
                 case XmlPullParser.START_TAG:
                     String name = parser.getName();
                     switch (name) {
-                        case "put":
-                            putUrl = new URL(parser.nextText());
+                        case "put": {
+                            String putUrlString;
+                            switch (version) {
+                            case v0_2:
+                                putUrlString = parser.nextText();
+                                break;
+                            case v0_3:
+                                putUrlString = parser.getAttributeValue(null, "url");
+                                break;
+                            default:
+                                throw new AssertionError();
+                            }
+                            putUrl = new URL(putUrlString);
                             break;
+                        }
                         case "get":
-                            getUrl = new URL(parser.nextText());
+                            String getUrlString;
+                            switch (version) {
+                            case v0_2:
+                                getUrlString = parser.nextText();
+                                break;
+                            case v0_3:
+                                getUrlString = parser.getAttributeValue(null, "url");
+                                break;
+                            default:
+                                throw new AssertionError();
+                            }
+                            getUrl = new URL(getUrlString);
                             break;
                         case "header":
                             String headerName = ParserUtils.getRequiredAttribute(parser, "name");
@@ -77,13 +106,14 @@ public class SlotProvider extends IQProvider<Slot> {
             }
         }
 
-        switch (namespace) {
-        case Slot.NAMESPACE:
+        switch (version) {
+        case v0_3:
             return new Slot(putUrl, getUrl, headers);
-        case Slot_V0_2.NAMESPACE:
+        case v0_2:
             return new Slot_V0_2(putUrl, getUrl);
         default:
             throw new AssertionError();
         }
     }
+
 }

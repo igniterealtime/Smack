@@ -22,7 +22,7 @@ import org.jxmpp.jid.DomainBareJid;
 
 public class UploadService {
 
-    enum Version {
+    public enum Version {
         /**
          * Upload service as specified in XEP-0363 v0.2 or lower.
          *

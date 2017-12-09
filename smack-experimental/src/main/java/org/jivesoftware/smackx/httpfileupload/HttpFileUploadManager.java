@@ -470,6 +470,22 @@ public final class HttpFileUploadManager extends Manager {
         }
     }
 
+    public static UploadService.Version namespaceToVersion(String namespace) {
+        UploadService.Version version;
+        switch (namespace) {
+        case NAMESPACE:
+            version = Version.v0_3;
+            break;
+        case NAMESPACE_0_2:
+            version = Version.v0_2;
+            break;
+        default:
+            version = null;
+            break;
+        }
+        return version;
+    }
+
     private static boolean containsHttpFileUploadNamespace(DiscoverInfo discoverInfo) {
         return discoverInfo.containsFeature(NAMESPACE) || discoverInfo.containsFeature(NAMESPACE_0_2);
     }
