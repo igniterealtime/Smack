@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017 Grigory Fedorov
+ * Copyright 2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,40 +21,25 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 
-/**
- * Slot responded by upload service.
- *
- * @author Grigory Fedorov
- * @see <a href="http://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
- */
 public class Slot extends IQ {
 
     public static final String ELEMENT = "slot";
-    public static final String NAMESPACE = SlotRequest.NAMESPACE;
+    public static final String NAMESPACE = HttpFileUploadManager.NAMESPACE;
 
     private final URL putUrl;
     private final URL getUrl;
-    private final Map<String, String> headers;
 
-    public Slot(URL putUrl, URL getUrl) {
-        this(putUrl, getUrl, null);
-    }
-
-    public Slot(URL putUrl, URL getUrl, Map<String, String> headers) {
-        this(putUrl, getUrl, headers, NAMESPACE);
-    }
-
-    protected Slot(URL putUrl, URL getUrl, Map<String, String> headers, String namespace) {
+    Slot(URL putUrl, URL getUrl, String namespace) {
         super(ELEMENT, namespace);
         setType(Type.result);
         this.putUrl = putUrl;
         this.getUrl = getUrl;
-        if (headers == null) {
-            this.headers = Collections.emptyMap();
-        } else {
-            this.headers = Collections.unmodifiableMap(headers);
-        }
+    }
+
+    public Slot(URL putUrl, URL getUrl) {
+        this(putUrl, getUrl, NAMESPACE);
     }
 
     public URL getPutUrl() {
@@ -66,18 +51,15 @@ public class Slot extends IQ {
     }
 
     public Map<String, String> getHeaders() {
-        return headers;
+        return Collections.unmodifiableMap(Collections.<String, String>emptyMap());
     }
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.rightAngleBracket();
 
-        xml.element("put", putUrl.toString());
-        xml.element("get", getUrl.toString());
-        for (Map.Entry<String, String> entry : getHeaders().entrySet()) {
-            xml.openElement("header").attribute(entry.getKey(), entry.getValue());
-        }
+        xml.element("put", getPutUrl().toString());
+        xml.element("get", getGetUrl().toString());
 
         return xml;
     }

@@ -23,9 +23,9 @@ import org.jxmpp.jid.DomainBareJid;
 public class UploadService {
 
     enum Version {
-        v0_2,
-        v0_3,
-    };
+        v0_2, // urn:xmpp:http:upload
+        v0_3, // urn:xmpp:http:upload:0
+    }
 
     private final DomainBareJid address;
     private final Version version;

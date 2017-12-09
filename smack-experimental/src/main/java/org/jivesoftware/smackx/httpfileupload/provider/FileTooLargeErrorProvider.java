@@ -16,10 +16,11 @@
  */
 package org.jivesoftware.smackx.httpfileupload.provider;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError;
-import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError_V0_2;
+import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError_V0;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -56,11 +57,15 @@ public class FileTooLargeErrorProvider extends ExtensionElementProvider<FileTooL
             }
         }
 
+        if (maxFileSize == null) {
+            throw new SmackException("Element <max-file-size> is required by XEP-0363, but was not found.");
+        }
+
         switch (namespace) {
         case FileTooLargeError.NAMESPACE:
             return new FileTooLargeError(maxFileSize);
-        case FileTooLargeError_V0_2.NAMESPACE:
-            return new FileTooLargeError_V0_2(maxFileSize);
+        case FileTooLargeError_V0.NAMESPACE:
+            return new FileTooLargeError_V0(maxFileSize);
         default:
             throw new AssertionError();
         }

@@ -30,7 +30,6 @@ import java.util.Map.Entry;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -43,13 +42,12 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
-
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.httpfileupload.UploadService.Version;
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
 import org.jivesoftware.smackx.httpfileupload.element.SlotRequest;
-import org.jivesoftware.smackx.httpfileupload.element.SlotRequest_V0_2;
+import org.jivesoftware.smackx.httpfileupload.element.SlotRequest_V0;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -64,8 +62,8 @@ import org.jxmpp.jid.DomainBareJid;
  */
 public final class HttpFileUploadManager extends Manager {
 
-    public static final String NAMESPACE = "urn:xmpp:http:upload:0";
-    public static final String NAMESPACE_0_2 = "urn:xmpp:http:upload";
+    public static final String NAMESPACE = "urn:xmpp:http:upload";
+    public static final String NAMESPACE_V0 = NAMESPACE + ":0";
 
     private static final Logger LOGGER = Logger.getLogger(HttpFileUploadManager.class.getName());
 
@@ -126,9 +124,9 @@ public final class HttpFileUploadManager extends Manager {
         assert (containsHttpFileUploadNamespace(discoverInfo));
 
         UploadService.Version version;
-        if (discoverInfo.containsFeature(NAMESPACE)) {
+        if (discoverInfo.containsFeature(NAMESPACE_V0)) {
             version = Version.v0_3;
-        } else if (discoverInfo.containsFeature(NAMESPACE_0_2)) {
+        } else if (discoverInfo.containsFeature(NAMESPACE)) {
             version = Version.v0_2;
         } else {
             throw new AssertionError();
@@ -174,10 +172,10 @@ public final class HttpFileUploadManager extends Manager {
             InterruptedException, SmackException.NoResponseException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
         List<DiscoverInfo> servicesDiscoverInfo = sdm
-                .findServicesDiscoverInfo(NAMESPACE, true, true);
+                .findServicesDiscoverInfo(NAMESPACE_V0, true, true);
 
         if (servicesDiscoverInfo.isEmpty()) {
-            servicesDiscoverInfo = sdm.findServicesDiscoverInfo(NAMESPACE_0_2, true, true);
+            servicesDiscoverInfo = sdm.findServicesDiscoverInfo(NAMESPACE, true, true);
             if (servicesDiscoverInfo.isEmpty()) {
                 return false;
             }
@@ -348,10 +346,10 @@ public final class HttpFileUploadManager extends Manager {
         SlotRequest slotRequest;
         switch (uploadService.getVersion()) {
         case v0_3:
-            slotRequest = new SlotRequest(uploadService.getAddress(), filename, fileSize, contentType);
+            slotRequest = new SlotRequest_V0(uploadService.getAddress(), filename, fileSize, contentType);
             break;
         case v0_2:
-            slotRequest = new SlotRequest_V0_2(uploadService.getAddress(), filename, fileSize, contentType);
+            slotRequest = new SlotRequest(uploadService.getAddress(), filename, fileSize, contentType);
             break;
         default:
             throw new AssertionError();
@@ -460,6 +458,6 @@ public final class HttpFileUploadManager extends Manager {
     }
 
     private static boolean containsHttpFileUploadNamespace(DiscoverInfo discoverInfo) {
-        return discoverInfo.containsFeature(NAMESPACE) || discoverInfo.containsFeature(NAMESPACE_0_2);
+        return discoverInfo.containsFeature(NAMESPACE_V0) || discoverInfo.containsFeature(NAMESPACE);
     }
 }

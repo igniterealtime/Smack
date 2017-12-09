@@ -16,16 +16,13 @@
  */
 package org.jivesoftware.smackx.httpfileupload.element;
 
-import java.net.URL;
+public class FileTooLargeError_V0 extends FileTooLargeError {
 
-import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
+    public static final String NAMESPACE = SlotRequest_V0.NAMESPACE;
 
-public class Slot_V0_2 extends Slot {
-
-    public static final String NAMESPACE = HttpFileUploadManager.NAMESPACE_0_2;
-
-    public Slot_V0_2(URL putUrl, URL getUrl) {
-        super(putUrl, getUrl, null, NAMESPACE);
+    public FileTooLargeError_V0(long maxFileSize) {
+        super(maxFileSize, NAMESPACE);
     }
+
 
 }

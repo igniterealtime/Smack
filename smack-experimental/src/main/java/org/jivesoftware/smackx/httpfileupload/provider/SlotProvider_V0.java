@@ -18,10 +18,13 @@ package org.jivesoftware.smackx.httpfileupload.provider;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smackx.httpfileupload.element.Slot;
+import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smackx.httpfileupload.element.Slot_V0;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -32,12 +35,13 @@ import org.xmlpull.v1.XmlPullParserException;
  * @author Grigory Fedorov
  * @see <a href="http://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
  */
-public class SlotProvider extends IQProvider<Slot> {
+public class SlotProvider_V0 extends IQProvider<Slot_V0> {
 
     @Override
-    public Slot parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
+    public Slot_V0 parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         URL putUrl = null;
         URL getUrl = null;
+        Map<String, String> headers = null;
 
         outerloop: while (true) {
             int event = parser.next();
@@ -47,10 +51,18 @@ public class SlotProvider extends IQProvider<Slot> {
                     String name = parser.getName();
                     switch (name) {
                         case "put":
-                            putUrl = new URL(parser.nextText());
+                            putUrl = new URL(parser.getAttributeValue(null, "url"));
                             break;
                         case "get":
-                            getUrl = new URL(parser.nextText());
+                            getUrl = new URL(parser.getAttributeValue(null, "url"));
+                            break;
+                        case "header":
+                            String headerName = ParserUtils.getRequiredAttribute(parser, "name");
+                            String headerValue = ParserUtils.getRequiredNextText(parser);
+                            if (headers == null) {
+                                headers = new HashMap<>();
+                            }
+                            headers.put(headerName, headerValue);
                             break;
                     }
                     break;
@@ -62,6 +74,6 @@ public class SlotProvider extends IQProvider<Slot> {
             }
         }
 
-        return new Slot(putUrl, getUrl);
+        return new Slot_V0(putUrl, getUrl, headers);
     }
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright © 2017 Grigory Fedorov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,17 @@ import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 
 import org.jxmpp.jid.DomainBareJid;
 
-public class SlotRequest_V0_2 extends SlotRequest {
+/**
+ * Upload slot request.
 
-    public static final String NAMESPACE = HttpFileUploadManager.NAMESPACE_0_2;
+ * @author Grigory Fedorov
+ * @see <a href="http://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
+ */
+public class SlotRequest_V0 extends SlotRequest {
 
-    public SlotRequest_V0_2(DomainBareJid uploadServiceAddress, String filename, long size) {
+    public static final String NAMESPACE = HttpFileUploadManager.NAMESPACE_V0;
+
+    public SlotRequest_V0(DomainBareJid uploadServiceAddress, String filename, long size) {
         this(uploadServiceAddress, filename, size, null);
     }
 
@@ -37,16 +43,20 @@ public class SlotRequest_V0_2 extends SlotRequest {
      * @param contentType file content type or null
      * @throws IllegalArgumentException if size is less than or equal to zero
      */
-    public SlotRequest_V0_2(DomainBareJid uploadServiceAddress, String filename, long size, String contentType) {
-        super(uploadServiceAddress, filename, size, contentType, NAMESPACE);
+    public SlotRequest_V0(DomainBareJid uploadServiceAddress, String filename, long size, String contentType) {
+        this(uploadServiceAddress, filename, size, contentType, NAMESPACE);
+    }
+
+    private SlotRequest_V0(DomainBareJid uploadServiceAddress, String filename, long size, String contentType, String namespace) {
+        super(uploadServiceAddress, filename, size, contentType, namespace);
     }
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.rightAngleBracket();
-        xml.element("filename", filename);
-        xml.element("size", String.valueOf(size));
-        xml.optElement("content-type", contentType);
+        xml.attribute("filename", getFilename());
+        xml.attribute("size", String.valueOf(getSize()));
+        xml.optAttribute("content-type", getContentType());
+        xml.setEmptyElement();
         return xml;
     }
 }

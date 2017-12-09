@@ -20,19 +20,26 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
+import org.jivesoftware.smackx.httpfileupload.element.Slot_V0;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 public class SlotCreateTest {
-    String testSlot
-            = "<slot xmlns='urn:xmpp:http:upload:0'>"
+    private static final String testSlot_vBase
+            = "<slot xmlns='urn:xmpp:http:upload'>"
             +     "<put>https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png</put>"
             +     "<get>https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png</get>"
             + "</slot>";
 
+    private static final String testSlot_v0
+            = "<slot xmlns='urn:xmpp:http:upload:0'>"
+            +    "<put url='https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my-juliet.jpg'/>"
+            +    "<get url='https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my-juliet.jpg'/>"
+            +  "</slot>";
+
     @Test
-    public void checkSlotRequestCreation() throws MalformedURLException {
+    public void checkSlotRequestCreation_vBase() throws MalformedURLException {
         Slot slot = new Slot(new URL("https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png"),
                 new URL("https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png"));
 
@@ -41,6 +48,19 @@ public class SlotCreateTest {
         Assert.assertEquals(new URL("https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png"),
                 slot.getGetUrl());
 
-        Assert.assertEquals(testSlot, slot.getChildElementXML().toString());
+        Assert.assertEquals(testSlot_vBase, slot.getChildElementXML().toString());
+    }
+
+    @Test
+    public void checkSlotRequestCreation_v0() throws Exception {
+        Slot_V0 slot = new Slot_V0(new URL("https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my-juliet.jpg"),
+                new URL("https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my-juliet.jpg"));
+
+        Assert.assertEquals(new URL("https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my-juliet.jpg"),
+                slot.getPutUrl());
+        Assert.assertEquals(new URL("https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my-juliet.jpg"),
+                slot.getGetUrl());
+
+        Assert.assertEquals(testSlot_v0, slot.getChildElementXML().toString());
     }
 }
