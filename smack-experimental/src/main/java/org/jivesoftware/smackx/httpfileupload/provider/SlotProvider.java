@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017 Grigory Fedorov
+ * Copyright © 2017 Grigory Fedorov, Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class SlotProvider extends IQProvider<Slot> {
 
         URL putUrl = null;
         URL getUrl = null;
-        Map<String, String> headers = null;
+        PutElement_V0_4_Content putElementV04Content = null;
 
         outerloop: while (true) {
             int event = parser.next();
@@ -60,18 +60,17 @@ public class SlotProvider extends IQProvider<Slot> {
                     String name = parser.getName();
                     switch (name) {
                         case "put": {
-                            String putUrlString;
                             switch (version) {
                             case v0_2:
-                                putUrlString = parser.nextText();
+                                String putUrlString = parser.nextText();
+                                putUrl = new URL(putUrlString);
                                 break;
                             case v0_3:
-                                putUrlString = parser.getAttributeValue(null, "url");
+                                putElementV04Content = parsePutElement_V0_4(parser);
                                 break;
                             default:
                                 throw new AssertionError();
                             }
-                            putUrl = new URL(putUrlString);
                             break;
                         }
                         case "get":
@@ -88,14 +87,6 @@ public class SlotProvider extends IQProvider<Slot> {
                             }
                             getUrl = new URL(getUrlString);
                             break;
-                        case "header":
-                            String headerName = ParserUtils.getRequiredAttribute(parser, "name");
-                            String headerValue = ParserUtils.getRequiredNextText(parser);
-                            if (headers == null) {
-                                headers = new HashMap<>();
-                            }
-                            headers.put(headerName, headerValue);
-                            break;
                     }
                     break;
                 case XmlPullParser.END_TAG:
@@ -108,7 +99,7 @@ public class SlotProvider extends IQProvider<Slot> {
 
         switch (version) {
         case v0_3:
-            return new Slot(putUrl, getUrl, headers);
+            return new Slot(putElementV04Content.putUrl, getUrl, putElementV04Content.headers);
         case v0_2:
             return new Slot_V0_2(putUrl, getUrl);
         default:
@@ -116,4 +107,57 @@ public class SlotProvider extends IQProvider<Slot> {
         }
     }
 
+    public static PutElement_V0_4_Content parsePutElement_V0_4(XmlPullParser parser) throws XmlPullParserException, IOException {
+        final int initialDepth = parser.getDepth();
+
+        String putUrlString = parser.getAttributeValue(null, "url");
+        URL putUrl = new URL(putUrlString);
+
+        Map<String, String> headers = null;
+        outerloop: while (true) {
+            int next = parser.next();
+            switch (next) {
+            case XmlPullParser.START_TAG:
+                String name = parser.getName();
+                switch (name) {
+                case "header":
+                    String headerName = ParserUtils.getRequiredAttribute(parser, "name");
+                    String headerValue = ParserUtils.getRequiredNextText(parser);
+                    if (headers == null) {
+                        headers = new HashMap<>();
+                    }
+                    headers.put(headerName, headerValue);
+                    break;
+                default:
+                    break;
+                }
+                break;
+            case XmlPullParser.END_TAG:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
+                }
+                break;
+            }
+        }
+
+        return new PutElement_V0_4_Content(putUrl, headers);
+    }
+
+    public static final class PutElement_V0_4_Content {
+        private final URL putUrl;
+        private final Map<String, String> headers;
+
+        private PutElement_V0_4_Content(URL putUrl, Map<String, String> headers) {
+            this.putUrl = putUrl;
+            this.headers = headers;
+        }
+
+        public URL getPutUrl() {
+            return putUrl;
+        }
+
+        public Map<String, String> getHeaders() {
+            return headers;
+        }
+    }
 }
