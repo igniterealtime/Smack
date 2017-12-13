@@ -54,7 +54,7 @@ public class ConfigureFormTest extends InitExtensions
     }
 
     @Test
-    public void getConfigFormWithInsufficientPriviliges() throws XMPPException, SmackException, IOException, InterruptedException
+    public void getConfigFormWithInsufficientPrivileges() throws XMPPException, SmackException, IOException, InterruptedException
     {
         ThreadedDummyConnection con = ThreadedDummyConnection.newInstance();
         PubSubManager mgr = new PubSubManager(con, PubSubManagerTest.DUMMY_PUBSUB_SERVICE);

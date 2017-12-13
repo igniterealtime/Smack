@@ -29,6 +29,6 @@ public interface TypedCloneable<T> extends Cloneable {
      *
      * @return a cloned version of this instance.
      */
-    public T clone();
+    T clone();
 
 }

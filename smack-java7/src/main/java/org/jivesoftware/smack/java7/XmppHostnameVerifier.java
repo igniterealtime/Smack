@@ -214,7 +214,7 @@ public class XmppHostnameVerifier implements HostnameVerifier {
         }
 
         boolean isBeginning = true;
-        String beforeWildcard = "";
+        String beforeWildcard;
         String afterWildcard = template;
         while (wildcardIndex != -1) {
             beforeWildcard = afterWildcard.substring(0, wildcardIndex);

@@ -35,7 +35,7 @@ public class LazyStringBuilder implements Appendable, CharSequence {
     }
 
     public LazyStringBuilder() {
-        list = new ArrayList<CharSequence>(20);
+        list = new ArrayList<>(20);
     }
 
     public LazyStringBuilder append(LazyStringBuilder lsb) {

@@ -39,7 +39,7 @@ public class ScreenShareMediaManager extends JingleMediaManager {
 
     public static final String MEDIA_NAME = "ScreenShare";
 
-    private List<PayloadType> payloads = new ArrayList<PayloadType>();
+    private List<PayloadType> payloads = new ArrayList<>();
 
     private ImageDecoder decoder = null;
     private ImageEncoder encoder = null;

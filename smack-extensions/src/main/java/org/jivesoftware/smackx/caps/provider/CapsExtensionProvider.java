@@ -32,9 +32,7 @@ public class CapsExtensionProvider extends ExtensionElementProvider<CapsExtensio
     @Override
     public CapsExtension parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
             SmackException {
-        String hash = null;
-        String version = null;
-        String node = null;
+        String hash, version, node;
         if (parser.getEventType() == XmlPullParser.START_TAG
                 && parser.getName().equalsIgnoreCase(EntityCapsManager.ELEMENT)) {
             hash = parser.getAttributeValue(null, "hash");

@@ -44,7 +44,7 @@ public enum JingleAction {
     transport_replace,
     ;
 
-    private static final Map<String, JingleAction> map = new HashMap<String, JingleAction>(
+    private static final Map<String, JingleAction> map = new HashMap<>(
                     JingleAction.values().length);
     static {
         for (JingleAction jingleAction : JingleAction.values()) {
@@ -54,7 +54,7 @@ public enum JingleAction {
 
     private final String asString;
 
-    private JingleAction() {
+    JingleAction() {
         asString = this.name().replace('_', '-');
     }
 

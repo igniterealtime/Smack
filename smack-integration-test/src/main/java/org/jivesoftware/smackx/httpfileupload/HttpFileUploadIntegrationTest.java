@@ -21,7 +21,6 @@ import static org.junit.Assert.assertArrayEquals;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +61,7 @@ public class HttpFileUploadIntegrationTest extends AbstractSmackIntegrationTest 
     }
 
     @SmackIntegrationTest
-    public void httpFileUploadTest() throws FileNotFoundException, IOException, XMPPErrorException, InterruptedException, SmackException {
+    public void httpFileUploadTest() throws IOException, XMPPErrorException, InterruptedException, SmackException {
         final int fileSize = FILE_SIZE;
         File file = createNewTempFile();
         FileOutputStream fos = new FileOutputStream(file.getCanonicalPath());

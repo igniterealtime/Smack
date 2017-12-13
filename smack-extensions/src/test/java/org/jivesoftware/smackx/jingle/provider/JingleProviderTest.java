@@ -55,8 +55,8 @@ public class JingleProviderTest {
 
         JingleContentDescription jingleContentDescription = jingle.getSoleContentOrThrow().getDescription();
 
-        String parsedUnknownJingleContentDescrptionNamespace = jingleContentDescription.getNamespace();
-        assertEquals(unknownJingleContentDescriptionNamespace, parsedUnknownJingleContentDescrptionNamespace);
+        String parsedUnknownJingleContentDescriptionNamespace = jingleContentDescription.getNamespace();
+        assertEquals(unknownJingleContentDescriptionNamespace, parsedUnknownJingleContentDescriptionNamespace);
     }
 
     @Test

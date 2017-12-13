@@ -72,9 +72,9 @@ public final class PrivacyListManager extends Manager {
     private static final StanzaFilter PRIVACY_RESULT = new AndFilter(IQTypeFilter.RESULT, PRIVACY_FILTER);
 
     // Keep the list of instances of this class.
-    private static final Map<XMPPConnection, PrivacyListManager> INSTANCES = new WeakHashMap<XMPPConnection, PrivacyListManager>();
+    private static final Map<XMPPConnection, PrivacyListManager> INSTANCES = new WeakHashMap<>();
 
-    private final Set<PrivacyListListener> listeners = new CopyOnWriteArraySet<PrivacyListListener>();
+    private final Set<PrivacyListListener> listeners = new CopyOnWriteArraySet<>();
 
     static {
         // Create a new PrivacyListManager on every established connection.

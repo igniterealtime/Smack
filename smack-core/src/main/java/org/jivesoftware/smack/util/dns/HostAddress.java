@@ -43,7 +43,7 @@ public class HostAddress {
     public HostAddress(String fqdn, int port, List<InetAddress> inetAddresses) {
         if (port < 0 || port > 65535)
             throw new IllegalArgumentException(
-                    "Port must be a 16-bit unsiged integer (i.e. between 0-65535. Port was: " + port);
+                    "Port must be a 16-bit unsigned integer (i.e. between 0-65535. Port was: " + port);
         if (StringUtils.isNotEmpty(fqdn) && fqdn.charAt(fqdn.length() - 1) == '.') {
             this.fqdn = fqdn.substring(0, fqdn.length() - 1);
         }

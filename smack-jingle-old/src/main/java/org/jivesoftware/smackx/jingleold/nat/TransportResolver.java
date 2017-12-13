@@ -62,7 +62,7 @@ public abstract class TransportResolver {
     public static final int CHECK_TIMEOUT = 3000;
 
     // Listeners for events
-    private final ArrayList<TransportResolverListener> listeners = new ArrayList<TransportResolverListener>();
+    private final ArrayList<TransportResolverListener> listeners = new ArrayList<>();
 
     // TRue if the resolver is working
     private boolean resolving;
@@ -76,7 +76,7 @@ public abstract class TransportResolver {
     // We store a list of candidates internally, just in case there are several
     // possibilities. When the user asks for a transport, we return the best
     // one.
-    protected final List<TransportCandidate> candidates = new ArrayList<TransportCandidate>();
+    protected final List<TransportCandidate> candidates = new ArrayList<>();
 
     /**
      * Default constructor.
@@ -142,7 +142,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Chack if the Transport Resolver is initialized.
+     * Check if the Transport Resolver is initialized.
      *
      * @return true if initialized
      */
@@ -151,8 +151,8 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Indicate the beggining of the resolution process. This method must be
-     * used by subclasses at the begining of their resolve() method.
+     * Indicate the beginning of the resolution process. This method must be
+     * used by subclasses at the beginning of their resolve() method.
      */
     protected synchronized void setResolveInit() {
         resolved = false;
@@ -163,7 +163,7 @@ public abstract class TransportResolver {
 
     /**
      * Indicate the end of the resolution process. This method must be used by
-     * subclasses at the begining of their resolve() method.
+     * subclasses at the beginning of their resolve() method.
      */
     protected synchronized void setResolveEnd() {
         resolved = true;
@@ -203,7 +203,7 @@ public abstract class TransportResolver {
      */
     public ArrayList<TransportResolverListener> getListenersList() {
         synchronized (listeners) {
-            return new ArrayList<TransportResolverListener>(listeners);
+            return new ArrayList<>(listeners);
         }
     }
 
@@ -241,7 +241,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Trigger a event notifying the obtention of all the candidates.
+     * Trigger a event notifying the obtainment of all the candidates.
      */
     private void triggerResolveEnd() {
         Iterator<TransportResolverListener> iter = getListenersList().iterator();
@@ -289,19 +289,19 @@ public abstract class TransportResolver {
      */
     public Iterator<TransportCandidate> getCandidates() {
         synchronized (candidates) {
-            return Collections.unmodifiableList(new ArrayList<TransportCandidate>(candidates)).iterator();
+            return Collections.unmodifiableList(new ArrayList<>(candidates)).iterator();
         }
     }
 
     /**
-     * Get the candididate with the highest preference.
+     * Get the candidate with the highest preference.
      *
      * @return The best candidate, according to the preference order.
      */
     public TransportCandidate getPreferredCandidate() {
         TransportCandidate result = null;
 
-        ArrayList<ICECandidate> cands = new ArrayList<ICECandidate>();
+        ArrayList<ICECandidate> cands = new ArrayList<>();
         for (TransportCandidate tpcan : getCandidatesList()) {
             if (tpcan instanceof ICECandidate)
                 cands.add((ICECandidate) tpcan);
@@ -319,7 +319,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Get the numer of transport candidates.
+     * Get the number of transport candidates.
      *
      * @return The length of the transport candidates list.
      */
@@ -335,10 +335,10 @@ public abstract class TransportResolver {
      * @return the list of transport candidates
      */
     public List<TransportCandidate> getCandidatesList() {
-        List<TransportCandidate> result = null;
+        List<TransportCandidate> result;
 
         synchronized (candidates) {
-            result = new ArrayList<TransportCandidate>(candidates);
+            result = new ArrayList<>(candidates);
         }
 
         return result;
@@ -359,7 +359,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Initialize Transport Resolver and wait until it is complete unitialized.
+     * Initialize Transport Resolver and wait until it is completely uninitialized.
      * @throws SmackException 
      * @throws InterruptedException 
      */

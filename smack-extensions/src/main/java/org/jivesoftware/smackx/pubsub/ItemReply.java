@@ -28,5 +28,5 @@ public enum ItemReply
     owner,
 
     /** The item publisher. */
-    publisher;
+    publisher
 }

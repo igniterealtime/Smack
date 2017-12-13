@@ -39,7 +39,7 @@ public class UserID implements ExtensionElement {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    private Jid userID;
+    private final Jid userID;
 
     public UserID(Jid userID) {
         this.userID = userID;

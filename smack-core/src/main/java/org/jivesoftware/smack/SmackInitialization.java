@@ -40,7 +40,6 @@ import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 
@@ -71,7 +70,7 @@ public final class SmackInitialization {
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Could not determine Smack version", e);
-            smackVersion = "unkown";
+            smackVersion = "unknown";
         }
         SMACK_VERSION = smackVersion;
 
@@ -182,7 +181,7 @@ public final class SmackInitialization {
 
     private static void parseClassesToLoad(XmlPullParser parser, boolean optional,
                     Collection<Exception> exceptions, ClassLoader classLoader)
-                    throws XmlPullParserException, IOException, Exception {
+                    throws Exception {
         final String startName = parser.getName();
         int eventType;
         String name;

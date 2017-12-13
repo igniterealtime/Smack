@@ -28,10 +28,10 @@ import org.junit.Test;
 
 public class MUCUserTest {
 
-    private static final Set<Status> createStatusSet() {
+    private static Set<Status> createStatusSet() {
         Status status301 = Status.create(301);
         Status status110 = Status.create(110);
-        Set<Status> statusSet = new HashSet<Status>();
+        Set<Status> statusSet = new HashSet<>();
         statusSet.add(status301);
         statusSet.add(status110);
 

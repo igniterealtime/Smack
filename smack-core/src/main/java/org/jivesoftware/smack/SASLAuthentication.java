@@ -64,9 +64,9 @@ public final class SASLAuthentication {
 
     private static final Logger LOGGER = Logger.getLogger(SASLAuthentication.class.getName());
 
-    private static final List<SASLMechanism> REGISTERED_MECHANISMS = new ArrayList<SASLMechanism>();
+    private static final List<SASLMechanism> REGISTERED_MECHANISMS = new ArrayList<>();
 
-    private static final Set<String> BLACKLISTED_MECHANISMS = new HashSet<String>();
+    private static final Set<String> BLACKLISTED_MECHANISMS = new HashSet<>();
 
     static {
         // Blacklist SCRAM-SHA-1-PLUS for now.
@@ -91,7 +91,7 @@ public final class SASLAuthentication {
      * @return the registered SASLMechanism sorted by the level of preference.
      */
     public static Map<String, String> getRegisterdSASLMechanisms() {
-        Map<String, String> answer = new LinkedHashMap<String, String>();
+        Map<String, String> answer = new LinkedHashMap<>();
         synchronized (REGISTERED_MECHANISMS) {
             for (SASLMechanism mechanism : REGISTERED_MECHANISMS) {
                 answer.put(mechanism.getClass().getName(), mechanism.toString());
@@ -132,9 +132,9 @@ public final class SASLAuthentication {
         return false;
     }
 
-    public static boolean blacklistSASLMechanism(String mechansim) {
+    public static boolean blacklistSASLMechanism(String mechanism) {
         synchronized (BLACKLISTED_MECHANISMS) {
-            return BLACKLISTED_MECHANISMS.add(mechansim);
+            return BLACKLISTED_MECHANISMS.add(mechanism);
         }
     }
 
@@ -356,8 +356,8 @@ public final class SASLAuthentication {
             throw new SmackException(
                             "No supported and enabled SASL Mechanism provided by server. " +
                             "Server announced mechanisms: " + serverMechanisms + ". " +
-                            "Registerd SASL mechanisms with Smack: " + REGISTERED_MECHANISMS + ". " +
-                            "Enabled SASL mechansisms for this connection: " + configuration.getEnabledSaslMechanisms() + ". " +
+                            "Registered SASL mechanisms with Smack: " + REGISTERED_MECHANISMS + ". " +
+                            "Enabled SASL mechanisms for this connection: " + configuration.getEnabledSaslMechanisms() + ". " +
                             "Blacklisted SASL mechanisms: " + BLACKLISTED_MECHANISMS + '.'
                             );
             // @formatter;on

@@ -112,7 +112,7 @@ public class MultipleRecipientManager {
             connection.sendStanza(packet);
             return;
         }
-        DomainBareJid serviceAddress = getMultipleRecipienServiceAddress(connection);
+        DomainBareJid serviceAddress = getMultipleRecipientServiceAddress(connection);
         if (serviceAddress != null) {
             // Send packet to target users using multiple recipient service provided by the server
             sendThroughService(connection, packet, to, cc, bcc, replyTo, replyRoom, noReply,
@@ -133,8 +133,8 @@ public class MultipleRecipientManager {
 
     /**
      * Sends a reply to a previously received stanza(/packet) that was sent to multiple recipients. Before
-     * attempting to send the reply message some checkings are performed. If any of those checkings
-     * fail then an XMPPException is going to be thrown with the specific error detail.
+     * attempting to send the reply message some checks are performed. If any of those checks
+     * fails, then an XMPPException is going to be thrown with the specific error detail.
      *
      * @param connection the connection to use to send the reply.
      * @param original   the previously received stanza(/packet) that was sent to multiple recipients.
@@ -201,8 +201,7 @@ public class MultipleRecipientManager {
      *         if none was found.
      */
     public static MultipleRecipientInfo getMultipleRecipientInfo(Stanza packet) {
-        MultipleAddresses extension = (MultipleAddresses) packet
-                .getExtension(MultipleAddresses.ELEMENT, MultipleAddresses.NAMESPACE);
+        MultipleAddresses extension = packet.getExtension(MultipleAddresses.ELEMENT, MultipleAddresses.NAMESPACE);
         return extension == null ? null : new MultipleRecipientInfo(extension);
     }
 
@@ -283,7 +282,7 @@ public class MultipleRecipientManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    private static DomainBareJid getMultipleRecipienServiceAddress(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    private static DomainBareJid getMultipleRecipientServiceAddress(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         return sdm.findService(MultipleAddresses.NAMESPACE, true);
     }
@@ -296,7 +295,7 @@ public class MultipleRecipientManager {
      */
     private static class PacketCopy extends Stanza {
 
-        private CharSequence text;
+        private final CharSequence text;
 
         /**
          * Create a copy of a stanza(/packet) with the text to send. The passed text must be a valid text to

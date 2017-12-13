@@ -33,14 +33,14 @@ import org.xmlpull.v1.XmlPullParser;
 
 public class MamResultProviderTest {
 
-    String exampleMamResultXml = "<result xmlns='urn:xmpp:mam:1' queryid='f27' id='28482-98726-73623'>"
+    private static final String exampleMamResultXml = "<result xmlns='urn:xmpp:mam:1' queryid='f27' id='28482-98726-73623'>"
             + "<forwarded xmlns='urn:xmpp:forward:0'>" + "<delay xmlns='urn:xmpp:delay' stamp='2010-07-10T23:08:25Z'/>"
             + "<message xmlns='jabber:client'" + "to='juliet@capulet.lit/balcony'" + "from='romeo@montague.lit/orchard'"
             + "type='chat'>"
             + "<body>Call me but love, and I'll be new baptized; Henceforth I never will be Romeo.</body>"
             + "</message>" + "</forwarded>" + "</result>";
 
-    String exampleResultMessage = "<message id='aeb213' to='juliet@capulet.lit/chamber'>"
+    private static final String exampleResultMessage = "<message id='aeb213' to='juliet@capulet.lit/chamber'>"
             + "<result xmlns='urn:xmpp:mam:1' queryid='f27' id='28482-98726-73623'>"
             + "<forwarded xmlns='urn:xmpp:forward:0'>" + "<delay xmlns='urn:xmpp:delay' stamp='2010-07-10T23:08:25Z'/>"
             + "<message xmlns='jabber:client' from='witch@shakespeare.lit' to='macbeth@shakespeare.lit'>"
@@ -62,15 +62,15 @@ public class MamResultProviderTest {
         Assert.assertEquals(forwarded.getDelayInformation().getStamp(), date);
 
         Message message = (Message) forwarded.getForwardedStanza();
-        Assert.assertEquals(message.getFrom(), "romeo@montague.lit/orchard");
-        Assert.assertEquals(message.getTo(), "juliet@capulet.lit/balcony");
+        Assert.assertEquals(message.getFrom().toString(), "romeo@montague.lit/orchard");
+        Assert.assertEquals(message.getTo().toString(), "juliet@capulet.lit/balcony");
         Assert.assertEquals(message.getBody(),
                 "Call me but love, and I'll be new baptized; Henceforth I never will be Romeo.");
     }
 
     @Test
     public void checkResultsParse() throws Exception {
-        Message message = (Message) PacketParserUtils.parseStanza(exampleResultMessage);
+        Message message = PacketParserUtils.parseStanza(exampleResultMessage);
         MamResultExtension mamResultExtension = MamResultExtension.from(message);
 
         Assert.assertEquals(mamResultExtension.getQueryId(), "f27");
@@ -84,8 +84,8 @@ public class MamResultProviderTest {
         Assert.assertEquals(forwarded.getDelayInformation().getStamp(), date);
 
         Message forwardedMessage = (Message) forwarded.getForwardedStanza();
-        Assert.assertEquals(forwardedMessage.getFrom(), "witch@shakespeare.lit");
-        Assert.assertEquals(forwardedMessage.getTo(), "macbeth@shakespeare.lit");
+        Assert.assertEquals(forwardedMessage.getFrom().toString(), "witch@shakespeare.lit");
+        Assert.assertEquals(forwardedMessage.getTo().toString(), "macbeth@shakespeare.lit");
         Assert.assertEquals(forwardedMessage.getBody(), "Hail to thee");
     }
 

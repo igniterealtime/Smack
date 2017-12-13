@@ -25,7 +25,7 @@ public class Tag implements NamedElement {
 
     public enum Type {
         str,
-        num;
+        num
     }
 
     private final String name;

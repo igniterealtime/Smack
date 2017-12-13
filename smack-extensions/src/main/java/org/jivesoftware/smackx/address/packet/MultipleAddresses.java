@@ -53,7 +53,7 @@ public class MultipleAddresses implements ExtensionElement {
         ofrom,
     }
 
-    private List<Address> addresses = new ArrayList<Address>();
+    private final List<Address> addresses = new ArrayList<>();
 
     /**
      * Adds a new address to which the stanza(/packet) is going to be sent or was sent.
@@ -68,7 +68,7 @@ public class MultipleAddresses implements ExtensionElement {
      */
     public void addAddress(Type type, Jid jid, String node, String desc, boolean delivered,
             String uri) {
-        // Create a new address with the specificed configuration
+        // Create a new address with the specified configuration
         Address address = new Address(type);
         address.setJid(jid);
         address.setNode(node);
@@ -83,7 +83,7 @@ public class MultipleAddresses implements ExtensionElement {
      * Indicate that the stanza(/packet) being sent should not be replied.
      */
     public void setNoReply() {
-        // Create a new address with the specificed configuration
+        // Create a new address with the specified configuration
         Address address = new Address(Type.noreply);
         // Add the new address to the list of multiple recipients
         addresses.add(address);
@@ -97,7 +97,7 @@ public class MultipleAddresses implements ExtensionElement {
      * @return the list of addresses that matches the specified type.
      */
     public List<Address> getAddressesOfType(Type type) {
-        List<Address> answer = new ArrayList<Address>(addresses.size());
+        List<Address> answer = new ArrayList<>(addresses.size());
         for (Address address : addresses) {
             if (address.getType().equals(type)) {
                 answer.add(address);

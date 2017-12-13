@@ -20,6 +20,6 @@ import java.util.Collection;
 
 public interface RosterEntries {
 
-    public void rosterEntries(Collection<RosterEntry> rosterEntries);
+    void rosterEntries(Collection<RosterEntry> rosterEntries);
 
 }

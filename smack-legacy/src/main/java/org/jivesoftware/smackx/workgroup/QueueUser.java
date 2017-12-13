@@ -28,11 +28,11 @@ import java.util.Date;
  */
 public class QueueUser {
 
-    private String userID;
+    private final String userID;
 
-    private int queuePosition;
-    private int estimatedTime;
-    private Date joinDate;
+    private final int queuePosition;
+    private final int estimatedTime;
+    private final Date joinDate;
 
     /**
      * Queue user.

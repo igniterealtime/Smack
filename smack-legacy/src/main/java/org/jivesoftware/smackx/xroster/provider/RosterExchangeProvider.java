@@ -52,16 +52,16 @@ public class RosterExchangeProvider extends ExtensionElementProvider<RosterExcha
         // CHECKSTYLE:OFF
         RosterExchange rosterExchange = new RosterExchange();
         boolean done = false;
-        RemoteRosterEntry remoteRosterEntry = null;
+        RemoteRosterEntry remoteRosterEntry;
         Jid jid = null;
 		String name = "";
-		ArrayList<String> groupsName = new ArrayList<String>();
+		ArrayList<String> groupsName = new ArrayList<>();
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("item")) {
                 	// Reset this variable since they are optional for each item
-					groupsName = new ArrayList<String>();
+					groupsName = new ArrayList<>();
 					// Initialize the variables from the parsed XML
                     jid = ParserUtils.getJidAttribute(parser);
                     name = parser.getAttributeValue("", "name");

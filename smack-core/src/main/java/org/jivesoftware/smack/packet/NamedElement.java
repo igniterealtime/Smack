@@ -28,6 +28,6 @@ public interface NamedElement extends Element {
      *
      * @return the element name.
      */
-    public String getElementName();
+    String getElementName();
 
 }

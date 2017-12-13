@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.iqversion;
 
-import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
+import static org.jivesoftware.smack.test.util.CharSequenceEquals.equalsCharSequence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -45,7 +45,7 @@ public class VersionTest extends InitExtensions {
         // Enable version replys for this connection
         VersionManager.setAutoAppendSmackVersion(false);
         VersionManager.getInstanceFor(con).setVersion("Test", "0.23", "DummyOS");
-        IQ versionRequest = (IQ) PacketParserUtils.parseStanza(control);
+        IQ versionRequest = PacketParserUtils.parseStanza(control);
 
         assertTrue(versionRequest instanceof Version);
 

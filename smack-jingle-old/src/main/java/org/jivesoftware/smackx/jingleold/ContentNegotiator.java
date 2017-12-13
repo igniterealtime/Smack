@@ -46,24 +46,24 @@ public class ContentNegotiator extends JingleNegotiator {
     public static final String INITIATOR = "initiator";
     public static final String RESPONDER = "responder";
 
-    private List<TransportNegotiator> transportNegotiators;
+    private final List<TransportNegotiator> transportNegotiators;
     private MediaNegotiator mediaNeg; // The description...
     private TransportNegotiator transNeg; // and transport negotiators
     private JingleTransportManager jingleTransportManager;
-    private String creator;
-    private String name;
+    private final String creator;
+    private final String name;
     private JingleMediaSession jingleMediaSession = null;
 
     public ContentNegotiator(JingleSession session, String inCreator, String inName) {
         super(session);
         creator = inCreator;
         name = inName;
-        transportNegotiators = new ArrayList<TransportNegotiator>();
+        transportNegotiators = new ArrayList<>();
     }
 
     @Override
     public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException, InterruptedException {
-        List<IQ> responses = new ArrayList<IQ>();
+        List<IQ> responses = new ArrayList<>();
 
         // First only process IQ packets that contain <content> stanzas that
         // match this media manager.
@@ -203,7 +203,7 @@ public class ContentNegotiator extends JingleNegotiator {
     }
 
     /**
-     * Set TransportNegociator
+     * Set TransportNegotiator
      * 
      * @param transNeg
      *            the transNeg to set
@@ -301,7 +301,7 @@ public class ContentNegotiator extends JingleNegotiator {
             jingleMediaSession.addMediaReceivedListener(session);
             if (jingleMediaSession != null) {
 
-                jingleMediaSession.startTrasmit();
+                jingleMediaSession.startTransmit();
                 jingleMediaSession.startReceive();
 
                 for (TransportCandidate candidate : getTransportNegotiator().getOfferedCandidates())
@@ -319,7 +319,7 @@ public class ContentNegotiator extends JingleNegotiator {
     public void stopJingleMediaSession() {
 
         if (jingleMediaSession != null) {
-            jingleMediaSession.stopTrasmit();
+            jingleMediaSession.stopTransmit();
             jingleMediaSession.stopReceive();
         }
     }

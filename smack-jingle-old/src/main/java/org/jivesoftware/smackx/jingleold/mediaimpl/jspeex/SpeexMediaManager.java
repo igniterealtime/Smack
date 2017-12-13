@@ -44,7 +44,7 @@ public class SpeexMediaManager extends JingleMediaManager {
 
     public static final String MEDIA_NAME = "Speex";
 
-    private List<PayloadType> payloads = new ArrayList<PayloadType>();
+    private List<PayloadType> payloads = new ArrayList<>();
 
     public SpeexMediaManager(JingleTransportManager transportManager) {
         super(transportManager);

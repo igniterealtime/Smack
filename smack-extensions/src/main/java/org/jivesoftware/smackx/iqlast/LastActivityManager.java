@@ -92,7 +92,7 @@ import org.jxmpp.jid.Jid;
  */
 
 public final class LastActivityManager extends Manager {
-    private static final Map<XMPPConnection, LastActivityManager> instances = new WeakHashMap<XMPPConnection, LastActivityManager>();
+    private static final Map<XMPPConnection, LastActivityManager> instances = new WeakHashMap<>();
 //    private static final PacketFilter IQ_GET_LAST_FILTER = new AndFilter(IQTypeFilter.GET,
 //                    new StanzaTypeFilter(LastActivity.class));
 

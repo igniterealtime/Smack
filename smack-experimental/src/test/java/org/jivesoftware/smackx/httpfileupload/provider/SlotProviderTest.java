@@ -33,7 +33,7 @@ public class SlotProviderTest {
      * Example 6. The upload service responds with a slot
      * @see <a href="http://xmpp.org/extensions/xep-0363.html#request">XEP-0363: HTTP File Upload 4. Requesting a slot</a>
      */
-    String slotExample
+    private static final String slotExample
             = "<iq from='upload.montague.tld' "
             +       "id='step_03' "
             +       "to='romeo@montague.tld/garden' "

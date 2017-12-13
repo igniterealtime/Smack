@@ -175,7 +175,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     protected PacketReader packetReader;
 
-    private final SynchronizationPoint<Exception> initalOpenStreamSend = new SynchronizationPoint<>(
+    private final SynchronizationPoint<Exception> initialOpenStreamSend = new SynchronizationPoint<>(
                     this, "initial open stream element send to server");
 
     /**
@@ -237,7 +237,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     /**
      * The server's preferred maximum resumption time in seconds.
      */
-    private int smServerMaxResumptimTime = -1;
+    private int smServerMaxResumptionTime = -1;
 
     /**
      * Indicates whether Stream Management (XEP-198) should be used if it's supported by the server.
@@ -276,13 +276,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * themselves after they have been invoked.
      * </p>
      */
-    private final Collection<StanzaListener> stanzaAcknowledgedListeners = new ConcurrentLinkedQueue<StanzaListener>();
+    private final Collection<StanzaListener> stanzaAcknowledgedListeners = new ConcurrentLinkedQueue<>();
 
     /**
      * This listeners are invoked for a acknowledged stanza that has the given stanza ID. They will
      * only be invoked once and automatically removed after that.
      */
-    private final Map<String, StanzaListener> stanzaIdAcknowledgedListeners = new ConcurrentHashMap<String, StanzaListener>();
+    private final Map<String, StanzaListener> stanzaIdAcknowledgedListeners = new ConcurrentHashMap<>();
 
     /**
      * Predicates that determine if an stream management ack should be requested from the server.
@@ -291,7 +291,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * order in which they are invoked in order to determine if an ack request should be send or not.
      * </p>
      */
-    private final Set<StanzaFilter> requestAckPredicates = new LinkedHashSet<StanzaFilter>();
+    private final Set<StanzaFilter> requestAckPredicates = new LinkedHashSet<>();
 
     private final XMPPTCPConnectionConfiguration config;
 
@@ -533,7 +533,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         compressSyncPoint.init();
         smResumedSyncPoint.init();
         smEnabledSyncPoint.init();
-        initalOpenStreamSend.init();
+        initialOpenStreamSend.init();
     }
 
     @Override
@@ -563,7 +563,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             socketFactory = SocketFactory.getDefault();
         }
         for (HostAddress hostAddress : hostAddresses) {
-            Iterator<InetAddress> inetAddresses = null;
+            Iterator<InetAddress> inetAddresses;
             String host = hostAddress.getHost();
             int port = hostAddress.getPort();
             if (proxyInfo == null) {
@@ -624,7 +624,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * XMPP stream to the server.
      *
      * @throws XMPPException if establishing a connection to the server fails.
-     * @throws SmackException if the server failes to respond back or if there is anther error.
+     * @throws SmackException if the server fails to respond back or if there is anther error.
      * @throws IOException 
      */
     private void initConnection() throws IOException {
@@ -823,7 +823,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * 
      */
     private static XMPPInputOutputStream maybeGetCompressionHandler(Compress.Feature compression) {
-        for (XMPPInputOutputStream handler : SmackConfiguration.getCompresionHandlers()) {
+        for (XMPPInputOutputStream handler : SmackConfiguration.getCompressionHandlers()) {
                 String method = handler.getCompressionMethod();
                 if (compression.getMethods().contains(method))
                     return handler;
@@ -854,7 +854,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws NoResponseException 
      * @throws InterruptedException 
      */
-    private void maybeEnableCompression() throws NotConnectedException, NoResponseException, SmackException, InterruptedException {
+    private void maybeEnableCompression() throws SmackException, InterruptedException {
         if (!config.isCompressionEnabled()) {
             return;
         }
@@ -955,7 +955,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * Resets the parser using the latest connection's reader. Reseting the parser is necessary
+     * Resets the parser using the latest connection's reader. Resetting the parser is necessary
      * when the plain connection has been secured or when a new opening stream element is going
      * to be sent by the server.
      *
@@ -1013,12 +1013,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         /**
          * Parse top-level packets in order to process them further.
-         *
-         * @param thread the thread that is being used by the reader to parse incoming packets.
          */
         private void parsePackets() {
             try {
-                initalOpenStreamSend.checkIfSuccessOrWait();
+                initialOpenStreamSend.checkIfSuccessOrWait();
                 int eventType = parser.getEventType();
                 while (!done) {
                     switch (eventType) {
@@ -1122,7 +1120,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                     smEnabledSyncPoint.reportFailure(xmppException);
                                     throw xmppException;
                                 }
-                                smServerMaxResumptimTime = enabled.getMaxResumptionTime();
+                                smServerMaxResumptionTime = enabled.getMaxResumptionTime();
                             } else {
                                 // Mark this a non-resumable stream by setting smSessionId to null
                                 smSessionId = null;
@@ -1130,7 +1128,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             clientHandledStanzasCount = 0;
                             smWasEnabledAtLeastOnce = true;
                             smEnabledSyncPoint.reportSuccess();
-                            LOGGER.fine("Stream Management (XEP-198): succesfully enabled");
+                            LOGGER.fine("Stream Management (XEP-198): successfully enabled");
                             break;
                         case Failed.ELEMENT:
                             Failed failed = ParseStreamManagement.failed(parser);
@@ -1252,13 +1250,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     protected class PacketWriter {
         public static final int QUEUE_SIZE = XMPPTCPConnection.QUEUE_SIZE;
 
-        private final ArrayBlockingQueueWithShutdown<Element> queue = new ArrayBlockingQueueWithShutdown<Element>(
+        private final ArrayBlockingQueueWithShutdown<Element> queue = new ArrayBlockingQueueWithShutdown<>(
                         QUEUE_SIZE, true);
 
         /**
          * Needs to be protected for unit testing purposes.
          */
-        protected SynchronizationPoint<NoResponseException> shutdownDone = new SynchronizationPoint<NoResponseException>(
+        protected SynchronizationPoint<NoResponseException> shutdownDone = new SynchronizationPoint<>(
                         XMPPTCPConnection.this, "shutdown completed");
 
         /**
@@ -1309,11 +1307,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         protected void throwNotConnectedExceptionIfDoneAndResumptionNotPossible() throws NotConnectedException {
             final boolean done = done();
             if (done) {
-                final boolean smResumptionPossbile = isSmResumptionPossible();
+                final boolean smResumptionPossible = isSmResumptionPossible();
                 // Don't throw a NotConnectedException is there is an resumable stream available
-                if (!smResumptionPossbile) {
+                if (!smResumptionPossible) {
                     throw new NotConnectedException(XMPPTCPConnection.this, "done=" + done
-                                    + " smResumptionPossible=" + smResumptionPossbile);
+                                    + " smResumptionPossible=" + smResumptionPossible);
                 }
             }
         }
@@ -1387,7 +1385,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             Exception writerException = null;
             try {
                 openStream();
-                initalOpenStreamSend.reportSuccess();
+                initialOpenStreamSend.reportSuccess();
                 // Write out packets from the queue.
                 while (!done()) {
                     Element element = nextStreamElement();
@@ -1507,7 +1505,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
 
         private void drainWriterQueueToUnacknowledgedStanzas() {
-            List<Element> elements = new ArrayList<Element>(queue.size());
+            List<Element> elements = new ArrayList<>(queue.size());
             queue.drainTo(elements);
             for (Element element : elements) {
                 if (element instanceof Stanza) {
@@ -1645,7 +1643,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     /**
      * Send an unconditional Stream Management acknowledgement request to the server.
      *
-     * @throws StreamManagementNotEnabledException if Stream Mangement is not enabled.
+     * @throws StreamManagementNotEnabledException if Stream Management is not enabled.
      * @throws NotConnectedException if the connection is not connected.
      * @throws InterruptedException 
      */
@@ -1847,13 +1845,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     public int getMaxSmResumptionTime() {
         int clientResumptionTime = smClientMaxResumptionTime > 0 ? smClientMaxResumptionTime : Integer.MAX_VALUE;
-        int serverResumptionTime = smServerMaxResumptimTime > 0 ? smServerMaxResumptimTime : Integer.MAX_VALUE;
+        int serverResumptionTime = smServerMaxResumptionTime > 0 ? smServerMaxResumptionTime : Integer.MAX_VALUE;
         return Math.min(clientResumptionTime, serverResumptionTime);
     }
 
     private void processHandledCount(long handledCount) throws StreamManagementCounterError {
         long ackedStanzasCount = SMUtils.calculateDelta(handledCount, serverHandledStanzasCount);
-        final List<Stanza> ackedStanzas = new ArrayList<Stanza>(
+        final List<Stanza> ackedStanzas = new ArrayList<>(
                         ackedStanzasCount <= Integer.MAX_VALUE ? (int) ackedStanzasCount
                                         : Integer.MAX_VALUE);
         for (long i = 0; i < ackedStanzasCount; i++) {

@@ -24,6 +24,6 @@ package org.jivesoftware.smack;
 @Deprecated
 public interface ExceptionCallback {
 
-    public void processException(Exception exception);
+    void processException(Exception exception);
 
 }

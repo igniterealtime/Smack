@@ -52,7 +52,7 @@ public class SharedGroupManager {
         SharedGroupsInfo info = new SharedGroupsInfo();
         info.setType(IQ.Type.get);
 
-        SharedGroupsInfo result = (SharedGroupsInfo) connection.createStanzaCollectorAndSend(info).nextResultOrThrow();
+        SharedGroupsInfo result = connection.createStanzaCollectorAndSend(info).nextResultOrThrow();
         return result.getGroups();
     }
 }

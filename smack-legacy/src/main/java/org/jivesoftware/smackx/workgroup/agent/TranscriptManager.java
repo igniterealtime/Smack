@@ -55,7 +55,7 @@ public class TranscriptManager {
     public Transcript getTranscript(Jid workgroupJID, String sessionID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Transcript request = new Transcript(sessionID);
         request.setTo(workgroupJID);
-        Transcript response = (Transcript) connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        Transcript response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
         return response;
     }
 
@@ -74,7 +74,7 @@ public class TranscriptManager {
     public Transcripts getTranscripts(Jid workgroupJID, Jid userID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Transcripts request = new Transcripts(userID);
         request.setTo(workgroupJID);
-        Transcripts response = (Transcripts) connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        Transcripts response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
         return response;
     }
 }

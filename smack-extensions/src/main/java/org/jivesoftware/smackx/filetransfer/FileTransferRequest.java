@@ -91,7 +91,7 @@ public class FileTransferRequest {
      * @return Returns the fully-qualified jabber ID of the user that requested
      *         this file transfer.
      */
-    public Jid getRequestor() {
+    public Jid getRequester() {
         return streamInitiation.getFrom();
     }
 

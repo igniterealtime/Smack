@@ -36,8 +36,8 @@ public class RegistrationProvider extends IQProvider<Registration> {
     public Registration parse(XmlPullParser parser, int initialDepth)
                     throws Exception {
         String instruction = null;
-        Map<String, String> fields = new HashMap<String, String>();
-        List<ExtensionElement> packetExtensions = new LinkedList<ExtensionElement>();
+        Map<String, String> fields = new HashMap<>();
+        List<ExtensionElement> packetExtensions = new LinkedList<>();
         outerloop:
         while (true) {
             int eventType = parser.next();

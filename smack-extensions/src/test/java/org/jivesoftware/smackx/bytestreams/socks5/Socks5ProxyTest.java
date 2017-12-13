@@ -46,7 +46,7 @@ import org.junit.Test;
  */
 public class Socks5ProxyTest {
 
-    static final String loopbackAddress = InetAddress.getLoopbackAddress().getHostAddress();
+    private static final String loopbackAddress = InetAddress.getLoopbackAddress().getHostAddress();
 
     /**
      * The SOCKS5 proxy should be a singleton used by all XMPP connections.
@@ -130,7 +130,7 @@ public class Socks5ProxyTest {
     @Test
     public void shouldPreserveAddressOrderOnReplace() {
         Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
-        List<String> addresses = new ArrayList<String>(proxy.getLocalAddresses());
+        List<String> addresses = new ArrayList<>(proxy.getLocalAddresses());
         addresses.add("1");
         addresses.add("2");
         addresses.add("3");
@@ -346,7 +346,7 @@ public class Socks5ProxyTest {
         Socks5Proxy socks5Proxy = Socks5Proxy.getSocks5Proxy();
         try {
             String address = InetAddress.getLocalHost().getHostAddress();
-            List<String> addresses = new ArrayList<String>();
+            List<String> addresses = new ArrayList<>();
             addresses.add(address);
             socks5Proxy.replaceLocalAddresses(addresses);
         }

@@ -32,6 +32,6 @@ public interface WorkgroupInvitationListener {
      * @param invitation an Invitation instance embodying the information pertaining to the
      *                      invitation
      */
-    public void invitationReceived(WorkgroupInvitation invitation);
+    void invitationReceived(WorkgroupInvitation invitation);
 
 }

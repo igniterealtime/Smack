@@ -32,7 +32,7 @@ import org.junit.Test;
 
 public class MamQueryIQProviderTest {
 
-    String exampleMamQueryIQ1 = "<iq type='set' id='query4'>" + "<query xmlns='urn:xmpp:mam:1' queryid='test'>"
+    private static final String exampleMamQueryIQ1 = "<iq type='set' id='query4'>" + "<query xmlns='urn:xmpp:mam:1' queryid='test'>"
             + "<x xmlns='jabber:x:data' type='submit'>" + "<field type='hidden' var='FORM_TYPE'>"
             + "<value>urn:xmpp:mam:1</value>" + "</field>"
             + "<field type='text-single' var='urn:example:xmpp:free-text-search'>"
@@ -41,7 +41,7 @@ public class MamQueryIQProviderTest {
             + "<value>{http://jabber.org/protocol/mood}mood/lonely</value>" + "</field>" + "</x>" + "</query>"
             + "</iq>";
 
-    String exampleMamQueryIQ2 = "<iq type='result' id='form1'>" + "<query xmlns='urn:xmpp:mam:1'>"
+    private static final String exampleMamQueryIQ2 = "<iq type='result' id='form1'>" + "<query xmlns='urn:xmpp:mam:1'>"
             + "<x xmlns='jabber:x:data' type='form'>" + "<field type='hidden' var='FORM_TYPE'>"
             + "<value>urn:xmpp:mam:1</value>" + "</field>" + "<field type='jid-single' var='with'/>"
             + "<field type='text-single' var='start'/>" + "<field type='text-single' var='end'/>"
@@ -51,7 +51,7 @@ public class MamQueryIQProviderTest {
     @Test
     public void checkMamQueryIQProvider() throws Exception {
         // example 1
-        IQ iq1 = (IQ) PacketParserUtils.parseStanza(exampleMamQueryIQ1);
+        IQ iq1 = PacketParserUtils.parseStanza(exampleMamQueryIQ1);
         MamQueryIQ mamQueryIQ1 = (MamQueryIQ) iq1;
 
         Assert.assertEquals(mamQueryIQ1.getType(), Type.set);
@@ -67,7 +67,7 @@ public class MamQueryIQProviderTest {
         Assert.assertEquals(fields1.get(2).getValues().get(0), "{http://jabber.org/protocol/mood}mood/lonely");
 
         // example2
-        IQ iq2 = (IQ) PacketParserUtils.parseStanza(exampleMamQueryIQ2);
+        IQ iq2 = PacketParserUtils.parseStanza(exampleMamQueryIQ2);
         MamQueryIQ mamQueryIQ2 = (MamQueryIQ) iq2;
 
         Assert.assertEquals(mamQueryIQ2.getType(), Type.result);

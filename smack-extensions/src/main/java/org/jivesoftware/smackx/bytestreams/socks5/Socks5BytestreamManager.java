@@ -152,7 +152,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * list containing session IDs of SOCKS5 Bytestream initialization packets that should be
      * ignored by the InitiationListener
      */
-    private List<String> ignoredBytestreamRequests = Collections.synchronizedList(new LinkedList<String>());
+    private final List<String> ignoredBytestreamRequests = Collections.synchronizedList(new LinkedList<String>());
 
     /**
      * Returns the Socks5BytestreamManager to handle SOCKS5 Bytestreams for a given
@@ -409,13 +409,12 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @return the Socket to send/receive data to/from the user
      * @throws IOException if the bytestream could not be established
      * @throws InterruptedException if the current thread was interrupted while waiting
-     * @throws NoResponseException 
      * @throws SmackException if the target does not support SOCKS5.
      * @throws XMPPException 
      */
     @Override
     public Socks5BytestreamSession establishSession(Jid targetJID, String sessionID)
-                    throws IOException, InterruptedException, NoResponseException, SmackException, XMPPException {
+                    throws IOException, InterruptedException, SmackException, XMPPException {
         XMPPConnection connection = connection();
         XMPPErrorException discoveryException = null;
         // check if target supports SOCKS5 Bytestream
@@ -587,7 +586,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      */
     private List<StreamHost> determineStreamHostInfos(List<Jid> proxies) {
         XMPPConnection connection = connection();
-        List<StreamHost> streamHosts = new ArrayList<StreamHost>();
+        List<StreamHost> streamHosts = new ArrayList<>();
 
         // add local proxy on first position if exists
         List<StreamHost> localProxies = getLocalStreamHost();
@@ -599,7 +598,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
         for (Jid proxy : proxies) {
             Bytestream streamHostRequest = createStreamHostRequest(proxy);
             try {
-                Bytestream response = (Bytestream) connection.createStanzaCollectorAndSend(
+                Bytestream response = connection.createStanzaCollectorAndSend(
                                 streamHostRequest).nextResultOrThrow();
                 streamHosts.addAll(response.getStreamHosts());
             }
@@ -648,7 +647,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
         }
         final int port = socks5Server.getPort();
 
-        List<StreamHost> streamHosts = new ArrayList<StreamHost>();
+        List<StreamHost> streamHosts = new ArrayList<>();
         outerloop: for (String address : addresses) {
             // Prevent loopback addresses from appearing as streamhost
             final String[] loopbackAddresses = { "127.0.0.1", "0:0:0:0:0:0:0:1", "::1" };

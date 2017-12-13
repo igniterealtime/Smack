@@ -36,6 +36,6 @@ public interface RosterExchangeListener {
      * @param remoteRosterEntries the entries sent by the user. The entries are instances of 
      * RemoteRosterEntry.
      */
-    public void entriesReceived(Jid from, Iterator<RemoteRosterEntry> remoteRosterEntries);
+    void entriesReceived(Jid from, Iterator<RemoteRosterEntry> remoteRosterEntries);
 
 }

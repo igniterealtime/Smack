@@ -104,8 +104,8 @@ public class FormTest extends AbstractSmackIntegrationTest {
             chat.sendMessage(msg);
 
             // Get the message with the form to fill out
-            Message msg2 = (Message) collector2.nextResult();
-            assertNotNull("Messge not found", msg2);
+            Message msg2 = collector2.nextResult();
+            assertNotNull("Message not found", msg2);
             // Retrieve the form to fill out
             Form formToRespond = Form.getFormFrom(msg2);
             assertNotNull(formToRespond);
@@ -140,8 +140,8 @@ public class FormTest extends AbstractSmackIntegrationTest {
             conTwo.sendStanza(msg2);
 
             // Get the message with the completed form
-            Message msg3 = (Message) collector.nextResult();
-            assertNotNull("Messge not found", msg3);
+            Message msg3 = collector.nextResult();
+            assertNotNull("Message not found", msg3);
             // Retrieve the completed form
             completedForm = Form.getFormFrom(msg3);
             assertNotNull(completedForm);

@@ -38,16 +38,16 @@ import org.jxmpp.jid.Jid;
  */
 public class Offer {
 
-    private XMPPConnection connection;
-    private AgentSession session;
+    private final XMPPConnection connection;
+    private final AgentSession session;
 
-    private String sessionID;
-    private Jid userJID;
-    private Jid userID;
-    private Jid workgroupName;
-    private Date expiresDate;
-    private Map<String, List<String>> metaData;
-    private OfferContent content;
+    private final String sessionID;
+    private final Jid userJID;
+    private final Jid userID;
+    private final Jid workgroupName;
+    private final Date expiresDate;
+    private final Map<String, List<String>> metaData;
+    private final OfferContent content;
 
     private boolean accepted = false;
     private boolean rejected = false;

@@ -32,7 +32,7 @@ public abstract class SetData implements NamedElement {
 
         private final String toStringCache;
 
-        private Type() {
+        Type() {
             toStringCache = this.name().toLowerCase(Locale.US);
         }
 

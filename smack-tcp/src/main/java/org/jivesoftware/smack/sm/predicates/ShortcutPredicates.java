@@ -25,7 +25,7 @@ import org.jivesoftware.smack.packet.Stanza;
 
 public class ShortcutPredicates implements StanzaFilter {
 
-    private final Set<StanzaFilter> predicates = new LinkedHashSet<StanzaFilter>();
+    private final Set<StanzaFilter> predicates = new LinkedHashSet<>();
 
     public ShortcutPredicates() {
     }

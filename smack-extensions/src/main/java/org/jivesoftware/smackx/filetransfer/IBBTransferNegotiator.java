@@ -46,7 +46,7 @@ import org.jxmpp.jid.Jid;
  */
 public class IBBTransferNegotiator extends StreamNegotiator {
 
-    private InBandBytestreamManager manager;
+    private final InBandBytestreamManager manager;
 
     /**
      * The default constructor for the In-Band Bytestream Negotiator.

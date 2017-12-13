@@ -27,7 +27,7 @@ public class XMPPConnectionRegistry {
      * A set of listeners which will be invoked if a new connection is created.
      */
     private final static Set<ConnectionCreationListener> connectionEstablishedListeners =
-            new CopyOnWriteArraySet<ConnectionCreationListener>();
+            new CopyOnWriteArraySet<>();
 
     /**
      * Adds a new listener that will be notified when new Connections are created. Note

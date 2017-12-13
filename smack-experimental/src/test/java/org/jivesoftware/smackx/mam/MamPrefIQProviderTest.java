@@ -31,18 +31,18 @@ import org.xmlpull.v1.XmlPullParser;
 
 public class MamPrefIQProviderTest extends MamTest {
 
-    String exampleMamPrefsIQ1 = "<iq type='set' id='juliet3'>" + "<prefs xmlns='urn:xmpp:mam:1' default='roster'>"
+    private static final String exampleMamPrefsIQ1 = "<iq type='set' id='juliet3'>" + "<prefs xmlns='urn:xmpp:mam:1' default='roster'>"
             + "<always>" + "<jid>romeo@montague.lit</jid>" + "</always>" + "<never>"
             + "<jid>montague@montague.lit</jid>" + "</never>" + "</prefs>" + "</iq>";
 
-    String exampleMamPrefsIQ2 = "<iq type='set' id='juliet3'>" + "<prefs xmlns='urn:xmpp:mam:1' default='roster'>"
+    private static final String exampleMamPrefsIQ2 = "<iq type='set' id='juliet3'>" + "<prefs xmlns='urn:xmpp:mam:1' default='roster'>"
             + "<always>" + "<jid>romeo@montague.lit</jid>" + "<jid>montague@montague.lit</jid>" + "</always>"
             + "<never>" + "</never>" + "</prefs>" + "</iq>";
 
-    String exampleMamPrefsIQ3 = "<iq type='get' id='juliet3'>" + "<prefs xmlns='urn:xmpp:mam:1'>" + "</prefs>"
+    private static final String exampleMamPrefsIQ3 = "<iq type='get' id='juliet3'>" + "<prefs xmlns='urn:xmpp:mam:1'>" + "</prefs>"
             + "</iq>";
 
-    String exampleMamPrefsResultIQ = "<iq type='result' id='juliet3'>"
+    private static final String exampleMamPrefsResultIQ = "<iq type='result' id='juliet3'>"
             + "<prefs xmlns='urn:xmpp:mam:1' default='roster'>" + "<always>" + "<jid>romeo@montague.lit</jid>"
             + "</always>" + "<never>" + "<jid>sarasa@montague.lit</jid>" + "<jid>montague@montague.lit</jid>"
             + "</never>" + "</prefs>" + "</iq>";
@@ -53,14 +53,14 @@ public class MamPrefIQProviderTest extends MamTest {
         MamPrefsIQ mamPrefIQ1 = new MamPrefsIQProvider().parse(parser1);
 
         Assert.assertEquals(IQ.Type.set, mamPrefIQ1.getType());
-        Assert.assertEquals(mamPrefIQ1.getAlwaysJids().get(0), "romeo@montague.lit");
-        Assert.assertEquals(mamPrefIQ1.getNeverJids().get(0), "montague@montague.lit");
+        Assert.assertEquals(mamPrefIQ1.getAlwaysJids().get(0).toString(), "romeo@montague.lit");
+        Assert.assertEquals(mamPrefIQ1.getNeverJids().get(0).toString(), "montague@montague.lit");
 
         XmlPullParser parser2 = PacketParserUtils.getParserFor(exampleMamPrefsIQ2);
         MamPrefsIQ mamPrefIQ2 = new MamPrefsIQProvider().parse(parser2);
         Assert.assertEquals(IQ.Type.set, mamPrefIQ2.getType());
-        Assert.assertEquals(mamPrefIQ2.getAlwaysJids().get(0), "romeo@montague.lit");
-        Assert.assertEquals(mamPrefIQ2.getAlwaysJids().get(1), "montague@montague.lit");
+        Assert.assertEquals(mamPrefIQ2.getAlwaysJids().get(0).toString(), "romeo@montague.lit");
+        Assert.assertEquals(mamPrefIQ2.getAlwaysJids().get(1).toString(), "montague@montague.lit");
         Assert.assertTrue(mamPrefIQ2.getNeverJids().isEmpty());
 
         XmlPullParser parser3 = PacketParserUtils.getParserFor(exampleMamPrefsIQ3);
@@ -70,7 +70,7 @@ public class MamPrefIQProviderTest extends MamTest {
 
     @Test
     public void checkMamPrefResult() throws Exception {
-        IQ iq = (IQ) PacketParserUtils.parseStanza(exampleMamPrefsResultIQ);
+        IQ iq = PacketParserUtils.parseStanza(exampleMamPrefsResultIQ);
 
         MamPrefsIQ mamPrefsIQ = (MamPrefsIQ) iq;
 

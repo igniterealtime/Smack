@@ -33,7 +33,7 @@ public enum PubSubFeature implements CharSequence {
     access_open(Support.optional),
     access_presence(Support.optional),
     access_roster(Support.optional),
-    acccess_whitelist(Support.optional),
+    access_whitelist(Support.optional),
     auto_create(Support.optional),
     auto_subscribe(Support.recommended),
     collections(Support.optional),
@@ -78,7 +78,7 @@ public enum PubSubFeature implements CharSequence {
     private final String qualifiedFeature;
     private final Feature.Support support;
 
-    private PubSubFeature(Feature.Support support) {
+    PubSubFeature(Feature.Support support) {
         this.feature = name().replace('_', '-');
         this.qualifiedFeature = PubSub.NAMESPACE + '#' + this.feature;
         this.support = support;

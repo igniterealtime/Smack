@@ -50,8 +50,7 @@ public class JingleProvider extends IQProvider<Jingle> {
         Jingle jingle = new Jingle();
         String sid = "";
         JingleActionEnum action;
-        Jid initiator = null;
-        Jid responder = null;
+        Jid initiator, responder;
         boolean done = false;
         JingleContent currentContent = null;
 

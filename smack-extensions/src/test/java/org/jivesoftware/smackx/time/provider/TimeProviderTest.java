@@ -39,7 +39,7 @@ public class TimeProviderTest {
           + "<time xmlns='urn:xmpp:time'/>"
           + "</iq>";
         // @formatter:on
-        IQ iqRequest = (IQ) PacketParserUtils.parseStanza(request);
+        IQ iqRequest = PacketParserUtils.parseStanza(request);
         assertTrue(iqRequest instanceof Time);
 
         // @formatter:off
@@ -54,7 +54,7 @@ public class TimeProviderTest {
           + "</time>"
           + "</iq>";
         // @formatter:on
-        IQ iqResponse = (IQ) PacketParserUtils.parseStanza(response);
+        IQ iqResponse = PacketParserUtils.parseStanza(response);
         assertTrue(iqResponse instanceof Time);
         Time time = (Time) iqResponse;
         assertEquals("-06:00", time.getTzo());

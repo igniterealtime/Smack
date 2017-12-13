@@ -49,7 +49,7 @@ public abstract class JingleNegotiator {
 
     protected JingleSession session;
 
-    private final List<JingleListener> listeners = new ArrayList<JingleListener>();
+    private final List<JingleListener> listeners = new ArrayList<>();
 
     private String expectedAckId;
 
@@ -158,7 +158,7 @@ public abstract class JingleNegotiator {
      * @param id
      */
     public void removeExpectedId(String id) {
-        addExpectedId((String) null);
+        addExpectedId(null);
     }
 
     // Listeners
@@ -196,7 +196,7 @@ public abstract class JingleNegotiator {
         ArrayList<JingleListener> result;
 
         synchronized (listeners) {
-            result = new ArrayList<JingleListener>(listeners);
+            result = new ArrayList<>(listeners);
         }
 
         return result;

@@ -19,22 +19,21 @@ package org.jivesoftware.smackx.workgroup.packet;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 
 /**
- * Represents the conversation transcript that occured in a group chat room between an Agent
+ * Represents the conversation transcript that occurred in a group chat room between an Agent
  * and a user that requested assistance. The transcript contains all the Messages that were sent
  * to the room as well as the sent presences. 
  *
  * @author Gaston Dombiak
  */
 public class Transcript extends IQ {
-    private String sessionID;
-    private List<Stanza> packets;
+    private final String sessionID;
+    private final List<Stanza> packets;
 
     /**
      * Creates a transcript request for the given sessionID.
@@ -83,8 +82,7 @@ public class Transcript extends IQ {
                 .append(sessionID)
                 .append("\">");
 
-        for (Iterator<Stanza> it = packets.iterator(); it.hasNext();) {
-            Stanza packet = it.next();
+        for (Stanza packet : packets) {
             buf.append(packet.toXML());
         }
 

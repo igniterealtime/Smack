@@ -85,7 +85,7 @@ public class XHTMLManager {
     /**
      * Returns true if the message contains an XHTML extension.
      *
-     * @param message the message to check if contains an XHTML extentsion or not
+     * @param message the message to check if contains an XHTML extension or not
      * @return a boolean indicating whether the message is an XHTML message
      */
     public static boolean isXHTMLMessage(Message message) {

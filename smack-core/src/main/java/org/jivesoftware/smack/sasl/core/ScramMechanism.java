@@ -246,7 +246,7 @@ public abstract class ScramMechanism extends SASLMechanism {
             return gs2Header;
         }
 
-        return ByteUtils.concact(gs2Header, cbindData);
+        return ByteUtils.concat(gs2Header, cbindData);
     }
 
     protected String getChannelBindingName() {
@@ -394,7 +394,7 @@ public abstract class ScramMechanism extends SASLMechanism {
             throw new AssertionError();
         }
         // U1 := HMAC(str, salt + INT(1))
-        byte[] u = hmac(key, ByteUtils.concact(salt, ONE));
+        byte[] u = hmac(key, ByteUtils.concat(salt, ONE));
         byte[] res = u.clone();
         for (int i = 1; i < iterations; i++) {
             u = hmac(key, u);

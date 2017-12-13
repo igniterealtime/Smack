@@ -77,7 +77,7 @@ public final class PrivateDataManager extends Manager {
     /**
      * Map of provider instances.
      */
-    private static Map<String, PrivateDataProvider> privateDataProviders = new Hashtable<String, PrivateDataProvider>();
+    private static final Map<String, PrivateDataProvider> privateDataProviders = new Hashtable<>();
 
     /**
      * Returns the private data provider registered to the specified XML element name and namespace.

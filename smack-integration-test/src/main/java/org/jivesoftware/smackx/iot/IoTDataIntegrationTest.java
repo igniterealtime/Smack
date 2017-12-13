@@ -58,7 +58,7 @@ public class IoTDataIntegrationTest extends AbstractSmackIntegrationTest {
      * @throws TimeoutException 
      */
     @SmackIntegrationTest
-    public void dataTest() throws TimeoutException, Exception {
+    public void dataTest() throws Exception {
         final String key = StringUtils.randomString(12);
         final String sn = StringUtils.randomString(12);
         final int value = INSECURE_RANDOM.nextInt();

@@ -33,6 +33,6 @@ public interface ConnectionCreationListener {
      * 
      * @param connection the newly created connection.
      */
-    public void connectionCreated(XMPPConnection connection);
+    void connectionCreated(XMPPConnection connection);
 
 }

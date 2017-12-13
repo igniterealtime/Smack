@@ -27,7 +27,7 @@ import org.junit.Test;
 public class ExperimentalInitializerTest {
 
     @Test
-    public void testExperimentalInitialzer() {
+    public void testExperimentalInitializer() {
         ExperimentalInitializer epi = new ExperimentalInitializer();
         List<Exception> exceptions = epi.initialize();
         assertTrue(exceptions.size() == 0);

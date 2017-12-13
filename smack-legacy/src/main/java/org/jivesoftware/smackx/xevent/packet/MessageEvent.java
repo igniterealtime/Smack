@@ -170,7 +170,7 @@ public class MessageEvent implements ExtensionElement {
      * @return a List of all the types of events of the MessageEvent.
      */
     public List<String> getEventTypes() {
-        ArrayList<String> allEvents = new ArrayList<String>();
+        ArrayList<String> allEvents = new ArrayList<>();
         if (isDelivered()) {
             allEvents.add(MessageEvent.DELIVERED);
         }

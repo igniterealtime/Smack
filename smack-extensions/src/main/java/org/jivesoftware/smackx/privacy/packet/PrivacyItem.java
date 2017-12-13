@@ -328,7 +328,7 @@ public class PrivacyItem {
     /**
      * Type defines if the rule is based on JIDs, roster groups or presence subscription types.
      */
-    public static enum Type {
+    public enum Type {
         /**
          * JID being analyzed should belong to a roster group of the list's owner.
          */

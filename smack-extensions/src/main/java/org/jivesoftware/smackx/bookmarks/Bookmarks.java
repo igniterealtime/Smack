@@ -68,15 +68,15 @@ public class Bookmarks implements PrivateData {
     public static final String NAMESPACE = "storage:bookmarks";
     public static final String ELEMENT = "storage";
 
-    private List<BookmarkedURL> bookmarkedURLS;
-    private List<BookmarkedConference> bookmarkedConferences;
+    private final List<BookmarkedURL> bookmarkedURLS;
+    private final List<BookmarkedConference> bookmarkedConferences;
 
     /**
      * Required Empty Constructor to use Bookmarks.
      */
     public Bookmarks() {
-        bookmarkedURLS = new ArrayList<BookmarkedURL>();
-        bookmarkedConferences = new ArrayList<BookmarkedConference>();
+        bookmarkedURLS = new ArrayList<>();
+        bookmarkedConferences = new ArrayList<>();
     }
 
     /**
@@ -280,7 +280,7 @@ public class Bookmarks implements PrivateData {
 
         BookmarkedConference conf = new BookmarkedConference(jid);
         conf.setName(name);
-        conf.setAutoJoin(Boolean.valueOf(autojoin).booleanValue());
+        conf.setAutoJoin(Boolean.valueOf(autojoin));
 
         // Check for nickname
         boolean done = false;

@@ -65,7 +65,7 @@ public class IncomingFileTransfer extends FileTransfer {
 
     protected IncomingFileTransfer(FileTransferRequest request,
             FileTransferNegotiator transferNegotiator) {
-        super(request.getRequestor(), request.getStreamID(), transferNegotiator);
+        super(request.getRequester(), request.getStreamID(), transferNegotiator);
         this.receiveRequest = request;
     }
 
@@ -182,7 +182,7 @@ public class IncomingFileTransfer extends FileTransfer {
         final StreamNegotiator streamNegotiator = negotiator
                 .selectStreamNegotiator(receiveRequest);
         setStatus(Status.negotiating_stream);
-        FutureTask<InputStream> streamNegotiatorTask = new FutureTask<InputStream>(
+        FutureTask<InputStream> streamNegotiatorTask = new FutureTask<>(
                 new Callable<InputStream>() {
 
                     @Override

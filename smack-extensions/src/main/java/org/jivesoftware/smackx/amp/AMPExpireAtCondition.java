@@ -48,7 +48,7 @@ public class AMPExpireAtCondition implements AMPExtension.Condition {
     private final String value;
 
     /**
-     * Create new expire-at amp condition with value setted as XEP-0082 formatted date.
+     * Create new expire-at amp condition with value set as XEP-0082 formatted date.
      * @param utcDateTime Date instance of time
      *                    that will be used as value parameter after formatting to XEP-0082 format. Can't be null.
      */

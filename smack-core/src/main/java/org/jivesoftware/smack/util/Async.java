@@ -73,7 +73,7 @@ public class Async {
                 if (e instanceof RuntimeException) {
                     throw (RuntimeException) e;
                 }
-                LOGGER.log(Level.WARNING, "Catched Exception", e);
+                LOGGER.log(Level.WARNING, "Caught Exception", e);
             }
         }
 

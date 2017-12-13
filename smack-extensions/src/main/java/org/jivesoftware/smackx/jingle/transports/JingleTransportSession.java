@@ -22,9 +22,6 @@ import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 
-/**
- * Created by vanitas on 20.06.17.
- */
 public abstract class JingleTransportSession<T extends JingleContentTransport> {
     protected final JingleSession jingleSession;
     protected T ourProposal, theirProposal;

@@ -30,19 +30,19 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class MUCLightAffiliationsChangeExtensionTest {
 
-    String exampleMessageStanza = "<message " + "to='coven@muclight.shakespeare.lit' id='member1' type='groupchat'>"
+    private static final String exampleMessageStanza = "<message " + "to='coven@muclight.shakespeare.lit' id='member1' type='groupchat'>"
             + "<x xmlns='urn:xmpp:muclight:0#affiliations'>"
             + "<user affiliation='owner'>sarasa2@shakespeare.lit</user>"
             + "<user affiliation='member'>sarasa1@shakespeare.lit</user>"
             + "<user affiliation='none'>sarasa3@shakespeare.lit</user>" + "</x>" + "</message>";
 
-    String exampleMessageStanzaWithVersion = "<message "
+    private static final String exampleMessageStanzaWithVersion = "<message "
             + "to='coven@muclight.shakespeare.lit' id='member1' type='groupchat'>"
             + "<x xmlns='urn:xmpp:muclight:0#affiliations'>" + "<version>qwerty</version>"
             + "<user affiliation='member'>sarasa1@shakespeare.lit</user>"
             + "<user affiliation='none'>sarasa3@shakespeare.lit</user>" + "</x>" + "<body></body>" + "</message>";
 
-    String exampleMessageStanzaWithPrevVersion = "<message "
+    private static final String exampleMessageStanzaWithPrevVersion = "<message "
             + "to='coven@muclight.shakespeare.lit' id='member1' type='groupchat'>"
             + "<x xmlns='urn:xmpp:muclight:0#affiliations'>" + "<prev-version>njiokm</prev-version>"
             + "<version>qwerty</version>" + "<user affiliation='owner'>sarasa2@shakespeare.lit</user>"
@@ -50,7 +50,7 @@ public class MUCLightAffiliationsChangeExtensionTest {
 
     @Test
     public void checkAffiliationsChangeExtension() throws Exception {
-        Message changeAffiliationsMessage = (Message) PacketParserUtils.parseStanza(exampleMessageStanza);
+        Message changeAffiliationsMessage = PacketParserUtils.parseStanza(exampleMessageStanza);
         AffiliationsChangeExtension affiliationsChangeExtension = AffiliationsChangeExtension
                 .from(changeAffiliationsMessage);
 
@@ -63,7 +63,7 @@ public class MUCLightAffiliationsChangeExtensionTest {
 
     @Test
     public void checkAffiliationsChangeExtensionWithVersion() throws Exception {
-        Message changeAffiliationsMessage = (Message) PacketParserUtils.parseStanza(exampleMessageStanzaWithVersion);
+        Message changeAffiliationsMessage = PacketParserUtils.parseStanza(exampleMessageStanzaWithVersion);
         AffiliationsChangeExtension affiliationsChangeExtension = AffiliationsChangeExtension
                 .from(changeAffiliationsMessage);
 
@@ -77,7 +77,7 @@ public class MUCLightAffiliationsChangeExtensionTest {
 
     @Test
     public void checkAffiliationsChangeExtensionWithPrevVersion() throws Exception {
-        Message changeAffiliationsMessage = (Message) PacketParserUtils
+        Message changeAffiliationsMessage = PacketParserUtils
                 .parseStanza(exampleMessageStanzaWithPrevVersion);
         AffiliationsChangeExtension affiliationsChangeExtension = AffiliationsChangeExtension
                 .from(changeAffiliationsMessage);

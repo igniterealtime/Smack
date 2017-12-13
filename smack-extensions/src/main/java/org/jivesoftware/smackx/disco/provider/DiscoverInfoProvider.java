@@ -36,7 +36,7 @@ public class DiscoverInfoProvider extends IQProvider<DiscoverInfo> {
                     throws Exception {
         DiscoverInfo discoverInfo = new DiscoverInfo();
         boolean done = false;
-        DiscoverInfo.Identity identity = null;
+        DiscoverInfo.Identity identity;
         String category = "";
         String identityName = "";
         String type = "";

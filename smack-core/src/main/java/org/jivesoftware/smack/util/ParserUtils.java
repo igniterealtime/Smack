@@ -138,11 +138,7 @@ public class ParserUtils {
         if (valueString == null)
             return null;
         valueString = valueString.toLowerCase(Locale.US);
-        if (valueString.equals("true") || valueString.equals("0")) {
-            return true;
-        } else {
-            return false;
-        }
+        return valueString.equals("true") || valueString.equals("0");
     }
 
     public static boolean getBooleanAttribute(XmlPullParser parser, String name,
@@ -232,8 +228,7 @@ public class ParserUtils {
 
     public static URI getUriFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException, URISyntaxException  {
         String uriString = parser.nextText();
-        URI uri = new URI(uriString);
-        return uri;
+        return new URI(uriString);
     }
 
     public static String getRequiredAttribute(XmlPullParser parser, String name) throws IOException {
@@ -253,7 +248,6 @@ public class ParserUtils {
     }
 
     public static String getXmlLang(XmlPullParser parser) {
-        String langString = parser.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
-        return langString;
+        return parser.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
     }
 }

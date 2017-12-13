@@ -37,21 +37,21 @@ public interface RosterListener {
      *
      * @param addresses the XMPP addresses of the contacts that have been added to the roster.
      */
-    public void entriesAdded(Collection<Jid> addresses);
+    void entriesAdded(Collection<Jid> addresses);
 
     /**
      * Called when a roster entries are updated.
      *
      * @param addresses the XMPP addresses of the contacts whose entries have been updated.
      */
-    public void entriesUpdated(Collection<Jid> addresses);
+    void entriesUpdated(Collection<Jid> addresses);
 
     /**
      * Called when a roster entries are removed.
      *
      * @param addresses the XMPP addresses of the contacts that have been removed from the roster.
      */
-    public void entriesDeleted(Collection<Jid> addresses);
+    void entriesDeleted(Collection<Jid> addresses);
 
     /**
      * Called when the presence of a roster entry is changed. Care should be taken
@@ -78,5 +78,5 @@ public interface RosterListener {
      * @param presence the presence that changed.
      * @see Roster#getPresence(org.jxmpp.jid.BareJid)
      */
-    public void presenceChanged(Presence presence);
+    void presenceChanged(Presence presence);
 }

@@ -108,13 +108,13 @@ public class RosterVersioningTest {
         Collection<RosterEntry> entries = roster.getEntries();
         assertSame("Size of the roster", 3, entries.size());
 
-        HashSet<Item> items = new HashSet<Item>();
+        HashSet<Item> items = new HashSet<>();
         for (RosterEntry entry : entries) {
             items.add(RosterEntry.toRosterItem(entry));
         }
         RosterStore store = DirectoryRosterStore.init(tmpFolder.newFolder());
         populateStore(store);
-        assertEquals("Elements of the roster", new HashSet<Item>(store.getEntries()), items);
+        assertEquals("Elements of the roster", new HashSet<>(store.getEntries()), items);
 
         for (RosterEntry entry : entries) {
             assertTrue("joe stevens".equals(entry.getName()) || "geoff hurley".equals(entry.getName())
@@ -168,7 +168,7 @@ public class RosterVersioningTest {
         RosterStore store = roster.getRosterStore();
         assertEquals("Size of store", 1, store.getEntries().size());
         Item item = store.getEntry(vaglafItem.getJid());
-        assertNotNull("Store contains vaglaf entry");
+        assertNotNull("Store contains vaglaf entry", item);
         assertEquals("vaglaf entry in store equals the sent entry", vaglafItem, item);
     }
 
@@ -201,11 +201,11 @@ public class RosterVersioningTest {
             assertNotNull("Expect vaglaf to be added", storedItem);
             assertEquals("Expect vaglaf to be equal to pushed item", pushedItem, storedItem);
 
-            Collection<Item> rosterItems = new HashSet<Item>();
+            Collection<Item> rosterItems = new HashSet<>();
             for (RosterEntry entry : roster.getEntries()) {
                 rosterItems.add(RosterEntry.toRosterItem(entry));
             }
-            assertEquals(rosterItems, new HashSet<Item>(store.getEntries()));
+            assertEquals(rosterItems, new HashSet<>(store.getEntries()));
         }
 
         // Simulate a roster push removing vaglaf

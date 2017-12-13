@@ -21,7 +21,7 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
 /**
- * Respresents a Conference Room bookmarked on the server using XEP-0048 Bookmark Storage XEP.
+ * Represents a Conference Room bookmarked on the server using XEP-0048 Bookmark Storage XEP.
  *
  * @author Derek DeMoro
  */

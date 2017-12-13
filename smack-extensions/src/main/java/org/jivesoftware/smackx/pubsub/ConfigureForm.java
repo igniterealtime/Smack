@@ -163,7 +163,7 @@ public class ConfigureForm extends Form
     public void setChildrenAssociationPolicy(ChildrenAssociationPolicy policy)
     {
         addField(ConfigureNodeFields.children_association_policy, FormField.Type.list_single);
-        List<String> values = new ArrayList<String>(1);
+        List<String> values = new ArrayList<>(1);
         values.add(policy.toString());
         setAnswer(ConfigureNodeFields.children_association_policy.getFieldName(), values);
     }
@@ -711,7 +711,7 @@ public class ConfigureForm extends Form
 
     private static List<String> getListSingle(String value)
     {
-        List<String> list = new ArrayList<String>(1);
+        List<String> list = new ArrayList<>(1);
         list.add(value);
         return list;
     }

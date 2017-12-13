@@ -26,15 +26,15 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class MUCLightSetConfigsIQTest {
 
-    String setConfigsIQExample = "<iq to='coven@muclight.shakespeare.lit' id='conf1' type='set'>"
+    private static final String setConfigsIQExample = "<iq to='coven@muclight.shakespeare.lit' id='conf1' type='set'>"
             + "<query xmlns='urn:xmpp:muclight:0#configuration'>" + "<roomname>A Darker Cave</roomname>"
             + "<color>blue</color>" + "</query>" + "</iq>";
 
-    String changeRoomNameIQExample = "<iq to='coven@muclight.shakespeare.lit' id='roomName1' type='set'>"
+    private static final String changeRoomNameIQExample = "<iq to='coven@muclight.shakespeare.lit' id='roomName1' type='set'>"
             + "<query xmlns='urn:xmpp:muclight:0#configuration'>" + "<roomname>A Darker Cave</roomname>" + "</query>"
             + "</iq>";
 
-    String changeSubjectIQExample = "<iq to='coven@muclight.shakespeare.lit' id='subject1' type='set'>"
+    private static final String changeSubjectIQExample = "<iq to='coven@muclight.shakespeare.lit' id='subject1' type='set'>"
             + "<query xmlns='urn:xmpp:muclight:0#configuration'>" + "<subject>To be or not to be?</subject>"
             + "</query>" + "</iq>";
 

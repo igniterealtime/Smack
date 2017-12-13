@@ -55,7 +55,7 @@ public class Privacy extends IQ {
     private String defaultName;
     /** itemLists holds the set of privacy items classified in lists. It is a map where the 
      * key is the name of the list and the value a collection with privacy items. **/
-    private Map<String, List<PrivacyItem>> itemLists = new HashMap<String, List<PrivacyItem>>();
+    private final Map<String, List<PrivacyItem>> itemLists = new HashMap<>();
 
     public Privacy() {
         super(ELEMENT, NAMESPACE);
@@ -271,7 +271,7 @@ public class Privacy extends IQ {
     public boolean isDeclineActiveList() {
         return declineActiveList;
     }
-    // CHECKSYTLE:ON
+    // CHECKSTYLE:ON
 
     /** 
      * Sets whether the receiver allows or declines the use of an active list.

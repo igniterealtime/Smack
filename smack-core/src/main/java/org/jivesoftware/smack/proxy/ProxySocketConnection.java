@@ -21,7 +21,7 @@ import java.net.Socket;
 
 public interface ProxySocketConnection {
 
-    public void connect(Socket socket, String host, int port, int timeout)
+    void connect(Socket socket, String host, int port, int timeout)
                     throws IOException;
 
 }

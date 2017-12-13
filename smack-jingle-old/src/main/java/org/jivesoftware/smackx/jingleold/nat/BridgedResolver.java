@@ -44,11 +44,11 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
 public class BridgedResolver extends TransportResolver {
     private static final Logger LOGGER = Logger.getLogger(BridgedResolver.class.getName());
 
-    XMPPConnection connection;
+    private final XMPPConnection connection;
 
-    Random random = new Random();
+    private final Random random = new Random();
 
-    long sid;
+    private long sid;
 
     /**
      * Constructor.
@@ -59,10 +59,10 @@ public class BridgedResolver extends TransportResolver {
         this.connection = connection;
     }
 
-    /**
+    /**1
      * Resolve Bridged Candidate.
      * <p/>
-     * The BridgedResolver takes the IP addresse and ports of a jmf proxy service.
+     * The BridgedResolver takes the IP address and ports of a jmf proxy service.
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */

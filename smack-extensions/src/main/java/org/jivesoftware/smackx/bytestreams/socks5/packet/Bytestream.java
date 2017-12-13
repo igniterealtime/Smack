@@ -46,7 +46,7 @@ public class Bytestream extends IQ {
 
     private Mode mode = Mode.tcp;
 
-    private final List<StreamHost> streamHosts = new ArrayList<StreamHost>();
+    private final List<StreamHost> streamHosts = new ArrayList<>();
 
     private StreamHostUsed usedHost;
 

@@ -29,7 +29,7 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class MUCLightChangeAffiliationsIQTest {
 
-    String stanza = "<iq " + "to='coven@muclight.shakespeare.lit' id='member1' type='set'>"
+    private static final String stanza = "<iq " + "to='coven@muclight.shakespeare.lit' id='member1' type='set'>"
             + "<query xmlns='urn:xmpp:muclight:0#affiliations'>"
             + "<user affiliation='owner'>sarasa2@shakespeare.lit</user>"
             + "<user affiliation='member'>sarasa1@shakespeare.lit</user>"

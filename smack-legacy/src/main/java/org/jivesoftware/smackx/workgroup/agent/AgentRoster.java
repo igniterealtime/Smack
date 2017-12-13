@@ -56,9 +56,9 @@ public class AgentRoster {
     private static final int EVENT_AGENT_REMOVED = 1;
     private static final int EVENT_PRESENCE_CHANGED = 2;
 
-    private XMPPConnection connection;
-    private Jid workgroupJID;
-    private final List<String> entries = new ArrayList<String>();
+    private final XMPPConnection connection;
+    private final Jid workgroupJID;
+    private final List<String> entries = new ArrayList<>();
     private final List<AgentRosterListener> listeners = new ArrayList<>();
     private final Map<Jid, Map<Resourcepart, Presence>> presenceMap = new HashMap<>();
     // The roster is marked as initialized when at least a single roster packet
@@ -168,7 +168,7 @@ public class AgentRoster {
      * @return all entries in the roster.
      */
     public Set<String> getAgents() {
-        Set<String> agents = new HashSet<String>();
+        Set<String> agents = new HashSet<>();
         synchronized (entries) {
             for (Iterator<String> i = entries.iterator(); i.hasNext();) {
                 agents.add(i.next());
@@ -270,7 +270,7 @@ public class AgentRoster {
      * Fires event to listeners.
      */
     private void fireEvent(int eventType, Object eventObject) {
-        AgentRosterListener[] listeners = null;
+        AgentRosterListener[] listeners;
         synchronized (this.listeners) {
             listeners = new AgentRosterListener[this.listeners.size()];
             this.listeners.toArray(listeners);
@@ -310,7 +310,7 @@ public class AgentRoster {
             // for a particular user a map with the presence packets saved for each resource.
             if (presence.getType() == Presence.Type.available) {
                 // Ignore the presence packet unless it has an agent status extension.
-                AgentStatus agentStatus = (AgentStatus) presence.getExtension(
+                AgentStatus agentStatus = presence.getExtension(
                         AgentStatus.ELEMENT_NAME, AgentStatus.NAMESPACE);
                 if (agentStatus == null) {
                     return;

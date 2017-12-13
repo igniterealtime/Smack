@@ -41,6 +41,6 @@ public interface LocalCommandFactory {
      * @throws InvocationTargetException 
      * @throws IllegalArgumentException 
      */
-    public LocalCommand getInstance() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
+    LocalCommand getInstance() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 
 }

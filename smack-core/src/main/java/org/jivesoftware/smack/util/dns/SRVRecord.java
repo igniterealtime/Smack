@@ -48,12 +48,12 @@ public class SRVRecord extends HostAddress implements Comparable<SRVRecord> {
         StringUtils.requireNotNullOrEmpty(fqdn, "The FQDN must not be null");
         if (weight < 0 || weight > 65535)
             throw new IllegalArgumentException(
-                    "DNS SRV records weight must be a 16-bit unsiged integer (i.e. between 0-65535. Weight was: "
+                    "DNS SRV records weight must be a 16-bit unsigned integer (i.e. between 0-65535. Weight was: "
                             + weight);
 
         if (priority < 0 || priority > 65535)
             throw new IllegalArgumentException(
-                    "DNS SRV records priority must be a 16-bit unsiged integer (i.e. between 0-65535. Priority was: "
+                    "DNS SRV records priority must be a 16-bit unsigned integer (i.e. between 0-65535. Priority was: "
                             + priority);
 
         this.priority = priority;

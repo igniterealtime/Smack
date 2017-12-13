@@ -35,46 +35,46 @@ public interface RosterStore {
      *
      * @return List of {@link org.jivesoftware.smack.roster.RosterEntry} or <code>null</code>.
      */
-    public List<RosterPacket.Item> getEntries();
+    List<RosterPacket.Item> getEntries();
 
     /**
      * This method returns the roster item in this store for the given JID.
      * @param bareJid The bare JID of the RosterEntry
      * @return The {@link org.jivesoftware.smack.roster.RosterEntry} which belongs to that user
      */
-    public RosterPacket.Item getEntry(Jid bareJid);
+    RosterPacket.Item getEntry(Jid bareJid);
     /**
      * This method returns the version number as specified by the "ver" attribute
      * of the local store. For a fresh store, this MUST be the empty string.
      * @return local roster version
      */
-    public String getRosterVersion();
+    String getRosterVersion();
     /**
      * This method stores a new roster entry in this store or updates an existing one.
      * @param item the entry to store
      * @param version the new roster version
      * @return True if successful
      */
-    public boolean addEntry(RosterPacket.Item item, String version);
+    boolean addEntry(RosterPacket.Item item, String version);
     /**
      * This method updates the store so that it contains only the given entries.
      * @param items the entries to store
      * @param version the new roster version
      * @return True if successful
      */
-    public boolean resetEntries(Collection<RosterPacket.Item> items, String version);
+    boolean resetEntries(Collection<RosterPacket.Item> items, String version);
     /**
      * Removes an entry from the store.
      * @param bareJid The bare JID of the entry to be removed
      * @param version the new roster version
      * @return True if successful
      */
-    public boolean removeEntry(Jid bareJid, String version);
+    boolean removeEntry(Jid bareJid, String version);
 
     /**
      * Reset the store by removing all entries and setting the version to the empty String.
      *
      * @since 4.2
      */
-    public void resetStore();
+    void resetStore();
 }

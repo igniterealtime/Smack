@@ -65,10 +65,10 @@ public class GeoLocationProviderTest extends InitExtensions {
         + "</message>";
         // @formatter:on
 
-        Message messageWithGeoLocation = (Message) PacketParserUtils.parseStanza(geoLocationString);
+        Message messageWithGeoLocation = PacketParserUtils.parseStanza(geoLocationString);
         assertNotNull(messageWithGeoLocation);
 
-        GeoLocation geoLocation = (GeoLocation) messageWithGeoLocation.getExtension(GeoLocation.ELEMENT,
+        GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.ELEMENT,
                         GeoLocation.NAMESPACE);
         assertNotNull(geoLocation);
 
@@ -132,10 +132,10 @@ public class GeoLocationProviderTest extends InitExtensions {
         + "</message>";
         // @formatter:on
 
-        Message messageWithGeoLocation = (Message) PacketParserUtils.parseStanza(geoLocationString);
+        Message messageWithGeoLocation = PacketParserUtils.parseStanza(geoLocationString);
         assertNotNull(messageWithGeoLocation);
 
-        GeoLocation geoLocation = (GeoLocation) messageWithGeoLocation.getExtension(GeoLocation.ELEMENT,
+        GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.ELEMENT,
                         GeoLocation.NAMESPACE);
         assertNotNull(geoLocation);
 
@@ -177,9 +177,9 @@ public class GeoLocationProviderTest extends InitExtensions {
         + "</message>";
         // @formatter:on
 
-        Message messageWithGeoLocation = (Message) PacketParserUtils.parseStanza(geoLocationString);
+        Message messageWithGeoLocation = PacketParserUtils.parseStanza(geoLocationString);
 
-        GeoLocation geoLocation = (GeoLocation) messageWithGeoLocation.getExtension(GeoLocation.ELEMENT,
+        GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.ELEMENT,
                         GeoLocation.NAMESPACE);
 
         assertEquals((Double) 90d, geoLocation.getError());
@@ -197,9 +197,9 @@ public class GeoLocationProviderTest extends InitExtensions {
         + "</message>";
         // @formatter:on
 
-        Message messageWithGeoLocation = (Message) PacketParserUtils.parseStanza(geoLocationString);
+        Message messageWithGeoLocation = PacketParserUtils.parseStanza(geoLocationString);
 
-        GeoLocation geoLocation = (GeoLocation) messageWithGeoLocation.getExtension(GeoLocation.ELEMENT,
+        GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.ELEMENT,
                         GeoLocation.NAMESPACE);
 
         assertEquals((Double) 90d, geoLocation.getAccuracy());
@@ -218,9 +218,9 @@ public class GeoLocationProviderTest extends InitExtensions {
         + "</message>";
         // @formatter:on
 
-        Message messageWithGeoLocation = (Message) PacketParserUtils.parseStanza(geoLocationString);
+        Message messageWithGeoLocation = PacketParserUtils.parseStanza(geoLocationString);
 
-        GeoLocation geoLocation = (GeoLocation) messageWithGeoLocation.getExtension(GeoLocation.ELEMENT,
+        GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.ELEMENT,
                         GeoLocation.NAMESPACE);
 
         assertEquals((Double) 90d, geoLocation.getAccuracy());

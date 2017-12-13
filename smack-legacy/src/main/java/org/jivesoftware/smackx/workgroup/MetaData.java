@@ -39,7 +39,7 @@ public class MetaData implements ExtensionElement {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    private Map<String, List<String>> metaData;
+    private final Map<String, List<String>> metaData;
 
     public MetaData(Map<String, List<String>> metaData) {
         this.metaData = metaData;

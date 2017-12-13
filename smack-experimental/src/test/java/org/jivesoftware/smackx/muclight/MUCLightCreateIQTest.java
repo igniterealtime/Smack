@@ -29,7 +29,7 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class MUCLightCreateIQTest {
 
-    String stanza = "<iq to='ef498f55-5f79-4238-a5ae-4efe19cbe617@muclight.test.com' id='1c72W-50' type='set'>"
+    private static final String stanza = "<iq to='ef498f55-5f79-4238-a5ae-4efe19cbe617@muclight.test.com' id='1c72W-50' type='set'>"
             + "<query xmlns='urn:xmpp:muclight:0#create'>" + "<configuration>" + "<roomname>test</roomname>"
             + "</configuration>" + "<occupants>" + "<user affiliation='member'>charlie@test.com</user>"
             + "<user affiliation='member'>pep@test.com</user>" + "</occupants>" + "</query>" + "</iq>";

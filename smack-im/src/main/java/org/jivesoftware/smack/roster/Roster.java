@@ -149,7 +149,7 @@ public final class Roster extends Manager {
     private static int defaultNonRosterPresenceMapMaxSize = INITIAL_DEFAULT_NON_ROSTER_PRESENCE_MAP_SIZE;
 
     private RosterStore rosterStore;
-    private final Map<String, RosterGroup> groups = new ConcurrentHashMap<String, RosterGroup>();
+    private final Map<String, RosterGroup> groups = new ConcurrentHashMap<>();
 
     /**
      * Concurrent hash map from JID to its roster entry.
@@ -761,7 +761,7 @@ public final class Roster extends Manager {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
 
         // Only remove the entry if it's in the entry list.
-        // The actual removal logic takes place in RosterPacketListenerprocess>>Packet(Packet)
+        // The actual removal logic takes place in RosterPacketListenerProcess>>Packet(Packet)
         if (!entries.containsKey(entry.getJid())) {
             return;
         }
@@ -788,7 +788,7 @@ public final class Roster extends Manager {
      * <p>
      * The method guarantees that the listener is only invoked after
      * {@link RosterEntries#rosterEntries(Collection)} has been invoked, and that all roster events
-     * that happen while <code>rosterEntires(Collection) </code> is called are queued until the
+     * that happen while <code>rosterEntries(Collection) </code> is called are queued until the
      * method returns.
      * </p>
      * <p>
@@ -1085,7 +1085,7 @@ public final class Roster extends Manager {
             res = Arrays.asList(presence);
         }
         else {
-            List<Presence> answer = new ArrayList<Presence>();
+            List<Presence> answer = new ArrayList<>();
             // Used in case no available presence is found
             Presence unavailable = null;
             for (Presence presence : userPresences.values()) {
@@ -1220,7 +1220,7 @@ public final class Roster extends Manager {
                     }
                     catch (NotConnectedException e) {
                         throw new IllegalStateException(
-                                        "presencePakcetListener should never throw a NotConnectedException when processStanza is called with a presence of type unavailable",
+                                        "presencePacketListener should never throw a NotConnectedException when processStanza is called with a presence of type unavailable",
                                         e);
                     }
                     catch (InterruptedException e) {
@@ -1312,7 +1312,7 @@ public final class Roster extends Manager {
         }
 
         // Add the entry/user to the groups
-        List<String> newGroupNames = new ArrayList<String>();
+        List<String> newGroupNames = new ArrayList<>();
         for (String groupName : item.getGroupNames()) {
             // Add the group name to the list.
             newGroupNames.add(groupName);
@@ -1328,7 +1328,7 @@ public final class Roster extends Manager {
         }
 
         // Remove user from the remaining groups.
-        List<String> oldGroupNames = new ArrayList<String>();
+        List<String> oldGroupNames = new ArrayList<>();
         for (RosterGroup group : getGroups()) {
             oldGroupNames.add(group.getName());
         }
@@ -1602,7 +1602,7 @@ public final class Roster extends Manager {
                 RosterPacket rosterPacket = (RosterPacket) packet;
 
                 // Ignore items without valid subscription type
-                ArrayList<Item> validItems = new ArrayList<RosterPacket.Item>();
+                ArrayList<Item> validItems = new ArrayList<>();
                 for (RosterPacket.Item item : rosterPacket.getRosterItems()) {
                     if (hasValidSubscriptionType(item)) {
                         validItems.add(item);
@@ -1666,10 +1666,10 @@ public final class Roster extends Manager {
             fireRosterChangedEvent(addedEntries, updatedEntries, deletedEntries);
 
             // Call the roster loaded listeners after the roster events have been fired. This is
-            // imporant because the user may call getEntriesAndAddListener() in onRosterLoaded(),
+            // important because the user may call getEntriesAndAddListener() in onRosterLoaded(),
             // and if the order would be the other way around, the roster listener added by
             // getEntriesAndAddListener() would be invoked with information that was already
-            // available at the time getEntriesAndAddListenr() was called.
+            // available at the time getEntriesAndAddListener() was called.
             try {
                 synchronized (rosterLoadedListeners) {
                     for (RosterLoadedListener rosterLoadedListener : rosterLoadedListeners) {
@@ -1728,7 +1728,7 @@ public final class Roster extends Manager {
             // A roster push must contain exactly one entry
             Collection<Item> items = rosterPacket.getRosterItems();
             if (items.size() != 1) {
-                LOGGER.warning("Ignoring roster push with not exaclty one entry. size=" + items.size());
+                LOGGER.warning("Ignoring roster push with not exactly one entry. size=" + items.size());
                 return IQ.createErrorResponse(iqRequest, Condition.bad_request);
             }
 
@@ -1737,7 +1737,7 @@ public final class Roster extends Manager {
             Collection<Jid> deletedEntries = new ArrayList<>();
             Collection<Jid> unchangedEntries = new ArrayList<>();
 
-            // We assured above that the size of items is exaclty 1, therefore we are able to
+            // We assured above that the size of items is exactly 1, therefore we are able to
             // safely retrieve this single item here.
             Item item = items.iterator().next();
             RosterEntry entry = new RosterEntry(item, Roster.this, connection);

@@ -28,5 +28,5 @@ public interface Element {
      *
      * @return the stanza(/packet) extension as XML.
      */
-    public CharSequence toXML();
+    CharSequence toXML();
 }

@@ -258,7 +258,7 @@ public class SmackException extends Exception {
 
         public ConnectionException(Throwable wrappedThrowable) {
             super(wrappedThrowable);
-            failedAddresses = new ArrayList<HostAddress>(0);
+            failedAddresses = new ArrayList<>(0);
         }
 
         private ConnectionException(String message, List<HostAddress> failedAddresses) {

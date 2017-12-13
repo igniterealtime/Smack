@@ -74,7 +74,7 @@ public class Socks5ClientForInitiator extends Socks5Client {
     @Override
     public Socket getSocket(int timeout) throws IOException, InterruptedException,
                     TimeoutException, XMPPException, SmackException {
-        Socket socket = null;
+        Socket socket;
 
         // check if stream host is the local SOCKS5 proxy
         if (this.streamHost.getJID().equals(this.connection.get().getUser())) {

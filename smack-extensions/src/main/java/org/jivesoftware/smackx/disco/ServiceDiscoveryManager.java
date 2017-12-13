@@ -78,17 +78,16 @@ public final class ServiceDiscoveryManager extends Manager {
     private static DiscoverInfo.Identity defaultIdentity = new Identity(DEFAULT_IDENTITY_CATEGORY,
             DEFAULT_IDENTITY_NAME, DEFAULT_IDENTITY_TYPE);
 
-    private Set<DiscoverInfo.Identity> identities = new HashSet<DiscoverInfo.Identity>();
+    private final Set<DiscoverInfo.Identity> identities = new HashSet<>();
     private DiscoverInfo.Identity identity = defaultIdentity;
 
     private EntityCapsManager capsManager;
 
-    private static Map<XMPPConnection, ServiceDiscoveryManager> instances = new WeakHashMap<>();
+    private static final Map<XMPPConnection, ServiceDiscoveryManager> instances = new WeakHashMap<>();
 
-    private final Set<String> features = new HashSet<String>();
+    private final Set<String> features = new HashSet<>();
     private DataForm extendedInfo = null;
-    private Map<String, NodeInformationProvider> nodeInformationProviders =
-            new ConcurrentHashMap<String, NodeInformationProvider>();
+    private final Map<String, NodeInformationProvider> nodeInformationProviders = new ConcurrentHashMap<>();
 
     // Create a new ServiceDiscoveryManager on every established connection
     static {
@@ -270,7 +269,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * @return all identies as set
      */
     public Set<DiscoverInfo.Identity> getIdentities() {
-        Set<Identity> res = new HashSet<Identity>(identities);
+        Set<Identity> res = new HashSet<>(identities);
         // Add the default identity that must exist
         res.add(defaultIdentity);
         return Collections.unmodifiableSet(res);
@@ -368,7 +367,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * @return a List of the supported features by this XMPP entity.
      */
     public synchronized List<String> getFeatures() {
-        return new ArrayList<String>(features);
+        return new ArrayList<>(features);
     }
 
     /**
@@ -455,7 +454,7 @@ public final class ServiceDiscoveryManager extends Manager {
     public List<ExtensionElement> getExtendedInfoAsList() {
         List<ExtensionElement> res = null;
         if (extendedInfo != null) {
-            res = new ArrayList<ExtensionElement>(1);
+            res = new ArrayList<>(1);
             res.add(extendedInfo);
         }
         return res;
@@ -748,7 +747,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * Create a cache to hold the 25 most recently lookup services for a given feature for a period
      * of 24 hours.
      */
-    private Cache<String, List<DiscoverInfo>> services = new ExpirationCache<>(25,
+    private final Cache<String, List<DiscoverInfo>> services = new ExpirationCache<>(25,
                     24 * 60 * 60 * 1000);
 
     /**
@@ -784,7 +783,7 @@ public final class ServiceDiscoveryManager extends Manager {
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(String feature, boolean stopOnFirst, boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        List<DiscoverInfo> serviceDiscoInfo = null;
+        List<DiscoverInfo> serviceDiscoInfo;
         DomainBareJid serviceName = connection().getXMPPServiceDomain();
         if (useCache) {
             serviceDiscoInfo = services.lookup(feature);
