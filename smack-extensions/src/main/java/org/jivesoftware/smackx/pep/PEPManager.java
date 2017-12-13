@@ -50,7 +50,7 @@ import org.jxmpp.jid.EntityBareJid;
 /**
  *
  * Manages Personal Event Publishing (XEP-163). A PEPManager provides a high level access to
- * pubsub personal events. It also provides an easy way
+ * PubSub personal events. It also provides an easy way
  * to hook up custom logic when events are received from another XMPP client through PEPListeners.
  * 
  * Use example:

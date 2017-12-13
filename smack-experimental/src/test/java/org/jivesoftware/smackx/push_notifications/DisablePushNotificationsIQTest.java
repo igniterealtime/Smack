@@ -24,10 +24,10 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class DisablePushNotificationsIQTest {
 
-    String disableAllNotificationsIQExample = "<iq id='x97' type='set'>"
+    private static final String disableAllNotificationsIQExample = "<iq id='x97' type='set'>"
             + "<disable xmlns='urn:xmpp:push:0' jid='push-5.client.example'>" + "</disable>" + "</iq>";
 
-    String disableNodeNotificationsIQExample = "<iq id='x97' type='set'>"
+    private static final String disableNodeNotificationsIQExample = "<iq id='x97' type='set'>"
             + "<disable xmlns='urn:xmpp:push:0' jid='push-5.client.example' node='yxs32uqsflafdk3iuqo'>" + "</disable>"
             + "</iq>";
 

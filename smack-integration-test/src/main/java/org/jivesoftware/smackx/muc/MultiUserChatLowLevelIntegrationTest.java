@@ -79,7 +79,7 @@ public class MultiUserChatLowLevelIntegrationTest extends AbstractSmackLowLevelI
         connection.connect().login();
 
         // MucBookmarkAutojoinManager is also able to do its task automatically
-        // after every login, it's not determinstic when this will be finished.
+        // after every login, it's not deterministic when this will be finished.
         // So we trigger it manually here.
         MucBookmarkAutojoinManager.getInstanceFor(connection).autojoinBookmarkedConferences();
 

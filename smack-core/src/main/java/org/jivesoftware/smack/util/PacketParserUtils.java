@@ -229,7 +229,7 @@ public class PacketParserUtils {
         String language = getLanguageAttribute(parser);
 
         // determine message's default language
-        String defaultLanguage = null;
+        String defaultLanguage;
         if (language != null && !"".equals(language.trim())) {
             message.setLanguage(language);
             defaultLanguage = language;
@@ -746,7 +746,7 @@ public class PacketParserUtils {
     public static Map<String, String> parseDescriptiveTexts(XmlPullParser parser, Map<String, String> descriptiveTexts)
                     throws XmlPullParserException, IOException {
         if (descriptiveTexts == null) {
-            descriptiveTexts = new HashMap<String, String>();
+            descriptiveTexts = new HashMap<>();
         }
         String xmllang = getLanguageAttribute(parser);
         if (xmllang == null) {
@@ -805,7 +805,7 @@ public class PacketParserUtils {
      */
     public static StreamError parseStreamError(XmlPullParser parser) throws Exception {
         final int initialDepth = parser.getDepth();
-        List<ExtensionElement> extensions = new ArrayList<ExtensionElement>();
+        List<ExtensionElement> extensions = new ArrayList<>();
         Map<String, String> descriptiveTexts = null;
         StreamError.Condition condition = null;
         String conditionText = null;
@@ -857,7 +857,7 @@ public class PacketParserUtils {
                     throws Exception {
         final int initialDepth = parser.getDepth();
         Map<String, String> descriptiveTexts = null;
-        List<ExtensionElement> extensions = new ArrayList<ExtensionElement>();
+        List<ExtensionElement> extensions = new ArrayList<>();
         XMPPError.Builder builder = XMPPError.getBuilder();
 
         // Parse the error header

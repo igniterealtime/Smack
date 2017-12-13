@@ -27,24 +27,24 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class RemoteDisablingPushNotificationsTest {
 
-    String remoteDisablingExample = "<message from='push-5.client.example' to='user@example.com'>"
+    private static final String remoteDisablingExample = "<message from='push-5.client.example' to='user@example.com'>"
             + "<pubsub xmlns='http://jabber.org/protocol/pubsub' node='yxs32uqsflafdk3iuqo'>"
             + "<affiliation jid='user@example.com' affiliation='none' />" + "</pubsub>" + "</message>";
 
-    String wrongRemoteDisabling1 = "<message from='push-5.client.example' to='user@example.com'>"
+    private static final String wrongRemoteDisabling1 = "<message from='push-5.client.example' to='user@example.com'>"
             + "<pubsub xmlns='http://jabber.org/protocol/pubsub' node='yxs32uqsflafdk3iuqo'>"
             + "<affiliation jid='user@example.com'/>" + "</pubsub>" + "</message>";
 
-    String wrongRemoteDisabling2 = "<message from='push-5.client.example' to='user@example.com'>"
+    private static final String wrongRemoteDisabling2 = "<message from='push-5.client.example' to='user@example.com'>"
             + "<pubsub xmlns='http://jabber.org/protocol/pubsub' node='yxs32uqsflafdk3iuqo'>"
             + "<affiliation jid='user@example.com' affiliation='member' />" + "</pubsub>" + "</message>";
 
-    String wrongRemoteDisabling3 = "<message from='push-5.client.example' to='user@example.com'>"
+    private static final String wrongRemoteDisabling3 = "<message from='push-5.client.example' to='user@example.com'>"
             + "<pubsub xmlns='http://jabber.org/protocol/pubsub'>" + "</pubsub>" + "</message>";
 
     @Test
     public void checkRemoteDisablingPushNotificationsParse() throws Exception {
-        Message message = (Message) PacketParserUtils.parseStanza(remoteDisablingExample);
+        Message message = PacketParserUtils.parseStanza(remoteDisablingExample);
         RemoteDisablingExtension remoteDisablingExtension = RemoteDisablingExtension.from(message);
 
         Assert.assertEquals("yxs32uqsflafdk3iuqo", remoteDisablingExtension.getNode());
@@ -53,15 +53,15 @@ public class RemoteDisablingPushNotificationsTest {
 
     @Test
     public void checkWrongRemoteDisablighPushNotifications() throws Exception {
-        Message message1 = (Message) PacketParserUtils.parseStanza(wrongRemoteDisabling1);
+        Message message1 = PacketParserUtils.parseStanza(wrongRemoteDisabling1);
         RemoteDisablingExtension remoteDisablingExtension1 = RemoteDisablingExtension.from(message1);
         Assert.assertNull(remoteDisablingExtension1);
 
-        Message message2 = (Message) PacketParserUtils.parseStanza(wrongRemoteDisabling1);
+        Message message2 = PacketParserUtils.parseStanza(wrongRemoteDisabling1);
         RemoteDisablingExtension remoteDisablingExtension2 = RemoteDisablingExtension.from(message2);
         Assert.assertNull(remoteDisablingExtension2);
 
-        Message message3 = (Message) PacketParserUtils.parseStanza(wrongRemoteDisabling1);
+        Message message3 = PacketParserUtils.parseStanza(wrongRemoteDisabling1);
         RemoteDisablingExtension remoteDisablingExtension3 = RemoteDisablingExtension.from(message3);
         Assert.assertNull(remoteDisablingExtension3);
     }

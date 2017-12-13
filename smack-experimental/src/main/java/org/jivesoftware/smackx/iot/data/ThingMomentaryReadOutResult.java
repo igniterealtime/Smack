@@ -22,6 +22,6 @@ import org.jivesoftware.smackx.iot.data.element.IoTDataField;
 
 public interface ThingMomentaryReadOutResult {
 
-    public void momentaryReadOut(List<? extends IoTDataField> results);
+    void momentaryReadOut(List<? extends IoTDataField> results);
 
 }

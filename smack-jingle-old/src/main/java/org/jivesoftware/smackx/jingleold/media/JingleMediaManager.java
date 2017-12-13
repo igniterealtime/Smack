@@ -37,7 +37,7 @@ public abstract class JingleMediaManager {
     public static final String MEDIA_NAME = "JingleMediaManager";
 
     // Each media manager must keep track of the transport manager that it uses.
-    private JingleTransportManager transportManager;
+    private final JingleTransportManager transportManager;
 
     public JingleMediaManager(JingleTransportManager transportManager) {
         this.transportManager = transportManager;

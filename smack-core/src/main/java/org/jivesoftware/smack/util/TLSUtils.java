@@ -55,7 +55,7 @@ public class TLSUtils {
      * According to the <a
      * href="https://raw.githubusercontent.com/stpeter/manifesto/master/manifesto.txt">Encrypted
      * XMPP Manifesto</a>, TLSv1.2 shall be deployed, providing fallback support for SSLv3 and
-     * TLSv1.1. This method goes one step boyond and upgrades the handshake to use TLSv1 or better.
+     * TLSv1.1. This method goes one step beyond and upgrades the handshake to use TLSv1 or better.
      * This method requires the underlying OS to support all of TLSv1.2 , 1.1 and 1.0.
      * </p>
      * 

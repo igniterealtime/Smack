@@ -48,8 +48,8 @@ public class RSMSetProviderTest extends InitExtensions {
           + "</iq>";
         // @formatter:on
 
-        IQ iqWithRsm = (IQ) PacketParserUtils.parseStanza(rsmset);
-        RSMSet rsm = (RSMSet) iqWithRsm.getExtension(RSMSet.ELEMENT, RSMSet.NAMESPACE);
+        IQ iqWithRsm = PacketParserUtils.parseStanza(rsmset);
+        RSMSet rsm = iqWithRsm.getExtension(RSMSet.ELEMENT, RSMSet.NAMESPACE);
         assertNotNull(rsm);
         assertEquals("aftervalue", rsm.getAfter());
         assertEquals("beforevalue", rsm.getBefore());

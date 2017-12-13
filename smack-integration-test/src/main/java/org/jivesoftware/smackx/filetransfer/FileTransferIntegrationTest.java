@@ -73,7 +73,7 @@ public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
         final FileTransferListener receiveListener = new FileTransferListener() {
             @Override
             public void fileTransferRequest(FileTransferRequest request) {
-                byte[] dataReceived = null;
+                byte[] dataReceived;
                 IncomingFileTransfer ift = request.accept();
                 try {
                     InputStream is = ift.recieveFile();
@@ -105,9 +105,9 @@ public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
         while (!oft.isDone()) {
             switch (oft.getStatus()) {
             case error:
-                throw new Exception("Filetransfer error: " + oft.getError());
+                throw new Exception("FileTransfer error: " + oft.getError());
             default:
-                LOGGER.info("Filetransfer status: " + oft.getStatus() + ". Progress: " + oft.getProgress());
+                LOGGER.info("FileTransfer status: " + oft.getStatus() + ". Progress: " + oft.getProgress());
                 break;
             }
             Thread.sleep(1000);

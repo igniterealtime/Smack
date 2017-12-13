@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 public class SlotCreateTest {
-    String testSlot
+    private static final String testSlot
             = "<slot xmlns='urn:xmpp:http:upload:0'>"
             +     "<put url='https://upload.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png'></put>"
             +     "<get url='https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png'></get>"

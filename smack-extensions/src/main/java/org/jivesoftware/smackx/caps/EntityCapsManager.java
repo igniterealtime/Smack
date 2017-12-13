@@ -96,7 +96,7 @@ public final class EntityCapsManager extends Manager {
 
     private static boolean autoEnableEntityCaps = true;
 
-    private static Map<XMPPConnection, EntityCapsManager> instances = new WeakHashMap<>();
+    private static final Map<XMPPConnection, EntityCapsManager> instances = new WeakHashMap<>();
 
     private static final StanzaFilter PRESENCES_WITH_CAPS = new AndFilter(new StanzaTypeFilter(Presence.class), new StanzaExtensionFilter(
                     ELEMENT, NAMESPACE));
@@ -104,7 +104,7 @@ public final class EntityCapsManager extends Manager {
     /**
      * Map of "node + '#' + hash" to DiscoverInfo data
      */
-    static final LruCache<String, DiscoverInfo> CAPS_CACHE = new LruCache<String, DiscoverInfo>(1000);
+    static final LruCache<String, DiscoverInfo> CAPS_CACHE = new LruCache<>(1000);
 
     /**
      * Map of Full JID -&gt; DiscoverInfo/null. In case of c2s connection the
@@ -417,8 +417,8 @@ public final class EntityCapsManager extends Manager {
     }
 
     /**
-     * Get our own caps version. The version depends on the enabled features. A
-     * caps version looks like '66/0NaeaBKkwk85efJTGmU47vXI='
+     * Get our own caps version. The version depends on the enabled features.
+     * A caps version looks like '66/0NaeaBKkwk85efJTGmU47vXI='
      * 
      * @return our own caps version
      */
@@ -497,7 +497,7 @@ public final class EntityCapsManager extends Manager {
         if (connection != null)
             JID_TO_NODEVER_CACHE.put(connection.getUser(), new NodeVerHash(entityNode, currentCapsVersion));
 
-        final List<Identity> identities = new LinkedList<Identity>(ServiceDiscoveryManager.getInstanceFor(connection).getIdentities());
+        final List<Identity> identities = new LinkedList<>(ServiceDiscoveryManager.getInstanceFor(connection).getIdentities());
         sdm.setNodeInformationProvider(localNodeVer, new AbstractNodeInformationProvider() {
             List<String> features = sdm.getFeatures();
             List<ExtensionElement> packetExtensions = sdm.getExtendedInfoAsList();
@@ -531,7 +531,7 @@ public final class EntityCapsManager extends Manager {
     }
 
     /**
-     * Verify DisoverInfo and Caps Node as defined in XEP-0115 5.4 Processing
+     * Verify DiscoverInfo and Caps Node as defined in XEP-0115 5.4 Processing
      * Method.
      * 
      * @see <a href="http://xmpp.org/extensions/xep-0115.html#ver-proc">XEP-0115
@@ -569,7 +569,7 @@ public final class EntityCapsManager extends Manager {
      * @return true if the stanza(/packet) extensions is ill-formed
      */
     protected static boolean verifyPacketExtensions(DiscoverInfo info) {
-        List<FormField> foundFormTypes = new LinkedList<FormField>();
+        List<FormField> foundFormTypes = new LinkedList<>();
         for (ExtensionElement pe : info.getExtensions()) {
             if (pe.getNamespace().equals(DataForm.NAMESPACE)) {
                 DataForm df = (DataForm) pe;
@@ -628,10 +628,9 @@ public final class EntityCapsManager extends Manager {
         // [NAME]. Note that each slash is included even if the LANG or
         // NAME is not included (in accordance with XEP-0030, the category and
         // type MUST be included.
-        SortedSet<DiscoverInfo.Identity> sortedIdentities = new TreeSet<DiscoverInfo.Identity>();
+        SortedSet<DiscoverInfo.Identity> sortedIdentities = new TreeSet<>();
 
-        for (DiscoverInfo.Identity i : discoverInfo.getIdentities())
-            sortedIdentities.add(i);
+        sortedIdentities.addAll(discoverInfo.getIdentities());
 
         // 3. For each identity, append the 'category/type/lang/name' to S,
         // followed by the '<' character.
@@ -647,7 +646,7 @@ public final class EntityCapsManager extends Manager {
         }
 
         // 4. Sort the supported service discovery features.
-        SortedSet<String> features = new TreeSet<String>();
+        SortedSet<String> features = new TreeSet<>();
         for (Feature f : discoverInfo.getFeatures())
             features.add(f.getVar());
 
@@ -666,7 +665,7 @@ public final class EntityCapsManager extends Manager {
                 // 6. If the service discovery information response includes
                 // XEP-0128 data forms, sort the forms by the FORM_TYPE (i.e.,
                 // by the XML character data of the <value/> element).
-                SortedSet<FormField> fs = new TreeSet<FormField>(new Comparator<FormField>() {
+                SortedSet<FormField> fs = new TreeSet<>(new Comparator<FormField>() {
                     @Override
                     public int compare(FormField f1, FormField f2) {
                         return f1.getVariable().compareTo(f2.getVariable());
@@ -727,10 +726,8 @@ public final class EntityCapsManager extends Manager {
     }
 
     private static void formFieldValuesToCaps(List<String> i, StringBuilder sb) {
-        SortedSet<String> fvs = new TreeSet<String>();
-        for (String s : i) {
-            fvs.add(s);
-        }
+        SortedSet<String> fvs = new TreeSet<>();
+        fvs.addAll(i);
         for (String fv : fvs) {
             sb.append(fv);
             sb.append('<');

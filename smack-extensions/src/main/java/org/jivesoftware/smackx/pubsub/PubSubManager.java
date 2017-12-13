@@ -80,7 +80,7 @@ public final class PubSubManager extends Manager {
      * A map of node IDs to Nodes, used to cache those Nodes. This does only cache the type of Node,
      * i.e. {@link CollectionNode} or {@link LeafNode}.
      */
-    private final Map<String, Node> nodeMap = new ConcurrentHashMap<String, Node>();
+    private final Map<String, Node> nodeMap = new ConcurrentHashMap<>();
 
     /**
      * Get a PubSub manager for the default PubSub service of the connection.
@@ -98,7 +98,7 @@ public final class PubSubManager extends Manager {
                 LOGGER.log(Level.WARNING, "Could not determine PubSub service", e);
             }
             catch (InterruptedException e) {
-                LOGGER.log(Level.FINE, "Interupted while trying to determine PubSub service", e);
+                LOGGER.log(Level.FINE, "Interrupted while trying to determine PubSub service", e);
             }
         }
         if (pubSubService == null) {

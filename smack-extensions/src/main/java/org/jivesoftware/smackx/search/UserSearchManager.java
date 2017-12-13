@@ -48,8 +48,8 @@ import org.jxmpp.jid.DomainBareJid;
  */
 public class UserSearchManager {
 
-    private XMPPConnection con;
-    private UserSearch userSearch;
+    private final XMPPConnection con;
+    private final UserSearch userSearch;
 
     /**
      * Creates a new UserSearchManager.

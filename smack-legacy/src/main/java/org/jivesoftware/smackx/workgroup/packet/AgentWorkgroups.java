@@ -56,7 +56,7 @@ public class AgentWorkgroups extends IQ {
     public AgentWorkgroups(Jid agentJID) {
         this();
         this.agentJID = agentJID;
-        this.workgroups = new ArrayList<String>();
+        this.workgroups = new ArrayList<>();
     }
 
     /**
@@ -107,7 +107,7 @@ public class AgentWorkgroups extends IQ {
         @Override
         public AgentWorkgroups parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             final Jid agentJID = ParserUtils.getJidAttribute(parser);
-            List<String> workgroups = new ArrayList<String>();
+            List<String> workgroups = new ArrayList<>();
 
             boolean done = false;
             while (!done) {

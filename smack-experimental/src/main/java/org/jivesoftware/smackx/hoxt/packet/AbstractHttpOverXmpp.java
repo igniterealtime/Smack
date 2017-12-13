@@ -90,7 +90,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     /**
      * A builder for XMPP connection configurations.
      * <p>
-     * See ConnectionConfiguration Buidler for more details.
+     * See ConnectionConfiguration Builder for more details.
      * </p>
      *
      * @param <B> the builder type parameter.

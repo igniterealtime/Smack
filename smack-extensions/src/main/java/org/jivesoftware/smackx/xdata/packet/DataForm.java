@@ -73,9 +73,9 @@ public class DataForm implements ExtensionElement {
     private String title;
     private final List<String> instructions = new ArrayList<>();
     private ReportedData reportedData;
-    private final List<Item> items = new ArrayList<Item>();
+    private final List<Item> items = new ArrayList<>();
     private final Map<String, FormField> fields = new LinkedHashMap<>();
-    private final List<Element> extensionElements = new ArrayList<Element>();
+    private final List<Element> extensionElements = new ArrayList<>();
 
     public DataForm(Type type) {
         this.type = type;
@@ -111,7 +111,7 @@ public class DataForm implements ExtensionElement {
      */
     public List<String> getInstructions() {
         synchronized (instructions) {
-            return Collections.unmodifiableList(new ArrayList<String>(instructions));
+            return Collections.unmodifiableList(new ArrayList<>(instructions));
         }
     }
 
@@ -131,7 +131,7 @@ public class DataForm implements ExtensionElement {
      */
     public List<Item> getItems() {
         synchronized (items) {
-            return Collections.unmodifiableList(new ArrayList<Item>(items));
+            return Collections.unmodifiableList(new ArrayList<>(items));
         }
     }
 
@@ -338,7 +338,7 @@ public class DataForm implements ExtensionElement {
     public static class ReportedData {
         public static final String ELEMENT = "reported";
 
-        private List<FormField> fields = new ArrayList<FormField>();
+        private List<FormField> fields = new ArrayList<>();
 
         public ReportedData(List<FormField> fields) {
             this.fields = fields;
@@ -350,7 +350,7 @@ public class DataForm implements ExtensionElement {
          * @return the fields returned from a search.
          */
         public List<FormField> getFields() {
-            return Collections.unmodifiableList(new ArrayList<FormField>(fields));
+            return Collections.unmodifiableList(new ArrayList<>(fields));
         }
 
         public CharSequence toXML() {
@@ -374,7 +374,7 @@ public class DataForm implements ExtensionElement {
     public static class Item {
         public static final String ELEMENT = "item";
 
-        private List<FormField> fields = new ArrayList<FormField>();
+        private List<FormField> fields = new ArrayList<>();
 
         public Item(List<FormField> fields) {
             this.fields = fields;
@@ -386,7 +386,7 @@ public class DataForm implements ExtensionElement {
          * @return the fields that define the data that goes with the item.
          */
         public List<FormField> getFields() {
-            return Collections.unmodifiableList(new ArrayList<FormField>(fields));
+            return Collections.unmodifiableList(new ArrayList<>(fields));
         }
 
         public CharSequence toXML() {

@@ -42,10 +42,10 @@ import org.jxmpp.jid.EntityJid;
 @Deprecated
 public class Chat {
 
-    private ChatManager chatManager;
-    private String threadID;
-    private EntityJid participant;
-    private final Set<ChatMessageListener> listeners = new CopyOnWriteArraySet<ChatMessageListener>();
+    private final ChatManager chatManager;
+    private final String threadID;
+    private final EntityJid participant;
+    private final Set<ChatMessageListener> listeners = new CopyOnWriteArraySet<>();
 
     /**
      * Creates a new chat with the specified user and thread ID.

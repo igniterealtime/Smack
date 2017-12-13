@@ -60,7 +60,7 @@ public final class FileTransferNegotiator extends Manager {
     public static final String SI_PROFILE_FILE_TRANSFER_NAMESPACE = "http://jabber.org/protocol/si/profile/file-transfer";
     private static final String[] NAMESPACE = { SI_NAMESPACE, SI_PROFILE_FILE_TRANSFER_NAMESPACE };
 
-    private static final Map<XMPPConnection, FileTransferNegotiator> INSTANCES = new WeakHashMap<XMPPConnection, FileTransferNegotiator>();
+    private static final Map<XMPPConnection, FileTransferNegotiator> INSTANCES = new WeakHashMap<>();
 
     private static final String STREAM_INIT_PREFIX = "jsi_";
 
@@ -105,7 +105,7 @@ public final class FileTransferNegotiator extends Manager {
         ServiceDiscoveryManager manager = ServiceDiscoveryManager
                 .getInstanceFor(connection);
 
-        List<String> namespaces = new ArrayList<String>();
+        List<String> namespaces = new ArrayList<>();
         namespaces.addAll(Arrays.asList(NAMESPACE));
         namespaces.add(DataPacketExtension.NAMESPACE);
         if (!IBB_ONLY) {
@@ -132,7 +132,7 @@ public final class FileTransferNegotiator extends Manager {
         ServiceDiscoveryManager manager = ServiceDiscoveryManager
                 .getInstanceFor(connection);
 
-        List<String> namespaces = new ArrayList<String>();
+        List<String> namespaces = new ArrayList<>();
         namespaces.addAll(Arrays.asList(NAMESPACE));
         namespaces.add(DataPacketExtension.NAMESPACE);
         if (!IBB_ONLY) {
@@ -153,7 +153,7 @@ public final class FileTransferNegotiator extends Manager {
      * @return Returns a collection of the supported transfer protocols.
      */
     public static Collection<String> getSupportedProtocols() {
-        List<String> protocols = new ArrayList<String>();
+        List<String> protocols = new ArrayList<>();
         protocols.add(DataPacketExtension.NAMESPACE);
         if (!IBB_ONLY) {
             protocols.add(Bytestream.NAMESPACE);

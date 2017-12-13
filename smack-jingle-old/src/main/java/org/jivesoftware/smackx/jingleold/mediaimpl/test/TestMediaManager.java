@@ -36,7 +36,7 @@ public class TestMediaManager extends JingleMediaManager {
 
     public static final String MEDIA_NAME = "TestMedia";
 
-    private List<PayloadType> payloads = new ArrayList<PayloadType>();
+    private List<PayloadType> payloads = new ArrayList<>();
 
     private PayloadType preferredPayloadType = null;
 
@@ -69,7 +69,7 @@ public class TestMediaManager extends JingleMediaManager {
     @Override
     public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote,
             final TransportCandidate local, final JingleSession jingleSession) {
-        TestMediaSession session = null;
+        TestMediaSession session;
 
         session = new TestMediaSession(payloadType, remote, local, "", jingleSession);
 

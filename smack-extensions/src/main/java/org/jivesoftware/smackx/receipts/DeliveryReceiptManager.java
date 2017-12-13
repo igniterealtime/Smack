@@ -74,14 +74,14 @@ import org.jxmpp.jid.Jid;
  */
 public final class DeliveryReceiptManager extends Manager {
 
-    private static final StanzaFilter MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST = new AndFilter(StanzaTypeFilter.MESSAGE,
+    private static final StanzaFilter MESSAGES_WITH_DELIVERY_RECEIPT_REQUEST = new AndFilter(StanzaTypeFilter.MESSAGE,
                     new StanzaExtensionFilter(new DeliveryReceiptRequest()));
     private static final StanzaFilter MESSAGES_WITH_DELIVERY_RECEIPT = new AndFilter(StanzaTypeFilter.MESSAGE,
                     new StanzaExtensionFilter(DeliveryReceipt.ELEMENT, DeliveryReceipt.NAMESPACE));
 
     private static final Logger LOGGER = Logger.getLogger(DeliveryReceiptManager.class.getName());
 
-    private static Map<XMPPConnection, DeliveryReceiptManager> instances = new WeakHashMap<XMPPConnection, DeliveryReceiptManager>();
+    private static final Map<XMPPConnection, DeliveryReceiptManager> instances = new WeakHashMap<>();
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -175,7 +175,7 @@ public final class DeliveryReceiptManager extends Manager {
                 }
                 connection.sendStanza(ack);
             }
-        }, MESSAGES_WITH_DEVLIERY_RECEIPT_REQUEST);
+        }, MESSAGES_WITH_DELIVERY_RECEIPT_REQUEST);
     }
 
     /**

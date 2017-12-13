@@ -25,5 +25,5 @@ import java.io.ByteArrayOutputStream;
  * @author Thiago Rocha Camargo
  */
 public interface ImageEncoder {
-    public ByteArrayOutputStream encode(BufferedImage bufferedImage);
+    ByteArrayOutputStream encode(BufferedImage bufferedImage);
 }

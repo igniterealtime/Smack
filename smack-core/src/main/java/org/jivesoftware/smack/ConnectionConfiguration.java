@@ -341,7 +341,7 @@ public abstract class ConnectionConfiguration {
      * An enumeration for TLS security modes that are available when making a connection
      * to the XMPP server.
      */
-    public static enum SecurityMode {
+    public enum SecurityMode {
 
         /**
          * Security via TLS encryption is required in order to connect. If the server
@@ -492,7 +492,7 @@ public abstract class ConnectionConfiguration {
      * <p>
      * This is an abstract class that uses the builder design pattern and the "getThis() trick" to recover the type of
      * the builder in a class hierarchies with a self-referential generic supertype. Otherwise chaining of build
-     * instructions from the superclasses followed by build instructions of a sublcass would not be possible, because
+     * instructions from the superclasses followed by build instructions of a subclass would not be possible, because
      * the superclass build instructions would return the builder of the superclass and not the one of the subclass. You
      * can read more about it a Angelika Langer's Generics FAQ, especially the entry <a
      * href="http://www.angelikalanger.com/GenericsFAQ/FAQSections/ProgrammingIdioms.html#FAQ206">What is the
@@ -646,7 +646,7 @@ public abstract class ConnectionConfiguration {
         public B setPort(int port) {
             if (port < 0 || port > 65535) {
                 throw new IllegalArgumentException(
-                        "Port must be a 16-bit unsiged integer (i.e. between 0-65535. Port was: " + port);
+                        "Port must be a 16-bit unsigned integer (i.e. between 0-65535. Port was: " + port);
             }
             this.port = port;
             return getThis();
@@ -930,7 +930,7 @@ public abstract class ConnectionConfiguration {
             Set<String> blacklistedMechanisms = SASLAuthentication.getBlacklistedSASLMechanisms();
             for (String mechanism : saslMechanisms) {
                 if (!SASLAuthentication.isSaslMechanismRegistered(mechanism)) {
-                    throw new IllegalArgumentException("SASL " + mechanism + " is not avaiable. Consider registering it with Smack");
+                    throw new IllegalArgumentException("SASL " + mechanism + " is not available. Consider registering it with Smack");
                 }
                 if (blacklistedMechanisms.contains(mechanism)) {
                     throw new IllegalArgumentException("SALS " + mechanism + " is blacklisted.");

@@ -28,13 +28,13 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class MUCLightInfoTest {
 
-    String exampleWithVersion = "<iq to='coven@muclight.shakespeare.lit' id='getinfo1' type='get'>"
+    private static final String exampleWithVersion = "<iq to='coven@muclight.shakespeare.lit' id='getinfo1' type='get'>"
             + "<query xmlns='urn:xmpp:muclight:0#info'>" + "<version>abcdefg</version>" + "</query>" + "</iq>";
 
-    String exampleWithoutVersion = "<iq to='coven@muclight.shakespeare.lit' id='getinfo1' type='get'>"
+    private static final String exampleWithoutVersion = "<iq to='coven@muclight.shakespeare.lit' id='getinfo1' type='get'>"
             + "<query xmlns='urn:xmpp:muclight:0#info'>" + "</query>" + "</iq>";
 
-    String exampleInfoResult = "<iq from='coven@muclight.shakespeare.lit' to='cronel@shakespeare.lit/desktop' id='getinfo1' type='result'>"
+    private static final String exampleInfoResult = "<iq from='coven@muclight.shakespeare.lit' to='cronel@shakespeare.lit/desktop' id='getinfo1' type='result'>"
             + "<query xmlns='urn:xmpp:muclight:0#info'>" + "<version>123456</version>" + "<configuration>"
             + "<roomname>test</roomname>" + "</configuration>" + "<occupants>"
             + "<user affiliation='owner'>john@test.com</user>" + "<user affiliation='member'>charlie@test.com</user>"
@@ -58,7 +58,7 @@ public class MUCLightInfoTest {
 
     @Test
     public void checkMUCLightInfoResult() throws Exception {
-        IQ iqInfoResult = (IQ) PacketParserUtils.parseStanza(exampleInfoResult);
+        IQ iqInfoResult = PacketParserUtils.parseStanza(exampleInfoResult);
         MUCLightInfoIQ mucLightInfoResponseIQ = (MUCLightInfoIQ) iqInfoResult;
         Assert.assertEquals(mucLightInfoResponseIQ.getVersion(), "123456");
         Assert.assertEquals(mucLightInfoResponseIQ.getConfiguration().getRoomName(), "test");

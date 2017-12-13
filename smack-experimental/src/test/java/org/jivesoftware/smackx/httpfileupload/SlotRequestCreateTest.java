@@ -29,14 +29,14 @@ import org.xml.sax.SAXException;
 
 public class SlotRequestCreateTest {
 
-    String testRequest
+    private static final String testRequest
             = "<request xmlns='urn:xmpp:http:upload:0'"
             +   " filename='my_juliet.png'"
             +   " size='23456'"
             +   " content-type='image/jpeg'"
             + "/>";
 
-    String testRequestWithoutContentType
+    private static final String testRequestWithoutContentType
             = "<request xmlns='urn:xmpp:http:upload:0'"
             +   " filename='my_romeo.png'"
             +   " size='52523'"

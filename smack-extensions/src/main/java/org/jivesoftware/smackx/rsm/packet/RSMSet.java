@@ -34,9 +34,9 @@ public class RSMSet implements ExtensionElement {
     private final String firstString;
     private final int firstIndex;
 
-    public static enum PageDirection {
+    public enum PageDirection {
         before,
-        after;
+        after
     }
 
     public RSMSet(int max) {

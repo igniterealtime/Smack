@@ -85,7 +85,7 @@ public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
             return null;
         }
 
-        List<SRVRecord> res = new LinkedList<SRVRecord>();
+        List<SRVRecord> res = new LinkedList<>();
         for (SRV srv : result.getAnswers()) {
             String hostname = srv.name.ace;
             List<InetAddress> hostAddresses = lookupHostAddress0(hostname, failedAddresses, dnssecMode);

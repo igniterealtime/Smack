@@ -38,7 +38,7 @@ public enum JingleActionEnum {
 
     private final String actionCode;
 
-    private JingleActionEnum(String inActionCode) {
+    JingleActionEnum(String inActionCode) {
         actionCode = inActionCode;
     }
 

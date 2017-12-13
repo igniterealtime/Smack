@@ -51,7 +51,7 @@ public class MarkableExtensionTest {
         MarkableExtension markableExtension1 = new MarkableProvider().parse(parser);
         Assert.assertEquals(markableExtension, markableExtension1.toXML().toString());
 
-        Message message = (Message) PacketParserUtils.parseStanza(markableMessageStanza);
+        Message message = PacketParserUtils.parseStanza(markableMessageStanza);
         MarkableExtension markableExtension2 = MarkableExtension.from(message);
         Assert.assertEquals(markableExtension, markableExtension2.toXML().toString());
     }

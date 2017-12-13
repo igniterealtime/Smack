@@ -26,7 +26,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 /**
- * Represents the top level element of a pubsub event extension.  All types of pubsub events are
+ * Represents the top level element of a PubSub event extension.  All types of PubSub events are
  * represented by this class.  The specific type can be found by {@link #getEventType()}.  The 
  * embedded event information, which is specific to the event type, can be retrieved by the {@link #getEvent()}
  * method.
@@ -45,8 +45,8 @@ public class EventElement implements EmbeddedPacketExtension
      */
     public static final String NAMESPACE = PubSubNamespace.EVENT.getXmlns();
 
-    private EventElementType type;
-    private NodeExtension ext;
+    private final EventElementType type;
+    private final NodeExtension ext;
 
     public EventElement(EventElementType eventType, NodeExtension eventExt)
     {

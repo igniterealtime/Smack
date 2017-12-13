@@ -30,8 +30,8 @@ import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 
 /**
- * The main class for the majority of pubsub functionality.  In general
- * almost all pubsub capabilities are related to the concept of a node.
+ * The main class for the majority of PubSub functionality. In general
+ * almost all PubSub capabilities are related to the concept of a node.
  * All items are published to a node, and typically subscribed to by other
  * users.  These users then retrieve events based on this subscription.
  * 
@@ -73,7 +73,7 @@ public class LeafNode extends Node
      */
     public <T extends Item> List<T> getItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
-        return getItems((List<ExtensionElement>) null, (List<ExtensionElement>) null);
+        return getItems((List<ExtensionElement>) null, null);
     }
 
     /**
@@ -112,7 +112,7 @@ public class LeafNode extends Node
      */
     public <T extends Item> List<T> getItems(Collection<String> ids) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
-        List<Item> itemList = new ArrayList<Item>(ids.size());
+        List<Item> itemList = new ArrayList<>(ids.size());
 
         for (String id : ids)
         {
@@ -320,7 +320,7 @@ public class LeafNode extends Node
     @SuppressWarnings("unchecked")
     public <T extends Item> void send(T item) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
-        Collection<T> items = new ArrayList<T>(1);
+        Collection<T> items = new ArrayList<>(1);
         items.add((item == null ? (T) new Item() : item));
         send(items);
     }
@@ -345,7 +345,7 @@ public class LeafNode extends Node
      */
     public <T extends Item> void send(Collection<T> items) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
-        PubSub packet = createPubsubPacket(Type.set, new PublishItem<T>(getId(), items));
+        PubSub packet = createPubsubPacket(Type.set, new PublishItem<>(getId(), items));
 
         pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
     }
@@ -378,7 +378,7 @@ public class LeafNode extends Node
      */
     public void deleteItem(String itemId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
-        Collection<String> items = new ArrayList<String>(1);
+        Collection<String> items = new ArrayList<>(1);
         items.add(itemId);
         deleteItem(items);
     }
@@ -394,7 +394,7 @@ public class LeafNode extends Node
      */
     public void deleteItem(Collection<String> itemIds) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
     {
-        List<Item> items = new ArrayList<Item>(itemIds.size());
+        List<Item> items = new ArrayList<>(itemIds.size());
 
         for (String id : itemIds)
         {

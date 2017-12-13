@@ -148,7 +148,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
 
     private static DataForm.Item parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
         final int initialDepth = parser.getDepth();
-        List<FormField> fields = new ArrayList<FormField>();
+        List<FormField> fields = new ArrayList<>();
         outerloop: while (true) {
             int eventType = parser.next();
             switch (eventType) {
@@ -172,7 +172,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
 
     private static DataForm.ReportedData parseReported(XmlPullParser parser) throws XmlPullParserException, IOException {
         final int initialDepth = parser.getDepth();
-        List<FormField> fields = new ArrayList<FormField>();
+        List<FormField> fields = new ArrayList<>();
         outerloop: while (true) {
             int eventType = parser.next();
             switch (eventType) {

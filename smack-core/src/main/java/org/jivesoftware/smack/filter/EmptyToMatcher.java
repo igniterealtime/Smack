@@ -30,10 +30,7 @@ public final class EmptyToMatcher implements StanzaFilter {
     @Override
     public boolean accept(Stanza packet) {
         Jid packetTo = packet.getTo();
-        if (packetTo == null) {
-            return true;
-        }
-        return false;
+        return packetTo == null;
     }
 
     @Override

@@ -17,7 +17,7 @@
 package org.jivesoftware.smack.util;
 
 public class ByteUtils {
-    public static byte[] concact(byte[] arrayOne, byte[] arrayTwo) {
+    public static byte[] concat(byte[] arrayOne, byte[] arrayTwo) {
         int combinedLength = arrayOne.length + arrayTwo.length;
         byte[] res = new byte[combinedLength];
         System.arraycopy(arrayOne, 0, res, 0, arrayOne.length);

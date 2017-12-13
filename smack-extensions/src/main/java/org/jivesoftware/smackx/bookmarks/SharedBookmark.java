@@ -29,5 +29,5 @@ public interface SharedBookmark {
      *
      * @return returns true if this bookmark is shared.
      */
-    public boolean isShared();
+    boolean isShared();
 }

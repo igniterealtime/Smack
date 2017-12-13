@@ -26,8 +26,8 @@ import org.jivesoftware.smackx.pubsub.NodeExtension;
 import org.jivesoftware.smackx.pubsub.PubSubElementType;
 
 /**
- * Parses simple elements that only contain a <b>node</b> attribute.  This is common amongst many of the 
- * elements defined in the pubsub specification.  For this common case a {@link NodeExtension} is returned. 
+ * Parses simple elements that only contain a <b>node</b> attribute. This is common amongst many of the
+ * elements defined in the PubSub specification. For this common case a {@link NodeExtension} is returned.
  * 
  * @author Robin Collier
  */

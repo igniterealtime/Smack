@@ -32,7 +32,7 @@ import org.jxmpp.jid.Jid;
 
 public final class GeoLocationManager extends Manager {
 
-    private static final Map<XMPPConnection, GeoLocationManager> INSTANCES = new WeakHashMap<XMPPConnection, GeoLocationManager>();
+    private static final Map<XMPPConnection, GeoLocationManager> INSTANCES = new WeakHashMap<>();
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {

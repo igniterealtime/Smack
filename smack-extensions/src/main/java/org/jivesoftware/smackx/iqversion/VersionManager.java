@@ -55,7 +55,7 @@ import org.jxmpp.jid.Jid;
  * @author Georg Lukas
  */
 public final class VersionManager extends Manager {
-    private static final Map<XMPPConnection, VersionManager> INSTANCES = new WeakHashMap<XMPPConnection, VersionManager>();
+    private static final Map<XMPPConnection, VersionManager> INSTANCES = new WeakHashMap<>();
 
     private static Version defaultVersion;
 

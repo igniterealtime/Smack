@@ -31,19 +31,19 @@ public interface PrivateData {
      *
      * @return the element name.
      */
-    public String getElementName();
+    String getElementName();
 
     /**
      * Returns the root element XML namespace.
      *
      * @return the namespace.
      */
-    public String getNamespace();
+    String getNamespace();
 
     /**
      * Returns the XML reppresentation of the PrivateData.
      *
      * @return the private data as XML.
      */
-    public CharSequence toXML();
+    CharSequence toXML();
 }

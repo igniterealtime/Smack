@@ -37,7 +37,7 @@ public class SessionID implements ExtensionElement {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    private String sessionID;
+    private final String sessionID;
 
     public SessionID(String sessionID) {
         this.sessionID = sessionID;

@@ -181,7 +181,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * list containing session IDs of In-Band Bytestream open packets that should be ignored by the
      * InitiationListener
      */
-    private List<String> ignoredBytestreamRequests = Collections.synchronizedList(new LinkedList<String>());
+    private final List<String> ignoredBytestreamRequests = Collections.synchronizedList(new LinkedList<String>());
 
     /**
      * Returns the InBandBytestreamManager to handle In-Band Bytestreams for a given

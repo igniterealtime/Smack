@@ -74,7 +74,7 @@ public abstract class StreamManagementException extends SmackException {
                         long ackedStanzaCount,
                         List<Stanza> ackedStanzas) {
             super(
-                            "There was an error regarding the Stream Mangement counters. Server reported "
+                            "There was an error regarding the Stream Management counters. Server reported "
                                             + handledCount
                                             + " handled stanzas, which means that the "
                                             + ackedStanzaCount

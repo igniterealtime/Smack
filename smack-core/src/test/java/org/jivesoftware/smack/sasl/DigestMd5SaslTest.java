@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jxmpp.jid.EntityBareJid;
@@ -40,7 +39,7 @@ public class DigestMd5SaslTest extends AbstractSaslTest {
         super(saslMechanism);
     }
 
-    protected void runTest(boolean useAuthzid) throws NotConnectedException, SmackException, InterruptedException, XmppStringprepException, UnsupportedEncodingException {
+    protected void runTest(boolean useAuthzid) throws SmackException, InterruptedException, XmppStringprepException, UnsupportedEncodingException {
         EntityBareJid authzid = null;
         if (useAuthzid) {
             authzid = JidCreate.entityBareFrom("shazbat@xmpp.org");

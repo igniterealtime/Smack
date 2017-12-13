@@ -250,7 +250,7 @@ public class JMFInit extends Frame implements Runnable {
                         plType);
                 int listSize = rendList.size();
                 boolean found = false;
-                String rname = null;
+                String rname;
 
                 for (int i = 0; i < listSize; i++) {
                     rname = rendList.elementAt(i);

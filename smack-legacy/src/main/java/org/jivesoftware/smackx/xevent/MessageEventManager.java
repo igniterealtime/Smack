@@ -58,8 +58,8 @@ public final class MessageEventManager extends Manager {
     private static final StanzaFilter PACKET_FILTER = new AndFilter(new StanzaExtensionFilter(
                     new MessageEvent()), new NotFilter(MessageTypeFilter.ERROR));
 
-    private List<MessageEventNotificationListener> messageEventNotificationListeners = new CopyOnWriteArrayList<MessageEventNotificationListener>();
-    private List<MessageEventRequestListener> messageEventRequestListeners = new CopyOnWriteArrayList<MessageEventRequestListener>();
+    private final List<MessageEventNotificationListener> messageEventNotificationListeners = new CopyOnWriteArrayList<>();
+    private final List<MessageEventRequestListener> messageEventRequestListeners = new CopyOnWriteArrayList<>();
 
     public synchronized static MessageEventManager getInstanceFor(XMPPConnection connection) {
         MessageEventManager messageEventManager = INSTANCES.get(connection);
@@ -73,7 +73,7 @@ public final class MessageEventManager extends Manager {
     /**
      * Creates a new message event manager.
      *
-     * @param con an XMPPConnection to a XMPP server.
+     * @param connection an XMPPConnection to a XMPP server.
      */
     private MessageEventManager(XMPPConnection connection) {
         super(connection);
@@ -82,8 +82,7 @@ public final class MessageEventManager extends Manager {
             @Override
             public void processStanza(Stanza packet) {
                 Message message = (Message) packet;
-                MessageEvent messageEvent =
-                    (MessageEvent) message.getExtension("x", "jabber:x:event");
+                MessageEvent messageEvent = message.getExtension("x", "jabber:x:event");
                 if (messageEvent.isMessageEventRequest()) {
                     // Fire event for requests of message events
                     for (String eventType : messageEvent.getEventTypes())
@@ -104,7 +103,7 @@ public final class MessageEventManager extends Manager {
 
     /**
      * Adds event notification requests to a message. For each event type that
-     * the user wishes event notifications from the message recepient for, <tt>true</tt>
+     * the user wishes event notifications from the message recipient for, <tt>true</tt>
      * should be passed in to this method.
      * 
      * @param message the message to add the requested notifications.

@@ -809,7 +809,7 @@ public class PacketParserUtilsTest {
                     IOException, TransformerException, SAXException {
         // @formatter:off
         final String stanza = XMLBuilder.create("outer", "outerNamespace").a("outerAttribute", "outerValue")
-                        .element("inner", "innerNamespace").a("innverAttribute", "innerValue")
+                        .element("inner", "innerNamespace").a("innerAttribute", "innerValue")
                             .element("innermost")
                                 .t("some text")
                         .asString();

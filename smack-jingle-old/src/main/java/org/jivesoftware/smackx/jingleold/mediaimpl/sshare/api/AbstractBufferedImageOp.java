@@ -60,8 +60,8 @@ public abstract class AbstractBufferedImageOp implements BufferedImageOp, Clonea
      * @param image   a BufferedImage object
      * @param x       the left edge of the pixel block
      * @param y       the right edge of the pixel block
-     * @param width   the width of the pixel arry
-     * @param height  the height of the pixel arry
+     * @param width   the width of the pixel array
+     * @param height  the height of the pixel array
      * @param pixels  the array to hold the returned pixels. May be null.
      * @return the pixels
      * @see #setRGB
@@ -79,8 +79,8 @@ public abstract class AbstractBufferedImageOp implements BufferedImageOp, Clonea
      * @param image   a BufferedImage object
      * @param x       the left edge of the pixel block
      * @param y       the right edge of the pixel block
-     * @param width   the width of the pixel arry
-     * @param height  the height of the pixel arry
+     * @param width   the width of the pixel array
+     * @param height  the height of the pixel array
      * @param pixels  the array of pixels to set
      * @see #getRGB
      */

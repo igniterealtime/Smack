@@ -32,6 +32,6 @@ public interface DatagramListener {
      * @param datagramPacket the datagram stanza(/packet) received.
      * @return ?
      */
-    public boolean datagramReceived(DatagramPacket datagramPacket);
+    boolean datagramReceived(DatagramPacket datagramPacket);
 
 }

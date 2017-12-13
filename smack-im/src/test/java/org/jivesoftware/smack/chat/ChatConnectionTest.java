@@ -374,12 +374,12 @@ public class ChatConnectionTest {
     }
 
     private static class TestChatServer extends Thread {
-        private Stanza chatPacket;
-        private DummyConnection con;
+        private final Stanza chatPacket;
+        private final DummyConnection con;
 
-        TestChatServer(Stanza chatMsg, DummyConnection conect) {
+        TestChatServer(Stanza chatMsg, DummyConnection connection) {
             chatPacket = chatMsg;
-            con = conect;
+            con = connection;
         }
 
         @Override

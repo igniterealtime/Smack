@@ -181,7 +181,7 @@ public class SubscribeForm extends Form
      */
     public List<PresenceState> getShowValues()
     {
-        ArrayList<PresenceState> result = new ArrayList<PresenceState>(5);
+        ArrayList<PresenceState> result = new ArrayList<>(5);
 
         for (String state : getFieldValues(SubscribeOptionFields.show_values))
         {
@@ -198,7 +198,7 @@ public class SubscribeForm extends Form
      */
     public void setShowValues(Collection<PresenceState> stateValues)
     {
-        ArrayList<String> values = new ArrayList<String>(stateValues.size());
+        ArrayList<String> values = new ArrayList<>(stateValues.size());
 
         for (PresenceState state : stateValues)
         {

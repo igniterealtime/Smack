@@ -30,7 +30,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 public class GenericSettings extends IQ {
 
-    private Map<String, String> map = new HashMap<String, String>();
+    private Map<String, String> map = new HashMap<>();
 
     private String query;
 

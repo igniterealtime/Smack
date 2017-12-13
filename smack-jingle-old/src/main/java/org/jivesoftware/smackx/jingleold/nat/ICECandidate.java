@@ -233,7 +233,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
                 final TestResult result = new TestResult();
 
                 // Media Proxy don't have Echo features.
-                // If its a relayed candidate we assumpt that is NOT Valid while other candidates still being checked.
+                // If its a relayed candidate we assumed that is NOT Valid while other candidates still being checked.
                 // The negotiator MUST add then in the correct situations
                 if (getType().equals(Type.relay)) {
                     triggerCandidateChecked(false);

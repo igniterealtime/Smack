@@ -18,6 +18,6 @@ package org.jivesoftware.smack;
 
 public interface SuccessCallback<T> {
 
-    public void onSuccess(T result);
+    void onSuccess(T result);
 
 }

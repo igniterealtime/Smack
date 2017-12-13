@@ -40,7 +40,7 @@ public class SharedGroupsInfo extends IQ {
     public static final String ELEMENT = "sharedgroup";
     public static final String NAMESPACE = "http://www.jivesoftware.org/protocol/sharedgroup";
 
-    private List<String> groups = new ArrayList<String>();
+    private final List<String> groups = new ArrayList<>();
 
     public SharedGroupsInfo() {
         super(ELEMENT, NAMESPACE);

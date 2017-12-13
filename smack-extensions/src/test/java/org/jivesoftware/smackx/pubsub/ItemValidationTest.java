@@ -80,15 +80,15 @@ public class ItemValidationTest extends InitExtensions {
     {
         SimplePayload payload = new SimplePayload(null, null, "<data>This is the payload</data>");
 
-        PayloadItem<SimplePayload> simpleItem = new PayloadItem<SimplePayload>(payload);
+        PayloadItem<SimplePayload> simpleItem = new PayloadItem<>(payload);
         String simpleCtrl = "<item>" + payload.toXML() + "</item>";
         assertXMLEqual(simpleCtrl, simpleItem.toXML());
 
-        PayloadItem<SimplePayload> idItem = new PayloadItem<SimplePayload>("uniqueid", payload);
+        PayloadItem<SimplePayload> idItem = new PayloadItem<>("uniqueid", payload);
         String idCtrl = "<item id='uniqueid'>" + payload.toXML() + "</item>";
         assertXMLEqual(idCtrl, idItem.toXML());
 
-        PayloadItem<SimplePayload> itemWithNodeId = new PayloadItem<SimplePayload>("testId", "testNode", payload);
+        PayloadItem<SimplePayload> itemWithNodeId = new PayloadItem<>("testId", "testNode", payload);
         String nodeIdCtrl = "<item id='testId' node='testNode'>" + payload.toXML() + "</item>";
         assertXMLEqual(nodeIdCtrl, itemWithNodeId.toXML());
     }
@@ -233,6 +233,6 @@ public class ItemValidationTest extends InitExtensions {
         assertEquals("testid1", item.getId());
         assertTrue(item.getPayload() instanceof SimplePayload);
 
-        assertXMLEqual(itemContent, ((SimplePayload) item.getPayload()).toXML().toString());
+        assertXMLEqual(itemContent, item.getPayload().toXML().toString());
     }
 }

@@ -419,7 +419,7 @@ public abstract class AdHocCommand {
         complete,
 
         /**
-         * The action is unknow. This is used when a recieved message has an
+         * The action is unknown. This is used when a received message has an
          * unknown action. It must not be used to send an execution request.
          */
         unknown

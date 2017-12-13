@@ -45,7 +45,7 @@ import org.jxmpp.jid.parts.Resourcepart;
  * @author Alexander Wenckus
  */
 public final class BookmarkManager {
-    private static final Map<XMPPConnection, BookmarkManager> bookmarkManagerMap = new WeakHashMap<XMPPConnection, BookmarkManager>();
+    private static final Map<XMPPConnection, BookmarkManager> bookmarkManagerMap = new WeakHashMap<>();
 
     static {
         PrivateDataManager.addPrivateDataProvider("storage", "storage:bookmarks",

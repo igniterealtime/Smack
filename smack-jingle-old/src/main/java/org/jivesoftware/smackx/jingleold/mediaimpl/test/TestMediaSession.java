@@ -54,18 +54,18 @@ public class TestMediaSession extends JingleMediaSession {
      * Starts transmission and for NAT Traversal reasons start receiving also.
      */
     @Override
-    public void startTrasmit() {
+    public void startTransmit() {
 
     }
 
     /**
-     * Set transmit activity. If the active is true, the instance should trasmit.
+     * Set transmit activity. If the active is true, the instance should transmit.
      * If it is set to false, the instance should pause transmit.
      *
      * @param active active state
      */
     @Override
-    public void setTrasmit(boolean active) {
+    public void setTransmit(boolean active) {
 
     }
 
@@ -81,7 +81,7 @@ public class TestMediaSession extends JingleMediaSession {
      * Stops transmission and for NAT Traversal reasons stop receiving also.
      */
     @Override
-    public void stopTrasmit() {
+    public void stopTransmit() {
 
     }
 

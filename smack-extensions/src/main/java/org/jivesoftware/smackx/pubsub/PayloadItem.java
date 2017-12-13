@@ -50,7 +50,7 @@ import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
  */
 public class PayloadItem<E extends ExtensionElement> extends Item
 {
-    private E payload;
+    private final E payload;
 
     /**
      * Create an <tt>Item</tt> with no id and a payload  The id will be set by the server.  

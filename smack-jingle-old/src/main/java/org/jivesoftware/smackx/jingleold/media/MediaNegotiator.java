@@ -55,9 +55,9 @@ public class MediaNegotiator extends JingleNegotiator {
 
     // Local and remote payload types...
 
-    private final List<PayloadType> localAudioPts = new ArrayList<PayloadType>();
+    private final List<PayloadType> localAudioPts = new ArrayList<>();
 
-    private final List<PayloadType> remoteAudioPts = new ArrayList<PayloadType>();
+    private final List<PayloadType> remoteAudioPts = new ArrayList<>();
 
     private PayloadType bestCommonAudioPt;
 
@@ -108,7 +108,7 @@ public class MediaNegotiator extends JingleNegotiator {
      */
     @Override
     public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, NotConnectedException, InterruptedException {
-        List<IQ> responses = new ArrayList<IQ>();
+        List<IQ> responses = new ArrayList<>();
         IQ response = null;
 
         if (iq.getType().equals(IQ.Type.error)) {
@@ -185,7 +185,7 @@ public class MediaNegotiator extends JingleNegotiator {
 //            // Calculate the best common codec
 //            bestCommonAudioPt = calculateBestCommonAudioPt(remoteAudioPts);
 //
-//            // and send an accept if we havee an agreement...
+//            // and send an accept if we have an agreement...
 //            if (bestCommonAudioPt != null) {
 //                response = createAcceptMessage();
 //            } else {
@@ -208,10 +208,9 @@ public class MediaNegotiator extends JingleNegotiator {
      * @throws InterruptedException 
       */
     private IQ receiveContentAcceptAction(Jingle jingle, JingleDescription description) throws XMPPException, NotConnectedException, InterruptedException {
-        IQ response = null;
-        List<PayloadType> offeredPayloads = new ArrayList<PayloadType>();
+        IQ response;
 
-        offeredPayloads = description.getAudioPayloadTypesList();
+        List<PayloadType> offeredPayloads = description.getAudioPayloadTypesList();
         bestCommonAudioPt = calculateBestCommonAudioPt(offeredPayloads);
 
         if (bestCommonAudioPt == null) {
@@ -240,9 +239,7 @@ public class MediaNegotiator extends JingleNegotiator {
     private IQ receiveSessionInitiateAction(Jingle jingle, JingleDescription description) {
         IQ response = null;
 
-        List<PayloadType> offeredPayloads = new ArrayList<PayloadType>();
-
-        offeredPayloads = description.getAudioPayloadTypesList();
+        List<PayloadType> offeredPayloads = description.getAudioPayloadTypesList();
         bestCommonAudioPt = calculateBestCommonAudioPt(offeredPayloads);
 
         synchronized (remoteAudioPts) {
@@ -251,7 +248,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
         // If there are suitable/matching payload types then accept this content.
         if (bestCommonAudioPt != null) {
-            // Let thre transport negotiators sort-out connectivity and content-accept instead.
+            // Let the transport negotiators sort-out connectivity and content-accept instead.
             // response = createAudioPayloadTypesOffer();
             setNegotiatorState(JingleNegotiatorState.PENDING);
         } else {
@@ -266,7 +263,7 @@ public class MediaNegotiator extends JingleNegotiator {
      * A content info has been received. This is done for publishing the
      * list of payload types...
      * 
-     * @param jin
+     * @param jingle
      *            The input packet
      * @return a Jingle packet
      * @throws JingleException
@@ -314,7 +311,6 @@ public class MediaNegotiator extends JingleNegotiator {
     private IQ receiveSessionAcceptAction(Jingle jingle, JingleDescription description) throws JingleException {
         IQ response = null;
         PayloadType.Audio agreedCommonAudioPt;
-        List<PayloadType> offeredPayloads = new ArrayList<PayloadType>();
 
         if (bestCommonAudioPt == null) {
             // Update the best common audio PT
@@ -322,7 +318,7 @@ public class MediaNegotiator extends JingleNegotiator {
             // response = createAcceptMessage();
         }
 
-        offeredPayloads = description.getAudioPayloadTypesList();
+        List<PayloadType> offeredPayloads = description.getAudioPayloadTypesList();
         if (!offeredPayloads.isEmpty()) {
             if (offeredPayloads.size() == 1) {
                 agreedCommonAudioPt = (PayloadType.Audio) offeredPayloads.get(0);
@@ -363,8 +359,8 @@ public class MediaNegotiator extends JingleNegotiator {
     // Payload types
 
     private PayloadType calculateBestCommonAudioPt(List<PayloadType> remoteAudioPts) {
-        final ArrayList<PayloadType> commonAudioPtsHere = new ArrayList<PayloadType>();
-        final ArrayList<PayloadType> commonAudioPtsThere = new ArrayList<PayloadType>();
+        final ArrayList<PayloadType> commonAudioPtsHere = new ArrayList<>();
+        final ArrayList<PayloadType> commonAudioPtsThere = new ArrayList<>();
         PayloadType result = null;
 
         if (!remoteAudioPts.isEmpty()) {

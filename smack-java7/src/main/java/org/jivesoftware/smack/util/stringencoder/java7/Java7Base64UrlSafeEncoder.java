@@ -35,9 +35,9 @@ import org.jivesoftware.smack.util.stringencoder.StringEncoder;
  */
 public final class Java7Base64UrlSafeEncoder implements StringEncoder {
 
-    private static Java7Base64UrlSafeEncoder instance = new Java7Base64UrlSafeEncoder();
+    private static final Java7Base64UrlSafeEncoder instance = new Java7Base64UrlSafeEncoder();
 
-    private static int BASE64_ENCODER_FLAGS =  Base64.URL_SAFE | Base64.DONT_BREAK_LINES;
+    private static final int BASE64_ENCODER_FLAGS =  Base64.URL_SAFE | Base64.DONT_BREAK_LINES;
 
     private Java7Base64UrlSafeEncoder() {
         // Use getInstance()

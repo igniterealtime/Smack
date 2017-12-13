@@ -56,22 +56,22 @@ import org.jxmpp.jid.JidTestUtil;
 public class Socks5ClientForInitiatorTest {
 
     // settings
-    static final EntityFullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
-    static final EntityFullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
-    static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
-    static final DomainBareJid proxyJID = JidTestUtil.MUC_EXAMPLE_ORG;
-    static final String loopbackAddress = InetAddress.getLoopbackAddress().getHostAddress();
+    private static final EntityFullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
+    private static final EntityFullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
+    private static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
+    private static final DomainBareJid proxyJID = JidTestUtil.MUC_EXAMPLE_ORG;
+    private static final String loopbackAddress = InetAddress.getLoopbackAddress().getHostAddress();
 
     private static final int GET_SOCKET_TIMEOUT = 90 * 1000;
 
-    int proxyPort = 7890;
-    String sessionID = "session_id";
+    private static final int proxyPort = 7890;
+    private static final String sessionID = "session_id";
 
     // protocol verifier
-    Protocol protocol;
+    private Protocol protocol;
 
     // mocked XMPP connection
-    XMPPConnection connection;
+    private XMPPConnection connection;
 
     /**
      * Initialize fields used in the tests.

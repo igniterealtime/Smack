@@ -94,12 +94,12 @@ public class OmemoStoreTest extends AbstractOmemoIntegrationTest {
                 store.getDateOfLastReceivedMessage(alice, bob.getOwnDevice()));
         Date now = new Date();
         store.setDateOfLastReceivedMessage(alice, bob.getOwnDevice(), now);
-        assertEquals("Date of last reveived message must match the one we set.",
+        assertEquals("Date of last received message must match the one we set.",
                 now, store.getDateOfLastReceivedMessage(alice, bob.getOwnDevice()));
-        assertNull("Date of last signed prekey renewal must be null.",
+        assertNull("Date of last signed preKey renewal must be null.",
                 store.getDateOfLastSignedPreKeyRenewal(alice));
         store.setDateOfLastSignedPreKeyRenewal(alice, now);
-        assertEquals("Date of last signed prekey renewal must match our date.",
+        assertEquals("Date of last signed preKey renewal must match our date.",
                 now, store.getDateOfLastSignedPreKeyRenewal(alice));
 
         // Keys

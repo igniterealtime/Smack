@@ -72,10 +72,10 @@ public class OfferRevokeProvider extends IQProvider<IQ> {
 
         public static final String ELEMENT = "offer-revoke";
         public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
-        private Jid userJID;
-        private Jid userID;
-        private String sessionID;
-        private String reason;
+        private final Jid userJID;
+        private final Jid userID;
+        private final String sessionID;
+        private final String reason;
 
         public OfferRevokePacket (Jid userJID, Jid userID, String cause, String sessionID) {
             super(ELEMENT, NAMESPACE);

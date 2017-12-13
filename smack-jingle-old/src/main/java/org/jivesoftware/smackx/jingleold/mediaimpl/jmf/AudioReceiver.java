@@ -93,10 +93,10 @@ public class AudioReceiver implements ReceiveStreamListener, SessionListener,
                 // Find out the formats.
                 RTPControl ctl = (RTPControl) ds.getControl("javax.jmf.rtp.RTPControl");
                 if (ctl != null) {
-                    LOGGER.severe("  - Recevied new RTP stream: " + ctl.getFormat());
+                    LOGGER.severe("  - Received new RTP stream: " + ctl.getFormat());
                 }
                 else
-                    LOGGER.severe("  - Recevied new RTP stream");
+                    LOGGER.severe("  - Received new RTP stream");
 
                 if (participant == null)
                     LOGGER.severe("      The sender of this stream had yet to be identified.");
@@ -113,7 +113,7 @@ public class AudioReceiver implements ReceiveStreamListener, SessionListener,
                 p.realize();
                 jingleMediaSession.mediaReceived(participant != null ? participant.getCNAME() : "");
 
-                // Notify intialize() that a new stream had arrived.
+                // Notify initialize() that a new stream had arrived.
                 synchronized (dataSync) {
                     dataReceived = true;
                     dataSync.notifyAll();

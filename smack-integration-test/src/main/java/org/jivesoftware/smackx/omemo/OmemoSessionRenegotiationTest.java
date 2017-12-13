@@ -107,7 +107,7 @@ public class OmemoSessionRenegotiationTest extends AbstractOmemoIntegrationTest 
             @Override
             public void onOmemoMessageReceived(String decryptedBody, Message encryptedMessage, Message wrappingMessage, OmemoMessageInformation omemoInformation) {
                 LOGGER.log(Level.INFO, "Alice received OMEMO message: " + decryptedBody);
-                assertEquals("Reply must match the messagewe sent.", decryptedBody, m2);
+                assertEquals("Reply must match the message we sent.", decryptedBody, m2);
                 sp2.signal();
             }
 

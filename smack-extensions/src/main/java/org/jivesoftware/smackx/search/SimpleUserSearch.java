@@ -99,11 +99,11 @@ class SimpleUserSearch extends IQ {
 
         boolean done = false;
 
-        List<ReportedData.Field> fields = new ArrayList<ReportedData.Field>();
+        List<ReportedData.Field> fields = new ArrayList<>();
         while (!done) {
             if (parser.getAttributeCount() > 0) {
                 String jid = parser.getAttributeValue("", "jid");
-                List<String> valueList = new ArrayList<String>();
+                List<String> valueList = new ArrayList<>();
                 valueList.add(jid);
                 ReportedData.Field field = new ReportedData.Field("jid", valueList);
                 fields.add(field);
@@ -112,7 +112,7 @@ class SimpleUserSearch extends IQ {
             int eventType = parser.next();
 
             if (eventType == XmlPullParser.START_TAG && parser.getName().equals("item")) {
-                fields = new ArrayList<ReportedData.Field>();
+                fields = new ArrayList<>();
             }
             else if (eventType == XmlPullParser.END_TAG && parser.getName().equals("item")) {
                 ReportedData.Row row = new ReportedData.Row(fields);
@@ -122,7 +122,7 @@ class SimpleUserSearch extends IQ {
                 String name = parser.getName();
                 String value = parser.nextText();
 
-                List<String> valueList = new ArrayList<String>();
+                List<String> valueList = new ArrayList<>();
                 valueList.add(value);
                 ReportedData.Field field = new ReportedData.Field(name, valueList);
                 fields.add(field);

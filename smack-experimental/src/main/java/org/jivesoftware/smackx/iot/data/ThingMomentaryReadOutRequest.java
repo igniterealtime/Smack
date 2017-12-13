@@ -18,6 +18,6 @@ package org.jivesoftware.smackx.iot.data;
 
 public interface ThingMomentaryReadOutRequest {
 
-    public void momentaryReadOutRequest(ThingMomentaryReadOutResult callback);
+    void momentaryReadOutRequest(ThingMomentaryReadOutResult callback);
 
 }

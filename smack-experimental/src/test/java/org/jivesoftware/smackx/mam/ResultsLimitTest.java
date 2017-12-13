@@ -29,7 +29,7 @@ import org.junit.Test;
 
 public class ResultsLimitTest extends MamTest {
 
-    String resultsLimitStanza = "<iq id='sarasa' type='set'>" + "<query xmlns='urn:xmpp:mam:1' queryid='testid'>"
+    private static final String resultsLimitStanza = "<iq id='sarasa' type='set'>" + "<query xmlns='urn:xmpp:mam:1' queryid='testid'>"
             + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>" + "<value>"
             + MamElements.NAMESPACE + "</value>" + "</field>" + "</x>" + "<set xmlns='http://jabber.org/protocol/rsm'>"
             + "<max>10</max>" + "</set>" + "</query>" + "</iq>";

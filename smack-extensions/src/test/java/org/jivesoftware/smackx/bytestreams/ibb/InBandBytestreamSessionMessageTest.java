@@ -58,24 +58,24 @@ import org.powermock.reflect.Whitebox;
 public class InBandBytestreamSessionMessageTest extends InitExtensions {
 
     // settings
-    static final EntityFullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
-    static final EntityFullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
-    static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
-    String sessionID = "session_id";
+    private static final EntityFullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
+    private static final EntityFullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
+    private static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
+    private static final String sessionID = "session_id";
 
-    int blockSize = 10;
+    private static final int blockSize = 10;
 
     // protocol verifier
-    Protocol protocol;
+    private Protocol protocol;
 
     // mocked XMPP connection
-    XMPPConnection connection;
+    private XMPPConnection connection;
 
-    InBandBytestreamManager byteStreamManager;
+    private InBandBytestreamManager byteStreamManager;
 
-    Open initBytestream;
+    private Open initBytestream;
 
-    Verification<Message, IQ> incrementingSequence;
+    private Verification<Message, IQ> incrementingSequence;
 
     /**
      * Initialize fields used in the tests.
@@ -106,7 +106,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
 
             @Override
             public void verify(Message request, IQ response) {
-                DataPacketExtension dpe = (DataPacketExtension) request.getExtension(
+                DataPacketExtension dpe = request.getExtension(
                                 DataPacketExtension.ELEMENT, DataPacketExtension.NAMESPACE);
                 assertEquals(lastSeq++, dpe.getSeq());
             }

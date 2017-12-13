@@ -50,7 +50,7 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
 
     static {
         try {
-            Hashtable<String, String> env = new Hashtable<String, String>();
+            Hashtable<String, String> env = new Hashtable<>();
             env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
             dirContext = new InitialDirContext(env);
         } catch (Exception e) {

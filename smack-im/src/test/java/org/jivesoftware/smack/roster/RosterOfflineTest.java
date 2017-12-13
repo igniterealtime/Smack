@@ -32,9 +32,9 @@ import org.junit.Test;
  */
 public class RosterOfflineTest {
 
-    DummyConnection connection;
+    private DummyConnection connection;
 
-    Roster roster;
+    private Roster roster;
 
     @Before
     public void setup() {

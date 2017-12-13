@@ -413,7 +413,7 @@ public class Form {
      */
     public void setInstructions(String instructions) {
         // Split the instructions into multiple instructions for each existent newline
-        ArrayList<String> instructionsList = new ArrayList<String>();
+        ArrayList<String> instructionsList = new ArrayList<>();
         StringTokenizer st = new StringTokenizer(instructions, "\n");
         while (st.hasMoreTokens()) {
             instructionsList.add(st.nextToken());
@@ -504,10 +504,8 @@ public class Form {
                 if (field.getType() == FormField.Type.hidden) {
                     // Since a hidden field could have many values we need to collect them 
                     // in a list
-                    List<String> values = new ArrayList<String>();
-                    for (String value : field.getValues()) {
-                        values.add(value);
-                    }
+                    List<String> values = new ArrayList<>();
+                    values.addAll(field.getValues());
                     form.setAnswer(field.getVariable(), values);
                 }
             }

@@ -36,7 +36,7 @@ public class DataLayout implements ExtensionElement {
     public static final String ELEMENT = "page";
     public static final String NAMESPACE = "http://jabber.org/protocol/xdata-layout";
 
-    private final List<DataFormLayoutElement> pageLayout = new ArrayList<DataFormLayoutElement>();
+    private final List<DataFormLayoutElement> pageLayout = new ArrayList<>();
     private final String label;
 
     /**
@@ -103,7 +103,7 @@ public class DataLayout implements ExtensionElement {
 
     /**
      * @param buf
-     * @param pageLayout2
+     * @param pageLayout
      */
     private static void walkList(XmlStringBuilder buf, List<DataFormLayoutElement> pageLayout) {
         for (DataFormLayoutElement object : pageLayout) {
@@ -151,7 +151,7 @@ public class DataLayout implements ExtensionElement {
     public static class Section implements DataFormLayoutElement{
 
         public static final String ELEMENT = "section";
-        private final List<DataFormLayoutElement> sectionLayout = new ArrayList<DataFormLayoutElement>();
+        private final List<DataFormLayoutElement> sectionLayout = new ArrayList<>();
         private final String label;
 
         /**
@@ -262,7 +262,7 @@ public class DataLayout implements ExtensionElement {
 
     }
 
-    public static interface DataFormLayoutElement extends NamedElement {
+    public interface DataFormLayoutElement extends NamedElement {
     }
 
 }

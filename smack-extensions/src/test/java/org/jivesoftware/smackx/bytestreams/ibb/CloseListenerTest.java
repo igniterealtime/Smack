@@ -40,8 +40,8 @@ import org.powermock.reflect.Whitebox;
  */
 public class CloseListenerTest extends InitExtensions {
 
-    static final Jid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
-    static final Jid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
+    private static final Jid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
+    private static final Jid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
 
     /**
      * If a close request to an unknown session is received it should be replied

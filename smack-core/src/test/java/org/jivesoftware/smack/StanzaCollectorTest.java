@@ -105,7 +105,7 @@ public class StanzaCollectorTest
             @Override
             public void run()
             {
-                Stanza p = null;
+                Stanza p;
 
                 do
                 {
@@ -134,7 +134,7 @@ public class StanzaCollectorTest
             @Override
             public void run()
             {
-                Stanza p = null;
+                Stanza p;
 
                 do
                 {

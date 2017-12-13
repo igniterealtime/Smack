@@ -90,19 +90,17 @@ public class ObservableWriter extends Writer {
 
     /**
      * Notify that a new string has been written.
-     * 
-     * @param str the written String to notify 
      */
     private void notifyListeners() {
-        WriterListener[] writerListeners = null;
+        WriterListener[] writerListeners;
         synchronized (listeners) {
             writerListeners = new WriterListener[listeners.size()];
             listeners.toArray(writerListeners);
         }
         String str = stringBuilder.toString();
         stringBuilder.setLength(0);
-        for (int i = 0; i < writerListeners.length; i++) {
-            writerListeners[i].write(str);
+        for (WriterListener writerListener : writerListeners) {
+            writerListener.write(str);
         }
     }
 

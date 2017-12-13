@@ -47,7 +47,7 @@ import org.jxmpp.jid.EntityFullJid;
  */
 public final class FileTransferManager extends Manager {
 
-    private static final Map<XMPPConnection, FileTransferManager> INSTANCES = new WeakHashMap<XMPPConnection, FileTransferManager>();
+    private static final Map<XMPPConnection, FileTransferManager> INSTANCES = new WeakHashMap<>();
 
     public static synchronized FileTransferManager getInstanceFor(XMPPConnection connection) {
         FileTransferManager fileTransferManager = INSTANCES.get(connection);
@@ -60,7 +60,7 @@ public final class FileTransferManager extends Manager {
 
     private final FileTransferNegotiator fileTransferNegotiator;
 
-    private final List<FileTransferListener> listeners = new CopyOnWriteArrayList<FileTransferListener>();
+    private final List<FileTransferListener> listeners = new CopyOnWriteArrayList<>();
 
     /**
      * Creates a file transfer manager to initiate and receive file transfers.

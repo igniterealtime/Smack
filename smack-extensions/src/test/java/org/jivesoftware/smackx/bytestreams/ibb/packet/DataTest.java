@@ -50,7 +50,7 @@ public class DataTest extends InitExtensions {
         assertEquals(IQ.Type.set, data.getType());
     }
 
-    private static Properties outputProperties = new Properties();
+    private static final Properties outputProperties = new Properties();
     {
         outputProperties.put(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
     }

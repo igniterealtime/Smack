@@ -55,7 +55,7 @@ public class JivePropertiesExtensionTest extends InitExtensions {
                         + "</message>";
         // @formatter:on
 
-        Message message = (Message) PacketParserUtils.parseStanza(properties);
+        Message message = PacketParserUtils.parseStanza(properties);
         JivePropertiesExtension jpe = JivePropertiesExtension.from(message);
         assertNotNull(jpe);
 

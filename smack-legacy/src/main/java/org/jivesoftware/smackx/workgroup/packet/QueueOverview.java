@@ -44,7 +44,7 @@ public class QueueOverview implements ExtensionElement {
     public static String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
     private static final String DATE_FORMAT = "yyyyMMdd'T'HH:mm:ss";
-    private SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
     private int averageWaitTime;
     private Date oldestEntry;

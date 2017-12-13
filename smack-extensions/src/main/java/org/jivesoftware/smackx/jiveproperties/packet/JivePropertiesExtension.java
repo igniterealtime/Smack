@@ -52,7 +52,7 @@ public class JivePropertiesExtension implements ExtensionElement {
     private final Map<String, Object> properties;
 
     public JivePropertiesExtension() {
-        properties = new HashMap<String, Object>();
+        properties = new HashMap<>();
     }
 
     public JivePropertiesExtension(Map<String, Object> properties) {
@@ -84,7 +84,7 @@ public class JivePropertiesExtension implements ExtensionElement {
      */
     public synchronized void setProperty(String name, Object value) {
         if (!(value instanceof Serializable)) {
-            throw new IllegalArgumentException("Value must be serialiazble");
+            throw new IllegalArgumentException("Value must be serializable");
         }
         properties.put(name, value);
     }
@@ -110,7 +110,7 @@ public class JivePropertiesExtension implements ExtensionElement {
         if (properties == null) {
             return Collections.emptySet();
         }
-        return Collections.unmodifiableSet(new HashSet<String>(properties.keySet()));
+        return Collections.unmodifiableSet(new HashSet<>(properties.keySet()));
     }
 
     /**
@@ -122,7 +122,7 @@ public class JivePropertiesExtension implements ExtensionElement {
         if (properties == null) {
             return Collections.emptyMap();
         }
-        return Collections.unmodifiableMap(new HashMap<String, Object>(properties));
+        return Collections.unmodifiableMap(new HashMap<>(properties));
     }
 
     @Override
