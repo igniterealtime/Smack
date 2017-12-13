@@ -43,7 +43,7 @@ public class AMPMatchResourceCondition implements AMPExtension.Condition {
     private final Value value;
 
     /**
-     * Create new amp match-resource condition with value setted to one of defined by XEP-0079.
+     * Create new amp match-resource condition with value set to one of defined by XEP-0079.
      * See http://xmpp.org/extensions/xep-0079.html#conditions-def-match
      * @param value AMPDeliveryCondition.Value instance that will be used as value parameter. Can't be null.
      */
@@ -67,7 +67,7 @@ public class AMPMatchResourceCondition implements AMPExtension.Condition {
      * match-resource amp condition value as defined by XEP-0079.
      * See http://xmpp.org/extensions/xep-0079.html#conditions-def-match
      */
-    public static enum Value {
+    public enum Value {
         /**
          * Destination resource matches any value, effectively ignoring the intended resource.
          * Example: "home/laptop" matches "home", "home/desktop" or "work/desktop"

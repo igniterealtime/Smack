@@ -31,9 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPConnection;
-
 import org.jivesoftware.smackx.jingleold.JingleSession;
-import org.jivesoftware.smackx.jingleold.nat.TransportResolverListener.Checker;
 
 import org.jxmpp.jid.Jid;
 
@@ -74,7 +72,7 @@ public abstract class TransportCandidate {
     private Thread echoThread = null;
 
     // Listeners for events
-    private final List<TransportResolverListener.Checker> listeners = new ArrayList<Checker>();
+    private final List<TransportResolverListener.Checker> listeners = new ArrayList<>();
 
     public void addCandidateEcho(JingleSession session) throws SocketException, UnknownHostException {
         candidateEcho = new CandidateEcho(this, session);
@@ -134,12 +132,12 @@ public abstract class TransportCandidate {
     }
 
     /**
-     * Set the symetric candidate for this candidate.
+     * Set the symmetric candidate for this candidate.
      *
-     * @param symetric
+     * @param symmetric
      */
-    public void setSymmetric(TransportCandidate symetric) {
-        this.symmetric = symetric;
+    public void setSymmetric(TransportCandidate symmetric) {
+        this.symmetric = symmetric;
     }
 
     /**
@@ -400,7 +398,7 @@ public abstract class TransportCandidate {
      */
     public List<TransportResolverListener.Checker> getListenersList() {
         synchronized (listeners) {
-            return new ArrayList<Checker>(listeners);
+            return new ArrayList<>(listeners);
         }
     }
 
@@ -633,8 +631,8 @@ public abstract class TransportCandidate {
         byte[] send = null;
         byte[] receive = null;
         DatagramPacket sendStanza = null;
-        List<DatagramListener> listeners = new ArrayList<DatagramListener>();
-        List<ResultListener> resultListeners = new ArrayList<ResultListener>();
+        List<DatagramListener> listeners = new ArrayList<>();
+        List<ResultListener> resultListeners = new ArrayList<>();
         boolean enabled = true;
         boolean ended = false;
         long replyTries = 2;

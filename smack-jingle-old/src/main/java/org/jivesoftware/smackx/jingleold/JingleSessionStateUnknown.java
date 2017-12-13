@@ -74,7 +74,7 @@ public class JingleSessionStateUnknown extends JingleSessionState {
 
     @Override
     public IQ processJingle(JingleSession session, Jingle jingle, JingleActionEnum action) throws SmackException, InterruptedException {
-        IQ response = null;
+        IQ response;
 
         switch (action) {
             case SESSION_INITIATE:
@@ -103,7 +103,7 @@ public class JingleSessionStateUnknown extends JingleSessionState {
 
     private IQ receiveSessionInitiateAction(JingleSession session, Jingle inJingle) throws SmackException, InterruptedException {
 
-        IQ response = null;
+        IQ response;
         boolean shouldAck = true;
 
         // According to XEP-166 when we get a session-initiate we need to check for:

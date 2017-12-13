@@ -54,5 +54,5 @@ public interface StanzaFilter {
      * @param stanza the stanza(/packet) to test.
      * @return true if and only if <tt>stanza</tt> passes the filter.
      */
-    public boolean accept(Stanza stanza);
+    boolean accept(Stanza stanza);
 }

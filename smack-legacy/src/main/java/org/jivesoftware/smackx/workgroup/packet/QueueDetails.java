@@ -54,7 +54,7 @@ public final class QueueDetails implements ExtensionElement {
 
     private static final String DATE_FORMAT = "yyyyMMdd'T'HH:mm:ss";
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     /**
      * The list of users in the queue.
      */
@@ -157,7 +157,7 @@ public final class QueueDetails implements ExtensionElement {
             {
                 eventType = parser.next();
                 while ((eventType == XmlPullParser.START_TAG) && "user".equals(parser.getName())) {
-                    String uid = null;
+                    String uid;
                     int position = -1;
                     int time = -1;
                     Date joinTime = null;

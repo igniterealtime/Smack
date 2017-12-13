@@ -40,7 +40,7 @@ public class DiscoverItems extends IQ {
     public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "http://jabber.org/protocol/disco#items";
 
-    private final List<Item> items = new LinkedList<Item>();
+    private final List<Item> items = new LinkedList<>();
     private String node;
 
     public DiscoverItems() {

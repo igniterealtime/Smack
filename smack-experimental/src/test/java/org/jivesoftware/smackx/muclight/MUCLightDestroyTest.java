@@ -24,7 +24,7 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class MUCLightDestroyTest {
 
-    String stanza = "<iq to='coven@muclight.shakespeare.lit' id='destroy1' type='set'>"
+    private static final String stanza = "<iq to='coven@muclight.shakespeare.lit' id='destroy1' type='set'>"
             + "<query xmlns='urn:xmpp:muclight:0#destroy'/>" + "</iq>";
 
     @Test

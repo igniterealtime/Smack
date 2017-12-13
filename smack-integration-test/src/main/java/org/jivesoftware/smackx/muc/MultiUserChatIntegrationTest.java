@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.muc;
 
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -25,7 +24,6 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
-
 import org.jivesoftware.smackx.muc.MultiUserChat.MucCreateConfigFormHandle;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
@@ -64,7 +62,7 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
-    public void mucTest() throws TimeoutException, Exception {
+    public void mucTest() throws Exception {
         EntityBareJid mucAddress = JidCreate.entityBareFrom(Localpart.from("smack-inttest-" + randomString), mucService.getDomain());
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);

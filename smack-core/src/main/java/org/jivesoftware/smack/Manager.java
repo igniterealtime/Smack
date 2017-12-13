@@ -28,7 +28,7 @@ public abstract class Manager {
     public Manager(XMPPConnection connection) {
         Objects.requireNonNull(connection, "XMPPConnection must not be null");
 
-        weakConnection = new WeakReference<XMPPConnection>(connection);
+        weakConnection = new WeakReference<>(connection);
     }
 
     protected final XMPPConnection connection() {

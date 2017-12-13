@@ -46,7 +46,7 @@ public class ChatSettings extends IQ {
      */
     public static final int BOT_SETTINGS = 2;
 
-    private List<ChatSetting> settings;
+    private final List<ChatSetting> settings;
     private String key;
     private int type = -1;
 
@@ -62,7 +62,7 @@ public class ChatSettings extends IQ {
 
     public ChatSettings() {
         super(ELEMENT_NAME, NAMESPACE);
-        settings = new ArrayList<ChatSetting>();
+        settings = new ArrayList<>();
     }
 
     public ChatSettings(String key) {

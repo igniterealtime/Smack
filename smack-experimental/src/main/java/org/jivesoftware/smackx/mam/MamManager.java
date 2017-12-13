@@ -239,11 +239,11 @@ public final class MamManager extends Manager {
 
 
     /**
-     * Query an message archive like a MUC archive or a pubsub node archive, addressed by an archiveAddress, applying
+     * Query an message archive like a MUC archive or a PubSub node archive, addressed by an archiveAddress, applying
      * filters: max count, start date, end date, from/to JID and with additional fields. When archiveAddress is null the
      * default, the server will be requested.
      * 
-     * @param node The Pubsub node name, can be null
+     * @param node The PubSub node name, can be null
      * @param max
      * @param start
      * @param end
@@ -346,7 +346,7 @@ public final class MamManager extends Manager {
     /**
      * Returns a page of the archive.
      * 
-     * @param node The Pubsub node name, can be null
+     * @param node The PubSub node name, can be null
      * @param dataForm
      * @param rsmSet
      * @return the MAM query result
@@ -498,7 +498,7 @@ public final class MamManager extends Manager {
     /**
      * Get the form fields supported by the server.
      * 
-     * @param node The Pubsub node name, can be null
+     * @param node The PubSub node name, can be null
      * @return the list of form fields.
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -521,7 +521,7 @@ public final class MamManager extends Manager {
     private MamQueryResult queryArchive(MamQueryIQ mamQueryIq) throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
-        MamFinIQ mamFinIQ = null;
+        MamFinIQ mamFinIQ;
 
         StanzaCollector mamFinIQCollector = connection.createStanzaCollector(new IQReplyFilter(mamQueryIq, connection));
 

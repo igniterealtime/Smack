@@ -91,7 +91,7 @@ public final class GeoLocation implements Serializable, ExtensionElement {
         if (accuracy != null) {
             error = null;
             LOGGER.log(Level.WARNING,
-                            "Error and accurracy set. Ignoring error as it is deprecated in favor of accuracy");
+                            "Error and accuracy set. Ignoring error as it is deprecated in favor of accuracy");
         }
 
         this.error = error;

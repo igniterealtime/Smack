@@ -37,7 +37,7 @@ public class OctTreeQuantizer implements Quantizer {
     final static int MAX_LEVEL = 5;
 
     /**
-     * An Octtree node.
+     * An Octree node.
      */
     static class OctTreeNode {
         int children;
@@ -73,7 +73,7 @@ public class OctTreeQuantizer implements Quantizer {
     private int reduceColors;
     private int maximumColors;
     private int colors = 0;
-    private List<Vector<OctTreeNode>> colorList;
+    private final List<Vector<OctTreeNode>> colorList;
 
     public OctTreeQuantizer() {
         setup(256);

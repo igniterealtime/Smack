@@ -49,16 +49,16 @@ abstract public class Node
     protected final PubSubManager pubSubManager;
     protected final String id;
 
-    protected ConcurrentHashMap<ItemEventListener<Item>, StanzaListener> itemEventToListenerMap = new ConcurrentHashMap<ItemEventListener<Item>, StanzaListener>();
-    protected ConcurrentHashMap<ItemDeleteListener, StanzaListener> itemDeleteToListenerMap = new ConcurrentHashMap<ItemDeleteListener, StanzaListener>();
-    protected ConcurrentHashMap<NodeConfigListener, StanzaListener> configEventToListenerMap = new ConcurrentHashMap<NodeConfigListener, StanzaListener>();
+    protected ConcurrentHashMap<ItemEventListener<Item>, StanzaListener> itemEventToListenerMap = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<ItemDeleteListener, StanzaListener> itemDeleteToListenerMap = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<NodeConfigListener, StanzaListener> configEventToListenerMap = new ConcurrentHashMap<>();
 
     /**
      * Construct a node associated to the supplied connection with the specified 
      * node id.
      * 
-     * @param connection The connection the node is associated with
-     * @param nodeName The node id
+     * @param pubSubManager The PubSubManager for the connection the node is associated with
+     * @param nodeId The node id
      */
     Node(PubSubManager pubSubManager, String nodeId)
     {
@@ -220,7 +220,7 @@ abstract public class Node
         if (returnedExtensions != null) {
             returnedExtensions.addAll(reply.getExtensions());
         }
-        SubscriptionsExtension subElem = (SubscriptionsExtension) reply.getExtension(PubSubElementType.SUBSCRIPTIONS);
+        SubscriptionsExtension subElem = reply.getExtension(PubSubElementType.SUBSCRIPTIONS);
         return subElem.getSubscriptions();
     }
 
@@ -280,7 +280,7 @@ abstract public class Node
     /**
      * Retrieve the affiliation list for this node as owner.
      * <p>
-     * Note that this is an <b>optional</b> PubSub feature ('pubusb#modify-affiliations').
+     * Note that this is an <b>optional</b> PubSub feature ('pubsub#modify-affiliations').
      * </p>
      *
      * @param additionalExtensions optional additional extension elements add to the request.
@@ -314,7 +314,7 @@ abstract public class Node
         if (returnedExtensions != null) {
             returnedExtensions.addAll(reply.getExtensions());
         }
-        AffiliationsExtension affilElem = (AffiliationsExtension) reply.getExtension(PubSubElementType.AFFILIATIONS);
+        AffiliationsExtension affilElem = reply.getExtension(PubSubElementType.AFFILIATIONS);
         return affilElem.getAffiliations();
     }
 
@@ -322,7 +322,7 @@ abstract public class Node
      * Modify the affiliations for this PubSub node as owner. The {@link Affiliation}s given must be created with the
      * {@link Affiliation#Affiliation(org.jxmpp.jid.BareJid, Affiliation.Type)} constructor.
      * <p>
-     * Note that this is an <b>optional</b> PubSub feature ('pubusb#modify-affiliations').
+     * Note that this is an <b>optional</b> PubSub feature ('pubsub#modify-affiliations').
      * </p>
      * 
      * @param affiliations
@@ -574,12 +574,12 @@ abstract public class Node
 
     private static List<String> getSubscriptionIds(Stanza packet)
     {
-        HeadersExtension headers = (HeadersExtension) packet.getExtension("headers", "http://jabber.org/protocol/shim");
+        HeadersExtension headers = packet.getExtension("headers", "http://jabber.org/protocol/shim");
         List<String> values = null;
 
         if (headers != null)
         {
-            values = new ArrayList<String>(headers.getHeaders().size());
+            values = new ArrayList<>(headers.getHeaders().size());
 
             for (Header header : headers.getHeaders())
             {
@@ -598,7 +598,7 @@ abstract public class Node
     public static class ItemEventTranslator implements StanzaListener
     {
         @SuppressWarnings("rawtypes")
-        private ItemEventListener listener;
+        private final ItemEventListener listener;
 
         public ItemEventTranslator(@SuppressWarnings("rawtypes") ItemEventListener eventListener)
         {
@@ -609,7 +609,7 @@ abstract public class Node
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public void processStanza(Stanza packet)
         {
-            EventElement event = (EventElement) packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
+            EventElement event = packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
             ItemsExtension itemsElem = (ItemsExtension) event.getEvent();
             ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), itemsElem.getItems(), getSubscriptionIds(packet), DelayInformationManager.getDelayTimestamp(packet));
             listener.handlePublishedItems(eventItems);
@@ -624,7 +624,7 @@ abstract public class Node
      */
     public static class ItemDeleteTranslator implements StanzaListener
     {
-        private ItemDeleteListener listener;
+        private final ItemDeleteListener listener;
 
         public ItemDeleteTranslator(ItemDeleteListener eventListener)
         {
@@ -635,7 +635,7 @@ abstract public class Node
         public void processStanza(Stanza packet)
         {
 // CHECKSTYLE:OFF
-            EventElement event = (EventElement)packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
+            EventElement event = packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
 
             List<ExtensionElement> extList = event.getExtensions();
 
@@ -648,7 +648,7 @@ abstract public class Node
                 ItemsExtension itemsElem = (ItemsExtension)event.getEvent();
                 @SuppressWarnings("unchecked")
                 Collection<RetractItem> pubItems = (Collection<RetractItem>) itemsElem.getItems();
-                List<String> items = new ArrayList<String>(pubItems.size());
+                List<String> items = new ArrayList<>(pubItems.size());
 
                 for (RetractItem item : pubItems)
                 {
@@ -670,7 +670,7 @@ abstract public class Node
      */
     public static class NodeConfigTranslator implements StanzaListener
     {
-        private NodeConfigListener listener;
+        private final NodeConfigListener listener;
 
         public NodeConfigTranslator(NodeConfigListener eventListener)
         {
@@ -680,7 +680,7 @@ abstract public class Node
         @Override
         public void processStanza(Stanza packet)
         {
-            EventElement event = (EventElement) packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
+            EventElement event = packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
             ConfigurationEvent config = (ConfigurationEvent) event.getEvent();
 
             listener.handleNodeConfiguration(config);
@@ -704,9 +704,9 @@ abstract public class Node
             this(elementName, null);
         }
 
-        EventContentFilter(String firstLevelEelement, String secondLevelElement)
+        EventContentFilter(String firstLevelElement, String secondLevelElement)
         {
-            firstElement = firstLevelEelement;
+            firstElement = firstLevelElement;
             secondElement = secondLevelElement;
             allowEmpty = firstElement.equals(EventElementType.items.toString())
                             && "item".equals(secondLevelElement);

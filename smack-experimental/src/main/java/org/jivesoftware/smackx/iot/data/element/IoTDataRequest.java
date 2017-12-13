@@ -24,7 +24,7 @@ public class IoTDataRequest extends IQ {
     public static final String NAMESPACE = Constants.IOT_SENSORDATA_NAMESPACE;
 
     /**
-     * The sequence nummber. According to XEP-0323 an xs:int.
+     * The sequence number. According to XEP-0323 an xs:int.
      */
     private final int seqNr;
 

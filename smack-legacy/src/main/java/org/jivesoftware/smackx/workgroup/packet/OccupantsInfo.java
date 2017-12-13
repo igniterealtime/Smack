@@ -58,13 +58,13 @@ public class OccupantsInfo extends IQ {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    private String roomID;
+    private final String roomID;
     private final Set<OccupantInfo> occupants;
 
     public OccupantsInfo(String roomID) {
         super(ELEMENT_NAME, NAMESPACE);
         this.roomID = roomID;
-        this.occupants = new HashSet<OccupantInfo>();
+        this.occupants = new HashSet<>();
     }
 
     public String getRoomID() {
@@ -107,9 +107,9 @@ public class OccupantsInfo extends IQ {
 
     public static class OccupantInfo {
 
-        private String jid;
-        private String nickname;
-        private Date joined;
+        private final String jid;
+        private final String nickname;
+        private final Date joined;
 
         public OccupantInfo(String jid, String nickname, Date joined) {
             this.jid = jid;

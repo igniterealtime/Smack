@@ -26,23 +26,23 @@ import org.junit.Test;
 
 public class MUCLightConfigurationsChangeExtensionTest {
 
-    String messageWithSubjectChangeExample = "<message to='crone1@shakespeare.lit' from='coven@muclight.shakespeare.lit' id='newsubject' type='groupchat'>"
+    private static final String messageWithSubjectChangeExample = "<message to='crone1@shakespeare.lit' from='coven@muclight.shakespeare.lit' id='newsubject' type='groupchat'>"
             + "<body></body>" + "<x xmlns='urn:xmpp:muclight:0#configuration'>"
             + "<prev-version>asdfghj000</prev-version>" + "<version>asdfghj</version>"
             + "<subject>To be or not to be?</subject>" + "</x>" + "</message>";
 
-    String messageWithRoomNameChangeExample = "<message to='crone1@shakespeare.lit' from='coven@muclight.shakespeare.lit' id='newsubject' type='groupchat'>"
+    private static final String messageWithRoomNameChangeExample = "<message to='crone1@shakespeare.lit' from='coven@muclight.shakespeare.lit' id='newsubject' type='groupchat'>"
             + "<body></body>" + "<x xmlns='urn:xmpp:muclight:0#configuration'>" + "<prev-version>zaqwsx</prev-version>"
             + "<version>zxcvbnm</version>" + "<roomname>A Darker Cave</roomname>" + "</x>" + "</message>";
 
-    String messageWithConfigsChangeExample = "<message to='crone1@shakespeare.lit' from='coven@muclight.shakespeare.lit' id='newsubject' type='groupchat'>"
+    private static final String messageWithConfigsChangeExample = "<message to='crone1@shakespeare.lit' from='coven@muclight.shakespeare.lit' id='newsubject' type='groupchat'>"
             + "<body></body>" + "<x xmlns='urn:xmpp:muclight:0#configuration'>" + "<prev-version>zaqwsx</prev-version>"
             + "<version>zxcvbnm</version>" + "<roomname>A Darker Cave</roomname>" + "<color>blue</color>" + "</x>"
             + "</message>";
 
     @Test
     public void checkSubjectChangeExtension() throws Exception {
-        Message configurationsMessage = (Message) PacketParserUtils.parseStanza(messageWithSubjectChangeExample);
+        Message configurationsMessage = PacketParserUtils.parseStanza(messageWithSubjectChangeExample);
         ConfigurationsChangeExtension configurationsChangeExtension = ConfigurationsChangeExtension
                 .from(configurationsMessage);
 
@@ -56,7 +56,7 @@ public class MUCLightConfigurationsChangeExtensionTest {
 
     @Test
     public void checkRoomNameChangeExtension() throws Exception {
-        Message configurationsMessage = (Message) PacketParserUtils.parseStanza(messageWithRoomNameChangeExample);
+        Message configurationsMessage = PacketParserUtils.parseStanza(messageWithRoomNameChangeExample);
         ConfigurationsChangeExtension configurationsChangeExtension = ConfigurationsChangeExtension
                 .from(configurationsMessage);
 
@@ -70,7 +70,7 @@ public class MUCLightConfigurationsChangeExtensionTest {
 
     @Test
     public void checkConfigsChangeExtension() throws Exception {
-        Message configurationsMessage = (Message) PacketParserUtils.parseStanza(messageWithConfigsChangeExample);
+        Message configurationsMessage = PacketParserUtils.parseStanza(messageWithConfigsChangeExample);
         ConfigurationsChangeExtension configurationsChangeExtension = ConfigurationsChangeExtension
                 .from(configurationsMessage);
 

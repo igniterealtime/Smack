@@ -42,7 +42,7 @@ public abstract class JingleTransportManager {
     // This class implements the context of a Strategy pattern...
 
     /**
-     * Deafult contructor.
+     * Default constructor.
      */
     public JingleTransportManager() {
 

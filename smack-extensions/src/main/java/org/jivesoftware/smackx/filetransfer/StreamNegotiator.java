@@ -137,7 +137,7 @@ public abstract class StreamNegotiator extends Manager {
 
 
     abstract InputStream negotiateIncomingStream(Stanza streamInitiation) throws XMPPErrorException,
-            InterruptedException, NoResponseException, SmackException;
+            InterruptedException, SmackException;
 
     /**
      * This method handles the file stream download negotiation process. The
@@ -156,7 +156,7 @@ public abstract class StreamNegotiator extends Manager {
      * @throws SmackException 
      */
     public abstract InputStream createIncomingStream(StreamInitiation initiation)
-            throws XMPPErrorException, InterruptedException, NoResponseException, SmackException;
+            throws XMPPErrorException, InterruptedException, SmackException;
 
     /**
      * This method handles the file upload stream negotiation process. The
@@ -169,14 +169,12 @@ public abstract class StreamNegotiator extends Manager {
      * @param target    The fully-qualified JID of the target or receiver of the file
      *                  transfer.
      * @return The negotiated stream ready for data.
-     * @throws XMPPErrorException If an error occurs during the negotiation process an
-     *                       exception will be thrown.
      * @throws SmackException 
      * @throws XMPPException 
      * @throws InterruptedException 
      */
     public abstract OutputStream createOutgoingStream(String streamID,
-            Jid initiator, Jid target) throws XMPPErrorException, NoResponseException, SmackException, XMPPException, InterruptedException;
+            Jid initiator, Jid target) throws SmackException, XMPPException, InterruptedException;
 
     /**
      * Returns the XMPP namespace reserved for this particular type of file

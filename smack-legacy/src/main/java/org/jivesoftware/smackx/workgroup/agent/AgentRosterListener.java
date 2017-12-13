@@ -25,9 +25,9 @@ import org.jivesoftware.smack.packet.Presence;
  */
 public interface AgentRosterListener {
 
-    public void agentAdded(String jid);
+    void agentAdded(String jid);
 
-    public void agentRemoved(String jid);
+    void agentRemoved(String jid);
 
-    public void presenceChanged(Presence presence);
+    void presenceChanged(Presence presence);
 }

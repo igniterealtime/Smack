@@ -45,14 +45,14 @@ public abstract class JingleMediaSession {
     // Media Locator
     private String mediaLocator;
     // Media Received Listener
-    private List<MediaReceivedListener> mediaReceivedListeners = new ArrayList<MediaReceivedListener>();
+    private List<MediaReceivedListener> mediaReceivedListeners = new ArrayList<>();
     // Jingle Session
     private JingleSession jingleSession;
 
     /**
      * Creates a new JingleMediaSession Instance to handle Media methods.
      *
-     * @param payloadType  Payload Type of the transmittion
+     * @param payloadType  Payload Type of the transmission
      * @param remote       Remote accepted Transport Candidate
      * @param local        Local accepted Transport Candidate
      * @param mediaLocator Media Locator of the capture device
@@ -144,7 +144,7 @@ public abstract class JingleMediaSession {
     /**
      * Starts a RTP / UDP / TCP Transmission to the remote Candidate.
      */
-    public abstract void startTrasmit();
+    public abstract void startTransmit();
 
     /**
      * Starts a RTP / UDP / TCP Receiver from the remote Candidate to local Candidate.
@@ -157,12 +157,12 @@ public abstract class JingleMediaSession {
      *
      * @param active
      */
-    public abstract void setTrasmit(boolean active);
+    public abstract void setTransmit(boolean active);
 
     /**
      * Stops a RTP / UDP / TCP Transmission to the remote Candidate.
      */
-    public abstract void stopTrasmit();
+    public abstract void stopTransmit();
 
     /**
      * Stops a RTP / UDP / TCP Receiver from the remote Candidate to local Candidate.

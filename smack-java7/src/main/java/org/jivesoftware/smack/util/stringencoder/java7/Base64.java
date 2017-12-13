@@ -298,7 +298,7 @@ public final class Base64
 	 * in which case one of them will be picked, though there is
 	 * no guarantee as to which one will be picked.
 	 */
-	private final static byte[] getAlphabet( int options )
+	private static byte[] getAlphabet( int options )
 	{
 		if( (options & URL_SAFE) == URL_SAFE ) return _URL_SAFE_ALPHABET;
 		else if( (options & ORDERED) == ORDERED ) return _ORDERED_ALPHABET;
@@ -314,7 +314,7 @@ public final class Base64
 	 * in which case one of them will be picked, though there is
 	 * no guarantee as to which one will be picked.
 	 */
-	private final static byte[] getDecodabet( int options )
+	private static byte[] getDecodabet( int options )
 	{
 		if( (options & URL_SAFE) == URL_SAFE ) return _URL_SAFE_DECODABET;
 		else if( (options & ORDERED) == ORDERED ) return _ORDERED_DECODABET;
@@ -359,7 +359,7 @@ public final class Base64
      * anywhere along their length by specifying
      * <var>srcOffset</var> and <var>destOffset</var>.
      * This method does not check to make sure your arrays
-     * are large enough to accomodate <var>srcOffset</var> + 3 for
+     * are large enough to accommodate <var>srcOffset</var> + 3 for
      * the <var>source</var> array or <var>destOffset</var> + 4 for
      * the <var>destination</var> array.
      * The actual number of significant bytes in your array is
@@ -710,7 +710,7 @@ public final class Base64
      * anywhere along their length by specifying
      * <var>srcOffset</var> and <var>destOffset</var>.
      * This method does not check to make sure your arrays
-     * are large enough to accomodate <var>srcOffset</var> + 4 for
+     * are large enough to accommodate <var>srcOffset</var> + 4 for
      * the <var>source</var> array or <var>destOffset</var> + 3 for
      * the <var>destination</var> array.
      * This method returns the actual number of bytes that

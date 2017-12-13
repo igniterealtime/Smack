@@ -68,7 +68,7 @@ public class JingleSessionStateEnded extends JingleSessionState {
      */
     @Override
     public IQ processJingle(JingleSession session, Jingle jingle, JingleActionEnum action) {
-        IQ response = null;
+        IQ response;
 
         response = session.createJingleError(jingle, JingleError.MALFORMED_STANZA);
 

@@ -50,7 +50,7 @@ public class STUN extends SimpleIQ {
 
     private static final Logger LOGGER = Logger.getLogger(STUN.class.getName());
 
-    private List<StunServerAddress> servers = new ArrayList<StunServerAddress>();
+    private final List<StunServerAddress> servers = new ArrayList<>();
 
     private String publicIp = null;
 

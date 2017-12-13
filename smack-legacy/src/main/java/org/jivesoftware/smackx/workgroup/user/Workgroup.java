@@ -77,11 +77,11 @@ import org.jxmpp.jid.Jid;
  */
 public class Workgroup {
 
-    private Jid workgroupJID;
-    private XMPPConnection connection;
+    private final Jid workgroupJID;
+    private final XMPPConnection connection;
     private boolean inQueue;
-    private CopyOnWriteArraySet<WorkgroupInvitationListener> invitationListeners;
-    private CopyOnWriteArraySet<QueueListener> queueListeners;
+    private final CopyOnWriteArraySet<WorkgroupInvitationListener> invitationListeners;
+    private final CopyOnWriteArraySet<QueueListener> queueListeners;
 
     private int queuePosition = -1;
     private int queueRemainingTime = -1;
@@ -194,7 +194,7 @@ public class Workgroup {
         StanzaCollector collector = connection.createStanzaCollectorAndSend(new AndFilter(fromFilter,
                 typeFilter), directedPresence);
 
-        Presence response = (Presence) collector.nextResultOrThrow();
+        Presence response = collector.nextResultOrThrow();
         return Presence.Type.available == response.getType();
     }
 
@@ -220,7 +220,7 @@ public class Workgroup {
      * returned.
      *
      * @return the estimated time remaining (in seconds) that the user has to
-     *         wait inthe workgroupu queue, or -1 if time information isn't available
+     *         wait in the workgroup queue, or -1 if time information isn't available
      *         or if the user isn't int the queue.
      */
     public int getQueueRemainingTime() {
@@ -256,8 +256,8 @@ public class Workgroup {
      * server will ignore a manually specified userID if the user's connection to the server
      * is not anonymous.
      *
-     * @throws XMPPException if an error occured joining the queue. An error may indicate
-     *                       that a connection failure occured or that the server explicitly rejected the
+     * @throws XMPPException if an error occurred joining the queue. An error may indicate
+     *                       that a connection failure occurred or that the server explicitly rejected the
      *                       request to join the queue.
      * @throws SmackException 
      * @throws InterruptedException 
@@ -295,8 +295,8 @@ public class Workgroup {
      * is not anonymous.
      *
      * @param answerForm the completed form the send for the join request.
-     * @throws XMPPException if an error occured joining the queue. An error may indicate
-     *                       that a connection failure occured or that the server explicitly rejected the
+     * @throws XMPPException if an error occurred joining the queue. An error may indicate
+     *                       that a connection failure occurred or that the server explicitly rejected the
      *                       request to join the queue.
      * @throws SmackException 
      * @throws InterruptedException 
@@ -331,11 +331,11 @@ public class Workgroup {
      * be used instead of the user's JID to track conversations. The server will ignore a
      * manually specified userID if the user's connection to the server is not anonymous.
      *
-     * @param answerForm the completed form associated with the join reqest.
+     * @param answerForm the completed form associated with the join request.
      * @param userID     String that represents the ID of the user when using anonymous sessions
      *                   or <tt>null</tt> if a userID should not be used.
-     * @throws XMPPErrorException if an error occured joining the queue. An error may indicate
-     *                       that a connection failure occured or that the server explicitly rejected the
+     * @throws XMPPErrorException if an error occurred joining the queue. An error may indicate
+     *                       that a connection failure occurred or that the server explicitly rejected the
      *                       request to join the queue.
      * @throws NoResponseException 
      * @throws NotConnectedException 
@@ -383,8 +383,8 @@ public class Workgroup {
      * @param metadata metadata to create a dataform from.
      * @param userID   String that represents the ID of the user when using anonymous sessions
      *                 or <tt>null</tt> if a userID should not be used.
-     * @throws XMPPException if an error occured joining the queue. An error may indicate
-     *                       that a connection failure occured or that the server explicitly rejected the
+     * @throws XMPPException if an error occurred joining the queue. An error may indicate
+     *                       that a connection failure occurred or that the server explicitly rejected the
      *                       request to join the queue.
      * @throws SmackException 
      * @throws InterruptedException 
@@ -418,7 +418,7 @@ public class Workgroup {
      * under certain circumstances -- for example, if they no longer wish to be routed
      * to an agent because they've been waiting too long.
      *
-     * @throws XMPPErrorException if an error occured trying to send the depart queue
+     * @throws XMPPErrorException if an error occurred trying to send the depart queue
      *                       request to the server.
      * @throws NoResponseException 
      * @throws NotConnectedException 
@@ -533,7 +533,7 @@ public class Workgroup {
 
             else {
                 // Check if a room invitation was sent and if the sender is the workgroup
-                MUCUser mucUser = (MUCUser) msg.getExtension("x", "http://jabber.org/protocol/muc#user");
+                MUCUser mucUser = msg.getExtension("x", "http://jabber.org/protocol/muc#user");
                 MUCUser.Invite invite = mucUser != null ? mucUser.getInvite() : null;
                 if (invite != null && workgroupJID.equals(invite.getFrom())) {
                     String sessionID = null;
@@ -566,8 +566,8 @@ public class Workgroup {
      */
     private class JoinQueuePacket extends IQ {
 
-        private Jid userID;
-        private DataForm form;
+        private final Jid userID;
+        private final DataForm form;
 
         public JoinQueuePacket(Jid workgroup, Form answerForm, Jid userID) {
             super("join-queue", "http://jabber.org/protocol/workgroup");
@@ -656,7 +656,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        ChatSettings response = (ChatSettings) connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        ChatSettings response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
 
         return response;
     }
@@ -696,9 +696,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        OfflineSettings response = (OfflineSettings) connection.createStanzaCollectorAndSend(
-                        request).nextResultOrThrow();
-        return response;
+        return connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
     }
 
     /**
@@ -715,8 +713,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        SoundSettings response = (SoundSettings) connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
-        return response;
+        return connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
     }
 
     /**
@@ -733,9 +730,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        WorkgroupProperties response = (WorkgroupProperties) connection.createStanzaCollectorAndSend(
-                        request).nextResultOrThrow();
-        return response;
+        return connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
     }
 
     /**
@@ -754,9 +749,8 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        WorkgroupProperties response = (WorkgroupProperties) connection.createStanzaCollectorAndSend(
+        return connection.createStanzaCollectorAndSend(
                         request).nextResultOrThrow();
-        return response;
     }
 
 
@@ -776,7 +770,7 @@ public class Workgroup {
         workgroupForm.setType(IQ.Type.get);
         workgroupForm.setTo(workgroupJID);
 
-        WorkgroupForm response = (WorkgroupForm) connection.createStanzaCollectorAndSend(
+        WorkgroupForm response = connection.createStanzaCollectorAndSend(
                         workgroupForm).nextResultOrThrow();
         return Form.getFormFrom(response);
     }

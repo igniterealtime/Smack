@@ -98,5 +98,6 @@ public class JingleUtilTest extends SmackTestSuite {
                         "</content>" +
                     "</jingle>" +
                 "</iq>";
+        // TODO: Finish test
     }
 }

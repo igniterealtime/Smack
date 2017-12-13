@@ -24,8 +24,8 @@ package org.jivesoftware.smackx.commands;
  */
 public class AdHocCommandNote {
 
-    private Type type;
-    private String value;
+    private final Type type;
+    private final String value;
 
     /**
      * Creates a new adhoc command note with the specified type and value.

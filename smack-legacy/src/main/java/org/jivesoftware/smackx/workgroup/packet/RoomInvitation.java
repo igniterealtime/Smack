@@ -133,7 +133,7 @@ public class RoomInvitation implements ExtensionElement {
     /**
      * Type of entity being invited to a groupchat support session.
      */
-    public static enum Type {
+    public enum Type {
         /**
          * A user is being invited to a groupchat support session. The user could be another agent
          * or just a regular XMPP user.

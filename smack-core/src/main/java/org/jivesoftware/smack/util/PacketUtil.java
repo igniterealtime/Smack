@@ -32,7 +32,7 @@ public class PacketUtil {
      * @deprecated use {@link #extensionElementFrom(Collection, String, String)} instead
      */
     @Deprecated
-    public static <PE extends ExtensionElement> PE packetExtensionfromCollection(
+    public static <PE extends ExtensionElement> PE packetExtensionFromCollection(
                     Collection<ExtensionElement> collection, String element,
                     String namespace) {
         return extensionElementFrom(collection, element, namespace);

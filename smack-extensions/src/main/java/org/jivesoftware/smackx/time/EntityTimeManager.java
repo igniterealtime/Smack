@@ -39,7 +39,7 @@ import org.jxmpp.jid.Jid;
 
 public final class EntityTimeManager extends Manager {
 
-    private static final Map<XMPPConnection, EntityTimeManager> INSTANCES = new WeakHashMap<XMPPConnection, EntityTimeManager>();
+    private static final Map<XMPPConnection, EntityTimeManager> INSTANCES = new WeakHashMap<>();
 
     private static boolean autoEnable = true;
 
@@ -113,7 +113,6 @@ public final class EntityTimeManager extends Manager {
         Time request = new Time();
         // TODO Add Time(Jid) constructor and use this constructor instead
         request.setTo(jid);
-        Time response = (Time) connection().createStanzaCollectorAndSend(request).nextResultOrThrow();
-        return response;
+        return connection().createStanzaCollectorAndSend(request).nextResultOrThrow();
     }
 }

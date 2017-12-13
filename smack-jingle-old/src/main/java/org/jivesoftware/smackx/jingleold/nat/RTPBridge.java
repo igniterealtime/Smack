@@ -213,7 +213,7 @@ public class RTPBridge extends IQ {
     /**
      * Get Side A receive port.
      *
-     * @return the side A receive prot
+     * @return the side A receive port
      */
     public int getPortA() {
         return portA;

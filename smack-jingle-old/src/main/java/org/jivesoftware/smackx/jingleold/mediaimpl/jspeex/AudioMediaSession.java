@@ -41,8 +41,8 @@ import mil.jfcom.cie.media.srtp.packetizer.SpeexFormat;
 
 /**
  * This Class implements a complete JingleMediaSession.
- * It sould be used to transmit and receive audio captured from the Mic.
- * This Class should be automaticly controlled by JingleSession.
+ * It should be used to transmit and receive audio captured from the Mic.
+ * This Class should be automatically controlled by JingleSession.
  * But you could also use in any VOIP application.
  * For better NAT Traversal support this implementation don't support only receive or only transmit.
  * To receive you MUST transmit. So the only implemented and functionally methods are startTransmit() and stopTransmit()
@@ -157,7 +157,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
      * Starts transmission and for NAT Traversal reasons start receiving also.
      */
     @Override
-    public void startTrasmit() {
+    public void startTransmit() {
         try {
             LOGGER.fine("start");
             mediaSession.start(true);
@@ -169,13 +169,13 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
     }
 
     /**
-     * Set transmit activity. If the active is true, the instance should trasmit.
+     * Set transmit activity. If the active is true, the instance should transmit.
      * If it is set to false, the instance should pause transmit.
      *
      * @param active active state
      */
     @Override
-    public void setTrasmit(boolean active) {
+    public void setTransmit(boolean active) {
         // Do nothing
     }
 
@@ -191,7 +191,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
      * Stops transmission and for NAT Traversal reasons stop receiving also.
      */
     @Override
-    public void stopTrasmit() {
+    public void stopTransmit() {
         if (mediaSession != null)
             mediaSession.close();
     }

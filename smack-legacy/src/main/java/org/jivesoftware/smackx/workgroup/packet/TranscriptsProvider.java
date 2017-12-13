@@ -48,7 +48,7 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
     @Override
     public Transcripts parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         Jid userID = ParserUtils.getJidAttribute(parser, "userID");
-        List<Transcripts.TranscriptSummary> summaries = new ArrayList<Transcripts.TranscriptSummary>();
+        List<Transcripts.TranscriptSummary> summaries = new ArrayList<>();
 
         boolean done = false;
         while (!done) {
@@ -73,7 +73,7 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
         String sessionID =  parser.getAttributeValue("", "sessionID");
         Date joinTime = null;
         Date leftTime = null;
-        List<Transcripts.AgentDetail> agents = new ArrayList<Transcripts.AgentDetail>();
+        List<Transcripts.AgentDetail> agents = new ArrayList<>();
 
         boolean done = false;
         while (!done) {
@@ -108,7 +108,7 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
     }
 
     private List<Transcripts.AgentDetail> parseAgents(XmlPullParser parser) throws IOException, XmlPullParserException {
-        List<Transcripts.AgentDetail> agents = new ArrayList<Transcripts.AgentDetail>();
+        List<Transcripts.AgentDetail> agents = new ArrayList<>();
         String agentJID =  null;
         Date joinTime = null;
         Date leftTime = null;

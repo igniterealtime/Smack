@@ -21,12 +21,11 @@ import java.util.Locale;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 /**
- * The types of forms supported by the pubsub specification.
+ * The types of forms supported by the PubSub specification.
  * 
  * @author Robin Collier
  */
-public enum FormNodeType
-{
+public enum FormNodeType {
     /** Form for configuring an existing node. */
     CONFIGURE_OWNER,
 

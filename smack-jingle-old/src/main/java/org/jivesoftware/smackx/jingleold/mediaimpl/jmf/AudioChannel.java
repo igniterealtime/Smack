@@ -63,7 +63,7 @@ import org.jivesoftware.smackx.jingleold.media.JingleMediaSession;
  * Receiving
  * portB ---> portA
  * <p/>
- * <i>Transmit and Receive are interdependents. To receive you MUST trasmit. </i>
+ * <i>Transmit and Receive are interdependence. To receive you MUST transmit. </i>
  *
  * @author Thiago Camargo
  */
@@ -83,7 +83,7 @@ public class AudioChannel {
     private DataSource dataOutput = null;
     private AudioReceiver audioReceiver;
 
-    private List<SendStream> sendStreams = new ArrayList<SendStream>();
+    private List<SendStream> sendStreams = new ArrayList<>();
 
     private JingleMediaSession jingleMediaSession;
 
@@ -220,7 +220,7 @@ public class AudioChannel {
         // Get the tracks from the processor
         TrackControl[] tracks = processor.getTrackControls();
 
-        // Do we have atleast one track?
+        // Do we have at least one track?
         if (tracks == null || tracks.length < 1) {
             return "Couldn't find tracks in processor";
         }
@@ -404,7 +404,7 @@ public class AudioChannel {
     }
 
     /**
-     * Set transmit activity. If the active is true, the instance should trasmit.
+     * Set transmit activity. If the active is true, the instance should transmit.
      * If it is set to false, the instance should pause transmit.
      *
      * @param active active state

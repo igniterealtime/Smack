@@ -45,6 +45,6 @@ public interface BytestreamListener {
      * 
      * @param request the incoming bytestream request
      */
-    public void incomingBytestreamRequest(BytestreamRequest request);
+    void incomingBytestreamRequest(BytestreamRequest request);
 
 }

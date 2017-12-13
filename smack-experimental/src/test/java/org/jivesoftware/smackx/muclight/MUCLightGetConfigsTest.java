@@ -30,15 +30,15 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class MUCLightGetConfigsTest {
 
-    String getConfigsIQExample = "<iq to='coven@muclight.shakespeare.lit' id='config0' type='get'>"
+    private static final String getConfigsIQExample = "<iq to='coven@muclight.shakespeare.lit' id='config0' type='get'>"
             + "<query xmlns='urn:xmpp:muclight:0#configuration'>" + "<version>abcdefg</version>" + "</query>" + "</iq>";
 
-    String getConfigsResponseExample = "<iq from='coven@muclight.shakespeare.lit' id='getconfig1' "
+    private static final String getConfigsResponseExample = "<iq from='coven@muclight.shakespeare.lit' id='getconfig1' "
             + "to='crone1@shakespeare.lit/desktop' type='result'>" + "<query xmlns='urn:xmpp:muclight:0#configuration'>"
             + "<version>123456</version>" + "<roomname>A Dark Cave</roomname>" + "<subject>A subject</subject>"
             + "</query>" + "</iq>";
 
-    String getConfigsResponseExampleWithCustomConfigs = "<iq from='coven@muclight.shakespeare.lit' id='getconfig2' "
+    private static final String getConfigsResponseExampleWithCustomConfigs = "<iq from='coven@muclight.shakespeare.lit' id='getconfig2' "
             + "to='crone1@shakespeare.lit/desktop' type='result'>" + "<query xmlns='urn:xmpp:muclight:0#configuration'>"
             + "<version>123456</version>" + "<roomname>A Dark Cave</roomname>" + "<color>blue</color>"
             + "<size>20</size>" + "</query>" + "</iq>";
@@ -53,7 +53,7 @@ public class MUCLightGetConfigsTest {
 
     @Test
     public void checkGetConfigsResponse() throws Exception {
-        IQ iqInfoResult = (IQ) PacketParserUtils.parseStanza(getConfigsResponseExample);
+        IQ iqInfoResult = PacketParserUtils.parseStanza(getConfigsResponseExample);
         MUCLightConfigurationIQ mucLightConfigurationIQ = (MUCLightConfigurationIQ) iqInfoResult;
 
         Assert.assertEquals("123456", mucLightConfigurationIQ.getVersion());
@@ -64,7 +64,7 @@ public class MUCLightGetConfigsTest {
 
     @Test
     public void checkGetConfigsResponseWithCustomConfigs() throws Exception {
-        IQ iqInfoResult = (IQ) PacketParserUtils.parseStanza(getConfigsResponseExampleWithCustomConfigs);
+        IQ iqInfoResult = PacketParserUtils.parseStanza(getConfigsResponseExampleWithCustomConfigs);
         MUCLightConfigurationIQ mucLightConfigurationIQ = (MUCLightConfigurationIQ) iqInfoResult;
 
         Assert.assertEquals("123456", mucLightConfigurationIQ.getVersion());

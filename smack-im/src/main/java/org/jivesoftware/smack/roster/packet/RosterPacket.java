@@ -44,7 +44,7 @@ public class RosterPacket extends IQ {
     public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "jabber:iq:roster";
 
-    private final List<Item> rosterItems = new ArrayList<Item>();
+    private final List<Item> rosterItems = new ArrayList<>();
     private String rosterVersion;
 
     public RosterPacket() {
@@ -80,7 +80,7 @@ public class RosterPacket extends IQ {
      */
     public List<Item> getRosterItems() {
         synchronized (rosterItems) {
-            return new ArrayList<Item>(rosterItems);
+            return new ArrayList<>(rosterItems);
         }
     }
 
@@ -153,7 +153,7 @@ public class RosterPacket extends IQ {
             this.jid = Objects.requireNonNull(jid);
             this.name = name;
             this.subscriptionPending = subscriptionPending;
-            groupNames = new CopyOnWriteArraySet<String>();
+            groupNames = new CopyOnWriteArraySet<>();
         }
 
         @Override
@@ -341,7 +341,7 @@ public class RosterPacket extends IQ {
 
     }
 
-    public static enum ItemType {
+    public enum ItemType {
 
         /**
          * The user does not have a subscription to the contact's presence, and the contact does not
@@ -379,7 +379,7 @@ public class RosterPacket extends IQ {
 
         private final String symbol;
 
-        private ItemType(char secondSymbolChar) {
+        ItemType(char secondSymbolChar) {
             StringBuilder sb = new StringBuilder(2);
             sb.append(ME).append(secondSymbolChar);
             symbol = sb.toString();

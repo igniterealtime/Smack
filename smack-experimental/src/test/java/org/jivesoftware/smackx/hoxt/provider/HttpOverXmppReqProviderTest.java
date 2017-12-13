@@ -72,7 +72,6 @@ public class HttpOverXmppReqProviderTest {
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
         IQ iq = provider.parse(parser);
         assertTrue(iq instanceof HttpOverXmppReq);
-        HttpOverXmppReq castedIq = (HttpOverXmppReq) iq;
-        return castedIq;
+        return  (HttpOverXmppReq) iq;
     }
 }

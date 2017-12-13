@@ -44,6 +44,6 @@ public interface BundleAndDeferCallback {
      * @param bundleAndDefer used to premature abort bundle and defer.
      * @return the bundle and defer period in milliseconds.
      */
-    public int getBundleAndDeferMillis(BundleAndDefer bundleAndDefer);
+    int getBundleAndDeferMillis(BundleAndDefer bundleAndDefer);
 
 }

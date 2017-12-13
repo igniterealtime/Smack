@@ -78,7 +78,7 @@ class HTTPProxySocketConnection implements ProxySocketConnection {
             got.append(c);
             if (got.length() > 1024)
             {
-                throw new ProxyException(ProxyInfo.ProxyType.HTTP, "Recieved " +
+                throw new ProxyException(ProxyInfo.ProxyType.HTTP, "Received " +
                     "header of >1024 characters from "
                     + proxyhost + ", cancelling connection");
             }

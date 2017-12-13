@@ -37,7 +37,7 @@ public interface Verification<T extends Stanza, S extends Stanza> {
      * Verifies that the "To" field of the request corresponds with the "From" field of
      * the response.
      */
-    public static Verification<Stanza, Stanza> correspondingSenderReceiver = new Verification<Stanza, Stanza>() {
+    Verification<Stanza, Stanza> correspondingSenderReceiver = new Verification<Stanza, Stanza>() {
 
         @Override
         public void verify(Stanza request, Stanza response) {
@@ -49,7 +49,7 @@ public interface Verification<T extends Stanza, S extends Stanza> {
     /**
      * Verifies that the type of the request is a GET.
      */
-    public static Verification<IQ, Stanza> requestTypeGET = new Verification<IQ, Stanza>() {
+    Verification<IQ, Stanza> requestTypeGET = new Verification<IQ, Stanza>() {
 
         @Override
         public void verify(IQ request, Stanza response) {
@@ -61,7 +61,7 @@ public interface Verification<T extends Stanza, S extends Stanza> {
     /**
      * Verifies that the type of the request is a SET.
      */
-    public static Verification<IQ, Stanza> requestTypeSET = new Verification<IQ, Stanza>() {
+    Verification<IQ, Stanza> requestTypeSET = new Verification<IQ, Stanza>() {
 
         @Override
         public void verify(IQ request, Stanza response) {
@@ -73,7 +73,7 @@ public interface Verification<T extends Stanza, S extends Stanza> {
     /**
      * Verifies that the type of the request is a RESULT.
      */
-    public static Verification<IQ, Stanza> requestTypeRESULT = new Verification<IQ, Stanza>() {
+    Verification<IQ, Stanza> requestTypeRESULT = new Verification<IQ, Stanza>() {
 
         @Override
         public void verify(IQ request, Stanza response) {
@@ -85,7 +85,7 @@ public interface Verification<T extends Stanza, S extends Stanza> {
     /**
      * Verifies that the type of the request is an ERROR.
      */
-    public static Verification<IQ, Stanza> requestTypeERROR = new Verification<IQ, Stanza>() {
+    Verification<IQ, Stanza> requestTypeERROR = new Verification<IQ, Stanza>() {
 
         @Override
         public void verify(IQ request, Stanza response) {
@@ -100,6 +100,6 @@ public interface Verification<T extends Stanza, S extends Stanza> {
      * @param request the request collected by the mocked XMPP connection
      * @param response the response added to the protocol instance
      */
-    public void verify(T request, S response);
+    void verify(T request, S response);
 
 }

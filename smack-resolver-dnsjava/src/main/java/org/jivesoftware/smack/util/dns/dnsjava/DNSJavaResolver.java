@@ -39,7 +39,7 @@ import org.xbill.DNS.Type;
  */
 public class DNSJavaResolver extends DNSResolver implements SmackInitializer {
 
-    private static DNSJavaResolver instance = new DNSJavaResolver();
+    private static final DNSJavaResolver instance = new DNSJavaResolver();
 
     public static DNSResolver getInstance() {
         return instance;
@@ -51,7 +51,7 @@ public class DNSJavaResolver extends DNSResolver implements SmackInitializer {
 
     @Override
     protected List<SRVRecord> lookupSRVRecords0(String name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
-        List<SRVRecord> res = new ArrayList<SRVRecord>();
+        List<SRVRecord> res = new ArrayList<>();
 
         Lookup lookup;
         try {

@@ -117,7 +117,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
             for (String part : challengeParts) {
                 String[] keyValue = part.split("=", 2);
                 String key = keyValue[0];
-                // RFC 2831 § 7.1 about the formating of the digest-challenge:
+                // RFC 2831 § 7.1 about the formatting of the digest-challenge:
                 // "The full form is "<n>#<m>element" indicating at least <n> and
                 // at most <m> elements, each separated by one or more commas
                 // (",") and OPTIONAL linear white space (LWS)."
@@ -148,7 +148,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
             byte[] a1FirstPart = MD5.bytes(authenticationId + ':' + serviceName + ':'
                             + password);
             cnonce = StringUtils.randomString(32);
-            byte[] a1 = ByteUtils.concact(a1FirstPart, toBytes(':' + nonce + ':' + cnonce));
+            byte[] a1 = ByteUtils.concat(a1FirstPart, toBytes(':' + nonce + ':' + cnonce));
             digestUri = "xmpp/" + serviceName;
             hex_hashed_a1 = StringUtils.encodeHex(MD5.bytes(a1));
             String responseValue = calcResponse(DigestType.ClientResponse);

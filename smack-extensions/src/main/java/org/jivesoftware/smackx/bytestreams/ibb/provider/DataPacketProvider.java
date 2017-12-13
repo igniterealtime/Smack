@@ -40,8 +40,7 @@ public class DataPacketProvider {
         public Data parse(XmlPullParser parser, int initialDepth)
                         throws Exception {
             DataPacketExtension data = packetExtensionProvider.parse(parser);
-            Data iq = new Data(data);
-            return iq;
+            return new Data(data);
         }
     }
 

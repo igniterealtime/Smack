@@ -21,15 +21,15 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 /**
  * Transport resolver Interface .
  */
-public abstract interface TransportResolverListener {
+public interface TransportResolverListener {
     /**
      * Resolver listener.
      */
-    public interface Resolver extends TransportResolverListener {
+    interface Resolver extends TransportResolverListener {
         /**
          * The resolution process has been started.
          */
-        public void init();
+        void init();
 
         /**
          * A transport candidate has been added.
@@ -38,31 +38,31 @@ public abstract interface TransportResolverListener {
          * @throws NotConnectedException 
          * @throws InterruptedException 
          */
-        public void candidateAdded(TransportCandidate cand) throws NotConnectedException, InterruptedException;
+        void candidateAdded(TransportCandidate cand) throws NotConnectedException, InterruptedException;
 
         /**
          * All the transport candidates have been obtained.
          */
-        public void end();
+        void end();
     }
 
     /**
      * Resolver checker.
      */
-    public interface Checker extends TransportResolverListener {
+    interface Checker extends TransportResolverListener {
         /**
          * A transport candidate has been checked.
          *
          * @param cand The transport candidate that has been checked.
          * @param result True if the candidate is usable.
          */
-        public void candidateChecked(TransportCandidate cand, boolean result);
+        void candidateChecked(TransportCandidate cand, boolean result);
 
         /**
          * A transport candidate is being checked.
          *
          * @param cand The transport candidate that is being checked.
          */
-        public void candidateChecking(TransportCandidate cand);
+        void candidateChecking(TransportCandidate cand);
     }
 }

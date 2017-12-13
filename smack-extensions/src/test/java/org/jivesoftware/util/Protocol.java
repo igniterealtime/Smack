@@ -94,16 +94,16 @@ public class Protocol {
     public boolean printProtocol = false;
 
     // responses to requests are taken form this queue
-    Queue<Stanza> responses = new LinkedList<Stanza>();
+    private final Queue<Stanza> responses = new LinkedList<>();
 
     // list of verifications
-    List<Verification<?, ?>[]> verificationList = new ArrayList<Verification<?, ?>[]>();
+    private final List<Verification<?, ?>[]> verificationList = new ArrayList<>();
 
     // list of requests
-    List<Stanza> requests = new ArrayList<Stanza>();
+    private final List<Stanza> requests = new ArrayList<>();
 
     // list of all responses
-    List<Stanza> responsesList = new ArrayList<Stanza>();
+    private final List<Stanza> responsesList = new ArrayList<>();
 
     /**
      * Adds a responses and all verifications for the request/response pair to

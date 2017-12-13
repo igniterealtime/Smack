@@ -45,7 +45,7 @@ public class ListenerEventDispatcher implements Runnable {
     public ListenerEventDispatcher () {
         super();
 
-        this.triplets = new ArrayList<TripletContainer>();
+        this.triplets = new ArrayList<>();
 
         this.hasFinishedDispatching = false;
         this.isRunning = false;
@@ -86,7 +86,7 @@ public class ListenerEventDispatcher implements Runnable {
 
     @Override
     public void run() {
-        ListIterator<TripletContainer> li = null;
+        ListIterator<TripletContainer> li;
 
         this.isRunning = true;
 

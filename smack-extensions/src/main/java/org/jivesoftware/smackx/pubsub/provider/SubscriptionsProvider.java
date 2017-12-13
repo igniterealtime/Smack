@@ -26,7 +26,7 @@ import org.jivesoftware.smackx.pubsub.Subscription;
 import org.jivesoftware.smackx.pubsub.SubscriptionsExtension;
 
 /**
- * Parses the <b>subscriptions</b> element out of the pubsub IQ message from 
+ * Parses the <b>subscriptions</b> element out of the PubSub IQ message from
  * the server as specified in the <a href="http://xmpp.org/extensions/xep-0060.html#schemas-pubsub">subscriptions schema</a>.
  * 
  * @author Robin Collier

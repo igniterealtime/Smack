@@ -34,7 +34,7 @@ public interface ReconnectionListener {
      *
      * @param seconds remaining seconds before attempting a reconnection.
      */
-    public void reconnectingIn(int seconds);
+    void reconnectingIn(int seconds);
 
     /**
      * An attempt to connect to the server has failed. The connection will keep trying reconnecting to the server in a
@@ -46,5 +46,5 @@ public interface ReconnectionListener {
      *
      * @param e the exception that caused the reconnection to fail.
      */
-    public void reconnectionFailed(Exception e);
+    void reconnectionFailed(Exception e);
 }

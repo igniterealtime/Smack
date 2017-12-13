@@ -82,7 +82,7 @@ public class MultiUserChatLight {
      * Same as {@link #fromRoomFilter} together with
      * {@link MessageTypeFilter#GROUPCHAT}.
      */
-    private final StanzaFilter fromRoomGroupchatFilter;
+    private final StanzaFilter fromRoomGroupChatFilter;
 
     private final StanzaListener messageListener;
 
@@ -93,7 +93,7 @@ public class MultiUserChatLight {
         this.room = room;
 
         fromRoomFilter = FromMatchesFilter.create(room);
-        fromRoomGroupchatFilter = new AndFilter(fromRoomFilter, MessageTypeFilter.GROUPCHAT);
+        fromRoomGroupChatFilter = new AndFilter(fromRoomFilter, MessageTypeFilter.GROUPCHAT);
 
         messageListener = new StanzaListener() {
             @Override
@@ -105,7 +105,7 @@ public class MultiUserChatLight {
             }
         };
 
-        connection.addSyncStanzaListener(messageListener, fromRoomGroupchatFilter);
+        connection.addSyncStanzaListener(messageListener, fromRoomGroupChatFilter);
     }
 
     /**
@@ -266,7 +266,7 @@ public class MultiUserChatLight {
             throws Exception {
         MUCLightCreateIQ createMUCLightIQ = new MUCLightCreateIQ(room, roomName, occupants);
 
-        messageCollector = connection.createStanzaCollector(fromRoomGroupchatFilter);
+        messageCollector = connection.createStanzaCollector(fromRoomGroupChatFilter);
 
         try {
             connection.createStanzaCollectorAndSend(createMUCLightIQ).nextResultOrThrow();

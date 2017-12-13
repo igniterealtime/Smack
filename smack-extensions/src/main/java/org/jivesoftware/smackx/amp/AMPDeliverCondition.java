@@ -43,7 +43,7 @@ public class AMPDeliverCondition implements AMPExtension.Condition {
     private final Value value;
 
     /**
-     * Create new amp deliver condition with value setted to one of defined by XEP-0079.
+     * Create new amp deliver condition with value set to one of defined by XEP-0079.
      * See http://xmpp.org/extensions/xep-0079.html#conditions-def-deliver
      * @param value AMPDeliveryCondition.Value instance that will be used as value parameter. Can't be null.
      */
@@ -67,7 +67,7 @@ public class AMPDeliverCondition implements AMPExtension.Condition {
      * Value for amp deliver condition as defined by XEP-0079.
      * See http://xmpp.org/extensions/xep-0079.html#conditions-def-deliver
      */
-    public static enum Value {
+    public enum Value {
         /**
          * The message would be immediately delivered to the intended recipient or routed to the next hop.
          */

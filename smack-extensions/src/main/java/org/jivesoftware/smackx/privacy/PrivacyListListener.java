@@ -36,13 +36,13 @@ public interface PrivacyListListener {
      * @param listName the name of the new or updated privacy list.
      * @param listItem the PrivacyItems that rules the list.
      */
-    public void setPrivacyList(String listName, List<PrivacyItem> listItem);
+    void setPrivacyList(String listName, List<PrivacyItem> listItem);
 
     /**
      * A privacy list has been modified by another. It gets notified.
      *
      * @param listName the name of the updated privacy list.
      */
-    public void updatedPrivacyList(String listName);
+    void updatedPrivacyList(String listName);
 
 }

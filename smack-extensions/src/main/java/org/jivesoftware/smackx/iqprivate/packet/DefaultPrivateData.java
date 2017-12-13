@@ -46,8 +46,8 @@ import java.util.Set;
  */
 public class DefaultPrivateData implements PrivateData {
 
-    private String elementName;
-    private String namespace;
+    private final String elementName;
+    private final String namespace;
     private Map<String, String> map;
 
     /**
@@ -103,7 +103,7 @@ public class DefaultPrivateData implements PrivateData {
      */
     public synchronized Set<String> getNames() {
         if (map == null) {
-            return Collections.<String>emptySet();
+            return Collections.emptySet();
         }
         return Collections.unmodifiableSet(map.keySet());
     }
@@ -129,7 +129,7 @@ public class DefaultPrivateData implements PrivateData {
      */
     public synchronized void setValue(String name, String value) {
         if (map == null) {
-            map = new HashMap<String,String>();
+            map = new HashMap<>();
         }
         map.put(name, value);
     }

@@ -52,7 +52,7 @@ public class RosterGroup extends Manager {
     RosterGroup(String name, XMPPConnection connection) {
         super(connection);
         this.name = name;
-        entries = new LinkedHashSet<RosterEntry>();
+        entries = new LinkedHashSet<>();
     }
 
     /**
@@ -108,7 +108,7 @@ public class RosterGroup extends Manager {
      */
     public List<RosterEntry> getEntries() {
         synchronized (entries) {
-            return new ArrayList<RosterEntry>(entries);
+            return new ArrayList<>(entries);
         }
     }
 
@@ -200,7 +200,7 @@ public class RosterGroup extends Manager {
      */
     public void removeEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Only remove the entry if it's in the entry list.
-        // Remove the entry locally, if we wait for RosterPacketListenerprocess>>Packet(Packet)
+        // Remove the entry locally, if we wait for RosterPacketListenerProcess>>Packet(Packet)
         // to take place the entry will exist in the group until a packet is received from the 
         // server.
         synchronized (entries) {

@@ -48,7 +48,7 @@ import org.jxmpp.jid.parts.Localpart;
  */
 public final class AccountManager extends Manager {
 
-    private static final Map<XMPPConnection, AccountManager> INSTANCES = new WeakHashMap<XMPPConnection, AccountManager>();
+    private static final Map<XMPPConnection, AccountManager> INSTANCES = new WeakHashMap<>();
 
     /**
      * Returns the AccountManager instance associated with a given XMPPConnection.
@@ -247,7 +247,7 @@ public final class AccountManager extends Manager {
      */
     public void createAccount(Localpart username, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         // Create a map for all the required attributes, but give them blank values.
-        Map<String, String> attributes = new HashMap<String, String>();
+        Map<String, String> attributes = new HashMap<>();
         for (String attributeName : getAccountAttributes()) {
             attributes.put(attributeName, "");
         }
@@ -303,7 +303,7 @@ public final class AccountManager extends Manager {
         if (!connection().isSecureConnection() && !allowSensitiveOperationOverInsecureConnection) {
             throw new IllegalStateException("Changing password over insecure connection.");
         }
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put("username",  connection().getUser().getLocalpart().toString());
         map.put("password",newPassword);
         Registration reg = new Registration(map);
@@ -324,7 +324,7 @@ public final class AccountManager extends Manager {
      * @throws InterruptedException 
      */
     public void deleteAccount() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        Map<String, String> attributes = new HashMap<String, String>();
+        Map<String, String> attributes = new HashMap<>();
         // To delete an account, we add a single attribute, "remove", that is blank.
         attributes.put("remove", "");
         Registration reg = new Registration(attributes);
@@ -369,7 +369,6 @@ public final class AccountManager extends Manager {
     }
 
     private StanzaCollector createStanzaCollectorAndSend(IQ req) throws NotConnectedException, InterruptedException {
-        StanzaCollector collector = connection().createStanzaCollectorAndSend(new StanzaIdFilter(req.getStanzaId()), req);
-        return collector;
+        return connection().createStanzaCollectorAndSend(new StanzaIdFilter(req.getStanzaId()), req);
     }
 }

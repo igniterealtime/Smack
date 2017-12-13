@@ -26,7 +26,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 
 
 /**
- * The NodeInformationProvider is responsible for providing supported indentities, features
+ * The NodeInformationProvider is responsible for providing supported identities, features
  * and hosted items (i.e. DiscoverItems.Item) about a given node. This information will be
  * requested each time this XMPPP client receives a disco info or items requests on the
  * given node. each time this XMPPP client receives a disco info or items requests on the
@@ -56,7 +56,7 @@ public interface NodeInformationProvider {
     List<String> getNodeFeatures();
 
     /**
-     * Returns a list of the indentites defined in the node. For
+     * Returns a list of the identities defined in the node. For
      * example, the x-command protocol must provide an identity of
      * category automation and type command-node for each command.
      *

@@ -96,16 +96,16 @@ public class VCard extends IQ {
      * Phone types:
      * VOICE?, FAX?, PAGER?, MSG?, CELL?, VIDEO?, BBS?, MODEM?, ISDN?, PCS?, PREF?
      */
-    private Map<String, String> homePhones = new HashMap<String, String>();
-    private Map<String, String> workPhones = new HashMap<String, String>();
+    private final Map<String, String> homePhones = new HashMap<>();
+    private final Map<String, String> workPhones = new HashMap<>();
 
     /**
      * Address types:
      * POSTAL?, PARCEL?, (DOM | INTL)?, PREF?, POBOX?, EXTADR?, STREET?, LOCALITY?,
      * REGION?, PCODE?, CTRY?
      */
-    private Map<String, String> homeAddr = new HashMap<String, String>();
-    private Map<String, String> workAddr = new HashMap<String, String>();
+    private final Map<String, String> homeAddr = new HashMap<>();
+    private final Map<String, String> workAddr = new HashMap<>();
 
     private String firstName;
     private String lastName;
@@ -125,10 +125,10 @@ public class VCard extends IQ {
     /**
      * Such as DESC ROLE GEO etc.. see XEP-0054
      */
-    private Map<String, String> otherSimpleFields = new HashMap<String, String>();
+    private final Map<String, String> otherSimpleFields = new HashMap<>();
 
     // fields that, as they are should not be escaped before forwarding to the server
-    private Map<String, String> otherUnescapableFields = new HashMap<String, String>();
+    private final Map<String, String> otherUnescapableFields = new HashMap<>();
 
     public VCard() {
         super(ELEMENT, NAMESPACE);
@@ -156,7 +156,7 @@ public class VCard extends IQ {
     }
 
     /**
-     * Set generic, unescapable VCard field. If unescabale is set to true, XML maybe a part of the
+     * Set generic, unescapable VCard field. If unescapable is set to true, XML maybe a part of the
      * value.
      *
      * @param value         value of field

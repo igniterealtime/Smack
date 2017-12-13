@@ -29,12 +29,12 @@ import org.jxmpp.jid.Jid;
  */
 public class RevokedOffer {
 
-    private Jid userJID;
-    private Jid userID;
-    private Jid workgroupName;
-    private String sessionID;
-    private String reason;
-    private Date timestamp;
+    private final Jid userJID;
+    private final Jid userID;
+    private final Jid workgroupName;
+    private final String sessionID;
+    private final String reason;
+    private final Date timestamp;
 
     /**
      *
@@ -78,7 +78,7 @@ public class RevokedOffer {
     }
 
     /**
-     * Get the sesion id.
+     * Get the session id.
      * @return the session id which will associate all packets for the pending chat
      */
     public String getSessionID() {

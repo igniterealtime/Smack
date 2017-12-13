@@ -99,7 +99,7 @@ public class XHTMLExtension implements ExtensionElement {
      */
     public List<CharSequence> getBodies() {
         synchronized (bodies) {
-            return Collections.unmodifiableList(new ArrayList<CharSequence>(bodies));
+            return Collections.unmodifiableList(new ArrayList<>(bodies));
         }
     }
 

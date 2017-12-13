@@ -34,9 +34,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.util.StringUtils;
-
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 
 /**
@@ -74,16 +72,15 @@ public class Socks5Client {
      * @param timeout timeout to connect to SOCKS5 proxy in milliseconds
      * @return socket the initialized socket
      * @throws IOException if initializing the socket failed due to a network error
-     * @throws XMPPErrorException if establishing connection to SOCKS5 proxy failed
      * @throws TimeoutException if connecting to SOCKS5 proxy timed out
      * @throws InterruptedException if the current thread was interrupted while waiting
-     * @throws SmackException if the connection to the SOC
+     * @throws SmackException if the connection to the SOCKS5 proxy failed
      * @throws XMPPException 
      */
-    public Socket getSocket(int timeout) throws IOException, XMPPErrorException, InterruptedException,
+    public Socket getSocket(int timeout) throws IOException, InterruptedException,
                     TimeoutException, SmackException, XMPPException {
         // wrap connecting in future for timeout
-        FutureTask<Socket> futureTask = new FutureTask<Socket>(new Callable<Socket>() {
+        FutureTask<Socket> futureTask = new FutureTask<>(new Callable<Socket>() {
 
             @Override
             public Socket call() throws IOException, SmackException {
@@ -173,7 +170,7 @@ public class Socks5Client {
 
         // check if server responded with correct version and no-authentication method
         if (response[0] != (byte) 0x05 || response[1] != (byte) 0x00) {
-            throw new SmackException("Remote SOCKS5 server responsed with unexpected version: " + response[0] + ' ' + response[1] + ". Should be 0x05 0x00.");
+            throw new SmackException("Remote SOCKS5 server responded with unexpected version: " + response[0] + ' ' + response[1] + ". Should be 0x05 0x00.");
         }
 
         // request SOCKS5 connection with given address/digest
@@ -188,7 +185,7 @@ public class Socks5Client {
         connectionRequest[1] = (byte) 0x00; // set expected return status to 0
         if (!Arrays.equals(connectionRequest, connectionResponse)) {
             throw new SmackException(
-                            "Connection request does not equal connection reponse. Response: "
+                            "Connection request does not equal connection response. Response: "
                                             + Arrays.toString(connectionResponse) + ". Request: "
                                             + Arrays.toString(connectionRequest));
         }

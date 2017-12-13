@@ -46,19 +46,19 @@ import org.powermock.reflect.Whitebox;
  */
 public class InitiationListenerTest {
 
-    private final int TIMEOUT = 10000;
+    private static final int TIMEOUT = 10000;
 
-    static final EntityFullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
-    static final EntityFullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
-    static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
-    static final DomainBareJid proxyJID = JidTestUtil.MUC_EXAMPLE_ORG;
-    String proxyAddress = "127.0.0.1";
-    String sessionID = "session_id";
+    private static final EntityFullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
+    private static final EntityFullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
+    private static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
+    private static final DomainBareJid proxyJID = JidTestUtil.MUC_EXAMPLE_ORG;
+    private static final String proxyAddress = "127.0.0.1";
+    private static final String sessionID = "session_id";
 
-    XMPPConnection connection;
-    Socks5BytestreamManager byteStreamManager;
-    InitiationListener initiationListener;
-    Bytestream initBytestream;
+    private XMPPConnection connection;
+    private Socks5BytestreamManager byteStreamManager;
+    private InitiationListener initiationListener;
+    private Bytestream initBytestream;
 
     /**
      * Initialize fields used in the tests.

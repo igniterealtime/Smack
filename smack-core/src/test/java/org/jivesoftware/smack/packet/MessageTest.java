@@ -142,7 +142,7 @@ public class MessageTest {
         XmlUnitUtils.assertSimilar(control, message.toXML());
 
         Collection<String> languages = message.getBodyLanguages();
-        List<String> controlLanguages = new ArrayList<String>();
+        List<String> controlLanguages = new ArrayList<>();
         controlLanguages.add(lang2);
         controlLanguages.add(lang3);
         controlLanguages.removeAll(languages);

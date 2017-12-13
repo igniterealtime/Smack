@@ -43,7 +43,7 @@ public class SASLPlainMechanism extends SASLMechanism {
         byte[] authcid = toBytes(authzid + '\u0000' + authenticationId);
         byte[] passw = toBytes('\u0000' + password);
 
-        return ByteUtils.concact(authcid, passw);
+        return ByteUtils.concat(authcid, passw);
     }
 
     @Override

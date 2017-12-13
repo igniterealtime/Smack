@@ -53,8 +53,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 public final class ChatStateManager extends Manager {
     public static final String NAMESPACE = "http://jabber.org/protocol/chatstates";
 
-    private static final Map<XMPPConnection, ChatStateManager> INSTANCES =
-            new WeakHashMap<XMPPConnection, ChatStateManager>();
+    private static final Map<XMPPConnection, ChatStateManager> INSTANCES = new WeakHashMap<>();
 
     private static final StanzaFilter filter = new NotFilter(new StanzaExtensionFilter(NAMESPACE));
 

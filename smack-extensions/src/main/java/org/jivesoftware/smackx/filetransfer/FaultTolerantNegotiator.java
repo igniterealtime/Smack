@@ -65,11 +65,11 @@ public class FaultTolerantNegotiator extends StreamNegotiator {
     @Override
     public InputStream createIncomingStream(final StreamInitiation initiation) throws SmackException, XMPPErrorException, InterruptedException {
         // This could be either an xep47 ibb 'open' iq or an xep65 streamhost iq
-        IQ initationSet = initiateIncomingStream(connection(), initiation);
+        IQ initiationSet = initiateIncomingStream(connection(), initiation);
 
-        StreamNegotiator streamNegotiator = determineNegotiator(initationSet);
+        StreamNegotiator streamNegotiator = determineNegotiator(initiationSet);
 
-        return streamNegotiator.negotiateIncomingStream(initationSet);
+        return streamNegotiator.negotiateIncomingStream(initiationSet);
     }
 
     private StreamNegotiator determineNegotiator(Stanza streamInitiation) {

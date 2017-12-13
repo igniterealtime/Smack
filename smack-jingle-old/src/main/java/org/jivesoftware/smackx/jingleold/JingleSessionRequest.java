@@ -31,7 +31,7 @@ import org.jxmpp.jid.Jid;
  * <p/>
  * This class is a facade of a received Jingle request. The user can have direct
  * access to the Jingle stanza(/packet) (<i>JingleSessionRequest.getJingle() </i>) of
- * the request or can use the convencience methods provided by this class.
+ * the request or can use the convenience methods provided by this class.
  *
  * @author Alvaro Saurin
  */
@@ -46,11 +46,11 @@ public class JingleSessionRequest {
     // request
 
     /**
-     * A recieve request is constructed from the Jingle Initiation request
-     * received from the initator.
+     * A receive request is constructed from the Jingle Initiation request
+     * received from the initiator.
      *
      * @param manager The manager handling this request
-     * @param jingle  The jingle IQ recieved from the initiator.
+     * @param jingle  The jingle IQ received from the initiator.
      */
     public JingleSessionRequest(JingleManager manager, Jingle jingle) {
         this.manager = manager;
@@ -113,7 +113,7 @@ public class JingleSessionRequest {
      * @throws InterruptedException 
      */
     public synchronized JingleSession accept() throws XMPPException, SmackException, InterruptedException {
-        JingleSession session = null;
+        JingleSession session;
         synchronized (manager) {
             session = manager.createIncomingJingleSession(this);
             // Acknowledge the IQ reception
@@ -129,7 +129,7 @@ public class JingleSessionRequest {
      * Rejects the session request.
      */
     public synchronized void reject() {
-        JingleSession session = null;
+        JingleSession session;
         synchronized (manager) {
             try {
                 session = manager.createIncomingJingleSession(this);

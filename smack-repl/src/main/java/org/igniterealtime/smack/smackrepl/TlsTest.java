@@ -96,7 +96,7 @@ public class TlsTest {
         try {
             connection.connect().login();
             if (shouldThrow) {
-                // Test not success, should have throwed on login().
+                // Test not success, should have thrown on login().
                 return false;
             }
         }

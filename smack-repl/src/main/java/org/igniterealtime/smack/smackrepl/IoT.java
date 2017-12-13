@@ -16,7 +16,6 @@
  */
 package org.igniterealtime.smack.smackrepl;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -30,7 +29,6 @@ import org.jivesoftware.smack.roster.RosterUtil;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.StringUtils;
-
 import org.jivesoftware.smackx.iot.IoTDiscoveryIntegrationTest;
 import org.jivesoftware.smackx.iot.Thing;
 import org.jivesoftware.smackx.iot.data.IoTDataManager;
@@ -56,11 +54,11 @@ public class IoT {
     private static final long TIMEOUT = 10 * 60 * 1000;
 
     private interface IotScenario {
-        void iotScenario(XMPPTCPConnection dataThingConnection, XMPPTCPConnection readinThingConnection) throws XMPPException, SmackException, IOException, InterruptedException, TimeoutException, Exception;
+        void iotScenario(XMPPTCPConnection dataThingConnection, XMPPTCPConnection readingThingConnection) throws Exception;
     }
 
     public static void iotScenario(String dataThingJidString, String dataThingPassword, String readingThingJidString,
-            String readingThingPassword, IotScenario scenario) throws TimeoutException, Exception {
+            String readingThingPassword, IotScenario scenario) throws Exception {
         final EntityBareJid dataThingJid = JidCreate.entityBareFrom(dataThingJidString);
         final EntityBareJid readingThingJid = JidCreate.entityBareFrom(readingThingJidString);
 
@@ -112,7 +110,7 @@ public class IoT {
             });
             // Wait until the thing is owned.
             syncPoint.waitForResult(TIMEOUT);
-            printStatus("OWNED - Thing now onwed by " + dataThingState.getOwner());
+            printStatus("OWNED - Thing now owned by " + dataThingState.getOwner());
 
             // Make sure things are befriended.
             IoTProvisioningManager readingThingProvisioningManager = IoTProvisioningManager.getInstanceFor(readingThingConnection);
@@ -159,7 +157,7 @@ public class IoT {
             });
             // Wait until the thing is owned.
             syncPoint.waitForResult(TIMEOUT);
-            printStatus("OWNED - Thing now onwed by " + dataThingState.getOwner());
+            printStatus("OWNED - Thing now owned by " + dataThingState.getOwner());
 
             // Now, ReadingThing sends a friendship request to data thing, which
             // will proxy the request to its provisioning service, which will
@@ -218,7 +216,7 @@ public class IoT {
         // CHECKSTYLE:ON
     }
 
-    public static void main(String[] args) throws TimeoutException, Exception {
+    public static void main(String[] args) throws Exception {
         if (args.length != 4) {
             throw new IllegalArgumentException();
         }

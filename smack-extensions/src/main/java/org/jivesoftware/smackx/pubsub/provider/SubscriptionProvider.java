@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Parses the <b>subscription</b> element out of the pubsub IQ message from 
+ * Parses the <b>subscription</b> element out of the PubSub IQ message from
  * the server as specified in the <a href="http://xmpp.org/extensions/xep-0060.html#schemas-pubsub">subscription schema</a>.
  * 
  * @author Robin Collier

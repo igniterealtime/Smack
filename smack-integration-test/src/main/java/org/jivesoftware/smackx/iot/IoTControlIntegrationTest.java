@@ -57,7 +57,7 @@ public class IoTControlIntegrationTest extends AbstractSmackIntegrationTest {
      */
     @SmackIntegrationTest
     // @SmackSerialIntegrationTest
-    public void controlTest() throws TimeoutException, Exception {
+    public void controlTest() throws Exception {
         final String key = StringUtils.randomString(12);
         final String sn = StringUtils.randomString(12);
         final SimpleResultSyncPoint syncPoint = new SimpleResultSyncPoint();

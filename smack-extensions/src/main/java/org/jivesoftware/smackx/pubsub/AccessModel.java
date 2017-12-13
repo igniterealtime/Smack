@@ -17,8 +17,8 @@
 package org.jivesoftware.smackx.pubsub;
 
 /**
- * This enumeration represents the access models for the pubsub node
- * as defined in the pubsub specification section <a href="http://xmpp.org/extensions/xep-0060.html#registrar-formtypes-config">16.4.3</a>.
+ * This enumeration represents the access models for the PubSub node
+ * as defined in the PubSub specification section <a href="http://xmpp.org/extensions/xep-0060.html#registrar-formtypes-config">16.4.3</a>.
  * 
  * @author Robin Collier
  */

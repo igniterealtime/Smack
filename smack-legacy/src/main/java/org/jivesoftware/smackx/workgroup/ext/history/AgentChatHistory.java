@@ -49,7 +49,7 @@ public class AgentChatHistory extends IQ {
     private int maxSessions;
     private long startDate;
 
-    private List<AgentChatSession> agentChatSessions = new ArrayList<AgentChatSession>();
+    private final List<AgentChatSession> agentChatSessions = new ArrayList<>();
 
     public AgentChatHistory(String agentJID, int maxSessions, Date startDate) {
         this();

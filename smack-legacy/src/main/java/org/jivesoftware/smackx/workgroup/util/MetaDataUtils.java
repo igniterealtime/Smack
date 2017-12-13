@@ -20,12 +20,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.util.StringUtils;
-
 import org.jivesoftware.smackx.workgroup.MetaData;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -54,7 +52,7 @@ public class MetaDataUtils {
         if ((eventType == XmlPullParser.START_TAG)
                 && parser.getName().equals(MetaData.ELEMENT_NAME)
                 && parser.getNamespace().equals(MetaData.NAMESPACE)) {
-            Map<String, List<String>> metaData = new Hashtable<String, List<String>>();
+            Map<String, List<String>> metaData = new Hashtable<>();
 
             eventType = parser.nextTag();
 
@@ -69,7 +67,7 @@ public class MetaDataUtils {
                     values.add(value);
                 }
                 else {
-                    List<String> values = new ArrayList<String>();
+                    List<String> values = new ArrayList<>();
                     values.add(value);
                     metaData.put(name, values);
                 }
@@ -93,11 +91,9 @@ public class MetaDataUtils {
         StringBuilder buf = new StringBuilder();
         if (metaData != null && metaData.size() > 0) {
             buf.append("<metadata xmlns=\"http://jivesoftware.com/protocol/workgroup\">");
-            for (Iterator<String> i = metaData.keySet().iterator(); i.hasNext();) {
-                String key = i.next();
+            for (String key : metaData.keySet()) {
                 List<String> value = metaData.get(key);
-                for (Iterator<String> it = value.iterator(); it.hasNext();) {
-                    String v = it.next();
+                for (String v : value) {
                     buf.append("<value name=\"").append(key).append("\">");
                     buf.append(StringUtils.escapeForXmlText(v));
                     buf.append("</value>");

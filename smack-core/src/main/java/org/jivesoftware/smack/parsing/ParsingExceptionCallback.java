@@ -39,6 +39,6 @@ public interface ParsingExceptionCallback {
      * @param stanzaData the raw stanza data that caused the exception
      * @throws Exception
      */
-    public void handleUnparsableStanza(UnparseableStanza stanzaData) throws Exception;
+    void handleUnparsableStanza(UnparseableStanza stanzaData) throws Exception;
 
 }

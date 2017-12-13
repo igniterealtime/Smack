@@ -49,7 +49,7 @@ public class PrivacyProviderTest extends InitExtensions {
           + "</query>"
           + "</iq>";
         // @formatter:on
-        IQ iqPrivacyList = (IQ) PacketParserUtils.parseStanza(xmlPrivacyList);
+        IQ iqPrivacyList = PacketParserUtils.parseStanza(xmlPrivacyList);
         assertTrue(iqPrivacyList instanceof Privacy);
 
         Privacy privacyList = (Privacy) iqPrivacyList;
@@ -85,7 +85,7 @@ public class PrivacyProviderTest extends InitExtensions {
           + "</query>"
           + "</iq>";
         // @formatter:on
-        IQ iqPrivacyList = (IQ) PacketParserUtils.parseStanza(xmlPrivacyList);
+        IQ iqPrivacyList = PacketParserUtils.parseStanza(xmlPrivacyList);
         assertTrue(iqPrivacyList instanceof Privacy);
 
         Privacy privacyList = (Privacy) iqPrivacyList;

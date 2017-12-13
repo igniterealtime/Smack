@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.receipts;
 
-import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
+import static org.jivesoftware.smack.test.util.CharSequenceEquals.equalsCharSequence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -61,8 +61,7 @@ public class DeliveryReceiptTest extends InitExtensions {
         parser = PacketParserUtils.getParserFor(control);
         Message p = PacketParserUtils.parseMessage(parser);
 
-        DeliveryReceiptRequest drr = (DeliveryReceiptRequest) p.getExtension(
-                        DeliveryReceiptRequest.ELEMENT, DeliveryReceipt.NAMESPACE);
+        DeliveryReceiptRequest drr = p.getExtension(DeliveryReceiptRequest.ELEMENT, DeliveryReceipt.NAMESPACE);
         assertNotNull(drr);
 
         assertTrue(DeliveryReceiptManager.hasDeliveryReceiptRequest(p));
