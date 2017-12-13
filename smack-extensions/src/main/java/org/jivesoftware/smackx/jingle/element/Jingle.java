@@ -94,7 +94,7 @@ public final class Jingle extends IQ {
 
     /**
      * Get the responder. The responder is the full JID of the entity that has replied to the initiation (which may be
-     * different to the "to" addresss in the IQ).
+     * different to the "to" address in the IQ).
      *
      * @return the responder
      */

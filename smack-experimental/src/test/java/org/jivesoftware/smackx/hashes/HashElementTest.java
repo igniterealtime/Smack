@@ -49,8 +49,6 @@ public class HashElementTest extends SmackTestSuite {
         assertEquals("f4OxZX/x/FO5LcGBSKHWXfwtSx+j1ncoSt3SABJtkGk=", parsed.getHashB64());
         assertArrayEquals(HashManager.sha_256(message), parsed.getHash());
 
-        assertFalse(parsed.equals(expected));
-        assertFalse(parsed.equals(null));
         assertEquals(element, parsed);
         assertTrue(element.equals(parsed));
 

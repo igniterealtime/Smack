@@ -182,7 +182,7 @@ public class IncomingFileTransfer extends FileTransfer {
         final StreamNegotiator streamNegotiator = negotiator
                 .selectStreamNegotiator(receiveRequest);
         setStatus(Status.negotiating_stream);
-        FutureTask<InputStream> streamNegotiatorTask = new FutureTask<InputStream>(
+        FutureTask<InputStream> streamNegotiatorTask = new FutureTask<>(
                 new Callable<InputStream>() {
 
                     @Override

@@ -18,6 +18,6 @@ package org.jivesoftware.smack.util;
 
 public interface ExceptionCallback<E> {
 
-    public void processException(E exception);
+    void processException(E exception);
 
 }

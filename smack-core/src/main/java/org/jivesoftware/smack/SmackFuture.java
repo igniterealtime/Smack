@@ -84,7 +84,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
         return this;
     }
 
-    private final V getOrThrowExecutionException() throws ExecutionException {
+    private V getOrThrowExecutionException() throws ExecutionException {
         assert (result != null || exception != null || cancelled);
         if (result != null) {
             return result;

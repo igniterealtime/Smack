@@ -46,14 +46,14 @@ public interface BytestreamManager {
      * 
      * @param listener the listener to register
      */
-    public void addIncomingBytestreamListener(BytestreamListener listener);
+    void addIncomingBytestreamListener(BytestreamListener listener);
 
     /**
      * Removes the given listener from the list of listeners for all incoming bytestream requests.
      * 
      * @param listener the listener to remove
      */
-    public void removeIncomingBytestreamListener(BytestreamListener listener);
+    void removeIncomingBytestreamListener(BytestreamListener listener);
 
     /**
      * Adds {@link BytestreamListener} that is called for every incoming bytestream request unless
@@ -68,14 +68,14 @@ public interface BytestreamManager {
      * @param listener the listener to register
      * @param initiatorJID the JID of the user that wants to establish a bytestream
      */
-    public void addIncomingBytestreamListener(BytestreamListener listener, Jid initiatorJID);
+    void addIncomingBytestreamListener(BytestreamListener listener, Jid initiatorJID);
 
     /**
      * Removes the listener for the given user.
      * 
      * @param initiatorJID the JID of the user the listener should be removed
      */
-    public void removeIncomingBytestreamListener(Jid initiatorJID);
+    void removeIncomingBytestreamListener(Jid initiatorJID);
 
     /**
      * Establishes a bytestream with the given user and returns the session to send/receive data
@@ -97,7 +97,7 @@ public interface BytestreamManager {
      * @throws InterruptedException if the thread was interrupted while waiting in a blocking
      *         operation
      */
-    public BytestreamSession establishSession(Jid targetJID) throws XMPPException, IOException,
+    BytestreamSession establishSession(Jid targetJID) throws XMPPException, IOException,
                     InterruptedException, SmackException;
 
     /**
@@ -115,7 +115,7 @@ public interface BytestreamManager {
      * @throws InterruptedException if the thread was interrupted while waiting in a blocking
      *         operation
      */
-    public BytestreamSession establishSession(Jid targetJID, String sessionID)
+    BytestreamSession establishSession(Jid targetJID, String sessionID)
                     throws XMPPException, IOException, InterruptedException, SmackException;
 
 }

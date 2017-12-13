@@ -113,7 +113,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * and reconnection events.
      */
     protected final Set<ConnectionListener> connectionListeners =
-            new CopyOnWriteArraySet<ConnectionListener>();
+            new CopyOnWriteArraySet<>();
 
     /**
      * A collection of StanzaCollectors which collects packets for a specified filter
@@ -142,7 +142,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * List of PacketListeners that will be notified when a new stanza(/packet) was sent.
      */
     private final Map<StanzaListener, ListenerWrapper> sendListeners =
-            new HashMap<StanzaListener, ListenerWrapper>();
+            new HashMap<>();
 
     /**
      * List of PacketListeners that will be notified when a new stanza(/packet) is about to be
@@ -150,11 +150,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * actually sent to the server.
      */
     private final Map<StanzaListener, InterceptorWrapper> interceptors =
-            new HashMap<StanzaListener, InterceptorWrapper>();
+            new HashMap<>();
 
     protected final Lock connectionLock = new ReentrantLock();
 
-    protected final Map<String, ExtensionElement> streamFeatures = new HashMap<String, ExtensionElement>();
+    protected final Map<String, ExtensionElement> streamFeatures = new HashMap<>();
 
     /**
      * The full JID of the authenticated user, as returned by the resource binding response of the server.
@@ -533,7 +533,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
 
         if (!hasFeature(Bind.ELEMENT, Bind.NAMESPACE)) {
-            // Server never offered resource binding, which is REQURIED in XMPP client and
+            // Server never offered resource binding, which is REQUIRED in XMPP client and
             // server implementations as per RFC6120 7.2
             throw new ResourceBindingNotOfferedException();
         }
@@ -592,7 +592,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     /**
      * Get the name of the SASL mechanism that was used to authenticate this connection. This returns the name of
-     * mechanism which was used the last time this conneciton was authenticated, and will return <code>null</code> if
+     * mechanism which was used the last time this connection was authenticated, and will return <code>null</code> if
      * this connection was not authenticated before.
      * 
      * @return the name of the used SASL mechanism.
@@ -621,7 +621,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             hostAddresses.add(hostAddress);
         }
         else if (config.host != null) {
-            hostAddresses = new ArrayList<HostAddress>(1);
+            hostAddresses = new ArrayList<>(1);
             HostAddress hostAddress = DNSUtil.getDNSResolver().lookupHostAddress(config.host, config.port, failedAddresses, config.getDnssecMode());
             if (hostAddress != null) {
                 hostAddresses.add(hostAddress);
@@ -862,7 +862,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             debugger.onOutgoingStreamElement(packet);
         }
 
-        final List<StanzaListener> listenersToNotify = new LinkedList<StanzaListener>();
+        final List<StanzaListener> listenersToNotify = new LinkedList<>();
         synchronized (sendListeners) {
             for (ListenerWrapper listenerWrapper : sendListeners.values()) {
                 if (listenerWrapper.filterMatches(packet)) {
@@ -918,7 +918,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @param packet the stanza(/packet) that is going to be sent to the server
      */
     private void firePacketInterceptors(Stanza packet) {
-        List<StanzaListener> interceptorsToInvoke = new LinkedList<StanzaListener>();
+        List<StanzaListener> interceptorsToInvoke = new LinkedList<>();
         synchronized (interceptors) {
             for (InterceptorWrapper interceptorWrapper : interceptors.values()) {
                 if (interceptorWrapper.filterMatches(packet)) {
@@ -1029,7 +1029,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             final IQ iq = (IQ) packet;
             if (iq.isRequestIQ()) {
                 final String key = XmppStringUtils.generateKey(iq.getChildElementName(), iq.getChildElementNamespace());
-                IQRequestHandler iqRequestHandler = null;
+                IQRequestHandler iqRequestHandler;
                 final IQ.Type type = iq.getType();
                 switch (type) {
                 case set:
@@ -1112,7 +1112,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // First handle the async recv listeners. Note that this code is very similar to what follows a few lines below,
         // the only difference is that asyncRecvListeners is used here and that the packet listeners are started in
         // their own thread.
-        final Collection<StanzaListener> listenersToNotify = new LinkedList<StanzaListener>();
+        final Collection<StanzaListener> listenersToNotify = new LinkedList<>();
         synchronized (asyncRecvListeners) {
             for (ListenerWrapper listenerWrapper : asyncRecvListeners.values()) {
                 if (listenerWrapper.filterMatches(packet)) {
@@ -1342,7 +1342,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             removeCallbacksService.shutdownNow();
             singleThreadedExecutorService.shutdownNow();
         } catch (Throwable t) {
-            LOGGER.log(Level.WARNING, "finalize() threw trhowable", t);
+            LOGGER.log(Level.WARNING, "finalize() threw throwable", t);
         }
         finally {
             super.finalize();
