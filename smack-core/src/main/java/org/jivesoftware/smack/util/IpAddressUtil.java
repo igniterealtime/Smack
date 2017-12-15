@@ -29,8 +29,9 @@ public class IpAddressUtil {
             return false;
         }
 
-        for (int i = 0; i < 3; i++) {
-            String ipSegment = matcher.group(i);
+        int segmentCount = matcher.groupCount();
+        for (int i = 0; i < segmentCount; i++) {
+            String ipSegment = matcher.group(i + 1);
             int ipSegmentInt;
             try {
                 ipSegmentInt = Integer.valueOf(ipSegment);
