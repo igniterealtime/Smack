@@ -29,6 +29,8 @@ public class IpAddressUtil {
             return false;
         }
 
+        assert matcher.groupCount() == 4;
+
         for (int i = 1; i <= 4; i++) {
             String ipSegment = matcher.group(i);
             int ipSegmentInt;
