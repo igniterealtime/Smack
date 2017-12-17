@@ -49,7 +49,7 @@ public class DisplayedExtensionTest {
         DisplayedExtension displayedExtension1 = new DisplayedProvider().parse(parser);
         Assert.assertEquals("message-1", displayedExtension1.getId());
 
-        Message message = (Message) PacketParserUtils.parseStanza(displayedMessageStanza);
+        Message message = PacketParserUtils.parseStanza(displayedMessageStanza);
         DisplayedExtension displayedExtension2 = DisplayedExtension.from(message);
         Assert.assertEquals("message-1", displayedExtension2.getId());
     }

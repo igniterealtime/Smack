@@ -37,7 +37,7 @@ public class PublishItem<T extends Item> extends NodeExtension
     public PublishItem(String nodeId, T toPublish)
     {
         super(PubSubElementType.PUBLISH, nodeId);
-        items = new ArrayList<T>(1);
+        items = new ArrayList<>(1);
         items.add(toPublish);
     }
 

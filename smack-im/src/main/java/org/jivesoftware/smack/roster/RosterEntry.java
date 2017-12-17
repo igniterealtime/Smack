@@ -117,11 +117,9 @@ public final class RosterEntry extends Manager {
     }
 
     /**
-     * Updates the state of the entry with the new values.
+     * Updates this entries item.
      *
-     * @param name the nickname for the entry.
-     * @param type the subscription type.
-     * @param subscriptionPending TODO
+     * @param item new item
      */
     void updateItem(RosterPacket.Item item) {
         assert (item != null);
@@ -143,7 +141,7 @@ public final class RosterEntry extends Manager {
      * @return an iterator for the groups this entry belongs to.
      */
     public List<RosterGroup> getGroups() {
-        List<RosterGroup> results = new ArrayList<RosterGroup>();
+        List<RosterGroup> results = new ArrayList<>();
         // Loop through all roster groups and find the ones that contain this
         // entry. This algorithm should be fine
         for (RosterGroup group : roster.getGroups()) {

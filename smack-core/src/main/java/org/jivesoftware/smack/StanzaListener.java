@@ -52,6 +52,6 @@ public interface StanzaListener {
      * @throws InterruptedException 
      * @throws NotLoggedInException 
      */
-    public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException, NotLoggedInException;
+    void processStanza(Stanza packet) throws NotConnectedException, InterruptedException, NotLoggedInException;
 
 }

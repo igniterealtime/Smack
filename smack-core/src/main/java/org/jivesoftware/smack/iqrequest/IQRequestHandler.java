@@ -26,7 +26,7 @@ import org.jivesoftware.smack.packet.IQ;
  */
 public interface IQRequestHandler {
 
-    public enum Mode {
+    enum Mode {
         /**
          * Process requests synchronously, i.e. in the order they arrive. Uses a single thread, which means that the other
          * requests have to wait until all previous synchronous requests have been handled. Use {@link #async} if
@@ -41,13 +41,13 @@ public interface IQRequestHandler {
         async,
     }
 
-    public IQ handleIQRequest(IQ iqRequest);
+    IQ handleIQRequest(IQ iqRequest);
 
-    public Mode getMode();
+    Mode getMode();
 
-    public IQ.Type getType();
+    IQ.Type getType();
 
-    public String getElement();
+    String getElement();
 
-    public String getNamespace();
+    String getNamespace();
 }

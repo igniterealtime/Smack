@@ -80,7 +80,7 @@ public class RosterExchange implements ExtensionElement {
      */
     public void addRosterEntry(RosterEntry rosterEntry) {
         // Obtain a String[] from the roster entry groups name 
-        List<String> groupNamesList = new ArrayList<String>();
+        List<String> groupNamesList = new ArrayList<>();
         String[] groupNames;
         for (RosterGroup group : rosterEntry.getGroups()) {
             groupNamesList.add(group.getName());
@@ -135,7 +135,7 @@ public class RosterExchange implements ExtensionElement {
      */
     public Iterator<RemoteRosterEntry> getRosterEntries() {
         synchronized (remoteRosterEntries) {
-            List<RemoteRosterEntry> entries = Collections.unmodifiableList(new ArrayList<RemoteRosterEntry>(remoteRosterEntries));
+            List<RemoteRosterEntry> entries = Collections.unmodifiableList(new ArrayList<>(remoteRosterEntries));
             return entries.iterator();
         }
     }

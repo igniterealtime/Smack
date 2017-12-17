@@ -40,7 +40,7 @@ public class OpenIQProvider extends IQProvider<Open> {
         int blockSize = Integer.parseInt(parser.getAttributeValue("", "block-size"));
 
         String stanzaValue = parser.getAttributeValue("", "stanza");
-        StanzaType stanza = null;
+        StanzaType stanza;
         if (stanzaValue == null) {
             stanza = StanzaType.IQ;
         }

@@ -69,7 +69,7 @@ import org.jxmpp.jid.Jid;
 public final class PingManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(PingManager.class.getName());
 
-    private static final Map<XMPPConnection, PingManager> INSTANCES = new WeakHashMap<XMPPConnection, PingManager>();
+    private static final Map<XMPPConnection, PingManager> INSTANCES = new WeakHashMap<>();
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {

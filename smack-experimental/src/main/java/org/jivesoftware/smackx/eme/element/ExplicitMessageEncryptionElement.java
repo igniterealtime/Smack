@@ -48,7 +48,7 @@ public class ExplicitMessageEncryptionElement implements ExtensionElement {
         private final String namespace;
         private final String name;
 
-        private ExplicitMessageEncryptionProtocol(String namespace, String name) {
+        ExplicitMessageEncryptionProtocol(String namespace, String name) {
             this.namespace = namespace;
             this.name = name;
             PROTOCOL_LUT.put(namespace, this);

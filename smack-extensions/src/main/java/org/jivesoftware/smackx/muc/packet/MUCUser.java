@@ -42,7 +42,7 @@ public class MUCUser implements ExtensionElement {
     public static final String ELEMENT = "x";
     public static final String NAMESPACE = MUCInitialPresence.NAMESPACE + "#user";
 
-    private final Set<Status> statusCodes = new HashSet<Status>(4);
+    private final Set<Status> statusCodes = new HashSet<>(4);
 
     private Invite invite;
     private Decline decline;
@@ -87,7 +87,7 @@ public class MUCUser implements ExtensionElement {
 
     /**
      * Returns the rejection to an invitation from another user to a room. The rejection will be
-     * sent to the room which in turn will forward the refusal to the inviter.
+     * sent to the room which in turn will forward the refusal to the inviting user.
      *
      * @return a rejection to an invitation from another user to a room.
      */
@@ -160,7 +160,7 @@ public class MUCUser implements ExtensionElement {
 
     /**
      * Sets the rejection to an invitation from another user to a room. The rejection will be
-     * sent to the room which in turn will forward the refusal to the inviter.
+     * sent to the room which in turn will forward the refusal to the inviting user.
      *
      * @param decline the rejection to an invitation from another user to a room.
      */
@@ -252,7 +252,7 @@ public class MUCUser implements ExtensionElement {
         private final String reason;
 
         /**
-         * From XEP-0045 § 7.8.2: "… whose value is the bare JID, full JID, or occupant JID of the inviter …" 
+         * From XEP-0045 § 7.8.2: "… whose value is the bare JID, full JID, or occupant JID of the inviting user …"
          */
         private final EntityJid from;
 
@@ -273,7 +273,7 @@ public class MUCUser implements ExtensionElement {
         }
 
         /**
-         * Returns the bare JID of the inviter or, optionally, the room JID. (e.g.
+         * Returns the bare JID of the inviting user or, optionally, the room JID. (e.g.
          * 'crone1@shakespeare.lit/desktop').
          *
          * @return the room's occupant that sent the invitation.
@@ -319,7 +319,7 @@ public class MUCUser implements ExtensionElement {
 
     /**
      * Represents a rejection to an invitation from another user to a room. The rejection will be
-     * sent to the room which in turn will forward the refusal to the inviter.
+     * sent to the room which in turn will forward the refusal to the inviting user.
      *
      * @author Gaston Dombiak
      */
@@ -360,9 +360,9 @@ public class MUCUser implements ExtensionElement {
         }
 
         /**
-         * Returns the bare JID of the inviter. (e.g. 'hecate@shakespeare.lit')
+         * Returns the bare JID of the inviting user. (e.g. 'hecate@shakespeare.lit')
          *
-         * @return the bare JID of the inviter.
+         * @return the bare JID of the inviting user.
          */
         public EntityBareJid getTo() {
             return to;
@@ -394,7 +394,7 @@ public class MUCUser implements ExtensionElement {
     public static final class Status implements NamedElement {
         public static final String ELEMENT = "status";
 
-        private static final Map<Integer, Status> statusMap = new HashMap<Integer, Status>(8);
+        private static final Map<Integer, Status> statusMap = new HashMap<>(8);
 
         public static final Status PRESENCE_TO_SELF_110 = Status.create(110);
         public static final Status ROOM_CREATED_201 = Status.create(201);

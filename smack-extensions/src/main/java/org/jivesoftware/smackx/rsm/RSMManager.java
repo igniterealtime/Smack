@@ -29,7 +29,7 @@ import org.jivesoftware.smackx.rsm.packet.RSMSet.PageDirection;
 public class RSMManager {
 
     Collection<ExtensionElement> page(int max) {
-        List<ExtensionElement> packetExtensions = new LinkedList<ExtensionElement>();
+        List<ExtensionElement> packetExtensions = new LinkedList<>();
         packetExtensions.add(new RSMSet(max));
         return packetExtensions;
     }
@@ -45,14 +45,14 @@ public class RSMManager {
             throw new IllegalArgumentException("returnedExtensions must no be null");
         }
         if (additionalExtensions == null) {
-            additionalExtensions = new LinkedList<ExtensionElement>();
+            additionalExtensions = new LinkedList<>();
         }
         RSMSet resultRsmSet = PacketUtil.extensionElementFrom(returnedExtensions, RSMSet.ELEMENT, RSMSet.NAMESPACE);
         if (resultRsmSet == null) {
             throw new IllegalArgumentException("returnedExtensions did not contain a RSMset");
         }
-        RSMSet continePageRsmSet = new RSMSet(max, resultRsmSet.getLast(), PageDirection.after);
-        additionalExtensions.add(continePageRsmSet);
+        RSMSet continuePageRsmSet = new RSMSet(max, resultRsmSet.getLast(), PageDirection.after);
+        additionalExtensions.add(continuePageRsmSet);
         return additionalExtensions;
     }
 }

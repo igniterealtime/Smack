@@ -26,6 +26,6 @@ import org.jxmpp.jid.Jid;
 
 public interface ThingControlRequest {
 
-    public void processRequest(Jid from, Collection<SetData> setData) throws XMPPErrorException;
+    void processRequest(Jid from, Collection<SetData> setData) throws XMPPErrorException;
 
 }

@@ -25,7 +25,7 @@ package org.jivesoftware.smack.proxy;
 
 public class ProxyInfo
 {
-    public static enum ProxyType
+    public enum ProxyType
     {
         HTTP,
         SOCKS4,

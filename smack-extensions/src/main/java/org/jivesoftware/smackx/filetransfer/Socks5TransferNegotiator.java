@@ -22,12 +22,10 @@ import java.io.OutputStream;
 import java.io.PushbackInputStream;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Stanza;
-
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamSession;
@@ -45,7 +43,7 @@ import org.jxmpp.jid.Jid;
  */
 public class Socks5TransferNegotiator extends StreamNegotiator {
 
-    private Socks5BytestreamManager manager;
+    private final Socks5BytestreamManager manager;
 
     Socks5TransferNegotiator(XMPPConnection connection) {
         super(connection);
@@ -53,7 +51,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     }
 
     @Override
-    public OutputStream createOutgoingStream(String streamID, Jid initiator, Jid target) throws NoResponseException, SmackException, XMPPException
+    public OutputStream createOutgoingStream(String streamID, Jid initiator, Jid target) throws SmackException, XMPPException
                     {
         try {
             return this.manager.establishSession(target, streamID).getOutputStream();

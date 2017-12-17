@@ -28,7 +28,7 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 
 /**
  * Implements a MultiMediaManager using other JingleMediaManager implementations.
- * It supports every Codecs that JingleMediaManagers added has.
+ * It supports every Codec that JingleMediaManagers added has.
  *
  * @author Thiago Camargo
  */
@@ -37,7 +37,7 @@ public class MultiMediaManager extends JingleMediaManager {
 
     public static final String MEDIA_NAME = "Multi";
 
-    private List<JingleMediaManager> managers = new ArrayList<JingleMediaManager>();
+    private static final List<JingleMediaManager> managers = new ArrayList<>();
 
     private PayloadType preferredPayloadType = null;
 
@@ -60,7 +60,7 @@ public class MultiMediaManager extends JingleMediaManager {
      */
     @Override
     public List<PayloadType> getPayloads() {
-        List<PayloadType> list = new ArrayList<PayloadType>();
+        List<PayloadType> list = new ArrayList<>();
         if (preferredPayloadType != null) list.add(preferredPayloadType);
         for (JingleMediaManager manager : managers) {
             for (PayloadType payloadType : manager.getPayloads()) {

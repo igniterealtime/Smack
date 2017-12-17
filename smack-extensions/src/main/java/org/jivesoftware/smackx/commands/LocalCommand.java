@@ -42,9 +42,9 @@ import org.jxmpp.jid.Jid;
 public abstract class LocalCommand extends AdHocCommand {
 
     /**
-     * The time stamp of first invokation of the command. Used to implement the session timeout.
+     * The time stamp of first invocation of the command. Used to implement the session timeout.
      */
-    private long creationDate;
+    private final long creationDate;
 
     /**
      * The unique ID of the execution of the command.
@@ -59,12 +59,12 @@ public abstract class LocalCommand extends AdHocCommand {
     /**
      * The number of the current stage.
      */
-    private int currenStage;
+    private int currentStage;
 
     public LocalCommand() {
         super();
         this.creationDate = System.currentTimeMillis();
-        currenStage = -1;
+        currentStage = -1;
     }
 
     /**
@@ -139,7 +139,7 @@ public abstract class LocalCommand extends AdHocCommand {
      * @return the current stage number.
      */
     public int getCurrentStage() {
-        return currenStage;
+        return currentStage;
     }
 
     @Override
@@ -154,7 +154,7 @@ public abstract class LocalCommand extends AdHocCommand {
      * 
      */
     void incrementStage() {
-        currenStage++;
+        currentStage++;
     }
 
     /**
@@ -163,6 +163,6 @@ public abstract class LocalCommand extends AdHocCommand {
      * 
      */
     void decrementStage() {
-        currenStage--;
+        currentStage--;
     }
 }

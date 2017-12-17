@@ -80,8 +80,8 @@ public class Affiliation implements ExtensionElement
         this.jid = jid;
         this.affiliation = affiliation;
         this.node = null;
-        // This is usually the pubsub#owner namesapce, but see xep60 example 208 where just 'pubsub' is used
-        // ("notification of affilliation change")
+        // This is usually the pubsub#owner namespace, but see xep60 example 208 where just 'pubsub' is used
+        // ("notification of affiliation change")
         this.namespace = namespace;
     }
 

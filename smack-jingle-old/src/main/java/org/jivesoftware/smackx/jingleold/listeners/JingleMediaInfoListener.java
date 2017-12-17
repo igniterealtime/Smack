@@ -24,25 +24,25 @@ public interface JingleMediaInfoListener extends JingleListener {
     /**
      * The other end is busy.
      */
-    public void mediaInfoBusy();
+    void mediaInfoBusy();
 
     /**
      * We are on hold.
      */
-    public void mediaInfoHold();
+    void mediaInfoHold();
 
     /**
      * The jmf is muted.
      */
-    public void mediaInfoMute();
+    void mediaInfoMute();
 
     /**
      * We are queued.
      */
-    public void mediaInfoQueued();
+    void mediaInfoQueued();
 
     /**
      * We are ringing.
      */
-    public void mediaInfoRinging();
+    void mediaInfoRinging();
 }

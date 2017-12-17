@@ -136,7 +136,7 @@ public class STUNResolver extends TransportResolver {
      * @return A list of loaded servers
      */
     public ArrayList<STUNService> loadSTUNServers(java.io.InputStream stunConfigStream) {
-        ArrayList<STUNService> serversList = new ArrayList<STUNService>();
+        ArrayList<STUNService> serversList = new ArrayList<>();
         String serverName;
         int serverPort;
 
@@ -218,7 +218,7 @@ public class STUNResolver extends TransportResolver {
      * @return a list of services
      */
     public ArrayList<STUNService> loadSTUNServers() {
-        ArrayList<STUNService> serversList = new ArrayList<STUNService>();
+        ArrayList<STUNService> serversList = new ArrayList<>();
 
         // Load the STUN configuration
         try {
@@ -234,7 +234,7 @@ public class STUNResolver extends TransportResolver {
 
                 while (stunConfigEnum.hasMoreElements() && serversList.isEmpty()) {
                     URL url = stunConfigEnum.nextElement();
-                    java.io.InputStream stunConfigStream = null;
+                    java.io.InputStream stunConfigStream;
 
                     stunConfigStream = url.openStream();
                     serversList.addAll(loadSTUNServers(stunConfigStream));

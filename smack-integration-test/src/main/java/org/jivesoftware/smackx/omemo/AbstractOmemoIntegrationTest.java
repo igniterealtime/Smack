@@ -33,7 +33,7 @@ import org.junit.BeforeClass;
  */
 public abstract class AbstractOmemoIntegrationTest extends AbstractSmackIntegrationTest {
 
-    static final File storePath;
+    private static final File storePath;
 
     static {
         String userHome = System.getProperty("user.home");

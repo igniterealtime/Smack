@@ -36,9 +36,9 @@ import org.jxmpp.jid.Jid;
  */
 public class RemoteRosterEntry {
 
-    private Jid user;
-    private String name;
-    private final List<String> groupNames = new ArrayList<String>();
+    private final Jid user;
+    private final String name;
+    private final List<String> groupNames = new ArrayList<>();
 
     /**
      * Creates a new remote roster entry.

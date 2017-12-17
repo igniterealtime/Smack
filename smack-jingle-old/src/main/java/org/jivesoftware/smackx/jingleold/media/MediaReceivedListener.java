@@ -24,6 +24,6 @@ public interface MediaReceivedListener {
     /**
      * Called when new Media is received.
      */
-    public void mediaReceived(String participant);
+    void mediaReceived(String participant);
 
 }

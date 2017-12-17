@@ -123,7 +123,7 @@ public class CarbonExtension implements ExtensionElement {
     /**
      * Defines the direction of a {@link CarbonExtension} message.
      */
-    public static enum Direction {
+    public enum Direction {
         received,
         sent
     }

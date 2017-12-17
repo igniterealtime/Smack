@@ -33,7 +33,7 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 
 /**
  * Implements a jingleMediaManager using JMF based API.
- * It supports GSM and G723 codecs.
+ * It supports GSM and G723 codices.
  * <i>This API only currently works on windows and Mac.</i>
  *
  * @author Thiago Camargo
@@ -45,7 +45,7 @@ public class JmfMediaManager extends JingleMediaManager {
     public static final String MEDIA_NAME = "JMF";
 
 
-    private List<PayloadType> payloads = new ArrayList<PayloadType>();
+    private List<PayloadType> payloads = new ArrayList<>();
     private String mediaLocator = null;
 
     /**

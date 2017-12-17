@@ -31,5 +31,5 @@ public enum PublishModel
     subscribers,
 
     /** Anyone may publish. */
-    open;
+    open
 }

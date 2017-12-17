@@ -34,7 +34,7 @@ public interface OfferListener {
      *
      * @param request the Offer instance embodying the details of the offer
      */
-    public void offerReceived (Offer request);
+    void offerReceived (Offer request);
 
     /**
      * The implementing class instance will be notified via this when the AgentSessino has received
@@ -42,6 +42,6 @@ public interface OfferListener {
      *
      * @param revokedOffer the RevokedOffer instance embodying the details of the revoked offer
      */
-    public void offerRevoked (RevokedOffer revokedOffer);
+    void offerRevoked (RevokedOffer revokedOffer);
 
 }

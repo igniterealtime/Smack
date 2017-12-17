@@ -60,7 +60,7 @@ public class LowLevelRosterIntegrationTest extends AbstractSmackLowLevelIntegrat
             }
         });
 
-        // Disconnect conTwo, this should cause an 'unavilable' presence to be send from conTwo to
+        // Disconnect conTwo, this should cause an 'unavailable' presence to be send from conTwo to
         // conOne.
         conTwo.disconnect();
 

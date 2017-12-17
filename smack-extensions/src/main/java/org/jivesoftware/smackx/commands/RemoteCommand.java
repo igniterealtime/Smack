@@ -46,12 +46,12 @@ public class RemoteCommand extends AdHocCommand {
     /**
      * The connection that is used to execute this command
      */
-    private XMPPConnection connection;
+    private final XMPPConnection connection;
 
     /**
      * The full JID of the command host
      */
-    private Jid jid;
+    private final Jid jid;
 
     /**
      * The session ID of this execution.
@@ -132,8 +132,8 @@ public class RemoteCommand extends AdHocCommand {
      */
     private void executeAction(Action action, Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // TODO: Check that all the required fields of the form were filled, if
-        // TODO: not throw the corresponding exeption. This will make a faster response,
-        // TODO: since the request is stoped before it's sent.
+        // TODO: not throw the corresponding exception. This will make a faster response,
+        // TODO: since the request is stopped before it's sent.
         AdHocCommandData data = new AdHocCommandData();
         data.setType(IQ.Type.set);
         data.setTo(getOwnerJID());

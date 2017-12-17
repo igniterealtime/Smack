@@ -46,7 +46,7 @@ public class DataFormTest {
     private static final String TEST_OUTPUT_2 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'></field><page xmlns='http://jabber.org/protocol/xdata-layout' label='Label'><fieldref var='testField1'/><section label='section Label'><text>SectionText</text></section><text>PageText</text></page></x>";
     private static final String TEST_OUTPUT_3 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'><validate xmlns='http://jabber.org/protocol/xdata-validate' datatype='xs:integer'><range min='1111' max='9999'/></validate></field></x>";
 
-    DataFormProvider pr = new DataFormProvider();
+    private static final DataFormProvider pr = new DataFormProvider();
 
     @Test
     public void test() throws Exception {

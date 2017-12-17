@@ -83,7 +83,7 @@ public class PrivacyProvider extends IQProvider<Privacy> {
     private static void parseList(XmlPullParser parser, Privacy privacy) throws XmlPullParserException, IOException, SmackException {
         boolean done = false;
         String listName = parser.getAttributeValue("", "name");
-        ArrayList<PrivacyItem> items = new ArrayList<PrivacyItem>();
+        ArrayList<PrivacyItem> items = new ArrayList<>();
         while (!done) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
@@ -128,7 +128,7 @@ public class PrivacyProvider extends IQProvider<Privacy> {
             allow = false;
             break;
         default:
-            throw new SmackException("Unkown action value '" + actionValue + "'");
+            throw new SmackException("Unknown action value '" + actionValue + "'");
         }
 
         PrivacyItem item;

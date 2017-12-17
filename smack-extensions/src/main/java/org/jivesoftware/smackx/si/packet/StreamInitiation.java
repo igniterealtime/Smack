@@ -78,7 +78,7 @@ public class StreamInitiation extends IQ {
      * listed at <http://www.iana.org/assignments/media-types>). During
      * negotiation, this attribute SHOULD be present, and is otherwise not
      * required. If not included during negotiation, its value is assumed to be
-     * "binary/octect-stream".
+     * "binary/octet-stream".
      *
      * @param mimeType The valid mime-type.
      */
@@ -87,7 +87,7 @@ public class StreamInitiation extends IQ {
     }
 
     /**
-     * Identifies the type of file that is desired to be transfered.
+     * Identifies the type of file that is desired to be transferred.
      *
      * @return The mime-type.
      * @see #setMimeType(String)
@@ -98,7 +98,7 @@ public class StreamInitiation extends IQ {
 
     /**
      * Sets the file which contains the information pertaining to the file to be
-     * transfered.
+     * transferred.
      *
      * @param file The file identified by the stream initiator to be sent.
      */
@@ -116,7 +116,7 @@ public class StreamInitiation extends IQ {
     }
 
     /**
-     * Sets the data form which contains the valid methods of stream neotiation
+     * Sets the data form which contains the valid methods of stream negotiation
      * and transfer.
      *
      * @param form The dataform containing the methods.
@@ -127,10 +127,10 @@ public class StreamInitiation extends IQ {
 
     /**
      * Returns the data form which contains the valid methods of stream
-     * neotiation and transfer.
+     * negotiation and transfer.
      *
      * @return Returns the data form which contains the valid methods of stream
-     *         neotiation and transfer.
+     *         negotiation and transfer.
      */
     public DataForm getFeatureNegotiationForm() {
         return featureNegotiation.getData();
@@ -283,7 +283,7 @@ public class StreamInitiation extends IQ {
         /**
          * Sets the description of the file.
          *
-         * @param desc The description of the file so that the file reciever can
+         * @param desc The description of the file so that the file receiver can
          *             know what file it is.
          */
         public void setDesc(final String desc) {
@@ -310,10 +310,10 @@ public class StreamInitiation extends IQ {
 
         /**
          * Returns whether or not the initiator can support a range for the file
-         * tranfer.
+         * transfer.
          *
          * @return Returns whether or not the initiator can support a range for
-         *         the file tranfer.
+         *         the file transfer.
          */
         public boolean isRanged() {
             return isRanged;

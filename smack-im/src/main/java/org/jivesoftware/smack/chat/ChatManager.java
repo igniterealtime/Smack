@@ -60,7 +60,7 @@ public final class ChatManager extends Manager{
 
     private static final Logger LOGGER = Logger.getLogger(ChatManager.class.getName());
 
-    private static final Map<XMPPConnection, ChatManager> INSTANCES = new WeakHashMap<XMPPConnection, ChatManager>();
+    private static final Map<XMPPConnection, ChatManager> INSTANCES = new WeakHashMap<>();
 
     /**
      * Sets the default behaviour for allowing 'normal' messages to be used in chats. As some clients don't set
@@ -128,23 +128,21 @@ public final class ChatManager extends Manager{
     /**
      * Maps thread ID to chat.
      */
-    private Map<String, Chat> threadChats = new ConcurrentHashMap<>();
+    private final Map<String, Chat> threadChats = new ConcurrentHashMap<>();
 
     /**
      * Maps jids to chats
      */
-    private Map<Jid, Chat> jidChats = new ConcurrentHashMap<>();
+    private final Map<Jid, Chat> jidChats = new ConcurrentHashMap<>();
 
     /**
      * Maps base jids to chats
      */
-    private Map<EntityBareJid, Chat> baseJidChats = new ConcurrentHashMap<>();
+    private final Map<EntityBareJid, Chat> baseJidChats = new ConcurrentHashMap<>();
 
-    private Set<ChatManagerListener> chatManagerListeners
-            = new CopyOnWriteArraySet<ChatManagerListener>();
+    private final Set<ChatManagerListener> chatManagerListeners = new CopyOnWriteArraySet<>();
 
-    private Map<MessageListener, StanzaFilter> interceptors
-            = new WeakHashMap<MessageListener, StanzaFilter>();
+    private final Map<MessageListener, StanzaFilter> interceptors = new WeakHashMap<>();
 
     private ChatManager(XMPPConnection connection) {
         super(connection);
@@ -339,7 +337,7 @@ public final class ChatManager extends Manager{
     }
 
     /**
-     * Register a new listener with the ChatManager to recieve events related to chats.
+     * Register a new listener with the ChatManager to receive events related to chats.
      *
      * @param listener the listener.
      */

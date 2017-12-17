@@ -146,7 +146,7 @@ public abstract class SASLJavaXMechanism extends SASLMechanism {
     }
 
     protected Map<String,String> getSaslProps() {
-        return new HashMap<String, String>();
+        return new HashMap<>();
     }
 
     protected String getServerName() {

@@ -33,8 +33,9 @@ public class Slot extends IQ {
     public static final String ELEMENT = "slot";
     public static final String NAMESPACE = SlotRequest.NAMESPACE;
 
-    private final URL putUrl;
-    private final URL getUrl;
+    protected final URL putUrl;
+    protected final URL getUrl;
+
     private final Map<String, String> headers;
 
     public Slot(URL putUrl, URL getUrl) {
@@ -73,11 +74,20 @@ public class Slot extends IQ {
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.rightAngleBracket();
 
-        xml.element("put", putUrl.toString());
-        xml.element("get", getUrl.toString());
-        for (Map.Entry<String, String> entry : getHeaders().entrySet()) {
-            xml.openElement("header").attribute(entry.getKey(), entry.getValue());
+        xml.halfOpenElement("put").attribute("url", putUrl.toString());
+        if (headers.isEmpty()) {
+            xml.closeEmptyElement();
+        } else {
+            xml.rightAngleBracket();
+            for (Map.Entry<String, String> entry : getHeaders().entrySet()) {
+                xml.halfOpenElement("header").attribute("name", entry.getKey()).rightAngleBracket();
+                xml.escape(entry.getValue());
+                xml.closeElement("header");
+            }
+            xml.closeElement("put");
         }
+
+        xml.halfOpenElement("get").attribute("url", getUrl.toString()).closeEmptyElement();
 
         return xml;
     }

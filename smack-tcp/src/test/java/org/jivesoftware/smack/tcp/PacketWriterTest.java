@@ -31,8 +31,8 @@ import org.junit.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 public class PacketWriterTest {
-    volatile boolean shutdown;
-    volatile boolean prematureUnblocked;
+    private volatile boolean shutdown;
+    private volatile boolean prematureUnblocked;
 
     /**
      * Make sure that stanza(/packet) writer does block once the queue reaches

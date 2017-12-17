@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2016 Florian Schmaus
+ * Copyright 2013-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.jivesoftware.smack.util.dns.dnsjava;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.initializer.SmackInitializer;
@@ -39,7 +38,7 @@ import org.xbill.DNS.Type;
  */
 public class DNSJavaResolver extends DNSResolver implements SmackInitializer {
 
-    private static DNSJavaResolver instance = new DNSJavaResolver();
+    private static final DNSJavaResolver instance = new DNSJavaResolver();
 
     public static DNSResolver getInstance() {
         return instance;
@@ -51,7 +50,7 @@ public class DNSJavaResolver extends DNSResolver implements SmackInitializer {
 
     @Override
     protected List<SRVRecord> lookupSRVRecords0(String name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
-        List<SRVRecord> res = new ArrayList<SRVRecord>();
+        List<SRVRecord> res = new ArrayList<>();
 
         Lookup lookup;
         try {
@@ -74,13 +73,7 @@ public class DNSJavaResolver extends DNSResolver implements SmackInitializer {
                 int weight = srvRecord.getWeight();
 
                 List<InetAddress> hostAddresses = lookupHostAddress0(host, failedAddresses, dnssecMode);
-                if (hostAddresses == null || hostAddresses.isEmpty()) {
-                    // If hostAddresses is not null but empty, then the DNS resolution was successful but the domain did not
-                    // have any A or AAAA resource records.
-                    if (hostAddresses.isEmpty()) {
-                        LOGGER.log(Level.INFO, "The DNS name " + name + ", points to a hostname (" + host
-                                + ") which has neither A or AAAA resource records. This is an indication of a broken DNS setup.");
-                    }
+                if (shouldContinue(name, host, hostAddresses)) {
                     continue;
                 }
 

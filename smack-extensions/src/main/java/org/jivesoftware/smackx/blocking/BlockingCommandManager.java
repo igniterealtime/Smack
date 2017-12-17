@@ -103,7 +103,7 @@ public final class BlockingCommandManager extends Manager {
                         BlockContactsIQ blockContactIQ = (BlockContactsIQ) iqRequest;
 
                         if (blockListCached == null) {
-                            blockListCached = new ArrayList<Jid>();
+                            blockListCached = new ArrayList<>();
                         }
 
                         List<Jid> blockedJids = blockContactIQ.getJids();
@@ -125,7 +125,7 @@ public final class BlockingCommandManager extends Manager {
                 UnblockContactsIQ unblockContactIQ = (UnblockContactsIQ) iqRequest;
 
                 if (blockListCached == null) {
-                    blockListCached = new ArrayList<Jid>();
+                    blockListCached = new ArrayList<>();
                 }
 
                 List<Jid> unblockedJids = unblockContactIQ.getJids();

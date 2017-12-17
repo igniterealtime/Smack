@@ -123,7 +123,7 @@ public class OfflineMessageManager {
      * @throws InterruptedException 
      */
     public List<OfflineMessageHeader> getHeaders() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        List<OfflineMessageHeader> answer = new ArrayList<OfflineMessageHeader>();
+        List<OfflineMessageHeader> answer = new ArrayList<>();
         DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(
                 null, namespace);
         for (DiscoverItems.Item item : items.getItems()) {
@@ -148,7 +148,7 @@ public class OfflineMessageManager {
      * @throws InterruptedException 
      */
     public List<Message> getMessages(final List<String> nodes) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        List<Message> messages = new ArrayList<Message>(nodes.size());
+        List<Message> messages = new ArrayList<>(nodes.size());
         OfflineMessageRequest request = new OfflineMessageRequest();
         for (String node : nodes) {
             OfflineMessageRequest.Item item = new OfflineMessageRequest.Item(node);
@@ -159,7 +159,7 @@ public class OfflineMessageManager {
         StanzaFilter messageFilter = new AndFilter(PACKET_FILTER, new StanzaFilter() {
             @Override
             public boolean accept(Stanza packet) {
-                OfflineMessageInfo info = (OfflineMessageInfo) packet.getExtension("offline",
+                OfflineMessageInfo info = packet.getExtension("offline",
                         namespace);
                 return nodes.contains(info.getNode());
             }
@@ -208,7 +208,7 @@ public class OfflineMessageManager {
         StanzaCollector.Configuration messageCollectorConfiguration = StanzaCollector.newConfiguration().setStanzaFilter(PACKET_FILTER).setCollectorToReset(resultCollector);
         StanzaCollector messageCollector = connection.createStanzaCollector(messageCollectorConfiguration);
 
-        List<Message> messages = null;
+        List<Message> messages;
         try {
             resultCollector.nextResultOrThrow();
             // Be extra safe, cancel the message collector right here so that it does not collector

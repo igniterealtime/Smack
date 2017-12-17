@@ -22,7 +22,7 @@ import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
 
 /**
  * This class represents an item that has been, or will be published to a
- * pubsub node.  An <tt>Item</tt> has several properties that are dependent
+ * PubSub node.  An <tt>Item</tt> has several properties that are dependent
  * on the configuration of the node to which it has been or will be published.
  * 
  * <h3>An Item received from a node (via {@link LeafNode#getItems()} or {@link LeafNode#addItemEventListener(org.jivesoftware.smackx.pubsub.listener.ItemEventListener)}</h3>

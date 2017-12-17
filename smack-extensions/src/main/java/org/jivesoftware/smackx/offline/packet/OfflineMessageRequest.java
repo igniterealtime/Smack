@@ -48,15 +48,15 @@ public class OfflineMessageRequest extends IQ {
     }
 
     /**
-     * Returns a List of item childs that holds information about offline messages to
+     * Returns a List of item children that holds information about offline messages to
      * view or delete.
      *
-     * @return a List of item childs that holds information about offline messages to
+     * @return a List of item children that holds information about offline messages to
      *         view or delete.
      */
     public List<Item> getItems() {
         synchronized (items) {
-            return Collections.unmodifiableList(new ArrayList<Item>(items));
+            return Collections.unmodifiableList(new ArrayList<>(items));
         }
     }
 
@@ -112,8 +112,7 @@ public class OfflineMessageRequest extends IQ {
         buf.rightAngleBracket();
 
         synchronized (items) {
-            for (int i = 0; i < items.size(); i++) {
-                Item item = items.get(i);
+            for (Item item : items) {
                 buf.append(item.toXML());
             }
         }

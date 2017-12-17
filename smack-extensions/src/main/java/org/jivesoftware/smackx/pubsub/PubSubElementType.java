@@ -54,7 +54,7 @@ public enum PubSubElementType
     private final String eName;
     private final PubSubNamespace nSpace;
 
-    private PubSubElementType(String elemName, PubSubNamespace ns)
+    PubSubElementType(String elemName, PubSubNamespace ns)
     {
         eName = elemName;
         nSpace = ns;

@@ -66,18 +66,18 @@ import org.jxmpp.stringprep.XmppStringprepException;
 public class Socks5ByteStreamManagerTest {
 
     // settings
-    static final EntityFullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
-    static final EntityFullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
-    static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
-    static final DomainBareJid proxyJID = JidTestUtil.MUC_EXAMPLE_ORG;
-    String proxyAddress = "127.0.0.1";
-    String sessionID = "session_id";
+    private static final EntityFullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
+    private static final EntityFullJid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
+    private static final DomainBareJid xmppServer = JidTestUtil.DOMAIN_BARE_JID_1;
+    private static final DomainBareJid proxyJID = JidTestUtil.MUC_EXAMPLE_ORG;
+    private static final String proxyAddress = "127.0.0.1";
+    private static final String sessionID = "session_id";
 
     // protocol verifier
-    Protocol protocol;
+    private Protocol protocol;
 
     // mocked XMPP connection
-    XMPPConnection connection;
+    private XMPPConnection connection;
 
     /**
      * Initialize fields used in the tests.

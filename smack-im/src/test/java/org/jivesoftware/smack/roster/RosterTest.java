@@ -387,7 +387,7 @@ public class RosterTest extends InitSmackIm {
         connection.processStanza(packet);
 
         // Smack should reply with an error IQ
-        ErrorIQ errorIQ = (ErrorIQ) connection.getSentPacket();
+        ErrorIQ errorIQ = connection.getSentPacket();
         assertEquals(requestId, errorIQ.getStanzaId());
         assertEquals(Condition.service_unavailable, errorIQ.getError().getCondition());
 
@@ -537,9 +537,7 @@ public class RosterTest extends InitSmackIm {
      * Initialize the roster according to the example in
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-login"
      *     >RFC3921: Retrieving One's Roster on Login</a>.
-     * 
-     * @param connection the dummy connection of which the provided roster belongs to.
-     * @param roster the roster (or buddy list) which should be initialized.
+     *
      * @throws SmackException 
      * @throws XmppStringprepException 
      */

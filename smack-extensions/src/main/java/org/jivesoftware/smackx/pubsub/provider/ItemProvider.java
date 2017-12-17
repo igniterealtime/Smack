@@ -59,11 +59,11 @@ public class ItemProvider extends ExtensionElementProvider<Item>
             if (extensionProvider == null)
             {
                 CharSequence payloadText = PacketParserUtils.parseElement(parser, true);
-                return new PayloadItem<SimplePayload>(id, node, new SimplePayload(payloadElemName, payloadNS, payloadText));
+                return new PayloadItem<>(id, node, new SimplePayload(payloadElemName, payloadNS, payloadText));
             }
             else
             {
-                return new PayloadItem<ExtensionElement>(id, node, extensionProvider.parse(parser));
+                return new PayloadItem<>(id, node, extensionProvider.parse(parser));
             }
         }
     }

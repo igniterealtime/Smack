@@ -29,7 +29,7 @@ public class IoTSetResponse extends IQ {
 
     public IoTSetResponse(IoTSetRequest iotSetRequest) {
         this();
-        initialzeAsResultFor(iotSetRequest);
+        initializeAsResultFor(iotSetRequest);
     }
 
     @Override

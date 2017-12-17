@@ -31,7 +31,7 @@ public class AMPExtension implements ExtensionElement {
     public static final String NAMESPACE = "http://jabber.org/protocol/amp";
     public static final String ELEMENT = "amp";
 
-    private CopyOnWriteArrayList<Rule> rules = new CopyOnWriteArrayList<Rule>();
+    private final CopyOnWriteArrayList<Rule> rules = new CopyOnWriteArrayList<>();
     private boolean perHop = false;
 
     private final String from;
@@ -225,18 +225,18 @@ public class AMPExtension implements ExtensionElement {
      * @see AMPExpireAtCondition
      * @see AMPMatchResourceCondition
      **/
-    public static interface Condition {
+    public interface Condition {
         String getName();
         String getValue();
 
-        static final String ATTRIBUTE_NAME = "condition";
+        String ATTRIBUTE_NAME = "condition";
     }
 
     /**
      * amp action attribute.
      * See http://xmpp.org/extensions/xep-0079.html#actions-def
      **/
-    public static enum Action {
+    public enum Action {
         /**
          * The "alert" action triggers a reply <message/> stanza to the sending entity.
          * This <message/> stanza MUST contain the element <amp status='alert'/>,
@@ -272,7 +272,7 @@ public class AMPExtension implements ExtensionElement {
     /**
      * amp notification status as defined by XEP-0079.
      */
-    public static enum Status {
+    public enum Status {
         alert,
         error,
         notify

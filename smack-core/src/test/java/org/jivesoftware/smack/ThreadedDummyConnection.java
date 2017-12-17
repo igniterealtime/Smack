@@ -37,8 +37,8 @@ import org.jivesoftware.smack.packet.Stanza;
 public class ThreadedDummyConnection extends DummyConnection {
     private static final Logger LOGGER = Logger.getLogger(ThreadedDummyConnection.class.getName());
 
-    private BlockingQueue<IQ> replyQ = new ArrayBlockingQueue<IQ>(1);
-    private BlockingQueue<Stanza> messageQ = new LinkedBlockingQueue<Stanza>(5);
+    private final BlockingQueue<IQ> replyQ = new ArrayBlockingQueue<>(1);
+    private final BlockingQueue<Stanza> messageQ = new LinkedBlockingQueue<>(5);
     private volatile boolean timeout = false;
 
     @Override

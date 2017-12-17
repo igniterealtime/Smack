@@ -90,9 +90,9 @@ public class AgentStatusRequest extends IQ {
 
     public static class Item {
 
-        private String jid;
-        private String type;
-        private String name;
+        private final String jid;
+        private final String type;
+        private final String name;
 
         public Item(String jid, String type, String name) {
             this.jid = jid;

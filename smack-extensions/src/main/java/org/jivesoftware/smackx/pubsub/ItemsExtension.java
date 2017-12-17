@@ -51,7 +51,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
         private final PubSubElementType elem;
         private final String att;
 
-        private ItemsElementType(PubSubElementType nodeElement, String attribute)
+        ItemsElementType(PubSubElementType nodeElement, String attribute)
         {
             elem = nodeElement;
             att = attribute;

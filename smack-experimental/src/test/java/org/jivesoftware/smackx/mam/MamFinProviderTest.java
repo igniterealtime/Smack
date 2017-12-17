@@ -61,7 +61,7 @@ public class MamFinProviderTest extends MamTest {
                         + "</iq>";
         // @formatter:on
 
-        IQ iq = (IQ) PacketParserUtils.parseStanza(IQ_LIMITED_RESULTS_EXAMPLE);
+        IQ iq = PacketParserUtils.parseStanza(IQ_LIMITED_RESULTS_EXAMPLE);
 
         MamFinIQ mamFinIQ = (MamFinIQ) iq;
         Assert.assertEquals(mamFinIQ.getType(), Type.result);

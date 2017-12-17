@@ -96,7 +96,7 @@ public final class MultiUserChatLightManager extends Manager {
 
     private MultiUserChatLight createNewMucLightAndAddToMap(EntityBareJid jid) {
         MultiUserChatLight multiUserChatLight = new MultiUserChatLight(connection(), jid);
-        multiUserChatLights.put(jid, new WeakReference<MultiUserChatLight>(multiUserChatLight));
+        multiUserChatLights.put(jid, new WeakReference<>(multiUserChatLight));
         return multiUserChatLight;
     }
 
@@ -193,11 +193,11 @@ public final class MultiUserChatLightManager extends Manager {
      */
     public List<Jid> getRoomsBlocked(DomainBareJid mucLightService)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        MUCLightBlockingIQ muclIghtBlockingIQResult = getBlockingList(mucLightService);
+        MUCLightBlockingIQ mucLightBlockingIQResult = getBlockingList(mucLightService);
 
         List<Jid> jids = new ArrayList<>();
-        if (muclIghtBlockingIQResult.getRooms() != null) {
-            jids.addAll(muclIghtBlockingIQResult.getRooms().keySet());
+        if (mucLightBlockingIQResult.getRooms() != null) {
+            jids.addAll(mucLightBlockingIQResult.getRooms().keySet());
         }
 
         return jids;
@@ -215,11 +215,11 @@ public final class MultiUserChatLightManager extends Manager {
      */
     public List<Jid> getUsersBlocked(DomainBareJid mucLightService)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        MUCLightBlockingIQ muclIghtBlockingIQResult = getBlockingList(mucLightService);
+        MUCLightBlockingIQ mucLightBlockingIQResult = getBlockingList(mucLightService);
 
         List<Jid> jids = new ArrayList<>();
-        if (muclIghtBlockingIQResult.getUsers() != null) {
-            jids.addAll(muclIghtBlockingIQResult.getUsers().keySet());
+        if (mucLightBlockingIQResult.getUsers() != null) {
+            jids.addAll(mucLightBlockingIQResult.getUsers().keySet());
         }
 
         return jids;
@@ -234,9 +234,9 @@ public final class MultiUserChatLightManager extends Manager {
         StanzaFilter responseFilter = new IQReplyFilter(mucLightBlockingIQ, connection());
         IQ responseIq = connection().createStanzaCollectorAndSend(responseFilter, mucLightBlockingIQ)
                 .nextResultOrThrow();
-        MUCLightBlockingIQ muclIghtBlockingIQResult = (MUCLightBlockingIQ) responseIq;
+        MUCLightBlockingIQ mucLightBlockingIQResult = (MUCLightBlockingIQ) responseIq;
 
-        return muclIghtBlockingIQResult;
+        return mucLightBlockingIQResult;
     }
 
     /**

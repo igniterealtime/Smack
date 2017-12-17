@@ -50,7 +50,7 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
 
     static {
         try {
-            Hashtable<String, String> env = new Hashtable<String, String>();
+            Hashtable<String, String> env = new Hashtable<>();
             env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
             dirContext = new InitialDirContext(env);
         } catch (Exception e) {
@@ -111,13 +111,7 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
                 String host = srvRecordEntries[srvRecordEntries.length - 1];
 
                 List<InetAddress> hostAddresses = lookupHostAddress0(host, failedAddresses, dnssecMode);
-                if (hostAddresses == null || hostAddresses.isEmpty()) {
-                    // If hostAddresses is not null but empty, then the DNS resolution was successful but the domain did not
-                    // have any A or AAAA resource records.
-                    if (hostAddresses.isEmpty()) {
-                        LOGGER.log(Level.INFO, "The DNS name " + name + ", points to a hostname (" + host
-                                + ") which has neither A or AAAA resource records. This is an indication of a broken DNS setup.");
-                    }
+                if (shouldContinue(name, host, hostAddresses)) {
                     continue;
                 }
 

@@ -36,7 +36,7 @@ public class TranscriptProvider extends IQProvider<Transcript> {
     @Override
     public Transcript parse(XmlPullParser parser, int initialDepth) throws Exception {
         String sessionID = parser.getAttributeValue("", "sessionID");
-        List<Stanza> packets = new ArrayList<Stanza>();
+        List<Stanza> packets = new ArrayList<>();
 
         boolean done = false;
         while (!done) {

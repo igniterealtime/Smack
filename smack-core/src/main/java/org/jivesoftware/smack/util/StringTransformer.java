@@ -18,6 +18,6 @@ package org.jivesoftware.smack.util;
 
 public interface StringTransformer {
 
-    public String transform(String string);
+    String transform(String string);
 
 }

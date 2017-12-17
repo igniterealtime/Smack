@@ -31,7 +31,7 @@ import org.jxmpp.jid.Jid;
  */
 public interface SubscribeListener {
 
-    public enum SubscribeAnswer {
+    enum SubscribeAnswer {
         /**
          * Approve the subscription request.
          */
@@ -56,6 +56,6 @@ public interface SubscribeListener {
      * @param subscribeRequest the presence stanza used for the request.
      * @return a answer to the request, or <code>null</code>
      */
-    public SubscribeAnswer processSubscribe(Jid from, Presence subscribeRequest);
+    SubscribeAnswer processSubscribe(Jid from, Presence subscribeRequest);
 
 }

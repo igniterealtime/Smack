@@ -28,15 +28,15 @@ import java.util.Set;
 @Deprecated
 public interface Packet extends TopLevelStreamElement {
 
-    public static final String TEXT = "text";
-    public static final String ITEM = "item";
+    String TEXT = "text";
+    String ITEM = "item";
 
     /**
      * Returns the unique ID of the stanza. The returned value could be <code>null</code>.
      *
      * @return the packet's unique ID or <code>null</code> if the id is not available.
      */
-    public String getStanzaId();
+    String getStanzaId();
 
     /**
      * Get the stanza id.
@@ -44,7 +44,7 @@ public interface Packet extends TopLevelStreamElement {
      * @deprecated use {@link #getStanzaId()} instead.
      */
     @Deprecated
-    public String getPacketID();
+    String getPacketID();
 
     /**
      * Sets the unique ID of the packet. To indicate that a stanza(/packet) has no id
@@ -52,7 +52,7 @@ public interface Packet extends TopLevelStreamElement {
      *
      * @param id the unique ID for the packet.
      */
-    public void setStanzaId(String id);
+    void setStanzaId(String id);
 
     /**
      * Set the stanza ID.
@@ -60,7 +60,7 @@ public interface Packet extends TopLevelStreamElement {
      * @deprecated use {@link #setStanzaId(String)} instead.
      */
     @Deprecated
-    public void setPacketID(String packetID);
+    void setPacketID(String packetID);
 
     /**
      * Returns who the stanza(/packet) is being sent "to", or <tt>null</tt> if
@@ -70,7 +70,7 @@ public interface Packet extends TopLevelStreamElement {
      * @return who the stanza(/packet) is being sent to, or <tt>null</tt> if the
      *      value has not been set.
      */
-    public String getTo();
+    String getTo();
 
     /**
      * Sets who the stanza(/packet) is being sent "to". The XMPP protocol often makes
@@ -78,7 +78,7 @@ public interface Packet extends TopLevelStreamElement {
      *
      * @param to who the stanza(/packet) is being sent to.
      */
-    public void setTo(String to);
+    void setTo(String to);
 
     /**
      * Returns who the stanza(/packet) is being sent "from" or <tt>null</tt> if
@@ -88,7 +88,7 @@ public interface Packet extends TopLevelStreamElement {
      * @return who the stanza(/packet) is being sent from, or <tt>null</tt> if the
      *      value has not been set.
      */
-    public String getFrom();
+    String getFrom();
 
     /**
      * Sets who the stanza(/packet) is being sent "from". The XMPP protocol often
@@ -97,7 +97,7 @@ public interface Packet extends TopLevelStreamElement {
      *
      * @param from who the stanza(/packet) is being sent to.
      */
-    public void setFrom(String from);
+    void setFrom(String from);
 
     /**
      * Returns the error associated with this packet, or <tt>null</tt> if there are
@@ -105,34 +105,34 @@ public interface Packet extends TopLevelStreamElement {
      *
      * @return the error sub-packet or <tt>null</tt> if there isn't an error.
      */
-    public XMPPError getError();
+    XMPPError getError();
     /**
      * Sets the error for this packet.
      *
      * @param error the error to associate with this packet.
      */
-    public void setError(XMPPError error);
+    void setError(XMPPError error);
 
     /**
      * Returns the xml:lang of this Stanza, or null if one has not been set.
      *
      * @return the xml:lang of this Stanza, or null.
      */
-    public String getLanguage();
+    String getLanguage();
 
     /**
      * Sets the xml:lang of this Stanza.
      *
      * @param language the xml:lang of this Stanza.
      */
-    public void setLanguage(String language);
+    void setLanguage(String language);
 
     /**
      * Returns a copy of the stanza(/packet) extensions attached to the packet.
      *
      * @return the stanza(/packet) extensions.
      */
-    public List<ExtensionElement> getExtensions();
+    List<ExtensionElement> getExtensions();
 
     /**
      * Return a set of all extensions with the given element name <emph>and</emph> namespace.
@@ -145,7 +145,7 @@ public interface Packet extends TopLevelStreamElement {
      * @return a set of all matching extensions.
      * @since 4.1
      */
-    public Set<ExtensionElement> getExtensions(String elementName, String namespace);
+    Set<ExtensionElement> getExtensions(String elementName, String namespace);
 
     /**
      * Returns the first extension of this stanza(/packet) that has the given namespace.
@@ -156,7 +156,7 @@ public interface Packet extends TopLevelStreamElement {
      * @param namespace the namespace of the extension that is desired.
      * @return the stanza(/packet) extension with the given namespace.
      */
-    public ExtensionElement getExtension(String namespace);
+    ExtensionElement getExtension(String namespace);
 
     /**
      * Returns the first stanza(/packet) extension that matches the specified element name and
@@ -173,20 +173,20 @@ public interface Packet extends TopLevelStreamElement {
      * @param namespace the XML element namespace of the stanza(/packet) extension.
      * @return the extension, or <tt>null</tt> if it doesn't exist.
      */
-    public <PE extends ExtensionElement> PE getExtension(String elementName, String namespace);
+    <PE extends ExtensionElement> PE getExtension(String elementName, String namespace);
     /**
      * Adds a stanza(/packet) extension to the packet. Does nothing if extension is null.
      *
      * @param extension a stanza(/packet) extension.
      */
-    public void addExtension(ExtensionElement extension);
+    void addExtension(ExtensionElement extension);
 
     /**
      * Adds a collection of stanza(/packet) extensions to the packet. Does nothing if extensions is null.
      * 
      * @param extensions a collection of stanza(/packet) extensions
      */
-    public void addExtensions(Collection<ExtensionElement> extensions);
+    void addExtensions(Collection<ExtensionElement> extensions);
 
     /**
      * Check if a stanza(/packet) extension with the given element and namespace exists.
@@ -198,7 +198,7 @@ public interface Packet extends TopLevelStreamElement {
      * @param namespace
      * @return true if a stanza(/packet) extension exists, false otherwise.
      */
-    public boolean hasExtension(String elementName, String namespace);
+    boolean hasExtension(String elementName, String namespace);
 
     /**
      * Check if a stanza(/packet) extension with the given namespace exists.
@@ -206,7 +206,7 @@ public interface Packet extends TopLevelStreamElement {
      * @param namespace
      * @return true if a stanza(/packet) extension exists, false otherwise.
      */
-    public boolean hasExtension(String namespace);
+    boolean hasExtension(String namespace);
 
     /**
      * Remove the stanza(/packet) extension with the given elementName and namespace.
@@ -215,7 +215,7 @@ public interface Packet extends TopLevelStreamElement {
      * @param namespace
      * @return the removed stanza(/packet) extension or null.
      */
-    public ExtensionElement removeExtension(String elementName, String namespace);
+    ExtensionElement removeExtension(String elementName, String namespace);
 
     /**
      * Removes a stanza(/packet) extension from the packet.
@@ -223,10 +223,10 @@ public interface Packet extends TopLevelStreamElement {
      * @param extension the stanza(/packet) extension to remove.
      * @return the removed stanza(/packet) extension or null.
      */
-    public ExtensionElement removeExtension(ExtensionElement extension);
+    ExtensionElement removeExtension(ExtensionElement extension);
 
     @Override
     // NOTE When Smack is using Java 8, then this method should be moved in Element as "Default Method".
-    public String toString();
+    String toString();
 
 }

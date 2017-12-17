@@ -81,7 +81,7 @@ public class DataPacketExtensionTest extends InitExtensions {
         assertNull(data.getDecodedData());
     }
 
-    private static Properties outputProperties = new Properties();
+    private static final Properties outputProperties = new Properties();
     {
         outputProperties.put(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
     }

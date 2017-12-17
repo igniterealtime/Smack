@@ -189,7 +189,7 @@ public final class ReconnectionManager {
     private Thread reconnectionThread;
 
     private ReconnectionManager(AbstractXMPPConnection connection) {
-        weakRefConnection = new WeakReference<AbstractXMPPConnection>(connection);
+        weakRefConnection = new WeakReference<>(connection);
 
         reconnectionRunnable = new Runnable() {
 

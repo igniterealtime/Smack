@@ -25,7 +25,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents a stream error packet. Stream errors are unrecoverable errors where the server
- * will close the unrelying TCP connection after the stream error was sent to the client.
+ * will close the underlying TCP connection after the stream error was sent to the client.
  * These is the list of stream errors as defined in the XMPP spec:<p>
  *
  * <table border=1>
@@ -174,7 +174,7 @@ public class StreamError extends AbstractError implements Nonza {
         restricted_xml,
         see_other_host,
         system_shutdown,
-        undeficed_condition,
+        undefined_condition,
         unsupported_encoding,
         unsupported_feature,
         unsupported_stanza_type,

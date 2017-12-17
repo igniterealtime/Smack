@@ -24,7 +24,7 @@ package org.jivesoftware.smackx.workgroup.agent;
  */
 public class UserRequest extends OfferContent {
     // TODO Do we want to use a singleton? Should we store the userID here?
-    private static UserRequest instance = new UserRequest();
+    private static final UserRequest instance = new UserRequest();
 
     public static OfferContent getInstance() {
         return instance;

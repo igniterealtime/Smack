@@ -31,25 +31,25 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class MUCLightBlockingTest {
 
-    String getBlockingListIQExample = "<iq to='muclight.shakespeare.lit' id='getblock1' type='get'>"
+    private static final String getBlockingListIQExample = "<iq to='muclight.shakespeare.lit' id='getblock1' type='get'>"
             + "<query xmlns='urn:xmpp:muclight:0#blocking'>" + "</query>" + "</iq>";
 
-    String getBlockingListIQResponse = "<iq type='result' id='getblock1' to='crone1@shakespeare.lit/desktop' from='muclight.shakespeare.lit'>"
+    private static final String getBlockingListIQResponse = "<iq type='result' id='getblock1' to='crone1@shakespeare.lit/desktop' from='muclight.shakespeare.lit'>"
             + "<query xmlns='urn:xmpp:muclight:0#blocking'>"
             + "<room action='deny'>coven@muclight.shakespeare.lit</room>"
             + "<room action='deny'>sarasa@muclight.shakespeare.lit</room>"
             + "<user action='deny'>hag77@shakespeare.lit</user>" + "</query>" + "</iq>";
 
-    String blockingRoomsIQExample = "<iq to='muclight.shakespeare.lit' id='block1' type='set'>"
+    private static final String blockingRoomsIQExample = "<iq to='muclight.shakespeare.lit' id='block1' type='set'>"
             + "<query xmlns='urn:xmpp:muclight:0#blocking'>"
             + "<room action='deny'>coven@muclight.shakespeare.lit</room>"
             + "<room action='deny'>chapel@shakespeare.lit</room>" + "</query>" + "</iq>";
 
-    String blockingUsersIQExample = "<iq to='muclight.shakespeare.lit' id='block2' type='set'>"
+    private static final String blockingUsersIQExample = "<iq to='muclight.shakespeare.lit' id='block2' type='set'>"
             + "<query xmlns='urn:xmpp:muclight:0#blocking'>" + "<user action='deny'>hag77@shakespeare.lit</user>"
             + "<user action='deny'>hag66@shakespeare.lit</user>" + "</query>" + "</iq>";
 
-    String unblockingUsersAndRoomsExample = "<iq to='muclight.shakespeare.lit' id='unblock1' type='set'>"
+    private static final String unblockingUsersAndRoomsExample = "<iq to='muclight.shakespeare.lit' id='unblock1' type='set'>"
             + "<query xmlns='urn:xmpp:muclight:0#blocking'>"
             + "<room action='allow'>coven@muclight.shakespeare.lit</room>"
             + "<user action='allow'>hag66@shakespeare.lit</user>" + "</query>" + "</iq>";
@@ -66,7 +66,7 @@ public class MUCLightBlockingTest {
 
     @Test
     public void checkGetBlockingListResponse() throws Exception {
-        IQ iqInfoResult = (IQ) PacketParserUtils.parseStanza(getBlockingListIQResponse);
+        IQ iqInfoResult = PacketParserUtils.parseStanza(getBlockingListIQResponse);
         MUCLightBlockingIQ mucLightBlockingIQ = (MUCLightBlockingIQ) iqInfoResult;
 
         Assert.assertEquals(2, mucLightBlockingIQ.getRooms().size());

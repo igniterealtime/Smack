@@ -20,6 +20,6 @@ import org.jxmpp.jid.BareJid;
 
 public interface ThingStateChangeListener {
 
-    public void owned(BareJid owner);
+    void owned(BareJid owner);
 
 }

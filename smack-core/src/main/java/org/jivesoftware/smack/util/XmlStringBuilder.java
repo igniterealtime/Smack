@@ -81,7 +81,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
 
     /**
      * Add a new element to this builder, with the {@link java.util.Date} instance as its content,
-     * which will get formated with {@link XmppDateTime#formatXEP0082Date(Date)}.
+     * which will get formatted with {@link XmppDateTime#formatXEP0082Date(Date)}.
      *
      * @param name element name
      * @param content content of element
@@ -123,7 +123,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
 
     /**
      * Add a new element to this builder, with the {@link java.util.Date} instance as its content,
-     * which will get formated with {@link XmppDateTime#formatXEP0082Date(Date)}
+     * which will get formatted with {@link XmppDateTime#formatXEP0082Date(Date)}
      * if {@link java.util.Date} instance is not <code>null</code>.
      *
      * @param name element name
@@ -245,7 +245,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
 
     /**
      * Add a new attribute to this builder, with the {@link java.util.Date} instance as its value,
-     * which will get formated with {@link XmppDateTime#formatXEP0082Date(Date)}.
+     * which will get formatted with {@link XmppDateTime#formatXEP0082Date(Date)}.
      *
      * @param name name of attribute
      * @param value value of attribute
@@ -280,7 +280,7 @@ public class XmlStringBuilder implements Appendable, CharSequence {
 
     /**
      * Add a new attribute to this builder, with the {@link java.util.Date} instance as its value,
-     * which will get formated with {@link XmppDateTime#formatXEP0082Date(Date)}
+     * which will get formatted with {@link XmppDateTime#formatXEP0082Date(Date)}
      * if {@link java.util.Date} instance is not <code>null</code>.
      *
      * @param name attribute name

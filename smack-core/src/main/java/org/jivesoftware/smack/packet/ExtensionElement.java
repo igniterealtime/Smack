@@ -40,6 +40,6 @@ public interface ExtensionElement extends NamedElement {
      *
      * @return the namespace.
      */
-    public String getNamespace();
+    String getNamespace();
 
 }

@@ -60,7 +60,7 @@ public class Jingle extends IQ {
 
     // Sub-elements of a Jingle object.
 
-    private final List<JingleContent> contents = new ArrayList<JingleContent>();
+    private final List<JingleContent> contents = new ArrayList<>();
 
     private JingleContentInfo contentInfo;
 
@@ -222,7 +222,7 @@ public class Jingle extends IQ {
      */
     public Iterator<JingleContent> getContents() {
         synchronized (contents) {
-            return Collections.unmodifiableList(new ArrayList<JingleContent>(contents)).iterator();
+            return Collections.unmodifiableList(new ArrayList<>(contents)).iterator();
         }
     }
 
@@ -233,7 +233,7 @@ public class Jingle extends IQ {
      */
     public List<JingleContent> getContentsList() {
         synchronized (contents) {
-            return new ArrayList<JingleContent>(contents);
+            return new ArrayList<>(contents);
         }
     }
 
@@ -305,7 +305,7 @@ public class Jingle extends IQ {
 
     /**
      * Get the responder. The responder is the full JID of the entity that has
-     * replied to the initiation (which may be different to the "to" addresss in
+     * replied to the initiation (which may be different to the "to" address in
      * the IQ).
      *
      * @return the responder
@@ -317,7 +317,7 @@ public class Jingle extends IQ {
     /**
      * Set the responder. The responder must be the full JID of the entity that
      * has replied to the initiation (which may be different to the "to"
-     * addresss in the IQ).
+     * address in the IQ).
      *
      * @param resp the responder to set
      */

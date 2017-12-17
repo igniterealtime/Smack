@@ -240,7 +240,7 @@ public final class EnhancedDebuggerWindow {
         JPanel iqProvidersPanel = new JPanel();
         iqProvidersPanel.setLayout(new GridLayout(1, 1));
         iqProvidersPanel.setBorder(BorderFactory.createTitledBorder("Installed IQ Providers"));
-        Vector<String> providers = new Vector<String>();
+        Vector<String> providers = new Vector<>();
         for (Object provider : ProviderManager.getIQProviders()) {
             if (provider.getClass() == Class.class) {
                 providers.add(((Class<?>) provider).getName());
@@ -259,7 +259,7 @@ public final class EnhancedDebuggerWindow {
         JPanel extensionProvidersPanel = new JPanel();
         extensionProvidersPanel.setLayout(new GridLayout(1, 1));
         extensionProvidersPanel.setBorder(BorderFactory.createTitledBorder("Installed Extension Providers"));
-        providers = new Vector<String>();
+        providers = new Vector<>();
         for (Object provider : ProviderManager.getExtensionProviders()) {
             if (provider.getClass() == Class.class) {
                 providers.add(((Class<?>) provider).getName());
@@ -305,7 +305,7 @@ public final class EnhancedDebuggerWindow {
         menuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ArrayList<EnhancedDebugger> debuggersToRemove = new ArrayList<EnhancedDebugger>();
+                ArrayList<EnhancedDebugger> debuggersToRemove = new ArrayList<>();
                 // Remove all the debuggers of which their connections are no longer valid
                 for (int index = 0; index < tabbedPane.getComponentCount() - 1; index++) {
                     EnhancedDebugger debugger = debuggers.get(index);

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.carbons;
 
-import static org.jivesoftware.smack.test.util.CharsequenceEquals.equalsCharSequence;
+import static org.jivesoftware.smack.test.util.CharSequenceEquals.equalsCharSequence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 

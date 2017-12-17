@@ -33,7 +33,7 @@ public interface RosterLoadedListener {
      *
      * @param roster the Roster that was loaded successfully.
      */
-    public void onRosterLoaded(Roster roster);
+    void onRosterLoaded(Roster roster);
 
     /**
      * Called when roster loading has failed.
@@ -46,6 +46,6 @@ public interface RosterLoadedListener {
      * @param exception the exception which caused the failure.
      * @since 4.2
      */
-    public void onRosterLoadingFailed(Exception exception);
+    void onRosterLoadingFailed(Exception exception);
 
 }

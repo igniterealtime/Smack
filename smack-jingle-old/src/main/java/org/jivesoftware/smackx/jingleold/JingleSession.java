@@ -67,7 +67,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     private static final Logger LOGGER = Logger.getLogger(JingleSession.class.getName());
 
     // static
-    private static final HashMap<XMPPConnection, JingleSession> sessions = new HashMap<XMPPConnection, JingleSession>();
+    private static final HashMap<XMPPConnection, JingleSession> sessions = new HashMap<>();
 
     private static final Random randomGenerator = new Random();
 
@@ -79,23 +79,23 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
     private String sid; // A unique id that identifies this session
 
-    ConnectionListener connectionListener;
+    private ConnectionListener connectionListener;
 
-    StanzaListener packetListener;
+    private StanzaListener packetListener;
 
-    StanzaFilter packetFilter;
+    private StanzaFilter packetFilter;
 
     protected List<JingleMediaManager> jingleMediaManagers = null;
 
     private JingleSessionState sessionState;
 
-    private List<ContentNegotiator> contentNegotiators;
+    private final List<ContentNegotiator> contentNegotiators;
 
-    private XMPPConnection connection;
+    private final XMPPConnection connection;
 
     private String sessionInitPacketID;
 
-    private Map<String, JingleMediaSession> mediaSessionMap;
+    private final Map<String, JingleMediaSession> mediaSessionMap;
 
     /**
      * Full featured JingleSession constructor.
@@ -125,10 +125,10 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
         // Initially, we don't known the session state.
         setSessionState(JingleSessionStateUnknown.getInstance());
 
-        contentNegotiators = new ArrayList<ContentNegotiator>();
-        mediaSessionMap = new HashMap<String, JingleMediaSession>();
+        contentNegotiators = new ArrayList<>();
+        mediaSessionMap = new HashMap<>();
 
-        // Add the session to the list and register the listeneres
+        // Add the session to the list and register the listeners
         registerInstance();
         installConnectionListeners(conn);
     }
@@ -284,9 +284,9 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * @throws InterruptedException 
      */
     public synchronized void receivePacketAndRespond(IQ iq) throws XMPPException, SmackException, InterruptedException {
-        List<IQ> responses = new ArrayList<IQ>();
+        List<IQ> responses = new ArrayList<>();
 
-        String responseId = null;
+        String responseId;
 
         LOGGER.fine("Packet: " + iq.toXML());
 
@@ -355,7 +355,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      */
     @Override
     public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException, InterruptedException {
-        List<IQ> responses = new ArrayList<IQ>();
+        List<IQ> responses = new ArrayList<>();
         IQ response = null;
 
         if (iq != null) {
@@ -437,7 +437,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * incoming packet.
      * 
      * @param iq
-     *            The Jingle stanza(/packet) we are responing to
+     *            The Jingle stanza(/packet) we are responding to
      * @param jout
      *            the Jingle stanza(/packet) we want to complete and send
      * @throws NotConnectedException 
@@ -1041,11 +1041,11 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
     /**
      * Complete and send an error. Complete all the null fields in an IQ error
-     * reponse, using the sesssion information we have or some info from the
+     * response, using the session information we have or some info from the
      * incoming packet.
      * 
      * @param iq
-     *            The Jingle stanza(/packet) we are responing to
+     *            The Jingle stanza(/packet) we are responding to
      * @param jingleError
      *            the IQ stanza(/packet) we want to complete and send
      */

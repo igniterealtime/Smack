@@ -55,7 +55,7 @@ public class JivePropertiesExtensionProvider extends ExtensionElementProvider<Ji
     public JivePropertiesExtension parse(XmlPullParser parser,
                     int initialDepth) throws XmlPullParserException,
                     IOException {
-        Map<String, Object> properties = new HashMap<String, Object>();
+        Map<String, Object> properties = new HashMap<>();
         while (true) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG && parser.getName().equals("property")) {

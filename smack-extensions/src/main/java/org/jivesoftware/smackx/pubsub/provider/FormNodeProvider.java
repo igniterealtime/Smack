@@ -28,7 +28,7 @@ import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
- * Parses one of several elements used in pubsub that contain a form of some kind as a child element.  The
+ * Parses one of several elements used in PubSub that contain a form of some kind as a child element.  The
  * elements and namespaces supported is defined in {@link FormNodeType}.
  * 
  * @author Robin Collier

@@ -42,8 +42,8 @@ public class QueueUpdate implements ExtensionElement {
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
-    private int position;
-    private int remainingTime;
+    private final int position;
+    private final int remainingTime;
 
     public QueueUpdate(int position, int remainingTime) {
         this.position = position;

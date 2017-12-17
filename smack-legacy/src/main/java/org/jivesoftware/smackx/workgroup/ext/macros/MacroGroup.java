@@ -35,8 +35,8 @@ public class MacroGroup {
     private String title;
 
     public MacroGroup() {
-        macros = new ArrayList<Macro>();
-        macroGroups = new ArrayList<MacroGroup>();
+        macros = new ArrayList<>();
+        macroGroups = new ArrayList<>();
     }
 
     public void addMacro(Macro macro) {

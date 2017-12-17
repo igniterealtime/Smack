@@ -28,13 +28,13 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class GetBlockingListTest {
 
-    String getBlockingListIQExample = "<iq id='blocklist1' type='get'>"
+    private static final String getBlockingListIQExample = "<iq id='blocklist1' type='get'>"
             + "<blocklist xmlns='urn:xmpp:blocking'/>" + "</iq>";
 
-    String blockListIQExample = "<iq type='result' id='blocklist1'>" + "<blocklist xmlns='urn:xmpp:blocking'>"
+    private static final String blockListIQExample = "<iq type='result' id='blocklist1'>" + "<blocklist xmlns='urn:xmpp:blocking'>"
             + "<item jid='romeo@montague.net'/>" + "<item jid='iago@shakespeare.lit'/>" + "</blocklist>" + "</iq>";
 
-    String emptyBlockListIQExample = "<iq type='result' id='blocklist1'>" + "<blocklist xmlns='urn:xmpp:blocking'/>"
+    private static final String emptyBlockListIQExample = "<iq type='result' id='blocklist1'>" + "<blocklist xmlns='urn:xmpp:blocking'/>"
             + "</iq>";
 
     @Test
@@ -47,13 +47,13 @@ public class GetBlockingListTest {
 
     @Test
     public void checkBlockListIQ() throws Exception {
-        IQ iq = (IQ) PacketParserUtils.parseStanza(blockListIQExample);
+        IQ iq = PacketParserUtils.parseStanza(blockListIQExample);
         BlockListIQ blockListIQ = (BlockListIQ) iq;
         Assert.assertEquals(2, blockListIQ.getBlockedJids().size());
         Assert.assertEquals(JidCreate.from("romeo@montague.net"), blockListIQ.getBlockedJids().get(0));
         Assert.assertEquals(JidCreate.from("iago@shakespeare.lit"), blockListIQ.getBlockedJids().get(1));
 
-        IQ iq2 = (IQ) PacketParserUtils.parseStanza(emptyBlockListIQExample);
+        IQ iq2 = PacketParserUtils.parseStanza(emptyBlockListIQExample);
         BlockListIQ emptyBlockListIQ = (BlockListIQ) iq2;
         Assert.assertEquals(0, emptyBlockListIQ.getBlockedJids().size());
     }

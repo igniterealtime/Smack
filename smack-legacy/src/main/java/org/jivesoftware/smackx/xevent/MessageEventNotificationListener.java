@@ -35,7 +35,7 @@ public interface MessageEventNotificationListener {
      * @param from the user that sent the notification.
      * @param packetID the id of the message that was sent.
      */
-    public void deliveredNotification(Jid from, String packetID);
+    void deliveredNotification(Jid from, String packetID);
 
     /**
      * Called when a notification of message displayed is received.
@@ -43,7 +43,7 @@ public interface MessageEventNotificationListener {
      * @param from the user that sent the notification.
      * @param packetID the id of the message that was sent.
      */
-    public void displayedNotification(Jid from, String packetID);
+    void displayedNotification(Jid from, String packetID);
 
     /**
      * Called when a notification that the receiver of the message is composing a reply is 
@@ -52,7 +52,7 @@ public interface MessageEventNotificationListener {
      * @param from the user that sent the notification.
      * @param packetID the id of the message that was sent.
      */
-    public void composingNotification(Jid from, String packetID);
+    void composingNotification(Jid from, String packetID);
 
     /**
      * Called when a notification that the receiver of the message is offline is received.
@@ -60,7 +60,7 @@ public interface MessageEventNotificationListener {
      * @param from the user that sent the notification.
      * @param packetID the id of the message that was sent.
      */
-    public void offlineNotification(Jid from, String packetID);
+    void offlineNotification(Jid from, String packetID);
 
     /**
      * Called when a notification that the receiver of the message cancelled the reply 
@@ -69,5 +69,5 @@ public interface MessageEventNotificationListener {
      * @param from the user that sent the notification.
      * @param packetID the id of the message that was sent.
      */
-    public void cancelledNotification(Jid from, String packetID);
+    void cancelledNotification(Jid from, String packetID);
 }

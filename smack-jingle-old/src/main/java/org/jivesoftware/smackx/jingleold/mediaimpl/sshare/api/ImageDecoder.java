@@ -27,5 +27,5 @@ import java.io.IOException;
  */
 public interface ImageDecoder {
 
-    public BufferedImage decode(ByteArrayInputStream stream) throws IOException;
+    BufferedImage decode(ByteArrayInputStream stream) throws IOException;
 }

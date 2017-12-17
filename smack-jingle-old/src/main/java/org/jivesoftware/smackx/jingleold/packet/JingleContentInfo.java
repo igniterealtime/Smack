@@ -76,7 +76,7 @@ public class JingleContentInfo implements ExtensionElement {
     }
 
     /**
-     * Get the publilc namespace.
+     * Get the public namespace.
      */
     @Override
     public String getNamespace() {

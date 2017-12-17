@@ -42,8 +42,8 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache {
     private static final Logger LOGGER = Logger.getLogger(SimpleDirectoryPersistentCache.class.getName());
 
-    private File cacheDir;
-    private StringEncoder filenameEncoder;
+    private final File cacheDir;
+    private final StringEncoder filenameEncoder;
 
     /**
      * Creates a new SimpleDirectoryPersistentCache Object. Make sure that the
@@ -108,13 +108,15 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
 
     private File getFileFor(String nodeVer) {
         String filename = filenameEncoder.encode(nodeVer);
-        File nodeFile = new File(cacheDir, filename);
-        return nodeFile;
+        return new File(cacheDir, filename);
     }
 
     @Override
     public void emptyCache() {
         File[] files = cacheDir.listFiles();
+        if (files == null) {
+            return;
+        }
         for (File f : files) {
             f.delete();
         }
@@ -145,7 +147,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
      */
     private static DiscoverInfo restoreInfoFromFile(File file) throws Exception {
         DataInputStream dis = new DataInputStream(new FileInputStream(file));
-        String fileContent = null;
+        String fileContent;
         try {
             fileContent = dis.readUTF();
         } finally {
@@ -154,8 +156,6 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
         if (fileContent == null) {
             return null;
         }
-        DiscoverInfo info = (DiscoverInfo) PacketParserUtils.parseStanza(fileContent);
-
-        return info;
+        return PacketParserUtils.parseStanza(fileContent);
     }
 }

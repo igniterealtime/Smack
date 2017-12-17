@@ -34,8 +34,8 @@ import org.jivesoftware.smackx.xdata.packet.DataForm.Item;
  */
 public class ReportedData {
 
-    private List<Column> columns = new ArrayList<Column>();
-    private List<Row> rows = new ArrayList<Row>();
+    private final List<Column> columns = new ArrayList<>();
+    private final List<Row> rows = new ArrayList<>();
     private String title = "";
 
     /**
@@ -70,13 +70,11 @@ public class ReportedData {
 
         // Add the rows to the report based on the form's items
         for (Item item : dataForm.getItems()) {
-            List<Field> fieldList = new ArrayList<Field>(columns.size());
+            List<Field> fieldList = new ArrayList<>(columns.size());
             for (FormField field : item.getFields()) {
                 // The field is created with all the values of the data form's field
-                List<String> values = new ArrayList<String>();
-                for (String value : field.getValues()) {
-                    values.add(value);
-                }
+                List<String> values = new ArrayList<>();
+                values.addAll(field.getValues());
                 fieldList.add(new Field(field.getVariable(), values));
             }
             rows.add(new Row(fieldList));
@@ -114,7 +112,7 @@ public class ReportedData {
      * @return a List of the rows returned from a search.
      */
     public List<Row> getRows() {
-        return Collections.unmodifiableList(new ArrayList<Row>(rows));
+        return Collections.unmodifiableList(new ArrayList<>(rows));
     }
 
     /**
@@ -123,7 +121,7 @@ public class ReportedData {
      * @return a List of the columns returned from a search.
      */
     public List<Column> getColumns() {
-        return Collections.unmodifiableList(new ArrayList<Column>(columns));
+        return Collections.unmodifiableList(new ArrayList<>(columns));
     }
 
 
@@ -194,7 +192,7 @@ public class ReportedData {
     }
 
     public static class Row {
-        private List<Field> fields = new ArrayList<Field>();
+        private List<Field> fields = new ArrayList<>();
 
         public Row(List<Field> fields) {
             this.fields = fields;
@@ -221,13 +219,13 @@ public class ReportedData {
          * @return the fields that define the data that goes with the item.
          */
         private List<Field> getFields() {
-            return Collections.unmodifiableList(new ArrayList<Field>(fields));
+            return Collections.unmodifiableList(new ArrayList<>(fields));
         }
     }
 
     public static class Field {
-        private String variable;
-        private List<String> values;
+        private final String variable;
+        private final List<String> values;
 
         public Field(String variable, List<String> values) {
             this.variable = variable;

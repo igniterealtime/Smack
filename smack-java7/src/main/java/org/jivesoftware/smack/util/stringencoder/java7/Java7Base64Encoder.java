@@ -26,9 +26,9 @@ import org.jivesoftware.smack.util.StringUtils;
  */
 public final class Java7Base64Encoder implements org.jivesoftware.smack.util.stringencoder.Base64.Encoder {
 
-    private static Java7Base64Encoder instance = new Java7Base64Encoder();
+    private static final Java7Base64Encoder instance = new Java7Base64Encoder();
 
-    private static int BASE64_ENCODER_FLAGS =  Base64.DONT_BREAK_LINES;
+    private static final int BASE64_ENCODER_FLAGS =  Base64.DONT_BREAK_LINES;
 
     private Java7Base64Encoder() {
         // Use getInstance()

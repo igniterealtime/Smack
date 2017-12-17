@@ -25,7 +25,7 @@ public class EmptyResultIQ extends IQ {
 
     public EmptyResultIQ(IQ request) {
         this();
-        initialzeAsResultFor(request);
+        initializeAsResultFor(request);
     }
 
     @Override

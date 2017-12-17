@@ -121,7 +121,7 @@ public class PayloadType {
     }
 
     /**
-     * Set the numer of channels for a payload type.
+     * Set the number of channels for a payload type.
      *
      * @param channels The number of channels
      */

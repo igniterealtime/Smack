@@ -49,7 +49,7 @@ public class AcknowledgedExtensionTest {
         AcknowledgedExtension acknowledgedExtension1 = new AcknowledgedProvider().parse(parser);
         Assert.assertEquals("message-1", acknowledgedExtension1.getId());
 
-        Message message = (Message) PacketParserUtils.parseStanza(acknowledgedMessageStanza);
+        Message message = PacketParserUtils.parseStanza(acknowledgedMessageStanza);
         AcknowledgedExtension acknowledgedExtension2 = AcknowledgedExtension.from(message);
         Assert.assertEquals("message-1", acknowledgedExtension2.getId());
     }

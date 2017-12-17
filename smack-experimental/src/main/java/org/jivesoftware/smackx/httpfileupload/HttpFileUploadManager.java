@@ -64,7 +64,18 @@ import org.jxmpp.jid.DomainBareJid;
  */
 public final class HttpFileUploadManager extends Manager {
 
+    /**
+     * Namespace of XEP-0363 v0.4 or higher. Constant value {@value #NAMESPACE}.
+     *
+     * @see <a href="https://xmpp.org/extensions/attic/xep-0363-0.4.0.html">XEP-0363 v0.4.0</a>
+     */
     public static final String NAMESPACE = "urn:xmpp:http:upload:0";
+
+    /**
+     * Namespace of XEP-0363 v0.2 or lower. Constant value {@value #NAMESPACE_0_2}.
+     *
+     * @see <a href="https://xmpp.org/extensions/attic/xep-0363-0.2.5.html">XEP-0363 v0.2.5</a>
+     */
     public static final String NAMESPACE_0_2 = "urn:xmpp:http:upload";
 
     private static final Logger LOGGER = Logger.getLogger(HttpFileUploadManager.class.getName());
@@ -457,6 +468,22 @@ public final class HttpFileUploadManager extends Manager {
         finally {
             urlConnection.disconnect();
         }
+    }
+
+    public static UploadService.Version namespaceToVersion(String namespace) {
+        UploadService.Version version;
+        switch (namespace) {
+        case NAMESPACE:
+            version = Version.v0_3;
+            break;
+        case NAMESPACE_0_2:
+            version = Version.v0_2;
+            break;
+        default:
+            version = null;
+            break;
+        }
+        return version;
     }
 
     private static boolean containsHttpFileUploadNamespace(DiscoverInfo discoverInfo) {
