@@ -260,6 +260,7 @@ public final class SASLAuthentication {
     /**
      * Notification message saying that SASL authentication was successful. The next step
      * would be to bind the resource.
+     * @param success result of the authentication.
      * @throws SmackException 
      * @throws InterruptedException 
      */

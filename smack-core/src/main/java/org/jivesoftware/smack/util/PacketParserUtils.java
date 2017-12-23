@@ -709,6 +709,7 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of the compression stanza.
      * @return The CompressionFeature stream element
+     * @throws IOException
      * @throws XmlPullParserException if an exception occurs while parsing the stanza.
      */
     public static Compress.Feature parseCompressionFeature(XmlPullParser parser)
@@ -716,7 +717,7 @@ public class PacketParserUtils {
         assert (parser.getEventType() == XmlPullParser.START_TAG);
         String name;
         final int initialDepth = parser.getDepth();
-        List<String> methods = new LinkedList<String>();
+        List<String> methods = new LinkedList<>();
         outerloop: while (true) {
             int eventType = parser.next();
             switch (eventType) {
@@ -899,7 +900,14 @@ public class PacketParserUtils {
     }
 
     /**
-     * Parse an extension element.
+     * Parses an extension element.
+     *
+     * @param elementName the XML element name of the extension element.
+     * @param namespace the XML namespace of the stanza(/packet) extension.
+     * @param parser the XML parser, positioned at the starting element of the extension.
+     *
+     * @return an extension element.
+     * @throws Exception when an error occurs during parsing.
      * @deprecated use {@link #parseExtensionElement(String, String, XmlPullParser)} instead.
      */
     @Deprecated
@@ -914,7 +922,9 @@ public class PacketParserUtils {
      * @param elementName the XML element name of the extension element.
      * @param namespace the XML namespace of the stanza(/packet) extension.
      * @param parser the XML parser, positioned at the starting element of the extension.
+     *
      * @return an extension element.
+     * @throws Exception when an error occurs during parsing.
      */
     public static ExtensionElement parseExtensionElement(String elementName, String namespace,
                     XmlPullParser parser) throws Exception {

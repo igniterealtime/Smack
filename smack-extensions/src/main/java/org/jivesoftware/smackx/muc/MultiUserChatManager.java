@@ -240,6 +240,7 @@ public final class MultiUserChatManager extends Manager {
      *
      * @param jid the name of the room in the form "roomName@service", where "service" is the hostname at which the
      *        multi-user chat service is running. Make sure to provide a valid JID.
+     * @return MultiUserChat instance of the room with the given jid.
      */
     public synchronized MultiUserChat getMultiUserChat(EntityBareJid jid) {
         WeakReference<MultiUserChat> weakRefMultiUserChat = multiUserChats.get(jid);

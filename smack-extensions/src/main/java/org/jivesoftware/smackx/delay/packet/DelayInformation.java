@@ -47,6 +47,8 @@ public class DelayInformation implements ExtensionElement {
     /**
      * Creates a new instance with the specified timestamp. 
      * @param stamp the timestamp
+     * @param from sender
+     * @param reason reason of delay.
      */
     public DelayInformation(Date stamp, String from, String reason) {
         this.stamp = stamp;

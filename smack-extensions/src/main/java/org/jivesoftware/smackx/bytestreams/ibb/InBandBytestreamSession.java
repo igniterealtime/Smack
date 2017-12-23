@@ -190,7 +190,8 @@ public class InBandBytestreamSession implements BytestreamSession {
     /**
      * This method is invoked if one of the streams has been closed locally, if an error occurred
      * locally or if the whole session should be closed.
-     * 
+     *
+     * @param in do we want to close the Input- or OutputStream?
      * @throws IOException if an error occurs while sending the close request
      */
     protected synchronized void closeByLocal(boolean in) throws IOException {

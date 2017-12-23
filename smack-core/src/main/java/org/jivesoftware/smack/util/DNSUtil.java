@@ -127,6 +127,7 @@ public class DNSUtil {
      *
      * @param domain the domain.
      * @param failedAddresses on optional list that will be populated with host addresses that failed to resolve.
+     * @param dnssecMode DNSSec mode.
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
      */
@@ -147,6 +148,7 @@ public class DNSUtil {
      *
      * @param domain the domain.
      * @param failedAddresses on optional list that will be populated with host addresses that failed to resolve.
+     * @param dnssecMode DNSSec mode.
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
      */

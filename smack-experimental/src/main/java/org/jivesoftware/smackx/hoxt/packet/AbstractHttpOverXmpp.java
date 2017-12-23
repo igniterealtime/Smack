@@ -56,6 +56,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     /**
      * Returns start tag.
      *
+     * @param xml builder.
      * @return start tag
      */
     protected abstract IQChildElementXmlStringBuilder getIQHoxtChildElementBuilder(IQChildElementXmlStringBuilder xml);

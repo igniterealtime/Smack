@@ -27,6 +27,11 @@ public interface SmackDebuggerFactory {
     /**
      * Initialize the new SmackDebugger instance.
      *
+     * @param connection connection.
+     * @param writer connection writer.
+     * @param reader connection reader.
+     *
+     * @return SmackDebugger.
      * @throws IllegalArgumentException if the SmackDebugger can't be loaded.
      */
     SmackDebugger create(XMPPConnection connection, Writer writer, Reader reader) throws IllegalArgumentException;

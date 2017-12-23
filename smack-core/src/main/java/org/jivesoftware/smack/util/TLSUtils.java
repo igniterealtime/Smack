@@ -60,6 +60,9 @@ public class TLSUtils {
      * </p>
      * 
      * @param builder the configuration builder to apply this setting to
+     * @param <B> Type of the ConnectionConfiguration builder.
+     *
+     * @return the given builder
      */
     public static <B extends ConnectionConfiguration.Builder<B,?>> B setTLSOnly(B builder) {
         builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_2,  PROTO_TLSV1_1, PROTO_TLSV1 });
@@ -77,6 +80,9 @@ public class TLSUtils {
      * </p>
      * 
      * @param builder the configuration builder to apply this setting to
+     * @param <B> Type of the ConnectionConfiguration builder.
+     *
+     * @return the given builder
      */
     public static <B extends ConnectionConfiguration.Builder<B,?>> B setSSLv3AndTLSOnly(B builder) {
         builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_2,  PROTO_TLSV1_1, PROTO_TLSV1, PROTO_SSL3 });
@@ -92,6 +98,7 @@ public class TLSUtils {
      * </p>
      * 
      * @param builder a connection configuration builder.
+     * @param <B> Type of the ConnectionConfiguration builder.
      * @throws NoSuchAlgorithmException
      * @throws KeyManagementException
      * @return the given builder.
@@ -120,6 +127,7 @@ public class TLSUtils {
      * </p>
      * 
      * @param builder a connection configuration builder.
+     * @param <B> Type of the ConnectionConfiguration builder.
      * @return the given builder.
      */
     public static <B extends ConnectionConfiguration.Builder<B,?>> B disableHostnameVerificationForTlsCertificates(B builder) {

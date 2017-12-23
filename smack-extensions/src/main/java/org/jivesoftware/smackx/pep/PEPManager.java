@@ -115,6 +115,7 @@ public final class PEPManager extends Manager {
      * are received from remote XMPP clients.
      *
      * @param pepListener a roster exchange listener.
+     * @return true if pepListener was added.
      */
     public boolean addPEPListener(PEPListener pepListener) {
         return pepListeners.add(pepListener);
@@ -124,6 +125,7 @@ public final class PEPManager extends Manager {
      * Removes a listener from PEP events.
      *
      * @param pepListener a roster exchange listener.
+     * @return true, if pepListener was removed.
      */
     public boolean removePEPListener(PEPListener pepListener) {
         return pepListeners.remove(pepListener);

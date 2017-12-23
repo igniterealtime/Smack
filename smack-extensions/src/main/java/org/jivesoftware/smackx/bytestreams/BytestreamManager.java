@@ -96,6 +96,7 @@ public interface BytestreamManager {
      * @throws IOException if an IO error occurred while establishing the session
      * @throws InterruptedException if the thread was interrupted while waiting in a blocking
      *         operation
+     * @throws SmackException if an error occurs in Smack.
      */
     public BytestreamSession establishSession(Jid targetJID) throws XMPPException, IOException,
                     InterruptedException, SmackException;
@@ -114,6 +115,7 @@ public interface BytestreamManager {
      * @throws IOException if an IO error occurred while establishing the session
      * @throws InterruptedException if the thread was interrupted while waiting in a blocking
      *         operation
+     * @throws SmackException if an error occurs in Smack.
      */
     public BytestreamSession establishSession(Jid targetJID, String sessionID)
                     throws XMPPException, IOException, InterruptedException, SmackException;

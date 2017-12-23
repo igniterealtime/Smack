@@ -295,6 +295,8 @@ public final class SmackConfiguration {
      * of a TLS certificate. XMPP connections are able to overwrite this settings by supplying a
      * HostnameVerifier in their ConnectionConfiguration with
      * {@link ConnectionConfiguration.Builder#setHostnameVerifier(HostnameVerifier)}.
+     *
+     * @param verifier HostnameVerifier
      */
     public static void setDefaultHostnameVerifier(HostnameVerifier verifier) {
         defaultHostnameVerififer = verifier;

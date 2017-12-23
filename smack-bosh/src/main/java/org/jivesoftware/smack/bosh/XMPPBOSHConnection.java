@@ -300,6 +300,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      * Send a HTTP request to the connection manager with the provided body element.
      * 
      * @param body the body which will be sent.
+     * @throws BOSHException
      */
     protected void send(ComposableBody body) throws BOSHException {
         if (!connected) {

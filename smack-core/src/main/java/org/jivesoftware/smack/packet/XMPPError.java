@@ -109,7 +109,7 @@ public class XMPPError extends AbstractError {
     /**
      * Create a new XMPPError.
      *
-     * @param condition
+     * @param condition error condition.
      * @deprecated use {@link Builder} instead.
      */
     @Deprecated
@@ -120,8 +120,8 @@ public class XMPPError extends AbstractError {
     /**
      * Create a new XMPPError.
      *
-     * @param condition
-     * @param applicationSpecificCondition
+     * @param condition error condition.
+     * @param applicationSpecificCondition application specific condition.
      * @deprecated use {@link Builder} instead.
      */
     @Deprecated
@@ -137,6 +137,8 @@ public class XMPPError extends AbstractError {
      * 
      * @param type the error type.
      * @param condition the error condition.
+     * @param conditionText
+     * @param errorGenerator
      * @param descriptiveTexts 
      * @param extensions list of stanza(/packet) extensions
      * @deprecated use {@link Builder} instead.
@@ -155,6 +157,8 @@ public class XMPPError extends AbstractError {
      * 
      * @param type the error type.
      * @param condition the error condition.
+     * @param conditionText
+     * @param errorGenerator
      * @param descriptiveTexts 
      * @param extensions list of stanza(/packet) extensions
      * @param stanza the stanza carrying this XMPP error.

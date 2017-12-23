@@ -135,10 +135,11 @@ public class VCard extends IQ {
     }
 
     /**
-     * Set generic VCard field.
+     * Get the content of a generic VCard field.
      *
      * @param field value of field. Possible values: NICKNAME, PHOTO, BDAY, JABBERID, MAILER, TZ,
      *              GEO, TITLE, ROLE, LOGO, NOTE, PRODID, REV, SORT-STRING, SOUND, UID, URL, DESC.
+     * @return content of field.
      */
     public String getField(String field) {
         return otherSimpleFields.get(field);
@@ -273,6 +274,7 @@ public class VCard extends IQ {
      *
      * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR, STREET,
      *                  LOCALITY, REGION, PCODE, CTRY
+     * @return content of home address field.
      */
     public String getAddressFieldHome(String addrField) {
         return homeAddr.get(addrField);
@@ -283,6 +285,7 @@ public class VCard extends IQ {
      *
      * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR, STREET,
      *                  LOCALITY, REGION, PCODE, CTRY
+     * @param value new value for the field.
      */
     public void setAddressFieldHome(String addrField, String value) {
         homeAddr.put(addrField, value);
@@ -293,6 +296,7 @@ public class VCard extends IQ {
      *
      * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR, STREET,
      *                  LOCALITY, REGION, PCODE, CTRY
+     * @return content of work address field.
      */
     public String getAddressFieldWork(String addrField) {
         return workAddr.get(addrField);
@@ -303,6 +307,7 @@ public class VCard extends IQ {
      *
      * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR, STREET,
      *                  LOCALITY, REGION, PCODE, CTRY
+     * @param value new value for the field.
      */
     public void setAddressFieldWork(String addrField, String value) {
         workAddr.put(addrField, value);
@@ -323,6 +328,7 @@ public class VCard extends IQ {
      * Get home phone number.
      *
      * @param phoneType one of VOICE, FAX, PAGER, MSG, CELL, VIDEO, BBS, MODEM, ISDN, PCS, PREF
+     * @return content of home phone number.
      */
     public String getPhoneHome(String phoneType) {
         return homePhones.get(phoneType);
@@ -342,6 +348,7 @@ public class VCard extends IQ {
      * Get work phone number.
      *
      * @param phoneType one of VOICE, FAX, PAGER, MSG, CELL, VIDEO, BBS, MODEM, ISDN, PCS, PREF
+     * @return content of work phone number.
      */
     public String getPhoneWork(String phoneType) {
         return workPhones.get(phoneType);
@@ -470,6 +477,8 @@ public class VCard extends IQ {
      * Common code for getting the bytes of a url.
      *
      * @param url the url to read.
+     * @return bytes of the file pointed to by URL.
+     * @throws IOException if an IOException occurs while reading the file.
      */
     public static byte[] getBytes(URL url) throws IOException {
         final String path = url.getPath();
@@ -557,6 +566,8 @@ public class VCard extends IQ {
     /**
      * Load VCard information for a connected user. XMPPConnection should be authenticated
      * and not anonymous.
+     *
+     * @param connection connection.
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
@@ -570,6 +581,10 @@ public class VCard extends IQ {
 
     /**
      * Load VCard information for a given user. XMPPConnection should be authenticated and not anonymous.
+     *
+     * @param connection connection.
+     * @param user user whos information we want to load.
+     *
      * @throws XMPPErrorException 
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 

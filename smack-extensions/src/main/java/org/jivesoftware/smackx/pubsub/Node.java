@@ -384,7 +384,10 @@ abstract public class Node
      * {@link Subscription.State#unconfigured} - If the {@link Subscription#isConfigRequired()} is true, 
      * the caller must configure the subscription before messages will be received.  If it is false
      * the caller can configure it but is not required to do so.
+     *
      * @param jid The jid to subscribe as.
+     * @param subForm
+     *
      * @return The subscription
      * @throws XMPPErrorException 
      * @throws NoResponseException 
@@ -434,7 +437,9 @@ abstract public class Node
     /**
      * Returns a SubscribeForm for subscriptions, from which you can create an answer form to be submitted
      * via the {@link #sendConfigurationForm(Form)}.
-     * 
+     *
+     * @param jid
+     *
      * @return A subscription options form
      * @throws XMPPErrorException 
      * @throws NoResponseException 
