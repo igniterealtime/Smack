@@ -280,6 +280,16 @@ public final class SmackConfiguration {
         compressionHandlers.add(xmppInputOutputStream);
     }
 
+    /**
+     * Get compression handlers.
+     *
+     * @deprecated use {@link #getCompressionHandlers()} instead.
+     */
+    @Deprecated
+    public static List<XMPPInputOutputStream> getCompresionHandlers() {
+        return getCompressionHandlers();
+    }
+
     public static List<XMPPInputOutputStream> getCompressionHandlers() {
         List<XMPPInputOutputStream> res = new ArrayList<>(compressionHandlers.size());
         for (XMPPInputOutputStream ios : compressionHandlers) {

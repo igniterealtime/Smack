@@ -24,6 +24,22 @@ public class PacketUtil {
 
     /**
      * Get a extension element from a collection.
+     * @param collection
+     * @param element
+     * @param namespace
+     * @param <PE>
+     * @return the extension element
+     * @deprecated use {@link #extensionElementFrom(Collection, String, String)} instead.
+     */
+    @Deprecated
+    public static <PE extends ExtensionElement> PE packetExtensionfromCollection(
+            Collection<ExtensionElement> collection, String element,
+            String namespace) {
+        return extensionElementFrom(collection, element, namespace);
+    }
+
+    /**
+     * Get a extension element from a collection.
      *
      * @param collection
      * @param element
