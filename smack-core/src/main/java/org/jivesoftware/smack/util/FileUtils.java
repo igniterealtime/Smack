@@ -104,7 +104,7 @@ public final class FileUtils {
      * @throws IOException 
      */
     @SuppressWarnings("DefaultCharset")
-    public static String readFileOrThrow(File file) throws FileNotFoundException, IOException {
+    public static String readFileOrThrow(File file) throws IOException {
         Reader reader = null;
         try {
             reader = new FileReader(file);

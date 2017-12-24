@@ -885,6 +885,7 @@ public class AgentSession {
      *
      * @param jid the jid of the agent.
      * @param maxSessions the max number of sessions to retrieve.
+     * @param startDate point in time from which on history should get retrieved.
      * @return the chat history associated with a given jid.
      * @throws XMPPException if an error occurs while retrieving the AgentChatHistory.
      * @throws NotConnectedException 

@@ -236,11 +236,10 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      *
      * @param challengeString a base64 encoded string representing the challenge.
      * @param finalChallenge true if this is the last challenge send by the server within the success stanza
-     * @throws NotConnectedException
-     * @throws SmackException
-     * @throws InterruptedException 
+     * @throws SmackException exception
+     * @throws InterruptedException if the connection is interrupted
      */
-    public final void challengeReceived(String challengeString, boolean finalChallenge) throws SmackException, NotConnectedException, InterruptedException {
+    public final void challengeReceived(String challengeString, boolean finalChallenge) throws SmackException, InterruptedException {
         byte[] challenge = Base64.decode((challengeString != null && challengeString.equals("=")) ? "" : challengeString);
         byte[] response = evaluateChallenge(challenge);
         if (finalChallenge) {
@@ -260,7 +259,12 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     }
 
     /**
-     * @throws SmackException
+     * Evaluate the SASL challenge.
+     *
+     * @param challenge challenge to evaluate.
+     *
+     * @return null.
+     * @throws SmackException in case of an error.
      */
     protected byte[] evaluateChallenge(byte[] challenge) throws SmackException {
         return null;

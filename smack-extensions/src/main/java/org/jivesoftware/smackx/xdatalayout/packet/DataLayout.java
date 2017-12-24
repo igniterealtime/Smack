@@ -52,6 +52,8 @@ public class DataLayout implements ExtensionElement {
      * <p>
      * Objects of the following type(s) are allowed in the list: {@link String },
      * {@link Section }, {@link Fieldref } and {@link Reportedref }
+     *
+     * @return list of DataFormLayoutElements.
      */
     public List<DataFormLayoutElement> getPageLayout() {
         return this.pageLayout;
@@ -177,6 +179,8 @@ public class DataLayout implements ExtensionElement {
          * <p>
          * Objects of the following type(s) are allowed in the list: {@link String },
          * {@link Section }, {@link Fieldref } and {@link Reportedref }
+         *
+         * @return list of DataFormLayoutElements.
          */
         public List<DataFormLayoutElement> getSectionLayout() {
             return this.sectionLayout;

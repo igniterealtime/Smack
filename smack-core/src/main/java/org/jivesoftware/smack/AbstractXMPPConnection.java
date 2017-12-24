@@ -1017,6 +1017,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     private SmackConfiguration.UnknownIqRequestReplyMode unknownIqRequestReplyMode = SmackConfiguration.getUnknownIqRequestReplyMode();
 
+    /**
+     * Set how Smack behaves when an unknown IQ request has been received.
+     *
+     * @param unknownIqRequestReplyMode reply mode.
+     */
     public void setUnknownIqRequestReplyMode(UnknownIqRequestReplyMode unknownIqRequestReplyMode) {
         this.unknownIqRequestReplyMode = Objects.requireNonNull(unknownIqRequestReplyMode, "Mode must not be null");
     }
@@ -1026,8 +1031,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * {@link org.jivesoftware.smack.packet.XMPPError.Condition#feature_not_implemented} when a request IQ without a
      * registered {@link IQRequestHandler} is received.
      *
-     * @param replyToUnknownIq
-     * @deprecated use {@link #setUnknownIqRequestReplyMode(UnknownIqRequestReplyMode)} instead.
+     * @param replyToUnknownIq whether Smack should reply to unknown IQs or not.
+     * @deprecated use {@link AbstractXMPPConnection#setUnknownIqRequestReplyMode(UnknownIqRequestReplyMode)} instead.
      */
     @Deprecated
     // TODO Remove in Smack 4.3

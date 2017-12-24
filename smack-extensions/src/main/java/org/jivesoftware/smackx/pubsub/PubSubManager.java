@@ -225,6 +225,8 @@ public final class PubSubManager extends Manager {
      * exception if it does not.
      * 
      * @param id - The unique id of the node
+     * @param <T> type of the node.
+     *
      * @return the node
      * @throws XMPPErrorException The node does not exist
      * @throws NoResponseException if there was no response from the server.
@@ -390,6 +392,8 @@ public final class PubSubManager extends Manager {
      *
      * @param id The unique id of the node.
      * @param item The item to publish.
+     * @param <I> type of the item.
+     *
      * @return the LeafNode on which the item was published.
      * @throws NoResponseException
      * @throws XMPPErrorException

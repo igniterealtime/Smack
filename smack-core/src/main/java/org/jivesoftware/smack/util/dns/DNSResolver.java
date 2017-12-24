@@ -42,6 +42,8 @@ public abstract class DNSResolver {
     /**
      * Gets a list of service records for the specified service.
      * @param name The symbolic name of the service.
+     * @param failedAddresses list of failed addresses.
+     * @param dnssecMode security mode.
      * @return The list of SRV records mapped to the service name.
      */
     public final List<SRVRecord> lookupSRVRecords(String name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {

@@ -336,6 +336,8 @@ public final class CarbonManager extends Manager {
 
     /**
      * Check if carbons are enabled on this connection.
+     *
+     * @return true if carbons are enabled, else false.
      */
     public boolean getCarbonsEnabled() {
         return this.enabled_state;

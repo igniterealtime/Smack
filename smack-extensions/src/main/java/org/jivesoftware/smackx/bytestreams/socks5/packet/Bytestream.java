@@ -284,6 +284,7 @@ public class Bytestream extends IQ {
          * 
          * @param JID The JID of the stream host.
          * @param address The internet address of the stream host.
+         * @param port port of the stream host.
          */
         public StreamHost(final Jid JID, final String address, int port) {
             this.JID = Objects.requireNonNull(JID, "StreamHost JID must not be null");

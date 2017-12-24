@@ -171,6 +171,7 @@ public interface Packet extends TopLevelStreamElement {
      *
      * @param elementName the XML element name of the stanza(/packet) extension. (May be null)
      * @param namespace the XML element namespace of the stanza(/packet) extension.
+     * @param <PE> type of the ExtensionElement.
      * @return the extension, or <tt>null</tt> if it doesn't exist.
      */
     <PE extends ExtensionElement> PE getExtension(String elementName, String namespace);
