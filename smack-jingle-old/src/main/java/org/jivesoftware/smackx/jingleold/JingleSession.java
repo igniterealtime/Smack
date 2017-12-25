@@ -55,7 +55,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleError;
 import org.jxmpp.jid.Jid;
 
 /**
- * An abstract Jingle session. <p/> This class contains some basic properties of
+ * An abstract Jingle session. This class contains some basic properties of
  * every Jingle session. However, the concrete implementation can be found in
  * subclasses.
  * 
@@ -270,7 +270,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     // ----------------------------------------------------------------------------------------------------------
 
     /**
-     * Process and respond to an incoming packet. <p/> This method is called
+     * Process and respond to an incoming packet. This method is called
      * from the stanza(/packet) listener dispatcher when a new stanza(/packet) has arrived. The
      * method is responsible for recognizing the stanza(/packet) type and, depending on
      * the current state, delivering it to the right event handler and wait for
@@ -394,7 +394,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
     }
 
     /**
-     * Add a new content negotiator on behalf of a <content> section received.
+     * Add a new content negotiator on behalf of a &lt;content/&gt; section received.
      */
     public void addContentNegotiator(ContentNegotiator inContentNegotiator) {
         contentNegotiators.add(inContentNegotiator);

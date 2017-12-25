@@ -70,7 +70,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      * Such an attribute is defined for all stanza types. For IQ, see for
      * example XEP-50 3.7:
      * "The requester SHOULD provide its locale information using the "xml:lang
-     * " attribute on either the <iq/> (RECOMMENDED) or <command/> element."
+     * " attribute on either the &lt;iq/&gt; (RECOMMENDED) or &lt;command/&gt; element."
      * </p>
      */
     protected String language;

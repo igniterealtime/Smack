@@ -61,10 +61,10 @@ public class CapsExtension implements ExtensionElement {
      * {@inheritDoc}.
      *
      * <pre>
-     *  <c xmlns='http://jabber.org/protocol/caps'
+     *  &lt;c xmlns='http://jabber.org/protocol/caps'
      *     hash='sha-1'
      *     node='http://code.google.com/p/exodus'
-     *     ver='QgayPKawpkPSDYmwT/WM94uAlu0='/>
+     *     ver='QgayPKawpkPSDYmwT/WM94uAlu0='/&gt;
      * </pre>
      *
      */

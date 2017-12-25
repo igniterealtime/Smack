@@ -49,10 +49,11 @@ import org.jivesoftware.smack.provider.ProviderManager;
 /**
  * The EnhancedDebuggerWindow is the main debug window that will show all the EnhancedDebuggers.
  * For each connection to debug there will be an EnhancedDebugger that will be shown in the
- * EnhancedDebuggerWindow.<p>
- * <p/>
+ * EnhancedDebuggerWindow.
+ * <p>
  * This class also provides information about Smack like for example the Smack version and the
  * installed providers.
+ * </p>
  *
  * @author Gaston Dombiak
  */

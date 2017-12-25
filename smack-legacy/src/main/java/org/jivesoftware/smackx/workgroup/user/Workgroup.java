@@ -68,7 +68,7 @@ import org.jxmpp.jid.Jid;
  * Provides workgroup services for users. Users can join the workgroup queue, depart the
  * queue, find status information about their placement in the queue, and register to
  * be notified when they are routed to an agent.<p>
- * <p/>
+ *
  * This class only provides a users perspective into a workgroup and is not intended
  * for use by agents.
  *
@@ -232,20 +232,20 @@ public class Workgroup {
      * the queue, queue status events will be sent to indicate the user's position and
      * estimated time left in the queue. Once joining the queue, there are three ways
      * the user can leave the queue: <ul>
-     * <p/>
+     *
      * <li>The user is routed to an agent, which triggers a GroupChat invitation.
      * <li>The user asks to leave the queue by calling the {@link #departQueue} method.
      * <li>A server error occurs, or an administrator explicitly removes the user
      * from the queue.
      * </ul>
-     * <p/>
+     *
      * A user cannot request to join the queue again if already in the queue. Therefore,
      * this method will throw an IllegalStateException if the user is already in the queue.<p>
-     * <p/>
+     *
      * Some servers may be configured to require certain meta-data in order to
      * join the queue. In that case, the {@link #joinQueue(Form)} method should be
      * used instead of this method so that meta-data may be passed in.<p>
-     * <p/>
+     *
      * The server tracks the conversations that a user has with agents over time. By
      * default, that tracking is done using the user's JID. However, this is not always
      * possible. For example, when the user is logged in anonymously using a web client.
@@ -271,19 +271,19 @@ public class Workgroup {
      * the queue, queue status events will be sent to indicate the user's position and
      * estimated time left in the queue. Once joining the queue, there are three ways
      * the user can leave the queue: <ul>
-     * <p/>
+     *
      * <li>The user is routed to an agent, which triggers a GroupChat invitation.
      * <li>The user asks to leave the queue by calling the {@link #departQueue} method.
      * <li>A server error occurs, or an administrator explicitly removes the user
      * from the queue.
      * </ul>
-     * <p/>
+     *
      * A user cannot request to join the queue again if already in the queue. Therefore,
      * this method will throw an IllegalStateException if the user is already in the queue.<p>
-     * <p/>
+     *
      * Some servers may be configured to require certain meta-data in order to
      * join the queue.<p>
-     * <p/>
+     *
      * The server tracks the conversations that a user has with agents over time. By
      * default, that tracking is done using the user's JID. However, this is not always
      * possible. For example, when the user is logged in anonymously using a web client.
@@ -310,19 +310,19 @@ public class Workgroup {
      * the queue, queue status events will be sent to indicate the user's position and
      * estimated time left in the queue. Once joining the queue, there are three ways
      * the user can leave the queue: <ul>
-     * <p/>
+     *
      * <li>The user is routed to an agent, which triggers a GroupChat invitation.
      * <li>The user asks to leave the queue by calling the {@link #departQueue} method.
      * <li>A server error occurs, or an administrator explicitly removes the user
      * from the queue.
      * </ul>
-     * <p/>
+     *
      * A user cannot request to join the queue again if already in the queue. Therefore,
      * this method will throw an IllegalStateException if the user is already in the queue.<p>
-     * <p/>
+     *
      * Some servers may be configured to require certain meta-data in order to
      * join the queue.<p>
-     * <p/>
+     *
      * The server tracks the conversations that a user has with agents over time. By
      * default, that tracking is done using the user's JID. However, this is not always
      * possible. For example, when the user is logged in anonymously using a web client.
@@ -359,19 +359,19 @@ public class Workgroup {
      * the queue, queue status events will be sent to indicate the user's position and
      * estimated time left in the queue. Once joining the queue, there are three ways
      * the user can leave the queue: <ul>
-     * <p/>
+     *
      * <li>The user is routed to an agent, which triggers a GroupChat invitation.
      * <li>The user asks to leave the queue by calling the {@link #departQueue} method.
      * <li>A server error occurs, or an administrator explicitly removes the user
      * from the queue.
      * </ul>
-     * <p/>
+     *
      * A user cannot request to join the queue again if already in the queue. Therefore,
      * this method will throw an IllegalStateException if the user is already in the queue.<p>
-     * <p/>
+     *
      * Some servers may be configured to require certain meta-data in order to
      * join the queue.<p>
-     * <p/>
+     *
      * The server tracks the conversations that a user has with agents over time. By
      * default, that tracking is done using the user's JID. However, this is not always
      * possible. For example, when the user is logged in anonymously using a web client.
@@ -413,7 +413,7 @@ public class Workgroup {
     /**
      * Departs the workgroup queue. If the user is not currently in the queue, this
      * method will do nothing.<p>
-     * <p/>
+     *
      * Normally, the user would not manually leave the queue. However, they may wish to
      * under certain circumstances -- for example, if they no longer wish to be routed
      * to an agent because they've been waiting too long.

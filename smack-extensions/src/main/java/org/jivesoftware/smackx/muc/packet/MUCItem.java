@@ -130,7 +130,7 @@ public class MUCItem implements NamedElement {
     }
 
     /**
-     * Returns the <room@service/nick> by which an occupant is identified within the context of a
+     * Returns the &lt;room@service/nick&gt; by which an occupant is identified within the context of a
      * room. If the room is non-anonymous, the JID will be included in the item.
      * 
      * @return the room JID by which an occupant is identified within the room.

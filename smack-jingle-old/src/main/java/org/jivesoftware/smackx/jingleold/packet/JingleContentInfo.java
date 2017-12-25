@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.jingleold.media.ContentInfo;
 /**
  * Jingle content info.
  *
- * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+ * @author Alvaro Saurin
  */
 public class JingleContentInfo implements ExtensionElement {
 

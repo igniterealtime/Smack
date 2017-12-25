@@ -93,10 +93,11 @@ import org.jxmpp.jid.Jid;
 
 /**
  * The EnhancedDebugger is a debugger that allows to debug sent, received and interpreted messages
- * but also provides the ability to send ad-hoc messages composed by the user.<p>
- * <p/>
+ * but also provides the ability to send ad-hoc messages composed by the user.
+ * <p>
  * A new EnhancedDebugger will be created for each connection to debug. All the EnhancedDebuggers
  * will be shown in the same debug window provided by the class EnhancedDebuggerWindow.
+ * </p>
  *
  * @author Gaston Dombiak
  */

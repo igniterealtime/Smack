@@ -29,7 +29,7 @@ import org.jivesoftware.smackx.jingleold.media.PayloadType;
 /**
  * Jingle content description.
  *
- * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+ * @author Alvaro Saurin
  */
 public abstract class JingleDescription implements ExtensionElement {
 

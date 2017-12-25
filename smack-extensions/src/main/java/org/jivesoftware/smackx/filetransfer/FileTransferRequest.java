@@ -122,7 +122,7 @@ public class FileTransferRequest {
     /**
      * Accepts this file transfer and creates the incoming file transfer.
      * 
-     * @return Returns the <b><i>IncomingFileTransfer</b></i> on which the
+     * @return Returns the IncomingFileTransfer on which the
      *         file transfer can be carried out.
      */
     public IncomingFileTransfer accept() {

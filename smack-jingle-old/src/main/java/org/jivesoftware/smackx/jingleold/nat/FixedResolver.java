@@ -26,7 +26,7 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
  * the external address and port are previously known when the object is
  * initialized.
  *
- * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+ * @author Alvaro Saurin
  */
 public class FixedResolver extends TransportResolver {
 

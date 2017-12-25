@@ -25,7 +25,7 @@ public class ErrorIQ extends SimpleIQ {
     /**
      * Constructs a new error IQ.
      * <p>
-     * According to RFC 6120 § 8.3.1 "4. An error stanza MUST contain an <error/> child element.", so the xmppError argument is mandatory.
+     * According to RFC 6120 § 8.3.1 "4. An error stanza MUST contain an &lt;error/&gt; child element.", so the xmppError argument is mandatory.
      * </p>
      * @param xmppErrorBuilder the XMPPError builder (required).
      */

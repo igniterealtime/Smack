@@ -25,10 +25,11 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 
 /**
  * This class provides necessary Jingle Session jmf methods and behavior.
- * <p/>
+ * <p>
  * The goal of this class is to provide a flexible way to make JingleManager control jmf streaming APIs without implement them.
  * For instance you can implement a file transfer using java sockets or a VOIP Media Manager using JMF.
  * You can implement many JingleMediaManager according to you necessity.
+ * </p>
  *
  * @author Thiago Camargo
  */

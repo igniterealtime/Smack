@@ -23,7 +23,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 
 /**
- * Stanza(/Packet) extension for >XEP-0297: Stanza Forwarding.
+ * Stanza extension for XEP-0297: Stanza Forwarding.
  * 
  * @author Georg Lukas
  * @see <a href="http://xmpp.org/extensions/xep-0297.html">XEP-0297: Stanza Forwarding</a>

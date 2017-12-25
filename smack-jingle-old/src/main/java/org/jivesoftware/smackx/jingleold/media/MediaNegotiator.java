@@ -38,7 +38,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleDescription;
 import org.jivesoftware.smackx.jingleold.packet.JingleError;
 
 /**
- * Manager for jmf descriptor negotiation. <p/> <p/> This class is responsible
+ * Manager for jmf descriptor negotiation. This class is responsible
  * for managing the descriptor negotiation process, handling all the xmpp
  * packets interchange and the stage control. handling all the xmpp packets
  * interchange and the stage control.

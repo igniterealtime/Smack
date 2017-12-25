@@ -45,12 +45,11 @@ import org.jivesoftware.smackx.jingleold.packet.JingleTransport.JingleTransportC
 
 /**
  * Transport negotiator.
- * <p/>
- * <p/>
+ *
  * This class is responsible for managing the transport negotiation process,
  * handling all the stanza(/packet) interchange and the stage control.
  *
- * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+ * @author Alvaro Saurin
  */
 public abstract class TransportNegotiator extends JingleNegotiator {
 
@@ -829,7 +828,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     /**
      * Raw-UDP transport negotiator.
      *
-     * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+     * @author Alvaro Saurin
      */
     public static final class RawUdp extends TransportNegotiator {
 
@@ -884,7 +883,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     /**
      * Ice transport negotiator.
      *
-     * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+     * @author Alvaro Saurin
      */
     public static final class Ice extends TransportNegotiator {
 

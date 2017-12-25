@@ -199,7 +199,7 @@ public class STUNResolver extends TransportResolver {
     /**
      * Load a list of services: STUN servers and ports. Some public STUN servers
      * are:
-     * <p/>
+     *
      * <pre>
      *               iphone-stun.freenet.de:3478
      *               larry.gloo.net:3478
@@ -212,7 +212,7 @@ public class STUNResolver extends TransportResolver {
      *               stun.voxgratia.org (no DNS SRV record)
      *               stun.noc.ams-ix.net
      * </pre>
-     * <p/>
+     *
      * This list should be contained in a file in the "META-INF" directory
      *
      * @return a list of services
@@ -494,7 +494,7 @@ public class STUNResolver extends TransportResolver {
 
         /**
          * Check a binding with the STUN currentServer.
-         * <p/>
+         *
          * Note: this function blocks for some time, waiting for a response.
          *
          * @return true if the currentServer is usable.

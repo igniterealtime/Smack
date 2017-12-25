@@ -35,6 +35,7 @@ import org.jxmpp.jid.EntityBareJid;
 /**
  * Base class for SASL mechanisms.
  * Subclasses will likely want to implement their own versions of these methods:
+ * <ul>
  *  <li>{@link #authenticate(String, String, DomainBareJid, String, EntityBareJid, SSLSession)} -- Initiate authentication stanza using the
  *  deprecated method.</li>
  *  <li>{@link #authenticate(String, DomainBareJid, CallbackHandler, EntityBareJid, SSLSession)} -- Initiate authentication stanza

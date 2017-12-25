@@ -84,7 +84,7 @@ public class MetaDataUtils {
     /**
      * Serializes a Map of String name/value pairs into the meta-data XML format.
      *
-     * @param metaData the Map of meta-data as Map&lt;String,List&lt;String>>
+     * @param metaData the Map of meta-data as Map&lt;String,List&lt;String&gt;&gt;
      * @return the meta-data values in XML form.
      */
     public static String serializeMetaData(Map<String, List<String>> metaData) {

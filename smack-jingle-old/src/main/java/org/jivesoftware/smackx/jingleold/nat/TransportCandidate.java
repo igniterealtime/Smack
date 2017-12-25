@@ -37,7 +37,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Transport candidate.
- * <p/>
+ *
  * A candidate represents the possible transport for data interchange between
  * the two endpoints.
  *
@@ -346,7 +346,7 @@ public abstract class TransportCandidate {
      * Check if a transport candidate is usable. The transport resolver should
      * check if the transport candidate the other endpoint has provided is
      * usable.
-     * <p/>
+     *
      * Subclasses should provide better methods if they can...
      */
     public void check(final List<TransportCandidate> localCandidates) {

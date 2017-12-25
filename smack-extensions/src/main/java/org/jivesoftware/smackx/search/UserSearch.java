@@ -37,7 +37,7 @@ import org.xmlpull.v1.XmlPullParser;
  * has been used mainly to search for people who have registered with user directories (e.g., the "Jabber User Directory" hosted at users.jabber.org).
  * However, the jabber:iq:search protocol is not limited to user directories, and could be used to search other Jabber information repositories
  * (such as chatroom directories) or even to provide a Jabber interface to conventional search engines.
- * <p/>
+ *
  * The basic functionality is to query an information repository regarding the possible search fields, to send a search query, and to receive search results.
  *
  * @author Derek DeMoro

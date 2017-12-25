@@ -380,7 +380,7 @@ public abstract class ValidateElement implements ExtensionElement {
     }
 
     /**
-     * The <list-range/> element SHOULD be included only when the <field/> is of type "list-multi" and SHOULD be ignored
+     * The &gt;list-range/&lt; element SHOULD be included only when the &lt;field/&gt; is of type "list-multi" and SHOULD be ignored
      * otherwise.
      * 
      * @param formField

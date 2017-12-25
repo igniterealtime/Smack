@@ -1670,8 +1670,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * Send a unconditional Stream Management acknowledgment to the server.
      * <p>
      * See <a href="http://xmpp.org/extensions/xep-0198.html#acking">XEP-198: Stream Management § 4. Acks</a>:
-     * "Either party MAY send an <a/> element at any time (e.g., after it has received a certain number of stanzas,
-     * or after a certain period of time), even if it has not received an <r/> element from the other party."
+     * "Either party MAY send an &lt;a/&gt; element at any time (e.g., after it has received a certain number of stanzas,
+     * or after a certain period of time), even if it has not received an &lt;r/&gt; element from the other party."
      * </p>
      * 
      * @throws StreamManagementNotEnabledException if Stream Management is not enabled.

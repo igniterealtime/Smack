@@ -34,8 +34,8 @@ import java.util.zip.InflaterInputStream;
  * <p>
  * See also:
  * <ul>
- * <li><a href="http://docs.oracle.com/javase/7/docs/api/java/util/zip/Deflater.html#deflate(byte[], int, int, int)">The required deflate() method (Java7)</a>
- * <li><a href="http://developer.android.com/reference/java/util/zip/Deflater.html#deflate(byte[], int, int, int)">The required deflate() method (Android)</a>
+  * <li><a href="http://docs.oracle.com/javase/7/docs/api/java/util/zip/Deflater.html#deflate(byte[],%20int,%20int,%20int)">The required deflate() method (Java7)</a>
+ * <li><a href="http://developer.android.com/reference/java/util/zip/Deflater.html#deflate(byte[],%20int,%20int,%20int)">The required deflate() method (Android)</a>
  * </ul>
  * 
  * @author Florian Schmaus

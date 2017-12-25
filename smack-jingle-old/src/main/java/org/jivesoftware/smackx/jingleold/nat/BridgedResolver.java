@@ -36,7 +36,7 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
 /**
  * Bridged Resolver use a RTPBridge Service to add a relayed candidate.
  * A very reliable solution for NAT Traversal.
- * <p/>
+ *
  * The resolver verify is the XMPP Server that the client is connected offer this service.
  * If the server supports, a candidate is requested from the service.
  * The resolver adds this candidate
@@ -61,7 +61,7 @@ public class BridgedResolver extends TransportResolver {
 
     /**1
      * Resolve Bridged Candidate.
-     * <p/>
+     *
      * The BridgedResolver takes the IP address and ports of a jmf proxy service.
      * @throws NotConnectedException 
      * @throws InterruptedException 

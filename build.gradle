@@ -178,8 +178,7 @@ allprojects {
 			// since the one paramater addStringOption doesn't seem to
 			// work, we extra add '-quiet', which is added anyway by
 			// gradle.
-			// TODO enable all doclints, see SMACK-650
-			options.addStringOption('Xdoclint:all,-html', '-quiet')
+			options.addStringOption('Xdoclint:all', '-quiet')
 		}
 	}
 	tasks.withType(Javadoc) {
@@ -193,6 +192,10 @@ allprojects {
 	configurations.errorprone {
 		resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.15'
 	}
+
+	// Make all project's 'test' target depend on javadoc, so that
+	// javadoc is also linted.
+	test { dependsOn javadoc }
 }
 
 gradle.taskGraph.whenReady { taskGraph ->

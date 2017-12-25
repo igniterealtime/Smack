@@ -54,15 +54,17 @@ import org.jivesoftware.smackx.jingleold.media.JingleMediaSession;
  * It sends and receives jmf for and from desired IPs and ports.
  * Also has a rport Symetric behavior for better NAT Traversal.
  * It send data from a defined port and receive data in the same port, making NAT binds easier.
- * <p/>
+ * <p>
  * Send from portA to portB and receive from portB in portA.
- * <p/>
+ * </p>
+ * <p>
  * Sending
- * portA ---> portB
- * <p/>
+ * portA ---&gt; portB
+ * </p>
+ * <p>
  * Receiving
- * portB ---> portA
- * <p/>
+ * portB ---&gt; portA
+ * </p>
  * <i>Transmit and Receive are interdependence. To receive you MUST transmit. </i>
  *
  * @author Thiago Camargo
