@@ -248,6 +248,16 @@ public final class SmackConfiguration {
         compressionHandlers.add(xmppInputOutputStream);
     }
 
+    /**
+     * Get compression handlers.
+     *
+     * @deprecated use {@link #getCompressionHandlers()} instead.
+     */
+    @Deprecated
+    public static List<XMPPInputOutputStream> getCompresionHandlers() {
+        return getCompressionHandlers();
+    }
+
     public static List<XMPPInputOutputStream> getCompressionHandlers() {
         List<XMPPInputOutputStream> res = new ArrayList<>(compressionHandlers.size());
         for (XMPPInputOutputStream ios : compressionHandlers) {
@@ -263,6 +273,8 @@ public final class SmackConfiguration {
      * of a TLS certificate. XMPP connections are able to overwrite this settings by supplying a
      * HostnameVerifier in their ConnectionConfiguration with
      * {@link ConnectionConfiguration.Builder#setHostnameVerifier(HostnameVerifier)}.
+     *
+     * @param verifier HostnameVerifier
      */
     public static void setDefaultHostnameVerifier(HostnameVerifier verifier) {
         defaultHostnameVerififer = verifier;

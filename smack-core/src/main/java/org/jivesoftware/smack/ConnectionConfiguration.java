@@ -889,6 +889,7 @@ public abstract class ConnectionConfiguration {
          * argument. It also calls {@link #allowEmptyOrNullUsernames()} and {@link #setSecurityMode(ConnectionConfiguration.SecurityMode)} to
          * {@link SecurityMode#required}.
          *
+         * @param sslContext custom SSLContext to be used.
          * @return a reference to this builder.
          */
         public B performSaslExternalAuthentication(SSLContext sslContext) {

@@ -111,6 +111,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
      * 
      * @param nodeId The node to which the items are being sent or deleted
      * @param items The list of {@link Item} or {@link RetractItem}
+     * @param notify
      */
     public ItemsExtension(String nodeId, List<? extends ExtensionElement> items, boolean notify)
     {
@@ -140,7 +141,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
     /**
      * Gets the items related to the type of request or event.
      * 
-     * return List of {@link Item}, {@link RetractItem}, or null
+     * @return List of {@link Item}, {@link RetractItem}, or null
      */
     public List<? extends ExtensionElement> getItems()
     {

@@ -43,6 +43,9 @@ public interface PrivateDataProvider {
      *
      * @param parser an XML parser.
      * @return a new PrivateData instance.
+     * @throws XmlPullParserException
+     * @throws IOException
+     * @throws SmackException
      */
     PrivateData parsePrivateData(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException;
 }

@@ -64,7 +64,8 @@ public class LeafNode extends Node
 
     /**
      * Get the current items stored in the node.
-     * 
+     *
+     * @param <T> type of the items.
      * @return List of {@link Item} in the node
      * @throws XMPPErrorException
      * @throws NoResponseException if there was no response from the server.
@@ -83,6 +84,8 @@ public class LeafNode extends Node
      * 
      * @param subscriptionId -  The subscription id for the 
      * associated subscription.
+     * @param <T> type of the items.
+     *
      * @return List of {@link Item} in the node
      * @throws XMPPErrorException
      * @throws NoResponseException if there was no response from the server.
@@ -103,7 +106,8 @@ public class LeafNode extends Node
      * event, that did not include the payload.
      * 
      * @param ids Item ids of the items to retrieve
-     * 
+     * @param <T> type of the items.
+     *
      * @return The list of {@link Item} with payload
      * @throws XMPPErrorException 
      * @throws NoResponseException if there was no response from the server.
@@ -126,7 +130,8 @@ public class LeafNode extends Node
      * Get items persisted on the node, limited to the specified number.
      * 
      * @param maxItems Maximum number of items to return
-     * 
+     * @param <T> type of the items.
+     *
      * @return List of {@link Item}
      * @throws XMPPErrorException
      * @throws NoResponseException if there was no response from the server.
@@ -148,6 +153,8 @@ public class LeafNode extends Node
      * on.
      * 
      * @return List of {@link Item}
+     * @param <T> type of the items.
+     *
      * @throws XMPPErrorException
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
@@ -170,6 +177,8 @@ public class LeafNode extends Node
      *        This is an optional argument, if provided as null no extensions will be added.
      * @param returnedExtensions a collection that will be filled with the returned packet
      *        extensions. This is an optional argument, if provided as null it won't be populated.
+     * @param <T> type of the items.
+     *
      * @return List of {@link Item}
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -229,6 +238,8 @@ public class LeafNode extends Node
      * publishes an event with NO item.
      * 
      * @param item - The item being sent
+     * @param <T> type of the items.
+     *
      * @throws NotConnectedException 
      * @throws InterruptedException 
      * @throws XMPPErrorException
@@ -249,6 +260,8 @@ public class LeafNode extends Node
      * list will get stored on the node, assuming it stores the last sent item.
      * 
      * @param items - The collection of items being sent
+     * @param <T> type of the items.
+     *
      * @throws NotConnectedException 
      * @throws InterruptedException 
      * @throws XMPPErrorException
@@ -294,6 +307,8 @@ public class LeafNode extends Node
      * publishes an event with NO item.
      * 
      * @param item - The item being sent
+     * @param <T> type of the items.
+     *
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 
@@ -315,6 +330,8 @@ public class LeafNode extends Node
      * list will get stored on the node, assuming it stores the last sent item.
      * 
      * @param items - The collection of {@link Item} objects being sent
+     * @param <T> type of the items.
+     *
      * @throws XMPPErrorException 
      * @throws NoResponseException 
      * @throws NotConnectedException 

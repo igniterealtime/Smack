@@ -38,6 +38,7 @@ public class HostAddress {
      * 
      * @param fqdn the optional fully qualified domain name (FQDN).
      * @param port The port to connect on.
+     * @param inetAddresses list of addresses.
      * @throws IllegalArgumentException If the port is out of valid range (0 - 65535).
      */
     public HostAddress(String fqdn, int port, List<InetAddress> inetAddresses) {

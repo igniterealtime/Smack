@@ -293,6 +293,8 @@ public final class AccountManager extends Manager {
      * be performed after a successful login operation has been completed. Not all servers
      * support changing passwords; an XMPPException will be thrown when that is the case.
      *
+     * @param newPassword new password.
+     *
      * @throws IllegalStateException if not currently logged-in to the server.
      * @throws XMPPErrorException if an error occurs when changing the password.
      * @throws NoResponseException if there was no response from the server.

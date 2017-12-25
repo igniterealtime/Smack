@@ -211,7 +211,8 @@ public abstract class AdHocCommand {
      * Executes the command. This is invoked only on the first stage of the
      * command. It is invoked on every command. If there is a problem executing
      * the command it throws an XMPPException.
-     * 
+     *
+     * @throws NoResponseException
      * @throws XMPPErrorException if there is an error executing the command.
      * @throws NotConnectedException 
      * @throws InterruptedException 
@@ -226,6 +227,7 @@ public abstract class AdHocCommand {
      * XMPPException.
      * 
      * @param response the form answer of the previous stage.
+     * @throws NoResponseException
      * @throws XMPPErrorException if there is a problem executing the command.
      * @throws NotConnectedException 
      * @throws InterruptedException 
@@ -240,6 +242,8 @@ public abstract class AdHocCommand {
      * XMPPException.
      * 
      * @param response the form answer of the previous stage.
+     *
+     * @throws NoResponseException
      * @throws XMPPErrorException if there is a problem executing the command.
      * @throws NotConnectedException 
      * @throws InterruptedException 
@@ -251,7 +255,8 @@ public abstract class AdHocCommand {
      * information of the previous stage. The command must change it state to
      * the previous one. If there is a problem executing the command it throws
      * an XMPPException.
-     * 
+     *
+     * @throws NoResponseException
      * @throws XMPPErrorException if there is a problem executing the command.
      * @throws NotConnectedException 
      * @throws InterruptedException 
@@ -262,7 +267,8 @@ public abstract class AdHocCommand {
      * Cancels the execution of the command. This can be invoked on any stage of
      * the execution. If there is a problem executing the command it throws an
      * XMPPException.
-     * 
+     *
+     * @throws NoResponseException
      * @throws XMPPErrorException if there is a problem executing the command.
      * @throws NotConnectedException 
      * @throws InterruptedException 

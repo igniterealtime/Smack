@@ -24,10 +24,28 @@ public class PacketUtil {
 
     /**
      * Get a extension element from a collection.
-     *
      * @param collection
      * @param element
      * @param namespace
+     * @param <PE>
+     * @return the extension element
+     * @deprecated use {@link #extensionElementFrom(Collection, String, String)} instead.
+     */
+    @Deprecated
+    public static <PE extends ExtensionElement> PE packetExtensionfromCollection(
+            Collection<ExtensionElement> collection, String element,
+            String namespace) {
+        return extensionElementFrom(collection, element, namespace);
+    }
+
+    /**
+     * Get a extension element from a collection.
+     *
+     * @param collection Collection of ExtensionElements.
+     * @param element name of the targeted ExtensionElement.
+     * @param namespace namespace of the targeted ExtensionElement.
+     * @param <PE> Type of the ExtensionElement
+     *
      * @return the extension element
      * @deprecated use {@link #extensionElementFrom(Collection, String, String)} instead
      */
@@ -41,9 +59,11 @@ public class PacketUtil {
     /**
      * Get a extension element from a collection.
      *
-     * @param collection
-     * @param element
-     * @param namespace
+     * @param collection Collection of ExtensionElements.
+     * @param element name of the targeted ExtensionElement.
+     * @param namespace namespace of the targeted ExtensionElement.
+     * @param <PE> Type of the ExtensionElement
+     *
      * @return the extension element
      */
     @SuppressWarnings("unchecked")

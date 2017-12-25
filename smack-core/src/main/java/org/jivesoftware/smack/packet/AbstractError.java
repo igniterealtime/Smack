@@ -96,6 +96,7 @@ public class AbstractError {
      *
      * @param elementName the XML element name of the stanza(/packet) extension.
      * @param namespace the XML element namespace of the stanza(/packet) extension.
+     * @param <PE> type of the ExtensionElement.
      * @return the extension, or <tt>null</tt> if it doesn't exist.
      */
     public <PE extends ExtensionElement> PE getExtension(String elementName, String namespace) {

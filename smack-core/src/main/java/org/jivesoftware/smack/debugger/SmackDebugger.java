@@ -58,6 +58,7 @@ public abstract class SmackDebugger {
      * needs to wrap the new reader and writer to keep being notified of the connection
      * traffic.
      *
+     * @param reader connection reader.
      * @return a new special Reader that wraps the new connection Reader.
      */
     public abstract Reader newConnectionReader(Reader reader);
@@ -68,6 +69,7 @@ public abstract class SmackDebugger {
      * needs to wrap the new reader and writer to keep being notified of the connection
      * traffic.
      *
+     * @param writer connection writer.
      * @return a new special Writer that wraps the new connection Writer.
      */
     public abstract Writer newConnectionWriter(Writer writer);

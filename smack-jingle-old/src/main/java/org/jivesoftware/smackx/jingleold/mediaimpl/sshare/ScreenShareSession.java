@@ -121,10 +121,32 @@ public class ScreenShareSession extends JingleMediaSession {
 
     /**
      * Starts transmission and for NAT Traversal reasons start receiving also.
+     *
+     * @deprecated use {@link #startTransmit()} instead.
+     */
+    @Deprecated
+    public void startTrasmit() {
+        startTransmit();
+    }
+
+    /**
+     * Starts transmission and for NAT Traversal reasons start receiving also.
      */
     @Override
     public void startTransmit() {
         new Thread(transmitter).start();
+    }
+
+    /**
+     * Set transmit activity. If the active is true, the instance should transmit.
+     * If it is set to false, the instance should pause transmit.
+     *
+     * @param active active state
+     * @deprecated use {@link #setTransmit(boolean)} instead.
+     */
+    @Deprecated
+    public void setTrasmit(boolean active) {
+        setTransmit(active);
     }
 
     /**
@@ -144,6 +166,16 @@ public class ScreenShareSession extends JingleMediaSession {
     @Override
     public void startReceive() {
         // Do nothing
+    }
+
+    /**
+     * Stops transmission and for NAT Traversal reasons stop receiving also.
+     *
+     * @deprecated use {@link #stopTransmit()} instead.
+     */
+    @Deprecated
+    public void stopTrasmit() {
+        stopTransmit();
     }
 
     /**

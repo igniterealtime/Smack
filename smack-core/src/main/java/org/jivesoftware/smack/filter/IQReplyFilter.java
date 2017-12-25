@@ -81,6 +81,7 @@ public class IQReplyFilter implements StanzaFilter {
      * and following discussion in February and March.
      *
      * @param iqPacket An IQ request. Filter for replies to this packet.
+     * @param conn connection.
      */
     public IQReplyFilter(IQ iqPacket, XMPPConnection conn) {
         if (!iqPacket.isRequestIQ()) {

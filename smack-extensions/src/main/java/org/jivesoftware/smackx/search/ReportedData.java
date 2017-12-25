@@ -43,6 +43,7 @@ public class ReportedData {
      * extension that matches the elementName and namespace "x","jabber:x:data".
      * 
      * @param packet the stanza(/packet) used for reporting data.
+     * @return ReportedData from the packet if present, otherwise null.
      */
     public static ReportedData getReportedDataFrom(Stanza packet) {
         // Check if the packet includes the DataForm extension

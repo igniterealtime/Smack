@@ -110,6 +110,8 @@ public class XMPPError extends AbstractError {
      * 
      * @param type the error type.
      * @param condition the error condition.
+     * @param conditionText
+     * @param errorGenerator
      * @param descriptiveTexts 
      * @param extensions list of stanza(/packet) extensions
      * @param stanza the stanza carrying this XMPP error.

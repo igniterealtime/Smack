@@ -155,6 +155,16 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
 
     /**
      * Starts transmission and for NAT Traversal reasons start receiving also.
+     *
+     * @deprecated use {@link #startTransmit()} instead.
+     */
+    @Deprecated
+    public void startTrasmit() {
+        startTransmit();
+    }
+
+    /**
+     * Starts transmission and for NAT Traversal reasons start receiving also.
      */
     @Override
     public void startTransmit() {
@@ -166,6 +176,18 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
         catch (IOException e) {
             LOGGER.log(Level.WARNING, "exception", e);
         }
+    }
+
+    /**
+     * Set transmit activity. If the active is true, the instance should transmit.
+     * If it is set to false, the instance should pause transmit.
+     *
+     * @param active active state
+     * @deprecated use {@link #setTransmit(boolean)} instead.
+     */
+    @Deprecated
+    public void setTrasmit(boolean active) {
+        setTransmit(active);
     }
 
     /**
@@ -185,6 +207,16 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
     @Override
     public void startReceive() {
         // Do nothing
+    }
+
+    /**
+     * Stops transmission and for NAT Traversal reasons stop receiving also.
+     *
+     * @deprecated use {@link #stopTransmit()} instead.
+     */
+    @Deprecated
+    public void stopTrasmit() {
+        stopTransmit();
     }
 
     /**

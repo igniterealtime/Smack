@@ -29,6 +29,9 @@ public interface EntityCapsPersistentCache {
 
     /**
      * Lookup DiscoverInfo by a Node string.
+     * @param nodeVer
+     *
+     * @return DiscoverInfo.
      */
     DiscoverInfo lookup(String nodeVer);
 

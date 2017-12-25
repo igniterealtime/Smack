@@ -44,13 +44,13 @@ import org.jxmpp.jid.EntityFullJid;
  * // Most servers require you to login before performing other tasks.
  * con.login("jsmith", "mypass");
  * // Start a new conversation with John Doe and send him a message.
- * Chat chat = ChatManager.getInstanceFor(con).createChat(<font color="green">"jdoe@igniterealtime.org"</font>, new MessageListener() {
+ * Chat chat = ChatManager.getInstanceFor(con).createChat("jdoe@igniterealtime.org", new MessageListener() {
  *     public void processMessage(Chat chat, Message message) {
  *         // Print out any messages we get back to standard out.
- *         System.out.println(<font color="green">"Received message: "</font> + message);
+ *         System.out.println("Received message: " + message);
  *     }
  * });
- * chat.sendMessage(<font color="green">"Howdy!"</font>);
+ * chat.sendMessage("Howdy!");
  * // Disconnect from the server
  * con.disconnect();
  * </pre>
@@ -412,7 +412,8 @@ public interface XMPPConnection {
     /**
      * Get the feature stanza(/packet) extensions for a given stream feature of the
      * server, or <code>null</code> if the server doesn't support that feature.
-     * 
+     *
+     * @param <F> {@link ExtensionElement} type of the feature.
      * @param element
      * @param namespace
      * @return a stanza(/packet) extensions of the feature or <code>null</code>

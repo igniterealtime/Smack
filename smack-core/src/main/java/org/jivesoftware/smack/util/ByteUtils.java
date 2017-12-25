@@ -17,6 +17,17 @@
 package org.jivesoftware.smack.util;
 
 public class ByteUtils {
+
+    /**
+     * Concatenate two byte arrays.
+     *
+     * @deprecated use {@link #concat(byte[], byte[])} instead.
+     */
+    @Deprecated
+    public static byte[] concact(byte[] arrayOne, byte[] arrayTwo) {
+        return concat(arrayOne, arrayTwo);
+    }
+
     public static byte[] concat(byte[] arrayOne, byte[] arrayTwo) {
         int combinedLength = arrayOne.length + arrayTwo.length;
         byte[] res = new byte[combinedLength];

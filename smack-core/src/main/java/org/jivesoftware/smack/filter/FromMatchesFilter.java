@@ -52,6 +52,7 @@ public final class FromMatchesFilter extends AbstractFromToMatchesFilter {
      *
      * @param address The address to filter for. If <code>null</code> is given, the stanza must not
      *        have a from address.
+     * @return filter for the "from" address.
      */
     public static FromMatchesFilter create(Jid address) {
         return new FromMatchesFilter(address, address != null ? address.hasNoResource() : false) ;
@@ -63,6 +64,7 @@ public final class FromMatchesFilter extends AbstractFromToMatchesFilter {
      *
      * @param address The address to filter for. If <code>null</code> is given, the stanza must not
      *        have a from address.
+     * @return filter matching the "from" address.
      */
     public static FromMatchesFilter createBare(Jid address) {
         return new FromMatchesFilter(address, true);
@@ -74,6 +76,7 @@ public final class FromMatchesFilter extends AbstractFromToMatchesFilter {
      *
      * @param address The address to filter for. If <code>null</code> is given, the stanza must not
      *        have a from address.
+     * @return filter matching the "from" address.
      */
     public static FromMatchesFilter createFull(Jid address) {
         return new FromMatchesFilter(address, false);

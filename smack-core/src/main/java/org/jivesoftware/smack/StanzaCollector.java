@@ -109,6 +109,7 @@ public class StanzaCollector {
      * immediately returns <tt>null</tt> if no packets are currently in the
      * result queue.
      *
+     * @param <P> type of the result stanza.
      * @return the next stanza(/packet) result, or <tt>null</tt> if there are no more
      *      results.
      */
@@ -124,7 +125,8 @@ public class StanzaCollector {
      * <p>
      * Throws an XMPPErrorException in case the polled stanzas did contain an XMPPError.
      * </p>
-     * 
+     *
+     * @param <P> type of the result stanza.
      * @return the next available packet.
      * @throws XMPPErrorException in case an error response.
      */
@@ -139,7 +141,8 @@ public class StanzaCollector {
     /**
      * Returns the next available packet. The method call will block (not return) until a stanza(/packet) is
      * available.
-     * 
+     *
+     * @param <P> type of the result stanza.
      * @return the next available packet.
      * @throws InterruptedException 
      */
@@ -156,7 +159,8 @@ public class StanzaCollector {
     /**
      * Returns the next available packet. The method call will block until the connection's default
      * timeout has elapsed.
-     * 
+     *
+     * @param <P> type of the result stanza.
      * @return the next available packet.
      * @throws InterruptedException 
      */
@@ -171,6 +175,7 @@ public class StanzaCollector {
      * until a stanza(/packet) is available or the <tt>timeout</tt> has elapsed. If the
      * timeout elapses without a result, <tt>null</tt> will be returned.
      *
+     * @param <P> type of the result stanza.
      * @param timeout the timeout in milliseconds.
      * @return the next available packet.
      * @throws InterruptedException 
@@ -195,7 +200,8 @@ public class StanzaCollector {
      * Returns the next available stanza. The method in equivalent to
      * {@link #nextResultOrThrow(long)} where the timeout argument is the default reply timeout of
      * the connection associated with this collector.
-     * 
+     *
+     * @param <P> type of the result stanza.
      * @return the next available stanza.
      * @throws XMPPErrorException in case an error response was received.
      * @throws NoResponseException if there was no response from the server.
@@ -236,6 +242,7 @@ public class StanzaCollector {
      * </p>
      *
      * @param timeout the amount of time to wait for the next stanza in milliseconds.
+     * @param <P> type of the result stanza.
      * @return the next available stanza.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException in case an error response was received.

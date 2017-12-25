@@ -966,6 +966,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     private SmackConfiguration.UnknownIqRequestReplyMode unknownIqRequestReplyMode = SmackConfiguration.getUnknownIqRequestReplyMode();
 
+    /**
+     * Set how Smack behaves when an unknown IQ request has been received.
+     *
+     * @param unknownIqRequestReplyMode reply mode.
+     */
     public void setUnknownIqRequestReplyMode(UnknownIqRequestReplyMode unknownIqRequestReplyMode) {
         this.unknownIqRequestReplyMode = Objects.requireNonNull(unknownIqRequestReplyMode, "Mode must not be null");
     }
