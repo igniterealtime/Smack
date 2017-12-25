@@ -155,7 +155,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * {@link Mode#dnd do not disturb}. False will be returned when the type or mode
      * is any other value, including when the presence type is unavailable (offline).
      * This is a convenience method equivalent to
-     * <tt>type == Type.available && (mode == Mode.away || mode == Mode.xa || mode == Mode.dnd)</tt>.
+     * <tt>type == Type.available &amp;&amp; (mode == Mode.away || mode == Mode.xa || mode == Mode.dnd)</tt>.
      *
      * @return true if the presence type is available and the presence mode is away, xa, or dnd.
      */

@@ -55,7 +55,7 @@ import org.jxmpp.util.XmppStringUtils;
  *     &lt;iqProvider&gt;
  *         &lt;elementName&gt;query&lt;/elementName&gt;
  *         &lt;namespace&gt;jabber:iq:time&lt;/namespace&gt;
- *         &lt;className&gt;org.jivesoftware.smack.packet.Time&lt/className&gt;
+ *         &lt;className&gt;org.jivesoftware.smack.packet.Time&lt;/className&gt;
  *     &lt;/iqProvider&gt;
  * &lt;/smackProviders&gt;</pre>
  *
@@ -91,7 +91,7 @@ import org.jxmpp.util.XmppStringUtils;
  *     &lt;extensionProvider&gt;
  *         &lt;elementName&gt;x&lt;/elementName&gt;
  *         &lt;namespace&gt;jabber:iq:event&lt;/namespace&gt;
- *         &lt;className&gt;org.jivesoftware.smack.packet.MessageEvent&lt/className&gt;
+ *         &lt;className&gt;org.jivesoftware.smack.packet.MessageEvent&lt;/className&gt;
  *     &lt;/extensionProvider&gt;
  * &lt;/smackProviders&gt;</pre>
  *
