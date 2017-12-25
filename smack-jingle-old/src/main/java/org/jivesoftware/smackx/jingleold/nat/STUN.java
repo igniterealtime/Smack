@@ -39,9 +39,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * STUN IQ Stanza(/Packet) used to request and retrieve a STUN server and port to make p2p connections easier. STUN is usually used by Jingle Media Transmission between two parties that are behind NAT.
- * <p/>
+ *
  * High Level Usage Example:
- * <p/>
+ *
  * STUN stun = STUN.getSTUNServer(connection);
  *
  * @author Thiago Camargo

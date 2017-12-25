@@ -37,7 +37,7 @@ import org.jxmpp.jid.parts.Resourcepart;
 /**
  * Provides methods to manage bookmarks in accordance with XEP-0048. Methods for managing URLs and
  * Conferences are provided.
- * </p>
+ *
  * It should be noted that some extensions have been made to the XEP. There is an attribute on URLs
  * that marks a url as a news feed and also a sub-element can be added to either a URL or conference
  * indicated that it is shared amongst all users on a server.

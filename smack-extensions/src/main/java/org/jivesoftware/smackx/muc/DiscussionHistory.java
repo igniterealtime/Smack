@@ -28,11 +28,11 @@ import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
  * 
  * You can use some or all of these variable to control the amount of history to receive:   
  * <ul>
- *  <li>maxchars -> total number of characters to receive in the history.
- *  <li>maxstanzas -> total number of messages to receive in the history.
- *  <li>seconds -> only the messages received in the last "X" seconds will be included in the 
+ *  <li>maxchars -&gt; total number of characters to receive in the history.
+ *  <li>maxstanzas -&gt; total number of messages to receive in the history.
+ *  <li>seconds -&gt; only the messages received in the last "X" seconds will be included in the 
  * history.
- *  <li>since -> only the messages received since the datetime specified will be included in 
+ *  <li>since -&gt; only the messages received since the datetime specified will be included in 
  * the history.
  * </ul>
  * 

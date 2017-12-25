@@ -418,7 +418,7 @@ public final class MamManager extends Manager {
     /**
      * Obtain page before the first message saved (specific chat).
      * <p>
-     * Note that the messageUid is the XEP-0313 UID and <b>not</> the stanza ID of the message.
+     * Note that the messageUid is the XEP-0313 UID and <b>not</b> the stanza ID of the message.
      * </p>
      *
      * @param chatJid
@@ -442,7 +442,7 @@ public final class MamManager extends Manager {
     /**
      * Obtain page after the last message saved (specific chat).
      * <p>
-     * Note that the messageUid is the XEP-0313 UID and <b>not</> the stanza ID of the message.
+     * Note that the messageUid is the XEP-0313 UID and <b>not</b> the stanza ID of the message.
      * </p>
      *
      * @param chatJid

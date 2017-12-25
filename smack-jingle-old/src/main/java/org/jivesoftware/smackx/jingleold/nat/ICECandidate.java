@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 /**
  * ICE Transport candidate.
- * <p/>
+ *
  * A candidate represents the possible transport for data interchange between
  * the two endpoints.
  *
@@ -216,7 +216,7 @@ public class ICECandidate extends TransportCandidate implements Comparable<ICECa
      * Check if a transport candidate is usable. The transport resolver should
      * check if the transport candidate the other endpoint has provided is
      * usable.
-     * <p/>
+     *
      * ICE Candidate can check connectivity using UDP echo Test.
      */
     @Override

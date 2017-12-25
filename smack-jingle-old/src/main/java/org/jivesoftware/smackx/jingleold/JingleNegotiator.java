@@ -29,13 +29,10 @@ import org.jivesoftware.smackx.jingleold.listeners.JingleListener;
 
 /**
  * Basic Jingle negotiator.
- * <p/>
- * </p>
- * <p/>
+ * <p>
  * JingleNegotiator implements some basic behavior for every Jingle negotiation.
  * It implements a "state" pattern: each stage should process Jingle packets and
  * act depending on the current state in the negotiation...
- * <p/>
  * </p>
  *
  * @author Alvaro Saurin
@@ -215,18 +212,18 @@ public abstract class JingleNegotiator {
      *          Media Negotiator
      *          Transport Negotiator
      *          
-     * <jingle>
-     *      <content>
-     *          <description>
-     *          <transport>
-     *      <content>
-     *          <description>
-     *          <transport>
+     * &lt;jingle&gt;
+     *      &lt;content&gt;
+     *          &lt;description&gt;
+     *          &lt;transport&gt;
+     *      &lt;content&gt;
+     *          &lt;description&gt;
+     *          &lt;transport&gt;
      *          
      * This way, each segment of a Jingle stanza(/packet) has a corresponding negotiator that know how to deal with that
      * part of the Jingle packet.  It also allows us to support Jingle packets of arbitraty complexity.
      * 
-     * Each parent calls dispatchIncomingPacket for each of its children.  The children then pass back a List<> of
+     * Each parent calls dispatchIncomingPacket for each of its children.  The children then pass back a List of
      * results that will get sent when we reach the top level negotiator (JingleSession).
      *
      * @param iq the stanza(/packet) received

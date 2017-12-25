@@ -38,6 +38,7 @@ import org.jxmpp.jid.Jid;
  * <code>getForm</code> method retrieves a form with all the users.
  * <p>
  * Each command has a <tt>node</tt> that should be unique within a given JID.
+ * </p>
  * <p>
  * Commands may have zero or more stages. Each stage is usually used for
  * gathering information required for the command execution. Users are able to
@@ -49,21 +50,22 @@ import org.jxmpp.jid.Jid;
  * have to provide the data forms the user must complete in each stage and the
  * allowed actions the user might perform during each stage (e.g. go to the
  * previous stage or go to the next stage).
- * <p>
+ * </p>
  * All the actions may throw an XMPPException if there is a problem executing
  * them. The <code>XMPPError</code> of that exception may have some specific
  * information about the problem. The possible extensions are:
- * 
+ * <ul>
  * <li><i>malformed-action</i>. Extension of a <i>bad-request</i> error.</li>
  * <li><i>bad-action</i>. Extension of a <i>bad-request</i> error.</li>
  * <li><i>bad-locale</i>. Extension of a <i>bad-request</i> error.</li>
  * <li><i>bad-payload</i>. Extension of a <i>bad-request</i> error.</li>
  * <li><i>bad-sessionid</i>. Extension of a <i>bad-request</i> error.</li>
  * <li><i>session-expired</i>. Extension of a <i>not-allowed</i> error.</li>
+ * </ul>
  * <p>
  * See the <code>SpecificErrorCondition</code> class for detailed description
  * of each one.
- * <p>
+ * </p>
  * Use the <code>getSpecificErrorConditionFrom</code> to obtain the specific
  * information from an <code>XMPPError</code>.
  * 

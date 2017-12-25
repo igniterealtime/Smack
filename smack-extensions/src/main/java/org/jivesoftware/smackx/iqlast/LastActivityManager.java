@@ -48,7 +48,6 @@ import org.jxmpp.jid.Jid;
  * associated with a Jabber ID. A manager handles incoming LastActivity requests
  * of existing Connections. It also allows to request last activity information
  * of other users.
- * <p>
  * 
  * LastActivity (XEP-0012) based on the sending JID's type allows for retrieval
  * of:
@@ -58,11 +57,9 @@ import org.jxmpp.jid.Jid;
  * specified when doing so.
  * <li>How long a host has been up.
  * </ol>
- * <p/>
  * 
  * For example to get the idle time of a user logged in a resource, simple send
  * the LastActivity stanza(/packet) to them, as in the following code:
- * <p>
  * 
  * <pre>
  * XMPPConnection con = new XMPPTCPConnection(&quot;jabber.org&quot;);

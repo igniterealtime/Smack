@@ -45,9 +45,9 @@ import org.xmlpull.v1.XmlPullParserException;
  * RTPBridge IQ Stanza(/Packet) used to request and retrieve a RTPBridge Candidates that can be used for a Jingle Media Transmission between two parties that are behind NAT.
  * This Jingle Bridge has all the needed information to establish a full UDP Channel (Send and Receive) between two parties.
  * <i>This transport method should be used only if other transport methods are not allowed. Or if you want a more reliable transport.</i>
- * <p/>
+ *
  * High Level Usage Example:
- * <p/>
+ *
  * RTPBridge rtpBridge = RTPBridge.getRTPBridge(connection, sessionID);
  *
  * @author Thiago Camargo

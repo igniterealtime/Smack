@@ -34,7 +34,6 @@ import org.jxmpp.jid.EntityFullJid;
  * implements shared methods which are used by the different types of connections (e.g.
  * <code>XMPPTCPConnection</code> or <code>XMPPBOSHConnection</code>). To create a connection to an XMPP server
  * a simple usage of this API might look like the following:
- * <p>
  * 
  * <pre>
  * // Create a connection to the igniterealtime.org XMPP server.
@@ -54,7 +53,6 @@ import org.jxmpp.jid.EntityFullJid;
  * // Disconnect from the server
  * con.disconnect();
  * </pre>
- * </p>
  * <p>
  * Note that the XMPPConnection interface does intentionally not declare any methods that manipulate
  * the connection state, e.g. <code>connect()</code>, <code>disconnect()</code>. You should use the

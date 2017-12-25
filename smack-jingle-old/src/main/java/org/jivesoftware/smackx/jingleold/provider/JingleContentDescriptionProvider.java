@@ -31,7 +31,7 @@ import org.xmlpull.v1.XmlPullParserException;
 /**
  * Parser for a Jingle description.
  *
- * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+ * @author Alvaro Saurin
  */
 public abstract class JingleContentDescriptionProvider extends ExtensionElementProvider<JingleContentDescription> {
 

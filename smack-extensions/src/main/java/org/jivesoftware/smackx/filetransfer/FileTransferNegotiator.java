@@ -269,7 +269,7 @@ public final class FileTransferNegotiator extends Manager {
      * Send a request to another user to send them a file. The other user has
      * the option of, accepting, rejecting, or not responding to a received file
      * transfer request.
-     * <p/>
+     * <p>
      * If they accept, the stanza(/packet) will contain the other user's chosen stream
      * type to send the file across. The two choices this implementation
      * provides to the other user for file transfer are <a
@@ -277,11 +277,12 @@ public final class FileTransferNegotiator extends Manager {
      * which is the preferred method of transfer, and <a
      * href="http://www.xmpp.org/extensions/jep-0047.html">In-Band Bytestreams</a>,
      * which is the fallback mechanism.
-     * <p/>
+     * </p>
+     * <p>
      * The other user may choose to decline the file request if they do not
      * desire the file, their client does not support XEP-0096, or if there are
      * no acceptable means to transfer the file.
-     * <p/>
+     * </p>
      * Finally, if the other user does not respond this method will return null
      * after the specified timeout.
      *

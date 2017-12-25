@@ -22,14 +22,14 @@ import java.util.Locale;
  * Content info. Content info messages are complementary messages that can be
  * transmitted for informing of events like "busy", "ringtone", etc.
  *
- * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+ * @author Alvaro Saurin
  */
 public abstract class ContentInfo {
 
     /**
      * Audio content info messages.
      *
-     * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+     * @author Alvaro Saurin
      */
     public static class Audio extends ContentInfo {
 

@@ -29,7 +29,7 @@ import org.jivesoftware.smack.packet.IQ;
  * and {@link org.jivesoftware.smackx.privacy.provider.PrivacyProvider} to allow and block
  * communications from other users. It contains the appropriate structure to suit
  * user-defined privacy lists. Different configured Privacy packages are used in the
- * server & manager communication in order to:
+ * server and manager communication in order to:
  * <ul>
  * <li>Retrieving one's privacy lists. 
  * <li>Adding, removing, and editing one's privacy lists. 

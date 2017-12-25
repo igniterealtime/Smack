@@ -363,14 +363,14 @@ public class AgentSession {
      * Sets the agent's current status with the workgroup. The presence mode affects
      * how offers are routed to the agent. The possible presence modes with their
      * meanings are as follows:<ul>
-     * <p/>
+     *
      * <li>Presence.Mode.AVAILABLE -- (Default) the agent is available for more chats
      * (equivalent to Presence.Mode.CHAT).
      * <li>Presence.Mode.DO_NOT_DISTURB -- the agent is busy and should not be disturbed.
      * However, special case, or extreme urgency chats may still be offered to the agent.
      * <li>Presence.Mode.AWAY -- the agent is not available and should not
      * have a chat routed to them (equivalent to Presence.Mode.EXTENDED_AWAY).</ul>
-     * <p/>
+     *
      * The max chats value is the maximum number of chats the agent is willing to have
      * routed to them at once. Some servers may be configured to only accept max chat
      * values in a certain range; for example, between two and five. In that case, the
@@ -391,14 +391,14 @@ public class AgentSession {
     /**
      * Sets the agent's current status with the workgroup. The presence mode affects how offers
      * are routed to the agent. The possible presence modes with their meanings are as follows:<ul>
-     * <p/>
+     *
      * <li>Presence.Mode.AVAILABLE -- (Default) the agent is available for more chats
      * (equivalent to Presence.Mode.CHAT).
      * <li>Presence.Mode.DO_NOT_DISTURB -- the agent is busy and should not be disturbed.
      * However, special case, or extreme urgency chats may still be offered to the agent.
      * <li>Presence.Mode.AWAY -- the agent is not available and should not
      * have a chat routed to them (equivalent to Presence.Mode.EXTENDED_AWAY).</ul>
-     * <p/>
+     *
      * The max chats value is the maximum number of chats the agent is willing to have routed to
      * them at once. Some servers may be configured to only accept max chat values in a certain
      * range; for example, between two and five. In that case, the maxChats value the agent sends
@@ -450,7 +450,7 @@ public class AgentSession {
     /**
      * Sets the agent's current status with the workgroup. The presence mode affects how offers
      * are routed to the agent. The possible presence modes with their meanings are as follows:<ul>
-     * <p/>
+     *
      * <li>Presence.Mode.AVAILABLE -- (Default) the agent is available for more chats
      * (equivalent to Presence.Mode.CHAT).
      * <li>Presence.Mode.DO_NOT_DISTURB -- the agent is busy and should not be disturbed.
@@ -493,7 +493,7 @@ public class AgentSession {
 
     /**
      * Removes a user from the workgroup queue. This is an administrative action that the
-     * <p/>
+     *
      * The agent is not guaranteed of having privileges to perform this action; an exception
      * denying the request may be thrown.
      *

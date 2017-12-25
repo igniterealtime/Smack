@@ -238,9 +238,9 @@ public class AMPExtension implements ExtensionElement {
      **/
     public enum Action {
         /**
-         * The "alert" action triggers a reply <message/> stanza to the sending entity.
-         * This <message/> stanza MUST contain the element <amp status='alert'/>,
-         * which itself contains the <rule/> that triggered this action. In all other respects,
+         * The "alert" action triggers a reply &lt;message/&gt; stanza to the sending entity.
+         * This &lt;message/&gt; stanza MUST contain the element &lt;amp status='alert'/&gt;,
+         * which itself contains the &lt;rule/&gt; that triggered this action. In all other respects,
          * this action behaves as "drop".
          */
         alert,
@@ -251,16 +251,16 @@ public class AMPExtension implements ExtensionElement {
          */
         drop,
         /**
-         * The "error" action triggers a reply <message/> stanza of type "error" to the sending entity.
-         * The <message/> stanza's <error/> child MUST contain a
-         * <failed-rules xmlns='http://jabber.org/protocol/amp#errors'/> error condition,
+         * The "error" action triggers a reply &lt;message/&gt; stanza of type "error" to the sending entity.
+         * The &lt;message/&gt; stanza's &lt;error/&gt; child MUST contain a
+         * &lt;failed-rules xmlns='http://jabber.org/protocol/amp#errors'/&gt; error condition,
          * which itself contains the rules that triggered this action.
          */
         error,
         /**
-         * The "notify" action triggers a reply <message/> stanza to the sending entity.
-         * This <message/> stanza MUST contain the element <amp status='notify'/>, which itself
-         * contains the <rule/> that triggered this action. Unlike the other actions,
+         * The "notify" action triggers a reply &lt;message/&gt; stanza to the sending entity.
+         * This &lt;message/&gt; stanza MUST contain the element &lt;amp status='notify'/&gt;, which itself
+         * contains the &lt;rule/&gt; that triggered this action. Unlike the other actions,
          * this action does not override the default behavior for a server.
          * Instead, the server then executes its default behavior after sending the notify.
          */

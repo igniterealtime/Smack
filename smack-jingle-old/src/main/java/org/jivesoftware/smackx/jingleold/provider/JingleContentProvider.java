@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleContent;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * Jingle <content> provider.
+ * Jingle &lt;content&gt; provider.
  * 
  * @author Jeff Williams
  */

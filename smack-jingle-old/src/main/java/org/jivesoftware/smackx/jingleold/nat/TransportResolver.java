@@ -37,7 +37,7 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
  * It is called candidate, because it can be elected or not.
  *
  * @author Thiago Camargo
- * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+ * @author Alvaro Saurin
  */
 public abstract class TransportResolver {
 

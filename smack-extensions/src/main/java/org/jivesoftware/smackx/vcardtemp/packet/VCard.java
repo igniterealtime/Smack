@@ -47,19 +47,19 @@ import org.jxmpp.jid.EntityBareJid;
 /**
  * A VCard class for use with the
  * <a href="http://www.jivesoftware.org/smack/" target="_blank">SMACK jabber library</a>.<p>
- * <p/>
+ *
  * You should refer to the
  * <a href="http://www.xmpp.org/extensions/jep-0054.html" target="_blank">XEP-54 documentation</a>.<p>
- * <p/>
+ *
  * Please note that this class is incomplete but it does provide the most commonly found
  * information in vCards. Also remember that VCard transfer is not a standard, and the protocol
  * may change or be replaced.<p>
- * <p/>
+ *
  * <b>Usage:</b>
  * <pre>
- * <p/>
+ *
  * // To save VCard:
- * <p/>
+ *
  * VCard vCard = new VCard();
  * vCard.setFirstName("kir");
  * vCard.setLastName("max");
@@ -67,16 +67,16 @@ import org.jxmpp.jid.EntityBareJid;
  * vCard.setJabberId("jabber@id.org");
  * vCard.setOrganization("Jetbrains, s.r.o");
  * vCard.setNickName("KIR");
- * <p/>
+ *
  * vCard.setField("TITLE", "Mr");
  * vCard.setAddressFieldHome("STREET", "Some street");
  * vCard.setAddressFieldWork("CTRY", "US");
  * vCard.setPhoneWork("FAX", "3443233");
- * <p/>
+ *
  * vCard.save(connection);
- * <p/>
+ *
  * // To load VCard:
- * <p/>
+ *
  * VCard vCard = new VCard();
  * vCard.load(conn); // load own VCard
  * vCard.load(conn, "joe@foo.bar"); // load someone's VCard
@@ -441,10 +441,10 @@ public class VCard extends IQ {
      * <pre>
      * // Load Avatar from VCard
      * byte[] avatarBytes = vCard.getAvatar();
-     * <p/>
+     *
      * // To create an ImageIcon for Swing applications
      * ImageIcon icon = new ImageIcon(avatar);
-     * <p/>
+     *
      * // To create just an image object from the bytes
      * ByteArrayInputStream bais = new ByteArrayInputStream(avatar);
      * try {

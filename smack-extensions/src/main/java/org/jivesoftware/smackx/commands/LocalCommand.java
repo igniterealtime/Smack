@@ -31,7 +31,7 @@ import org.jxmpp.jid.Jid;
  *      <li>Current Stage</li>
  *      <li>Available actions</li>
  *      <li>Default action</li>
- * </ul><p/>
+ * </ul>
  * To implement a new command extend this class and implement all the abstract
  * methods. When implementing the actions remember that they could be invoked
  * several times, and that you must use the current stage number to know what to

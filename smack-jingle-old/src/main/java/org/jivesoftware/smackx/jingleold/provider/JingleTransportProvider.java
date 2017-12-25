@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParserException;
 /**
  * Provider for a Jingle transport element.
  *
- * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+ * @author Alvaro Saurin
  */
 public abstract class JingleTransportProvider extends ExtensionElementProvider<JingleTransport> {
 

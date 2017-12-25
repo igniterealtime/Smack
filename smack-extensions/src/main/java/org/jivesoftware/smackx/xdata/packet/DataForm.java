@@ -93,7 +93,7 @@ public class DataForm implements ExtensionElement {
 
     /**
      * Returns the description of the data. It is similar to the title on a web page or an X 
-     * window.  You can put a <title/> on either a form to fill out, or a set of data results.
+     * window.  You can put a &lt;title/&gt; on either a form to fill out, or a set of data results.
      * 
      * @return description of the data.
      */
@@ -184,7 +184,7 @@ public class DataForm implements ExtensionElement {
 
     /**
      * Sets the description of the data. It is similar to the title on a web page or an X window.
-     * You can put a <title/> on either a form to fill out, or a set of data results.
+     * You can put a &lt;title/&gt; on either a form to fill out, or a set of data results.
      * 
      * @param title description of the data.
      */

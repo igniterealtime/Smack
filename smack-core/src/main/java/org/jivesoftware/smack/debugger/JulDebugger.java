@@ -24,11 +24,12 @@ import org.jivesoftware.smack.XMPPConnection;
 /**
  * Very simple debugger that prints to the console (stdout) the sent and received stanzas. Use
  * this debugger with caution since printing to the console is an expensive operation that may
- * even block the thread since only one thread may print at a time.<p>
- * <p/>
+ * even block the thread since only one thread may print at a time.
+ * <p>
  * It is possible to not only print the raw sent and received stanzas but also the interpreted
  * packets by Smack. By default interpreted packets won't be printed. To enable this feature
  * just change the <tt>printInterpreted</tt> static variable to <tt>true</tt>.
+ * </p>
  *
  * @author Gaston Dombiak
  */

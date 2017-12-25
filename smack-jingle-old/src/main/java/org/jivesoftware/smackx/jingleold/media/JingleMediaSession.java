@@ -24,11 +24,11 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 
 /**
  * Public Abstract Class provides a clear interface between Media Session and Jingle API.
- * <p/>
+ * <p>
  * When a Jingle Session is fully stablished, we will have a Payload Type and two transport candidates defined for it.
  * Smack Jingle API don't implement Media Transmit and Receive methods.
  * But provides an interface to let the user implements it using another API. For instance: JMF.
- * <p/>
+ * </p>
  * <i>The Class that implements this one, must have the support to transmit and receive the jmf.</i>
  * <i>This interface let the user choose his own jmf API.</i>
  *

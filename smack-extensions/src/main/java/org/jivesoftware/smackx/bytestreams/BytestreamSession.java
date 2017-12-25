@@ -73,7 +73,7 @@ public interface BytestreamSession {
      * read() call on the input stream associated with this session will block for only this amount
      * of time. If the timeout expires, a java.net.SocketTimeoutException is raised, though the
      * session is still valid. The option must be enabled prior to entering the blocking operation
-     * to have effect. The timeout must be > 0. A timeout of zero is interpreted as an infinite
+     * to have effect. The timeout must be &gt; 0. A timeout of zero is interpreted as an infinite
      * timeout. Default is 0.
      * 
      * @param timeout the specified timeout, in milliseconds

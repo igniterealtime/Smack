@@ -36,12 +36,10 @@ import org.xmlpull.v1.XmlPullParserException;
  * Bookmark Storage (XEP-0048) defined a protocol for the storage of bookmarks to conference rooms and other entities
  * in a Jabber user's account.
  * See the following code sample for saving Bookmarks:
- * <p/>
  * <pre>
  * XMPPConnection con = new XMPPTCPConnection("jabber.org");
  * con.login("john", "doe");
  * Bookmarks bookmarks = new Bookmarks();
- * <p/>
  * // Bookmark a URL
  * BookmarkedURL url = new BookmarkedURL();
  * url.setName("Google");
@@ -56,8 +54,6 @@ import org.xmlpull.v1.XmlPullParserException;
  * // Save Bookmarks using PrivateDataManager.
  * PrivateDataManager manager = new PrivateDataManager(con);
  * manager.setPrivateData(bookmarks);
- * <p/>
- * <p/>
  * LastActivity activity = LastActivity.getLastActivity(con, "xray@jabber.org");
  * </pre>
  *

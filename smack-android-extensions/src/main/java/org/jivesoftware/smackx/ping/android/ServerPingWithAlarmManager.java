@@ -50,6 +50,7 @@ import android.os.SystemClock;
  * counted towards the scheduled delay time</li>
  * <li>the scheduled Runnable is not run while the system is in deep sleep.</li>
  * </ul>
+ * <p>
  * That is the reason Android comes with an API to schedule those tasks: AlarmManager. Which this
  * class uses to determine every 30 minutes if a server ping is necessary. The interval of 30
  * minutes is the ideal trade-off between reliability and low resource (battery) consumption.

@@ -42,12 +42,12 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
  * user on the jabber network. There are two stages of the file transfer to be
  * concerned with and they can be handled in different ways depending upon the
  * method that is invoked on this class.
- * <p/>
+ *
  * The first way that a file is received is by calling the
  * {@link #receiveFile()} method. This method, negotiates the appropriate stream
- * method and then returns the <b><i>InputStream</b></i> to read the file
+ * method and then returns the InputStream to read the file
  * data from.
- * <p/>
+ *
  * The second way that a file can be received through this class is by invoking
  * the {@link #receiveFile(File)} method. This method returns immediately and
  * takes as its parameter a file on the local file system where the file
@@ -98,14 +98,14 @@ public class IncomingFileTransfer extends FileTransfer {
     /**
      * This method negotiates the stream and then transfer's the file over the negotiated stream.
      * The transferred file will be saved at the provided location.
-     * <p/>
+     *
      * This method will return immediately, file transfer progress can be monitored through several
      * methods:
-     * <p/>
+     *
      * <UL>
-     * <LI>{@link FileTransfer#getStatus()}
-     * <LI>{@link FileTransfer#getProgress()}
-     * <LI>{@link FileTransfer#isDone()}
+     * <LI>{@link FileTransfer#getStatus()}</LI>
+     * <LI>{@link FileTransfer#getProgress()}</LI>
+     * <LI>{@link FileTransfer#isDone()}</LI>
      * </UL>
      * 
      * @param file The location to save the file.

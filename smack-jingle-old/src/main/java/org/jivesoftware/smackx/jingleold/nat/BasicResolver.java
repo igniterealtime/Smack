@@ -45,7 +45,7 @@ public class BasicResolver extends TransportResolver {
 
     /**
      * Resolve the IP address.
-     * <p/>
+     *
      * The BasicResolver takes the IP addresses of the interfaces and uses the
      * first non-loopback, non-linklocal and non-sitelocal address.
      * @throws NotConnectedException 

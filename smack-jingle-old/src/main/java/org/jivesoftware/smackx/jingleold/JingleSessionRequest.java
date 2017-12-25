@@ -28,7 +28,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * A Jingle session request.
- * <p/>
+ *
  * This class is a facade of a received Jingle request. The user can have direct
  * access to the Jingle stanza(/packet) (<i>JingleSessionRequest.getJingle() </i>) of
  * the request or can use the convenience methods provided by this class.
@@ -107,7 +107,7 @@ public class JingleSessionRequest {
     /**
      * Accepts this request and creates the incoming Jingle session.
      *
-     * @return Returns the <b><i>IncomingJingleSession</b></i> on which the
+     * @return Returns the IncomingJingleSession on which the
      *         negotiation can be carried out.
      * @throws SmackException 
      * @throws InterruptedException 

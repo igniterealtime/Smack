@@ -68,7 +68,6 @@ public final class SmackConfiguration {
      * <li> Server Traffic -- raw XML traffic sent by the server to the client.
      * <li> Interpreted Packets -- shows XML packets from the server as parsed by Smack.
      * </ul>
-     * <p/>
      * Debugging can be enabled by setting this field to true, or by setting the Java system
      * property <tt>smack.debugEnabled</tt> to true. The system property can be set on the
      * command line such as "java SomeApp -Dsmack.debugEnabled=true".

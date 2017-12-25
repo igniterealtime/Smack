@@ -29,7 +29,7 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 /**
  * A jingle transport extension.
  *
- * @author Alvaro Saurin <alvaro.saurin@gmail.com>
+ * @author Alvaro Saurin
  */
 public class JingleTransport implements ExtensionElement {
 
