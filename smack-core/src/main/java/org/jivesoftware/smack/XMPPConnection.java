@@ -451,7 +451,7 @@ public interface XMPPConnection {
 
     public static enum FromMode {
         /**
-         * Leave the 'from' attribute unchanged. This is the behavior of Smack < 4.0
+         * Leave the 'from' attribute unchanged. This is the behavior of Smack &lt; 4.0
          */
         UNCHANGED,
         /**

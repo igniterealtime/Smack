@@ -23,7 +23,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 
 
 /**
- * Looks for a provider file location based on the VM argument <i>smack.provider.file</>.  If it is supplied, its value will 
+ * Looks for a provider file location based on the VM argument <i>smack.provider.file</i>.  If it is supplied, its value will 
  * be used as a file location for a providers file and loaded into the {@link ProviderManager} on Smack initialization.
  *  
  * @author Robin Collier

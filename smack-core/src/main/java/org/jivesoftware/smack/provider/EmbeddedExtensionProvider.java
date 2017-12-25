@@ -48,7 +48,7 @@ import org.xmlpull.v1.XmlPullParser;
  *             &lt;entry xmlns='http://www.w3.org/2005/Atom'&gt;
  *                &lt;title&gt;Soliloquy&lt;/title&gt;
  *                &lt;link rel='alternative' type='text/html'/&gt;
- *                &lt;id>tag:denmark.lit,2003:entry-32397&lt;/id&gt;
+ *                &lt;id&gt;tag:denmark.lit,2003:entry-32397&lt;/id&gt;
  *             &lt;/entry&gt;
  *          &lt;/item&gt;
  *       &lt;/items&gt;
