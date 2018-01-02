@@ -115,7 +115,7 @@ public class RoomTransfer implements ExtensionElement {
     }
 
     public IQ.IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
-        buf.append("\" type=\"").append(type.name()).append("\">");
+        buf.append(" type=\"").append(type.name()).append("\">");
         buf.append("<session xmlns=\"http://jivesoftware.com/protocol/workgroup\" id=\"").append(sessionID).append("\"></session>");
         if (invitee != null) {
             buf.append("<invitee>").append(invitee).append("</invitee>");
