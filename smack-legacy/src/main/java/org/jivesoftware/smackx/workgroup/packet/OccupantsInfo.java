@@ -80,7 +80,7 @@ public class OccupantsInfo extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
-        buf.append("\" roomID=\"").append(roomID).append("\">");
+        buf.append(" roomID=\"").append(roomID).append("\">");
         synchronized (occupants) {
             for (OccupantInfo occupant : occupants) {
                 buf.append("<occupant>");
