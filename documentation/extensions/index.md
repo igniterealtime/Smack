@@ -96,6 +96,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | [Multi-User Chat Light](muclight.md)        | [XEP-xxxx](http://mongooseim.readthedocs.io/en/latest/open-extensions/xeps/xep-muc-light.html) | Multi-User Chats for mobile XMPP applications and specific enviroment. |
 | [OMEMO Multi End Message and Object Encryption](omemo.md)            | [XEP-XXXX](https://conversations.im/omemo/xep-omemo.html) | Encrypt messages using OMEMO encryption (currently only with smack-omemo-signal -> GPLv3). |
 | Google GCM JSON payload                     | n/a                                                  | Semantically the same as XEP-0335: JSON Containers |
+| [Message Markup](messagemarkup.md)          | [XEP-0394](http://xmpp.org/extensions/xep-0394.html)| Style message bodies while keeping body and markup information separated. |
 
 
 Legacy Smack Extensions and currently supported XEPs of smack-legacy
