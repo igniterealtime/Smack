@@ -21,8 +21,6 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 public class CodeBlockElement implements MarkupElement.BlockLevelMarkupElement {
 
     public static final String ELEMENT = "bcode";
-    public static final String ATTR_START = "start";
-    public static final String ATTR_END = "end";
 
     private final int start, end;
 
@@ -53,7 +51,7 @@ public class CodeBlockElement implements MarkupElement.BlockLevelMarkupElement {
     }
 
     @Override
-    public CharSequence toXML() {
+    public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement(this);
         xml.attribute(ATTR_START, getStart());

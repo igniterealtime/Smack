@@ -25,8 +25,6 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 public class ListElement implements MarkupElement.MarkupChildElement {
 
     public static final String ELEMENT = "list";
-    public static final String ATTR_START = "start";
-    public static final String ATTR_END = "end";
     public static final String ELEM_LI = "li";
 
     private final int start, end;
@@ -112,7 +110,7 @@ public class ListElement implements MarkupElement.MarkupChildElement {
         }
 
         @Override
-        public CharSequence toXML() {
+        public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
             xml.attribute(ATTR_START, getStart());

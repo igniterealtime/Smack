@@ -58,7 +58,7 @@ public class MarkupElement implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML() {
+    public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this).rightAngleBracket();
 
         for (MarkupChildElement child : getChildElements()) {
@@ -73,6 +73,9 @@ public class MarkupElement implements ExtensionElement {
      * Interface for child elements.
      */
     public interface MarkupChildElement extends NamedElement {
+
+        String ATTR_START = "start";
+        String ATTR_END = "end";
 
         /**
          * Return the start index of this element.

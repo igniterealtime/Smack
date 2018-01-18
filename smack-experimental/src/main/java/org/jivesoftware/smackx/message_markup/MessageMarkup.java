@@ -173,8 +173,9 @@ public final class MessageMarkup {
             verifyStartEnd(start, end);
 
             ListElement.ListEntryElement last = entries.size() == 0 ? null : entries.get(entries.size() - 1);
+            // Entries themselves do not store end values, that's why we store the last entries end value in this.end
             if (last != null && start != this.end) {
-                throw new IllegalArgumentException("Next entries start must be equal to last entries end.");
+                throw new IllegalArgumentException("Next entries start must be equal to last entries end (" + this.end + ").");
             }
             entries.add(new ListElement.ListEntryElement(start));
             this.end = end;
@@ -214,7 +215,8 @@ public final class MessageMarkup {
 
     private static void verifyStartEnd(int start, int end) {
         if (start >= end || start < 0) {
-            throw new IllegalArgumentException("Start value MUST be greater equal than 0 and MUST be smaller than end value.");
+            throw new IllegalArgumentException("Start value (" + start + ") MUST be greater equal than 0 " +
+                    "and MUST be smaller than end value (" + end + ").");
         }
     }
 }

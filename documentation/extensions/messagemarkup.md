@@ -28,8 +28,8 @@ Those styles are available by calling `builder.setEmphasis(int start, int end)`,
 If you want to apply multiple inline styles to a section, you can do the following:
 ```
 Set<SpanElement.SpanStyle> spanStyles = new HashSet<>();
-styles.add(SpanElement.SpanStyle.emphasis;
-styles.add(SpanElement.SpanStyle.deleted;
+styles.add(SpanElement.SpanStyle.emphasis);
+styles.add(SpanElement.SpanStyle.deleted);
 builder.addSpan(start, end, spanStyles);
 ```
 
