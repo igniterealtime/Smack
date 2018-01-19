@@ -137,7 +137,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
                     System.arraycopy(userBytes, 0, buf, index, 
                         user.length());
                     index += user.length();
-                    byte[] passwordBytes = user.getBytes(StringUtils.UTF8);
+                    byte[] passwordBytes = passwd.getBytes(StringUtils.UTF8);
                     buf[index++] = (byte) (passwordBytes.length);
                     System.arraycopy(passwordBytes, 0, buf, index, 
                         passwd.length());
