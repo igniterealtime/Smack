@@ -94,6 +94,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | [Push Notifications](pushnotifications.md)  | [XEP-0357](http://xmpp.org/extensions/xep-0357.html) | Defines a way to manage push notifications from an XMPP Server. |
 | Stable and Unique Stanza IDs                | [XEP-0359](http://xmpp.org/extensions/xep-0359.html) | This specification describes unique and stable IDs for messages. |
 | HTTP File Upload                            | [XEP-0363](http://xmpp.org/extensions/xep-0363.html) | Protocol to request permissions to upload a file to an HTTP server and get a shareable URL. |
+| References                                  | [XEP-0372](http://xmpp.org/extensions/xep-0363.html) | Add references like mentions or external data to stanzas. |
 | [Spoiler Messages](spoiler.md)              | [XEP-0382](http://xmpp.org/extensions/xep-0382.html) | Indicate that the body of a message should be treated as a spoiler |
 | [Multi-User Chat Light](muclight.md)        | [XEP-xxxx](http://mongooseim.readthedocs.io/en/latest/open-extensions/xeps/xep-muc-light.html) | Multi-User Chats for mobile XMPP applications and specific enviroment. |
 | [OMEMO Multi End Message and Object Encryption](omemo.md)            | [XEP-XXXX](https://conversations.im/omemo/xep-omemo.html) | Encrypt messages using OMEMO encryption (currently only with smack-omemo-signal -> GPLv3). |
