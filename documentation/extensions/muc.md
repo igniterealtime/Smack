@@ -27,7 +27,7 @@ EntityBareJid mucJid = JidCreate.bareFrom("myroom@conference.jabber.org");
 Resourcepart nickname = Resourcepart.from("testbot");
 
 // A other use (we may invite him to a MUC).
-FullJid otherJid = JidCreate.fullFromm("user3@host.org/Smack");
+FullJid otherJid = JidCreate.fullFrom("user3@host.org/Smack");
 ```
 
 Create a new Room
