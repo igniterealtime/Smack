@@ -28,8 +28,6 @@ public class ConsistentColor {
     // See XEP-0392 §5.4 CbCr to RGB
     private static final double Y = 0.732;
 
-    private static Deficiency DEFICIENCY = Deficiency.none;
-
     public enum Deficiency {
         none,
         redGreenBlindness,
@@ -43,8 +41,8 @@ public class ConsistentColor {
      * @param input input string
      * @return output angle
      */
-    private static double createAngle(String input) {
-        byte[] h = SHA1.bytes(input);
+    private static double createAngle(CharSequence input) {
+        byte[] h = SHA1.bytes(input.toString());
         double v = u(h[0]) + (256 * u(h[1]));
         double d = v / 65536;
         return d * 2 * Math.PI;
@@ -156,38 +154,52 @@ public class ConsistentColor {
     }
 
     /**
-     * Activate color correction for users suffering from red-green-blindness.
-     */
-    public static void activateRedGreenBlindnessCorrection() {
-        DEFICIENCY = Deficiency.redGreenBlindness;
-    }
-
-    /**
-     * Activate color correction for users suffering from blue-blindness.
-     */
-    public static void activateBlueBlindnessCorrection() {
-        DEFICIENCY = Deficiency.blueBlindness;
-    }
-
-    /**
-     * Deactivate color vision deficiency correction.
-     */
-    public static void deactivateDeficiencyCorrection() {
-        DEFICIENCY = Deficiency.none;
-    }
-
-    /**
      * Return the consistent RGB color value for the input.
      * This method respects the color vision deficiency mode set by the user.
      *
      * @param input input string (for example username)
      * @return consistent color of that username as RGB values in range [0,1].
      */
-    public static float[] RGBFrom(String input) {
+    public static float[] RGBFrom(CharSequence input, Context context) {
         double angle = createAngle(input);
-        double correctedAngle = applyColorDeficiencyCorrection(angle, DEFICIENCY);
+        double correctedAngle = applyColorDeficiencyCorrection(angle, context.getDeficiency());
         double[] CbCr = angleToCbCr(correctedAngle);
         float[] rgb = CbCrToRGB(CbCr, Y);
         return rgb;
+    }
+
+    public static class Context {
+
+        private Deficiency deficiency = Deficiency.none;
+
+        /**
+         * Activate color correction for users suffering from red-green-blindness.
+         */
+        public void activateRedGreenBlindnessCorrection() {
+            deficiency = Deficiency.redGreenBlindness;
+        }
+
+        /**
+         * Activate color correction for users suffering from blue-blindness.
+         */
+        public void activateBlueBlindnessCorrection() {
+            deficiency = Deficiency.blueBlindness;
+        }
+
+        /**
+         * Deactivate color vision deficiency correction.
+         */
+        public void deactivateDeficiencyCorrection() {
+            deficiency = Deficiency.none;
+        }
+
+        /**
+         * Return the deficiency setting.
+         *
+         * @return deficiency setting.
+         */
+        public Deficiency getDeficiency() {
+            return deficiency;
+        }
     }
 }

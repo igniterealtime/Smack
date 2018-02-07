@@ -28,6 +28,16 @@ public class ConsistentColorsTest extends SmackTestSuite {
     // Margin of error we allow due to floating point arithmetic
     private static final float EPS = 0.001f;
 
+    private static final ConsistentColor.Context noDeficiency = new ConsistentColor.Context();
+    private static final ConsistentColor.Context redGreenDeficiency = new ConsistentColor.Context();
+    private static final ConsistentColor.Context blueBlindnessDeficiency = new ConsistentColor.Context();
+
+    public ConsistentColorsTest() {
+        noDeficiency.deactivateDeficiencyCorrection();
+        redGreenDeficiency.activateRedGreenBlindnessCorrection();
+        blueBlindnessDeficiency.activateBlueBlindnessCorrection();
+    }
+
     /*
     Below tests check the test vectors from XEP-0392 §13.2.
      */
@@ -36,10 +46,7 @@ public class ConsistentColorsTest extends SmackTestSuite {
     public void romeoNoDeficiencyTest() {
         String value = "Romeo";
         float[] expected = new float[] {0.281f, 0.790f, 1.000f};
-
-        ConsistentColor.deactivateDeficiencyCorrection();
-
-        float[] actual = ConsistentColor.RGBFrom(value);
+        float[] actual = ConsistentColor.RGBFrom(value, noDeficiency);
         assertRGBEquals(expected, actual, EPS);
     }
 
@@ -47,10 +54,7 @@ public class ConsistentColorsTest extends SmackTestSuite {
     public void romeoRedGreenBlindnessTest() {
         String value = "Romeo";
         float[] expected = new float[] {1.000f, 0.674f, 0.000f};
-
-        ConsistentColor.activateRedGreenBlindnessCorrection();
-
-        float[] actual = ConsistentColor.RGBFrom(value);
+        float[] actual = ConsistentColor.RGBFrom(value, redGreenDeficiency);
         assertRGBEquals(expected, actual, EPS);
     }
 
@@ -58,10 +62,7 @@ public class ConsistentColorsTest extends SmackTestSuite {
     public void romeoBlueBlindnessTest() {
         String value = "Romeo";
         float[] expected = new float[] {1.000f, 0.674f, 0.000f};
-
-        ConsistentColor.activateBlueBlindnessCorrection();
-
-        float[] actual = ConsistentColor.RGBFrom(value);
+        float[] actual = ConsistentColor.RGBFrom(value, blueBlindnessDeficiency);
         assertRGBEquals(expected, actual, EPS);
     }
 
@@ -69,10 +70,7 @@ public class ConsistentColorsTest extends SmackTestSuite {
     public void julietNoDeficiencyTest() {
         String value = "juliet@capulet.lit";
         float[] expected = new float[] {0.337f, 1.000f, 0.000f};
-
-        ConsistentColor.deactivateDeficiencyCorrection();
-
-        float[] actual = ConsistentColor.RGBFrom(value);
+        float[] actual = ConsistentColor.RGBFrom(value, noDeficiency);
         assertRGBEquals(expected, actual, EPS);
     }
 
@@ -80,10 +78,7 @@ public class ConsistentColorsTest extends SmackTestSuite {
     public void julietRedGreenBlindnessTest() {
         String value = "juliet@capulet.lit";
         float[] expected = new float[] {1.000f, 0.359f, 1.000f};
-
-        ConsistentColor.activateRedGreenBlindnessCorrection();
-
-        float[] actual = ConsistentColor.RGBFrom(value);
+        float[] actual = ConsistentColor.RGBFrom(value, redGreenDeficiency);
         assertRGBEquals(expected, actual, EPS);
     }
 
@@ -91,10 +86,7 @@ public class ConsistentColorsTest extends SmackTestSuite {
     public void julietBlueBlindnessTest() {
         String value = "juliet@capulet.lit";
         float[] expected = new float[] {0.337f, 1.000f, 0.000f};
-
-        ConsistentColor.activateBlueBlindnessCorrection();
-
-        float[] actual = ConsistentColor.RGBFrom(value);
+        float[] actual = ConsistentColor.RGBFrom(value, blueBlindnessDeficiency);
         assertRGBEquals(expected, actual, EPS);
     }
 
@@ -102,10 +94,7 @@ public class ConsistentColorsTest extends SmackTestSuite {
     public void emojiNoDeficiencyTest() {
         String value = "\uD83D\uDE3A";
         float[] expected = new float[] {0.347f, 0.756f, 1.000f};
-
-        ConsistentColor.deactivateDeficiencyCorrection();
-
-        float[] actual = ConsistentColor.RGBFrom(value);
+        float[] actual = ConsistentColor.RGBFrom(value, noDeficiency);
         assertRGBEquals(expected, actual, EPS);
     }
 
@@ -113,10 +102,7 @@ public class ConsistentColorsTest extends SmackTestSuite {
     public void emojiRedGreenBlindnessTest() {
         String value = "\uD83D\uDE3A";
         float[] expected = new float[] {1.000f, 0.708f, 0.000f};
-
-        ConsistentColor.activateRedGreenBlindnessCorrection();
-
-        float[] actual = ConsistentColor.RGBFrom(value);
+        float[] actual = ConsistentColor.RGBFrom(value, redGreenDeficiency);
         assertRGBEquals(expected, actual, EPS);
     }
 
@@ -124,10 +110,7 @@ public class ConsistentColorsTest extends SmackTestSuite {
     public void emojiBlueBlindnessTest() {
         String value = "\uD83D\uDE3A";
         float[] expected = new float[] {1.000f, 0.708f, 0.000f};
-
-        ConsistentColor.activateBlueBlindnessCorrection();
-
-        float[] actual = ConsistentColor.RGBFrom(value);
+        float[] actual = ConsistentColor.RGBFrom(value, blueBlindnessDeficiency);
         assertRGBEquals(expected, actual, EPS);
     }
 
@@ -135,10 +118,7 @@ public class ConsistentColorsTest extends SmackTestSuite {
     public void councilNoDeficiencyTest() {
         String value = "council";
         float[] expected = new float[] {0.732f, 0.560f, 1.000f};
-
-        ConsistentColor.deactivateDeficiencyCorrection();
-
-        float[] actual = ConsistentColor.RGBFrom(value);
+        float[] actual = ConsistentColor.RGBFrom(value, noDeficiency);
         assertRGBEquals(expected, actual, EPS);
     }
 
@@ -146,10 +126,7 @@ public class ConsistentColorsTest extends SmackTestSuite {
     public void councilRedGreenBlindnessTest() {
         String value = "council";
         float[] expected = new float[] {0.732f, 0.904f, 0.000f};
-
-        ConsistentColor.activateRedGreenBlindnessCorrection();
-
-        float[] actual = ConsistentColor.RGBFrom(value);
+        float[] actual = ConsistentColor.RGBFrom(value, redGreenDeficiency);
         assertRGBEquals(expected, actual, EPS);
     }
 
@@ -157,13 +134,21 @@ public class ConsistentColorsTest extends SmackTestSuite {
     public void councilBlueBlindnessTest() {
         String value = "council";
         float[] expected = new float[] {0.732f, 0.904f, 0.000f};
-
-        ConsistentColor.activateBlueBlindnessCorrection();
-
-        float[] actual = ConsistentColor.RGBFrom(value);
+        float[] actual = ConsistentColor.RGBFrom(value, blueBlindnessDeficiency);
         assertRGBEquals(expected, actual, EPS);
     }
 
+    @Test
+    public void contextGetterTest() {
+        ConsistentColor.Context context = new ConsistentColor.Context();
+        assertEquals(ConsistentColor.Deficiency.none, context.getDeficiency());
+        context.activateBlueBlindnessCorrection();
+        assertEquals(ConsistentColor.Deficiency.blueBlindness, context.getDeficiency());
+        context.activateRedGreenBlindnessCorrection();
+        assertEquals(ConsistentColor.Deficiency.redGreenBlindness, context.getDeficiency());
+        context.deactivateDeficiencyCorrection();
+        assertEquals(ConsistentColor.Deficiency.none, context.getDeficiency());
+    }
 
     /**
      * Check, whether the values of two float arrays of size 3 are pairwise equal with an allowed error of eps.
