@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.reference.provider;
 
+import java.net.URI;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -35,9 +37,10 @@ public class ReferenceProvider extends ExtensionElementProvider<ReferenceElement
         String typeString = parser.getAttributeValue(null, ReferenceElement.ATTR_TYPE);
         ReferenceElement.Type type = ReferenceElement.Type.valueOf(typeString);
         String anchor = parser.getAttributeValue(null, ReferenceElement.ATTR_ANCHOR);
-        String uri = parser.getAttributeValue(null, ReferenceElement.ATTR_URI);
+        String uriString = parser.getAttributeValue(null, ReferenceElement.ATTR_URI);
+        URI uri = uriString != null ? new URI(uriString) : null;
         ExtensionElement child = null;
-        while (true) {
+        outerloop: while (true) {
             int eventType = parser.next();
             if (eventType == XmlPullParser.START_TAG) {
                 String elementName = parser.getName();
@@ -48,8 +51,10 @@ public class ReferenceProvider extends ExtensionElementProvider<ReferenceElement
                 }
             }
             if (eventType == XmlPullParser.END_TAG) {
-                return new ReferenceElement(begin, end, type, anchor, uri, child);
+                break outerloop;
             }
         }
+
+        return new ReferenceElement(begin, end, type, anchor, uri, child);
     }
 }

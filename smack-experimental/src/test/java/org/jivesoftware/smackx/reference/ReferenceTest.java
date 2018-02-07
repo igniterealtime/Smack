@@ -20,6 +20,9 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smackx.reference.element.ReferenceElement;
@@ -36,14 +39,14 @@ public class ReferenceTest extends SmackTestSuite {
                         "end='78' " +
                         "type='mention' " +
                         "uri='xmpp:juliet@capulet.lit' />";
-        ReferenceElement element = new ReferenceElement(72, 78, ReferenceElement.Type.mention, null,
-                "xmpp:juliet@capulet.lit");
+        URI uri = new URI("xmpp:juliet@capulet.lit");
+        ReferenceElement element = new ReferenceElement(72, 78, ReferenceElement.Type.mention, null, uri);
         assertXMLEqual(xml, element.toXML().toString());
         assertEquals(72, (int) element.getBegin());
         assertEquals(78, (int) element.getEnd());
         assertEquals(ReferenceElement.Type.mention, element.getType());
         assertNull(element.getAnchor());
-        assertEquals("xmpp:juliet@capulet.lit", element.getUri());
+        assertEquals(uri, element.getUri());
 
         ReferenceElement parsed = ReferenceProvider.TEST_PROVIDER.parse(TestUtils.getParser(xml));
         assertXMLEqual(xml, parsed.toXML().toString());
@@ -59,38 +62,38 @@ public class ReferenceTest extends SmackTestSuite {
         String xml = "<reference xmlns='urn:xmpp:reference:0' " +
                 "type='data' " +
                 "uri='xmpp:fdp.shakespeare.lit?;node=fdp/submitted/stan.isode.net/accidentreport;item=ndina872be' />";
-        ReferenceElement element = new ReferenceElement(null, null, ReferenceElement.Type.data, null,
-                "xmpp:fdp.shakespeare.lit?;node=fdp/submitted/stan.isode.net/accidentreport;item=ndina872be");
+        URI uri = new URI("xmpp:fdp.shakespeare.lit?;node=fdp/submitted/stan.isode.net/accidentreport;item=ndina872be");
+        ReferenceElement element = new ReferenceElement(null, null, ReferenceElement.Type.data, null, uri);
         assertXMLEqual(xml, element.toXML().toString());
 
         assertNull(element.getBegin());
         assertNull(element.getEnd());
         assertNull(element.getAnchor());
         assertEquals(ReferenceElement.Type.data, element.getType());
-        assertEquals("xmpp:fdp.shakespeare.lit?;node=fdp/submitted/stan.isode.net/accidentreport;item=ndina872be", element.getUri());
+        assertEquals(uri, element.getUri());
 
         ReferenceElement parsed = ReferenceProvider.TEST_PROVIDER.parse(TestUtils.getParser(xml));
         assertXMLEqual(xml, parsed.toXML().toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void beginGreaterEndIllegalTest() {
-        new ReferenceElement(100, 10, ReferenceElement.Type.mention, null, "test@test.test");
+    public void beginGreaterEndIllegalTest() throws URISyntaxException {
+        new ReferenceElement(100, 10, ReferenceElement.Type.mention, null, new URI("xmpp:test@test.test"));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void beginSmallerZeroTest() {
-        new ReferenceElement(-1, 12, ReferenceElement.Type.data, null, "test@test.test");
+    public void beginSmallerZeroTest() throws URISyntaxException {
+        new ReferenceElement(-1, 12, ReferenceElement.Type.data, null, new URI("xmpp:test@test.test"));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void endSmallerZeroTest() {
-        new ReferenceElement(12, -2, ReferenceElement.Type.mention, null, "test@test.test");
+    public void endSmallerZeroTest() throws URISyntaxException {
+        new ReferenceElement(12, -2, ReferenceElement.Type.mention, null, new URI("xmpp:test@test.test"));
     }
 
     @Test(expected = NullPointerException.class)
-    public void typeArgumentNullTest() {
-        new ReferenceElement(1, 2, null, null, "test@test.test");
+    public void typeArgumentNullTest() throws URISyntaxException {
+        new ReferenceElement(1, 2, null, null, new URI("xmpp:test@test.test"));
     }
 
     /*

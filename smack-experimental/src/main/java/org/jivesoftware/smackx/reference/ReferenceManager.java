@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.reference;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -25,12 +23,7 @@ import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.reference.element.ReferenceElement;
-
-import org.jxmpp.jid.BareJid;
 
 public final class ReferenceManager extends Manager {
 
@@ -65,45 +58,5 @@ public final class ReferenceManager extends Manager {
             INSTANCES.put(connection, manager);
         }
         return manager;
-    }
-
-    /**
-     * Add a reference to another users bare jid to a stanza.
-     *
-     * @param stanza stanza.
-     * @param begin start index of the mention in the messages body.
-     * @param end end index of the mention in the messages body.
-     * @param jid referenced jid.
-     */
-    public static void addMention(Stanza stanza, int begin, int end, BareJid jid) {
-        ReferenceElement reference = new ReferenceElement(begin, end, ReferenceElement.Type.mention, null,
-                "xmpp:" + jid.toString());
-        stanza.addExtension(reference);
-    }
-
-    /**
-     * Return a list of all reference extensions contained in a stanza.
-     * If there are no reference elements, return an empty list.
-     *
-     * @param stanza stanza
-     * @return list of all references contained in the stanza
-     */
-    public static List<ReferenceElement> getReferencesFromStanza(Stanza stanza) {
-        List<ReferenceElement> references = new ArrayList<>();
-        List<ExtensionElement> extensions = stanza.getExtensions(ReferenceElement.ELEMENT, NAMESPACE);
-        for (ExtensionElement e : extensions) {
-            references.add((ReferenceElement) e);
-        }
-        return references;
-    }
-
-    /**
-     * Return true, if the stanza contains at least one reference extension.
-     *
-     * @param stanza stanza
-     * @return true if stanza contains references
-     */
-    public static boolean containsReferences(Stanza stanza) {
-        return getReferencesFromStanza(stanza).size() > 0;
     }
 }
