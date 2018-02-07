@@ -22,8 +22,6 @@ import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 
-import java.util.UUID;
-
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
@@ -62,7 +60,7 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
 
     @Test
     public void createOriginIdTest() {
-        OriginIdElement element = StableUniqueStanzaIdManager.createOriginId();
+        OriginIdElement element = new OriginIdElement();
         assertNotNull(element);
         assertEquals(StableUniqueStanzaIdManager.NAMESPACE, element.getNamespace());
         assertEquals(36, element.getId().length());
@@ -71,17 +69,17 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
     @Test
     public void fromMessageTest() {
         Message message = new Message();
-        assertFalse(StableUniqueStanzaIdManager.hasOriginId(message));
-        assertFalse(StableUniqueStanzaIdManager.hasStanzaId(message));
+        assertFalse(OriginIdElement.hasOriginId(message));
+        assertFalse(StanzaIdElement.hasStanzaId(message));
 
-        StableUniqueStanzaIdManager.addOriginId(message);
+        OriginIdElement.addOriginId(message);
 
-        assertTrue(StableUniqueStanzaIdManager.hasOriginId(message));
-        assertEquals(message.getStanzaId(), StableUniqueStanzaIdManager.getOriginId(message).getId());
+        assertTrue(OriginIdElement.hasOriginId(message));
+        assertEquals(message.getStanzaId(), OriginIdElement.getOriginId(message).getId());
 
-        StanzaIdElement stanzaId = new StanzaIdElement(UUID.randomUUID().toString(), "alice@wonderland.lit");
+        StanzaIdElement stanzaId = new StanzaIdElement("alice@wonderland.lit");
         message.addExtension(stanzaId);
-        assertTrue(StableUniqueStanzaIdManager.hasStanzaId(message));
-        assertEquals(stanzaId, StableUniqueStanzaIdManager.getStanzaId(message));
+        assertTrue(StanzaIdElement.hasStanzaId(message));
+        assertEquals(stanzaId, StanzaIdElement.getStanzaId(message));
     }
 }

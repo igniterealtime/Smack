@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.sid;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -32,7 +31,6 @@ import org.jivesoftware.smack.filter.ToTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
-import org.jivesoftware.smackx.sid.element.StanzaIdElement;
 
 public final class StableUniqueStanzaIdManager extends Manager {
 
@@ -49,7 +47,9 @@ public final class StableUniqueStanzaIdManager extends Manager {
     private final StanzaListener stanzaListener = new StanzaListener() {
         @Override
         public void processStanza(Stanza packet) {
-            addOriginId(packet);
+            if (!OriginIdElement.hasOriginId(packet)) {
+                OriginIdElement.addOriginId(packet);
+            }
         }
     };
 
@@ -118,65 +118,5 @@ public final class StableUniqueStanzaIdManager extends Manager {
     public boolean isEnabled() {
         ServiceDiscoveryManager disco = ServiceDiscoveryManager.getInstanceFor(connection());
         return disco.includesFeature(NAMESPACE);
-    }
-
-    /**
-     * Create an origin-id element with a random UUID.
-     *
-     * @return origin-id element.
-     */
-    public static OriginIdElement createOriginId() {
-        return new OriginIdElement(UUID.randomUUID().toString());
-    }
-
-    /**
-     * Add an origin-id element to a stanza and set the stanzas id to the same id as in the origin-id element.
-     *
-     * @param stanza stanza.
-     */
-    public static void addOriginId(Stanza stanza) {
-        OriginIdElement originId = createOriginId();
-        stanza.addExtension(originId);
-        stanza.setStanzaId(originId.getId());
-    }
-
-    /**
-     * Return true, if a stanza contains a stanza-id element.
-     *
-     * @param stanza stanza
-     * @return true if message contains stanza-id element, otherwise false.
-     */
-    public static boolean hasStanzaId(Stanza stanza) {
-        return getStanzaId(stanza) != null;
-    }
-
-    /**
-     * Return the stanza-id element of a stanza.
-     *
-     * @param stanza stanza
-     * @return stanza-id element of a jid, or null if absent.
-     */
-    public static StanzaIdElement getStanzaId(Stanza stanza) {
-        return stanza.getExtension(StanzaIdElement.ELEMENT, NAMESPACE);
-    }
-
-    /**
-     * Return true, if the stanza contains a origin-id element.
-     *
-     * @param stanza stanza
-     * @return true if the stanza contains a origin-id, false otherwise.
-     */
-    public static boolean hasOriginId(Stanza stanza) {
-        return getOriginId(stanza) != null;
-    }
-
-    /**
-     * Return the origin-id element of a stanza or null, if absent.
-     *
-     * @param stanza stanza
-     * @return origin-id element
-     */
-    public static OriginIdElement getOriginId(Stanza stanza) {
-        return stanza.getExtension(OriginIdElement.ELEMENT, NAMESPACE);
     }
 }

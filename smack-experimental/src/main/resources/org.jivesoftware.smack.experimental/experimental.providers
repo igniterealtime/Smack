@@ -223,7 +223,6 @@
         <className>org.jivesoftware.smackx.sid.provider.OriginIdProvider</className>
     </extensionProvider>
 
-
     <!-- XEP-0333: Chat Markers -->
     <extensionProvider>
       <elementName>markable</elementName>

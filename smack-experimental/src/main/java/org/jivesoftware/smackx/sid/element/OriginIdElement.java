@@ -16,23 +16,51 @@
  */
 package org.jivesoftware.smackx.sid.element;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.sid.StableUniqueStanzaIdManager;
 
-public class OriginIdElement implements ExtensionElement {
+public class OriginIdElement extends StableAndUniqueIdElement {
 
     public static final String ELEMENT = "origin-id";
-    public static final String ATTR_ID = "id";
 
-    private final String id;
-
-    public OriginIdElement(String id) {
-        this.id = id;
+    public OriginIdElement() {
+        super();
     }
 
-    public String getId() {
-        return id;
+    public OriginIdElement(String id) {
+        super(id);
+    }
+
+    /**
+     * Add an origin-id element to a stanza and set the stanzas id to the same id as in the origin-id element.
+     *
+     * @param stanza stanza.
+     */
+    public static void addOriginId(Stanza stanza) {
+        OriginIdElement originId = new OriginIdElement();
+        stanza.addExtension(originId);
+        stanza.setStanzaId(originId.getId());
+    }
+
+    /**
+     * Return true, if the stanza contains a origin-id element.
+     *
+     * @param stanza stanza
+     * @return true if the stanza contains a origin-id, false otherwise.
+     */
+    public static boolean hasOriginId(Stanza stanza) {
+        return getOriginId(stanza) != null;
+    }
+
+    /**
+     * Return the origin-id element of a stanza or null, if absent.
+     *
+     * @param stanza stanza
+     * @return origin-id element
+     */
+    public static OriginIdElement getOriginId(Stanza stanza) {
+        return stanza.getExtension(OriginIdElement.ELEMENT, StableUniqueStanzaIdManager.NAMESPACE);
     }
 
     @Override

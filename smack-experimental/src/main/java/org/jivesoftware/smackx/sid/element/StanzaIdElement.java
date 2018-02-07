@@ -16,26 +16,45 @@
  */
 package org.jivesoftware.smackx.sid.element;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.sid.StableUniqueStanzaIdManager;
 
-public class StanzaIdElement implements ExtensionElement {
+public class StanzaIdElement extends StableAndUniqueIdElement {
 
     public static final String ELEMENT = "stanza-id";
-    public static final String ATTR_ID = "id";
     public static final String ATTR_BY = "by";
 
-    private final String id;
     private final String by;
 
-    public StanzaIdElement(String id, String by) {
-        this.id = id;
+    public StanzaIdElement(String by) {
+        super();
         this.by = by;
     }
 
-    public String getId() {
-        return id;
+    public StanzaIdElement(String id, String by) {
+        super(id);
+        this.by = by;
+    }
+
+    /**
+     * Return true, if a stanza contains a stanza-id element.
+     *
+     * @param stanza stanza
+     * @return true if message contains stanza-id element, otherwise false.
+     */
+    public static boolean hasStanzaId(Stanza stanza) {
+        return getStanzaId(stanza) != null;
+    }
+
+    /**
+     * Return the stanza-id element of a stanza.
+     *
+     * @param stanza stanza
+     * @return stanza-id element of a jid, or null if absent.
+     */
+    public static StanzaIdElement getStanzaId(Stanza stanza) {
+        return stanza.getExtension(StanzaIdElement.ELEMENT, StableUniqueStanzaIdManager.NAMESPACE);
     }
 
     public String getBy() {
