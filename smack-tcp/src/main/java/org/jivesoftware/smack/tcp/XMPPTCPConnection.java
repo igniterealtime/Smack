@@ -647,9 +647,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
             }
         }
-        // Start the packet writer. This will open an XMPP stream to the server
+        // Start the writer thread. This will open an XMPP stream to the server
         packetWriter.init();
-        // Start the packet reader. The startup() method will block until we
+        // Start the reader thread. The startup() method will block until we
         // get an opening stream packet back from server
         packetReader.init();
     }
@@ -1009,7 +1009,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 public void run() {
                     parsePackets();
                 }
-            }, "Smack Packet Reader (" + getConnectionCounter() + ")");
+            }, "Smack Reader (" + getConnectionCounter() + ")");
          }
 
         /**
@@ -1305,7 +1305,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 public void run() {
                     writePackets();
                 }
-            }, "Smack Packet Writer (" + getConnectionCounter() + ")");
+            }, "Smack Writer (" + getConnectionCounter() + ")");
         }
 
         private boolean done() {
@@ -1383,7 +1383,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             catch (InterruptedException e) {
                 if (!queue.isShutdown()) {
                     // Users shouldn't try to interrupt the packet writer thread
-                    LOGGER.log(Level.WARNING, "Packet writer thread was interrupted. Don't do that. Use disconnect() instead.", e);
+                    LOGGER.log(Level.WARNING, "Writer thread was interrupted. Don't do that. Use disconnect() instead.", e);
                 }
             }
             return packet;
