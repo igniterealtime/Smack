@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.sid.element;
 
-import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.sid.StableUniqueStanzaIdManager;
 
@@ -33,34 +33,34 @@ public class OriginIdElement extends StableAndUniqueIdElement {
     }
 
     /**
-     * Add an origin-id element to a stanza and set the stanzas id to the same id as in the origin-id element.
+     * Add an origin-id element to a message and set the stanzas id to the same id as in the origin-id element.
      *
-     * @param stanza stanza.
+     * @param message message.
      */
-    public static void addOriginId(Stanza stanza) {
+    public static void addOriginId(Message message) {
         OriginIdElement originId = new OriginIdElement();
-        stanza.addExtension(originId);
-        stanza.setStanzaId(originId.getId());
+        message.addExtension(originId);
+        message.setStanzaId(originId.getId());
     }
 
     /**
-     * Return true, if the stanza contains a origin-id element.
+     * Return true, if the message contains a origin-id element.
      *
-     * @param stanza stanza
-     * @return true if the stanza contains a origin-id, false otherwise.
+     * @param message message
+     * @return true if the message contains a origin-id, false otherwise.
      */
-    public static boolean hasOriginId(Stanza stanza) {
-        return getOriginId(stanza) != null;
+    public static boolean hasOriginId(Message message) {
+        return getOriginId(message) != null;
     }
 
     /**
-     * Return the origin-id element of a stanza or null, if absent.
+     * Return the origin-id element of a message or null, if absent.
      *
-     * @param stanza stanza
+     * @param message message
      * @return origin-id element
      */
-    public static OriginIdElement getOriginId(Stanza stanza) {
-        return stanza.getExtension(OriginIdElement.ELEMENT, StableUniqueStanzaIdManager.NAMESPACE);
+    public static OriginIdElement getOriginId(Message message) {
+        return message.getExtension(OriginIdElement.ELEMENT, StableUniqueStanzaIdManager.NAMESPACE);
     }
 
     @Override
