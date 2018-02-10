@@ -43,7 +43,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                         "<emphasis/>" +
                     "</span>" +
                 "</markup>";
-        MessageMarkup m = MessageMarkup.getBuilder();
+        MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setEmphasis(9, 15);
         assertXMLEqual(xml, m.build().toXML().toString());
 
@@ -67,7 +67,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                         "<code/>" +
                     "</span>" +
                 "</markup>";
-        MessageMarkup m = MessageMarkup.getBuilder();
+        MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setCode(9, 15);
         assertXMLEqual(xml, m.build().toXML().toString());
 
@@ -91,7 +91,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                         "<deleted/>" +
                     "</span>" +
                 "</markup>";
-        MessageMarkup m = MessageMarkup.getBuilder();
+        MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setDeleted(9, 15);
         assertXMLEqual(xml, m.build().toXML().toString());
 
@@ -109,12 +109,12 @@ public class MessageMarkupTest extends SmackTestSuite {
 
     @Test(expected = IllegalArgumentException.class)
     public void wrongStartEndTest() {
-        MessageMarkup.getBuilder().setEmphasis(12, 10);
+        MarkupElement.getBuilder().setEmphasis(12, 10);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void overlappingSpansTest() {
-        MessageMarkup m = MessageMarkup.getBuilder();
+        MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setEmphasis(0, 10);
         m.setDeleted(5, 15);
     }
@@ -125,7 +125,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                 "<markup xmlns='urn:xmpp:markup:0'>" +
                     "<bcode start='23' end='48'/>" +
                 "</markup>";
-        MessageMarkup m = MessageMarkup.getBuilder();
+        MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setCodeBlock(23, 48);
         assertXMLEqual(xml, m.build().toXML().toString());
 
@@ -150,7 +150,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                         "<li start='69'/>" +
                     "</list>" +
                 "</markup>";
-        MessageMarkup m = MessageMarkup.getBuilder();
+        MarkupElement.Builder m = MarkupElement.getBuilder();
         m = m.beginList()
                 .addEntry(31, 47)
                 .addEntry(47, 61)
@@ -174,7 +174,7 @@ public class MessageMarkupTest extends SmackTestSuite {
 
     @Test(expected = IllegalArgumentException.class)
     public void listWrongSecondEntryTest() {
-        MessageMarkup m = MessageMarkup.getBuilder();
+        MarkupElement.Builder m = MarkupElement.getBuilder();
         m.beginList().addEntry(0,1).addEntry(3,4);
     }
 
@@ -184,7 +184,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                 "<markup xmlns='urn:xmpp:markup:0'>" +
                     "<bquote start='9' end='32'/>" +
                 "</markup>";
-        MessageMarkup m = MessageMarkup.getBuilder();
+        MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setBlockQuote(9 ,32);
         assertXMLEqual(xml, m.build().toXML().toString());
 
@@ -205,7 +205,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                     "<bquote start='0' end='57'/>" +
                     "<bquote start='11' end='34'/>" +
                 "</markup>";
-        MessageMarkup m = MessageMarkup.getBuilder();
+        MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setBlockQuote(0, 57);
         m.setBlockQuote(11, 34);
         assertXMLEqual(xml, m.build().toXML().toString());

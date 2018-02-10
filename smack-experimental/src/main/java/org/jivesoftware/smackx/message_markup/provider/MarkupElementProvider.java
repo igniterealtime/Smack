@@ -27,7 +27,6 @@ import java.util.Set;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
-import org.jivesoftware.smackx.message_markup.MessageMarkup;
 import org.jivesoftware.smackx.message_markup.element.BlockQuoteElement;
 import org.jivesoftware.smackx.message_markup.element.CodeBlockElement;
 import org.jivesoftware.smackx.message_markup.element.ListElement;
@@ -41,7 +40,7 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
     @Override
     public MarkupElement parse(XmlPullParser parser, int initialDepth) throws Exception {
 
-        MessageMarkup markup = MessageMarkup.getBuilder();
+        MarkupElement.Builder markup = MarkupElement.getBuilder();
 
         int spanStart = -1, spanEnd = -1;
         Set<SpanElement.SpanStyle> spanStyles = new HashSet<>();
@@ -116,7 +115,7 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
                             break;
 
                         case ListElement.ELEMENT:
-                            MessageMarkup.MessageMarkupListBuilder listBuilder = markup.beginList();
+                            MarkupElement.Builder.ListBuilder listBuilder = markup.beginList();
                             if (lis.size() > 0 && lis.get(0).getStart() != listStart) {
                                 throw new SmackException("Error while parsing incoming MessageMarkup ListElement: " +
                                         "'start' attribute of first 'li' element must equal 'start' attribute of list.");

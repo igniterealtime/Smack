@@ -8,9 +8,9 @@ This implementation can *not* be used to render message bodies, but will offer a
 
 ## Usage
 
-The most important class is the `MessageMarkup` class, which implements the Builder pattern.
+The most important class is the `MarkupElement` class, which contains a Builder.
 
-To start creating a Message Markup Extension, call `MessageMarkup.getBuilder()`.
+To start creating a Message Markup Extension, call `MarkupElement.getBuilder()`.
 (Almost) all method calls documented below will be made on the builder.
 
 Whenever a method call receives a `start` and `end` index, `start` represents the first character, which is affected by the styling, while `end` is the character *after* the last affected character.
@@ -56,7 +56,7 @@ code
 
 To mark a section as code block, call `builder.setCodeBlock(start, end)`.
 
-To create a list, call `MessageMarkup.MessageMarkupListBuilder lbuilder = builder.beginList()`, which will return a list builder.
+To create a list, call `MarkupElement.Builder.ListBuilder lbuilder = builder.beginList()`, which will return a list builder.
 On this you can call `lbuilder.addEntry(start, end)` to add an entry.
 
 Note: If you add an entry, the start value MUST be equal to the end value of the previous added entry!
