@@ -96,7 +96,7 @@ allprojects {
 		junitVersion = '4.11'
 	}
 	group = 'org.igniterealtime.smack'
-	sourceCompatibility = 1.7
+	sourceCompatibility = JavaVersion.VERSION_1_8
 	targetCompatibility = sourceCompatibility
 	version = shortVersion
 	if (isSnapshot) {
