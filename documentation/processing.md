@@ -49,7 +49,7 @@ filters includes:
   * `StanzaIdFilter` -- filters for packets with a particular packet ID.
   * `ThreadFilter` -- filters for message packets with a particular thread ID.
   * `ToContainsFilter` -- filters for packets that are sent to a particular address.
-  * `FromContainsFilter` -- filters for packets that are sent to a particular address.
+  * `FromContainsFilter` -- filters for packets that are sent from a particular address.
   * `StanzaExtensionFilter` -- filters for packets that have a particular packet extension.
   * `AndFilter` -- implements the logical AND operation over two filters.
   * `OrFilter` -- implements the logical OR operation over two filters.
