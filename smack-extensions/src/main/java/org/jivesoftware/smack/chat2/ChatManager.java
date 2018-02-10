@@ -218,9 +218,21 @@ public final class ChatManager extends Manager {
      *
      * @param listener the listener to remove.
      * @return <code>true</code> if the listener was active and got removed.
+     * @deprecated Use {@link #removeIncomingListener(IncomingChatMessageListener)} instead.
      */
+    @Deprecated
     @SuppressWarnings("FunctionalInterfaceClash")
     public boolean removeListener(IncomingChatMessageListener listener) {
+        return incomingListeners.remove(listener);
+    }
+
+    /**
+     * Remove an incoming chat message listener.
+     *
+     * @param listener the listener to remove.
+     * @return <code>true</code> if the listener was active and got removed.
+     */
+    public boolean removeIncomingListener(IncomingChatMessageListener listener) {
         return incomingListeners.remove(listener);
     }
 
@@ -252,9 +264,11 @@ public final class ChatManager extends Manager {
      *
      * @param listener the listener to remove.
      * @return <code>true</code> if the listener was active and got removed.
+     * @deprecated use {@link #removeOutgoingListener(OutgoingChatMessageListener)} instead.
      */
+    @Deprecated
     public boolean removeListener(OutgoingChatMessageListener listener) {
-        return outgoingListeners.remove(listener);
+        return removeOutgoingListener(listener);
     }
 
     /**
@@ -262,11 +276,9 @@ public final class ChatManager extends Manager {
      *
      * @param listener the listener to remove.
      * @return <code>true</code> if the listener was active and got removed.
-     * @deprecated use {@link #removeListener(OutgoingChatMessageListener)} instead.
      */
-    @Deprecated
-    public boolean removeOutoingLIstener(OutgoingChatMessageListener listener) {
-        return removeListener(listener);
+    public boolean removeOutgoingListener(OutgoingChatMessageListener listener) {
+        return outgoingListeners.remove(listener);
     }
 
     /**
