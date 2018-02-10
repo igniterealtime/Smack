@@ -13,20 +13,21 @@ SpoilerManager manager = SpoilerManager.getInstanceFor(connection);
 ```
 This will automatically add Spoilers to the list of supported features of your client.
 
-The manager can then be used to create SpoilerElements. You can create SpoilerElements like follows:
+The manager can then be used to add SpoilerElements to messages like follows:
 ```
+Message message = new Message();
+
 // spoiler without hint
-SpoilerElement empty = manager.createSpoiler();
+SpoilerElement.addSpoiler(message);
 
 // spoiler with hint about content
-SpoilerElement withHint = manager.createSpoiler("End of Love Story");
+SpoilerElement.addSpoiler(message, "End of Love Story");
 
 // spoiler with localized hint
-SpoilerElement l10nHint = manager.createSpoiler("de", "Der Kuchen ist eine Lüge");
+SpoilerElement.addSpoiler(message, "de", "Der Kuchen ist eine Lüge");
 ```
 
-Those SpoilerElements can be attached to a message like follows:
+To get Spoilers from a message call
 ```
-Message message = new Message("Darth Vader is the father of...");
-message.addExtension(spoilerElement);
+Map<String, String> spoilers = SpoilerElement.getSpoilers(message);
 ```
