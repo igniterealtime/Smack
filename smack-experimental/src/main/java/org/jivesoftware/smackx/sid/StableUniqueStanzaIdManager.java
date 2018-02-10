@@ -28,6 +28,7 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ToTypeFilter;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
@@ -47,8 +48,12 @@ public final class StableUniqueStanzaIdManager extends Manager {
     private final StanzaListener stanzaListener = new StanzaListener() {
         @Override
         public void processStanza(Stanza packet) {
-            if (!OriginIdElement.hasOriginId(packet)) {
-                OriginIdElement.addOriginId(packet);
+            if (!(packet instanceof Message)) {
+                return;
+            }
+            Message message = (Message) packet;
+            if (!OriginIdElement.hasOriginId(message)) {
+                OriginIdElement.addOriginId(message);
             }
         }
     };
@@ -89,23 +94,15 @@ public final class StableUniqueStanzaIdManager extends Manager {
     /**
      * Start appending origin-id elements to outgoing stanzas and add the feature to disco.
      */
-    public void enable() {
-        ServiceDiscoveryManager disco = ServiceDiscoveryManager.getInstanceFor(connection());
-        if (disco.includesFeature(NAMESPACE)) {
-            return;
-        }
-        disco.addFeature(NAMESPACE);
+    public synchronized void enable() {
+        ServiceDiscoveryManager.getInstanceFor(connection()).addFeature(NAMESPACE);
         connection().addPacketInterceptor(stanzaListener, OUTGOING_FILTER);
     }
 
     /**
      * Stop appending origin-id elements to outgoing stanzas and remove the feature from disco.
      */
-    public void disable() {
-        ServiceDiscoveryManager disco = ServiceDiscoveryManager.getInstanceFor(connection());
-        if (!disco.includesFeature(NAMESPACE)) {
-            return;
-        }
+    public synchronized void disable() {
         ServiceDiscoveryManager.getInstanceFor(connection()).removeFeature(NAMESPACE);
         connection().removePacketInterceptor(stanzaListener);
     }
@@ -115,7 +112,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
      *
      * @return true if functionality is enabled, otherwise false.
      */
-    public boolean isEnabled() {
+    public synchronized boolean isEnabled() {
         ServiceDiscoveryManager disco = ServiceDiscoveryManager.getInstanceFor(connection());
         return disco.includesFeature(NAMESPACE);
     }
