@@ -21,6 +21,8 @@ import static junit.framework.TestCase.assertTrue;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
+import org.jivesoftware.smackx.colors.ConsistentColor.Deficiency;
+
 import org.junit.Test;
 
 public class ConsistentColorsTest extends SmackTestSuite {
@@ -28,15 +30,9 @@ public class ConsistentColorsTest extends SmackTestSuite {
     // Margin of error we allow due to floating point arithmetic
     private static final float EPS = 0.001f;
 
-    private static final ConsistentColor.Context noDeficiency = new ConsistentColor.Context();
-    private static final ConsistentColor.Context redGreenDeficiency = new ConsistentColor.Context();
-    private static final ConsistentColor.Context blueBlindnessDeficiency = new ConsistentColor.Context();
-
-    public ConsistentColorsTest() {
-        noDeficiency.deactivateDeficiencyCorrection();
-        redGreenDeficiency.activateRedGreenBlindnessCorrection();
-        blueBlindnessDeficiency.activateBlueBlindnessCorrection();
-    }
+    private static final ConsistentColor.ConsistentColorSettings noDeficiency = new ConsistentColor.ConsistentColorSettings(Deficiency.none);
+    private static final ConsistentColor.ConsistentColorSettings redGreenDeficiency = new ConsistentColor.ConsistentColorSettings(Deficiency.redGreenBlindness);
+    private static final ConsistentColor.ConsistentColorSettings blueBlindnessDeficiency = new ConsistentColor.ConsistentColorSettings(Deficiency.blueBlindness);
 
     /*
     Below tests check the test vectors from XEP-0392 §13.2.
@@ -136,18 +132,6 @@ public class ConsistentColorsTest extends SmackTestSuite {
         float[] expected = new float[] {0.732f, 0.904f, 0.000f};
         float[] actual = ConsistentColor.RGBFrom(value, blueBlindnessDeficiency);
         assertRGBEquals(expected, actual, EPS);
-    }
-
-    @Test
-    public void contextGetterTest() {
-        ConsistentColor.Context context = new ConsistentColor.Context();
-        assertEquals(ConsistentColor.Deficiency.none, context.getDeficiency());
-        context.activateBlueBlindnessCorrection();
-        assertEquals(ConsistentColor.Deficiency.blueBlindness, context.getDeficiency());
-        context.activateRedGreenBlindnessCorrection();
-        assertEquals(ConsistentColor.Deficiency.redGreenBlindness, context.getDeficiency());
-        context.deactivateDeficiencyCorrection();
-        assertEquals(ConsistentColor.Deficiency.none, context.getDeficiency());
     }
 
     /**

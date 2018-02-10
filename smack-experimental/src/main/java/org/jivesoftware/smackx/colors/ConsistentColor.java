@@ -16,9 +16,12 @@
  */
 package org.jivesoftware.smackx.colors;
 
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.SHA1;
 
 public class ConsistentColor {
+
+    private static final ConsistentColorSettings DEFAULT_SETTINGS = new ConsistentColorSettings();
 
     // See XEP-0392 §13.1 Constants for YCbCr (BT.601)
     private static final double KR = 0.299;
@@ -29,8 +32,19 @@ public class ConsistentColor {
     private static final double Y = 0.732;
 
     public enum Deficiency {
+        /**
+         * Do not apply measurements for color vision deficiency correction.
+         */
         none,
+
+        /**
+         * Activate color correction for users suffering from red-green-blindness.
+         */
         redGreenBlindness,
+
+        /**
+         * Activate color correction for users suffering from blue-blindness.
+         */
         blueBlindness
     }
 
@@ -57,20 +71,19 @@ public class ConsistentColor {
      * @return corrected angle in CbCr plane
      */
     private static double applyColorDeficiencyCorrection(double angle, Deficiency deficiency) {
-        double _angle = angle;
         switch (deficiency) {
             case none:
                 break;
             case redGreenBlindness:
-                _angle = _angle % Math.PI;
+                angle %= Math.PI;
                 break;
             case blueBlindness:
-                _angle -= Math.PI / 2;
-                _angle = _angle % Math.PI;
-                _angle += Math.PI / 2;
+                angle -= Math.PI / 2;
+                angle %= Math.PI;
+                angle += Math.PI / 2;
                 break;
         }
-        return _angle;
+        return angle;
     }
 
     /**
@@ -154,43 +167,43 @@ public class ConsistentColor {
     }
 
     /**
+     * Return the consistent RGB color value of the input.
+     * This method uses the default {@link ConsistentColorSettings}.
+     *
+     * @param input input string (for example username)
+     * @return consistent color of that username as RGB values in range [0,1].
+     * @see #RGBFrom(CharSequence, ConsistentColorSettings)
+     */
+    public static float[] RGBFrom(CharSequence input) {
+        return RGBFrom(input, DEFAULT_SETTINGS);
+    }
+
+    /**
      * Return the consistent RGB color value for the input.
      * This method respects the color vision deficiency mode set by the user.
      *
      * @param input input string (for example username)
+     * @param settings the settings for consistent color creation.
      * @return consistent color of that username as RGB values in range [0,1].
      */
-    public static float[] RGBFrom(CharSequence input, Context context) {
+    public static float[] RGBFrom(CharSequence input, ConsistentColorSettings settings) {
         double angle = createAngle(input);
-        double correctedAngle = applyColorDeficiencyCorrection(angle, context.getDeficiency());
+        double correctedAngle = applyColorDeficiencyCorrection(angle, settings.getDeficiency());
         double[] CbCr = angleToCbCr(correctedAngle);
         float[] rgb = CbCrToRGB(CbCr, Y);
         return rgb;
     }
 
-    public static class Context {
+    public static class ConsistentColorSettings {
 
-        private Deficiency deficiency = Deficiency.none;
+        private final Deficiency deficiency;
 
-        /**
-         * Activate color correction for users suffering from red-green-blindness.
-         */
-        public void activateRedGreenBlindnessCorrection() {
-            deficiency = Deficiency.redGreenBlindness;
+        public ConsistentColorSettings() {
+            this(Deficiency.none);
         }
 
-        /**
-         * Activate color correction for users suffering from blue-blindness.
-         */
-        public void activateBlueBlindnessCorrection() {
-            deficiency = Deficiency.blueBlindness;
-        }
-
-        /**
-         * Deactivate color vision deficiency correction.
-         */
-        public void deactivateDeficiencyCorrection() {
-            deficiency = Deficiency.none;
+        public ConsistentColorSettings(Deficiency deficiency) {
+            this.deficiency = Objects.requireNonNull(deficiency, "Deficiency must be given");
         }
 
         /**
