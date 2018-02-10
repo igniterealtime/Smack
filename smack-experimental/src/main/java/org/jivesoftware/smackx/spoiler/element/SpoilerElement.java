@@ -16,9 +16,15 @@
  */
 package org.jivesoftware.smackx.spoiler.element;
 
+import static org.jivesoftware.smackx.spoiler.SpoilerManager.NAMESPACE_0;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smackx.spoiler.SpoilerManager;
 
 public class SpoilerElement implements ExtensionElement {
 
@@ -55,6 +61,75 @@ public class SpoilerElement implements ExtensionElement {
     }
 
     /**
+     * Add a SpoilerElement to a message.
+     *
+     * @param message message to add the Spoiler to.
+     */
+    public static void addSpoiler(Message message) {
+        message.addExtension(SpoilerElement.EMPTY);
+    }
+
+    /**
+     * Add a SpoilerElement with a hint to a message.
+     *
+     * @param message Message to add the Spoiler to.
+     * @param hint Hint about the Spoilers content.
+     */
+    public static void addSpoiler(Message message, String hint) {
+        message.addExtension(new SpoilerElement(null, hint));
+    }
+
+    /**
+     * Add a SpoilerElement with a hint in a certain language to a message.
+     *
+     * @param message Message to add the Spoiler to.
+     * @param lang language of the Spoiler hint.
+     * @param hint hint.
+     */
+    public static void addSpoiler(Message message, String lang, String hint) {
+        message.addExtension(new SpoilerElement(lang, hint));
+    }
+
+
+    /**
+     * Returns true, if the message has at least one spoiler element.
+     *
+     * @param message message
+     * @return true if message has spoiler extension
+     */
+    public static boolean containsSpoiler(Message message) {
+        return message.hasExtension(SpoilerElement.ELEMENT, NAMESPACE_0);
+    }
+
+    /**
+     * Return a map of all spoilers contained in a message.
+     * The map uses the language of a spoiler as key.
+     * If a spoiler has no language attribute, its key will be an empty String.
+     *
+     * @param message message
+     * @return map of spoilers
+     */
+    public static Map<String, String> getSpoilers(Message message) {
+        if (!containsSpoiler(message)) {
+            return null;
+        }
+
+        List<ExtensionElement> spoilers = message.getExtensions(SpoilerElement.ELEMENT, NAMESPACE_0);
+        Map<String, String> map = new HashMap<>();
+
+        for (ExtensionElement e : spoilers) {
+            SpoilerElement s = (SpoilerElement) e;
+            if (s.getLanguage() == null || s.getLanguage().equals("")) {
+                map.put("", s.getHint());
+            } else {
+                map.put(s.getLanguage(), s.getHint());
+            }
+        }
+
+        return map;
+    }
+
+    /**
      * Return the language of the hint.
      * May be null.
      *
@@ -66,7 +141,7 @@ public class SpoilerElement implements ExtensionElement {
 
     @Override
     public String getNamespace() {
-        return SpoilerManager.NAMESPACE_0;
+        return NAMESPACE_0;
     }
 
     @Override

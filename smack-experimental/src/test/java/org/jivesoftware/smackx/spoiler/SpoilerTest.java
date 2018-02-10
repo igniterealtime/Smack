@@ -38,7 +38,10 @@ public class SpoilerTest extends SmackTestSuite {
     public void emptySpoilerTest() throws Exception {
         final String xml = "<spoiler xmlns='urn:xmpp:spoiler:0'/>";
 
-        SpoilerElement empty = SpoilerManager.createSpoiler();
+        Message message = new Message();
+        SpoilerElement.addSpoiler(message);
+
+        SpoilerElement empty = message.getExtension(SpoilerElement.ELEMENT, SpoilerManager.NAMESPACE_0);
 
         assertNull(empty.getHint());
         assertNull(empty.getLanguage());
@@ -54,7 +57,10 @@ public class SpoilerTest extends SmackTestSuite {
     public void hintSpoilerTest() throws Exception {
         final String xml = "<spoiler xmlns='urn:xmpp:spoiler:0'>Love story end</spoiler>";
 
-        SpoilerElement withHint = SpoilerManager.createSpoiler("Love story end");
+        Message message = new Message();
+        SpoilerElement.addSpoiler(message, "Love story end");
+
+        SpoilerElement withHint = message.getExtension(SpoilerElement.ELEMENT, SpoilerManager.NAMESPACE_0);
 
         assertEquals("Love story end", withHint.getHint());
         assertNull(withHint.getLanguage());
@@ -71,7 +77,10 @@ public class SpoilerTest extends SmackTestSuite {
     public void i18nHintSpoilerTest() throws Exception {
         final String xml = "<spoiler xml:lang='de' xmlns='urn:xmpp:spoiler:0'>Der Kuchen ist eine Lüge!</spoiler>";
 
-        SpoilerElement i18nHint = SpoilerManager.createSpoiler("de", "Der Kuchen ist eine Lüge!");
+        Message message = new Message();
+        SpoilerElement.addSpoiler(message, "de", "Der Kuchen ist eine Lüge!");
+
+        SpoilerElement i18nHint = message.getExtension(SpoilerElement.ELEMENT, SpoilerManager.NAMESPACE_0);
 
         assertEquals("Der Kuchen ist eine Lüge!", i18nHint.getHint());
         assertEquals("de", i18nHint.getLanguage());
@@ -88,19 +97,19 @@ public class SpoilerTest extends SmackTestSuite {
     @Test
     public void getSpoilersTest() {
         Message m = new Message();
-        assertNull(SpoilerManager.getSpoilers(m));
+        assertNull(SpoilerElement.getSpoilers(m));
 
-        m.addExtension(SpoilerManager.createSpoiler());
-        assertTrue(SpoilerManager.containsSpoiler(m));
+        SpoilerElement.addSpoiler(m);
+        assertTrue(SpoilerElement.containsSpoiler(m));
 
-        Map<String, String> spoilers = SpoilerManager.getSpoilers(m);
+        Map<String, String> spoilers = SpoilerElement.getSpoilers(m);
         assertEquals(1, spoilers.size());
         assertEquals(null, spoilers.get(""));
 
         final String spoilerText = "Spoiler Text";
 
-        m.addExtension(SpoilerManager.createSpoiler("de", spoilerText));
-        spoilers = SpoilerManager.getSpoilers(m);
+        SpoilerElement.addSpoiler(m, "de", spoilerText);
+        spoilers = SpoilerElement.getSpoilers(m);
         assertEquals(2, spoilers.size());
         assertEquals(spoilerText, spoilers.get("de"));
     }
