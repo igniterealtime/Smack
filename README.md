@@ -27,16 +27,16 @@ Smack is a collaborative effort of many open source, professionally and spare-ti
 While we try to provide the best possible XMPP library for Android and Java SE compatible execution environments by following state of the art software engineering practices, the API may not always perfectly fit your requirements.
 We welcome contributions and encourage discussion about how Smack can be further improved.
 We also provide **paid services** ranging from **XMPP/Smack related consulting** to **designing and developing features** in order to accommodate your needs.
-Please contact [Florian Schmaus](mailto:flo@geekplace.eu) for futher information.
+Please contact [Florian Schmaus](mailto:flo@geekplace.eu) for further information.
 
 Bug Reporting
 -------------
 
-Only a few users have access for for filling bugs in the tracker. New
+Only a few users have access for filling bugs in the tracker. New
 users should:
 
 1. Read ["How to ask for help or report an issue"](https://github.com/igniterealtime/Smack/wiki/How-to-ask-for-help,-report-an-issue-and-possible-solve-the-problem-yourself)
-2. [Create a discourse account](https://discourse.igniterealtime.org/signup) (you can also sign up with your google account).
+2. [Create a discourse account](https://discourse.igniterealtime.org/signup) (you can also sign up with your Google account).
 3. Login to the forum account
 4. Press "New Topic" in your toolbar and choose the 'Smack Support' sub-category.
 
@@ -81,8 +81,7 @@ Resources
 Ignite Realtime
 ===============
 
-[Ignite Realtime] is an Open Source community composed of end-users and developers around the world who 
-are interested in applying innovative, open-standards-based Real Time Collaboration to their businesses and organizations. 
+[Ignite Realtime] is an Open Source community composed of end-users and developers around the world who are interested in applying innovative, open-standards-based RealTime Collaboration to their businesses and organizations. 
 We're aimed at disrupting proprietary, non-open standards-based systems and invite you to participate in what's already one 
 of the biggest and most active Open Source communities.
 
