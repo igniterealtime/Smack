@@ -158,7 +158,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
         sdmTwo.addFeature(dummyFeature);
 
         // wait for the dummy feature to get sent via presence
-        presenceReceivedSyncPoint.waitForResult(10 * 1000);
+        presenceReceivedSyncPoint.waitForResult(timeout);
 
         dropCapsCache();
         // discover that
