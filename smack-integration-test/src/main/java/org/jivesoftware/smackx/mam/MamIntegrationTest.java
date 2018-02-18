@@ -25,11 +25,9 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
-
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.MamManager.MamQueryResult;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
-import org.jivesoftware.smackx.sid.element.OriginIdElement;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
@@ -63,7 +61,6 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
         mamManagerConTwo.updateArchivingPreferences(null, null, MamPrefsIQ.DefaultBehavior.always);
 
         Message message = new Message(userTwo);
-        OriginIdElement.addOriginId(message);
         String messageId = message.setStanzaId();
         String messageBody = "test message";
         message.setBody(messageBody);

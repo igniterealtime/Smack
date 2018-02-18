@@ -75,7 +75,6 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
         OriginIdElement.addOriginId(message);
 
         assertTrue(OriginIdElement.hasOriginId(message));
-        assertEquals(message.getStanzaId(), OriginIdElement.getOriginId(message).getId());
 
         StanzaIdElement stanzaId = new StanzaIdElement("alice@wonderland.lit");
         message.addExtension(stanzaId);

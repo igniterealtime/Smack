@@ -40,7 +40,8 @@ public class OriginIdElement extends StableAndUniqueIdElement {
     public static OriginIdElement addOriginId(Message message) {
         OriginIdElement originId = new OriginIdElement();
         message.addExtension(originId);
-        message.setStanzaId(originId.getId());
+        // TODO: Find solution to have both the originIds stanzaId and a nice to look at incremental stanzaID.
+        // message.setStanzaId(originId.getId());
         return originId;
     }
 
