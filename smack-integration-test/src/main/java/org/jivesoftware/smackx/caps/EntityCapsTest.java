@@ -39,13 +39,13 @@ import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.RosterUtil;
-
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -56,6 +56,14 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
     private final ServiceDiscoveryManager sdmTwo;
 
     private boolean discoInfoSend = false;
+
+    private final SimpleResultSyncPoint presenceReceivedSyncPoint = new SimpleResultSyncPoint();
+    private final StanzaListener presenceListener = new StanzaListener() {
+        @Override
+        public void processStanza(Stanza packet) {
+            presenceReceivedSyncPoint.signal();
+        }
+    };
 
     public EntityCapsTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
@@ -87,6 +95,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
                 sdm.removeFeature(dummyFeature);
             }
         }
+        conOne.removeAsyncStanzaListener(presenceListener);
     }
 
     @SmackIntegrationTest
@@ -131,7 +140,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
      * 
      */
     @SmackIntegrationTest
-    public void testPreventDiscoInfo() throws XMPPException, NoResponseException, NotConnectedException, InterruptedException {
+    public void testPreventDiscoInfo() throws Exception {
         final String dummyFeature = getNewDummyFeature();
         conOne.addPacketSendingListener(new StanzaListener() {
 
@@ -142,8 +151,14 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
 
         }, new AndFilter(new StanzaTypeFilter(DiscoverInfo.class), IQTypeFilter.GET));
 
+        // Add a stanzaListener to listen for incoming presence
+        conOne.addAsyncStanzaListener(presenceListener, PresenceTypeFilter.AVAILABLE);
+
         // add a bogus feature so that con1 ver won't match con0's
         sdmTwo.addFeature(dummyFeature);
+
+        // wait for the dummy feature to get sent via presence
+        presenceReceivedSyncPoint.waitForResult(10 * 1000);
 
         dropCapsCache();
         // discover that
