@@ -37,10 +37,11 @@ public class OriginIdElement extends StableAndUniqueIdElement {
      *
      * @param message message.
      */
-    public static void addOriginId(Message message) {
+    public static OriginIdElement addOriginId(Message message) {
         OriginIdElement originId = new OriginIdElement();
         message.addExtension(originId);
         message.setStanzaId(originId.getId());
+        return originId;
     }
 
     /**
