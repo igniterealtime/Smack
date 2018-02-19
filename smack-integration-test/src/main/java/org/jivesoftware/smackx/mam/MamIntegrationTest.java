@@ -25,6 +25,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.MamManager.MamQueryResult;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
@@ -53,7 +54,7 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
 
     @SmackIntegrationTest
     public void mamTest() throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException,
-                    NotLoggedInException {
+            NotLoggedInException {
         EntityBareJid userOne = conOne.getUser().asEntityBareJid();
         EntityBareJid userTwo = conTwo.getUser().asEntityBareJid();
 
