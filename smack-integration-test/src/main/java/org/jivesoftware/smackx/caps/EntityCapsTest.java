@@ -39,6 +39,7 @@ import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.RosterUtil;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
@@ -56,14 +57,6 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
     private final ServiceDiscoveryManager sdmTwo;
 
     private boolean discoInfoSend = false;
-
-    private final SimpleResultSyncPoint presenceReceivedSyncPoint = new SimpleResultSyncPoint();
-    private final StanzaListener presenceListener = new StanzaListener() {
-        @Override
-        public void processStanza(Stanza packet) {
-            presenceReceivedSyncPoint.signal();
-        }
-    };
 
     public EntityCapsTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
@@ -95,7 +88,6 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
                 sdm.removeFeature(dummyFeature);
             }
         }
-        conOne.removeAsyncStanzaListener(presenceListener);
     }
 
     @SmackIntegrationTest
@@ -151,14 +143,26 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
 
         }, new AndFilter(new StanzaTypeFilter(DiscoverInfo.class), IQTypeFilter.GET));
 
+        final SimpleResultSyncPoint presenceReceivedSyncPoint = new SimpleResultSyncPoint();
+        final StanzaListener presenceListener = new StanzaListener() {
+            @Override
+            public void processStanza(Stanza packet) {
+                presenceReceivedSyncPoint.signal();
+            }
+        };
+
         // Add a stanzaListener to listen for incoming presence
         conOne.addAsyncStanzaListener(presenceListener, PresenceTypeFilter.AVAILABLE);
 
         // add a bogus feature so that con1 ver won't match con0's
         sdmTwo.addFeature(dummyFeature);
 
-        // wait for the dummy feature to get sent via presence
-        presenceReceivedSyncPoint.waitForResult(timeout);
+        try {
+            // wait for the dummy feature to get sent via presence
+            presenceReceivedSyncPoint.waitForResult(timeout);
+        } finally {
+            conOne.removeAsyncStanzaListener(presenceListener);
+        }
 
         dropCapsCache();
         // discover that
