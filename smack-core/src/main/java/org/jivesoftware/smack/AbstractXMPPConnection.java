@@ -706,8 +706,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      *
      */
     public void disconnect() {
+        Presence unavailablePresence = null;
+        if (isAuthenticated()) {
+            unavailablePresence = new Presence(Presence.Type.unavailable);
+        }
         try {
-            disconnect(new Presence(Presence.Type.unavailable));
+            disconnect(unavailablePresence);
         }
         catch (NotConnectedException e) {
             LOGGER.log(Level.FINEST, "Connection is already disconnected", e);
@@ -722,15 +726,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * stanza(/packet) is set with online information, but most XMPP servers will deliver the full
      * presence stanza(/packet) with whatever data is set.
      * 
-     * @param unavailablePresence the presence stanza(/packet) to send during shutdown.
+     * @param unavailablePresence the optional presence stanza to send during shutdown.
      * @throws NotConnectedException 
      */
     public synchronized void disconnect(Presence unavailablePresence) throws NotConnectedException {
-        try {
-            sendStanza(unavailablePresence);
-        }
-        catch (InterruptedException e) {
-            LOGGER.log(Level.FINE, "Was interrupted while sending unavailable presence. Continuing to disconnect the connection", e);
+        if (unavailablePresence != null) {
+            try {
+                sendStanza(unavailablePresence);
+            } catch (InterruptedException e) {
+                LOGGER.log(Level.FINE,
+                        "Was interrupted while sending unavailable presence. Continuing to disconnect the connection",
+                        e);
+            }
         }
         shutdown();
         callConnectionClosedListener();
