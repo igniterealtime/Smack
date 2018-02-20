@@ -903,6 +903,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // We connected successfully to the servers TCP port
         initConnection();
+
+        // TLS handled will be successful either if TLS was established, or if it was not mandatory.
+        tlsHandled.checkIfSuccessOrWaitOrThrow();
+
+        // Wait with SASL auth until the SASL mechanisms have been received
+        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
     }
 
     /**

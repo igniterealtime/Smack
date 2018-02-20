@@ -92,8 +92,6 @@ public class DummyConnection extends AbstractXMPPConnection {
     @Override
     protected void connectInternal() {
         connected = true;
-        saslFeatureReceived.reportSuccess();
-        tlsHandled.reportSuccess();
         streamId = "dummy-" + new Random(new Date().getTime()).nextInt();
 
         // TODO: Remove in Smack 4.3, and likely the suppression of the deprecation warning.

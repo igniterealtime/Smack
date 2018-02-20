@@ -379,12 +379,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Perform the actual connection to the XMPP service
         connectInternal();
 
-        // TLS handled will be successful either if TLS was established, or if it was not mandatory.
-        tlsHandled.checkIfSuccessOrWaitOrThrow();
-
-        // Wait with SASL auth until the SASL mechanisms have been received
-        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
-
         // If TLS is required but the server doesn't offer it, disconnect
         // from the server and throw an error. First check if we've already negotiated TLS
         // and are secure, however (features get parsed a second time after TLS is established).
