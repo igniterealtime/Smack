@@ -98,6 +98,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | [OMEMO Multi End Message and Object Encryption](omemo.md)            | [XEP-XXXX](https://conversations.im/omemo/xep-omemo.html) | Encrypt messages using OMEMO encryption (currently only with smack-omemo-signal -> GPLv3). |
 | [Consistent Color Generation](consistent_colors.md) | [XEP-0392](http://xmpp.org/extensions/xep-0392.html) | Generate consistent colors for identifiers like usernames to provide a consistent user experience. |
 | Google GCM JSON payload                     | n/a                                                  | Semantically the same as XEP-0335: JSON Containers |
+| [Spoiler Messages](spoiler.md)              | [XEP-0382](http://xmpp.org/extensions/xep-0382.html) | Indicate that the body of a message should be treated as a spoiler |
 
 
 Legacy Smack Extensions and currently supported XEPs of smack-legacy
