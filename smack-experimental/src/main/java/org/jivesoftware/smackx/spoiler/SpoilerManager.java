@@ -19,10 +19,8 @@ package org.jivesoftware.smackx.spoiler;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 public final class SpoilerManager extends Manager {
@@ -31,15 +29,6 @@ public final class SpoilerManager extends Manager {
 
     private static final Map<XMPPConnection, SpoilerManager> INSTANCES = new WeakHashMap<>();
 
-    static {
-        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
-            @Override
-            public void connectionCreated(XMPPConnection connection) {
-                getInstanceFor(connection);
-            }
-        });
-    }
-
     /**
      * Create a new SpoilerManager and add Spoiler to disco features.
      *
@@ -47,7 +36,20 @@ public final class SpoilerManager extends Manager {
      */
     private SpoilerManager(XMPPConnection connection) {
         super(connection);
-        ServiceDiscoveryManager.getInstanceFor(connection).addFeature(NAMESPACE_0);
+    }
+
+    /**
+     * Begin announcing support for Spoiler messages.
+     */
+    public void startAnnounceSupport() {
+        ServiceDiscoveryManager.getInstanceFor(connection()).addFeature(NAMESPACE_0);
+    }
+
+    /**
+     * End announcing support for Spoiler messages.
+     */
+    public void stopAnnounceSupport() {
+        ServiceDiscoveryManager.getInstanceFor(connection()).removeFeature(NAMESPACE_0);
     }
 
     /**
