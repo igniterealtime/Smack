@@ -6,5 +6,6 @@
         <className>org.jivesoftware.smackx.iot.provisioning.IoTProvisioningManager</className>
         <className>org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager</className>
 		<className>org.jivesoftware.smackx.eme.ExplicitMessageEncryptionManager</className>
+        <className>org.jivesoftware.smackx.sid.StableUniqueStanzaIdManager</className>
     </startupClasses>
 </smack>
