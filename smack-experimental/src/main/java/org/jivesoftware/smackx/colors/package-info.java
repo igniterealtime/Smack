@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright © 2018 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,6 @@
  */
 
 /**
- * Smacks implementation of XEP-0030: Service Discovery.
+ * Smack's API for XEP-0392: Consistent Color Generation.
  */
-package org.jivesoftware.smackx.disco;
+package org.jivesoftware.smackx.colors;

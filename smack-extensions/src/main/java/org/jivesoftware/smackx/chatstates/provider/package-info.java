@@ -16,6 +16,6 @@
  */
 
 /**
- * Provider classes for Chat State Notifications (XEP-0085).
+ * Provider classes for XEP-0085: Chat State Notifications.
  */
 package org.jivesoftware.smackx.chatstates.provider;

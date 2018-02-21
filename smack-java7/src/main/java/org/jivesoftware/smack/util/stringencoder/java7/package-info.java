@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Java7 related classes for Smacks Base64 implementation.
  */
 package org.jivesoftware.smack.util.stringencoder.java7;

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +52,15 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
     public void simplePubSubNodeTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final String nodename = "sinttest-simple-nodename-" + testRunId;
         final String itemId = "sintest-simple-itemid-" + testRunId;
-        LeafNode leafNode = pubSubManagerOne.createNode(nodename);
+        ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
+        ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        // Configure the node as "Notification-Only Node", which in turn means that
+        // items do not need payload, to prevent payload-required error responses when
+        // publishing the item.
+        config.setDeliverPayloads(false);
+        Node node = pubSubManagerOne.createNode(nodename, config);
         try {
+            LeafNode leafNode = (LeafNode) node;
             leafNode.publish(new Item(itemId));
             List<Item> items = leafNode.getItems();
             assertEquals(1, items.size());

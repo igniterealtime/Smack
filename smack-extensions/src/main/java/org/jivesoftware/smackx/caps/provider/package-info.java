@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Provider classes for XEP-0115: Entity Capabilities.
  */
 package org.jivesoftware.smackx.caps.provider;

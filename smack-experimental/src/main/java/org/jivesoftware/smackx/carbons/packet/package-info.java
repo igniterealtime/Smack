@@ -16,6 +16,6 @@
  */
 
 /**
- * Stanzas and extension elements for XEP-280: Message Carbons.
+ * Stanzas and extension elements for XEP-0280: Message Carbons.
  */
 package org.jivesoftware.smackx.carbons.packet;

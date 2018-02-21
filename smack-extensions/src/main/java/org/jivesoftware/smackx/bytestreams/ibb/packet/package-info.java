@@ -16,6 +16,6 @@
  */
 
 /**
- * Stanzas and extension elements for XEP-47: In-Band Bytestreams.
+ * Stanzas and extension elements for XEP-0047: In-Band Bytestreams.
  */
 package org.jivesoftware.smackx.bytestreams.ibb.packet;

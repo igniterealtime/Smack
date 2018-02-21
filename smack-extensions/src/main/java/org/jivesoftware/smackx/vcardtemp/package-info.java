@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0054: vcard-temp.
  */
 package org.jivesoftware.smackx.vcardtemp;

@@ -85,7 +85,7 @@ public class ServiceAdministrationManager extends Manager {
         FormField passwordVerifyField = answerForm.getField("password-verify");
         passwordVerifyField.addValue(password);
 
-        command.next(answerForm);
+        command.execute(answerForm);
         assert (command.isCompleted());
     }
 
@@ -113,7 +113,7 @@ public class ServiceAdministrationManager extends Manager {
         FormField accountJids = answerForm.getField("accountjids");
         accountJids.addValues(JidUtil.toStringList(jidsToDelete));
 
-        command.next(answerForm);
+        command.execute(answerForm);
         assert (command.isCompleted());
     }
 }

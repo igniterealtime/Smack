@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0004: Data Forms.
  */
 package org.jivesoftware.smackx.xdata;

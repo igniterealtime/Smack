@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * XEP-0184: Message Delivery Receipts.
  */
 package org.jivesoftware.smackx.receipts;

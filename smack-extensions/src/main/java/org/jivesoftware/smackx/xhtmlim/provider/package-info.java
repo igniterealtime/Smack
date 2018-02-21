@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Provider classes for XEP-0071: XHTML-IM.
  */
 package org.jivesoftware.smackx.xhtmlim.provider;

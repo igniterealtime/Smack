@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smack classes for compression.
  */
 package org.jivesoftware.smack.compression;

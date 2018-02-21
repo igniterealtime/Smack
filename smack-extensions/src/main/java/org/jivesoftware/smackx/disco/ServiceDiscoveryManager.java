@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2018 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -66,6 +67,7 @@ import org.jxmpp.util.cache.ExpirationCache;
  * </ol>  
  * 
  * @author Gaston Dombiak
+ * @author Florian Schmaus
  */
 public final class ServiceDiscoveryManager extends Manager {
 
@@ -875,20 +877,26 @@ public final class ServiceDiscoveryManager extends Manager {
     public DomainBareJid findService(String feature, boolean useCache, String category, String type)
                     throws NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException {
-        List<DiscoverInfo> services = findServicesDiscoverInfo(feature, true, useCache);
+        boolean noCategory = StringUtils.isNullOrEmpty(category);
+        boolean noType = StringUtils.isNullOrEmpty(type);
+        if (noType != noCategory) {
+            throw new IllegalArgumentException("Must specify either both, category and type, or none");
+        }
+
+        List<DiscoverInfo> services = findServicesDiscoverInfo(feature, false, useCache);
         if (services.isEmpty()) {
             return null;
         }
-        DiscoverInfo info = services.get(0);
-        if (category != null && type != null) {
-            if (!info.hasIdentity(category, type)) {
-                return null;
+
+        if (!noCategory && !noType) {
+            for (DiscoverInfo info : services) {
+                if (info.hasIdentity(category, type)) {
+                    return info.getFrom().asDomainBareJid();
+                }
             }
         }
-        else if (category != null || type != null) {
-            throw new IllegalArgumentException("Must specify either both, category and type, or none");
-        }
-        return info.getFrom().asDomainBareJid();
+
+        return services.get(0).getFrom().asDomainBareJid();
     }
 
     public DomainBareJid findService(String feature, boolean useCache) throws NoResponseException,

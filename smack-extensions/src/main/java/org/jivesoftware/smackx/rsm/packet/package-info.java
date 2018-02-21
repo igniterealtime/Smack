@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes of XEP-0059: Result Set Management.
  */
 package org.jivesoftware.smackx.rsm.packet;

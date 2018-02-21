@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0077: In-Band Registration.
  */
 package org.jivesoftware.smackx.iqregister.packet;

@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0172: User Nickname.
  */
 package org.jivesoftware.smackx.nick.packet;

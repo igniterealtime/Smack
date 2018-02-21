@@ -16,6 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-47: In-Band Bytestreams.
+ * Smack's API for XEP-0047: In-Band Bytestreams.
  */
 package org.jivesoftware.smackx.bytestreams.ibb;

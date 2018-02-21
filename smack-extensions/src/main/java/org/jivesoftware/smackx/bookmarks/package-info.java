@@ -16,6 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-48: Bookmarks.
+ * Smack's API for XEP-0048: Bookmarks.
  */
 package org.jivesoftware.smackx.bookmarks;

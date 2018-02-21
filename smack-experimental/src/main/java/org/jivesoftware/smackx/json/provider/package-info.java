@@ -16,6 +16,6 @@
  */
 
 /**
- * Providers for XEP-295: JSON Encodings for XMPP.
+ * Providers for XEP-0295: JSON Encodings for XMPP.
  */
 package org.jivesoftware.smackx.json.provider;

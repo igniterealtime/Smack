@@ -16,6 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-65: SOCKS5 Bytestreams.
+ * Smack's API for XEP-0065: SOCKS5 Bytestreams.
  */
 package org.jivesoftware.smackx.bytestreams.socks5;

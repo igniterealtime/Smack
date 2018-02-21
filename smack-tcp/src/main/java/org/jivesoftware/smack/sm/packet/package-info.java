@@ -16,6 +16,6 @@
  */
 
 /**
- * Plain stream elements for XEP-198: Stream Management.
+ * Plain stream elements for XEP-0198: Stream Management.
  */
 package org.jivesoftware.smack.sm.packet;

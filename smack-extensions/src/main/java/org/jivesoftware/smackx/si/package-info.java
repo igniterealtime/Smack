@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0095: Stream Initiation.
  */
 package org.jivesoftware.smackx.si;

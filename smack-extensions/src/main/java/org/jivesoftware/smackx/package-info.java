@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Integration tests.
  */
 package org.jivesoftware.smackx;

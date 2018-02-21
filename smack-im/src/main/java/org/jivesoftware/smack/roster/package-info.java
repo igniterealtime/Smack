@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks API for Rosters.
  */
 package org.jivesoftware.smack.roster;

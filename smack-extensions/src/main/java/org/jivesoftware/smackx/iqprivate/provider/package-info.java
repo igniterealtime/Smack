@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Provider classes for XEP-0049: Private XML Storage.
  */
 package org.jivesoftware.smackx.iqprivate.provider;

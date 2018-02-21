@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Provider classes for XEP-0016: Privacy Lists.
  */
 package org.jivesoftware.smackx.privacy.provider;

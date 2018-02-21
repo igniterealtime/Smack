@@ -46,6 +46,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -131,7 +132,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
      * 
      */
     @SmackIntegrationTest
-    public void testPreventDiscoInfo() throws XMPPException, NoResponseException, NotConnectedException, InterruptedException {
+    public void testPreventDiscoInfo() throws Exception {
         final String dummyFeature = getNewDummyFeature();
         conOne.addPacketSendingListener(new StanzaListener() {
 
@@ -142,8 +143,26 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
 
         }, new AndFilter(new StanzaTypeFilter(DiscoverInfo.class), IQTypeFilter.GET));
 
+        final SimpleResultSyncPoint presenceReceivedSyncPoint = new SimpleResultSyncPoint();
+        final StanzaListener presenceListener = new StanzaListener() {
+            @Override
+            public void processStanza(Stanza packet) {
+                presenceReceivedSyncPoint.signal();
+            }
+        };
+
+        // Add a stanzaListener to listen for incoming presence
+        conOne.addAsyncStanzaListener(presenceListener, PresenceTypeFilter.AVAILABLE);
+
         // add a bogus feature so that con1 ver won't match con0's
         sdmTwo.addFeature(dummyFeature);
+
+        try {
+            // wait for the dummy feature to get sent via presence
+            presenceReceivedSyncPoint.waitForResult(timeout);
+        } finally {
+            conOne.removeAsyncStanzaListener(presenceListener);
+        }
 
         dropCapsCache();
         // discover that

@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Java7 related classes.
  */
 package org.jivesoftware.smack.java7;

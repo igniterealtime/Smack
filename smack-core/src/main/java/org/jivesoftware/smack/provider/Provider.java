@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,17 @@ import org.jivesoftware.smack.util.ParserUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 
+/**
+ * Smack provider are the parsers used to deserialize raw XMPP into the according Java {@link Element}s.
+ * <p>
+ * At any time when {@link #parse(XmlPullParser, int)} is invoked any type of exception can be thrown. If the parsed
+ * element does not follow the specification, for example by putting a string where only integers are allowed, then a
+ * {@link org.jivesoftware.smack.SmackException} should be thrown.
+ * </p>
+ * 
+ * @author Florian Schmaus
+ * @param <E> the type of the resulting element.
+ */
 public abstract class Provider<E extends Element> {
 
     public final E parse(XmlPullParser parser) throws Exception {

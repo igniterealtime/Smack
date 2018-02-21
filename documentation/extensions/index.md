@@ -96,6 +96,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | HTTP File Upload                            | [XEP-0363](http://xmpp.org/extensions/xep-0363.html) | Protocol to request permissions to upload a file to an HTTP server and get a shareable URL. |
 | [Multi-User Chat Light](muclight.md)        | [XEP-xxxx](http://mongooseim.readthedocs.io/en/latest/open-extensions/xeps/xep-muc-light.html) | Multi-User Chats for mobile XMPP applications and specific enviroment. |
 | [OMEMO Multi End Message and Object Encryption](omemo.md)            | [XEP-XXXX](https://conversations.im/omemo/xep-omemo.html) | Encrypt messages using OMEMO encryption (currently only with smack-omemo-signal -> GPLv3). |
+| [Consistent Color Generation](consistent_colors.md) | [XEP-0392](http://xmpp.org/extensions/xep-0392.html) | Generate consistent colors for identifiers like usernames to provide a consistent user experience. |
 | Google GCM JSON payload                     | n/a                                                  | Semantically the same as XEP-0335: JSON Containers |
 
 

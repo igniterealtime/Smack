@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0092: Software Version.
  */
 package org.jivesoftware.smackx.iqversion;

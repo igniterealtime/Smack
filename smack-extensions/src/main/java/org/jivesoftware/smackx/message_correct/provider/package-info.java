@@ -14,4 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * XMPP stream element providers for Last Message Correction as defined in XEP-0308.
+ */
 package org.jivesoftware.smackx.message_correct.provider;

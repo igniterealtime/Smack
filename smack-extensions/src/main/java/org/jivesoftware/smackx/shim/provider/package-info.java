@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Provider classes of XEP-0131: Stanza Headers and Internet Metadata.
  */
 package org.jivesoftware.smackx.shim.provider;

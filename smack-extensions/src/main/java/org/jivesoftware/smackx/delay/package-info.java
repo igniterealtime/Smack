@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0203: Delayed Delivery, as well as XEP-0091: Legacy Delayed Delivery.
  */
 package org.jivesoftware.smackx.delay;
