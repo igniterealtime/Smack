@@ -16,6 +16,6 @@
  */
 
 /**
- * Provider for XEP-280: Message Carbons.
+ * Provider for XEP-0280: Message Carbons.
  */
 package org.jivesoftware.smackx.carbons.provider;

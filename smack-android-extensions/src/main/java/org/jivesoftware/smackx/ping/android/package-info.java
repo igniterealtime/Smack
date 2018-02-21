@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Android classes for XEP-0199: XMPP Ping.
  */
 package org.jivesoftware.smackx.ping.android;

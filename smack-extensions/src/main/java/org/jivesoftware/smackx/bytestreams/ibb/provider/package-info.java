@@ -16,6 +16,6 @@
  */
 
 /**
- * Providers for XEP-47: In-Band Bytestreams.
+ * Providers for XEP-0047: In-Band Bytestreams.
  */
 package org.jivesoftware.smackx.bytestreams.ibb.provider;

@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0080: User Location.
  */
 package org.jivesoftware.smackx.geoloc.packet;

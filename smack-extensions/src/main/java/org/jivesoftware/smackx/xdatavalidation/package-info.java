@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0122: Data Forms Validation.
  */
 package org.jivesoftware.smackx.xdatavalidation;

@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Android classes for debugging purposes.
  */
 package org.jivesoftware.smackx.debugger.android;

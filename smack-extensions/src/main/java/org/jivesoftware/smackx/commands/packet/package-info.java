@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0050: Ad-Hoc Commands.
  */
 package org.jivesoftware.smackx.commands.packet;

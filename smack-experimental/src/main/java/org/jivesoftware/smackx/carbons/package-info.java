@@ -16,6 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-280: Message Carbons.
+ * Smack's API for XEP-0280: Message Carbons.
  */
 package org.jivesoftware.smackx.carbons;

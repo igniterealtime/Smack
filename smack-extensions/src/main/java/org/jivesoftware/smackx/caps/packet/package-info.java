@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0115: Entity Capabilities.
  */
 package org.jivesoftware.smackx.caps.packet;

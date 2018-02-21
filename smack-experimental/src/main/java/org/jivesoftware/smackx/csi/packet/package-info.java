@@ -16,6 +16,6 @@
  */
 
 /**
- * Plain stream elements for XEP-352: Client State Indication.
+ * Plain stream elements for XEP-0352: Client State Indication.
  */
 package org.jivesoftware.smackx.csi.packet;

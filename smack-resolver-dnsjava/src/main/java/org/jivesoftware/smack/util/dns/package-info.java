@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks DNS resolvers.
  */
 package org.jivesoftware.smack.util.dns;

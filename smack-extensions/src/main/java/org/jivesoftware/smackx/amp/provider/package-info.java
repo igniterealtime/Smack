@@ -16,6 +16,6 @@
  */
 
 /**
- * Providers for XEP-79: Advanced Message Processing.
+ * Providers for XEP-0079: Advanced Message Processing.
  */
 package org.jivesoftware.smackx.amp.provider;

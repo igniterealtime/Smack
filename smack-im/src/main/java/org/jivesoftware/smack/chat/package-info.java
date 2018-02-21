@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks legacy API for 1:1 chats.
  */
 package org.jivesoftware.smack.chat;

@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0092: Software Version.
  */
 package org.jivesoftware.smackx.iqversion.packet;

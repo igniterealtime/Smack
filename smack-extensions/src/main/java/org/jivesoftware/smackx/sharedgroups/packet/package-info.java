@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes of shared groups.
  */
 package org.jivesoftware.smackx.sharedgroups.packet;

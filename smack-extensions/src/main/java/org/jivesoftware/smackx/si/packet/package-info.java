@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0095: Stream Initiation.
  */
 package org.jivesoftware.smackx.si.packet;

@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0016: Privacy Lists.
  */
 package org.jivesoftware.smackx.privacy;

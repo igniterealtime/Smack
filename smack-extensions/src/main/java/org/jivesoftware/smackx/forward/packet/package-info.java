@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0297: Stanza Forwarding.
  */
 package org.jivesoftware.smackx.forward.packet;

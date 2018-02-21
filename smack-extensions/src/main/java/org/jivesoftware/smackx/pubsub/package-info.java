@@ -16,6 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-60: Publish-Subscribe.
+ * Smack's API for XEP-0060: Publish-Subscribe.
  */
 package org.jivesoftware.smackx.pubsub;

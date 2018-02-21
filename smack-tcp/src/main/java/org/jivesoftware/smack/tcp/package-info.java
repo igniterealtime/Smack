@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * TCP-IP related classes for Smack.
  */
 package org.jivesoftware.smack.tcp;

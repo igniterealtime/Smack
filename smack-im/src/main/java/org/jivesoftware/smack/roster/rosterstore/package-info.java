@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Persistence classes for Rosters.
  */
 package org.jivesoftware.smack.roster.rosterstore;

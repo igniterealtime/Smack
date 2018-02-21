@@ -16,6 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-224: Attention.
+ * Smack's API for XEP-0224: Attention.
  */
 package org.jivesoftware.smackx.attention;

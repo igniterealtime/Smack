@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0141: Data Forms Layout.
  */
 package org.jivesoftware.smackx.xdatalayout.packet;

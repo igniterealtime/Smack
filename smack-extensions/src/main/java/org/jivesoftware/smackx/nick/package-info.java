@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0172: User Nickname.
  */
 package org.jivesoftware.smackx.nick;

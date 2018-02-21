@@ -16,6 +16,6 @@
  */
 
 /**
- * Providers for XEP-332: HTTP over XMPP transport.
+ * Providers for XEP-0332: HTTP over XMPP transport.
  */
 package org.jivesoftware.smackx.hoxt.provider;

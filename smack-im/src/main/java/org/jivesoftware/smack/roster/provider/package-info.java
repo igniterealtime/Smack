@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Provider classes for Rosters.
  */
 package org.jivesoftware.smack.roster.provider;

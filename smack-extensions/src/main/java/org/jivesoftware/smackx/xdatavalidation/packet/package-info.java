@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0122: Data Forms Validation.
  */
 package org.jivesoftware.smackx.xdatavalidation.packet;

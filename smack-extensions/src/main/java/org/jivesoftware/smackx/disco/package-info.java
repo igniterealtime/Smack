@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0030: Service Discovery.
  */
 package org.jivesoftware.smackx.disco;

@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Provider classes for XEP-0030: Service Discovery.
  */
 package org.jivesoftware.smackx.disco.provider;

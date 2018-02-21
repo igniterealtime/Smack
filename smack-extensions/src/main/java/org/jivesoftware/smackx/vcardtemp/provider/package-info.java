@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Provider classes for XEP-0054: vcard-temp.
  */
 package org.jivesoftware.smackx.vcardtemp.provider;

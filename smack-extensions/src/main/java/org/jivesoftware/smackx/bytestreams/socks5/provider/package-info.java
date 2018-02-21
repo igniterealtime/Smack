@@ -16,6 +16,6 @@
  */
 
 /**
- * Providers for XEP-65: SOCKS5 Bytestreams.
+ * Providers for XEP-0065: SOCKS5 Bytestreams.
  */
 package org.jivesoftware.smackx.bytestreams.socks5.provider;

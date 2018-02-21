@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Internal classes for smack-im.
  */
 package org.jivesoftware.smack.im;

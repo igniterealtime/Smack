@@ -16,6 +16,6 @@
  */
 
 /**
- * Provider for XEP-352: Client State Indication.
+ * Provider for XEP-0352: Client State Indication.
  */
 package org.jivesoftware.smackx.csi.provider;

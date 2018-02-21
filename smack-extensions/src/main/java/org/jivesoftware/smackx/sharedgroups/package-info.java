@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Implementation of shared groups. Will only work with Wildfire!
  */
 package org.jivesoftware.smackx.sharedgroups;

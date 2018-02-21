@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Providers for XEP-0059: Result Set Management.
  */
 package org.jivesoftware.smackx.rsm.provider;

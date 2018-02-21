@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * A MiniDNS resolver implementation for Smack.
  */
 package org.jivesoftware.smack.util.dns.minidns;

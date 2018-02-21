@@ -16,6 +16,6 @@
  */
 
 /**
- * Extension elements for XEP-295: JSON Encodings for XMPP.
+ * Extension elements for XEP-0295: JSON Encodings for XMPP.
  */
 package org.jivesoftware.smackx.json.packet;

@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * A SASL implementation for Smack.
  */
 package org.jivesoftware.smack.sasl.provided;

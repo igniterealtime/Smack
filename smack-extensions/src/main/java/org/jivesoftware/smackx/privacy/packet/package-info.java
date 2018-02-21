@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0016: Privacy Lists.
  */
 package org.jivesoftware.smackx.privacy.packet;

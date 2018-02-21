@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Provider classes.
  */
 package org.jivesoftware.smackx.jiveproperties.provider;

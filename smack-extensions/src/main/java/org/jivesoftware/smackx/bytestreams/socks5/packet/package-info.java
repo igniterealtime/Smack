@@ -16,6 +16,6 @@
  */
 
 /**
- * Stanzas and extension elements for XEP-65: SOCKS5 Bytestreams.
+ * Stanzas and extension elements for XEP-0065: SOCKS5 Bytestreams.
  */
 package org.jivesoftware.smackx.bytestreams.socks5.packet;

@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0115: Entity Capabilities.
  */
 package org.jivesoftware.smackx.caps;

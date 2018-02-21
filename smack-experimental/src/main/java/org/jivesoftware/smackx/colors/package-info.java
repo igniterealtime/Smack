@@ -16,6 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-392: Consistent Color Generation.
+ * Smack's API for XEP-0392: Consistent Color Generation.
  */
 package org.jivesoftware.smackx.colors;
