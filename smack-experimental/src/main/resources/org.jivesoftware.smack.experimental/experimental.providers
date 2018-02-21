@@ -211,6 +211,18 @@
         <className>org.jivesoftware.smackx.push_notifications.provider.RemoteDisablingProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0359: Stable and Unique Stanza IDs -->
+    <extensionProvider>
+        <elementName>stanza-id</elementName>
+        <namespace>urn:xmpp:sid:0</namespace>
+        <className>org.jivesoftware.smackx.sid.provider.StanzaIdProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>origin-id</elementName>
+        <namespace>urn:xmpp:sid:0</namespace>
+        <className>org.jivesoftware.smackx.sid.provider.OriginIdProvider</className>
+    </extensionProvider>
+
     <!-- XEP-0333: Chat Markers -->
     <extensionProvider>
       <elementName>markable</elementName>
