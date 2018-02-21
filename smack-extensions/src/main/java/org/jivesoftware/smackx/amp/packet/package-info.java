@@ -16,6 +16,6 @@
  */
 
 /**
- * Stanzas and extension elements for XEP-79: Advanced Message Processing.
+ * Stanzas and extension elements for XEP-0079: Advanced Message Processing.
  */
 package org.jivesoftware.smackx.amp.packet;

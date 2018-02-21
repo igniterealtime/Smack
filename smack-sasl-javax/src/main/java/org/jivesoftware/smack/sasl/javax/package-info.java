@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * A javax SASL implementation for Smack.
  */
 package org.jivesoftware.smack.sasl.javax;

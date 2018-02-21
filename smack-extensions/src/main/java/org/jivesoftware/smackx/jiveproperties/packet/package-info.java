@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes.
  */
 package org.jivesoftware.smackx.jiveproperties.packet;

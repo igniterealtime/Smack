@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0202: Entity Time.
  */
 package org.jivesoftware.smackx.time;

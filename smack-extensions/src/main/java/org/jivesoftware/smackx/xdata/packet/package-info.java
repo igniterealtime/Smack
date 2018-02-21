@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0004: Data Forms.
  */
 package org.jivesoftware.smackx.xdata.packet;

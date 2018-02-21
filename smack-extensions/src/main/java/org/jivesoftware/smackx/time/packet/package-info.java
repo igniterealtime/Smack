@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes of XEP-0202: Entity Time.
  */
 package org.jivesoftware.smackx.time.packet;

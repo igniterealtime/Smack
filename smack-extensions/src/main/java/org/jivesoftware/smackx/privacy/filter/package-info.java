@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Filters for XEP-0016: Privacy Lists.
  */
 package org.jivesoftware.smackx.privacy.filter;

@@ -16,6 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-332: HTTP over XMPP transport.
+ * Smack's API for XEP-0332: HTTP over XMPP transport.
  */
 package org.jivesoftware.smackx.hoxt;

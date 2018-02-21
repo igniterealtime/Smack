@@ -16,6 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-352: Client State Indication.
+ * Smack's API for XEP-0352: Client State Indication.
  */
 package org.jivesoftware.smackx.csi;

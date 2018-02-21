@@ -16,6 +16,6 @@
  */
 
 /**
- * Stanzas and extension elements for XEP-33: Extended Stanzas Addressing.
+ * Stanzas and extension elements for XEP-0033: Extended Stanzas Addressing.
  */
 package org.jivesoftware.smackx.address.packet;

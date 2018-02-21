@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0054: vcard-temp.
  */
 package org.jivesoftware.smackx.vcardtemp.packet;

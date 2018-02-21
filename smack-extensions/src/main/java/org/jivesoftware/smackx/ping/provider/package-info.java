@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Provider classes for XEP-0199: XMPP Ping.
  */
 package org.jivesoftware.smackx.ping.provider;

@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0045: Multi-User Chat.
  */
 package org.jivesoftware.smackx.muc.packet;

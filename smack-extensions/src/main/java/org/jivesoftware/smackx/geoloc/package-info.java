@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0080: User Location.
  */
 package org.jivesoftware.smackx.geoloc;

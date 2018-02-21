@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0297: Stanza Forwarding.
  */
 package org.jivesoftware.smackx.forward;

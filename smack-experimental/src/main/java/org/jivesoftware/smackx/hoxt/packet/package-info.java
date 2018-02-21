@@ -16,6 +16,6 @@
  */
 
 /**
- * Stanzas and extension elements for XEP-332: HTTP over XMPP transport.
+ * Stanzas and extension elements for XEP-0332: HTTP over XMPP transport.
  */
 package org.jivesoftware.smackx.hoxt.packet;

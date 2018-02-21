@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0055: Jabber Search.
  */
 package org.jivesoftware.smackx.search;

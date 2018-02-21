@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smack optional Debuggers.
  */
 package org.jivesoftware.smackx.debugger;

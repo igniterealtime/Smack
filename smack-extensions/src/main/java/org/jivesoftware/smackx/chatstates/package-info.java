@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0085: Chat State Notifications.
  */
 package org.jivesoftware.smackx.chatstates;

@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0012: Last Activity.
  */
 package org.jivesoftware.smackx.iqlast;

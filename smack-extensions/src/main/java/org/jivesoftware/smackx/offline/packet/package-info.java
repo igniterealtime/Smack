@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0013: Flexible Offline Message Retrieval.
  */
 package org.jivesoftware.smackx.offline.packet;

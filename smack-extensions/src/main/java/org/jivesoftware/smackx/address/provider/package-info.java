@@ -16,6 +16,6 @@
  */
 
 /**
- * Providers for XEP-33: Extended Stanza Addressing.
+ * Providers for XEP-0033: Extended Stanza Addressing.
  */
 package org.jivesoftware.smackx.address.provider;

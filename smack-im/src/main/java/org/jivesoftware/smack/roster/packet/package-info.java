@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for Rosters.
  */
 package org.jivesoftware.smack.roster.packet;

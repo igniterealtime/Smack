@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks initializer for extensions.
  */
 package org.jivesoftware.smack.extensions;

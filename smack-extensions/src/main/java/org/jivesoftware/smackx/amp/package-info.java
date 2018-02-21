@@ -16,6 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-79: Advanced Message Processing.
+ * Smack's API for XEP-0079: Advanced Message Processing.
  */
 package org.jivesoftware.smackx.amp;

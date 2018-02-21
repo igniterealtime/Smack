@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0012: Last Activity.
  */
 package org.jivesoftware.smackx.iqlast.packet;

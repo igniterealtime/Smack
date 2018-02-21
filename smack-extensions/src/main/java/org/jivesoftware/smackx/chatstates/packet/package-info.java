@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0085: Chat State Notifications.
  */
 package org.jivesoftware.smackx.chatstates.packet;

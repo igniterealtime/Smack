@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * File Transfers via XEP-0095: Stream Initialization.
  */
 package org.jivesoftware.smackx.filetransfer;

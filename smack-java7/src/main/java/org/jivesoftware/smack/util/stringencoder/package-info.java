@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Java7 related classes for Smacks StringEncoder.
  */
 package org.jivesoftware.smack.util.stringencoder;

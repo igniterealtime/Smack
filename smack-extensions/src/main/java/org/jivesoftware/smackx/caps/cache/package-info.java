@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Cache classes for XEP-0115: Entity Capabilities.
  */
 package org.jivesoftware.smackx.caps.cache;

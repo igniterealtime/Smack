@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation XEP-0163: Personal Eventing Protocol.
  */
 package org.jivesoftware.smackx.pep;

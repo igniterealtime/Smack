@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Element classes for XEP-0131: Stanza Headers and Internet Metadata.
  */
 package org.jivesoftware.smackx.shim.packet;

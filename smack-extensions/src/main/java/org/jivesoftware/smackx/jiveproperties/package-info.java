@@ -16,6 +16,7 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation for attaching arbitrary properties to packets according to
+ * https://docs.jivesoftware.com/smack/latest/documentation/properties.html.
  */
 package org.jivesoftware.smackx.jiveproperties;

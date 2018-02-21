@@ -16,6 +16,6 @@
  */
 
 /**
- * Stanzas and extension elements for XEP-224: Attention.
+ * Stanzas and extension elements for XEP-0224: Attention.
  */
 package org.jivesoftware.smackx.attention.packet;

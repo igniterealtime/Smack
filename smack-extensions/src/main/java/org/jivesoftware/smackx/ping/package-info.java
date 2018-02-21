@@ -16,6 +16,6 @@
  */
 
 /**
- * TODO describe me.
+ * Smacks implementation of XEP-0199: XMPP Ping.
  */
 package org.jivesoftware.smackx.ping;
