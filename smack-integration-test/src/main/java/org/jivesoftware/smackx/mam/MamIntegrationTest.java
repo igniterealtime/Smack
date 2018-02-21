@@ -54,7 +54,7 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
 
     @SmackIntegrationTest
     public void mamTest() throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException,
-            NotLoggedInException {
+                    NotLoggedInException {
         EntityBareJid userOne = conOne.getUser().asEntityBareJid();
         EntityBareJid userTwo = conTwo.getUser().asEntityBareJid();
 
