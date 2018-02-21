@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -70,8 +69,6 @@ import org.jxmpp.util.cache.ExpirationCache;
  * @author Florian Schmaus
  */
 public final class ServiceDiscoveryManager extends Manager {
-
-    private static final Logger LOGGER = Logger.getLogger(ServiceDiscoveryManager.class.getName());
 
     private static final String DEFAULT_IDENTITY_NAME = "Smack";
     private static final String DEFAULT_IDENTITY_CATEGORY = "client";
