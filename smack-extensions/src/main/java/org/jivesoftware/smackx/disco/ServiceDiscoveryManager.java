@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -70,8 +69,6 @@ import org.jxmpp.util.cache.ExpirationCache;
  * @author Florian Schmaus
  */
 public final class ServiceDiscoveryManager extends Manager {
-
-    private static final Logger LOGGER = Logger.getLogger(ServiceDiscoveryManager.class.getName());
 
     private static final String DEFAULT_IDENTITY_NAME = "Smack";
     private static final String DEFAULT_IDENTITY_CATEGORY = "client";
@@ -595,7 +592,10 @@ public final class ServiceDiscoveryManager extends Manager {
      * @throws NoResponseException 
      * @throws NotConnectedException 
      * @throws InterruptedException 
+     * @deprecated The disco-publish feature was removed from XEP-0030 in 2008 in favor of XEP-0060: Publish-Subscribe.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.4
     public boolean canPublishItems(Jid entityID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverInfo info = discoverInfo(entityID);
         return canPublishItems(info);
@@ -609,7 +609,10 @@ public final class ServiceDiscoveryManager extends Manager {
       * 
       * @param info the discover info stanza(/packet) to check.
       * @return true if the server supports publishing of items.
+      * @deprecated The disco-publish feature was removed from XEP-0030 in 2008 in favor of XEP-0060: Publish-Subscribe.
       */
+    @Deprecated
+     // TODO: Remove in Smack 4.4
      public static boolean canPublishItems(DiscoverInfo info) {
          return info.containsFeature("http://jabber.org/protocol/disco#publish");
      }
@@ -626,7 +629,10 @@ public final class ServiceDiscoveryManager extends Manager {
      * @throws NoResponseException 
      * @throws NotConnectedException 
      * @throws InterruptedException 
+     * @deprecated The disco-publish feature was removed from XEP-0030 in 2008 in favor of XEP-0060: Publish-Subscribe.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.4
     public void publishItems(Jid entityID, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         publishItems(entityID, null, discoverItems);
     }
@@ -644,7 +650,10 @@ public final class ServiceDiscoveryManager extends Manager {
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException 
      * @throws InterruptedException 
+     * @deprecated The disco-publish feature was removed from XEP-0030 in 2008 in favor of XEP-0060: Publish-Subscribe.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.4
     public void publishItems(Jid entityID, String node, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
             {
         discoverItems.setType(IQ.Type.set);

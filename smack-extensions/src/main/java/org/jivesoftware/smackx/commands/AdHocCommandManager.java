@@ -271,7 +271,11 @@ public final class AdHocCommandManager extends Manager {
      * @throws XMPPException if the operation failed for some reason.
      * @throws SmackException if there was no response from the server.
      * @throws InterruptedException 
+     * @deprecated This method uses no longer existent XEP-0030 features and will be removed.
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
+    // TODO: Remove in Smack 4.4.
     public void publishCommands(Jid jid) throws XMPPException, SmackException, InterruptedException {
         // Collects the commands to publish as items
         DiscoverItems discoverItems = new DiscoverItems();

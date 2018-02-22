@@ -211,6 +211,18 @@
         <className>org.jivesoftware.smackx.push_notifications.provider.RemoteDisablingProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0359: Stable and Unique Stanza IDs -->
+    <extensionProvider>
+        <elementName>stanza-id</elementName>
+        <namespace>urn:xmpp:sid:0</namespace>
+        <className>org.jivesoftware.smackx.sid.provider.StanzaIdProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>origin-id</elementName>
+        <namespace>urn:xmpp:sid:0</namespace>
+        <className>org.jivesoftware.smackx.sid.provider.OriginIdProvider</className>
+    </extensionProvider>
+
     <!-- XEP-0333: Chat Markers -->
     <extensionProvider>
       <elementName>markable</elementName>
@@ -282,6 +294,20 @@
       <elementName>encryption</elementName>
       <namespace>urn:xmpp:eme:0</namespace>
       <className>org.jivesoftware.smackx.eme.provider.ExplicitMessageEncryptionProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0382: Spoiler Messages -->
+    <extensionProvider>
+      <elementName>spoiler</elementName>
+      <namespace>urn:xmpp:spoiler:0</namespace>
+      <className>org.jivesoftware.smackx.spoiler.provider.SpoilerProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0394: Message Markup -->
+    <extensionProvider>
+      <elementName>markup</elementName>
+      <namespace>urn:xmpp:markup:0</namespace>
+      <className>org.jivesoftware.smackx.message_markup.provider.MarkupElementProvider</className>
     </extensionProvider>
 
 </smackProviders>
