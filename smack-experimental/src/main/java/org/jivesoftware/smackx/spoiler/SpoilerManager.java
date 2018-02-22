@@ -29,6 +29,8 @@ public final class SpoilerManager extends Manager {
 
     private static final Map<XMPPConnection, SpoilerManager> INSTANCES = new WeakHashMap<>();
 
+    private final ServiceDiscoveryManager serviceDiscoveryManager;
+
     /**
      * Create a new SpoilerManager and add Spoiler to disco features.
      *
@@ -36,20 +38,21 @@ public final class SpoilerManager extends Manager {
      */
     private SpoilerManager(XMPPConnection connection) {
         super(connection);
+        serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
     }
 
     /**
      * Begin announcing support for Spoiler messages.
      */
     public void startAnnounceSupport() {
-        ServiceDiscoveryManager.getInstanceFor(connection()).addFeature(NAMESPACE_0);
+        serviceDiscoveryManager.addFeature(NAMESPACE_0);
     }
 
     /**
      * End announcing support for Spoiler messages.
      */
     public void stopAnnounceSupport() {
-        ServiceDiscoveryManager.getInstanceFor(connection()).removeFeature(NAMESPACE_0);
+        serviceDiscoveryManager.removeFeature(NAMESPACE_0);
     }
 
     /**
