@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class SpoilerElement implements ExtensionElement {
@@ -41,10 +42,8 @@ public class SpoilerElement implements ExtensionElement {
      * @param hint hint about the content.
      */
     public SpoilerElement(String language, String hint) {
-        if (language != null && !language.equals("")) {
-            if (hint == null || hint.equals("")) {
-                throw new IllegalArgumentException("Hint cannot be null or empty if language is not empty.");
-            }
+        if (StringUtils.isNotEmpty(language) && StringUtils.isNullOrEmpty(hint)) {
+            throw new IllegalArgumentException("Hint cannot be null or empty if language is not empty.");
         }
         this.language = language;
         this.hint = hint;
