@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.spoiler.element;
 
 import static org.jivesoftware.smackx.spoiler.SpoilerManager.NAMESPACE_0;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +111,7 @@ public class SpoilerElement implements ExtensionElement {
      */
     public static Map<String, String> getSpoilers(Message message) {
         if (!containsSpoiler(message)) {
-            return null;
+            return Collections.emptyMap();
         }
 
         List<ExtensionElement> spoilers = message.getExtensions(SpoilerElement.ELEMENT, NAMESPACE_0);

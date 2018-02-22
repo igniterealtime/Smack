@@ -97,7 +97,7 @@ public class SpoilerTest extends SmackTestSuite {
     @Test
     public void getSpoilersTest() {
         Message m = new Message();
-        assertNull(SpoilerElement.getSpoilers(m));
+        assertTrue(SpoilerElement.getSpoilers(m).isEmpty());
 
         SpoilerElement.addSpoiler(m);
         assertTrue(SpoilerElement.containsSpoiler(m));
