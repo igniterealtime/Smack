@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.spoiler.element;
 
-import static org.jivesoftware.smackx.spoiler.SpoilerManager.NAMESPACE_0;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,10 +25,13 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.spoiler.SpoilerManager;
 
 public class SpoilerElement implements ExtensionElement {
 
     public static final String ELEMENT = "spoiler";
+    public static final String NAMESPACE = SpoilerManager.NAMESPACE_0;
+
     public static final SpoilerElement EMPTY = new SpoilerElement(null, null);
 
     private final String hint;
@@ -98,7 +99,7 @@ public class SpoilerElement implements ExtensionElement {
      * @return true if message has spoiler extension
      */
     public static boolean containsSpoiler(Message message) {
-        return message.hasExtension(SpoilerElement.ELEMENT, NAMESPACE_0);
+        return message.hasExtension(SpoilerElement.ELEMENT, NAMESPACE);
     }
 
     /**
@@ -114,7 +115,7 @@ public class SpoilerElement implements ExtensionElement {
             return Collections.emptyMap();
         }
 
-        List<ExtensionElement> spoilers = message.getExtensions(SpoilerElement.ELEMENT, NAMESPACE_0);
+        List<ExtensionElement> spoilers = message.getExtensions(SpoilerElement.ELEMENT, NAMESPACE);
         Map<String, String> map = new HashMap<>();
 
         for (ExtensionElement e : spoilers) {
@@ -141,7 +142,7 @@ public class SpoilerElement implements ExtensionElement {
 
     @Override
     public String getNamespace() {
-        return NAMESPACE_0;
+        return NAMESPACE;
     }
 
     @Override
