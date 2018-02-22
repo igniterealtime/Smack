@@ -116,11 +116,13 @@ public class SpoilerTest extends SmackTestSuite {
 
     @Test(expected = IllegalArgumentException.class)
     public void spoilerCheckArgumentsNullTest() {
+        @SuppressWarnings("unused")
         SpoilerElement spoilerElement = new SpoilerElement("de", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void spoilerCheckArgumentsEmptyTest() {
+        @SuppressWarnings("unused")
         SpoilerElement spoilerElement = new SpoilerElement("de", "");
     }
 }
