@@ -296,6 +296,13 @@
       <className>org.jivesoftware.smackx.eme.provider.ExplicitMessageEncryptionProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0382: Spoiler Messages -->
+    <extensionProvider>
+      <elementName>spoiler</elementName>
+      <namespace>urn:xmpp:spoiler:0</namespace>
+      <className>org.jivesoftware.smackx.spoiler.provider.SpoilerProvider</className>
+    </extensionProvider>
+
     <!-- XEP-0394: Message Markup -->
     <extensionProvider>
       <elementName>markup</elementName>
