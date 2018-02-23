@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -242,16 +243,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * A cached thread pool executor service with custom thread factory to set meaningful names on the threads and set
      * them 'daemon'.
      */
-    private final ExecutorService cachedExecutorService = Executors.newCachedThreadPool(
-                    // @formatter:off
-                    // CHECKSTYLE:OFF
-                    new SmackExecutorThreadFactory(    // threadFactory
-                                    this,
-                                    "Cached Executor"
-                                    )
-                    // @formatter:on
-                    // CHECKSTYLE:ON
-                    );
+    private static final ExecutorService CACHED_EXECUTOR_SERVICE = Executors.newCachedThreadPool(new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable runnable) {
+            Thread thread = new Thread(runnable);
+            thread.setName("Smack Cached Executor");
+            thread.setDaemon(true);
+            return thread;
+        }
+    });
 
     /**
      * A executor service used to invoke the callbacks of synchronous stanza(/packet) listeners. We use a executor service to
@@ -1141,7 +1141,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         executorService = singleThreadedExecutorService;
                         break;
                     case async:
-                        executorService = cachedExecutorService;
+                        executorService = CACHED_EXECUTOR_SERVICE;
                         break;
                     }
                     final IQRequestHandler finalIqRequestHandler = iqRequestHandler;
@@ -1404,7 +1404,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             // reference to their ExecutorService which prevents the ExecutorService from being
             // gc'ed. It is possible that the XMPPConnection instance is gc'ed while the
             // listenerExecutor ExecutorService call not be gc'ed until it got shut down.
-            cachedExecutorService.shutdown();
             removeCallbacksService.shutdownNow();
             singleThreadedExecutorService.shutdownNow();
         } catch (Throwable t) {
@@ -1681,7 +1680,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected final void asyncGo(Runnable runnable) {
-        cachedExecutorService.execute(runnable);
+        CACHED_EXECUTOR_SERVICE.execute(runnable);
     }
 
     protected final ScheduledFuture<?> schedule(Runnable runnable, long delay, TimeUnit unit) {
