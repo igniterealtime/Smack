@@ -1736,8 +1736,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         if (!smWasEnabledAtLeastOnce) {
             throw new StreamManagementException.StreamManagementNotEnabledException();
         }
-        // Remove the listener after max. 12 hours
-        final int removeAfterSeconds = Math.min(getMaxSmResumptionTime(), 12 * 60 * 60);
+        // Remove the listener after max. 3 hours
+        final int removeAfterSeconds = Math.min(getMaxSmResumptionTime(), 3 * 60 * 60);
         schedule(new Runnable() {
             @Override
             public void run() {
