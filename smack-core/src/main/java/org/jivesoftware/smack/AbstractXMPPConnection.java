@@ -31,8 +31,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -78,7 +81,6 @@ import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
-import org.jivesoftware.smack.util.BoundedThreadPoolExecutor;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -236,14 +238,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private ParsingExceptionCallback parsingExceptionCallback = SmackConfiguration.getDefaultParsingExceptionCallback();
 
     /**
-     * ExecutorService used to invoke the PacketListeners on newly arrived and parsed stanzas. It is
-     * important that we use a <b>single threaded ExecutorService</b> in order to guarantee that the
-     * PacketListeners are invoked in the same order the stanzas arrived.
-     */
-    private final BoundedThreadPoolExecutor executorService = new BoundedThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS,
-                    100, new SmackExecutorThreadFactory(this, "Incoming Processor"));
-
-    /**
      * This scheduled thread pool executor is used to remove pending callbacks.
      */
     private final ScheduledExecutorService removeCallbacksService = Executors.newSingleThreadScheduledExecutor(
@@ -253,24 +247,24 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * A cached thread pool executor service with custom thread factory to set meaningful names on the threads and set
      * them 'daemon'.
      */
-    private final ExecutorService cachedExecutorService = Executors.newCachedThreadPool(
-                    // @formatter:off
-                    // CHECKSTYLE:OFF
-                    new SmackExecutorThreadFactory(
-                                    this,
-                                    "Cached Executor"
-                                    )
-                    // @formatter:on
-                    // CHECKSTYLE:ON
-                    );
+    private static final ExecutorService CACHED_EXECUTOR_SERVICE = Executors.newCachedThreadPool(new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable runnable) {
+            Thread thread = new Thread(runnable);
+            thread.setName("Smack Cached Executor");
+            thread.setDaemon(true);
+            return thread;
+        }
+    });
 
     /**
      * A executor service used to invoke the callbacks of synchronous stanza(/packet) listeners. We use a executor service to
      * decouple incoming stanza processing from callback invocation. It is important that order of callback invocation
      * is the same as the order of the incoming stanzas. Therefore we use a <i>single</i> threaded executor service.
      */
-    private final ExecutorService singleThreadedExecutorService = Executors.newSingleThreadExecutor(new SmackExecutorThreadFactory(
-                    this, "Single Threaded Executor"));
+    private final ExecutorService singleThreadedExecutorService = new ThreadPoolExecutor(0, 1, 30L,
+                    TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
+                    new SmackExecutorThreadFactory(this, "Single Threaded Executor"));
 
     /**
      * The used host to establish the connection to
@@ -380,12 +374,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         // Perform the actual connection to the XMPP service
         connectInternal();
-
-        // TLS handled will be successful either if TLS was established, or if it was not mandatory.
-        tlsHandled.checkIfSuccessOrWaitOrThrow();
-
-        // Wait with SASL auth until the SASL mechanisms have been received
-        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
 
         // If TLS is required but the server doesn't offer it, disconnect
         // from the server and throw an error. First check if we've already negotiated TLS
@@ -702,8 +690,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      *
      */
     public void disconnect() {
+        Presence unavailablePresence = null;
+        if (isAuthenticated()) {
+            unavailablePresence = new Presence(Presence.Type.unavailable);
+        }
         try {
-            disconnect(new Presence(Presence.Type.unavailable));
+            disconnect(unavailablePresence);
         }
         catch (NotConnectedException e) {
             LOGGER.log(Level.FINEST, "Connection is already disconnected", e);
@@ -718,15 +710,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * stanza(/packet) is set with online information, but most XMPP servers will deliver the full
      * presence stanza(/packet) with whatever data is set.
      * 
-     * @param unavailablePresence the presence stanza(/packet) to send during shutdown.
+     * @param unavailablePresence the optional presence stanza to send during shutdown.
      * @throws NotConnectedException 
      */
     public synchronized void disconnect(Presence unavailablePresence) throws NotConnectedException {
-        try {
-            sendStanza(unavailablePresence);
-        }
-        catch (InterruptedException e) {
-            LOGGER.log(Level.FINE, "Was interrupted while sending unavailable presence. Continuing to disconnect the connection", e);
+        if (unavailablePresence != null) {
+            try {
+                sendStanza(unavailablePresence);
+            } catch (InterruptedException e) {
+                LOGGER.log(Level.FINE,
+                        "Was interrupted while sending unavailable presence. Continuing to disconnect the connection",
+                        e);
+            }
         }
         shutdown();
         callConnectionClosedListener();
@@ -1015,17 +1010,17 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         lastStanzaReceived = System.currentTimeMillis();
         // Deliver the incoming packet to listeners.
-        executorService.executeBlocking(new Runnable() {
-            @Override
-            public void run() {
-                invokeStanzaCollectorsAndNotifyRecvListeners(stanza);
-            }
-        });
+        invokeStanzaCollectorsAndNotifyRecvListeners(stanza);
     }
 
     /**
      * Invoke {@link StanzaCollector#processStanza(Stanza)} for every
      * StanzaCollector with the given packet. Also notify the receive listeners with a matching stanza(/packet) filter about the packet.
+     * <p>
+     * This method will be invoked by the connections incoming processing thread which may be shared across multiple connections and
+     * thus it is important that no user code, e.g. in form of a callback, is invoked by this method. For the same reason,
+     * this method must not block for an extended period of time.
+     * </p>
      *
      * @param packet the stanza(/packet) to notify the StanzaCollectors and receive listeners about.
      */
@@ -1082,7 +1077,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         executorService = singleThreadedExecutorService;
                         break;
                     case async:
-                        executorService = cachedExecutorService;
+                        executorService = CACHED_EXECUTOR_SERVICE;
                         break;
                     }
                     final IQRequestHandler finalIqRequestHandler = iqRequestHandler;
@@ -1342,8 +1337,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             // reference to their ExecutorService which prevents the ExecutorService from being
             // gc'ed. It is possible that the XMPPConnection instance is gc'ed while the
             // listenerExecutor ExecutorService call not be gc'ed until it got shut down.
-            executorService.shutdownNow();
-            cachedExecutorService.shutdown();
             removeCallbacksService.shutdownNow();
             singleThreadedExecutorService.shutdownNow();
         } catch (Throwable t) {
@@ -1708,7 +1701,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected final void asyncGo(Runnable runnable) {
-        cachedExecutorService.execute(runnable);
+        CACHED_EXECUTOR_SERVICE.execute(runnable);
     }
 
     protected final ScheduledFuture<?> schedule(Runnable runnable, long delay, TimeUnit unit) {
