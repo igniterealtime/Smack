@@ -1494,7 +1494,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 }
             }
         };
-        removeCallbacksService.schedule(new Runnable() {
+        schedule(new Runnable() {
             @Override
             public void run() {
                 boolean removed = removeAsyncStanzaListener(stanzaListener);
@@ -1560,7 +1560,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 }
             }
         };
-        removeCallbacksService.schedule(new Runnable() {
+        schedule(new Runnable() {
             @Override
             public void run() {
                 boolean removed = removeAsyncStanzaListener(packetListener);
@@ -1619,7 +1619,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             }
         };
         addSyncStanzaListener(packetListener, packetFilter);
-        removeCallbacksService.schedule(new Runnable() {
+        schedule(new Runnable() {
             @Override
             public void run() {
                 removeSyncStanzaListener(packetListener);
