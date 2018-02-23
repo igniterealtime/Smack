@@ -235,7 +235,7 @@ public class Form {
         if (field.getType() != FormField.Type.bool) {
             throw new IllegalArgumentException("This field is not of type boolean.");
         }
-        setAnswer(field, (value ? "1" : "0"));
+        setAnswer(field, Boolean.toString(value));
     }
 
     /**
