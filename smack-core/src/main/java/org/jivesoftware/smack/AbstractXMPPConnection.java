@@ -31,9 +31,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -258,8 +260,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * decouple incoming stanza processing from callback invocation. It is important that order of callback invocation
      * is the same as the order of the incoming stanzas. Therefore we use a <i>single</i> threaded executor service.
      */
-    private final ExecutorService singleThreadedExecutorService = Executors.newSingleThreadExecutor(new SmackExecutorThreadFactory(
-                    this, "Single Threaded Executor"));
+    private final ExecutorService singleThreadedExecutorService = new ThreadPoolExecutor(0, 1, 30L,
+                    TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
+                    new SmackExecutorThreadFactory(this, "Single Threaded Executor"));
 
     /**
      * The used host to establish the connection to
