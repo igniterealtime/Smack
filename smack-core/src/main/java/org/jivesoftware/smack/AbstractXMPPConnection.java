@@ -76,7 +76,6 @@ import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
-import org.jivesoftware.smack.util.BoundedThreadPoolExecutor;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -232,14 +231,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected XMPPInputOutputStream compressionHandler;
 
     private ParsingExceptionCallback parsingExceptionCallback = SmackConfiguration.getDefaultParsingExceptionCallback();
-
-    /**
-     * ExecutorService used to invoke the PacketListeners on newly arrived and parsed stanzas. It is
-     * important that we use a <b>single threaded ExecutorService</b> in order to guarantee that the
-     * PacketListeners are invoked in the same order the stanzas arrived.
-     */
-    private final BoundedThreadPoolExecutor executorService = new BoundedThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS,
-                    100, new SmackExecutorThreadFactory(this, "Incoming Processor"));
 
     /**
      * This scheduled thread pool executor is used to remove pending callbacks.
@@ -1081,17 +1072,17 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         assert (stanza != null);
         lastStanzaReceived = System.currentTimeMillis();
         // Deliver the incoming packet to listeners.
-        executorService.executeBlocking(new Runnable() {
-            @Override
-            public void run() {
-                invokeStanzaCollectorsAndNotifyRecvListeners(stanza);
-            }
-        });
+        invokeStanzaCollectorsAndNotifyRecvListeners(stanza);
     }
 
     /**
      * Invoke {@link StanzaCollector#processStanza(Stanza)} for every
      * StanzaCollector with the given packet. Also notify the receive listeners with a matching stanza(/packet) filter about the packet.
+     * <p>
+     * This method will be invoked by the connections incoming processing thread which may be shared across multiple connections and
+     * thus it is important that no user code, e.g. in form of a callback, is invoked by this method. For the same reason,
+     * this method must not block for an extended period of time.
+     * </p>
      *
      * @param packet the stanza(/packet) to notify the StanzaCollectors and receive listeners about.
      */
@@ -1413,7 +1404,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             // reference to their ExecutorService which prevents the ExecutorService from being
             // gc'ed. It is possible that the XMPPConnection instance is gc'ed while the
             // listenerExecutor ExecutorService call not be gc'ed until it got shut down.
-            executorService.shutdownNow();
             cachedExecutorService.shutdown();
             removeCallbacksService.shutdownNow();
             singleThreadedExecutorService.shutdownNow();
