@@ -47,7 +47,7 @@ server. Below are code examples for making a connection:
 
 ```
 // Create a connection and login to the example.org XMPP service.
-AbstractXMPPConnection connection = new XMPPTCPConnection("username", "password" "example.org");
+AbstractXMPPConnection connection = new XMPPTCPConnection("username", "password", "example.org");
 conn1.connect().login();
 ```
 
