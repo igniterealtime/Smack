@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package org.jivesoftware.smack;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.util.Objects;
@@ -47,5 +49,9 @@ public abstract class Manager {
             throw new NotLoggedInException();
         }
         return connection;
+    }
+
+    protected static final ScheduledFuture<?> schedule(Runnable runnable, long delay, TimeUnit unit) {
+        return AbstractXMPPConnection.SCHEDULED_EXECUTOR_SERVICE.schedule(runnable, delay, unit);
     }
 }
