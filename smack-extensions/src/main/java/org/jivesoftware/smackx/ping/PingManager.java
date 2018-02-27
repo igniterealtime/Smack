@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2012-2017 Florian Schmaus
+ * Copyright 2012-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -45,7 +43,6 @@ import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.ExceptionCallback;
-import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
 import org.jivesoftware.smack.util.SuccessCallback;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -113,8 +110,6 @@ public final class PingManager extends Manager {
 
     private final Set<PingFailedListener> pingFailedListeners = new CopyOnWriteArraySet<>();
 
-    private final ScheduledExecutorService executorService;
-
     /**
      * The interval in seconds between pings are send to the users server.
      */
@@ -124,8 +119,6 @@ public final class PingManager extends Manager {
 
     private PingManager(XMPPConnection connection) {
         super(connection);
-        executorService = Executors.newSingleThreadScheduledExecutor(
-                        new SmackExecutorThreadFactory(connection, "Ping"));
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(Ping.NAMESPACE);
 
@@ -398,7 +391,7 @@ public final class PingManager extends Manager {
             int nextPingIn = pingInterval - delta;
             LOGGER.fine("Scheduling ServerPingTask in " + nextPingIn + " seconds (pingInterval="
                             + pingInterval + ", delta=" + delta + ")");
-            nextAutomaticPing = executorService.schedule(pingServerRunnable, nextPingIn, TimeUnit.SECONDS);
+            nextAutomaticPing = schedule(pingServerRunnable, nextPingIn, TimeUnit.SECONDS);
         }
     }
 
@@ -486,16 +479,4 @@ public final class PingManager extends Manager {
         }
     };
 
-    @Override
-    protected void finalize() throws Throwable {
-        LOGGER.fine("finalizing PingManager: Shutting down executor service");
-        try {
-            executorService.shutdown();
-        } catch (Throwable t) {
-            LOGGER.log(Level.WARNING, "finalize() threw throwable", t);
-        }
-        finally {
-            super.finalize();
-        }
-    }
 }

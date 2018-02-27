@@ -81,6 +81,7 @@ import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
+import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -240,8 +241,16 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * This scheduled thread pool executor is used to remove pending callbacks.
      */
-    private final ScheduledExecutorService removeCallbacksService = Executors.newSingleThreadScheduledExecutor(
-                    new SmackExecutorThreadFactory(this, "Remove Callbacks"));
+    protected static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor(
+            new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable runnable) {
+                    Thread thread = new Thread(runnable);
+                    thread.setName("Smack Scheduled Executor Service");
+                    thread.setDaemon(true);
+                    return thread;
+                }
+            });
 
     /**
      * A cached thread pool executor service with custom thread factory to set meaningful names on the threads and set
@@ -1337,7 +1346,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             // reference to their ExecutorService which prevents the ExecutorService from being
             // gc'ed. It is possible that the XMPPConnection instance is gc'ed while the
             // listenerExecutor ExecutorService call not be gc'ed until it got shut down.
-            removeCallbacksService.shutdownNow();
             singleThreadedExecutorService.shutdownNow();
         } catch (Throwable t) {
             LOGGER.log(Level.WARNING, "finalize() threw throwable", t);
@@ -1574,7 +1582,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     } else {
                         exception = NoResponseException.newWith(AbstractXMPPConnection.this, replyFilter);
                     }
-                    exceptionCallback.processException(exception);
+                    final Exception exceptionToProcess = exception;
+                    Async.go(new Runnable() {
+                        @Override
+                        public void run() {
+                            exceptionCallback.processException(exceptionToProcess);
+                        }
+                    });
                 }
             }
         }, timeout, TimeUnit.MILLISECONDS);
@@ -1705,6 +1719,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected final ScheduledFuture<?> schedule(Runnable runnable, long delay, TimeUnit unit) {
-        return removeCallbacksService.schedule(runnable, delay, unit);
+        return SCHEDULED_EXECUTOR_SERVICE.schedule(runnable, delay, unit);
     }
 }
