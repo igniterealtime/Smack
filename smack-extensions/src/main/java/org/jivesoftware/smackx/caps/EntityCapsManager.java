@@ -339,7 +339,7 @@ public final class EntityCapsManager extends Manager {
             }
         });
 
-        connection.addPacketSendingListener(new StanzaListener() {
+        connection.addStanzaSendingListener(new StanzaListener() {
             @Override
             public void processStanza(Stanza packet) {
                 presenceSend = (Presence) packet;
@@ -362,7 +362,7 @@ public final class EntityCapsManager extends Manager {
                 packet.overrideExtension(caps);
             }
         };
-        connection.addPacketInterceptor(packetInterceptor, PresenceTypeFilter.AVAILABLE);
+        connection.addStanzaInterceptor(packetInterceptor, PresenceTypeFilter.AVAILABLE);
         // It's important to do this as last action. Since it changes the
         // behavior of the SDM in some ways
         sdm.setEntityCapsManager(this);

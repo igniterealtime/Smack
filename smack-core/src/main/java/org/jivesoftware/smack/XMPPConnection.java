@@ -319,7 +319,7 @@ public interface XMPPConnection {
      *
      * @param packetListener the stanza(/packet) listener to notify of new received packets.
      * @param packetFilter the stanza(/packet) filter to use.
-     * @see #addPacketInterceptor(StanzaListener, StanzaFilter)
+     * @see #addStanzaInterceptor(StanzaListener, StanzaFilter)
      * @since 4.1
      */
     public void addSyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter);
@@ -345,7 +345,7 @@ public interface XMPPConnection {
      * 
      * @param packetListener the stanza(/packet) listener to notify of new received packets.
      * @param packetFilter the stanza(/packet) filter to use.
-     * @see #addPacketInterceptor(StanzaListener, StanzaFilter)
+     * @see #addStanzaInterceptor(StanzaListener, StanzaFilter)
      * @since 4.1
     */
     public void addAsyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter);
@@ -369,15 +369,41 @@ public interface XMPPConnection {
      * 
      * @param packetListener the stanza(/packet) listener to notify of sent packets.
      * @param packetFilter   the stanza(/packet) filter to use.
+     * @deprecated use {@link #addStanzaSendingListener} instead
      */
+    // TODO Remove in Smack 4.4
+    @Deprecated
     public void addPacketSendingListener(StanzaListener packetListener, StanzaFilter packetFilter);
+
+    /**
+     * Registers a stanza(/packet) listener with this connection. The listener will be
+     * notified of every stanza(/packet) that this connection sends. A stanza(/packet) filter determines
+     * which packets will be delivered to the listener. Note that the thread
+     * that writes packets will be used to invoke the listeners. Therefore, each
+     * stanza(/packet) listener should complete all operations quickly or use a different
+     * thread for processing.
+     *
+     * @param packetListener the stanza(/packet) listener to notify of sent packets.
+     * @param packetFilter   the stanza(/packet) filter to use.
+     */
+    public void addStanzaSendingListener(StanzaListener packetListener, StanzaFilter packetFilter);
 
     /**
      * Removes a stanza(/packet) listener for sending packets from this connection.
      * 
      * @param packetListener the stanza(/packet) listener to remove.
+     * @deprecated use {@link #removeStanzaSendingListener} instead
      */
+    // TODO Remove in Smack 4.4
+    @Deprecated
     public void removePacketSendingListener(StanzaListener packetListener);
+
+    /**
+     * Removes a stanza(/packet) listener for sending packets from this connection.
+     *
+     * @param packetListener the stanza(/packet) listener to remove.
+     */
+    public void removeStanzaSendingListener(StanzaListener packetListener);
 
     /**
      * Registers a stanza(/packet) interceptor with this connection. The interceptor will be
@@ -387,18 +413,47 @@ public interface XMPPConnection {
      * 
      * <p>
      * NOTE: For a similar functionality on incoming packets, see {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)}.
+     * </p>
+     *
+     * @param packetInterceptor the stanza(/packet) interceptor to notify of packets about to be sent.
+     * @param packetFilter      the stanza(/packet) filter to use.
+     * @deprecated use {@link #addStanzaInterceptor} instead
+     */
+    // TODO Remove in Smack 4.4
+    @Deprecated
+    public void addPacketInterceptor(StanzaListener packetInterceptor, StanzaFilter packetFilter);
+
+    /**
+     * Registers a stanza(/packet) interceptor with this connection. The interceptor will be
+     * invoked every time a stanza(/packet) is about to be sent by this connection. Interceptors
+     * may modify the stanza(/packet) to be sent. A stanza(/packet) filter determines which packets
+     * will be delivered to the interceptor.
+     *
+     * <p>
+     * NOTE: For a similar functionality on incoming packets, see {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)}.
+     * </p>
      *
      * @param packetInterceptor the stanza(/packet) interceptor to notify of packets about to be sent.
      * @param packetFilter      the stanza(/packet) filter to use.
      */
-    public void addPacketInterceptor(StanzaListener packetInterceptor, StanzaFilter packetFilter);
+    public void addStanzaInterceptor(StanzaListener packetInterceptor, StanzaFilter packetFilter);
+
+    /**
+     * Removes a stanza(/packet) interceptor.
+     *
+     * @param packetInterceptor the stanza(/packet) interceptor to remove.
+     * @deprecated user {@link #removeStanzaInterceptor} instead
+     */
+    // TODO Remove in Smack 4.4
+    @Deprecated
+    public void removePacketInterceptor(StanzaListener packetInterceptor);
 
     /**
      * Removes a stanza(/packet) interceptor.
      *
      * @param packetInterceptor the stanza(/packet) interceptor to remove.
      */
-    public void removePacketInterceptor(StanzaListener packetInterceptor);
+    public void removeStanzaInterceptor(StanzaListener packetInterceptor);
 
     /**
      * Returns the current value of the reply timeout in milliseconds for request for this

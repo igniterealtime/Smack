@@ -840,8 +840,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
+    @Deprecated
     @Override
     public void addPacketSendingListener(StanzaListener packetListener, StanzaFilter packetFilter) {
+        addStanzaSendingListener(packetListener, packetFilter);
+    }
+
+    @Override
+    public void addStanzaSendingListener(StanzaListener packetListener, StanzaFilter packetFilter) {
         if (packetListener == null) {
             throw new NullPointerException("Packet listener is null.");
         }
@@ -851,8 +857,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
+    @Deprecated
     @Override
     public void removePacketSendingListener(StanzaListener packetListener) {
+        removeStanzaSendingListener(packetListener);
+    }
+
+    @Override
+    public void removeStanzaSendingListener(StanzaListener packetListener) {
         synchronized (sendListeners) {
             sendListeners.remove(packetListener);
         }
@@ -896,8 +908,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         });
     }
 
+    @Deprecated
     @Override
     public void addPacketInterceptor(StanzaListener packetInterceptor,
+                                     StanzaFilter packetFilter) {
+        addStanzaInterceptor(packetInterceptor, packetFilter);
+    }
+
+    @Override
+    public void addStanzaInterceptor(StanzaListener packetInterceptor,
             StanzaFilter packetFilter) {
         if (packetInterceptor == null) {
             throw new NullPointerException("Packet interceptor is null.");
@@ -908,8 +927,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
+    @Deprecated
     @Override
     public void removePacketInterceptor(StanzaListener packetInterceptor) {
+        removeStanzaInterceptor(packetInterceptor);
+    }
+
+    @Override
+    public void removeStanzaInterceptor(StanzaListener packetInterceptor) {
         synchronized (interceptors) {
             interceptors.remove(packetInterceptor);
         }

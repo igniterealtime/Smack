@@ -1013,7 +1013,7 @@ public class EnhancedDebugger implements SmackDebugger {
     void cancel() {
         connection.removeConnectionListener(connListener);
         connection.removeAsyncStanzaListener(packetReaderListener);
-        connection.removePacketSendingListener(packetWriterListener);
+        connection.removeStanzaSendingListener(packetWriterListener);
         ((ObservableReader) reader).removeReaderListener(readerListener);
         ((ObservableWriter) writer).removeWriterListener(writerListener);
         messagesTable = null;
