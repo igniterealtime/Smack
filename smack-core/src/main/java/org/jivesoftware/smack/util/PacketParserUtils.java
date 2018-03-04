@@ -561,7 +561,8 @@ public class PacketParserUtils {
                         try {
                             presence.setMode(Presence.Mode.fromString(modeText));
                         } catch (IllegalArgumentException ex) {
-                            /* Invalid mode string received. */
+                            LOGGER.warning("Invalid presence mode received: \"" + modeText + "\" from: '"
+                                           + presence.getFrom() + " id: '" + presence.getStanzaId() + "'");
                         }
                     } else {
                         // Some implementations send presence stanzas with a
