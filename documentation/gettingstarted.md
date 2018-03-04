@@ -10,11 +10,11 @@ Smack Modules and Requirements
 -------------------------------
 
 Smack is meant to be easily embedded into any existing Java application. The
-library ships as several modulesto provide more flexibility over which
+library ships as several modules to provide more flexibility over which
 features applications require:
 
   * `smack-core` -- provides core XMPP functionality. All XMPP features that are part of the XMPP RFCs are included.
-  * `smack-im` -- provides functinoality defined in RFC 6121 (XMPP-IM), like the Roster.
+  * `smack-im` -- provides functionality defined in RFC 6121 (XMPP-IM), like the Roster.
   * `smack-tcp` -- support for XMPP over TCP. Includes XMPPTCPConnection class, which you usually want to use
   * `smack-extensions` -- support for many of the extensions (XEPs) defined by the XMPP Standards Foundation, including multi-user chat, file transfer, user search, etc. The extensions are documented in the [extensions manual](extensions/index.md).
   * `smack-experimental` -- support for experimental extensions (XEPs) defined by the XMPP Standards Foundation. The API and functionality of those extensions should be considered as unstable.
@@ -30,7 +30,7 @@ Configuration
 
 Smack has an initialization process that involves 2 phases.
 
-  * Initializing system properties - Initializing all the system properties accessible through the class **SmackConfiguration**. These properties are retrieve by the _getXXX_ methods on that class.
+  * Initializing system properties - Initializing all the system properties accessible through the class **SmackConfiguration**. These properties are retrieved by the _getXXX_ methods on that class.
   * Initializing startup classes - Initializing any classes meant to be active at startup by instantiating the class, and then calling the _initialize_ method on that class if it extends **SmackInitializer**. If it does not extend this interface, then initialization will have to take place in a static block of code which is automatically executed when the class is loaded.
 
 Initialization is accomplished via a configuration file. By default, Smack
@@ -73,7 +73,7 @@ created, such as the ability to disable or require encryption. See
 [XMPPConnection Management](connections.md) for full details.
 
 Once you've created a connection, you should login with the
-`XMPPConnection.login()` method. Once you've logged in, you can being
+`XMPPConnection.login()` method. Once you've logged in, you can begin
 chatting with other users by creating new `Chat` or `MultiUserChat`
 objects.
 
