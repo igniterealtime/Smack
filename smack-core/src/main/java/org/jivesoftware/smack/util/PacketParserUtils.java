@@ -558,7 +558,12 @@ public class PacketParserUtils {
                 case "show":
                     String modeText = parser.nextText();
                     if (StringUtils.isNotEmpty(modeText)) {
-                        presence.setMode(Presence.Mode.fromString(modeText));
+                        try {
+                            presence.setMode(Presence.Mode.fromString(modeText));
+                        } catch (IllegalArgumentException ex) {
+                            LOGGER.warning("Invalid presence mode received: \"" + modeText + "\" from: '"
+                                           + presence.getFrom() + " id: '" + presence.getStanzaId() + "'");
+                        }
                     } else {
                         // Some implementations send presence stanzas with a
                         // '<show />' element, which is a invalid XMPP presence
