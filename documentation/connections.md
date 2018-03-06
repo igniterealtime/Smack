@@ -52,7 +52,7 @@ turn on/off this feature. The reconnection manager will try to immediately
 reconnect to the server and increase the delay between attempts as successive
 reconnections keep failing._
 
-In case you want to force a reconnection while the reconnetion manager is
+In case you want to force a reconnection while the reconnection manager is
 waiting for the next reconnection, you can just use _AbstractXMPPConnection#connect()_
 and a new attempt will be made. If the manual attempt also failed then the
 reconnection manager will still continue the reconnection job.
