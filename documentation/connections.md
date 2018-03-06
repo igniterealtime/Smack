@@ -6,11 +6,10 @@ Smack: XMPPConnection Management
 Creating a Connection
 ---------------------
 
-The `org.jivesoftware.smack.XMPPConnection` class manages your connection to
+The `org.jivesoftware.smack.XMPPConnection` interface manages your connection to
 an XMPP server. The default implementation is the
-`org.jivesoftware.smack.XMPPTCPConnection` class. Two constructors are mainly
-used. The first, `XMPPTCPConnection(String)` takes the server name you'd like
-to connect to as an argument. All default connection settings will be used:
+`org.jivesoftware.smack.tcp.XMPPTCPConnection` class. The class contains three constructors. The simplest, `XMPPTCPConnection(CharSequence, String, String)` takes the username, password, and server name you'd like
+to connect to as arguments. All default connection settings will be used:
 
   * A DNS SRV lookup will be performed to find the exact address and port (typically 5222) that the server resides at.
   * The maximum security possible will be negotiated with the server, including TLS encryption, but the connection will fall back to lower security settings if necessary.
@@ -35,10 +34,9 @@ configBuilder.setResource("SomeResource");
 configBuilder.setXmppDomain("jabber.org");
 
 AbstractXMPPConnection connection = new XMPPTCPConnection(configBuilder.build());
-// Connect to the server
-connection.connect();
-// Log into the server
-connection.login();
+// Connect and Log into the server
+connection.connect()
+          .login();
 
 ...
 
@@ -47,8 +45,7 @@ connection.disconnect();
 ```
 
 By default Smack will try to reconnect the connection in case it was abruptly
-disconnected. Use _ConnectionConfiguration#setReconnectionAllowed(boolean) to
-turn on/off this feature. The reconnection manager will try to immediately
+disconnected. The reconnection manager will try to immediately
 reconnect to the server and increase the delay between attempts as successive
 reconnections keep failing._
 
