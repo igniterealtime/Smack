@@ -17,14 +17,3 @@ dependencies {
 	// Add the Android jar to the Eclipse .classpath.
 	compile files(androidBootClasspath)
 }
-
-configure (androidProjects) {
-	task compileAndroid(type: JavaCompile) {
-		source = compileJava.source
-		classpath = compileJava.classpath
-		destinationDir = new File(buildDir, 'android')
-		options.bootClasspath = androidBootClasspath
-	}
-}
-
-test { dependsOn androidProjects*.compileAndroid }
