@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 - 2018 Florian Schmaus, Paul Schaub
+ * Copyright 2018 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,6 @@
  */
 
 /**
- * Classes for Chat States (<a href="http://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>).
+ * TODO describe me.
  */
-package org.jivesoftware.smackx.chatstates;
+package org.jivesoftware.smackx.chatstate;
