@@ -1,7 +1,7 @@
 Blocking Command
 ================
 
-Allows to manage communications blocking.
+Allows one to manage communications blocking.
 
   * Check push notifications support
   * Get blocking list
@@ -42,18 +42,18 @@ Block contact
 -------------
 
 ```
-blockingCommandManager.blockContact(jid);
+blockingCommandManager.blockContacts(jids);
 ```
-*jid* is a `Jid`
+*jids* is a `java.util.List<Jid>`
 
 
 Unblock contact
 ---------------
 
 ```
-blockingCommandManager.unblockContact(jid);
+blockingCommandManager.unblockContacts(jids);
 ```
-*jid* is a `Jid`
+*jids* is a `java.util.List<Jid>`
 
 
 Unblock all

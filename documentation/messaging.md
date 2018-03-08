@@ -18,7 +18,7 @@ and then send them a text message:
 ```
 // Assume we've created an XMPPConnection name "connection"._
 ChatManager chatManager = ChatManager.getInstanceFor(connection);
-chatManager.addListener(new IncomingChatMessageListener() {
+chatManager.addIncomingListener(new IncomingChatMessageListener() {
   @Override
   void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
     System.out.println("New message from " + from + ": " + message.getBody());
@@ -26,14 +26,14 @@ chatManager.addListener(new IncomingChatMessageListener() {
 });
 EntityBareJid jid = JidCreate.entityBareFrom("jsmith@jivesoftware.com");
 Chat chat = chatManager.chatWith(jid);
-chat.sendMessage("Howdy!");
+chat.send("Howdy!");
 }
 ```
 
-The `Chat.sendMessage(String)` method is a convenience method that creates a
+The `Chat.send(String)` method is a convenience method that creates a
 Message object, sets the body using the String parameter, then sends the
 message. In the case that you wish to set additional values on a Message
-before sending it, use
+before sending it, use the
 `Chat.send(Message)` method, as in the following code snippet:
 
 ```
