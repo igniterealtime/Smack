@@ -112,7 +112,7 @@ the message to send back.
 **Examples**
 
 In this example we can see how to retrieve a form to fill out, complete the
-form, and send it back:
+form and send it back:
 
 ```
 // Get the message with the form to fill out

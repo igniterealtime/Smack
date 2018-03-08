@@ -45,7 +45,6 @@ import org.jxmpp.jid.EntityFullJid;
  * // Start a new conversation with John Doe and send him a message.
  * ChatManager chatManager = ChatManager.getInstanceFor(con);
  * chatManager.addIncomingListener(new IncomingChatMessageListener() {
- *     @Override
  *     public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
  *         // Print out any messages we get back to standard out.
  *         System.out.println("Received message: " + message);
