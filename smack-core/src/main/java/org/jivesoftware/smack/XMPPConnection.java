@@ -51,7 +51,7 @@ import org.jxmpp.jid.EntityFullJid;
  *         System.out.println("Received message: " + message);
  *     }
  * });
- * Chat chat = .chatWith("jdoe@igniterealtime.org");
+ * Chat chat = chatManager.chatWith("jdoe@igniterealtime.org");
  * chat.send("Howdy!");
  * // Disconnect from the server
  * con.disconnect();
