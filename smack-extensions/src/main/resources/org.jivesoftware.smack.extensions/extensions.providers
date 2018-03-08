@@ -544,4 +544,10 @@
         <className>org.jivesoftware.smackx.bob.provider.BoBIQProvider</className>
     </iqProvider>
 
+    <extensionProvider>
+        <elementName>img</elementName>
+        <namespace>http://www.w3.org/1999/xhtml</namespace>
+        <className>org.jivesoftware.smackx.bob.provider.BoBExtensionProvider</className>
+    </extensionProvider>
+
 </smackProviders>

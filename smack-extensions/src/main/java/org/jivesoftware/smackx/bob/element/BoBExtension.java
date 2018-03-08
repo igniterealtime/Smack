@@ -32,6 +32,9 @@ import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
  */
 public class BoBExtension extends XHTMLExtension {
 
+    public static final String ALT = "alt";
+    public static final String SRC = "src";
+
     private final BoBHash bobHash;
     private final String alt;
     private final String paragraph;
@@ -80,8 +83,8 @@ public class BoBExtension extends XHTMLExtension {
         xml.optEscape(paragraph);
 
         xml.halfOpenElement(XHTMLText.IMG);
-        xml.optAttribute("alt", alt);
-        xml.attribute("src", bobHash.toSrc());
+        xml.optAttribute(ALT, alt);
+        xml.attribute(SRC, bobHash.toSrc());
         xml.closeEmptyElement();
 
         xml.closeElement(XHTMLText.P);
