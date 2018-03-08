@@ -43,13 +43,16 @@ import org.jxmpp.jid.EntityFullJid;
  * // Most servers require you to login before performing other tasks.
  * con.login("jsmith", "mypass");
  * // Start a new conversation with John Doe and send him a message.
- * Chat chat = ChatManager.getInstanceFor(con).createChat("jdoe@igniterealtime.org", new MessageListener() {
- *     public void processMessage(Chat chat, Message message) {
+ * ChatManager chatManager = ChatManager.getInstanceFor(con);
+ * chatManager.addIncomingListener(new IncomingChatMessageListener() {
+ *     @Override
+ *     public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
  *         // Print out any messages we get back to standard out.
  *         System.out.println("Received message: " + message);
  *     }
  * });
- * chat.sendMessage("Howdy!");
+ * Chat chat = .chatWith("jdoe@igniterealtime.org");
+ * chat.send("Howdy!");
  * // Disconnect from the server
  * con.disconnect();
  * </pre>

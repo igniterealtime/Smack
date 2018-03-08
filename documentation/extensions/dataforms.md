@@ -116,7 +116,7 @@ form, and send it back:
 
 ```
 // Get the message with the form to fill out
-Chat chat2 = ChatManager.getInstanceFor(conn).addIncomingChatMessageListener(
+Chat chat2 = ChatManager.getInstanceFor(conn).addIncomingListener(
 	new IncomingChatMessageListener() {
 		@Override public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
 			// Retrieve the form to fill out from the message
