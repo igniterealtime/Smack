@@ -56,7 +56,7 @@ see the image showing a Roster in the Exodus XMPP client to the right.
 The presence information will likely change often, and it's also possible for
 the roster entries to change or be deleted. To listen for changing roster and
 presence data, a RosterListener should be used. To be informed about all
-changes to the roster the RosterListener should be registered before logging
+changes to the roster, the RosterListener should be registered before logging
 into the XMPP server. The following code snippet registers a RosterListener
 with the Roster that prints any presence changes in the roster to standard
 out. A normal client would use similar code to update the roster UI with the
