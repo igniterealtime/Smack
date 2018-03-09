@@ -382,12 +382,14 @@ public final class Roster extends Manager {
     private synchronized Map<Resourcepart, Presence> getOrCreatePresencesInternal(BareJid entity) {
         Map<Resourcepart, Presence> entityPresences = getPresencesInternal(entity);
         if (entityPresences == null) {
-            entityPresences = new ConcurrentHashMap<>();
             if (contains(entity)) {
+                entityPresences = new ConcurrentHashMap<>();
                 presenceMap.put(entity, entityPresences);
             }
             else {
-                nonRosterPresenceMap.put(entity, entityPresences);
+                LruCache<Resourcepart, Presence> nonRosterEntityPresences = new LruCache<>(32);
+                nonRosterPresenceMap.put(entity, nonRosterEntityPresences);
+                entityPresences = nonRosterEntityPresences;
             }
         }
         return entityPresences;
