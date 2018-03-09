@@ -16,17 +16,17 @@
  */
 package org.jivesoftware.smackx.bob.provider;
 
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.bob.BoBHash;
 import org.jivesoftware.smackx.bob.element.BoBExtension;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
-import org.jivesoftware.smackx.xhtmlim.provider.XHTMLExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-public class BoBExtensionProvider extends XHTMLExtensionProvider {
+public class BoBExtensionProvider extends ExtensionElementProvider<XHTMLExtension> {
 
     @Override
     public XHTMLExtension parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException {
