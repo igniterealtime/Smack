@@ -1504,14 +1504,13 @@ public final class Roster extends Manager {
             case unavailable:
                 // If no resource, this is likely an offline presence as part of
                 // a roster presence flood. In that case, we store it.
+                userPresences = getOrCreatePresencesInternal(key);
                 if (from.hasNoResource()) {
                     // Get the user presence map
-                    userPresences = getOrCreatePresencesInternal(key);
                     userPresences.put(Resourcepart.EMPTY, presence);
                 }
                 // Otherwise, this is a normal offline presence.
-                else if (presenceMap.get(key) != null) {
-                    userPresences = presenceMap.get(key);
+                else {
                     // Store the offline presence, as it may include extra information
                     // such as the user being on vacation.
                     userPresences.put(fromResource, presence);
