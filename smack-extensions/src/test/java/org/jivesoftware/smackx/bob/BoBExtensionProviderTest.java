@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.bob;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
@@ -38,6 +38,12 @@ public class BoBExtensionProviderTest extends SmackTestSuite {
     @Test
     public void parseTest() throws Exception {
         BoBExtension boBExtension = TestUtils.parseExtensionElement(sampleBoBExtensionIM);
-        assertNotNull(boBExtension);
+        assertEquals("Testing alt attribute", "A spot", boBExtension.getAlt());
+        assertEquals("Testing BoBHash cid",
+                "cid:sha1+8f35fef110ffc5df08d579a50083ff9308fb6242@bob.xmpp.org",
+                boBExtension.getBoBHash().toSrc());
+        assertEquals(1, boBExtension.getBodiesCount());
+        assertEquals("Testing paragraph text", "Yet here's a spot.",
+                boBExtension.getBodies().get(0));
     }
 }

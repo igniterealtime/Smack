@@ -20,30 +20,25 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.bob.BoBHash;
 import org.jivesoftware.smackx.bob.element.BoBExtension;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
-import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-public class BoBExtensionProvider extends ExtensionElementProvider<XHTMLExtension> {
+public class BoBExtensionProvider extends ExtensionElementProvider<BoBExtension> {
 
     @Override
-    public XHTMLExtension parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException {
-        String src = null;
-        String alt = null;
+    public BoBExtension parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException {
+        String src = parser.getAttributeValue("", BoBExtension.SRC);
+        String alt = parser.getAttributeValue("", BoBExtension.ALT);
+
         String paragraph = null;
 
         outerloop: while (true) {
             switch (parser.next()) {
                 case XmlPullParser.START_TAG:
-                    switch (parser.getName()) {
-                        case XHTMLText.P:
-                            paragraph = parser.nextText();
-                            break;
-                        case XHTMLText.IMG:
-                            alt = parser.getAttributeValue(null, BoBExtension.ALT);
-                            src = parser.getAttributeValue(null, BoBExtension.SRC);
+                    if (parser.getName().equals(XHTMLText.P)) {
+                        paragraph = parser.nextText();
                     }
                     break;
                 case XmlPullParser.END_TAG:
