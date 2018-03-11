@@ -22,7 +22,9 @@ import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smackx.bob.element.BoBExtension;
 import org.jivesoftware.smackx.bob.provider.BoBExtensionProvider;
+
 import org.junit.Test;
+
 import org.xmlpull.v1.XmlPullParser;
 
 public class BoBExtensionProviderTest extends SmackTestSuite {
