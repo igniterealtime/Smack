@@ -16,14 +16,15 @@
  */
 package org.jivesoftware.smackx.bob.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.bob.BoBHash;
 import org.jivesoftware.smackx.bob.element.BoBExtension;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 
 public class BoBExtensionProvider extends ExtensionElementProvider<BoBExtension> {
 
