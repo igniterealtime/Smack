@@ -29,33 +29,34 @@ public class BoBExtensionProvider extends ExtensionElementProvider<BoBExtension>
 
     @Override
     public BoBExtension parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException {
-        String src = parser.getAttributeValue("", BoBExtension.SRC);
-        String alt = parser.getAttributeValue("", BoBExtension.ALT);
-
+        String alt = null;
+        String src = null;
         String paragraph = null;
 
-        outerloop: while (true) {
-            switch (parser.next()) {
-                case XmlPullParser.START_TAG:
-                    if (parser.getName().equals(XHTMLText.P)) {
-                        paragraph = parser.nextText();
-                    }
-                    break;
-                case XmlPullParser.END_TAG:
-                    if (parser.getDepth() == initialDepth) {
-                        break outerloop;
-                    }
+        int eventType;
+        String name;
+        while (true) {
+            eventType = parser.getEventType();
+            name = parser.getName();
+
+            if (eventType == XmlPullParser.START_TAG) {
+                if (name.equals(XHTMLText.P)) {
+                    paragraph = parser.getText();
+                }
+                else if (name.equals(XHTMLText.IMG)) {
+                    alt = parser.getAttributeValue(null, BoBExtension.ALT);
+                    src = parser.getAttributeValue(null, BoBExtension.SRC);
+                }
             }
+            else if (eventType == XmlPullParser.END_TAG && parser.getDepth() == initialDepth) {
+                if (src == null || alt == null || paragraph == null) {
+                    throw new XmlPullParserException("Bits of Binary element with missing attibutes. "
+                            + "Attributes: alt=" + alt + " src=" + src + " paragraph=" + paragraph);
+                }
+                return new BoBExtension(BoBHash.fromSrc(src), alt, paragraph);
+            }
+            parser.next();
         }
-
-        if (src == null || alt == null || paragraph == null) {
-            throw new XmlPullParserException("Bits of Binary element with missing attibutes. Attributes: alt="
-                    + alt + " src=" + src + " paragraph=" + paragraph);
-        }
-
-        BoBHash bobHash = BoBHash.fromSrc(src);
-
-        return new BoBExtension(bobHash, alt, paragraph);
     }
 
 }

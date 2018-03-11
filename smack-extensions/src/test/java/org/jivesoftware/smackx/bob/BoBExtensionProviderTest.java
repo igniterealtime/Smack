@@ -21,7 +21,9 @@ import static org.junit.Assert.assertEquals;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smackx.bob.element.BoBExtension;
+import org.jivesoftware.smackx.bob.provider.BoBExtensionProvider;
 import org.junit.Test;
+import org.xmlpull.v1.XmlPullParser;
 
 public class BoBExtensionProviderTest extends SmackTestSuite {
 
@@ -37,13 +39,12 @@ public class BoBExtensionProviderTest extends SmackTestSuite {
 
     @Test
     public void parseTest() throws Exception {
-        BoBExtension boBExtension = TestUtils.parseExtensionElement(sampleBoBExtensionIM);
+        XmlPullParser parser = TestUtils.getParser(sampleBoBExtensionIM);
+        BoBExtension boBExtension = new BoBExtensionProvider().parse(parser);
+
         assertEquals("Testing alt attribute", "A spot", boBExtension.getAlt());
         assertEquals("Testing BoBHash cid",
                 "cid:sha1+8f35fef110ffc5df08d579a50083ff9308fb6242@bob.xmpp.org",
                 boBExtension.getBoBHash().toSrc());
-        assertEquals(1, boBExtension.getBodiesCount());
-        assertEquals("Testing paragraph text", "Yet here's a spot.",
-                boBExtension.getBodies().get(0));
     }
 }
