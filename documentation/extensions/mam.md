@@ -26,7 +26,7 @@ Check MAM support
 -----------------
 
 ```
-boolean isSupported = mamManager.isSupportedByServer();
+boolean isSupported = mamManager.isSupported();
 ```
 
 
@@ -98,7 +98,7 @@ MamQueryResult mamQueryResult = mamManager.queryArchive(max, start, end, withJid
 List<Forwarded> forwardedMessages = mamQueryResult.forwardedMessages;
 
 // Get fin IQ
-MamFinIQ mamFinIQ = mamQueryResult.mamFinIQ;
+MamFinIQ mamFinIQ = mamQueryResult.mamFin;
 ```
 
 
@@ -174,7 +174,7 @@ List<Jid> neverJids = mamPrefs.getNeverJids();
 DefaultBehavior defaultBehavior = mamPrefs.getDefault();
 
 // Get the data form
-DataForm dataForm = mamPrefs.form;
+DataForm dataForm = mamPrefsResult.form;
 ```
 
 
