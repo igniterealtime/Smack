@@ -78,7 +78,7 @@ import org.jxmpp.util.cache.LruCache;
  * Represents a user's roster, which is the collection of users a person receives
  * presence updates for. Roster items are categorized into groups for easier management.
  *
- * Others users may attempt to subscribe to this user using a subscription request. Three
+ * Other users may attempt to subscribe to this user using a subscription request. Three
  * modes are supported for handling these requests: <ul>
  * <li>{@link SubscriptionMode#accept_all accept_all} -- accept all subscription requests.</li>
  * <li>{@link SubscriptionMode#reject_all reject_all} -- reject all subscription requests.</li>
