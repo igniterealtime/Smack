@@ -1,6 +1,8 @@
 Entity Time Exchange
 ====================
 
+[Back](index.md)
+
 Supports a protocol that XMPP clients use to exchange their respective local
 times and time zones.
 

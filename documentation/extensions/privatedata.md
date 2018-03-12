@@ -1,6 +1,8 @@
 Private Data
 ============
 
+[Back](index.md)
+
 Manages private data, which is a mechanism to allow users to store arbitrary
 XML data on an XMPP server. Each private data chunk is defined by a element
 name and XML namespace. Example private data:

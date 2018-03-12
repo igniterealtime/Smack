@@ -1,6 +1,8 @@
 Service Discovery
 =================
 
+[Back](index.md)
+
 The service discovery extension allows to discover items and information about
 XMPP entities. Follow these links to learn how to use this extension.
 

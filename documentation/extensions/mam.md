@@ -1,6 +1,8 @@
 Message Archive Management
 ==========================
 
+[Back](index.md)
+
 Query and control an archive of messages stored on a server.
 
   * Check MAM support

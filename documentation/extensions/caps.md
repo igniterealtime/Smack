@@ -1,6 +1,8 @@
 Entity Capabilities
 ===================
 
+[Back](index.md)
+
 This section details the usage of Smacks implementation of Entity
 Capabilities.
 

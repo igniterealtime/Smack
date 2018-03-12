@@ -1,6 +1,8 @@
 Push Notifications
 ==================
 
+[Back](index.md)
+
 Allows to manage how XMPP servers deliver information for use in push notifications to mobile and other devices.
 
   * Check push notifications support

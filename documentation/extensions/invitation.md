@@ -1,6 +1,8 @@
 Group Chat Invitations
 ======================
 
+[Back](index.md)
+
 The group chat invitation extension is used to invite other users to a
 group chat room.
 

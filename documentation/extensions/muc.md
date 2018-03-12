@@ -1,6 +1,8 @@
 Multi User Chat
 ===============
 
+[Back](index.md)
+
 Allows configuration of, participation in, and administration of individual
 text-based conference rooms.
 

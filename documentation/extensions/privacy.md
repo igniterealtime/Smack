@@ -1,10 +1,12 @@
 Privacy Lists
 ============
 
+[Back](index.md)
+
 [XEP-0016: Privacy Lists](http://xmpp.org/extensions/xep-0016.html)
 
-What is?
---------
+What is it?
+-----------
 
 `Privacy` is a method for users to block communications from particular other
 users. In XMPP this is done by managing one's privacy lists.

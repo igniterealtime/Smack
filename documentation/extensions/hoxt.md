@@ -1,6 +1,8 @@
 HTTP over XMPP transport
 ========================
 
+[Back](index.md)
+
 Allows to transport HTTP communication over XMPP peer-to-peer networks.
 
   * Discover HOXT support

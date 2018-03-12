@@ -1,6 +1,8 @@
 Multi-User Chat Light
 =====================
 
+[Back](index.md)
+
 Allows configuration of, participation in, and administration of presence­less  Multi­-User Chats. 
 Its feature set is a response to mobile XMPP applications needs and specific environment.
 
