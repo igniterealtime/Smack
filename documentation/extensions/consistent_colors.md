@@ -10,7 +10,7 @@ color on all platforms to provide a consistent user experience.
 The utility class `ConsistentColor` allows the generation of colors to a given
 string following the specification of [XEP-0392](https://xmpp.org/extensions/xep-0392.html).
 
-**Usage**
+## Usage
 
 To generate a consistent color for a given string, call
 ```
@@ -18,7 +18,7 @@ float[] rgb = ConsistentColor.RGBFrom(input);
 ```
 The resulting float array contains values for RGB in the range of 0 to 1.
 
-**Color Deficiency Corrections**
+## Color Deficiency Corrections
 
 Some users might suffer from color vision deficiencies. To compensate those deficiencies,
 the API allows for color correction. The color correction mode is a static value, which can be changed at any time.
