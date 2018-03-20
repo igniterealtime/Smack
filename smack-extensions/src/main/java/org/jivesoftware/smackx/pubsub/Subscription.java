@@ -57,6 +57,16 @@ public class Subscription extends NodeExtension {
     }
 
     /**
+     * Construct a subscription change request to the specified state.
+     *
+     * @param subscriptionJid The subscriber JID
+     * @param state The requested new state
+     */
+    public Subscription(Jid subscriptionJid, State state) {
+        this(subscriptionJid, null, null, state);
+    }
+
+    /**
      * Constructs a representation of a subscription reply to the specified node 
      * and JID.  The server will have supplied the subscription id and current state.
      * 
