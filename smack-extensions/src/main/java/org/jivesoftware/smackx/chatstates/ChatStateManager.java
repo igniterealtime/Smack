@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,32 @@
 
 package org.jivesoftware.smackx.chatstates;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.chat.ChatManagerListener;
-import org.jivesoftware.smack.chat.ChatMessageListener;
+import org.jivesoftware.smack.chat2.Chat;
+import org.jivesoftware.smack.chat2.ChatManager;
+import org.jivesoftware.smack.chat2.OutgoingChatMessageListener;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromTypeFilter;
+import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
-
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
 
 /**
  * Handles chat state for all chats on a particular XMPPConnection. This class manages both the
@@ -45,17 +54,39 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
  * If this does not occur you will not receive the update notifications.
  *
  * @author Alexander Wenckus
+ * @author Paul Schaub
  * @see org.jivesoftware.smackx.chatstates.ChatState
  * @see org.jivesoftware.smackx.chatstates.packet.ChatStateExtension
  */
-// TODO Migrate to new chat2 API on Smack 4.3.
-@SuppressWarnings("deprecation")
 public final class ChatStateManager extends Manager {
+
     public static final String NAMESPACE = "http://jabber.org/protocol/chatstates";
 
     private static final Map<XMPPConnection, ChatStateManager> INSTANCES = new WeakHashMap<>();
 
     private static final StanzaFilter filter = new NotFilter(new StanzaExtensionFilter(NAMESPACE));
+    private static final StanzaFilter INCOMING_MESSAGE_FILTER =
+            new AndFilter(MessageTypeFilter.NORMAL_OR_CHAT, FromTypeFilter.ENTITY_FULL_JID);
+
+    /**
+     * Message listener, that appends a ChatStateExtension to outgoing messages
+     */
+    private final OutgoingMessageInterceptor outgoingInterceptor = new OutgoingMessageInterceptor();
+
+    /**
+     * Message listener, that triggers registered ChatStateListeners for incoming chat messages with ChatStateExtensions.
+     */
+    private final IncomingMessageInterceptor incomingInterceptor = new IncomingMessageInterceptor();
+
+    /**
+     * Registered ChatStateListeners
+     */
+    private final Set<ChatStateListener> chatStateListeners = new HashSet<>();
+
+    /**
+     * Maps chat to last chat state.
+     */
+    private final Map<Chat, ChatState> chatStates = new WeakHashMap<>();
 
     /**
      * Returns the ChatStateManager related to the XMPPConnection and it will create one if it does
@@ -72,25 +103,41 @@ public final class ChatStateManager extends Manager {
             return manager;
     }
 
-    private final OutgoingMessageInterceptor outgoingInterceptor = new OutgoingMessageInterceptor();
-
-    private final IncomingMessageInterceptor incomingInterceptor = new IncomingMessageInterceptor();
-
     /**
-     * Maps chat to last chat state.
+     * Private constructor to create a new ChatStateManager.
+     * This adds ChatMessageListeners as interceptors to the connection and adds the namespace to the disco features.
+     *
+     * @param connection xmpp connection
      */
-    private final Map<org.jivesoftware.smack.chat.Chat, ChatState> chatStates = new WeakHashMap<>();
-
-    private final org.jivesoftware.smack.chat.ChatManager chatManager;
-
     private ChatStateManager(XMPPConnection connection) {
         super(connection);
-        chatManager = org.jivesoftware.smack.chat.ChatManager.getInstanceFor(connection);
-        chatManager.addOutgoingMessageInterceptor(outgoingInterceptor, filter);
-        chatManager.addChatListener(incomingInterceptor);
+        ChatManager chatManager = ChatManager.getInstanceFor(connection);
+        chatManager.addOutgoingListener(outgoingInterceptor);
+        connection.addAsyncStanzaListener(new IncomingMessageInterceptor(),
+                new AndFilter(INCOMING_MESSAGE_FILTER, new StanzaExtensionFilter(NAMESPACE)));
 
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(NAMESPACE);
         INSTANCES.put(connection, this);
+    }
+
+    /**
+     * Register a ChatStateListener. That listener will be informed about changed chat states.
+     *
+     * @param listener chatStateListener
+     * @return true, if the listener was not registered before
+     */
+    public boolean addChatStateListener(ChatStateListener listener) {
+        return chatStateListeners.add(listener);
+    }
+
+    /**
+     * Unregister a ChatStateListener.
+     *
+     * @param listener chatStateListener
+     * @return true, if the listener was registered before
+     */
+    public boolean removeChatStateListener(ChatStateListener listener) {
+        return chatStateListeners.remove(listener);
     }
 
 
@@ -101,10 +148,10 @@ public final class ChatStateManager extends Manager {
      *
      * @param newState the new state of the chat
      * @param chat the chat.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
-    public void setCurrentState(ChatState newState, org.jivesoftware.smack.chat.Chat chat) throws NotConnectedException, InterruptedException {
+    public void setCurrentState(ChatState newState, Chat chat) throws NotConnectedException, InterruptedException {
         if (chat == null || newState == null) {
             throw new IllegalArgumentException("Arguments cannot be null.");
         }
@@ -115,7 +162,7 @@ public final class ChatStateManager extends Manager {
         ChatStateExtension extension = new ChatStateExtension(newState);
         message.addExtension(extension);
 
-        chat.sendMessage(message);
+        chat.send(message);
     }
 
 
@@ -135,7 +182,7 @@ public final class ChatStateManager extends Manager {
         return connection().hashCode();
     }
 
-    private synchronized boolean updateChatState(org.jivesoftware.smack.chat.Chat chat, ChatState newState) {
+    private synchronized boolean updateChatState(Chat chat, ChatState newState) {
         ChatState lastChatState = chatStates.get(chat);
         if (lastChatState != newState) {
             chatStates.put(chat, newState);
@@ -144,38 +191,44 @@ public final class ChatStateManager extends Manager {
         return false;
     }
 
-    private static void fireNewChatState(org.jivesoftware.smack.chat.Chat chat, ChatState state, Message message) {
-        for (ChatMessageListener listener : chat.getListeners()) {
-            if (listener instanceof ChatStateListener) {
-                ((ChatStateListener) listener).stateChanged(chat, state, message);
-            }
+    private void fireNewChatState(Chat chat, ChatState state, Message message) {
+        for (ChatStateListener listener : chatStateListeners) {
+            listener.stateChanged(chat, state, message);
         }
     }
 
-    private class OutgoingMessageInterceptor implements MessageListener {
+    private class OutgoingMessageInterceptor implements OutgoingChatMessageListener {
 
         @Override
-        public void processMessage(Message message) {
-            org.jivesoftware.smack.chat.Chat chat = chatManager.getThreadChat(message.getThread());
+        public void newOutgoingMessage(EntityBareJid to, Message message, Chat chat) {
             if (chat == null) {
                 return;
             }
+
+            // if message already has a chatStateExtension, then do nothing,
+            if (!filter.accept(message)) {
+                return;
+            }
+
+            // otherwise add a chatState extension if necessary.
             if (updateChatState(chat, ChatState.active)) {
                 message.addExtension(new ChatStateExtension(ChatState.active));
             }
         }
     }
 
-    private static class IncomingMessageInterceptor implements ChatManagerListener, ChatMessageListener {
+    private class IncomingMessageInterceptor implements StanzaListener {
 
         @Override
-        public void chatCreated(final org.jivesoftware.smack.chat.Chat chat, boolean createdLocally) {
-            chat.addMessageListener(this);
-        }
+        public void processStanza(Stanza packet) {
+            Message message = (Message) packet;
 
-        @Override
-        public void processMessage(org.jivesoftware.smack.chat.Chat chat, Message message) {
+            EntityFullJid fullFrom = message.getFrom().asEntityFullJidIfPossible();
+            EntityBareJid bareFrom = fullFrom.asEntityBareJid();
+
+            Chat chat = ChatManager.getInstanceFor(connection()).chatWith(bareFrom);
             ExtensionElement extension = message.getExtension(NAMESPACE);
+
             if (extension == null) {
                 return;
             }
