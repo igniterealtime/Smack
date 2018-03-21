@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import org.jxmpp.jid.Jid;
+
 /**
  * Represents a subscription to node for both requests and replies.
  * 
@@ -25,7 +27,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  */
 public class Subscription extends NodeExtension
 {
-    protected String jid;
+    protected Jid jid;
     protected String id;
     protected State state;
     protected boolean configRequired = false;
@@ -41,7 +43,7 @@ public class Subscription extends NodeExtension
      * 
      * @param subscriptionJid The subscriber JID
      */
-    public Subscription(String subscriptionJid)
+    public Subscription(Jid subscriptionJid)
     {
         this(subscriptionJid, null, null, null);
     }
@@ -53,7 +55,7 @@ public class Subscription extends NodeExtension
      * @param subscriptionJid The subscriber JID
      * @param nodeId The node id
      */
-    public Subscription(String subscriptionJid, String nodeId)
+    public Subscription(Jid subscriptionJid, String nodeId)
     {
         this(subscriptionJid, nodeId, null, null);
     }
@@ -67,7 +69,7 @@ public class Subscription extends NodeExtension
      * @param subscriptionId The id of this subscription
      * @param state The current state of the subscription
      */
-    public Subscription(String jid, String nodeId, String subscriptionId, State state)
+    public Subscription(Jid jid, String nodeId, String subscriptionId, State state)
     {
         super(PubSubElementType.SUBSCRIPTION, nodeId);
         this.jid = jid;
@@ -86,7 +88,7 @@ public class Subscription extends NodeExtension
      * @param state The current state of the subscription
      * @param configRequired Is configuration required to complete the subscription 
      */
-    public Subscription(String jid, String nodeId, String subscriptionId, State state, boolean configRequired)
+    public Subscription(Jid jid, String nodeId, String subscriptionId, State state, boolean configRequired)
     {
         super(PubSubElementType.SUBSCRIPTION, nodeId);
         this.jid = jid;
@@ -100,7 +102,7 @@ public class Subscription extends NodeExtension
      * 
      * @return The JID
      */
-    public String getJid()
+    public Jid getJid()
     {
         return jid;
     }

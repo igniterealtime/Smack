@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smackx.pubsub.provider;
 
+import static org.jivesoftware.smack.test.util.CharSequenceEquals.equalsCharSequence;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
@@ -53,12 +55,12 @@ public class PubSubProviderTest {
         assertEquals(2, subscriptions.size());
 
         Subscription sub1 = subscriptions.get(0);
-        assertEquals("foo@example.org/Smack", sub1.getJid());
+        assertThat("foo@example.org/Smack", equalsCharSequence(sub1.getJid()));
         assertEquals(Subscription.State.subscribed, sub1.getState());
         assertEquals("58C1A6F99F2A7", sub1.getId());
 
         Subscription sub2 = subscriptions.get(1);
-        assertEquals("julia@example.org/Smack", sub2.getJid());
+        assertThat("julia@example.org/Smack", equalsCharSequence(sub2.getJid()));
         assertEquals(Subscription.State.subscribed, sub2.getState());
         assertEquals("58C18F8917321", sub2.getId());
     }
