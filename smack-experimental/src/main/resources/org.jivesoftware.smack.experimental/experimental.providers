@@ -289,6 +289,13 @@
       <className>org.jivesoftware.smackx.httpfileupload.provider.FileTooLargeErrorProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0372: References -->
+    <extensionProvider>
+      <elementName>reference</elementName>
+      <namespace>urn:xmpp:reference:0</namespace>
+      <className>org.jivesoftware.smackx.reference.provider.ReferenceProvider</className>
+    </extensionProvider>
+
     <!-- XEP-0380: Explicit Message Encryption -->
     <extensionProvider>
       <elementName>encryption</elementName>

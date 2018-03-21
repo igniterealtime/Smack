@@ -13,6 +13,11 @@ buildscript {
 		classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.10'
     }
 }
+
+plugins {
+    id 'ru.vyarus.animalsniffer' version '1.4.3'
+}
+
 apply plugin: 'org.kordamp.gradle.markdown'
 
 apply from: 'version.gradle'
@@ -414,6 +419,16 @@ subprojects {
 		//   (Look at the clirr reports).
 		enabled false
 		semver false
+	}
+}
+
+configure (androidProjects) {
+	apply plugin: 'ru.vyarus.animalsniffer'
+	dependencies {
+		signature "net.sf.androidscents.signature:android-api-level-${smackMinAndroidSdk}:2.2_r3@signature"
+	}
+	animalsniffer {
+		sourceSets = [sourceSets.main]
 	}
 }
 

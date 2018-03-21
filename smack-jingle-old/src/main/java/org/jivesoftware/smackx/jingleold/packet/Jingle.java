@@ -354,7 +354,7 @@ public class Jingle extends IQ {
             buf.append(" responder=\"").append(getResponder()).append('"');
         }
         if (getAction() != null) {
-            buf.append(" action=\"").append(getAction().name()).append('"');
+            buf.append(" action=\"").append(getAction().toString()).append('"');
         }
         if (getSid() != null) {
             buf.append(" sid=\"").append(getSid()).append('"');

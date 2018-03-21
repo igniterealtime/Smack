@@ -80,7 +80,7 @@ import org.jxmpp.util.cache.LruCache;
  * Represents a user's roster, which is the collection of users a person receives
  * presence updates for. Roster items are categorized into groups for easier management.
  *
- * Others users may attempt to subscribe to this user using a subscription request. Three
+ * Other users may attempt to subscribe to this user using a subscription request. Three
  * modes are supported for handling these requests: <ul>
  * <li>{@link SubscriptionMode#accept_all accept_all} -- accept all subscription requests.</li>
  * <li>{@link SubscriptionMode#reject_all reject_all} -- reject all subscription requests.</li>
@@ -384,12 +384,14 @@ public final class Roster extends Manager {
     private synchronized Map<Resourcepart, Presence> getOrCreatePresencesInternal(BareJid entity) {
         Map<Resourcepart, Presence> entityPresences = getPresencesInternal(entity);
         if (entityPresences == null) {
-            entityPresences = new ConcurrentHashMap<>();
             if (contains(entity)) {
+                entityPresences = new ConcurrentHashMap<>();
                 presenceMap.put(entity, entityPresences);
             }
             else {
-                nonRosterPresenceMap.put(entity, entityPresences);
+                LruCache<Resourcepart, Presence> nonRosterEntityPresences = new LruCache<>(32);
+                nonRosterPresenceMap.put(entity, nonRosterEntityPresences);
+                entityPresences = nonRosterEntityPresences;
             }
         }
         return entityPresences;
@@ -1509,14 +1511,13 @@ public final class Roster extends Manager {
             case unavailable:
                 // If no resource, this is likely an offline presence as part of
                 // a roster presence flood. In that case, we store it.
+                userPresences = getOrCreatePresencesInternal(key);
                 if (from.hasNoResource()) {
                     // Get the user presence map
-                    userPresences = getOrCreatePresencesInternal(key);
                     userPresences.put(Resourcepart.EMPTY, presence);
                 }
                 // Otherwise, this is a normal offline presence.
-                else if (presenceMap.get(key) != null) {
-                    userPresences = presenceMap.get(key);
+                else {
                     // Store the offline presence, as it may include extra information
                     // such as the user being on vacation.
                     userPresences.put(fromResource, presence);
