@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 /**
  * Represents a subscription to node for both requests and replies.
  * 
@@ -134,22 +136,17 @@ public class Subscription extends NodeExtension
     }
 
     @Override
-    public String toXML()
+    public XmlStringBuilder toXML()
     {
-        StringBuilder builder = new StringBuilder("<subscription");
-        appendAttribute(builder, "jid", jid);
+        XmlStringBuilder builder = new XmlStringBuilder(this);
+        builder.attribute("jid", jid);
 
-        if (getNode() != null)
-            appendAttribute(builder, "node", getNode());
+        builder.optAttribute("node", getNode());
+        builder.optAttribute("subid", id);
+        builder.optAttribute("subscription", state.toString());
 
-        if (id != null)
-            appendAttribute(builder, "subid", id);
-
-        if (state != null)
-            appendAttribute(builder, "subscription", state.toString());
-
-        builder.append("/>");
-        return builder.toString();
+        builder.closeEmptyElement();
+        return builder;
     }
 
     private static void appendAttribute(StringBuilder builder, String att, String value)
