@@ -67,16 +67,7 @@ public final class ChatStateManager extends Manager {
     private static final StanzaFilter filter = new NotFilter(new StanzaExtensionFilter(NAMESPACE));
     private static final StanzaFilter INCOMING_MESSAGE_FILTER =
             new AndFilter(MessageTypeFilter.NORMAL_OR_CHAT, FromTypeFilter.ENTITY_FULL_JID);
-
-    /**
-     * Message listener, that appends a ChatStateExtension to outgoing messages
-     */
-    private final OutgoingMessageInterceptor outgoingInterceptor = new OutgoingMessageInterceptor();
-
-    /**
-     * Message listener, that triggers registered ChatStateListeners for incoming chat messages with ChatStateExtensions.
-     */
-    private final IncomingMessageInterceptor incomingInterceptor = new IncomingMessageInterceptor();
+    private static final StanzaFilter INCOMING_CHAT_STATE_FILTER = new AndFilter(INCOMING_MESSAGE_FILTER, new StanzaExtensionFilter(NAMESPACE));
 
     /**
      * Registered ChatStateListeners
@@ -112,9 +103,53 @@ public final class ChatStateManager extends Manager {
     private ChatStateManager(XMPPConnection connection) {
         super(connection);
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
-        chatManager.addOutgoingListener(outgoingInterceptor);
-        connection.addAsyncStanzaListener(new IncomingMessageInterceptor(),
-                new AndFilter(INCOMING_MESSAGE_FILTER, new StanzaExtensionFilter(NAMESPACE)));
+        chatManager.addOutgoingListener(new OutgoingChatMessageListener() {
+            @Override
+            public void newOutgoingMessage(EntityBareJid to, Message message, Chat chat) {
+                if (chat == null) {
+                    return;
+                }
+
+                // if message already has a chatStateExtension, then do nothing,
+                if (!filter.accept(message)) {
+                    return;
+                }
+
+                // otherwise add a chatState extension if necessary.
+                if (updateChatState(chat, ChatState.active)) {
+                    message.addExtension(new ChatStateExtension(ChatState.active));
+                }
+            }
+        });
+
+        connection.addAsyncStanzaListener(new StanzaListener() {
+            @Override
+            public void processStanza(Stanza stanza) {
+                Message message = (Message) stanza;
+
+                EntityFullJid fullFrom = message.getFrom().asEntityFullJidIfPossible();
+                EntityBareJid bareFrom = fullFrom.asEntityBareJid();
+
+                Chat chat = ChatManager.getInstanceFor(connection()).chatWith(bareFrom);
+                ExtensionElement extension = message.getExtension(NAMESPACE);
+
+                if (extension == null) {
+                    return;
+                }
+
+                ChatState state;
+                try {
+                    state = ChatState.valueOf(extension.getElementName());
+                }
+                catch (Exception ex) {
+                    return;
+                }
+
+                for (ChatStateListener listener : chatStateListeners) {
+                    listener.stateChanged(chat, state, message);
+                }
+            }
+        }, INCOMING_CHAT_STATE_FILTER);
 
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(NAMESPACE);
         INSTANCES.put(connection, this);
@@ -191,57 +226,4 @@ public final class ChatStateManager extends Manager {
         return false;
     }
 
-    private void fireNewChatState(Chat chat, ChatState state, Message message) {
-        for (ChatStateListener listener : chatStateListeners) {
-            listener.stateChanged(chat, state, message);
-        }
-    }
-
-    private class OutgoingMessageInterceptor implements OutgoingChatMessageListener {
-
-        @Override
-        public void newOutgoingMessage(EntityBareJid to, Message message, Chat chat) {
-            if (chat == null) {
-                return;
-            }
-
-            // if message already has a chatStateExtension, then do nothing,
-            if (!filter.accept(message)) {
-                return;
-            }
-
-            // otherwise add a chatState extension if necessary.
-            if (updateChatState(chat, ChatState.active)) {
-                message.addExtension(new ChatStateExtension(ChatState.active));
-            }
-        }
-    }
-
-    private class IncomingMessageInterceptor implements StanzaListener {
-
-        @Override
-        public void processStanza(Stanza packet) {
-            Message message = (Message) packet;
-
-            EntityFullJid fullFrom = message.getFrom().asEntityFullJidIfPossible();
-            EntityBareJid bareFrom = fullFrom.asEntityBareJid();
-
-            Chat chat = ChatManager.getInstanceFor(connection()).chatWith(bareFrom);
-            ExtensionElement extension = message.getExtension(NAMESPACE);
-
-            if (extension == null) {
-                return;
-            }
-
-            ChatState state;
-            try {
-                state = ChatState.valueOf(extension.getElementName());
-            }
-            catch (Exception ex) {
-                return;
-            }
-
-            fireNewChatState(chat, state, message);
-        }
-    }
 }
