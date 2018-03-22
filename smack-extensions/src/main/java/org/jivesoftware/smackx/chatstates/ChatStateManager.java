@@ -90,6 +90,7 @@ public final class ChatStateManager extends Manager {
             ChatStateManager manager = INSTANCES.get(connection);
             if (manager == null) {
                 manager = new ChatStateManager(connection);
+                INSTANCES.put(connection, manager);
             }
             return manager;
     }
@@ -152,7 +153,6 @@ public final class ChatStateManager extends Manager {
         }, INCOMING_CHAT_STATE_FILTER);
 
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(NAMESPACE);
-        INSTANCES.put(connection, this);
     }
 
     /**
