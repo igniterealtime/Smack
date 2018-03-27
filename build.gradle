@@ -165,7 +165,7 @@ allprojects {
 	}
 
 	jacoco {
-		toolVersion = "0.7.4.201502262128"
+		toolVersion = "0.8.1"
 	}
 
 	jacocoTestReport {
