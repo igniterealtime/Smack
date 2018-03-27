@@ -507,7 +507,7 @@ configure(gplLicensedProjects) {
 
 configure(androidBootClasspathProjects) {
 	compileJava {
-		options.bootClasspath = androidBootClasspath
+		options.bootstrapClasspath = files(androidBootClasspath)
 	}
 	javadoc {
 		classpath += files(androidBootClasspath)
@@ -526,7 +526,7 @@ task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
 	executionData = files(projectsWithUnitTests.jacocoTestReport.executionData)
 	reports {
 		xml.enabled true
-		xml.destination ="${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+		xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
 	}
 	// We could remove the following setOnlyIf line, but then
 	// jacocoRootReport would silently be SKIPPED if something with
