@@ -10,7 +10,7 @@ cache:
   - $HOME/.m2
 
 before_install:
-  - export GRADLE_VERSION=3.5
+  - export GRADLE_VERSION=4.6
   - wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip
   - unzip -q gradle-${GRADLE_VERSION}-all.zip
   - export PATH="$(pwd)/gradle-${GRADLE_VERSION}/bin:$PATH"
