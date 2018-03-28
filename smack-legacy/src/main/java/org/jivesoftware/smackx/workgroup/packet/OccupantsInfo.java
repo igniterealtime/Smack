@@ -41,7 +41,7 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class OccupantsInfo extends IQ {
 
-    @SuppressWarnings("SimpleDateFormatConstant")
+    @SuppressWarnings("DateFormatConstant")
     private static final SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
 
     static {

@@ -24,7 +24,6 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -66,32 +65,24 @@ public class SignalOmemoKeyUtilTest extends SmackTestSuite {
     }
 
     @Test
-    public void omemoIdentityKeyPairSerializationTest() {
+    public void omemoIdentityKeyPairSerializationTest() throws CorruptedOmemoKeyException {
         IdentityKeyPair ikp = keyUtil.generateOmemoIdentityKeyPair();
         byte[] bytes = keyUtil.identityKeyPairToBytes(ikp);
         assertNotNull("serialized identityKeyPair must not be null.",
                 bytes);
         assertNotSame("serialized identityKeyPair must not be of length 0.",
                 0, bytes.length);
-        try {
-            IdentityKeyPair ikp2 = keyUtil.identityKeyPairFromBytes(bytes);
-            assertTrue("Deserialized IdentityKeyPairs PublicKey must equal the originals one.",
+
+        IdentityKeyPair ikp2 = keyUtil.identityKeyPairFromBytes(bytes);
+        assertTrue("Deserialized IdentityKeyPairs PublicKey must equal the originals one.",
                     ikp.getPublicKey().equals(ikp2.getPublicKey()));
-        } catch (CorruptedOmemoKeyException e) {
-            fail("Caught exception while deserializing IdentityKeyPair.");
-        }
     }
 
     @Test
-    public void omemoIdentityKeySerializationTest() {
+    public void omemoIdentityKeySerializationTest() throws CorruptedOmemoKeyException {
         IdentityKey k = keyUtil.generateOmemoIdentityKeyPair().getPublicKey();
-
-        try {
-            assertEquals("Deserialized IdentityKey must equal the original one.",
-                    k, keyUtil.identityKeyFromBytes(keyUtil.identityKeyToBytes(k)));
-        } catch (CorruptedOmemoKeyException e) {
-            fail("Caught exception while serializing and deserializing identityKey (" + e + "): " + e.getMessage());
-        }
+        assertEquals("Deserialized IdentityKey must equal the original one.", k,
+                keyUtil.identityKeyFromBytes(keyUtil.identityKeyToBytes(k)));
     }
 
     @Test
@@ -103,16 +94,12 @@ public class SignalOmemoKeyUtilTest extends SmackTestSuite {
     }
 
     @Test
-    public void generateOmemoSignedPreKeyTest() {
+    public void generateOmemoSignedPreKeyTest() throws CorruptedOmemoKeyException {
         IdentityKeyPair ikp = keyUtil.generateOmemoIdentityKeyPair();
-        try {
-            SignedPreKeyRecord spk = keyUtil.generateOmemoSignedPreKey(ikp, 1);
-            assertNotNull("SignedPreKey must not be null.", spk);
-            assertEquals("SignedPreKeyId must match.", 1, spk.getId());
-            assertEquals("singedPreKeyId must match here also.", 1, keyUtil.signedPreKeyIdFromKey(spk));
-        } catch (CorruptedOmemoKeyException e) {
-            fail("Caught an exception while generating signedPreKey (" + e + "): " + e.getMessage());
-        }
+        SignedPreKeyRecord spk = keyUtil.generateOmemoSignedPreKey(ikp, 1);
+        assertNotNull("SignedPreKey must not be null.", spk);
+        assertEquals("SignedPreKeyId must match.", 1, spk.getId());
+        assertEquals("singedPreKeyId must match here also.", 1, keyUtil.signedPreKeyIdFromKey(spk));
     }
 
     @Test
@@ -124,25 +111,17 @@ public class SignalOmemoKeyUtilTest extends SmackTestSuite {
     }
 
     @Test
-    public void addressToDeviceTest() {
-        SignalProtocolAddress address = new SignalProtocolAddress("test@server.tld",1337);
-        try {
-            OmemoDevice device = keyUtil.addressAsOmemoDevice(address);
-            assertEquals(device, new OmemoDevice(JidCreate.bareFrom("test@server.tld"), 1337));
-        } catch (XmppStringprepException e) {
-            fail("Could not convert address to device: " + e + " " + e.getMessage());
-        }
+    public void addressToDeviceTest() throws XmppStringprepException {
+        SignalProtocolAddress address = new SignalProtocolAddress("test@server.tld", 1337);
+        OmemoDevice device = keyUtil.addressAsOmemoDevice(address);
+        assertEquals(device, new OmemoDevice(JidCreate.bareFrom("test@server.tld"), 1337));
     }
 
     @Test
-    public void deviceToAddressTest() {
-        try {
-            OmemoDevice device = new OmemoDevice(JidCreate.bareFrom("test@server.tld"), 1337);
-            SignalProtocolAddress address = keyUtil.omemoDeviceAsAddress(device);
-            assertEquals(address, new SignalProtocolAddress("test@server.tld", 1337));
-        } catch (XmppStringprepException e) {
-            fail("Could not convert device to address: " + e + " " + e.getMessage());
-        }
+    public void deviceToAddressTest() throws XmppStringprepException {
+        OmemoDevice device = new OmemoDevice(JidCreate.bareFrom("test@server.tld"), 1337);
+        SignalProtocolAddress address = keyUtil.omemoDeviceAsAddress(device);
+        assertEquals(address, new SignalProtocolAddress("test@server.tld", 1337));
     }
 
     @Test

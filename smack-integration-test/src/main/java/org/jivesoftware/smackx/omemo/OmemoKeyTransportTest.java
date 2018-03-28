@@ -23,7 +23,6 @@ import static org.jivesoftware.smackx.omemo.OmemoIntegrationTestHelper.unidirect
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 
 import org.jivesoftware.smack.SmackException;
@@ -37,7 +36,6 @@ import org.jivesoftware.smackx.omemo.internal.OmemoMessageInformation;
 import org.jivesoftware.smackx.omemo.listener.OmemoMessageListener;
 import org.jivesoftware.smackx.omemo.util.OmemoMessageBuilder;
 
-import junit.framework.TestCase;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
@@ -97,11 +95,8 @@ public class OmemoKeyTransportTest extends AbstractOmemoIntegrationTest {
         ChatManager.getInstanceFor(alice.getConnection()).chatWith(bob.getOwnJid().asEntityBareJidIfPossible())
                 .send(message);
 
-        try {
-            syncPoint.waitForResult(10 * 1000);
-        } catch (TimeoutException e) {
-            TestCase.fail("We MUST have received the keyTransportMessage within 10 seconds.");
-        }
+        // TODO: Should use 'timeout' field instead of hardcoded '10 * 1000'.
+        syncPoint.waitForResult(10 * 1000);
     }
 
     @Override

@@ -293,6 +293,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private final Set<StanzaFilter> requestAckPredicates = new LinkedHashSet<>();
 
+    @SuppressWarnings("HidingField")
     private final XMPPTCPConnectionConfiguration config;
 
     /**

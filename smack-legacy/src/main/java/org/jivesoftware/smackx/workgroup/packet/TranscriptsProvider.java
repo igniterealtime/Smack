@@ -39,7 +39,7 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class TranscriptsProvider extends IQProvider<Transcripts> {
 
-    @SuppressWarnings("SimpleDateFormatConstant")
+    @SuppressWarnings("DateFormatConstant")
     private static final SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
     static {
         UTC_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+0"));

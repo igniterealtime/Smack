@@ -683,9 +683,9 @@ public class RosterTest extends InitSmackIm {
                         connection.processStanza(response);
 
                         // Verify the roster update request
-                        assertSame("A roster set MUST contain one and only one <item/> element.",
-                                1,
-                                rosterRequest.getRosterItemCount());
+                        if (rosterRequest.getRosterItemCount() != 1) {
+                            throw new AssertionError("A roster set MUST contain one and only one <item/> element.");
+                        }
                         verifyUpdateRequest(rosterRequest);
                         break;
                     }

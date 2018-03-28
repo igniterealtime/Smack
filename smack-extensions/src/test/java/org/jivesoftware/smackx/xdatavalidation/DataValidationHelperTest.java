@@ -67,12 +67,7 @@ public class DataValidationHelperTest {
         }
 
         field.setType(FormField.Type.list_multi);
-        try {
-            element.checkConsistency(field);
-        }
-        catch (ValidationConsistencyException e) {
-            fail("No correct check on consistency");
-        }
+        element.checkConsistency(field);
     }
 
 

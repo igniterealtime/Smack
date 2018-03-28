@@ -21,7 +21,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.Message;
@@ -343,7 +342,7 @@ public class ChatConnectionTest {
         try {
             chatServer.join();
         } catch (InterruptedException e) {
-            fail();
+            throw new AssertionError(e);
         }
         waitListener.waitAndReset();
     }

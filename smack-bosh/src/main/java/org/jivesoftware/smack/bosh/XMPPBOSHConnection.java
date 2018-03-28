@@ -88,6 +88,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     /**
      * Holds the initial configuration used while creating the connection.
      */
+    @SuppressWarnings("HidingField")
     private final BOSHConfiguration config;
 
     // Some flags which provides some info about the current state.

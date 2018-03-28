@@ -312,6 +312,7 @@ public abstract class FileTransfer {
         return amountWritten;
     }
 
+    @SuppressWarnings("JavaLangClash")
     public enum Error {
         /**
          * No error.

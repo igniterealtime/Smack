@@ -10,7 +10,7 @@ buildscript {
         classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
 		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.2'
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
-		classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.10'
+		classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.13'
     }
 }
 
@@ -160,7 +160,15 @@ allprojects {
 			'-Xlint:-path',
 			// Disable errorprone checks
 			'-Xep:TypeParameterUnusedInFormals:OFF',
-			'-Xep:TopLevel:OFF',
+			// Disable errorpone StringSplitter check, as it
+			// recommends using Splitter from Guava, which we don't
+			// have (nor want to use in Smack).
+			'-Xep:StringSplitter:OFF',
+			'-Xep:JdkObsolete:OFF',
+			// Disabled because sinttest re-uses BeforeClass from junit.
+			// TODO: change sinttest so that it has it's own
+			// BeforeClass and re-enable this check.
+			'-Xep:JUnit4ClassAnnotationNonStatic:OFF',
 		]
 	}
 
@@ -191,11 +199,8 @@ allprojects {
 		options.encoding = 'UTF-8'
 	}
 
-	// Pin the errorprone version to prevent "unsupported major.minor
-	// version 52.0" error messages caused by the errorprone javac.
-	// See https://github.com/tbroyer/gradle-errorprone-plugin/issues/18 for more information.
-	configurations.errorprone {
-		resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.18'
+	dependencies {
+		errorprone 'com.google.errorprone:error_prone_core:2.2.0'
 	}
 
 	// Make all project's 'test' target depend on javadoc, so that

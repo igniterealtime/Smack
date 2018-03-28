@@ -160,7 +160,7 @@ public class InBandBytestreamManagerTest extends InitExtensions {
     }
 
     @Test
-    public void shouldUseConfiguredStanzaType() throws SmackException, InterruptedException {
+    public void shouldUseConfiguredStanzaType() throws SmackException, InterruptedException, XMPPException {
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
         byteStreamManager.setStanza(StanzaType.MESSAGE);
 
@@ -173,14 +173,10 @@ public class InBandBytestreamManagerTest extends InitExtensions {
 
         });
 
-        try {
-            // start In-Band Bytestream
-            byteStreamManager.establishSession(targetJID);
-        }
-        catch (XMPPException e) {
-            protocol.verifyAll();
-        }
+        // start In-Band Bytestream
+        byteStreamManager.establishSession(targetJID);
 
+        protocol.verifyAll();
     }
 
     @Test

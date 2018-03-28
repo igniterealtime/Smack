@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.pubsub;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -77,6 +78,7 @@ public class ConfigureFormTest extends InitExtensions
         try
         {
             node.getNodeConfiguration();
+            fail();
         }
         catch (XMPPErrorException e)
         {
