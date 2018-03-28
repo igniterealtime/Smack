@@ -293,7 +293,7 @@ public class MultipleRecipientManager {
      * (i.e. cannot change the TO address of a queues stanza(/packet) to be sent) then this class was
      * created to keep the XML stanza to send.
      */
-    private static class PacketCopy extends Stanza {
+    private static final class PacketCopy extends Stanza {
 
         private final CharSequence text;
 
@@ -303,7 +303,7 @@ public class MultipleRecipientManager {
          *
          * @param text the whole text of the stanza(/packet) to send
          */
-        public PacketCopy(CharSequence text) {
+        private PacketCopy(CharSequence text) {
             this.text = text;
         }
 

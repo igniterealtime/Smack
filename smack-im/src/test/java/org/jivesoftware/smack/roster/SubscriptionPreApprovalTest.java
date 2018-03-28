@@ -148,13 +148,13 @@ public class SubscriptionPreApprovalTest extends InitSmackIm {
          * 
          * @param updateRequest the request which would be sent to the server.
          */
-        abstract void verifyRosterUpdateRequest(final RosterPacket updateRequest);
+        abstract void verifyRosterUpdateRequest(RosterPacket updateRequest);
         /**
          * Overwrite this method to check if received pre-approval request is valid
          *
          * @param preApproval the request which would be sent to server.
          */
-        abstract void verifyPreApprovalRequest(final Presence preApproval);
+        abstract void verifyPreApprovalRequest(Presence preApproval);
 
         @Override
         public void run() {

@@ -934,7 +934,7 @@ public class EnhancedDebugger extends SmackDebugger {
      * The whole text to send must be passed to the constructor. This implies that the client of
      * this class is responsible for sending a valid text to the constructor.
      */
-    private static class AdHocPacket extends Stanza {
+    private static final class AdHocPacket extends Stanza {
 
         private final String text;
 
@@ -944,7 +944,7 @@ public class EnhancedDebugger extends SmackDebugger {
          *
          * @param text the whole text of the stanza(/packet) to send
          */
-        public AdHocPacket(String text) {
+        private AdHocPacket(String text) {
             this.text = text;
         }
 

@@ -203,7 +203,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
 
     protected abstract void authenticateInternal(CallbackHandler cbh) throws SmackException;
 
-    private final void authenticate() throws SmackException, NotConnectedException, InterruptedException {
+    private void authenticate() throws SmackException, NotConnectedException, InterruptedException {
         byte[] authenticationBytes = getAuthenticationText();
         String authenticationText;
         // Some SASL mechanisms do return an empty array (e.g. EXTERNAL from javax), so check that

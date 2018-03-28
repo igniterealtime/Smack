@@ -274,7 +274,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         /**
          * Constructor.
          */
-        public IBBInputStream() {
+        protected IBBInputStream() {
             // add data packet listener to connection
             this.dataPacketListener = getDataPacketListener();
             connection.addSyncStanzaListener(this.dataPacketListener, getDataPacketFilter());
@@ -627,7 +627,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         /**
          * Constructor.
          */
-        public IBBOutputStream() {
+        private IBBOutputStream() {
             this.buffer = new byte[byteStreamRequest.getBlockSize()];
         }
 

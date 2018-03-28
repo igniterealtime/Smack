@@ -29,7 +29,7 @@ class SLF4JLoggingConnectionListener extends AbstractConnectionListener implemen
     private final XMPPConnection connection;
     private final Logger logger;
 
-    public SLF4JLoggingConnectionListener(XMPPConnection connection, Logger logger) {
+    SLF4JLoggingConnectionListener(XMPPConnection connection, Logger logger) {
         this.connection = Validate.notNull(connection);
         this.logger = Validate.notNull(logger);
     }

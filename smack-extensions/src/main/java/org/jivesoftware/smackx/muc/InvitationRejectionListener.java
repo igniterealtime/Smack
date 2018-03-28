@@ -38,6 +38,6 @@ public interface InvitationRejectionListener {
      * @param message the message used to decline the invitation.
      * @param rejection the raw decline found in the message.
      */
-    public abstract void invitationDeclined(EntityBareJid invitee, String reason, Message message, MUCUser.Decline rejection);
+    void invitationDeclined(EntityBareJid invitee, String reason, Message message, MUCUser.Decline rejection);
 
 }

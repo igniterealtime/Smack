@@ -43,7 +43,7 @@ class SimpleUserSearch extends IQ {
     private Form form;
     private ReportedData data;
 
-    public SimpleUserSearch() {
+    SimpleUserSearch() {
         super(ELEMENT, NAMESPACE);
     }
 

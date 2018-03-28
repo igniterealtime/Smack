@@ -657,7 +657,7 @@ public class RosterTest extends InitSmackIm {
          * 
          * @param updateRequest the request which would be sent to the server.
          */
-        abstract void verifyUpdateRequest(final RosterPacket updateRequest);
+        abstract void verifyUpdateRequest(RosterPacket updateRequest);
 
         @Override
         public void run() {

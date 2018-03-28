@@ -564,12 +564,12 @@ public class Workgroup {
     /**
      * IQ stanza(/packet) to request joining the workgroup queue.
      */
-    private class JoinQueuePacket extends IQ {
+    private final class JoinQueuePacket extends IQ {
 
         private final Jid userID;
         private final DataForm form;
 
-        public JoinQueuePacket(Jid workgroup, Form answerForm, Jid userID) {
+        private JoinQueuePacket(Jid workgroup, Form answerForm, Jid userID) {
             super("join-queue", "http://jabber.org/protocol/workgroup");
             this.userID = userID;
 

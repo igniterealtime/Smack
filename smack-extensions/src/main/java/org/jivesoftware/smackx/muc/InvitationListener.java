@@ -45,7 +45,7 @@ public interface InvitationListener {
      * @param message the message used by the inviter to send the invitation.
      * @param invitation the raw invitation received with the message.
      */
-    public abstract void invitationReceived(XMPPConnection conn, MultiUserChat room, EntityJid inviter, String reason,
+    void invitationReceived(XMPPConnection conn, MultiUserChat room, EntityJid inviter, String reason,
                                             String password, Message message, MUCUser.Invite invitation);
 
 }

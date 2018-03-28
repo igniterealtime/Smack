@@ -197,7 +197,7 @@ public class StanzaCollectorTest
 
     static class TestPacket extends Stanza
     {
-        public TestPacket(int i)
+        TestPacket(int i)
         {
             setStanzaId(String.valueOf(i));
         }

@@ -352,11 +352,11 @@ public class ChatConnectionTest {
         private Chat newChat;
         private ChatMessageListener listener;
 
-        public TestChatManagerListener(TestMessageListener msgListener) {
+        TestChatManagerListener(TestMessageListener msgListener) {
             listener = msgListener;
         }
 
-        public TestChatManagerListener() {
+        TestChatManagerListener() {
         }
 
         @Override

@@ -345,12 +345,12 @@ public class JingleS5BTransportSession extends JingleTransportSession<JingleS5BT
         return JingleS5BTransportManager.getInstanceFor(jingleSession.getConnection());
     }
 
-    private static class UsedCandidate {
+    private static final class UsedCandidate {
         private final Socket socket;
         private final JingleS5BTransport transport;
         private final JingleS5BTransportCandidate candidate;
 
-        public UsedCandidate(JingleS5BTransport transport, JingleS5BTransportCandidate candidate, Socket socket) {
+        private UsedCandidate(JingleS5BTransport transport, JingleS5BTransportCandidate candidate, Socket socket) {
             this.socket = socket;
             this.transport = transport;
             this.candidate = candidate;

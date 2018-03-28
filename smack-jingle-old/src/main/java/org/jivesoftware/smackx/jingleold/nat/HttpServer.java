@@ -83,7 +83,7 @@ public class HttpServer {
         OutputStream output;
         BufferedReader br;
 
-        public HttpRequestHandler(Socket socket) throws Exception {
+        HttpRequestHandler(Socket socket) throws Exception {
             this.socket = socket;
             this.input = socket.getInputStream();
             this.output = socket.getOutputStream();

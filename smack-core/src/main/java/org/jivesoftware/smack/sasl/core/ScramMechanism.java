@@ -226,7 +226,7 @@ public abstract class ScramMechanism extends SASLMechanism {
         return null;
     }
 
-    private final String getGS2Header() {
+    private String getGS2Header() {
         String authzidPortion = "";
         if (authorizationId != null) {
             authzidPortion = "a=" + authorizationId;
@@ -238,7 +238,7 @@ public abstract class ScramMechanism extends SASLMechanism {
         return cbName + ',' + authzidPortion + ",";
     }
 
-    private final byte[] getCBindInput() throws SmackException {
+    private byte[] getCBindInput() throws SmackException {
         byte[] cbindData = getChannelBindingData();
         byte[] gs2Header = toBytes(getGS2Header());
 
@@ -409,7 +409,7 @@ public abstract class ScramMechanism extends SASLMechanism {
         private final byte[] clientKey;
         private final byte[] serverKey;
 
-        public Keys(byte[] clientKey, byte[] serverKey) {
+        Keys(byte[] clientKey, byte[] serverKey) {
             this.clientKey = clientKey;
             this.serverKey = serverKey;
         }

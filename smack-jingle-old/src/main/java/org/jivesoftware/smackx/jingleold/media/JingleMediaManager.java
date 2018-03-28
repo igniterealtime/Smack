@@ -75,8 +75,8 @@ public abstract class JingleMediaManager {
      * @param local
      * @return the media session
      */
-    public abstract JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote,
-            final TransportCandidate local, JingleSession jingleSession);
+    public abstract JingleMediaSession createMediaSession(PayloadType payloadType, TransportCandidate remote,
+            TransportCandidate local, JingleSession jingleSession);
 
     // This is to set the attributes of the <content> element of the Jingle packet.    
     public String getName() {

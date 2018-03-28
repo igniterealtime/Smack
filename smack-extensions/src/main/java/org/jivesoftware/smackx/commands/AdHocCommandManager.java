@@ -664,14 +664,14 @@ public final class AdHocCommandManager extends Manager {
     /**
      * Stores ad-hoc command information.
      */
-    private static class AdHocCommandInfo {
+    private static final class AdHocCommandInfo {
 
         private String node;
         private String name;
         private final Jid ownerJID;
         private LocalCommandFactory factory;
 
-        public AdHocCommandInfo(String node, String name, Jid ownerJID,
+        private AdHocCommandInfo(String node, String name, Jid ownerJID,
                 LocalCommandFactory factory)
         {
             this.node = node;

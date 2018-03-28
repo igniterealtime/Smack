@@ -110,7 +110,7 @@ public abstract class DNSResolver {
         return false;
     }
 
-    private final void checkIfDnssecRequestedAndSupported(DnssecMode dnssecMode) {
+    private void checkIfDnssecRequestedAndSupported(DnssecMode dnssecMode) {
         if (dnssecMode != DnssecMode.disabled && !supportsDnssec) {
             throw new UnsupportedOperationException("This resolver does not support DNSSEC");
         }

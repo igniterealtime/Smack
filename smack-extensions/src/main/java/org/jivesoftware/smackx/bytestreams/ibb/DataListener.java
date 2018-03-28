@@ -48,7 +48,7 @@ class DataListener extends AbstractIqRequestHandler {
      * 
      * @param manager the In-Band Bytestream manager
      */
-    public DataListener(InBandBytestreamManager manager) {
+    DataListener(InBandBytestreamManager manager) {
       super(DataPacketExtension.ELEMENT, DataPacketExtension.NAMESPACE, IQ.Type.set, Mode.async);
         this.manager = manager;
     }

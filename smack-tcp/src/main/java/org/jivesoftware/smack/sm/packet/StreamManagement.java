@@ -254,7 +254,7 @@ public class StreamManagement {
         private final long handledCount;
         private final String previd;
 
-        public AbstractResume(long handledCount, String previd) {
+        private AbstractResume(long handledCount, String previd) {
             this.handledCount = handledCount;
             this.previd = previd;
         }

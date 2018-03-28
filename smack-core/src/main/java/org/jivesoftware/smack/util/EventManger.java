@@ -92,6 +92,6 @@ public class EventManger<K, R, E extends Exception> {
     }
 
     public interface Callback<E extends Exception> {
-        public void action() throws E;
+        void action() throws E;
     }
 }

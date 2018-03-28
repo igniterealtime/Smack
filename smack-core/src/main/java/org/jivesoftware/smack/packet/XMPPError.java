@@ -317,7 +317,7 @@ public class XMPPError extends AbstractError {
      *      <li>XMPPError.Type.CONTINUE - proceed (the condition was only a warning)
      * </ul>
      */
-    public static enum Type {
+    public enum Type {
         WAIT,
         CANCEL,
         MODIFY,

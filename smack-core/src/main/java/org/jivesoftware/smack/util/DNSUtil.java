@@ -110,7 +110,7 @@ public class DNSUtil {
         DNSUtil.idnaTransformer = idnaTransformer;
     }
 
-    private static enum DomainType {
+    private enum DomainType {
         Server,
         Client,
         ;

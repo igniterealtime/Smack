@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 class SLF4JRawXmlListener implements ReaderListener, WriterListener {
     private final Logger logger;
 
-    public SLF4JRawXmlListener(Logger logger) {
+    SLF4JRawXmlListener(Logger logger) {
         this.logger = Validate.notNull(logger);
     }
 

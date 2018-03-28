@@ -338,7 +338,7 @@ public interface XMPPConnection {
      * @param packetListener the stanza(/packet) listener to notify of sent packets.
      * @param packetFilter   the stanza(/packet) filter to use.
      */
-    public void addStanzaSendingListener(StanzaListener packetListener, StanzaFilter packetFilter);
+    void addStanzaSendingListener(StanzaListener packetListener, StanzaFilter packetFilter);
 
     /**
      * Removes a stanza(/packet) listener for sending packets from this connection.
@@ -355,7 +355,7 @@ public interface XMPPConnection {
      *
      * @param packetListener the stanza(/packet) listener to remove.
      */
-    public void removeStanzaSendingListener(StanzaListener packetListener);
+    void removeStanzaSendingListener(StanzaListener packetListener);
 
     /**
      * Registers a stanza(/packet) interceptor with this connection. The interceptor will be
@@ -582,7 +582,7 @@ public interface XMPPConnection {
     @Deprecated
     // TODO: Remove in Smack 4.4.
     void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
-                    final StanzaListener callback, @SuppressWarnings("deprecation") final ExceptionCallback exceptionCallback,
+                    StanzaListener callback, @SuppressWarnings("deprecation") ExceptionCallback exceptionCallback,
                     long timeout) throws NotConnectedException, InterruptedException;
 
     /**
@@ -638,8 +638,8 @@ public interface XMPPConnection {
      */
     @Deprecated
     // TODO: Remove in Smack 4.4.
-    void sendIqWithResponseCallback(IQ iqRequest, final StanzaListener callback,
-                    @SuppressWarnings("deprecation") final ExceptionCallback exceptionCallback, long timeout)
+    void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback,
+                    @SuppressWarnings("deprecation") ExceptionCallback exceptionCallback, long timeout)
                     throws NotConnectedException, InterruptedException;
 
     /**

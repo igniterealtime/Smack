@@ -29,5 +29,5 @@ public interface FileTransferListener {
      * @param request
      *            The request from the other user.
      */
-    void fileTransferRequest(final FileTransferRequest request);
+    void fileTransferRequest(FileTransferRequest request);
 }

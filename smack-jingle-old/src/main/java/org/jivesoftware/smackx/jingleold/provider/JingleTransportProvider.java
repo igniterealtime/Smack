@@ -82,7 +82,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
         return trans;
     }
 
-    protected abstract JingleTransportCandidate parseCandidate(final XmlPullParser parser);
+    protected abstract JingleTransportCandidate parseCandidate(XmlPullParser parser);
 
     /**
      * RTP-ICE profile.

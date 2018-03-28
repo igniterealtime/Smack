@@ -62,6 +62,6 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
     }
 
     public interface ConnectionCallback {
-        public void connectionCallback(XMPPTCPConnection connection) throws Exception;
+        void connectionCallback(XMPPTCPConnection connection) throws Exception;
     }
 }

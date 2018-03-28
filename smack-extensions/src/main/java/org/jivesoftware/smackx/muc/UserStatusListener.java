@@ -34,7 +34,7 @@ public interface UserStatusListener {
      * @param actor the moderator that kicked your user from the room (e.g. user@host.org).
      * @param reason the reason provided by the actor to kick you from the room.
      */
-    public abstract void kicked(Jid actor, String reason);
+     void kicked(Jid actor, String reason);
 
     /**
      * Called when a moderator grants voice to your user. This means that you were a visitor in 
@@ -42,7 +42,7 @@ public interface UserStatusListener {
      * all occupants.
      * 
      */
-    public abstract void voiceGranted();
+     void voiceGranted();
 
     /**
      * Called when a moderator revokes voice from your user. This means that you were a 
@@ -50,7 +50,7 @@ public interface UserStatusListener {
      * messages to the room occupants.
      * 
      */
-    public abstract void voiceRevoked();
+     void voiceRevoked();
 
     /**
      * Called when an administrator or owner banned your user from the room. This means that you 
@@ -59,21 +59,21 @@ public interface UserStatusListener {
      * @param actor the administrator that banned your user (e.g. user@host.org).
      * @param reason the reason provided by the administrator to banned you.
      */
-    public abstract void banned(Jid actor, String reason);
+     void banned(Jid actor, String reason);
 
     /**
      * Called when an administrator grants your user membership to the room. This means that you 
      * will be able to join the members-only room. 
      * 
      */
-    public abstract void membershipGranted();
+     void membershipGranted();
 
     /**
      * Called when an administrator revokes your user membership to the room. This means that you 
      * will not be able to join the members-only room.
      * 
      */
-    public abstract void membershipRevoked();
+     void membershipRevoked();
 
     /**
      * Called when an administrator grants moderator privileges to your user. This means that you 
@@ -81,7 +81,7 @@ public interface UserStatusListener {
      * subject plus all the partcipants privileges.
      * 
      */
-    public abstract void moderatorGranted();
+     void moderatorGranted();
 
     /**
      * Called when an administrator revokes moderator privileges from your user. This means that 
@@ -89,7 +89,7 @@ public interface UserStatusListener {
      * modify room's subject plus all the partcipants privileges.
      * 
      */
-    public abstract void moderatorRevoked();
+     void moderatorRevoked();
 
     /**
      * Called when an owner grants to your user ownership on the room. This means that you 
@@ -97,7 +97,7 @@ public interface UserStatusListener {
      * functions.
      * 
      */
-    public abstract void ownershipGranted();
+     void ownershipGranted();
 
     /**
      * Called when an owner revokes from your user ownership on the room. This means that you 
@@ -105,7 +105,7 @@ public interface UserStatusListener {
      * administrative functions.
      * 
      */
-    public abstract void ownershipRevoked();
+     void ownershipRevoked();
 
     /**
      * Called when an owner grants administrator privileges to your user. This means that you 
@@ -113,7 +113,7 @@ public interface UserStatusListener {
      * list.
      * 
      */
-    public abstract void adminGranted();
+     void adminGranted();
 
     /**
      * Called when an owner revokes administrator privileges from your user. This means that you 
@@ -121,7 +121,7 @@ public interface UserStatusListener {
      * moderator list.
      * 
      */
-    public abstract void adminRevoked();
+     void adminRevoked();
 
     /**
      * Called when the room is destroyed.
@@ -129,6 +129,6 @@ public interface UserStatusListener {
      * @param alternateMUC an alternate MultiUserChat, may be null.
      * @param reason the reason why the room was closed, may be null.
      */
-    public abstract void roomDestroyed(MultiUserChat alternateMUC, String reason);
+     void roomDestroyed(MultiUserChat alternateMUC, String reason);
 
 }
