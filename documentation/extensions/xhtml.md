@@ -1,6 +1,8 @@
 XHTML Messages
 ==============
 
+[Back](index.md)
+
 Provides the ability to send and receive formatted messages using XHTML.
 
 Follow these links to learn how to compose, send, receive and discover support

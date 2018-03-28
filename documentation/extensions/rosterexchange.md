@@ -1,6 +1,8 @@
 Roster Item Exchange
 ====================
 
+[Back](index.md)
+
 This extension is used to send rosters, roster groups and roster entries from
 one XMPP Entity to another. It also provides an easy way to hook up custom
 logic when entries are received from other XMPP clients.

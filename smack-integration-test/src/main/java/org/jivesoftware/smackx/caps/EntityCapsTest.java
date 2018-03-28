@@ -134,7 +134,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
     @SmackIntegrationTest
     public void testPreventDiscoInfo() throws Exception {
         final String dummyFeature = getNewDummyFeature();
-        conOne.addPacketSendingListener(new StanzaListener() {
+        conOne.addStanzaSendingListener(new StanzaListener() {
 
             @Override
             public void processStanza(Stanza stanza) {

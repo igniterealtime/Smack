@@ -1,6 +1,8 @@
 File Transfer
 =============
 
+[Back](index.md)
+
 The file transfer extension allows the user to transmit and receive files.
 
   * Send a file to another user

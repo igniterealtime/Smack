@@ -279,7 +279,7 @@ public final class DeliveryReceiptManager extends Manager {
      * @see #dontAutoAddDeliveryReceiptRequests()
      */
     public void autoAddDeliveryReceiptRequests() {
-        connection().addPacketInterceptor(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER,
+        connection().addStanzaInterceptor(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER,
                         MESSAGES_TO_REQUEST_RECEIPTS_FOR);
     }
 
@@ -290,7 +290,7 @@ public final class DeliveryReceiptManager extends Manager {
      * @see #autoAddDeliveryReceiptRequests()
      */
     public void dontAutoAddDeliveryReceiptRequests() {
-        connection().removePacketInterceptor(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER);
+        connection().removeStanzaInterceptor(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER);
     }
 
     /**

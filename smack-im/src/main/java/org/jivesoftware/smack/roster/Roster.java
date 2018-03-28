@@ -337,7 +337,7 @@ public final class Roster extends Manager {
 
         });
 
-        connection.addPacketSendingListener(new StanzaListener() {
+        connection.addStanzaSendingListener(new StanzaListener() {
             @Override
             public void processStanza(Stanza stanzav) throws NotConnectedException, InterruptedException {
                 // Once we send an unavailable presence, the server is allowed to suppress sending presence status

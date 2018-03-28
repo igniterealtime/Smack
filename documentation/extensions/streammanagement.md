@@ -1,6 +1,8 @@
 Stream Management
 =================
 
+[Back](index.md)
+
 XMPPTCPConnection comes with support for Stream Management (SM).
 
 **XEP related:** [XEP-0198](http://xmpp.org/extensions/xep-0198.html)

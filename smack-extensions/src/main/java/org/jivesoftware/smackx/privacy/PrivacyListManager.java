@@ -126,7 +126,7 @@ public final class PrivacyListManager extends Manager {
         });
 
         // cached(Active|Default)ListName handling
-        connection.addPacketSendingListener(new StanzaListener() {
+        connection.addStanzaSendingListener(new StanzaListener() {
             @Override
             public void processStanza(Stanza packet) throws NotConnectedException {
                 XMPPConnection connection = connection();
@@ -148,7 +148,7 @@ public final class PrivacyListManager extends Manager {
                 }, iqResultReplyFilter);
             }
         }, SetActiveListFilter.INSTANCE);
-        connection.addPacketSendingListener(new StanzaListener() {
+        connection.addStanzaSendingListener(new StanzaListener() {
             @Override
             public void processStanza(Stanza packet) throws NotConnectedException {
                 XMPPConnection connection = connection();

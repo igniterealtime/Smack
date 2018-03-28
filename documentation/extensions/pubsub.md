@@ -1,6 +1,8 @@
 Pubsub
 ======
 
+[Back](index.md)
+
 This section details the usage of an API designed for accessing an XMPP based
 implementation of a [publish and
 subscribe](http://en.wikipedia.org/wiki/Publish/subscribe) based messaging

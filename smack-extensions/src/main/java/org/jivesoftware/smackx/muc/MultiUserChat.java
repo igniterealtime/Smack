@@ -334,7 +334,7 @@ public class MultiUserChat {
                         );
         // @formatter:on
         connection.addSyncStanzaListener(declinesListener, new AndFilter(fromRoomFilter, DECLINE_FILTER));
-        connection.addPacketInterceptor(presenceInterceptor, new AndFilter(ToMatchesFilter.create(room),
+        connection.addStanzaInterceptor(presenceInterceptor, new AndFilter(ToMatchesFilter.create(room),
                         StanzaTypeFilter.PRESENCE));
         messageCollector = connection.createStanzaCollector(fromRoomGroupchatFilter);
 
@@ -2021,7 +2021,7 @@ public class MultiUserChat {
         connection.removeSyncStanzaListener(presenceListener);
         connection.removeSyncStanzaListener(subjectListener);
         connection.removeSyncStanzaListener(declinesListener);
-        connection.removePacketInterceptor(presenceInterceptor);
+        connection.removeStanzaInterceptor(presenceInterceptor);
         if (messageCollector != null) {
             messageCollector.cancel();
             messageCollector = null;

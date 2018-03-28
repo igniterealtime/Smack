@@ -134,7 +134,7 @@ public final class LastActivityManager extends Manager {
         super(connection);
 
         // Listen to all the sent messages to reset the idle time on each one
-        connection.addPacketSendingListener(new StanzaListener() {
+        connection.addStanzaSendingListener(new StanzaListener() {
             @Override
             public void processStanza(Stanza packet) {
                 Presence presence = (Presence) packet;
@@ -153,7 +153,7 @@ public final class LastActivityManager extends Manager {
             }
         }, StanzaTypeFilter.PRESENCE);
 
-        connection.addPacketSendingListener(new StanzaListener() {
+        connection.addStanzaSendingListener(new StanzaListener() {
             @Override
             public void processStanza(Stanza packet) {
                 Message message = (Message) packet;
