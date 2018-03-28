@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Anno van Vliet
+ * Copyright 2014 Anno van Vliet, 2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.test.util.TestUtils;
 
+import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.BasicValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.ListRange;
@@ -128,6 +130,42 @@ public class DataValidationTest {
     public void testRangeFailure() throws IOException, XmlPullParserException {
             XmlPullParser parser = getParser(TEST_OUTPUT_FAIL);
             DataValidationProvider.parse(parser);
+    }
+
+    @Test
+    public void testNamespacePrefix() throws Exception {
+        String formFieldUsingNamespacePrefix =
+                "<x xmlns='jabber:x:data'" +
+                "   xmlns:xdv='http://jabber.org/protocol/xdata-validate'" +
+                "   type='form'>" +
+                "  <title>Sample Form</title>" +
+                "  <instructions>" +
+                "    Please provide information for the following fields..." +
+                "  </instructions>" +
+                "  <field type='text-single' var='name' label='Event Name'/>" +
+                "  <field type='text-single' var='date/start' label='Starting Date'>" +
+                "    <xdv:validate datatype='xs:date'>" +
+                "      <basic/>" +
+                "    </xdv:validate>" +
+                "  </field>" +
+                "  <field type='text-single' var='date/end' label='Ending Date'>" +
+                "    <xdv:validate datatype='xs:date'>" +
+                "      <basic/>" +
+                "    </xdv:validate>" +
+                "  </field>" +
+                "</x>";
+
+        DataForm dataForm = TestUtils.parseExtensionElement(formFieldUsingNamespacePrefix);
+
+        assertEquals("Sample Form", dataForm.getTitle());
+
+        FormField nameField = dataForm.getField("name");
+        assertEquals("Event Name", nameField.getLabel());
+
+        FormField dataStartField = dataForm.getField("date/start");
+        ValidateElement dataStartValidateElement = dataStartField.getValidateElement();
+        assertEquals("xs:date", dataStartValidateElement.getDatatype());
+        assertTrue(dataStartValidateElement instanceof BasicValidateElement);
     }
 
     /**
