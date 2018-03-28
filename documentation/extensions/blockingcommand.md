@@ -1,6 +1,8 @@
 Blocking Command
 ================
 
+[Back](index.md)
+
 Allows to manage communications blocking.
 
   * Check push notifications support

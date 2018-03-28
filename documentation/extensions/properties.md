@@ -1,6 +1,8 @@
 Stanza Properties
 =================
 
+[Back](index.md)
+
 Smack provides an easy mechanism for attaching arbitrary properties to
 packets. Each property has a String name, and a value that is a Java primitive
 (int, long, float, double, boolean) or any Serializable object (a Java object

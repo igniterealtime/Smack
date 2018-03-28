@@ -1,6 +1,8 @@
 Internet of Things (XEP-0323, -0324, -0325, -0347)
 ==================================================
 
+[Back](index.md)
+
 The Internet of Things (IoT) XEPs are an experimental open standard how XMPP can be used for IoT. They currently consists of
 - XEP-0323 Sensor Data
 - XEP-0324 Provisioning
