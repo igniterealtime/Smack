@@ -50,7 +50,8 @@ public class DataValidationProvider {
             int eventType = parser.next();
             switch (eventType) {
             case XmlPullParser.START_TAG:
-                switch (parser.getName()) {
+                String name = parser.getName();
+                switch (name) {
                 case OpenValidateElement.METHOD:
                     dataValidation = new OpenValidateElement(dataType);
                     break;
