@@ -95,7 +95,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
     public synchronized void enable() {
         ServiceDiscoveryManager.getInstanceFor(connection()).addFeature(NAMESPACE);
         StanzaFilter filter = new AndFilter(OUTGOING_FILTER, new NotFilter(OUTGOING_FILTER));
-        connection().addPacketInterceptor(stanzaListener, filter);
+        connection().addStanzaInterceptor(stanzaListener, filter);
     }
 
     /**
@@ -103,7 +103,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
      */
     public synchronized void disable() {
         ServiceDiscoveryManager.getInstanceFor(connection()).removeFeature(NAMESPACE);
-        connection().removePacketInterceptor(stanzaListener);
+        connection().removeStanzaInterceptor(stanzaListener);
     }
 
     /**

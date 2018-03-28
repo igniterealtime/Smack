@@ -30,7 +30,7 @@ import org.jivesoftware.smack.packet.Stanza;
  * <p>
  * Additionally you are able to intercept Packets that are going to be send and
  * make modifications to them. You can register a PacketListener as interceptor
- * by using {@link XMPPConnection#addPacketInterceptor(StanzaListener,
+ * by using {@link XMPPConnection#addStanzaInterceptor(StanzaListener,
  * org.jivesoftware.smack.filter.StanzaFilter)}
  * </p>
  *

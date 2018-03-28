@@ -116,7 +116,7 @@ public final class ChatManager extends Manager {
             }
         }, INCOMING_MESSAGE_FILTER);
 
-        connection.addPacketInterceptor(new StanzaListener() {
+        connection.addStanzaInterceptor(new StanzaListener() {
             @Override
             public void processStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
                 Message message = (Message) stanza;
