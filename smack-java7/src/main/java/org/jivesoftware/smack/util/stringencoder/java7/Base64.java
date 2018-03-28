@@ -93,7 +93,7 @@ public final class Base64
 
 
     // I think I end up not using the BAD_ENCODING indicator.
-    //private final static byte BAD_ENCODING    = -9; // Indicates error in encoding
+    // private final static byte BAD_ENCODING    = -9; // Indicates error in encoding
     private final static byte WHITE_SPACE_ENC = -5; // Indicates white space in encoding
     private final static byte EQUALS_SIGN_ENC = -1; // Indicates equals sign in encoding
 
@@ -101,7 +101,7 @@ public final class Base64
 /* ********  S T A N D A R D   B A S E 6 4   A L P H A B E T  ******** */
 
     /** The 64 valid Base64 values. */
-    //private final static byte[] ALPHABET;
+    // private final static byte[] ALPHABET;
 	/* Host platform me be something funny like EBCDIC, so we hardcode these values. */
 	private final static byte[] _STANDARD_ALPHABET =
     {
@@ -735,7 +735,7 @@ public final class Base64
         if( source[ srcOffset + 2] == EQUALS_SIGN )
         {
             // Two ways to do the same thing. Don't know which way I like best.
-            //int outBuff =   ( ( DECODABET[ source[ srcOffset    ] ] << 24 ) >>>  6 )
+            // int outBuff =   ( ( DECODABET[ source[ srcOffset    ] ] << 24 ) >>>  6 )
             //              | ( ( DECODABET[ source[ srcOffset + 1] ] << 24 ) >>> 12 );
             int outBuff =   ( ( DECODABET[ source[ srcOffset    ] ] & 0xFF ) << 18 )
                           | ( ( DECODABET[ source[ srcOffset + 1] ] & 0xFF ) << 12 );
@@ -748,7 +748,7 @@ public final class Base64
         else if( source[ srcOffset + 3 ] == EQUALS_SIGN )
         {
             // Two ways to do the same thing. Don't know which way I like best.
-            //int outBuff =   ( ( DECODABET[ source[ srcOffset     ] ] << 24 ) >>>  6 )
+            // int outBuff =   ( ( DECODABET[ source[ srcOffset     ] ] << 24 ) >>>  6 )
             //              | ( ( DECODABET[ source[ srcOffset + 1 ] ] << 24 ) >>> 12 )
             //              | ( ( DECODABET[ source[ srcOffset + 2 ] ] << 24 ) >>> 18 );
             int outBuff =   ( ( DECODABET[ source[ srcOffset     ] ] & 0xFF ) << 18 )
@@ -765,7 +765,7 @@ public final class Base64
         {
             try{
             // Two ways to do the same thing. Don't know which way I like best.
-            //int outBuff =   ( ( DECODABET[ source[ srcOffset     ] ] << 24 ) >>>  6 )
+            // int outBuff =   ( ( DECODABET[ source[ srcOffset     ] ] << 24 ) >>>  6 )
             //              | ( ( DECODABET[ source[ srcOffset + 1 ] ] << 24 ) >>> 12 )
             //              | ( ( DECODABET[ source[ srcOffset + 2 ] ] << 24 ) >>> 18 )
             //              | ( ( DECODABET[ source[ srcOffset + 3 ] ] << 24 ) >>> 24 );
@@ -890,7 +890,7 @@ public final class Base64
         {
             bytes = s.getBytes( Charset.defaultCharset() );
         }   // end catch
-		//</change>
+		// </change>
 
         // Decode
         bytes = decode( bytes, 0, bytes.length, options );
@@ -1428,7 +1428,7 @@ public final class Base64
             {
                 b = read();
 
-                //if( b < 0 && i == 0 )
+                // if( b < 0 && i == 0 )
                 //    return -1;
 
                 if( b >= 0 )
@@ -1573,7 +1573,7 @@ public final class Base64
                     {
                         int len = Base64.decode4to3( buffer, 0, b4, 0, options );
                         out.write( b4, 0, len );
-                        //out.write( Base64.decode4to3( buffer ) );
+                        // out.write( Base64.decode4to3( buffer ) );
                         position = 0;
                     }   // end if: enough to output
                 }   // end if: meaningful base64 character
