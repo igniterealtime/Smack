@@ -42,7 +42,7 @@ public class JingleSessionStateEnded extends JingleSessionState {
      *  A thread-safe means of getting the one instance of this class.
      *  @return The singleton instance of this class.
      */
-    public synchronized static JingleSessionState getInstance() {
+    public static synchronized JingleSessionState getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new JingleSessionStateEnded();
         }

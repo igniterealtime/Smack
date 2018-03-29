@@ -24,7 +24,7 @@ import java.util.List;
  * 
  * @author Robin Collier
  */
-abstract public class SubscriptionEvent extends NodeEvent
+public abstract class SubscriptionEvent extends NodeEvent
 {
     private List<String> subIds = Collections.emptyList();
 

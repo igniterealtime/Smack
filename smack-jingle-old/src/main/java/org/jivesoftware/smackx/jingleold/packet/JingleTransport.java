@@ -183,7 +183,7 @@ public class JingleTransport implements ExtensionElement {
      * @author Alvaro Saurin
      * @see TransportCandidate
      */
-    public static abstract class JingleTransportCandidate {
+    public abstract static class JingleTransportCandidate {
 
         public static final String NODENAME = "candidate";
 

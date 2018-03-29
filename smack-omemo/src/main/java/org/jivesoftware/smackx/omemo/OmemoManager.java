@@ -146,7 +146,7 @@ public final class OmemoManager extends Manager {
      * @param deviceId deviceId of the Manager. If the deviceId is null, a random id will be generated.
      * @return an OmemoManager
      */
-    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection, Integer deviceId) {
+    public static synchronized OmemoManager getInstanceFor(XMPPConnection connection, Integer deviceId) {
         WeakHashMap<Integer,OmemoManager> managersOfConnection = INSTANCES.get(connection);
         if (managersOfConnection == null) {
             managersOfConnection = new WeakHashMap<>();
@@ -173,7 +173,7 @@ public final class OmemoManager extends Manager {
      * @param connection connection
      * @return OmemoManager
      */
-    public synchronized static OmemoManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized OmemoManager getInstanceFor(XMPPConnection connection) {
         BareJid user;
         if (connection.getUser() != null) {
             user = connection.getUser().asBareJid();

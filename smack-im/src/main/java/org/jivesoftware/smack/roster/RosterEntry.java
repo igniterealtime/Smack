@@ -45,7 +45,7 @@ import org.jxmpp.jid.BareJid;
 public final class RosterEntry extends Manager {
 
     private RosterPacket.Item item;
-    final private Roster roster;
+    private final Roster roster;
 
     /**
      * Creates a new roster entry.

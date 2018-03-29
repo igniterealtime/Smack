@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ public class XMPPConnectionRegistry {
     /**
      * A set of listeners which will be invoked if a new connection is created.
      */
-    private final static Set<ConnectionCreationListener> connectionEstablishedListeners =
+    private static final Set<ConnectionCreationListener> connectionEstablishedListeners =
             new CopyOnWriteArraySet<>();
 
     /**

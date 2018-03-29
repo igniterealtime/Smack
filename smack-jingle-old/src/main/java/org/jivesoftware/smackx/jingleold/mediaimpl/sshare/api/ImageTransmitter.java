@@ -54,7 +54,7 @@ public class ImageTransmitter implements Runnable {
     private int maxI;
     private int maxJ;
     private ImageEncoder encoder;
-    public final static int KEYFRAME = 10;
+    public static final int KEYFRAME = 10;
 
     public ImageTransmitter(DatagramSocket socket, InetAddress remoteHost, int remotePort, Rectangle area) {
 

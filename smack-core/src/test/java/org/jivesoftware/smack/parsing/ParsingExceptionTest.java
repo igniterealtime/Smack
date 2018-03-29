@@ -33,7 +33,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 public class ParsingExceptionTest {
 
-    private final static String EXTENSION2 =
+    private static final String EXTENSION2 =
     "<extension2 xmlns='namespace'>" +
         "<bar node='testNode'>" +
             "<i id='testid1'>" +

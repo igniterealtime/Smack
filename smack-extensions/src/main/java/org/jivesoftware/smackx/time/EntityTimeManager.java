@@ -56,7 +56,7 @@ public final class EntityTimeManager extends Manager {
         EntityTimeManager.autoEnable = autoEnable;
     }
 
-    public synchronized static EntityTimeManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized EntityTimeManager getInstanceFor(XMPPConnection connection) {
         EntityTimeManager entityTimeManager = INSTANCES.get(connection);
         if (entityTimeManager == null) {
             entityTimeManager = new EntityTimeManager(connection);

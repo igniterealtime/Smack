@@ -32,7 +32,7 @@ public class QuantizeFilter extends WholeImageFilter {
     /**
      * Floyd-Steinberg dithering matrix.
      */
-    protected final static int[] matrix = {
+    protected static final int[] matrix = {
          0, 0, 0,
          0, 0, 7,
          3, 5, 1,

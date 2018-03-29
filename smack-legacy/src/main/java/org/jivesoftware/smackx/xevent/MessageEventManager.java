@@ -61,7 +61,7 @@ public final class MessageEventManager extends Manager {
     private final List<MessageEventNotificationListener> messageEventNotificationListeners = new CopyOnWriteArrayList<>();
     private final List<MessageEventRequestListener> messageEventRequestListeners = new CopyOnWriteArrayList<>();
 
-    public synchronized static MessageEventManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized MessageEventManager getInstanceFor(XMPPConnection connection) {
         MessageEventManager messageEventManager = INSTANCES.get(connection);
         if (messageEventManager == null) {
             messageEventManager = new MessageEventManager(connection);

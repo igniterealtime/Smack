@@ -78,7 +78,7 @@ import org.jxmpp.jid.parts.Resourcepart;
  * @see <a href="http://xmpp.org/extensions/xep-0045.html">XEP-0045: Multi-User Chat</a>
  */
 public final class MultiUserChatManager extends Manager {
-    private final static String DISCO_NODE = MUCInitialPresence.NAMESPACE + "#rooms";
+    private static final String DISCO_NODE = MUCInitialPresence.NAMESPACE + "#rooms";
 
     private static final Logger LOGGER = Logger.getLogger(MultiUserChatManager.class.getName());
 

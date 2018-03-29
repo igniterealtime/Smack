@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,7 +149,7 @@ public class SaslStreamElements {
     public static class Success implements Nonza {
         public static final String ELEMENT = "success";
 
-        final private String data;
+        private final String data;
 
         /**
          * Construct a new SASL success stream element with optional additional data for the SASL layer.

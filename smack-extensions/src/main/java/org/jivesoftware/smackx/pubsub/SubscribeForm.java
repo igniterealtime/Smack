@@ -209,7 +209,7 @@ public class SubscribeForm extends Form
     }
 
 
-    static private boolean parseBoolean(String fieldValue)
+    private static boolean parseBoolean(String fieldValue)
     {
         return ("1".equals(fieldValue) || "true".equals(fieldValue));
     }

@@ -115,7 +115,7 @@ public final class EnhancedDebuggerWindow {
      *
      * @return the unique EnhancedDebuggerWindow instance
      */
-    public synchronized static EnhancedDebuggerWindow getInstance() {
+    public static synchronized EnhancedDebuggerWindow getInstance() {
         if (instance == null) {
             instance = new EnhancedDebuggerWindow();
         }
@@ -127,7 +127,7 @@ public final class EnhancedDebuggerWindow {
      *
      * @param debugger the new debugger to show in the debug window
      */
-    synchronized static void addDebugger(EnhancedDebugger debugger) {
+    static synchronized void addDebugger(EnhancedDebugger debugger) {
         getInstance().showNewDebugger(debugger);
     }
 
@@ -156,7 +156,7 @@ public final class EnhancedDebuggerWindow {
      * @param debugger the debugger whose connection logged in to the server
      * @param user     the user@host/resource that has just logged in
      */
-    synchronized static void userHasLogged(EnhancedDebugger debugger, String user) {
+    static synchronized void userHasLogged(EnhancedDebugger debugger, String user) {
         int index = getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane);
         getInstance().tabbedPane.setTitleAt(
                 index,
@@ -171,7 +171,7 @@ public final class EnhancedDebuggerWindow {
      *
      * @param debugger the debugger whose connection was properly closed.
      */
-    synchronized static void connectionClosed(EnhancedDebugger debugger) {
+    static synchronized void connectionClosed(EnhancedDebugger debugger) {
         getInstance().tabbedPane.setIconAt(
                 getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane),
                 connectionClosedIcon);
@@ -183,7 +183,7 @@ public final class EnhancedDebuggerWindow {
      * @param debugger the debugger whose connection was closed due to an exception.
      * @param e        the exception.
      */
-    synchronized static void connectionClosedOnError(EnhancedDebugger debugger, Exception e) {
+    static synchronized void connectionClosedOnError(EnhancedDebugger debugger, Exception e) {
         int index = getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane);
         getInstance().tabbedPane.setToolTipTextAt(
                 index,
@@ -193,7 +193,7 @@ public final class EnhancedDebuggerWindow {
                 connectionClosedOnErrorIcon);
     }
 
-    synchronized static void connectionEstablished(EnhancedDebugger debugger) {
+    static synchronized void connectionEstablished(EnhancedDebugger debugger) {
         getInstance().tabbedPane.setIconAt(
                 getInstance().tabbedPane.indexOfComponent(debugger.tabbedPane),
                 connectionActiveIcon);

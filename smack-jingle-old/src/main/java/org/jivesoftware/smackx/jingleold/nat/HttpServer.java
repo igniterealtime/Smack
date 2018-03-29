@@ -77,7 +77,7 @@ public class HttpServer {
 
     static class HttpRequestHandler implements Runnable {
 
-        final static String CRLF = "\r\n";
+        static final String CRLF = "\r\n";
         Socket socket;
         InputStream input;
         OutputStream output;

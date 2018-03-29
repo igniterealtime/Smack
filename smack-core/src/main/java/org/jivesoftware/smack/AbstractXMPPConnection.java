@@ -104,7 +104,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /** 
      * Counter to uniquely identify connections that are created.
      */
-    private final static AtomicInteger connectionCounter = new AtomicInteger(0);
+    private static final AtomicInteger connectionCounter = new AtomicInteger(0);
 
     static {
         // Ensure the SmackConfiguration class is loaded by calling a method in it.

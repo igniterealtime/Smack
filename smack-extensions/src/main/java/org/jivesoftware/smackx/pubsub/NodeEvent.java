@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-abstract public class NodeEvent
+public abstract class NodeEvent
 {
     private String nodeId;
 

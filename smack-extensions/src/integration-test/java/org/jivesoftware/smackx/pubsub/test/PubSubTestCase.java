@@ -29,7 +29,7 @@ import org.jivesoftware.smackx.pubsub.PubSubManager;
  * @author Robin Collier
  *
  */
-abstract public class PubSubTestCase extends SmackTestCase
+public abstract class PubSubTestCase extends SmackTestCase
 {
 	private PubSubManager[] manager;
 

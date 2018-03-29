@@ -30,7 +30,7 @@ import org.jxmpp.jid.Jid;
  */
 public final class FromMatchesFilter extends AbstractFromToMatchesFilter {
 
-    public final static FromMatchesFilter MATCH_NO_FROM_SET = create(null);
+    public static final FromMatchesFilter MATCH_NO_FROM_SET = create(null);
 
     /**
      * Creates a filter matching on the "from" field. The from address must be the same as the

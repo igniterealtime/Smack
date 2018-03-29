@@ -50,7 +50,7 @@ public class STUNResolver extends TransportResolver {
     private static final Logger LOGGER = Logger.getLogger(STUNResolver.class.getName());
 
     // The filename where the STUN servers are stored.
-    public final static String STUNSERVERS_FILENAME = "META-INF/stun-config.xml";
+    public static final String STUNSERVERS_FILENAME = "META-INF/stun-config.xml";
 
     // Current STUN server we are using
     protected STUNService currentServer;

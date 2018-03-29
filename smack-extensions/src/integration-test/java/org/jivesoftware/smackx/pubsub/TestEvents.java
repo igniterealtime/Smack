@@ -585,7 +585,7 @@ public class TestEvents extends SmackTestCase
 		}
 	}
 
-	static private LeafNode getPubnode(PubSubManager manager, String id, boolean persistItems, boolean deliverPayload) 
+	private static LeafNode getPubnode(PubSubManager manager, String id, boolean persistItems, boolean deliverPayload) 
 		throws XMPPException
 	{
 		ConfigureForm form = new ConfigureForm(FormType.submit);

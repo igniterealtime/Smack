@@ -26,27 +26,27 @@ import java.util.Random;
  */
 public class PixelUtils {
 
-    public final static int REPLACE = 0;
-    public final static int NORMAL = 1;
-    public final static int MIN = 2;
-    public final static int MAX = 3;
-    public final static int ADD = 4;
-    public final static int SUBTRACT = 5;
-    public final static int DIFFERENCE = 6;
-    public final static int MULTIPLY = 7;
-    public final static int HUE = 8;
-    public final static int SATURATION = 9;
-    public final static int VALUE = 10;
-    public final static int COLOR = 11;
-    public final static int SCREEN = 12;
-    public final static int AVERAGE = 13;
-    public final static int OVERLAY = 14;
-    public final static int CLEAR = 15;
-    public final static int EXCHANGE = 16;
-    public final static int DISSOLVE = 17;
-    public final static int DST_IN = 18;
-    public final static int ALPHA = 19;
-    public final static int ALPHA_TO_GRAY = 20;
+    public static final int REPLACE = 0;
+    public static final int NORMAL = 1;
+    public static final int MIN = 2;
+    public static final int MAX = 3;
+    public static final int ADD = 4;
+    public static final int SUBTRACT = 5;
+    public static final int DIFFERENCE = 6;
+    public static final int MULTIPLY = 7;
+    public static final int HUE = 8;
+    public static final int SATURATION = 9;
+    public static final int VALUE = 10;
+    public static final int COLOR = 11;
+    public static final int SCREEN = 12;
+    public static final int AVERAGE = 13;
+    public static final int OVERLAY = 14;
+    public static final int CLEAR = 15;
+    public static final int EXCHANGE = 16;
+    public static final int DISSOLVE = 17;
+    public static final int DST_IN = 18;
+    public static final int ALPHA = 19;
+    public static final int ALPHA_TO_GRAY = 20;
 
     private static Random randomGenerator = new Random();
 
@@ -82,8 +82,8 @@ public class PixelUtils {
         return Math.abs(r1 - r2) <= tolerance && Math.abs(g1 - g2) <= tolerance && Math.abs(b1 - b2) <= tolerance;
     }
 
-    private final static float[] hsb1 = new float[3];//FIXME-not thread safe
-    private final static float[] hsb2 = new float[3];//FIXME-not thread safe
+    private static final float[] hsb1 = new float[3];//FIXME-not thread safe
+    private static final float[] hsb2 = new float[3];//FIXME-not thread safe
 
     // Return rgb1 painted onto rgb2
     public static int combinePixels(int rgb1, int rgb2, int op) {

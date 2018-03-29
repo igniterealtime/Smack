@@ -139,10 +139,10 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     private static final String SESSION_ID_PREFIX = "jibb_";
 
     /* random generator to create session IDs */
-    private final static Random randomGenerator = new Random();
+    private static final Random randomGenerator = new Random();
 
     /* stores one InBandBytestreamManager for each XMPP connection */
-    private final static Map<XMPPConnection, InBandBytestreamManager> managers = new WeakHashMap<>();
+    private static final Map<XMPPConnection, InBandBytestreamManager> managers = new WeakHashMap<>();
 
     /*
      * assigns a user to a listener that is informed if an In-Band Bytestream request for this user

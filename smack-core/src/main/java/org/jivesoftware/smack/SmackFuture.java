@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
     private ExceptionCallback<E> exceptionCallback;
 
     @Override
-    public synchronized final boolean cancel(boolean mayInterruptIfRunning) {
+    public final synchronized boolean cancel(boolean mayInterruptIfRunning) {
         if (isDone()) {
             return false;
         }
@@ -61,12 +61,12 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
     }
 
     @Override
-    public synchronized final boolean isCancelled() {
+    public final synchronized boolean isCancelled() {
         return cancelled;
     }
 
     @Override
-    public synchronized final boolean isDone() {
+    public final synchronized boolean isDone() {
         return result != null;
     }
 
@@ -98,7 +98,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
     }
 
     @Override
-    public synchronized final V get() throws InterruptedException, ExecutionException {
+    public final synchronized V get() throws InterruptedException, ExecutionException {
         while (result == null && exception == null && !cancelled) {
             wait();
         }
@@ -106,7 +106,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
         return getOrThrowExecutionException();
     }
 
-    public synchronized final V getOrThrow() throws E, InterruptedException {
+    public final synchronized V getOrThrow() throws E, InterruptedException {
         while (result == null && exception == null && !cancelled) {
             wait();
         }
@@ -124,7 +124,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
     }
 
     @Override
-    public synchronized final V get(long timeout, TimeUnit unit)
+    public final synchronized V get(long timeout, TimeUnit unit)
                     throws InterruptedException, ExecutionException, TimeoutException {
         final long deadline = System.currentTimeMillis() + unit.toMillis(timeout);
         while (result != null && exception != null) {
@@ -212,7 +212,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
         }
     }
 
-    public static abstract class InternalProcessStanzaSmackFuture<V, E extends Exception> extends InternalSmackFuture<V, E>
+    public abstract static class InternalProcessStanzaSmackFuture<V, E extends Exception> extends InternalSmackFuture<V, E>
                     implements StanzaListener, ExceptionCallback<E> {
 
         /**
@@ -228,7 +228,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
         protected abstract void handleStanza(Stanza stanza);
 
         @Override
-        public synchronized final void processException(E exception) {
+        public final synchronized void processException(E exception) {
             if (!isNonFatalException(exception)) {
                 this.exception = exception;
                 this.notifyAll();
@@ -241,7 +241,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
          * Wrapper method for {@link #handleStanza(Stanza)}. Note that this method is <code>synchronized</code>.
          */
         @Override
-        public synchronized final void processStanza(Stanza stanza) {
+        public final synchronized void processStanza(Stanza stanza) {
             handleStanza(stanza);
         }
     }
@@ -252,7 +252,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
      *
      * @param <V>
      */
-    public static abstract class SimpleInternalProcessStanzaSmackFuture<V, E extends Exception>
+    public abstract static class SimpleInternalProcessStanzaSmackFuture<V, E extends Exception>
                     extends InternalProcessStanzaSmackFuture<V, E> {
         @Override
         protected boolean isNonFatalException(E exception) {

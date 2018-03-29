@@ -90,7 +90,7 @@ public enum SubscribeOptionFields
         return "pubsub#" + toString();
     }
 
-    static public SubscribeOptionFields valueOfFromElement(String elementName)
+    public static SubscribeOptionFields valueOfFromElement(String elementName)
     {
         String portion = elementName.substring(elementName.lastIndexOf('#' + 1));
 

@@ -97,7 +97,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
      * @param <B> the builder type parameter.
      * @param <C> the resulting HttpOverXmpp IQ
      */
-    public static abstract class Builder<B extends Builder<B, C>, C extends AbstractHttpOverXmpp> {
+    public abstract static class Builder<B extends Builder<B, C>, C extends AbstractHttpOverXmpp> {
 
         private HeadersExtension headers;
         private Data data;

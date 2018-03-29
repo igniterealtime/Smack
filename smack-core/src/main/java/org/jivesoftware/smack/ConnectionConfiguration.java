@@ -502,7 +502,7 @@ public abstract class ConnectionConfiguration {
      * @param <B> the builder type parameter.
      * @param <C> the resulting connection configuration type parameter.
      */
-    public static abstract class Builder<B extends Builder<B, C>, C extends ConnectionConfiguration> {
+    public abstract static class Builder<B extends Builder<B, C>, C extends ConnectionConfiguration> {
         private SecurityMode securityMode = SecurityMode.ifpossible;
         private DnssecMode dnssecMode = DnssecMode.disabled;
         private String keystorePath = System.getProperty("javax.net.ssl.keyStore");

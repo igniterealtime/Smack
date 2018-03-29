@@ -55,7 +55,7 @@ public final class GeoLocationManager extends Manager {
      * @param connection The connection the manager is attached to.
      * @return The new or existing manager.
      */
-    public synchronized static GeoLocationManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized GeoLocationManager getInstanceFor(XMPPConnection connection) {
         GeoLocationManager geoLocationManager = INSTANCES.get(connection);
         if (geoLocationManager == null) {
             geoLocationManager = new GeoLocationManager(connection);

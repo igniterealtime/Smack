@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Florian Schmaus
+ * Copyright 2013-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,9 @@ import java.util.zip.InflaterInputStream;
  * @author Florian Schmaus
  */
 public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
-    private final static Method method;
-    private final static boolean supported;
-    private final static int compressionLevel = Deflater.DEFAULT_COMPRESSION;
+    private static final Method method;
+    private static final boolean supported;
+    private static final int compressionLevel = Deflater.DEFAULT_COMPRESSION;
 
     private static final int SYNC_FLUSH_INT = 2;
     private static final int FULL_FLUSH_INT = 3;

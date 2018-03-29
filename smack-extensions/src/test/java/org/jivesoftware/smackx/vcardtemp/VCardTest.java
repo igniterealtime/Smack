@@ -249,8 +249,8 @@ public class VCardTest extends InitExtensions {
         assertEquals("kir max", vCard.getField("FN"));
     }
 
-    private final static String MIME_TYPE = "testtype";
-    private final static String VCARD_XML = "<vCard xmlns='vcard-temp'><PHOTO><BINVAL>" + getAvatarEncoded()
+    private static final String MIME_TYPE = "testtype";
+    private static final String VCARD_XML = "<vCard xmlns='vcard-temp'><PHOTO><BINVAL>" + getAvatarEncoded()
                     + "</BINVAL><TYPE>" + MIME_TYPE + "</TYPE></PHOTO></vCard>";
 
     @Test

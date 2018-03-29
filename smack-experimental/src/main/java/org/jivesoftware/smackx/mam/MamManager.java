@@ -552,7 +552,7 @@ public final class MamManager extends Manager {
      * MAM query result class.
      *
      */
-    public final static class MamQueryResult {
+    public static final class MamQueryResult {
         public final List<Forwarded> forwardedMessages;
         public final MamFinIQ mamFin;
         private final String node;
@@ -662,7 +662,7 @@ public final class MamManager extends Manager {
      * MAM preferences result class.
      *
      */
-    public final static class MamPrefsResult {
+    public static final class MamPrefsResult {
         public final MamPrefsIQ mamPrefs;
         public final DataForm form;
 

@@ -27,7 +27,7 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-final public class TestUtils {
+public final class TestUtils {
     private TestUtils() {
     }
 

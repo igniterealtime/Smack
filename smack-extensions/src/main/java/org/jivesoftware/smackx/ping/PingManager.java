@@ -85,7 +85,7 @@ public final class PingManager extends Manager {
      * The connection the manager is attached to.
      * @return The new or existing manager.
      */
-    public synchronized static PingManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized PingManager getInstanceFor(XMPPConnection connection) {
         PingManager pingManager = INSTANCES.get(connection);
         if (pingManager == null) {
             pingManager = new PingManager(connection);

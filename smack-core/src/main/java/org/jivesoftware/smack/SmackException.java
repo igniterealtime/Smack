@@ -195,7 +195,7 @@ public class SmackException extends Exception {
         }
     }
 
-    public static abstract class SecurityRequiredException extends SmackException {
+    public abstract static class SecurityRequiredException extends SmackException {
 
         /**
          * 

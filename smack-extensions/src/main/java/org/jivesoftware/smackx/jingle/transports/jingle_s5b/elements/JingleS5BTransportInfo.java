@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
  */
 public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo {
 
-    public static abstract class JingleS5BCandidateTransportInfo extends JingleS5BTransportInfo {
+    public abstract static class JingleS5BCandidateTransportInfo extends JingleS5BTransportInfo {
         public static final String ATTR_CID = "cid";
 
         private final String candidateId;

@@ -113,10 +113,10 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
     private static final String SESSION_ID_PREFIX = "js5_";
 
     /* random generator to create session IDs */
-    private final static Random randomGenerator = new Random();
+    private static final Random randomGenerator = new Random();
 
     /* stores one Socks5BytestreamManager for each XMPP connection */
-    private final static Map<XMPPConnection, Socks5BytestreamManager> managers = new WeakHashMap<>();
+    private static final Map<XMPPConnection, Socks5BytestreamManager> managers = new WeakHashMap<>();
 
     /*
      * assigns a user to a listener that is informed if a bytestream request for this user is

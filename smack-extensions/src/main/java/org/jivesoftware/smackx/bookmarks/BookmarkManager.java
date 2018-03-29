@@ -60,7 +60,7 @@ public final class BookmarkManager {
      * exist it is created.
      * @throws IllegalArgumentException when the connection is null.
      */
-    public synchronized static BookmarkManager getBookmarkManager(XMPPConnection connection)
+    public static synchronized BookmarkManager getBookmarkManager(XMPPConnection connection)
     {
         BookmarkManager manager = bookmarkManagerMap.get(connection);
         if (manager == null) {

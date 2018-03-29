@@ -678,7 +678,7 @@ public class ConfigureForm extends Form
         return result.toString();
     }
 
-    static private boolean parseBoolean(String fieldValue)
+    private static boolean parseBoolean(String fieldValue)
     {
         return ("1".equals(fieldValue) || "true".equals(fieldValue));
     }

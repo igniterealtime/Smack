@@ -32,7 +32,7 @@ public class DataPacketExtension implements ExtensionElement {
     /**
      * The element name of the data stanza(/packet) extension.
      */
-    public final static String ELEMENT = "data";
+    public static final String ELEMENT = "data";
 
     /**
      * The XMPP namespace of the In-Band Bytestream.

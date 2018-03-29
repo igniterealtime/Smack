@@ -44,7 +44,7 @@ import org.jivesoftware.smackx.shim.packet.Header;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 import org.jivesoftware.smackx.xdata.Form;
 
-abstract public class Node
+public abstract class Node
 {
     protected final PubSubManager pubSubManager;
     protected final String id;

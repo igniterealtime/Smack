@@ -50,19 +50,19 @@ import org.jxmpp.jid.Jid;
  */
 public class RosterExchangeManager {
 
-    public final static String NAMESPACE = "jabber:x:roster";
-    public final static String ELEMENT = "x";
+    public static final String NAMESPACE = "jabber:x:roster";
+    public static final String ELEMENT = "x";
 
-    private final static Map<XMPPConnection, RosterExchangeManager> INSTANCES = new WeakHashMap<>();
+    private static final Map<XMPPConnection, RosterExchangeManager> INSTANCES = new WeakHashMap<>();
 
-    private final static StanzaFilter PACKET_FILTER = new StanzaExtensionFilter(ELEMENT, NAMESPACE);
+    private static final StanzaFilter PACKET_FILTER = new StanzaExtensionFilter(ELEMENT, NAMESPACE);
 
     private final Set<RosterExchangeListener> rosterExchangeListeners = Collections.synchronizedSet(new HashSet<RosterExchangeListener>());
 
     private final WeakReference<XMPPConnection> weakRefConnection;
     private final StanzaListener packetListener;
 
-    public synchronized static RosterExchangeManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized RosterExchangeManager getInstanceFor(XMPPConnection connection) {
         RosterExchangeManager rosterExchangeManager = INSTANCES.get(connection);
         if (rosterExchangeManager == null) {
             rosterExchangeManager = new RosterExchangeManager(connection);

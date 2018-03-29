@@ -271,7 +271,7 @@ public class JingleManager implements JingleSessionListener {
      *                   disabled
      * @param enabled    indicates if the service will be enabled or disabled
      */
-    public synchronized static void setServiceEnabled(XMPPConnection connection, boolean enabled) {
+    public static synchronized void setServiceEnabled(XMPPConnection connection, boolean enabled) {
         if (isServiceEnabled(connection) == enabled) {
             return;
         }

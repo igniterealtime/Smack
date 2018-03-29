@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2015 Florian Schmaus
+ * Copyright © 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class IntrospectionProvider{
 
     // Unfortunately, we have to create two introspection providers, with the exactly the same code here
 
-    public static abstract class IQIntrospectionProvider<I extends IQ> extends IQProvider<I> {
+    public abstract static class IQIntrospectionProvider<I extends IQ> extends IQProvider<I> {
         private final Class<I> elementClass;
 
         protected IQIntrospectionProvider(Class<I> elementClass) {
@@ -52,7 +52,7 @@ public class IntrospectionProvider{
         }
     }
 
-    public static abstract class PacketExtensionIntrospectionProvider<PE extends ExtensionElement> extends ExtensionElementProvider<PE> {
+    public abstract static class PacketExtensionIntrospectionProvider<PE extends ExtensionElement> extends ExtensionElementProvider<PE> {
         private final Class<PE> elementClass;
 
         protected PacketExtensionIntrospectionProvider(Class<PE> elementClass) {

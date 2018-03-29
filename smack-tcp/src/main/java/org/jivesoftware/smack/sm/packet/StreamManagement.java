@@ -54,7 +54,7 @@ public class StreamManagement {
         }
     }
 
-    private static abstract class AbstractEnable implements Nonza {
+    private abstract static class AbstractEnable implements Nonza {
 
         /**
          * Preferred maximum resumption time in seconds (optional).
@@ -249,7 +249,7 @@ public class StreamManagement {
 
     }
 
-    private static abstract class AbstractResume implements Nonza {
+    private abstract static class AbstractResume implements Nonza {
 
         private final long handledCount;
         private final String previd;

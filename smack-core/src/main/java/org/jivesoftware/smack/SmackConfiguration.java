@@ -56,7 +56,7 @@ public final class SmackConfiguration {
 
     static Set<String> disabledSmackClasses = new HashSet<>();
 
-    final static List<XMPPInputOutputStream> compressionHandlers = new ArrayList<>(2);
+    static final List<XMPPInputOutputStream> compressionHandlers = new ArrayList<>(2);
 
     static boolean smackInitialized = false;
 

@@ -62,7 +62,7 @@ public class OfflineMessageManager {
 
     private static final Logger LOGGER = Logger.getLogger(OfflineMessageManager.class.getName());
 
-    private final static String namespace = "http://jabber.org/protocol/offline";
+    private static final String namespace = "http://jabber.org/protocol/offline";
 
     private final XMPPConnection connection;
 

@@ -118,7 +118,7 @@ public class AbstractError {
         }
     }
 
-    public static abstract class Builder<B extends Builder<B>> {
+    public abstract static class Builder<B extends Builder<B>> {
         protected String textNamespace;
         protected Map<String, String> descriptiveTexts;
         protected List<ExtensionElement> extensions;

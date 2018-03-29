@@ -34,7 +34,7 @@ public class OctTreeQuantizer implements Quantizer {
     /**
      * The greatest depth the tree is allowed to reach
      */
-    final static int MAX_LEVEL = 5;
+    static final int MAX_LEVEL = 5;
 
     /**
      * An Octree node.

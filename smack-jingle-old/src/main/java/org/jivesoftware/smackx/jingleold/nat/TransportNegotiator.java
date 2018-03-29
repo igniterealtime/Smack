@@ -57,7 +57,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
     // The time we give to the candidates check before we accept or decline the
     // transport (in milliseconds)
-    public final static int CANDIDATES_ACCEPT_PERIOD = 4000;
+    public static final int CANDIDATES_ACCEPT_PERIOD = 4000;
 
     // The session this negotiator belongs to
     // private final JingleSession session;
