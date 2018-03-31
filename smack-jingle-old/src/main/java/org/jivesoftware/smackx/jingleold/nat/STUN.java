@@ -55,17 +55,17 @@ public class STUN extends SimpleIQ {
     private String publicIp = null;
 
     /**
-     * Element name of the stanza(/packet) extension.
+     * Element name of the stanza extension.
      */
     public static final String DOMAIN = "stun";
 
     /**
-     * Element name of the stanza(/packet) extension.
+     * Element name of the stanza extension.
      */
     public static final String ELEMENT_NAME = "query";
 
     /**
-     * Namespace of the stanza(/packet) extension.
+     * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "google:jingleinfo";
 
@@ -109,7 +109,7 @@ public class STUN extends SimpleIQ {
 
     /**
      * IQProvider for RTP Bridge packets.
-     * Parse receive RTPBridge stanza(/packet) to a RTPBridge instance
+     * Parse receive RTPBridge stanza to a RTPBridge instance
      *
      * @author Thiago Rocha
      */

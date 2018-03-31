@@ -210,12 +210,12 @@ public class MultiUserChatLight {
     }
 
     /**
-     * Adds a stanza(/packet) listener that will be notified of any new messages
+     * Adds a stanza listener that will be notified of any new messages
      * in the group chat. Only "group chat" messages addressed to this group
      * chat will be delivered to the listener.
      *
      * @param listener
-     *            a stanza(/packet) listener.
+     *            a stanza listener.
      * @return true if the listener was not already added.
      */
     public boolean addMessageListener(MessageListener listener) {
@@ -223,12 +223,12 @@ public class MultiUserChatLight {
     }
 
     /**
-     * Removes a stanza(/packet) listener that was being notified of any new
+     * Removes a stanza listener that was being notified of any new
      * messages in the MUCLight. Only "group chat" messages addressed to this
      * MUCLight were being delivered to the listener.
      *
      * @param listener
-     *            a stanza(/packet) listener.
+     *            a stanza listener.
      * @return true if the listener was removed, otherwise the listener was not
      *         added previously.
      */

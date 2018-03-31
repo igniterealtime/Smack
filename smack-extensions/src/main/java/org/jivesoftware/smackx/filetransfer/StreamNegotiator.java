@@ -65,7 +65,7 @@ public abstract class StreamNegotiator extends Manager {
     protected static final EventManger<String, IQ, SmackException.NotConnectedException> initationSetEvents = new EventManger<>();
 
     /**
-     * Creates the initiation acceptance stanza(/packet) to forward to the stream
+     * Creates the initiation acceptance stanza to forward to the stream
      * initiator.
      *
      * @param streamInitiationOffer The offer from the stream initiator to connect for a stream.

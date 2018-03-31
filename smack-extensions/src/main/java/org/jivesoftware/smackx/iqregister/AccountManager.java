@@ -99,7 +99,7 @@ public final class AccountManager extends Manager {
     /**
      * Flag that indicates whether the server supports In-Band Registration.
      * In-Band Registration may be advertised as a stream feature. If no stream feature
-     * was advertised from the server then try sending an IQ stanza(/packet) to discover if In-Band
+     * was advertised from the server then try sending an IQ stanza to discover if In-Band
      * Registration is available.
      */
     private boolean accountCreationSupported = false;
@@ -116,7 +116,7 @@ public final class AccountManager extends Manager {
     /**
      * Sets whether the server supports In-Band Registration. In-Band Registration may be
      * advertised as a stream feature. If no stream feature was advertised from the server
-     * then try sending an IQ stanza(/packet) to discover if In-Band Registration is available.
+     * then try sending an IQ stanza to discover if In-Band Registration is available.
      *
      * @param accountCreationSupported true if the server supports In-Band Registration.
      */

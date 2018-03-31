@@ -105,7 +105,7 @@ public class Socks5ClientForInitiator extends Socks5Client {
     }
 
     /**
-     * Activates the SOCKS5 Bytestream by sending an XMPP SOCKS5 Bytestream activation stanza(/packet) to the
+     * Activates the SOCKS5 Bytestream by sending an XMPP SOCKS5 Bytestream activation stanza to the
      * SOCKS5 proxy.
      * @throws XMPPErrorException 
      * @throws NoResponseException 

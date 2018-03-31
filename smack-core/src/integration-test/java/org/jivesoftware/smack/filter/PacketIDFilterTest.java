@@ -49,7 +49,7 @@ public class PacketIDFilterTest extends TestCase {
     }
 
     /**
-     * Wraps the MockPacket class to always give an expected stanza(/packet) ID field.
+     * Wraps the MockPacket class to always give an expected stanza ID field.
      */
     private class MockIDPacket extends MockPacket {
         private String id;

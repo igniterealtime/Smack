@@ -51,7 +51,7 @@ public interface StanzaFilter {
     /**
      * Tests whether or not the specified stanza should pass the filter.
      *
-     * @param stanza the stanza(/packet) to test.
+     * @param stanza the stanza to test.
      * @return true if and only if <tt>stanza</tt> passes the filter.
      */
     boolean accept(Stanza stanza);

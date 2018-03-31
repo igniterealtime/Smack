@@ -138,7 +138,7 @@ public class MUCUser implements ExtensionElement {
 
     /**
      * Returns the notification that the room has been destroyed. After a room has been destroyed,
-     * the room occupants will receive a Presence stanza(/packet) of type 'unavailable' with the reason for
+     * the room occupants will receive a Presence stanza of type 'unavailable' with the reason for
      * the room destruction if provided by the room owner.
      *
      * @return a notification that the room has been destroyed.
@@ -208,7 +208,7 @@ public class MUCUser implements ExtensionElement {
 
     /**
      * Sets the notification that the room has been destroyed. After a room has been destroyed,
-     * the room occupants will receive a Presence stanza(/packet) of type 'unavailable' with the reason for
+     * the room occupants will receive a Presence stanza of type 'unavailable' with the reason for
      * the room destruction if provided by the room owner.
      *
      * @param destroy the notification that the room has been destroyed.

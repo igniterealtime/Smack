@@ -38,7 +38,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MUCUserProvider extends ExtensionElementProvider<MUCUser> {
 
     /**
-     * Parses a MUCUser stanza(/packet) (extension sub-packet).
+     * Parses a MUCUser stanza (extension sub-packet).
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.

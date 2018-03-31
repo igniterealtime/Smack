@@ -564,7 +564,7 @@ public final class EntityCapsManager extends Manager {
     /**
      * 
      * @param info
-     * @return true if the stanza(/packet) extensions is ill-formed
+     * @return true if the stanza extensions is ill-formed
      */
     protected static boolean verifyPacketExtensions(DiscoverInfo info) {
         List<FormField> foundFormTypes = new LinkedList<>();

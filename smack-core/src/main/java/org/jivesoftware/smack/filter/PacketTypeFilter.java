@@ -42,7 +42,7 @@ public class PacketTypeFilter implements StanzaFilter {
     private final Class<? extends Stanza> packetType;
 
     /**
-     * Creates a new stanza(/packet) type filter that will filter for packets that are the
+     * Creates a new stanza type filter that will filter for packets that are the
      * same type as <tt>packetType</tt>.
      *
      * @param packetType the Class type.

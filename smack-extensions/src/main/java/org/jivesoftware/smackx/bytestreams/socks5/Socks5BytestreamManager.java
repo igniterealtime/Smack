@@ -256,7 +256,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * to the initiator.
      * <p>
      * This method should be used if you are awaiting a SOCKS5 Bytestream request as a reply to
-     * another stanza(/packet) (e.g. file transfer).
+     * another stanza (e.g. file transfer).
      * 
      * @param sessionID to be ignored
      */
@@ -612,10 +612,10 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
     }
 
     /**
-     * Returns a IQ stanza(/packet) to query a SOCKS5 proxy its network settings.
+     * Returns a IQ stanza to query a SOCKS5 proxy its network settings.
      * 
      * @param proxy the proxy to query
-     * @return IQ stanza(/packet) to query a SOCKS5 proxy its network settings
+     * @return IQ stanza to query a SOCKS5 proxy its network settings
      */
     private static Bytestream createStreamHostRequest(Jid proxy) {
         Bytestream request = new Bytestream();
@@ -664,7 +664,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
     }
 
     /**
-     * Returns a SOCKS5 Bytestream initialization request stanza(/packet) with the given session ID
+     * Returns a SOCKS5 Bytestream initialization request stanza with the given session ID
      * containing the given stream hosts for the given target JID.
      * 
      * @param sessionID the session ID for the SOCKS5 Bytestream

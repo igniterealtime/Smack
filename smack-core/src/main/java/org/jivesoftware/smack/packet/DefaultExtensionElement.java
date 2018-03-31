@@ -27,7 +27,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 /**
  * Default implementation of the ExtensionElement interface. Unless a ExtensionElementProvider
  * is registered with {@link org.jivesoftware.smack.provider.ProviderManager ProviderManager},
- * instances of this class will be returned when getting stanza(/packet) extensions.<p>
+ * instances of this class will be returned when getting stanza extensions.<p>
  *
  * This class provides a very simple representation of an XML sub-document. Each element
  * is a key in a Map with its CDATA being the value. For example, given the following
@@ -55,7 +55,7 @@ public class DefaultExtensionElement implements ExtensionElement {
     private Map<String,String> map;
 
     /**
-     * Creates a new generic stanza(/packet) extension.
+     * Creates a new generic stanza extension.
      *
      * @param elementName the name of the element of the XML sub-document.
      * @param namespace the namespace of the element.
@@ -68,7 +68,7 @@ public class DefaultExtensionElement implements ExtensionElement {
      /**
      * Returns the XML element name of the extension sub-packet root element.
      *
-     * @return the XML element name of the stanza(/packet) extension.
+     * @return the XML element name of the stanza extension.
      */
     @Override
     public String getElementName() {
@@ -78,7 +78,7 @@ public class DefaultExtensionElement implements ExtensionElement {
     /**
      * Returns the XML namespace of the extension sub-packet root element.
      *
-     * @return the XML namespace of the stanza(/packet) extension.
+     * @return the XML namespace of the stanza extension.
      */
     @Override
     public String getNamespace() {
@@ -99,7 +99,7 @@ public class DefaultExtensionElement implements ExtensionElement {
 
     /**
      * Returns an unmodifiable collection of the names that can be used to get
-     * values of the stanza(/packet) extension.
+     * values of the stanza extension.
      *
      * @return the names.
      */
@@ -111,7 +111,7 @@ public class DefaultExtensionElement implements ExtensionElement {
     }
 
     /**
-     * Returns a stanza(/packet) extension value given a name.
+     * Returns a stanza extension value given a name.
      *
      * @param name the name.
      * @return the value.
@@ -124,7 +124,7 @@ public class DefaultExtensionElement implements ExtensionElement {
     }
 
     /**
-     * Sets a stanza(/packet) extension value using the given name.
+     * Sets a stanza extension value using the given name.
      *
      * @param name the name.
      * @param value the value.

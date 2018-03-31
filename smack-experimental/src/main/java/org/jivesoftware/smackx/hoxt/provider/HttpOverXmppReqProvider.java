@@ -22,7 +22,7 @@ import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppReq;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * Req stanza(/packet) provider.
+ * Req stanza provider.
  *
  * @author Andriy Tsykholyas
  * @see <a href="http://xmpp.org/extensions/xep-0332.html">XEP-0332: HTTP over XMPP transport</a>

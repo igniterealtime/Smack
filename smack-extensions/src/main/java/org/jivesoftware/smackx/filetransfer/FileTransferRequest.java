@@ -106,11 +106,11 @@ public class FileTransferRequest {
     }
 
     /**
-     * Returns the stream initiation stanza(/packet) that was sent by the requester which
+     * Returns the stream initiation stanza that was sent by the requester which
      * contains the parameters of the file transfer being transfer and also the
      * methods available to transfer the file.
      * 
-     * @return Returns the stream initiation stanza(/packet) that was sent by the
+     * @return Returns the stream initiation stanza that was sent by the
      *         requester which contains the parameters of the file transfer
      *         being transfer and also the methods available to transfer the
      *         file.

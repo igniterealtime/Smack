@@ -21,8 +21,8 @@ import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
 /**
- * IQ stanza(/packet) used by Smack to bind a resource and to obtain the jid assigned by the server.
- * There are two ways to bind a resource. One is simply sending an empty Bind stanza(/packet) where the
+ * IQ stanza used by Smack to bind a resource and to obtain the jid assigned by the server.
+ * There are two ways to bind a resource. One is simply sending an empty Bind stanza where the
  * server will assign a new resource for this connection. The other option is to set a desired
  * resource but the server may return a modified version of the sent resource.<p>
  *

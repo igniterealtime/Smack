@@ -28,7 +28,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.Jid;
 
 /**
- * Represents XMPP presence packets. Every presence stanza(/packet) has a type, which is one of
+ * Represents XMPP presence packets. Every presence stanza has a type, which is one of
  * the following values:
  * <ul>
  *      <li>{@link Presence.Type#available available} -- (Default) indicates the user is available to
@@ -40,7 +40,7 @@ import org.jxmpp.jid.Jid;
  *          sender's presence.
  *      <li>{@link Presence.Type#unsubscribed unsubscribed} -- grant removal of subscription to
  *          sender's presence.
- *      <li>{@link Presence.Type#error error} -- the presence stanza(/packet) contains an error message.
+ *      <li>{@link Presence.Type#error error} -- the presence stanza contains an error message.
  * </ul><p>
  *
  * A number of attributes are optional:
@@ -363,7 +363,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         unsubscribed,
 
         /**
-         * The presence stanza(/packet) contains an error message.
+         * The presence stanza contains an error message.
          */
         error,
 

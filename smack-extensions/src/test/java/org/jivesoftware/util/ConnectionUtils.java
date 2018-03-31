@@ -46,7 +46,7 @@ import org.mockito.stubbing.Answer;
 public class ConnectionUtils {
 
     /**
-     * Creates a mocked XMPP connection that stores every stanza(/packet) that is send over this
+     * Creates a mocked XMPP connection that stores every stanza that is send over this
      * connection in the given protocol instance and returns the predefined answer packets
      * form the protocol instance.
      * <p>

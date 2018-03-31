@@ -23,7 +23,7 @@ import org.jivesoftware.smack.packet.Stanza;
 
 /**
  * Provides a mechanism to listen for packets that pass a specified filter.
- * This allows event-style programming -- every time a new stanza(/packet) is found,
+ * This allows event-style programming -- every time a new stanza is found,
  * the {@link #processStanza(Stanza)} method will be called. This is the
  * opposite approach to the functionality provided by a {@link StanzaCollector}
  * which lets you block while waiting for results.
@@ -40,14 +40,14 @@ import org.jivesoftware.smack.packet.Stanza;
 public interface StanzaListener {
 
     /**
-     * Process the next stanza(/packet) sent to this stanza(/packet) listener.
+     * Process the next stanza sent to this stanza listener.
      * <p>
      * If this listener is synchronous, then a single thread is responsible for invoking all listeners, so
      * it's very important that implementations of this method not block
      * for any extended period of time.
      * </p>
      *
-     * @param packet the stanza(/packet) to process.
+     * @param packet the stanza to process.
      * @throws NotConnectedException
      * @throws InterruptedException 
      * @throws NotLoggedInException 

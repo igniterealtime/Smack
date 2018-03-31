@@ -21,7 +21,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Objects;
 
 /**
- * Implements the logical NOT operation on a stanza(/packet) filter. In other words, packets
+ * Implements the logical NOT operation on a stanza filter. In other words, packets
  * pass this filter if they do not pass the supplied filter.
  *
  * @author Matt Tucker

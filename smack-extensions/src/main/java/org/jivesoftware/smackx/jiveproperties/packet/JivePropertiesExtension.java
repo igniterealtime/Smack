@@ -41,7 +41,7 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
  */
 public class JivePropertiesExtension implements ExtensionElement {
     /**
-     * Namespace used to store stanza(/packet) properties.
+     * Namespace used to store stanza properties.
      */
     public static final String NAMESPACE = "http://www.jivesoftware.com/xmlns/xmpp/properties";
 
@@ -60,7 +60,7 @@ public class JivePropertiesExtension implements ExtensionElement {
     }
 
     /**
-     * Returns the stanza(/packet) property with the specified name or <tt>null</tt> if the
+     * Returns the stanza property with the specified name or <tt>null</tt> if the
      * property doesn't exist. Property values that were originally primitives will
      * be returned as their object equivalent. For example, an int property will be
      * returned as an Integer, a double as a Double, etc.

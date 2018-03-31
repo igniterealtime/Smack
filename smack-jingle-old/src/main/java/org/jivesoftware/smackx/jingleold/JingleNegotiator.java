@@ -202,7 +202,7 @@ public abstract class JingleNegotiator {
     /**
      * Dispatch an incoming packet.
      * 
-     * The negotiators form a tree relationship that roughly matches the Jingle stanza(/packet) format:
+     * The negotiators form a tree relationship that roughly matches the Jingle stanza format:
      * 
      * JingleSession
      *      Content Negotiator
@@ -220,15 +220,15 @@ public abstract class JingleNegotiator {
      *          &lt;description&gt;
      *          &lt;transport&gt;
      *          
-     * This way, each segment of a Jingle stanza(/packet) has a corresponding negotiator that know how to deal with that
+     * This way, each segment of a Jingle stanza has a corresponding negotiator that know how to deal with that
      * part of the Jingle packet.  It also allows us to support Jingle packets of arbitraty complexity.
      * 
      * Each parent calls dispatchIncomingPacket for each of its children.  The children then pass back a List of
      * results that will get sent when we reach the top level negotiator (JingleSession).
      *
-     * @param iq the stanza(/packet) received
+     * @param iq the stanza received
      * @param id the ID of the response that will be sent
-     * @return the new stanza(/packet) to send (either a Jingle or an IQ error).
+     * @return the new stanza to send (either a Jingle or an IQ error).
      * @throws XMPPException
      * @throws InterruptedException 
      */

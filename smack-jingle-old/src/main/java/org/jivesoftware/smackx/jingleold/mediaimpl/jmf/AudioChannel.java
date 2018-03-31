@@ -310,11 +310,11 @@ public class AudioChannel {
     }
 
     /**
-     * Get the best stanza(/packet) size for a given codec and a codec rate
+     * Get the best stanza size for a given codec and a codec rate
      *
      * @param codecFormat
      * @param milliseconds
-     * @return the best stanza(/packet) size
+     * @return the best stanza size
      * @throws IllegalArgumentException
      */
     private int getPacketSize(Format codecFormat, int milliseconds) throws IllegalArgumentException {

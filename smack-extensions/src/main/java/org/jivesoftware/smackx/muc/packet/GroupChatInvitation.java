@@ -28,7 +28,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * A group chat invitation stanza(/packet) extension, which is used to invite other
+ * A group chat invitation stanza extension, which is used to invite other
  * users to a group chat room. To invite a user to a group chat room, address
  * a new message to the user and set the room name appropriately, as in the
  * following code example:
@@ -46,7 +46,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * <pre>
  * PacketFilter filter = new StanzaExtensionFilter("x", "jabber:x:conference");
- * // Create a stanza(/packet) collector or stanza(/packet) listeners using the filter...
+ * // Create a stanza collector or stanza listeners using the filter...
  * </pre>
  *
  * <b>Note</b>: this protocol is outdated now that the Multi-User Chat (MUC) XEP is available
@@ -59,12 +59,12 @@ import org.xmlpull.v1.XmlPullParserException;
 public class GroupChatInvitation implements ExtensionElement {
 
     /**
-     * Element name of the stanza(/packet) extension.
+     * Element name of the stanza extension.
      */
     public static final String ELEMENT = "x";
 
     /**
-     * Namespace of the stanza(/packet) extension.
+     * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "jabber:x:conference";
 

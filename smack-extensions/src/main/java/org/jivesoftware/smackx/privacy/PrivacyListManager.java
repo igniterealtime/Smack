@@ -218,10 +218,10 @@ public final class PrivacyListManager extends Manager {
     }
 
     /**
-     * Send the {@link Privacy} stanza(/packet) to the server in order to know some privacy content and then 
+     * Send the {@link Privacy} stanza to the server in order to know some privacy content and then 
      * waits for the answer.
      * 
-     * @param requestPrivacy is the {@link Privacy} stanza(/packet) configured properly whose XML
+     * @param requestPrivacy is the {@link Privacy} stanza configured properly whose XML
      *      will be sent to the server.
      * @return a new {@link Privacy} with the data received from the server.
      * @throws XMPPErrorException 
@@ -237,10 +237,10 @@ public final class PrivacyListManager extends Manager {
     }
 
     /**
-     * Send the {@link Privacy} stanza(/packet) to the server in order to modify the server privacy and waits
+     * Send the {@link Privacy} stanza to the server in order to modify the server privacy and waits
      * for the answer.
      * 
-     * @param requestPrivacy is the {@link Privacy} stanza(/packet) configured properly whose xml will be
+     * @param requestPrivacy is the {@link Privacy} stanza configured properly whose xml will be
      *        sent to the server.
      * @return a new {@link Privacy} with the data received from the server.
      * @throws XMPPErrorException 

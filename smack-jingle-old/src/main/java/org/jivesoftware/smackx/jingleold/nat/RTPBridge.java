@@ -72,17 +72,17 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Element name of the stanza(/packet) extension.
+     * Element name of the stanza extension.
      */
     public static final String NAME = "rtpbridge";
 
     /**
-     * Element name of the stanza(/packet) extension.
+     * Element name of the stanza extension.
      */
     public static final String ELEMENT_NAME = "rtpbridge";
 
     /**
-     * Namespace of the stanza(/packet) extension.
+     * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "http://www.jivesoftware.com/protocol/rtpbridge";
 
@@ -322,7 +322,7 @@ public class RTPBridge extends IQ {
 
     /**
      * IQProvider for RTP Bridge packets.
-     * Parse receive RTPBridge stanza(/packet) to a RTPBridge instance
+     * Parse receive RTPBridge stanza to a RTPBridge instance
      *
      * @author Thiago Rocha
      */

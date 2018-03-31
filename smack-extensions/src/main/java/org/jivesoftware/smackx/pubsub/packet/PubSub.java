@@ -58,7 +58,7 @@ public class PubSub extends IQ
     /**
      * Returns the XML representation of a pubsub element according the specification.
      * 
-     * The XML representation will be inside of an iq stanza(/packet) like
+     * The XML representation will be inside of an iq stanza like
      * in the following example:
      * <pre>
      * &lt;iq type='set' id="MlIpV-4" to="pubsub.gato.home" from="gato3@gato.home/Smack"&gt;

@@ -46,7 +46,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * 
  * Packets that should be processed by the client to simulate a received stanza
  * can be delivered using the {@linkplain #processStanza(Stanza)} method.
- * It invokes the registered stanza(/packet) interceptors and listeners.
+ * It invokes the registered stanza interceptors and listeners.
  * 
  * @see XMPPConnection
  * @author Guenther Niess
@@ -147,7 +147,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * Returns the first stanza(/packet) that's sent through {@link #sendStanza(Stanza)}
+     * Returns the first stanza that's sent through {@link #sendStanza(Stanza)}
      * and that has not been returned by earlier calls to this method.
      * 
      * @return a sent packet.
@@ -157,7 +157,7 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * Returns the first stanza(/packet) that's sent through {@link #sendStanza(Stanza)}
+     * Returns the first stanza that's sent through {@link #sendStanza(Stanza)}
      * and that has not been returned by earlier calls to this method. This
      * method will block for up to the specified number of seconds if no packets
      * have been sent yet.
@@ -175,11 +175,11 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * Processes a stanza(/packet) through the installed stanza(/packet) collectors and listeners
-     * and letting them examine the stanza(/packet) to see if they are a match with the
+     * Processes a stanza through the installed stanza collectors and listeners
+     * and letting them examine the stanza to see if they are a match with the
      * filter.
      *
-     * @param packet the stanza(/packet) to process.
+     * @param packet the stanza to process.
      */
     @Override
     public void processStanza(Stanza packet) {

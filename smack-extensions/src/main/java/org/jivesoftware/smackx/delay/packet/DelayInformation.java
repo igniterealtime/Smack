@@ -26,8 +26,8 @@ import org.jxmpp.util.XmppDateTime;
 
 /**
  * Represents timestamp information about data stored for later delivery. A DelayInformation will 
- * always includes the timestamp when the stanza(/packet) was originally sent and may include more 
- * information such as the JID of the entity that originally sent the stanza(/packet) as well as the reason
+ * always includes the timestamp when the stanza was originally sent and may include more 
+ * information such as the JID of the entity that originally sent the stanza as well as the reason
  * for the delay.<p>
  * 
  * For more information see <a href="http://xmpp.org/extensions/xep-0091.html">XEP-0091</a>
@@ -61,10 +61,10 @@ public class DelayInformation implements ExtensionElement {
     }
 
     /**
-     * Returns the JID of the entity that originally sent the stanza(/packet) or that delayed the 
-     * delivery of the stanza(/packet) or <tt>null</tt> if this information is not available.
+     * Returns the JID of the entity that originally sent the stanza or that delayed the 
+     * delivery of the stanza or <tt>null</tt> if this information is not available.
      * 
-     * @return the JID of the entity that originally sent the stanza(/packet) or that delayed the 
+     * @return the JID of the entity that originally sent the stanza or that delayed the 
      *         delivery of the packet.
      */
     public String getFrom() {
@@ -72,10 +72,10 @@ public class DelayInformation implements ExtensionElement {
     }
 
     /**
-     * Returns the timestamp when the stanza(/packet) was originally sent. The returned Date is 
+     * Returns the timestamp when the stanza was originally sent. The returned Date is 
      * be understood as UTC.
      * 
-     * @return the timestamp when the stanza(/packet) was originally sent.
+     * @return the timestamp when the stanza was originally sent.
      */
     public Date getStamp() {
         return stamp;

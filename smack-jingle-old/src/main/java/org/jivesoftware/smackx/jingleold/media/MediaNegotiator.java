@@ -96,12 +96,12 @@ public class MediaNegotiator extends JingleNegotiator {
 
     /**
      * Dispatch an incoming packet. The method is responsible for recognizing
-     * the stanza(/packet) type and, depending on the current state, delivering the
-     * stanza(/packet) to the right event handler and wait for a response.
+     * the stanza type and, depending on the current state, delivering the
+     * stanza to the right event handler and wait for a response.
      * 
      * @param iq
-     *            the stanza(/packet) received
-     * @return the new Jingle stanza(/packet) to send.
+     *            the stanza received
+     * @return the new Jingle stanza to send.
      * @throws XMPPException
      * @throws NotConnectedException 
      * @throws InterruptedException 

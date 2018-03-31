@@ -47,11 +47,11 @@ public class Form {
     private DataForm dataForm;
 
     /**
-     * Returns a new ReportedData if the stanza(/packet) is used for gathering data and includes an 
+     * Returns a new ReportedData if the stanza is used for gathering data and includes an 
      * extension that matches the elementName and namespace "x","jabber:x:data".  
      * 
-     * @param packet the stanza(/packet) used for gathering data.
-     * @return the data form parsed from the stanza(/packet) or <tt>null</tt> if there was not
+     * @param packet the stanza used for gathering data.
+     * @return the data form parsed from the stanza or <tt>null</tt> if there was not
      *      a form in the packet.
      */
     public static Form getFormFrom(Stanza packet) {

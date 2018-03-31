@@ -25,17 +25,17 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
 
 /**
- * MetaData stanza(/packet) extension.
+ * MetaData stanza extension.
  */
 public class MetaData implements ExtensionElement {
 
     /**
-     * Element name of the stanza(/packet) extension.
+     * Element name of the stanza extension.
      */
     public static final String ELEMENT_NAME = "metadata";
 
     /**
-     * Namespace of the stanza(/packet) extension.
+     * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 

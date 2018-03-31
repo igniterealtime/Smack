@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
- * A stanza(/packet) extension representing the <b>options</b> element. 
+ * A stanza extension representing the <b>options</b> element. 
  * 
  * @author Robin Collier
  */

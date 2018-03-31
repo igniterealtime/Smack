@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub;
 import org.jivesoftware.smackx.xdata.Form;
 
 /**
- * Generic stanza(/packet) extension which represents any PubSub form that is
+ * Generic stanza extension which represents any PubSub form that is
  * parsed from the incoming stream or being sent out to the server.
  * 
  * Form types are defined in {@link FormNodeType}.

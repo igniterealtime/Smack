@@ -59,7 +59,7 @@ import org.jxmpp.jid.Jid;
  * </ol>
  * 
  * For example to get the idle time of a user logged in a resource, simple send
- * the LastActivity stanza(/packet) to them, as in the following code:
+ * the LastActivity stanza to them, as in the following code:
  * 
  * <pre>
  * XMPPConnection con = new XMPPTCPConnection(&quot;jabber.org&quot;);
@@ -74,7 +74,7 @@ import org.jxmpp.jid.Jid;
  * LastActivity activity = LastActivity.getLastActivity(con, &quot;xray@jabber.org&quot;);
  * </pre>
  * 
- * To get the uptime of a host, you simple send the LastActivity stanza(/packet) to it,
+ * To get the uptime of a host, you simple send the LastActivity stanza to it,
  * as in the following code example:
  * <p>
  * 
@@ -228,7 +228,7 @@ public final class LastActivityManager extends Manager {
      * 
      * @param jid
      *            the JID of the user.
-     * @return the LastActivity stanza(/packet) of the jid.
+     * @return the LastActivity stanza of the jid.
      * @throws XMPPErrorException
      *             thrown if a server error has occured.
      * @throws NoResponseException if there was no response from the server.

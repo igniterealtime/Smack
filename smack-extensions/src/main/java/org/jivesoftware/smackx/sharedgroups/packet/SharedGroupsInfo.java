@@ -27,7 +27,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * IQ stanza(/packet) used for discovering the user's shared groups and for getting the answer back
+ * IQ stanza used for discovering the user's shared groups and for getting the answer back
  * from the server.<p>
  *
  * Important note: This functionality is not part of the XMPP spec and it will only work

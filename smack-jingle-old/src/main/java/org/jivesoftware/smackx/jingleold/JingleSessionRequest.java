@@ -30,7 +30,7 @@ import org.jxmpp.jid.Jid;
  * A Jingle session request.
  *
  * This class is a facade of a received Jingle request. The user can have direct
- * access to the Jingle stanza(/packet) (<i>JingleSessionRequest.getJingle() </i>) of
+ * access to the Jingle stanza (<i>JingleSessionRequest.getJingle() </i>) of
  * the request or can use the convenience methods provided by this class.
  *
  * @author Alvaro Saurin
@@ -78,7 +78,7 @@ public class JingleSessionRequest {
     }
 
     /**
-     * Returns the Jingle stanza(/packet) that was sent by the requester which contains
+     * Returns the Jingle stanza that was sent by the requester which contains
      * the parameters of the session.
      */
     public Jingle getJingle() {

@@ -41,7 +41,7 @@ public class JivePropertiesExtensionProvider extends ExtensionElementProvider<Ji
      * Parse a properties sub-packet. If any errors occur while de-serializing Java object
      * properties, an exception will be printed and not thrown since a thrown exception will shut
      * down the entire connection. ClassCastExceptions will occur when both the sender and receiver
-     * of the stanza(/packet) don't have identical versions of the same class.
+     * of the stanza don't have identical versions of the same class.
      * <p>
      * Note that you have to explicitly enabled Java object deserialization with @{link
      * {@link JivePropertiesManager#setJavaObjectEnabled(boolean)}

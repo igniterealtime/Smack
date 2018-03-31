@@ -36,10 +36,10 @@ public class Forwarded implements ExtensionElement {
     private final Stanza forwardedPacket;
 
     /**
-     * Creates a new Forwarded stanza(/packet) extension.
+     * Creates a new Forwarded stanza extension.
      *
      * @param delay an optional {@link DelayInformation} timestamp of the packet.
-     * @param fwdPacket the stanza(/packet) that is forwarded (required).
+     * @param fwdPacket the stanza that is forwarded (required).
      */
     public Forwarded(DelayInformation delay, Stanza fwdPacket) {
         this.delay = delay;
@@ -47,9 +47,9 @@ public class Forwarded implements ExtensionElement {
     }
 
     /**
-     * Creates a new Forwarded stanza(/packet) extension.
+     * Creates a new Forwarded stanza extension.
      *
-     * @param fwdPacket the stanza(/packet) that is forwarded (required).
+     * @param fwdPacket the stanza that is forwarded (required).
      */
     public Forwarded(Stanza fwdPacket) {
         this(null, fwdPacket);
@@ -76,7 +76,7 @@ public class Forwarded implements ExtensionElement {
     }
 
     /**
-     * get the stanza(/packet) forwarded by this stanza.
+     * get the stanza forwarded by this stanza.
      *
      * @return the {@link Stanza} instance (typically a message) that was forwarded.
      * @deprecated use @{link {@link #getForwardedStanza()}} instead.
@@ -98,7 +98,7 @@ public class Forwarded implements ExtensionElement {
     /**
      * get the timestamp of the forwarded packet.
      *
-     * @return the {@link DelayInformation} representing the time when the original stanza(/packet) was sent. May be null.
+     * @return the {@link DelayInformation} representing the time when the original stanza was sent. May be null.
      */
     public DelayInformation getDelayInformation() {
         return delay;

@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * Resp stanza(/packet) provider.
+ * Resp stanza provider.
  *
  * @author Andriy Tsykholyas
  * @see <a href="http://xmpp.org/extensions/xep-0332.html">XEP-0332: HTTP over XMPP transport</a>

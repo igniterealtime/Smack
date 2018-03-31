@@ -29,7 +29,7 @@ public class JivePropertiesManager {
     private static boolean javaObjectEnabled = false;
 
     /**
-     * Enables deserialization of Java objects embedded in the 'properties' stanza(/packet) extension. Since
+     * Enables deserialization of Java objects embedded in the 'properties' stanza extension. Since
      * this is a security sensitive feature, it is disabled per default in Smack. Only enable it if
      * you are sure that you understand the potential security implications it can cause.
      * <p>
@@ -51,7 +51,7 @@ public class JivePropertiesManager {
     /**
      * Convenience method to add a property to a packet.
      * 
-     * @param packet the stanza(/packet) to add the property to.
+     * @param packet the stanza to add the property to.
      * @param name the name of the property to add.
      * @param value the value of the property to add.
      */
@@ -65,7 +65,7 @@ public class JivePropertiesManager {
     }
 
     /**
-     * Convenience method to get a property from a packet. Will return null if the stanza(/packet) contains
+     * Convenience method to get a property from a packet. Will return null if the stanza contains
      * not property with the given name.
      * 
      * @param packet
@@ -97,7 +97,7 @@ public class JivePropertiesManager {
     }
 
     /**
-     * Return a map of all properties of the given packet. If the stanza(/packet) contains no properties
+     * Return a map of all properties of the given packet. If the stanza contains no properties
      * extension, an empty map will be returned.
      * 
      * @param packet

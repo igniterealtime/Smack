@@ -46,7 +46,7 @@ import org.jxmpp.jid.EntityFullJid;
 
 /**
  * Handles chat state for all chats on a particular XMPPConnection. This class manages both the
- * stanza(/packet) extensions and the disco response necessary for compliance with
+ * stanza extensions and the disco response necessary for compliance with
  * <a href="http://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
  *
  * NOTE: {@link org.jivesoftware.smackx.chatstates.ChatStateManager#getInstance(org.jivesoftware.smack.XMPPConnection)}
@@ -178,7 +178,7 @@ public final class ChatStateManager extends Manager {
 
     /**
      * Sets the current state of the provided chat. This method will send an empty bodied Message
-     * stanza(/packet) with the state attached as a {@link org.jivesoftware.smack.packet.ExtensionElement}, if
+     * stanza with the state attached as a {@link org.jivesoftware.smack.packet.ExtensionElement}, if
      * and only if the new chat state is different than the last state.
      *
      * @param newState the new state of the chat

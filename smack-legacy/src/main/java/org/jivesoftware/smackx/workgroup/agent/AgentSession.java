@@ -197,7 +197,7 @@ public class AgentSession {
 
     /**
      * Close the agent session. The underlying connection will remain opened but the
-     * stanza(/packet) listeners that were added by this agent session will be removed.
+     * stanza listeners that were added by this agent session will be removed.
      */
     public void close() {
         connection.removeAsyncStanzaListener(packetListener);

@@ -26,18 +26,18 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * A stanza(/packet) extension that contains information about the user and agent in a
- * workgroup chat. The stanza(/packet) extension is attached to group chat invitations.
+ * A stanza extension that contains information about the user and agent in a
+ * workgroup chat. The stanza extension is attached to group chat invitations.
  */
 public class WorkgroupInformation implements ExtensionElement {
 
     /**
-     * Element name of the stanza(/packet) extension.
+     * Element name of the stanza extension.
      */
     public static final String ELEMENT_NAME = "workgroup";
 
     /**
-     * Namespace of the stanza(/packet) extension.
+     * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 

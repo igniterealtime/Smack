@@ -764,10 +764,10 @@ public class EnhancedDebugger extends SmackDebugger {
     }
 
     /**
-     * Adds the received stanza(/packet) detail to the messages table.
+     * Adds the received stanza detail to the messages table.
      *
      * @param dateFormatter the SimpleDateFormat to use to format Dates
-     * @param packet        the read stanza(/packet) to add to the table
+     * @param packet        the read stanza to add to the table
      */
     private void addReadPacketToTable(final SimpleDateFormat dateFormatter, final TopLevelStreamElement packet) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -835,10 +835,10 @@ public class EnhancedDebugger extends SmackDebugger {
     }
 
     /**
-     * Adds the sent stanza(/packet) detail to the messages table.
+     * Adds the sent stanza detail to the messages table.
      *
      * @param dateFormatter the SimpleDateFormat to use to format Dates
-     * @param packet        the sent stanza(/packet) to add to the table
+     * @param packet        the sent stanza to add to the table
      */
     private void addSentPacketToTable(final SimpleDateFormat dateFormatter, final TopLevelStreamElement packet) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -926,7 +926,7 @@ public class EnhancedDebugger extends SmackDebugger {
     }
 
     /**
-     * An ad-hoc stanza(/packet) is like any regular stanza(/packet) but with the exception that it's intention is
+     * An ad-hoc stanza is like any regular stanza but with the exception that it's intention is
      * to be used only <b>to send packets</b>.<p>
      * <p/>
      * The whole text to send must be passed to the constructor. This implies that the client of
@@ -940,7 +940,7 @@ public class EnhancedDebugger extends SmackDebugger {
          * Create a new AdHocPacket with the text to send. The passed text must be a valid text to
          * send to the server, no validation will be done on the passed text.
          *
-         * @param text the whole text of the stanza(/packet) to send
+         * @param text the whole text of the stanza to send
          */
         private AdHocPacket(String text) {
             this.text = text;

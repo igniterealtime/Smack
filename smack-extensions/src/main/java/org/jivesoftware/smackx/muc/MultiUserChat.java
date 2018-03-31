@@ -1006,7 +1006,7 @@ public class MultiUserChat {
      * is going to be sent by this MultiUserChat to the server. Stanza(/Packet) interceptors may
      * add new extensions to the presence that is going to be sent to the MUC service.
      *
-     * @param presenceInterceptor the new stanza(/packet) interceptor that will intercept presence packets.
+     * @param presenceInterceptor the new stanza interceptor that will intercept presence packets.
      */
     public void addPresenceInterceptor(PresenceListener presenceInterceptor) {
         presenceInterceptors.add(presenceInterceptor);
@@ -1017,7 +1017,7 @@ public class MultiUserChat {
      * was being sent by this MultiUserChat to the server. Stanza(/Packet) interceptors may
      * add new extensions to the presence that is going to be sent to the MUC service.
      *
-     * @param presenceInterceptor the stanza(/packet) interceptor to remove.
+     * @param presenceInterceptor the stanza interceptor to remove.
      */
     public void removePresenceInterceptor(PresenceListener presenceInterceptor) {
         presenceInterceptors.remove(presenceInterceptor);
@@ -1693,11 +1693,11 @@ public class MultiUserChat {
     }
 
     /**
-     * Adds a stanza(/packet) listener that will be notified of any new Presence packets
+     * Adds a stanza listener that will be notified of any new Presence packets
      * sent to the group chat. Using a listener is a suitable way to know when the list
      * of occupants should be re-loaded due to any changes.
      *
-     * @param listener a stanza(/packet) listener that will be notified of any presence packets
+     * @param listener a stanza listener that will be notified of any presence packets
      *      sent to the group chat.
      * @return true if the listener was not already added.
      */
@@ -1706,10 +1706,10 @@ public class MultiUserChat {
     }
 
     /**
-     * Removes a stanza(/packet) listener that was being notified of any new Presence packets
+     * Removes a stanza listener that was being notified of any new Presence packets
      * sent to the group chat.
      *
-     * @param listener a stanza(/packet) listener that was being notified of any presence packets
+     * @param listener a stanza listener that was being notified of any presence packets
      *      sent to the group chat.
      * @return true if the listener was removed, otherwise the listener was not added previously.
      */
@@ -1941,7 +1941,7 @@ public class MultiUserChat {
 
     /**
      * Returns the next available message in the chat. The method call will block
-     * (not return) until a stanza(/packet) is available or the <tt>timeout</tt> has elapased.
+     * (not return) until a stanza is available or the <tt>timeout</tt> has elapased.
      * If the timeout elapses without a result, <tt>null</tt> will be returned.
      *
      * @param timeout the maximum amount of time to wait for the next message.
@@ -1958,14 +1958,14 @@ public class MultiUserChat {
     }
 
     /**
-     * Adds a stanza(/packet) listener that will be notified of any new messages in the
+     * Adds a stanza listener that will be notified of any new messages in the
      * group chat. Only "group chat" messages addressed to this group chat will
      * be delivered to the listener. If you wish to listen for other packets
      * that may be associated with this group chat, you should register a
      * PacketListener directly with the XMPPConnection with the appropriate
      * PacketListener.
      *
-     * @param listener a stanza(/packet) listener.
+     * @param listener a stanza listener.
      * @return true if the listener was not already added.
      */
     public boolean addMessageListener(MessageListener listener) {
@@ -1973,11 +1973,11 @@ public class MultiUserChat {
     }
 
     /**
-     * Removes a stanza(/packet) listener that was being notified of any new messages in the
+     * Removes a stanza listener that was being notified of any new messages in the
      * multi user chat. Only "group chat" messages addressed to this multi user chat were
      * being delivered to the listener.
      *
-     * @param listener a stanza(/packet) listener.
+     * @param listener a stanza listener.
      * @return true if the listener was removed, otherwise the listener was not added previously.
      */
     public boolean removeMessageListener(MessageListener listener) {

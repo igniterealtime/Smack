@@ -19,24 +19,24 @@ package org.jivesoftware.smack.filter;
 
 /**
  * Defines a way to filter packets for particular attributes. Stanza(/Packet) filters are used when
- * constructing stanza(/packet) listeners or collectors -- the filter defines what packets match the criteria
- * of the collector or listener for further stanza(/packet) processing.
+ * constructing stanza listeners or collectors -- the filter defines what packets match the criteria
+ * of the collector or listener for further stanza processing.
  * <p>
  * Several simple filters are pre-defined. These filters can be logically combined for more complex
- * stanza(/packet) filtering by using the {@link org.jivesoftware.smack.filter.AndFilter AndFilter} and
+ * stanza filtering by using the {@link org.jivesoftware.smack.filter.AndFilter AndFilter} and
  * {@link org.jivesoftware.smack.filter.OrFilter OrFilter} filters. It's also possible to define
  * your own filters by implementing this interface. The code example below creates a trivial filter
  * for packets with a specific ID (real code should use {@link StanzaIdFilter} instead).
  *
  * <pre>
- * // Use an anonymous inner class to define a stanza(/packet) filter that returns
- * // all packets that have a stanza(/packet) ID of &quot;RS145&quot;.
+ * // Use an anonymous inner class to define a stanza filter that returns
+ * // all packets that have a stanza ID of &quot;RS145&quot;.
  * PacketFilter myFilter = new PacketFilter() {
  *     public boolean accept(Packet packet) {
  *         return &quot;RS145&quot;.equals(packet.getStanzaId());
  *     }
  * };
- * // Create a new stanza(/packet) collector using the filter we created.
+ * // Create a new stanza collector using the filter we created.
  * StanzaCollector myCollector = packetReader.createStanzaCollector(myFilter);
  * </pre>
  *

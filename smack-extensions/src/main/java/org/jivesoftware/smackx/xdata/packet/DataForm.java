@@ -44,7 +44,7 @@ public class DataForm implements ExtensionElement {
 
     public enum Type {
         /**
-         * This stanza(/packet) contains a form to fill out. Display it to the user (if your program can).
+         * This stanza contains a form to fill out. Display it to the user (if your program can).
          */
         form,
 

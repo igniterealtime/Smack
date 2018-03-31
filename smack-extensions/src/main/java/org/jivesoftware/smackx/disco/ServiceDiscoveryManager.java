@@ -373,7 +373,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * Registers that a new feature is supported by this XMPP entity. When this client is 
      * queried for its information the registered features will be answered.<p>
      *
-     * Since no stanza(/packet) is actually sent to the server it is safe to perform this operation
+     * Since no stanza is actually sent to the server it is safe to perform this operation
      * before logging to the server. In fact, you may want to configure the supported features
      * before logging to the server so that the information is already available if it is required
      * upon login.
@@ -390,7 +390,7 @@ public final class ServiceDiscoveryManager extends Manager {
     /**
      * Removes the specified feature from the supported features by this XMPP entity.<p>
      *
-     * Since no stanza(/packet) is actually sent to the server it is safe to perform this operation
+     * Since no stanza is actually sent to the server it is safe to perform this operation
      * before logging to the server.
      *
      * @param feature the feature to remove from the supported features.
@@ -418,7 +418,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * specified by XEP-0128.
      * <p>
      *
-     * Since no stanza(/packet) is actually sent to the server it is safe to perform this
+     * Since no stanza is actually sent to the server it is safe to perform this
      * operation before logging to the server. In fact, you may want to
      * configure the extended info before logging to the server so that the
      * information is already available if it is required upon login.
@@ -463,7 +463,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * Removes the data form containing extended service discovery information
      * from the information returned by this XMPP entity.<p>
      *
-     * Since no stanza(/packet) is actually sent to the server it is safe to perform this
+     * Since no stanza is actually sent to the server it is safe to perform this
      * operation before logging to the server.
      */
     public synchronized void removeExtendedInfo() {
@@ -607,7 +607,7 @@ public final class ServiceDiscoveryManager extends Manager {
       * be returned by the server whenever the server receives a disco request targeted to the bare
       * address of the client (i.e. user@host.com).
       * 
-      * @param info the discover info stanza(/packet) to check.
+      * @param info the discover info stanza to check.
       * @return true if the server supports publishing of items.
       * @deprecated The disco-publish feature was removed from XEP-0030 in 2008 in favor of XEP-0060: Publish-Subscribe.
       */

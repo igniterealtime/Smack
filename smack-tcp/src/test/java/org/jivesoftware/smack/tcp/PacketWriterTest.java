@@ -35,7 +35,7 @@ public class PacketWriterTest {
     private volatile boolean prematureUnblocked;
 
     /**
-     * Make sure that stanza(/packet) writer does block once the queue reaches
+     * Make sure that stanza writer does block once the queue reaches
      * {@link PacketWriter#QUEUE_SIZE} and that
      * {@link PacketWriter#sendStanza(org.jivesoftware.smack.tcp.packet.Packet)} does unblock after the
      * interrupt.

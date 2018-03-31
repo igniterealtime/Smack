@@ -25,12 +25,12 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 /**
  * The base IQ (Info/Query) packet. IQ packets are used to get and set information
  * on the server, including authentication, roster operations, and creating
- * accounts. Each IQ stanza(/packet) has a specific type that indicates what type of action
+ * accounts. Each IQ stanza has a specific type that indicates what type of action
  * is being taken: "get", "set", "result", or "error".<p>
  *
  * IQ packets can contain a single child element that exists in a specific XML
  * namespace. The combination of the element name and namespace determines what
- * type of IQ stanza(/packet) it is. Some example IQ subpacket snippets:<ul>
+ * type of IQ stanza it is. Some example IQ subpacket snippets:<ul>
  *
  *  <li>&lt;query xmlns="jabber:iq:auth"&gt; -- an authentication IQ.
  *  <li>&lt;query xmlns="jabber:iq:private"&gt; -- a private storage IQ.
@@ -237,7 +237,7 @@ public abstract class IQ extends Stanza {
     /**
      * Convenience method to create a new empty {@link Type#result IQ.Type.result}
      * IQ based on a {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}
-     * IQ. The new stanza(/packet) will be initialized with:<ul>
+     * IQ. The new stanza will be initialized with:<ul>
      *      <li>The sender set to the recipient of the originating IQ.
      *      <li>The recipient set to the sender of the originating IQ.
      *      <li>The type set to {@link Type#result IQ.Type.result}.
@@ -246,7 +246,7 @@ public abstract class IQ extends Stanza {
      * </ul>
      *
      * @param request the {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set} IQ packet.
-     * @throws IllegalArgumentException if the IQ stanza(/packet) does not have a type of
+     * @throws IllegalArgumentException if the IQ stanza does not have a type of
      *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
      * @return a new {@link Type#result IQ.Type.result} IQ based on the originating IQ.
      */
@@ -257,7 +257,7 @@ public abstract class IQ extends Stanza {
     /**
      * Convenience method to create a new {@link Type#error IQ.Type.error} IQ
      * based on a {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}
-     * IQ. The new stanza(/packet) will be initialized with:<ul>
+     * IQ. The new stanza will be initialized with:<ul>
      *      <li>The sender set to the recipient of the originating IQ.
      *      <li>The recipient set to the sender of the originating IQ.
      *      <li>The type set to {@link Type#error IQ.Type.error}.
@@ -268,7 +268,7 @@ public abstract class IQ extends Stanza {
      *
      * @param request the {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set} IQ packet.
      * @param error the error to associate with the created IQ packet.
-     * @throws IllegalArgumentException if the IQ stanza(/packet) does not have a type of
+     * @throws IllegalArgumentException if the IQ stanza does not have a type of
      *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
      * @return a new {@link Type#error IQ.Type.error} IQ based on the originating IQ.
      */
@@ -294,7 +294,7 @@ public abstract class IQ extends Stanza {
     /**
      * Convenience method to create a new {@link Type#error IQ.Type.error} IQ
      * based on a {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}
-     * IQ. The new stanza(/packet) will be initialized with:<ul>
+     * IQ. The new stanza will be initialized with:<ul>
      *      <li>The sender set to the recipient of the originating IQ.
      *      <li>The recipient set to the sender of the originating IQ.
      *      <li>The type set to {@link Type#error IQ.Type.error}.
@@ -305,7 +305,7 @@ public abstract class IQ extends Stanza {
      *
      * @param request the {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set} IQ packet.
      * @param error the error to associate with the created IQ packet.
-     * @throws IllegalArgumentException if the IQ stanza(/packet) does not have a type of
+     * @throws IllegalArgumentException if the IQ stanza does not have a type of
      *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
      * @return a new {@link Type#error IQ.Type.error} IQ based on the originating IQ.
      */

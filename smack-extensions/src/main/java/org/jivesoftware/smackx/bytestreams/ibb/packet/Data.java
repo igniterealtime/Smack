@@ -32,7 +32,7 @@ public class Data extends IQ {
     /**
      * Constructor.
      * 
-     * @param data data stanza(/packet) extension containing the encoded data
+     * @param data data stanza extension containing the encoded data
      */
     public Data(DataPacketExtension data) {
         super(DataPacketExtension.ELEMENT, DataPacketExtension.NAMESPACE);
@@ -45,9 +45,9 @@ public class Data extends IQ {
     }
 
     /**
-     * Returns the data stanza(/packet) extension.
+     * Returns the data stanza extension.
      * 
-     * @return the data stanza(/packet) extension
+     * @return the data stanza extension
      */
     public DataPacketExtension getDataPacketExtension() {
         return this.dataPacketExtension;

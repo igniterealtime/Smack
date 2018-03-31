@@ -34,12 +34,12 @@ import org.xmlpull.v1.XmlPullParserException;
 public class QueueOverview implements ExtensionElement {
 
     /**
-     * Element name of the stanza(/packet) extension.
+     * Element name of the stanza extension.
      */
     public static String ELEMENT_NAME = "notify-queue";
 
     /**
-     * Namespace of the stanza(/packet) extension.
+     * Namespace of the stanza extension.
      */
     public static String NAMESPACE = "http://jabber.org/protocol/workgroup";
 

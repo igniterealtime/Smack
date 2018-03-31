@@ -29,7 +29,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.Jid;
 
 /**
- * A stanza(/packet) representing part of a SOCKS5 Bytestream negotiation.
+ * A stanza representing part of a SOCKS5 Bytestream negotiation.
  * 
  * @author Alexander Wenckus
  */
@@ -202,10 +202,10 @@ public class Bytestream extends IQ {
     }
 
     /**
-     * Returns the activate element of the stanza(/packet) sent to the proxy host to verify the identity of
+     * Returns the activate element of the stanza sent to the proxy host to verify the identity of
      * the initiator and match them to the appropriate stream.
      * 
-     * @return Returns the activate element of the stanza(/packet) sent to the proxy host to verify the
+     * @return Returns the activate element of the stanza sent to the proxy host to verify the
      *         identity of the initiator and match them to the appropriate stream.
      */
     public Activate getToActivate() {
@@ -213,7 +213,7 @@ public class Bytestream extends IQ {
     }
 
     /**
-     * Upon the response from the target of the used host the activate stanza(/packet) is sent to the SOCKS5
+     * Upon the response from the target of the used host the activate stanza is sent to the SOCKS5
      * proxy. The proxy will activate the stream or return an error after verifying the identity of
      * the initiator, using the activate packet.
      * 
@@ -341,7 +341,7 @@ public class Bytestream extends IQ {
 
     /**
      * After selected a SOCKS5 stream host and successfully connecting, the target of the file
-     * transfer returns a byte stream stanza(/packet) with the stream host used extension.
+     * transfer returns a byte stream stanza with the stream host used extension.
      * 
      * @author Alexander Wenckus
      */
@@ -384,7 +384,7 @@ public class Bytestream extends IQ {
     }
 
     /**
-     * The stanza(/packet) sent by the stream initiator to the stream proxy to activate the connection.
+     * The stanza sent by the stream initiator to the stream proxy to activate the connection.
      * 
      * @author Alexander Wenckus
      */

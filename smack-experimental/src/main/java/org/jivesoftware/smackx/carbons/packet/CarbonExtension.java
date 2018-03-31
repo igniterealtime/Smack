@@ -28,7 +28,7 @@ import org.jivesoftware.smackx.forward.packet.Forwarded;
  * meant to synchronize a message flow to multiple presences of a user.
  * 
  * <p>
- * It accomplishes this by wrapping a {@link Forwarded} stanza(/packet) in a <b>sent</b>
+ * It accomplishes this by wrapping a {@link Forwarded} stanza in a <b>sent</b>
  * or <b>received</b> element
  *
  * @author Georg Lukas

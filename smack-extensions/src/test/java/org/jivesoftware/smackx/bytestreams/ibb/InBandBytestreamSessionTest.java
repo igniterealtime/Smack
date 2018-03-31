@@ -363,7 +363,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
     }
 
     /**
-     * If the data stanza(/packet) has a sequence that is already used an 'unexpected-request' error should
+     * If the data stanza has a sequence that is already used an 'unexpected-request' error should
      * be returned. See XEP-0047 Section 2.2.
      * 
      * @throws Exception should not happen
@@ -405,7 +405,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
     }
 
     /**
-     * If the data stanza(/packet) contains invalid Base64 encoding an 'bad-request' error should be
+     * If the data stanza contains invalid Base64 encoding an 'bad-request' error should be
      * returned. See XEP-0047 Section 2.2.
      * 
      * @throws Exception should not happen
@@ -441,7 +441,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
     }
 
     /**
-     * If a data stanza(/packet) is received out of order the session should be closed. See XEP-0047 Section
+     * If a data stanza is received out of order the session should be closed. See XEP-0047 Section
      * 2.2.
      * 
      * @throws Exception should not happen

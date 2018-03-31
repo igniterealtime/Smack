@@ -27,9 +27,9 @@ public interface DatagramListener {
 
     /**
      * Called when a datagram is received. If the method returns false, the
-     * stanza(/packet) MUST NOT be resent from the received Channel.
+     * stanza MUST NOT be resent from the received Channel.
      *
-     * @param datagramPacket the datagram stanza(/packet) received.
+     * @param datagramPacket the datagram stanza received.
      * @return ?
      */
     boolean datagramReceived(DatagramPacket datagramPacket);

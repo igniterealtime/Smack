@@ -153,7 +153,7 @@ public final class SmackConfiguration {
     }
 
     /**
-     * Gets the default max size of a stanza(/packet) collector before it will delete 
+     * Gets the default max size of a stanza collector before it will delete 
      * the older packets.
      * 
      * @return The number of packets to queue before deleting older packets.
@@ -163,7 +163,7 @@ public final class SmackConfiguration {
     }
 
     /**
-     * Sets the default max size of a stanza(/packet) collector before it will delete 
+     * Sets the default max size of a stanza collector before it will delete 
      * the older packets.
      * 
      * @param collectorSize the number of packets to queue before deleting older packets.

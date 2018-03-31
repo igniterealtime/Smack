@@ -39,10 +39,10 @@ public class ReportedData {
     private String title = "";
 
     /**
-     * Returns a new ReportedData if the stanza(/packet) is used for reporting data and includes an 
+     * Returns a new ReportedData if the stanza is used for reporting data and includes an 
      * extension that matches the elementName and namespace "x","jabber:x:data".
      * 
-     * @param packet the stanza(/packet) used for reporting data.
+     * @param packet the stanza used for reporting data.
      * @return ReportedData from the packet if present, otherwise null.
      */
     public static ReportedData getReportedDataFrom(Stanza packet) {

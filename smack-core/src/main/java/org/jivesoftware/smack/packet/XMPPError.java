@@ -28,7 +28,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents an XMPP error sub-packet. Typically, a server responds to a request that has
- * problems by sending the stanza(/packet) back and including an error packet. Each error has a type,
+ * problems by sending the stanza back and including an error packet. Each error has a type,
  * error condition as well as as an optional text explanation. Typical errors are:<p>
  *
  * <table border=1>
@@ -113,7 +113,7 @@ public class XMPPError extends AbstractError {
      * @param conditionText
      * @param errorGenerator
      * @param descriptiveTexts 
-     * @param extensions list of stanza(/packet) extensions
+     * @param extensions list of stanza extensions
      * @param stanza the stanza carrying this XMPP error.
      */
     public XMPPError(Condition condition, String conditionText, String errorGenerator, Type type, Map<String, String> descriptiveTexts,

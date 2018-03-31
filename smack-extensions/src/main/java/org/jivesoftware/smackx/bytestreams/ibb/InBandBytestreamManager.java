@@ -53,7 +53,7 @@ import org.jxmpp.jid.Jid;
  * in case the Socks5 bytestream method of transferring data is not available.
  * <p>
  * There are two ways to send data over an In-Band Bytestream. It could either use IQ stanzas to
- * send data packets or message stanzas. If IQ stanzas are used every data stanza(/packet) is acknowledged by
+ * send data packets or message stanzas. If IQ stanzas are used every data stanza is acknowledged by
  * the receiver. This is the recommended way to avoid possible rate-limiting penalties. Message
  * stanzas are not acknowledged because most XMPP server implementation don't support stanza
  * flow-control method like <a href="http://xmpp.org/extensions/xep-0079.html">Advanced Message
@@ -291,7 +291,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * to the initiator.
      * <p>
      * This method should be used if you are awaiting an In-Band Bytestream request as a reply to
-     * another stanza(/packet) (e.g. file transfer).
+     * another stanza (e.g. file transfer).
      * 
      * @param sessionID to be ignored
      */
@@ -447,7 +447,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * Responses to the given IQ packet's sender with an XMPP error that an In-Band Bytestream is
      * not accepted.
      * 
-     * @param request IQ stanza(/packet) that should be answered with a not-acceptable error
+     * @param request IQ stanza that should be answered with a not-acceptable error
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
@@ -460,7 +460,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * Responses to the given IQ packet's sender with an XMPP error that an In-Band Bytestream open
      * request is rejected because its block size is greater than the maximum allowed block size.
      * 
-     * @param request IQ stanza(/packet) that should be answered with a resource-constraint error
+     * @param request IQ stanza that should be answered with a resource-constraint error
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
@@ -473,7 +473,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * Responses to the given IQ packet's sender with an XMPP error that an In-Band Bytestream
      * session could not be found.
      * 
-     * @param request IQ stanza(/packet) that should be answered with a item-not-found error
+     * @param request IQ stanza that should be answered with a item-not-found error
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
@@ -543,7 +543,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     }
 
     /**
-     * Disables the InBandBytestreamManager by removing its stanza(/packet) listeners and resetting its
+     * Disables the InBandBytestreamManager by removing its stanza listeners and resetting its
      * internal status, which includes removing this instance from the managers map.
      */
     private void disableService() {

@@ -30,8 +30,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Agent status request packet. This stanza(/packet) is used by agents to request the list of
- * agents in a workgroup. The response stanza(/packet) contains a list of packets. Presence
+ * Agent status request packet. This stanza is used by agents to request the list of
+ * agents in a workgroup. The response stanza contains a list of packets. Presence
  * packets from individual agents follow.
  *
  * @author Matt Tucker
@@ -39,12 +39,12 @@ import org.xmlpull.v1.XmlPullParserException;
 public class AgentStatusRequest extends IQ {
 
      /**
-     * Element name of the stanza(/packet) extension.
+     * Element name of the stanza extension.
      */
     public static final String ELEMENT_NAME = "agent-status-request";
 
     /**
-     * Namespace of the stanza(/packet) extension.
+     * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 

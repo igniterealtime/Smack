@@ -75,7 +75,7 @@ public class RoomInfo {
      */
     private final boolean moderated;
     /**
-     * Every presence stanza(/packet) can include the JID of every occupant unless the owner deactives this
+     * Every presence stanza can include the JID of every occupant unless the owner deactives this
      * configuration.
      */
     private final boolean nonanonymous;

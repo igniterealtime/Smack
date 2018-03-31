@@ -79,7 +79,7 @@ public abstract class SetData implements NamedElement {
     /**
      * Returns the XML representation of this Element.
      *
-     * @return the stanza(/packet) extension as XML.
+     * @return the stanza extension as XML.
      */
     @Override
     public final XmlStringBuilder toXML() {

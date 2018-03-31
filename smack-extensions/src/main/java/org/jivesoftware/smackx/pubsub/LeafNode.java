@@ -170,7 +170,7 @@ public class LeafNode extends Node
      * Get items persisted on the node.
      * <p>
      * {@code additionalExtensions} can be used e.g. to add a "Result Set Management" extension.
-     * {@code returnedExtensions} will be filled with the stanza(/packet) extensions found in the answer.
+     * {@code returnedExtensions} will be filled with the stanza extensions found in the answer.
      * </p>
      * 
      * @param additionalExtensions additional {@code PacketExtensions} to be added to the request.

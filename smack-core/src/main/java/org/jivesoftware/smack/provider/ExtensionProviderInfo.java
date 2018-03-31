@@ -19,7 +19,7 @@ package org.jivesoftware.smack.provider;
 import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
- * Defines the information required to register a stanza(/packet) extension Provider with the {@link ProviderManager} when using the
+ * Defines the information required to register a stanza extension Provider with the {@link ProviderManager} when using the
  * {@link ProviderLoader}.
  * 
  * @author Robin Collier

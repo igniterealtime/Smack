@@ -36,19 +36,19 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Queue details stanza(/packet) extension, which contains details about the users
+ * Queue details stanza extension, which contains details about the users
  * currently in a queue.
  */
 public final class QueueDetails implements ExtensionElement {
     private static final Logger LOGGER = Logger.getLogger(QueueDetails.class.getName());
 
     /**
-     * Element name of the stanza(/packet) extension.
+     * Element name of the stanza extension.
      */
     public static final String ELEMENT_NAME = "notify-queue-details";
 
     /**
-     * Namespace of the stanza(/packet) extension.
+     * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
@@ -139,7 +139,7 @@ public final class QueueDetails implements ExtensionElement {
     }
 
     /**
-     * Provider class for QueueDetails stanza(/packet) extensions.
+     * Provider class for QueueDetails stanza extensions.
      */
     public static class Provider extends ExtensionElementProvider<QueueDetails> {
 

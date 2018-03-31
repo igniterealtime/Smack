@@ -76,7 +76,7 @@ public class MessageEvent implements ExtensionElement {
     * Returns the XML element name of the extension sub-packet root element.
     * Always returns "x"
     *
-    * @return the XML element name of the stanza(/packet) extension.
+    * @return the XML element name of the stanza extension.
     */
     @Override
     public String getElementName() {
@@ -87,7 +87,7 @@ public class MessageEvent implements ExtensionElement {
      * Returns the XML namespace of the extension sub-packet root element.
      * According the specification the namespace is always "jabber:x:event"
      *
-     * @return the XML namespace of the stanza(/packet) extension.
+     * @return the XML namespace of the stanza extension.
      */
     @Override
     public String getNamespace() {
@@ -155,7 +155,7 @@ public class MessageEvent implements ExtensionElement {
 
     /**
      * Returns the unique ID of the message that requested to be notified of the event.
-     * The stanza(/packet) id is not used when the message is a request for notifications
+     * The stanza id is not used when the message is a request for notifications
      *
      * @return the message id that requested to be notified of the event.
      */
@@ -256,7 +256,7 @@ public class MessageEvent implements ExtensionElement {
 
     /**
      * Sets the unique ID of the message that requested to be notified of the event.
-     * The stanza(/packet) id is not used when the message is a request for notifications
+     * The stanza id is not used when the message is a request for notifications
      *
      * @param packetID the message id that requested to be notified of the event.
      */

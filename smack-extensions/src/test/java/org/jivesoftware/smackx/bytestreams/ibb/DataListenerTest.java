@@ -45,7 +45,7 @@ public class DataListenerTest extends InitExtensions {
     private static final Jid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
 
     /**
-     * If a data stanza(/packet) of an unknown session is received it should be replied
+     * If a data stanza of an unknown session is received it should be replied
      * with an &lt;item-not-found/&gt; error.
      * 
      * @throws Exception should not happen

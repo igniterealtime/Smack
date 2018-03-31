@@ -24,7 +24,7 @@ import org.jxmpp.jid.Jid;
  * Filter for packets where the "from" field exactly matches a specified JID. If the specified
  * address is a bare JID then the filter will match any address whose bare JID matches the
  * specified JID. But if the specified address is a full JID then the filter will only match
- * if the sender of the stanza(/packet) matches the specified resource.
+ * if the sender of the stanza matches the specified resource.
  *
  * @author Gaston Dombiak
  */
@@ -37,7 +37,7 @@ public final class FromMatchesFilter extends AbstractFromToMatchesFilter {
      * filter address. The second parameter specifies whether the full or the bare addresses are
      * compared.
      *
-     * @param address The address to filter for. If <code>null</code> is given, the stanza(/packet) must not
+     * @param address The address to filter for. If <code>null</code> is given, the stanza must not
      *        have a from address.
      * @param ignoreResourcepart
      */
