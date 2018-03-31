@@ -18,6 +18,7 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
@@ -190,6 +191,20 @@ public interface XMPPConnection {
      * @param connectionListener a connection listener.
      */
     void removeConnectionListener(ConnectionListener connectionListener);
+
+    /**
+     * Send an IQ request and wait for the response.
+     *
+     * @param request the IQ request
+     * @return an IQ with type 'result'
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.3
+     */
+    <I extends IQ> I sendIqRequestAndWaitForResponse(IQ request)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
     /**
      * Creates a new stanza(/packet) collector collecting packets that are replies to <code>packet</code>.

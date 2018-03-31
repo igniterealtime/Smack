@@ -755,6 +755,16 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
+    public <I extends IQ> I sendIqRequestAndWaitForResponse(IQ request)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        StanzaCollector collector = createStanzaCollectorAndSend(request);
+        IQ resultResponse = collector.nextResultOrThrow();
+        @SuppressWarnings("unchecked")
+        I concreteResultResponse = (I) resultResponse;
+        return concreteResultResponse;
+    }
+
+    @Override
     public StanzaCollector createStanzaCollectorAndSend(IQ packet) throws NotConnectedException, InterruptedException {
         StanzaFilter packetFilter = new IQReplyFilter(packet, this);
         // Create the packet collector before sending the packet
