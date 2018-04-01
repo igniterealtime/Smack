@@ -17,7 +17,7 @@ are determined with the help of the Service Discovery Protocol
 
 **Usage**
 
-Entity Capabilities work silenty in background when enabled. If the remote
+Entity Capabilities work silently in the background when enabled. If the remote
 XMPP entity does not support XEP-0115 but XEP-0030 then XEP-0030 mechanisms
 are transparently used. You can enable or disable Entity Capabilities by using
 _**EntityCapsManager**_.
