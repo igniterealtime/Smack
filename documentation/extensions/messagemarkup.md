@@ -3,7 +3,7 @@ Message Markup
 
 [Back](index.md)
 
-[Message Markup (XEP-0394)](https://xmpp.org/extensions/xep-0394.html) can be used as a an alternative to XHTML-IM to style messages, while keeping the body and markup information strictly separated.
+[Message Markup (XEP-0394)](https://xmpp.org/extensions/xep-0394.html) can be used as an alternative to XHTML-IM to style messages, while keeping the body and markup information strictly separated.
 This implementation can *not* be used to render message bodies, but will offer a simple to use interface for creating ExtensionElements which encode the markup information.
 
 ## Usage
@@ -61,7 +61,7 @@ On this you can call `lbuilder.addEntry(start, end)` to add an entry.
 
 Note: If you add an entry, the start value MUST be equal to the end value of the previous added entry!
 
-To end the list, call `lbuilder.endList()`, which will return the MessageMarkup builder.
+To end the list, call `lbuilder.endList()`, which will return the MessageElement builder.
 
 To create a block quote, call `builder.setBlockQuote(start, end)`.
 
