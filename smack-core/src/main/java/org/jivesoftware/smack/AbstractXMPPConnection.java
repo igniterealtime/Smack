@@ -550,10 +550,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         Session.Feature sessionFeature = getFeature(Session.ELEMENT, Session.NAMESPACE);
         // Only bind the session if it's announced as stream feature by the server, is not optional and not disabled
         // For more information see http://tools.ietf.org/html/draft-cridland-xmpp-session-01
-        // TODO remove this suppression once "disable legacy session" code has been removed from Smack
-        @SuppressWarnings("deprecation")
-        boolean legacySessionDisabled = getConfiguration().isLegacySessionDisabled();
-        if (sessionFeature != null && !sessionFeature.isOptional() && !legacySessionDisabled) {
+        if (sessionFeature != null && !sessionFeature.isOptional()) {
             Session session = new Session();
             packetCollector = createStanzaCollectorAndSend(new StanzaIdFilter(session), session);
             packetCollector.nextResultOrThrow();

@@ -32,7 +32,6 @@ import javax.net.ssl.X509TrustManager;
 import javax.security.auth.callback.CallbackHandler;
 
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
-import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
@@ -100,7 +99,6 @@ public abstract class ConnectionConfiguration {
      */
     private final boolean sendPresence;
 
-    private final boolean legacySessionDisabled;
     private final SecurityMode securityMode;
 
     private final DnssecMode dnssecMode;
@@ -159,7 +157,6 @@ public abstract class ConnectionConfiguration {
         enabledSSLCiphers = builder.enabledSSLCiphers;
         hostnameVerifier = builder.hostnameVerifier;
         sendPresence = builder.sendPresence;
-        legacySessionDisabled = builder.legacySessionDisabled;
         debuggerFactory = builder.debuggerFactory;
         allowNullOrEmptyUsername = builder.allowEmptyOrNullUsername;
         enabledSaslMechanisms = builder.enabledSaslMechanisms;
@@ -289,20 +286,6 @@ public abstract class ConnectionConfiguration {
      */
     public SmackDebuggerFactory getDebuggerFactory() {
         return debuggerFactory;
-    }
-
-    /**
-     * Returns true if a {@link Session} will be requested on login if the server
-     * supports it. Although this was mandatory on RFC 3921, RFC 6120/6121 don't
-     * even mention this part of the protocol.
-     *
-     * @return true if a session has to be requested when logging in.
-     * @deprecated Smack processes the 'optional' element of the session stream feature.
-     * @see Builder#setLegacySessionDisabled(boolean)
-     */
-    @Deprecated
-    public boolean isLegacySessionDisabled() {
-        return legacySessionDisabled;
     }
 
     /**
@@ -517,7 +500,6 @@ public abstract class ConnectionConfiguration {
         private String password;
         private Resourcepart resource;
         private boolean sendPresence = true;
-        private boolean legacySessionDisabled = false;
         private ProxyInfo proxy;
         private CallbackHandler callbackHandler;
         private SmackDebuggerFactory debuggerFactory;
@@ -774,27 +756,6 @@ public abstract class ConnectionConfiguration {
          */
         public B setHostnameVerifier(HostnameVerifier verifier) {
             hostnameVerifier = verifier;
-            return getThis();
-        }
-
-        /**
-         * Sets if a {@link Session} will be requested on login if the server supports
-         * it. Although this was mandatory on RFC 3921, RFC 6120/6121 don't even
-         * mention this part of the protocol.
-         * <p>
-         * Deprecation notice: This setting is no longer required in most cases because Smack processes the 'optional'
-         * element eventually found in the session stream feature. See also <a
-         * href="https://tools.ietf.org/html/draft-cridland-xmpp-session-01">Here Lies Extensible Messaging and Presence
-         * Protocol (XMPP) Session Establishment</a>
-         * </p>
-         *
-         * @param legacySessionDisabled if a session has to be requested when logging in.
-         * @return a reference to this builder.
-         * @deprecated Smack processes the 'optional' element of the session stream feature.
-         */
-        @Deprecated
-        public B setLegacySessionDisabled(boolean legacySessionDisabled) {
-            this.legacySessionDisabled = legacySessionDisabled;
             return getThis();
         }
 
