@@ -12,7 +12,7 @@ Extensions](extensions/index.md) are built using the provider architecture.
 There are two types of providers:
 
   * `IQProvider` -- parses IQ requests into Java objects.
-  * `Extension Provider` -- parses XML sub-documents attached to packets into PacketExtension instances. By default, Smack only knows how to process a few standard packets and sub-packets that are in a few namespaces such as:
+  * `Extension Provider` -- parses XML sub-documents attached to packets into ExtensionElement instances. By default, Smack only knows how to process a few standard packets and sub-packets that are in a few namespaces such as:
     * jabber:iq:auth
     * jabber:iq:roster
     * jabber:iq:register
@@ -20,8 +20,8 @@ There are two types of providers:
 There are many more IQ types and extensions that are part of XMPP standards, and of course an endless number that can be added as custom extensions. To support this, an extensible parsing mechanism is provided via Smack and user build providers.
 
 Whenever a packet extension is found in a packet, parsing will be
-passed to the correct provider. Each provider must implement the
-PacketExtensionProvider interface. Each extension provider is
+passed to the correct provider. Each provider must extend the
+ExtensionElementProvider abstract class. Each extension provider is
 responsible for parsing the raw XML stream, via the
 [XML Pull Parser](http://www.xmlpull.org/), to contruct an object.
 
@@ -32,7 +32,7 @@ of the class using the values in the packet extension sub-element.
 
 When no extension provider is registered for an element name and namespace
 combination, Smack will store all top-level elements of the sub-packet in the
-DefaultPacketExtension object and then attach it to the packet.
+StandardExtensionElement object and then attach it to the packet.
 
 Management of these providers is accomplished via the [ProviderManager]()
 class. There are multiple ways to add providers to the manager.
@@ -53,7 +53,7 @@ ProviderManager.addExtensionProvider("element", "namespace", new MyExtProvider()
   * VM Argument - You can add a provider file via the VM argument _smack.provider.file_. This will load the file at the specified URL during startup when Smack initializes. This also assumes the default configuration, since it requires that the **VmArgInitializer** was part of the startup configuration.
 
 
-`-Dsmack.provider.file=classpath:com/myco/provider/myco_custom.provider`s
+`-Dsmack.provider.file=classpath:com/myco/provider/myco_custom.providers`
 
 or
 
@@ -63,13 +63,13 @@ or
 IQ Providers
 ------------
 
-The IQ provider class must implement the IQProvider interface. Each
+The IQ provider class must extend the IQProvider abstract class. Each
 IQProvider is responsible for parsing the raw XML stream to create an
 IQ instance.
 
 You can also create an introspection provider
 (`provider.IntrospectionProvider.IQIntrospectionProvider`). Which
-uses, bean introspection to try to automatically set properties of the
+uses bean introspection to try to automatically set properties of the
 IQ instance using the values found in the IQ packet XML. For example,
 an XMPP time packet resembles the following:
 
@@ -287,8 +287,8 @@ _Pubsub Subscription Stanza_
 _Subscription PacketExtensionProvider Implementation_
 
 
-	public class SubscriptionProvider implements PacketExtensionProvider {
-		public PacketExtension parseExtension(XmlPullParser parser) throws Exception {
+	public class SubscriptionProvider extends ExtensionElementProvider<ExtensionElement> {
+		public ExtensionElement parse(XmlPullParser parser) throws Exception {
 			String jid = parser.getAttributeValue(null, "jid");
 			String nodeId = parser.getAttributeValue(null, "node");
 			String subId = parser.getAttributeValue(null, "subid");
@@ -306,7 +306,7 @@ _Subscription PacketExtensionProvider Implementation_
 				while (parser.next() != XmlPullParser.END_TAG && parser.getName() != "subscribe-options");
 			}
 			while (parser.getEventType() != XmlPullParser.END_TAG) parser.next();
-			return new Subscription(jid, nodeId, subId, (state == null ? null : Subscription.State.valueOf(state), isRequired);
+			return new Subscription(jid, nodeId, subId, state == null ? null : Subscription.State.valueOf(state), isRequired);
 		}
 	}
 
