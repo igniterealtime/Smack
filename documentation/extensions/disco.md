@@ -3,7 +3,7 @@ Service Discovery
 
 [Back](index.md)
 
-The service discovery extension allows to discover items and information about
+The service discovery extension allows one to discover items and information about
 XMPP entities. Follow these links to learn how to use this extension.
 
   * Manage XMPP entity features
@@ -92,14 +92,18 @@ ServiceDiscoveryManager that will provide information concerning a node named
 ServiceDiscoveryManager.getInstanceFor(connection).setNodeInformationProvider(
 	"http://jabber.org/protocol/muc#rooms",
 	new NodeInformationProvider() {
-		public List getNodeItems() {
-			ArrayList answer = new ArrayList();
+		public List<DiscoverItems.Item> getNodeItems() {
+			List<DiscoverItems.Item> answer = new ArrayList<>();
 			Iterator rooms = MultiUserChat.getJoinedRooms(connection);
 			while (rooms.hasNext()) {
 				answer.add(new DiscoverItems.Item((String)rooms.next()));
 			}
 			return answer;
 		}
+
+		public List<String> getNodeFeatures() {...}
+		public List<DiscoverInfo.Identity> getNodeIdentities() {...}
+		public List<ExtensionElement> getNodePacketExtensions() {...}
 });
 ```
 
@@ -131,7 +135,7 @@ ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(co
 // This example gets the items associated with online catalog service
 DiscoverItems discoItems = discoManager.discoverItems("plays.shakespeare.lit");
 // Get the discovered items of the queried XMPP entity
-Iterator it = discoItems.getItems();
+Iterator it = discoItems.getItems().iterator();
 // Display the items of the remote XMPP entity
 while (it.hasNext()) {
 	DiscoverItems.Item item = (DiscoverItems.Item) it.next();
@@ -175,7 +179,7 @@ ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(co
 // This example gets the information of a conference room
 DiscoverInfo discoInfo = discoManager.discoverInfo("balconyscene@plays.shakespeare.lit");
 // Get the discovered identities of the remote XMPP entity
-Iterator it = discoInfo.getIdentities();
+Iterator it = discoInfo.getIdentities().iterator();
 // Display the identities of the remote XMPP entity
 while (it.hasNext()) {
 	DiscoverInfo.Identity identity = (DiscoverInfo.Identity) it.next();
@@ -203,7 +207,7 @@ Once you have your ServiceDiscoveryManager you will be able to publish items
 to some kind of persistent storage. To publish the items of a given XMPP
 entity you have to first create an instance of _**DiscoverItems**_ and
 configure it with the items to publish. Then you will have to send
-**publishItems(String entityID, DiscoverItems discoverItems)** to your
+**publishItems(Jid entityID, DiscoverItems discoverItems)** to your
 _**ServiceDiscoveryManager**_ where entityID is the address of the XMPP entity
 that will persist the items and discoverItems contains the items to publish.
 
@@ -214,13 +218,17 @@ In this example we can see how to publish new items:
 ```
 // Obtain the ServiceDiscoveryManager associated with my XMPPConnection
 ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
+
 // Create a DiscoverItems with the items to publish
 DiscoverItems itemsToPublish = new DiscoverItems();
-DiscoverItems.Item itemToPublish = new DiscoverItems.Item("pubsub.shakespeare.lit");
+Jid jid = JidCreate.from("pubsub.shakespeare.lit");
+DiscoverItems.Item itemToPublish = new DiscoverItems.Item(jid);
 itemToPublish.setName("Avatar");
 itemToPublish.setNode("romeo/avatar");
 itemToPublish.setAction(DiscoverItems.Item.UPDATE_ACTION);
 itemsToPublish.addItem(itemToPublish);
+
 // Publish the new items by sending them to the server
-discoManager.publishItems("host", itemsToPublish);
+Jid jid2 = JidCreate.from("host");
+discoManager.publishItems(jid2, itemsToPublish);
 ```
