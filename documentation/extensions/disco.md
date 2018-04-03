@@ -93,10 +93,11 @@ ServiceDiscoveryManager.getInstanceFor(connection).setNodeInformationProvider(
 	"http://jabber.org/protocol/muc#rooms",
 	new NodeInformationProvider() {
 		public List<DiscoverItems.Item> getNodeItems() {
+			MultiUserChatManager mucManager = MultiUserChatManager.getInstanceFor(connection);
 			List<DiscoverItems.Item> answer = new ArrayList<>();
-			Iterator rooms = MultiUserChat.getJoinedRooms(connection);
+			Iterator<Jid> rooms = mucManager.getJoinedRooms().iterator();
 			while (rooms.hasNext()) {
-				answer.add(new DiscoverItems.Item((String)rooms.next()));
+				answer.add(new DiscoverItems.Item(rooms.next()));
 			}
 			return answer;
 		}
