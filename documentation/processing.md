@@ -3,54 +3,55 @@ Processing Incoming Stanzas
 
 [Back](index.md)
 
-Smack provides a flexible framework for processing incoming packets using two
+Smack provides a flexible framework for processing incoming stanzas using two
 constructs:
 
-  * `org.jivesoftware.smack.PacketCollector` -- a class that lets you synchronously wait for new packets.
-  * `org.jivesoftware.smack.PacketListener` -- an interface for asynchronously notifying you of incoming packets.  A packet listener is used for event style programming, while a packet collector has a result queue of packets that you can do polling and blocking operations on. So, a packet listener is useful when you want to take some action whenever a packet happens to come in, while a packet collector is useful when you want to wait for a specific packet to arrive. Packet collectors and listeners can be created using an `XMPPConnection` instance.
+  * `org.jivesoftware.smack.StanzaCollector` -- a class that lets you synchronously wait for new stanzas.
+  * `org.jivesoftware.smack.StanzaListener` -- an interface for asynchronously notifying you of incoming stanzas.  A stanza listener is used for event style programming, while a stanza collector has a result queue of stanzas that you can do polling and blocking operations on. So, a stanza listener is useful when you want to take some action whenever a stanza happens to come in, while a stanza collector is useful when you want to wait for a specific stanza to arrive. Stanza collectors and listeners can be created using an `XMPPConnection` instance.
 
 The `org.jivesoftware.smack.filter.StanzaFilter` interface determines which
-specific packets will be delivered to a `PacketCollector` or `PacketListener`.
+specific stanzas will be delivered to a `StanzaCollector` or `StanzaListener`.
 Many pre-defined filters can be found in the `org.jivesoftware.smack.filter`
 package.
 
-The following code snippet demonstrates registering both a packet collector
-and a packet listener:
+The following code snippet demonstrates registering both a stanza collector
+and a stanza listener:
 
 ```
-// Create a packet filter to listen for new messages from a particular
+// Create a stanza filter to listen for new messages from a particular
 // user. We use an AndFilter to combine two other filters._
-StanzaFilter filter = new AndFilter(new StanzaTypeFilter(Message.class),
-		new FromContainsFilter("mary@jivesoftware.com"));
-// Assume we've created an XMPPConnection name "connection".
+StanzaFilter filter = new AndFilter(StanzaTypeFilter.Message, FromMatchesFilter.create("mary@jivesoftware.com"));
+// Assume we've created an XMPPConnection named "connection".
 
-// First, register a packet collector using the filter we created.
-PacketCollector myCollector = connection.createPacketCollector(filter);
+// First, register a stanza collector using the filter we created.
+StanzaCollector myCollector = connection.createStanzaCollector(filter);
 // Normally, you'd do something with the collector, like wait for new packets.
 
-// Next, create a packet listener. We use an anonymous inner class for brevity.
+// Next, create a stanza listener. We use an anonymous inner class for brevity.
 StanzaListener myListener = new StanzaListener() {
 		**public** **void** processStanza(Stanza stanza) {
 			// Do something with the incoming stanza here._
 		}
 	};
 // Register the listener._
-connection.addStanzaListener(myListener, filter);
+connection.addAsyncStanzaListener(myListener, filter);
+// or for a synchronous stanza listener use
+connection.addSyncStanzaListener(myListener, filter);
 ```
 
 Standard Stanza Filters
 -----------------------
 
-A rich set of packet filters are included with Smack, or you can create your
+A rich set of stanza filters are included with Smack, or you can create your
 own filters by coding to the `StanzaFilter` interface. The default set of
 filters includes:
 
-  * `StanzaTypeFilter` -- filters for packets that are a particular Class type.
-  * `StanzaIdFilter` -- filters for packets with a particular packet ID.
-  * `ThreadFilter` -- filters for message packets with a particular thread ID.
-  * `ToContainsFilter` -- filters for packets that are sent to a particular address.
-  * `FromContainsFilter` -- filters for packets that are sent from a particular address.
-  * `StanzaExtensionFilter` -- filters for packets that have a particular packet extension.
+  * `StanzaTypeFilter` -- filters for stanzas that are a particular Class type.
+  * `StanzaIdFilter` -- filters for stanzas with a particular packet ID.
+  * `ThreadFilter` -- filters for message stanzas with a particular thread ID.
+  * `ToMatchesFilter` -- filters for stanzas that are sent to a particular address.
+  * `FromMatchesFilter` -- filters for stanzas that are sent from a particular address.
+  * `StanzaExtensionFilter` -- filters for stanzas that have a particular stanza extension.
   * `AndFilter` -- implements the logical AND operation over two filters.
   * `OrFilter` -- implements the logical OR operation over two filters.
   * `NotFilter` -- implements the logical NOT operation on a filter.
