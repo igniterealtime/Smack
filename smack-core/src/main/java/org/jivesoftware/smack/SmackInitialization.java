@@ -21,7 +21,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -84,27 +83,6 @@ public final class SmackInitialization {
         }
         catch (Exception e) {
             throw new IllegalStateException(e);
-        }
-
-        try {
-            Class<?> c = Class.forName("org.jivesoftware.smack.CustomSmackConfiguration");
-            Field f = c.getField("DISABLED_SMACK_CLASSES");
-            String[] sa = (String[]) f.get(null);
-            if (sa != null) {
-                LOGGER.warning("Using CustomSmackConfig is deprecated and will be removed in a future release");
-                for (String s : sa)
-                    SmackConfiguration.disabledSmackClasses.add(s);
-            }
-        }
-        catch (ClassNotFoundException e1) {
-        }
-        catch (NoSuchFieldException e) {
-        }
-        catch (SecurityException e) {
-        }
-        catch (IllegalArgumentException e) {
-        }
-        catch (IllegalAccessException e) {
         }
 
         InputStream configFileStream;
