@@ -21,7 +21,7 @@ import org.jivesoftware.smack.initializer.UrlInitializer;
 public class TCPInitializer extends UrlInitializer {
 
     @Override
-    protected String getProvidersUrl() {
+    protected String getProvidersUri() {
         return "classpath:org.jivesoftware.smack.tcp/smacktcp.providers";
     }
 

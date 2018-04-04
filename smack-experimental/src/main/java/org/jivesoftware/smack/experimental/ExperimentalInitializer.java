@@ -26,12 +26,12 @@ import org.jivesoftware.smack.initializer.UrlInitializer;
 public class ExperimentalInitializer extends UrlInitializer {
 
     @Override
-    protected String getProvidersUrl() {
+    protected String getProvidersUri() {
         return "classpath:org.jivesoftware.smack.experimental/experimental.providers";
     }
 
     @Override
-    protected String getConfigUrl() {
+    protected String getConfigUri() {
         return "classpath:org.jivesoftware.smack.experimental/experimental.xml";
     }
 }

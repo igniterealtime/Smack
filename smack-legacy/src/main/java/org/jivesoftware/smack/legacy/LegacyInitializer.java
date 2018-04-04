@@ -21,7 +21,7 @@ import org.jivesoftware.smack.initializer.UrlInitializer;
 public class LegacyInitializer extends UrlInitializer {
 
     @Override
-    protected String getProvidersUrl() {
+    protected String getProvidersUri() {
         return "classpath:org.jivesoftware.smack.legacy/legacy.providers";
     }
 }

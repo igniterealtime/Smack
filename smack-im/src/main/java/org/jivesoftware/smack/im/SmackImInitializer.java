@@ -21,12 +21,12 @@ import org.jivesoftware.smack.initializer.UrlInitializer;
 public class SmackImInitializer extends UrlInitializer {
 
     @Override
-    protected String getProvidersUrl() {
+    protected String getProvidersUri() {
         return "classpath:org.jivesoftware.smack.im/smackim.providers";
     }
 
     @Override
-    protected String getConfigUrl() {
+    protected String getConfigUri() {
         return "classpath:org.jivesoftware.smack.im/smackim.xml";
     }
 

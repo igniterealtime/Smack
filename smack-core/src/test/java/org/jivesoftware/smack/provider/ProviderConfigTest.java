@@ -55,7 +55,7 @@ public class ProviderConfigTest {
 
     @Test
     public void addClasspathFileLoaderProvider() throws Exception {
-        ProviderManager.addLoader(new ProviderFileLoader(FileUtils.getStreamForUrl("classpath:test.providers", null)));
+        ProviderManager.addLoader(new ProviderFileLoader(FileUtils.getStreamForClasspathFile("test.providers", null)));
         Assert.assertNotNull(ProviderManager.getIQProvider("provider", "test:file_provider"));
     }
 

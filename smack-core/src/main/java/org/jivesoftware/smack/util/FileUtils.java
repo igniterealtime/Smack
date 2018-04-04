@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -37,31 +38,31 @@ public final class FileUtils {
 
     private static final Logger LOGGER = Logger.getLogger(FileUtils.class.getName());
 
-    public static InputStream getStreamForUrl(String url, ClassLoader loader) throws MalformedURLException, IOException {
-        URI fileUri = URI.create(url);
-
-        if (fileUri.getScheme() == null) {
-            throw new MalformedURLException("No protocol found in file URL: " + url);
+    public static InputStream getStreamForClasspathFile(String path, ClassLoader loader) throws IOException {
+        // Get an array of class loaders to try loading the providers files from.
+        List<ClassLoader> classLoaders = getClassLoaders();
+        if (loader != null) {
+            classLoaders.add(0, loader);
         }
+        for (ClassLoader classLoader : classLoaders) {
+            InputStream is = classLoader.getResourceAsStream(path);
 
-        if (fileUri.getScheme().equals("classpath")) {
-            // Get an array of class loaders to try loading the providers files from.
-            List<ClassLoader> classLoaders = getClassLoaders();
-            if (loader != null) {
-                classLoaders.add(0, loader);
-            }
-            for (ClassLoader classLoader : classLoaders) {
-                InputStream is = classLoader.getResourceAsStream(fileUri.getSchemeSpecificPart());
-
-                if (is != null) {
-                    return is;
-                }
+            if (is != null) {
+                return is;
             }
         }
-        else {
-            return fileUri.toURL().openStream();
+        throw new IOException("Unable to get '" + path + "' from classpath. Tried ClassLoaders:" + classLoaders);
+    }
+
+    public static InputStream getStreamForUri(URI uri, ClassLoader loader) throws IOException {
+        String protocol = uri.getScheme();
+        if (protocol.equals("classpath")) {
+            String path = uri.getSchemeSpecificPart();
+            return getStreamForClasspathFile(path, loader);
         }
-        return null;
+
+        URL url = uri.toURL();
+        return url.openStream();
     }
 
     /**
@@ -84,9 +85,9 @@ public final class FileUtils {
         return loaders;
     }
 
-    public static boolean addLines(String url, Set<String> set) throws MalformedURLException, IOException {
-        InputStream is = getStreamForUrl(url, null);
-        if (is == null) return false;
+    public static boolean addLines(String uriString, Set<String> set) throws MalformedURLException, IOException {
+        URI uri = URI.create(uriString);
+        InputStream is = getStreamForUri(uri, null);
         InputStreamReader sr = new InputStreamReader(is, StringUtils.UTF8);
         BufferedReader br = new BufferedReader(sr);
         String line;

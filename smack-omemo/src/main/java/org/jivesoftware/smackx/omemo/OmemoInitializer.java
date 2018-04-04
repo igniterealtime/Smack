@@ -27,12 +27,12 @@ import org.jivesoftware.smack.initializer.UrlInitializer;
 public class OmemoInitializer extends UrlInitializer {
 
     @Override
-    protected String getProvidersUrl() {
+    protected String getProvidersUri() {
         return "classpath:org.jivesoftware.smackx.omemo/omemo.providers";
     }
 
     @Override
-    protected String getConfigUrl() {
+    protected String getConfigUri() {
         return "classpath:org.jivesoftware.smackx.omemo/omemo.xml";
     }
 }

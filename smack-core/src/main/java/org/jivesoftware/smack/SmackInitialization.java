@@ -46,7 +46,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 public final class SmackInitialization {
     static final String SMACK_VERSION;
 
-    private static final String DEFAULT_CONFIG_FILE = "classpath:org.jivesoftware.smack/smack-config.xml";
+    private static final String DEFAULT_CONFIG_FILE = "org.jivesoftware.smack/smack-config.xml";
 
     private static final Logger LOGGER = Logger.getLogger(SmackInitialization.class.getName());
 
@@ -61,7 +61,7 @@ public final class SmackInitialization {
     static {
         String smackVersion;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(FileUtils.getStreamForUrl("classpath:org.jivesoftware.smack/version", null), StringUtils.UTF8));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(FileUtils.getStreamForClasspathFile("org.jivesoftware.smack/version", null), StringUtils.UTF8));
             smackVersion = reader.readLine();
             try {
                 reader.close();
@@ -109,7 +109,7 @@ public final class SmackInitialization {
 
         InputStream configFileStream;
         try {
-            configFileStream = FileUtils.getStreamForUrl(DEFAULT_CONFIG_FILE, null);
+            configFileStream = FileUtils.getStreamForClasspathFile(DEFAULT_CONFIG_FILE, null);
         }
         catch (Exception e) {
             throw new IllegalStateException(e);
