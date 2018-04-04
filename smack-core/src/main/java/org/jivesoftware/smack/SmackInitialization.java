@@ -113,7 +113,7 @@ public final class SmackInitialization {
             }
         }
         catch (Exception e) {
-            // Ignore.
+            LOGGER.log(Level.FINE, "Could not handle debugEnable property on Smack initialization", e);
         }
 
         SASLAuthentication.registerSASLMechanism(new SCRAMSHA1Mechanism());
