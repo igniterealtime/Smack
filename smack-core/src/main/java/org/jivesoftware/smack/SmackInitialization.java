@@ -90,14 +90,14 @@ public final class SmackInitialization {
             configFileStream = FileUtils.getStreamForClasspathFile(DEFAULT_CONFIG_FILE, null);
         }
         catch (Exception e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("Could not load Smack configuration file", e);
         }
 
         try {
             processConfigFile(configFileStream, null);
         }
         catch (Exception e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("Could not parse Smack configuration file", e);
         }
 
         // Add the Java7 compression handler first, since it's preferred
