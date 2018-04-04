@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Ishan Khanna
+ * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,9 @@ public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
                     break;
                 case "alt":
                     builder.setAlt(ParserUtils.getDoubleFromNextText(parser));
+                    break;
+                case "altaccuracy":
+                    builder.setAltAccuracy(ParserUtils.getDoubleFromNextText(parser));
                     break;
                 case "area":
                     builder.setArea(parser.nextText());

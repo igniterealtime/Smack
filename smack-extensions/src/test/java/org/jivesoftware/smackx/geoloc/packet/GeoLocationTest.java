@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Ishan Khanna
+ * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,6 +73,14 @@ public class GeoLocationTest extends InitExtensions {
     }
 
     @Test
+    public void altAccuracyTest() {
+
+        GeoLocation geoLocation = new GeoLocation.Builder().setAltAccuracy(1.52d).build();
+
+        assertEquals((Double) 1.52, geoLocation.getAltAccuracy());
+    }
+
+    @Test
     public void toXMLMethodTest() throws Exception {
 
         // @formatter:off
@@ -81,6 +89,7 @@ public class GeoLocationTest extends InitExtensions {
         + "<geoloc xmlns='http://jabber.org/protocol/geoloc'>"
         + "<accuracy>23</accuracy>"
         + "<alt>1000</alt>"
+        + "<altaccuracy>10</altaccuracy>"
         + "<area>Delhi</area>"
         + "<bearing>10</bearing>"
         + "<building>Small Building</building>"
@@ -113,7 +122,7 @@ public class GeoLocationTest extends InitExtensions {
         assertNotNull(geoLocation);
         assertNotNull(geoLocation.toXML());
 
-        GeoLocation constructedGeoLocation = GeoLocation.builder().setAccuracy(23d).setAlt(1000d).setArea("Delhi").setBearing(
+        GeoLocation constructedGeoLocation = GeoLocation.builder().setAccuracy(23d).setAlt(1000d).setAltAccuracy(10d).setArea("Delhi").setBearing(
                         10d).setBuilding("Small Building").setCountry("India").setCountryCode("IN").setDescription(
                         "My Description").setError(90d).setFloor("top").setLat(25.098345d).setLocality("awesome").setLon(
                         77.992034).setPostalcode("110085").setRegion("North").setRoom("small").setSpeed(250.0d).setStreet(

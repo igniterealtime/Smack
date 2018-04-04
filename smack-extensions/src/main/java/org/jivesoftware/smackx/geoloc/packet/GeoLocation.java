@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Ishan Khanna
+ * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ public final class GeoLocation implements Serializable, ExtensionElement {
 
     private final Double accuracy;
     private final Double alt;
+    private final Double altAccuracy;
     private final String area;
     private final Double bearing;
     private final String building;
@@ -65,12 +66,13 @@ public final class GeoLocation implements Serializable, ExtensionElement {
     private final String tzo;
     private final URI uri;
 
-    private GeoLocation(Double accuracy, Double alt, String area, Double bearing, String building, String country,
+    private GeoLocation(Double accuracy, Double alt, Double altAccuracy, String area, Double bearing, String building, String country,
                     String countryCode, String datum, String description, Double error, String floor, Double lat,
                     String locality, Double lon, String postalcode, String region, String room, Double speed,
                     String street, String text, Date timestamp, String tzo, URI uri) {
         this.accuracy = accuracy;
         this.alt = alt;
+        this.altAccuracy = altAccuracy;
         this.area = area;
         this.bearing = bearing;
         this.building = building;
@@ -116,6 +118,10 @@ public final class GeoLocation implements Serializable, ExtensionElement {
 
     public Double getAlt() {
         return alt;
+    }
+
+    public Double getAltAccuracy() {
+        return altAccuracy;
     }
 
     public String getArea() {
@@ -213,6 +219,7 @@ public final class GeoLocation implements Serializable, ExtensionElement {
         xml.rightAngleBracket();
         xml.optElement("accuracy", accuracy);
         xml.optElement("alt", alt);
+        xml.optElement("altaccuracy", altAccuracy);
         xml.optElement("area", area);
         xml.optElement("bearing", bearing);
         xml.optElement("building", building);
@@ -255,6 +262,7 @@ public final class GeoLocation implements Serializable, ExtensionElement {
 
         private Double accuracy;
         private Double alt;
+        private Double altAccuracy;
         private String area;
         private Double bearing;
         private String building;
@@ -284,6 +292,11 @@ public final class GeoLocation implements Serializable, ExtensionElement {
 
         public Builder setAlt(Double alt) {
             this.alt = alt;
+            return this;
+        }
+
+        public Builder setAltAccuracy(Double altAccuracy) {
+            this.altAccuracy = altAccuracy;
             return this;
         }
 
@@ -394,7 +407,7 @@ public final class GeoLocation implements Serializable, ExtensionElement {
 
         public GeoLocation build() {
 
-            return new GeoLocation(accuracy, alt, area, bearing, building, country, countryCode, datum, description,
+            return new GeoLocation(accuracy, alt, altAccuracy, area, bearing, building, country, countryCode, datum, description,
                             error, floor, lat, locality, lon, postalcode, region, room, speed, street, text, timestamp,
                             tzo, uri);
         }
