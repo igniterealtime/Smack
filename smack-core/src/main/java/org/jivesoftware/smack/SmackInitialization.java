@@ -78,12 +78,6 @@ public final class SmackInitialization {
             String[] splitDisabledClasses = disabledClasses.split(",");
             for (String s : splitDisabledClasses) SmackConfiguration.disabledSmackClasses.add(s);
         }
-        try {
-            FileUtils.addLines("classpath:org.jivesoftware.smack/disabledClasses", SmackConfiguration.disabledSmackClasses);
-        }
-        catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
 
         InputStream configFileStream;
         try {
