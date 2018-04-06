@@ -17,7 +17,9 @@
 
 package org.jivesoftware.smackx.chatstates;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -146,7 +148,13 @@ public final class ChatStateManager extends Manager {
                     return;
                 }
 
-                for (ChatStateListener listener : chatStateListeners) {
+                List<ChatStateListener> listeners;
+                synchronized (chatStateListeners) {
+                    listeners = new ArrayList<>(chatStateListeners.size());
+                    listeners.addAll(chatStateListeners);
+                }
+
+                for (ChatStateListener listener : listeners) {
                     listener.stateChanged(chat, state, message);
                 }
             }
@@ -162,7 +170,9 @@ public final class ChatStateManager extends Manager {
      * @return true, if the listener was not registered before
      */
     public boolean addChatStateListener(ChatStateListener listener) {
-        return chatStateListeners.add(listener);
+        synchronized (chatStateListeners) {
+            return chatStateListeners.add(listener);
+        }
     }
 
     /**
@@ -172,7 +182,9 @@ public final class ChatStateManager extends Manager {
      * @return true, if the listener was registered before
      */
     public boolean removeChatStateListener(ChatStateListener listener) {
-        return chatStateListeners.remove(listener);
+        synchronized (chatStateListeners) {
+            return chatStateListeners.remove(listener);
+        }
     }
 
 
