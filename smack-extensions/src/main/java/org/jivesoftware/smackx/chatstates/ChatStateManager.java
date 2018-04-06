@@ -136,10 +136,6 @@ public final class ChatStateManager extends Manager {
                 Chat chat = ChatManager.getInstanceFor(connection()).chatWith(bareFrom);
                 ExtensionElement extension = message.getExtension(NAMESPACE);
 
-                if (extension == null) {
-                    return;
-                }
-
                 ChatState state;
                 try {
                     state = ChatState.valueOf(extension.getElementName());
