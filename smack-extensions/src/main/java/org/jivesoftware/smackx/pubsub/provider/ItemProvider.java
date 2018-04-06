@@ -36,8 +36,7 @@ import org.xmlpull.v1.XmlPullParser;
  * 
  * @author Robin Collier
  */
-public class ItemProvider extends ExtensionElementProvider<Item> 
-{
+public class ItemProvider extends ExtensionElementProvider<Item>  {
     @Override
     public Item parse(XmlPullParser parser, int initialDepth)
                     throws Exception {
@@ -46,23 +45,19 @@ public class ItemProvider extends ExtensionElementProvider<Item>
 
         int tag = parser.next();
 
-        if (tag == XmlPullParser.END_TAG) 
-        {
+        if (tag == XmlPullParser.END_TAG)  {
             return new Item(id, node);
         }
-        else
-        {
+        else {
             String payloadElemName = parser.getName();
             String payloadNS = parser.getNamespace();
 
             final ExtensionElementProvider<ExtensionElement> extensionProvider = ProviderManager.getExtensionProvider(payloadElemName, payloadNS);
-            if (extensionProvider == null)
-            {
+            if (extensionProvider == null) {
                 CharSequence payloadText = PacketParserUtils.parseElement(parser, true);
                 return new PayloadItem<>(id, node, new SimplePayload(payloadElemName, payloadNS, payloadText));
             }
-            else
-            {
+            else {
                 return new PayloadItem<>(id, node, extensionProvider.parse(parser));
             }
         }

@@ -37,10 +37,8 @@ import org.jivesoftware.smackx.pubsub.packet.PubSub;
  * 
  * @author Robin Collier
  */
-public class LeafNode extends Node
-{
-    LeafNode(PubSubManager pubSubManager, String nodeId)
-    {
+public class LeafNode extends Node {
+    LeafNode(PubSubManager pubSubManager, String nodeId) {
         super(pubSubManager, nodeId);
     }
 
@@ -54,8 +52,7 @@ public class LeafNode extends Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public DiscoverItems discoverItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public DiscoverItems discoverItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverItems items = new DiscoverItems();
         items.setTo(pubSubManager.getServiceJid());
         items.setNode(getId());
@@ -72,8 +69,7 @@ public class LeafNode extends Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public <T extends Item> List<T> getItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public <T extends Item> List<T> getItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return getItems((List<ExtensionElement>) null, null);
     }
 
@@ -92,8 +88,7 @@ public class LeafNode extends Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public <T extends Item> List<T> getItems(String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public <T extends Item> List<T> getItems(String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), subscriptionId));
         return getItems(request);
     }
@@ -114,12 +109,10 @@ public class LeafNode extends Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public <T extends Item> List<T> getItems(Collection<String> ids) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public <T extends Item> List<T> getItems(Collection<String> ids) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         List<Item> itemList = new ArrayList<>(ids.size());
 
-        for (String id : ids)
-        {
+        for (String id : ids) {
             itemList.add(new Item(id));
         }
         PubSub request = createPubsubPacket(Type.get, new ItemsExtension(ItemsExtension.ItemsElementType.items, getId(), itemList));
@@ -138,8 +131,7 @@ public class LeafNode extends Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public <T extends Item> List<T> getItems(int maxItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public <T extends Item> List<T> getItems(int maxItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), maxItems));
         return getItems(request);
     }
@@ -160,8 +152,7 @@ public class LeafNode extends Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public <T extends Item> List<T> getItems(int maxItems, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public <T extends Item> List<T> getItems(int maxItems, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), subscriptionId, maxItems));
         return getItems(request);
     }
@@ -224,8 +215,7 @@ public class LeafNode extends Node
      * @deprecated use {@link #publish()} instead.
      */
     @Deprecated
-    public void send() throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException
-    {
+    public void send() throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
         publish();
     }
 
@@ -248,8 +238,7 @@ public class LeafNode extends Node
      */
     @SuppressWarnings("unchecked")
     @Deprecated
-    public <T extends Item> void send(T item) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException
-    {
+    public <T extends Item> void send(T item) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
         publish(item);
     }
 
@@ -269,8 +258,7 @@ public class LeafNode extends Node
      * @deprecated use {@link #publish(Collection)} instead.
      */
     @Deprecated
-    public <T extends Item> void send(Collection<T> items) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException
-    {
+    public <T extends Item> void send(Collection<T> items) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
         publish(items);
     }
 
@@ -287,8 +275,7 @@ public class LeafNode extends Node
      * @throws InterruptedException 
      * 
      */
-    public void publish() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public void publish() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub packet = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PUBLISH, getId()));
 
         pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
@@ -316,8 +303,7 @@ public class LeafNode extends Node
      * 
      */
     @SuppressWarnings("unchecked")
-    public <T extends Item> void publish(T item) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public <T extends Item> void publish(T item) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Collection<T> items = new ArrayList<>(1);
         items.add((item == null ? (T) new Item() : item));
         publish(items);
@@ -338,8 +324,7 @@ public class LeafNode extends Node
      * @throws InterruptedException 
      * 
      */
-    public <T extends Item> void publish(Collection<T> items) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public <T extends Item> void publish(Collection<T> items) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub packet = createPubsubPacket(Type.set, new PublishItem<>(getId(), items));
 
         pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
@@ -355,8 +340,7 @@ public class LeafNode extends Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void deleteAllItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public void deleteAllItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PURGE_OWNER, getId()), PubSubElementType.PURGE_OWNER.getNamespace());
 
         pubSubManager.getConnection().createStanzaCollectorAndSend(request).nextResultOrThrow();
@@ -371,8 +355,7 @@ public class LeafNode extends Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void deleteItem(String itemId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public void deleteItem(String itemId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Collection<String> items = new ArrayList<>(1);
         items.add(itemId);
         deleteItem(items);
@@ -387,13 +370,11 @@ public class LeafNode extends Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void deleteItem(Collection<String> itemIds) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public void deleteItem(Collection<String> itemIds) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         List<Item> items = new ArrayList<>(itemIds.size());
 
-        for (String id : itemIds)
-        {
-            items.add(new Item(id));
+        for (String id : itemIds) {
+             items.add(new Item(id));
         }
         PubSub request = createPubsubPacket(Type.set, new ItemsExtension(ItemsExtension.ItemsElementType.retract, getId(), items));
         pubSubManager.getConnection().createStanzaCollectorAndSend(request).nextResultOrThrow();

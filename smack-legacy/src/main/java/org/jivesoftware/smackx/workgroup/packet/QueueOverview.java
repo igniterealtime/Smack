@@ -134,8 +134,7 @@ public class QueueOverview implements ExtensionElement {
 
             eventType = parser.next();
             while ((eventType != XmlPullParser.END_TAG)
-                         || (!ELEMENT_NAME.equals(parser.getName())))
-            {
+                         || (!ELEMENT_NAME.equals(parser.getName()))) {
                 if ("count".equals(parser.getName())) {
                     queueOverview.setUserCount(Integer.parseInt(parser.nextText()));
                 }

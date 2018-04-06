@@ -71,8 +71,9 @@ public class MultipleRecipientManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public static void send(XMPPConnection connection, Stanza packet, Collection<? extends Jid> to, Collection<? extends Jid> cc, Collection<? extends Jid> bcc) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException, NotConnectedException, InterruptedException
-   {
+    public static void send(XMPPConnection connection, Stanza packet, Collection<? extends Jid> to,
+            Collection<? extends Jid> cc, Collection<? extends Jid> bcc) throws NoResponseException, XMPPErrorException,
+            FeatureNotSupportedException, NotConnectedException, InterruptedException {
         send(connection, packet, to, cc, bcc, null, null, false);
     }
 
@@ -143,8 +144,8 @@ public class MultipleRecipientManager {
      * @throws XMPPErrorException 
      * @throws InterruptedException 
      */
-    public static void reply(XMPPConnection connection, Message original, Message reply) throws SmackException, XMPPErrorException, InterruptedException
-         {
+    public static void reply(XMPPConnection connection, Message original, Message reply)
+            throws SmackException, XMPPErrorException, InterruptedException {
         MultipleRecipientInfo info = getMultipleRecipientInfo(original);
         if (info == null) {
             throw new SmackException("Original message does not contain multiple recipient info");

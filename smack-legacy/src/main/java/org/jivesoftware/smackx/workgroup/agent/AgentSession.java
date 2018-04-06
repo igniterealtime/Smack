@@ -1015,8 +1015,7 @@ public class AgentSession {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void sendRoomInvitation(RoomInvitation.Type type, String invitee, String sessionID, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-            {
+    public void sendRoomInvitation(RoomInvitation.Type type, String invitee, String sessionID, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final RoomInvitation invitation = new RoomInvitation(type, invitee, sessionID, reason);
         IQ iq = new RoomInvitation.RoomInvitationIQ(invitation);
         iq.setType(IQ.Type.set);
@@ -1053,8 +1052,7 @@ public class AgentSession {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void sendRoomTransfer(RoomTransfer.Type type, String invitee, String sessionID, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-            {
+    public void sendRoomTransfer(RoomTransfer.Type type, String invitee, String sessionID, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final RoomTransfer transfer = new RoomTransfer(type, invitee, sessionID, reason);
         IQ iq = new RoomTransfer.RoomTransferIQ(transfer);
         iq.setType(IQ.Type.set);

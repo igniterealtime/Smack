@@ -39,20 +39,16 @@ import org.jxmpp.util.XmppDateTime;
  * 
  * @author Robin Collier
  */
-public class SubscribeForm extends Form
-{
-    public SubscribeForm(DataForm configDataForm)
-    {
+public class SubscribeForm extends Form {
+    public SubscribeForm(DataForm configDataForm) {
         super(configDataForm);
     }
 
-    public SubscribeForm(Form subscribeOptionsForm)
-    {
+    public SubscribeForm(Form subscribeOptionsForm) {
         super(subscribeOptionsForm.getDataFormToSend());
     }
 
-    public SubscribeForm(DataForm.Type formType)
-    {
+    public SubscribeForm(DataForm.Type formType) {
         super(formType);
     }
 
@@ -61,8 +57,7 @@ public class SubscribeForm extends Form
      * 
      * @return true if want to receive, false otherwise
      */
-    public boolean isDeliverOn()
-    {
+    public boolean isDeliverOn() {
         return parseBoolean(getFieldValue(SubscribeOptionFields.deliver));
     }
 
@@ -71,8 +66,7 @@ public class SubscribeForm extends Form
      *
      * @param deliverNotifications
      */
-    public void setDeliverOn(boolean deliverNotifications)
-    {
+    public void setDeliverOn(boolean deliverNotifications) {
         addField(SubscribeOptionFields.deliver, FormField.Type.bool);
         setAnswer(SubscribeOptionFields.deliver.getFieldName(), deliverNotifications);
     }
@@ -82,8 +76,7 @@ public class SubscribeForm extends Form
      * 
      * @return true to aggregate, false otherwise
      */
-    public boolean isDigestOn()
-    {
+    public boolean isDigestOn() {
         return parseBoolean(getFieldValue(SubscribeOptionFields.digest));
     }
 
@@ -92,8 +85,7 @@ public class SubscribeForm extends Form
      * 
      * @param digestOn true to aggregate, false otherwise 
      */
-    public void setDigestOn(boolean digestOn)
-    {
+    public void setDigestOn(boolean digestOn) {
         addField(SubscribeOptionFields.deliver, FormField.Type.bool);
         setAnswer(SubscribeOptionFields.deliver.getFieldName(), digestOn);
     }
@@ -103,8 +95,7 @@ public class SubscribeForm extends Form
      * 
      * @return The frequency in milliseconds
      */
-    public int getDigestFrequency()
-    {
+    public int getDigestFrequency() {
         return Integer.parseInt(getFieldValue(SubscribeOptionFields.digest_frequency));
     }
 
@@ -113,8 +104,7 @@ public class SubscribeForm extends Form
      * 
      * @param frequency The frequency in milliseconds
      */
-    public void setDigestFrequency(int frequency)
-    {
+    public void setDigestFrequency(int frequency) {
         addField(SubscribeOptionFields.digest_frequency, FormField.Type.text_single);
         setAnswer(SubscribeOptionFields.digest_frequency.getFieldName(), frequency);
     }
@@ -124,15 +114,12 @@ public class SubscribeForm extends Form
      * 
      * @return The expiry date
      */
-    public Date getExpiry()
-    {
+    public Date getExpiry() {
         String dateTime = getFieldValue(SubscribeOptionFields.expire);
-        try
-        {
+        try {
             return XmppDateTime.parseDate(dateTime);
         }
-        catch (ParseException e)
-        {
+        catch (ParseException e) {
             UnknownFormatConversionException exc = new UnknownFormatConversionException(dateTime);
             exc.initCause(e);
             throw exc;
@@ -144,8 +131,7 @@ public class SubscribeForm extends Form
      * 
      * @param expire The expiry date
      */
-    public void setExpiry(Date expire)
-    {
+    public void setExpiry(Date expire) {
         addField(SubscribeOptionFields.expire, FormField.Type.text_single);
         setAnswer(SubscribeOptionFields.expire.getFieldName(), XmppDateTime.formatXEP0082Date(expire));
     }
@@ -156,8 +142,7 @@ public class SubscribeForm extends Form
      * 
      * @return true to receive the message body, false otherwise
      */
-    public boolean isIncludeBody()
-    {
+    public boolean isIncludeBody() {
         return parseBoolean(getFieldValue(SubscribeOptionFields.include_body));
     }
 
@@ -167,8 +152,7 @@ public class SubscribeForm extends Form
      * 
      * @param include true to receive the message body, false otherwise
      */
-    public void setIncludeBody(boolean include)
-    {
+    public void setIncludeBody(boolean include) {
         addField(SubscribeOptionFields.include_body, FormField.Type.bool);
         setAnswer(SubscribeOptionFields.include_body.getFieldName(), include);
     }
@@ -179,12 +163,10 @@ public class SubscribeForm extends Form
      * 
      * @return the list of states
      */
-    public List<PresenceState> getShowValues()
-    {
+    public List<PresenceState> getShowValues() {
         ArrayList<PresenceState> result = new ArrayList<>(5);
 
-        for (String state : getFieldValues(SubscribeOptionFields.show_values))
-        {
+        for (String state : getFieldValues(SubscribeOptionFields.show_values)) {
             result.add(PresenceState.valueOf(state));
         }
         return result;
@@ -196,12 +178,10 @@ public class SubscribeForm extends Form
      * 
      * @param stateValues The list of states
      */
-    public void setShowValues(Collection<PresenceState> stateValues)
-    {
+    public void setShowValues(Collection<PresenceState> stateValues) {
         ArrayList<String> values = new ArrayList<>(stateValues.size());
 
-        for (PresenceState state : stateValues)
-        {
+        for (PresenceState state : stateValues) {
             values.add(state.toString());
         }
         addField(SubscribeOptionFields.show_values, FormField.Type.list_multi);
@@ -209,31 +189,26 @@ public class SubscribeForm extends Form
     }
 
 
-    private static boolean parseBoolean(String fieldValue)
-    {
+    private static boolean parseBoolean(String fieldValue) {
         return ("1".equals(fieldValue) || "true".equals(fieldValue));
     }
 
-    private String getFieldValue(SubscribeOptionFields field)
-    {
+    private String getFieldValue(SubscribeOptionFields field) {
         FormField formField = getField(field.getFieldName());
 
         return formField.getValues().get(0);
     }
 
-    private List<String> getFieldValues(SubscribeOptionFields field)
-    {
+    private List<String> getFieldValues(SubscribeOptionFields field) {
         FormField formField = getField(field.getFieldName());
 
         return formField.getValues();
     }
 
-    private void addField(SubscribeOptionFields nodeField, FormField.Type type)
-    {
+    private void addField(SubscribeOptionFields nodeField, FormField.Type type) {
         String fieldName = nodeField.getFieldName();
 
-        if (getField(fieldName) == null)
-        {
+        if (getField(fieldName) == null) {
             FormField field = new FormField(fieldName);
             field.setType(type);
             addField(field);

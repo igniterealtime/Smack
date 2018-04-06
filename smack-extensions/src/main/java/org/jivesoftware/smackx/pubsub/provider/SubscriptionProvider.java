@@ -33,8 +33,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * 
  * @author Robin Collier
  */
-public class SubscriptionProvider extends ExtensionElementProvider<Subscription>
-{
+public class SubscriptionProvider extends ExtensionElementProvider<Subscription> {
     @Override
     public Subscription parse(XmlPullParser parser, int initialDepth)
                     throws XmlPullParserException, IOException {
@@ -46,8 +45,7 @@ public class SubscriptionProvider extends ExtensionElementProvider<Subscription>
 
         int tag = parser.next();
 
-        if ((tag == XmlPullParser.START_TAG) && parser.getName().equals("subscribe-options"))
-        {
+        if ((tag == XmlPullParser.START_TAG) && parser.getName().equals("subscribe-options")) {
             tag = parser.next();
 
             if ((tag == XmlPullParser.START_TAG) && parser.getName().equals("required"))

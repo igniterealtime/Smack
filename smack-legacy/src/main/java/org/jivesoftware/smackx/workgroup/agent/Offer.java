@@ -67,8 +67,7 @@ public class Offer {
      */
     Offer(XMPPConnection conn, AgentSession agentSession, Jid userID,
             Jid userJID, Jid workgroupName, Date expiresDate,
-            String sessionID, Map<String, List<String>> metaData, OfferContent content)
-    {
+            String sessionID, Map<String, List<String>> metaData, OfferContent content) {
         this.connection = conn;
         this.session = agentSession;
         this.userID = userID;

@@ -51,8 +51,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     }
 
     @Override
-    public OutputStream createOutgoingStream(String streamID, Jid initiator, Jid target) throws SmackException, XMPPException
-                    {
+    public OutputStream createOutgoingStream(String streamID, Jid initiator, Jid target) throws SmackException, XMPPException {
         try {
             return this.manager.establishSession(target, streamID).getOutputStream();
         }

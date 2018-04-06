@@ -37,8 +37,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
  * 
  * @author Robin Collier
  */
-public interface EmbeddedPacketExtension extends ExtensionElement
-{
+public interface EmbeddedPacketExtension extends ExtensionElement {
     /**
      * Get the list of embedded {@link ExtensionElement} objects.
      *  

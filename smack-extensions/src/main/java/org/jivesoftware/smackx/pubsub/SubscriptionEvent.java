@@ -24,8 +24,7 @@ import java.util.List;
  * 
  * @author Robin Collier
  */
-public abstract class SubscriptionEvent extends NodeEvent
-{
+public abstract class SubscriptionEvent extends NodeEvent {
     private List<String> subIds = Collections.emptyList();
 
     /**
@@ -36,8 +35,7 @@ public abstract class SubscriptionEvent extends NodeEvent
      * 
      * @param nodeId The id of the node the event came from
      */
-    protected SubscriptionEvent(String nodeId)
-    {
+    protected SubscriptionEvent(String nodeId) {
         super(nodeId);
     }
 
@@ -47,8 +45,7 @@ public abstract class SubscriptionEvent extends NodeEvent
      * @param nodeId The id of the node the event came from
      * @param subscriptionIds The list of subscription id's
      */
-    protected SubscriptionEvent(String nodeId, List<String> subscriptionIds)
-    {
+    protected SubscriptionEvent(String nodeId, List<String> subscriptionIds) {
         super(nodeId);
 
         if (subscriptionIds != null)
@@ -60,8 +57,7 @@ public abstract class SubscriptionEvent extends NodeEvent
      * 
      * @return List of subscription id's
      */
-    public List<String> getSubscriptions()
-    {
+    public List<String> getSubscriptions() {
         return Collections.unmodifiableList(subIds);
     }
 
@@ -70,8 +66,7 @@ public abstract class SubscriptionEvent extends NodeEvent
      * 
      * @param subscriptionIds The list of subscription id's
      */
-    protected void setSubscriptions(List<String> subscriptionIds)
-    {
+    protected void setSubscriptions(List<String> subscriptionIds) {
         if (subscriptionIds != null)
             subIds = subscriptionIds;
     }

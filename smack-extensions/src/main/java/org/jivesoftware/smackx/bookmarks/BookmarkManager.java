@@ -60,8 +60,7 @@ public final class BookmarkManager {
      * exist it is created.
      * @throws IllegalArgumentException when the connection is null.
      */
-    public static synchronized BookmarkManager getBookmarkManager(XMPPConnection connection)
-    {
+    public static synchronized BookmarkManager getBookmarkManager(XMPPConnection connection) {
         BookmarkManager manager = bookmarkManagerMap.get(connection);
         if (manager == null) {
             manager = new BookmarkManager(connection);
@@ -114,8 +113,7 @@ public final class BookmarkManager {
      * @throws InterruptedException 
      */
     public void addBookmarkedConference(String name, EntityBareJid jid, boolean isAutoJoin,
-            Resourcepart nickname, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+            Resourcepart nickname, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         retrieveBookmarks();
         BookmarkedConference bookmark
                 = new BookmarkedConference(name, jid, isAutoJoin, nickname, password);

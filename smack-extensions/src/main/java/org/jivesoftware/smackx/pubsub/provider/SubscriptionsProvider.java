@@ -31,12 +31,10 @@ import org.jivesoftware.smackx.pubsub.SubscriptionsExtension;
  * 
  * @author Robin Collier
  */
-public class SubscriptionsProvider extends EmbeddedExtensionProvider<SubscriptionsExtension>
-{
+public class SubscriptionsProvider extends EmbeddedExtensionProvider<SubscriptionsExtension> {
     @SuppressWarnings("unchecked")
     @Override
-    protected SubscriptionsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
-    {
+    protected SubscriptionsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content) {
         return new SubscriptionsExtension(attributeMap.get("node"), (List<Subscription>) content);
     }
 

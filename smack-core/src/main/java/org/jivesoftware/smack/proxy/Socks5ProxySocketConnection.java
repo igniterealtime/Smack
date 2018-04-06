@@ -32,8 +32,7 @@ import org.jivesoftware.smack.util.StringUtils;
 public class Socks5ProxySocketConnection implements ProxySocketConnection {
     private final ProxyInfo proxy;
 
-    Socks5ProxySocketConnection(ProxyInfo proxy)
-    {
+    Socks5ProxySocketConnection(ProxyInfo proxy) {
         this.proxy = proxy;
     }
 
@@ -47,8 +46,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
         String user = proxy.getProxyUsername();
         String passwd = proxy.getProxyPassword();
 
-        try
-        {
+        try {
             socket.connect(new InetSocketAddress(proxy_host, proxy_port), timeout);
             in = socket.getInputStream();
             out = socket.getOutputStream();
@@ -100,14 +98,12 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
             fill(in, buf, 2);
 
             boolean check = false;
-            switch ((buf[1]) & 0xff)
-            {
+            switch ((buf[1]) & 0xff) {
                 case 0:                // NO AUTHENTICATION REQUIRED
                     check = true;
                     break;
                 case 2:                // USERNAME/PASSWORD
-                    if (user == null || passwd == null)
-                    {
+                    if (user == null || passwd == null) {
                         break;
                     }
 
@@ -160,22 +156,18 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
    connection.
 */
                     fill(in, buf, 2);
-                    if (buf[1] == 0)
-                    {
+                    if (buf[1] == 0) {
                         check = true;
                     }
                     break;
                 default:
             }
 
-            if (!check)
-            {
-                try
-                {
+            if (!check) {
+                try {
                     socket.close();
                 }
-                catch (Exception eee)
-                {
+                catch (Exception eee) {
                 }
                 throw new ProxyException(ProxyInfo.ProxyType.SOCKS5,
                     "fail in SOCKS5 proxy");
@@ -260,21 +252,17 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
 
             fill(in, buf, 4);
 
-            if (buf[1] != 0)
-            {
-                try
-                {
+            if (buf[1] != 0) {
+                try {
                     socket.close();
                 }
-                catch (Exception eee)
-                {
+                catch (Exception eee) {
                 }
                 throw new ProxyException(ProxyInfo.ProxyType.SOCKS5, 
                     "server returns " + buf[1]);
             }
 
-            switch (buf[3] & 0xff)
-            {
+            switch (buf[3] & 0xff) {
                 case 1:
                     fill(in, buf, 6);
                     break;
@@ -288,18 +276,14 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
                 default:
             }
         }
-        catch (RuntimeException e)
-        {
+        catch (RuntimeException e) {
             throw e;
         }
-        catch (Exception e)
-        {
-            try
-            {
+        catch (Exception e) {
+            try {
                 socket.close();
             }
-            catch (Exception eee)
-            {
+            catch (Exception eee) {
             }
             // TODO convert to IOException(e) when minimum Android API level is 9 or higher
             throw new IOException(e.getLocalizedMessage());
@@ -307,14 +291,11 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
     }
 
     private static void fill(InputStream in, byte[] buf, int len) 
-      throws IOException
-    {
+      throws IOException {
         int s = 0;
-        while (s < len)
-        {
+        while (s < len) {
             int i = in.read(buf, s, len - s);
-            if (i <= 0)
-            {
+            if (i <= 0) {
                 throw new ProxyException(ProxyInfo.ProxyType.SOCKS5, "stream " +
                     "is closed");
             }

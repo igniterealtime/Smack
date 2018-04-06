@@ -26,8 +26,7 @@ import org.jivesoftware.smackx.pubsub.LeafNode;
  *
  * @author Robin Collier
  */
-public interface NodeConfigListener
-{
+public interface NodeConfigListener {
     /**
      * Called whenever the node the listener
      * is registered with is configured.

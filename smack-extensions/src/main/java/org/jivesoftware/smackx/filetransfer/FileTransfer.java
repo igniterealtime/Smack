@@ -204,8 +204,7 @@ public abstract class FileTransfer {
     }
 
     protected void writeToStream(final InputStream in, final OutputStream out)
-                    throws IOException
-    {
+                    throws IOException {
         final byte[] b = new byte[BUFFER_SIZE];
         int count = 0;
         amountWritten = 0;

@@ -193,8 +193,7 @@ public final class ProviderManager {
      */
     @SuppressWarnings("unchecked")
     public static void addIQProvider(String elementName, String namespace,
-            Object provider)
-    {
+            Object provider) {
         validate(elementName, namespace);
         // First remove existing providers
         String key = removeIQProvider(elementName, namespace);
@@ -255,8 +254,7 @@ public final class ProviderManager {
      */
     @SuppressWarnings("unchecked")
     public static void addExtensionProvider(String elementName, String namespace,
-            Object provider)
-    {
+            Object provider) {
         validate(elementName, namespace);
         // First remove existing providers
         String key = removeExtensionProvider(elementName, namespace);

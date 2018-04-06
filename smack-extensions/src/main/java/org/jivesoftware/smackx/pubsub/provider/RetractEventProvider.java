@@ -31,11 +31,9 @@ import org.jivesoftware.smackx.pubsub.RetractItem;
  * 
  * @author Robin Collier
  */
-public class RetractEventProvider extends EmbeddedExtensionProvider<RetractItem>
-{
+public class RetractEventProvider extends EmbeddedExtensionProvider<RetractItem> {
     @Override
-    protected RetractItem createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
-    {
+    protected RetractItem createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content) {
         return new RetractItem(attributeMap.get("id"));
     }
 

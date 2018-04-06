@@ -30,8 +30,7 @@ import org.jxmpp.jid.Jid;
  * 
  * @author Robin Collier
  */
-public class PubSub extends IQ
-{
+public class PubSub extends IQ {
     public static final String ELEMENT = "pubsub";
     public static final String NAMESPACE = "http://jabber.org/protocol/pubsub";
 
@@ -50,8 +49,7 @@ public class PubSub extends IQ
     }
 
     @SuppressWarnings("unchecked")
-    public <PE extends ExtensionElement> PE getExtension(PubSubElementType elem)
-    {
+    public <PE extends ExtensionElement> PE getExtension(PubSubElementType elem) {
         return (PE) getExtension(elem.getElementName(), elem.getNamespace().getXmlns());
     }
 

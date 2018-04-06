@@ -26,8 +26,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
  * 
  * @author Robin Collier
  */
-public enum PubSubElementType
-{
+public enum PubSubElementType {
     CREATE("create", PubSubNamespace.BASIC),
     DELETE("delete", PubSubNamespace.OWNER),
     DELETE_EVENT("delete", PubSubNamespace.EVENT),
@@ -54,29 +53,24 @@ public enum PubSubElementType
     private final String eName;
     private final PubSubNamespace nSpace;
 
-    PubSubElementType(String elemName, PubSubNamespace ns)
-    {
+    PubSubElementType(String elemName, PubSubNamespace ns) {
         eName = elemName;
         nSpace = ns;
     }
 
-    public PubSubNamespace getNamespace()
-    {
+    public PubSubNamespace getNamespace() {
         return nSpace;
     }
 
-    public String getElementName()
-    {
+    public String getElementName() {
         return eName;
     }
 
-    public static PubSubElementType valueOfFromElemName(String elemName, String namespace)
-    {
+    public static PubSubElementType valueOfFromElemName(String elemName, String namespace) {
         int index = namespace.lastIndexOf('#');
         String fragment = (index == -1 ? null : namespace.substring(index + 1));
 
-        if (fragment != null)
-        {
+        if (fragment != null) {
             return valueOf((elemName + '_' + fragment).toUpperCase(Locale.US));
         }
         return valueOf(elemName.toUpperCase(Locale.US).replace('-', '_'));

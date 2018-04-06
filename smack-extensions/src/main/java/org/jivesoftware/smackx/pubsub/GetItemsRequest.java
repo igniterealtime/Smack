@@ -23,40 +23,33 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * 
  * @author Robin Collier
  */
-public class GetItemsRequest extends NodeExtension
-{
+public class GetItemsRequest extends NodeExtension {
     protected final String subId;
     protected final int maxItems;
 
-    public GetItemsRequest(String nodeId)
-    {
+    public GetItemsRequest(String nodeId) {
         this(nodeId, null, -1);
     }
 
-    public GetItemsRequest(String nodeId, String subscriptionId)
-    {
+    public GetItemsRequest(String nodeId, String subscriptionId) {
         this(nodeId, subscriptionId, -1);
     }
 
-    public GetItemsRequest(String nodeId, int maxItemsToReturn)
-    {
+    public GetItemsRequest(String nodeId, int maxItemsToReturn) {
         this(nodeId, null, maxItemsToReturn);
     }
 
-    public GetItemsRequest(String nodeId, String subscriptionId, int maxItemsToReturn)
-    {
+    public GetItemsRequest(String nodeId, String subscriptionId, int maxItemsToReturn) {
         super(PubSubElementType.ITEMS, nodeId);
         maxItems = maxItemsToReturn;
         subId = subscriptionId;
     }
 
-    public String getSubscriptionId()
-    {
+    public String getSubscriptionId() {
         return subId;
     }
 
-    public int getMaxItems()
-    {
+    public int getMaxItems() {
         return maxItems;
     }
 

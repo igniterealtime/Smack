@@ -34,27 +34,23 @@ public class DefaultMessageEventRequestListener implements MessageEventRequestLi
 
     @Override
     public void deliveredNotificationRequested(Jid from, String packetID,
-                MessageEventManager messageEventManager) throws NotConnectedException, InterruptedException
-    {
+                MessageEventManager messageEventManager) throws NotConnectedException, InterruptedException {
         // Send to the message's sender that the message has been delivered
         messageEventManager.sendDeliveredNotification(from, packetID);
     }
 
     @Override
     public void displayedNotificationRequested(Jid from, String packetID,
-            MessageEventManager messageEventManager)
-    {
+            MessageEventManager messageEventManager) {
     }
 
     @Override
     public void composingNotificationRequested(Jid from, String packetID,
-            MessageEventManager messageEventManager)
-    {
+            MessageEventManager messageEventManager) {
     }
 
     @Override
     public void offlineNotificationRequested(Jid from, String packetID,
-            MessageEventManager messageEventManager)
-    {
+            MessageEventManager messageEventManager) {
     }
 }

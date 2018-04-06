@@ -25,8 +25,7 @@ import java.util.List;
  * 
  * @author Robin Collier
  */
-public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
-{
+public class ItemPublishEvent<T extends Item> extends SubscriptionEvent {
     private List<T> items;
     private Date originalDate;
 
@@ -37,8 +36,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
      * @param nodeId The id of the node the event came from
      * @param eventItems The list of {@link Item} that were published 
      */
-    public ItemPublishEvent(String nodeId, List<T> eventItems)
-    {
+    public ItemPublishEvent(String nodeId, List<T> eventItems) {
         super(nodeId);
         items = eventItems;
     }
@@ -53,8 +51,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
      * @param eventItems The list of {@link Item} that were published 
      * @param subscriptionIds The list of subscriptionIds
      */
-    public ItemPublishEvent(String nodeId, List<T> eventItems, List<String> subscriptionIds)
-    {
+    public ItemPublishEvent(String nodeId, List<T> eventItems, List<String> subscriptionIds) {
         super(nodeId, subscriptionIds);
         items = eventItems;
     }
@@ -71,8 +68,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
      * @param subscriptionIds The list of subscriptionIds
      * @param publishedDate date of publication.
      */
-    public ItemPublishEvent(String nodeId, List<T> eventItems, List<String> subscriptionIds, Date publishedDate)
-    {
+    public ItemPublishEvent(String nodeId, List<T> eventItems, List<String> subscriptionIds, Date publishedDate) {
         super(nodeId, subscriptionIds);
         items = eventItems;
 
@@ -85,8 +81,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
      * 
      * @return The list of published {@link Item}
      */
-    public List<T> getItems()
-    {
+    public List<T> getItems() {
         return Collections.unmodifiableList(items);
     }
 
@@ -100,8 +95,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
      * 
      * @return true if the items are delayed, false otherwise.
      */
-    public boolean isDelayed()
-    {
+    public boolean isDelayed() {
         return (originalDate != null);
     }
 
@@ -111,14 +105,12 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent
      *
      * @return date of publication.
      */
-    public Date getPublishedDate()
-    {
+    public Date getPublishedDate() {
         return originalDate;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getClass().getName() + "  [subscriptions: " + getSubscriptions() + "], [Delayed: " + 
             (isDelayed() ? originalDate.toString() : "false") + ']';
     }

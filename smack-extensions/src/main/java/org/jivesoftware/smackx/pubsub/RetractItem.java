@@ -25,8 +25,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
  * 
  * @author Robin Collier
  */
-public class RetractItem implements ExtensionElement
-{
+public class RetractItem implements ExtensionElement {
     private final String id;
 
     /**
@@ -34,33 +33,28 @@ public class RetractItem implements ExtensionElement
      * 
      * @param itemId The id if the item deleted
      */
-    public RetractItem(String itemId)
-    {
+    public RetractItem(String itemId) {
         if (itemId == null)
             throw new IllegalArgumentException("itemId must not be 'null'");
         id = itemId;
     }
 
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return "retract";
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return PubSubNamespace.EVENT.getXmlns();
     }
 
     @Override
-    public String toXML()
-    {
+    public String toXML() {
         return "<retract id='" + id + "'/>";
     }
 }

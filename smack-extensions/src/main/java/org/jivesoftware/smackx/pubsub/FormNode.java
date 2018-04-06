@@ -26,8 +26,7 @@ import org.jivesoftware.smackx.xdata.Form;
  * 
  * @author Robin Collier
  */
-public class FormNode extends NodeExtension
-{
+public class FormNode extends NodeExtension {
     private final Form configForm;
 
     /**
@@ -36,8 +35,7 @@ public class FormNode extends NodeExtension
      * @param formType The type of form being sent
      * @param submitForm The form
      */
-    public FormNode(FormNodeType formType, Form submitForm)
-    {
+    public FormNode(FormNodeType formType, Form submitForm) {
         super(formType.getNodeElement());
 
         if (submitForm == null)
@@ -53,8 +51,7 @@ public class FormNode extends NodeExtension
      * @param nodeId The node the form is associated with
      * @param submitForm The form
      */
-    public FormNode(FormNodeType formType, String nodeId, Form submitForm)
-    {
+    public FormNode(FormNodeType formType, String nodeId, Form submitForm) {
         super(formType.getNodeElement(), nodeId);
 
         if (submitForm == null)
@@ -67,25 +64,20 @@ public class FormNode extends NodeExtension
      * 
      * @return The form
      */
-    public Form getForm()
-    {
+    public Form getForm() {
         return configForm;
     }
 
     @Override
-    public CharSequence toXML()
-    {
-        if (configForm == null)
-        {
+    public CharSequence toXML() {
+        if (configForm == null) {
             return super.toXML();
         }
-        else
-        {
+        else {
             StringBuilder builder = new StringBuilder("<");
             builder.append(getElementName());
 
-            if (getNode() != null)
-            {
+            if (getNode() != null) {
                 builder.append(" node='");
                 builder.append(getNode());
                 builder.append("'>");

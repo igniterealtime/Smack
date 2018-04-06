@@ -23,10 +23,8 @@ package org.jivesoftware.smack.proxy;
  * @author Atul Aggarwal
  */
 
-public class ProxyInfo
-{
-    public enum ProxyType
-    {
+public class ProxyInfo {
+    public enum ProxyType {
         HTTP,
         SOCKS4,
         SOCKS5
@@ -40,8 +38,7 @@ public class ProxyInfo
     private final ProxySocketConnection proxySocketConnection;
 
     public ProxyInfo(ProxyType pType, String pHost, int pPort, String pUser, 
-                        String pPass)
-    {
+                        String pPass) {
         this.proxyType = pType;
         this.proxyAddress = pHost;
         this.proxyPort = pPort;
@@ -63,45 +60,37 @@ public class ProxyInfo
     }
 
     public static ProxyInfo forHttpProxy(String pHost, int pPort, String pUser, 
-                                    String pPass)
-    {
+                                    String pPass) {
         return new ProxyInfo(ProxyType.HTTP, pHost, pPort, pUser, pPass);
     }
 
     public static ProxyInfo forSocks4Proxy(String pHost, int pPort, String pUser, 
-                                    String pPass)
-    {
+                                    String pPass) {
         return new ProxyInfo(ProxyType.SOCKS4, pHost, pPort, pUser, pPass);
     }
 
     public static ProxyInfo forSocks5Proxy(String pHost, int pPort, String pUser, 
-                                    String pPass)
-    {
+                                    String pPass) {
         return new ProxyInfo(ProxyType.SOCKS5, pHost, pPort, pUser, pPass);
     }
 
-    public ProxyType getProxyType()
-    {
+    public ProxyType getProxyType() {
         return proxyType;
     }
 
-    public String getProxyAddress()
-    {
+    public String getProxyAddress() {
         return proxyAddress;
     }
 
-    public int getProxyPort()
-    {
+    public int getProxyPort() {
         return proxyPort;
     }
 
-    public String getProxyUsername()
-    {
+    public String getProxyUsername() {
         return proxyUsername;
     }
 
-    public String getProxyPassword()
-    {
+    public String getProxyPassword() {
         return proxyPassword;
     }
 

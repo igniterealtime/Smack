@@ -27,8 +27,7 @@ import org.jivesoftware.smackx.xdata.Form;
  * 
  * @author Robin Collier
  */
-public enum ConfigureNodeFields
-{
+public enum ConfigureNodeFields {
     /**
      * Determines who may subscribe and retrieve items.
      * 
@@ -214,8 +213,7 @@ public enum ConfigureNodeFields
      */
     type;
 
-    public String getFieldName()
-    {
+    public String getFieldName() {
         return "pubsub#" + toString();
     }
 }

@@ -68,8 +68,7 @@ public class ListenerEventDispatcher implements Runnable {
      * @param methodArguments the arguments supplied to the notification method
      */
     public void addListenerTriplet(Object listenerInstance, Method listenerMethod,
-            Object[] methodArguments)
-    {
+            Object[] methodArguments) {
         if (!this.isRunning) {
             this.triplets.add(new TripletContainer(listenerInstance, listenerMethod,
                     methodArguments));

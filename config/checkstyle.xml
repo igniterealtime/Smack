@@ -80,6 +80,7 @@
 		<module name="GenericWhitespace"/>
 		<module name="EmptyStatement"/>
 		<module name="PackageDeclaration"/>
+		<module name="LeftCurly"/>
 		<module name="RegexpSinglelineJava">
 			<property name="format" value="printStackTrace"/>
 			<property name="message" value="Usage of printStackTrace"/>

@@ -22,8 +22,8 @@ package org.jivesoftware.smackx.pubsub;
  * 
  * @author Robin Collier
  */
-public enum AccessModel
-{
+public enum AccessModel {
+
     /** Anyone may subscribe and retrieve items.     */
     open,
 

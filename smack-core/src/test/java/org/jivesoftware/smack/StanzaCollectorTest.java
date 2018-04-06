@@ -24,16 +24,13 @@ import org.jivesoftware.smack.packet.Stanza;
 
 import org.junit.Test;
 
-public class StanzaCollectorTest
-{
+public class StanzaCollectorTest {
 
     @Test
-    public void verifyRollover() throws InterruptedException
-    {
+    public void verifyRollover() throws InterruptedException {
         TestStanzaCollector collector = new TestStanzaCollector(null, new OKEverything(), 5);
 
-        for (int i = 0; i < 6; i++)
-        {
+        for (int i = 0; i < 6; i++) {
             Stanza testPacket = new TestPacket(i);
             collector.processStanza(testPacket);
         }
@@ -46,8 +43,7 @@ public class StanzaCollectorTest
         assertEquals("5", collector.pollResult().getStanzaId());
         assertNull(collector.pollResult());
 
-        for (int i = 10; i < 15; i++)
-        {
+        for (int i = 10; i < 15; i++) {
             Stanza testPacket = new TestPacket(i);
             collector.processStanza(testPacket);
         }
@@ -67,26 +63,18 @@ public class StanzaCollectorTest
      * catch problems.
      */
     @Test
-    public void verifyThreadSafety()
-    {
+    public void verifyThreadSafety() {
         int insertCount = 500;
         final TestStanzaCollector collector = new TestStanzaCollector(null, new OKEverything(), insertCount);
 
-        Thread consumer1 = new Thread(new Runnable()
-        {
+        Thread consumer1 = new Thread(new Runnable() {
             @Override
-            public void run()
-            {
-                try
-                {
-                    while (true)
-                    {
-                        try
-                        {
+            public void run() {
+                try {
+                    while (true) {
+                        try {
                             Thread.sleep(3);
-                        }
-                        catch (InterruptedException e)
-                        {
+                        } catch (InterruptedException e) {
                         }
                         @SuppressWarnings("unused")
                         Stanza packet = collector.nextResultBlockForever();
@@ -100,55 +88,41 @@ public class StanzaCollectorTest
         });
         consumer1.setName("consumer 1");
 
-        Thread consumer2 = new Thread(new Runnable()
-        {
+        Thread consumer2 = new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 Stanza p;
 
-                do
-                {
-                    try
-                    {
+                do {
+                    try {
                         Thread.sleep(3);
-                    }
-                    catch (InterruptedException e)
-                    {
+                    } catch (InterruptedException e) {
                     }
                     try {
                         p = collector.nextResult(1);
-                    }
-                    catch (InterruptedException e) {
+                    } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-//                  System.out.println(Thread.currentThread().getName() + "  packet: " + p);
+                    // System.out.println(Thread.currentThread().getName() + " packet: " + p);
                 }
                 while (p != null);
             }
         });
         consumer2.setName("consumer 2");
 
-        Thread consumer3 = new Thread(new Runnable()
-        {
+        Thread consumer3 = new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 Stanza p;
 
-                do
-                {
-                    try
-                    {
+                do {
+                    try {
                         Thread.sleep(3);
-                    }
-                    catch (InterruptedException e)
-                    {
+                    } catch (InterruptedException e) {
                     }
                     p = collector.pollResult();
-//                  System.out.println(Thread.currentThread().getName() + "  packet: " + p);
-                }
-                while (p != null);
+                    // System.out.println(Thread.currentThread().getName() + " packet: " + p);
+                } while (p != null);
             }
         });
         consumer3.setName("consumer 3");
@@ -157,54 +131,43 @@ public class StanzaCollectorTest
         consumer2.start();
         consumer3.start();
 
-        for (int i = 0; i < insertCount; i++)
-        {
+        for (int i = 0; i < insertCount; i++) {
             collector.processStanza(new TestPacket(i));
         }
 
-        try
-        {
+        try {
             Thread.sleep(5000);
             consumer3.join();
             consumer2.join();
             consumer1.interrupt();
-        }
-        catch (InterruptedException e)
-        {
+        } catch (InterruptedException e) {
         }
         // We cannot guarantee that this is going to pass due to the possible issue of timing between consumer 1 
         // and main, but the probability is extremely remote.
         assertNull(collector.pollResult());
     }
 
-    static class OKEverything implements StanzaFilter
-    {
+    static class OKEverything implements StanzaFilter {
         @Override
-        public boolean accept(Stanza packet)
-        {
+        public boolean accept(Stanza packet) {
             return true;
         }
 
     }
 
-    static class TestStanzaCollector extends StanzaCollector 
-    {
-        protected TestStanzaCollector(XMPPConnection conection, StanzaFilter packetFilter, int size)
-        {
+    static class TestStanzaCollector extends StanzaCollector {
+        protected TestStanzaCollector(XMPPConnection conection, StanzaFilter packetFilter, int size) {
             super(conection, StanzaCollector.newConfiguration().setStanzaFilter(packetFilter).setSize(size));
         }
     }
 
-    static class TestPacket extends Stanza
-    {
-        TestPacket(int i)
-        {
+    static class TestPacket extends Stanza {
+        TestPacket(int i) {
             setStanzaId(String.valueOf(i));
         }
 
         @Override
-        public String toXML()
-        {
+        public String toXML() {
             return "<packetId>" + getStanzaId() + "</packetId>";
         }
 

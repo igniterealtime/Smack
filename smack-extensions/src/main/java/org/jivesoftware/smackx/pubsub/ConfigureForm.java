@@ -33,16 +33,14 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
  * 
  * @author Robin Collier
  */
-public class ConfigureForm extends Form
-{
+public class ConfigureForm extends Form {
     /**
      * Create a decorator from an existing {@link DataForm} that has been
      * retrieved from parsing a node configuration request.
      * 
      * @param configDataForm
      */
-    public ConfigureForm(DataForm configDataForm)
-    {
+    public ConfigureForm(DataForm configDataForm) {
         super(configDataForm);
     }
 
@@ -53,8 +51,7 @@ public class ConfigureForm extends Form
      * 
      * @param nodeConfigForm
      */
-    public ConfigureForm(Form nodeConfigForm)
-    {
+    public ConfigureForm(Form nodeConfigForm) {
         super(nodeConfigForm.getDataFormToSend());
     }
 
@@ -65,8 +62,7 @@ public class ConfigureForm extends Form
      * using the resulting form to create a answer form.  See {@link #ConfigureForm(Form)}.
      * @param formType
      */
-    public ConfigureForm(DataForm.Type formType)
-    {
+    public ConfigureForm(DataForm.Type formType) {
         super(formType);
     }
 
@@ -75,8 +71,7 @@ public class ConfigureForm extends Form
      * 
      * @return The current {@link AccessModel}
      */
-    public AccessModel getAccessModel()
-    {
+    public AccessModel getAccessModel() {
         String value = getFieldValue(ConfigureNodeFields.access_model);
 
         if (value == null)
@@ -90,8 +85,7 @@ public class ConfigureForm extends Form
      * 
      * @param accessModel
      */
-    public void setAccessModel(AccessModel accessModel)
-    {
+    public void setAccessModel(AccessModel accessModel) {
         addField(ConfigureNodeFields.access_model, FormField.Type.list_single);
         setAnswer(ConfigureNodeFields.access_model.getFieldName(), getListSingle(accessModel.toString()));
     }
@@ -102,8 +96,7 @@ public class ConfigureForm extends Form
      * 
      * @return URL to an XSL
      */
-    public String getBodyXSLT()
-    {
+    public String getBodyXSLT() {
         return getFieldValue(ConfigureNodeFields.body_xslt);
     }
 
@@ -113,8 +106,7 @@ public class ConfigureForm extends Form
      * 
      * @param bodyXslt The URL of an XSL
      */
-    public void setBodyXSLT(String bodyXslt)
-    {
+    public void setBodyXSLT(String bodyXslt) {
         addField(ConfigureNodeFields.body_xslt, FormField.Type.text_single);
         setAnswer(ConfigureNodeFields.body_xslt.getFieldName(), bodyXslt);
     }
@@ -124,8 +116,7 @@ public class ConfigureForm extends Form
      * 
      * @return list of child nodes.
      */
-    public List<String> getChildren()
-    {
+    public List<String> getChildren() {
         return getFieldValues(ConfigureNodeFields.children);
     }
 
@@ -134,8 +125,7 @@ public class ConfigureForm extends Form
      * 
      * @param children
      */
-    public void setChildren(List<String> children)
-    {
+    public void setChildren(List<String> children) {
         addField(ConfigureNodeFields.children, FormField.Type.text_multi);
         setAnswer(ConfigureNodeFields.children.getFieldName(), children);
     }
@@ -145,8 +135,7 @@ public class ConfigureForm extends Form
      *  
      * @return The current policy
      */
-    public ChildrenAssociationPolicy getChildrenAssociationPolicy()
-    {
+    public ChildrenAssociationPolicy getChildrenAssociationPolicy() {
         String value = getFieldValue(ConfigureNodeFields.children_association_policy);
 
         if (value == null)
@@ -160,8 +149,7 @@ public class ConfigureForm extends Form
      * 
      * @param policy The policy being set
      */
-    public void setChildrenAssociationPolicy(ChildrenAssociationPolicy policy)
-    {
+    public void setChildrenAssociationPolicy(ChildrenAssociationPolicy policy) {
         addField(ConfigureNodeFields.children_association_policy, FormField.Type.list_single);
         List<String> values = new ArrayList<>(1);
         values.add(policy.toString());
@@ -175,8 +163,7 @@ public class ConfigureForm extends Form
      * 
      * @return List of the whitelist
      */
-    public List<String> getChildrenAssociationWhitelist()
-    {
+    public List<String> getChildrenAssociationWhitelist() {
         return getFieldValues(ConfigureNodeFields.children_association_whitelist);
     }
 
@@ -187,8 +174,7 @@ public class ConfigureForm extends Form
      * 
      * @param whitelist The list of JID's
      */
-    public void setChildrenAssociationWhitelist(List<String> whitelist)
-    {
+    public void setChildrenAssociationWhitelist(List<String> whitelist) {
         addField(ConfigureNodeFields.children_association_whitelist, FormField.Type.jid_multi);
         setAnswer(ConfigureNodeFields.children_association_whitelist.getFieldName(), whitelist);
     }
@@ -198,8 +184,7 @@ public class ConfigureForm extends Form
      * 
      * @return The maximum number of child nodes
      */
-    public int getChildrenMax()
-    {
+    public int getChildrenMax() {
         return Integer.parseInt(getFieldValue(ConfigureNodeFields.children_max));
     }
 
@@ -208,8 +193,7 @@ public class ConfigureForm extends Form
      * 
      * @param max The maximum number of child nodes.
      */
-    public void setChildrenMax(int max)
-    {
+    public void setChildrenMax(int max) {
         addField(ConfigureNodeFields.children_max, FormField.Type.text_single);
         setAnswer(ConfigureNodeFields.children_max.getFieldName(), max);
     }
@@ -219,8 +203,7 @@ public class ConfigureForm extends Form
      * 
      * @return The collection node id
      */
-    public String getCollection()
-    {
+    public String getCollection() {
         return getFieldValue(ConfigureNodeFields.collection);
     }
 
@@ -229,8 +212,7 @@ public class ConfigureForm extends Form
      * 
      * @param collection The node id of the collection node
      */
-    public void setCollection(String collection)
-    {
+    public void setCollection(String collection) {
         addField(ConfigureNodeFields.collection, FormField.Type.text_single);
         setAnswer(ConfigureNodeFields.collection.getFieldName(), collection);
     }
@@ -242,8 +224,7 @@ public class ConfigureForm extends Form
      * 
      * @return The URL of an XSL transformation
      */
-    public String getDataformXSLT()
-    {
+    public String getDataformXSLT() {
         return getFieldValue(ConfigureNodeFields.dataform_xslt);
     }
 
@@ -254,8 +235,7 @@ public class ConfigureForm extends Form
      * 
      * @param url The URL of an XSL transformation
      */
-    public void setDataformXSLT(String url)
-    {
+    public void setDataformXSLT(String url) {
         addField(ConfigureNodeFields.dataform_xslt, FormField.Type.text_single);
         setAnswer(ConfigureNodeFields.dataform_xslt.getFieldName(), url);
     }
@@ -265,8 +245,7 @@ public class ConfigureForm extends Form
      * 
      * @return true if it does, false otherwise
      */
-    public boolean isDeliverPayloads()
-    {
+    public boolean isDeliverPayloads() {
         return parseBoolean(getFieldValue(ConfigureNodeFields.deliver_payloads));
     }
 
@@ -275,8 +254,7 @@ public class ConfigureForm extends Form
      * 
      * @param deliver true if the payload will be delivered, false otherwise
      */
-    public void setDeliverPayloads(boolean deliver)
-    {
+    public void setDeliverPayloads(boolean deliver) {
         addField(ConfigureNodeFields.deliver_payloads, FormField.Type.bool);
         setAnswer(ConfigureNodeFields.deliver_payloads.getFieldName(), deliver);
     }
@@ -286,8 +264,7 @@ public class ConfigureForm extends Form
      * 
      * @return Who should get the reply
      */
-    public ItemReply getItemReply()
-    {
+    public ItemReply getItemReply() {
         String value = getFieldValue(ConfigureNodeFields.itemreply);
 
         if (value == null)
@@ -301,8 +278,7 @@ public class ConfigureForm extends Form
      * 
      * @param reply Defines who should get the reply
      */
-    public void setItemReply(ItemReply reply)
-    {
+    public void setItemReply(ItemReply reply) {
         addField(ConfigureNodeFields.itemreply, FormField.Type.list_single);
         setAnswer(ConfigureNodeFields.itemreply.getFieldName(), getListSingle(reply.toString()));
     }
@@ -313,8 +289,7 @@ public class ConfigureForm extends Form
      * 
      * @return The maximum number of items to persist
      */
-    public int getMaxItems()
-    {
+    public int getMaxItems() {
         return Integer.parseInt(getFieldValue(ConfigureNodeFields.max_items));
     }
 
@@ -324,8 +299,7 @@ public class ConfigureForm extends Form
      * 
      * @param max The maximum number of items to persist
      */
-    public void setMaxItems(int max)
-    {
+    public void setMaxItems(int max) {
         addField(ConfigureNodeFields.max_items, FormField.Type.text_single);
         setAnswer(ConfigureNodeFields.max_items.getFieldName(), max);
     }
@@ -335,8 +309,7 @@ public class ConfigureForm extends Form
      * 
      * @return The maximum payload size
      */
-    public int getMaxPayloadSize()
-    {
+    public int getMaxPayloadSize() {
         return Integer.parseInt(getFieldValue(ConfigureNodeFields.max_payload_size));
     }
 
@@ -345,8 +318,7 @@ public class ConfigureForm extends Form
      * 
      * @param max The maximum payload size
      */
-    public void setMaxPayloadSize(int max)
-    {
+    public void setMaxPayloadSize(int max) {
         addField(ConfigureNodeFields.max_payload_size, FormField.Type.text_single);
         setAnswer(ConfigureNodeFields.max_payload_size.getFieldName(), max);
     }
@@ -356,8 +328,7 @@ public class ConfigureForm extends Form
      * 
      * @return The node type
      */
-    public NodeType getNodeType()
-    {
+    public NodeType getNodeType() {
         String value = getFieldValue(ConfigureNodeFields.node_type);
 
         if (value == null)
@@ -371,8 +342,7 @@ public class ConfigureForm extends Form
      * 
      * @param type The node type
      */
-    public void setNodeType(NodeType type)
-    {
+    public void setNodeType(NodeType type) {
         addField(ConfigureNodeFields.node_type, FormField.Type.list_single);
         setAnswer(ConfigureNodeFields.node_type.getFieldName(), getListSingle(type.toString()));
     }
@@ -382,8 +352,7 @@ public class ConfigureForm extends Form
      * 
      * @return true if they should be notified, false otherwise
      */
-    public boolean isNotifyConfig()
-    {
+    public boolean isNotifyConfig() {
         return parseBoolean(getFieldValue(ConfigureNodeFields.notify_config));
     }
 
@@ -392,8 +361,7 @@ public class ConfigureForm extends Form
      * 
      * @param notify true if subscribers should be notified, false otherwise
      */
-    public void setNotifyConfig(boolean notify)
-    {
+    public void setNotifyConfig(boolean notify) {
         addField(ConfigureNodeFields.notify_config, FormField.Type.bool);
         setAnswer(ConfigureNodeFields.notify_config.getFieldName(), notify);
     }
@@ -403,8 +371,7 @@ public class ConfigureForm extends Form
      * 
      * @return true if subscribers should be notified, false otherwise
      */
-    public boolean isNotifyDelete()
-    {
+    public boolean isNotifyDelete() {
         return parseBoolean(getFieldValue(ConfigureNodeFields.notify_delete));
     }
 
@@ -413,8 +380,7 @@ public class ConfigureForm extends Form
      * 
      * @param notify true if subscribers should be notified, false otherwise
      */
-    public void setNotifyDelete(boolean notify) 
-    {
+    public void setNotifyDelete(boolean notify)  {
         addField(ConfigureNodeFields.notify_delete, FormField.Type.bool);
         setAnswer(ConfigureNodeFields.notify_delete.getFieldName(), notify);
     }
@@ -425,8 +391,7 @@ public class ConfigureForm extends Form
      * 
      * @return true if subscribers should be notified, false otherwise
      */
-    public boolean isNotifyRetract()
-    {
+    public boolean isNotifyRetract() {
         return parseBoolean(getFieldValue(ConfigureNodeFields.notify_retract));
     }
 
@@ -436,8 +401,7 @@ public class ConfigureForm extends Form
      * 
      * @param notify true if subscribers should be notified, false otherwise
      */
-    public void setNotifyRetract(boolean notify) 
-    {
+    public void setNotifyRetract(boolean notify)  {
         addField(ConfigureNodeFields.notify_retract, FormField.Type.bool);
         setAnswer(ConfigureNodeFields.notify_retract.getFieldName(), notify);
     }
@@ -447,8 +411,7 @@ public class ConfigureForm extends Form
      * 
      * @return true if items are persisted
      */
-    public boolean isPersistItems()
-    {
+    public boolean isPersistItems() {
         return parseBoolean(getFieldValue(ConfigureNodeFields.persist_items));
     }
 
@@ -457,8 +420,7 @@ public class ConfigureForm extends Form
      * 
      * @param persist true if items should be persisted, false otherwise
      */
-    public void setPersistentItems(boolean persist) 
-    {
+    public void setPersistentItems(boolean persist)  {
         addField(ConfigureNodeFields.persist_items, FormField.Type.bool);
         setAnswer(ConfigureNodeFields.persist_items.getFieldName(), persist);
     }
@@ -468,8 +430,7 @@ public class ConfigureForm extends Form
      * 
      * @return true if users must be available
      */
-    public boolean isPresenceBasedDelivery()
-    {
+    public boolean isPresenceBasedDelivery() {
         return parseBoolean(getFieldValue(ConfigureNodeFields.presence_based_delivery));
     }
 
@@ -478,8 +439,7 @@ public class ConfigureForm extends Form
      * 
      * @param presenceBased true if user must be available, false otherwise
      */
-    public void setPresenceBasedDelivery(boolean presenceBased) 
-    {
+    public void setPresenceBasedDelivery(boolean presenceBased)  {
         addField(ConfigureNodeFields.presence_based_delivery, FormField.Type.bool);
         setAnswer(ConfigureNodeFields.presence_based_delivery.getFieldName(), presenceBased);
     }
@@ -489,8 +449,7 @@ public class ConfigureForm extends Form
      * 
      * @return The publishing model
      */
-    public PublishModel getPublishModel()
-    {
+    public PublishModel getPublishModel() {
         String value = getFieldValue(ConfigureNodeFields.publish_model);
 
         if (value == null)
@@ -504,8 +463,7 @@ public class ConfigureForm extends Form
      * 
      * @param publish The enum representing the possible options for the publishing model
      */
-    public void setPublishModel(PublishModel publish) 
-    {
+    public void setPublishModel(PublishModel publish)  {
         addField(ConfigureNodeFields.publish_model, FormField.Type.list_single);
         setAnswer(ConfigureNodeFields.publish_model.getFieldName(), getListSingle(publish.toString()));
     }
@@ -515,8 +473,7 @@ public class ConfigureForm extends Form
      * 
      * @return The reply room JID's
      */
-    public List<String> getReplyRoom()
-    {
+    public List<String> getReplyRoom() {
         return getFieldValues(ConfigureNodeFields.replyroom);
     }
 
@@ -525,8 +482,7 @@ public class ConfigureForm extends Form
      * 
      * @param replyRooms The multi user chat room to use as reply rooms
      */
-    public void setReplyRoom(List<String> replyRooms) 
-    {
+    public void setReplyRoom(List<String> replyRooms)  {
         addField(ConfigureNodeFields.replyroom, FormField.Type.list_multi);
         setAnswer(ConfigureNodeFields.replyroom.getFieldName(), replyRooms);
     }
@@ -536,8 +492,7 @@ public class ConfigureForm extends Form
      *  
      * @return The JID's
      */
-    public List<String> getReplyTo()
-    {
+    public List<String> getReplyTo() {
         return getFieldValues(ConfigureNodeFields.replyto);
     }
 
@@ -546,8 +501,7 @@ public class ConfigureForm extends Form
      * 
      * @param replyTos The JID's to reply to
      */
-    public void setReplyTo(List<String> replyTos)
-    {
+    public void setReplyTo(List<String> replyTos) {
         addField(ConfigureNodeFields.replyto, FormField.Type.list_multi);
         setAnswer(ConfigureNodeFields.replyto.getFieldName(), replyTos);
     }
@@ -557,8 +511,7 @@ public class ConfigureForm extends Form
      *  
      * @return The roster groups
      */
-    public List<String> getRosterGroupsAllowed()
-    {
+    public List<String> getRosterGroupsAllowed() {
         return getFieldValues(ConfigureNodeFields.roster_groups_allowed);
     }
 
@@ -567,8 +520,7 @@ public class ConfigureForm extends Form
      * 
      * @param groups The roster groups
      */
-    public void setRosterGroupsAllowed(List<String> groups)
-    {
+    public void setRosterGroupsAllowed(List<String> groups) {
         addField(ConfigureNodeFields.roster_groups_allowed, FormField.Type.list_multi);
         setAnswer(ConfigureNodeFields.roster_groups_allowed.getFieldName(), groups);
     }
@@ -580,8 +532,7 @@ public class ConfigureForm extends Form
      * @deprecated use {@link #isSubscribe()} instead
      */
     @Deprecated
-    public boolean isSubscibe()
-    {
+    public boolean isSubscibe() {
         return isSubscribe();
     }
 
@@ -599,8 +550,7 @@ public class ConfigureForm extends Form
      * 
      * @param subscribe true if they are, false otherwise
      */
-    public void setSubscribe(boolean subscribe)
-    {
+    public void setSubscribe(boolean subscribe) {
         addField(ConfigureNodeFields.subscribe, FormField.Type.bool);
         setAnswer(ConfigureNodeFields.subscribe.getFieldName(), subscribe);
     }
@@ -611,8 +561,7 @@ public class ConfigureForm extends Form
      * @return The node title
      */
     @Override
-    public String getTitle()
-    {
+    public String getTitle() {
         return getFieldValue(ConfigureNodeFields.title);
     }
 
@@ -622,8 +571,7 @@ public class ConfigureForm extends Form
      * @param title The node title
      */
     @Override
-    public void setTitle(String title) 
-    {
+    public void setTitle(String title)  {
         addField(ConfigureNodeFields.title, FormField.Type.text_single);
         setAnswer(ConfigureNodeFields.title.getFieldName(), title);
     }
@@ -633,8 +581,7 @@ public class ConfigureForm extends Form
      * 
      * @return The type of node data
      */
-    public String getDataType()
-    {
+    public String getDataType() {
         return getFieldValue(ConfigureNodeFields.type);
     }
 
@@ -643,27 +590,23 @@ public class ConfigureForm extends Form
      * 
      * @param type The type of node data
      */
-    public void setDataType(String type) 
-    {
+    public void setDataType(String type)  {
         addField(ConfigureNodeFields.type, FormField.Type.text_single);
         setAnswer(ConfigureNodeFields.type.getFieldName(), type);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder result = new StringBuilder(getClass().getName() + " Content [");
 
-        for (FormField formField : getFields())
-        {
+        for (FormField formField : getFields()) {
             result.append('(');
             result.append(formField.getVariable());
             result.append(':');
 
             StringBuilder valuesBuilder = new StringBuilder();
 
-            for (String value : formField.getValues())
-            {
+            for (String value : formField.getValues()) {
                 if (valuesBuilder.length() > 0)
                     result.append(',');
                 valuesBuilder.append(value);
@@ -678,39 +621,33 @@ public class ConfigureForm extends Form
         return result.toString();
     }
 
-    private static boolean parseBoolean(String fieldValue)
-    {
+    private static boolean parseBoolean(String fieldValue) {
         return ("1".equals(fieldValue) || "true".equals(fieldValue));
     }
 
-    private String getFieldValue(ConfigureNodeFields field)
-    {
+    private String getFieldValue(ConfigureNodeFields field) {
         FormField formField = getField(field.getFieldName());
 
         return (formField.getValues().isEmpty()) ? null : formField.getValues().get(0);
     }
 
-    private List<String> getFieldValues(ConfigureNodeFields field)
-    {
+    private List<String> getFieldValues(ConfigureNodeFields field) {
         FormField formField = getField(field.getFieldName());
 
         return formField.getValues();
     }
 
-    private void addField(ConfigureNodeFields nodeField, FormField.Type type)
-    {
+    private void addField(ConfigureNodeFields nodeField, FormField.Type type) {
         String fieldName = nodeField.getFieldName();
 
-        if (getField(fieldName) == null)
-        {
+        if (getField(fieldName) == null) {
             FormField field = new FormField(fieldName);
             field.setType(type);
             addField(field);
         }
     }
 
-    private static List<String> getListSingle(String value)
-    {
+    private static List<String> getListSingle(String value) {
         List<String> list = new ArrayList<>(1);
         list.add(value);
         return list;

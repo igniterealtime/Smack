@@ -48,8 +48,7 @@ import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
  * 
  * @author Robin Collier
  */
-public class PayloadItem<E extends ExtensionElement> extends Item
-{
+public class PayloadItem<E extends ExtensionElement> extends Item {
     private final E payload;
 
     /**
@@ -57,8 +56,7 @@ public class PayloadItem<E extends ExtensionElement> extends Item
      * 
      * @param payloadExt A {@link ExtensionElement} which represents the payload data.
      */
-    public PayloadItem(E payloadExt)
-    {
+    public PayloadItem(E payloadExt) {
         super();
 
         if (payloadExt == null)
@@ -72,8 +70,7 @@ public class PayloadItem<E extends ExtensionElement> extends Item
      * @param itemId The id of this item.  It can be null if we want the server to set the id.
      * @param payloadExt A {@link ExtensionElement} which represents the payload data.
      */
-    public PayloadItem(String itemId, E payloadExt)
-    {
+    public PayloadItem(String itemId, E payloadExt) {
         super(itemId);
 
         if (payloadExt == null)
@@ -95,8 +92,7 @@ public class PayloadItem<E extends ExtensionElement> extends Item
      * @param nodeId The id of the node the item was published to.
      * @param payloadExt A {@link ExtensionElement} which represents the payload data.
      */
-    public PayloadItem(String itemId, String nodeId, E payloadExt)
-    {
+    public PayloadItem(String itemId, String nodeId, E payloadExt) {
         super(itemId, nodeId);
 
         if (payloadExt == null)
@@ -110,18 +106,15 @@ public class PayloadItem<E extends ExtensionElement> extends Item
      * 
      * @return The payload as a {@link ExtensionElement}.
      */
-    public E getPayload()
-    {
+    public E getPayload() {
         return payload;
     }
 
     @Override
-    public String toXML()
-    {
+    public String toXML() {
         StringBuilder builder = new StringBuilder("<item");
 
-        if (getId() != null)
-        {
+        if (getId() != null) {
             builder.append(" id='");
             builder.append(getId());
             builder.append('\'');
@@ -140,8 +133,7 @@ public class PayloadItem<E extends ExtensionElement> extends Item
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getClass().getName() + " | Content [" + toXML() + "]";
     }
 }

@@ -22,8 +22,8 @@ package org.jivesoftware.smackx.pubsub;
  * 
  * @author Robin Collier
  */
-public enum EventElementType
-{
+public enum EventElementType {
+
     /** A node has been associated or disassociated with a collection node. */
     collection,
 

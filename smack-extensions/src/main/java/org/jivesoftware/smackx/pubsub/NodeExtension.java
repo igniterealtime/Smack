@@ -26,8 +26,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  * 
  * @author Robin Collier
  */
-public class NodeExtension implements ExtensionElement
-{
+public class NodeExtension implements ExtensionElement {
     private final PubSubElementType element;
     private final String node;
 
@@ -38,8 +37,7 @@ public class NodeExtension implements ExtensionElement
      * @param elem Defines the element name and namespace
      * @param nodeId Specifies the id of the node
      */
-    public NodeExtension(PubSubElementType elem, String nodeId)
-    {
+    public NodeExtension(PubSubElementType elem, String nodeId) {
         element = elem;
         this.node = nodeId;
     }
@@ -50,8 +48,7 @@ public class NodeExtension implements ExtensionElement
      * 
      * @param elem Defines the element name and namespace
      */
-    public NodeExtension(PubSubElementType elem)
-    {
+    public NodeExtension(PubSubElementType elem) {
         this(elem, null);
     }
 
@@ -60,32 +57,27 @@ public class NodeExtension implements ExtensionElement
      * 
      * @return The node id
      */
-    public String getNode()
-    {
+    public String getNode() {
         return node;
     }
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return element.getElementName();
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return element.getNamespace().getXmlns();
     }
 
     @Override
-    public CharSequence toXML()
-    {
+    public CharSequence toXML() {
         return '<' + getElementName() + (node == null ? "" : " node='" + node + '\'') + "/>";
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getClass().getName() + " - content [" + toXML() + "]";
     }
 }

@@ -38,15 +38,12 @@ public enum FormNodeType {
     /** Form which represents the default node configuration options. */
     DEFAULT;
 
-    public PubSubElementType getNodeElement()
-    {
+    public PubSubElementType getNodeElement() {
         return PubSubElementType.valueOf(toString());
     }
 
-    public static FormNodeType valueOfFromElementName(String elem, String configNamespace)
-    {
-        if ("configure".equals(elem) && PubSubNamespace.OWNER.getXmlns().equals(configNamespace))
-        {
+    public static FormNodeType valueOfFromElementName(String elem, String configNamespace) {
+        if ("configure".equals(elem) && PubSubNamespace.OWNER.getXmlns().equals(configNamespace)) {
             return CONFIGURE_OWNER;
         }
         return valueOf(elem.toUpperCase(Locale.US));

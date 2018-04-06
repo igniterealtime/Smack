@@ -33,25 +33,21 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author Georg Lukas
  */
-public class DeliveryReceiptRequest implements ExtensionElement
-{
+public class DeliveryReceiptRequest implements ExtensionElement {
     public static final String ELEMENT = "request";
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return DeliveryReceipt.NAMESPACE;
     }
 
     @Override
-    public String toXML()
-    {
+    public String toXML() {
         return "<request xmlns='" + DeliveryReceipt.NAMESPACE + "'/>";
     }
 

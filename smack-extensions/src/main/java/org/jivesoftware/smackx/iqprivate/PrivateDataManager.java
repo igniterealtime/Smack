@@ -115,8 +115,7 @@ public final class PrivateDataManager extends Manager {
      * @param provider the private data provider.
      */
     public static void addPrivateDataProvider(String elementName, String namespace,
-            PrivateDataProvider provider)
-    {
+            PrivateDataProvider provider) {
         String key = XmppStringUtils.generateKey(elementName, namespace);
         privateDataProviders.put(key, provider);
     }
@@ -159,8 +158,7 @@ public final class PrivateDataManager extends Manager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public PrivateData getPrivateData(final String elementName, final String namespace) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public PrivateData getPrivateData(final String elementName, final String namespace) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Create an IQ packet to get the private data.
         IQ privateDataGet = new PrivateDataIQ(elementName, namespace);
 

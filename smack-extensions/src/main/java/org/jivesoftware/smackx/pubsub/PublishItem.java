@@ -24,8 +24,7 @@ import java.util.Collection;
  * 
  * @author Robin Collier
  */
-public class PublishItem<T extends Item> extends NodeExtension
-{
+public class PublishItem<T extends Item> extends NodeExtension {
     protected Collection<T> items;
 
     /**
@@ -34,8 +33,7 @@ public class PublishItem<T extends Item> extends NodeExtension
      * @param nodeId The node to publish to
      * @param toPublish The {@link Item} to publish
      */
-    public PublishItem(String nodeId, T toPublish)
-    {
+    public PublishItem(String nodeId, T toPublish) {
         super(PubSubElementType.PUBLISH, nodeId);
         items = new ArrayList<>(1);
         items.add(toPublish);
@@ -47,23 +45,20 @@ public class PublishItem<T extends Item> extends NodeExtension
      * @param nodeId The node to publish to
      * @param toPublish The list of {@link Item} to publish
      */
-    public PublishItem(String nodeId, Collection<T> toPublish)
-    {
+    public PublishItem(String nodeId, Collection<T> toPublish) {
         super(PubSubElementType.PUBLISH, nodeId);
         items = toPublish;
     }
 
     @Override
-    public String toXML()
-    {
+    public String toXML() {
         StringBuilder builder = new StringBuilder("<");
         builder.append(getElementName());
         builder.append(" node='");
         builder.append(getNode());
         builder.append("'>");
 
-        for (Item item : items)
-        {
+        for (Item item : items) {
             builder.append(item.toXML());
         }
         builder.append("</publish>");

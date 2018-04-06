@@ -33,8 +33,7 @@ import org.jivesoftware.smack.util.StringUtils;
 public class Socks4ProxySocketConnection implements ProxySocketConnection {
     private final ProxyInfo proxy;
 
-    Socks4ProxySocketConnection(ProxyInfo proxy)
-    {
+    Socks4ProxySocketConnection(ProxyInfo proxy) {
         this.proxy = proxy;
     }
 
@@ -47,8 +46,7 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
         int proxy_port = proxy.getProxyPort();
         String user = proxy.getProxyUsername();
 
-        try
-        {
+        try {
             socket.connect(new InetSocketAddress(proxy_host, proxy_port), timeout);
             in = socket.getInputStream();
             out = socket.getOutputStream();
@@ -84,13 +82,11 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
 
             InetAddress inetAddress = InetAddress.getByName(proxy_host);
             byte[] byteAddress = inetAddress.getAddress();
-            for (int i = 0; i < byteAddress.length; i++)
-            {
+            for (int i = 0; i < byteAddress.length; i++) {
                 buf[index++] = byteAddress[i];
             }
 
-            if (user != null)
-            {
+            if (user != null) {
                 byte[] userBytes = user.getBytes(StringUtils.UTF8);
                 System.arraycopy(userBytes, 0, buf, index, user.length());
                 index += user.length();
@@ -127,29 +123,23 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
 
             int len = 6;
             int s = 0;
-            while (s < len)
-            {
+            while (s < len) {
                 int i = in.read(buf, s, len - s);
-                if (i <= 0)
-                {
+                if (i <= 0) {
                     throw new ProxyException(ProxyInfo.ProxyType.SOCKS4, 
                         "stream is closed");
                 }
                 s += i;
             }
-            if (buf[0] != 0)
-            {
+            if (buf[0] != 0) {
                 throw new ProxyException(ProxyInfo.ProxyType.SOCKS4, 
                     "server returns VN " + buf[0]);
             }
-            if (buf[1] != 90)
-            {
-                try
-                {
+            if (buf[1] != 90) {
+                try {
                     socket.close();
                 }
-                catch (Exception eee)
-                {
+                catch (Exception eee) {
                 }
                 String message = "ProxySOCKS4: server returns CD " + buf[1];
                 throw new ProxyException(ProxyInfo.ProxyType.SOCKS4, message);
@@ -157,18 +147,14 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
             byte[] temp = new byte[2];
             in.read(temp, 0, 2);
         }
-        catch (RuntimeException e)
-        {
+        catch (RuntimeException e) {
             throw e;
         }
-        catch (Exception e)
-        {
-            try
-            {
+        catch (Exception e) {
+            try {
                socket.close();
             }
-            catch (Exception eee)
-            {
+            catch (Exception eee) {
             }
             throw new ProxyException(ProxyInfo.ProxyType.SOCKS4, e.toString());
         }

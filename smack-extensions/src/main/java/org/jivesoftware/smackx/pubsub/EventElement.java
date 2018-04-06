@@ -33,8 +33,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
  * 
  * @author Robin Collier
  */
-public class EventElement implements EmbeddedPacketExtension
-{
+public class EventElement implements EmbeddedPacketExtension {
     /**
      * The constant String "event".
      */
@@ -48,37 +47,31 @@ public class EventElement implements EmbeddedPacketExtension
     private final EventElementType type;
     private final NodeExtension ext;
 
-    public EventElement(EventElementType eventType, NodeExtension eventExt)
-    {
+    public EventElement(EventElementType eventType, NodeExtension eventExt) {
         type = eventType;
         ext = eventExt;
     }
 
-    public EventElementType getEventType()
-    {
+    public EventElementType getEventType() {
         return type;
     }
 
     @Override
-    public List<ExtensionElement> getExtensions()
-    {
+    public List<ExtensionElement> getExtensions() {
         return Arrays.asList(new ExtensionElement[] {getEvent()});
     }
 
-    public NodeExtension getEvent()
-    {
+    public NodeExtension getEvent() {
         return ext;
     }
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return "event";
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return PubSubNamespace.EVENT.getXmlns();
     }
 

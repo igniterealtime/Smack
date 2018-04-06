@@ -31,8 +31,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Georg Lukas
  */
-public class DeliveryReceipt implements ExtensionElement
-{
+public class DeliveryReceipt implements ExtensionElement {
     public static final String NAMESPACE = "urn:xmpp:receipts";
     public static final String ELEMENT = "received";
 
@@ -41,31 +40,26 @@ public class DeliveryReceipt implements ExtensionElement
      */
     private final String id;
 
-    public DeliveryReceipt(String id)
-    {
+    public DeliveryReceipt(String id) {
         this.id = StringUtils.requireNotNullOrEmpty(id, "id must not be null");
     }
 
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return NAMESPACE;
     }
 
     @Override
-    public XmlStringBuilder toXML()
-    {
+    public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("id", id);
         xml.closeEmptyElement();
@@ -97,13 +91,11 @@ public class DeliveryReceipt implements ExtensionElement
     /**
      * This Provider parses and returns DeliveryReceipt packets.
      */
-    public static class Provider extends EmbeddedExtensionProvider<DeliveryReceipt>
-    {
+    public static class Provider extends EmbeddedExtensionProvider<DeliveryReceipt> {
 
         @Override
         protected DeliveryReceipt createReturnExtension(String currentElement, String currentNamespace,
-                Map<String, String> attributeMap, List<? extends ExtensionElement> content)
-        {
+                Map<String, String> attributeMap, List<? extends ExtensionElement> content) {
             return new DeliveryReceipt(attributeMap.get("id"));
         }
 

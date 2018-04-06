@@ -49,8 +49,7 @@ import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
  * 
  * @author Robin Collier
  */
-public class Item extends NodeExtension
-{
+public class Item extends NodeExtension {
     private String id;
 
     /**
@@ -60,8 +59,7 @@ public class Item extends NodeExtension
      * set to false, no <tt>Item</tt> is sent to the node, you have to use the {@link LeafNode#publish()}
      * method in this case.
      */
-    public Item()
-    {
+    public Item() {
         super(PubSubElementType.ITEM);
     }
 
@@ -72,8 +70,7 @@ public class Item extends NodeExtension
      * @param itemId The id if the item.  It must be unique within the node unless overwriting and existing item.
      * Passing null is the equivalent of calling {@link #Item()}.
      */
-    public Item(String itemId)
-    {
+    public Item(String itemId) {
         // The element type is actually irrelevant since we override getNamespace() to return null
         super(PubSubElementType.ITEM);
         id = itemId;
@@ -90,8 +87,7 @@ public class Item extends NodeExtension
      * @param itemId The id of the item.
      * @param nodeId The id of the node which the item was published to.
      */
-    public Item(String itemId, String nodeId)
-    {
+    public Item(String itemId, String nodeId) {
         super(PubSubElementType.ITEM_EVENT, nodeId);
         id = itemId;
     }
@@ -101,24 +97,20 @@ public class Item extends NodeExtension
      *
      * @return The id
      */
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return null;
     }
 
     @Override
-    public String toXML()
-    {
+    public String toXML() {
         StringBuilder builder = new StringBuilder("<item");
 
-        if (id != null)
-        {
+        if (id != null) {
             builder.append(" id='");
             builder.append(id);
             builder.append('\'');
@@ -135,8 +127,7 @@ public class Item extends NodeExtension
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getClass().getName() + " | Content [" + toXML() + "]";
     }
 }

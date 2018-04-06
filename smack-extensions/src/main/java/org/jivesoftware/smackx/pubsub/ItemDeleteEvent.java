@@ -24,8 +24,7 @@ import java.util.List;
  * 
  * @author Robin Collier
  */
-public class ItemDeleteEvent extends SubscriptionEvent
-{
+public class ItemDeleteEvent extends SubscriptionEvent {
     private List<String> itemIds = Collections.emptyList();
 
     /**
@@ -38,8 +37,7 @@ public class ItemDeleteEvent extends SubscriptionEvent
      * @param deletedItemIds The item ids of the items that were deleted.
      * @param subscriptionIds The subscriptions that match the event.
      */
-    public ItemDeleteEvent(String nodeId, List<String> deletedItemIds, List<String> subscriptionIds)
-    {
+    public ItemDeleteEvent(String nodeId, List<String> deletedItemIds, List<String> subscriptionIds) {
         super(nodeId, subscriptionIds);
 
         if (deletedItemIds == null)
@@ -52,14 +50,12 @@ public class ItemDeleteEvent extends SubscriptionEvent
      * 
      * @return List of item id's
      */
-    public List<String> getItemIds()
-    {
+    public List<String> getItemIds() {
         return Collections.unmodifiableList(itemIds);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getClass().getName() + "  [subscriptions: " + getSubscriptions() + "], [Deleted Items: " + itemIds + ']';
     }
 }

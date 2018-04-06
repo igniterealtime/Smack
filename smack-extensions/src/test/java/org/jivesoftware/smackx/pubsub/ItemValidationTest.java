@@ -42,8 +42,7 @@ public class ItemValidationTest extends InitExtensions {
     private ThreadedDummyConnection connection;
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         // Uncomment this to enable debug output
         // SmackConfiguration.DEBUG = true;
 
@@ -53,15 +52,13 @@ public class ItemValidationTest extends InitExtensions {
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         if (connection != null)
             connection.disconnect();
     }
 
     @Test
-    public void verifyBasicItem() throws Exception
-    {
+    public void verifyBasicItem() throws Exception {
         Item simpleItem = new Item();
         String simpleCtrl = "<item />";
         assertXMLEqual(simpleCtrl, simpleItem.toXML());
@@ -76,8 +73,7 @@ public class ItemValidationTest extends InitExtensions {
     }
 
     @Test
-    public void verifyPayloadItem() throws Exception
-    {
+    public void verifyPayloadItem() throws Exception {
         SimplePayload payload = new SimplePayload(null, null, "<data>This is the payload</data>");
 
         PayloadItem<SimplePayload> simpleItem = new PayloadItem<>(payload);
@@ -94,8 +90,7 @@ public class ItemValidationTest extends InitExtensions {
     }
 
     @Test
-    public void parseBasicItem() throws Exception
-    {
+    public void parseBasicItem() throws Exception {
         XmlPullParser parser = PacketParserUtils.getParserFor(
             "<message from='pubsub.myserver.com' to='francisco@denmark.lit' id='foo'>" +
                 "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
@@ -121,8 +116,7 @@ public class ItemValidationTest extends InitExtensions {
     }
 
     @Test
-    public void parseSimplePayloadItem() throws Exception
-    {
+    public void parseSimplePayloadItem() throws Exception {
         String itemContent = "<foo xmlns='smack:test'>Some text</foo>";
 
         XmlPullParser parser = PacketParserUtils.getParserFor(
@@ -154,8 +148,7 @@ public class ItemValidationTest extends InitExtensions {
     }
 
     @Test
-    public void parseComplexItem() throws Exception
-    {
+    public void parseComplexItem() throws Exception {
         String itemContent = 
                 "<entry xmlns='http://www.w3.org/2005/Atom'>" +
                     "<title>Soliloquy</title>" +
@@ -201,8 +194,7 @@ public class ItemValidationTest extends InitExtensions {
     }
 
     @Test
-    public void parseEmptyTag() throws Exception
-    {
+    public void parseEmptyTag() throws Exception {
         String itemContent = "<foo xmlns='smack:test'><bar/></foo>";
 
         XmlPullParser parser = PacketParserUtils.getParserFor(

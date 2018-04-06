@@ -28,8 +28,7 @@ import org.jivesoftware.smackx.xdata.Form;
  * 
  * @author Robin Collier
  */
-public class NodeUtils
-{
+public class NodeUtils {
     /** 
      * Get a {@link ConfigureForm} from a packet.
      * 
@@ -37,8 +36,7 @@ public class NodeUtils
      * @param elem
      * @return The configuration form
      */
-    public static ConfigureForm getFormFromPacket(Stanza packet, PubSubElementType elem)
-    {
+    public static ConfigureForm getFormFromPacket(Stanza packet, PubSubElementType elem) {
         FormNode config = packet.getExtension(elem.getElementName(), elem.getNamespace().getXmlns());
         Form formReply = config.getForm();
         return new ConfigureForm(formReply);

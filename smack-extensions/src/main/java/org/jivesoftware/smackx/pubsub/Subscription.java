@@ -25,15 +25,13 @@ import org.jxmpp.jid.Jid;
  * 
  * @author Robin Collier
  */
-public class Subscription extends NodeExtension
-{
+public class Subscription extends NodeExtension {
     protected Jid jid;
     protected String id;
     protected State state;
     protected boolean configRequired = false;
 
-    public enum State
-    {
+    public enum State {
         subscribed, unconfigured, pending, none 
     }
 
@@ -43,8 +41,7 @@ public class Subscription extends NodeExtension
      * 
      * @param subscriptionJid The subscriber JID
      */
-    public Subscription(Jid subscriptionJid)
-    {
+    public Subscription(Jid subscriptionJid) {
         this(subscriptionJid, null, null, null);
     }
 
@@ -55,8 +52,7 @@ public class Subscription extends NodeExtension
      * @param subscriptionJid The subscriber JID
      * @param nodeId The node id
      */
-    public Subscription(Jid subscriptionJid, String nodeId)
-    {
+    public Subscription(Jid subscriptionJid, String nodeId) {
         this(subscriptionJid, nodeId, null, null);
     }
 
@@ -69,8 +65,7 @@ public class Subscription extends NodeExtension
      * @param subscriptionId The id of this subscription
      * @param state The current state of the subscription
      */
-    public Subscription(Jid jid, String nodeId, String subscriptionId, State state)
-    {
+    public Subscription(Jid jid, String nodeId, String subscriptionId, State state) {
         super(PubSubElementType.SUBSCRIPTION, nodeId);
         this.jid = jid;
         id = subscriptionId;
@@ -88,8 +83,7 @@ public class Subscription extends NodeExtension
      * @param state The current state of the subscription
      * @param configRequired Is configuration required to complete the subscription 
      */
-    public Subscription(Jid jid, String nodeId, String subscriptionId, State state, boolean configRequired)
-    {
+    public Subscription(Jid jid, String nodeId, String subscriptionId, State state, boolean configRequired) {
         super(PubSubElementType.SUBSCRIPTION, nodeId);
         this.jid = jid;
         id = subscriptionId;
@@ -102,8 +96,7 @@ public class Subscription extends NodeExtension
      * 
      * @return The JID
      */
-    public Jid getJid()
-    {
+    public Jid getJid() {
         return jid;
     }
 
@@ -112,8 +105,7 @@ public class Subscription extends NodeExtension
      * 
      * @return The subscription id
      */
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
@@ -122,8 +114,7 @@ public class Subscription extends NodeExtension
      * 
      * @return Current subscription state
      */
-    public State getState()
-    {
+    public State getState() {
         return state;
     }
 
@@ -132,14 +123,12 @@ public class Subscription extends NodeExtension
      * 
      * @return true if configuration is required, false otherwise
      */
-    public boolean isConfigRequired()
-    {
+    public boolean isConfigRequired() {
         return configRequired;
     }
 
     @Override
-    public XmlStringBuilder toXML()
-    {
+    public XmlStringBuilder toXML() {
         XmlStringBuilder builder = new XmlStringBuilder(this);
         builder.attribute("jid", jid);
 
@@ -151,8 +140,7 @@ public class Subscription extends NodeExtension
         return builder;
     }
 
-    private static void appendAttribute(StringBuilder builder, String att, String value)
-    {
+    private static void appendAttribute(StringBuilder builder, String att, String value) {
         builder.append(' ');
         builder.append(att);
         builder.append("='");

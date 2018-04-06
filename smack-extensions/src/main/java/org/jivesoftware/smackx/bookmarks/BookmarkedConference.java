@@ -40,8 +40,7 @@ public class BookmarkedConference implements SharedBookmark {
     }
 
     protected BookmarkedConference(String name, EntityBareJid jid, boolean autoJoin, Resourcepart nickname,
-            String password)
-    {
+            String password) {
         this.name = name;
         this.jid = jid;
         this.autoJoin = autoJoin;

@@ -29,29 +29,24 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  *  
  * @author Robin Collier
  */
-public class ConfigurationEvent extends NodeExtension implements EmbeddedPacketExtension
-{
+public class ConfigurationEvent extends NodeExtension implements EmbeddedPacketExtension {
     private ConfigureForm form;
 
-    public ConfigurationEvent(String nodeId)
-    {
+    public ConfigurationEvent(String nodeId) {
         super(PubSubElementType.CONFIGURATION, nodeId);
     }
 
-    public ConfigurationEvent(String nodeId, ConfigureForm configForm)
-    {
+    public ConfigurationEvent(String nodeId, ConfigureForm configForm) {
         super(PubSubElementType.CONFIGURATION, nodeId);
         form = configForm;
     }
 
-    public ConfigureForm getConfiguration()
-    {
+    public ConfigureForm getConfiguration() {
         return form;
     }
 
     @Override
-    public List<ExtensionElement> getExtensions()
-    {
+    public List<ExtensionElement> getExtensions() {
         if (getConfiguration() == null)
             return Collections.emptyList();
         else

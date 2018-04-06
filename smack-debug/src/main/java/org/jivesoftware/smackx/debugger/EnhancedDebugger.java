@@ -434,8 +434,7 @@ public class EnhancedDebugger extends SmackDebugger {
 
                         int index = str.lastIndexOf(">");
                         if (index != -1) {
-                            if (receivedText.getLineCount() >= EnhancedDebuggerWindow.MAX_TABLE_ROWS)
-                            {
+                            if (receivedText.getLineCount() >= EnhancedDebuggerWindow.MAX_TABLE_ROWS) {
                                 try {
                                     receivedText.replaceRange("", 0, receivedText.getLineEndOffset(0));
                                 }

@@ -654,8 +654,7 @@ public final class ServiceDiscoveryManager extends Manager {
      */
     @Deprecated
     // TODO: Remove in Smack 4.4
-    public void publishItems(Jid entityID, String node, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-            {
+    public void publishItems(Jid entityID, String node, DiscoverItems discoverItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         discoverItems.setType(IQ.Type.set);
         discoverItems.setTo(entityID);
         discoverItems.setNode(node);

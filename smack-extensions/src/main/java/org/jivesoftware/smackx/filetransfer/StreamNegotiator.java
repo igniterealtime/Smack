@@ -73,8 +73,7 @@ public abstract class StreamNegotiator extends Manager {
      * @return The response to be forwarded to the initiator.
      */
     protected static StreamInitiation createInitiationAccept(
-            StreamInitiation streamInitiationOffer, String[] namespaces)
-    {
+            StreamInitiation streamInitiationOffer, String[] namespaces) {
         StreamInitiation response = new StreamInitiation();
         response.setTo(streamInitiationOffer.getFrom());
         response.setFrom(streamInitiationOffer.getTo());

@@ -42,22 +42,18 @@ public enum PubSubNamespace {
         }
     }
 
-    public String getXmlns()
-    {
+    public String getXmlns() {
         return fullNamespace;
     }
 
-    public String getFragment()
-    {
+    public String getFragment() {
         return fragment;
     }
 
-    public static PubSubNamespace valueOfFromXmlns(String ns)
-    {
+    public static PubSubNamespace valueOfFromXmlns(String ns) {
         int index = ns.lastIndexOf('#');
 
-        if (index != -1)
-        {
+        if (index != -1) {
             String suffix = ns.substring(ns.lastIndexOf('#') + 1);
             return valueOf(suffix.toUpperCase(Locale.US));
         }

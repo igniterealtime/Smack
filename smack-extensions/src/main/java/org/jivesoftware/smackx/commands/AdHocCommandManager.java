@@ -606,8 +606,7 @@ public final class AdHocCommandManager extends Manager {
      * @throws NotConnectedException 
      */
     private static IQ respondError(AdHocCommandData response, XMPPError.Condition condition,
-            AdHocCommand.SpecificErrorCondition specificCondition)
-    {
+            AdHocCommand.SpecificErrorCondition specificCondition) {
         XMPPError.Builder error = XMPPError.getBuilder(condition).addExtension(new AdHocCommandData.SpecificError(specificCondition));
         return respondError(response, error);
     }
@@ -672,8 +671,7 @@ public final class AdHocCommandManager extends Manager {
         private LocalCommandFactory factory;
 
         private AdHocCommandInfo(String node, String name, Jid ownerJID,
-                LocalCommandFactory factory)
-        {
+                LocalCommandFactory factory) {
             this.node = node;
             this.name = name;
             this.ownerJID = ownerJID;
@@ -681,8 +679,7 @@ public final class AdHocCommandManager extends Manager {
         }
 
         public LocalCommand getCommandInstance() throws InstantiationException,
-                IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
-        {
+                IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
             return factory.getInstance();
         }
 

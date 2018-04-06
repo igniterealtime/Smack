@@ -37,8 +37,7 @@ class HTTPProxySocketConnection implements ProxySocketConnection {
 
     private final ProxyInfo proxy;
 
-    HTTPProxySocketConnection(ProxyInfo proxy)
-    {
+    HTTPProxySocketConnection(ProxyInfo proxy) {
         this.proxy = proxy;
     }
 
@@ -51,12 +50,10 @@ class HTTPProxySocketConnection implements ProxySocketConnection {
         String hostport = "CONNECT " + host + ":" + port;
         String proxyLine;
         String username = proxy.getProxyUsername();
-        if (username == null)
-        {
+        if (username == null) {
             proxyLine = "";
         }
-        else
-        {
+        else {
             String password = proxy.getProxyPassword();
             proxyLine = "\r\nProxy-Authorization: Basic " + Base64.encode(username + ":" + password);
         }
@@ -67,41 +64,33 @@ class HTTPProxySocketConnection implements ProxySocketConnection {
         StringBuilder got = new StringBuilder(100);
         int nlchars = 0;
 
-        while (true)
-        {
+        while (true) {
             int inByte = in.read();
-            if (inByte == -1)
-            {
+            if (inByte == -1) {
                 throw new ProxyException(ProxyInfo.ProxyType.HTTP);
             }
             char c = (char) inByte;
             got.append(c);
-            if (got.length() > 1024)
-            {
+            if (got.length() > 1024) {
                 throw new ProxyException(ProxyInfo.ProxyType.HTTP, "Received " +
                     "header of >1024 characters from "
                     + proxyhost + ", cancelling connection");
             }
-            if ((nlchars == 0 || nlchars == 2) && c == '\r')
-            {
+            if ((nlchars == 0 || nlchars == 2) && c == '\r') {
                 nlchars++;
             }
-            else if ((nlchars == 1 || nlchars == 3) && c == '\n')
-            {
+            else if ((nlchars == 1 || nlchars == 3) && c == '\n') {
                 nlchars++;
             }
-            else
-            {
+            else {
                 nlchars = 0;
             }
-            if (nlchars == 4)
-            {
+            if (nlchars == 4) {
                 break;
             }
         }
 
-        if (nlchars != 4)
-        {
+        if (nlchars != 4) {
             throw new ProxyException(ProxyInfo.ProxyType.HTTP, "Never " +
                 "received blank line from " 
                 + proxyhost + ", cancelling connection");
@@ -112,23 +101,20 @@ class HTTPProxySocketConnection implements ProxySocketConnection {
         BufferedReader br = new BufferedReader(new StringReader(gotstr));
         String response = br.readLine();
 
-        if (response == null)
-        {
+        if (response == null) {
             throw new ProxyException(ProxyInfo.ProxyType.HTTP, "Empty proxy " +
                 "response from " + proxyhost + ", cancelling");
         }
 
         Matcher m = RESPONSE_PATTERN.matcher(response);
-        if (!m.matches())
-        {
+        if (!m.matches()) {
             throw new ProxyException(ProxyInfo.ProxyType.HTTP , "Unexpected " +
                 "proxy response from " + proxyhost + ": " + response);
         }
 
         int code = Integer.parseInt(m.group(1));
 
-        if (code != HttpURLConnection.HTTP_OK)
-        {
+        if (code != HttpURLConnection.HTTP_OK) {
             throw new ProxyException(ProxyInfo.ProxyType.HTTP);
         }
     }

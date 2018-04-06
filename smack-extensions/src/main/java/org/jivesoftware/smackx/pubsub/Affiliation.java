@@ -35,8 +35,7 @@ import org.jxmpp.jid.BareJid;
  * 
  * @author Robin Collier
  */
-public class Affiliation implements ExtensionElement
-{
+public class Affiliation implements ExtensionElement {
     public static final String ELEMENT = "affiliation";
 
     private final BareJid jid;
@@ -44,8 +43,7 @@ public class Affiliation implements ExtensionElement
     private final Type affiliation;
     private final PubSubNamespace namespace;
 
-    public enum Type
-    {
+    public enum Type {
         member, none, outcast, owner, publisher
     }
 

@@ -24,8 +24,7 @@ import java.util.Calendar;
  * 
  * @author Robin Collier
  */
-public enum SubscribeOptionFields
-{
+public enum SubscribeOptionFields {
     /**
      * Whether an entity wants to receive or disable notifications.
      * 
@@ -83,15 +82,13 @@ public enum SubscribeOptionFields
      */
     subscription_depth;
 
-    public String getFieldName()
-    {
+    public String getFieldName() {
         if (this == show_values)
             return "pubsub#" + toString().replace('_', '-');
         return "pubsub#" + toString();
     }
 
-    public static SubscribeOptionFields valueOfFromElement(String elementName)
-    {
+    public static SubscribeOptionFields valueOfFromElement(String elementName) {
         String portion = elementName.substring(elementName.lastIndexOf('#' + 1));
 
         if ("show-values".equals(portion))

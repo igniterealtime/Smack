@@ -22,8 +22,7 @@ package org.jivesoftware.smackx.pubsub;
  * 
  * @author Robin Collier
  */
-public enum ItemReply
-{
+public enum ItemReply {
     /** The node owner. */
     owner,
 

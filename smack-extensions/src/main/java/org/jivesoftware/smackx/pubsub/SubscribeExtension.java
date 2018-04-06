@@ -21,35 +21,29 @@ package org.jivesoftware.smackx.pubsub;
  * 
  * @author Robin Collier
  */
-public class SubscribeExtension extends NodeExtension
-{
+public class SubscribeExtension extends NodeExtension {
     protected String jid;
 
-    public SubscribeExtension(String subscribeJid)
-    {
+    public SubscribeExtension(String subscribeJid) {
         super(PubSubElementType.SUBSCRIBE);
         jid = subscribeJid;
     }
 
-    public SubscribeExtension(String subscribeJid, String nodeId)
-    {
+    public SubscribeExtension(String subscribeJid, String nodeId) {
         super(PubSubElementType.SUBSCRIBE, nodeId);
         jid = subscribeJid;
     }
 
-    public String getJid()
-    {
+    public String getJid() {
         return jid;
     }
 
     @Override
-    public String toXML()
-    {
+    public String toXML() {
         StringBuilder builder = new StringBuilder("<");
         builder.append(getElementName());
 
-        if (getNode() != null)
-        {
+        if (getNode() != null) {
             builder.append(" node='");
             builder.append(getNode());
             builder.append('\'');

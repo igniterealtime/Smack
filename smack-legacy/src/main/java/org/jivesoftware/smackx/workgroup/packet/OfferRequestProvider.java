@@ -124,8 +124,7 @@ public class OfferRequestProvider extends IQProvider<IQ> {
         private final OfferContent content;
 
         public OfferRequestPacket(Jid userJID, Jid userID, int timeout, Map<String, List<String>> metaData,
-                String sessionID, OfferContent content)
-        {
+                String sessionID, OfferContent content) {
             super(ELEMENT, NAMESPACE);
             this.userJID = userJID;
             this.userID = userID;

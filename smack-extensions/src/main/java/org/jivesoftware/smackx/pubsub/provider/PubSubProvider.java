@@ -31,8 +31,7 @@ import org.xmlpull.v1.XmlPullParser;
  * 
  * @author Robin Collier
  */
-public class PubSubProvider extends IQProvider<PubSub>
-{
+public class PubSubProvider extends IQProvider<PubSub> {
     @Override
     public PubSub parse(XmlPullParser parser, int initialDepth)
                     throws Exception {
@@ -40,8 +39,7 @@ public class PubSubProvider extends IQProvider<PubSub>
         PubSubNamespace pubSubNamespace = PubSubNamespace.valueOfFromXmlns(namespace);
         PubSub pubsub = new PubSub(pubSubNamespace);
 
-        outerloop: while (true) 
-        {
+        outerloop: while (true)  {
             int eventType = parser.next();
             switch (eventType) {
             case XmlPullParser.START_TAG:

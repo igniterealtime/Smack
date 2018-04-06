@@ -33,11 +33,9 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
  * 
  * @author Robin Collier
  */
-public class FormNodeProvider extends EmbeddedExtensionProvider<FormNode>
-{
+public class FormNodeProvider extends EmbeddedExtensionProvider<FormNode> {
     @Override
-    protected FormNode createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content)
-    {
+    protected FormNode createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content) {
         return new FormNode(FormNodeType.valueOfFromElementName(currentElement, currentNamespace), attributeMap.get("node"), new Form((DataForm) content.iterator().next()));
     }
 }

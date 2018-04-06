@@ -23,35 +23,29 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * 
  * @author Robin Collier
  */
-public class OptionsExtension extends NodeExtension
-{
+public class OptionsExtension extends NodeExtension {
     protected String jid;
     protected String id;
 
-    public OptionsExtension(String subscriptionJid)
-    {
+    public OptionsExtension(String subscriptionJid) {
         this(subscriptionJid, null, null);
     }
 
-    public OptionsExtension(String subscriptionJid, String nodeId)
-    {
+    public OptionsExtension(String subscriptionJid, String nodeId) {
         this(subscriptionJid, nodeId, null);
     }
 
-    public OptionsExtension(String jid, String nodeId, String subscriptionId)
-    {
+    public OptionsExtension(String jid, String nodeId, String subscriptionId) {
         super(PubSubElementType.OPTIONS, nodeId);
         this.jid = jid;
         id = subscriptionId;
     }
 
-    public String getJid()
-    {
+    public String getJid() {
         return jid;
     }
 
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 

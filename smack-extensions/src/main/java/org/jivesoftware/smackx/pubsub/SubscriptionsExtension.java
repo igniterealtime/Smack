@@ -24,8 +24,7 @@ import java.util.List;
  * 
  * @author Robin Collier
  */
-public class SubscriptionsExtension extends NodeExtension
-{
+public class SubscriptionsExtension extends NodeExtension {
     protected List<Subscription> items = Collections.emptyList();
 
     /**
@@ -33,8 +32,7 @@ public class SubscriptionsExtension extends NodeExtension
      * 
      * @param subList The list of subscriptions
      */
-    public SubscriptionsExtension(List<Subscription> subList)
-    {
+    public SubscriptionsExtension(List<Subscription> subList) {
         super(PubSubElementType.SUBSCRIPTIONS);
 
         if (subList != null)
@@ -47,8 +45,7 @@ public class SubscriptionsExtension extends NodeExtension
      * @param nodeId The node subscribed to
      * @param subList The list of subscriptions
      */
-    public SubscriptionsExtension(String nodeId, List<Subscription> subList)
-    {
+    public SubscriptionsExtension(String nodeId, List<Subscription> subList) {
         super(PubSubElementType.SUBSCRIPTIONS, nodeId);
 
         if (subList != null)
@@ -60,33 +57,27 @@ public class SubscriptionsExtension extends NodeExtension
      * 
      * @return List of subscriptions
      */
-    public List<Subscription> getSubscriptions()
-    {
+    public List<Subscription> getSubscriptions() {
         return items;
     }
 
     @Override
-    public CharSequence toXML()
-    {
-        if ((items == null) || (items.size() == 0))
-        {
+    public CharSequence toXML() {
+        if ((items == null) || (items.size() == 0)) {
             return super.toXML();
         }
-        else
-        {
+        else {
             StringBuilder builder = new StringBuilder("<");
             builder.append(getElementName());
 
-            if (getNode() != null)
-            {
+            if (getNode() != null) {
                 builder.append(" node='");
                 builder.append(getNode());
                 builder.append('\'');
             }
             builder.append('>');
 
-            for (Subscription item : items)
-            {
+            for (Subscription item : items) {
                 builder.append(item.toXML());
             }
 

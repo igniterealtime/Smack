@@ -113,8 +113,7 @@ public final class MessageEventManager extends Manager {
      * @param composing specifies if the composing event is requested.
      */
     public static void addNotificationsRequests(Message message, boolean offline,
-            boolean delivered, boolean displayed, boolean composing)
-    {
+            boolean delivered, boolean displayed, boolean composing) {
         // Create a MessageEvent Package and add it to the message
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setOffline(offline);

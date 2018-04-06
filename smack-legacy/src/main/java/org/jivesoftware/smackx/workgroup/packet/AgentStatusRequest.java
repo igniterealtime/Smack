@@ -129,8 +129,7 @@ public class AgentStatusRequest extends IQ {
                     statusRequest.agents.add(parseAgent(parser));
                 }
                 else if (eventType == XmlPullParser.END_TAG &&
-                        "agent-status-request".equals(parser.getName()))
-                {
+                        "agent-status-request".equals(parser.getName())) {
                     done = true;
                 }
             }
@@ -149,8 +148,7 @@ public class AgentStatusRequest extends IQ {
                     name = parser.nextText();
                 }
                 else if (eventType == XmlPullParser.END_TAG &&
-                        "agent".equals(parser.getName()))
-                {
+                        "agent".equals(parser.getName())) {
                     done = true;
                 }
             }

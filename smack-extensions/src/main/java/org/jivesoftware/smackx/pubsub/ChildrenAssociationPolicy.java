@@ -22,8 +22,7 @@ package org.jivesoftware.smackx.pubsub;
  * 
  * @author Robin Collier
  */
-public enum ChildrenAssociationPolicy
-{
+public enum ChildrenAssociationPolicy {
     /** Anyone may associate leaf nodes with the collection.     */
     all,
 

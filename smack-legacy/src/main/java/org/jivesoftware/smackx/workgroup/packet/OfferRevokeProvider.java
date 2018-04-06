@@ -59,8 +59,7 @@ public class OfferRevokeProvider extends IQProvider<IQ> {
                 userID = ParserUtils.getJidAttribute(parser, "id");
             }
             else if ((eventType == XmlPullParser.END_TAG) && parser.getName().equals(
-                    "offer-revoke"))
-            {
+                    "offer-revoke")) {
                 done = true;
             }
         }

@@ -232,13 +232,11 @@ public class Bookmarks implements PrivateData {
                     }
                 }
                 else if (eventType == XmlPullParser.START_TAG &&
-                        "conference".equals(parser.getName()))
-                {
+                        "conference".equals(parser.getName())) {
                     final BookmarkedConference conference = getConferenceStorage(parser);
                     storage.addBookmarkedConference(conference);
                 }
-                else if (eventType == XmlPullParser.END_TAG && "storage".equals(parser.getName()))
-                {
+                else if (eventType == XmlPullParser.END_TAG && "storage".equals(parser.getName())) {
                     done = true;
                 }
             }

@@ -161,8 +161,7 @@ public class OutgoingFileTransfer extends FileTransfer {
      */
     public synchronized void sendFile(final String fileName,
             final long fileSize, final String description,
-            final NegotiationProgress progress)
-    {
+            final NegotiationProgress progress) {
         if (progress == null) {
             throw new IllegalArgumentException("Callback progress cannot be null.");
         }

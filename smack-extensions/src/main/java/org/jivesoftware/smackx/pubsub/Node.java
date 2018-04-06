@@ -44,8 +44,7 @@ import org.jivesoftware.smackx.shim.packet.Header;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 import org.jivesoftware.smackx.xdata.Form;
 
-public abstract class Node
-{
+public abstract class Node {
     protected final PubSubManager pubSubManager;
     protected final String id;
 
@@ -60,8 +59,7 @@ public abstract class Node
      * @param pubSubManager The PubSubManager for the connection the node is associated with
      * @param nodeId The node id
      */
-    Node(PubSubManager pubSubManager, String nodeId)
-    {
+    Node(PubSubManager pubSubManager, String nodeId) {
         this.pubSubManager = pubSubManager;
         id = nodeId;
     }
@@ -71,8 +69,7 @@ public abstract class Node
      * 
      * @return the node id
      */
-    public String getId() 
-    {
+    public String getId() {
         return id;
     }
     /**
@@ -85,8 +82,7 @@ public abstract class Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public ConfigureForm getNodeConfiguration() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public ConfigureForm getNodeConfiguration() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(
                         PubSubElementType.CONFIGURE_OWNER, getId()), PubSubNamespace.OWNER);
         Stanza reply = sendPubsubPacket(pubSub);
@@ -102,8 +98,7 @@ public abstract class Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void sendConfigurationForm(Form submitForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public void sendConfigurationForm(Form submitForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub packet = createPubsubPacket(Type.set, new FormNode(FormNodeType.CONFIGURE_OWNER,
                         getId(), submitForm), PubSubNamespace.OWNER);
         pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
@@ -118,8 +113,7 @@ public abstract class Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public DiscoverInfo discoverInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public DiscoverInfo discoverInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverInfo info = new DiscoverInfo();
         info.setTo(pubSubManager.getServiceJid());
         info.setNode(getId());
@@ -136,8 +130,7 @@ public abstract class Node
      * @throws InterruptedException 
      * 
      */
-    public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return getSubscriptions(null, null);
     }
 
@@ -365,8 +358,7 @@ public abstract class Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public Subscription subscribe(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public Subscription subscribe(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub pubSub = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
         PubSub reply = sendPubsubPacket(pubSub);
         return reply.getExtension(PubSubElementType.SUBSCRIPTION);
@@ -394,8 +386,7 @@ public abstract class Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public Subscription subscribe(String jid, SubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public Subscription subscribe(String jid, SubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
         request.addExtension(new FormNode(FormNodeType.OPTIONS, subForm));
         PubSub reply = sendPubsubPacket(request);
@@ -414,8 +405,7 @@ public abstract class Node
      * @throws InterruptedException 
      * 
      */
-    public void unsubscribe(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public void unsubscribe(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         unsubscribe(jid, null);
     }
 
@@ -429,8 +419,7 @@ public abstract class Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void unsubscribe(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public void unsubscribe(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         sendPubsubPacket(createPubsubPacket(Type.set, new UnsubscribeExtension(jid, getId(), subscriptionId)));
     }
 
@@ -446,8 +435,7 @@ public abstract class Node
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public SubscribeForm getSubscriptionOptions(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public SubscribeForm getSubscriptionOptions(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return getSubscriptionOptions(jid, null);
     }
 
@@ -465,8 +453,7 @@ public abstract class Node
      * @throws InterruptedException 
      * 
      */
-    public SubscribeForm getSubscriptionOptions(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    public SubscribeForm getSubscriptionOptions(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub packet = sendPubsubPacket(createPubsubPacket(Type.get, new OptionsExtension(jid, getId(), subscriptionId)));
         FormNode ext = packet.getExtension(PubSubElementType.OPTIONS);
         return new SubscribeForm(ext.getForm());
@@ -480,8 +467,7 @@ public abstract class Node
      * @param listener The handler for the event
      */
     @SuppressWarnings("unchecked")
-    public void addItemEventListener(@SuppressWarnings("rawtypes") ItemEventListener listener)
-    {
+    public void addItemEventListener(@SuppressWarnings("rawtypes") ItemEventListener listener) {
         StanzaListener conListener = new ItemEventTranslator(listener); 
         itemEventToListenerMap.put(listener, conListener);
         pubSubManager.getConnection().addSyncStanzaListener(conListener, new EventContentFilter(EventElementType.items.toString(), "item"));
@@ -492,8 +478,7 @@ public abstract class Node
      * 
      * @param listener The handler to unregister
      */
-    public void removeItemEventListener(@SuppressWarnings("rawtypes") ItemEventListener listener)
-    {
+    public void removeItemEventListener(@SuppressWarnings("rawtypes") ItemEventListener listener) {
         StanzaListener conListener = itemEventToListenerMap.remove(listener);
 
         if (conListener != null)
@@ -506,8 +491,7 @@ public abstract class Node
      * 
      * @param listener The handler for the event
      */
-    public void addConfigurationListener(NodeConfigListener listener)
-    {
+    public void addConfigurationListener(NodeConfigListener listener) {
         StanzaListener conListener = new NodeConfigTranslator(listener); 
         configEventToListenerMap.put(listener, conListener);
         pubSubManager.getConnection().addSyncStanzaListener(conListener, new EventContentFilter(EventElementType.configuration.toString()));
@@ -518,8 +502,7 @@ public abstract class Node
      * 
      * @param listener The handler to unregister
      */
-    public void removeConfigurationListener(NodeConfigListener listener)
-    {
+    public void removeConfigurationListener(NodeConfigListener listener) {
         StanzaListener conListener = configEventToListenerMap .remove(listener);
 
         if (conListener != null)
@@ -532,8 +515,7 @@ public abstract class Node
      * 
      * @param listener The handler for the event
      */
-    public void addItemDeleteListener(ItemDeleteListener listener)
-    {
+    public void addItemDeleteListener(ItemDeleteListener listener) {
         StanzaListener delListener = new ItemDeleteTranslator(listener); 
         itemDeleteToListenerMap.put(listener, delListener);
         EventContentFilter deleteItem = new EventContentFilter(EventElementType.items.toString(), "retract");
@@ -547,8 +529,7 @@ public abstract class Node
      * 
      * @param listener The handler to unregister
      */
-    public void removeItemDeleteListener(ItemDeleteListener listener)
-    {
+    public void removeItemDeleteListener(ItemDeleteListener listener) {
         StanzaListener conListener = itemDeleteToListenerMap .remove(listener);
 
         if (conListener != null)
@@ -556,38 +537,31 @@ public abstract class Node
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return super.toString() + " " + getClass().getName() + " id: " + id;
     }
 
-    protected PubSub createPubsubPacket(Type type, ExtensionElement ext)
-    {
+    protected PubSub createPubsubPacket(Type type, ExtensionElement ext) {
         return createPubsubPacket(type, ext, null);
     }
 
-    protected PubSub createPubsubPacket(Type type, ExtensionElement ext, PubSubNamespace ns)
-    {
+    protected PubSub createPubsubPacket(Type type, ExtensionElement ext, PubSubNamespace ns) {
         return PubSub.createPubsubPacket(pubSubManager.getServiceJid(), type, ext, ns);
     }
 
-    protected PubSub sendPubsubPacket(PubSub packet) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+    protected PubSub sendPubsubPacket(PubSub packet) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return pubSubManager.sendPubsubPacket(packet);
     }
 
 
-    private static List<String> getSubscriptionIds(Stanza packet)
-    {
+    private static List<String> getSubscriptionIds(Stanza packet) {
         HeadersExtension headers = packet.getExtension("headers", "http://jabber.org/protocol/shim");
         List<String> values = null;
 
-        if (headers != null)
-        {
+        if (headers != null) {
             values = new ArrayList<>(headers.getHeaders().size());
 
-            for (Header header : headers.getHeaders())
-            {
+            for (Header header : headers.getHeaders()) {
                 values.add(header.getValue());
             }
         }
@@ -600,20 +574,17 @@ public abstract class Node
      * 
      * @author Robin Collier
      */
-    public static class ItemEventTranslator implements StanzaListener
-    {
+    public static class ItemEventTranslator implements StanzaListener {
         @SuppressWarnings("rawtypes")
         private final ItemEventListener listener;
 
-        public ItemEventTranslator(@SuppressWarnings("rawtypes") ItemEventListener eventListener)
-        {
+        public ItemEventTranslator(@SuppressWarnings("rawtypes") ItemEventListener eventListener) {
             listener = eventListener;
         }
 
         @Override
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        public void processStanza(Stanza packet)
-        {
+        public void processStanza(Stanza packet) {
             EventElement event = packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
             ItemsExtension itemsElem = (ItemsExtension) event.getEvent();
             ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), itemsElem.getItems(), getSubscriptionIds(packet), DelayInformationManager.getDelayTimestamp(packet));
@@ -627,36 +598,30 @@ public abstract class Node
      * 
      * @author Robin Collier
      */
-    public static class ItemDeleteTranslator implements StanzaListener
-    {
+    public static class ItemDeleteTranslator implements StanzaListener {
         private final ItemDeleteListener listener;
 
-        public ItemDeleteTranslator(ItemDeleteListener eventListener)
-        {
+        public ItemDeleteTranslator(ItemDeleteListener eventListener) {
             listener = eventListener;
         }
 
         @Override
-        public void processStanza(Stanza packet)
-        {
+        public void processStanza(Stanza packet) {
 // CHECKSTYLE:OFF
             EventElement event = packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
 
             List<ExtensionElement> extList = event.getExtensions();
 
-            if (extList.get(0).getElementName().equals(PubSubElementType.PURGE_EVENT.getElementName()))
-            {
+            if (extList.get(0).getElementName().equals(PubSubElementType.PURGE_EVENT.getElementName())) {
                 listener.handlePurge();
             }
-            else
-            {
+            else {
                 ItemsExtension itemsElem = (ItemsExtension)event.getEvent();
                 @SuppressWarnings("unchecked")
                 Collection<RetractItem> pubItems = (Collection<RetractItem>) itemsElem.getItems();
                 List<String> items = new ArrayList<>(pubItems.size());
 
-                for (RetractItem item : pubItems)
-                {
+                for (RetractItem item : pubItems) {
                     items.add(item.getId());
                 }
 
@@ -673,18 +638,15 @@ public abstract class Node
      * 
      * @author Robin Collier
      */
-    public static class NodeConfigTranslator implements StanzaListener
-    {
+    public static class NodeConfigTranslator implements StanzaListener {
         private final NodeConfigListener listener;
 
-        public NodeConfigTranslator(NodeConfigListener eventListener)
-        {
+        public NodeConfigTranslator(NodeConfigListener eventListener) {
             listener = eventListener;
         }
 
         @Override
-        public void processStanza(Stanza packet)
-        {
+        public void processStanza(Stanza packet) {
             EventElement event = packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
             ConfigurationEvent config = (ConfigurationEvent) event.getEvent();
 
@@ -698,19 +660,16 @@ public abstract class Node
      * 
      * @author Robin Collier
      */
-    class EventContentFilter extends FlexibleStanzaTypeFilter<Message>
-    {
+    class EventContentFilter extends FlexibleStanzaTypeFilter<Message> {
         private final String firstElement;
         private final String secondElement;
         private final boolean allowEmpty;
 
-        EventContentFilter(String elementName)
-        {
+        EventContentFilter(String elementName) {
             this(elementName, null);
         }
 
-        EventContentFilter(String firstLevelElement, String secondLevelElement)
-        {
+        EventContentFilter(String firstLevelElement, String secondLevelElement) {
             firstElement = firstLevelElement;
             secondElement = secondLevelElement;
             allowEmpty = firstElement.equals(EventElementType.items.toString())
@@ -729,16 +688,14 @@ public abstract class Node
             if (embedEvent == null)
                 return false;
 
-            if (embedEvent.getElementName().equals(firstElement))
-            {
+            if (embedEvent.getElementName().equals(firstElement)) {
                 if (!embedEvent.getNode().equals(getId()))
                     return false;
 
                 if (secondElement == null)
                     return true;
 
-                if (embedEvent instanceof EmbeddedPacketExtension)
-                {
+                if (embedEvent instanceof EmbeddedPacketExtension) {
                     List<ExtensionElement> secondLevelList = ((EmbeddedPacketExtension) embedEvent).getExtensions();
 
                     // XEP-0060 allows no elements on second level for notifications. See schema or

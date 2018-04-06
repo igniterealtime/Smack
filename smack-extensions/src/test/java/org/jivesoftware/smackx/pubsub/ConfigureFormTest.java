@@ -44,19 +44,16 @@ import org.junit.Test;
  * @author Robin Collier
  *
  */
-public class ConfigureFormTest extends InitExtensions
-{
+public class ConfigureFormTest extends InitExtensions {
     @Test
-    public void checkChildrenAssocPolicy()
-    {
+    public void checkChildrenAssocPolicy() {
         ConfigureForm form = new ConfigureForm(DataForm.Type.submit);
         form.setChildrenAssociationPolicy(ChildrenAssociationPolicy.owners);
         assertEquals(ChildrenAssociationPolicy.owners, form.getChildrenAssociationPolicy());
     }
 
     @Test
-    public void getConfigFormWithInsufficientPrivileges() throws XMPPException, SmackException, IOException, InterruptedException
-    {
+    public void getConfigFormWithInsufficientPrivileges() throws XMPPException, SmackException, IOException, InterruptedException {
         ThreadedDummyConnection con = ThreadedDummyConnection.newInstance();
         PubSubManager mgr = new PubSubManager(con, PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
         DiscoverInfo info = new DiscoverInfo();
@@ -75,20 +72,17 @@ public class ConfigureFormTest extends InitExtensions
         errorIq.setError(error);
         con.addIQReply(errorIq);
 
-        try
-        {
+        try {
             node.getNodeConfiguration();
             fail();
         }
-        catch (XMPPErrorException e)
-        {
+        catch (XMPPErrorException e) {
             Assert.assertEquals(XMPPError.Type.AUTH, e.getXMPPError().getType());
         }
     }
 
     @Test(expected = SmackException.class)
-    public void getConfigFormWithTimeout() throws XMPPException, SmackException, InterruptedException
-    {
+    public void getConfigFormWithTimeout() throws XMPPException, SmackException, InterruptedException {
         ThreadedDummyConnection con = new ThreadedDummyConnection();
         PubSubManager mgr = new PubSubManager(con, PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
         DiscoverInfo info = new DiscoverInfo();

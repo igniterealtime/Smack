@@ -34,14 +34,12 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  * 
  * @author Robin Collier
  */
-public class ItemsExtension extends NodeExtension implements EmbeddedPacketExtension
-{
+public class ItemsExtension extends NodeExtension implements EmbeddedPacketExtension {
     protected ItemsElementType type;
     protected Boolean notify;
     protected List<? extends ExtensionElement> items;
 
-    public enum ItemsElementType
-    {
+    public enum ItemsElementType {
         /** An items element, which has an optional <b>max_items</b> attribute when requesting items. */
         items(PubSubElementType.ITEMS, "max_items"),
 
@@ -51,19 +49,16 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
         private final PubSubElementType elem;
         private final String att;
 
-        ItemsElementType(PubSubElementType nodeElement, String attribute)
-        {
+        ItemsElementType(PubSubElementType nodeElement, String attribute) {
             elem = nodeElement;
             att = attribute;
         }
 
-        public PubSubElementType getNodeElement()
-        {
+        public PubSubElementType getNodeElement() {
             return elem;
         }
 
-        public String getElementAttribute()
-        {
+        public String getElementAttribute() {
             return att;
         }
     }
@@ -87,8 +82,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
      * @param nodeId The node to which the items are being sent or deleted
      * @param items The list of {@link Item} or {@link RetractItem}
      */
-    public ItemsExtension(ItemsElementType itemsType, String nodeId, List<? extends ExtensionElement> items)
-    {
+    public ItemsExtension(ItemsElementType itemsType, String nodeId, List<? extends ExtensionElement> items) {
         super(itemsType.getNodeElement(), nodeId);
         type = itemsType;
         this.items = items;
@@ -113,8 +107,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
      * @param items The list of {@link Item} or {@link RetractItem}
      * @param notify
      */
-    public ItemsExtension(String nodeId, List<? extends ExtensionElement> items, boolean notify)
-    {
+    public ItemsExtension(String nodeId, List<? extends ExtensionElement> items, boolean notify) {
         super(ItemsElementType.retract.getNodeElement(), nodeId);
         type = ItemsElementType.retract;
         this.items = items; 
@@ -126,15 +119,13 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
      * 
      * @return The element type
      */
-    public ItemsElementType getItemsElementType()
-    {
+    public ItemsElementType getItemsElementType() {
         return type;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ExtensionElement> getExtensions()
-    {
+    public List<ExtensionElement> getExtensions() {
         return (List<ExtensionElement>) getItems();
     }
 
@@ -143,8 +134,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
      * 
      * @return List of {@link Item}, {@link RetractItem}, or null
      */
-    public List<? extends ExtensionElement> getItems()
-    {
+    public List<? extends ExtensionElement> getItems() {
         return items;
     }
 
@@ -153,38 +143,31 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
      * 
      * @return The attribute value
      */
-    public boolean getNotify()
-    {
+    public boolean getNotify() {
         return notify;
     }
 
     @Override
-    public CharSequence toXML()
-    {
-        if ((items == null) || (items.size() == 0))
-        {
+    public CharSequence toXML() {
+        if ((items == null) || (items.size() == 0)) {
             return super.toXML();
         }
-        else
-        {
+        else {
             StringBuilder builder = new StringBuilder("<");
             builder.append(getElementName());
             builder.append(" node='");
             builder.append(getNode());
 
-            if (notify != null)
-            {
+            if (notify != null) {
                 builder.append("' ");
                 builder.append(type.getElementAttribute());
                 builder.append("='");
                 builder.append(notify.equals(Boolean.TRUE) ? 1 : 0);
                 builder.append("'>");
             }
-            else
-            {
+            else {
                 builder.append("'>");
-                for (ExtensionElement item : items)
-                {
+                for (ExtensionElement item : items) {
                     builder.append(item.toXML());
                 }
             }
@@ -197,8 +180,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getClass().getName() + "Content [" + toXML() + "]";
     }
 
