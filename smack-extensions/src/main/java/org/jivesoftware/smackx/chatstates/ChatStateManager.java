@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -61,6 +63,8 @@ import org.jxmpp.jid.EntityFullJid;
  * @see org.jivesoftware.smackx.chatstates.packet.ChatStateExtension
  */
 public final class ChatStateManager extends Manager {
+
+    private static final Logger LOGGER = Logger.getLogger(ChatStateManager.class.getName());
 
     public static final String NAMESPACE = "http://jabber.org/protocol/chatstates";
 
@@ -135,12 +139,14 @@ public final class ChatStateManager extends Manager {
 
                 Chat chat = ChatManager.getInstanceFor(connection()).chatWith(bareFrom);
                 ExtensionElement extension = message.getExtension(NAMESPACE);
+                String chatStateElementName = extension.getElementName();
 
                 ChatState state;
                 try {
-                    state = ChatState.valueOf(extension.getElementName());
+                    state = ChatState.valueOf(chatStateElementName);
                 }
                 catch (Exception ex) {
+                    LOGGER.log(Level.WARNING, "Invalid chat state element name: " + chatStateElementName, ex);
                     return;
                 }
 
