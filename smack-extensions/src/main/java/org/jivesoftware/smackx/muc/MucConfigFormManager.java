@@ -107,7 +107,7 @@ public class MucConfigFormManager {
         // Set the local variables according to the fields found in the answer form
         if (answerForm.hasField(MUC_ROOMCONFIG_ROOMOWNERS)) {
             // Set 'owners' to the currently configured owners
-            List<String> ownerStrings = answerForm.getField(MUC_ROOMCONFIG_ROOMOWNERS).getValues();
+            List<CharSequence> ownerStrings = answerForm.getField(MUC_ROOMCONFIG_ROOMOWNERS).getValues();
             owners = new ArrayList<>(ownerStrings.size());
             JidUtil.jidsFrom(ownerStrings, owners, null);
         }

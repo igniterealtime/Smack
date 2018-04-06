@@ -723,10 +723,10 @@ public final class EntityCapsManager extends Manager {
         return new CapsVersionAndHash(version, hash);
     }
 
-    private static void formFieldValuesToCaps(List<String> i, StringBuilder sb) {
-        SortedSet<String> fvs = new TreeSet<>();
+    private static void formFieldValuesToCaps(List<CharSequence> i, StringBuilder sb) {
+        SortedSet<CharSequence> fvs = new TreeSet<>();
         fvs.addAll(i);
-        for (String fv : fvs) {
+        for (CharSequence fv : fvs) {
             sb.append(fv);
             sb.append('<');
         }

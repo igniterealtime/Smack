@@ -103,7 +103,7 @@ public class OfflineMessageManager {
                 namespace);
         Form extendedInfo = Form.getFormFrom(info);
         if (extendedInfo != null) {
-            String value = extendedInfo.getField("number_of_messages").getValues().get(0);
+            String value = extendedInfo.getField("number_of_messages").getFirstValue();
             return Integer.parseInt(value);
         }
         return 0;

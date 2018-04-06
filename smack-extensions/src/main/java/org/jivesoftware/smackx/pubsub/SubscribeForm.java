@@ -196,13 +196,13 @@ public class SubscribeForm extends Form {
     private String getFieldValue(SubscribeOptionFields field) {
         FormField formField = getField(field.getFieldName());
 
-        return formField.getValues().get(0);
+        return formField.getFirstValue();
     }
 
     private List<String> getFieldValues(SubscribeOptionFields field) {
         FormField formField = getField(field.getFieldName());
 
-        return formField.getValues();
+        return formField.getValuesAsString();
     }
 
     private void addField(SubscribeOptionFields nodeField, FormField.Type type) {

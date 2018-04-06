@@ -277,7 +277,7 @@ public class Form {
      * @throws IllegalStateException if the form is not of type "submit".
      * @throws IllegalArgumentException if the form does not include the specified variable.
      */
-    public void setAnswer(String variable, List<String> values) {
+    public void setAnswer(String variable, List<? extends CharSequence> values) {
         if (!isSubmitType()) {
             throw new IllegalStateException("Cannot set an answer if the form is not of type " +
             "\"submit\"");
@@ -324,7 +324,7 @@ public class Form {
             // Clear the old values
             field.resetValues();
             // Set the default value
-            for (String value : field.getValues()) {
+            for (CharSequence value : field.getValues()) {
                 field.addValue(value);
             }
         }
@@ -504,7 +504,7 @@ public class Form {
                 if (field.getType() == FormField.Type.hidden) {
                     // Since a hidden field could have many values we need to collect them 
                     // in a list
-                    List<String> values = new ArrayList<>();
+                    List<CharSequence> values = new ArrayList<>();
                     values.addAll(field.getValues());
                     form.setAnswer(field.getVariable(), values);
                 }

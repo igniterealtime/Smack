@@ -606,7 +606,7 @@ public class ConfigureForm extends Form {
 
             StringBuilder valuesBuilder = new StringBuilder();
 
-            for (String value : formField.getValues()) {
+            for (CharSequence value : formField.getValues()) {
                 if (valuesBuilder.length() > 0)
                     result.append(',');
                 valuesBuilder.append(value);
@@ -628,13 +628,13 @@ public class ConfigureForm extends Form {
     private String getFieldValue(ConfigureNodeFields field) {
         FormField formField = getField(field.getFieldName());
 
-        return (formField.getValues().isEmpty()) ? null : formField.getValues().get(0);
+        return formField.getFirstValue();
     }
 
     private List<String> getFieldValues(ConfigureNodeFields field) {
         FormField formField = getField(field.getFieldName());
 
-        return formField.getValues();
+        return formField.getValuesAsString();
     }
 
     private void addField(ConfigureNodeFields nodeField, FormField.Type type) {

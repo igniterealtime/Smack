@@ -74,7 +74,7 @@ public class ReportedData {
             List<Field> fieldList = new ArrayList<>(columns.size());
             for (FormField field : item.getFields()) {
                 // The field is created with all the values of the data form's field
-                List<String> values = new ArrayList<>();
+                List<CharSequence> values = new ArrayList<>();
                 values.addAll(field.getValues());
                 fieldList.add(new Field(field.getVariable(), values));
             }
@@ -205,7 +205,7 @@ public class ReportedData {
          * @param variable the variable to match.
          * @return the values of the field whose variable matches the requested variable.
          */
-        public List<String> getValues(String variable) {
+        public List<CharSequence> getValues(String variable) {
             for (Field field : getFields()) {
                 if (variable.equalsIgnoreCase(field.getVariable())) {
                     return field.getValues();
@@ -226,9 +226,9 @@ public class ReportedData {
 
     public static class Field {
         private final String variable;
-        private final List<String> values;
+        private final List<? extends CharSequence> values;
 
-        public Field(String variable, List<String> values) {
+        public Field(String variable, List<? extends CharSequence> values) {
             this.variable = variable;
             this.values = values;
         }
@@ -247,7 +247,7 @@ public class ReportedData {
          * 
          * @return the returned values of the search.
          */
-        public List<String> getValues() {
+        public List<CharSequence> getValues() {
             return Collections.unmodifiableList(values);
         }
     }

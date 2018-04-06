@@ -142,7 +142,7 @@ public class FormField implements NamedElement {
     private String label;
     private Type type;
     private final List<Option> options = new ArrayList<>();
-    private final List<String> values = new ArrayList<>();
+    private final List<CharSequence> values = new ArrayList<>();
     private ValidateElement validateElement;
 
     /**
@@ -226,10 +226,44 @@ public class FormField implements NamedElement {
      *
      * @return a List of the default values or answered values of the question.
      */
-    public List<String> getValues() {
+    public List<CharSequence> getValues() {
         synchronized (values) {
             return Collections.unmodifiableList(new ArrayList<>(values));
         }
+    }
+
+    /**
+     * Returns the values a String. Note that you should use {@link #getValues()} whenever possible instead of this
+     * method.
+     *
+     * @return a list of Strings representing the values
+     * @see #getValues()
+     * @since 4.3
+     */
+    public List<String> getValuesAsString() {
+        List<CharSequence> valuesAsCharSequence = getValues();
+        List<String> res = new ArrayList<>(valuesAsCharSequence.size());
+        for (CharSequence value : valuesAsCharSequence) {
+            res.add(value.toString());
+        }
+        return res;
+    }
+
+    /**
+     * Returns the first value of this form fold or {@code null}.
+     *
+     * @return the first value or {@code null}
+     * @since 4.3
+     */
+    public String getFirstValue() {
+        CharSequence firstValue;
+        synchronized (values) {
+            firstValue = values.get(0);
+        }
+        if (firstValue == null) {
+            return null;
+        }
+        return firstValue.toString();
     }
 
     /**
@@ -321,7 +355,7 @@ public class FormField implements NamedElement {
      *
      * @param value a default value or an answered value of the question.
      */
-    public void addValue(String value) {
+    public void addValue(CharSequence value) {
         synchronized (values) {
             values.add(value);
         }
@@ -333,7 +367,7 @@ public class FormField implements NamedElement {
      *
      * @param newValues default values or an answered values of the question.
      */
-    public void addValues(List<String> newValues) {
+    public void addValues(List<? extends CharSequence> newValues) {
         synchronized (values) {
             values.addAll(newValues);
         }
@@ -377,7 +411,7 @@ public class FormField implements NamedElement {
         buf.optElement("desc", getDescription());
         buf.condEmptyElement(isRequired(), "required");
         // Loop through all the values and append them to the string buffer
-        for (String value : getValues()) {
+        for (CharSequence value : getValues()) {
             buf.element("value", value);
         }
         // Loop through all the values and append them to the string buffer

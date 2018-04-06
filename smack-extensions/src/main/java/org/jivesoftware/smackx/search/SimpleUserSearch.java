@@ -85,7 +85,7 @@ class SimpleUserSearch extends IQ {
     }
 
     private static String getSingleValue(FormField formField) {
-        List<String> values = formField.getValues();
+        List<String> values = formField.getValuesAsString();
         if (values.isEmpty()) {
             return "";
         } else {

@@ -157,13 +157,13 @@ public final class HttpFileUploadManager extends Manager {
             return new UploadService(address, version);
         }
 
-        List<String> values = field.getValues();
-        if (values.isEmpty()) {
+        String maxFileSizeValue = field.getFirstValue();
+        if (maxFileSizeValue == null) {
             return new UploadService(address, version);
 
         }
 
-        Long maxFileSize = Long.valueOf(values.get(0));
+        Long maxFileSize = Long.valueOf(maxFileSizeValue);
         return new UploadService(address, version, maxFileSize);
     }
 

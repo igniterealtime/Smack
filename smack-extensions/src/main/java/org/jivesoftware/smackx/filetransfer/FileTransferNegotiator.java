@@ -341,7 +341,7 @@ public final class FileTransferNegotiator extends Manager {
     private StreamNegotiator getOutgoingNegotiator(final FormField field) throws NoAcceptableTransferMechanisms {
         boolean isByteStream = false;
         boolean isIBB = false;
-        for (String variable : field.getValues()) {
+        for (CharSequence variable : field.getValues()) {
             if (variable.equals(Bytestream.NAMESPACE) && !IBB_ONLY) {
                 isByteStream = true;
             }
