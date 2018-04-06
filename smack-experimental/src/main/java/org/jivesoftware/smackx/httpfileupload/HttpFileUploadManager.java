@@ -159,6 +159,8 @@ public final class HttpFileUploadManager extends Manager {
 
         String maxFileSizeValue = field.getFirstValue();
         if (maxFileSizeValue == null) {
+            // This is likely an implementation error of the upload component, because the max-file-size form field is
+            // there but has no value set.
             return new UploadService(address, version);
 
         }
