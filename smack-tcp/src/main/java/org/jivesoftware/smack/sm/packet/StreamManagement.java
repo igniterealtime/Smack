@@ -225,10 +225,11 @@ public class StreamManagement {
             if (condition == null && textElements.isEmpty()) {
                 xml.closeEmptyElement();
             } else {
-                xml.rightAngleBracket();
                 if (condition != null) {
+                    xml.rightAngleBracket();
                     xml.append(condition.toString());
                     xml.xmlnsAttribute(StanzaError.NAMESPACE);
+                    xml.closeEmptyElement();
                 }
                 xml.append(textElements);
                 xml.closeElement(ELEMENT);
