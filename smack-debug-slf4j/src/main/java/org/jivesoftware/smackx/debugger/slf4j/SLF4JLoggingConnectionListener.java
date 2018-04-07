@@ -23,8 +23,6 @@ import org.jivesoftware.smack.XMPPConnection;
 
 import org.slf4j.Logger;
 
-// TODO: The suppression of deprecated API can be removed in Smack 4.3.
-@SuppressWarnings("deprecation")
 class SLF4JLoggingConnectionListener extends AbstractConnectionListener implements ReconnectionListener {
     private final XMPPConnection connection;
     private final Logger logger;
