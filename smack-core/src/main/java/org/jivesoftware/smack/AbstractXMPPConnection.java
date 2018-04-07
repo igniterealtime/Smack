@@ -1746,11 +1746,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return getClass().getSimpleName() + '[' + localEndpointString + "] (" + getConnectionCounter() + ')';
     }
 
-    protected final void asyncGo(Runnable runnable) {
+    protected static void asyncGo(Runnable runnable) {
         CACHED_EXECUTOR_SERVICE.execute(runnable);
     }
 
-    protected final ScheduledFuture<?> schedule(Runnable runnable, long delay, TimeUnit unit) {
+    protected static ScheduledFuture<?> schedule(Runnable runnable, long delay, TimeUnit unit) {
         return SCHEDULED_EXECUTOR_SERVICE.schedule(runnable, delay, unit);
     }
 }
