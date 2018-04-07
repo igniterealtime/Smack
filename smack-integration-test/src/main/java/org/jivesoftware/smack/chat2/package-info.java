@@ -18,4 +18,4 @@
 /**
  * Integration Tests for the chat2 API.
  */
-package org.jivesoftware.smackx.chat;
+package org.jivesoftware.smack.chat2;

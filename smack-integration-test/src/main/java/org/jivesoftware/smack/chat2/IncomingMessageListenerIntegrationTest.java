@@ -14,21 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.chat;
+package org.jivesoftware.smack.chat2;
 
-import org.jivesoftware.smack.chat2.Chat;
-import org.jivesoftware.smack.chat2.ChatManager;
-import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
 
-import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
 
-public class IncomingMessageListenerIntegrationTest extends AbstractSmackIntegrationTest {
+public class IncomingMessageListenerIntegrationTest extends AbstractChatIntegrationTest {
 
     public IncomingMessageListenerIntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
@@ -36,9 +32,6 @@ public class IncomingMessageListenerIntegrationTest extends AbstractSmackIntegra
 
     @SmackIntegrationTest
     public void test() throws Exception {
-        ChatManager chatManagerOne = ChatManager.getInstanceFor(conOne);
-        ChatManager chatManagerTwo = ChatManager.getInstanceFor(conTwo);
-
         final String body = StringUtils.randomString(16);
         final SimpleResultSyncPoint syncPoint = new SimpleResultSyncPoint();
         final IncomingChatMessageListener listener = new IncomingChatMessageListener() {
@@ -54,7 +47,7 @@ public class IncomingMessageListenerIntegrationTest extends AbstractSmackIntegra
             chatManagerTwo.addIncomingListener(listener);
             Chat chat = chatManagerOne.chatWith(conTwo.getUser().asEntityBareJid());
             chat.send(body);
-            syncPoint.waitForResult(10 * 1000);
+            syncPoint.waitForResult(timeout);
         }
         finally {
             chatManagerTwo.removeIncomingListener(listener);
