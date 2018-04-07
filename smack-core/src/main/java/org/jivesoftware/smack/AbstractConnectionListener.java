@@ -45,21 +45,4 @@ public class AbstractConnectionListener implements ConnectionListener {
         // do nothing
     }
 
-    @Deprecated
-    @Override
-    public void reconnectingIn(int seconds) {
-        // do nothing
-    }
-
-    @Deprecated
-    @Override
-    public void reconnectionFailed(Exception e) {
-        // do nothing
-    }
-
-    @Deprecated
-    @Override
-    public void reconnectionSuccessful() {
-        // do nothing
-    }
 }

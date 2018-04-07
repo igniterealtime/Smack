@@ -262,9 +262,6 @@ public final class ReconnectionManager {
                             for (ReconnectionListener listener : reconnectionListeners) {
                                 listener.reconnectingIn(remainingSeconds);
                             }
-                            for (ConnectionListener listener : connection.connectionListeners) {
-                                listener.reconnectingIn(remainingSeconds);
-                            }
                         }
                         catch (InterruptedException e) {
                             LOGGER.log(Level.FINE, "Reconnection Thread was interrupted, aborting reconnection mechanism", e);
@@ -274,9 +271,6 @@ public final class ReconnectionManager {
                     }
 
                     for (ReconnectionListener listener : reconnectionListeners) {
-                        listener.reconnectingIn(0);
-                    }
-                    for (ConnectionListener listener : connection.connectionListeners) {
                         listener.reconnectingIn(0);
                     }
 
@@ -302,9 +296,6 @@ public final class ReconnectionManager {
                     catch (SmackException | IOException | XMPPException e) {
                         // Fires the failed reconnection notification
                         for (ReconnectionListener listener : reconnectionListeners) {
-                            listener.reconnectionFailed(e);
-                        }
-                        for (ConnectionListener listener : connection.connectionListeners) {
                             listener.reconnectionFailed(e);
                         }
                         // Failed to reconnect, try again.

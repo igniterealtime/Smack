@@ -53,8 +53,6 @@ import org.jxmpp.stringprep.XmppStringprepException;
  */
 public class DummyConnection extends AbstractXMPPConnection {
 
-    private boolean reconnect = false;
-
     private final BlockingQueue<TopLevelStreamElement> queue = new LinkedBlockingQueue<TopLevelStreamElement>();
 
     public static ConnectionConfiguration.Builder<?,?> getDummyConfigurationBuilder() {
@@ -88,16 +86,10 @@ public class DummyConnection extends AbstractXMPPConnection {
         user = getUserJid();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void connectInternal() {
         connected = true;
         streamId = "dummy-" + new Random(new Date().getTime()).nextInt();
-
-        // TODO: Remove in Smack 4.3, and likely the suppression of the deprecation warning.
-        if (reconnect) {
-            notifyReconnection();
-        }
     }
 
     @Override
@@ -106,7 +98,6 @@ public class DummyConnection extends AbstractXMPPConnection {
         authenticated = false;
 
         callConnectionClosedListener();
-        reconnect = true;
     }
 
     @Override
