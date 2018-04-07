@@ -80,24 +80,6 @@ public final class PushNotificationsManager extends Manager {
     }
 
     /**
-     * Returns true if Push Notifications is supported by the server.
-     *
-     * @return true if Push Notifications is supported by the server.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @deprecated Use {@link #isSupported()} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.3
-    public boolean isSupportedByServer()
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection())
-                .serverSupportsFeature(PushNotificationsElements.NAMESPACE);
-    }
-
-    /**
      * Returns true if Push Notifications are supported by this account.
      *
      * @return true if Push Notifications are supported by this account.
