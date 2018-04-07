@@ -263,7 +263,7 @@ public abstract class IQ extends Stanza {
      *      <li>The type set to {@link Type#error IQ.Type.error}.
      *      <li>The id set to the id of the originating IQ.
      *      <li>The child element contained in the associated originating IQ.
-     *      <li>The provided {@link XMPPError XMPPError}.
+     *      <li>The provided {@link StanzaError XMPPError}.
      * </ul>
      *
      * @param request the {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set} IQ packet.
@@ -272,7 +272,7 @@ public abstract class IQ extends Stanza {
      *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
      * @return a new {@link Type#error IQ.Type.error} IQ based on the originating IQ.
      */
-    public static ErrorIQ createErrorResponse(final IQ request, final XMPPError.Builder error) {
+    public static ErrorIQ createErrorResponse(final IQ request, final StanzaError.Builder error) {
         if (!(request.getType() == Type.get || request.getType() == Type.set)) {
             throw new IllegalArgumentException(
                     "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
@@ -287,8 +287,8 @@ public abstract class IQ extends Stanza {
         return result;
     }
 
-    public static ErrorIQ createErrorResponse(final IQ request, final XMPPError.Condition condition) {
-        return createErrorResponse(request, XMPPError.getBuilder(condition));
+    public static ErrorIQ createErrorResponse(final IQ request, final StanzaError.Condition condition) {
+        return createErrorResponse(request, StanzaError.getBuilder(condition));
     }
 
     /**
@@ -300,7 +300,7 @@ public abstract class IQ extends Stanza {
      *      <li>The type set to {@link Type#error IQ.Type.error}.
      *      <li>The id set to the id of the originating IQ.
      *      <li>The child element contained in the associated originating IQ.
-     *      <li>The provided {@link XMPPError XMPPError}.
+     *      <li>The provided {@link StanzaError XMPPError}.
      * </ul>
      *
      * @param request the {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set} IQ packet.
@@ -309,8 +309,8 @@ public abstract class IQ extends Stanza {
      *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
      * @return a new {@link Type#error IQ.Type.error} IQ based on the originating IQ.
      */
-    public static ErrorIQ createErrorResponse(final IQ request, final XMPPError error) {
-        return createErrorResponse(request, XMPPError.getBuilder(error));
+    public static ErrorIQ createErrorResponse(final IQ request, final StanzaError error) {
+        return createErrorResponse(request, StanzaError.getBuilder(error));
     }
 
     /**

@@ -21,7 +21,7 @@ import java.util.List;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.xdata.Form;
@@ -94,7 +94,7 @@ public abstract class AdHocCommand {
      * @return the specific condition of this error, or null if it doesn't have
      *         any.
      */
-    public static SpecificErrorCondition getSpecificErrorCondition(XMPPError error) {
+    public static SpecificErrorCondition getSpecificErrorCondition(StanzaError error) {
         // This method is implemented to provide an easy way of getting a packet
         // extension of the XMPPError.
         for (SpecificErrorCondition condition : SpecificErrorCondition.values()) {

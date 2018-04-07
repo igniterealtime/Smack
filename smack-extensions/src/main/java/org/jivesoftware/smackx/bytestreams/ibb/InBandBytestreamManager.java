@@ -35,7 +35,7 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.BytestreamManager;
@@ -452,7 +452,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * @throws InterruptedException 
      */
     protected void replyRejectPacket(IQ request) throws NotConnectedException, InterruptedException {
-        IQ error = IQ.createErrorResponse(request, XMPPError.Condition.not_acceptable);
+        IQ error = IQ.createErrorResponse(request, StanzaError.Condition.not_acceptable);
         connection().sendStanza(error);
     }
 
@@ -465,7 +465,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * @throws InterruptedException 
      */
     protected void replyResourceConstraintPacket(IQ request) throws NotConnectedException, InterruptedException {
-        IQ error = IQ.createErrorResponse(request, XMPPError.Condition.resource_constraint);
+        IQ error = IQ.createErrorResponse(request, StanzaError.Condition.resource_constraint);
         connection().sendStanza(error);
     }
 
@@ -478,7 +478,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * @throws InterruptedException 
      */
     protected void replyItemNotFoundPacket(IQ request) throws NotConnectedException, InterruptedException {
-        IQ error = IQ.createErrorResponse(request, XMPPError.Condition.item_not_found);
+        IQ error = IQ.createErrorResponse(request, StanzaError.Condition.item_not_found);
         connection().sendStanza(error);
     }
 

@@ -29,7 +29,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.IllegalStateChangeException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jxmpp.jid.Jid;
 
@@ -344,7 +344,7 @@ public class OutgoingFileTransfer extends FileTransfer {
     }
 
     private void handleXMPPException(XMPPErrorException e) {
-        XMPPError error = e.getXMPPError();
+        StanzaError error = e.getXMPPError();
         if (error != null) {
             switch (error.getCondition()) {
             case forbidden:

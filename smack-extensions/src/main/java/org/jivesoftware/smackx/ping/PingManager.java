@@ -41,7 +41,7 @@ import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.ExceptionCallback;
 import org.jivesoftware.smack.util.SuccessCallback;
 
@@ -149,7 +149,7 @@ public final class PingManager extends Manager {
             return true;
         }
 
-        final XMPPError xmppError = xmppErrorException.getXMPPError();
+        final StanzaError xmppError = xmppErrorException.getXMPPError();
 
         // We may received an error response from an intermediate service returning an error like
         // 'remote-server-not-found' or 'remote-server-timeout' to us (which would fake the 'from' address,
@@ -167,9 +167,9 @@ public final class PingManager extends Manager {
 
         // Some clients don't obey the first rule and instead send back a feature-not-implement condition with type 'cancel',
         // which allows us to consider this response as valid "error response" pong.
-        XMPPError.Type type = xmppError.getType();
-        XMPPError.Condition condition = xmppError.getCondition();
-        return type == XMPPError.Type.CANCEL && condition == XMPPError.Condition.feature_not_implemented;
+        StanzaError.Type type = xmppError.getType();
+        StanzaError.Condition condition = xmppError.getCondition();
+        return type == StanzaError.Type.CANCEL && condition == StanzaError.Condition.feature_not_implemented;
     }
 
     public SmackFuture<Boolean, Exception> pingAsync(Jid jid) {

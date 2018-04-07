@@ -105,13 +105,13 @@ public interface Packet extends TopLevelStreamElement {
      *
      * @return the error sub-packet or <tt>null</tt> if there isn't an error.
      */
-    XMPPError getError();
+    StanzaError getError();
     /**
      * Sets the error for this packet.
      *
      * @param error the error to associate with this packet.
      */
-    void setError(XMPPError error);
+    void setError(StanzaError error);
 
     /**
      * Returns the xml:lang of this Stanza, or null if one has not been set.

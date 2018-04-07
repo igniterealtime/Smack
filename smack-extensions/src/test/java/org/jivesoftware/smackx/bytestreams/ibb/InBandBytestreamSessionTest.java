@@ -30,7 +30,7 @@ import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
 import org.jivesoftware.smackx.InitExtensions;
@@ -378,7 +378,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
             @Override
             public void verify(IQ request, IQ response) {
-                assertEquals(XMPPError.Condition.unexpected_request,
+                assertEquals(StanzaError.Condition.unexpected_request,
                                 request.getError().getCondition());
             }
 
@@ -417,7 +417,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
             @Override
             public void verify(IQ request, IQ response) {
-                assertEquals(XMPPError.Condition.bad_request,
+                assertEquals(StanzaError.Condition.bad_request,
                                 request.getError().getCondition());
             }
 

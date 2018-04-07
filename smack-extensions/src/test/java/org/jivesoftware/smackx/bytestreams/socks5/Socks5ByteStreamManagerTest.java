@@ -36,7 +36,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
@@ -433,7 +433,7 @@ public class Socks5ByteStreamManagerTest {
                         Verification.requestTypeGET);
 
         // build error packet to reject SOCKS5 Bytestream
-        XMPPError.Builder builder = XMPPError.getBuilder(XMPPError.Condition.not_acceptable);
+        StanzaError.Builder builder = StanzaError.getBuilder(StanzaError.Condition.not_acceptable);
         IQ rejectPacket = new ErrorIQ(builder);
         rejectPacket.setFrom(targetJID);
         rejectPacket.setTo(initiatorJID);

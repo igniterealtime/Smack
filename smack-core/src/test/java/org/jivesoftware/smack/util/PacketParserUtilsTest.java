@@ -37,7 +37,7 @@ import javax.xml.transform.TransformerException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
@@ -875,8 +875,8 @@ public class PacketParserUtilsTest {
         final String text = "Dummy descriptive text";
         Map<String, String> texts = new HashMap<>();
         texts.put(null, text);
-        XMPPError
-            .getBuilder(XMPPError.Condition.internal_server_error)
+        StanzaError
+            .getBuilder(StanzaError.Condition.internal_server_error)
             .setDescriptiveTexts(texts)
             .build();
     }
@@ -886,14 +886,14 @@ public class PacketParserUtilsTest {
         final String text = "Dummy descriptive text";
         Map<String, String> texts = new HashMap<>();
         texts.put("", text);
-        XMPPError error = XMPPError
-                .getBuilder(XMPPError.Condition.internal_server_error)
+        StanzaError error = StanzaError
+                .getBuilder(StanzaError.Condition.internal_server_error)
                 .setDescriptiveTexts(texts)
                 .build();
         final String errorXml = XMLBuilder
-                .create(XMPPError.ERROR).a("type", "cancel").up()
-                .element("internal-server-error", XMPPError.NAMESPACE).up()
-                .element("text", XMPPError.NAMESPACE).t(text).up()
+                .create(StanzaError.ERROR).a("type", "cancel").up()
+                .element("internal-server-error", StanzaError.NAMESPACE).up()
+                .element("text", StanzaError.NAMESPACE).t(text).up()
                 .asString();
         XmlUnitUtils.assertSimilar(errorXml, error.toXML());
     }
@@ -902,12 +902,12 @@ public class PacketParserUtilsTest {
     public void ensureNoNullLangInParsedDescriptiveTexts() throws Exception {
         final String text = "Dummy descriptive text";
         final String errorXml = XMLBuilder
-            .create(XMPPError.ERROR).a("type", "cancel").up()
-            .element("internal-server-error", XMPPError.NAMESPACE).up()
-            .element("text", XMPPError.NAMESPACE).t(text).up()
+            .create(StanzaError.ERROR).a("type", "cancel").up()
+            .element("internal-server-error", StanzaError.NAMESPACE).up()
+            .element("text", StanzaError.NAMESPACE).t(text).up()
             .asString();
         XmlPullParser parser = TestUtils.getParser(errorXml);
-        XMPPError error = PacketParserUtils.parseError(parser).build();
+        StanzaError error = PacketParserUtils.parseError(parser).build();
         assertEquals(text, error.getDescriptiveText());
     }
 }

@@ -74,9 +74,9 @@ import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -1087,15 +1087,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     throw new IllegalStateException("Should only encounter IQ type 'get' or 'set'");
                 }
                 if (iqRequestHandler == null) {
-                    XMPPError.Condition replyCondition;
+                    StanzaError.Condition replyCondition;
                     switch (unknownIqRequestReplyMode) {
                     case doNotReply:
                         return;
                     case replyFeatureNotImplemented:
-                        replyCondition = XMPPError.Condition.feature_not_implemented;
+                        replyCondition = StanzaError.Condition.feature_not_implemented;
                         break;
                     case replyServiceUnavailable:
-                        replyCondition = XMPPError.Condition.service_unavailable;
+                        replyCondition = StanzaError.Condition.service_unavailable;
                         break;
                     default:
                         throw new AssertionError();
@@ -1103,7 +1103,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
                     // If the IQ stanza is of type "get" or "set" with no registered IQ request handler, then answer an
                     // IQ of type 'error' with condition 'service-unavailable'.
-                    ErrorIQ errorIQ = IQ.createErrorResponse(iq, XMPPError.getBuilder((
+                    ErrorIQ errorIQ = IQ.createErrorResponse(iq, StanzaError.getBuilder((
                                     replyCondition)));
                     try {
                         sendStanza(errorIQ);

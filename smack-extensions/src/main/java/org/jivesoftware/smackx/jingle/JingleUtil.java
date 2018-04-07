@@ -20,7 +20,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
@@ -423,8 +423,8 @@ public class JingleUtil {
      */
 
     public IQ createErrorUnknownSession(Jingle request) {
-        XMPPError.Builder error = XMPPError.getBuilder();
-        error.setCondition(XMPPError.Condition.item_not_found)
+        StanzaError.Builder error = StanzaError.getBuilder();
+        error.setCondition(StanzaError.Condition.item_not_found)
                 .addExtension(JingleError.UNKNOWN_SESSION);
         return IQ.createErrorResponse(request, error);
     }
@@ -435,7 +435,7 @@ public class JingleUtil {
     }
 
     public IQ createErrorUnknownInitiator(Jingle request) {
-        return IQ.createErrorResponse(request, XMPPError.Condition.service_unavailable);
+        return IQ.createErrorResponse(request, StanzaError.Condition.service_unavailable);
     }
 
     public void sendErrorUnknownInitiator(Jingle request)
@@ -444,8 +444,8 @@ public class JingleUtil {
     }
 
     public IQ createErrorUnsupportedInfo(Jingle request) {
-        XMPPError.Builder error = XMPPError.getBuilder();
-        error.setCondition(XMPPError.Condition.feature_not_implemented)
+        StanzaError.Builder error = StanzaError.getBuilder();
+        error.setCondition(StanzaError.Condition.feature_not_implemented)
                 .addExtension(JingleError.UNSUPPORTED_INFO);
         return IQ.createErrorResponse(request, error);
     }
@@ -456,8 +456,8 @@ public class JingleUtil {
     }
 
     public IQ createErrorTieBreak(Jingle request) {
-        XMPPError.Builder error = XMPPError.getBuilder();
-        error.setCondition(XMPPError.Condition.conflict)
+        StanzaError.Builder error = StanzaError.getBuilder();
+        error.setCondition(StanzaError.Condition.conflict)
                 .addExtension(JingleError.TIE_BREAK);
         return IQ.createErrorResponse(request, error);
     }
@@ -468,8 +468,8 @@ public class JingleUtil {
     }
 
     public IQ createErrorOutOfOrder(Jingle request) {
-        XMPPError.Builder error = XMPPError.getBuilder();
-        error.setCondition(XMPPError.Condition.unexpected_request)
+        StanzaError.Builder error = StanzaError.getBuilder();
+        error.setCondition(StanzaError.Condition.unexpected_request)
                 .addExtension(JingleError.OUT_OF_ORDER);
         return IQ.createErrorResponse(request, error);
     }
@@ -480,7 +480,7 @@ public class JingleUtil {
     }
 
     public IQ createErrorMalformedRequest(Jingle request) {
-        return IQ.createErrorResponse(request, XMPPError.Condition.bad_request);
+        return IQ.createErrorResponse(request, StanzaError.Condition.bad_request);
     }
 
     public void sendErrorMalformedRequest(Jingle request)

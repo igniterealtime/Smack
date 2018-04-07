@@ -37,10 +37,10 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.UnparsedIQ;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -607,7 +607,7 @@ public class PacketParserUtils {
         ParserUtils.assertAtStartTag(parser);
         final int initialDepth = parser.getDepth();
         IQ iqPacket = null;
-        XMPPError.Builder error = null;
+        StanzaError.Builder error = null;
 
         final String id = parser.getAttributeValue("", "id");
         final Jid to = ParserUtils.getJidAttribute(parser, "to");
@@ -854,15 +854,15 @@ public class PacketParserUtils {
      * @return an error sub-packet.
      * @throws Exception 
      */
-    public static XMPPError.Builder parseError(XmlPullParser parser)
+    public static StanzaError.Builder parseError(XmlPullParser parser)
                     throws Exception {
         final int initialDepth = parser.getDepth();
         Map<String, String> descriptiveTexts = null;
         List<ExtensionElement> extensions = new ArrayList<>();
-        XMPPError.Builder builder = XMPPError.getBuilder();
+        StanzaError.Builder builder = StanzaError.getBuilder();
 
         // Parse the error header
-        builder.setType(XMPPError.Type.fromString(parser.getAttributeValue("", "type")));
+        builder.setType(StanzaError.Type.fromString(parser.getAttributeValue("", "type")));
         builder.setErrorGenerator(parser.getAttributeValue("", "by"));
 
         outerloop: while (true) {
@@ -872,13 +872,13 @@ public class PacketParserUtils {
                 String name = parser.getName();
                 String namespace = parser.getNamespace();
                 switch (namespace) {
-                case XMPPError.NAMESPACE:
+                case StanzaError.NAMESPACE:
                     switch (name) {
                     case Stanza.TEXT:
                         descriptiveTexts = parseDescriptiveTexts(parser, descriptiveTexts);
                         break;
                     default:
-                        builder.setCondition(XMPPError.Condition.fromString(name));
+                        builder.setCondition(StanzaError.Condition.fromString(name));
                         if (!parser.isEmptyElementTag()) {
                             builder.setConditionText(parser.nextText());
                         }

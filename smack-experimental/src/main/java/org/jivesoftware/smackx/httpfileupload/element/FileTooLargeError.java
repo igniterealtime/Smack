@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.httpfileupload.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -67,7 +67,7 @@ public class FileTooLargeError implements ExtensionElement {
     }
 
     public static FileTooLargeError from(IQ iq) {
-        XMPPError error = iq.getError();
+        StanzaError error = iq.getError();
         if (error == null) {
             return null;
         }

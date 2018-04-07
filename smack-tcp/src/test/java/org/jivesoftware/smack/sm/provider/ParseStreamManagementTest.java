@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Vyacheslav Blinov, 2017 Florian Schmaus
+ * Copyright 2014 Vyacheslav Blinov, 2017-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.jivesoftware.smack.sm.provider;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -29,8 +27,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaErrorTextElement;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.sm.packet.StreamManagement;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
@@ -92,11 +90,11 @@ public class ParseStreamManagementTest {
 
     @Test
     public void testParseFailedError() throws Exception {
-        XMPPError.Condition errorCondition = XMPPError.Condition.unexpected_request;
+        StanzaError.Condition errorCondition = StanzaError.Condition.unexpected_request;
 
         String failedStanza = XMLBuilder.create("failed")
                 .a("xmlns", "urn:xmpp:sm:3")
-                .element(errorCondition.toString(), XMPPError.NAMESPACE)
+                .element(errorCondition.toString(), StanzaError.NAMESPACE)
                 .asString(outputProperties);
 
         StreamManagement.Failed failedPacket = ParseStreamManagement.failed(
@@ -120,7 +118,7 @@ public class ParseStreamManagementTest {
 
         StreamManagement.Failed failed = ParseStreamManagement.failed(parser);
 
-        assertEquals(XMPPError.Condition.item_not_found, failed.getXMPPErrorCondition());
+        assertEquals(StanzaError.Condition.item_not_found, failed.getXMPPErrorCondition());
 
         List<StanzaErrorTextElement> textElements = failed.getTextElements();
         assertEquals(1, textElements.size());

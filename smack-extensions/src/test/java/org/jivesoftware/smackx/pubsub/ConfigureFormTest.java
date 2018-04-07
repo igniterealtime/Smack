@@ -27,8 +27,8 @@ import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ.Type;
-import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.packet.XMPPError.Condition;
+import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.StanzaError.Condition;
 
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -68,7 +68,7 @@ public class ConfigureFormTest extends InitExtensions {
         PubSub errorIq = new PubSub();
         errorIq.setType(Type.error);
         errorIq.setFrom(PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
-        XMPPError.Builder error = XMPPError.getBuilder(Condition.forbidden);
+        StanzaError.Builder error = StanzaError.getBuilder(Condition.forbidden);
         errorIq.setError(error);
         con.addIQReply(errorIq);
 
@@ -77,7 +77,7 @@ public class ConfigureFormTest extends InitExtensions {
             fail();
         }
         catch (XMPPErrorException e) {
-            Assert.assertEquals(XMPPError.Type.AUTH, e.getXMPPError().getType());
+            Assert.assertEquals(StanzaError.Type.AUTH, e.getXMPPError().getType());
         }
     }
 

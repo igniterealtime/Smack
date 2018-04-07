@@ -34,7 +34,7 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
@@ -476,7 +476,7 @@ public class InBandBytestreamSession implements BytestreamSession {
                      */
                     if (data.getSeq() <= this.lastSequence) {
                         IQ unexpectedRequest = IQ.createErrorResponse((IQ) packet,
-                                        XMPPError.Condition.unexpected_request);
+                                        StanzaError.Condition.unexpected_request);
                         connection.sendStanza(unexpectedRequest);
                         return;
 
@@ -486,7 +486,7 @@ public class InBandBytestreamSession implements BytestreamSession {
                     if (data.getDecodedData() == null) {
                         // data is invalid; respond with bad-request error
                         IQ badRequest = IQ.createErrorResponse((IQ) packet,
-                                        XMPPError.Condition.bad_request);
+                                        StanzaError.Condition.bad_request);
                         connection.sendStanza(badRequest);
                         return;
                     }

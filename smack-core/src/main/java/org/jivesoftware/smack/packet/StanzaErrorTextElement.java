@@ -18,7 +18,7 @@ package org.jivesoftware.smack.packet;
 
 public class StanzaErrorTextElement extends AbstractTextElement {
 
-    public static final String NAMESPACE = XMPPError.NAMESPACE;
+    public static final String NAMESPACE = StanzaError.NAMESPACE;
 
     public StanzaErrorTextElement(String text, String lang) {
         super(text, lang);

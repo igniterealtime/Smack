@@ -27,7 +27,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
@@ -118,7 +118,7 @@ public class InBandBytestreamManagerTest extends InitExtensions {
 
         try {
             IQ errorIQ = IBBPacketUtils.createErrorIQ(targetJID, initiatorJID,
-                            XMPPError.Condition.feature_not_implemented);
+                            StanzaError.Condition.feature_not_implemented);
             protocol.addResponse(errorIQ);
 
             // start In-Band Bytestream
@@ -127,7 +127,7 @@ public class InBandBytestreamManagerTest extends InitExtensions {
             fail("exception should be thrown");
         }
         catch (XMPPErrorException e) {
-            assertEquals(XMPPError.Condition.feature_not_implemented,
+            assertEquals(StanzaError.Condition.feature_not_implemented,
                             e.getXMPPError().getCondition());
         }
 

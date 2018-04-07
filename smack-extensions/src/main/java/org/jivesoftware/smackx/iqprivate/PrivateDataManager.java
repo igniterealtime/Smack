@@ -29,7 +29,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError.Condition;
+import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.jivesoftware.smackx.iqprivate.packet.DefaultPrivateData;

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Nonza;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaErrorTextElement;
-import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class StreamManagement {
@@ -193,7 +193,7 @@ public class StreamManagement {
     public static class Failed implements Nonza {
         public static final String ELEMENT = "failed";
 
-        private final XMPPError.Condition condition;
+        private final StanzaError.Condition condition;
 
         private final List<StanzaErrorTextElement> textElements;
 
@@ -202,7 +202,7 @@ public class StreamManagement {
             this(null, null);
         }
 
-        public Failed(XMPPError.Condition condition, List<StanzaErrorTextElement> textElements) {
+        public Failed(StanzaError.Condition condition, List<StanzaErrorTextElement> textElements) {
             this.condition = condition;
             if (textElements == null) {
                 this.textElements = Collections.emptyList();
@@ -211,7 +211,7 @@ public class StreamManagement {
             }
         }
 
-        public XMPPError.Condition getXMPPErrorCondition() {
+        public StanzaError.Condition getXMPPErrorCondition() {
             return condition;
         }
 
@@ -229,7 +229,7 @@ public class StreamManagement {
                 if (condition != null) {
                     // TODO This should use StanzaError (formerly XMPPError) in Smack 4.3 (see SMACK-769)
                     xml.append(condition.toString());
-                    xml.xmlnsAttribute(XMPPError.NAMESPACE);
+                    xml.xmlnsAttribute(StanzaError.NAMESPACE);
                 }
                 xml.append(textElements);
                 xml.closeElement(ELEMENT);

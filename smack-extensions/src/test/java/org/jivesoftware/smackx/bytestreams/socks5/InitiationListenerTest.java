@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
@@ -104,7 +104,7 @@ public class InitiationListenerTest {
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());
         assertEquals(IQ.Type.error, argument.getValue().getType());
-        assertEquals(XMPPError.Condition.not_acceptable,
+        assertEquals(StanzaError.Condition.not_acceptable,
                         argument.getValue().getError().getCondition());
 
     }
@@ -185,7 +185,7 @@ public class InitiationListenerTest {
         // assert that reply is the correct error packet
         assertEquals(initiatorJID, argument.getValue().getTo());
         assertEquals(IQ.Type.error, argument.getValue().getType());
-        assertEquals(XMPPError.Condition.not_acceptable,
+        assertEquals(StanzaError.Condition.not_acceptable,
                         argument.getValue().getError().getCondition());
     }
 

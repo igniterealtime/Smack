@@ -33,7 +33,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
@@ -194,7 +194,7 @@ public final class FileTransferNegotiator extends Manager {
 
         if (streamMethodField == null) {
             String errorMessage = "No stream methods contained in stanza.";
-            XMPPError.Builder error = XMPPError.from(XMPPError.Condition.bad_request, errorMessage);
+            StanzaError.Builder error = StanzaError.from(StanzaError.Condition.bad_request, errorMessage);
             IQ iqPacket = IQ.createErrorResponse(si, error);
             connection().sendStanza(iqPacket);
             throw new FileTransferException.NoStreamMethodsOfferedException();
@@ -206,7 +206,7 @@ public final class FileTransferNegotiator extends Manager {
             selectedStreamNegotiator = getNegotiator(streamMethodField);
         }
         catch (NoAcceptableTransferMechanisms e) {
-            IQ iqPacket = IQ.createErrorResponse(si, XMPPError.from(XMPPError.Condition.bad_request, "No acceptable transfer mechanism"));
+            IQ iqPacket = IQ.createErrorResponse(si, StanzaError.from(StanzaError.Condition.bad_request, "No acceptable transfer mechanism"));
             connection().sendStanza(iqPacket);
             throw e;
         }

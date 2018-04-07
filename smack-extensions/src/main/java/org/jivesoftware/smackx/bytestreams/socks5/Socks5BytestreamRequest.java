@@ -26,7 +26,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
@@ -283,7 +283,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      */
     private void cancelRequest() throws XMPPErrorException, NotConnectedException, InterruptedException {
         String errorMessage = "Could not establish socket with any provided host";
-        XMPPError.Builder error = XMPPError.from(XMPPError.Condition.item_not_found, errorMessage);
+        StanzaError.Builder error = StanzaError.from(StanzaError.Condition.item_not_found, errorMessage);
         IQ errorIQ = IQ.createErrorResponse(this.bytestreamRequest, error);
         this.manager.getConnection().sendStanza(errorIQ);
         throw new XMPPErrorException(errorIQ, error.build());

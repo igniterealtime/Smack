@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.commands.provider;
 
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -109,7 +109,7 @@ public class AdHocCommandDataProvider extends IQProvider<AdHocCommandData> {
                     adHocCommandData.addNote(new AdHocCommandNote(type, value));
                 }
                 else if (parser.getName().equals("error")) {
-                    XMPPError.Builder error = PacketParserUtils.parseError(parser);
+                    StanzaError.Builder error = PacketParserUtils.parseError(parser);
                     adHocCommandData.setError(error);
                 }
             }

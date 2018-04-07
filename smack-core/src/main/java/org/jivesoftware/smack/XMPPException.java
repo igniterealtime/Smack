@@ -19,8 +19,8 @@ package org.jivesoftware.smack;
 
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StreamError;
-import org.jivesoftware.smack.packet.XMPPError;
 
 import org.jxmpp.jid.Jid;
 
@@ -35,7 +35,7 @@ import org.jxmpp.jid.Jid;
  * is sent to the client an XMPPException will be thrown containing the StreamError sent
  * by the server.
  *
- * @see XMPPError
+ * @see StanzaError
  * @author Matt Tucker
  */
 public abstract class XMPPException extends Exception {
@@ -74,17 +74,17 @@ public abstract class XMPPException extends Exception {
          * 
          */
         private static final long serialVersionUID = 212790389529249604L;
-        private final XMPPError error;
+        private final StanzaError error;
         private final Stanza stanza;
 
         /**
          * Creates a new XMPPErrorException with the given builder.
          *
          * @param xmppErrorBuilder
-         * @deprecated Use {@link #XMPPErrorException(Stanza, XMPPError)} instead.
+         * @deprecated Use {@link #XMPPErrorException(Stanza, StanzaError)} instead.
          */
         @Deprecated
-        public XMPPErrorException(XMPPError.Builder xmppErrorBuilder) {
+        public XMPPErrorException(StanzaError.Builder xmppErrorBuilder) {
             this(null, xmppErrorBuilder.build());
         }
 
@@ -94,7 +94,7 @@ public abstract class XMPPException extends Exception {
          * @param stanza stanza that contained the exception.
          * @param error the root cause of the exception.
          */
-        public XMPPErrorException(Stanza stanza, XMPPError error) {
+        public XMPPErrorException(Stanza stanza, StanzaError error) {
             super();
             this.error = error;
             this.stanza = stanza;
@@ -106,7 +106,7 @@ public abstract class XMPPException extends Exception {
          * 
          * @return the XMPPError associated with this exception.
          */
-        public XMPPError getXMPPError() {
+        public StanzaError getXMPPError() {
             return error;
         }
 
@@ -127,7 +127,7 @@ public abstract class XMPPException extends Exception {
         }
 
         public static void ifHasErrorThenThrow(Stanza packet) throws XMPPErrorException {
-            XMPPError xmppError = packet.getError();
+            StanzaError xmppError = packet.getError();
             if (xmppError != null) {
                 throw new XMPPErrorException(packet, xmppError);
             }
@@ -141,16 +141,16 @@ public abstract class XMPPException extends Exception {
          */
         private static final long serialVersionUID = 1L;
 
-        private final XMPPError.Condition condition;
+        private final StanzaError.Condition condition;
 
         private final Nonza nonza;
 
-        public FailedNonzaException(Nonza nonza, XMPPError.Condition condition) {
+        public FailedNonzaException(Nonza nonza, StanzaError.Condition condition) {
             this.condition = condition;
             this.nonza = nonza;
         }
 
-        public XMPPError.Condition getCondition() {
+        public StanzaError.Condition getCondition() {
             return condition;
         }
 

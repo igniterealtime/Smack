@@ -35,8 +35,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.packet.XMPPError.Condition;
+import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.StanzaError.Condition;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -556,7 +556,7 @@ public final class PubSubManager extends Manager {
             leafNode = createNode();
         }
         catch (XMPPErrorException e) {
-            if (e.getXMPPError().getCondition() == XMPPError.Condition.forbidden) {
+            if (e.getXMPPError().getCondition() == StanzaError.Condition.forbidden) {
                 return false;
             }
             throw e;

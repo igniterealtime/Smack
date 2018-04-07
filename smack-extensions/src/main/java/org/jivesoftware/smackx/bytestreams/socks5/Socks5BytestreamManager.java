@@ -42,7 +42,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.BytestreamManager;
@@ -699,7 +699,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @throws InterruptedException 
      */
     protected void replyRejectPacket(IQ packet) throws NotConnectedException, InterruptedException {
-        XMPPError.Builder xmppError = XMPPError.getBuilder(XMPPError.Condition.not_acceptable);
+        StanzaError.Builder xmppError = StanzaError.getBuilder(StanzaError.Condition.not_acceptable);
         IQ errorIQ = IQ.createErrorResponse(packet, xmppError);
         connection().sendStanza(errorIQ);
     }

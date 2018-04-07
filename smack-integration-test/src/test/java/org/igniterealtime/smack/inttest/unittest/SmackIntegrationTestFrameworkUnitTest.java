@@ -30,7 +30,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.DummySmackIntegrationTestFramework;
@@ -85,7 +85,7 @@ public class SmackIntegrationTestFrameworkUnitTest {
         FailedTest failedTest = failedTests.get(0);
         assertTrue(failedTest.failureReason instanceof XMPPErrorException);
         XMPPErrorException ex = (XMPPErrorException) failedTest.failureReason;
-        assertEquals(XMPPError.Condition.bad_request, ex.getXMPPError().getCondition());
+        assertEquals(StanzaError.Condition.bad_request, ex.getXMPPError().getCondition());
         assertEquals(ThrowsNonFatalExceptionDummyTest.DESCRIPTIVE_TEXT, ex.getXMPPError().getDescriptiveText());
     }
 
@@ -101,7 +101,7 @@ public class SmackIntegrationTestFrameworkUnitTest {
         public void throwRuntimeExceptionTest() throws XMPPErrorException {
             Message message = new Message();
             throw new XMPPException.XMPPErrorException(message,
-                            XMPPError.from(XMPPError.Condition.bad_request, DESCRIPTIVE_TEXT).build());
+                            StanzaError.from(StanzaError.Condition.bad_request, DESCRIPTIVE_TEXT).build());
         }
     }
 

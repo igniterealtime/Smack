@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.bytestreams.ibb;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jxmpp.jid.Jid;
 
@@ -38,8 +38,8 @@ public class IBBPacketUtils {
      * @param condition the XMPP error condition
      * @return an error IQ
      */
-    public static IQ createErrorIQ(Jid from, Jid to, XMPPError.Condition condition) {
-        XMPPError.Builder xmppError = XMPPError.getBuilder(condition);
+    public static IQ createErrorIQ(Jid from, Jid to, StanzaError.Condition condition) {
+        StanzaError.Builder xmppError = StanzaError.getBuilder(condition);
         IQ errorIQ = new ErrorIQ(xmppError);
         errorIQ.setType(IQ.Type.error);
         errorIQ.setFrom(from);

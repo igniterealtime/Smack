@@ -62,7 +62,7 @@ public class IQResponseTest {
      */
     @Test
     public void testGeneratingValidErrorResponse() throws XmppStringprepException {
-        final XMPPError.Builder error = XMPPError.getBuilder(XMPPError.Condition.bad_request);
+        final StanzaError.Builder error = StanzaError.getBuilder(StanzaError.Condition.bad_request);
         final IQ request = new TestIQ(ELEMENT, NAMESPACE);
 
         request.setType(IQ.Type.set);
@@ -110,7 +110,7 @@ public class IQResponseTest {
      */
     @Test
     public void testGeneratingErrorBasedOnError() throws XmppStringprepException {
-        final XMPPError.Builder error = XMPPError.getBuilder(XMPPError.Condition.bad_request);
+        final StanzaError.Builder error = StanzaError.getBuilder(StanzaError.Condition.bad_request);
         final IQ request = new TestIQ(ELEMENT, NAMESPACE);
 
         request.setType(IQ.Type.error);

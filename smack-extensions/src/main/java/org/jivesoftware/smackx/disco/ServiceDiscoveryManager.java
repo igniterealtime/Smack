@@ -40,7 +40,7 @@ import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -144,7 +144,7 @@ public final class ServiceDiscoveryManager extends Manager {
                     // Return <item-not-found/> error since client doesn't contain
                     // the specified node
                     response.setType(IQ.Type.error);
-                    response.setError(XMPPError.getBuilder(XMPPError.Condition.item_not_found));
+                    response.setError(StanzaError.getBuilder(StanzaError.Condition.item_not_found));
                 }
                 return response;
             }
@@ -182,7 +182,7 @@ public final class ServiceDiscoveryManager extends Manager {
                     } else {
                         // Return <item-not-found/> error since specified node was not found
                         response.setType(IQ.Type.error);
-                        response.setError(XMPPError.getBuilder(XMPPError.Condition.item_not_found));
+                        response.setError(StanzaError.getBuilder(StanzaError.Condition.item_not_found));
                     }
                 }
                 return response;

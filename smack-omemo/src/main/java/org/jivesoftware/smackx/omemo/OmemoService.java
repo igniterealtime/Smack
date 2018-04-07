@@ -48,7 +48,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.Async;
 
 import org.jivesoftware.smackx.carbons.CarbonCopyReceivedListener;
@@ -468,7 +468,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
 
         } catch (XMPPException.XMPPErrorException e) {
 
-            if (e.getXMPPError().getCondition() == XMPPError.Condition.item_not_found) {
+            if (e.getXMPPError().getCondition() == StanzaError.Condition.item_not_found) {
                 LOGGER.log(Level.WARNING, "Could not refresh own deviceList, because the node did not exist: "
                         + e.getMessage());
                 return true;

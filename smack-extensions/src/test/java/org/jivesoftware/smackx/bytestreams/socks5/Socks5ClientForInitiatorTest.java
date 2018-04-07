@@ -33,7 +33,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
@@ -205,7 +205,7 @@ public class Socks5ClientForInitiatorTest {
     public void shouldFailIfActivateSocks5ProxyFails() throws Exception {
 
         // build error response as reply to the stream activation
-        IQ error = new ErrorIQ(XMPPError.getBuilder(XMPPError.Condition.internal_server_error));
+        IQ error = new ErrorIQ(StanzaError.getBuilder(StanzaError.Condition.internal_server_error));
         error.setFrom(proxyJID);
         error.setTo(initiatorJID);
 
@@ -232,7 +232,7 @@ public class Socks5ClientForInitiatorTest {
             fail("exception should be thrown");
         }
         catch (XMPPErrorException e) {
-            assertTrue(XMPPError.Condition.internal_server_error.equals(e.getXMPPError().getCondition()));
+            assertTrue(StanzaError.Condition.internal_server_error.equals(e.getXMPPError().getCondition()));
             protocol.verifyAll();
         }
 

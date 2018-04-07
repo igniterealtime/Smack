@@ -20,7 +20,7 @@ import org.jivesoftware.smack.util.Objects;
 
 public class ErrorIQ extends SimpleIQ {
 
-    public static final String ELEMENT = XMPPError.ERROR;
+    public static final String ELEMENT = StanzaError.ERROR;
 
     /**
      * Constructs a new error IQ.
@@ -29,7 +29,7 @@ public class ErrorIQ extends SimpleIQ {
      * </p>
      * @param xmppErrorBuilder the XMPPError builder (required).
      */
-    public ErrorIQ(XMPPError.Builder xmppErrorBuilder) {
+    public ErrorIQ(StanzaError.Builder xmppErrorBuilder) {
         super(ELEMENT, null);
         Objects.requireNonNull(xmppErrorBuilder, "xmppErrorBuilder must not be null");
         setType(IQ.Type.error);

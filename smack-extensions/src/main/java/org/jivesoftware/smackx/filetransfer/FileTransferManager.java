@@ -27,7 +27,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 
@@ -171,8 +171,8 @@ public final class FileTransferManager extends Manager {
         // Bytestream rejection as specified in XEP-65 5.3.1 Example 13, which says that
         // 'not-acceptable' should be returned. This is done by Smack in
         // Socks5BytestreamManager.replyRejectPacket(IQ).
-        IQ rejection = IQ.createErrorResponse(initiation, XMPPError.getBuilder(
-                        XMPPError.Condition.forbidden));
+        IQ rejection = IQ.createErrorResponse(initiation, StanzaError.getBuilder(
+                        StanzaError.Condition.forbidden));
         connection().sendStanza(rejection);
     }
 }

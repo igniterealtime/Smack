@@ -61,7 +61,7 @@ public abstract class Stanza implements TopLevelStreamElement {
     private String id = null;
     private Jid to;
     private Jid from;
-    private XMPPError error = null;
+    private StanzaError error = null;
 
     /**
      * Optional value of the 'xml:lang' attribute of the outermost element of
@@ -254,7 +254,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      *
      * @return the error sub-packet or <tt>null</tt> if there isn't an error.
      */
-    public XMPPError getError() {
+    public StanzaError getError() {
         return error;
     }
 
@@ -262,10 +262,10 @@ public abstract class Stanza implements TopLevelStreamElement {
      * Sets the error for this packet.
      *
      * @param error the error to associate with this packet.
-     * @deprecated use {@link #setError(org.jivesoftware.smack.packet.XMPPError.Builder)} instead.
+     * @deprecated use {@link #setError(org.jivesoftware.smack.packet.StanzaError.Builder)} instead.
      */
     @Deprecated
-    public void setError(XMPPError error) {
+    public void setError(StanzaError error) {
         this.error = error;
     }
 
@@ -274,7 +274,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      *
      * @param xmppErrorBuilder the error to associate with this stanza.
      */
-    public void setError(XMPPError.Builder xmppErrorBuilder) {
+    public void setError(StanzaError.Builder xmppErrorBuilder) {
         if (xmppErrorBuilder == null) {
             return;
         }
@@ -534,7 +534,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @param xml the XmlStringBuilder to append the error to.
      */
     protected void appendErrorIfExists(XmlStringBuilder xml) {
-        XMPPError error = getError();
+        StanzaError error = getError();
         if (error != null) {
             xml.append(error.toXML());
         }

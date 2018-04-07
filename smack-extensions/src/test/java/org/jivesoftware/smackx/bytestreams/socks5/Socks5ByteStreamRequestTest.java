@@ -33,7 +33,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 
@@ -120,7 +120,7 @@ public class Socks5ByteStreamRequestTest {
         assertTrue(IQ.class.isInstance(targetResponse));
         assertEquals(initiatorJID, targetResponse.getTo());
         assertEquals(IQ.Type.error, ((IQ) targetResponse).getType());
-        assertEquals(XMPPError.Condition.item_not_found,
+        assertEquals(StanzaError.Condition.item_not_found,
                         targetResponse.getError().getCondition());
 
     }
@@ -164,7 +164,7 @@ public class Socks5ByteStreamRequestTest {
         assertTrue(IQ.class.isInstance(targetResponse));
         assertEquals(initiatorJID, targetResponse.getTo());
         assertEquals(IQ.Type.error, ((IQ) targetResponse).getType());
-        assertEquals(XMPPError.Condition.item_not_found,
+        assertEquals(StanzaError.Condition.item_not_found,
                         targetResponse.getError().getCondition());
 
     }
@@ -212,7 +212,7 @@ public class Socks5ByteStreamRequestTest {
             assertTrue(IQ.class.isInstance(targetResponse));
             assertEquals(initiatorJID, targetResponse.getTo());
             assertEquals(IQ.Type.error, ((IQ) targetResponse).getType());
-            assertEquals(XMPPError.Condition.item_not_found,
+            assertEquals(StanzaError.Condition.item_not_found,
                             targetResponse.getError().getCondition());
         }
 
@@ -304,7 +304,7 @@ public class Socks5ByteStreamRequestTest {
             assertTrue(IQ.class.isInstance(targetResponse));
             assertEquals(initiatorJID, targetResponse.getTo());
             assertEquals(IQ.Type.error, ((IQ) targetResponse).getType());
-            assertEquals(XMPPError.Condition.item_not_found,
+            assertEquals(StanzaError.Condition.item_not_found,
                             targetResponse.getError().getCondition());
         }
 

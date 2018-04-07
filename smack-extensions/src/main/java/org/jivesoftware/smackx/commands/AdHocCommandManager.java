@@ -39,7 +39,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.commands.AdHocCommand.Action;
@@ -349,7 +349,7 @@ public final class AdHocCommandManager extends Manager {
             if (!commands.containsKey(commandNode)) {
                 // Requested command does not exist so return
                 // item_not_found error.
-                return respondError(response, XMPPError.Condition.item_not_found);
+                return respondError(response, StanzaError.Condition.item_not_found);
             }
 
             // Create new session ID
@@ -364,7 +364,7 @@ public final class AdHocCommandManager extends Manager {
                 }
                 catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                                 | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                    XMPPError.Builder xmppError = XMPPError.getBuilder().setCondition(XMPPError.Condition.internal_server_error).setDescriptiveEnText(e.getMessage());
+                    StanzaError.Builder xmppError = StanzaError.getBuilder().setCondition(StanzaError.Condition.internal_server_error).setDescriptiveEnText(e.getMessage());
                     return respondError(response, xmppError);
                 }
 
@@ -375,20 +375,20 @@ public final class AdHocCommandManager extends Manager {
                 // Answer forbidden error if requester permissions are not
                 // enough to execute the requested command
                 if (!command.hasPermission(requestData.getFrom())) {
-                    return respondError(response, XMPPError.Condition.forbidden);
+                    return respondError(response, StanzaError.Condition.forbidden);
                 }
 
                 Action action = requestData.getAction();
 
                 // If the action is unknown then respond an error.
                 if (action != null && action.equals(Action.unknown)) {
-                    return respondError(response, XMPPError.Condition.bad_request,
+                    return respondError(response, StanzaError.Condition.bad_request,
                             AdHocCommand.SpecificErrorCondition.malformedAction);
                 }
 
                 // If the action is not execute, then it is an invalid action.
                 if (action != null && !action.equals(Action.execute)) {
-                    return respondError(response, XMPPError.Condition.bad_request,
+                    return respondError(response, StanzaError.Condition.bad_request,
                             AdHocCommand.SpecificErrorCondition.badAction);
                 }
 
@@ -460,16 +460,16 @@ public final class AdHocCommandManager extends Manager {
                 // If there is an exception caused by the next, complete,
                 // prev or cancel method, then that error is returned to the
                 // requester.
-                XMPPError error = e.getXMPPError();
+                StanzaError error = e.getXMPPError();
 
                 // If the error type is cancel, then the execution is
                 // canceled therefore the status must show that, and the
                 // command be removed from the executing list.
-                if (XMPPError.Type.CANCEL.equals(error.getType())) {
+                if (StanzaError.Type.CANCEL.equals(error.getType())) {
                     response.setStatus(Status.canceled);
                     executingCommands.remove(sessionId);
                 }
-                return respondError(response, XMPPError.getBuilder(error));
+                return respondError(response, StanzaError.getBuilder(error));
             }
         }
         else {
@@ -479,7 +479,7 @@ public final class AdHocCommandManager extends Manager {
             // This also handles if the command was removed in the meanwhile
             // of getting the key and the value of the map.
             if (command == null) {
-                return respondError(response, XMPPError.Condition.bad_request,
+                return respondError(response, StanzaError.Condition.bad_request,
                         AdHocCommand.SpecificErrorCondition.badSessionid);
             }
 
@@ -490,7 +490,7 @@ public final class AdHocCommandManager extends Manager {
                 executingCommands.remove(sessionId);
 
                 // Answer a not_allowed error (session-expired)
-                return respondError(response, XMPPError.Condition.not_allowed,
+                return respondError(response, StanzaError.Condition.not_allowed,
                         AdHocCommand.SpecificErrorCondition.sessionExpired);
             }
 
@@ -504,7 +504,7 @@ public final class AdHocCommandManager extends Manager {
 
                 // If the action is unknown the respond an error
                 if (action != null && action.equals(Action.unknown)) {
-                    return respondError(response, XMPPError.Condition.bad_request,
+                    return respondError(response, StanzaError.Condition.bad_request,
                             AdHocCommand.SpecificErrorCondition.malformedAction);
                 }
 
@@ -517,7 +517,7 @@ public final class AdHocCommandManager extends Manager {
                 // Check that the specified action was previously
                 // offered
                 if (!command.isValidAction(action)) {
-                    return respondError(response, XMPPError.Condition.bad_request,
+                    return respondError(response, StanzaError.Condition.bad_request,
                             AdHocCommand.SpecificErrorCondition.badAction);
                 }
 
@@ -570,16 +570,16 @@ public final class AdHocCommandManager extends Manager {
                     // If there is an exception caused by the next, complete,
                     // prev or cancel method, then that error is returned to the
                     // requester.
-                    XMPPError error = e.getXMPPError();
+                    StanzaError error = e.getXMPPError();
 
                     // If the error type is cancel, then the execution is
                     // canceled therefore the status must show that, and the
                     // command be removed from the executing list.
-                    if (XMPPError.Type.CANCEL.equals(error.getType())) {
+                    if (StanzaError.Type.CANCEL.equals(error.getType())) {
                         response.setStatus(Status.canceled);
                         executingCommands.remove(sessionId);
                     }
-                    return respondError(response, XMPPError.getBuilder(error));
+                    return respondError(response, StanzaError.getBuilder(error));
                 }
             }
         }
@@ -593,8 +593,8 @@ public final class AdHocCommandManager extends Manager {
      * @throws NotConnectedException 
      */
     private static IQ respondError(AdHocCommandData response,
-            XMPPError.Condition condition) {
-        return respondError(response, XMPPError.getBuilder(condition));
+            StanzaError.Condition condition) {
+        return respondError(response, StanzaError.getBuilder(condition));
     }
 
     /**
@@ -605,9 +605,9 @@ public final class AdHocCommandManager extends Manager {
      * @param specificCondition the adhoc command error condition.
      * @throws NotConnectedException 
      */
-    private static IQ respondError(AdHocCommandData response, XMPPError.Condition condition,
+    private static IQ respondError(AdHocCommandData response, StanzaError.Condition condition,
             AdHocCommand.SpecificErrorCondition specificCondition) {
-        XMPPError.Builder error = XMPPError.getBuilder(condition).addExtension(new AdHocCommandData.SpecificError(specificCondition));
+        StanzaError.Builder error = StanzaError.getBuilder(condition).addExtension(new AdHocCommandData.SpecificError(specificCondition));
         return respondError(response, error);
     }
 
@@ -618,7 +618,7 @@ public final class AdHocCommandManager extends Manager {
      * @param error the error to send.
      * @throws NotConnectedException 
      */
-    private static IQ respondError(AdHocCommandData response, XMPPError.Builder error) {
+    private static IQ respondError(AdHocCommandData response, StanzaError.Builder error) {
         response.setType(IQ.Type.error);
         response.setError(error);
         return response;

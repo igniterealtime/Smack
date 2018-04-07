@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2015-2017 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2015-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,14 +61,13 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @author Matt Tucker
  * @see <a href="http://xmpp.org/rfcs/rfc6120.html#stanzas-error-syntax">RFC 6120 - 8.3.2 Syntax: The Syntax of XMPP error stanzas</a>
  */
-// TODO Rename this class to StanzaError (RFC 6120 § 8.3) in Smack 4.3, as this is what this class actually is. SMACK-769
 // TODO Use StanzaErrorTextElement here.
-public class XMPPError extends AbstractError {
+public class StanzaError extends AbstractError {
 
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-stanzas";
     public static final String ERROR = "error";
 
-    private static final Logger LOGGER = Logger.getLogger(XMPPError.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(StanzaError.class.getName());
     static final Map<Condition, Type> CONDITION_TO_TYPE = new HashMap<Condition, Type>();
 
     static {
@@ -116,7 +115,7 @@ public class XMPPError extends AbstractError {
      * @param extensions list of stanza extensions
      * @param stanza the stanza carrying this XMPP error.
      */
-    public XMPPError(Condition condition, String conditionText, String errorGenerator, Type type, Map<String, String> descriptiveTexts,
+    public StanzaError(Condition condition, String conditionText, String errorGenerator, Type type, Map<String, String> descriptiveTexts,
             List<ExtensionElement> extensions, Stanza stanza) {
         super(descriptiveTexts, NAMESPACE, extensions);
         this.condition = Objects.requireNonNull(condition, "condition must not be null");
@@ -227,8 +226,8 @@ public class XMPPError extends AbstractError {
         return xml;
     }
 
-    public static XMPPError.Builder from(Condition condition, String descriptiveText) {
-        XMPPError.Builder builder = getBuilder().setCondition(condition);
+    public static StanzaError.Builder from(Condition condition, String descriptiveText) {
+        StanzaError.Builder builder = getBuilder().setCondition(condition);
         if (descriptiveText != null) {
             Map<String, String> descriptiveTexts = new HashMap<>();
             descriptiveTexts.put("en", descriptiveText);
@@ -245,7 +244,7 @@ public class XMPPError extends AbstractError {
         return getBuilder().setCondition(condition);
     }
 
-    public static Builder getBuilder(XMPPError xmppError) {
+    public static Builder getBuilder(StanzaError xmppError) {
         return getBuilder().copyFrom(xmppError);
     }
 
@@ -284,7 +283,7 @@ public class XMPPError extends AbstractError {
             return this;
         }
 
-        public Builder copyFrom(XMPPError xmppError) {
+        public Builder copyFrom(StanzaError xmppError) {
             setCondition(xmppError.getCondition());
             setType(xmppError.getType());
             setConditionText(xmppError.getConditionText());
@@ -296,8 +295,8 @@ public class XMPPError extends AbstractError {
             return this;
         }
 
-        public XMPPError build() {
-            return new XMPPError(condition, conditionText, errorGenerator, type, descriptiveTexts,
+        public StanzaError build() {
+            return new StanzaError(condition, conditionText, errorGenerator, type, descriptiveTexts,
             extensions, stanza);
         }
 
