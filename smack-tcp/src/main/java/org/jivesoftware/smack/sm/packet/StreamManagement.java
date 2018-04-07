@@ -227,7 +227,6 @@ public class StreamManagement {
             } else {
                 xml.rightAngleBracket();
                 if (condition != null) {
-                    // TODO This should use StanzaError (formerly XMPPError) in Smack 4.3 (see SMACK-769)
                     xml.append(condition.toString());
                     xml.xmlnsAttribute(StanzaError.NAMESPACE);
                 }
