@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
@@ -233,6 +234,8 @@ public final class Roster extends Manager {
     public static void setDefaultSubscriptionMode(SubscriptionMode subscriptionMode) {
         defaultSubscriptionMode = subscriptionMode;
     }
+
+    private final AsyncButOrdered<BareJid> asyncButOrdered = new AsyncButOrdered<>();
 
     /**
      * Creates a new roster.
@@ -1466,120 +1469,125 @@ public final class Roster extends Manager {
             if (!isLoaded() && rosterLoadedAtLogin) {
                 LOGGER.warning("Roster not loaded while processing " + packet);
             }
-            Presence presence = (Presence) packet;
-            Jid from = presence.getFrom();
-            Resourcepart fromResource = Resourcepart.EMPTY;
-            BareJid bareFrom = null;
-            FullJid fullFrom = null;
-            if (from != null) {
-                fromResource = from.getResourceOrNull();
-                if (fromResource == null) {
-                    fromResource = Resourcepart.EMPTY;
-                    bareFrom = from.asBareJid();
-                }
-                else {
-                    fullFrom = from.asFullJidIfPossible();
-                    // We know that this must be a full JID in this case.
-                    assert (fullFrom != null);
-                }
-            }
+            final Presence presence = (Presence) packet;
+            final Jid from = presence.getFrom();
 
-            BareJid key = from != null ? from.asBareJid() : null;
-            Map<Resourcepart, Presence> userPresences;
+            final BareJid key = from != null ? from.asBareJid() : null;
 
-            // If an "available" presence, add it to the presence map. Each presence
-            // map will hold for a particular user a map with the presence
-            // packets saved for each resource.
-            switch (presence.getType()) {
-            case available:
-                // Get the user presence map
-                userPresences = getOrCreatePresencesInternal(key);
-                // See if an offline presence was being stored in the map. If so, remove
-                // it since we now have an online presence.
-                userPresences.remove(Resourcepart.EMPTY);
-                // Add the new presence, using the resources as a key.
-                userPresences.put(fromResource, presence);
-                // If the user is in the roster, fire an event.
-                if (contains(key)) {
-                    fireRosterPresenceEvent(presence);
-                }
-                for (PresenceEventListener presenceEventListener : presenceEventListeners) {
-                    presenceEventListener.presenceAvailable(fullFrom, presence);
-                }
-                break;
-            // If an "unavailable" packet.
-            case unavailable:
-                // If no resource, this is likely an offline presence as part of
-                // a roster presence flood. In that case, we store it.
-                userPresences = getOrCreatePresencesInternal(key);
-                if (from.hasNoResource()) {
-                    // Get the user presence map
-                    userPresences.put(Resourcepart.EMPTY, presence);
-                }
-                // Otherwise, this is a normal offline presence.
-                else {
-                    // Store the offline presence, as it may include extra information
-                    // such as the user being on vacation.
-                    userPresences.put(fromResource, presence);
-                }
-                // If the user is in the roster, fire an event.
-                if (contains(key)) {
-                    fireRosterPresenceEvent(presence);
-                }
-
-                // Ensure that 'from' is a full JID before invoking the presence unavailable
-                // listeners. Usually unavailable presences always have a resourcepart, i.e. are
-                // full JIDs, but RFC 6121 § 4.5.4 has an implementation note that unavailable
-                // presences from a bare JID SHOULD be treated as applying to all resources. I don't
-                // think any client or server ever implemented that, I do think that this
-                // implementation note is a terrible idea since it adds another corner case in
-                // client code, instead of just having the invariant
-                // "unavailable presences are always from the full JID".
-                if (fullFrom != null) {
-                    for (PresenceEventListener presenceEventListener : presenceEventListeners) {
-                        presenceEventListener.presenceUnavailable(fullFrom, presence);
+            asyncButOrdered.performAsyncButOrdered(key, new Runnable() {
+                @Override
+                public void run() {
+                    Resourcepart fromResource = Resourcepart.EMPTY;
+                    BareJid bareFrom = null;
+                    FullJid fullFrom = null;
+                    if (from != null) {
+                        fromResource = from.getResourceOrNull();
+                        if (fromResource == null) {
+                            fromResource = Resourcepart.EMPTY;
+                            bareFrom = from.asBareJid();
+                        }
+                        else {
+                            fullFrom = from.asFullJidIfPossible();
+                            // We know that this must be a full JID in this case.
+                            assert (fullFrom != null);
+                        }
                     }
-                } else {
-                    LOGGER.fine("Unavailable presence from bare JID: " + presence);
-                }
+                    Map<Resourcepart, Presence> userPresences;
+                    // If an "available" presence, add it to the presence map. Each presence
+                    // map will hold for a particular user a map with the presence
+                    // packets saved for each resource.
+                    switch (presence.getType()) {
+                    case available:
+                        // Get the user presence map
+                        userPresences = getOrCreatePresencesInternal(key);
+                        // See if an offline presence was being stored in the map. If so, remove
+                        // it since we now have an online presence.
+                        userPresences.remove(Resourcepart.EMPTY);
+                        // Add the new presence, using the resources as a key.
+                        userPresences.put(fromResource, presence);
+                        // If the user is in the roster, fire an event.
+                        if (contains(key)) {
+                            fireRosterPresenceEvent(presence);
+                        }
+                        for (PresenceEventListener presenceEventListener : presenceEventListeners) {
+                            presenceEventListener.presenceAvailable(fullFrom, presence);
+                        }
+                        break;
+                    // If an "unavailable" packet.
+                    case unavailable:
+                        // If no resource, this is likely an offline presence as part of
+                        // a roster presence flood. In that case, we store it.
+                        userPresences = getOrCreatePresencesInternal(key);
+                        if (from.hasNoResource()) {
+                            // Get the user presence map
+                            userPresences.put(Resourcepart.EMPTY, presence);
+                        }
+                        // Otherwise, this is a normal offline presence.
+                        else {
+                            // Store the offline presence, as it may include extra information
+                            // such as the user being on vacation.
+                            userPresences.put(fromResource, presence);
+                        }
+                        // If the user is in the roster, fire an event.
+                        if (contains(key)) {
+                            fireRosterPresenceEvent(presence);
+                        }
 
-                break;
-            // Error presence packets from a bare JID mean we invalidate all existing
-            // presence info for the user.
-            case error:
-                // No need to act on error presences send without from, i.e.
-                // directly send from the users XMPP service, or where the from
-                // address is not a bare JID
-                if (from == null || !from.isEntityBareJid()) {
-                    break;
-                }
-                userPresences = getOrCreatePresencesInternal(key);
-                // Any other presence data is invalidated by the error packet.
-                userPresences.clear();
+                        // Ensure that 'from' is a full JID before invoking the presence unavailable
+                        // listeners. Usually unavailable presences always have a resourcepart, i.e. are
+                        // full JIDs, but RFC 6121 § 4.5.4 has an implementation note that unavailable
+                        // presences from a bare JID SHOULD be treated as applying to all resources. I don't
+                        // think any client or server ever implemented that, I do think that this
+                        // implementation note is a terrible idea since it adds another corner case in
+                        // client code, instead of just having the invariant
+                        // "unavailable presences are always from the full JID".
+                        if (fullFrom != null) {
+                            for (PresenceEventListener presenceEventListener : presenceEventListeners) {
+                                presenceEventListener.presenceUnavailable(fullFrom, presence);
+                            }
+                        } else {
+                            LOGGER.fine("Unavailable presence from bare JID: " + presence);
+                        }
 
-                // Set the new presence using the empty resource as a key.
-                userPresences.put(Resourcepart.EMPTY, presence);
-                // If the user is in the roster, fire an event.
-                if (contains(key)) {
-                    fireRosterPresenceEvent(presence);
+                        break;
+                    // Error presence packets from a bare JID mean we invalidate all existing
+                    // presence info for the user.
+                    case error:
+                        // No need to act on error presences send without from, i.e.
+                        // directly send from the users XMPP service, or where the from
+                        // address is not a bare JID
+                        if (from == null || !from.isEntityBareJid()) {
+                            break;
+                        }
+                        userPresences = getOrCreatePresencesInternal(key);
+                        // Any other presence data is invalidated by the error packet.
+                        userPresences.clear();
+
+                        // Set the new presence using the empty resource as a key.
+                        userPresences.put(Resourcepart.EMPTY, presence);
+                        // If the user is in the roster, fire an event.
+                        if (contains(key)) {
+                            fireRosterPresenceEvent(presence);
+                        }
+                        for (PresenceEventListener presenceEventListener : presenceEventListeners) {
+                            presenceEventListener.presenceError(from, presence);
+                        }
+                        break;
+                    case subscribed:
+                        for (PresenceEventListener presenceEventListener : presenceEventListeners) {
+                            presenceEventListener.presenceSubscribed(bareFrom, presence);
+                        }
+                        break;
+                    case unsubscribed:
+                        for (PresenceEventListener presenceEventListener : presenceEventListeners) {
+                            presenceEventListener.presenceUnsubscribed(bareFrom, presence);
+                        }
+                        break;
+                    default:
+                        break;
+                    }
                 }
-                for (PresenceEventListener presenceEventListener : presenceEventListeners) {
-                    presenceEventListener.presenceError(from, presence);
-                }
-                break;
-            case subscribed:
-                for (PresenceEventListener presenceEventListener : presenceEventListeners) {
-                    presenceEventListener.presenceSubscribed(bareFrom, presence);
-                }
-                break;
-            case unsubscribed:
-                for (PresenceEventListener presenceEventListener : presenceEventListeners) {
-                    presenceEventListener.presenceUnsubscribed(bareFrom, presence);
-                }
-                break;
-            default:
-                break;
-            }
+            });
         }
     }
 

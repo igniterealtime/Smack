@@ -22,6 +22,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
@@ -91,6 +92,8 @@ public final class ChatManager extends Manager {
 
     private final Set<OutgoingChatMessageListener> outgoingListeners = new CopyOnWriteArraySet<>();
 
+    private final AsyncButOrdered<Chat> asyncButOrdered = new AsyncButOrdered<>();
+
     private boolean xhtmlIm;
 
     private ChatManager(final XMPPConnection connection) {
@@ -98,7 +101,7 @@ public final class ChatManager extends Manager {
         connection.addSyncStanzaListener(new StanzaListener() {
             @Override
             public void processStanza(Stanza stanza) {
-                Message message = (Message) stanza;
+                final Message message = (Message) stanza;
                 if (!shouldAcceptMessage(message)) {
                     return;
                 }
@@ -109,9 +112,15 @@ public final class ChatManager extends Manager {
                 final Chat chat = chatWith(bareFrom);
                 chat.lockedResource = fullFrom;
 
-                for (IncomingChatMessageListener listener : incomingListeners) {
-                    listener.newIncomingMessage(bareFrom, message, chat);
-                }
+                asyncButOrdered.performAsyncButOrdered(chat, new Runnable() {
+                    @Override
+                    public void run() {
+                        for (IncomingChatMessageListener listener : incomingListeners) {
+                            listener.newIncomingMessage(bareFrom, message, chat);
+                        }
+                    }
+                });
+
             }
         }, INCOMING_MESSAGE_FILTER);
 

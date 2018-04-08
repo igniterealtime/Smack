@@ -169,6 +169,8 @@ public final class ChatManager extends Manager{
                 // The chat could not be created, abort here
                 if (chat == null)
                     return;
+
+                // TODO: Use AsyncButOrdered (with Chat as Key?)
                 deliverMessage(chat, message);
             }
         }, packetFilter);

@@ -29,13 +29,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -86,7 +85,6 @@ import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
-import org.jivesoftware.smack.util.SmackExecutorThreadFactory;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 
@@ -266,14 +264,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     });
 
-    /**
-     * A executor service used to invoke the callbacks of synchronous stanza listeners. We use a executor service to
-     * decouple incoming stanza processing from callback invocation. It is important that order of callback invocation
-     * is the same as the order of the incoming stanzas. Therefore we use a <i>single</i> threaded executor service.
-     */
-    private final ExecutorService singleThreadedExecutorService = new ThreadPoolExecutor(0, 1, 30L,
-                    TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
-                    new SmackExecutorThreadFactory(this, "Single Threaded Executor"));
+    private static final AsyncButOrdered<AbstractXMPPConnection> ASYNC_BUT_ORDERED = new AsyncButOrdered<>();
 
     /**
      * The used host to establish the connection to
@@ -1112,10 +1103,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         LOGGER.log(Level.WARNING, "Exception while sending error IQ to unkown IQ request", e);
                     }
                 } else {
-                    ExecutorService executorService = null;
+                    Executor executorService = null;
                     switch (iqRequestHandler.getMode()) {
                     case sync:
-                        executorService = singleThreadedExecutorService;
+                        executorService = ASYNC_BUT_ORDERED.asExecutorFor(this);
                         break;
                     case async:
                         executorService = CACHED_EXECUTOR_SERVICE;
@@ -1192,7 +1183,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         // Decouple incoming stanza processing from listener invocation. Unlike async listeners, this uses a single
         // threaded executor service and therefore keeps the order.
-        singleThreadedExecutorService.execute(new Runnable() {
+        ASYNC_BUT_ORDERED.performAsyncButOrdered(this, new Runnable() {
             @Override
             public void run() {
                 for (StanzaListener listener : listenersToNotify) {
@@ -1207,7 +1198,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 }
             }
         });
-
     }
 
     /**
@@ -1348,24 +1338,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public FromMode getFromMode() {
         return this.fromMode;
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        LOGGER.fine("finalizing " + this + ": Shutting down executor services");
-        try {
-            // It's usually not a good idea to rely on finalize. But this is the easiest way to
-            // avoid the "Smack Listener Processor" leaking. The thread(s) of the executor have a
-            // reference to their ExecutorService which prevents the ExecutorService from being
-            // gc'ed. It is possible that the XMPPConnection instance is gc'ed while the
-            // listenerExecutor ExecutorService call not be gc'ed until it got shut down.
-            singleThreadedExecutorService.shutdownNow();
-        } catch (Throwable t) {
-            LOGGER.log(Level.WARNING, "finalize() threw throwable", t);
-        }
-        finally {
-            super.finalize();
-        }
     }
 
     protected final void parseFeatures(XmlPullParser parser) throws Exception {

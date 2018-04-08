@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2015 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2015-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -86,6 +87,8 @@ public final class PEPManager extends Manager {
 
     private final Set<PEPListener> pepListeners = new CopyOnWriteArraySet<>();
 
+    private final AsyncButOrdered<EntityBareJid> asyncButOrdered = new AsyncButOrdered<>();
+
     /**
      * Creates a new PEP exchange manager.
      *
@@ -96,14 +99,19 @@ public final class PEPManager extends Manager {
         StanzaListener packetListener = new StanzaListener() {
             @Override
             public void processStanza(Stanza stanza) {
-                Message message = (Message) stanza;
-                EventElement event = EventElement.from(stanza);
+                final Message message = (Message) stanza;
+                final EventElement event = EventElement.from(stanza);
                 assert (event != null);
-                EntityBareJid from = message.getFrom().asEntityBareJidIfPossible();
+                final EntityBareJid from = message.getFrom().asEntityBareJidIfPossible();
                 assert (from != null);
-                for (PEPListener listener : pepListeners) {
-                    listener.eventReceived(from, event, message);
-                }
+                asyncButOrdered.performAsyncButOrdered(from, new Runnable() {
+                    @Override
+                    public void run() {
+                        for (PEPListener listener : pepListeners) {
+                            listener.eventReceived(from, event, message);
+                        }
+                    }
+                });
             }
         };
         // TODO Add filter to check if from supports PubSub as per xep163 2 2.4

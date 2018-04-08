@@ -521,6 +521,7 @@ public abstract class Node {
         EventContentFilter deleteItem = new EventContentFilter(EventElementType.items.toString(), "retract");
         EventContentFilter purge = new EventContentFilter(EventElementType.purge.toString());
 
+        // TODO: Use AsyncButOrdered (with Node as Key?)
         pubSubManager.getConnection().addSyncStanzaListener(delListener, new OrFilter(deleteItem, purge));
     }
 
@@ -588,6 +589,7 @@ public abstract class Node {
             EventElement event = packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
             ItemsExtension itemsElem = (ItemsExtension) event.getEvent();
             ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), itemsElem.getItems(), getSubscriptionIds(packet), DelayInformationManager.getDelayTimestamp(packet));
+            // TODO: Use AsyncButOrdered (with Node as Key?)
             listener.handlePublishedItems(eventItems);
         }
     }
@@ -650,6 +652,7 @@ public abstract class Node {
             EventElement event = packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
             ConfigurationEvent config = (ConfigurationEvent) event.getEvent();
 
+            // TODO: Use AsyncButOrdered (with Node as Key?)
             listener.handleNodeConfiguration(config);
         }
     }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Georg Lukas, 2017 Florian Schmaus
+ * Copyright 2013-2014 Georg Lukas, 2017-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
@@ -52,6 +53,7 @@ import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Private;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityFullJid;
 
 /**
@@ -100,6 +102,8 @@ public final class CarbonManager extends Manager {
 
     private final StanzaListener carbonsListener;
 
+    private final AsyncButOrdered<BareJid> carbonsListenerAsyncButOrdered = new AsyncButOrdered<>();
+
     private CarbonManager(XMPPConnection connection) {
         super(connection);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
@@ -113,9 +117,16 @@ public final class CarbonManager extends Manager {
                 final Direction direction = carbonExtension.getDirection();
                 final Forwarded forwarded = carbonExtension.getForwarded();
                 final Message carbonCopy = (Message) forwarded.getForwardedStanza();
-                for (CarbonCopyReceivedListener listener : listeners) {
-                    listener.onCarbonCopyReceived(direction, carbonCopy, wrappingMessage);
-                }
+                final BareJid from = carbonCopy.getFrom().asBareJid();
+
+                carbonsListenerAsyncButOrdered.performAsyncButOrdered(from, new Runnable() {
+                    @Override
+                    public void run() {
+                        for (CarbonCopyReceivedListener listener : listeners) {
+                            listener.onCarbonCopyReceived(direction, carbonCopy, wrappingMessage);
+                        }
+                    }
+                });
             }
         };
 

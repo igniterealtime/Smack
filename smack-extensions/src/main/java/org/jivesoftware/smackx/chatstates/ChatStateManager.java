@@ -26,6 +26,7 @@ import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
@@ -85,6 +86,8 @@ public final class ChatStateManager extends Manager {
      */
     private final Map<Chat, ChatState> chatStates = new WeakHashMap<>();
 
+    private final AsyncButOrdered<Chat> asyncButOrdered = new AsyncButOrdered<>();
+
     /**
      * Returns the ChatStateManager related to the XMPPConnection and it will create one if it does
      * not yet exist.
@@ -129,15 +132,15 @@ public final class ChatStateManager extends Manager {
             }
         });
 
-        connection.addAsyncStanzaListener(new StanzaListener() {
+        connection.addSyncStanzaListener(new StanzaListener() {
             @Override
             public void processStanza(Stanza stanza) {
-                Message message = (Message) stanza;
+                final Message message = (Message) stanza;
 
                 EntityFullJid fullFrom = message.getFrom().asEntityFullJidIfPossible();
                 EntityBareJid bareFrom = fullFrom.asEntityBareJid();
 
-                Chat chat = ChatManager.getInstanceFor(connection()).chatWith(bareFrom);
+                final Chat chat = ChatManager.getInstanceFor(connection()).chatWith(bareFrom);
                 ExtensionElement extension = message.getExtension(NAMESPACE);
                 String chatStateElementName = extension.getElementName();
 
@@ -149,6 +152,7 @@ public final class ChatStateManager extends Manager {
                     LOGGER.log(Level.WARNING, "Invalid chat state element name: " + chatStateElementName, ex);
                     return;
                 }
+                final ChatState finalState = state;
 
                 List<ChatStateListener> listeners;
                 synchronized (chatStateListeners) {
@@ -156,9 +160,15 @@ public final class ChatStateManager extends Manager {
                     listeners.addAll(chatStateListeners);
                 }
 
-                for (ChatStateListener listener : listeners) {
-                    listener.stateChanged(chat, state, message);
-                }
+                final List<ChatStateListener> finalListeners = listeners;
+                asyncButOrdered.performAsyncButOrdered(chat, new Runnable() {
+                    @Override
+                    public void run() {
+                        for (ChatStateListener listener : finalListeners) {
+                            listener.stateChanged(chat, finalState, message);
+                        }
+                    }
+                });
             }
         }, INCOMING_CHAT_STATE_FILTER);
 
