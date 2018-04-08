@@ -45,8 +45,10 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -261,7 +263,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * </p>
      */
     private long clientHandledStanzasCount = 0;
-
+    private Queue< Map.Entry<String, Integer> > unacknowledgedRcvdStanzas;
     private BlockingQueue<Stanza> unacknowledgedStanzas;
 
     /**
@@ -1033,10 +1035,22 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         case Message.ELEMENT:
                         case IQ.IQ_ELEMENT:
                         case Presence.ELEMENT:
+                            final String HandledStanzaId=parser.getAttributeValue(null, "id");
+                            if(unacknowledgedRcvdStanzas==null) {
+                                unacknowledgedRcvdStanzas = new ConcurrentLinkedQueue<>();
+                            }
+                            if(HandledStanzaId!=null) {
+                                unacknowledgedRcvdStanzas.add(new AbstractMap.SimpleEntry<>(HandledStanzaId, 0));
+                            }
                             try {
                                 parseAndProcessStanza(parser);
-                            } finally {
-                                clientHandledStanzasCount = SMUtils.incrementHeight(clientHandledStanzasCount);
+                            }
+                            finally {
+                                if(HandledStanzaId!=null) {
+                                    if(!name.equals(Message.ELEMENT) || !config.isManualRcvMessageAck()) {
+                                        markHandledStanzaId(HandledStanzaId);
+                                    }
+                                }
                             }
                             break;
                         case "stream":
@@ -1133,6 +1147,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 smSessionId = null;
                             }
                             clientHandledStanzasCount = 0;
+                            unacknowledgedRcvdStanzas = new ConcurrentLinkedQueue<>();
                             smWasEnabledAtLeastOnce = true;
                             smEnabledSyncPoint.reportSuccess();
                             LOGGER.fine("Stream Management (XEP-198): successfully enabled");
@@ -1689,6 +1704,42 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     /**
+     * Mark received stanza ID as already successfully processed by application.
+     * <p>
+     * This function is called whenever application level routine already completed
+     * the processing(for e.g storing to persistent DB, updating the UI etc).
+     * So this will eventually trigger receive's ACK counter incremet that previously deferred to
+     * indicate that the original messsage is now safe to be deleted from server's offline buffer.
+     * This is important function to ensure the transactional nature of client message
+     * receiption without which, client always have risk to losing the messages(esp when
+     * application defer the processing to other module/thread).
+     * </p>
+     *
+     */
+    public void markHandledStanzaId(String Id) {
+        if (unacknowledgedRcvdStanzas== null)
+            return;
+
+        // lookout unacknowledge stanza, mark as acknowledged(integer 1) for matching Id
+        for (Map.Entry<String, Integer> E: unacknowledgedRcvdStanzas) {
+            if(E.getKey().equals(Id))
+                E.setValue(1);
+        }
+
+        // recheck all acknowledged stanza list, if there is consecutive acknowledged stanzas,
+        // started from the first stanza, increment the clientHandledStanzasCount until
+        // unacknowledged stanza is found
+        Iterator<Map.Entry<String, Integer>> iter = unacknowledgedRcvdStanzas.iterator();
+        while(iter.hasNext()){
+            if(iter.next().getValue()!=0){
+                clientHandledStanzasCount = SMUtils.incrementHeight(clientHandledStanzasCount);
+                iter.remove();
+            }else
+                break;
+        }
+    }
+
+    /**
      * Add a Stanza acknowledged listener.
      * <p>
      * Those listeners will be invoked every time a Stanza has been acknowledged by the server. The will not get
@@ -1838,6 +1889,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // respective. No need to reset them here.
         smSessionId = null;
         unacknowledgedStanzas = null;
+        unacknowledgedRcvdStanzas = null;
     }
 
     /**
