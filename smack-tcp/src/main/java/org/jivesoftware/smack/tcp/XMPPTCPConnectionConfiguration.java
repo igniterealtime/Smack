@@ -48,10 +48,18 @@ public final class XMPPTCPConnectionConfiguration extends ConnectionConfiguratio
      */
     private final int connectTimeout;
 
+    /**
+     * Setting whether to use automatic ACK of received Message stanzas(default behaviour), or
+     * activate manual ACK, that is, all received Message stanzas should be explicitly marked
+     * as handled by application via {@link XMPPTCPConnection#markHandledStanzaId(String)}
+     */
+    private final boolean manualRcvMessageAck;
+
     private XMPPTCPConnectionConfiguration(Builder builder) {
         super(builder);
         compressionEnabled = builder.compressionEnabled;
         connectTimeout = builder.connectTimeout;
+        manualRcvMessageAck = builder.manualRcvMessageAck;
     }
 
     /**
@@ -76,6 +84,17 @@ public final class XMPPTCPConnectionConfiguration extends ConnectionConfiguratio
         return connectTimeout;
     }
 
+    /**
+     * Get whether to use automatic ACK of received Message stanzas(default behaviour), or
+     * activate manual ACK, that is, all received Message stanzas should be explicitly marked
+     * as handled by application via {@link XMPPTCPConnection#markHandledStanzaId(String)}
+     *
+     * * @return boolean false if auto ACK, true if manual ACK
+     */
+    public boolean isManualRcvMessageAck() {
+        return manualRcvMessageAck;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -87,6 +106,7 @@ public final class XMPPTCPConnectionConfiguration extends ConnectionConfiguratio
     public static final class Builder extends ConnectionConfiguration.Builder<Builder, XMPPTCPConnectionConfiguration> {
         private boolean compressionEnabled = false;
         private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
+        private boolean manualRcvMessageAck = false;
 
         private Builder() {
         }
@@ -113,6 +133,19 @@ public final class XMPPTCPConnectionConfiguration extends ConnectionConfiguratio
          */
         public Builder setConnectTimeout(int connectTimeout) {
             this.connectTimeout = connectTimeout;
+            return this;
+        }
+
+        /**
+         * Setting whether to use automatic ACK of received Message stanzas(default behaviour), or
+         * activate manual ACK, that is, all received Message stanzas should be explicitly marked
+         * as handled by application via {@link XMPPTCPConnection#markHandledStanzaId(String)}
+         *
+         * @param manualAck false if auto ACK for received Message is desired, false for manual ACK
+         * @return a reference to this object.
+         */
+        public Builder setManualRcvAck(boolean manualAck) {
+            this.manualRcvMessageAck = manualAck;
             return this;
         }
 
