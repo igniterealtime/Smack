@@ -514,7 +514,14 @@
         <namespace>urn:xmpp:message-correct:0</namespace>
         <className>org.jivesoftware.smackx.message_correct.provider.MessageCorrectProvider</className>
     </extensionProvider>
-    
+
+    <!-- XEP-0319: Last User Interaction in Presence -->
+    <extensionProvider>
+        <elementName>idle</elementName>
+        <namespace>urn:xmpp:idle:1</namespace>
+        <className>org.jivesoftware.smackx.last_interaction.provider.IdleProvider</className>
+    </extensionProvider>
+
      <!-- XEP-0191 Blocking Command -->
     <iqProvider>
         <elementName>blocklist</elementName>
