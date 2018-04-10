@@ -218,6 +218,31 @@ public abstract class Node {
     }
 
     /**
+     * Modify the subscriptions for this PubSub node as owner.
+     * <p>
+     * Note that the subscriptions are _not_ checked against the existing subscriptions
+     * since these are not cached (and indeed could change asynchronously)
+     * </p>
+     *
+     * @param changedSubs subscriptions that have changed
+     * @return <code>null</code> or a PubSub stanza with additional information on success.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @see <a href="https://xmpp.org/extensions/xep-0060.html#owner-subscriptions-modify">XEP-60 § 8.8.2 Modify Subscriptions</a>
+     * @since 4.3
+     */
+    public PubSub modifySubscriptionsAsOwner(List<Subscription> changedSubs)
+        throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+
+        PubSub pubSub = createPubsubPacket(Type.set,
+            new SubscriptionsExtension(getId(), changedSubs),
+            PubSubNamespace.OWNER);
+        return sendPubsubPacket(pubSub);
+    }
+
+    /**
      * Get the affiliations of this node.
      *
      * @return List of {@link Affiliation}
