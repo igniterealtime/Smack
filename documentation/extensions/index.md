@@ -71,6 +71,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Bits of Binary                              | [XEP-0231](https://xmpp.org/extensions/xep-0231.html)  | n/a       | Including or referring to small bits of binary data in an XML stanza. |
 | Best Practices for Resource Locking         | [XEP-0296](https://xmpp.org/extensions/xep-0296.html)  | n/a       | Specifies best practices to be followed by Jabber/XMPP clients about when to lock into, and unlock away from, resources. |
 | Last Message Correction                     | [XEP-0308](https://xmpp.org/extensions/xep-0308.html)  | n/a       | Provides a method for indicating that a message is a correction of the last sent message. |
+| Last User Interaction in Presence           | [XEP-0319](https://xmpp.org/extensions/xep-0319.html)  | n/a       | Communicate time of last user interaction via XMPP presence notifications. |
 | [Group Chat Invitations](invitation.md)     | n/a                                                    | n/a       | Send invitations to other users to join a group chat room. |
 | [Jive Properties](properties.md)            | n/a                                                    | n/a       | TODO |
 

@@ -249,8 +249,8 @@ public class VCard extends IQ {
         return otherSimpleFields.get("JABBERID");
     }
 
-    public void setJabberId(String jabberId) {
-        otherSimpleFields.put("JABBERID", jabberId);
+    public void setJabberId(CharSequence jabberId) {
+        otherSimpleFields.put("JABBERID", jabberId.toString());
     }
 
     public String getOrganization() {

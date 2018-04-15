@@ -788,7 +788,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         Socket plain = socket;
         // Secure the plain connection
         socket = context.getSocketFactory().createSocket(plain,
-                host, plain.getPort(), true);
+                config.getXMPPServiceDomain().toString(), plain.getPort(), true);
 
         final SSLSocket sslSocket = (SSLSocket) socket;
         // Immediately set the enabled SSL protocols and ciphers. See SMACK-712 why this is

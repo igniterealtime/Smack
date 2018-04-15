@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.omemo;
 
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.BODY_OMEMO_HINT;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.PEP_NODE_DEVICE_LIST_NOTIFY;
 
@@ -42,7 +41,6 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Async;
-
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
@@ -474,7 +472,8 @@ public final class OmemoManager extends Manager {
         }
 
         if (OmemoConfiguration.getAddEmeEncryptionHint()) {
-            chatMessage.addExtension(new ExplicitMessageEncryptionElement(OMEMO_NAMESPACE_V_AXOLOTL, OMEMO));
+            chatMessage.addExtension(new ExplicitMessageEncryptionElement(
+                    ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.omemoVAxolotl));
         }
 
         return chatMessage;
