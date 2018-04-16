@@ -148,6 +148,13 @@ public enum ConfigureNodeFields {
     notify_retract,
 
     /**
+     * The type of notification that the nodes sends.
+     *
+     * <p><b>Value:  {@link NotificationType}</b></p>
+     */
+    notification_type,
+
+    /**
      * Whether to persist items to storage.  This is required to have. multiple 
      * items in the node. 
      * 
@@ -205,7 +212,7 @@ public enum ConfigureNodeFields {
     title,
 
     /**
-     * The type of node data, ussually specified by the namespace 
+     * The type of node data, usually specified by the namespace
      * of the payload(if any);MAY be a list-single rather than a 
      * text single.
      * 
