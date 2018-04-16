@@ -407,6 +407,30 @@ public class ConfigureForm extends Form {
     }
 
     /**
+     * Determines the type of notifications which are sent.
+     *
+     * @return NotificationType for the node configuration
+     * @since 4.3
+     */
+    public NotificationType getNotificationType() {
+        String value = getFieldValue(ConfigureNodeFields.notification_type);
+        if (value == null)
+            return null;
+        return NotificationType.valueOf(value);
+    }
+
+    /**
+     * Sets the NotificationType for the node.
+     *
+     * @param notificationType The enum representing the possible options
+     * @since 4.3
+     */
+    public void setNotificationType(NotificationType notificationType) {
+        addField(ConfigureNodeFields.notification_type, FormField.Type.list_single);
+        setAnswer(ConfigureNodeFields.notification_type.getFieldName(), getListSingle(notificationType.toString()));
+    }
+
+    /**
      * Determines whether items should be persisted in the node.
      * 
      * @return true if items are persisted

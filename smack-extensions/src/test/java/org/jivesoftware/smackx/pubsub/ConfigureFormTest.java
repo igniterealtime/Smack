@@ -97,4 +97,14 @@ public class ConfigureFormTest extends InitExtensions {
 
         node.getNodeConfiguration();
     }
+
+    @Test
+    public void checkNotificationType() {
+        ConfigureForm form = new ConfigureForm(DataForm.Type.submit);
+        form.setNotificationType(NotificationType.normal);
+        assertEquals(NotificationType.normal, form.getNotificationType());
+        form.setNotificationType(NotificationType.headline);
+        assertEquals(NotificationType.headline, form.getNotificationType());
+    }
+
 }
