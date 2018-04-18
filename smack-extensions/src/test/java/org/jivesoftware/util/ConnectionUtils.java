@@ -63,14 +63,15 @@ public class ConnectionUtils {
      * 
      * @param protocol protocol helper containing answer packets
      * @param initiatorJID the user associated to the XMPP connection
-     * @param xmppServer the XMPP server associated to the XMPP connection
      * @return a mocked XMPP connection
      * @throws SmackException 
      * @throws XMPPErrorException 
      * @throws InterruptedException 
      */
     public static XMPPConnection createMockedConnection(final Protocol protocol,
-                    EntityFullJid initiatorJID, DomainBareJid xmppServer) throws SmackException, XMPPErrorException, InterruptedException {
+                    EntityFullJid initiatorJID) throws SmackException, XMPPErrorException, InterruptedException {
+
+        DomainBareJid xmppServer = initiatorJID.asDomainBareJid();
 
         // mock XMPP connection
         XMPPConnection connection = mock(XMPPConnection.class);
