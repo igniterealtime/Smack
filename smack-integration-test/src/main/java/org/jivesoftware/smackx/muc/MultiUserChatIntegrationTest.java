@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
         mucManagerOne = MultiUserChatManager.getInstanceFor(conOne);
         mucManagerTwo = MultiUserChatManager.getInstanceFor(conTwo);
 
-        List<DomainBareJid> services = mucManagerOne.getXMPPServiceDomains();
+        List<DomainBareJid> services = mucManagerOne.getMucServiceDomains();
         if (services.isEmpty()) {
             throw new TestNotPossibleException("No MUC (XEP-45) service found");
         }

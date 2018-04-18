@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2017 Florian Schmaus
+ * Copyright © 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -338,9 +338,25 @@ public final class MultiUserChatManager extends Manager {
      * @throws NotConnectedException
      * @throws InterruptedException 
      */
-    public List<DomainBareJid> getXMPPServiceDomains() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public List<DomainBareJid> getMucServiceDomains() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
         return sdm.findServices(MUCInitialPresence.NAMESPACE, false, false);
+    }
+
+    /**
+     * Returns a collection with the XMPP addresses of the Multi-User Chat services.
+     *
+     * @return a collection with the XMPP addresses of the Multi-User Chat services.
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @deprecated use {@link #getMucServiceDomains()} instead.
+     */
+    // TODO: Remove in Smack 4.5
+    @Deprecated
+    public List<DomainBareJid> getXMPPServiceDomains() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return getMucServiceDomains();
     }
 
     /**
