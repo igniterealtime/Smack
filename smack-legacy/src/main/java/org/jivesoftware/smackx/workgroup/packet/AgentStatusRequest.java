@@ -25,7 +25,9 @@ import java.util.Set;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 
+import org.jxmpp.jid.EntityBareJid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -90,17 +92,17 @@ public class AgentStatusRequest extends IQ {
 
     public static class Item {
 
-        private final String jid;
+        private final EntityBareJid jid;
         private final String type;
         private final String name;
 
-        public Item(String jid, String type, String name) {
+        public Item(EntityBareJid jid, String type, String name) {
             this.jid = jid;
             this.type = type;
             this.name = name;
         }
 
-        public String getJID() {
+        public EntityBareJid getJID() {
             return jid;
         }
 
@@ -139,7 +141,7 @@ public class AgentStatusRequest extends IQ {
         private Item parseAgent(XmlPullParser parser) throws XmlPullParserException, IOException {
 
             boolean done = false;
-            String jid = parser.getAttributeValue("", "jid");
+            EntityBareJid jid = ParserUtils.getBareJidAttribute(parser);
             String type = parser.getAttributeValue("", "type");
             String name = null;
             while (!done) {

@@ -26,6 +26,7 @@ import java.util.List;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 
+import org.jxmpp.jid.EntityBareJid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -45,20 +46,20 @@ public class AgentChatHistory extends IQ {
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
 
-    private String agentJID;
+    private EntityBareJid agentJID;
     private int maxSessions;
     private long startDate;
 
     private final List<AgentChatSession> agentChatSessions = new ArrayList<>();
 
-    public AgentChatHistory(String agentJID, int maxSessions, Date startDate) {
+    public AgentChatHistory(EntityBareJid agentJID, int maxSessions, Date startDate) {
         this();
         this.agentJID = agentJID;
         this.maxSessions = maxSessions;
         this.startDate = startDate.getTime();
     }
 
-    public AgentChatHistory(String agentJID, int maxSessions) {
+    public AgentChatHistory(EntityBareJid agentJID, int maxSessions) {
         this();
         this.agentJID = agentJID;
         this.maxSessions = maxSessions;

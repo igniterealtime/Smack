@@ -19,15 +19,17 @@ package org.jivesoftware.smackx.workgroup.agent;
 
 import org.jivesoftware.smack.packet.Presence;
 
+import org.jxmpp.jid.EntityBareJid;
+
 /**
  * Agent roster listener.
  * @author Matt Tucker
  */
 public interface AgentRosterListener {
 
-    void agentAdded(String jid);
+    void agentAdded(EntityBareJid jid);
 
-    void agentRemoved(String jid);
+    void agentRemoved(EntityBareJid jid);
 
     void presenceChanged(Presence presence);
 }

@@ -891,7 +891,7 @@ public class AgentSession {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public AgentChatHistory getAgentHistory(String jid, int maxSessions, Date startDate) throws XMPPException, NotConnectedException, InterruptedException {
+    public AgentChatHistory getAgentHistory(EntityBareJid jid, int maxSessions, Date startDate) throws XMPPException, NotConnectedException, InterruptedException {
         AgentChatHistory request;
         if (startDate != null) {
             request = new AgentChatHistory(jid, maxSessions, startDate);
@@ -1015,7 +1015,7 @@ public class AgentSession {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void sendRoomInvitation(RoomInvitation.Type type, String invitee, String sessionID, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void sendRoomInvitation(RoomInvitation.Type type, Jid invitee, String sessionID, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final RoomInvitation invitation = new RoomInvitation(type, invitee, sessionID, reason);
         IQ iq = new RoomInvitation.RoomInvitationIQ(invitation);
         iq.setType(IQ.Type.set);
