@@ -18,21 +18,13 @@ package org.jivesoftware.util;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.XmlUtil;
 
 /**
  * This class can be used in conjunction with a mocked XMPP connection (
@@ -136,10 +128,10 @@ public class Protocol {
 
             if (printProtocol) {
                 System.out.println("------------------- Request -------------\n");
-                System.out.println(prettyFormat(request.toXML().toString()));
+                System.out.println(XmlUtil.prettyFormatXml(request.toXML()));
                 System.out.println("------------------- Response ------------\n");
                 if (response != null) {
-                    System.out.println(prettyFormat(response.toXML().toString()));
+                    System.out.println(XmlUtil.prettyFormatXml(response.toXML()));
                 }
                 else {
                     System.out.println("No response");
@@ -174,27 +166,6 @@ public class Protocol {
      */
     public List<Stanza> getRequests() {
         return requests;
-    }
-
-    private static String prettyFormat(String input, int indent) {
-        try {
-            Source xmlInput = new StreamSource(new StringReader(input));
-            StringWriter stringWriter = new StringWriter();
-            StreamResult xmlOutput = new StreamResult(stringWriter);
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
-                            String.valueOf(indent));
-            transformer.transform(xmlInput, xmlOutput);
-            return xmlOutput.getWriter().toString();
-        }
-        catch (Exception e) {
-            return "error while formatting the XML: " + e.getMessage();
-        }
-    }
-
-    private static String prettyFormat(String input) {
-        return prettyFormat(input, 2);
     }
 
 }

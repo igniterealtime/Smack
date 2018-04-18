@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus.
+ * Copyright 2017-2018 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,8 +38,9 @@ public class XmlUtil {
         transformerFactory.setAttribute("indent-number", 2);
     }
 
-    public static String prettyFormatXml(String xml) {
-        StreamSource source = new StreamSource(new StringReader(xml));
+    public static String prettyFormatXml(CharSequence xml) {
+        String xmlString = xml.toString();
+        StreamSource source = new StreamSource(new StringReader(xmlString));
         StringWriter stringWriter = new StringWriter();
         StreamResult result = new StreamResult(stringWriter);
 
@@ -54,7 +55,7 @@ public class XmlUtil {
         }
         catch (TransformerException | IllegalArgumentException e) {
             LOGGER.log(Level.SEVERE, "Transformer error", e);
-            return xml;
+            return xmlString;
         }
 
         return stringWriter.toString();
