@@ -42,20 +42,22 @@ import org.jivesoftware.smack.util.XmlUtil;
  * <pre>
  * <code>
  * public void methodToTest() {
- *   Stanza(/Packet) stanza = new Packet(); // create an XMPP packet
+ *   Stanza stanza = new Packet(); // create an XMPP packet
  *   StanzaCollector collector = connection.createStanzaCollector(new StanzaIdFilter());
  *   connection.sendStanza(packet);
- *   Stanza(/Packet) reply = collector.nextResult();
+ *   Stanza reply = collector.nextResult();
  * }
  * 
  * public void testMethod() {
+ *   EntityFullJid userJid = JidCreate.entityFullFrom("user@xmpp-server.org");
+ *   DomainBareJid serverJid = JidCreate.domainBareFrom("user-server.org");
  *   // create protocol
  *   Protocol protocol = new Protocol();
  *   // create mocked connection
- *   XMPPConnection connection = ConnectionUtils.createMockedConnection(protocol, "user@xmpp-server", "xmpp-server");
+ *   XMPPConnection connection = ConnectionUtils.createMockedConnection(protocol, userJid, serverJid);
  *   
  *   // add reply stanza to protocol
- *   Stanza(/Packet) reply = new Packet();
+ *   Stanza reply = new Packet();
  *   protocol.add(reply);
  *   
  *   // call method to test
@@ -74,6 +76,7 @@ import org.jivesoftware.smack.util.XmlUtil;
  * If the {@link #printProtocol} flag is set to true {@link #verifyAll()} will
  * also print out the XML messages in the order they are sent to the console.
  * This may be useful to inspect the whole protocol "by hand".
+ * </p>
  * 
  * @author Henning Staib
  */
