@@ -21,7 +21,9 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 
+import org.jxmpp.jid.EntityBareJid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -41,13 +43,13 @@ public class WorkgroupInformation implements ExtensionElement {
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
-    private final String workgroupJID;
+    private final EntityBareJid workgroupJID;
 
-    public WorkgroupInformation(String workgroupJID) {
+    public WorkgroupInformation(EntityBareJid workgroupJID) {
         this.workgroupJID = workgroupJID;
     }
 
-    public String getWorkgroupJID() {
+    public EntityBareJid getWorkgroupJID() {
         return workgroupJID;
     }
 
@@ -83,7 +85,7 @@ public class WorkgroupInformation implements ExtensionElement {
         public WorkgroupInformation parse(XmlPullParser parser,
                         int initialDepth) throws XmlPullParserException,
                         IOException {
-            String workgroupJID = parser.getAttributeValue("", "jid");
+            EntityBareJid workgroupJID = ParserUtils.getBareJidAttribute(parser);
 
             // since this is a start and end tag, and we arrive on the start, this should guarantee
             //      we leave on the end

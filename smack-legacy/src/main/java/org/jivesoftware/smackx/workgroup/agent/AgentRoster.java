@@ -58,7 +58,7 @@ public class AgentRoster {
     private static final int EVENT_PRESENCE_CHANGED = 2;
 
     private final XMPPConnection connection;
-    private final Jid workgroupJID;
+    private final EntityBareJid workgroupJID;
     private final List<EntityBareJid> entries = new ArrayList<>();
     private final List<AgentRosterListener> listeners = new ArrayList<>();
     private final Map<Jid, Map<Resourcepart, Presence>> presenceMap = new HashMap<>();
@@ -73,7 +73,7 @@ public class AgentRoster {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    AgentRoster(XMPPConnection connection, Jid workgroupJID) throws NotConnectedException, InterruptedException {
+    AgentRoster(XMPPConnection connection, EntityBareJid workgroupJID) throws NotConnectedException, InterruptedException {
         this.connection = connection;
         this.workgroupJID = workgroupJID;
         // Listen for any roster packets.
@@ -292,7 +292,6 @@ public class AgentRoster {
     /**
      * Listens for all presence packets and processes them.
      */
-    @SuppressWarnings("EqualsIncompatibleType")
     private class PresencePacketListener implements StanzaListener {
         @Override
         public void processStanza(Stanza packet) {

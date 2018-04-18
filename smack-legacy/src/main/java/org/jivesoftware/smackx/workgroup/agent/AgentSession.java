@@ -76,6 +76,8 @@ import org.jivesoftware.smackx.workgroup.settings.GenericSettings;
 import org.jivesoftware.smackx.workgroup.settings.SearchSettings;
 import org.jivesoftware.smackx.xdata.Form;
 
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -96,7 +98,7 @@ public class AgentSession {
 
     private final XMPPConnection connection;
 
-    private final Jid workgroupJID;
+    private final EntityBareJid workgroupJID;
 
     private boolean online = false;
     private Presence.Mode presenceMode;
@@ -124,7 +126,7 @@ public class AgentSession {
      *                     authentication.
      * @param workgroupJID the fully qualified JID of the workgroup.
      */
-    public AgentSession(Jid workgroupJID, XMPPConnection connection) {
+    public AgentSession(EntityBareJid workgroupJID, XMPPConnection connection) {
         // Login must have been done before passing in connection.
         if (!connection.isAuthenticated()) {
             throw new IllegalStateException("Must login to server before creating workgroup.");
@@ -502,9 +504,9 @@ public class AgentSession {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public void dequeueUser(String userID) throws XMPPException, NotConnectedException, InterruptedException {
+    public void dequeueUser(EntityJid userID) throws XMPPException, NotConnectedException, InterruptedException {
         // todo: this method simply won't work right now.
-        DepartQueuePacket departPacket = new DepartQueuePacket(this.workgroupJID);
+        DepartQueuePacket departPacket = new DepartQueuePacket(workgroupJID, userID);
 
         // PENDING
         this.connection.sendStanza(departPacket);

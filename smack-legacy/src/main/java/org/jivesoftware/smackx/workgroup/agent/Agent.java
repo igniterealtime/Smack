@@ -28,6 +28,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.workgroup.packet.AgentInfo;
 import org.jivesoftware.smackx.workgroup.packet.AgentWorkgroups;
 
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -37,7 +38,7 @@ import org.jxmpp.jid.Jid;
  */
 public class Agent {
     private XMPPConnection connection;
-    private Jid workgroupJID;
+    private final EntityBareJid workgroupJID;
 
     public static Collection<String> getWorkgroups(Jid serviceJID, Jid agentJID, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         AgentWorkgroups request = new AgentWorkgroups(agentJID);
@@ -49,7 +50,7 @@ public class Agent {
     /**
      * Constructs an Agent.
      */
-    Agent(XMPPConnection connection, Jid workgroupJID) {
+    Agent(XMPPConnection connection, EntityBareJid workgroupJID) {
         this.connection = connection;
         this.workgroupJID = workgroupJID;
     }

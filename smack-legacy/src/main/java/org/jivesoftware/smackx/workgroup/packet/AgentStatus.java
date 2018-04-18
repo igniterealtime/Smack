@@ -28,7 +28,9 @@ import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 
+import org.jxmpp.jid.EntityBareJid;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -56,14 +58,14 @@ public class AgentStatus implements ExtensionElement {
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
 
-    private String workgroupJID;
+    private EntityBareJid workgroupJID;
     private final List<ChatInfo> currentChats = new ArrayList<>();
     private int maxChats = -1;
 
     AgentStatus() {
     }
 
-    public String getWorkgroupJID() {
+    public EntityBareJid getWorkgroupJID() {
         return workgroupJID;
     }
 
@@ -238,7 +240,7 @@ public class AgentStatus implements ExtensionElement {
         public AgentStatus parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             AgentStatus agentStatus = new AgentStatus();
 
-            agentStatus.workgroupJID = parser.getAttributeValue("", "jid");
+            agentStatus.workgroupJID = ParserUtils.getBareJidAttribute(parser);
 
             boolean done = false;
             while (!done) {

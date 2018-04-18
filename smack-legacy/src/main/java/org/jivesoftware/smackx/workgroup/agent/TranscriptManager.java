@@ -25,12 +25,13 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.workgroup.packet.Transcript;
 import org.jivesoftware.smackx.workgroup.packet.Transcripts;
 
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 
 /**
  * A TranscriptManager helps to retrieve the full conversation transcript of a given session
- * {@link #getTranscript(Jid, String)} or to retrieve a list with the summary of all the
- * conversations that a user had {@link #getTranscripts(Jid, Jid)}.
+ * {@link #getTranscript(EntityBareJid, String)} or to retrieve a list with the summary of all the
+ * conversations that a user had {@link #getTranscripts(EntityBareJid, Jid)}.
  *
  * @author Gaston Dombiak
  */
@@ -52,7 +53,7 @@ public class TranscriptManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public Transcript getTranscript(Jid workgroupJID, String sessionID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public Transcript getTranscript(EntityBareJid workgroupJID, String sessionID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Transcript request = new Transcript(sessionID);
         request.setTo(workgroupJID);
         Transcript response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
@@ -71,7 +72,7 @@ public class TranscriptManager {
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    public Transcripts getTranscripts(Jid workgroupJID, Jid userID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public Transcripts getTranscripts(EntityBareJid workgroupJID, Jid userID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Transcripts request = new Transcripts(userID);
         request.setTo(workgroupJID);
         Transcripts response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();

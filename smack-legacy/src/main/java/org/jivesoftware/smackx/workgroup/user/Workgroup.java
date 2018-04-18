@@ -61,6 +61,7 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.Jid;
 
@@ -77,7 +78,7 @@ import org.jxmpp.jid.Jid;
  */
 public class Workgroup {
 
-    private final Jid workgroupJID;
+    private final EntityBareJid workgroupJID;
     private final XMPPConnection connection;
     private boolean inQueue;
     private final CopyOnWriteArraySet<WorkgroupInvitationListener> invitationListeners;
@@ -96,7 +97,7 @@ public class Workgroup {
      * @param connection   an XMPP connection which must have already undergone a
      *                     successful login.
      */
-    public Workgroup(Jid workgroupJID, XMPPConnection connection) {
+    public Workgroup(EntityBareJid workgroupJID, XMPPConnection connection) {
         // Login must have been done before passing in connection.
         if (!connection.isAuthenticated()) {
             throw new IllegalStateException("Must login to server before creating workgroup.");
@@ -163,7 +164,7 @@ public class Workgroup {
      *
      * @return the name of the workgroup.
      */
-    public Jid getWorkgroupJID() {
+    public EntityBareJid getWorkgroupJID() {
         return workgroupJID;
     }
 
@@ -569,7 +570,7 @@ public class Workgroup {
         private final Jid userID;
         private final DataForm form;
 
-        private JoinQueuePacket(Jid workgroup, Form answerForm, Jid userID) {
+        private JoinQueuePacket(EntityBareJid workgroup, Form answerForm, Jid userID) {
             super("join-queue", "http://jabber.org/protocol/workgroup");
             this.userID = userID;
 
