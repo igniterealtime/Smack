@@ -341,7 +341,7 @@ public class LeafNode extends Node {
      * @throws InterruptedException 
      */
     public void deleteAllItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub request = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PURGE_OWNER, getId()), PubSubElementType.PURGE_OWNER.getNamespace());
+        PubSub request = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PURGE_OWNER, getId()));
 
         pubSubManager.getConnection().createStanzaCollectorAndSend(request).nextResultOrThrow();
     }

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.pubsub.packet;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 
+import org.jivesoftware.smackx.pubsub.NodeExtension;
 import org.jivesoftware.smackx.pubsub.PubSubElementType;
 
 import org.jxmpp.jid.Jid;
@@ -43,7 +44,7 @@ public class PubSub extends IQ {
     }
 
     public PubSub(Jid to, Type type, PubSubNamespace ns) {
-        super(ELEMENT, (ns == null ? PubSubNamespace.BASIC : ns).getXmlns());
+        super(ELEMENT, (ns == null ? PubSubNamespace.basic : ns).getXmlns());
         setTo(to);
         setType(type);
     }
@@ -78,8 +79,8 @@ public class PubSub extends IQ {
         return xml;
     }
 
-    public static PubSub createPubsubPacket(Jid to, Type type, ExtensionElement extension, PubSubNamespace ns) {
-        PubSub pubSub = new PubSub(to, type, ns);
+    public static PubSub createPubsubPacket(Jid to, Type type, NodeExtension extension) {
+        PubSub pubSub = new PubSub(to, type, extension.getPubSubNamespace());
         pubSub.addExtension(extension);
         return pubSub;
     }

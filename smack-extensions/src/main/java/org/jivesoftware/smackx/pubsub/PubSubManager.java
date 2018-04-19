@@ -157,7 +157,7 @@ public final class PubSubManager extends Manager {
      */
     public LeafNode createNode() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub reply = sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.CREATE), null);
-        NodeExtension elem = reply.getExtension("create", PubSubNamespace.BASIC.getXmlns());
+        NodeExtension elem = reply.getExtension("create", PubSubNamespace.basic.getXmlns());
 
         LeafNode newNode = new LeafNode(this, elem.getNode());
         nodeMap.put(newNode.getId(), newNode);
@@ -195,7 +195,7 @@ public final class PubSubManager extends Manager {
      * @throws InterruptedException 
      */
     public Node createNode(String nodeId, Form config) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub request = PubSub.createPubsubPacket(pubSubService, Type.set, new NodeExtension(PubSubElementType.CREATE, nodeId), null);
+        PubSub request = PubSub.createPubsubPacket(pubSubService, Type.set, new NodeExtension(PubSubElementType.CREATE, nodeId));
         boolean isLeafNode = true;
 
         if (config != null) {

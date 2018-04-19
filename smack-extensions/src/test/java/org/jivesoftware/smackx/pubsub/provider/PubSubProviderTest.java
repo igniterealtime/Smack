@@ -50,7 +50,7 @@ public class PubSubProviderTest {
         // @formatter:on
         XmlPullParser parser = TestUtils.getIQParser(resultStanza);
         PubSub pubsubResult = (PubSub) PacketParserUtils.parseIQ(parser);
-        SubscriptionsExtension subElem = pubsubResult.getExtension(PubSubElementType.SUBSCRIPTIONS);
+        SubscriptionsExtension subElem = pubsubResult.getExtension(PubSubElementType.SUBSCRIPTIONS_OWNER);
         List<Subscription> subscriptions = subElem.getSubscriptions();
         assertEquals(2, subscriptions.size());
 

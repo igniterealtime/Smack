@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
 
@@ -93,7 +94,25 @@ public class PayloadItem<E extends ExtensionElement> extends Item {
      * @param payloadExt A {@link ExtensionElement} which represents the payload data.
      */
     public PayloadItem(String itemId, String nodeId, E payloadExt) {
-        super(itemId, nodeId);
+        this(ItemNamespace.pubsub, itemId, nodeId, payloadExt);
+    }
+
+    /**
+     * Create an <tt>Item</tt> with an id, node id and payload.
+     *
+     * <p>
+     * <b>Note:</b> This is not valid for publishing an item to a node, only receiving from
+     * one as part of {@link Message}.  If used to create an Item to publish
+     * (via {@link LeafNode#publish(Item)}, the server <i>may</i> return an
+     * error for an invalid packet.
+     * </p>
+     *
+     * @param itemId The id of this item.
+     * @param nodeId The id of the node the item was published to.
+     * @param payloadExt A {@link ExtensionElement} which represents the payload data.
+     */
+    public PayloadItem(ItemNamespace itemNamespace, String itemId, String nodeId, E payloadExt) {
+        super(itemNamespace, itemId, nodeId);
 
         if (payloadExt == null)
             throw new IllegalArgumentException("payload cannot be 'null'");
@@ -111,25 +130,14 @@ public class PayloadItem<E extends ExtensionElement> extends Item {
     }
 
     @Override
-    public String toXML() {
-        StringBuilder builder = new StringBuilder("<item");
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = getCommonXml();
 
-        if (getId() != null) {
-            builder.append(" id='");
-            builder.append(getId());
-            builder.append('\'');
-        }
+        xml.rightAngleBracket();
+        xml.append(payload.toXML());
+        xml.closeElement(this);
 
-        if (getNode() != null) {
-            builder.append(" node='");
-            builder.append(getNode());
-            builder.append('\'');
-        }
-        builder.append('>');
-        builder.append(payload.toXML());
-        builder.append("</item>");
-
-        return builder.toString();
+        return xml;
     }
 
     @Override

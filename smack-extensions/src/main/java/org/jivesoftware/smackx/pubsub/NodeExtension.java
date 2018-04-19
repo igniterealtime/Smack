@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 
+import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
+
 /**
  * A class which represents a common element within the pubsub defined
  * schemas.  One which has a <b>node</b> as an attribute.  This class is 
@@ -66,9 +68,13 @@ public class NodeExtension implements ExtensionElement {
         return element.getElementName();
     }
 
+    public PubSubNamespace getPubSubNamespace() {
+        return element.getNamespace();
+    }
+
     @Override
-    public String getNamespace() {
-        return element.getNamespace().getXmlns();
+    public final String getNamespace() {
+        return getPubSubNamespace().getXmlns();
     }
 
     @Override

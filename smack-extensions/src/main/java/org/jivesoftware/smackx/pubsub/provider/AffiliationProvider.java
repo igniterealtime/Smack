@@ -21,7 +21,7 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
 import org.jivesoftware.smackx.pubsub.Affiliation;
-import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
+import org.jivesoftware.smackx.pubsub.Affiliation.AffiliationNamespace;
 
 import org.jxmpp.jid.BareJid;
 import org.xmlpull.v1.XmlPullParser;
@@ -39,6 +39,8 @@ public class AffiliationProvider extends ExtensionElementProvider<Affiliation> {
             throws Exception {
         String node = parser.getAttributeValue(null, "node");
         BareJid jid = ParserUtils.getBareJidAttribute(parser);
+        String namespaceString = parser.getNamespace();
+        AffiliationNamespace namespace = AffiliationNamespace.fromXmlns(namespaceString);
 
         String affiliationString = parser.getAttributeValue(null, "affiliation");
         Affiliation.Type affiliationType = null;
@@ -48,10 +50,9 @@ public class AffiliationProvider extends ExtensionElementProvider<Affiliation> {
         Affiliation affiliation;
         if (node != null && jid == null) {
             // affiliationType may be empty
-            affiliation = new Affiliation(node, affiliationType);
+            affiliation = new Affiliation(node, affiliationType, namespace);
         }
         else if (node == null && jid != null) {
-            PubSubNamespace namespace = null; // TODO
             affiliation = new Affiliation(jid, affiliationType, namespace);
         }
         else {

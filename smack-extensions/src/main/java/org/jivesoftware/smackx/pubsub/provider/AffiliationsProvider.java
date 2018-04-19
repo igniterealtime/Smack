@@ -23,6 +23,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 
 import org.jivesoftware.smackx.pubsub.Affiliation;
+import org.jivesoftware.smackx.pubsub.Affiliation.AffiliationNamespace;
 import org.jivesoftware.smackx.pubsub.AffiliationsExtension;
 
 /**
@@ -34,7 +35,8 @@ import org.jivesoftware.smackx.pubsub.AffiliationsExtension;
     @SuppressWarnings("unchecked")
     @Override
     protected AffiliationsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content) {
-        return new AffiliationsExtension((List<Affiliation>) content);
+        AffiliationNamespace affiliationsNamespace = AffiliationNamespace.fromXmlns(currentNamespace);
+        return new AffiliationsExtension(affiliationsNamespace, (List<Affiliation>) content);
     }
 
 }

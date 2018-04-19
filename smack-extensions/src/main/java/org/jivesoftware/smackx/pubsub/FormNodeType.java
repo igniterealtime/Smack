@@ -43,7 +43,7 @@ public enum FormNodeType {
     }
 
     public static FormNodeType valueOfFromElementName(String elem, String configNamespace) {
-        if ("configure".equals(elem) && PubSubNamespace.OWNER.getXmlns().equals(configNamespace)) {
+        if ("configure".equals(elem) && PubSubNamespace.owner.getXmlns().equals(configNamespace)) {
             return CONFIGURE_OWNER;
         }
         return valueOf(elem.toUpperCase(Locale.US));

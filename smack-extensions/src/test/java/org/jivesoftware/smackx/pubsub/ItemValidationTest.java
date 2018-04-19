@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
@@ -60,16 +61,16 @@ public class ItemValidationTest extends InitExtensions {
     @Test
     public void verifyBasicItem() throws Exception {
         Item simpleItem = new Item();
-        String simpleCtrl = "<item />";
-        assertXMLEqual(simpleCtrl, simpleItem.toXML());
+        String simpleCtrl = "<item xmlns='http://jabber.org/protocol/pubsub' />";
+        assertXMLEqual(simpleCtrl, simpleItem.toXML().toString());
 
         Item idItem = new Item("uniqueid");
-        String idCtrl = "<item id='uniqueid'/>";
-        assertXMLEqual(idCtrl, idItem.toXML());
+        String idCtrl = "<item xmlns='http://jabber.org/protocol/pubsub' id='uniqueid'/>";
+        assertXMLEqual(idCtrl, idItem.toXML().toString());
 
         Item itemWithNodeId = new Item("testId", "testNode");
-        String nodeIdCtrl = "<item id='testId' node='testNode' />";
-        assertXMLEqual(nodeIdCtrl, itemWithNodeId.toXML());
+        String nodeIdCtrl = "<item xmlns='http://jabber.org/protocol/pubsub' id='testId' node='testNode' />";
+        assertXMLEqual(nodeIdCtrl, itemWithNodeId.toXML().toString());
     }
 
     @Test
@@ -77,16 +78,16 @@ public class ItemValidationTest extends InitExtensions {
         SimplePayload payload = new SimplePayload(null, null, "<data>This is the payload</data>");
 
         PayloadItem<SimplePayload> simpleItem = new PayloadItem<>(payload);
-        String simpleCtrl = "<item>" + payload.toXML() + "</item>";
-        assertXMLEqual(simpleCtrl, simpleItem.toXML());
+        String simpleCtrl = "<item xmlns='http://jabber.org/protocol/pubsub'>" + payload.toXML() + "</item>";
+        assertXMLEqual(simpleCtrl, simpleItem.toXML().toString());
 
         PayloadItem<SimplePayload> idItem = new PayloadItem<>("uniqueid", payload);
-        String idCtrl = "<item id='uniqueid'>" + payload.toXML() + "</item>";
-        assertXMLEqual(idCtrl, idItem.toXML());
+        String idCtrl = "<item xmlns='http://jabber.org/protocol/pubsub' id='uniqueid'>" + payload.toXML() + "</item>";
+        assertXMLEqual(idCtrl, idItem.toXML().toString());
 
         PayloadItem<SimplePayload> itemWithNodeId = new PayloadItem<>("testId", "testNode", payload);
-        String nodeIdCtrl = "<item id='testId' node='testNode'>" + payload.toXML() + "</item>";
-        assertXMLEqual(nodeIdCtrl, itemWithNodeId.toXML());
+        String nodeIdCtrl = "<item xmlns='http://jabber.org/protocol/pubsub' id='testId' node='testNode'>" + payload.toXML() + "</item>";
+        assertXMLEqual(nodeIdCtrl, itemWithNodeId.toXML().toString());
     }
 
     @Test
@@ -101,7 +102,7 @@ public class ItemValidationTest extends InitExtensions {
             "</message>");
 
         Stanza message = PacketParserUtils.parseMessage(parser);
-        ExtensionElement eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
+        ExtensionElement eventExt = message.getExtension(PubSubNamespace.event.getXmlns());
 
         assertTrue(eventExt instanceof EventElement);
         EventElement event = (EventElement) eventExt;
@@ -110,7 +111,7 @@ public class ItemValidationTest extends InitExtensions {
         assertTrue(event.getExtensions().get(0) instanceof ItemsExtension);
         assertEquals(1, ((ItemsExtension) event.getExtensions().get(0)).items.size());
 
-        ExtensionElement itemExt = ((ItemsExtension) event.getExtensions().get(0)).items.get(0);
+        NamedElement itemExt = ((ItemsExtension) event.getExtensions().get(0)).items.get(0);
         assertTrue(itemExt instanceof Item);
         assertEquals("testid1", ((Item) itemExt).getId());
     }
@@ -131,9 +132,9 @@ public class ItemValidationTest extends InitExtensions {
             "</message>");
 
         Stanza message = PacketParserUtils.parseMessage(parser);
-        ExtensionElement eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
+        ExtensionElement eventExt = message.getExtension(PubSubNamespace.event.getXmlns());
         EventElement event = (EventElement) eventExt;
-        ExtensionElement itemExt = ((ItemsExtension) event.getExtensions().get(0)).items.get(0);
+        NamedElement itemExt = ((ItemsExtension) event.getExtensions().get(0)).items.get(0);
 
         assertTrue(itemExt instanceof PayloadItem<?>);
         PayloadItem<?> item = (PayloadItem<?>) itemExt;
@@ -177,9 +178,9 @@ public class ItemValidationTest extends InitExtensions {
             "</message>");
 
         Stanza message = PacketParserUtils.parseMessage(parser);
-        ExtensionElement eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
+        ExtensionElement eventExt = message.getExtension(PubSubNamespace.event.getXmlns());
         EventElement event = (EventElement) eventExt;
-        ExtensionElement itemExt = ((ItemsExtension) event.getExtensions().get(0)).items.get(0);
+        NamedElement itemExt = ((ItemsExtension) event.getExtensions().get(0)).items.get(0);
 
         assertTrue(itemExt instanceof PayloadItem<?>);
         PayloadItem<?> item = (PayloadItem<?>) itemExt;
@@ -209,7 +210,7 @@ public class ItemValidationTest extends InitExtensions {
             "</message>");
 
         Stanza message = PacketParserUtils.parseMessage(parser);
-        ExtensionElement eventExt = message.getExtension(PubSubNamespace.EVENT.getXmlns());
+        ExtensionElement eventExt = message.getExtension(PubSubNamespace.event.getXmlns());
 
         assertTrue(eventExt instanceof EventElement);
         EventElement event = (EventElement) eventExt;
@@ -218,7 +219,7 @@ public class ItemValidationTest extends InitExtensions {
         assertTrue(event.getExtensions().get(0) instanceof ItemsExtension);
         assertEquals(1, ((ItemsExtension) event.getExtensions().get(0)).items.size());
 
-        ExtensionElement itemExt = ((ItemsExtension) event.getExtensions().get(0)).items.get(0);
+        NamedElement itemExt = ((ItemsExtension) event.getExtensions().get(0)).items.get(0);
         assertTrue(itemExt instanceof PayloadItem<?>);
         PayloadItem<?> item = (PayloadItem<?>) itemExt;
 

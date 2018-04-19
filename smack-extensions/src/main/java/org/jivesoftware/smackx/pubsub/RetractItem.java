@@ -50,7 +50,7 @@ public class RetractItem implements ExtensionElement {
 
     @Override
     public String getNamespace() {
-        return PubSubNamespace.EVENT.getXmlns();
+        return PubSubNamespace.event.getXmlns();
     }
 
     @Override

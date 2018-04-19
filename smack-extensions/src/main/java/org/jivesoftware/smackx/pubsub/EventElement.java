@@ -42,7 +42,7 @@ public class EventElement implements EmbeddedPacketExtension {
     /**
      * The constant String "http://jabber.org/protocol/pubsub#event".
      */
-    public static final String NAMESPACE = PubSubNamespace.EVENT.getXmlns();
+    public static final String NAMESPACE = PubSubNamespace.event.getXmlns();
 
     private final EventElementType type;
     private final NodeExtension ext;
@@ -72,7 +72,7 @@ public class EventElement implements EmbeddedPacketExtension {
 
     @Override
     public String getNamespace() {
-        return PubSubNamespace.EVENT.getXmlns();
+        return PubSubNamespace.event.getXmlns();
     }
 
     @Override

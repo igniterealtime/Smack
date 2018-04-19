@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.pubsub.packet;
 
-import java.util.Locale;
-
 /**
  * Defines all the valid namespaces that are used with the {@link PubSub} packet
  * as defined by the specification.
@@ -25,10 +23,10 @@ import java.util.Locale;
  * @author Robin Collier
  */
 public enum PubSubNamespace {
-    BASIC(null),
-    ERROR("errors"),
-    EVENT("event"),
-    OWNER("owner");
+    basic(null),
+    error("errors"),
+    event("event"),
+    owner("owner");
 
     private final String fragment;
     private final String fullNamespace;
@@ -54,10 +52,17 @@ public enum PubSubNamespace {
         int index = ns.lastIndexOf('#');
 
         if (index != -1) {
-            String suffix = ns.substring(ns.lastIndexOf('#') + 1);
-            return valueOf(suffix.toUpperCase(Locale.US));
+            // We found an extended namespace.
+            if (index > ns.length()) {
+                throw new IllegalArgumentException(ns + " is not a valid PubSub namespace");
+            }
+            String suffix = ns.substring(index + 1);
+            return valueOf(suffix);
         }
-        else
-            return BASIC;
+
+        if (!PubSub.NAMESPACE.equals(ns)) {
+            throw new IllegalArgumentException(ns + " is not a valid PubSub namespace");
+        }
+        return basic;
     }
 }

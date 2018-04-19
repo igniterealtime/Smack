@@ -34,6 +34,8 @@ import org.jivesoftware.smack.packet.Stanza;
 
 import org.jivesoftware.smackx.delay.DelayInformationManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.pubsub.Affiliation.AffiliationNamespace;
+import org.jivesoftware.smackx.pubsub.SubscriptionsExtension.SubscriptionsNamespace;
 import org.jivesoftware.smackx.pubsub.listener.ItemDeleteListener;
 import org.jivesoftware.smackx.pubsub.listener.ItemEventListener;
 import org.jivesoftware.smackx.pubsub.listener.NodeConfigListener;
@@ -84,7 +86,7 @@ public abstract class Node {
      */
     public ConfigureForm getNodeConfiguration() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(
-                        PubSubElementType.CONFIGURE_OWNER, getId()), PubSubNamespace.OWNER);
+                        PubSubElementType.CONFIGURE_OWNER, getId()));
         Stanza reply = sendPubsubPacket(pubSub);
         return NodeUtils.getFormFromPacket(reply, PubSubElementType.CONFIGURE_OWNER);
     }
@@ -100,7 +102,7 @@ public abstract class Node {
      */
     public void sendConfigurationForm(Form submitForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub packet = createPubsubPacket(Type.set, new FormNode(FormNodeType.CONFIGURE_OWNER,
-                        getId(), submitForm), PubSubNamespace.OWNER);
+                        getId(), submitForm));
         pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
     }
 
@@ -152,7 +154,7 @@ public abstract class Node {
      */
     public List<Subscription> getSubscriptions(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return getSubscriptions(additionalExtensions, returnedExtensions, null);
+        return getSubscriptions(SubscriptionsNamespace.basic, additionalExtensions, returnedExtensions);
     }
 
     /**
@@ -197,13 +199,15 @@ public abstract class Node {
     public List<Subscription> getSubscriptionsAsOwner(List<ExtensionElement> additionalExtensions,
                     Collection<ExtensionElement> returnedExtensions) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
-        return getSubscriptions(additionalExtensions, returnedExtensions, PubSubNamespace.OWNER);
+        return getSubscriptions(SubscriptionsNamespace.owner, additionalExtensions, returnedExtensions);
     }
 
-    private List<Subscription> getSubscriptions(List<ExtensionElement> additionalExtensions,
-                    Collection<ExtensionElement> returnedExtensions, PubSubNamespace pubSubNamespace)
+    private List<Subscription> getSubscriptions(SubscriptionsNamespace subscriptionsNamespace, List<ExtensionElement> additionalExtensions,
+                    Collection<ExtensionElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(PubSubElementType.SUBSCRIPTIONS, getId()), pubSubNamespace);
+        PubSubElementType pubSubElementType = subscriptionsNamespace.type;
+
+        PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(pubSubElementType, getId()));
         if (additionalExtensions != null) {
             for (ExtensionElement pe : additionalExtensions) {
                 pubSub.addExtension(pe);
@@ -213,7 +217,7 @@ public abstract class Node {
         if (returnedExtensions != null) {
             returnedExtensions.addAll(reply.getExtensions());
         }
-        SubscriptionsExtension subElem = reply.getExtension(PubSubElementType.SUBSCRIPTIONS);
+        SubscriptionsExtension subElem = reply.getExtension(pubSubElementType);
         return subElem.getSubscriptions();
     }
 
@@ -237,8 +241,7 @@ public abstract class Node {
         throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
 
         PubSub pubSub = createPubsubPacket(Type.set,
-            new SubscriptionsExtension(getId(), changedSubs),
-            PubSubNamespace.OWNER);
+            new SubscriptionsExtension(SubscriptionsNamespace.owner, getId(), changedSubs));
         return sendPubsubPacket(pubSub);
     }
 
@@ -275,7 +278,7 @@ public abstract class Node {
     public List<Affiliation> getAffiliations(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
 
-        return getAffiliations(PubSubNamespace.BASIC, additionalExtensions, returnedExtensions);
+        return getAffiliations(AffiliationNamespace.basic, additionalExtensions, returnedExtensions);
     }
 
     /**
@@ -315,14 +318,15 @@ public abstract class Node {
     public List<Affiliation> getAffiliationsAsOwner(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
 
-        return getAffiliations(PubSubNamespace.OWNER, additionalExtensions, returnedExtensions);
+        return getAffiliations(AffiliationNamespace.owner, additionalExtensions, returnedExtensions);
     }
 
-    private List<Affiliation> getAffiliations(PubSubNamespace namespace, List<ExtensionElement> additionalExtensions,
+    private List<Affiliation> getAffiliations(AffiliationNamespace affiliationsNamespace, List<ExtensionElement> additionalExtensions,
                     Collection<ExtensionElement> returnedExtensions) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
+        PubSubElementType pubSubElementType = affiliationsNamespace.type;
 
-        PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(PubSubElementType.AFFILIATIONS, getId()), namespace);
+        PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(pubSubElementType, getId()));
         if (additionalExtensions != null) {
             for (ExtensionElement pe : additionalExtensions) {
                 pubSub.addExtension(pe);
@@ -332,7 +336,7 @@ public abstract class Node {
         if (returnedExtensions != null) {
             returnedExtensions.addAll(reply.getExtensions());
         }
-        AffiliationsExtension affilElem = reply.getExtension(PubSubElementType.AFFILIATIONS);
+        AffiliationsExtension affilElem = reply.getExtension(pubSubElementType);
         return affilElem.getAffiliations();
     }
 
@@ -355,13 +359,12 @@ public abstract class Node {
     public PubSub modifyAffiliationAsOwner(List<Affiliation> affiliations) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
         for (Affiliation affiliation : affiliations) {
-            if (affiliation.getPubSubNamespace() != PubSubNamespace.OWNER) {
+            if (affiliation.getPubSubNamespace() != PubSubNamespace.owner) {
                 throw new IllegalArgumentException("Must use Affiliation(BareJid, Type) affiliations");
             }
         }
 
-        PubSub pubSub = createPubsubPacket(Type.set, new AffiliationsExtension(affiliations, getId()),
-                        PubSubNamespace.OWNER);
+        PubSub pubSub = createPubsubPacket(Type.set, new AffiliationsExtension(AffiliationNamespace.owner, affiliations, getId()));
         return sendPubsubPacket(pubSub);
     }
 
@@ -567,12 +570,8 @@ public abstract class Node {
         return super.toString() + " " + getClass().getName() + " id: " + id;
     }
 
-    protected PubSub createPubsubPacket(Type type, ExtensionElement ext) {
-        return createPubsubPacket(type, ext, null);
-    }
-
-    protected PubSub createPubsubPacket(Type type, ExtensionElement ext, PubSubNamespace ns) {
-        return PubSub.createPubsubPacket(pubSubManager.getServiceJid(), type, ext, ns);
+    protected PubSub createPubsubPacket(Type type, NodeExtension ext) {
+        return PubSub.createPubsubPacket(pubSubManager.getServiceJid(), type, ext);
     }
 
     protected PubSub sendPubsubPacket(PubSub packet) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -611,7 +610,7 @@ public abstract class Node {
         @Override
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public void processStanza(Stanza packet) {
-            EventElement event = packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
+            EventElement event = packet.getExtension("event", PubSubNamespace.event.getXmlns());
             ItemsExtension itemsElem = (ItemsExtension) event.getEvent();
             ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), itemsElem.getItems(), getSubscriptionIds(packet), DelayInformationManager.getDelayTimestamp(packet));
             // TODO: Use AsyncButOrdered (with Node as Key?)
@@ -635,7 +634,7 @@ public abstract class Node {
         @Override
         public void processStanza(Stanza packet) {
 // CHECKSTYLE:OFF
-            EventElement event = packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
+            EventElement event = packet.getExtension("event", PubSubNamespace.event.getXmlns());
 
             List<ExtensionElement> extList = event.getExtensions();
 
@@ -674,7 +673,7 @@ public abstract class Node {
 
         @Override
         public void processStanza(Stanza packet) {
-            EventElement event = packet.getExtension("event", PubSubNamespace.EVENT.getXmlns());
+            EventElement event = packet.getExtension("event", PubSubNamespace.event.getXmlns());
             ConfigurationEvent config = (ConfigurationEvent) event.getEvent();
 
             // TODO: Use AsyncButOrdered (with Node as Key?)

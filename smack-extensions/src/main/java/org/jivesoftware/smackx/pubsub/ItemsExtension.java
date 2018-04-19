@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.pubsub;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.NamedElement;
 
 /**
  * This class is used for multiple purposes.
@@ -37,7 +38,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 public class ItemsExtension extends NodeExtension implements EmbeddedPacketExtension {
     protected ItemsElementType type;
     protected Boolean notify;
-    protected List<? extends ExtensionElement> items;
+    protected List<? extends NamedElement> items;
 
     public enum ItemsElementType {
         /** An items element, which has an optional <b>max_items</b> attribute when requesting items. */
@@ -82,7 +83,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
      * @param nodeId The node to which the items are being sent or deleted
      * @param items The list of {@link Item} or {@link RetractItem}
      */
-    public ItemsExtension(ItemsElementType itemsType, String nodeId, List<? extends ExtensionElement> items) {
+    public ItemsExtension(ItemsElementType itemsType, String nodeId, List<? extends NamedElement> items) {
         super(itemsType.getNodeElement(), nodeId);
         type = itemsType;
         this.items = items;
@@ -134,7 +135,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
      * 
      * @return List of {@link Item}, {@link RetractItem}, or null
      */
-    public List<? extends ExtensionElement> getItems() {
+    public List<? extends NamedElement> getItems() {
         return items;
     }
 
@@ -167,7 +168,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
             }
             else {
                 builder.append("'>");
-                for (ExtensionElement item : items) {
+                for (NamedElement item : items) {
                     builder.append(item.toXML());
                 }
             }

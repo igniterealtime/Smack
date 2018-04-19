@@ -24,6 +24,7 @@ import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 
 import org.jivesoftware.smackx.pubsub.Subscription;
 import org.jivesoftware.smackx.pubsub.SubscriptionsExtension;
+import org.jivesoftware.smackx.pubsub.SubscriptionsExtension.SubscriptionsNamespace;
 
 /**
  * Parses the <b>subscriptions</b> element out of the PubSub IQ message from
@@ -35,7 +36,9 @@ public class SubscriptionsProvider extends EmbeddedExtensionProvider<Subscriptio
     @SuppressWarnings("unchecked")
     @Override
     protected SubscriptionsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content) {
-        return new SubscriptionsExtension(attributeMap.get("node"), (List<Subscription>) content);
+        SubscriptionsNamespace subscriptionsNamespace = SubscriptionsNamespace.fromXmlns(currentNamespace);
+        String nodeId = attributeMap.get("node");
+        return new SubscriptionsExtension(subscriptionsNamespace, nodeId, (List<Subscription>) content);
     }
 
 }

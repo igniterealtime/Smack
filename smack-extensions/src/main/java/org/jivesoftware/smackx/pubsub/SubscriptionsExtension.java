@@ -25,6 +25,26 @@ import java.util.List;
  * @author Robin Collier
  */
 public class SubscriptionsExtension extends NodeExtension {
+    public enum SubscriptionsNamespace {
+        basic(PubSubElementType.SUBSCRIPTIONS),
+        owner(PubSubElementType.SUBSCRIPTIONS_OWNER),
+        ;
+        public final PubSubElementType type;
+
+        SubscriptionsNamespace(PubSubElementType type) {
+            this.type = type;
+        }
+
+        public static SubscriptionsNamespace fromXmlns(String xmlns) {
+            for (SubscriptionsNamespace subscriptionsNamespace : SubscriptionsNamespace.values()) {
+                if (subscriptionsNamespace.type.getNamespace().getXmlns().equals(xmlns)) {
+                    return subscriptionsNamespace;
+                }
+            }
+            throw new IllegalArgumentException("Invalid Subscription namespace: " + xmlns);
+        }
+    }
+
     protected List<Subscription> items = Collections.emptyList();
 
     /**
@@ -33,10 +53,7 @@ public class SubscriptionsExtension extends NodeExtension {
      * @param subList The list of subscriptions
      */
     public SubscriptionsExtension(List<Subscription> subList) {
-        super(PubSubElementType.SUBSCRIPTIONS);
-
-        if (subList != null)
-            items = subList;
+        this(SubscriptionsNamespace.basic, null, subList);
     }
 
     /**
@@ -46,7 +63,19 @@ public class SubscriptionsExtension extends NodeExtension {
      * @param subList The list of subscriptions
      */
     public SubscriptionsExtension(String nodeId, List<Subscription> subList) {
-        super(PubSubElementType.SUBSCRIPTIONS, nodeId);
+        this(SubscriptionsNamespace.basic, nodeId, subList);
+    }
+
+    /**
+     * Subscriptions to the specified node.
+     * 
+     * @param subscriptionsNamespace the namespace used by this element
+     * @param nodeId The node subscribed to
+     * @param subList The list of subscriptions
+     * @since 4.3
+     */
+    public SubscriptionsExtension(SubscriptionsNamespace subscriptionsNamespace, String nodeId, List<Subscription> subList) {
+        super(subscriptionsNamespace.type, nodeId);
 
         if (subList != null)
             items = subList;

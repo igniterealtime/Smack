@@ -21,6 +21,8 @@ import java.util.List;
 
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import org.jivesoftware.smackx.pubsub.Affiliation.AffiliationNamespace;
+
 /**
  * Represents the <b>affiliations</b> element of the reply to a request for affiliations.
  * It is defined in the specification in section <a href="http://xmpp.org/extensions/xep-0060.html#entity-affiliations">5.7 Retrieve Affiliations</a> and
@@ -33,15 +35,23 @@ public class AffiliationsExtension extends NodeExtension {
     private final String node;
 
     public AffiliationsExtension() {
-        this(null, null);
+        this(null);
     }
 
     public AffiliationsExtension(List<Affiliation> subList) {
         this(subList, null);
     }
 
+    public AffiliationsExtension(AffiliationNamespace affiliationsNamespace, List<Affiliation> subList) {
+        this(affiliationsNamespace, subList, null);
+    }
+
     public AffiliationsExtension(List<Affiliation> subList, String node) {
-        super(PubSubElementType.AFFILIATIONS);
+        this(AffiliationNamespace.basic, subList, node);
+    }
+
+    public AffiliationsExtension(AffiliationNamespace affiliationsNamespace, List<Affiliation> subList, String node) {
+        super(affiliationsNamespace.type);
         items = subList;
         this.node = node;
     }

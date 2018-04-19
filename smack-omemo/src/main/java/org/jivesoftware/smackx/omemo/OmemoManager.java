@@ -39,6 +39,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smackx.carbons.CarbonManager;
@@ -776,7 +777,7 @@ public final class OmemoManager extends Manager {
                     continue;
                 }
 
-                for (ExtensionElement item : ((ItemsExtension) items).getItems()) {
+                for (NamedElement item : ((ItemsExtension) items).getItems()) {
                     if (!(item instanceof PayloadItem<?>)) {
                         continue;
                     }

@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
 
@@ -50,7 +51,27 @@ import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
  * @author Robin Collier
  */
 public class Item extends NodeExtension {
-    private String id;
+    public enum ItemNamespace {
+        pubsub(PubSubElementType.ITEM),
+        event(PubSubElementType.ITEM_EVENT),
+        ;
+        private final PubSubElementType type;
+
+        ItemNamespace(PubSubElementType type) {
+            this.type = type;
+        }
+
+        public static ItemNamespace fromXmlns(String xmlns) {
+            for (ItemNamespace itemNamespace : ItemNamespace.values()) {
+                if (itemNamespace.type.getNamespace().getXmlns().equals(xmlns)) {
+                    return itemNamespace;
+                }
+            }
+            throw new IllegalArgumentException("Invalid item namespace: " + xmlns);
+        }
+    }
+
+    private final String itemId;
 
     /**
      * Create an empty <tt>Item</tt> with no id.  This is a valid item for nodes which are configured
@@ -60,7 +81,7 @@ public class Item extends NodeExtension {
      * method in this case.
      */
     public Item() {
-        super(PubSubElementType.ITEM);
+        this(ItemNamespace.pubsub, null, null);
     }
 
     /**
@@ -71,9 +92,18 @@ public class Item extends NodeExtension {
      * Passing null is the equivalent of calling {@link #Item()}.
      */
     public Item(String itemId) {
-        // The element type is actually irrelevant since we override getNamespace() to return null
-        super(PubSubElementType.ITEM);
-        id = itemId;
+        this(ItemNamespace.pubsub, itemId, null);
+    }
+
+    /**
+     * Create an <tt>Item</tt> with an id but no payload.  This is a valid item for nodes which are configured
+     * so that {@link ConfigureForm#isDeliverPayloads()} is false.
+     *
+     * @param itemId The id if the item.  It must be unique within the node unless overwriting and existing item.
+     * Passing null is the equivalent of calling {@link #Item()}.
+     */
+    public Item(ItemNamespace itemNamespace, String itemId) {
+        this(itemNamespace, itemId, null);
     }
 
     /**
@@ -88,8 +118,23 @@ public class Item extends NodeExtension {
      * @param nodeId The id of the node which the item was published to.
      */
     public Item(String itemId, String nodeId) {
-        super(PubSubElementType.ITEM_EVENT, nodeId);
-        id = itemId;
+        this(ItemNamespace.pubsub, itemId, nodeId);
+    }
+
+    /**
+     * Create an <tt>Item</tt> with an id and a node id.
+     * <p>
+     * <b>Note:</b> This is not valid for publishing an item to a node, only receiving from
+     * one as part of {@link Message}.  If used to create an Item to publish
+     * (via {@link LeafNode#publish(Item)}, the server <i>may</i> return an
+     * error for an invalid packet.
+     *
+     * @param itemId The id of the item.
+     * @param nodeId The id of the node which the item was published to.
+     */
+    public Item(ItemNamespace itemNamespace, String itemId, String nodeId) {
+        super(itemNamespace.type, nodeId);
+        this.itemId = itemId;
     }
 
     /**
@@ -98,36 +143,30 @@ public class Item extends NodeExtension {
      * @return The id
      */
     public String getId() {
-        return id;
+        return itemId;
     }
 
     @Override
-    public String getNamespace() {
-        return null;
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = getCommonXml();
+
+        xml.closeEmptyElement();
+
+        return xml;
     }
 
-    @Override
-    public String toXML() {
-        StringBuilder builder = new StringBuilder("<item");
+    protected final XmlStringBuilder getCommonXml() {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
 
-        if (id != null) {
-            builder.append(" id='");
-            builder.append(id);
-            builder.append('\'');
-        }
+        xml.optAttribute("id", getId());
+        xml.optAttribute("node", getNode());
 
-        if (getNode() != null) {
-            builder.append(" node='");
-            builder.append(getNode());
-            builder.append('\'');
-        }
-        builder.append("/>");
-
-        return builder.toString();
+        return xml;
     }
 
     @Override
     public String toString() {
         return getClass().getName() + " | Content [" + toXML() + "]";
     }
+
 }
