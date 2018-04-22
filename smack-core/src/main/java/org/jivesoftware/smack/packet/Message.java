@@ -619,7 +619,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     /**
      * Represents a message body, its language and the content of the message.
      */
-    public static final class Body implements ExtensionElement {
+    public static class Body implements ExtensionElement {
 
         public static final String ELEMENT = "body";
         public static final String NAMESPACE = StreamOpen.CLIENT_NAMESPACE;
@@ -627,7 +627,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         private final String message;
         private final String language;
 
-        private Body(String language, String message) {
+        Body(String language, String message) {
             if (language == null) {
                 throw new NullPointerException("Language cannot be null.");
             }
