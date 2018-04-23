@@ -59,7 +59,7 @@ public class ItemProvider extends ExtensionElementProvider<Item>  {
             if (extensionProvider == null) {
                 // TODO: Should we use StandardExtensionElement in this case? And probably remove SimplePayload all together.
                 CharSequence payloadText = PacketParserUtils.parseElement(parser, true);
-                return new PayloadItem<>(itemNamespace, id, node, new SimplePayload(payloadElemName, payloadNS, payloadText));
+                return new PayloadItem<>(itemNamespace, id, node, new SimplePayload(payloadText.toString()));
             }
             else {
                 return new PayloadItem<>(itemNamespace, id, node, extensionProvider.parse(parser));

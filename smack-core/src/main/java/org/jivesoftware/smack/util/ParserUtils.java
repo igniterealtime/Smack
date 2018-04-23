@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2017 Florian Schmaus
+ * Copyright © 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,9 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
+
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.SmackException;
 
@@ -249,5 +252,15 @@ public class ParserUtils {
 
     public static String getXmlLang(XmlPullParser parser) {
         return parser.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
+    }
+
+    public static QName getQName(XmlPullParser parser) {
+        String elementName = parser.getName();
+        String prefix = parser.getPrefix();
+        if (prefix == null) {
+            prefix = XMLConstants.DEFAULT_NS_PREFIX;
+        }
+        String namespace = parser.getNamespace();
+        return new QName(namespace, elementName, prefix);
     }
 }

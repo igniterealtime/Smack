@@ -16,7 +16,17 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import java.io.IOException;
+
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.util.StringUtils;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The default payload representation for {@link PayloadItem#getPayload()}.  It simply 
@@ -27,7 +37,29 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 public class SimplePayload implements ExtensionElement {
     private final String elemName;
     private final String ns;
-    private final CharSequence payload;
+    private final String payload;
+
+    /**
+     * Construct a <tt>SimplePayload</tt> object with the specified element name,
+     * namespace and content.  The content must be well formed XML.
+     *
+     * @param xmlPayload The payload data
+     */
+    public SimplePayload(String xmlPayload) {
+        XmlPullParser parser;
+        try {
+            parser = PacketParserUtils.getParserFor(xmlPayload);
+        }
+        catch (XmlPullParserException | IOException e) {
+            throw new AssertionError(e);
+        }
+        QName qname = ParserUtils.getQName(parser);
+
+        payload = xmlPayload;
+
+        elemName = StringUtils.requireNotNullOrEmpty(qname.getLocalPart(), "Could not determine element name from XML payload");
+        ns = StringUtils.requireNotNullOrEmpty(qname.getNamespaceURI(), "Could not determine namespace from XML payload");
+    }
 
     /**
      * Construct a <tt>SimplePayload</tt> object with the specified element name, 
@@ -36,11 +68,18 @@ public class SimplePayload implements ExtensionElement {
      * @param elementName The root element name (of the payload)
      * @param namespace The namespace of the payload, null if there is none
      * @param xmlPayload The payload data
+     * @deprecated use {@link #SimplePayload(String)} insteas.
      */
+    // TODO: Remove in Smack 4.5
+    @Deprecated
     public SimplePayload(String elementName, String namespace, CharSequence xmlPayload) {
-        elemName = elementName;
-        payload = xmlPayload;
-        ns = namespace;
+        this(xmlPayload.toString());
+        if (!elementName.equals(this.elemName)) {
+            throw new IllegalArgumentException();
+        }
+        if (!namespace.equals(this.ns)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
@@ -54,7 +93,7 @@ public class SimplePayload implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML() {
+    public String toXML() {
         return payload;
     }
 

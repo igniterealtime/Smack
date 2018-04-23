@@ -75,7 +75,7 @@ public class ItemValidationTest extends InitExtensions {
 
     @Test
     public void verifyPayloadItem() throws Exception {
-        SimplePayload payload = new SimplePayload(null, null, "<data>This is the payload</data>");
+        SimplePayload payload = new SimplePayload("<data xmlns='https://example.org'>This is the payload</data>");
 
         PayloadItem<SimplePayload> simpleItem = new PayloadItem<>(payload);
         String simpleCtrl = "<item xmlns='http://jabber.org/protocol/pubsub'>" + payload.toXML() + "</item>";
