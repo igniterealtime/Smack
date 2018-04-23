@@ -793,8 +793,29 @@ public final class ServiceDiscoveryManager extends Manager {
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(String feature, boolean stopOnFirst, boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        List<DiscoverInfo> serviceDiscoInfo;
         DomainBareJid serviceName = connection().getXMPPServiceDomain();
+        return findServicesDiscoverInfo(serviceName, feature, stopOnFirst, useCache, encounteredExceptions);
+    }
+
+    /**
+     * Find all services under a given service that provide a given feature.
+     *
+     * @param serviceName the service to query
+     * @param feature the feature to search for
+     * @param stopOnFirst if true, stop searching after the first service was found
+     * @param useCache if true, query a cache first to avoid network I/O
+     * @param encounteredExceptions an optional map which will be filled with the exceptions encountered
+     * @return a possible empty list of services providing the given feature
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.3.0
+     */
+    public List<DiscoverInfo> findServicesDiscoverInfo(DomainBareJid serviceName, String feature, boolean stopOnFirst,
+                    boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        List<DiscoverInfo> serviceDiscoInfo;
         if (useCache) {
             serviceDiscoInfo = services.lookup(feature);
             if (serviceDiscoInfo != null) {
