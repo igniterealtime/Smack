@@ -78,6 +78,11 @@ public abstract class XMPPException extends Exception {
         private final Stanza stanza;
 
         /**
+         * The request which resulted in the XMPP protocol error response. May be {@code null}.
+         */
+        private final Stanza request;
+
+        /**
          * Creates a new XMPPErrorException with the given builder.
          *
          * @param xmppErrorBuilder
@@ -95,9 +100,22 @@ public abstract class XMPPException extends Exception {
          * @param error the root cause of the exception.
          */
         public XMPPErrorException(Stanza stanza, StanzaError error) {
+            this(stanza, error, null);
+        }
+
+        /**
+         * Creates a new XMPPErrorException with the XMPPError that was the root case of the exception.
+         *
+         * @param request the request which triggered the error.
+         * @param stanza stanza that contained the exception.
+         * @param error the root cause of the exception.
+         * @since 4.3.0
+         */
+        public XMPPErrorException(Stanza stanza, StanzaError error, Stanza request) {
             super();
             this.error = error;
             this.stanza = stanza;
+            this.request = request;
         }
 
         /**
@@ -108,6 +126,16 @@ public abstract class XMPPException extends Exception {
          */
         public StanzaError getXMPPError() {
             return error;
+        }
+
+        /**
+         * Get the request which triggered the error response causing this exception.
+         *
+         * @return the request or {@code null}.
+         * @since 4.3.0
+         */
+        public Stanza getRequest() {
+            return request;
         }
 
         @Override
@@ -123,13 +151,22 @@ public abstract class XMPPException extends Exception {
 
             sb.append(error);
 
+            if (request != null) {
+                sb.append(" as result of the following request: ");
+                sb.append(request);
+            }
+
             return sb.toString();
         }
 
         public static void ifHasErrorThenThrow(Stanza packet) throws XMPPErrorException {
+            ifHasErrorThenThrow(packet, null);
+        }
+
+        public static void ifHasErrorThenThrow(Stanza packet, Stanza request) throws XMPPErrorException {
             StanzaError xmppError = packet.getError();
             if (xmppError != null) {
-                throw new XMPPErrorException(packet, xmppError);
+                throw new XMPPErrorException(packet, xmppError, request);
             }
         }
     }

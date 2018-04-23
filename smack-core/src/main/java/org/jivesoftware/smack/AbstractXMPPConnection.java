@@ -763,8 +763,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public StanzaCollector createStanzaCollectorAndSend(StanzaFilter packetFilter, Stanza packet)
                     throws NotConnectedException, InterruptedException {
+        StanzaCollector.Configuration configuration = StanzaCollector.newConfiguration()
+                        .setStanzaFilter(packetFilter)
+                        .setRequest(packet);
         // Create the packet collector before sending the packet
-        StanzaCollector packetCollector = createStanzaCollector(packetFilter);
+        StanzaCollector packetCollector = createStanzaCollector(configuration);
         try {
             // Now we can send the packet as the collector has been created
             sendStanza(packet);

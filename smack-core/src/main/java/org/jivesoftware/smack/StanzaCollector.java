@@ -53,6 +53,8 @@ public class StanzaCollector {
 
     private final XMPPConnection connection;
 
+    private final Stanza request;
+
     private boolean cancelled = false;
 
     /**
@@ -67,6 +69,7 @@ public class StanzaCollector {
         this.packetFilter = configuration.packetFilter;
         this.resultQueue = new ArrayBlockingQueue<>(configuration.size);
         this.collectorToReset = configuration.collectorToReset;
+        this.request = configuration.request;
     }
 
     /**
@@ -314,6 +317,7 @@ public class StanzaCollector {
         private StanzaFilter packetFilter;
         private int size = SmackConfiguration.getStanzaCollectorSize();
         private StanzaCollector collectorToReset;
+        private Stanza request;
 
         private Configuration() {
         }
@@ -364,6 +368,11 @@ public class StanzaCollector {
          */
         public Configuration setCollectorToReset(StanzaCollector collector) {
             this.collectorToReset = collector;
+            return this;
+        }
+
+        public Configuration setRequest(Stanza request) {
+            this.request = request;
             return this;
         }
     }
