@@ -18,7 +18,7 @@
 package org.jivesoftware.smack.filter;
 
 /**
- * Defines a way to filter packets for particular attributes. Stanza(/Packet) filters are used when
+ * Defines a way to filter packets for particular attributes. Stanza filters are used when
  * constructing stanza listeners or collectors -- the filter defines what packets match the criteria
  * of the collector or listener for further stanza processing.
  * <p>

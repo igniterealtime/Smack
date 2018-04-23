@@ -260,7 +260,7 @@ public class Bytestream extends IQ {
     }
 
     /**
-     * Stanza(/Packet) extension that represents a potential SOCKS5 proxy for the file transfer. Stream hosts
+     * Stanza extension that represents a potential SOCKS5 proxy for the file transfer. Stream hosts
      * are forwarded to the target of the file transfer who then chooses and connects to one.
      * 
      * @author Alexander Wenckus

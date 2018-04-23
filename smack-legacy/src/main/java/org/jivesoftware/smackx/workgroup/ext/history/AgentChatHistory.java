@@ -88,7 +88,7 @@ public class AgentChatHistory extends IQ {
     }
 
     /**
-     * Stanza(/Packet) extension provider for AgentHistory packets.
+     * Stanza extension provider for AgentHistory packets.
      */
     public static class InternalProvider extends IQProvider<AgentChatHistory> {
 

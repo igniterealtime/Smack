@@ -23,7 +23,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 
 /**
- * Stanza(/Packet) extension for XEP-0280: Message Carbons. The extension
+ * Stanza extension for XEP-0280: Message Carbons. The extension
  * <a href="http://xmpp.org/extensions/xep-0280.html">XEP-0280</a> is
  * meant to synchronize a message flow to multiple presences of a user.
  * 
@@ -129,7 +129,7 @@ public class CarbonExtension implements ExtensionElement {
     }
 
     /**
-     * Stanza(/Packet) extension indicating that a message may not be carbon-copied.  Adding this
+     * Stanza extension indicating that a message may not be carbon-copied.  Adding this
      * extension to any message will disallow that message from being copied. 
      */
     public static final class Private implements ExtensionElement {

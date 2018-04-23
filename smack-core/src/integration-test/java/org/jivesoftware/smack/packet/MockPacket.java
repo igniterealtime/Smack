@@ -18,7 +18,7 @@
 package org.jivesoftware.smack.packet;
 
 /**
- * A mock implementation of the Stanza(/Packet) abstract class. Implements toXML() by returning null.
+ * A mock implementation of the Stanza abstract class. Implements toXML() by returning null.
  */
 public class MockPacket extends Packet {
 

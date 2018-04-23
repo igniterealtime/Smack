@@ -289,7 +289,7 @@ public class MultipleRecipientManager {
     }
 
     /**
-     * Stanza(/Packet) that holds the XML stanza to send. This class is useful when the same packet
+     * Stanza that holds the XML stanza to send. This class is useful when the same packet
      * is needed to be sent to different recipients. Since using the same stanza is not possible
      * (i.e. cannot change the TO address of a queues stanza to be sent) then this class was
      * created to keep the XML stanza to send.

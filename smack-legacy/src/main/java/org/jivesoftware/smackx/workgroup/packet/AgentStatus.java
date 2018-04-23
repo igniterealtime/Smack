@@ -232,7 +232,7 @@ public class AgentStatus implements ExtensionElement {
     }
 
     /**
-     * Stanza(/Packet) extension provider for AgentStatus packets.
+     * Stanza extension provider for AgentStatus packets.
      */
     public static class Provider extends ExtensionElementProvider<AgentStatus> {
 

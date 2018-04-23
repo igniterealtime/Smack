@@ -73,7 +73,7 @@ public class SearchSettings extends SimpleIQ {
     }
 
     /**
-     * Stanza(/Packet) extension provider for AgentStatusRequest packets.
+     * Stanza extension provider for AgentStatusRequest packets.
      */
     public static class InternalProvider extends IQProvider<SearchSettings> {
 

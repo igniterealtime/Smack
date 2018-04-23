@@ -694,7 +694,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * Specified in XEP-65 5.3.1 (Example 13)
      * </p>
      * 
-     * @param packet Stanza(/Packet) that should be answered with a not-acceptable error
+     * @param packet Stanza that should be answered with a not-acceptable error
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */

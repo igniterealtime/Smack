@@ -33,7 +33,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Stanza(/Packet) extension for {@link org.jivesoftware.smackx.workgroup.agent.InvitationRequest}.
+ * Stanza extension for {@link org.jivesoftware.smackx.workgroup.agent.InvitationRequest}.
  *
  * @author Gaston Dombiak
  */

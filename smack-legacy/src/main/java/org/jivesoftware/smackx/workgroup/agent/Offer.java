@@ -192,7 +192,7 @@ public class Offer {
     }
 
     /**
-     * Stanza(/Packet) for rejecting offers.
+     * Stanza for rejecting offers.
      */
     private class RejectPacket extends IQ {
 
@@ -211,7 +211,7 @@ public class Offer {
     }
 
     /**
-     * Stanza(/Packet) for accepting an offer.
+     * Stanza for accepting an offer.
      */
     private class AcceptPacket extends IQ {
 

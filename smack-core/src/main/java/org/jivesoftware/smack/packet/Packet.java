@@ -161,7 +161,7 @@ public interface Packet extends TopLevelStreamElement {
     /**
      * Returns the first stanza extension that matches the specified element name and
      * namespace, or <tt>null</tt> if it doesn't exist. If the provided elementName is null,
-     * only the namespace is matched. Stanza(/Packet) extensions are
+     * only the namespace is matched. Stanza extensions are
      * are arbitrary XML sub-documents in standard XMPP packets. By default, a 
      * DefaultPacketExtension instance will be returned for each extension. However, 
      * PacketExtensionProvider instances can be registered with the 

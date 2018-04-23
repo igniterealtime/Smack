@@ -34,7 +34,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 
 /**
- * Base class for XMPP Stanzas, which are called Stanza(/Packet) in older versions of Smack (i.e. &lt; 4.1).
+ * Base class for XMPP Stanzas, which are called Stanza in older versions of Smack (i.e. &lt; 4.1).
  * <p>
  * Every stanza has a unique ID (which is automatically generated, but can be overridden). Stanza
  * IDs are required for IQ stanzas and recommended for presence and message stanzas. Optionally, the

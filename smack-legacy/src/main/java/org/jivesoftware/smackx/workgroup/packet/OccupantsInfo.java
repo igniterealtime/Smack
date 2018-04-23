@@ -34,7 +34,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * Stanza(/Packet) used for requesting information about occupants of a room or for retrieving information
+ * Stanza used for requesting information about occupants of a room or for retrieving information
  * such information.
  *
  * @author Gaston Dombiak
@@ -131,7 +131,7 @@ public class OccupantsInfo extends IQ {
     }
 
     /**
-     * Stanza(/Packet) extension provider for AgentStatusRequest packets.
+     * Stanza extension provider for AgentStatusRequest packets.
      */
     public static class Provider extends IQProvider<OccupantsInfo> {
 

@@ -121,7 +121,7 @@ public class ChatSettings extends IQ {
     }
 
     /**
-     * Stanza(/Packet) extension provider for AgentStatusRequest packets.
+     * Stanza extension provider for AgentStatusRequest packets.
      */
     public static class InternalProvider extends IQProvider<ChatSettings> {
 

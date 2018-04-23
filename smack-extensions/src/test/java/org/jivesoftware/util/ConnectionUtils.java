@@ -57,7 +57,7 @@ public class ConnectionUtils {
      * <code>
      *   StanzaCollector collector = connection.createStanzaCollector(new PacketFilter());
      *   connection.sendStanza(packet);
-     *   Stanza(/Packet) reply = collector.nextResult();
+     *   Stanza reply = collector.nextResult();
      * </code>
      * </pre>
      * 

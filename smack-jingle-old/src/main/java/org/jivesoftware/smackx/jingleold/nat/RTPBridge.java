@@ -42,7 +42,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * RTPBridge IQ Stanza(/Packet) used to request and retrieve a RTPBridge Candidates that can be used for a Jingle Media Transmission between two parties that are behind NAT.
+ * RTPBridge IQ Stanza used to request and retrieve a RTPBridge Candidates that can be used for a Jingle Media Transmission between two parties that are behind NAT.
  * This Jingle Bridge has all the needed information to establish a full UDP Channel (Send and Receive) between two parties.
  * <i>This transport method should be used only if other transport methods are not allowed. Or if you want a more reliable transport.</i>
  *
@@ -123,7 +123,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Creates a RTPBridge Stanza(/Packet) without Session ID.
+     * Creates a RTPBridge Stanza without Session ID.
      */
     public RTPBridge() {
         super(ELEMENT_NAME, NAMESPACE);
@@ -157,7 +157,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Get the Session ID of the Stanza(/Packet) (usually same as Jingle Session ID).
+     * Get the Session ID of the Stanza (usually same as Jingle Session ID).
      *
      * @return the session ID
      */
@@ -166,7 +166,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Set the Session ID of the Stanza(/Packet) (usually same as Jingle Session ID).
+     * Set the Session ID of the Stanza (usually same as Jingle Session ID).
      *
      * @param sid
      */

@@ -23,7 +23,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.hoxt.HOXTManager;
 
 /**
- * Stanza(/Packet) extension for base64 binary chunks.<p>
+ * Stanza extension for base64 binary chunks.<p>
  * This class is immutable.
  *
  * @author Andriy Tsykholyas

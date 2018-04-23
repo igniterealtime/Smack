@@ -207,50 +207,50 @@ public interface XMPPConnection {
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
     /**
-     * Creates a new stanza collector collecting packets that are replies to <code>packet</code>.
-     * Does also send <code>packet</code>. The stanza filter for the collector is an
+     * Creates a new stanza collector collecting IQ responses that are replies to the IQ <code>request</code>.
+     * Does also send the <code>request</code> IQ. The stanza filter for the collector is an
      * {@link IQReplyFilter}, guaranteeing that stanza id and JID in the 'from' address have
      * expected values.
      *
-     * @param packet the stanza to filter responses from
+     * @param request the IQ request to filter responses from
      * @return a new stanza collector.
      * @throws NotConnectedException 
      * @throws InterruptedException 
      */
-    StanzaCollector createStanzaCollectorAndSend(IQ packet) throws NotConnectedException, InterruptedException;
+    StanzaCollector createStanzaCollectorAndSend(IQ request) throws NotConnectedException, InterruptedException;
 
     /**
      * Creates a new stanza collector for this connection. A stanza filter determines
-     * which packets will be accumulated by the collector. A StanzaCollector is
+     * which stanzas will be accumulated by the collector. A StanzaCollector is
      * more suitable to use than a {@link StanzaListener} when you need to wait for
      * a specific result.
      * 
-     * @param packetFilter the stanza filter to use.
-     * @param packet the packet to send right after the collector got created
+     * @param stanzaFilter the stanza filter to use.
+     * @param stanza the stanza to send right after the collector got created
      * @return a new stanza collector.
      * @throws InterruptedException 
      * @throws NotConnectedException 
      */
-    StanzaCollector createStanzaCollectorAndSend(StanzaFilter packetFilter, Stanza packet)
+    StanzaCollector createStanzaCollectorAndSend(StanzaFilter stanzaFilter, Stanza stanza)
                     throws NotConnectedException, InterruptedException;
 
     /**
      * Creates a new stanza collector for this connection. A stanza filter
-     * determines which packets will be accumulated by the collector. A
+     * determines which stanzas will be accumulated by the collector. A
      * StanzaCollector is more suitable to use than a {@link StanzaListener}
      * when you need to wait for a specific result.
      * <p>
-     * <b>Note:</b> If you send a Stanza(/Packet) right after using this method, then
+     * <b>Note:</b> If you send a Stanza right after using this method, then
      * consider using
      * {@link #createStanzaCollectorAndSend(StanzaFilter, Stanza)} instead.
      * Otherwise make sure cancel the StanzaCollector in every case, e.g. even
      * if an exception is thrown, or otherwise you may leak the StanzaCollector.
      * </p>
      * 
-     * @param packetFilter the stanza filter to use.
+     * @param stanzaFilter the stanza filter to use.
      * @return a new stanza collector.
      */
-    StanzaCollector createStanzaCollector(StanzaFilter packetFilter);
+    StanzaCollector createStanzaCollector(StanzaFilter stanzaFilter);
 
     /**
      * Create a new stanza collector with the given stanza collector configuration.
@@ -274,35 +274,35 @@ public interface XMPPConnection {
 
     /**
      * Registers a <b>synchronous</b> stanza listener with this connection. A stanza listener will be invoked only when
-     * an incoming stanza is received. A stanza filter determines which packets will be delivered to the listener. If
+     * an incoming stanza is received. A stanza filter determines which stanzas will be delivered to the listener. If
      * the same stanza listener is added again with a different filter, only the new filter will be used.
      * <p>
      * <b>Important:</b> This stanza listeners will be called in the same <i>single</i> thread that processes all
      * incoming stanzas. Only use this kind of stanza filter if it does not perform any XMPP activity that waits for a
      * response. Consider using {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)} when possible, i.e. when
-     * the invocation order doesn't have to be the same as the order of the arriving packets. If the order of the
-     * arriving packets, consider using a {@link StanzaCollector} when possible.
+     * the invocation order doesn't have to be the same as the order of the arriving stanzas. If the order of the
+     * arriving stanzas, consider using a {@link StanzaCollector} when possible.
      * </p>
      *
-     * @param packetListener the stanza listener to notify of new received packets.
-     * @param packetFilter the stanza filter to use.
+     * @param stanzaListener the stanza listener to notify of new received stanzas.
+     * @param stanzaFilter the stanza filter to use.
      * @see #addStanzaInterceptor(StanzaListener, StanzaFilter)
      * @since 4.1
      */
-    void addSyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter);
+    void addSyncStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
 
     /**
-     * Removes a stanza listener for received packets from this connection.
+     * Removes a stanza listener for received stanzas from this connection.
      *
-     * @param packetListener the stanza listener to remove.
+     * @param stanzaListener the stanza listener to remove.
      * @return true if the stanza listener was removed
      * @since 4.1
      */
-    boolean removeSyncStanzaListener(StanzaListener packetListener);
+    boolean removeSyncStanzaListener(StanzaListener stanzaListener);
 
     /**
      * Registers an <b>asynchronous</b> stanza listener with this connection. A stanza listener will be invoked only
-     * when an incoming stanza is received. A stanza filter determines which packets will be delivered to the listener.
+     * when an incoming stanza is received. A stanza filter determines which stanzas will be delivered to the listener.
      * If the same stanza listener is added again with a different filter, only the new filter will be used.
      * <p>
      * Unlike {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)} stanza listeners added with this method will be
@@ -310,117 +310,117 @@ public interface XMPPConnection {
      * on the order how the stanzas where received.
      * </p>
      * 
-     * @param packetListener the stanza listener to notify of new received packets.
-     * @param packetFilter the stanza filter to use.
+     * @param stanzaListener the stanza listener to notify of new received stanzas.
+     * @param stanzaFilter the stanza filter to use.
      * @see #addStanzaInterceptor(StanzaListener, StanzaFilter)
      * @since 4.1
     */
-    void addAsyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter);
+    void addAsyncStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
 
     /**
-     * Removes an <b>asynchronous</b> stanza listener for received packets from this connection.
+     * Removes an <b>asynchronous</b> stanza listener for received stanzas from this connection.
      * 
-     * @param packetListener the stanza listener to remove.
+     * @param stanzaListener the stanza listener to remove.
      * @return true if the stanza listener was removed
      * @since 4.1
      */
-    boolean removeAsyncStanzaListener(StanzaListener packetListener);
+    boolean removeAsyncStanzaListener(StanzaListener stanzaListener);
 
     /**
      * Registers a stanza listener with this connection. The listener will be
      * notified of every stanza that this connection sends. A stanza filter determines
-     * which packets will be delivered to the listener. Note that the thread
-     * that writes packets will be used to invoke the listeners. Therefore, each
+     * which stanzas will be delivered to the listener. Note that the thread
+     * that writes stanzas will be used to invoke the listeners. Therefore, each
      * stanza listener should complete all operations quickly or use a different
      * thread for processing.
      * 
-     * @param packetListener the stanza listener to notify of sent packets.
-     * @param packetFilter   the stanza filter to use.
+     * @param stanzaListener the stanza listener to notify of sent stanzas.
+     * @param stanzaFilter   the stanza filter to use.
      * @deprecated use {@link #addStanzaSendingListener} instead
      */
     // TODO Remove in Smack 4.4
     @Deprecated
-    void addPacketSendingListener(StanzaListener packetListener, StanzaFilter packetFilter);
+    void addPacketSendingListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
 
     /**
      * Registers a stanza listener with this connection. The listener will be
      * notified of every stanza that this connection sends. A stanza filter determines
-     * which packets will be delivered to the listener. Note that the thread
-     * that writes packets will be used to invoke the listeners. Therefore, each
+     * which stanzas will be delivered to the listener. Note that the thread
+     * that writes stanzas will be used to invoke the listeners. Therefore, each
      * stanza listener should complete all operations quickly or use a different
      * thread for processing.
      *
-     * @param packetListener the stanza listener to notify of sent packets.
-     * @param packetFilter   the stanza filter to use.
+     * @param stanzaListener the stanza listener to notify of sent stanzas.
+     * @param stanzaFilter   the stanza filter to use.
      */
-    void addStanzaSendingListener(StanzaListener packetListener, StanzaFilter packetFilter);
+    void addStanzaSendingListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
 
     /**
-     * Removes a stanza listener for sending packets from this connection.
+     * Removes a stanza listener for sending stanzas from this connection.
      * 
-     * @param packetListener the stanza listener to remove.
+     * @param stanzaListener the stanza listener to remove.
      * @deprecated use {@link #removeStanzaSendingListener} instead
      */
     // TODO Remove in Smack 4.4
     @Deprecated
-    void removePacketSendingListener(StanzaListener packetListener);
+    void removePacketSendingListener(StanzaListener stanzaListener);
 
     /**
-     * Removes a stanza listener for sending packets from this connection.
+     * Removes a stanza listener for sending stanzas from this connection.
      *
-     * @param packetListener the stanza listener to remove.
+     * @param stanzaListener the stanza listener to remove.
      */
-    void removeStanzaSendingListener(StanzaListener packetListener);
+    void removeStanzaSendingListener(StanzaListener stanzaListener);
 
     /**
      * Registers a stanza interceptor with this connection. The interceptor will be
      * invoked every time a stanza is about to be sent by this connection. Interceptors
-     * may modify the stanza to be sent. A stanza filter determines which packets
+     * may modify the stanza to be sent. A stanza filter determines which stanzas
      * will be delivered to the interceptor.
      * 
      * <p>
-     * NOTE: For a similar functionality on incoming packets, see {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)}.
+     * NOTE: For a similar functionality on incoming stanzas, see {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)}.
      * </p>
      *
-     * @param packetInterceptor the stanza interceptor to notify of packets about to be sent.
-     * @param packetFilter      the stanza filter to use.
+     * @param stanzaInterceptor the stanza interceptor to notify of stanzas about to be sent.
+     * @param stanzaFilter      the stanza filter to use.
      * @deprecated use {@link #addStanzaInterceptor} instead
      */
     // TODO Remove in Smack 4.4
     @Deprecated
-    void addPacketInterceptor(StanzaListener packetInterceptor, StanzaFilter packetFilter);
+    void addPacketInterceptor(StanzaListener stanzaInterceptor, StanzaFilter stanzaFilter);
 
     /**
      * Registers a stanza interceptor with this connection. The interceptor will be
      * invoked every time a stanza is about to be sent by this connection. Interceptors
-     * may modify the stanza to be sent. A stanza filter determines which packets
+     * may modify the stanza to be sent. A stanza filter determines which stanzas
      * will be delivered to the interceptor.
      *
      * <p>
-     * NOTE: For a similar functionality on incoming packets, see {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)}.
+     * NOTE: For a similar functionality on incoming stanzas, see {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)}.
      * </p>
      *
-     * @param packetInterceptor the stanza interceptor to notify of packets about to be sent.
-     * @param packetFilter      the stanza filter to use.
+     * @param stanzaInterceptor the stanza interceptor to notify of stanzas about to be sent.
+     * @param stanzaFilter      the stanza filter to use.
      */
-    void addStanzaInterceptor(StanzaListener packetInterceptor, StanzaFilter packetFilter);
+    void addStanzaInterceptor(StanzaListener stanzaInterceptor, StanzaFilter stanzaFilter);
 
     /**
      * Removes a stanza interceptor.
      *
-     * @param packetInterceptor the stanza interceptor to remove.
+     * @param stanzaInterceptor the stanza interceptor to remove.
      * @deprecated user {@link #removeStanzaInterceptor} instead
      */
     // TODO Remove in Smack 4.4
     @Deprecated
-    void removePacketInterceptor(StanzaListener packetInterceptor);
+    void removePacketInterceptor(StanzaListener stanzaInterceptor);
 
     /**
      * Removes a stanza interceptor.
      *
-     * @param packetInterceptor the stanza interceptor to remove.
+     * @param stanzaInterceptor the stanza interceptor to remove.
      */
-    void removeStanzaInterceptor(StanzaListener packetInterceptor);
+    void removeStanzaInterceptor(StanzaListener stanzaInterceptor);
 
     /**
      * Returns the current value of the reply timeout in milliseconds for request for this
@@ -662,9 +662,9 @@ public interface XMPPConnection {
      * stanza filter.
      * 
      * @param callback the callback invoked once the stanza filter matches a stanza.
-     * @param packetFilter the filter to match stanzas or null to match all.
+     * @param stanzaFilter the filter to match stanzas or null to match all.
      */
-    void addOneTimeSyncCallback(StanzaListener callback, StanzaFilter packetFilter);
+    void addOneTimeSyncCallback(StanzaListener callback, StanzaFilter stanzaFilter);
 
     /**
      * Register an IQ request handler with this connection.

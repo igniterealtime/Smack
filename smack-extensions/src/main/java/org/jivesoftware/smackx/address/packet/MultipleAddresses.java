@@ -27,7 +27,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.Jid;
 
 /**
- * Stanza(/Packet) extension that contains the list of addresses that a stanza should be sent or was sent.
+ * Stanza extension that contains the list of addresses that a stanza should be sent or was sent.
  *
  * @author Gaston Dombiak
  */

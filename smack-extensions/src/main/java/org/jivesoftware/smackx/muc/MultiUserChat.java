@@ -1024,7 +1024,7 @@ public class MultiUserChat {
 
     /**
      * Adds a new {@link StanzaListener} that will be invoked every time a new presence
-     * is going to be sent by this MultiUserChat to the server. Stanza(/Packet) interceptors may
+     * is going to be sent by this MultiUserChat to the server. Stanza interceptors may
      * add new extensions to the presence that is going to be sent to the MUC service.
      *
      * @param presenceInterceptor the new stanza interceptor that will intercept presence packets.
@@ -1035,7 +1035,7 @@ public class MultiUserChat {
 
     /**
      * Removes a {@link StanzaListener} that was being invoked every time a new presence
-     * was being sent by this MultiUserChat to the server. Stanza(/Packet) interceptors may
+     * was being sent by this MultiUserChat to the server. Stanza interceptors may
      * add new extensions to the presence that is going to be sent to the MUC service.
      *
      * @param presenceInterceptor the stanza interceptor to remove.

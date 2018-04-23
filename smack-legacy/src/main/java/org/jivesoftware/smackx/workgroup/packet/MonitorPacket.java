@@ -73,7 +73,7 @@ public class MonitorPacket extends IQ {
 
 
     /**
-     * Stanza(/Packet) extension provider for Monitor Packets.
+     * Stanza extension provider for Monitor Packets.
      */
     public static class InternalProvider extends IQProvider<MonitorPacket> {
 

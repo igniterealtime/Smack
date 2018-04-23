@@ -63,7 +63,7 @@ public class SoundSettings extends SimpleIQ {
     }
 
     /**
-     * Stanza(/Packet) extension provider for SoundSetting Packets.
+     * Stanza extension provider for SoundSetting Packets.
      */
     public static class InternalProvider extends IQProvider<SoundSettings> {
 
