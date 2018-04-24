@@ -38,7 +38,7 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 import javax.security.auth.kerberos.KerberosPrincipal;
 
-import org.jivesoftware.smack.util.IpAddressUtil;
+import org.minidns.util.InetAddressUtil;
 
 /**
  * HostnameVerifier implementation for XMPP. Verifies a given name, the 'hostname' argument, which
@@ -98,7 +98,7 @@ public class XmppHostnameVerifier implements HostnameVerifier {
     }
 
     private static void match(String name, X509Certificate cert) throws CertificateException {
-        if (IpAddressUtil.isIpAddress(name)) {
+        if (InetAddressUtil.isIpAddress(name)) {
             matchIp(name, cert);
         }
         else {

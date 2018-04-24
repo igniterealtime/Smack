@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2017 Florian Schmaus
+ * Copyright 2013-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SRVRecord;
 
+import org.minidns.dnsname.DNSName;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.TextParseException;
@@ -49,12 +50,12 @@ public class DNSJavaResolver extends DNSResolver implements SmackInitializer {
     }
 
     @Override
-    protected List<SRVRecord> lookupSRVRecords0(String name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    protected List<SRVRecord> lookupSRVRecords0(DNSName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         List<SRVRecord> res = new ArrayList<>();
 
         Lookup lookup;
         try {
-            lookup = new Lookup(name, Type.SRV);
+            lookup = new Lookup(name.ace, Type.SRV);
         }
         catch (TextParseException e) {
             throw new IllegalStateException(e);
@@ -67,7 +68,7 @@ public class DNSJavaResolver extends DNSResolver implements SmackInitializer {
         for (Record record : recs) {
             org.xbill.DNS.SRVRecord srvRecord = (org.xbill.DNS.SRVRecord) record;
             if (srvRecord != null && srvRecord.getTarget() != null) {
-                String host = srvRecord.getTarget().toString();
+                DNSName host = DNSName.from(srvRecord.getTarget().toString());
                 int port = srvRecord.getPort();
                 int priority = srvRecord.getPriority();
                 int weight = srvRecord.getWeight();

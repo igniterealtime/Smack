@@ -10,6 +10,7 @@ dependencies {
 	compile 'xpp3:xpp3:1.1.4c'
 	compile "org.jxmpp:jxmpp-core:$jxmppVersion"
 	compile "org.jxmpp:jxmpp-jid:$jxmppVersion"
+	compile "org.minidns:minidns-core:$miniDnsVersion"
 	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
 	testCompile "junit:junit:$junitVersion"
 	testCompile 'xmlunit:xmlunit:1.5'

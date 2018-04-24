@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2015 Florian Schmaus
+ * Copyright 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import java.util.List;
 
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.initializer.SmackInitializer;
-import org.jivesoftware.smack.util.DNSUtil;
-import org.jivesoftware.smack.util.StringTransformer;
 import org.jivesoftware.smack.util.SystemUtil;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smack.util.stringencoder.Base64UrlSafeEncoder;
@@ -43,12 +41,6 @@ public class Java7SmackInitializer implements SmackInitializer {
         SmackConfiguration.setDefaultHostnameVerifier(new XmppHostnameVerifier());
         Base64.setEncoder(Java7Base64Encoder.getInstance());
         Base64UrlSafeEncoder.setEncoder(Java7Base64UrlSafeEncoder.getInstance());
-        DNSUtil.setIdnaTransformer(new StringTransformer() {
-            @Override
-            public String transform(String string) {
-                return java.net.IDN.toASCII(string);
-            }
-        });
         return null;
     }
 

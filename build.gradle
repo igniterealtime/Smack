@@ -238,6 +238,7 @@ task javadocAll(type: Javadoc) {
 	options.links = [
 		"https://docs.oracle.com/javase/${sourceCompatibility.getMajorVersion()}/docs/api/",
 		"http://jxmpp.org/$jxmppVersion/javadoc/",
+		"https://minidns.org/releases/$miniDnsVersion/javadoc/",
 		] as String[]
 }
 
@@ -430,7 +431,7 @@ subprojects {
 configure (androidProjects) {
 	apply plugin: 'ru.vyarus.animalsniffer'
 	dependencies {
-		signature "net.sf.androidscents.signature:android-api-level-${smackMinAndroidSdk}:2.2_r3@signature"
+		signature "net.sf.androidscents.signature:android-api-level-${smackMinAndroidSdk}:2.3.1_r2@signature"
 	}
 	animalsniffer {
 		sourceSets = [sourceSets.main]

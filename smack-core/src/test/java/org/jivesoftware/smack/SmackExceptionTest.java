@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.util.dns.HostAddress;
 
 import org.junit.Test;
+import org.minidns.dnsname.DNSName;
 
 public class SmackExceptionTest {
 
@@ -35,15 +36,15 @@ public class SmackExceptionTest {
     public void testConnectionException() throws UnknownHostException {
         List<HostAddress> failedAddresses = new LinkedList<HostAddress>();
 
-        String host = "foo.bar.example";
-        InetAddress inetAddress = InetAddress.getByAddress(host, new byte[] { 0, 0, 0, 0 });
+        DNSName host = DNSName.from("foo.bar.example");
+        InetAddress inetAddress = InetAddress.getByAddress(host.toString(), new byte[] { 0, 0, 0, 0 });
         List<InetAddress> inetAddresses = Collections.singletonList(inetAddress);
         HostAddress hostAddress = new HostAddress(host, 1234, inetAddresses);
         hostAddress.setException(new Exception("Failed for some reason"));
         failedAddresses.add(hostAddress);
 
-        host = "barz.example";
-        inetAddress = InetAddress.getByAddress(host, new byte[] { 0, 0, 0, 0 });
+        host = DNSName.from("barz.example");
+        inetAddress = InetAddress.getByAddress(host.toString(), new byte[] { 0, 0, 0, 0 });
         inetAddresses = Collections.singletonList(inetAddress);
         hostAddress = new HostAddress(host, 5678, inetAddresses);
         hostAddress.setException(new Exception("Failed for some other reason"));

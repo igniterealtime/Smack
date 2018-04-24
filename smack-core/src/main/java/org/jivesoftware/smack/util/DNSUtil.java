@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2005 Jive Software, 2016 Florian Schmaus.
+ * Copyright 2003-2005 Jive Software, 2016-2018 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,8 @@ import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SRVRecord;
 import org.jivesoftware.smack.util.dns.SmackDaneProvider;
 
+import org.minidns.dnsname.DNSName;
+
 /**
  * Utility class to perform DNS lookups for XMPP services.
  *
@@ -39,26 +41,12 @@ import org.jivesoftware.smack.util.dns.SmackDaneProvider;
  */
 public class DNSUtil {
 
+    public static final String XMPP_CLIENT_DNS_SRV_PREFIX = "_xmpp-client._tcp";
+    public static final String XMPP_SERVER_DNS_SRV_PREFIX = "_xmpp-server._tcp";
+
     private static final Logger LOGGER = Logger.getLogger(DNSUtil.class.getName());
     private static DNSResolver dnsResolver = null;
     private static SmackDaneProvider daneProvider;
-
-    /**
-     * International Domain Name transformer.
-     * <p>
-     * Used to transform Unicode representations of the Domain Name to ASCII in
-     * order to perform a DNS request with the ASCII representation.
-     * 'java.net.IDN' is available since Android API 9, but as long as Smack
-     * requires API 8, we are going to need this. This part is going to get
-     * removed once Smack depends on Android API 9 or higher.
-     * </p>
-     */
-    private static StringTransformer idnaTransformer = new StringTransformer() {
-        @Override
-        public String transform(String string) {
-            return string;
-        }
-    };
 
     /**
      * Set the DNS resolver that should be used to perform DNS lookups.
@@ -96,24 +84,16 @@ public class DNSUtil {
         return daneProvider;
     }
 
-    /**
-     * Set the IDNA (Internationalizing Domain Names in Applications, RFC 3490) transformer.
-     * <p>
-     * You usually want to wrap 'java.net.IDN.toASCII()' into a StringTransformer here.
-     * </p>
-     * @param idnaTransformer
-     */
-    public static void setIdnaTransformer(StringTransformer idnaTransformer) {
-        if (idnaTransformer == null) {
-            throw new NullPointerException();
-        }
-        DNSUtil.idnaTransformer = idnaTransformer;
-    }
-
-    private enum DomainType {
-        Server,
-        Client,
+    @SuppressWarnings("ImmutableEnumChecker")
+    enum DomainType {
+        server(XMPP_SERVER_DNS_SRV_PREFIX),
+        client(XMPP_CLIENT_DNS_SRV_PREFIX),
         ;
+        public final DNSName srvPrefix;
+
+        DomainType(String srvPrefixString) {
+            srvPrefix = DNSName.from(srvPrefixString);
+        }
     }
 
     /**
@@ -131,10 +111,8 @@ public class DNSUtil {
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
      */
-    public static List<HostAddress> resolveXMPPServiceDomain(String domain, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
-        domain = idnaTransformer.transform(domain);
-
-        return resolveDomain(domain, DomainType.Client, failedAddresses, dnssecMode);
+    public static List<HostAddress> resolveXMPPServiceDomain(DNSName domain, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+        return resolveDomain(domain, DomainType.client, failedAddresses, dnssecMode);
     }
 
     /**
@@ -152,10 +130,8 @@ public class DNSUtil {
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
      */
-    public static List<HostAddress> resolveXMPPServerDomain(String domain, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
-        domain = idnaTransformer.transform(domain);
-
-        return resolveDomain(domain, DomainType.Server, failedAddresses, dnssecMode);
+    public static List<HostAddress> resolveXMPPServerDomain(DNSName domain, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+        return resolveDomain(domain, DomainType.server, failedAddresses, dnssecMode);
     }
 
     /**
@@ -165,7 +141,7 @@ public class DNSUtil {
      * @param failedAddresses a list that will be populated with host addresses that failed to resolve.
      * @return a list of resolver host addresses for this domain.
      */
-    private static List<HostAddress> resolveDomain(String domain, DomainType domainType,
+    private static List<HostAddress> resolveDomain(DNSName domain, DomainType domainType,
                     List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         if (dnsResolver == null) {
             throw new IllegalStateException("No DNS Resolver active in Smack");
@@ -174,17 +150,7 @@ public class DNSUtil {
         List<HostAddress> addresses = new ArrayList<HostAddress>();
 
         // Step one: Do SRV lookups
-        String srvDomain;
-        switch (domainType) {
-        case Server:
-            srvDomain = "_xmpp-server._tcp." + domain;
-            break;
-        case Client:
-            srvDomain = "_xmpp-client._tcp." + domain;
-            break;
-        default:
-            throw new AssertionError();
-        }
+        DNSName srvDomain = DNSName.from(domainType.srvPrefix, domain);
 
         List<SRVRecord> srvRecords = dnsResolver.lookupSRVRecords(srvDomain, failedAddresses, dnssecMode);
         if (srvRecords != null && !srvRecords.isEmpty()) {
@@ -202,10 +168,10 @@ public class DNSUtil {
 
         int defaultPort = -1;
         switch (domainType) {
-        case Client:
+        case client:
             defaultPort = 5222;
             break;
-        case Server:
+        case server:
             defaultPort = 5269;
             break;
         }
@@ -229,7 +195,7 @@ public class DNSUtil {
     private static List<HostAddress> sortSRVRecords(List<SRVRecord> records) {
         // RFC 2782, Usage rules: "If there is precisely one SRV RR, and its Target is "."
         // (the root domain), abort."
-        if (records.size() == 1 && records.get(0).getFQDN().equals("."))
+        if (records.size() == 1 && records.get(0).getFQDN().isRootLabel())
             return Collections.emptyList();
 
         // sorting the records improves the performance of the bisection later

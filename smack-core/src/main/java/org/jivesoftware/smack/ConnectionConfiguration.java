@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2017 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2017-2018 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
+import org.minidns.dnsname.DNSName;
 
 /**
  * Configuration to use while establishing the connection to the server.
@@ -66,7 +67,7 @@ public abstract class ConnectionConfiguration {
     protected final DomainBareJid xmppServiceDomain;
 
     protected final InetAddress hostAddress;
-    protected final String host;
+    protected final DNSName host;
     protected final int port;
 
     private final String keystorePath;
@@ -506,7 +507,7 @@ public abstract class ConnectionConfiguration {
         private SocketFactory socketFactory;
         private DomainBareJid xmppServiceDomain;
         private InetAddress hostAddress;
-        private String host;
+        private DNSName host;
         private int port = 5222;
         private boolean allowEmptyOrNullUsername = false;
         private boolean saslMechanismsSealed;
@@ -624,6 +625,19 @@ public abstract class ConnectionConfiguration {
          * @return a reference to this builder.
          */
         public B setHost(String host) {
+            DNSName hostDnsName = DNSName.from(host);
+            return setHost(hostDnsName);
+        }
+
+        /**
+         * Set the name of the host providing the XMPP service. Note that this method does only allow DNS names and not
+         * IP addresses. Use {@link #setHostAddress(InetAddress)} if you want to explicitly set the Internet address of
+         * the host providing the XMPP service.
+         *
+         * @param host the DNS name of the host providing the XMPP service.
+         * @return a reference to this builder.
+         */
+        public B setHost(DNSName host) {
             this.host = host;
             return getThis();
         }

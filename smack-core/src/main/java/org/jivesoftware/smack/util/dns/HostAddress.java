@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2013-2017 Florian Schmaus
+ * Copyright © 2013-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jivesoftware.smack.SmackException.ConnectionException;
-import org.jivesoftware.smack.util.StringUtils;
+
+import org.minidns.dnsname.DNSName;
 
 public class HostAddress {
-    private final String fqdn;
+    private final DNSName fqdn;
     private final int port;
     private final Map<InetAddress, Exception> exceptions = new LinkedHashMap<>();
     private final List<InetAddress> inetAddresses;
@@ -41,16 +42,11 @@ public class HostAddress {
      * @param inetAddresses list of addresses.
      * @throws IllegalArgumentException If the port is out of valid range (0 - 65535).
      */
-    public HostAddress(String fqdn, int port, List<InetAddress> inetAddresses) {
+    public HostAddress(DNSName fqdn, int port, List<InetAddress> inetAddresses) {
         if (port < 0 || port > 65535)
             throw new IllegalArgumentException(
                     "Port must be a 16-bit unsigned integer (i.e. between 0-65535. Port was: " + port);
-        if (StringUtils.isNotEmpty(fqdn) && fqdn.charAt(fqdn.length() - 1) == '.') {
-            this.fqdn = fqdn.substring(0, fqdn.length() - 1);
-        }
-        else {
-            this.fqdn = fqdn;
-        }
+        this.fqdn = fqdn;
         this.port = port;
         if (inetAddresses.isEmpty()) {
             throw new IllegalArgumentException("Must provide at least one InetAddress");
@@ -69,7 +65,7 @@ public class HostAddress {
      * @param fqdn the domain name of the host.
      * @param e the exception causing the failure.
      */
-    public HostAddress(String fqdn, Exception e) {
+    public HostAddress(DNSName fqdn, Exception e) {
         this.fqdn = fqdn;
         this.port = 5222;
         inetAddresses = Collections.emptyList();
@@ -78,7 +74,7 @@ public class HostAddress {
 
     public String getHost() {
         if (fqdn != null) {
-            return fqdn;
+            return fqdn.toString();
         }
 
         // In this case, the HostAddress(int, InetAddress) constructor must been used. We have no FQDN. And
@@ -92,7 +88,7 @@ public class HostAddress {
      *
      * @return the fully qualified domain name or <code>null</code>
      */
-    public String getFQDN() {
+    public DNSName getFQDN() {
         return fqdn;
     }
 
