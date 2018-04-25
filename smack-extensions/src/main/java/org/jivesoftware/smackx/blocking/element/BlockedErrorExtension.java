@@ -46,7 +46,7 @@ public class BlockedErrorExtension implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.closeEmptyElement();
         return xml;

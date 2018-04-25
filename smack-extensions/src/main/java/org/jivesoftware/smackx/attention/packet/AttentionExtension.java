@@ -69,7 +69,7 @@ public class AttentionExtension implements ExtensionElement {
      * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
      */
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         final StringBuilder sb = new StringBuilder();
         sb.append('<').append(getElementName()).append(" xmlns=\"").append(
                 getNamespace()).append("\"/>");

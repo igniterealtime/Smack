@@ -52,8 +52,8 @@ public class DataValidationTest {
 
         ValidateElement dv = new BasicValidateElement(null);
 
-        assertNotNull(dv.toXML());
-        String output = dv.toXML().toString();
+        assertNotNull(dv.toXML(null));
+        String output = dv.toXML(null).toString();
         assertEquals(TEST_OUTPUT_MIN, output);
 
         XmlPullParser parser = getParser(TEST_INPUT_MIN);
@@ -64,8 +64,8 @@ public class DataValidationTest {
         assertEquals("xs:string", dv.getDatatype());
         assertTrue(dv instanceof BasicValidateElement);
 
-        assertNotNull(dv.toXML());
-        output = dv.toXML().toString();
+        assertNotNull(dv.toXML(null));
+        output = dv.toXML(null).toString();
         assertEquals(TEST_OUTPUT_MIN, output);
     }
 
@@ -77,8 +77,8 @@ public class DataValidationTest {
         ListRange listRange = new ListRange(111L, 999L);
         dv.setListRange(listRange);
 
-        assertNotNull(dv.toXML());
-        String output = dv.toXML().toString();
+        assertNotNull(dv.toXML(null));
+        String output = dv.toXML(null).toString();
         assertEquals(TEST_OUTPUT_RANGE, output);
 
         XmlPullParser parser = getParser(output);
@@ -96,8 +96,8 @@ public class DataValidationTest {
         assertEquals(999, rdv.getListRange().getMax().intValue());
 
 
-        assertNotNull(dv.toXML());
-        output = dv.toXML().toString();
+        assertNotNull(dv.toXML(null));
+        output = dv.toXML(null).toString();
         assertEquals(TEST_OUTPUT_RANGE, output);
     }
 
@@ -106,8 +106,8 @@ public class DataValidationTest {
 
         ValidateElement dv = new RangeValidateElement(null, null, null);
 
-        assertNotNull(dv.toXML());
-        String output = dv.toXML().toString();
+        assertNotNull(dv.toXML(null));
+        String output = dv.toXML(null).toString();
         assertEquals(TEST_OUTPUT_RANGE2, output);
 
         XmlPullParser parser = getParser(output);
@@ -121,8 +121,8 @@ public class DataValidationTest {
         assertEquals(null, rdv.getMin());
         assertEquals(null, rdv.getMax());
 
-        assertNotNull(rdv.toXML());
-        output = rdv.toXML().toString();
+        assertNotNull(rdv.toXML(null));
+        output = rdv.toXML(null).toString();
         assertEquals(TEST_OUTPUT_RANGE2, output);
     }
 

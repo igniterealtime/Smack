@@ -37,7 +37,7 @@ public abstract class OmemoBundleElement implements ExtensionElement {
     public static final String PRE_KEY_ID = "preKeyId";
 
     @Override
-    public abstract XmlStringBuilder toXML();
+    public abstract XmlStringBuilder toXML(String enclosingNamespace);
 
     @Override
     public boolean equals(Object other) {
@@ -46,11 +46,11 @@ public abstract class OmemoBundleElement implements ExtensionElement {
         }
 
         OmemoBundleElement otherOmemoBundleElement = (OmemoBundleElement) other;
-        return toXML().equals(otherOmemoBundleElement.toXML());
+        return toXML(null).equals(otherOmemoBundleElement.toXML(null));
     }
 
     @Override
     public int hashCode() {
-        return this.toXML().hashCode();
+        return this.toXML(null).hashCode();
     }
 }

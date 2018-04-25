@@ -39,7 +39,7 @@ public class SubscribeExtension extends NodeExtension {
     }
 
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         StringBuilder builder = new StringBuilder("<");
         builder.append(getElementName());
 

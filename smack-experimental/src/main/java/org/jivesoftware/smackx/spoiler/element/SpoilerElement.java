@@ -151,7 +151,7 @@ public class SpoilerElement implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.optXmlLangAttribute(getLanguage());
         if (getHint() == null) {

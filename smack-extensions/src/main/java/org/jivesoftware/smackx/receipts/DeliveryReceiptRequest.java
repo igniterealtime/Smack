@@ -47,7 +47,7 @@ public class DeliveryReceiptRequest implements ExtensionElement {
     }
 
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         return "<request xmlns='" + DeliveryReceipt.NAMESPACE + "'/>";
     }
 

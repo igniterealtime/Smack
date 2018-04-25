@@ -86,7 +86,7 @@ public class DefaultExtensionElement implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(elementName).xmlnsAttribute(namespace).rightAngleBracket();
         for (String name : getNames()) {

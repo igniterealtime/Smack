@@ -71,7 +71,7 @@ public class QueueUpdate implements ExtensionElement {
     }
 
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         StringBuilder buf = new StringBuilder();
         buf.append("<queue-status xmlns=\"http://jabber.org/protocol/workgroup\">");
         if (position != -1) {

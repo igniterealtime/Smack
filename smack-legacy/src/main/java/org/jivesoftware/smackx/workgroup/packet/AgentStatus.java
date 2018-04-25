@@ -95,7 +95,7 @@ public class AgentStatus implements ExtensionElement {
     }
 
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         StringBuilder buf = new StringBuilder();
 
         buf.append('<').append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append('"');

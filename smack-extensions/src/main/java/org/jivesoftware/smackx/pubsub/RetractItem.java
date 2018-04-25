@@ -54,7 +54,7 @@ public class RetractItem implements ExtensionElement {
     }
 
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         return "<retract id='" + id + "'/>";
     }
 }

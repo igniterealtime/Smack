@@ -331,8 +331,8 @@ public class LiteDebugger extends SmackDebugger {
 
     @Override
     public void onIncomingStreamElement(TopLevelStreamElement streamElement) {
-        interpretedText1.append(streamElement.toXML().toString());
-        interpretedText2.append(streamElement.toXML().toString());
+        interpretedText1.append(streamElement.toXML(null).toString());
+        interpretedText2.append(streamElement.toXML(null).toString());
         interpretedText1.append(NEWLINE);
         interpretedText2.append(NEWLINE);
     }

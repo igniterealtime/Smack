@@ -89,7 +89,7 @@ public final class Bind extends IQ {
         }
 
         @Override
-        public String toXML() {
+        public String toXML(String enclosingNamespace) {
             return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
         }
 

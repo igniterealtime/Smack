@@ -95,7 +95,7 @@ public class AdHocCommandData extends IQ {
         }
 
         if (form != null) {
-            xml.append(form.toXML());
+            xml.append(form.toXML(null));
         }
 
         for (AdHocCommandNote note : notes) {
@@ -264,7 +264,7 @@ public class AdHocCommandData extends IQ {
         }
 
         @Override
-        public String toXML() {
+        public String toXML(String enclosingNamespace) {
             StringBuilder buf = new StringBuilder();
             buf.append('<').append(getElementName());
             buf.append(" xmlns=\"").append(getNamespace()).append("\"/>");

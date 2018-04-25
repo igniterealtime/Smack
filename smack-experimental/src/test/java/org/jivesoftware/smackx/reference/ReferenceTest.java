@@ -41,7 +41,7 @@ public class ReferenceTest extends SmackTestSuite {
                         "uri='xmpp:juliet@capulet.lit' />";
         URI uri = new URI("xmpp:juliet@capulet.lit");
         ReferenceElement element = new ReferenceElement(72, 78, ReferenceElement.Type.mention, null, uri);
-        assertXMLEqual(xml, element.toXML().toString());
+        assertXMLEqual(xml, element.toXML(null).toString());
         assertEquals(72, (int) element.getBegin());
         assertEquals(78, (int) element.getEnd());
         assertEquals(ReferenceElement.Type.mention, element.getType());
@@ -49,7 +49,7 @@ public class ReferenceTest extends SmackTestSuite {
         assertEquals(uri, element.getUri());
 
         ReferenceElement parsed = ReferenceProvider.TEST_PROVIDER.parse(TestUtils.getParser(xml));
-        assertXMLEqual(xml, parsed.toXML().toString());
+        assertXMLEqual(xml, parsed.toXML(null).toString());
     }
 
     /**
@@ -64,7 +64,7 @@ public class ReferenceTest extends SmackTestSuite {
                 "uri='xmpp:fdp.shakespeare.lit?;node=fdp/submitted/stan.isode.net/accidentreport;item=ndina872be' />";
         URI uri = new URI("xmpp:fdp.shakespeare.lit?;node=fdp/submitted/stan.isode.net/accidentreport;item=ndina872be");
         ReferenceElement element = new ReferenceElement(null, null, ReferenceElement.Type.data, null, uri);
-        assertXMLEqual(xml, element.toXML().toString());
+        assertXMLEqual(xml, element.toXML(null).toString());
 
         assertNull(element.getBegin());
         assertNull(element.getEnd());
@@ -73,7 +73,7 @@ public class ReferenceTest extends SmackTestSuite {
         assertEquals(uri, element.getUri());
 
         ReferenceElement parsed = ReferenceProvider.TEST_PROVIDER.parse(TestUtils.getParser(xml));
-        assertXMLEqual(xml, parsed.toXML().toString());
+        assertXMLEqual(xml, parsed.toXML(null).toString());
     }
 
     @Test(expected = IllegalArgumentException.class)

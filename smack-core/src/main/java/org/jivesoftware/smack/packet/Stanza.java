@@ -490,7 +490,7 @@ public abstract class Stanza implements TopLevelStreamElement {
         XmlStringBuilder xml = new XmlStringBuilder();
         // Add in all standard extension sub-packets.
         for (ExtensionElement extension : getExtensions()) {
-            xml.append(extension.toXML());
+            xml.append(extension.toXML(null));
         }
         return xml;
     }

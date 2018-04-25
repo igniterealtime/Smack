@@ -80,8 +80,8 @@ public class DataLayoutTest {
         layout.getPageLayout().add(section);
         layout.getPageLayout().add(new Text("PageText"));
 
-        assertNotNull(layout.toXML());
-        String output = layout.toXML().toString();
+        assertNotNull(layout.toXML(null));
+        String output = layout.toXML(null).toString();
         assertEquals(TEST_OUTPUT_2, output);
 
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
@@ -91,8 +91,8 @@ public class DataLayoutTest {
         assertEquals(3 , layout.getPageLayout().size());
         assertEquals("Label", layout.getLabel());
 
-        assertNotNull(layout.toXML());
-        output = layout.toXML().toString();
+        assertNotNull(layout.toXML(null));
+        output = layout.toXML(null).toString();
         assertEquals(TEST_OUTPUT_2, output);
     }
 
@@ -114,8 +114,8 @@ public class DataLayoutTest {
         layout.getPageLayout().add(new Text("<html><font color='red'><em>DO NOT DELAY</em></font><br/>supply further information</html>"));
 
 
-        assertNotNull(layout.toXML());
-        String output = layout.toXML().toString();
+        assertNotNull(layout.toXML(null));
+        String output = layout.toXML(null).toString();
         assertEquals(TEST_OUTPUT_SPECIAL, output);
 
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
@@ -134,8 +134,8 @@ public class DataLayoutTest {
         assertEquals("<html><font color='red'><em>DO NOT DELAY</em></font><br/>supply further information</html>", text.getText());
 
 
-        assertNotNull(layout.toXML());
-        output = layout.toXML().toString();
+        assertNotNull(layout.toXML(null));
+        output = layout.toXML(null).toString();
         assertEquals(TEST_OUTPUT_SPECIAL, output);
     }
 
@@ -165,8 +165,8 @@ public class DataLayoutTest {
         assertEquals("<html><font color='red'><em>DO NOT DELAY</em></font><br/>supply further information</html>", text.getText());
 
 
-        assertNotNull(layout.toXML());
-        String output = layout.toXML().toString();
+        assertNotNull(layout.toXML(null));
+        String output = layout.toXML(null).toString();
         assertEquals(TEST_OUTPUT_SPECIAL, output);
     }
 }

@@ -92,7 +92,7 @@ public class EntityCapsManagerTest extends InitExtensions {
 
         DiscoverInfo restored_di = EntityCapsManager.getDiscoveryInfoByNodeVer(nodeVer);
         assertNotNull(restored_di);
-        assertEquals(di.toXML().toString(), restored_di.toXML().toString());
+        assertEquals(di.toXML(null).toString(), restored_di.toXML(null).toString());
     }
 
     private static DiscoverInfo createComplexSamplePacket() throws XmppStringprepException {

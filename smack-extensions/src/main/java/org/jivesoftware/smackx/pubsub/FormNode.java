@@ -69,9 +69,9 @@ public class FormNode extends NodeExtension {
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         if (configForm == null) {
-            return super.toXML();
+            return super.toXML(enclosingNamespace);
         }
         else {
             StringBuilder builder = new StringBuilder("<");
@@ -84,7 +84,7 @@ public class FormNode extends NodeExtension {
             }
             else
                 builder.append('>');
-            builder.append(configForm.getDataFormToSend().toXML());
+            builder.append(configForm.getDataFormToSend().toXML(null));
             builder.append("</");
             builder.append(getElementName() + '>');
             return builder.toString();

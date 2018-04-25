@@ -76,6 +76,6 @@ public class JingleTest extends SmackTestSuite {
                 "action='session-initiate' " +
                 "sid='" + sessionId + "'>" +
                 "</jingle>";
-        assertTrue(jingle.toXML().toString().contains(xml));
+        assertTrue(jingle.toXML(null).toString().contains(xml));
     }
 }

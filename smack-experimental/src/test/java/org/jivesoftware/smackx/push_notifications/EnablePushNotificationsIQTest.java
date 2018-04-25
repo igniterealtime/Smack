@@ -41,7 +41,7 @@ public class EnablePushNotificationsIQTest {
         EnablePushNotificationsIQ enablePushNotificationsIQ = new EnablePushNotificationsIQ(
                 JidCreate.from("push-5.client.example"), "yxs32uqsflafdk3iuqo");
         enablePushNotificationsIQ.setStanzaId("x42");
-        Assert.assertEquals(exampleEnableIQ, enablePushNotificationsIQ.toXML().toString());
+        Assert.assertEquals(exampleEnableIQ, enablePushNotificationsIQ.toXML(null).toString());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class EnablePushNotificationsIQTest {
                 JidCreate.from("push-5.client.example"), "yxs32uqsflafdk3iuqo", publishOptions);
         enablePushNotificationsIQ.setStanzaId("x42");
 
-        Assert.assertEquals(exampleEnableIQWithPublishOptions, enablePushNotificationsIQ.toXML().toString());
+        Assert.assertEquals(exampleEnableIQWithPublishOptions, enablePushNotificationsIQ.toXML(null).toString());
     }
 
 }

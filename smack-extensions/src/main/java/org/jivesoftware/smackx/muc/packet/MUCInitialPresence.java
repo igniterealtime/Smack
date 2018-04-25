@@ -84,7 +84,7 @@ public class MUCInitialPresence implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         xml.optElement("password", getPassword());
@@ -286,7 +286,7 @@ public class MUCInitialPresence implements ExtensionElement {
         }
 
         @Override
-        public XmlStringBuilder toXML() {
+        public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.optIntAttribute("maxchars", getMaxChars());
             xml.optIntAttribute("maxstanzas", getMaxStanzas());

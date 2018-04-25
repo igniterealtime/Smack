@@ -818,7 +818,7 @@ public class EnhancedDebugger extends SmackDebugger {
 
                 messagesTable.addRow(
                         new Object[] {
-                                XmlUtil.prettyFormatXml(packet.toXML().toString()),
+                                XmlUtil.prettyFormatXml(packet.toXML(null).toString()),
                                 dateFormatter.format(new Date()),
                                 packetReceivedIcon,
                                 packetTypeIcon,
@@ -889,7 +889,7 @@ public class EnhancedDebugger extends SmackDebugger {
 
                 messagesTable.addRow(
                         new Object[] {
-                                XmlUtil.prettyFormatXml(packet.toXML().toString()),
+                                XmlUtil.prettyFormatXml(packet.toXML(null).toString()),
                                 dateFormatter.format(new Date()),
                                 packetSentIcon,
                                 packetTypeIcon,
@@ -946,13 +946,13 @@ public class EnhancedDebugger extends SmackDebugger {
         }
 
         @Override
-        public String toXML() {
+        public String toXML(String enclosingNamespace) {
             return text;
         }
 
         @Override
         public String toString() {
-            return toXML();
+            return toXML(null);
         }
 
     }

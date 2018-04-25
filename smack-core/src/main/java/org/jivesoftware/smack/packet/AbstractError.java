@@ -114,7 +114,7 @@ public class AbstractError {
             xml.closeElement("text");
         }
         for (ExtensionElement packetExtension : extensions) {
-            xml.append(packetExtension.toXML());
+            xml.append(packetExtension.toXML(null));
         }
     }
 

@@ -86,7 +86,7 @@ public class JingleFileTransferChild extends JingleContentDescriptionChildElemen
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         XmlStringBuilder sb = new XmlStringBuilder(this);
         sb.rightAngleBracket();
 

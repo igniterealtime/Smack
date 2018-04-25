@@ -102,7 +102,7 @@ public class DelayInformation implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("stamp", XmppDateTime.formatXEP0082Date(stamp));
         xml.optAttribute("from", from);

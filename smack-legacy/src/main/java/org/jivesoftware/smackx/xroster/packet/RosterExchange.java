@@ -167,7 +167,7 @@ public class RosterExchange implements ExtensionElement {
      * 
      */
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         StringBuilder buf = new StringBuilder();
         buf.append('<').append(getElementName()).append(" xmlns=\"").append(getNamespace()).append(
             "\">");

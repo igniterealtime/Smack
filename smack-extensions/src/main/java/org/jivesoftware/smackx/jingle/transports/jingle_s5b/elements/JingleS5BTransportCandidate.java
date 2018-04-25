@@ -130,7 +130,7 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement(this);
         xml.attribute(ATTR_CID, cid);

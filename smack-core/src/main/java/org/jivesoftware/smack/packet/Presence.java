@@ -272,7 +272,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(ELEMENT);
         addCommonAttributes(buf);

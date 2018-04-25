@@ -80,7 +80,7 @@ public class CloseTest extends InitExtensions {
         close.setTo(JidCreate.from("juliet@capulet.lit/balcony"));
         close.setStanzaId("us71g45j");
 
-        assertXMLEqual(control, close.toXML().toString());
+        assertXMLEqual(control, close.toXML(null).toString());
     }
 
 }

@@ -82,7 +82,7 @@ public abstract class SetData implements NamedElement {
      * @return the stanza extension as XML.
      */
     @Override
-    public final XmlStringBuilder toXML() {
+    public final XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("name", name);
         xml.attribute("value", value);

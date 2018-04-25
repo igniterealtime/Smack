@@ -136,11 +136,11 @@ public class StreamError extends AbstractError implements Nonza {
 
     @Override
     public String toString() {
-        return toXML().toString();
+        return toXML(null).toString();
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.openElement(ELEMENT);
         xml.halfOpenElement(condition.toString()).xmlnsAttribute(NAMESPACE).closeEmptyElement();

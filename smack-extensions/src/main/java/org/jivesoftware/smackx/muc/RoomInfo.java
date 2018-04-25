@@ -152,7 +152,7 @@ public class RoomInfo {
         if (!identities.isEmpty()) {
             this.name = identities.get(0).getName();
         } else {
-            LOGGER.warning("DiscoverInfo does not contain any Identity: " + info.toXML());
+            LOGGER.warning("DiscoverInfo does not contain any Identity: " + info.toXML(null));
             this.name = "";
         }
         String subject = "";

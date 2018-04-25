@@ -154,7 +154,7 @@ public class AMPExtension implements ExtensionElement {
      * Returns the XML representation of a XHTML extension according the specification.
      **/
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         StringBuilder buf = new StringBuilder();
         buf.append('<').append(getElementName()).append(" xmlns=\"").append(getNamespace()).append('"');
         if (status != null) {

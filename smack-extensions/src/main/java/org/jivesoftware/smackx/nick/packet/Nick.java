@@ -87,7 +87,7 @@ public class Nick implements ExtensionElement {
      * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
      */
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         final StringBuilder buf = new StringBuilder();
 
         buf.append('<').append(ELEMENT_NAME).append(" xmlns=\"").append(

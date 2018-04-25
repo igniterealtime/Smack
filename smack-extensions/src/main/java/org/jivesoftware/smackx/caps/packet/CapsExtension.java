@@ -69,7 +69,7 @@ public class CapsExtension implements ExtensionElement {
      *
      */
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("hash", hash).attribute("node", node).attribute("ver", ver);
         xml.closeEmptyElement();

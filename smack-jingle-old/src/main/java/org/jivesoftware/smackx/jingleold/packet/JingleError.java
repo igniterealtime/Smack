@@ -76,7 +76,7 @@ public class JingleError implements ExtensionElement {
      * @return the error as XML.
      */
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         StringBuilder buf = new StringBuilder();
         if (message != null) {
             buf.append("<error type=\"cancel\">");

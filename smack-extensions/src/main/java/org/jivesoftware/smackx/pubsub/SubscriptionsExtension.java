@@ -91,9 +91,9 @@ public class SubscriptionsExtension extends NodeExtension {
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         if ((items == null) || (items.size() == 0)) {
-            return super.toXML();
+            return super.toXML(enclosingNamespace);
         }
         else {
             StringBuilder builder = new StringBuilder("<");
@@ -107,7 +107,7 @@ public class SubscriptionsExtension extends NodeExtension {
             builder.append('>');
 
             for (Subscription item : items) {
-                builder.append(item.toXML());
+                builder.append(item.toXML(null));
             }
 
             builder.append("</");

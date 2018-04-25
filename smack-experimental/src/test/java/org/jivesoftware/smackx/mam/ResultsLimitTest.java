@@ -46,7 +46,7 @@ public class ResultsLimitTest extends MamTest {
         mamQueryIQ.setStanzaId("sarasa");
 
         methodAddResultsLimit.invoke(mamManager, 10, mamQueryIQ);
-        Assert.assertEquals(mamQueryIQ.toXML().toString(), resultsLimitStanza);
+        Assert.assertEquals(mamQueryIQ.toXML(null).toString(), resultsLimitStanza);
     }
 
 }

@@ -294,7 +294,7 @@ public final class ChatManager extends Manager{
 
         EntityJid userJID = from.asEntityJidIfPossible();
         if (userJID == null) {
-            LOGGER.warning("Message from JID without localpart: '" + message.toXML() + "'");
+            LOGGER.warning("Message from JID without localpart: '" + message.toXML(null) + "'");
             return null;
         }
         String threadID = message.getThread();

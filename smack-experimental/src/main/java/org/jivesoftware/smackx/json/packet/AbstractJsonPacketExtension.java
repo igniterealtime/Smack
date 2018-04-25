@@ -32,7 +32,7 @@ public abstract class AbstractJsonPacketExtension implements ExtensionElement {
     }
 
     @Override
-    public final XmlStringBuilder toXML() {
+    public final XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         xml.append(json);

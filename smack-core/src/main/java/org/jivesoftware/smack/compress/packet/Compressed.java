@@ -39,7 +39,7 @@ public final class Compressed implements Nonza {
     }
 
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
     }
 }

@@ -38,7 +38,7 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
         }
 
         @Override
-        public final XmlStringBuilder toXML() {
+        public final XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
             xml.attribute(ATTR_CID, getCandidateId());
@@ -53,7 +53,7 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
             }
 
             JingleS5BCandidateTransportInfo otherCandidateTransportInfo = (JingleS5BCandidateTransportInfo) other;
-            return toXML().equals(otherCandidateTransportInfo.toXML());
+            return toXML(null).equals(otherCandidateTransportInfo.toXML(null));
         }
 
         @Override
@@ -102,7 +102,7 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
         }
 
         @Override
-        public XmlStringBuilder toXML() {
+        public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
             xml.closeEmptyElement();
@@ -116,7 +116,7 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
 
         @Override
         public int hashCode() {
-            return toXML().toString().hashCode();
+            return toXML(null).toString().hashCode();
         }
     }
 
@@ -134,7 +134,7 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
             xml.closeEmptyElement();
@@ -148,7 +148,7 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
 
         @Override
         public int hashCode() {
-            return toXML().toString().hashCode();
+            return toXML(null).toString().hashCode();
         }
     }
 }

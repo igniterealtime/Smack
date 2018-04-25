@@ -40,7 +40,7 @@ public class DisplayedExtensionTest {
         Message message = new Message(JidCreate.from("northumberland@shakespeare.lit/westminster"));
         message.setStanzaId("message-2");
         message.addExtension(new ChatMarkersElements.DisplayedExtension("message-1"));
-        Assert.assertEquals(displayedMessageStanza, message.toXML().toString());
+        Assert.assertEquals(displayedMessageStanza, message.toXML(null).toString());
     }
 
     @Test

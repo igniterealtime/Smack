@@ -58,7 +58,7 @@ public class Tag implements NamedElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("name", name);
         xml.attribute("value", value);

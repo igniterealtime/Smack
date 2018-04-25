@@ -51,7 +51,7 @@ public class BlockQuoteElement implements MarkupElement.BlockLevelMarkupElement 
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement(this);
         xml.attribute(ATTR_START, getStart());

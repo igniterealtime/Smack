@@ -211,19 +211,19 @@ public class MultipleRecipientManager {
         if (to != null) {
             for (Jid jid : to) {
                 packet.setTo(jid);
-                connection.sendStanza(new PacketCopy(packet.toXML()));
+                connection.sendStanza(new PacketCopy(packet.toXML(null)));
             }
         }
         if (cc != null) {
             for (Jid jid : cc) {
                 packet.setTo(jid);
-                connection.sendStanza(new PacketCopy(packet.toXML()));
+                connection.sendStanza(new PacketCopy(packet.toXML(null)));
             }
         }
         if (bcc != null) {
             for (Jid jid : bcc) {
                 packet.setTo(jid);
-                connection.sendStanza(new PacketCopy(packet.toXML()));
+                connection.sendStanza(new PacketCopy(packet.toXML(null)));
             }
         }
     }
@@ -309,13 +309,13 @@ public class MultipleRecipientManager {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             return text;
         }
 
         @Override
         public String toString() {
-            return toXML().toString();
+            return toXML(null).toString();
         }
 
     }

@@ -42,7 +42,7 @@ public class GetBlockingListTest {
         BlockListIQ getBlockListIQ = new BlockListIQ(null);
         getBlockListIQ.setType(Type.get);
         getBlockListIQ.setStanzaId("blocklist1");
-        Assert.assertEquals(getBlockingListIQExample, getBlockListIQ.toXML().toString());
+        Assert.assertEquals(getBlockingListIQExample, getBlockListIQ.toXML(null).toString());
     }
 
     @Test

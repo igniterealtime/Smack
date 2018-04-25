@@ -68,7 +68,7 @@ public class SlotProviderTest {
 
         checkUrls(slot);
 
-        assertXMLEqual(SLOT_IQ, slot.toXML().toString());
+        assertXMLEqual(SLOT_IQ, slot.toXML(null).toString());
     }
 
     private static final String SLOT_V0_2_IQ =
@@ -88,7 +88,7 @@ public class SlotProviderTest {
 
         checkUrls(slot);
 
-        String slotXml = slot.toXML().toString();
+        String slotXml = slot.toXML(null).toString();
         assertXMLEqual(SLOT_V0_2_IQ, slotXml);
     }
 
@@ -112,7 +112,7 @@ public class SlotProviderTest {
 
         checkUrls(slot);
 
-        String slotXml = slot.toXML().toString();
+        String slotXml = slot.toXML(null).toString();
         assertXMLEqual(SLOT_WITH_HEADERS_IQ, slotXml);
     }
 

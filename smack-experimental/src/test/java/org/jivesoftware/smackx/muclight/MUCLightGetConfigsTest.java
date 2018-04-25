@@ -48,7 +48,7 @@ public class MUCLightGetConfigsTest {
         MUCLightGetConfigsIQ mucLightGetConfigsIQ = new MUCLightGetConfigsIQ(
                 JidCreate.from("coven@muclight.shakespeare.lit"), "abcdefg");
         mucLightGetConfigsIQ.setStanzaId("config0");
-        Assert.assertEquals(getConfigsIQExample, mucLightGetConfigsIQ.toXML().toString());
+        Assert.assertEquals(getConfigsIQExample, mucLightGetConfigsIQ.toXML(null).toString());
     }
 
     @Test

@@ -120,7 +120,7 @@ public abstract class OmemoElement implements ExtensionElement {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder sb = new XmlStringBuilder(this);
             sb.attribute(SID, getSid()).rightAngleBracket();
 
@@ -176,7 +176,7 @@ public abstract class OmemoElement implements ExtensionElement {
             }
 
             @Override
-            public CharSequence toXML() {
+            public CharSequence toXML(String enclosingNamespace) {
                 XmlStringBuilder sb = new XmlStringBuilder(this);
 
                 if (isPreKey()) {

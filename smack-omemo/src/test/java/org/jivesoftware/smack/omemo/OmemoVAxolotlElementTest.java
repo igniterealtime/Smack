@@ -66,10 +66,10 @@ public class OmemoVAxolotlElementTest extends SmackTestSuite {
                     "</payload>" +
                 "</encrypted>";
 
-        String actual = element.toXML().toString();
+        String actual = element.toXML(null).toString();
         assertEquals("Serialized xml of OmemoElement must match.", expected, actual);
 
         OmemoVAxolotlElement parsed = new OmemoVAxolotlProvider().parse(TestUtils.getParser(actual));
-        assertEquals("Parsed OmemoElement must equal the original.", element.toXML().toString(), parsed.toXML().toString());
+        assertEquals("Parsed OmemoElement must equal the original.", element.toXML(null).toString(), parsed.toXML(null).toString());
     }
 }

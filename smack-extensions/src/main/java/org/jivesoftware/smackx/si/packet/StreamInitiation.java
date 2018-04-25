@@ -146,7 +146,7 @@ public class StreamInitiation extends IQ {
             buf.rightAngleBracket();
 
             // Add the file section if there is one.
-            buf.optAppend(file.toXML());
+            buf.optAppend(file.toXML(null));
             break;
         case result:
             buf.rightAngleBracket();
@@ -155,7 +155,7 @@ public class StreamInitiation extends IQ {
             throw new IllegalArgumentException("IQ Type not understood");
         }
         if (featureNegotiation != null) {
-            buf.append(featureNegotiation.toXML());
+            buf.append(featureNegotiation.toXML(null));
         }
         return buf;
     }
@@ -327,7 +327,7 @@ public class StreamInitiation extends IQ {
         }
 
         @Override
-        public String toXML() {
+        public String toXML(String enclosingNamespace) {
             StringBuilder buffer = new StringBuilder();
 
             buffer.append('<').append(getElementName()).append(" xmlns=\"")
@@ -405,11 +405,11 @@ public class StreamInitiation extends IQ {
         }
 
         @Override
-        public String toXML() {
+        public String toXML(String enclosingNamespace) {
             StringBuilder buf = new StringBuilder();
             buf
                     .append("<feature xmlns=\"http://jabber.org/protocol/feature-neg\">");
-            buf.append(data.toXML());
+            buf.append(data.toXML(null));
             buf.append("</feature>");
             return buf.toString();
         }

@@ -78,7 +78,7 @@ public class PushNotificationsElements {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
 
             xml.attribute("node", node);

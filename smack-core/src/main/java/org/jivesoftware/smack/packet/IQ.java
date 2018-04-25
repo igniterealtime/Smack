@@ -125,8 +125,8 @@ public abstract class IQ extends Stanza {
     }
 
     @Override
-    public final XmlStringBuilder toXML() {
-        XmlStringBuilder buf = new XmlStringBuilder();
+    public final XmlStringBuilder toXML(String enclosingNamespace) {
+        XmlStringBuilder buf = new XmlStringBuilder(enclosingNamespace);
         buf.halfOpenElement(IQ_ELEMENT);
         addCommonAttributes(buf);
         if (type == null) {
@@ -226,7 +226,7 @@ public abstract class IQ extends Stanza {
     protected final void initializeAsResultFor(IQ request) {
         if (!(request.getType() == Type.get || request.getType() == Type.set)) {
             throw new IllegalArgumentException(
-                    "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
+                    "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML(null));
         }
         setStanzaId(request.getStanzaId());
         setFrom(request.getTo());
@@ -275,7 +275,7 @@ public abstract class IQ extends Stanza {
     public static ErrorIQ createErrorResponse(final IQ request, final StanzaError.Builder error) {
         if (!(request.getType() == Type.get || request.getType() == Type.set)) {
             throw new IllegalArgumentException(
-                    "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
+                    "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML(null));
         }
         final ErrorIQ result = new ErrorIQ(error);
         result.setStanzaId(request.getStanzaId());
@@ -367,6 +367,7 @@ public abstract class IQ extends Stanza {
         }
 
         private IQChildElementXmlStringBuilder(String element, String namespace) {
+            super("");
             prelude(element, namespace);
             this.element = element;
         }

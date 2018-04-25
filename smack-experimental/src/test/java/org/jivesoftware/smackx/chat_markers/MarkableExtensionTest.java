@@ -42,18 +42,18 @@ public class MarkableExtensionTest {
         message.setStanzaId("message-1");
         message.setBody("My lord, dispatch; read o'er these articles.");
         message.addExtension(new ChatMarkersElements.MarkableExtension());
-        Assert.assertEquals(markableMessageStanza, message.toXML().toString());
+        Assert.assertEquals(markableMessageStanza, message.toXML(null).toString());
     }
 
     @Test
     public void checkMarkableProvider() throws Exception {
         XmlPullParser parser = PacketParserUtils.getParserFor(markableExtension);
         MarkableExtension markableExtension1 = new MarkableProvider().parse(parser);
-        Assert.assertEquals(markableExtension, markableExtension1.toXML().toString());
+        Assert.assertEquals(markableExtension, markableExtension1.toXML(null).toString());
 
         Message message = PacketParserUtils.parseStanza(markableMessageStanza);
         MarkableExtension markableExtension2 = MarkableExtension.from(message);
-        Assert.assertEquals(markableExtension, markableExtension2.toXML().toString());
+        Assert.assertEquals(markableExtension, markableExtension2.toXML(null).toString());
     }
 
 }

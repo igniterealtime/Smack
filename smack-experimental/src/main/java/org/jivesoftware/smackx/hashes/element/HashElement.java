@@ -93,7 +93,7 @@ public class HashElement implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         XmlStringBuilder sb = new XmlStringBuilder(this);
         sb.attribute(ATTR_ALGO, algorithm.toString());
         sb.rightAngleBracket();
@@ -117,6 +117,6 @@ public class HashElement implements ExtensionElement {
 
     @Override
     public int hashCode() {
-        return toXML().toString().hashCode();
+        return toXML(null).toString().hashCode();
     }
 }

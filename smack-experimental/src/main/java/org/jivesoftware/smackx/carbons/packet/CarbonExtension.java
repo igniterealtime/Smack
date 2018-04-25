@@ -79,10 +79,10 @@ public class CarbonExtension implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
-        xml.append(fwd.toXML());
+        xml.append(fwd.toXML(null));
         xml.closeElement(this);
         return xml;
     }
@@ -150,7 +150,7 @@ public class CarbonExtension implements ExtensionElement {
         }
 
         @Override
-        public String toXML() {
+        public String toXML(String enclosingNamespace) {
             return "<" + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
         }
 

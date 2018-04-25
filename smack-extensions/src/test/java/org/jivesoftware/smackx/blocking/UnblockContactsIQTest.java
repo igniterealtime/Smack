@@ -53,7 +53,7 @@ public class UnblockContactsIQTest {
         UnblockContactsIQ unblockContactIQ = new UnblockContactsIQ(jids);
         unblockContactIQ.setStanzaId("unblock1");
 
-        Assert.assertEquals(unblockContactIQExample, unblockContactIQ.toXML().toString());
+        Assert.assertEquals(unblockContactIQExample, unblockContactIQ.toXML(null).toString());
     }
 
     @Test
@@ -68,7 +68,7 @@ public class UnblockContactsIQTest {
     public void checkUnblockAllIQStanza() throws Exception {
         UnblockContactsIQ unblockAllIQ = new UnblockContactsIQ(null);
         unblockAllIQ.setStanzaId("unblock2");
-        Assert.assertEquals(unblockAllIQExample, unblockAllIQ.toXML().toString());
+        Assert.assertEquals(unblockAllIQExample, unblockAllIQ.toXML(null).toString());
     }
 
     @Test

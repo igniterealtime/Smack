@@ -47,7 +47,7 @@ public class MUCLightSetConfigsIQTest {
                 JidCreate.from("coven@muclight.shakespeare.lit"), "A Darker Cave", customConfigs);
         mucLightSetConfigsIQ.setStanzaId("conf1");
 
-        Assert.assertEquals(setConfigsIQExample, mucLightSetConfigsIQ.toXML().toString());
+        Assert.assertEquals(setConfigsIQExample, mucLightSetConfigsIQ.toXML(null).toString());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class MUCLightSetConfigsIQTest {
                 JidCreate.from("coven@muclight.shakespeare.lit"), "A Darker Cave", null);
         mucLightChangeRoomNameIQ.setStanzaId("roomName1");
 
-        Assert.assertEquals(changeRoomNameIQExample, mucLightChangeRoomNameIQ.toXML().toString());
+        Assert.assertEquals(changeRoomNameIQExample, mucLightChangeRoomNameIQ.toXML(null).toString());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class MUCLightSetConfigsIQTest {
                 JidCreate.from("coven@muclight.shakespeare.lit"), null, "To be or not to be?", null);
         mucLightChangeSubjectIQ.setStanzaId("subject1");
 
-        Assert.assertEquals(changeSubjectIQExample, mucLightChangeSubjectIQ.toXML().toString());
+        Assert.assertEquals(changeSubjectIQExample, mucLightChangeSubjectIQ.toXML(null).toString());
     }
 
 }

@@ -59,7 +59,7 @@ public class AMPExtensionTest {
         ext.addRule(new AMPExtension.Rule(AMPExtension.Action.notify, new AMPMatchResourceCondition(AMPMatchResourceCondition.Value.exact)));
         ext.addRule(new AMPExtension.Rule(AMPExtension.Action.notify, new AMPMatchResourceCondition(AMPMatchResourceCondition.Value.other)));
 
-        assertEquals(correctStanza, ext.toXML());
+        assertEquals(correctStanza, ext.toXML(null));
     }
 
     @Test

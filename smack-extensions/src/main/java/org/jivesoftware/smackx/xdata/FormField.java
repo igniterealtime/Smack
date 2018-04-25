@@ -400,7 +400,7 @@ public class FormField implements NamedElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder(this);
         // Add attributes
         buf.optAttribute("label", getLabel());
@@ -416,7 +416,7 @@ public class FormField implements NamedElement {
         }
         // Loop through all the values and append them to the string buffer
         for (Option option : getOptions()) {
-            buf.append(option.toXML());
+            buf.append(option.toXML(null));
         }
         buf.optElement(validateElement);
         buf.closeElement(this);
@@ -434,12 +434,12 @@ public class FormField implements NamedElement {
 
         FormField other = (FormField) obj;
 
-        return toXML().equals(other.toXML());
+        return toXML(null).equals(other.toXML(null));
     }
 
     @Override
     public int hashCode() {
-        return toXML().hashCode();
+        return toXML(null).hashCode();
     }
 
     /**
@@ -492,7 +492,7 @@ public class FormField implements NamedElement {
         }
 
         @Override
-        public XmlStringBuilder toXML() {
+        public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             // Add attribute
             xml.optAttribute("label", getLabel());

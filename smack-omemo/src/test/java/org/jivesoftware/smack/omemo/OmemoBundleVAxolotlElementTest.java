@@ -76,7 +76,7 @@ public class OmemoBundleVAxolotlElementTest extends SmackTestSuite {
                         "</preKeyPublic>" +
                     "</prekeys>" +
                 "</bundle>";
-        String actual = bundle.toXML().toString();
+        String actual = bundle.toXML(null).toString();
         assertEquals("Bundles XML must match.", expected, actual);
 
         byte[] signedPreKey = "SignedPreKey".getBytes(StringUtils.UTF8);

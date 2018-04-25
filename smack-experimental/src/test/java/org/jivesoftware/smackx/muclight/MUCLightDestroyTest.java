@@ -31,7 +31,7 @@ public class MUCLightDestroyTest {
     public void checkDestroyMUCLightStanza() throws Exception {
         MUCLightDestroyIQ mucLightDestroyIQ = new MUCLightDestroyIQ(JidCreate.from("coven@muclight.shakespeare.lit"));
         mucLightDestroyIQ.setStanzaId("destroy1");
-        Assert.assertEquals(mucLightDestroyIQ.toXML().toString(), stanza);
+        Assert.assertEquals(mucLightDestroyIQ.toXML(null).toString(), stanza);
     }
 
 }

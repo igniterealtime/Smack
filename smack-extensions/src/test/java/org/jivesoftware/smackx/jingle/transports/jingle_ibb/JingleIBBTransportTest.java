@@ -43,7 +43,7 @@ public class JingleIBBTransportTest extends SmackTestSuite {
         String xml = "<transport xmlns='urn:xmpp:jingle:transports:ibb:1' block-size='8192' sid='" + sid + "'/>";
 
         JingleIBBTransport transport = new JingleIBBTransport(size, sid);
-        assertEquals(xml, transport.toXML().toString());
+        assertEquals(xml, transport.toXML(null).toString());
         assertEquals(size, transport.getBlockSize());
         assertEquals(sid, transport.getSessionId());
 
@@ -51,7 +51,7 @@ public class JingleIBBTransportTest extends SmackTestSuite {
                 .parse(TestUtils.getParser(xml));
         assertEquals(transport, parsed);
         assertTrue(transport.equals(parsed));
-        assertEquals(xml, parsed.toXML().toString());
+        assertEquals(xml, parsed.toXML(null).toString());
 
         JingleIBBTransport transport1 = new JingleIBBTransport((short) 1024);
         assertEquals((short) 1024, transport1.getBlockSize());

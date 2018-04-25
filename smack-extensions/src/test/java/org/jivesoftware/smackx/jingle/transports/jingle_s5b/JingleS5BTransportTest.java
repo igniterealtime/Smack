@@ -113,7 +113,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
         assertEquals(7878787, candidate3.getPriority());
         assertEquals(JingleS5BTransportCandidate.Type.proxy, candidate3.getType());
 
-        assertEquals(xml, transport.toXML().toString());
+        assertEquals(xml, transport.toXML(null).toString());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
         assertEquals("vj3hs98y", candidateErrorTransport.getStreamId());
         assertEquals(JingleS5BTransportInfo.CandidateError.INSTANCE,
                 candidateErrorTransport.getInfo());
-        assertEquals(candidateError, candidateErrorTransport.toXML().toString());
+        assertEquals(candidateError, candidateErrorTransport.toXML(null).toString());
 
         String proxyError =
                 "<transport xmlns='urn:xmpp:jingle:transports:s5b:1' sid='vj3hs98y'>" +
@@ -143,7 +143,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
         assertEquals("vj3hs98y", proxyErrorTransport.getStreamId());
         assertEquals(JingleS5BTransportInfo.ProxyError.INSTANCE,
                 proxyErrorTransport.getInfo());
-        assertEquals(proxyError, proxyErrorTransport.toXML().toString());
+        assertEquals(proxyError, proxyErrorTransport.toXML(null).toString());
 
         String candidateUsed =
                 "<transport xmlns='urn:xmpp:jingle:transports:s5b:1' sid='vj3hs98y'>" +
@@ -157,7 +157,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
         assertEquals("hr65dqyd",
                 ((JingleS5BTransportInfo.CandidateUsed)
                         candidateUsedTransport.getInfo()).getCandidateId());
-        assertEquals(candidateUsed, candidateUsedTransport.toXML().toString());
+        assertEquals(candidateUsed, candidateUsedTransport.toXML(null).toString());
 
         String candidateActivated =
                 "<transport xmlns='urn:xmpp:jingle:transports:s5b:1' sid='vj3hs98y'>" +
@@ -173,7 +173,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
         assertEquals("hr65dqyd",
                 ((JingleS5BTransportInfo.CandidateActivated)
                         candidateActivatedTransport.getInfo()).getCandidateId());
-        assertEquals(candidateActivated, candidateActivatedTransport.toXML().toString());
+        assertEquals(candidateActivated, candidateActivatedTransport.toXML(null).toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -216,7 +216,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
         assertEquals(host, candidate.getHost());
         assertEquals(port, candidate.getPort());
 
-        assertEquals(streamHost.toXML().toString(), candidate.getStreamHost().toXML().toString());
+        assertEquals(streamHost.toXML(null).toString(), candidate.getStreamHost().toXML(null).toString());
     }
 
     @Test(expected = IllegalArgumentException.class)

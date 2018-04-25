@@ -72,7 +72,7 @@ public class StanzaIdElement extends StableAndUniqueIdElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         return new XmlStringBuilder(this)
                 .attribute(ATTR_ID, getId())
                 .attribute(ATTR_BY, getBy())

@@ -45,7 +45,7 @@ public class MUCLightInfoTest {
         MUCLightGetInfoIQ mucLightGetInfoIQWithVersion = new MUCLightGetInfoIQ(
                 JidCreate.from("coven@muclight.shakespeare.lit"), "abcdefg");
         mucLightGetInfoIQWithVersion.setStanzaId("getinfo1");
-        Assert.assertEquals(mucLightGetInfoIQWithVersion.toXML().toString(), exampleWithVersion);
+        Assert.assertEquals(mucLightGetInfoIQWithVersion.toXML(null).toString(), exampleWithVersion);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class MUCLightInfoTest {
         MUCLightGetInfoIQ mucLightGetInfoIQWithoutVersion = new MUCLightGetInfoIQ(
                 JidCreate.from("coven@muclight.shakespeare.lit"), null);
         mucLightGetInfoIQWithoutVersion.setStanzaId("getinfo1");
-        Assert.assertEquals(mucLightGetInfoIQWithoutVersion.toXML().toString(), exampleWithoutVersion);
+        Assert.assertEquals(mucLightGetInfoIQWithoutVersion.toXML(null).toString(), exampleWithoutVersion);
     }
 
     @Test

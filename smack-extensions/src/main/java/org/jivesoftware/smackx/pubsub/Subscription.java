@@ -138,7 +138,7 @@ public class Subscription extends NodeExtension {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder builder = new XmlStringBuilder(this);
         builder.attribute("jid", jid);
 

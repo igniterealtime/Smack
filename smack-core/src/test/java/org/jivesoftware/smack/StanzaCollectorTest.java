@@ -167,13 +167,13 @@ public class StanzaCollectorTest {
         }
 
         @Override
-        public String toXML() {
+        public String toXML(String enclosingNamespace) {
             return "<packetId>" + getStanzaId() + "</packetId>";
         }
 
         @Override
         public String toString() {
-            return toXML();
+            return toXML(null);
         }
     }
 }

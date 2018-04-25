@@ -59,7 +59,7 @@ public abstract class OmemoDeviceListElement implements ExtensionElement {
     }
 
     @Override
-    public final XmlStringBuilder toXML() {
+    public final XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder sb = new XmlStringBuilder(this).rightAngleBracket();
 
         for (Integer id : deviceIds) {

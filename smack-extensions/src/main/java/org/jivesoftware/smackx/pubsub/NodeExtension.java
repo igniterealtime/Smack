@@ -78,12 +78,12 @@ public class NodeExtension implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         return '<' + getElementName() + (node == null ? "" : " node='" + node + '\'') + "/>";
     }
 
     @Override
     public String toString() {
-        return getClass().getName() + " - content [" + toXML() + "]";
+        return getClass().getName() + " - content [" + toXML(null) + "]";
     }
 }

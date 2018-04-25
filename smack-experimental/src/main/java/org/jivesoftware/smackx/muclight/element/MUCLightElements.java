@@ -94,7 +94,7 @@ public abstract class MUCLightElements {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.rightAngleBracket();
 
@@ -208,7 +208,7 @@ public abstract class MUCLightElements {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.rightAngleBracket();
 
@@ -255,7 +255,7 @@ public abstract class MUCLightElements {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.openElement("configuration");
 
@@ -296,7 +296,7 @@ public abstract class MUCLightElements {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.openElement("occupants");
 
@@ -335,7 +335,7 @@ public abstract class MUCLightElements {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement("user");
             xml.attribute("affiliation", affiliation);
@@ -373,7 +373,7 @@ public abstract class MUCLightElements {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
 
             String tag = isRoom ? "room" : "user";

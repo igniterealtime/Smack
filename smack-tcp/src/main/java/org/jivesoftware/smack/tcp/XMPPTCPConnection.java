@@ -1438,9 +1438,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     }
                     maybeAddToUnacknowledgedStanzas(packet);
 
-                    CharSequence elementXml = element.toXML();
+                    CharSequence elementXml = element.toXML(StreamOpen.CLIENT_NAMESPACE);
                     if (elementXml instanceof XmlStringBuilder) {
-                        ((XmlStringBuilder) elementXml).write(writer);
+                        ((XmlStringBuilder) elementXml).write(writer, StreamOpen.CLIENT_NAMESPACE);
                     }
                     else {
                         writer.write(elementXml.toString());
@@ -1462,7 +1462,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 Stanza stanza = (Stanza) packet;
                                 maybeAddToUnacknowledgedStanzas(stanza);
                             }
-                            writer.write(packet.toXML().toString());
+                            writer.write(packet.toXML(null).toString());
                         }
                         writer.flush();
                     }
@@ -1530,7 +1530,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 // If the unacknowledgedStanza queue is nearly full, request an new ack
                 // from the server in order to drain it
                 if (unacknowledgedStanzas.size() == 0.8 * XMPPTCPConnection.QUEUE_SIZE) {
-                    writer.write(AckRequest.INSTANCE.toXML().toString());
+                    writer.write(AckRequest.INSTANCE.toXML(null).toString());
                     writer.flush();
                 }
                 try {

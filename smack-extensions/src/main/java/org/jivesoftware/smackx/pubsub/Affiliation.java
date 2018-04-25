@@ -174,7 +174,7 @@ public class Affiliation implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.optAttribute("node", node);
         xml.optAttribute("jid", jid);

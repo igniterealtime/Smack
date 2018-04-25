@@ -166,7 +166,7 @@ public class OmemoBundleVAxolotlElement extends OmemoBundleElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder sb = new XmlStringBuilder(this).rightAngleBracket();
 
         sb.halfOpenElement(SIGNED_PRE_KEY_PUB).attribute(SIGNED_PRE_KEY_ID, signedPreKeyId).rightAngleBracket()

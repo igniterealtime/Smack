@@ -66,11 +66,11 @@ public class Forwarded implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         xml.optElement(getDelayInformation());
-        xml.append(forwardedPacket.toXML());
+        xml.append(forwardedPacket.toXML(null));
         xml.closeElement(this);
         return xml;
     }

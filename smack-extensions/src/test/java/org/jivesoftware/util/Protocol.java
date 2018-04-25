@@ -131,10 +131,10 @@ public class Protocol {
 
             if (printProtocol) {
                 System.out.println("------------------- Request -------------\n");
-                System.out.println(XmlUtil.prettyFormatXml(request.toXML()));
+                System.out.println(XmlUtil.prettyFormatXml(request.toXML(null)));
                 System.out.println("------------------- Response ------------\n");
                 if (response != null) {
-                    System.out.println(XmlUtil.prettyFormatXml(response.toXML()));
+                    System.out.println(XmlUtil.prettyFormatXml(response.toXML(null)));
                 }
                 else {
                     System.out.println("No response");

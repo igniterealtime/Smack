@@ -47,7 +47,7 @@ public class BlockContactsIQTest {
         BlockContactsIQ blockContactIQ = new BlockContactsIQ(jids);
         blockContactIQ.setStanzaId("block1");
 
-        Assert.assertEquals(blockContactIQExample, blockContactIQ.toXML().toString());
+        Assert.assertEquals(blockContactIQExample, blockContactIQ.toXML(null).toString());
     }
 
     @Test

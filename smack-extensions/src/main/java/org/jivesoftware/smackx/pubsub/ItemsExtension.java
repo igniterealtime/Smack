@@ -149,9 +149,9 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         if ((items == null) || (items.size() == 0)) {
-            return super.toXML();
+            return super.toXML(enclosingNamespace);
         }
         else {
             StringBuilder builder = new StringBuilder("<");
@@ -169,7 +169,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
             else {
                 builder.append("'>");
                 for (NamedElement item : items) {
-                    builder.append(item.toXML());
+                    builder.append(item.toXML(null));
                 }
             }
 
@@ -182,7 +182,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 
     @Override
     public String toString() {
-        return getClass().getName() + "Content [" + toXML() + "]";
+        return getClass().getName() + "Content [" + toXML(null) + "]";
     }
 
 }

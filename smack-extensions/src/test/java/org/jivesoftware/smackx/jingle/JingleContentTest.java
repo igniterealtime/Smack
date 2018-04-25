@@ -65,12 +65,12 @@ public class JingleContentTest extends SmackTestSuite {
         builder.setDisposition("session");
         JingleContent content1 = builder.build();
         assertEquals("session", content1.getDisposition());
-        assertNotSame(content.toXML().toString(), content1.toXML().toString());
-        assertEquals(content1.toXML().toString(), builder.build().toXML().toString());
+        assertNotSame(content.toXML(null).toString(), content1.toXML(null).toString());
+        assertEquals(content1.toXML(null).toString(), builder.build().toXML(null).toString());
 
         String xml =
                 "<content creator='initiator' disposition='session' name='A name' senders='both'>" +
                 "</content>";
-        assertEquals(xml, content1.toXML().toString());
+        assertEquals(xml, content1.toXML(null).toString());
     }
 }

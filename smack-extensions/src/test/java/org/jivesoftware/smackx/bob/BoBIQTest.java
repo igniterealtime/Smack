@@ -45,7 +45,7 @@ public class BoBIQTest extends SmackTestSuite {
         createdBoBIQ.setTo(JidCreate.from("ladymacbeth@shakespeare.lit/castle"));
         createdBoBIQ.setType(Type.get);
 
-        Assert.assertEquals(sampleBoBIQRequest, createdBoBIQ.toXML().toString());
+        Assert.assertEquals(sampleBoBIQRequest, createdBoBIQ.toXML(null).toString());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class BoBIQTest extends SmackTestSuite {
         Assert.assertEquals(bobIQ.getBoBData().getMaxAge(), createdBoBIQ.getBoBData().getMaxAge());
         Assert.assertEquals(bobIQ.getBoBData().getType(), createdBoBIQ.getBoBData().getType());
         Assert.assertEquals(bobIQ.getBoBData().getContentBase64Encoded(), createdBoBIQ.getBoBData().getContentBase64Encoded());
-        Assert.assertEquals(bobIQ.toXML().toString(), createdBoBIQ.toXML().toString());
+        Assert.assertEquals(bobIQ.toXML(null).toString(), createdBoBIQ.toXML(null).toString());
     }
 
 }

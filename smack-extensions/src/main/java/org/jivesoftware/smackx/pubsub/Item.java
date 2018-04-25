@@ -147,7 +147,7 @@ public class Item extends NodeExtension {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = getCommonXml();
 
         xml.closeEmptyElement();
@@ -166,7 +166,7 @@ public class Item extends NodeExtension {
 
     @Override
     public String toString() {
-        return getClass().getName() + " | Content [" + toXML() + "]";
+        return getClass().getName() + " | Content [" + toXML(null) + "]";
     }
 
 }

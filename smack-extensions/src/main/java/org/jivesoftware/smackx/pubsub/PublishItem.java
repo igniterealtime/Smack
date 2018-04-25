@@ -51,7 +51,7 @@ public class PublishItem<T extends Item> extends NodeExtension {
     }
 
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         StringBuilder builder = new StringBuilder("<");
         builder.append(getElementName());
         builder.append(" node='");
@@ -59,7 +59,7 @@ public class PublishItem<T extends Item> extends NodeExtension {
         builder.append("'>");
 
         for (Item item : items) {
-            builder.append(item.toXML());
+            builder.append(item.toXML(null));
         }
         builder.append("</publish>");
 

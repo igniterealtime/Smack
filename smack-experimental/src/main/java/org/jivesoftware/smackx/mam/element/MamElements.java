@@ -126,7 +126,7 @@ public class MamElements {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
             xml.xmlnsAttribute(NAMESPACE);
@@ -167,7 +167,7 @@ public class MamElements {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.openElement("always");
 
@@ -201,7 +201,7 @@ public class MamElements {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.openElement("never");
 

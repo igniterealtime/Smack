@@ -134,7 +134,7 @@ public class ExplicitMessageEncryptionElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("namespace", getEncryptionNamespace());
         xml.optAttribute("name", getName());

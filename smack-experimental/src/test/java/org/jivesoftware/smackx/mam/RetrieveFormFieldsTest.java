@@ -44,7 +44,7 @@ public class RetrieveFormFieldsTest extends MamTest {
         MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId);
         mamQueryIQ.setStanzaId("sarasa");
 
-        Assert.assertEquals(mamQueryIQ.toXML().toString(), retrieveFormFieldStanza);
+        Assert.assertEquals(mamQueryIQ.toXML(null).toString(), retrieveFormFieldStanza);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class RetrieveFormFieldsTest extends MamTest {
 
         methodAddAdditionalFields.invoke(mamManager, additionalFields, dataForm);
 
-        String dataFormResult = dataForm.toXML().toString();
+        String dataFormResult = dataForm.toXML(null).toString();
 
         Assert.assertEquals(dataFormResult, additionalFieldsStanza);
     }

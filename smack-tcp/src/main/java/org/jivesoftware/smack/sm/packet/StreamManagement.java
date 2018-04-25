@@ -47,7 +47,7 @@ public class StreamManagement {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.closeEmptyElement();
             return xml;
@@ -113,7 +113,7 @@ public class StreamManagement {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             maybeAddResumeAttributeTo(xml);
             maybeAddMaxAttributeTo(xml);
@@ -174,7 +174,7 @@ public class StreamManagement {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.optAttribute("id", id);
             maybeAddResumeAttributeTo(xml);
@@ -220,7 +220,7 @@ public class StreamManagement {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             if (condition == null && textElements.isEmpty()) {
                 xml.closeEmptyElement();
@@ -273,7 +273,7 @@ public class StreamManagement {
         }
 
         @Override
-        public final XmlStringBuilder toXML() {
+        public final XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.attribute("h", Long.toString(handledCount));
             xml.attribute("previd", previd);
@@ -322,7 +322,7 @@ public class StreamManagement {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.attribute("h", Long.toString(handledCount));
             xml.closeEmptyElement();
@@ -348,7 +348,7 @@ public class StreamManagement {
         }
 
         @Override
-        public CharSequence toXML() {
+        public CharSequence toXML(String enclosingNamespace) {
             return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
         }
 

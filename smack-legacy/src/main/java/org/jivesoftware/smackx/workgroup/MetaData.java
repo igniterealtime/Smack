@@ -64,7 +64,7 @@ public class MetaData implements ExtensionElement {
     }
 
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         return MetaDataUtils.serializeMetaData(this.getMetaData());
     }
 }

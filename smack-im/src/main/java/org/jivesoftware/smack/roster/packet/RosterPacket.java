@@ -91,7 +91,7 @@ public class RosterPacket extends IQ {
 
         synchronized (rosterItems) {
             for (Item entry : rosterItems) {
-                buf.append(entry.toXML());
+                buf.append(entry.toXML(null));
             }
         }
         return buf;
@@ -272,7 +272,7 @@ public class RosterPacket extends IQ {
         }
 
         @Override
-        public XmlStringBuilder toXML() {
+        public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.attribute("jid", jid);
             xml.optAttribute("name", name);

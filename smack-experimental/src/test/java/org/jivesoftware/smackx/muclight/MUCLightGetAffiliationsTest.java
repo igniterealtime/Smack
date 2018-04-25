@@ -45,7 +45,7 @@ public class MUCLightGetAffiliationsTest {
         MUCLightGetAffiliationsIQ mucLightGetAffiliationsIQ = new MUCLightGetAffiliationsIQ(
                 JidCreate.from("coven@muclight.shakespeare.lit"), "abcdefg");
         mucLightGetAffiliationsIQ.setStanzaId("getmembers");
-        Assert.assertEquals(getAffiliationsIQExample, mucLightGetAffiliationsIQ.toXML().toString());
+        Assert.assertEquals(getAffiliationsIQExample, mucLightGetAffiliationsIQ.toXML(null).toString());
     }
 
     @Test

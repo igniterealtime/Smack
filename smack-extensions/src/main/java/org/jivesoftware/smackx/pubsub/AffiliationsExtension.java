@@ -61,9 +61,9 @@ public class AffiliationsExtension extends NodeExtension {
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         if ((items == null) || (items.size() == 0)) {
-            return super.toXML();
+            return super.toXML(enclosingNamespace);
         }
         else {
             // Can't use XmlStringBuilder(this), because we don't want the namespace to be included

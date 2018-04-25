@@ -132,10 +132,6 @@ public final class StandardExtensionElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
-        return toXML(null);
-    }
-
     public XmlStringBuilder toXML(String enclosingNamespace) {
         if (xmlCache != null) {
             return xmlCache;

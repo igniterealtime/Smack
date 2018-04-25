@@ -45,7 +45,7 @@ public class TimestampElement implements NamedElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("value", date);
         xml.rightAngleBracket();

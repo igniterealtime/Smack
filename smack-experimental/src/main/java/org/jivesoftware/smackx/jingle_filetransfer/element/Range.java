@@ -99,7 +99,7 @@ public class Range implements NamedElement {
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         XmlStringBuilder sb =  new XmlStringBuilder(this);
 
         if (offset > 0) {
@@ -130,6 +130,6 @@ public class Range implements NamedElement {
 
     @Override
     public int hashCode() {
-        return toXML().toString().hashCode();
+        return toXML(null).toString().hashCode();
     }
 }

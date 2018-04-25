@@ -55,7 +55,7 @@ public class QueryArchiveTest extends MamTest {
         MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.setStanzaId("sarasa");
-        Assert.assertEquals(mamQueryIQ.toXML().toString(), mamSimpleQueryIQ);
+        Assert.assertEquals(mamQueryIQ.toXML(null).toString(), mamSimpleQueryIQ);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class QueryArchiveTest extends MamTest {
 
         message.addExtension(new MamResultExtension("g27", "34482-21985-73620", forwarded));
 
-        Assert.assertEquals(message.toXML().toString(), mamQueryResultExample);
+        Assert.assertEquals(message.toXML(null).toString(), mamQueryResultExample);
 
         MamResultExtension mamResultExtension = MamResultExtension.from(message);
 

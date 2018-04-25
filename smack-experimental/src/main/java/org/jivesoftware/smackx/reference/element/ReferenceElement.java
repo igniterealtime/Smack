@@ -174,7 +174,7 @@ public class ReferenceElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this)
                 .optIntAttribute(ATTR_BEGIN, begin != null ? begin : -1)
                 .optIntAttribute(ATTR_END, end != null ? end : -1)
@@ -186,7 +186,7 @@ public class ReferenceElement implements ExtensionElement {
             return xml.closeEmptyElement();
         } else {
             return xml.rightAngleBracket()
-                    .append(child.toXML())
+                    .append(child.toXML(null))
                     .closeElement(this);
         }
     }

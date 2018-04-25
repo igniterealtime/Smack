@@ -57,8 +57,8 @@ public class DataFormTest {
         FormField field = new FormField("testField1");
         df.addField(field);
 
-        assertNotNull(df.toXML());
-        String output = df.toXML().toString();
+        assertNotNull(df.toXML(null));
+        String output = df.toXML(null).toString();
         assertEquals(TEST_OUTPUT_1, output);
 
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
@@ -70,8 +70,8 @@ public class DataFormTest {
         assertEquals(1 , df.getFields().size());
         assertEquals(1 , df.getInstructions().size());
 
-        assertNotNull(df.toXML());
-        output = df.toXML().toString();
+        assertNotNull(df.toXML(null));
+        output = df.toXML(null).toString();
         assertEquals(TEST_OUTPUT_1, output);
     }
 
@@ -95,8 +95,8 @@ public class DataFormTest {
         df.addExtensionElement(layout);
 
 
-        assertNotNull(df.toXML());
-        String output = df.toXML().toString();
+        assertNotNull(df.toXML(null));
+        String output = df.toXML(null).toString();
         assertEquals(TEST_OUTPUT_2, output);
 
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
@@ -112,8 +112,8 @@ public class DataFormTest {
 
         assertEquals(3 , layout.getPageLayout().size());
 
-        assertNotNull(df.toXML());
-        output = df.toXML().toString();
+        assertNotNull(df.toXML(null));
+        output = df.toXML(null).toString();
         assertEquals(TEST_OUTPUT_2, output);
     }
 
@@ -129,8 +129,8 @@ public class DataFormTest {
         ValidateElement dv = new RangeValidateElement("xs:integer","1111", "9999");
         field.setValidateElement(dv);
 
-        assertNotNull(df.toXML());
-        String output = df.toXML().toString();
+        assertNotNull(df.toXML(null));
+        String output = df.toXML(null).toString();
         assertEquals(TEST_OUTPUT_3, output);
 
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
@@ -146,8 +146,8 @@ public class DataFormTest {
 
         assertEquals("xs:integer" , dv.getDatatype());
 
-        assertNotNull(df.toXML());
-        output = df.toXML().toString();
+        assertNotNull(df.toXML(null));
+        output = df.toXML(null).toString();
         assertEquals(TEST_OUTPUT_3, output);
     }
 

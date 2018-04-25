@@ -52,7 +52,7 @@ public abstract class IoTDataField implements NamedElement {
     }
 
     @Override
-    public final XmlStringBuilder toXML() {
+    public final XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("name", name).attribute("value", getValueString());
         // TODO handle 'unit' attribute as special case if <numeric/> is implemented.

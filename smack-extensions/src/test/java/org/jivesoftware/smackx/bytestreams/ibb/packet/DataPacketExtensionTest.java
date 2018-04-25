@@ -96,7 +96,7 @@ public class DataPacketExtensionTest extends InitExtensions {
             .asString(outputProperties);
 
         DataPacketExtension data = new DataPacketExtension("i781hf64", 0, "DATA");
-        assertXMLEqual(control, data.toXML().toString());
+        assertXMLEqual(control, data.toXML(null).toString());
     }
 
 }

@@ -291,7 +291,7 @@ public class DataForm implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder(this);
         buf.attribute("type", getType());
         buf.rightAngleBracket();
@@ -310,10 +310,10 @@ public class DataForm implements ExtensionElement {
         }
         // Loop through all the form fields and append them to the string buffer
         for (FormField field : getFields()) {
-            buf.append(field.toXML());
+            buf.append(field.toXML(null));
         }
         for (Element element : extensionElements) {
-            buf.append(element.toXML());
+            buf.append(element.toXML(null));
         }
         buf.closeElement(this);
         return buf;
@@ -358,7 +358,7 @@ public class DataForm implements ExtensionElement {
             buf.openElement(ELEMENT);
             // Loop through all the form items and append them to the string buffer
             for (FormField field : getFields()) {
-                buf.append(field.toXML());
+                buf.append(field.toXML(null));
             }
             buf.closeElement(ELEMENT);
             return buf;
@@ -394,7 +394,7 @@ public class DataForm implements ExtensionElement {
             buf.openElement(ELEMENT);
             // Loop through all the form items and append them to the string buffer
             for (FormField field : getFields()) {
-                buf.append(field.toXML());
+                buf.append(field.toXML(null));
             }
             buf.closeElement(ELEMENT);
             return buf;

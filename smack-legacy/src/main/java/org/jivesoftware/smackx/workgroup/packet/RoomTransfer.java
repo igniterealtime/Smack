@@ -108,7 +108,7 @@ public class RoomTransfer implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = getIQChildElementBuilder(new IQChildElementXmlStringBuilder(this));
         xml.closeElement(this);
         return xml;

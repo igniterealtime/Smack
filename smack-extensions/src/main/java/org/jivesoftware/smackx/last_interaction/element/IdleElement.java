@@ -93,7 +93,7 @@ public class IdleElement implements ExtensionElement {
      * {@inheritDoc}
      */
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         return new XmlStringBuilder(this)
                 .attribute(ATTR_SINCE, since)
                 .closeEmptyElement();

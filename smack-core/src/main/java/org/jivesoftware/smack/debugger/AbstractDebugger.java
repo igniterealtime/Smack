@@ -171,7 +171,7 @@ public abstract class AbstractDebugger extends SmackDebugger {
     @Override
     public void onIncomingStreamElement(TopLevelStreamElement streamElement) {
         if (printInterpreted) {
-            log("RCV PKT (" + connection.getConnectionCounter() + "): " + streamElement.toXML());
+            log("RCV PKT (" + connection.getConnectionCounter() + "): " + streamElement.toXML(null));
         }
     }
 

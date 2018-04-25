@@ -76,7 +76,7 @@ public class OriginIdElement extends StableAndUniqueIdElement {
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         return new XmlStringBuilder(this)
                 .attribute(ATTR_ID, getId())
                 .closeEmptyElement();

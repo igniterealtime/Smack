@@ -68,7 +68,7 @@ public class ListElement implements MarkupElement.MarkupChildElement {
     }
 
     @Override
-    public CharSequence toXML() {
+    public CharSequence toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement(this);
         xml.attribute(ATTR_START, getStart());
@@ -76,7 +76,7 @@ public class ListElement implements MarkupElement.MarkupChildElement {
         xml.rightAngleBracket();
 
         for (ListEntryElement li : getEntries()) {
-            xml.append(li.toXML());
+            xml.append(li.toXML(null));
         }
 
         xml.closeElement(this);
@@ -110,7 +110,7 @@ public class ListElement implements MarkupElement.MarkupChildElement {
         }
 
         @Override
-        public XmlStringBuilder toXML() {
+        public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
             xml.attribute(ATTR_START, getStart());

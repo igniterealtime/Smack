@@ -36,7 +36,7 @@ public class DisablePushNotificationsIQTest {
         DisablePushNotificationsIQ disablePushNotificationsIQ = new DisablePushNotificationsIQ(
                 JidCreate.from("push-5.client.example"));
         disablePushNotificationsIQ.setStanzaId("x97");
-        Assert.assertEquals(disableAllNotificationsIQExample, disablePushNotificationsIQ.toXML().toString());
+        Assert.assertEquals(disableAllNotificationsIQExample, disablePushNotificationsIQ.toXML(null).toString());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class DisablePushNotificationsIQTest {
         DisablePushNotificationsIQ disablePushNotificationsIQ = new DisablePushNotificationsIQ(
                 JidCreate.from("push-5.client.example"), "yxs32uqsflafdk3iuqo");
         disablePushNotificationsIQ.setStanzaId("x97");
-        Assert.assertEquals(disableNodeNotificationsIQExample, disablePushNotificationsIQ.toXML().toString());
+        Assert.assertEquals(disableNodeNotificationsIQExample, disablePushNotificationsIQ.toXML(null).toString());
     }
 
 }

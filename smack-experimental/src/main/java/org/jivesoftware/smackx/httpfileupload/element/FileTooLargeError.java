@@ -58,7 +58,7 @@ public class FileTooLargeError implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         xml.element("max-file-size", String.valueOf(maxFileSize));

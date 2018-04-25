@@ -40,7 +40,7 @@ public class AffiliationsExtensionTest {
 
         AffiliationsExtension affiliationsExtension = new AffiliationsExtension(affiliationsList, "testNode");
 
-        CharSequence xml = affiliationsExtension.toXML();
+        CharSequence xml = affiliationsExtension.toXML(null);
 
         assertXMLEqual("<affiliations node='testNode'><affiliation xmlns='http://jabber.org/protocol/pubsub#owner' jid='one@exampleone.org' affiliation='member'/></affiliations>",
                         xml.toString());

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -474,7 +475,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(ELEMENT);
         addCommonAttributes(buf);
@@ -491,7 +492,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             // Skip the default language
             if (subject.equals(defaultSubject))
                 continue;
-            buf.append(subject.toXML());
+            buf.append(subject.toXML(null));
         }
         // Add the body in the default language
         Body defaultBody = getMessageBody(null);
@@ -503,7 +504,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             // Skip the default language
             if (body.equals(defaultBody))
                 continue;
-            buf.append(body.toXML());
+            buf.append(body.toXML(enclosingNamespace));
         }
         buf.optElement("thread", thread);
         // Append the error subpacket if the message type is an error.
@@ -606,7 +607,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         }
 
         @Override
-        public XmlStringBuilder toXML() {
+        public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(getElementName()).xmllangAttribute(getLanguage()).rightAngleBracket();
             xml.escape(subject);
@@ -624,10 +625,31 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         public static final String ELEMENT = "body";
         public static final String NAMESPACE = StreamOpen.CLIENT_NAMESPACE;
 
+        enum BodyElementNamespace {
+            client(StreamOpen.CLIENT_NAMESPACE),
+            server(StreamOpen.SERVER_NAMESPACE),
+            ;
+
+            private final String xmlNamespace;
+
+            BodyElementNamespace(String xmlNamespace) {
+                this.xmlNamespace = xmlNamespace;
+            }
+
+            public String getNamespace() {
+                return xmlNamespace;
+            }
+        }
+
         private final String message;
         private final String language;
+        private final BodyElementNamespace namespace;
 
-        private Body(String language, String message) {
+        public Body(String language, String message) {
+            this(language, message, BodyElementNamespace.client);
+        }
+
+        public Body(String language, String message, BodyElementNamespace namespace) {
             if (language == null) {
                 throw new NullPointerException("Language cannot be null.");
             }
@@ -636,6 +658,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             }
             this.language = language;
             this.message = message;
+            this.namespace = Objects.requireNonNull(namespace);
         }
 
         /**
@@ -688,13 +711,13 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
 
         @Override
         public String getNamespace() {
-            return NAMESPACE;
+            return namespace.xmlNamespace;
         }
 
         @Override
-        public XmlStringBuilder toXML() {
-            XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(getElementName()).xmllangAttribute(getLanguage()).rightAngleBracket();
+        public XmlStringBuilder toXML(String enclosingNamespace) {
+            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+            xml.xmllangAttribute(getLanguage()).rightAngleBracket();
             xml.escape(message);
             xml.closeElement(getElementName());
             return xml;

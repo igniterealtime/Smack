@@ -34,28 +34,28 @@ public class JingleErrorTest extends SmackTestSuite {
     public void tieBreakTest() throws Exception {
         String xml = "<tie-break xmlns='urn:xmpp:jingle:errors:1'/>";
         JingleError error = new JingleErrorProvider().parse(TestUtils.getParser(xml));
-        assertEquals(xml, error.toXML().toString());
+        assertEquals(xml, error.toXML(null).toString());
     }
 
     @Test
     public void unknownSessionTest() throws Exception {
         String xml = "<unknown-session xmlns='urn:xmpp:jingle:errors:1'/>";
         JingleError error = new JingleErrorProvider().parse(TestUtils.getParser(xml));
-        assertEquals(xml, error.toXML().toString());
+        assertEquals(xml, error.toXML(null).toString());
     }
 
     @Test
     public void unsupportedInfoTest() throws Exception {
         String xml = "<unsupported-info xmlns='urn:xmpp:jingle:errors:1'/>";
         JingleError error = new JingleErrorProvider().parse(TestUtils.getParser(xml));
-        assertEquals(xml, error.toXML().toString());
+        assertEquals(xml, error.toXML(null).toString());
     }
 
     @Test
     public void outOfOrderTest() throws Exception {
         String xml = "<out-of-order xmlns='urn:xmpp:jingle:errors:1'/>";
         JingleError error = new JingleErrorProvider().parse(TestUtils.getParser(xml));
-        assertEquals(xml, error.toXML().toString());
+        assertEquals(xml, error.toXML(null).toString());
     }
 
     @Test(expected = IllegalArgumentException.class)

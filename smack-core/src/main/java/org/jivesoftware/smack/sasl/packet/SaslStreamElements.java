@@ -44,7 +44,7 @@ public class SaslStreamElements {
         }
 
         @Override
-        public XmlStringBuilder toXML() {
+        public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).attribute("mechanism", mechanism).rightAngleBracket();
             xml.optAppend(authenticationText);
@@ -84,7 +84,7 @@ public class SaslStreamElements {
         }
 
         @Override
-        public XmlStringBuilder toXML() {
+        public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder().halfOpenElement(ELEMENT).xmlnsAttribute(
                             NAMESPACE).rightAngleBracket();
             xml.optAppend(data);
@@ -120,7 +120,7 @@ public class SaslStreamElements {
         }
 
         @Override
-        public XmlStringBuilder toXML() {
+        public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
             xml.optAppend(authenticationText);
@@ -171,7 +171,7 @@ public class SaslStreamElements {
         }
 
         @Override
-        public XmlStringBuilder toXML() {
+        public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
             xml.optAppend(data);
@@ -236,7 +236,7 @@ public class SaslStreamElements {
         }
 
         @Override
-        public XmlStringBuilder toXML() {
+        public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
             xml.emptyElement(saslErrorString);
@@ -247,7 +247,7 @@ public class SaslStreamElements {
 
         @Override
         public String toString() {
-            return toXML().toString();
+            return toXML(null).toString();
         }
 
         @Override

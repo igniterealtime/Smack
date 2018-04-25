@@ -161,7 +161,7 @@ public class MUCItem implements NamedElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.optAttribute("affiliation", getAffiliation());
         xml.optAttribute("jid", getJid());

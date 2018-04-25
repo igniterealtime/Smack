@@ -37,7 +37,7 @@ public abstract class AbstractTextElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.optXmlLangAttribute(lang);
         xml.rightAngleBracket();

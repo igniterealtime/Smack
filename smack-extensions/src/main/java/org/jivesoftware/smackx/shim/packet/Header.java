@@ -55,7 +55,7 @@ public class Header implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         // Upcast to NamedElement since we don't want a xmlns attribute
         XmlStringBuilder xml = new XmlStringBuilder((NamedElement) this);
         xml.attribute("name", name);

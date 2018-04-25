@@ -217,7 +217,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
         DiscoverInfo entityInfo = EntityCapsManager.CAPS_CACHE.lookup(u1ver);
         assertNotNull(entityInfo);
 
-        assertEquals(info.toXML(), entityInfo.toXML());
+        assertEquals(info.toXML(null), entityInfo.toXML(null));
     }
 
     private static void dropWholeEntityCapsCache() {

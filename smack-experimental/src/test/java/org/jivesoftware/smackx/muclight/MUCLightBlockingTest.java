@@ -61,7 +61,7 @@ public class MUCLightBlockingTest {
         mucLightBlockingIQ.setStanzaId("getblock1");
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
 
-        Assert.assertEquals(getBlockingListIQExample, mucLightBlockingIQ.toXML().toString());
+        Assert.assertEquals(getBlockingListIQExample, mucLightBlockingIQ.toXML(null).toString());
     }
 
     @Test
@@ -88,7 +88,7 @@ public class MUCLightBlockingTest {
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
         mucLightBlockingIQ.setStanzaId("block1");
 
-        Assert.assertEquals(blockingRoomsIQExample, mucLightBlockingIQ.toXML().toString());
+        Assert.assertEquals(blockingRoomsIQExample, mucLightBlockingIQ.toXML(null).toString());
     }
 
     @Test
@@ -102,7 +102,7 @@ public class MUCLightBlockingTest {
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
         mucLightBlockingIQ.setStanzaId("block2");
 
-        Assert.assertEquals(blockingUsersIQExample, mucLightBlockingIQ.toXML().toString());
+        Assert.assertEquals(blockingUsersIQExample, mucLightBlockingIQ.toXML(null).toString());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class MUCLightBlockingTest {
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
         mucLightBlockingIQ.setStanzaId("unblock1");
 
-        Assert.assertEquals(unblockingUsersAndRoomsExample, mucLightBlockingIQ.toXML().toString());
+        Assert.assertEquals(unblockingUsersAndRoomsExample, mucLightBlockingIQ.toXML(null).toString());
     }
 
 }

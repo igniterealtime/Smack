@@ -38,7 +38,7 @@ public final class NoStoreHint extends MessageProcessingHint {
     }
 
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
     }
 

@@ -50,7 +50,7 @@ public class NodeElement implements NamedElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         nodeInfo.appendTo(xml);
         xml.rightAngleBracket();

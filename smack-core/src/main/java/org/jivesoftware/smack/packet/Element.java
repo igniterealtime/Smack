@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,14 @@ package org.jivesoftware.smack.packet;
  */
 public interface Element {
 
+    // TODO: Add a toXML() non-parameter default method once Smack supports Java 8.
+
     /**
-     * Returns the XML representation of this Element.
+     * Returns the XML representation of this Element. This method takes an optional argument for the enclosing
+     * namespace which may be null or the empty String if the value is not known.
      *
+     * @param enclosingNamespace the enclosing namespace or {@code null}.
      * @return the stanza extension as XML.
      */
-    CharSequence toXML();
+    CharSequence toXML(String enclosingNamespace);
 }

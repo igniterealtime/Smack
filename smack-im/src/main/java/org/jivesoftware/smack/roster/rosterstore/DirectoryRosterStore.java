@@ -213,7 +213,7 @@ public final class DirectoryRosterStore implements RosterStore {
     }
 
     private boolean addEntryRaw (Item item) {
-        return FileUtils.writeFile(getBareJidFile(item.getJid()), item.toXML());
+        return FileUtils.writeFile(getBareJidFile(item.getJid()), item.toXML(null));
     }
 
     private File getBareJidFile(Jid bareJid) {

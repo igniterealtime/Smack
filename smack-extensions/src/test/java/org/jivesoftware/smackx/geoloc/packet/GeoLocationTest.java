@@ -120,7 +120,7 @@ public class GeoLocationTest extends InitExtensions {
         GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.ELEMENT,
                         GeoLocation.NAMESPACE);
         assertNotNull(geoLocation);
-        assertNotNull(geoLocation.toXML());
+        assertNotNull(geoLocation.toXML(null));
 
         GeoLocation constructedGeoLocation = GeoLocation.builder().setAccuracy(23d).setAlt(1000d).setAltAccuracy(10d).setArea("Delhi").setBearing(
                         10d).setBuilding("Small Building").setCountry("India").setCountryCode("IN").setDescription(
@@ -129,7 +129,7 @@ public class GeoLocationTest extends InitExtensions {
                         "Wall Street").setText("Unit Testing GeoLocation").setTimestamp(
                         XmppDateTime.parseDate("2004-02-19")).setTzo("+5:30").setUri(new URI("http://xmpp.org")).build();
 
-        assertEquals(constructedGeoLocation.toXML().toString(), geoLocation.toXML().toString());
+        assertEquals(constructedGeoLocation.toXML(null).toString(), geoLocation.toXML(null).toString());
 
     }
 

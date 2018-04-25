@@ -77,7 +77,7 @@ public class DataTest extends InitExtensions {
         data.setTo(JidCreate.from("juliet@capulet.lit/balcony"));
         data.setStanzaId("kr91n475");
 
-        assertXMLEqual(control, data.toXML().toString());
+        assertXMLEqual(control, data.toXML(null).toString());
     }
 
 }

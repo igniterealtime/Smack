@@ -56,7 +56,7 @@ public abstract class JingleContentDescription implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         addExtraAttributes(xml);
         xml.rightAngleBracket();

@@ -51,7 +51,7 @@ public class MUCLightConfigurationsChangeExtensionTest {
         Assert.assertEquals("To be or not to be?", configurationsChangeExtension.getSubject());
         Assert.assertNull(configurationsChangeExtension.getRoomName());
         Assert.assertNull(configurationsChangeExtension.getCustomConfigs());
-        Assert.assertEquals(messageWithSubjectChangeExample, configurationsMessage.toXML().toString());
+        Assert.assertEquals(messageWithSubjectChangeExample, configurationsMessage.toXML(null).toString());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class MUCLightConfigurationsChangeExtensionTest {
         Assert.assertEquals("A Darker Cave", configurationsChangeExtension.getRoomName());
         Assert.assertNull(configurationsChangeExtension.getSubject());
         Assert.assertNull(configurationsChangeExtension.getCustomConfigs());
-        Assert.assertEquals(messageWithRoomNameChangeExample, configurationsMessage.toXML().toString());
+        Assert.assertEquals(messageWithRoomNameChangeExample, configurationsMessage.toXML(null).toString());
     }
 
     @Test
@@ -79,7 +79,7 @@ public class MUCLightConfigurationsChangeExtensionTest {
         Assert.assertEquals("A Darker Cave", configurationsChangeExtension.getRoomName());
         Assert.assertNull(configurationsChangeExtension.getSubject());
         Assert.assertEquals("blue", configurationsChangeExtension.getCustomConfigs().get("color"));
-        Assert.assertEquals(messageWithConfigsChangeExample, configurationsMessage.toXML().toString());
+        Assert.assertEquals(messageWithConfigsChangeExample, configurationsMessage.toXML(null).toString());
     }
 
 }

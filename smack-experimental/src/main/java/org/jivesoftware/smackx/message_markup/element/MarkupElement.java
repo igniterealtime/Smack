@@ -68,11 +68,11 @@ public class MarkupElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this).rightAngleBracket();
 
         for (MarkupChildElement child : getChildElements()) {
-            xml.append(child.toXML());
+            xml.append(child.toXML(null));
         }
 
         xml.closeElement(this);

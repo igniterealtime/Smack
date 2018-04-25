@@ -117,7 +117,7 @@ public class Base64BinaryChunk implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("streamId", streamId);
         xml.attribute("nr", nr);

@@ -39,8 +39,8 @@ public final class UnknownJingleContentDescription extends JingleContentDescript
     }
 
     @Override
-    public XmlStringBuilder toXML() {
-        return standardExtensionElement.toXML();
+    public XmlStringBuilder toXML(String enclosingNamespace) {
+        return standardExtensionElement.toXML(null);
     }
 
     public StandardExtensionElement getStandardExtensionElement() {

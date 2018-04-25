@@ -67,7 +67,7 @@ public class Session extends SimpleIQ {
         }
 
         @Override
-        public XmlStringBuilder toXML() {
+        public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             if (optional) {
                 xml.rightAngleBracket();

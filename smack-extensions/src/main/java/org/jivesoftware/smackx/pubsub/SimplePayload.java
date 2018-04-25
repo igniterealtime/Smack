@@ -93,12 +93,12 @@ public class SimplePayload implements ExtensionElement {
     }
 
     @Override
-    public String toXML() {
+    public String toXML(String enclosingNamespace) {
         return payload;
     }
 
     @Override
     public String toString() {
-        return getClass().getName() + "payload [" + toXML() + "]";
+        return getClass().getName() + "payload [" + toXML(null) + "]";
     }
 }

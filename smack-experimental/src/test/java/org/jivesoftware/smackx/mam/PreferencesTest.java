@@ -41,7 +41,7 @@ public class PreferencesTest {
     public void checkRetrievePrefsStanza() throws Exception {
         MamPrefsIQ mamPrefIQ = new MamPrefsIQ();
         mamPrefIQ.setStanzaId("sarasa");
-        Assert.assertEquals(mamPrefIQ.toXML().toString(), retrievePrefsStanzaExample);
+        Assert.assertEquals(mamPrefIQ.toXML(null).toString(), retrievePrefsStanzaExample);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class PreferencesTest {
 
         MamPrefsIQ mamPrefIQ =  new MamPrefsIQ(alwaysJids, neverJids, DefaultBehavior.roster);
         mamPrefIQ.setStanzaId("sarasa");
-        Assert.assertEquals(mamPrefIQ.toXML().toString(), updatePrefsStanzaExample);
+        Assert.assertEquals(mamPrefIQ.toXML(null).toString(), updatePrefsStanzaExample);
     }
 
 }

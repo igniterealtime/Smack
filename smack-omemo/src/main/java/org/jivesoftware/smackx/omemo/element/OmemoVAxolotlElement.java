@@ -47,7 +47,7 @@ public class OmemoVAxolotlElement extends OmemoElement {
     }
 
     @Override
-    public XmlStringBuilder toXML() {
+    public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder sb = new XmlStringBuilder(this).rightAngleBracket();
 
         sb.element(header);
