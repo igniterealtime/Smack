@@ -237,7 +237,7 @@ task javadocAll(type: Javadoc) {
 	options.use = true
 	options.links = [
 		"https://docs.oracle.com/javase/${sourceCompatibility.getMajorVersion()}/docs/api/",
-		"http://jxmpp.org/$jxmppVersion/javadoc/",
+		"https://jxmpp.org/releases/$jxmppVersion/javadoc/",
 		"https://minidns.org/releases/$miniDnsVersion/javadoc/",
 		] as String[]
 }
