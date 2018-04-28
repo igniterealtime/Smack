@@ -35,7 +35,8 @@ public interface ReceiptReceivedListener {
      * 
      * @param fromJid the jid that send this receipt
      * @param toJid the jid which received this receipt
-     * @param receiptId the message ID of the stanza which has been received and this receipt is for
+     * @param receiptId the message ID of the stanza which has been received and this receipt is for.
+     *                  This might be {@code null}.
      * @param receipt the receipt
      */
     void onReceiptReceived(Jid fromJid, Jid toJid, String receiptId, Stanza receipt);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2015 the original author or authors
+ * Copyright 2013-2018 the original author or authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.Map;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -41,9 +40,14 @@ public class DeliveryReceipt implements ExtensionElement {
     private final String id;
 
     public DeliveryReceipt(String id) {
-        this.id = StringUtils.requireNotNullOrEmpty(id, "id must not be null");
+        this.id = id;
     }
 
+    /**
+     * Get the id of the message that has been delivered.
+     *
+     * @return id of the delivered message or {@code null}.
+     */
     public String getId() {
         return id;
     }
@@ -61,7 +65,7 @@ public class DeliveryReceipt implements ExtensionElement {
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.attribute("id", id);
+        xml.optAttribute("id", id);
         xml.closeEmptyElement();
         return xml;
     }
