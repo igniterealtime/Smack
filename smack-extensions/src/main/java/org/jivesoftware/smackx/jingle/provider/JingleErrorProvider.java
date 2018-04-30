@@ -17,17 +17,16 @@
 package org.jivesoftware.smackx.jingle.provider;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-
-import org.jivesoftware.smackx.jingle.element.JingleError;
+import org.jivesoftware.smackx.jingle.element.JingleErrorElement;
 
 import org.xmlpull.v1.XmlPullParser;
 
-public class JingleErrorProvider extends ExtensionElementProvider<JingleError> {
+public class JingleErrorProvider extends ExtensionElementProvider<JingleErrorElement> {
 
     @Override
-    public JingleError parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public JingleErrorElement parse(XmlPullParser parser, int initialDepth) throws Exception {
         String errorName = parser.getName();
-        return JingleError.fromString(errorName);
+        return JingleErrorElement.fromString(errorName);
     }
 
 }

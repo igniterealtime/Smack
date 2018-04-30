@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017 Florian Schmaus, Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import org.jivesoftware.smack.util.PacketParserUtils;
-
-import org.jivesoftware.smackx.jingle.element.Jingle;
-import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
-import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
+import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionElement;
+import org.jivesoftware.smackx.jingle.element.JingleContentTransportElement;
+import org.jivesoftware.smackx.jingle.element.JingleElement;
 
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
@@ -51,9 +50,9 @@ public class JingleProviderTest {
                         "</description>";
                         // @formatter:on
         XmlPullParser parser = createTestJingle(unknownJingleContentDescription);
-        Jingle jingle = (Jingle) PacketParserUtils.parseIQ(parser);
+        JingleElement jingle = (JingleElement) PacketParserUtils.parseIQ(parser);
 
-        JingleContentDescription jingleContentDescription = jingle.getSoleContentOrThrow().getDescription();
+        JingleContentDescriptionElement jingleContentDescription = jingle.getSoleContentOrThrow().getDescription();
 
         String parsedUnknownJingleContentDescriptionNamespace = jingleContentDescription.getNamespace();
         assertEquals(unknownJingleContentDescriptionNamespace, parsedUnknownJingleContentDescriptionNamespace);
@@ -82,9 +81,9 @@ public class JingleProviderTest {
                         "</transport>";
                         // @formatter:on
         XmlPullParser parser = createTestJingle(unknownJingleContentTransport);
-        Jingle jingle = (Jingle) PacketParserUtils.parseIQ(parser);
+        JingleElement jingle = (JingleElement) PacketParserUtils.parseIQ(parser);
 
-        JingleContentTransport jingleContentTransport = jingle.getSoleContentOrThrow().getTransport();
+        JingleContentTransportElement jingleContentTransport = jingle.getSoleContentOrThrow().getTransport();
 
         String parsedUnknownJingleContentTransportNamespace = jingleContentTransport.getNamespace();
         assertEquals(unknownJingleContentTransportNamespace, parsedUnknownJingleContentTransportNamespace);
