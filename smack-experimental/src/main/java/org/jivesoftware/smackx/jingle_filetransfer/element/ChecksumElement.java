@@ -19,21 +19,29 @@ package org.jivesoftware.smackx.jingle_filetransfer.element;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.element.JingleContentElement;
+import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransfer;
 
 /**
- * Checksum element.
+ * Checksum element declared in <a href="https://xmpp.org/extensions/xep-0234.html#hash">XEP-0234</a>.
  */
-public class Checksum implements ExtensionElement {
+public class ChecksumElement implements ExtensionElement {
+
     public static final String ELEMENT = "checksum";
     public static final String ATTR_CREATOR = "creator";
     public static final String ATTR_NAME = "name";
 
-    private final JingleContent.Creator creator;
+    private final JingleContentElement.Creator creator;
     private final String name;
-    private final JingleFileTransferChild file;
+    private final JingleFileTransferChildElement file;
 
-    public Checksum(JingleContent.Creator creator, String name, JingleFileTransferChild file) {
+    /**
+     * Create a new ChecksumElement.
+     * @param creator creator of the content (party that added the file to the transmission).
+     * @param name name of the content.
+     * @param file metadata of the file.
+     */
+    public ChecksumElement(JingleContentElement.Creator creator, String name, JingleFileTransferChildElement file) {
         this.creator = creator;
         this.name = name;
         this.file = Objects.requireNonNull(file, "file MUST NOT be null.");
@@ -58,6 +66,6 @@ public class Checksum implements ExtensionElement {
 
     @Override
     public String getNamespace() {
-        return JingleFileTransfer.NAMESPACE_V5;
+        return JingleFileTransfer.NAMESPACE;
     }
 }

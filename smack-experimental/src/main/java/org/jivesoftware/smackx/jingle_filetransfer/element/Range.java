@@ -29,22 +29,22 @@ public class Range implements NamedElement {
     public static final String ATTR_OFFSET = "offset";
     public static final String ATTR_LENGTH = "length";
 
-    private final int offset, length;
+    private final Long offset, length;
     private final HashElement hash;
 
     /**
      * Create a Range element with default values.
      */
     public Range() {
-        this(0, -1, null);
+        this(null, null, null);
     }
 
     /**
      * Create a Range element with specified length.
      * @param length length of the transmitted data in bytes.
      */
-    public Range(int length) {
-        this(0, length, null);
+    public Range(Long length) {
+        this(null, length, null);
     }
 
     /**
@@ -52,7 +52,7 @@ public class Range implements NamedElement {
      * @param offset offset in bytes from the beginning of the transmitted data.
      * @param length number of bytes that shall be transferred.
      */
-    public Range(int offset, int length) {
+    public Range(Long offset, Long length) {
         this(offset, length, null);
     }
 
@@ -62,7 +62,7 @@ public class Range implements NamedElement {
      * @param length number of bytes that shall be transferred.
      * @param hash hash of the bytes in the specified range.
      */
-    public Range(int offset, int length, HashElement hash) {
+    public Range(Long offset, Long length, HashElement hash) {
         this.offset = offset;
         this.length = length;
         this.hash = hash;
@@ -73,7 +73,7 @@ public class Range implements NamedElement {
      * This marks the begin of the specified range.
      * @return offset
      */
-    public int getOffset() {
+    public Long getOffset() {
         return offset;
     }
 
@@ -81,7 +81,7 @@ public class Range implements NamedElement {
      * Return the length of the range.
      * @return length
      */
-    public int getLength() {
+    public Long getLength() {
         return length;
     }
 
@@ -102,12 +102,8 @@ public class Range implements NamedElement {
     public CharSequence toXML(String enclosingNamespace) {
         XmlStringBuilder sb =  new XmlStringBuilder(this);
 
-        if (offset > 0) {
-            sb.attribute(ATTR_OFFSET, offset);
-        }
-        if (length > 0) {
-            sb.attribute(ATTR_LENGTH, length);
-        }
+        sb.optAttribute(ATTR_OFFSET, offset);
+        sb.optAttribute(ATTR_LENGTH, length);
 
         if (hash != null) {
             sb.rightAngleBracket();
