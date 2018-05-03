@@ -7,6 +7,14 @@ smack-extensions and smack-experimental."""
 // Note that the test dependencies (junit, …) are inferred from the
 // sourceSet.test of the core subproject
 dependencies {
+	// Depend on minidns-android21 as optional dependency, even if may
+	// not need it. Can't hurt to have it in the programm path with
+	// the correct MiniDNS version as it won't hurt even if the
+	// Android version is smaller then 21. Note that we deliberatly do
+	// not add this to smack-minidns, as this dependency may also be
+	// used in non-Android projects.
+	compile "org.minidns:minidns-android21:$miniDnsVersion"
+
 	// androidProjects lists all projects that are checked to compile against android.jar
 	// Filter out the optional Smack dependencies from androidProjects
 	(androidProjects - androidOptionalProjects)
