@@ -26,10 +26,10 @@ import java.util.Map.Entry;
 
 import org.jivesoftware.smack.SmackException.ConnectionException;
 
-import org.minidns.dnsname.DNSName;
+import org.minidns.dnsname.DnsName;
 
 public class HostAddress {
-    private final DNSName fqdn;
+    private final DnsName fqdn;
     private final int port;
     private final Map<InetAddress, Exception> exceptions = new LinkedHashMap<>();
     private final List<InetAddress> inetAddresses;
@@ -42,7 +42,7 @@ public class HostAddress {
      * @param inetAddresses list of addresses.
      * @throws IllegalArgumentException If the port is out of valid range (0 - 65535).
      */
-    public HostAddress(DNSName fqdn, int port, List<InetAddress> inetAddresses) {
+    public HostAddress(DnsName fqdn, int port, List<InetAddress> inetAddresses) {
         if (port < 0 || port > 65535)
             throw new IllegalArgumentException(
                     "Port must be a 16-bit unsigned integer (i.e. between 0-65535. Port was: " + port);
@@ -65,7 +65,7 @@ public class HostAddress {
      * @param fqdn the domain name of the host.
      * @param e the exception causing the failure.
      */
-    public HostAddress(DNSName fqdn, Exception e) {
+    public HostAddress(DnsName fqdn, Exception e) {
         this.fqdn = fqdn;
         this.port = 5222;
         inetAddresses = Collections.emptyList();
@@ -88,7 +88,7 @@ public class HostAddress {
      *
      * @return the fully qualified domain name or <code>null</code>
      */
-    public DNSName getFQDN() {
+    public DnsName getFQDN() {
         return fqdn;
     }
 

@@ -27,7 +27,7 @@ import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SRVRecord;
 
-import org.minidns.dnsname.DNSName;
+import org.minidns.dnsname.DnsName;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.TextParseException;
@@ -50,7 +50,7 @@ public class DNSJavaResolver extends DNSResolver implements SmackInitializer {
     }
 
     @Override
-    protected List<SRVRecord> lookupSRVRecords0(DNSName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    protected List<SRVRecord> lookupSRVRecords0(DnsName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         List<SRVRecord> res = new ArrayList<>();
 
         Lookup lookup;
@@ -68,7 +68,7 @@ public class DNSJavaResolver extends DNSResolver implements SmackInitializer {
         for (Record record : recs) {
             org.xbill.DNS.SRVRecord srvRecord = (org.xbill.DNS.SRVRecord) record;
             if (srvRecord != null && srvRecord.getTarget() != null) {
-                DNSName host = DNSName.from(srvRecord.getTarget().toString());
+                DnsName host = DnsName.from(srvRecord.getTarget().toString());
                 int port = srvRecord.getPort();
                 int priority = srvRecord.getPriority();
                 int weight = srvRecord.getWeight();

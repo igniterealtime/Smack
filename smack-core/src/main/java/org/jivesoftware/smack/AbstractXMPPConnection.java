@@ -93,7 +93,7 @@ import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.util.XmppStringUtils;
-import org.minidns.dnsname.DNSName;
+import org.minidns.dnsname.DnsName;
 import org.xmlpull.v1.XmlPullParser;
 
 
@@ -614,7 +614,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             }
         } else {
             // N.B.: Important to use config.serviceName and not AbstractXMPPConnection.serviceName
-            DNSName dnsName = DNSName.from(config.getXMPPServiceDomain());
+            DnsName dnsName = DnsName.from(config.getXMPPServiceDomain());
             hostAddresses = DNSUtil.resolveXMPPServiceDomain(dnsName, failedAddresses, config.getDnssecMode());
         }
         // Either the populated host addresses are not empty *or* there must be at least one failed address.

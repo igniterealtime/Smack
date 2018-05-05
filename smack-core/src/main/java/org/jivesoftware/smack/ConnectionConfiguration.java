@@ -44,7 +44,7 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.minidns.dnsname.DNSName;
+import org.minidns.dnsname.DnsName;
 
 /**
  * Configuration to use while establishing the connection to the server.
@@ -67,7 +67,7 @@ public abstract class ConnectionConfiguration {
     protected final DomainBareJid xmppServiceDomain;
 
     protected final InetAddress hostAddress;
-    protected final DNSName host;
+    protected final DnsName host;
     protected final int port;
 
     private final String keystorePath;
@@ -507,7 +507,7 @@ public abstract class ConnectionConfiguration {
         private SocketFactory socketFactory;
         private DomainBareJid xmppServiceDomain;
         private InetAddress hostAddress;
-        private DNSName host;
+        private DnsName host;
         private int port = 5222;
         private boolean allowEmptyOrNullUsername = false;
         private boolean saslMechanismsSealed;
@@ -625,7 +625,7 @@ public abstract class ConnectionConfiguration {
          * @return a reference to this builder.
          */
         public B setHost(String host) {
-            DNSName hostDnsName = DNSName.from(host);
+            DnsName hostDnsName = DnsName.from(host);
             return setHost(hostDnsName);
         }
 
@@ -637,7 +637,7 @@ public abstract class ConnectionConfiguration {
          * @param host the DNS name of the host providing the XMPP service.
          * @return a reference to this builder.
          */
-        public B setHost(DNSName host) {
+        public B setHost(DnsName host) {
             this.host = host;
             return getThis();
         }

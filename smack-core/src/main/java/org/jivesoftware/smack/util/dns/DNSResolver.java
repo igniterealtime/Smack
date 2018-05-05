@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 
-import org.minidns.dnsname.DNSName;
+import org.minidns.dnsname.DnsName;
 
 /**
  * Implementations of this interface define a class that is capable of resolving DNS addresses.
@@ -48,14 +48,14 @@ public abstract class DNSResolver {
      * @param dnssecMode security mode.
      * @return The list of SRV records mapped to the service name.
      */
-    public final List<SRVRecord> lookupSRVRecords(DNSName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    public final List<SRVRecord> lookupSRVRecords(DnsName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         checkIfDnssecRequestedAndSupported(dnssecMode);
         return lookupSRVRecords0(name, failedAddresses, dnssecMode);
     }
 
-    protected abstract List<SRVRecord> lookupSRVRecords0(DNSName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode);
+    protected abstract List<SRVRecord> lookupSRVRecords0(DnsName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode);
 
-    public final HostAddress lookupHostAddress(DNSName name, int port, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    public final HostAddress lookupHostAddress(DnsName name, int port, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         checkIfDnssecRequestedAndSupported(dnssecMode);
         List<InetAddress> inetAddresses = lookupHostAddress0(name, failedAddresses, dnssecMode);
         if (inetAddresses == null || inetAddresses.isEmpty()) {
@@ -78,7 +78,7 @@ public abstract class DNSResolver {
      * @param dnssecMode the selected DNSSEC mode
      * @return A list, either empty or non-empty, or <code>null</code>
      */
-    protected List<InetAddress> lookupHostAddress0(DNSName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    protected List<InetAddress> lookupHostAddress0(DnsName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         // Default implementation of a DNS name lookup for A/AAAA records. It is assumed that this method does never
         // support DNSSEC. Subclasses are free to override this method.
         if (dnssecMode != DnssecMode.disabled) {

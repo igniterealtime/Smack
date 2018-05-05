@@ -31,7 +31,7 @@ import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SRVRecord;
 import org.jivesoftware.smack.util.dns.SmackDaneProvider;
 
-import org.minidns.dnsname.DNSName;
+import org.minidns.dnsname.DnsName;
 
 /**
  * Utility class to perform DNS lookups for XMPP services.
@@ -89,10 +89,10 @@ public class DNSUtil {
         server(XMPP_SERVER_DNS_SRV_PREFIX),
         client(XMPP_CLIENT_DNS_SRV_PREFIX),
         ;
-        public final DNSName srvPrefix;
+        public final DnsName srvPrefix;
 
         DomainType(String srvPrefixString) {
-            srvPrefix = DNSName.from(srvPrefixString);
+            srvPrefix = DnsName.from(srvPrefixString);
         }
     }
 
@@ -111,7 +111,7 @@ public class DNSUtil {
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
      */
-    public static List<HostAddress> resolveXMPPServiceDomain(DNSName domain, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    public static List<HostAddress> resolveXMPPServiceDomain(DnsName domain, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         return resolveDomain(domain, DomainType.client, failedAddresses, dnssecMode);
     }
 
@@ -130,7 +130,7 @@ public class DNSUtil {
      * @return List of HostAddress, which encompasses the hostname and port that the
      *      XMPP server can be reached at for the specified domain.
      */
-    public static List<HostAddress> resolveXMPPServerDomain(DNSName domain, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    public static List<HostAddress> resolveXMPPServerDomain(DnsName domain, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         return resolveDomain(domain, DomainType.server, failedAddresses, dnssecMode);
     }
 
@@ -141,7 +141,7 @@ public class DNSUtil {
      * @param failedAddresses a list that will be populated with host addresses that failed to resolve.
      * @return a list of resolver host addresses for this domain.
      */
-    private static List<HostAddress> resolveDomain(DNSName domain, DomainType domainType,
+    private static List<HostAddress> resolveDomain(DnsName domain, DomainType domainType,
                     List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         if (dnsResolver == null) {
             throw new IllegalStateException("No DNS Resolver active in Smack");
@@ -150,7 +150,7 @@ public class DNSUtil {
         List<HostAddress> addresses = new ArrayList<HostAddress>();
 
         // Step one: Do SRV lookups
-        DNSName srvDomain = DNSName.from(domainType.srvPrefix, domain);
+        DnsName srvDomain = DnsName.from(domainType.srvPrefix, domain);
 
         List<SRVRecord> srvRecords = dnsResolver.lookupSRVRecords(srvDomain, failedAddresses, dnssecMode);
         if (srvRecords != null && !srvRecords.isEmpty()) {

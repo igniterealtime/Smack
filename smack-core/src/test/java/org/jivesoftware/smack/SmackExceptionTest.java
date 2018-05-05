@@ -28,7 +28,7 @@ import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.util.dns.HostAddress;
 
 import org.junit.Test;
-import org.minidns.dnsname.DNSName;
+import org.minidns.dnsname.DnsName;
 
 public class SmackExceptionTest {
 
@@ -36,14 +36,14 @@ public class SmackExceptionTest {
     public void testConnectionException() throws UnknownHostException {
         List<HostAddress> failedAddresses = new LinkedList<HostAddress>();
 
-        DNSName host = DNSName.from("foo.bar.example");
+        DnsName host = DnsName.from("foo.bar.example");
         InetAddress inetAddress = InetAddress.getByAddress(host.toString(), new byte[] { 0, 0, 0, 0 });
         List<InetAddress> inetAddresses = Collections.singletonList(inetAddress);
         HostAddress hostAddress = new HostAddress(host, 1234, inetAddresses);
         hostAddress.setException(new Exception("Failed for some reason"));
         failedAddresses.add(hostAddress);
 
-        host = DNSName.from("barz.example");
+        host = DnsName.from("barz.example");
         inetAddress = InetAddress.getByAddress(host.toString(), new byte[] { 0, 0, 0, 0 });
         inetAddresses = Collections.singletonList(inetAddress);
         hostAddress = new HostAddress(host, 5678, inetAddresses);

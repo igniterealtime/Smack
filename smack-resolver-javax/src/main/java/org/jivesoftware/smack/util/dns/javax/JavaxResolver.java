@@ -37,7 +37,7 @@ import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SRVRecord;
 
-import org.minidns.dnsname.DNSName;
+import org.minidns.dnsname.DnsName;
 
 /**
  * A DNS resolver (mostly for SRV records), which makes use of the API provided in the javax.* namespace.
@@ -83,7 +83,7 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
     }
 
     @Override
-    protected List<SRVRecord> lookupSRVRecords0(DNSName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    protected List<SRVRecord> lookupSRVRecords0(DnsName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         List<SRVRecord> res = null;
 
         Attribute srvAttribute;
@@ -112,12 +112,12 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
                 int weight = Integer.parseInt(srvRecordEntries[srvRecordEntries.length - 3]);
                 String srvTarget = srvRecordEntries[srvRecordEntries.length - 1];
                 // Strip trailing '.' from srvTarget.
-                // Later MiniDNS version may do the right thing when DNSName.from() is called with a DNS name string
+                // Later MiniDNS version may do the right thing when DnsName.from() is called with a DNS name string
                 // having a trailing dot, so this can possibly be removed in future Smack versions.
                 if (srvTarget.length() > 0 && srvTarget.charAt(srvTarget.length() - 1) == '.') {
                     srvTarget = srvTarget.substring(0, srvTarget.length() - 1);
                 }
-                DNSName host = DNSName.from(srvTarget);
+                DnsName host = DnsName.from(srvTarget);
 
                 List<InetAddress> hostAddresses = lookupHostAddress0(host, failedAddresses, dnssecMode);
                 if (shouldContinue(name, host, hostAddresses)) {

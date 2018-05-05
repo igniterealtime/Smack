@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.util.StringUtils;
 
-import org.minidns.dnsname.DNSName;
+import org.minidns.dnsname.DnsName;
 
 /**
  * A DNS SRV RR.
@@ -46,7 +46,7 @@ public class SRVRecord extends HostAddress implements Comparable<SRVRecord> {
      * @param inetAddresses list of addresses.
      * @throws IllegalArgumentException fqdn is null or any other field is not in valid range (0-65535).
      */
-    public SRVRecord(DNSName fqdn, int port, int priority, int weight, List<InetAddress> inetAddresses) {
+    public SRVRecord(DnsName fqdn, int port, int priority, int weight, List<InetAddress> inetAddresses) {
         super(fqdn, port, inetAddresses);
         StringUtils.requireNotNullOrEmpty(fqdn, "The FQDN must not be null");
         if (weight < 0 || weight > 65535)

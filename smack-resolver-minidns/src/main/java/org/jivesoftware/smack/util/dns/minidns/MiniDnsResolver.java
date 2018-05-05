@@ -32,9 +32,9 @@ import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SRVRecord;
 
-import org.minidns.dnsmessage.DNSMessage.RESPONSE_CODE;
+import org.minidns.dnsmessage.DnsMessage.RESPONSE_CODE;
 import org.minidns.dnsmessage.Question;
-import org.minidns.dnsname.DNSName;
+import org.minidns.dnsname.DnsName;
 import org.minidns.hla.DnssecResolverApi;
 import org.minidns.hla.ResolutionUnsuccessfulException;
 import org.minidns.hla.ResolverApi;
@@ -66,7 +66,7 @@ public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
     }
 
     @Override
-    protected List<SRVRecord> lookupSRVRecords0(final DNSName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    protected List<SRVRecord> lookupSRVRecords0(final DnsName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         final ResolverApi resolver = getResolver(dnssecMode);
 
         SrvResolverResult result;
@@ -89,7 +89,7 @@ public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
 
         List<SRVRecord> res = new LinkedList<>();
         for (SRV srv : result.getAnswers()) {
-            DNSName hostname = srv.target;
+            DnsName hostname = srv.target;
             List<InetAddress> hostAddresses = lookupHostAddress0(hostname, failedAddresses, dnssecMode);
             if (shouldContinue(name, hostname, hostAddresses)) {
                 continue;
@@ -103,7 +103,7 @@ public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
     }
 
     @Override
-    protected List<InetAddress> lookupHostAddress0(final DNSName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    protected List<InetAddress> lookupHostAddress0(final DnsName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
         final ResolverApi resolver = getResolver(dnssecMode);
 
         final ResolverResult<A> aResult;
@@ -193,7 +193,7 @@ public class MiniDnsResolver extends DNSResolver implements SmackInitializer {
         }
     }
 
-    private static boolean shouldAbortIfNotAuthentic(DNSName name, DnssecMode dnssecMode,
+    private static boolean shouldAbortIfNotAuthentic(DnsName name, DnssecMode dnssecMode,
                     ResolverResult<?> result, List<HostAddress> failedAddresses) {
         switch (dnssecMode) {
         case needsDnssec:
