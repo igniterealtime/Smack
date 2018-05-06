@@ -428,7 +428,7 @@ subprojects {
 	}
 }
 
-configure (androidProjects) {
+configure (androidProjects + androidBootClasspathProjects) {
 	apply plugin: 'ru.vyarus.animalsniffer'
 	dependencies {
 		signature "net.sf.androidscents.signature:android-api-level-${smackMinAndroidSdk}:2.3.1_r2@signature"
@@ -580,12 +580,21 @@ def getGitCommit() {
 }
 
 def getAndroidRuntimeJar() {
+	// We set a different Android API level compared to
+	// smackMinAndroidSdk here. The runtime jar retrieved via this
+	// method is, compared to earlier Smack versions, not used to
+	// check for Android API compatibility. Instead it is used to for
+	// the eclipse classpath, for javadoc and when compiling the pure
+	// Android subprojects of Smack. Currently we require level 16
+	// here, because of the @TargetApi annotation found in
+	// AndroidUsingLinkProperties of minidns-android21.
+	def androidApiLevel = 16
 	def androidHome = getAndroidHome()
-	def androidJar = new File("$androidHome/platforms/android-$smackMinAndroidSdk/android.jar")
+	def androidJar = new File("$androidHome/platforms/android-${androidApiLevel}/android.jar")
 	if (androidJar.isFile()) {
 		return androidJar
 	} else {
-		throw new Exception("Can't find android.jar for $smackMinAndroidSdk API. Please install corresponding SDK platform package")
+		throw new Exception("Can't find android.jar for $androidApiLevel API. Please install corresponding SDK platform package")
 	}
 }
 

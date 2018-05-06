@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2017 Florian Schmaus
+ * Copyright © 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,15 @@ import org.jivesoftware.smack.util.stringencoder.Base64UrlSafeEncoder;
 import org.jivesoftware.smack.util.stringencoder.android.AndroidBase64Encoder;
 import org.jivesoftware.smack.util.stringencoder.android.AndroidBase64UrlSafeEncoder;
 
+import android.content.Context;
 import org.apache.http.conn.ssl.StrictHostnameVerifier;
+import org.minidns.dnsserverlookup.android21.AndroidUsingLinkProperties;
 
+/**
+ * This class initialized Smack for you on Android. Unfortunately it can't do it automatically, you should call
+ * {@link #initialize(Context)} once before performing your first XMPP connection with Smack. Note that on Android 21 or
+ * higher you need to hold the ACCESS_NETWORK_STATE permission.
+ */
 public class AndroidSmackInitializer implements SmackInitializer {
 
     @Override
@@ -37,4 +44,13 @@ public class AndroidSmackInitializer implements SmackInitializer {
         return null;
     }
 
+    /**
+     * Initializes Smack on Android. You should call this method fore performing your first XMPP connection with Smack.
+     *
+     * @param context an Android context.
+     * @since 4.3
+     */
+    public static void initialize(Context context) {
+        AndroidUsingLinkProperties.setup(context);
+    }
 }

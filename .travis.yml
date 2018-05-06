@@ -1,7 +1,7 @@
 language: android
 android:
   components:
-    - android-9
+    - android-16
 jdk:
   - oraclejdk8
 sudo: false
