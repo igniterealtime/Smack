@@ -5,6 +5,7 @@
     <startupClasses>
         <className>org.jivesoftware.smack.initializer.VmArgInitializer</className>
         <className>org.jivesoftware.smack.ReconnectionManager</className>
+        <className>org.jivesoftware.smack.CoreInitializer</className>
     </startupClasses>
 
     <optionalStartupClasses>
