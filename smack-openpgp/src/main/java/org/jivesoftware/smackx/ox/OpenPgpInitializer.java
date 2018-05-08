@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus.
+ * Copyright 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,12 @@
  */
 package org.jivesoftware.smackx.ox;
 
-import java.io.InputStream;
+import org.jivesoftware.smack.initializer.UrlInitializer;
 
-public interface OpenPgpProvider {
+public class OpenPgpInitializer extends UrlInitializer {
 
-    OpenPgpMessage toOpenPgpMessage(InputStream is);
-
+    @Override
+    protected String getProvidersUri() {
+        return "classpath:org.jivesoftware.smackx.ox/openpgp.providers";
+    }
 }

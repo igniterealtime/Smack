@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus.
+ * Copyright 2017 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,17 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.ox.OpenPgpManager;
 import org.jivesoftware.smackx.ox.OpenPgpMessage;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 public class OpenPgpElement implements ExtensionElement {
 
     public static final String ELEMENT = "openpgp";
-    public static final String NAMESPACE = "urn:xmpp:openpg:0";
+    public static final String NAMESPACE = "urn:xmpp:openpgp:0";
 
     private final String base64EncodedOpenPgpMessage;
 
@@ -72,12 +74,13 @@ public class OpenPgpElement implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML() {
-        // TODO Auto-generated method stub
-        return null;
+    public XmlStringBuilder toXML(String enclosingNamespace) {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
+        xml.rightAngleBracket().append(base64EncodedOpenPgpMessage).closeElement(this);
+        return xml;
     }
 
-    private final void ensureOpenPgpMessageBytesSet() {
+    private void ensureOpenPgpMessageBytesSet() {
         if (openPgpMessageBytes != null) return;
 
         openPgpMessageBytes = Base64.decode(base64EncodedOpenPgpMessage);

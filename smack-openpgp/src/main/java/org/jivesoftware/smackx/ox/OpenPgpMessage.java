@@ -23,6 +23,7 @@ import org.jivesoftware.smackx.ox.element.OpenPgpContentElement;
 import org.jivesoftware.smackx.ox.element.SignElement;
 import org.jivesoftware.smackx.ox.element.SigncryptElement;
 import org.jivesoftware.smackx.ox.provider.OpenPgpContentElementProvider;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 public class OpenPgpMessage {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus.
+ * Copyright 2017 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,27 +18,39 @@ package org.jivesoftware.smackx.ox.element;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppDateTime;
 
+/**
+ * This class describes an OpenPGP content element. It defines the elements and fields that OpenPGP content elements
+ * do have in common.
+ */
 public abstract class OpenPgpContentElement implements ExtensionElement {
 
-    private final List<Jid> to;
+    public static final String ELEM_TO = "to";
+    public static final String ATTR_JID = "jid";
+    public static final String ELEM_TIME = "time";
+    public static final String ATTR_STAMP = "stamp";
+    public static final String ELEM_PAYLOAD = "payload";
+
+    private final Set<Jid> to;
     private final Date timestamp;
     private final List<ExtensionElement> payload;
 
     private String timestampString;
 
-    protected OpenPgpContentElement(List<Jid> to, Date timestamp, List<ExtensionElement> payload) {
+    protected OpenPgpContentElement(Set<Jid> to, Date timestamp, List<ExtensionElement> payload) {
         this.to = to;
         this.timestamp = timestamp;
         this.payload = payload;
     }
 
-    public final List<Jid> getTo() {
+    public final Set<Jid> getTo() {
         return to;
     }
 
@@ -63,16 +75,16 @@ public abstract class OpenPgpContentElement implements ExtensionElement {
 
     protected void addCommonXml(XmlStringBuilder xml) {
         for (Jid toJid : to) {
-            xml.halfOpenElement("to").attribute("jid", toJid).closeEmptyElement();
+            xml.halfOpenElement(ELEM_TO).attribute(ATTR_JID, toJid).closeEmptyElement();
         }
 
         ensureTimestampStringSet();
-        xml.halfOpenElement("time").attribute("stamp", timestampString).closeEmptyElement();
+        xml.halfOpenElement(ELEM_TIME).attribute(ATTR_STAMP, timestampString).closeEmptyElement();
 
-        xml.openElement("payload");
+        xml.openElement(ELEM_PAYLOAD);
         for (ExtensionElement element : payload) {
-            xml.append(element.toXML());
+            xml.append(element.toXML(getNamespace()));
         }
-        xml.closeElement("payload");
+        xml.closeElement(ELEM_PAYLOAD);
     }
 }

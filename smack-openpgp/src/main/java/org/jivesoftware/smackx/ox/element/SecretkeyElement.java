@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,30 @@
  */
 package org.jivesoftware.smackx.ox.element;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.nio.charset.Charset;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-import org.jxmpp.jid.Jid;
+public class SecretkeyElement implements ExtensionElement {
 
-public class SignElement extends OpenPgpContentElement {
+    public static final String NAMESPACE = OpenPgpElement.NAMESPACE;
+    public static final String ELEMENT = "secretkey";
 
-    public SignElement(Set<Jid> to, Date timestamp, List<ExtensionElement> payload) {
-        super(to, timestamp, payload);
+    private final byte[] b64Data;
+
+    public SecretkeyElement(byte[] b64Data) {
+        this.b64Data = b64Data;
     }
 
-    public static final String ELEMENT = "sign";
+    public byte[] getB64Data() {
+        return b64Data;
+    }
+
+    @Override
+    public String getNamespace() {
+        return NAMESPACE;
+    }
 
     @Override
     public String getElementName() {
@@ -40,10 +48,10 @@ public class SignElement extends OpenPgpContentElement {
 
     @Override
     public XmlStringBuilder toXML(String enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder(this).rightAngleBracket();
-        addCommonXml(xml);
-        xml.closeElement(this);
+        XmlStringBuilder xml = new XmlStringBuilder(this)
+                .rightAngleBracket()
+                .append(new String(b64Data, Charset.forName("UTF-8")))
+                .closeElement(this);
         return xml;
     }
-
 }

@@ -18,9 +18,12 @@ package org.jivesoftware.smackx.ox.provider;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.ox.element.OpenPgpElement;
+
 import org.xmlpull.v1.XmlPullParser;
 
 public class OpenPgpElementProvider extends ExtensionElementProvider<OpenPgpElement> {
+
+    public static final OpenPgpElementProvider TEST_INSTANCE = new OpenPgpElementProvider();
 
     @Override
     public OpenPgpElement parse(XmlPullParser parser, int initialDepth) throws Exception {

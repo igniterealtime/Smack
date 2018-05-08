@@ -29,3 +29,4 @@ include 'smack-core',
 		'smack-repl',
 		'smack-openpgp',
 		'smack-openpgp-bouncycastle'
+

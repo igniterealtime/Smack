@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus.
+ * Copyright 2017 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,23 @@ package org.jivesoftware.smackx.ox.element;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jxmpp.jid.Jid;
 
 public class SigncryptElement extends EncryptedOpenPgpContentElement {
 
     public static final String ELEMENT = "signcrypt";
 
-    public SigncryptElement(List<Jid> to, String rpad, Date timestamp, List<ExtensionElement> payload) {
+    public SigncryptElement(Set<Jid> to, String rpad, Date timestamp, List<ExtensionElement> payload) {
         super(to, rpad, timestamp, payload);
+    }
+
+    public SigncryptElement(Set<Jid> to, List<ExtensionElement> payload) {
+        super(to, payload);
     }
 
     @Override
@@ -36,9 +43,11 @@ public class SigncryptElement extends EncryptedOpenPgpContentElement {
     }
 
     @Override
-    public CharSequence toXML() {
-        // TODO Auto-generated method stub
-        return null;
+    public XmlStringBuilder toXML(String enclosingNamespace) {
+        XmlStringBuilder xml = new XmlStringBuilder(this).rightAngleBracket();
+        addCommonXml(xml);
+        xml.closeElement(this);
+        return xml;
     }
 
 }

@@ -20,11 +20,13 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.ox.element.SignElement;
+
 import org.xmlpull.v1.XmlPullParser;
 
 public class SignElementProvider extends OpenPgpContentElementProvider<SignElement> {
 
     private static final Logger LOGGER = Logger.getLogger(SigncryptElementProvider.class.getName());
+    public static final SignElementProvider TEST_INSTANCE = new SignElementProvider();
 
     @Override
     public SignElement parse(XmlPullParser parser, int initialDepth) throws Exception {

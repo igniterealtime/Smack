@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus.
+ * Copyright 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,20 @@
  */
 package org.jivesoftware.smackx.ox.provider;
 
-import org.jivesoftware.smackx.ox.element.CryptElement;
+import java.nio.charset.Charset;
+
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smackx.ox.element.SecretkeyElement;
 
 import org.xmlpull.v1.XmlPullParser;
 
-public class CryptElementProvider extends OpenPgpContentElementProvider<CryptElement> {
+public class SecretkeyElementProvider extends ExtensionElementProvider<SecretkeyElement> {
 
-    public static final CryptElementProvider TEST_INSTANCE = new CryptElementProvider();
+    public static final SecretkeyElementProvider TEST_INSTANCE = new SecretkeyElementProvider();
 
     @Override
-    public CryptElement parse(XmlPullParser parser, int initialDepth)
-            throws Exception {
-        OpenPgpContentElementData data = parseOpenPgpContentElementData(parser, initialDepth);
-
-        return new CryptElement(data.to, data.rpad, data.timestamp, data.payload);
+    public SecretkeyElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+        String data = parser.nextText();
+        return new SecretkeyElement(data.getBytes(Charset.forName("UTF-8")));
     }
-
 }
