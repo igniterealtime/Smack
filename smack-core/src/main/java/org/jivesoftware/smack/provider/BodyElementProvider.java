@@ -28,11 +28,8 @@ public class BodyElementProvider extends ExtensionElementProvider<Message.Body> 
     @Override
     public Message.Body parse(XmlPullParser parser, int initialDepth) throws Exception {
         String xmlLang = ParserUtils.getXmlLang(parser);
-        if (xmlLang == null) {
-            xmlLang = "en";
-        }
-
         String body = parseElementText(parser);
+
         return new Message.Body(xmlLang, body);
     }
 }
