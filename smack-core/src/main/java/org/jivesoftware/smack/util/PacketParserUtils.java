@@ -482,8 +482,7 @@ public class PacketParserUtils {
             if (!(event == XmlPullParser.START_TAG && parser.isEmptyElementTag())) {
                 CharSequence text = parser.getText();
                 if (event == XmlPullParser.TEXT) {
-                    // TODO the toString() can be removed in Smack 4.2.
-                    text = StringUtils.escapeForXmlText(text.toString());
+                    text = StringUtils.escapeForXmlText(text);
                 }
                 sb.append(text);
             }
