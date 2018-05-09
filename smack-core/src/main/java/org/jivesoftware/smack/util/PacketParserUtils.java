@@ -231,16 +231,7 @@ public class PacketParserUtils {
             message.setType(Message.Type.fromString(typeString));
         }
         String language = getLanguageAttribute(parser);
-
-        // determine message's default language
-        String defaultLanguage;
-        if (language != null && !"".equals(language.trim())) {
-            message.setLanguage(language);
-            defaultLanguage = language;
-        }
-        else {
-            defaultLanguage = Stanza.getDefaultLanguage();
-        }
+        message.setLanguage(language);
 
         // Parse sub-elements. We include extra logic to make sure the values
         // are only read once. This is because it's possible for the names to appear
