@@ -230,7 +230,7 @@ public class PacketParserUtils {
         if (typeString != null) {
             message.setType(Message.Type.fromString(typeString));
         }
-        String language = getLanguageAttribute(parser);
+        String language = ParserUtils.getXmlLang(parser);
         message.setLanguage(language);
 
         // Parse sub-elements. We include extra logic to make sure the values
@@ -245,7 +245,7 @@ public class PacketParserUtils {
                 String namespace = parser.getNamespace();
                 switch (elementName) {
                 case "subject":
-                    String xmlLangSubject = getLanguageAttribute(parser);
+                    String xmlLangSubject = ParserUtils.getXmlLang(parser);
                     String subject = parseElementText(parser);
 
                     if (message.getSubject(xmlLangSubject) == null) {
@@ -517,7 +517,7 @@ public class PacketParserUtils {
         presence.setFrom(ParserUtils.getJidAttribute(parser, "from"));
         presence.setStanzaId(parser.getAttributeValue("", "id"));
 
-        String language = getLanguageAttribute(parser);
+        String language = ParserUtils.getXmlLang(parser);
         if (language != null && !"".equals(language.trim())) {
         // CHECKSTYLE:OFF
         	presence.setLanguage(language);
@@ -733,7 +733,7 @@ public class PacketParserUtils {
         if (descriptiveTexts == null) {
             descriptiveTexts = new HashMap<>();
         }
-        String xmllang = getLanguageAttribute(parser);
+        String xmllang = ParserUtils.getXmlLang(parser);
         if (xmllang == null) {
             // XMPPError assumes the default locale, 'en', or the empty string.
             // Establish the invariant that there is never null as a key.
@@ -975,23 +975,6 @@ public class PacketParserUtils {
         }
         return new Session.Feature(optional);
 
-    }
-
-    // TODO Remove this static method and use ParserUtils.getXmlLang(XmlPullParser) instead.
-    private static String getLanguageAttribute(XmlPullParser parser) {
-    // CHECKSTYLE:OFF
-    	for (int i = 0; i < parser.getAttributeCount(); i++) {
-            String attributeName = parser.getAttributeName(i);
-            if ( "xml:lang".equals(attributeName) ||
-    // CHECKSTYLE:ON
-                    ("lang".equals(attributeName) &&
-                            "xml".equals(parser.getAttributePrefix(i)))) {
-    // CHECKSTYLE:OFF
-    			return parser.getAttributeValue(i);
-    		}
-    	}
-    	return null;
-    // CHECKSTYLE:ON
     }
 
     @Deprecated
