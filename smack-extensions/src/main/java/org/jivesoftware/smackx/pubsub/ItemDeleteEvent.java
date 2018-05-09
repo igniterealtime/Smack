@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * Represents an event in which items have been deleted from the node.
- * 
+ *
  * @author Robin Collier
  */
 public class ItemDeleteEvent extends SubscriptionEvent {
@@ -30,9 +30,9 @@ public class ItemDeleteEvent extends SubscriptionEvent {
     /**
      * Constructs an <tt>ItemDeleteEvent</tt> that indicates the the supplied
      * items (by id) have been deleted, and that the event matches the listed
-     * subscriptions.  The subscriptions would have been created by calling 
+     * subscriptions.  The subscriptions would have been created by calling
      * {@link LeafNode#subscribe(String)}.
-     * 
+     *
      * @param nodeId The id of the node the event came from
      * @param deletedItemIds The item ids of the items that were deleted.
      * @param subscriptionIds The subscriptions that match the event.
@@ -47,7 +47,7 @@ public class ItemDeleteEvent extends SubscriptionEvent {
 
     /**
      * Get the item id's of the items that have been deleted.
-     * 
+     *
      * @return List of item id's
      */
     public List<String> getItemIds() {

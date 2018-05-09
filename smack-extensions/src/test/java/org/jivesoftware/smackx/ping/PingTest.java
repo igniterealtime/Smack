@@ -47,7 +47,7 @@ public class PingTest extends InitExtensions {
     public void checkProvider() throws Exception {
         // @formatter:off
         String control = "<iq from='capulet.lit' to='juliet@capulet.lit/balcony' id='s2c1' type='get'>"
-                + "<ping xmlns='urn:xmpp:ping'/>" 
+                + "<ping xmlns='urn:xmpp:ping'/>"
                 + "</iq>";
         // @formatter:on
         DummyConnection con = new DummyConnection();
@@ -98,10 +98,10 @@ public class PingTest extends InitExtensions {
 
     /**
      * DummyConnection will not reply so it will timeout.
-     * @throws SmackException 
-     * @throws XMPPException 
-     * @throws IOException 
-     * @throws InterruptedException 
+     * @throws SmackException
+     * @throws XMPPException
+     * @throws IOException
+     * @throws InterruptedException
      */
     @Test
     public void checkFailedPingOnTimeout() throws SmackException, IOException, XMPPException, InterruptedException {
@@ -125,12 +125,12 @@ public class PingTest extends InitExtensions {
     public void checkFailedPingToEntityError() throws Exception {
         ThreadedDummyConnection threadedCon = getAuthenticatedDummyConnection();
         // @formatter:off
-        String reply = 
+        String reply =
                 "<iq type='error' id='qrzSp-16' to='test@myserver.com'>" +
                         "<ping xmlns='urn:xmpp:ping'/>" +
                         "<error type='cancel'>" +
                             "<service-unavailable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
-                        "</error>" + 
+                        "</error>" +
                  "</iq>";
         // @formatter:on
         IQ serviceUnavailable = PacketParserUtils.parseStanza(reply);
@@ -161,12 +161,12 @@ public class PingTest extends InitExtensions {
     public void checkPingToServerError() throws Exception {
         ThreadedDummyConnection con = getAuthenticatedDummyConnection();
         // @formatter:off
-        String reply = 
+        String reply =
                 "<iq type='error' id='qrzSp-16' to='test@myserver.com' from='" + con.getXMPPServiceDomain() + "'>" +
                         "<ping xmlns='urn:xmpp:ping'/>" +
                         "<error type='cancel'>" +
                             "<service-unavailable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
-                        "</error>" + 
+                        "</error>" +
                  "</iq>";
         // @formatter:on
         IQ serviceUnavailable = PacketParserUtils.parseStanza(reply);
@@ -195,7 +195,7 @@ public class PingTest extends InitExtensions {
         info.addFeature(Ping.NAMESPACE);
 
         // @formatter:off
-        String reply = 
+        String reply =
                 "<iq type='result' id='qrzSp-16' to='test@myserver.com'>" +
                         "<query xmlns='http://jabber.org/protocol/disco#info'><identity category='client' type='pc' name='Pidgin'/>" +
                             "<feature var='urn:xmpp:ping'/>" +
@@ -217,7 +217,7 @@ public class PingTest extends InitExtensions {
         info.addFeature(Ping.NAMESPACE);
 
         // @formatter:off
-        String reply = 
+        String reply =
                 "<iq type='result' id='qrzSp-16' to='test@myserver.com'>" +
                         "<query xmlns='http://jabber.org/protocol/disco#info'><identity category='client' type='pc' name='Pidgin'/>" +
                             "<feature var='urn:xmpp:noping'/>" +
@@ -241,12 +241,12 @@ public class PingTest extends InitExtensions {
 
     /**
      * The returned connection won't send replies to IQs
-     * 
+     *
      * @return
-     * @throws XMPPException 
-     * @throws IOException 
-     * @throws SmackException 
-     * @throws InterruptedException 
+     * @throws XMPPException
+     * @throws IOException
+     * @throws SmackException
+     * @throws InterruptedException
      */
     private static DummyConnection getAuthenticatedDummyConnectionWithoutIqReplies() throws SmackException, IOException, XMPPException, InterruptedException {
         DummyConnection con = new DummyConnection();

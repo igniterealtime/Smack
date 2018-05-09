@@ -27,7 +27,7 @@ import org.jxmpp.jid.EntityBareJid;
  * Represents a request to the server to destroy a room. The sender of the request should be the
  * room's owner. If the sender of the destroy request is not the room's owner then the server will
  * answer a "Forbidden" error.
- * 
+ *
  * @author Gaston Dombiak
  */
 public class Destroy implements NamedElement, Serializable {
@@ -52,7 +52,7 @@ public class Destroy implements NamedElement, Serializable {
 
     /**
      * Returns the JID of an alternate location since the current room is being destroyed.
-     * 
+     *
      * @return the JID of an alternate location.
      */
     public EntityBareJid getJid() {
@@ -61,7 +61,7 @@ public class Destroy implements NamedElement, Serializable {
 
     /**
      * Returns the reason for the room destruction.
-     * 
+     *
      * @return the reason for the room destruction.
      */
     public String getReason() {

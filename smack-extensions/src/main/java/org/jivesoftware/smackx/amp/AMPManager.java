@@ -85,10 +85,10 @@ public class AMPManager {
      * @param connection active xmpp connection
      * @param action action to check
      * @return true if this action is supported.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public static boolean isActionSupported(XMPPConnection connection, AMPExtension.Action action) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         String featureName = AMPExtension.NAMESPACE + "?action=" + action.toString();
@@ -100,10 +100,10 @@ public class AMPManager {
      * @param connection active xmpp connection
      * @param conditionName name of condition to check
      * @return true if this condition is supported.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      * @see AMPDeliverCondition
      * @see AMPExpireAtCondition
      * @see AMPMatchResourceCondition

@@ -140,12 +140,12 @@ public class PacketParserUtils {
 
     /**
      * Tries to parse and return either a Message, IQ or Presence stanza.
-     * 
+     *
      * connection is optional and is used to return feature-not-implemented errors for unknown IQ stanzas.
      *
      * @param parser
      * @return a stanza which is either a Message, IQ or Presence.
-     * @throws Exception 
+     * @throws Exception
      */
     public static Stanza parseStanza(XmlPullParser parser) throws Exception {
         ParserUtils.assertAtStartTag(parser);
@@ -170,7 +170,7 @@ public class PacketParserUtils {
      * <code>getText()</code> if the parser is on START_TAG or END_TAG. So you must not rely on this
      * behavior when using the parser.
      * </p>
-     * 
+     *
      * @return A suitable XmlPullParser for XMPP parsing
      * @throws XmlPullParserException
      */
@@ -198,7 +198,7 @@ public class PacketParserUtils {
      * <code>getText()</code> if the parser is on START_TAG or END_TAG. So you must not rely on this
      * behavior when using the parser.
      * </p>
-     * 
+     *
      * @param reader
      * @return A suitable XmlPullParser for XMPP parsing
      * @throws XmlPullParserException
@@ -214,7 +214,7 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of a message packet.
      * @return a Message packet.
-     * @throws Exception 
+     * @throws Exception
      */
     public static Message parseMessage(XmlPullParser parser)
                     throws Exception {
@@ -291,7 +291,7 @@ public class PacketParserUtils {
      * </p>
      * This method is used for the parts where the XMPP specification requires elements that contain
      * only text or are the empty element.
-     * 
+     *
      * @param parser
      * @return the textual content of the element as String
      * @throws XmlPullParserException
@@ -362,7 +362,7 @@ public class PacketParserUtils {
      * closing tag of the same depth is returned as String.
      * </p>
      * Note that only the outermost namespace attributes ("xmlns") will be returned, not nested ones.
-     * 
+     *
      * @param parser the XML pull parser
      * @return the content of a tag
      * @throws XmlPullParserException if parser encounters invalid XML
@@ -399,7 +399,7 @@ public class PacketParserUtils {
      * <p>
      * In particular Android's XmlPullParser does not support XML_ROUNDTRIP.
      * </p>
-     * 
+     *
      * @param parser
      * @param depth
      * @param fullNamespaces
@@ -499,7 +499,7 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of a presence packet.
      * @return a Presence packet.
-     * @throws Exception 
+     * @throws Exception
      */
     public static Presence parsePresence(XmlPullParser parser)
                     throws Exception {
@@ -662,8 +662,8 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of the mechanisms stanza.
      * @return a collection of Stings with the mechanisms included in the mechanisms stanza.
-     * @throws IOException 
-     * @throws XmlPullParserException 
+     * @throws IOException
+     * @throws XmlPullParserException
      */
     public static Collection<String> parseMechanisms(XmlPullParser parser)
                     throws XmlPullParserException, IOException {
@@ -747,11 +747,11 @@ public class PacketParserUtils {
 
     /**
      * Parses SASL authentication error packets.
-     * 
+     *
      * @param parser the XML parser.
      * @return a SASL Failure packet.
-     * @throws IOException 
-     * @throws XmlPullParserException 
+     * @throws IOException
+     * @throws XmlPullParserException
      */
     public static SASLFailure parseSASLFailure(XmlPullParser parser) throws XmlPullParserException, IOException {
         final int initialDepth = parser.getDepth();
@@ -835,7 +835,7 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser.
      * @return an error sub-packet.
-     * @throws Exception 
+     * @throws Exception
      */
     public static StanzaError.Builder parseError(XmlPullParser parser)
                     throws Exception {

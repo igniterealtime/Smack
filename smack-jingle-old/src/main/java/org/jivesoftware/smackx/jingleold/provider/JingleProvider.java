@@ -34,14 +34,14 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * The JingleProvider parses Jingle packets.
- * 
+ *
  * @author Alvaro Saurin
  */
 public class JingleProvider extends IQProvider<Jingle> {
 
     /**
      * Parse a iq/jingle element.
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public Jingle parse(XmlPullParser parser, int intialDepth)

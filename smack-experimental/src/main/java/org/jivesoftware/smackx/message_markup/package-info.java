@@ -17,9 +17,9 @@
 
 /**
  * XEP-0394: Message Markup.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0394.html">XEP-0394: Message
  *      Markup</a>
- * 
+ *
  */
 package org.jivesoftware.smackx.message_markup;

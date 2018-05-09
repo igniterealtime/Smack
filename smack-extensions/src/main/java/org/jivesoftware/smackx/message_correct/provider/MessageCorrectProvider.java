@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParserException;
 /**
  * A ExtensionElementProvider for the MessageCorrectExtension. As
  * MessageCorrection elements have only the ID of the message to replace.
- * 
+ *
  * @author Fernando Ramirez, f.e.ramirez94@gmail.com
  */
 public class MessageCorrectProvider extends ExtensionElementProvider<MessageCorrectExtension> {

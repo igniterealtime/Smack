@@ -36,7 +36,7 @@ import org.powermock.reflect.Whitebox;
 
 /**
  * Test for the CloseListener class.
- * 
+ *
  * @author Henning Staib
  */
 public class DataListenerTest extends InitExtensions {
@@ -47,7 +47,7 @@ public class DataListenerTest extends InitExtensions {
     /**
      * If a data stanza of an unknown session is received it should be replied
      * with an &lt;item-not-found/&gt; error.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test

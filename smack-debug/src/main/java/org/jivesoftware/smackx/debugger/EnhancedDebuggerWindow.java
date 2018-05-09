@@ -219,10 +219,10 @@ public final class EnhancedDebuggerWindow {
         }
 
         // We'll arrange the UI into tabs. The last tab contains Smack's information.
-        // All the connection debugger tabs will be shown before the Smack info tab. 
+        // All the connection debugger tabs will be shown before the Smack info tab.
         tabbedPane = new JTabbedPane();
 
-        // Create the Smack info panel 
+        // Create the Smack info panel
         JPanel informationPanel = new JPanel();
         informationPanel.setLayout(new BoxLayout(informationPanel, BoxLayout.Y_AXIS));
 

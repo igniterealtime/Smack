@@ -38,9 +38,9 @@ public interface NodeInformationProvider {
 
     /**
      * Returns a list of the Items {@link org.jivesoftware.smackx.disco.packet.DiscoverItems.Item}
-     * defined in the node. For example, the MUC protocol specifies that an XMPP client should 
+     * defined in the node. For example, the MUC protocol specifies that an XMPP client should
      * answer an Item for each joined room when asked for the rooms where the use has joined.
-     *  
+     *
      * @return a list of the Items defined in the node.
      */
     List<DiscoverItems.Item> getNodeItems();

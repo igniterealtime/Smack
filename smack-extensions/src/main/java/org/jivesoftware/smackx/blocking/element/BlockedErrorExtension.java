@@ -25,7 +25,7 @@ import org.jivesoftware.smackx.blocking.BlockingCommandManager;
 
 /**
  * Blocked error extension class.
- * 
+ *
  * @author Fernando Ramirez
  * @see <a href="http://xmpp.org/extensions/xep-0191.html">XEP-0191: Blocking
  *      Command</a>
@@ -64,7 +64,7 @@ public class BlockedErrorExtension implements ExtensionElement {
      * Check if a message contains a BlockedErrorExtension, which means that a
      * message was blocked because the JID blocked the sender, and that was
      * reflected back as an error message.
-     * 
+     *
      * @param message
      * @return true if the message contains a BlockedErrorExtension, false if
      *         not

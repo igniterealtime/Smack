@@ -53,7 +53,7 @@ public final class VCardManager extends Manager {
     /**
      * Retrieves a {@link VCardManager} for the specified {@link XMPPConnection}, creating one if it doesn't already
      * exist.
-     * 
+     *
      * @param connection the connection the manager is attached to.
      * @return The new or existing manager.
      */
@@ -68,14 +68,14 @@ public final class VCardManager extends Manager {
 
     /**
      * Returns true if the given entity understands the vCard-XML format and allows the exchange of such.
-     * 
+     *
      * @param jid
      * @param connection
      * @return true if the given entity understands the vCard-XML format and exchange.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      * @deprecated use {@link #isSupported(Jid)} instead.
      */
     @Deprecated
@@ -96,8 +96,8 @@ public final class VCardManager extends Manager {
      *
      * @throws XMPPErrorException thrown if there was an issue setting the VCard in the server.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void saveVCard(VCard vcard) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // XEP-54 § 3.2 "A user may publish or update his or her vCard by sending an IQ of type "set" with no 'to' address…"
@@ -113,10 +113,10 @@ public final class VCardManager extends Manager {
      * Load the VCard of the current user.
      *
      * @return VCard.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public VCard loadVCard() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return loadVCard(null);
@@ -128,10 +128,10 @@ public final class VCardManager extends Manager {
      * @param bareJid bareJid of the user.
      *
      * @return VCard.
-     * @throws XMPPErrorException 
+     * @throws XMPPErrorException
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public VCard loadVCard(EntityBareJid bareJid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         VCard vcardRequest = new VCard();
@@ -142,13 +142,13 @@ public final class VCardManager extends Manager {
 
     /**
      * Returns true if the given entity understands the vCard-XML format and allows the exchange of such.
-     * 
+     *
      * @param jid
      * @return true if the given entity understands the vCard-XML format and exchange.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public boolean isSupported(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, NAMESPACE);

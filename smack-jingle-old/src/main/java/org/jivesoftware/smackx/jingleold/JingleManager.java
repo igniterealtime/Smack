@@ -194,8 +194,8 @@ public class JingleManager implements JingleSessionListener {
      *
      * @param connection             XMPP XMPPConnection to be used
      * @param jingleMediaManagers     an implemented JingleMediaManager to be used.
-     * @throws SmackException 
-     * @throws XMPPException 
+     * @throws SmackException
+     * @throws XMPPException
      */
     public JingleManager(XMPPConnection connection, List<JingleMediaManager> jingleMediaManagers) throws XMPPException, SmackException {
         this.connection = connection;
@@ -303,8 +303,8 @@ public class JingleManager implements JingleSessionListener {
      * @return a boolean indicating whether the specified user handles Jingle
      *         messages
      * @throws SmackException if there was no response from the server.
-     * @throws XMPPException 
-     * @throws InterruptedException 
+     * @throws XMPPException
+     * @throws InterruptedException
      */
     public static boolean isServiceEnabled(XMPPConnection connection, Jid userID) throws XMPPException, SmackException, InterruptedException {
             return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(userID, Jingle.NAMESPACE);

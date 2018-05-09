@@ -40,7 +40,7 @@ import org.mockito.stubbing.Answer;
 
 /**
  * A collection of utility methods to create mocked XMPP connections.
- * 
+ *
  * @author Henning Staib
  */
 public class ConnectionUtils {
@@ -52,7 +52,7 @@ public class ConnectionUtils {
      * <p>
      * This mocked connection can used to collect packets that require a reply using a
      * StanzaCollector.
-     * 
+     *
      * <pre>
      * <code>
      *   StanzaCollector collector = connection.createStanzaCollector(new PacketFilter());
@@ -60,13 +60,13 @@ public class ConnectionUtils {
      *   Stanza reply = collector.nextResult();
      * </code>
      * </pre>
-     * 
+     *
      * @param protocol protocol helper containing answer packets
      * @param initiatorJID the user associated to the XMPP connection
      * @return a mocked XMPP connection
-     * @throws SmackException 
-     * @throws XMPPErrorException 
-     * @throws InterruptedException 
+     * @throws SmackException
+     * @throws XMPPErrorException
+     * @throws InterruptedException
      */
     public static XMPPConnection createMockedConnection(final Protocol protocol,
                     EntityFullJid initiatorJID) throws SmackException, XMPPErrorException, InterruptedException {

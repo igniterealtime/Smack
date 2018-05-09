@@ -26,7 +26,7 @@ import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 
 /**
  * Socks5BytestreamSession class represents a SOCKS5 Bytestream session.
- * 
+ *
  * @author Henning Staib
  */
 public class Socks5BytestreamSession implements BytestreamSession {
@@ -45,7 +45,7 @@ public class Socks5BytestreamSession implements BytestreamSession {
     /**
      * Returns <code>true</code> if the session is established through a direct connection between
      * the initiator and target, <code>false</code> if the session is mediated over a SOCKS proxy.
-     * 
+     *
      * @return <code>true</code> if session is a direct connection, <code>false</code> if session is
      *         mediated over a SOCKS5 proxy
      */
@@ -56,7 +56,7 @@ public class Socks5BytestreamSession implements BytestreamSession {
     /**
      * Returns <code>true</code> if the session is mediated over a SOCKS proxy, <code>false</code>
      * if this session is established through a direct connection between the initiator and target.
-     * 
+     *
      * @return <code>true</code> if session is mediated over a SOCKS5 proxy, <code>false</code> if
      *         session is a direct connection
      */

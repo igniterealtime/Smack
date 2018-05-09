@@ -35,7 +35,7 @@ import org.jivesoftware.smackx.filetransfer.StreamNegotiator;
  * listeners for a SOCKS5 bytestream request InitiationListener will always refuse the request and
  * reply with a &lt;not-acceptable/&gt; error (<a
  * href="http://xmpp.org/extensions/xep-0065.html#usecase-alternate">XEP-0065</a> Section 5.2.A2).
- * 
+ *
  * @author Henning Staib
  */
 final class InitiationListener extends AbstractIqRequestHandler {
@@ -49,7 +49,7 @@ final class InitiationListener extends AbstractIqRequestHandler {
 
     /**
      * Constructor
-     * 
+     *
      * @param manager the SOCKS5 Bytestream manager
      */
     protected InitiationListener(Socks5BytestreamManager manager) {

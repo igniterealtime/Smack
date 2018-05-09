@@ -25,14 +25,14 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.util.XmppDateTime;
 
 /**
- * Represents timestamp information about data stored for later delivery. A DelayInformation will 
- * always includes the timestamp when the stanza was originally sent and may include more 
+ * Represents timestamp information about data stored for later delivery. A DelayInformation will
+ * always includes the timestamp when the stanza was originally sent and may include more
  * information such as the JID of the entity that originally sent the stanza as well as the reason
  * for the delay.<p>
- * 
+ *
  * For more information see <a href="http://xmpp.org/extensions/xep-0091.html">XEP-0091</a>
  * and <a href="http://xmpp.org/extensions/xep-0203.html">XEP-0203</a>.
- * 
+ *
  * @author Gaston Dombiak
  * @author Florian Schmaus
  */
@@ -45,7 +45,7 @@ public class DelayInformation implements ExtensionElement {
     private final String reason;
 
     /**
-     * Creates a new instance with the specified timestamp. 
+     * Creates a new instance with the specified timestamp.
      * @param stamp the timestamp
      * @param from sender
      * @param reason reason of delay.
@@ -61,10 +61,10 @@ public class DelayInformation implements ExtensionElement {
     }
 
     /**
-     * Returns the JID of the entity that originally sent the stanza or that delayed the 
+     * Returns the JID of the entity that originally sent the stanza or that delayed the
      * delivery of the stanza or <tt>null</tt> if this information is not available.
-     * 
-     * @return the JID of the entity that originally sent the stanza or that delayed the 
+     *
+     * @return the JID of the entity that originally sent the stanza or that delayed the
      *         delivery of the packet.
      */
     public String getFrom() {
@@ -72,9 +72,9 @@ public class DelayInformation implements ExtensionElement {
     }
 
     /**
-     * Returns the timestamp when the stanza was originally sent. The returned Date is 
+     * Returns the timestamp when the stanza was originally sent. The returned Date is
      * be understood as UTC.
-     * 
+     *
      * @return the timestamp when the stanza was originally sent.
      */
     public Date getStamp() {
@@ -82,9 +82,9 @@ public class DelayInformation implements ExtensionElement {
     }
 
     /**
-     * Returns a natural-language description of the reason for the delay or <tt>null</tt> if 
+     * Returns a natural-language description of the reason for the delay or <tt>null</tt> if
      * this information is not available.
-     * 
+     *
      * @return a natural-language description of the reason for the delay or <tt>null</tt>.
      */
     public String getReason() {

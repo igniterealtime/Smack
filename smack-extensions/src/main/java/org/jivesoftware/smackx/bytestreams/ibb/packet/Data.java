@@ -21,7 +21,7 @@ import org.jivesoftware.smack.packet.IQ;
 /**
  * Represents a chunk of data sent over an In-Band Bytestream encapsulated in an
  * IQ stanza.
- * 
+ *
  * @author Henning Staib
  */
 public class Data extends IQ {
@@ -31,7 +31,7 @@ public class Data extends IQ {
 
     /**
      * Constructor.
-     * 
+     *
      * @param data data stanza extension containing the encoded data
      */
     public Data(DataPacketExtension data) {
@@ -46,7 +46,7 @@ public class Data extends IQ {
 
     /**
      * Returns the data stanza extension.
-     * 
+     *
      * @return the data stanza extension
      */
     public DataPacketExtension getDataPacketExtension() {

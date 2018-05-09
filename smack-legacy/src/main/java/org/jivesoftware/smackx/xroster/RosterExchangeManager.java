@@ -41,9 +41,9 @@ import org.jxmpp.jid.Jid;
 
 /**
  *
- * Manages Roster exchanges. A RosterExchangeManager provides a high level access to send 
+ * Manages Roster exchanges. A RosterExchangeManager provides a high level access to send
  * rosters, roster groups and roster entries to XMPP clients. It also provides an easy way
- * to hook up custom logic when entries are received from another XMPP client through 
+ * to hook up custom logic when entries are received from another XMPP client through
  * RosterExchangeListeners.
  *
  * @author Gaston Dombiak
@@ -102,7 +102,7 @@ public class RosterExchangeManager {
     }
 
     /**
-     * Removes a listener from roster exchanges. The listener will be fired anytime roster 
+     * Removes a listener from roster exchanges. The listener will be fired anytime roster
      * entries are received from remote XMPP clients.
      *
      * @param rosterExchangeListener a roster exchange listener..
@@ -114,11 +114,11 @@ public class RosterExchangeManager {
     /**
      * Sends a roster to userID. All the entries of the roster will be sent to the
      * target user.
-     * 
+     *
      * @param roster the roster to send
      * @param targetUserID the user that will receive the roster entries
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void send(Roster roster, Jid targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
@@ -134,11 +134,11 @@ public class RosterExchangeManager {
 
     /**
      * Sends a roster entry to userID.
-     * 
+     *
      * @param rosterEntry the roster entry to send
      * @param targetUserID the user that will receive the roster entries
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void send(RosterEntry rosterEntry, Jid targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
@@ -154,13 +154,13 @@ public class RosterExchangeManager {
     }
 
     /**
-     * Sends a roster group to userID. All the entries of the group will be sent to the 
+     * Sends a roster group to userID. All the entries of the group will be sent to the
      * target user.
-     * 
+     *
      * @param rosterGroup the roster group to send
      * @param targetUserID the user that will receive the roster entries
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void send(RosterGroup rosterGroup, Jid targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster

@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * Represents the element holding the list of subscription elements.
- * 
+ *
  * @author Robin Collier
  */
 public class SubscriptionsExtension extends NodeExtension {
@@ -49,7 +49,7 @@ public class SubscriptionsExtension extends NodeExtension {
 
     /**
      * Subscriptions to the root node.
-     * 
+     *
      * @param subList The list of subscriptions
      */
     public SubscriptionsExtension(List<Subscription> subList) {
@@ -58,7 +58,7 @@ public class SubscriptionsExtension extends NodeExtension {
 
     /**
      * Subscriptions to the specified node.
-     * 
+     *
      * @param nodeId The node subscribed to
      * @param subList The list of subscriptions
      */
@@ -68,7 +68,7 @@ public class SubscriptionsExtension extends NodeExtension {
 
     /**
      * Subscriptions to the specified node.
-     * 
+     *
      * @param subscriptionsNamespace the namespace used by this element
      * @param nodeId The node subscribed to
      * @param subList The list of subscriptions
@@ -83,7 +83,7 @@ public class SubscriptionsExtension extends NodeExtension {
 
     /**
      * Gets the list of subscriptions.
-     * 
+     *
      * @return List of subscriptions
      */
     public List<Subscription> getSubscriptions() {

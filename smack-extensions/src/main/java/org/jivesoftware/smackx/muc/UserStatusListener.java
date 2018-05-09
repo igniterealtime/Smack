@@ -20,9 +20,9 @@ package org.jivesoftware.smackx.muc;
 import org.jxmpp.jid.Jid;
 
 /**
- * A listener that is fired anytime your participant's status in a room is changed, such as the 
+ * A listener that is fired anytime your participant's status in a room is changed, such as the
  * user being kicked, banned, or granted admin permissions or the room is destroyed.
- * 
+ *
  * @author Gaston Dombiak
  */
 public interface UserStatusListener {
@@ -30,102 +30,102 @@ public interface UserStatusListener {
     /**
      * Called when a moderator kicked your user from the room. This means that you are no longer
      * participanting in the room.
-     * 
+     *
      * @param actor the moderator that kicked your user from the room (e.g. user@host.org).
      * @param reason the reason provided by the actor to kick you from the room.
      */
      void kicked(Jid actor, String reason);
 
     /**
-     * Called when a moderator grants voice to your user. This means that you were a visitor in 
-     * the moderated room before and now you can participate in the room by sending messages to 
+     * Called when a moderator grants voice to your user. This means that you were a visitor in
+     * the moderated room before and now you can participate in the room by sending messages to
      * all occupants.
-     * 
+     *
      */
      void voiceGranted();
 
     /**
-     * Called when a moderator revokes voice from your user. This means that you were a 
-     * participant in the room able to speak and now you are a visitor that can't send 
+     * Called when a moderator revokes voice from your user. This means that you were a
+     * participant in the room able to speak and now you are a visitor that can't send
      * messages to the room occupants.
-     * 
+     *
      */
      void voiceRevoked();
 
     /**
-     * Called when an administrator or owner banned your user from the room. This means that you 
+     * Called when an administrator or owner banned your user from the room. This means that you
      * will no longer be able to join the room unless the ban has been removed.
-     * 
+     *
      * @param actor the administrator that banned your user (e.g. user@host.org).
      * @param reason the reason provided by the administrator to banned you.
      */
      void banned(Jid actor, String reason);
 
     /**
-     * Called when an administrator grants your user membership to the room. This means that you 
-     * will be able to join the members-only room. 
-     * 
+     * Called when an administrator grants your user membership to the room. This means that you
+     * will be able to join the members-only room.
+     *
      */
      void membershipGranted();
 
     /**
-     * Called when an administrator revokes your user membership to the room. This means that you 
+     * Called when an administrator revokes your user membership to the room. This means that you
      * will not be able to join the members-only room.
-     * 
+     *
      */
      void membershipRevoked();
 
     /**
-     * Called when an administrator grants moderator privileges to your user. This means that you 
-     * will be able to kick users, grant and revoke voice, invite other users, modify room's 
+     * Called when an administrator grants moderator privileges to your user. This means that you
+     * will be able to kick users, grant and revoke voice, invite other users, modify room's
      * subject plus all the partcipants privileges.
-     * 
+     *
      */
      void moderatorGranted();
 
     /**
-     * Called when an administrator revokes moderator privileges from your user. This means that 
-     * you will no longer be able to kick users, grant and revoke voice, invite other users, 
+     * Called when an administrator revokes moderator privileges from your user. This means that
+     * you will no longer be able to kick users, grant and revoke voice, invite other users,
      * modify room's subject plus all the partcipants privileges.
-     * 
+     *
      */
      void moderatorRevoked();
 
     /**
-     * Called when an owner grants to your user ownership on the room. This means that you 
-     * will be able to change defining room features as well as perform all administrative 
+     * Called when an owner grants to your user ownership on the room. This means that you
+     * will be able to change defining room features as well as perform all administrative
      * functions.
-     * 
+     *
      */
      void ownershipGranted();
 
     /**
-     * Called when an owner revokes from your user ownership on the room. This means that you 
-     * will no longer be able to change defining room features as well as perform all 
+     * Called when an owner revokes from your user ownership on the room. This means that you
+     * will no longer be able to change defining room features as well as perform all
      * administrative functions.
-     * 
+     *
      */
      void ownershipRevoked();
 
     /**
-     * Called when an owner grants administrator privileges to your user. This means that you 
-     * will be able to perform administrative functions such as banning users and edit moderator 
+     * Called when an owner grants administrator privileges to your user. This means that you
+     * will be able to perform administrative functions such as banning users and edit moderator
      * list.
-     * 
+     *
      */
      void adminGranted();
 
     /**
-     * Called when an owner revokes administrator privileges from your user. This means that you 
-     * will no longer be able to perform administrative functions such as banning users and edit 
+     * Called when an owner revokes administrator privileges from your user. This means that you
+     * will no longer be able to perform administrative functions such as banning users and edit
      * moderator list.
-     * 
+     *
      */
      void adminRevoked();
 
     /**
      * Called when the room is destroyed.
-     * 
+     *
      * @param alternateMUC an alternate MultiUserChat, may be null.
      * @param reason the reason why the room was closed, may be null.
      */

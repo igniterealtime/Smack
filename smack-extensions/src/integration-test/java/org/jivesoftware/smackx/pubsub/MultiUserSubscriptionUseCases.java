@@ -24,7 +24,7 @@ import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.pubsub.test.PubSubTestCase;
 
 /**
- * 
+ *
  * @author Robin Collier
  *
  */

@@ -16,7 +16,7 @@
  */
 /**
  * Exceptions.
- * 
+ *
  * @author Paul Schaub
  * @see <a href="https://conversations.im/xeps/multi-end.html">XEP-0384: OMEMO</a>
  */

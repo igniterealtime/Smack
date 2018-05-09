@@ -30,11 +30,11 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Enable Push Notifications IQ.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0357.html">XEP-0357: Push
  *      Notifications</a>
  * @author Fernando Ramirez
- * 
+ *
  */
 public class EnablePushNotificationsIQ extends IQ {
 
@@ -66,7 +66,7 @@ public class EnablePushNotificationsIQ extends IQ {
 
     /**
      * Get the JID.
-     * 
+     *
      * @return the JID
      */
     public Jid getJid() {
@@ -75,7 +75,7 @@ public class EnablePushNotificationsIQ extends IQ {
 
     /**
      * Get the node.
-     * 
+     *
      * @return the node
      */
     public String getNode() {
@@ -84,7 +84,7 @@ public class EnablePushNotificationsIQ extends IQ {
 
     /**
      * Get the publish options.
-     * 
+     *
      * @return the publish options
      */
     public HashMap<String, String> getPublishOptions() {

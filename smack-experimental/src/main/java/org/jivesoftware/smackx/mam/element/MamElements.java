@@ -30,11 +30,11 @@ import org.jxmpp.jid.Jid;
 
 /**
  * MAM elements.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
  *      Archive Management</a>
  * @author Fernando Ramirez and Florian Schmaus
- * 
+ *
  */
 public class MamElements {
 
@@ -42,7 +42,7 @@ public class MamElements {
 
     /**
      * MAM result extension class.
-     * 
+     *
      * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
      *      Archive Management</a>
      *
@@ -71,7 +71,7 @@ public class MamElements {
 
         /**
          * MAM result extension constructor.
-         * 
+         *
          * @param queryId
          * @param id
          * @param forwarded
@@ -90,7 +90,7 @@ public class MamElements {
 
         /**
          * Get the id.
-         * 
+         *
          * @return the id
          */
         public String getId() {
@@ -99,7 +99,7 @@ public class MamElements {
 
         /**
          * Get the forwarded element.
-         * 
+         *
          * @return the forwarded element
          */
         public Forwarded getForwarded() {
@@ -108,7 +108,7 @@ public class MamElements {
 
         /**
          * Get query id.
-         * 
+         *
          * @return the query id
          */
         public final String getQueryId() {
@@ -159,7 +159,7 @@ public class MamElements {
 
         /**
          * Always JID list element constructor.
-         * 
+         *
          * @param alwaysJids
          */
         AlwaysJidListElement(List<Jid> alwaysJids) {
@@ -193,7 +193,7 @@ public class MamElements {
 
         /**
          * Never JID list element constructor.
-         * 
+         *
          * @param neverJids
          */
         public NeverJidListElement(List<Jid> neverJids) {

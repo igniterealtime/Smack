@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 /**
  * MUC Light room configuration class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */
@@ -32,7 +32,7 @@ public class MUCLightRoomConfiguration {
 
     /**
      * MUC Light room configuration model constructor.
-     * 
+     *
      * @param roomName
      * @param subject
      * @param customConfigs
@@ -45,7 +45,7 @@ public class MUCLightRoomConfiguration {
 
     /**
      * Returns the room name.
-     * 
+     *
      * @return the name of the room.
      */
     public String getRoomName() {
@@ -54,7 +54,7 @@ public class MUCLightRoomConfiguration {
 
     /**
      * Returns the room subject.
-     * 
+     *
      * @return the subject of the room.
      */
     public String getSubject() {
@@ -63,7 +63,7 @@ public class MUCLightRoomConfiguration {
 
     /**
      * Returns the room custom configurations.
-     * 
+     *
      * @return the custom configurations of the room.
      */
     public HashMap<String, String> getCustomConfigs() {

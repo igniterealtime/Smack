@@ -21,7 +21,7 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
 
 /**
  * Bits of Binary data class.
- * 
+ *
  * @author Fernando Ramirez
  * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0231.html">XEP-0231: Bits of
@@ -41,7 +41,7 @@ public class BoBData {
 
     /**
      * BoB data constructor.
-     * 
+     *
      * @param type
      * @param content
      * @param maxAge
@@ -64,7 +64,7 @@ public class BoBData {
 
     /**
      * Get the max age.
-     * 
+     *
      * @return the max age
      */
     public int getMaxAge() {
@@ -73,7 +73,7 @@ public class BoBData {
 
     /**
      * Get the type.
-     * 
+     *
      * @return the type
      */
     public String getType() {
@@ -89,7 +89,7 @@ public class BoBData {
 
     /**
      * Get the content.
-     * 
+     *
      * @return the content
      */
     public byte[] getContent() {
@@ -99,7 +99,7 @@ public class BoBData {
 
     /**
      * Get the content in a Base64 encoded String.
-     * 
+     *
      * @return the content in a Base64 encoded String
      */
     public String getContentBase64Encoded() {

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 /**
  * An image Quantizer based on the Octree algorithm. This is a very basic implementation
- * at present and could be much improved by picking the nodes to reduce more carefully 
+ * at present and could be much improved by picking the nodes to reduce more carefully
  * (i.e. not completely at random) when I get the time.
  */
 public class OctTreeQuantizer implements Quantizer {

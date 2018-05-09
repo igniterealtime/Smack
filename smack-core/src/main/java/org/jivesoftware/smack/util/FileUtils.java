@@ -102,7 +102,7 @@ public final class FileUtils {
      *
      * @param file
      * @return the content of file or null in case of an error
-     * @throws IOException 
+     * @throws IOException
      */
     @SuppressWarnings("DefaultCharset")
     public static String readFileOrThrow(File file) throws IOException {

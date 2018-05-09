@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * The MUCOwnerProvider parses MUCOwner packets. (@see MUCOwner)
- * 
+ *
  * @author Gaston Dombiak
  */
 public class MUCOwnerProvider extends IQProvider<MUCOwner> {

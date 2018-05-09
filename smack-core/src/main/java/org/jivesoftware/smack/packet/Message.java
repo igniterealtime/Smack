@@ -220,7 +220,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      */
     public void setSubject(String subject) {
         if (subject == null) {
-            removeSubject(""); // use empty string because #removeSubject(null) is ambiguous 
+            removeSubject(""); // use empty string because #removeSubject(null) is ambiguous
             return;
         }
         addSubject(null, subject);
@@ -751,7 +751,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         /**
          * Converts a String into the corresponding types. Valid String values that can be converted
          * to types are: "normal", "chat", "groupchat", "headline" and "error".
-         * 
+         *
          * @param string the String value to covert.
          * @return the corresponding Type.
          * @throws IllegalArgumentException when not able to parse the string parameter

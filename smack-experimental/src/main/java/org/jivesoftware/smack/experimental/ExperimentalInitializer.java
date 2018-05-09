@@ -20,7 +20,7 @@ import org.jivesoftware.smack.initializer.UrlInitializer;
 
 /**
  * Initializes the providers in the experimental code stream.
- * 
+ *
  * @author Florian Schmaus
  */
 public class ExperimentalInitializer extends UrlInitializer {

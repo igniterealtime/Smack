@@ -21,7 +21,7 @@ import org.jivesoftware.smack.provider.PacketExtensionProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * 
+ *
  * @author Robin Collier
  *
  */

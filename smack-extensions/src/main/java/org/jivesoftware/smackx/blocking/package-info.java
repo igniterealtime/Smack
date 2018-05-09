@@ -16,7 +16,7 @@
  */
 /**
  * Classes and interfaces of Blocking command.
- * 
+ *
  * @author Fernando Ramirez
  * @see <a href="http://xmpp.org/extensions/xep-0191.html">XEP-0191: Blocking
  *      Command</a>

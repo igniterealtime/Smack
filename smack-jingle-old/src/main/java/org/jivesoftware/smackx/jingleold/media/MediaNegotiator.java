@@ -42,7 +42,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleError;
  * for managing the descriptor negotiation process, handling all the xmpp
  * packets interchange and the stage control. handling all the xmpp packets
  * interchange and the stage control.
- * 
+ *
  * @author Thiago Camargo
  */
 public class MediaNegotiator extends JingleNegotiator {
@@ -67,7 +67,7 @@ public class MediaNegotiator extends JingleNegotiator {
      * Default constructor. The constructor establishes some basic parameters,
      * but it does not start the negotiation. For starting the negotiation, call
      * startNegotiation.
-     * 
+     *
      * @param session
      *            The jingle session.
      */
@@ -98,13 +98,13 @@ public class MediaNegotiator extends JingleNegotiator {
      * Dispatch an incoming packet. The method is responsible for recognizing
      * the stanza type and, depending on the current state, delivering the
      * stanza to the right event handler and wait for a response.
-     * 
+     *
      * @param iq
      *            the stanza received
      * @return the new Jingle stanza to send.
      * @throws XMPPException
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     @Override
     public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, NotConnectedException, InterruptedException {
@@ -198,14 +198,14 @@ public class MediaNegotiator extends JingleNegotiator {
     /**
       *  The other side has sent us a content-accept.  The payload types in that message may not match with what
       *  we sent, but XEP-167 says that the other side should retain the order of the payload types we first sent.
-      *  
+      *
       *  This means we can walk through our list, in order, until we find one from their list that matches.  This
       *  will be the best payload type to use.
-      *  
+      *
       *  @param jingle
       *  @return the iq
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
       */
     private IQ receiveContentAcceptAction(Jingle jingle, JingleDescription description) throws XMPPException, NotConnectedException, InterruptedException {
         IQ response;
@@ -262,7 +262,7 @@ public class MediaNegotiator extends JingleNegotiator {
     /**
      * A content info has been received. This is done for publishing the
      * list of payload types...
-     * 
+     *
      * @param jingle
      *            The input packet
      * @return a Jingle packet
@@ -302,7 +302,7 @@ public class MediaNegotiator extends JingleNegotiator {
     /**
      * A jmf description has been accepted. In this case, we must save the
      * accepted payload type and notify any listener...
-     * 
+     *
      * @param jin
      *            The input packet
      * @return a Jingle packet
@@ -340,7 +340,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
     /**
     * Return true if the content is negotiated.
-    * 
+    *
     * @return true if the content is negotiated.
     */
     public boolean isEstablished() {
@@ -349,7 +349,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
     /**
      * Return true if the content is fully negotiated.
-     * 
+     *
      * @return true if the content is fully negotiated.
      */
     public boolean isFullyEstablished() {
@@ -407,7 +407,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
     /**
      * Adds a payload type to the list of remote payloads.
-     * 
+     *
      * @param pt
      *            the remote payload type
      */
@@ -421,7 +421,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
 //    /**
 //    * Create an offer for the list of audio payload types.
-//    * 
+//    *
 //    * @return a new Jingle packet with the list of audio Payload Types
 //    */
 //    private Jingle createAudioPayloadTypesOffer() {
@@ -462,7 +462,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
     /**
      * Get the best common codec between both parts.
-     * 
+     *
      * @return The best common PayloadType codec.
      */
     public PayloadType getBestCommonAudioPt() {
@@ -473,11 +473,11 @@ public class MediaNegotiator extends JingleNegotiator {
 
     /**
      * Trigger a session established event.
-     * 
+     *
      * @param bestPt
      *            payload type that has been agreed.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     protected void triggerMediaEstablished(PayloadType bestPt) throws NotConnectedException, InterruptedException {
         List<JingleListener> listeners = getListenersList();
@@ -491,7 +491,7 @@ public class MediaNegotiator extends JingleNegotiator {
 
     /**
      * Trigger a jmf closed event.
-     * 
+     *
      * @param currPt
      *            current payload type that is cancelled.
      */

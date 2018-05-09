@@ -27,9 +27,9 @@ import org.jivesoftware.smackx.pubsub.ConfigureForm;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
- * Parses the node configuration element out of the message event stanza from 
+ * Parses the node configuration element out of the message event stanza from
  * the server as specified in the <a href="http://xmpp.org/extensions/xep-0060.html#schemas-event">configuration schema</a>.
- * 
+ *
  * @author Robin Collier
  */
 public class ConfigEventProvider extends EmbeddedExtensionProvider<ConfigurationEvent> {

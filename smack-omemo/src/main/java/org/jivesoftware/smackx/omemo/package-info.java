@@ -19,7 +19,7 @@
  * XMPP logic and some abstract crypto classes that have to be implemented
  * using concrete crypto libraries (like signal-protocol-java or olm).
  * See smack-omemo-signal for a concrete implementation (GPL licensed).
- * 
+ *
  * @author Paul Schaub
  * @see <a href="https://conversations.im/xeps/multi-end.html">XEP-0384: OMEMO</a>
  */

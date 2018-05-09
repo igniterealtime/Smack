@@ -104,14 +104,14 @@ public class StanzaError extends AbstractError {
     /**
      * Creates a new error with the specified type, condition and message.
      * This constructor is used when the condition is not recognized automatically by XMPPError
-     * i.e. there is not a defined instance of ErrorCondition or it does not apply the default 
+     * i.e. there is not a defined instance of ErrorCondition or it does not apply the default
      * specification.
-     * 
+     *
      * @param type the error type.
      * @param condition the error condition.
      * @param conditionText
      * @param errorGenerator
-     * @param descriptiveTexts 
+     * @param descriptiveTexts
      * @param extensions list of stanza extensions
      * @param stanza the stanza carrying this XMPP error.
      */

@@ -23,7 +23,7 @@ import org.jxmpp.util.XmppDateTime;
 
 /**
  * The DelayInformationProvider parses DelayInformation packets.
- * 
+ *
  * @author Florian Schmaus
  */
 public class DelayInformationProvider extends AbstractDelayInformationProvider {

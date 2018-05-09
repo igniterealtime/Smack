@@ -53,7 +53,7 @@ public class PayloadTypeTest extends SmackTestCase {
 		set2.add(common1);
 
 		// Get the difference
-		ArrayList<Audio> commonSet = new ArrayList<Audio>();			
+		ArrayList<Audio> commonSet = new ArrayList<Audio>();
 		commonSet.addAll(set1);
 		commonSet.retainAll(set2);
 
@@ -88,7 +88,7 @@ public class PayloadTypeTest extends SmackTestCase {
 		set2.add(common4);
 
 		// Get the difference
-		ArrayList<Audio> commonSet = new ArrayList<Audio>();			
+		ArrayList<Audio> commonSet = new ArrayList<Audio>();
 		commonSet.addAll(set1);
 		commonSet.retainAll(set2);
 

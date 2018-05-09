@@ -40,7 +40,7 @@ import org.jxmpp.jid.FullJid;
 
 /**
  * A manger for XEP-0325: Internet of Things - Control.
- * 
+ *
  * @author Florian Schmaus {@literal <flo@geekplace.eu>}
  * @see <a href="http://xmpp.org/extensions/xep-0325.html">XEP-0323: Internet of Things - Control</a>
  */

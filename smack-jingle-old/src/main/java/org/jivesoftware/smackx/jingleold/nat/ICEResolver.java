@@ -96,8 +96,8 @@ public class ICEResolver extends TransportResolver {
 
     /**
      * Resolve the IP and obtain a valid transport method.
-     * @throws SmackException 
-     * @throws InterruptedException 
+     * @throws SmackException
+     * @throws InterruptedException
      */
     @Override
     public synchronized void resolve(JingleSession session) throws XMPPException, SmackException, InterruptedException {

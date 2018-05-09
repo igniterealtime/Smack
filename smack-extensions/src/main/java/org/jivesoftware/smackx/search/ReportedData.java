@@ -27,9 +27,9 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.packet.DataForm.Item;
 
 /**
- * Represents a set of data results returned as part of a search. The report is structured 
+ * Represents a set of data results returned as part of a search. The report is structured
  * in columns and rows.
- * 
+ *
  * @author Gaston Dombiak
  */
 public class ReportedData {
@@ -39,9 +39,9 @@ public class ReportedData {
     private String title = "";
 
     /**
-     * Returns a new ReportedData if the stanza is used for reporting data and includes an 
+     * Returns a new ReportedData if the stanza is used for reporting data and includes an
      * extension that matches the elementName and namespace "x","jabber:x:data".
-     * 
+     *
      * @param packet the stanza used for reporting data.
      * @return ReportedData from the packet if present, otherwise null.
      */
@@ -235,7 +235,7 @@ public class ReportedData {
 
         /**
          * Returns the variable name that the field represents.
-         * 
+         *
          * @return the variable name of the field.
          */
         public String getVariable() {
@@ -244,7 +244,7 @@ public class ReportedData {
 
         /**
          * Returns a List of the values reported as part of the search.
-         * 
+         *
          * @return the returned values of the search.
          */
         public List<CharSequence> getValues() {

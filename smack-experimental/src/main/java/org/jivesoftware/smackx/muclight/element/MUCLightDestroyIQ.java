@@ -24,7 +24,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * MUC Light destroy IQ class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */
@@ -35,7 +35,7 @@ public class MUCLightDestroyIQ extends IQ {
 
     /**
      * MUC Light destroy IQ constructor.
-     * 
+     *
      * @param roomJid
      */
     public MUCLightDestroyIQ(Jid roomJid) {

@@ -153,7 +153,7 @@ public final class HttpOverXmppReq extends AbstractHttpOverXmpp {
          * Sets resource attribute.
          *
          * @param resource attribute
-         * 
+         *
          * @return the builder
          */
         public Builder setResource(String resource) {
@@ -165,7 +165,7 @@ public final class HttpOverXmppReq extends AbstractHttpOverXmpp {
          * Sets jingle attribute.
          *
          * @param jingle jingle attribute
-         * 
+         *
          * @return the builder
          */
         public Builder setJingle(boolean jingle) {
@@ -177,7 +177,7 @@ public final class HttpOverXmppReq extends AbstractHttpOverXmpp {
          * Sets ibb attribute.
          *
          * @param ibb ibb attribute
-         * 
+         *
          * @return the builder
          */
         public Builder setIbb(boolean ibb) {
@@ -189,7 +189,7 @@ public final class HttpOverXmppReq extends AbstractHttpOverXmpp {
          * Sets sipub attribute.
          *
          * @param sipub sipub attribute
-         * 
+         *
          * @return the builder
          */
         public Builder setSipub(boolean sipub) {
@@ -201,7 +201,7 @@ public final class HttpOverXmppReq extends AbstractHttpOverXmpp {
          * Sets maxChunkSize attribute.
          *
          * @param maxChunkSize maxChunkSize attribute
-         * 
+         *
          * @return the builder
          */
         public Builder setMaxChunkSize(int maxChunkSize) {

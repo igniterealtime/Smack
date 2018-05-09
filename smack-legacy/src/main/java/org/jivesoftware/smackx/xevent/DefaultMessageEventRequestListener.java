@@ -25,8 +25,8 @@ import org.jxmpp.jid.Jid;
  *
  * Default implementation of the MessageEventRequestListener interface.<p>
  *
- * This class automatically sends a delivered notification to the sender of the message 
- * if the sender has requested to be notified when the message is delivered. 
+ * This class automatically sends a delivered notification to the sender of the message
+ * if the sender has requested to be notified when the message is delivered.
  *
  * @author Gaston Dombiak
  */

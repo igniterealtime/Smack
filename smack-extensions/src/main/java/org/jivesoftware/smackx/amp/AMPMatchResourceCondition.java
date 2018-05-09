@@ -31,10 +31,10 @@ public class AMPMatchResourceCondition implements AMPExtension.Condition {
      * Check if server supports match-resource condition.
      * @param connection Smack connection instance
      * @return true if match-resource condition is supported.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public static boolean isSupported(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return AMPManager.isConditionSupported(connection, NAME);

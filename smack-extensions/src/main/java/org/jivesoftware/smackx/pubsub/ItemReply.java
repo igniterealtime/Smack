@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub;
 /**
  * These are the options for the node configuration setting {@link ConfigureForm#setItemReply(ItemReply)},
  * which defines who should receive replies to items.
- * 
+ *
  * @author Robin Collier
  */
 public enum ItemReply {

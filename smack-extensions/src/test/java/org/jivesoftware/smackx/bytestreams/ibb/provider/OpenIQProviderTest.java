@@ -34,7 +34,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Test for the OpenIQProvider class.
- * 
+ *
  * @author Henning Staib
  */
 public class OpenIQProviderTest extends InitExtensions {

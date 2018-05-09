@@ -66,15 +66,15 @@ public class RosterGroup extends Manager {
 
     /**
      * Sets the name of the group. Changing the group's name is like moving all the group entries
-     * of the group to a new group specified by the new name. Since this group won't have entries 
-     * it will be removed from the roster. This means that all the references to this object will 
+     * of the group to a new group specified by the new name. Since this group won't have entries
+     * it will be removed from the roster. This means that all the references to this object will
      * be invalid and will need to be updated to the new group specified by the new name.
      *
      * @param name the name of the group.
-     * @throws NotConnectedException 
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws InterruptedException
      */
     public void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException, InterruptedException {
         synchronized (entries) {
@@ -159,7 +159,7 @@ public class RosterGroup extends Manager {
     }
 
     /**
-     * Adds a roster entry to this group. If the entry was unfiled then it will be removed from 
+     * Adds a roster entry to this group. If the entry was unfiled then it will be removed from
      * the unfiled list and will be added to this group.
      * Note that this is a synchronous call -- Smack must wait for the server
      * to receive the updated roster.
@@ -167,8 +167,8 @@ public class RosterGroup extends Manager {
      * @param entry a roster entry.
      * @throws XMPPErrorException if an error occured while trying to add the entry to the group.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void addEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Only add the entry if it isn't already in the list.
@@ -186,22 +186,22 @@ public class RosterGroup extends Manager {
     }
 
     /**
-     * Removes a roster entry from this group. If the entry does not belong to any other group 
-     * then it will be considered as unfiled, therefore it will be added to the list of unfiled 
+     * Removes a roster entry from this group. If the entry does not belong to any other group
+     * then it will be considered as unfiled, therefore it will be added to the list of unfiled
      * entries.
      * Note that this is a synchronous call -- Smack must wait for the server
      * to receive the updated roster.
      *
      * @param entry a roster entry.
-     * @throws XMPPErrorException if an error occurred while trying to remove the entry from the group. 
+     * @throws XMPPErrorException if an error occurred while trying to remove the entry from the group.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void removeEntry(RosterEntry entry) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Only remove the entry if it's in the entry list.
         // Remove the entry locally, if we wait for RosterPacketListenerProcess>>Packet(Packet)
-        // to take place the entry will exist in the group until a packet is received from the 
+        // to take place the entry will exist in the group until a packet is received from the
         // server.
         synchronized (entries) {
             if (entries.contains(entry)) {

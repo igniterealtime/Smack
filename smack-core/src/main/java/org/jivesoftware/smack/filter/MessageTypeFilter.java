@@ -23,7 +23,7 @@ import org.jivesoftware.smack.packet.Message.Type;
 
 /**
  * Filters for packets of a specific type of Message (e.g. CHAT).
- * 
+ *
  * @see org.jivesoftware.smack.packet.Message.Type
  * @author Ward Harold
  */
@@ -42,7 +42,7 @@ public final class MessageTypeFilter extends FlexibleStanzaTypeFilter<Message> {
 
     /**
      * Creates a new message type filter using the specified message type.
-     * 
+     *
      * @param type the message type.
      */
     private MessageTypeFilter(Message.Type type) {

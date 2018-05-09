@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * An ObservableReader is a wrapper on a Reader that notifies to its listeners when
  * reading character streams.
- * 
+ *
  * @author Gaston Dombiak
  */
 public class ObservableReader extends Reader {

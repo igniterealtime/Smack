@@ -60,7 +60,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Test for Socks5BytestreamManager.
- * 
+ *
  * @author Henning Staib
  */
 public class Socks5ByteStreamManagerTest {
@@ -81,9 +81,9 @@ public class Socks5ByteStreamManagerTest {
 
     /**
      * Initialize fields used in the tests.
-     * @throws XMPPException 
-     * @throws SmackException 
-     * @throws InterruptedException 
+     * @throws XMPPException
+     * @throws SmackException
+     * @throws InterruptedException
      */
     @Before
     public void setup() throws XMPPException, SmackException, InterruptedException {
@@ -146,7 +146,7 @@ public class Socks5ByteStreamManagerTest {
     /**
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid)} should throw an exception
      * if the given target does not support SOCKS5 Bytestream.
-     * @throws XMPPException 
+     * @throws XMPPException
      */
     @Test
     public void shouldFailIfTargetDoesNotSupportSocks5() throws XMPPException {
@@ -462,7 +462,7 @@ public class Socks5ByteStreamManagerTest {
     /**
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid, String)} should fail if the
      * proxy used by target is invalid.
-     * @throws XmppStringprepException 
+     * @throws XmppStringprepException
      */
     @Test
     public void shouldFailIfTargetUsesInvalidSocks5Proxy() throws XmppStringprepException {
@@ -638,7 +638,7 @@ public class Socks5ByteStreamManagerTest {
     /**
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid, String)} should successfully
      * negotiate and return a SOCKS5 Bytestream connection.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -753,7 +753,7 @@ public class Socks5ByteStreamManagerTest {
     /**
      * If multiple network addresses are added to the local SOCKS5 proxy, all of them should be
      * contained in the SOCKS5 Bytestream request.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -852,7 +852,7 @@ public class Socks5ByteStreamManagerTest {
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid, String)} the first time
      * should successfully negotiate a SOCKS5 Bytestream via the second SOCKS5 proxy and should
      * prioritize this proxy for a second SOCKS5 Bytestream negotiation.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -937,7 +937,7 @@ public class Socks5ByteStreamManagerTest {
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid, String)} the first time
      * should successfully negotiate a SOCKS5 Bytestream via the second SOCKS5 proxy. The second
      * negotiation should run in the same manner if prioritization is disabled.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test

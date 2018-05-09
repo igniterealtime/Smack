@@ -22,7 +22,7 @@ import org.jivesoftware.smack.packet.PrivacyItem;
 /**
  * This class supports automated tests about privacy communication from the
  * server to the client.
- * 
+ *
  * @author Francisco Vives
  */
 

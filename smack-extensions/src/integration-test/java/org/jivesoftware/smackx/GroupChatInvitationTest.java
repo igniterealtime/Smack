@@ -24,8 +24,8 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 
 /**
- * 
- * 
+ *
+ *
  * @author Matt Tucker
  */
 public class GroupChatInvitationTest extends SmackTestCase {

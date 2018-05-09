@@ -34,7 +34,7 @@ import org.jivesoftware.smack.packet.Stanza;
  * result.<p>
  *
  * Each stanza collector will queue up a configured number of packets for processing before
- * older packets are automatically dropped.  The default number is retrieved by 
+ * older packets are automatically dropped.  The default number is retrieved by
  * {@link SmackConfiguration#getStanzaCollectorSize()}.
  *
  * @see XMPPConnection#createStanzaCollector(StanzaFilter)
@@ -147,7 +147,7 @@ public class StanzaCollector {
      *
      * @param <P> type of the result stanza.
      * @return the next available packet.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     @SuppressWarnings("unchecked")
     public <P extends Stanza> P nextResultBlockForever() throws InterruptedException {
@@ -165,7 +165,7 @@ public class StanzaCollector {
      *
      * @param <P> type of the result stanza.
      * @return the next available packet.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public <P extends Stanza> P nextResult() throws InterruptedException {
         return nextResult(connection.getReplyTimeout());
@@ -181,7 +181,7 @@ public class StanzaCollector {
      * @param <P> type of the result stanza.
      * @param timeout the timeout in milliseconds.
      * @return the next available packet.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     @SuppressWarnings("unchecked")
     public <P extends Stanza> P nextResult(long timeout) throws InterruptedException {
@@ -270,7 +270,7 @@ public class StanzaCollector {
 
     /**
      * Get the number of collected stanzas this stanza collector has collected so far.
-     * 
+     *
      * @return the count of collected stanzas.
      * @since 4.1
      */
@@ -306,7 +306,7 @@ public class StanzaCollector {
 
     /**
      * Get a new stanza collector configuration instance.
-     * 
+     *
      * @return a new stanza collector configuration.
      */
     public static Configuration newConfiguration() {
@@ -325,7 +325,7 @@ public class StanzaCollector {
         /**
          * Set the stanza filter used by this collector. If <code>null</code>, then all packets will
          * get collected by this collector.
-         * 
+         *
          * @param packetFilter
          * @return a reference to this configuration.
          * @deprecated use {@link #setStanzaFilter(StanzaFilter)} instead.
@@ -338,7 +338,7 @@ public class StanzaCollector {
         /**
          * Set the stanza filter used by this collector. If <code>null</code>, then all stanzas will
          * get collected by this collector.
-         * 
+         *
          * @param stanzaFilter
          * @return a reference to this configuration.
          */
@@ -350,7 +350,7 @@ public class StanzaCollector {
         /**
          * Set the maximum size of this collector, i.e. how many stanzas this collector will collect
          * before dropping old ones.
-         * 
+         *
          * @param size
          * @return a reference to this configuration.
          */
@@ -362,7 +362,7 @@ public class StanzaCollector {
         /**
          * Set the collector which timeout for the next result is reset once this collector collects
          * a packet.
-         * 
+         *
          * @param collector
          * @return a reference to this configuration.
          */

@@ -20,7 +20,7 @@ import java.util.Locale;
 
 /**
  * MUCLight affiliations enum.
- * 
+ *
  * @author Fernando Ramirez
  *
  */

@@ -24,7 +24,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Blocked error extension class.
- * 
+ *
  * @author Fernando Ramirez
  * @see <a href="http://xmpp.org/extensions/xep-0191.html">XEP-0191: Blocking
  *      Command</a>

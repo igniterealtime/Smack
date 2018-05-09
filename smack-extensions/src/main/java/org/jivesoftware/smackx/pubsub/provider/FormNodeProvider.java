@@ -30,7 +30,7 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 /**
  * Parses one of several elements used in PubSub that contain a form of some kind as a child element.  The
  * elements and namespaces supported is defined in {@link FormNodeType}.
- * 
+ *
  * @author Robin Collier
  */
 public class FormNodeProvider extends EmbeddedExtensionProvider<FormNode> {

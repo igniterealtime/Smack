@@ -109,7 +109,7 @@ public class EnhancedDebugger extends SmackDebugger {
 
     {
         URL url;
-        // Load the image icons 
+        // Load the image icons
         url =
                 Thread.currentThread().getContextClassLoader().getResource("images/nav_left_blue.png");
         if (url != null) {
@@ -205,7 +205,7 @@ public class EnhancedDebugger extends SmackDebugger {
         }
 
         // We'll arrange the UI into six tabs. The first tab contains all data, the second
-        // client generated XML, the third server generated XML, the fourth allows to send 
+        // client generated XML, the third server generated XML, the fourth allows to send
         // ad-hoc messages and the fifth contains connection information.
         tabbedPane = new JTabbedPane();
 

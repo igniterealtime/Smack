@@ -53,7 +53,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * MUCLight class.
- * 
+ *
  * @author Fernando Ramirez
  */
 public class MultiUserChatLight {
@@ -255,7 +255,7 @@ public class MultiUserChatLight {
 
     /**
      * Create new MUCLight.
-     * 
+     *
      * @param roomName
      * @param subject
      * @param customConfigs
@@ -278,7 +278,7 @@ public class MultiUserChatLight {
 
     /**
      * Create new MUCLight.
-     * 
+     *
      * @param roomName
      * @param occupants
      * @throws Exception
@@ -289,7 +289,7 @@ public class MultiUserChatLight {
 
     /**
      * Leave the MUCLight.
-     * 
+     *
      * @throws NotConnectedException
      * @throws InterruptedException
      * @throws NoResponseException
@@ -310,7 +310,7 @@ public class MultiUserChatLight {
 
     /**
      * Get the MUC Light info.
-     * 
+     *
      * @param version
      * @return the room info
      * @throws NoResponseException
@@ -331,7 +331,7 @@ public class MultiUserChatLight {
 
     /**
      * Get the MUC Light info.
-     * 
+     *
      * @return the room info
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -345,7 +345,7 @@ public class MultiUserChatLight {
 
     /**
      * Get the MUC Light configuration.
-     * 
+     *
      * @param version
      * @return the room configuration
      * @throws NoResponseException
@@ -363,7 +363,7 @@ public class MultiUserChatLight {
 
     /**
      * Get the MUC Light configuration.
-     * 
+     *
      * @return the room configuration
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -377,7 +377,7 @@ public class MultiUserChatLight {
 
     /**
      * Get the MUC Light affiliations.
-     * 
+     *
      * @param version
      * @return the room affiliations
      * @throws NoResponseException
@@ -397,7 +397,7 @@ public class MultiUserChatLight {
 
     /**
      * Get the MUC Light affiliations.
-     * 
+     *
      * @return the room affiliations
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -411,7 +411,7 @@ public class MultiUserChatLight {
 
     /**
      * Change the MUC Light affiliations.
-     * 
+     *
      * @param affiliations
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -426,7 +426,7 @@ public class MultiUserChatLight {
 
     /**
      * Destroy the MUC Light. Only will work if it is requested by the owner.
-     * 
+     *
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
@@ -444,7 +444,7 @@ public class MultiUserChatLight {
 
     /**
      * Change the subject of the MUC Light.
-     * 
+     *
      * @param subject
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -459,7 +459,7 @@ public class MultiUserChatLight {
 
     /**
      * Change the name of the room.
-     * 
+     *
      * @param roomName
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -474,7 +474,7 @@ public class MultiUserChatLight {
 
     /**
      * Set the room configurations.
-     * 
+     *
      * @param customConfigs
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -488,7 +488,7 @@ public class MultiUserChatLight {
 
     /**
      * Set the room configurations.
-     * 
+     *
      * @param roomName
      * @param customConfigs
      * @throws NoResponseException

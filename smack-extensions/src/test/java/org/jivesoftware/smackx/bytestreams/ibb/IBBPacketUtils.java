@@ -25,14 +25,14 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Utility methods to create packets.
- * 
+ *
  * @author Henning Staib
  */
 public class IBBPacketUtils {
 
     /**
      * Returns an error IQ.
-     * 
+     *
      * @param from the senders JID
      * @param to the recipients JID
      * @param condition the XMPP error condition
@@ -49,7 +49,7 @@ public class IBBPacketUtils {
 
     /**
      * Returns a result IQ.
-     * 
+     *
      * @param from the senders JID
      * @param to the recipients JID
      * @return a result IQ

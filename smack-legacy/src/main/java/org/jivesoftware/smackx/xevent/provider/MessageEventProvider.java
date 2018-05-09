@@ -39,8 +39,8 @@ public class MessageEventProvider extends ExtensionElementProvider<MessageEvent>
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.
-     * @throws IOException 
-     * @throws XmlPullParserException 
+     * @throws IOException
+     * @throws XmlPullParserException
      */
     @Override
     public MessageEvent parse(XmlPullParser parser, int initialDepth)

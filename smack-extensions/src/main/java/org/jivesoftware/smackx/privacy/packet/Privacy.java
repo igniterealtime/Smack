@@ -31,14 +31,14 @@ import org.jivesoftware.smack.packet.IQ;
  * user-defined privacy lists. Different configured Privacy packages are used in the
  * server and manager communication in order to:
  * <ul>
- * <li>Retrieving one's privacy lists. 
- * <li>Adding, removing, and editing one's privacy lists. 
- * <li>Setting, changing, or declining active lists. 
- * <li>Setting, changing, or declining the default list (i.e., the list that is active by default). 
+ * <li>Retrieving one's privacy lists.
+ * <li>Adding, removing, and editing one's privacy lists.
+ * <li>Setting, changing, or declining active lists.
+ * <li>Setting, changing, or declining the default list (i.e., the list that is active by default).
  * </ul>
- * Privacy Items can handle different kind of blocking communications based on JID, group, 
+ * Privacy Items can handle different kind of blocking communications based on JID, group,
  * subscription type or globally {@link PrivacyItem}
- * 
+ *
  * @author Francisco Vives
  */
 public class Privacy extends IQ {
@@ -53,7 +53,7 @@ public class Privacy extends IQ {
     private boolean declineDefaultList = false;
     /** defaultName is the name of the default list that applies to the user as a whole **/
     private String defaultName;
-    /** itemLists holds the set of privacy items classified in lists. It is a map where the 
+    /** itemLists holds the set of privacy items classified in lists. It is a map where the
      * key is the name of the list and the value a collection with privacy items. **/
     private final Map<String, List<PrivacyItem>> itemLists = new HashMap<>();
 
@@ -85,8 +85,8 @@ public class Privacy extends IQ {
     }
 
     /**
-     * Deletes an existing privacy list. If the privacy list being deleted was the default list 
-     * then the user will end up with no default list. Therefore, the user will have to set a new 
+     * Deletes an existing privacy list. If the privacy list being deleted was the default list
+     * then the user will end up with no default list. Therefore, the user will have to set a new
      * default list.
      *
      * @param listName the name of the list being deleted.
@@ -180,7 +180,7 @@ public class Privacy extends IQ {
            return true;
         } else {
             // CHECKSTYLE:OFF
-            return false; 
+            return false;
             // CHECKSTYLE:ON
         }
     }
@@ -211,7 +211,7 @@ public class Privacy extends IQ {
     /**
      * Sets the name associated with the active list set for the session. Communications
      * will be verified against the active list.
-     * 
+     *
      * @param activeName is the name of the active list.
      */
     // CHECKSTYLE:OFF
@@ -221,10 +221,10 @@ public class Privacy extends IQ {
     // CHECKSTYLE:ON
 
     /**
-     * Returns the name of the default list that applies to the user as a whole. Default list is 
-     * processed if there is no active list set for the target session/resource to which a stanza 
+     * Returns the name of the default list that applies to the user as a whole. Default list is
+     * processed if there is no active list set for the target session/resource to which a stanza
      * is addressed, or if there are no current sessions for the user.
-     * 
+     *
      * @return the name of the default list.
      */
     // CHECKSTYLE:OFF
@@ -234,12 +234,12 @@ public class Privacy extends IQ {
     // CHECKSTYLE:ON
 
     /**
-     * Sets the name of the default list that applies to the user as a whole. Default list is 
-     * processed if there is no active list set for the target session/resource to which a stanza 
+     * Sets the name of the default list that applies to the user as a whole. Default list is
+     * processed if there is no active list set for the target session/resource to which a stanza
      * is addressed, or if there are no current sessions for the user.
-     * 
+     *
      * If there is no default list set, then all Privacy Items are processed.
-     * 
+     *
      * @param defaultName is the name of the default list.
      */
     // CHECKSTYLE:OFF
@@ -249,11 +249,11 @@ public class Privacy extends IQ {
     // CHECKSTYLE:ON
 
     /**
-     * Returns the collection of privacy list that the user holds. A Privacy List contains a set of 
-     * rules that define if communication with the list owner is allowed or denied. 
+     * Returns the collection of privacy list that the user holds. A Privacy List contains a set of
+     * rules that define if communication with the list owner is allowed or denied.
      * Users may have zero, one or more privacy items.
-     * 
-     * @return a map where the key is the name of the list and the value the 
+     *
+     * @return a map where the key is the name of the list and the value the
      * collection of privacy items.
      */
     // CHECKSTYLE:OFF
@@ -262,9 +262,9 @@ public class Privacy extends IQ {
     }
     // CHECKSTYLE:ON
 
-    /** 
+    /**
      * Returns whether the receiver allows or declines the use of an active list.
-     * 
+     *
      * @return the decline status of the list.
      */
     // CHECKSTYLE:OFF
@@ -273,9 +273,9 @@ public class Privacy extends IQ {
     }
     // CHECKSTYLE:ON
 
-    /** 
+    /**
      * Sets whether the receiver allows or declines the use of an active list.
-     * 
+     *
      * @param declineActiveList indicates if the receiver declines the use of an active list.
      */
     // CHECKSTYLE:OFF
@@ -284,9 +284,9 @@ public class Privacy extends IQ {
     }
     // CHECKSTYLE:ON
 
-    /** 
+    /**
      * Returns whether the receiver allows or declines the use of a default list.
-     * 
+     *
      * @return the decline status of the list.
      */
     // CHECKSTYLE:OFF
@@ -295,9 +295,9 @@ public class Privacy extends IQ {
     }
     // CHECKSTYLE:ON
 
-    /** 
+    /**
      * Sets whether the receiver allows or declines the use of a default list.
-     * 
+     *
      * @param declineDefaultList indicates if the receiver declines the use of a default list.
      */
     // CHECKSTYLE:OFF
@@ -305,9 +305,9 @@ public class Privacy extends IQ {
         this.declineDefaultList = declineDefaultList;
     }
 
-    /** 
+    /**
      * Returns all the list names the user has defined to group restrictions.
-     * 
+     *
      * @return a Set with Strings containing every list names.
      */
     public Set<String> getPrivacyListNames() {

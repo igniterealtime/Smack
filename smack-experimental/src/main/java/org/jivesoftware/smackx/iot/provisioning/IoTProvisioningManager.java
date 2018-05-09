@@ -283,7 +283,7 @@ public final class IoTProvisioningManager extends Manager {
     /**
      * Set the configured provisioning server. Use <code>null</code> as provisioningServer to use
      * automatic discovery of the provisioning server (the default behavior).
-     * 
+     *
      * @param provisioningServer
      */
     public void setConfiguredProvisioningServer(Jid provisioningServer) {
@@ -300,7 +300,7 @@ public final class IoTProvisioningManager extends Manager {
 
     /**
      * Try to find a provisioning server component.
-     * 
+     *
      * @return the XMPP address of the provisioning server component if one was found.
      * @throws NoResponseException
      * @throws XMPPErrorException

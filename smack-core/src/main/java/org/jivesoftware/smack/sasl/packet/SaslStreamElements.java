@@ -154,7 +154,7 @@ public class SaslStreamElements {
         /**
          * Construct a new SASL success stream element with optional additional data for the SASL layer.
          * (RFC6120 6.3.10)
-         * 
+         *
          * @param data additional data for the SASL layer or <code>null</code>
          */
         public Success(String data) {
@@ -163,7 +163,7 @@ public class SaslStreamElements {
 
         /**
          * Returns additional data for the SASL layer or <code>null</code>.
-         * 
+         *
          * @return additional data or <code>null</code>
          */
         public String getData() {
@@ -220,7 +220,7 @@ public class SaslStreamElements {
 
         /**
          * Get the SASL related error condition.
-         * 
+         *
          * @return the SASL related error condition.
          */
         public SASLError getSASLError() {

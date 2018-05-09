@@ -27,10 +27,10 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.Jid;
 
 /**
- * A DiscoverItems IQ packet, which is used by XMPP clients to request and receive items 
+ * A DiscoverItems IQ packet, which is used by XMPP clients to request and receive items
  * associated with XMPP entities.<p>
- * 
- * The items could also be queried in order to discover if they contain items inside. Some items 
+ *
+ * The items could also be queried in order to discover if they contain items inside. Some items
  * may be addressable by its JID and others may require to be addressed by a JID and a node name.
  *
  * @author Gaston Dombiak
@@ -49,7 +49,7 @@ public class DiscoverItems extends IQ {
 
     /**
      * Adds a new item to the discovered information.
-     * 
+     *
      * @param item the discovered entity's item
      */
     public void addItem(Item item) {
@@ -70,7 +70,7 @@ public class DiscoverItems extends IQ {
 
 
     /**
-     * Returns the discovered items of the queried XMPP entity. 
+     * Returns the discovered items of the queried XMPP entity.
      *
      * @return an unmodifiable list of the discovered entity's items
      */
@@ -79,10 +79,10 @@ public class DiscoverItems extends IQ {
     }
 
     /**
-     * Returns the node attribute that supplements the 'jid' attribute. A node is merely 
-     * something that is associated with a JID and for which the JID can provide information.<p> 
-     * 
-     * Node attributes SHOULD be used only when trying to provide or query information which 
+     * Returns the node attribute that supplements the 'jid' attribute. A node is merely
+     * something that is associated with a JID and for which the JID can provide information.<p>
+     *
+     * Node attributes SHOULD be used only when trying to provide or query information which
      * is not directly addressable.
      *
      * @return the node attribute that supplements the 'jid' attribute
@@ -92,12 +92,12 @@ public class DiscoverItems extends IQ {
     }
 
     /**
-     * Sets the node attribute that supplements the 'jid' attribute. A node is merely 
-     * something that is associated with a JID and for which the JID can provide information.<p> 
-     * 
-     * Node attributes SHOULD be used only when trying to provide or query information which 
+     * Sets the node attribute that supplements the 'jid' attribute. A node is merely
+     * something that is associated with a JID and for which the JID can provide information.<p>
+     *
+     * Node attributes SHOULD be used only when trying to provide or query information which
      * is not directly addressable.
-     * 
+     *
      * @param node the node attribute that supplements the 'jid' attribute
      */
     public void setNode(String node) {
@@ -117,11 +117,11 @@ public class DiscoverItems extends IQ {
     }
 
     /**
-     * An item is associated with an XMPP Entity, usually thought of a children of the parent 
-     * entity and normally are addressable as a JID.<p> 
-     * 
-     * An item associated with an entity may not be addressable as a JID. In order to handle 
-     * such items, Service Discovery uses an optional 'node' attribute that supplements the 
+     * An item is associated with an XMPP Entity, usually thought of a children of the parent
+     * entity and normally are addressable as a JID.<p>
+     *
+     * An item associated with an entity may not be addressable as a JID. In order to handle
+     * such items, Service Discovery uses an optional 'node' attribute that supplements the
      * 'jid' attribute.
      */
     public static class Item {
@@ -143,7 +143,7 @@ public class DiscoverItems extends IQ {
 
         /**
          * Create a new Item associated with a given entity.
-         * 
+         *
          * @param entityID the id of the entity that contains the item
          */
         public Item(Jid entityID) {
@@ -178,10 +178,10 @@ public class DiscoverItems extends IQ {
         }
 
         /**
-         * Returns the node attribute that supplements the 'jid' attribute. A node is merely 
-         * something that is associated with a JID and for which the JID can provide information.<p> 
-         * 
-         * Node attributes SHOULD be used only when trying to provide or query information which 
+         * Returns the node attribute that supplements the 'jid' attribute. A node is merely
+         * something that is associated with a JID and for which the JID can provide information.<p>
+         *
+         * Node attributes SHOULD be used only when trying to provide or query information which
          * is not directly addressable.
          *
          * @return the node attribute that supplements the 'jid' attribute
@@ -191,12 +191,12 @@ public class DiscoverItems extends IQ {
         }
 
         /**
-         * Sets the node attribute that supplements the 'jid' attribute. A node is merely 
-         * something that is associated with a JID and for which the JID can provide information.<p> 
-         * 
-         * Node attributes SHOULD be used only when trying to provide or query information which 
+         * Sets the node attribute that supplements the 'jid' attribute. A node is merely
+         * something that is associated with a JID and for which the JID can provide information.<p>
+         *
+         * Node attributes SHOULD be used only when trying to provide or query information which
          * is not directly addressable.
-         * 
+         *
          * @param node the node attribute that supplements the 'jid' attribute
          */
         public void setNode(String node) {
@@ -204,11 +204,11 @@ public class DiscoverItems extends IQ {
         }
 
         /**
-         * Returns the action that specifies the action being taken for this item. Possible action 
-         * values are: "update" and "remove". Update should either create a new entry if the node 
-         * and jid combination does not already exist, or simply update an existing entry. If 
+         * Returns the action that specifies the action being taken for this item. Possible action
+         * values are: "update" and "remove". Update should either create a new entry if the node
+         * and jid combination does not already exist, or simply update an existing entry. If
          * "remove" is used as the action, the item should be removed from persistent storage.
-         *  
+         *
          * @return the action being taken for this item
          */
         public String getAction() {
@@ -216,11 +216,11 @@ public class DiscoverItems extends IQ {
         }
 
         /**
-         * Sets the action that specifies the action being taken for this item. Possible action 
-         * values are: "update" and "remove". Update should either create a new entry if the node 
-         * and jid combination does not already exist, or simply update an existing entry. If 
+         * Sets the action that specifies the action being taken for this item. Possible action
+         * values are: "update" and "remove". Update should either create a new entry if the node
+         * and jid combination does not already exist, or simply update an existing entry. If
          * "remove" is used as the action, the item should be removed from persistent storage.
-         * 
+         *
          * @param action the action being taken for this item
          */
         public void setAction(String action) {

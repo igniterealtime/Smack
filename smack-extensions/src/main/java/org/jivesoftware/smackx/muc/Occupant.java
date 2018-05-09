@@ -64,7 +64,7 @@ public class Occupant {
         if (from == null) {
             LOGGER.warning("Occupant presence without resource: " + presence.getFrom());
             this.nick = null;
-        } else { 
+        } else {
             this.nick = from.getResourcepart();
         }
     }

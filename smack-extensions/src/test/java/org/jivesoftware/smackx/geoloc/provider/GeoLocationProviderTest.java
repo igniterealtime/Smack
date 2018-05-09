@@ -36,7 +36,7 @@ public class GeoLocationProviderTest extends InitExtensions {
     @Test
     public void testGeoLocationProviderWithNoDatumSet() throws Exception {
         // @formatter:off
-        final String geoLocationString = "<message from='portia@merchantofvenice.lit'" 
+        final String geoLocationString = "<message from='portia@merchantofvenice.lit'"
         + " to='bassanio@merchantofvenice.lit'>"
         + "<geoloc xmlns='http://jabber.org/protocol/geoloc'>"
         + "<accuracy>23</accuracy>"
@@ -104,7 +104,7 @@ public class GeoLocationProviderTest extends InitExtensions {
     public void testGeoLocationWithDatumSet() throws Exception {
 
         // @formatter:off
-        final String geoLocationString = "<message from='portia@merchantofvenice.lit'" 
+        final String geoLocationString = "<message from='portia@merchantofvenice.lit'"
         + " to='bassanio@merchantofvenice.lit'>"
         + "<geoloc xmlns='http://jabber.org/protocol/geoloc'>"
         + "<accuracy>23</accuracy>"
@@ -173,7 +173,7 @@ public class GeoLocationProviderTest extends InitExtensions {
     public void testGeoLocationWithoutAccuracySetAndWithErrorSet() throws Exception {
 
         // @formatter:off
-        final String geoLocationString = "<message from='portia@merchantofvenice.lit'" 
+        final String geoLocationString = "<message from='portia@merchantofvenice.lit'"
         + " to='bassanio@merchantofvenice.lit'>"
         + "<geoloc xmlns='http://jabber.org/protocol/geoloc'>"
         + "<error>90</error>"
@@ -193,7 +193,7 @@ public class GeoLocationProviderTest extends InitExtensions {
     public void testGeoLocationWithAccuracySetAndWithoutErrorSet() throws Exception {
 
         // @formatter:off
-        final String geoLocationString = "<message from='portia@merchantofvenice.lit'" 
+        final String geoLocationString = "<message from='portia@merchantofvenice.lit'"
         + " to='bassanio@merchantofvenice.lit'>"
         + "<geoloc xmlns='http://jabber.org/protocol/geoloc'>"
         + "<accuracy>90</accuracy>"
@@ -213,7 +213,7 @@ public class GeoLocationProviderTest extends InitExtensions {
     public void testGeoLocationWithAccuracySetAndErrorSet() throws Exception {
 
         // @formatter:off
-        final String geoLocationString = "<message from='portia@merchantofvenice.lit'" 
+        final String geoLocationString = "<message from='portia@merchantofvenice.lit'"
         + " to='bassanio@merchantofvenice.lit'>"
         + "<geoloc xmlns='http://jabber.org/protocol/geoloc'>"
         + "<accuracy>90</accuracy>"

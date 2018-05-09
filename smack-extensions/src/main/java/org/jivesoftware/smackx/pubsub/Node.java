@@ -55,9 +55,9 @@ public abstract class Node {
     protected ConcurrentHashMap<NodeConfigListener, StanzaListener> configEventToListenerMap = new ConcurrentHashMap<>();
 
     /**
-     * Construct a node associated to the supplied connection with the specified 
+     * Construct a node associated to the supplied connection with the specified
      * node id.
-     * 
+     *
      * @param pubSubManager The PubSubManager for the connection the node is associated with
      * @param nodeId The node id
      */
@@ -68,7 +68,7 @@ public abstract class Node {
 
     /**
      * Get the NodeId.
-     * 
+     *
      * @return the node id
      */
     public String getId() {
@@ -77,12 +77,12 @@ public abstract class Node {
     /**
      * Returns a configuration form, from which you can create an answer form to be submitted
      * via the {@link #sendConfigurationForm(Form)}.
-     * 
+     *
      * @return the configuration form
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public ConfigureForm getNodeConfiguration() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(
@@ -93,12 +93,12 @@ public abstract class Node {
 
     /**
      * Update the configuration with the contents of the new {@link Form}.
-     * 
+     *
      * @param submitForm
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void sendConfigurationForm(Form submitForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub packet = createPubsubPacket(Type.set, new FormNode(FormNodeType.CONFIGURE_OWNER,
@@ -108,12 +108,12 @@ public abstract class Node {
 
     /**
      * Discover node information in standard {@link DiscoverInfo} format.
-     * 
+     *
      * @return The discovery information about the node.
-     * @throws XMPPErrorException 
+     * @throws XMPPErrorException
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public DiscoverInfo discoverInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverInfo info = new DiscoverInfo();
@@ -124,13 +124,13 @@ public abstract class Node {
 
     /**
      * Get the subscriptions currently associated with this node.
-     * 
+     *
      * @return List of {@link Subscription}
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
-     * 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     *
      */
     public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return getSubscriptions(null, null);
@@ -150,7 +150,7 @@ public abstract class Node {
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public List<Subscription> getSubscriptions(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -164,7 +164,7 @@ public abstract class Node {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      * @see #getSubscriptionsAsOwner(List, Collection)
      * @since 4.1
      */
@@ -191,7 +191,7 @@ public abstract class Node {
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      * @see <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-subscriptions-retrieve">XEP-60 § 8.8.1 -
      *      Retrieve Subscriptions List</a>
      * @since 4.1
@@ -252,7 +252,7 @@ public abstract class Node {
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public List<Affiliation> getAffiliations() throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
@@ -273,7 +273,7 @@ public abstract class Node {
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public List<Affiliation> getAffiliations(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -346,7 +346,7 @@ public abstract class Node {
      * <p>
      * Note that this is an <b>optional</b> PubSub feature ('pubsub#modify-affiliations').
      * </p>
-     * 
+     *
      * @param affiliations
      * @return <code>null</code> or a PubSub stanza with additional information on success.
      * @throws NoResponseException
@@ -371,20 +371,20 @@ public abstract class Node {
     /**
      * The user subscribes to the node using the supplied jid.  The
      * bare jid portion of this one must match the jid for the connection.
-     * 
-     * Please note that the {@link Subscription.State} should be checked 
+     *
+     * Please note that the {@link Subscription.State} should be checked
      * on return since more actions may be required by the caller.
-     * {@link Subscription.State#pending} - The owner must approve the subscription 
+     * {@link Subscription.State#pending} - The owner must approve the subscription
      * request before messages will be received.
-     * {@link Subscription.State#unconfigured} - If the {@link Subscription#isConfigRequired()} is true, 
+     * {@link Subscription.State#unconfigured} - If the {@link Subscription#isConfigRequired()} is true,
      * the caller must configure the subscription before messages will be received.  If it is false
      * the caller can configure it but is not required to do so.
      * @param jid The jid to subscribe as.
      * @return The subscription
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public Subscription subscribe(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub pubSub = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
@@ -394,14 +394,14 @@ public abstract class Node {
 
     /**
      * The user subscribes to the node using the supplied jid and subscription
-     * options.  The bare jid portion of this one must match the jid for the 
+     * options.  The bare jid portion of this one must match the jid for the
      * connection.
-     * 
-     * Please note that the {@link Subscription.State} should be checked 
+     *
+     * Please note that the {@link Subscription.State} should be checked
      * on return since more actions may be required by the caller.
-     * {@link Subscription.State#pending} - The owner must approve the subscription 
+     * {@link Subscription.State#pending} - The owner must approve the subscription
      * request before messages will be received.
-     * {@link Subscription.State#unconfigured} - If the {@link Subscription#isConfigRequired()} is true, 
+     * {@link Subscription.State#unconfigured} - If the {@link Subscription#isConfigRequired()} is true,
      * the caller must configure the subscription before messages will be received.  If it is false
      * the caller can configure it but is not required to do so.
      *
@@ -409,10 +409,10 @@ public abstract class Node {
      * @param subForm
      *
      * @return The subscription
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public Subscription subscribe(String jid, SubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
@@ -422,16 +422,16 @@ public abstract class Node {
     }
 
     /**
-     * Remove the subscription related to the specified JID.  This will only 
+     * Remove the subscription related to the specified JID.  This will only
      * work if there is only 1 subscription.  If there are multiple subscriptions,
      * use {@link #unsubscribe(String, String)}.
-     * 
+     *
      * @param jid The JID used to subscribe to the node
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
-     * 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     *
      */
     public void unsubscribe(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         unsubscribe(jid, null);
@@ -439,13 +439,13 @@ public abstract class Node {
 
     /**
      * Remove the specific subscription related to the specified JID.
-     * 
+     *
      * @param jid The JID used to subscribe to the node
      * @param subscriptionId The id of the subscription being removed
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void unsubscribe(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         sendPubsubPacket(createPubsubPacket(Type.set, new UnsubscribeExtension(jid, getId(), subscriptionId)));
@@ -458,10 +458,10 @@ public abstract class Node {
      * @param jid
      *
      * @return A subscription options form
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public SubscribeForm getSubscriptionOptions(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return getSubscriptionOptions(jid, null);
@@ -470,16 +470,16 @@ public abstract class Node {
 
     /**
      * Get the options for configuring the specified subscription.
-     * 
+     *
      * @param jid JID the subscription is registered under
      * @param subscriptionId The subscription id
-     * 
+     *
      * @return The subscription option form
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
-     * 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     *
      */
     public SubscribeForm getSubscriptionOptions(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub packet = sendPubsubPacket(createPubsubPacket(Type.get, new OptionsExtension(jid, getId(), subscriptionId)));
@@ -488,22 +488,22 @@ public abstract class Node {
     }
 
     /**
-     * Register a listener for item publication events.  This 
-     * listener will get called whenever an item is published to 
+     * Register a listener for item publication events.  This
+     * listener will get called whenever an item is published to
      * this node.
-     * 
+     *
      * @param listener The handler for the event
      */
     @SuppressWarnings("unchecked")
     public void addItemEventListener(@SuppressWarnings("rawtypes") ItemEventListener listener) {
-        StanzaListener conListener = new ItemEventTranslator(listener); 
+        StanzaListener conListener = new ItemEventTranslator(listener);
         itemEventToListenerMap.put(listener, conListener);
         pubSubManager.getConnection().addSyncStanzaListener(conListener, new EventContentFilter(EventElementType.items.toString(), "item"));
     }
 
     /**
      * Unregister a listener for publication events.
-     * 
+     *
      * @param listener The handler to unregister
      */
     public void removeItemEventListener(@SuppressWarnings("rawtypes") ItemEventListener listener) {
@@ -516,18 +516,18 @@ public abstract class Node {
     /**
      * Register a listener for configuration events.  This listener
      * will get called whenever the node's configuration changes.
-     * 
+     *
      * @param listener The handler for the event
      */
     public void addConfigurationListener(NodeConfigListener listener) {
-        StanzaListener conListener = new NodeConfigTranslator(listener); 
+        StanzaListener conListener = new NodeConfigTranslator(listener);
         configEventToListenerMap.put(listener, conListener);
         pubSubManager.getConnection().addSyncStanzaListener(conListener, new EventContentFilter(EventElementType.configuration.toString()));
     }
 
     /**
      * Unregister a listener for configuration events.
-     * 
+     *
      * @param listener The handler to unregister
      */
     public void removeConfigurationListener(NodeConfigListener listener) {
@@ -540,11 +540,11 @@ public abstract class Node {
     /**
      * Register an listener for item delete events.  This listener
      * gets called whenever an item is deleted from the node.
-     * 
+     *
      * @param listener The handler for the event
      */
     public void addItemDeleteListener(ItemDeleteListener listener) {
-        StanzaListener delListener = new ItemDeleteTranslator(listener); 
+        StanzaListener delListener = new ItemDeleteTranslator(listener);
         itemDeleteToListenerMap.put(listener, delListener);
         EventContentFilter deleteItem = new EventContentFilter(EventElementType.items.toString(), "retract");
         EventContentFilter purge = new EventContentFilter(EventElementType.purge.toString());
@@ -555,7 +555,7 @@ public abstract class Node {
 
     /**
      * Unregister a listener for item delete events.
-     * 
+     *
      * @param listener The handler to unregister
      */
     public void removeItemDeleteListener(ItemDeleteListener listener) {
@@ -594,9 +594,9 @@ public abstract class Node {
     }
 
     /**
-     * This class translates low level item publication events into api level objects for 
+     * This class translates low level item publication events into api level objects for
      * user consumption.
-     * 
+     *
      * @author Robin Collier
      */
     public static class ItemEventTranslator implements StanzaListener {
@@ -619,9 +619,9 @@ public abstract class Node {
     }
 
     /**
-     * This class translates low level item deletion events into api level objects for 
+     * This class translates low level item deletion events into api level objects for
      * user consumption.
-     * 
+     *
      * @author Robin Collier
      */
     public static class ItemDeleteTranslator implements StanzaListener {
@@ -659,9 +659,9 @@ public abstract class Node {
     }
 
     /**
-     * This class translates low level node configuration events into api level objects for 
+     * This class translates low level node configuration events into api level objects for
      * user consumption.
-     * 
+     *
      * @author Robin Collier
      */
     public static class NodeConfigTranslator implements StanzaListener {
@@ -682,9 +682,9 @@ public abstract class Node {
     }
 
     /**
-     * Filter for {@link StanzaListener} to filter out events not specific to the 
+     * Filter for {@link StanzaListener} to filter out events not specific to the
      * event type expected for this node.
-     * 
+     *
      * @author Robin Collier
      */
     class EventContentFilter extends FlexibleStanzaTypeFilter<Message> {

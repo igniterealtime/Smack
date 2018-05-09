@@ -126,7 +126,7 @@ public class RosterPacket extends IQ {
          */
         private boolean subscriptionPending;
 
-        // TODO Make immutable. 
+        // TODO Make immutable.
         private String name;
         private ItemType itemType = ItemType.none;
         private boolean approved;
@@ -399,7 +399,7 @@ public class RosterPacket extends IQ {
          * point in the direction presence messages are sent. For example, if there is only a head
          * pointing to the big dot, then the local user will receive presence information from the
          * remote entity.
-         * 
+         *
          * @return the symbolic representation of this item type.
          */
         public String asSymbol() {

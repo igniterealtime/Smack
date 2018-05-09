@@ -17,7 +17,7 @@ package org.jivesoftware.smack;
 /**
  * Run all tests defined in RosterTest but initialize the roster before connection is logged in and
  * authenticated.
- * 
+ *
  * @author Henning Staib
  */
 public class RosterInitializedBeforeConnectTest extends RosterSmackTest {

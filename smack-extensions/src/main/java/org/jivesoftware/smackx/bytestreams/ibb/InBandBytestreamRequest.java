@@ -27,7 +27,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * InBandBytestreamRequest class handles incoming In-Band Bytestream requests.
- * 
+ *
  * @author Henning Staib
  */
 public class InBandBytestreamRequest implements BytestreamRequest {
@@ -49,7 +49,7 @@ public class InBandBytestreamRequest implements BytestreamRequest {
 
     /**
      * Returns the sender of the In-Band Bytestream open request.
-     * 
+     *
      * @return the sender of the In-Band Bytestream open request
      */
     @Override
@@ -59,7 +59,7 @@ public class InBandBytestreamRequest implements BytestreamRequest {
 
     /**
      * Returns the session ID of the In-Band Bytestream open request.
-     * 
+     *
      * @return the session ID of the In-Band Bytestream open request
      */
     @Override
@@ -70,10 +70,10 @@ public class InBandBytestreamRequest implements BytestreamRequest {
     /**
      * Accepts the In-Band Bytestream open request and returns the session to
      * send/receive data.
-     * 
+     *
      * @return the session to send/receive data
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     @Override
     public InBandBytestreamSession accept() throws NotConnectedException, InterruptedException {
@@ -94,8 +94,8 @@ public class InBandBytestreamRequest implements BytestreamRequest {
     /**
      * Rejects the In-Band Bytestream request by sending a reject error to the
      * initiator.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     @Override
     public void reject() throws NotConnectedException, InterruptedException {

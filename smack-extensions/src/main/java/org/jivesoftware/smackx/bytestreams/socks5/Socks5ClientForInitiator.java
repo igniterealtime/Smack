@@ -39,7 +39,7 @@ import org.jxmpp.jid.Jid;
  * to the local SOCKS5 proxy differs form the regular way to connect to a SOCKS5 proxy. Additionally
  * a remote SOCKS5 proxy has to be activated by the initiator before data can be transferred between
  * the peers.
- * 
+ *
  * @author Henning Staib
  */
 public class Socks5ClientForInitiator extends Socks5Client {
@@ -56,7 +56,7 @@ public class Socks5ClientForInitiator extends Socks5Client {
 
     /**
      * Creates a new SOCKS5 client for the initiators side.
-     * 
+     *
      * @param streamHost containing network settings of the SOCKS5 proxy
      * @param digest identifying the SOCKS5 Bytestream
      * @param connection the XMPP connection
@@ -107,10 +107,10 @@ public class Socks5ClientForInitiator extends Socks5Client {
     /**
      * Activates the SOCKS5 Bytestream by sending an XMPP SOCKS5 Bytestream activation stanza to the
      * SOCKS5 proxy.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      * @throws SmackException if there was no response from the server.
      */
     private void activate() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -121,7 +121,7 @@ public class Socks5ClientForInitiator extends Socks5Client {
 
     /**
      * Returns a SOCKS5 Bytestream activation packet.
-     * 
+     *
      * @return SOCKS5 Bytestream activation packet
      */
     private Bytestream createStreamHostActivation() {

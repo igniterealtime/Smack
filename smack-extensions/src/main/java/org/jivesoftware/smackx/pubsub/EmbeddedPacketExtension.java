@@ -24,23 +24,23 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 
 /**
  * This interface defines {@link ExtensionElement} implementations that contain other
- * extensions.  This effectively extends the idea of an extension within one of the 
+ * extensions.  This effectively extends the idea of an extension within one of the
  * top level {@link Stanza} types to consider any embedded element to be an extension
  * of its parent.  This more easily enables the usage of some of Smacks parsing
  * utilities such as {@link PacketParserUtils#parseExtensionElement(String, String, org.xmlpull.v1.XmlPullParser)} to be used
  * to parse any element of the XML being parsed.
- * 
+ *
  * <p>Top level extensions have only one element, but they can have multiple children, or
- * their children can have multiple children.  This interface is a way of allowing extensions 
- * to be embedded within one another as a partial or complete one to one mapping of extension 
+ * their children can have multiple children.  This interface is a way of allowing extensions
+ * to be embedded within one another as a partial or complete one to one mapping of extension
  * to element.
- * 
+ *
  * @author Robin Collier
  */
 public interface EmbeddedPacketExtension extends ExtensionElement {
     /**
      * Get the list of embedded {@link ExtensionElement} objects.
-     *  
+     *
      * @return List of embedded {@link ExtensionElement}
      */
     List<ExtensionElement> getExtensions();

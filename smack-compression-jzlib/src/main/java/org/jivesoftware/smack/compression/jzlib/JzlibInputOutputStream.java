@@ -28,10 +28,10 @@ import com.jcraft.jzlib.InflaterInputStream;
 
 /**
  * This class provides XMPP "zlib" compression with the help of JZLib.
- * 
+ *
  * @author Florian Schmaus
  * @see <a href="http://www.jcraft.com/jzlib/">JZLib</a>
- * 
+ *
  */
 public class JzlibInputOutputStream extends XMPPInputOutputStream {
 

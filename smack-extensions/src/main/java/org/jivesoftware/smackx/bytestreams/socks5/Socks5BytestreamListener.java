@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
  * {@link Socks5BytestreamManager#addIncomingBytestreamListener(BytestreamListener)} and
  * {@link Socks5BytestreamManager#addIncomingBytestreamListener(BytestreamListener, org.jxmpp.jid.Jid)} for
  * further details.
- * 
+ *
  * @author Henning Staib
  */
 public abstract class Socks5BytestreamListener implements BytestreamListener {
@@ -39,7 +39,7 @@ public abstract class Socks5BytestreamListener implements BytestreamListener {
 
     /**
      * This listener is notified if a SOCKS5 Bytestream request from another user has been received.
-     * 
+     *
      * @param request the incoming SOCKS5 Bytestream request
      */
     public abstract void incomingBytestreamRequest(Socks5BytestreamRequest request);

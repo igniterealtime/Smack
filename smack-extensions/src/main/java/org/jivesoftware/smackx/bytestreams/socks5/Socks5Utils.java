@@ -26,7 +26,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * A collection of utility methods for SOcKS5 messages.
- * 
+ *
  * @author Henning Staib
  */
 public class Socks5Utils {
@@ -34,7 +34,7 @@ public class Socks5Utils {
     /**
      * Returns a SHA-1 digest of the given parameters as specified in <a
      * href="http://xmpp.org/extensions/xep-0065.html#impl-socks5">XEP-0065</a>.
-     * 
+     *
      * @param sessionID for the SOCKS5 Bytestream
      * @param initiatorJID JID of the initiator of a SOCKS5 Bytestream
      * @param targetJID JID of the target of a SOCKS5 Bytestream
@@ -51,7 +51,7 @@ public class Socks5Utils {
      * message or a SOCKS5 response message.
      * <p>
      * (see <a href="http://tools.ietf.org/html/rfc1928">RFC1928</a>)
-     * 
+     *
      * @param in the DataInputStream to read the message from
      * @return the SOCKS5 message
      * @throws IOException if a network error occurred

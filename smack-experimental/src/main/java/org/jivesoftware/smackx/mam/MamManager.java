@@ -58,12 +58,12 @@ import org.jxmpp.util.XmppDateTime;
 
 /**
  * A Manager for Message Archive Management (XEP-0313).
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
  *      Archive Management</a>
  * @author Florian Schmaus
  * @author Fernando Ramirez
- * 
+ *
  */
 public final class MamManager extends Manager {
 
@@ -80,7 +80,7 @@ public final class MamManager extends Manager {
 
     /**
      * Get the singleton instance of MamManager.
-     * 
+     *
      * @param connection
      * @return the instance of MamManager
      */
@@ -114,7 +114,7 @@ public final class MamManager extends Manager {
 
     /**
      * Query archive with a maximum amount of results.
-     * 
+     *
      * @param max
      * @return the MAM query result
      * @throws NoResponseException
@@ -130,7 +130,7 @@ public final class MamManager extends Manager {
 
     /**
      * Query archive with a JID (only messages from/to the JID).
-     * 
+     *
      * @param withJid
      * @return the MAM query result
      * @throws NoResponseException
@@ -149,7 +149,7 @@ public final class MamManager extends Manager {
      * value of 'start' will be equal to the date/time of the earliest message
      * stored in the archive. If end == null, the value of 'end' will be equal
      * to the date/time of the most recent message stored in the archive.
-     * 
+     *
      * @param start
      * @param end
      * @return the MAM query result
@@ -166,7 +166,7 @@ public final class MamManager extends Manager {
 
     /**
      * Query Archive adding filters with additional fields.
-     * 
+     *
      * @param additionalFields
      * @return the MAM query result
      * @throws NoResponseException
@@ -183,7 +183,7 @@ public final class MamManager extends Manager {
     /**
      * Query archive filtering by start date. The value of 'end' will be equal
      * to the date/time of the most recent message stored in the archive.
-     * 
+     *
      * @param start
      * @return the MAM query result
      * @throws NoResponseException
@@ -200,7 +200,7 @@ public final class MamManager extends Manager {
     /**
      * Query archive filtering by end date. The value of 'start' will be equal
      * to the date/time of the earliest message stored in the archive.
-     * 
+     *
      * @param end
      * @return the MAM query result
      * @throws NoResponseException
@@ -218,7 +218,7 @@ public final class MamManager extends Manager {
     /**
      * Query archive applying filters: max count, start date, end date, from/to
      * JID and with additional fields.
-     * 
+     *
      * @param max
      * @param start
      * @param end
@@ -242,7 +242,7 @@ public final class MamManager extends Manager {
      * Query an message archive like a MUC archive or a PubSub node archive, addressed by an archiveAddress, applying
      * filters: max count, start date, end date, from/to JID and with additional fields. When archiveAddress is null the
      * default, the server will be requested.
-     * 
+     *
      * @param node The PubSub node name, can be null
      * @param max
      * @param start
@@ -326,7 +326,7 @@ public final class MamManager extends Manager {
 
     /**
      * Returns a page of the archive.
-     * 
+     *
      * @param dataForm
      * @param rsmSet
      * @return the MAM query result
@@ -345,7 +345,7 @@ public final class MamManager extends Manager {
 
     /**
      * Returns a page of the archive.
-     * 
+     *
      * @param node The PubSub node name, can be null
      * @param dataForm
      * @param rsmSet
@@ -368,7 +368,7 @@ public final class MamManager extends Manager {
 
     /**
      * Returns the next page of the archive.
-     * 
+     *
      * @param mamQueryResult
      *            is the previous query result
      * @param count
@@ -389,7 +389,7 @@ public final class MamManager extends Manager {
 
     /**
      * Returns the previous page of the archive.
-     * 
+     *
      * @param mamQueryResult
      *            is the previous query result
      * @param count
@@ -482,7 +482,7 @@ public final class MamManager extends Manager {
 
     /**
      * Get the form fields supported by the server.
-     * 
+     *
      * @return the list of form fields.
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -497,7 +497,7 @@ public final class MamManager extends Manager {
 
     /**
      * Get the form fields supported by the server.
-     * 
+     *
      * @param node The PubSub node name, can be null
      * @return the list of form fields.
      * @throws NoResponseException
@@ -618,7 +618,7 @@ public final class MamManager extends Manager {
 
     /**
      * Get the preferences stored in the server.
-     * 
+     *
      * @return the MAM preferences result
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -634,7 +634,7 @@ public final class MamManager extends Manager {
 
     /**
      * Update the preferences in the server.
-     * 
+     *
      * @param alwaysJids
      *            is the list of JIDs that should always have messages to/from
      *            archived in the user's store

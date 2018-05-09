@@ -74,7 +74,7 @@ import org.jxmpp.jid.parts.Resourcepart;
  * notified if this mechanism failed for some reason. Note that as soon as rejoining for a single room failed, no
  * further attempts will be made for the other rooms.
  * </p>
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0045.html">XEP-0045: Multi-User Chat</a>
  */
 public final class MultiUserChatManager extends Manager {
@@ -117,7 +117,7 @@ public final class MultiUserChatManager extends Manager {
 
     /**
      * Get a instance of a multi user chat manager for the given connection.
-     * 
+     *
      * @param connection
      * @return a multi user chat manager.
      */
@@ -268,7 +268,7 @@ public final class MultiUserChatManager extends Manager {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public boolean isServiceEnabled(Jid user) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(user, MUCInitialPresence.NAMESPACE);
@@ -293,7 +293,7 @@ public final class MultiUserChatManager extends Manager {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public List<EntityBareJid> getJoinedRooms(EntityJid user) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
@@ -322,7 +322,7 @@ public final class MultiUserChatManager extends Manager {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public RoomInfo getRoomInfo(EntityBareJid room) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(connection()).discoverInfo(room);
@@ -336,7 +336,7 @@ public final class MultiUserChatManager extends Manager {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public List<DomainBareJid> getMucServiceDomains() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
@@ -361,7 +361,7 @@ public final class MultiUserChatManager extends Manager {
 
     /**
      * Check if the provided domain bare JID provides a MUC service.
-     * 
+     *
      * @param domainBareJid the domain bare JID to check.
      * @return <code>true</code> if the provided JID provides a MUC service, <code>false</code> otherwise.
      * @throws NoResponseException
@@ -387,8 +387,8 @@ public final class MultiUserChatManager extends Manager {
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException
-     * @throws InterruptedException 
-     * @throws NotAMucServiceException 
+     * @throws InterruptedException
+     * @throws NotAMucServiceException
      */
     public List<HostedRoom> getHostedRooms(DomainBareJid serviceName) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException, NotAMucServiceException {
@@ -413,7 +413,7 @@ public final class MultiUserChatManager extends Manager {
      * @param inviter the inviter of the declined invitation.
      * @param reason the reason why the invitee is declining the invitation.
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public void decline(EntityBareJid room, EntityBareJid inviter, String reason) throws NotConnectedException, InterruptedException {
         Message message = new Message(room);

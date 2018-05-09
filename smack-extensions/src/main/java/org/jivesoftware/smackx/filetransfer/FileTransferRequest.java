@@ -24,9 +24,9 @@ import org.jxmpp.jid.Jid;
 
 /**
  * A request to send a file received from another user.
- * 
+ *
  * @author Alexander Wenckus
- * 
+ *
  */
 public class FileTransferRequest {
     private final StreamInitiation streamInitiation;
@@ -36,10 +36,10 @@ public class FileTransferRequest {
     /**
      * A receive request is constructed from the Stream Initiation request
      * received from the initiator.
-     * 
+     *
      * @param manager
      *            The manager handling this file transfer
-     * 
+     *
      * @param si
      *            The Stream initiation received from the initiator.
      */
@@ -50,7 +50,7 @@ public class FileTransferRequest {
 
     /**
      * Returns the name of the file.
-     * 
+     *
      * @return Returns the name of the file.
      */
     public String getFileName() {
@@ -59,7 +59,7 @@ public class FileTransferRequest {
 
     /**
      * Returns the size in bytes of the file.
-     * 
+     *
      * @return Returns the size in bytes of the file.
      */
     public long getFileSize() {
@@ -68,7 +68,7 @@ public class FileTransferRequest {
 
     /**
      * Returns the description of the file provided by the requester.
-     * 
+     *
      * @return Returns the description of the file provided by the requester.
      */
     public String getDescription() {
@@ -77,7 +77,7 @@ public class FileTransferRequest {
 
     /**
      * Returns the mime-type of the file.
-     * 
+     *
      * @return Returns the mime-type of the file.
      */
     public String getMimeType() {
@@ -87,7 +87,7 @@ public class FileTransferRequest {
     /**
      * Returns the fully-qualified jabber ID of the user that requested this
      * file transfer.
-     * 
+     *
      * @return Returns the fully-qualified jabber ID of the user that requested
      *         this file transfer.
      */
@@ -97,7 +97,7 @@ public class FileTransferRequest {
 
     /**
      * Returns the stream ID that uniquely identifies this file transfer.
-     * 
+     *
      * @return Returns the stream ID that uniquely identifies this file
      *         transfer.
      */
@@ -109,7 +109,7 @@ public class FileTransferRequest {
      * Returns the stream initiation stanza that was sent by the requester which
      * contains the parameters of the file transfer being transfer and also the
      * methods available to transfer the file.
-     * 
+     *
      * @return Returns the stream initiation stanza that was sent by the
      *         requester which contains the parameters of the file transfer
      *         being transfer and also the methods available to transfer the
@@ -121,7 +121,7 @@ public class FileTransferRequest {
 
     /**
      * Accepts this file transfer and creates the incoming file transfer.
-     * 
+     *
      * @return Returns the IncomingFileTransfer on which the
      *         file transfer can be carried out.
      */
@@ -131,8 +131,8 @@ public class FileTransferRequest {
 
     /**
      * Rejects the file transfer request.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void reject() throws NotConnectedException, InterruptedException {
         manager.rejectIncomingFileTransfer(this);

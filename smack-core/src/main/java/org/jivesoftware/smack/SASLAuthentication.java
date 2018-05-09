@@ -114,7 +114,7 @@ public final class SASLAuthentication {
     /**
      * Unregister a SASLMechanism by it's full class name. For example
      * "org.jivesoftware.smack.sasl.javax.SASLCramMD5Mechanism".
-     * 
+     *
      * @param clazz the SASLMechanism class's name
      * @return true if the given SASLMechanism was removed, false otherwise
      */
@@ -228,10 +228,10 @@ public final class SASLAuthentication {
     /**
      * Wrapper for {@link #challengeReceived(String, boolean)}, with <code>finalChallenge</code> set
      * to <code>false</code>.
-     * 
+     *
      * @param challenge a base64 encoded string representing the challenge.
      * @throws SmackException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public void challengeReceived(String challenge) throws SmackException, InterruptedException {
         challengeReceived(challenge, false);
@@ -261,8 +261,8 @@ public final class SASLAuthentication {
      * Notification message saying that SASL authentication was successful. The next step
      * would be to bind the resource.
      * @param success result of the authentication.
-     * @throws SmackException 
-     * @throws InterruptedException 
+     * @throws SmackException
+     * @throws InterruptedException
      */
     public void authenticated(Success success) throws SmackException, InterruptedException {
         // RFC6120 6.3.10 "At the end of the authentication exchange, the SASL server (the XMPP
@@ -284,7 +284,7 @@ public final class SASLAuthentication {
     /**
      * Notification message saying that SASL authentication has failed. The server may have
      * closed the connection depending on the number of possible retries.
-     * 
+     *
      * @param saslFailure the SASL failure as reported by the server
      * @see <a href="https://tools.ietf.org/html/rfc6120#section-6.5">RFC6120 6.5</a>
      */

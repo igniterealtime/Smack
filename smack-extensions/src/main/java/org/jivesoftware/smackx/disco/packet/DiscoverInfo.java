@@ -32,10 +32,10 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.util.XmppStringUtils;
 
 /**
- * A DiscoverInfo IQ packet, which is used by XMPP clients to request and receive information 
- * to/from other XMPP entities.<p> 
- * 
- * The received information may contain one or more identities of the requested XMPP entity, and 
+ * A DiscoverInfo IQ packet, which is used by XMPP clients to request and receive information
+ * to/from other XMPP entities.<p>
+ *
+ * The received information may contain one or more identities of the requested XMPP entity, and
  * a list of supported features by the requested XMPP entity.
  *
  * @author Gaston Dombiak
@@ -58,7 +58,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
     /**
      * Copy constructor.
-     * 
+     *
      * @param d
      */
     public DiscoverInfo(DiscoverInfo d) {
@@ -120,7 +120,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
     /**
      * Adds a new identity of the requested entity to the discovered information.
-     * 
+     *
      * @param identity the discovered entity's identity
      */
     public void addIdentity(Identity identity) {
@@ -130,7 +130,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
     /**
      * Adds identities to the DiscoverInfo stanza.
-     * 
+     *
      * @param identitiesToAdd
      */
     public void addIdentities(Collection<Identity> identitiesToAdd) {
@@ -142,7 +142,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
     /**
      * Returns the discovered identities of an XMPP entity.
-     * 
+     *
      * @return an unmodifiable list of the discovered identities
      */
     public List<Identity> getIdentities() {
@@ -179,10 +179,10 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
     }
 
     /**
-     * Returns the node attribute that supplements the 'jid' attribute. A node is merely 
-     * something that is associated with a JID and for which the JID can provide information.<p> 
-     * 
-     * Node attributes SHOULD be used only when trying to provide or query information which 
+     * Returns the node attribute that supplements the 'jid' attribute. A node is merely
+     * something that is associated with a JID and for which the JID can provide information.<p>
+     *
+     * Node attributes SHOULD be used only when trying to provide or query information which
      * is not directly addressable.
      *
      * @return the node attribute that supplements the 'jid' attribute
@@ -192,12 +192,12 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
     }
 
     /**
-     * Sets the node attribute that supplements the 'jid' attribute. A node is merely 
-     * something that is associated with a JID and for which the JID can provide information.<p> 
-     * 
-     * Node attributes SHOULD be used only when trying to provide or query information which 
+     * Sets the node attribute that supplements the 'jid' attribute. A node is merely
+     * something that is associated with a JID and for which the JID can provide information.<p>
+     *
+     * Node attributes SHOULD be used only when trying to provide or query information which
      * is not directly addressable.
-     * 
+     *
      * @param node the node attribute that supplements the 'jid' attribute
      */
     public void setNode(String node) {
@@ -206,7 +206,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
     /**
      * Returns true if the specified feature is part of the discovered information.
-     * 
+     *
      * @param feature the feature to check
      * @return true if the requests feature has been discovered
      */
@@ -230,7 +230,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
     /**
      * Test if a DiscoverInfo response contains duplicate identities.
-     * 
+     *
      * @return true if duplicate identities where found, otherwise false
      */
     public boolean containsDuplicateIdentities() {
@@ -247,7 +247,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
     /**
      * Test if a DiscoverInfo response contains duplicate features.
-     * 
+     *
      * @return true if duplicate identities where found, otherwise false
      */
     public boolean containsDuplicateFeatures() {
@@ -262,11 +262,11 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
     /**
      * Represents the identity of a given XMPP entity. An entity may have many identities but all
      * the identities SHOULD have the same name.<p>
-     * 
+     *
      * Refer to <a href="http://www.jabber.org/registrar/disco-categories.html">Jabber::Registrar</a>
-     * in order to get the official registry of values for the <i>category</i> and <i>type</i> 
+     * in order to get the official registry of values for the <i>category</i> and <i>type</i>
      * attributes.
-     * 
+     *
      */
     public static class Identity implements Comparable<Identity>, TypedCloneable<Identity> {
 
@@ -286,7 +286,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
         /**
          * Creates a new identity for an XMPP entity.
-         * 
+         *
          * @param category the entity's category (required as per XEP-30).
          * @param type the entity's type (required as per XEP-30).
          */
@@ -296,9 +296,9 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
         /**
          * Creates a new identity for an XMPP entity.
-         * 'category' and 'type' are required by 
+         * 'category' and 'type' are required by
          * <a href="http://xmpp.org/extensions/xep-0030.html#schemas">XEP-30 XML Schemas</a>
-         * 
+         *
          * @param category the entity's category (required as per XEP-30).
          * @param name the entity's name.
          * @param type the entity's type (required as per XEP-30).
@@ -309,9 +309,9 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
         /**
          * Creates a new identity for an XMPP entity.
-         * 'category' and 'type' are required by 
+         * 'category' and 'type' are required by
          * <a href="http://xmpp.org/extensions/xep-0030.html#schemas">XEP-30 XML Schemas</a>
-         * 
+         *
          * @param category the entity's category (required as per XEP-30).
          * @param type the entity's type (required as per XEP-30).
          * @param name the entity's name.
@@ -326,8 +326,8 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         }
 
         /**
-         * Returns the entity's category. To get the official registry of values for the 
-         * 'category' attribute refer to <a href="http://www.jabber.org/registrar/disco-categories.html">Jabber::Registrar</a> 
+         * Returns the entity's category. To get the official registry of values for the
+         * 'category' attribute refer to <a href="http://www.jabber.org/registrar/disco-categories.html">Jabber::Registrar</a>
          *
          * @return the entity's category.
          */
@@ -345,8 +345,8 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         }
 
         /**
-         * Returns the entity's type. To get the official registry of values for the 
-         * 'type' attribute refer to <a href="http://www.jabber.org/registrar/disco-categories.html">Jabber::Registrar</a> 
+         * Returns the entity's type. To get the official registry of values for the
+         * 'type' attribute refer to <a href="http://www.jabber.org/registrar/disco-categories.html">Jabber::Registrar</a>
          *
          * @return the entity's type.
          */
@@ -356,7 +356,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
         /**
          * Returns the identities natural language if one is set.
-         * 
+         *
          * @return the value of xml:lang of this Identity
          */
         public String getLanguage() {
@@ -389,11 +389,11 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
             return xml;
         }
 
-        /** 
+        /**
          * Check equality for Identity  for category, type, lang and name
          * in that order as defined by
          * <a href="http://xmpp.org/extensions/xep-0115.html#ver-proc">XEP-0015 5.4 Processing Method (Step 3.3)</a>.
-         *  
+         *
          */
         @Override
         public boolean equals(Object obj) {
@@ -434,7 +434,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
          * Compares this identity with another one. The comparison order is: Category, Type, Lang.
          * If all three are identical the other Identity is considered equal. Name is not used for
          * comparison, as defined by XEP-0115
-         * 
+         *
          * @param other
          * @return a negative integer, zero, or a positive integer as this object is less than,
          *         equal to, or greater than the specified object.
@@ -473,8 +473,8 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
     /**
      * Represents the features offered by the item. This information helps the requester to determine
-     * what actions are possible with regard to this item (registration, search, join, etc.) 
-     * as well as specific feature types of interest, if any (e.g., for the purpose of feature 
+     * what actions are possible with regard to this item (registration, search, join, etc.)
+     * as well as specific feature types of interest, if any (e.g., for the purpose of feature
      * negotiation).
      */
     public static class Feature implements TypedCloneable<Feature> {
@@ -491,7 +491,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
         /**
          * Creates a new feature offered by an XMPP entity or item.
-         * 
+         *
          * @param variable the feature's variable.
          */
         public Feature(String variable) {

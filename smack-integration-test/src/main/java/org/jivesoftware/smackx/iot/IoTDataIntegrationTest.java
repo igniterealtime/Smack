@@ -54,8 +54,8 @@ public class IoTDataIntegrationTest extends AbstractSmackIntegrationTest {
     /**
      * Connection one provides a thing, which momentary value is read out by connection two.
      *
-     * @throws Exception 
-     * @throws TimeoutException 
+     * @throws Exception
+     * @throws TimeoutException
      */
     @SmackIntegrationTest
     public void dataTest() throws Exception {

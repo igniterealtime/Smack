@@ -213,7 +213,7 @@ public class MessageTest extends SmackTestCase {
         StanzaCollector collector = getConnection(0).createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
         StanzaCollector coll3 = conn3.createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
 
-        // User1 sends a message to the bare JID of User0 
+        // User1 sends a message to the bare JID of User0
         Chat chat = getConnection(1).getChatManager().createChat(getBareJID(0), null);
         chat.sendMessage("Test 1");
         chat.sendMessage("Test 2");
@@ -325,7 +325,7 @@ public class MessageTest extends SmackTestCase {
         StanzaCollector coll3 = conn3.createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
         StanzaCollector coll4 = conn4.createStanzaCollector(new MessageTypeFilter(Message.Type.chat));
 
-        // Send a message from this resource to indicate most recent activity 
+        // Send a message from this resource to indicate most recent activity
         conn3.sendStanza(new Message("admin@" + getXMPPServiceDomain()));
 
         // User1 sends a message to the bare JID of User0

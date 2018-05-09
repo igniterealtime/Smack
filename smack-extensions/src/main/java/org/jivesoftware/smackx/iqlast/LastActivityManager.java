@@ -48,7 +48,7 @@ import org.jxmpp.jid.Jid;
  * associated with a Jabber ID. A manager handles incoming LastActivity requests
  * of existing Connections. It also allows to request last activity information
  * of other users.
- * 
+ *
  * LastActivity (XEP-0012) based on the sending JID's type allows for retrieval
  * of:
  * <ol>
@@ -57,31 +57,31 @@ import org.jxmpp.jid.Jid;
  * specified when doing so.
  * <li>How long a host has been up.
  * </ol>
- * 
+ *
  * For example to get the idle time of a user logged in a resource, simple send
  * the LastActivity stanza to them, as in the following code:
- * 
+ *
  * <pre>
  * XMPPConnection con = new XMPPTCPConnection(&quot;jabber.org&quot;);
  * con.login(&quot;john&quot;, &quot;doe&quot;);
  * LastActivity activity = LastActivity.getLastActivity(con, &quot;xray@jabber.org/Smack&quot;);
  * </pre>
- * 
+ *
  * To get the lapsed time since the last user logout is the same as above but
  * with out the resource:
- * 
+ *
  * <pre>
  * LastActivity activity = LastActivity.getLastActivity(con, &quot;xray@jabber.org&quot;);
  * </pre>
- * 
+ *
  * To get the uptime of a host, you simple send the LastActivity stanza to it,
  * as in the following code example:
  * <p>
- * 
+ *
  * <pre>
  * LastActivity activity = LastActivity.getLastActivity(con, &quot;jabber.org&quot;);
  * </pre>
- * 
+ *
  * @author Gabriel Guardincerri
  * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0012.html">XEP-0012: Last
@@ -126,7 +126,7 @@ public final class LastActivityManager extends Manager {
 
     /**
      * Creates a last activity manager to response last activity requests.
-     * 
+     *
      * @param connection
      *            The XMPPConnection that the last activity requests will use.
      */
@@ -208,7 +208,7 @@ public final class LastActivityManager extends Manager {
 
     /**
      * The idle time is the lapsed time between the last message sent and now.
-     * 
+     *
      * @return the lapsed time between the last message sent and now.
      */
     private long getIdleTime() {
@@ -225,15 +225,15 @@ public final class LastActivityManager extends Manager {
      * time since the last logout or 0 if the user is currently logged in.
      * Moreover, when the jid is a server or component (e.g., a JID of the form
      * 'host') the last activity is the uptime.
-     * 
+     *
      * @param jid
      *            the JID of the user.
      * @return the LastActivity stanza of the jid.
      * @throws XMPPErrorException
      *             thrown if a server error has occured.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public LastActivity getLastActivity(Jid jid) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
@@ -243,13 +243,13 @@ public final class LastActivityManager extends Manager {
 
     /**
      * Returns true if Last Activity (XEP-0012) is supported by a given JID.
-     * 
+     *
      * @param jid a JID to be tested for Last Activity support
      * @return true if Last Activity is supported, otherwise false
-     * @throws NotConnectedException 
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws InterruptedException
      */
     public boolean isLastActivitySupported(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, LastActivity.NAMESPACE);

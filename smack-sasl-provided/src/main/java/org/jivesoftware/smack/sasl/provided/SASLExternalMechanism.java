@@ -26,7 +26,7 @@ import org.jxmpp.util.XmppStringUtils;
 
 /**
  * Implementation of the SASL-EXTERNAL authentication mechanism.
- * 
+ *
  * @author Daniele Ricci
  */
 public class SASLExternalMechanism extends SASLMechanism {

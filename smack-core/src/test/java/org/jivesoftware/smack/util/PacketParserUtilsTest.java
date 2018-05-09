@@ -671,7 +671,7 @@ public class PacketParserUtilsTest {
     /**
      * RFC6121 5.2.3 explicitly disallows mixed content in <body/> elements. Make sure that we throw
      * an exception if we encounter such an element.
-     * 
+     *
      * @throws Exception
      */
     @Test(expected = XmlPullParserException.class)

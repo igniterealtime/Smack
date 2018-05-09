@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Push Notifications Remote Disabling Provider class.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0357.html">XEP-0357: Push
  *      Notifications</a>
  * @author Fernando Ramirez

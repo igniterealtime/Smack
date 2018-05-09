@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub;
 import junit.framework.TestCase;
 
 /**
- * 
+ *
  * @author Robin Collier
  *
  */
@@ -27,7 +27,7 @@ public class TestMessageContent extends TestCase
 {
 	String payloadXmlWithNS = "<book xmlns='pubsub:test:book'><author name='Stephen King'/></book>";
 
-	public void testItemWithId() 
+	public void testItemWithId()
 	{
 		Item item = new Item("123");
 		assertEquals("<item id='123'/>", item.toXML());
@@ -35,7 +35,7 @@ public class TestMessageContent extends TestCase
 		assertNull(item.getNamespace());
 	}
 
-	public void testItemWithNoId() 
+	public void testItemWithNoId()
 	{
 		Item item = new Item();
 		assertEquals("<item/>", item.toXML());
@@ -44,7 +44,7 @@ public class TestMessageContent extends TestCase
 		assertEquals("<item/>", itemNull.toXML());
 	}
 
-	public void testSimplePayload() 
+	public void testSimplePayload()
 	{
 		SimplePayload payloadNS = new SimplePayload("book", "pubsub:test:book", payloadXmlWithNS);
 

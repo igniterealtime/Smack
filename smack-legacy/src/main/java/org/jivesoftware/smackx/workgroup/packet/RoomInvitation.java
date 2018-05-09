@@ -55,7 +55,7 @@ public class RoomInvitation implements ExtensionElement {
     private Type type;
     /**
      * JID of the entity being invited. The entity could be another agent, user , a queue or a workgroup. In
-     * the case of a queue or a workgroup the server will select the best agent to invite. 
+     * the case of a queue or a workgroup the server will select the best agent to invite.
      */
     private Jid invitee;
     /**
@@ -71,7 +71,7 @@ public class RoomInvitation implements ExtensionElement {
      */
     private EntityBareJid room;
     /**
-     * Text provided by the inviter explaining the reason why the invitee is invited. 
+     * Text provided by the inviter explaining the reason why the invitee is invited.
      */
     private String reason;
 
@@ -183,7 +183,7 @@ public class RoomInvitation implements ExtensionElement {
                         invitation.sessionID = parser.getAttributeValue("", "id");
                     }
                     else if ("invitee".equals(elementName)) {
-                        String inviteeString = parser.nextText(); 
+                        String inviteeString = parser.nextText();
                         invitation.invitee = JidCreate.from(inviteeString);
                     }
                     else if ("inviter".equals(elementName)) {

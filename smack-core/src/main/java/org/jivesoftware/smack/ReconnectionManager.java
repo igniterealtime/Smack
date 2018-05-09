@@ -44,7 +44,7 @@ import org.jivesoftware.smack.util.Async;
  *  <li>If that fails it will indefinitely try to connect once every five minutes.
  * </ol>
  *
- * {@link ReconnectionPolicy#FIXED_DELAY} - The reconnection mechanism will try to reconnect after a fixed delay 
+ * {@link ReconnectionPolicy#FIXED_DELAY} - The reconnection mechanism will try to reconnect after a fixed delay
  * independently from the number of reconnection attempts already performed.
  * <p>
  * Interrupting the reconnection thread will abort the reconnection mechanism.
@@ -60,7 +60,7 @@ public final class ReconnectionManager {
 
     /**
      * Get a instance of ReconnectionManager for the given connection.
-     * 
+     *
      * @param connection
      * @return a ReconnectionManager for the connection.
      */
@@ -89,7 +89,7 @@ public final class ReconnectionManager {
     /**
      * Set if the automatic reconnection mechanism will be enabled per default for new XMPP connections. The default is
      * 'false'.
-     * 
+     *
      * @param enabled
      */
     public static void setEnabledPerDefault(boolean enabled) {
@@ -121,7 +121,7 @@ public final class ReconnectionManager {
     /**
      * Set the default fixed delay in seconds between the reconnection attempts. Also set the
      * default connection policy to {@link ReconnectionPolicy#FIXED_DELAY}
-     * 
+     *
      * @param fixedDelay Delay expressed in seconds
      */
     public static void setDefaultFixedDelay(int fixedDelay) {
@@ -131,7 +131,7 @@ public final class ReconnectionManager {
 
     /**
      * Set the default Reconnection Policy to use.
-     * 
+     *
      * @param reconnectionPolicy
      */
     public static void setDefaultReconnectionPolicy(ReconnectionPolicy reconnectionPolicy) {
@@ -162,7 +162,7 @@ public final class ReconnectionManager {
     /**
      * Set the fixed delay in seconds between the reconnection attempts Also set the connection
      * policy to {@link ReconnectionPolicy#FIXED_DELAY}.
-     * 
+     *
      * @param fixedDelay Delay expressed in seconds
      */
     public void setFixedDelay(int fixedDelay) {
@@ -172,7 +172,7 @@ public final class ReconnectionManager {
 
     /**
      * Set the Reconnection Policy to use.
-     * 
+     *
      * @param reconnectionPolicy
      */
     public void setReconnectionPolicy(ReconnectionPolicy reconnectionPolicy) {

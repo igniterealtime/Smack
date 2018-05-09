@@ -195,7 +195,7 @@ public class Transcripts extends IQ {
     }
 
     /**
-     * An AgentDetail contains information of an Agent that was involved in a conversation. 
+     * An AgentDetail contains information of an Agent that was involved in a conversation.
      */
     public static class AgentDetail {
         private final String agentJID;

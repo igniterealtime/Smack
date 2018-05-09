@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.bob.BoBManager;
 
 /**
  * Bits of Binary IQ class.
- * 
+ *
  * @author Fernando Ramirez
  * @see <a href="http://xmpp.org/extensions/xep-0231.html">XEP-0231: Bits of
  *      Binary</a>
@@ -46,7 +46,7 @@ public class BoBIQ extends IQ {
 
     /**
      * Bits of Binary IQ constructor.
-     * 
+     *
      * @param bobHash
      * @param bobData
      */
@@ -58,7 +58,7 @@ public class BoBIQ extends IQ {
 
     /**
      * Bits of Binary IQ constructor.
-     * 
+     *
      * @param bobHash
      */
     public BoBIQ(BoBHash bobHash) {
@@ -67,7 +67,7 @@ public class BoBIQ extends IQ {
 
     /**
      * Get the BoB hash.
-     * 
+     *
      * @return the BoB hash
      */
     public BoBHash getBoBHash() {
@@ -76,7 +76,7 @@ public class BoBIQ extends IQ {
 
     /**
      * Get the BoB data.
-     * 
+     *
      * @return the BoB data
      */
     public BoBData getBoBData() {

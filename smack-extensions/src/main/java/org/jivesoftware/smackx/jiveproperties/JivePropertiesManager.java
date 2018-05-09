@@ -50,7 +50,7 @@ public class JivePropertiesManager {
 
     /**
      * Convenience method to add a property to a packet.
-     * 
+     *
      * @param packet the stanza to add the property to.
      * @param name the name of the property to add.
      * @param value the value of the property to add.
@@ -67,7 +67,7 @@ public class JivePropertiesManager {
     /**
      * Convenience method to get a property from a packet. Will return null if the stanza contains
      * not property with the given name.
-     * 
+     *
      * @param packet
      * @param name
      * @return the property or <tt>null</tt> if none found.
@@ -84,7 +84,7 @@ public class JivePropertiesManager {
     /**
      * Return a collection of the names of all properties of the given packet. If the packet
      * contains no properties extension, then an empty collection will be returned.
-     * 
+     *
      * @param packet
      * @return a collection of the names of all properties.
      */
@@ -99,7 +99,7 @@ public class JivePropertiesManager {
     /**
      * Return a map of all properties of the given packet. If the stanza contains no properties
      * extension, an empty map will be returned.
-     * 
+     *
      * @param packet
      * @return a map of all properties of the given packet.
      */

@@ -34,7 +34,7 @@ public class MUCLightRoomInfo {
 
     /**
      * MUC Light room info model constructor.
-     * 
+     *
      * @param version
      * @param roomJid
      * @param configuration
@@ -50,7 +50,7 @@ public class MUCLightRoomInfo {
 
     /**
      * Returns the version.
-     * 
+     *
      * @return the version
      */
     public String getVersion() {
@@ -68,7 +68,7 @@ public class MUCLightRoomInfo {
 
     /**
      * Returns the configuration.
-     * 
+     *
      * @return the room configuration
      */
     public MUCLightRoomConfiguration getConfiguration() {
@@ -77,7 +77,7 @@ public class MUCLightRoomInfo {
 
     /**
      * Returns the room occupants.
-     * 
+     *
      * @return the occupants of the room.
      */
     public HashMap<Jid, MUCLightAffiliation> getOccupants() {

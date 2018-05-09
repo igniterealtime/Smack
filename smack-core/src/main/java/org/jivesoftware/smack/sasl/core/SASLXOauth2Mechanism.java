@@ -32,7 +32,7 @@ import org.jivesoftware.smack.sasl.SASLMechanism;
  * Note that X-OAUTH2 is experimental in Smack. This is because Google defined, besides being a bad practice (XEP-134),
  * custom attributes to the 'auth' stanza, as can be seen here
  * </p>
- * 
+ *
  * <pre>
  * {@code
  * <auth xmlns="urn:ietf:params:xml:ns:xmpp-sasl" mechanism="X-OAUTH2"
@@ -40,9 +40,9 @@ import org.jivesoftware.smack.sasl.SASLMechanism;
  *    auth:client-uses-full-bind-result="true" xmlns:auth="http://www.google.com/talk/protocol/auth">
  * }
  * </pre>
- * 
+ *
  * from https://developers.google.com/cloud-print/docs/rawxmpp and here
- * 
+ *
  * <pre>
  * {@code
  * <auth xmlns="urn:ietf:params:xml:ns:xmpp-sasl"
@@ -53,7 +53,7 @@ import org.jivesoftware.smack.sasl.SASLMechanism;
  * </auth>
  * }
  * </pre>
- * 
+ *
  * from https://developers.google.com/talk/jep_extensions/oauth
  * <p>
  * Those attribute extensions are currently not supported by Smack, and it's unclear how it affects authorization and

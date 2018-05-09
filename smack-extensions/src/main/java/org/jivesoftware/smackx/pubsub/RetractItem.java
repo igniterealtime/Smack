@@ -22,7 +22,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 /**
  * Represents and item that has been deleted from a node.
- * 
+ *
  * @author Robin Collier
  */
 public class RetractItem implements ExtensionElement {
@@ -30,7 +30,7 @@ public class RetractItem implements ExtensionElement {
 
     /**
      * Construct a <tt>RetractItem</tt> with the specified id.
-     * 
+     *
      * @param itemId The id if the item deleted
      */
     public RetractItem(String itemId) {

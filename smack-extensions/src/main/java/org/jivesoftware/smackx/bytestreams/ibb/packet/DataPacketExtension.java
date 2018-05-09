@@ -24,7 +24,7 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
 /**
  * Represents a chunk of data of an In-Band Bytestream within an IQ stanza or a
  * message stanza.
- * 
+ *
  * @author Henning Staib
  */
 public class DataPacketExtension implements ExtensionElement {
@@ -52,7 +52,7 @@ public class DataPacketExtension implements ExtensionElement {
 
     /**
      * Creates a new In-Band Bytestream data packet.
-     * 
+     *
      * @param sessionID unique session ID identifying this In-Band Bytestream
      * @param seq sequence of this stanza in regard to the other data packets
      * @param data the base64 encoded data contained in this packet
@@ -74,7 +74,7 @@ public class DataPacketExtension implements ExtensionElement {
 
     /**
      * Returns the unique session ID identifying this In-Band Bytestream.
-     * 
+     *
      * @return the unique session ID identifying this In-Band Bytestream
      */
     public String getSessionID() {
@@ -83,7 +83,7 @@ public class DataPacketExtension implements ExtensionElement {
 
     /**
      * Returns the sequence of this stanza in regard to the other data packets.
-     * 
+     *
      * @return the sequence of this stanza in regard to the other data packets.
      */
     public long getSeq() {
@@ -92,7 +92,7 @@ public class DataPacketExtension implements ExtensionElement {
 
     /**
      * Returns the data contained in this packet.
-     * 
+     *
      * @return the data contained in this packet.
      */
     public String getData() {
@@ -107,7 +107,7 @@ public class DataPacketExtension implements ExtensionElement {
      * character(s) of the data. See <a
      * href="http://xmpp.org/extensions/xep-0047.html#sec">XEP-0047</a> Section
      * 6.
-     * 
+     *
      * @return the decoded data
      */
     public byte[] getDecodedData() {

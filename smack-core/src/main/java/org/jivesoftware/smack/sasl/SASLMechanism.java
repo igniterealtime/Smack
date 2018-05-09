@@ -62,7 +62,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * <p>
      * A simple SASLPrep StringTransformer would be for example: <code>java.text.Normalizer.normalize(string, Form.NFKC);</code>
      * </p>
-     * 
+     *
      * @param stringTransformer set StringTransformer to use for SASLPrep.
      * @see <a href="http://tools.ietf.org/html/rfc4013">RFC 4013 - SASLprep: Stringprep Profile for User Names and Passwords</a>
      */
@@ -111,28 +111,28 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * Builds and sends the <tt>auth</tt> stanza to the server. Note that this method of
      * authentication is not recommended, since it is very inflexible. Use
      * {@link #authenticate(String, DomainBareJid, CallbackHandler, EntityBareJid, SSLSession)} whenever possible.
-     * 
+     *
      * Explanation of auth stanza:
-     * 
-     * The client authentication stanza needs to include the digest-uri of the form: xmpp/serviceName 
-     * From RFC-2831: 
+     *
+     * The client authentication stanza needs to include the digest-uri of the form: xmpp/serviceName
+     * From RFC-2831:
      * digest-uri = "digest-uri" "=" digest-uri-value
      * digest-uri-value = serv-type "/" host [ "/" serv-name ]
-     * 
-     * digest-uri: 
-     * Indicates the principal name of the service with which the client 
-     * wishes to connect, formed from the serv-type, host, and serv-name. 
+     *
+     * digest-uri:
+     * Indicates the principal name of the service with which the client
+     * wishes to connect, formed from the serv-type, host, and serv-name.
      * For example, the FTP service
      * on "ftp.example.com" would have a "digest-uri" value of "ftp/ftp.example.com"; the SMTP
      * server from the example above would have a "digest-uri" value of
      * "smtp/mail3.example.com/example.com".
-     * 
+     *
      * host:
      * The DNS host name or IP address for the service requested. The DNS host name
      * must be the fully-qualified canonical name of the host. The DNS host name is the
      * preferred form; see notes on server processing of the digest-uri.
-     * 
-     * serv-name: 
+     *
+     * serv-name:
      * Indicates the name of the service if it is replicated. The service is
      * considered to be replicated if the client's service-location process involves resolution
      * using standard DNS lookup operations, and if these operations involve DNS records (such
@@ -154,8 +154,8 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param authzid the optional authorization identity.
      * @param sslSession the optional SSL/TLS session (if one was established)
      * @throws SmackException If a network error occurs while authenticating.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public final void authenticate(String username, String host, DomainBareJid serviceName, String password,
                     EntityBareJid authzid, SSLSession sslSession)
@@ -187,8 +187,8 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param authzid the optional authorization identity.
      * @param sslSession the optional SSL/TLS session (if one was established)
      * @throws SmackException
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void authenticate(String host, DomainBareJid serviceName, CallbackHandler cbh, EntityBareJid authzid, SSLSession sslSession)
                     throws SmackException, NotConnectedException, InterruptedException {
@@ -225,7 +225,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * Should return the initial response of the SASL mechanism. The returned byte array will be
      * send base64 encoded to the server. SASL mechanism are free to return <code>null</code> or an
      * empty array here.
-     * 
+     *
      * @return the initial response or null
      * @throws SmackException
      */
@@ -313,7 +313,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
 
     /**
      * SASLprep the given String. The resulting String is in UTF-8.
-     * 
+     *
      * @param string the String to sasl prep.
      * @return the given String SASL preped
      * @see <a href="http://tools.ietf.org/html/rfc4013">RFC 4013 - SASLprep: Stringprep Profile for User Names and Passwords</a>

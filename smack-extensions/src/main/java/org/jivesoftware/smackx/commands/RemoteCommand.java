@@ -97,8 +97,8 @@ public class RemoteCommand extends AdHocCommand {
      * @param form the form answer of the previous stage.
      * @throws XMPPErrorException if an error occurs.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void execute(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         executeAction(Action.execute, form);
@@ -127,8 +127,8 @@ public class RemoteCommand extends AdHocCommand {
      * @param form the form with the information.
      * @throws XMPPErrorException if there is a problem executing the command.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     private void executeAction(Action action, Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // TODO: Check that all the required fields of the form were filled, if

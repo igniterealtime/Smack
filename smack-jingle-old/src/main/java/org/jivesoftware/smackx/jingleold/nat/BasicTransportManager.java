@@ -20,7 +20,7 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
 
 /**
  * A Basic Jingle Transport Manager implementation.
- *  
+ *
  */
 public class BasicTransportManager extends JingleTransportManager{
 

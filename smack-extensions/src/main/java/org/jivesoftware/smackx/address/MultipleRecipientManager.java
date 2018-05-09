@@ -68,8 +68,8 @@ public class MultipleRecipientManager {
      * @throws XMPPErrorException if server does not support XEP-33: Extended Stanza Addressing and
      *                       some XEP-33 specific features were requested.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public static void send(XMPPConnection connection, Stanza packet, Collection<? extends Jid> to,
             Collection<? extends Jid> cc, Collection<? extends Jid> bcc) throws NoResponseException, XMPPErrorException,
@@ -82,7 +82,7 @@ public class MultipleRecipientManager {
      * connection. If the server has support for XEP-33 then only one stanza is going to be sent to
      * the server with the multiple recipient instructions. However, if XEP-33 is not supported by
      * the server then the client is going to send the stanza to each recipient.
-     * 
+     *
      * @param connection the connection to use to send the packet.
      * @param packet the stanza to send to the list of recipients.
      * @param to the collection of JIDs to include in the TO list or <tt>null</tt> if no TO list exists.
@@ -99,8 +99,8 @@ public class MultipleRecipientManager {
      * @throws NoResponseException if there was no response from the server.
      * @throws FeatureNotSupportedException if special XEP-33 features where requested, but the
      *         server does not support them.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public static void send(XMPPConnection connection, Stanza packet, Collection<? extends Jid> to, Collection<? extends Jid> cc, Collection<? extends Jid> bcc,
             Jid replyTo, Jid replyRoom, boolean noReply) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException, NotConnectedException, InterruptedException {
@@ -140,9 +140,9 @@ public class MultipleRecipientManager {
      * @param connection the connection to use to send the reply.
      * @param original   the previously received stanza that was sent to multiple recipients.
      * @param reply      the new message to send as a reply.
-     * @throws SmackException 
-     * @throws XMPPErrorException 
-     * @throws InterruptedException 
+     * @throws SmackException
+     * @throws XMPPErrorException
+     * @throws InterruptedException
      */
     public static void reply(XMPPConnection connection, Message original, Message reply)
             throws SmackException, XMPPErrorException, InterruptedException {
@@ -279,9 +279,9 @@ public class MultipleRecipientManager {
      *                   queried.
      * @return the address of the multiple recipients service or <tt>null</tt> if none was found.
      * @throws NoResponseException if there was no response from the server.
-     * @throws XMPPErrorException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     private static DomainBareJid getMultipleRecipientServiceAddress(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);

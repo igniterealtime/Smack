@@ -23,9 +23,9 @@ import org.jivesoftware.smack.util.Objects;
 /**
  * A filter for IQ stanza types. Returns true only if the stanza is an IQ packet
  * and it matches the type provided in the constructor.
- * 
+ *
  * @author Alexander Wenckus
- * 
+ *
  */
 public final class IQTypeFilter extends FlexibleStanzaTypeFilter<IQ> {
 

@@ -40,7 +40,7 @@ import org.jivesoftware.smackx.filetransfer.StreamNegotiator;
  * All In-Band Bytestream request having a block size greater than the maximum allowed block size
  * for this connection are rejected with an &lt;resource-constraint/&gt; error. The maximum block
  * size can be set by invoking {@link InBandBytestreamManager#setMaximumBlockSize(int)}.
- * 
+ *
  * @author Henning Staib
  */
 class InitiationListener extends AbstractIqRequestHandler {
@@ -54,7 +54,7 @@ class InitiationListener extends AbstractIqRequestHandler {
 
     /**
      * Constructor.
-     * 
+     *
      * @param manager the In-Band Bytestream manager
      */
     protected InitiationListener(InBandBytestreamManager manager) {

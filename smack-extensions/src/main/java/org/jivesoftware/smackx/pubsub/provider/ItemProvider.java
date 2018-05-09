@@ -34,7 +34,7 @@ import org.xmlpull.v1.XmlPullParser;
  * {@link PubSubNamespace#event} namespaces. To parse the item contents, it will use whatever
  * {@link ExtensionElementProvider} is registered in <b>smack.providers</b> for its element name and namespace. If no
  * provider is registered, it will return a {@link SimplePayload}.
- * 
+ *
  * @author Robin Collier
  */
 public class ItemProvider extends ExtensionElementProvider<Item>  {

@@ -46,7 +46,7 @@ public class Version extends IQ {
 
     /**
      * Request version IQ.
-     * 
+     *
      * @param to the jid where to request version from
      */
     public Version(Jid to) {

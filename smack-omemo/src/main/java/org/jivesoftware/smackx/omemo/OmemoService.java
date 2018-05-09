@@ -424,7 +424,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @throws XMPPException.XMPPErrorException
      * @throws SmackException.NotConnectedException
      * @throws SmackException.NoResponseException
-     * @throws NotAPubSubNodeException 
+     * @throws NotAPubSubNodeException
      */
     static LeafNode fetchDeviceListNode(OmemoManager omemoManager, BareJid contact)
             throws InterruptedException, PubSubException.NotALeafNodeException, XMPPException.XMPPErrorException,
@@ -443,7 +443,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @throws InterruptedException                 goes
      * @throws SmackException.NoResponseException   wrong
      * @throws PubSubException.NotALeafNodeException when the device lists node is not a LeafNode
-     * @throws NotAPubSubNodeException 
+     * @throws NotAPubSubNodeException
      */
     static OmemoDeviceListElement fetchDeviceList(OmemoManager omemoManager, BareJid contact)
                     throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
@@ -524,7 +524,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @throws InterruptedException                 goes
      * @throws SmackException.NoResponseException   wrong
      * @throws PubSubException.NotALeafNodeException when the bundles node is not a LeafNode
-     * @throws NotAPubSubNodeException 
+     * @throws NotAPubSubNodeException
      */
     static OmemoBundleVAxolotlElement fetchBundle(OmemoManager omemoManager, OmemoDevice contact)
                     throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,

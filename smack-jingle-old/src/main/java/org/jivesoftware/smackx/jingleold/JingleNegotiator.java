@@ -201,9 +201,9 @@ public abstract class JingleNegotiator {
 
     /**
      * Dispatch an incoming packet.
-     * 
+     *
      * The negotiators form a tree relationship that roughly matches the Jingle stanza format:
-     * 
+     *
      * JingleSession
      *      Content Negotiator
      *          Media Negotiator
@@ -211,7 +211,7 @@ public abstract class JingleNegotiator {
      *      Content Negotiator
      *          Media Negotiator
      *          Transport Negotiator
-     *          
+     *
      * &lt;jingle&gt;
      *      &lt;content&gt;
      *          &lt;description&gt;
@@ -219,10 +219,10 @@ public abstract class JingleNegotiator {
      *      &lt;content&gt;
      *          &lt;description&gt;
      *          &lt;transport&gt;
-     *          
+     *
      * This way, each segment of a Jingle stanza has a corresponding negotiator that know how to deal with that
      * part of the Jingle packet.  It also allows us to support Jingle packets of arbitraty complexity.
-     * 
+     *
      * Each parent calls dispatchIncomingPacket for each of its children.  The children then pass back a List of
      * results that will get sent when we reach the top level negotiator (JingleSession).
      *
@@ -230,7 +230,7 @@ public abstract class JingleNegotiator {
      * @param id the ID of the response that will be sent
      * @return the new stanza to send (either a Jingle or an IQ error).
      * @throws XMPPException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public abstract List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException, InterruptedException;
 

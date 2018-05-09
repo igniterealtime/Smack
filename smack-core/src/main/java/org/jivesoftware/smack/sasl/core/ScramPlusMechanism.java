@@ -28,7 +28,7 @@ import org.jivesoftware.smack.util.TLSUtils;
  * SCRAM-X-PLUS implementation. Due limitations of the Java API, this mechanism only supports the 'tls-server-end-point'
  * channel binding type. But on the other hand, the other relevant channel binding type 'tls-unique' has some flaws (see
  * 3SHAKE, RFC 7627).
- * 
+ *
  * @author Florian Schmaus
  */
 public abstract class ScramPlusMechanism extends ScramMechanism {

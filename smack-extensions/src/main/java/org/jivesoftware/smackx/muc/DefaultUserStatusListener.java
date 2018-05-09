@@ -25,7 +25,7 @@ import org.jxmpp.jid.Jid;
  * This class does not provide any behavior by default. It just avoids having
  * to implement all the inteface methods if the user is only interested in implementing
  * some of the methods.
- * 
+ *
  * @author Gaston Dombiak
  */
 public class DefaultUserStatusListener implements UserStatusListener {

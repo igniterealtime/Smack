@@ -32,7 +32,7 @@ public class XMPPConnectionRegistry {
     /**
      * Adds a new listener that will be notified when new Connections are created. Note
      * that newly created connections will not be actually connected to the server.
-     * 
+     *
      * @param connectionCreationListener a listener interested on new connections.
      */
     public static void addConnectionCreationListener(
@@ -42,7 +42,7 @@ public class XMPPConnectionRegistry {
 
     /**
      * Removes a listener that was interested in connection creation events.
-     * 
+     *
      * @param connectionCreationListener a listener interested on new connections.
      */
     public static void removeConnectionCreationListener(
@@ -54,7 +54,7 @@ public class XMPPConnectionRegistry {
 
     /**
      * Get the collection of listeners that are interested in connection creation events.
-     * 
+     *
      * @return a collection of listeners interested on new connections.
      */
     protected static Collection<ConnectionCreationListener> getConnectionCreationListeners() {

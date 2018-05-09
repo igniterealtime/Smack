@@ -36,17 +36,17 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * Base class for all the test cases which provides a pre-configured execution context. This 
- * means that any test case that subclassifies this base class will have access to a pool of 
+ * Base class for all the test cases which provides a pre-configured execution context. This
+ * means that any test case that subclassifies this base class will have access to a pool of
  * connections and to the user of each connection. The maximum number of connections in the pool
- * can be controlled by the message {@link #getMaxConnections()} which every subclass must 
- * implement.<p>   
- * 
- * This base class defines a default execution context (i.e. host, port, chat domain and muc 
+ * can be controlled by the message {@link #getMaxConnections()} which every subclass must
+ * implement.<p>
+ *
+ * This base class defines a default execution context (i.e. host, port, chat domain and muc
  * domain) which can be found in the file "config/test-case.xml". However, each subclass could
  * redefine the default configuration by providing its own configuration file (if desired). The
  * name of the configuration file must be of the form <test class name>.xml (e.g. RosterTest.xml).
- * The file must be placed in the folder "config". This folder is where the default configuration 
+ * The file must be placed in the folder "config". This folder is where the default configuration
  * file is being held.
  *
  * @author Gaston Dombiak
@@ -81,21 +81,21 @@ public abstract class SmackTestCase extends TestCase {
     }
 
     /**
-     * Returns the maximum number of connections to initialize for this test case. All the 
-     * initialized connections will be connected to the server using a new test account for 
-     * each conection. 
-     * 
+     * Returns the maximum number of connections to initialize for this test case. All the
+     * initialized connections will be connected to the server using a new test account for
+     * each conection.
+     *
      * @return the maximum number of connections to initialize for this test case.
      */
     protected abstract int getMaxConnections();
 
     /**
-     * Returns a SocketFactory that will be used to create the socket to the XMPP server. By 
+     * Returns a SocketFactory that will be used to create the socket to the XMPP server. By
      * default no SocketFactory is used but subclasses my want to redefine this method.<p>
-     * 
-     * A custom SocketFactory allows fine-grained control of the actual connection to the XMPP 
+     *
+     * A custom SocketFactory allows fine-grained control of the actual connection to the XMPP
      * server. A typical use for a custom SocketFactory is when connecting through a SOCKS proxy.
-     * 
+     *
      * @return a SocketFactory that will be used to create the socket to the XMPP server.
      */
     protected SocketFactory getSocketFactory() {
@@ -111,7 +111,7 @@ public abstract class SmackTestCase extends TestCase {
      * <p>
      * Connections are connected by default.
      * Overwrite this method if the test case needs unconnected connections.
-     * 
+     *
      * @return <code>true</code> if connections should NOT be connected automatically,
      *         <code>false</code> if connections should be connected automatically.
      */
@@ -123,11 +123,11 @@ public abstract class SmackTestCase extends TestCase {
      * Returns the XMPPTCPConnection located at the requested position. Each test case holds a
      * pool of connections which is initialized while setting up the test case. The maximum
      * number of connections is controlled by the message {@link #getMaxConnections()} which
-     * every subclass must implement.<p>   
-     * 
-     * If the requested position is greater than the connections size then an 
-     * IllegalArgumentException will be thrown. 
-     * 
+     * every subclass must implement.<p>
+     *
+     * If the requested position is greater than the connections size then an
+     * IllegalArgumentException will be thrown.
+     *
      * @param index the position in the pool of the connection to look for.
      * @return the XMPPTCPConnection located at the requested position.
      */
@@ -156,9 +156,9 @@ public abstract class SmackTestCase extends TestCase {
     }
 
     /**
-     * Returns the name of the user (e.g. johndoe) that is using the connection 
+     * Returns the name of the user (e.g. johndoe) that is using the connection
      * located at the requested position.
-     * 
+     *
      * @param index the position in the pool of the connection to look for.
      * @return the user of the user (e.g. johndoe).
      */
@@ -167,9 +167,9 @@ public abstract class SmackTestCase extends TestCase {
     }
 
     /**
-     * Returns the password of the user (e.g. johndoe) that is using the connection 
+     * Returns the password of the user (e.g. johndoe) that is using the connection
      * located at the requested position.
-     * 
+     *
      * @param index the position in the pool of the connection to look for.
      * @return the password of the user (e.g. johndoe).
      */
@@ -180,7 +180,7 @@ public abstract class SmackTestCase extends TestCase {
     /**
      * Returns the bare XMPP address of the user (e.g. johndoe@jabber.org) that is
      * using the connection located at the requested position.
-     * 
+     *
      * @param index the position in the pool of the connection to look for.
      * @return the bare XMPP address of the user (e.g. johndoe@jabber.org).
      */
@@ -191,7 +191,7 @@ public abstract class SmackTestCase extends TestCase {
     /**
      * Returns the full XMPP address of the user (e.g. johndoe@jabber.org/Smack) that is
      * using the connection located at the requested position.
-     * 
+     *
      * @param index the position in the pool of the connection to look for.
      * @return the full XMPP address of the user (e.g. johndoe@jabber.org/Smack).
      */
@@ -213,7 +213,7 @@ public abstract class SmackTestCase extends TestCase {
 
     /**
      * Returns the default groupchat service domain.
-     * 
+     *
      * @return the default groupchat service domain.
      */
     protected String getChatDomain() {
@@ -222,7 +222,7 @@ public abstract class SmackTestCase extends TestCase {
 
     /**
      * Returns the default MUC service domain.
-     * 
+     *
      * @return the default MUC service domain.
      */
     protected String getMUCDomain() {
@@ -273,7 +273,7 @@ public abstract class SmackTestCase extends TestCase {
                         if (!getConnection(0).getAccountManager().supportsAccountCreation())
                             fail("Server does not support account creation");
 
-                        // Create the account and try logging in again as the 
+                        // Create the account and try logging in again as the
                         // same user.
                         try {
                             createAccount(i, currentUser, currentPassword);
@@ -345,7 +345,7 @@ public abstract class SmackTestCase extends TestCase {
                         con.login(getUsername(i), getUsername(i));
                     }
                     else if (!getConnection(i).isAuthenticated()) {
-                        getConnection(i).login(getUsername(i), getUsername(i));     
+                        getConnection(i).login(getUsername(i), getUsername(i));
                     }
                     // Delete the created account for the test
                     getConnection(i).getAccountManager().deleteAccount();
@@ -366,22 +366,22 @@ public abstract class SmackTestCase extends TestCase {
     }
 
     /**
-     * Initializes the context of the test case. We will first try to load the configuration from 
-     * a file whose name is conformed by the test case class name plus an .xml extension 
-     * (e.g RosterTest.xml). If no file was found under that name then we will try to load the 
+     * Initializes the context of the test case. We will first try to load the configuration from
+     * a file whose name is conformed by the test case class name plus an .xml extension
+     * (e.g RosterTest.xml). If no file was found under that name then we will try to load the
      * default configuration for all the test cases from the file "config/test-case.xml".
      *
      */
     private void init() {
         try {
             boolean found = false;
-            // Try to load the configutation from an XML file specific for this test case 
+            // Try to load the configutation from an XML file specific for this test case
             Enumeration<URL> resources =
                 ClassLoader.getSystemClassLoader().getResources(getConfigurationFilename());
             while (resources.hasMoreElements()) {
                 found = parseURL(resources.nextElement());
             }
-            // If none was found then try to load the configuration from the default configuration 
+            // If none was found then try to load the configuration from the default configuration
             // file (i.e. "config/test-case.xml")
             if (!found) {
                 resources = ClassLoader.getSystemClassLoader().getResources("config/test-case.xml");
@@ -401,8 +401,8 @@ public abstract class SmackTestCase extends TestCase {
     /**
      * Returns true if the given URL was found and parsed without problems. The file provided
      * by the URL must contain information useful for the test case configuration, such us,
-     * host and port of the server.  
-     * 
+     * host and port of the server.
+     *
      * @param url the url of the file to parse.
      * @return true if the given URL was found and parsed without problems.
      */
@@ -487,11 +487,11 @@ public abstract class SmackTestCase extends TestCase {
     }
 
     /**
-     * Returns the name of the configuration file related to <b>this</b> test case. By default all 
+     * Returns the name of the configuration file related to <b>this</b> test case. By default all
      * the test cases will use the same configuration file. However, it's possible to override the
      * default configuration by providing a file of the form <test case class name>.xml
      * (e.g. RosterTest.xml).
-     * 
+     *
      * @return the name of the configuration file related to this test case.
      */
     private String getConfigurationFilename() {
@@ -502,7 +502,7 @@ public abstract class SmackTestCase extends TestCase {
 
     /**
      * Subscribes all connections with each other: They all become friends
-     * 
+     *
      * @throws XMPPException
      */
     protected void letsAllBeFriends() throws XMPPException {

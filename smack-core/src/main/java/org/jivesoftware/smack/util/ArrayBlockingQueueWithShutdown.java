@@ -32,7 +32,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * <p>
  * Based on ArrayBlockingQueue of OpenJDK by Doug Lea (who released ArrayBlockingQueue as public
  * domain).
- * 
+ *
  * @param <E> the type of elements held in this collection
  */
 public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implements BlockingQueue<E> {
@@ -170,7 +170,7 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
 
     /**
      * Returns true if the queue is currently shut down.
-     * 
+     *
      * @return true if the queue is shut down.
      */
     public boolean isShutdown() {

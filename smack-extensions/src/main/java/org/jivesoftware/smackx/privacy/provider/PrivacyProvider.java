@@ -32,9 +32,9 @@ import org.xmlpull.v1.XmlPullParserException;
 /**
  * The PrivacyProvider parses {@link Privacy} packets. {@link Privacy}
  * Parses the <tt>query</tt> sub-document and creates an instance of {@link Privacy}.
- * For each <tt>item</tt> in the <tt>list</tt> element, it creates an instance 
+ * For each <tt>item</tt> in the <tt>list</tt> element, it creates an instance
  * of {@link PrivacyItem}.
- * 
+ *
  * @author Francisco Vives
  */
 public class PrivacyProvider extends IQProvider<Privacy> {
@@ -115,8 +115,8 @@ public class PrivacyProvider extends IQProvider<Privacy> {
         // If type is not set, then it's the fall-through case
         String type = parser.getAttributeValue("", "type");
 
-        /* 
-         * According the action value it sets the allow status. The fall-through action is assumed 
+        /*
+         * According the action value it sets the allow status. The fall-through action is assumed
          * to be "allow"
          */
         boolean allow;

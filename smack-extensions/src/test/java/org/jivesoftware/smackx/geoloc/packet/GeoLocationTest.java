@@ -34,7 +34,7 @@ import org.jxmpp.util.XmppDateTime;
 
 /**
  * Unit tests for GeoLocation.
- * 
+ *
  * @author Ishan Khanna
  */
 public class GeoLocationTest extends InitExtensions {
@@ -84,7 +84,7 @@ public class GeoLocationTest extends InitExtensions {
     public void toXMLMethodTest() throws Exception {
 
         // @formatter:off
-        final String geoLocationMessageString = "<message from='portia@merchantofvenice.lit'" 
+        final String geoLocationMessageString = "<message from='portia@merchantofvenice.lit'"
         + " to='bassanio@merchantofvenice.lit'>"
         + "<geoloc xmlns='http://jabber.org/protocol/geoloc'>"
         + "<accuracy>23</accuracy>"

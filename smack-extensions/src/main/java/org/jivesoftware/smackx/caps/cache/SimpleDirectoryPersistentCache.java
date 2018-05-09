@@ -35,9 +35,9 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
  * Simple implementation of an EntityCapsPersistentCache that uses a directory
  * to store the Caps information for every known node. Every node is represented
  * by a file.
- * 
+ *
  * @author Florian Schmaus
- * 
+ *
  */
 public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache {
     private static final Logger LOGGER = Logger.getLogger(SimpleDirectoryPersistentCache.class.getName());
@@ -49,10 +49,10 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
      * Creates a new SimpleDirectoryPersistentCache Object. Make sure that the
      * cacheDir exists and that it's an directory.
      * <p>
-     * Default filename encoder {@link Base32}, as this will work on all 
-     * file systems, both case sensitive and case insensitive.  It does however 
+     * Default filename encoder {@link Base32}, as this will work on all
+     * file systems, both case sensitive and case insensitive.  It does however
      * produce longer filenames.
-     * 
+     *
      * @param cacheDir
      */
     public SimpleDirectoryPersistentCache(File cacheDir) {
@@ -62,10 +62,10 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
     /**
      * Creates a new SimpleDirectoryPersistentCache Object. Make sure that the
      * cacheDir exists and that it's an directory.
-     * 
+     *
      * If your cacheDir is case insensitive then make sure to set the
      * StringEncoder to {@link Base32} (which is the default).
-     * 
+     *
      * @param cacheDir The directory where the cache will be stored.
      * @param filenameEncoder Encodes the node string into a filename.
      */
@@ -124,7 +124,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
 
     /**
      * Writes the DiscoverInfo stanza to an file
-     * 
+     *
      * @param file
      * @param info
      * @throws IOException
@@ -140,7 +140,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
 
     /**
      * Tries to restore an DiscoverInfo stanza from a file.
-     * 
+     *
      * @param file
      * @return the restored DiscoverInfo
      * @throws Exception

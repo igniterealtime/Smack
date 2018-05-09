@@ -26,9 +26,9 @@ import org.jxmpp.jid.Jid;
 
 /**
  * The standard PubSub extension of an {@link IQ} packet.  This is the topmost
- * element of all pubsub requests and replies as defined in the <a href="http://xmpp.org/extensions/xep-0060">Publish-Subscribe</a> 
+ * element of all pubsub requests and replies as defined in the <a href="http://xmpp.org/extensions/xep-0060">Publish-Subscribe</a>
  * specification.
- * 
+ *
  * @author Robin Collier
  */
 public class PubSub extends IQ {
@@ -56,7 +56,7 @@ public class PubSub extends IQ {
 
     /**
      * Returns the XML representation of a pubsub element according the specification.
-     * 
+     *
      * The XML representation will be inside of an iq stanza like
      * in the following example:
      * <pre>
@@ -68,7 +68,7 @@ public class PubSub extends IQ {
      *     &lt;/pubsub&gt;
      * &lt;/iq&gt;
      * </pre>
-     * 
+     *
      */
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {

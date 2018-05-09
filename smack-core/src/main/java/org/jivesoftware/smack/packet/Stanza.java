@@ -151,7 +151,7 @@ public abstract class Stanza implements TopLevelStreamElement {
 
     /**
      * Set the stanza id if none is set.
-     * 
+     *
      * @return the stanza id.
      * @since 4.2
      */
@@ -402,7 +402,7 @@ public abstract class Stanza implements TopLevelStreamElement {
 
     /**
      * Adds a collection of stanza extensions to the packet. Does nothing if extensions is null.
-     * 
+     *
      * @param extensions a collection of stanza extensions
      */
     public void addExtensions(Collection<ExtensionElement> extensions) {
@@ -434,7 +434,7 @@ public abstract class Stanza implements TopLevelStreamElement {
 
     /**
      * Check if a stanza extension with the given namespace exists.
-     * 
+     *
      * @param namespace
      * @return true if a stanza extension exists, false otherwise.
      */
@@ -489,7 +489,7 @@ public abstract class Stanza implements TopLevelStreamElement {
 
     /**
      * Returns the default language used for all messages containing localized content.
-     * 
+     *
      * @return the default language
      */
     public static String getDefaultLanguage() {

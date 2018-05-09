@@ -63,8 +63,8 @@ public class BridgedResolver extends TransportResolver {
      * Resolve Bridged Candidate.
      *
      * The BridgedResolver takes the IP address and ports of a jmf proxy service.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     @Override
     public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException, InterruptedException {

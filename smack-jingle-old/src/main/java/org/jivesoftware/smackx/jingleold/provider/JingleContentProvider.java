@@ -24,7 +24,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Jingle &lt;content&gt; provider.
- * 
+ *
  * @author Jeff Williams
  */
 public class JingleContentProvider extends ExtensionElementProvider<JingleContent> {

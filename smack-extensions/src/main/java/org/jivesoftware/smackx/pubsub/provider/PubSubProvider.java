@@ -28,7 +28,7 @@ import org.xmlpull.v1.XmlPullParser;
 /**
  * Parses the root PubSub stanza extensions of the {@link IQ} stanza and returns
  * a {@link PubSub} instance.
- * 
+ *
  * @author Robin Collier
  */
 public class PubSubProvider extends IQProvider<PubSub> {

@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.pubsub;
 
 /**
  * Represents a request to subscribe to a node.
- * 
+ *
  * @author Robin Collier
  */
 public class SubscribeExtension extends NodeExtension {

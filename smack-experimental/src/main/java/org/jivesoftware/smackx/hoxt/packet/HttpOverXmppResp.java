@@ -84,7 +84,7 @@ public final class HttpOverXmppResp extends AbstractHttpOverXmpp {
          * Sets statusCode attribute.
          *
          * @param statusCode statusCode attribute
-         * 
+         *
          * @return the builder
          */
         public Builder setStatusCode(int statusCode) {
@@ -96,7 +96,7 @@ public final class HttpOverXmppResp extends AbstractHttpOverXmpp {
          * Sets statusMessage attribute.
          *
          * @param statusMessage statusMessage attribute
-         * 
+         *
          * @return the builder
          */
         public Builder setStatusMessage(String statusMessage) {

@@ -37,7 +37,7 @@ import org.mockito.ArgumentCaptor;
 
 /**
  * Test for InBandBytestreamRequest.
- * 
+ *
  * @author Henning Staib
  */
 public class InBandBytestreamRequestTest extends InitExtensions {
@@ -71,8 +71,8 @@ public class InBandBytestreamRequestTest extends InitExtensions {
 
     /**
      * Test reject() method.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     @Test
     public void shouldReplyWithErrorIfRequestIsRejected() throws NotConnectedException, InterruptedException {
@@ -96,7 +96,7 @@ public class InBandBytestreamRequestTest extends InitExtensions {
 
     /**
      * Test accept() method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test

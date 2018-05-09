@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.muclight.element.MUCLightElements.ConfigurationEl
 
 /**
  * MUC Light configuration response IQ class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */
@@ -38,7 +38,7 @@ public class MUCLightConfigurationIQ extends IQ {
 
     /**
      * MUC Light configuration response IQ constructor.
-     * 
+     *
      * @param version
      * @param configuration
      */
@@ -58,7 +58,7 @@ public class MUCLightConfigurationIQ extends IQ {
 
     /**
      * Returns the version.
-     * 
+     *
      * @return the version
      */
     public String getVersion() {
@@ -67,7 +67,7 @@ public class MUCLightConfigurationIQ extends IQ {
 
     /**
      * Returns the room configuration.
-     * 
+     *
      * @return the configuration of the room
      */
     public MUCLightRoomConfiguration getConfiguration() {

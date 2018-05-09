@@ -111,7 +111,7 @@ public class ContentNegotiator extends JingleNegotiator {
 
     /**
      * Get the JingleMediaSession of this Jingle Session.
-     * 
+     *
      * @return the JingleMediaSession
      */
     public JingleMediaSession getJingleMediaSession() {
@@ -165,7 +165,7 @@ public class ContentNegotiator extends JingleNegotiator {
 
     /**
      * Obtain the description negotiator for this session.
-     * 
+     *
      * @return the description negotiator
      */
     public MediaNegotiator getMediaNegotiator() {
@@ -174,7 +174,7 @@ public class ContentNegotiator extends JingleNegotiator {
 
     /**
      * Set the jmf negotiator.
-     * 
+     *
      * @param mediaNeg
      *            the description negotiator to set
      */
@@ -195,7 +195,7 @@ public class ContentNegotiator extends JingleNegotiator {
 
     /**
      * Obtain the transport negotiator for this session.
-     * 
+     *
      * @return the transport negotiator instance
      */
     public TransportNegotiator getTransportNegotiator() {
@@ -204,7 +204,7 @@ public class ContentNegotiator extends JingleNegotiator {
 
     /**
      * Set TransportNegotiator
-     * 
+     *
      * @param transNeg
      *            the transNeg to set
      */
@@ -247,7 +247,7 @@ public class ContentNegotiator extends JingleNegotiator {
 
         //            PayloadType.Audio bestCommonAudioPt = getMediaNegotiator().getBestCommonAudioPt();
         //            TransportCandidate bestRemoteCandidate = getTransportNegotiator().getBestRemoteCandidate();
-        //    
+        //
         //            // Ok, send a packet saying that we accept this session
         //            // with the audio payload type and the transport
         //            // candidate
@@ -275,8 +275,8 @@ public class ContentNegotiator extends JingleNegotiator {
 
     /**
      * Trigger a session established event.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     private void triggerContentEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc) throws NotConnectedException, InterruptedException {
 

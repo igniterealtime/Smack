@@ -153,10 +153,10 @@ public final class PrivateDataManager extends Manager {
      * @param elementName the element name.
      * @param namespace the namespace.
      * @return the private data.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public PrivateData getPrivateData(final String elementName, final String namespace) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Create an IQ packet to get the private data.
@@ -173,10 +173,10 @@ public final class PrivateDataManager extends Manager {
      * element name and namespace, then the new private data will overwrite the old value.
      *
      * @param privateData the private data.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void setPrivateData(final PrivateData privateData) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Create an IQ packet to set the private data.

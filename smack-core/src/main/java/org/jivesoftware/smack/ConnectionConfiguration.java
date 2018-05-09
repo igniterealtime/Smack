@@ -107,12 +107,12 @@ public abstract class ConnectionConfiguration {
     private final X509TrustManager customX509TrustManager;
 
     /**
-     * 
+     *
      */
     private final String[] enabledSSLProtocols;
 
     /**
-     * 
+     *
      */
     private final String[] enabledSSLCiphers;
 
@@ -210,7 +210,7 @@ public abstract class ConnectionConfiguration {
     }
 
     /**
-     * Retuns the path to the keystore file. The key store file contains the 
+     * Retuns the path to the keystore file. The key store file contains the
      * certificates that may be used to authenticate the client to the server,
      * in the event the server requests or requires it.
      *
@@ -271,7 +271,7 @@ public abstract class ConnectionConfiguration {
      * Returns the configured HostnameVerifier of this ConnectionConfiguration or the Smack default
      * HostnameVerifier configured with
      * {@link SmackConfiguration#setDefaultHostnameVerifier(HostnameVerifier)}.
-     * 
+     *
      * @return a configured HostnameVerifier or <code>null</code>
      */
     public HostnameVerifier getHostnameVerifier() {
@@ -305,7 +305,7 @@ public abstract class ConnectionConfiguration {
     /**
      * Returns the socket factory used to create new xmppConnection sockets.
      * This is useful when connecting through SOCKS5 proxies.
-     * 
+     *
      * @return socketFactory used to create new sockets.
      */
     public SocketFactory getSocketFactory() {
@@ -413,7 +413,7 @@ public abstract class ConnectionConfiguration {
 
     /**
      * Returns the optional XMPP address to be requested as the SASL authorization identity.
-     * 
+     *
      * @return the authorization identifier.
      * @see <a href="http://tools.ietf.org/html/rfc6120#section-6.3.8">RFC 6120 § 6.3.8. Authorization Identity</a>
      * @since 4.2
@@ -689,7 +689,7 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
-         * Sets the path to the keystore file. The key store file contains the 
+         * Sets the path to the keystore file. The key store file contains the
          * certificates that may be used to authenticate the client to the server,
          * in the event the server requests or requires it.
          *
@@ -752,8 +752,8 @@ public abstract class ConnectionConfiguration {
 
         /**
          * Set the enabled SSL/TLS ciphers.
-         * 
-         * @param enabledSSLCiphers the enabled SSL/TLS ciphers 
+         *
+         * @param enabledSSLCiphers the enabled SSL/TLS ciphers
          * @return a reference to this builder.
          */
         public B setEnabledSSLCiphers(String[] enabledSSLCiphers) {
@@ -764,7 +764,7 @@ public abstract class ConnectionConfiguration {
         /**
          * Set the HostnameVerifier used to verify the hostname of SSLSockets used by XMPP connections
          * created with this ConnectionConfiguration.
-         * 
+         *
          * @param verifier
          * @return a reference to this builder.
          */
@@ -795,7 +795,7 @@ public abstract class ConnectionConfiguration {
 
         /**
          * Set the Smack debugger factory used to construct Smack debuggers.
-         * 
+         *
          * @param debuggerFactory the Smack debugger factory.
          * @return a reference to this builder.
          */
@@ -832,7 +832,7 @@ public abstract class ConnectionConfiguration {
          *
          * Some SASL mechanisms (e.g. SASL External) may also signal the username (as "authorization identity"), in
          * which case Smack should not throw an IllegalArgumentException when the username is not set.
-         * 
+         *
          * @return a reference to this builder.
          */
         public B allowEmptyOrNullUsernames() {
@@ -843,7 +843,7 @@ public abstract class ConnectionConfiguration {
         /**
          * Perform anonymous authentication using SASL ANONYMOUS. Your XMPP service must support this authentication
          * mechanism. This method also calls {@link #addEnabledSaslMechanism(String)} with "ANONYMOUS" as argument.
-         * 
+         *
          * @return a reference to this builder.
          */
         public B performSaslAnonymousAuthentication() {
@@ -902,7 +902,7 @@ public abstract class ConnectionConfiguration {
          * Enable the given SASL mechanisms. If you never add a mechanism to the set of enabled ones, <b>all mechanisms
          * known to Smack</b> will be enabled. Only explicitly enable particular SASL mechanisms if you want to limit
          * the used mechanisms to the enabled ones.
-         * 
+         *
          * @param saslMechanisms a collection of names of mechanisms to enable.
          * @return a reference to this builder.
          */
@@ -935,7 +935,7 @@ public abstract class ConnectionConfiguration {
          * service domain, which should typically match.
          * Calling this will also SASL CRAM, since this mechanism does not support authzid.
          * </p>
-         * 
+         *
          * @param authzid The BareJid to be requested as the authorization identifier.
          * @return a reference to this builder.
          * @see <a href="http://tools.ietf.org/html/rfc6120#section-6.3.8">RFC 6120 § 6.3.8. Authorization Identity</a>

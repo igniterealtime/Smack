@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParser;
 /**
  * Parses the affiliation element out of the reply stanza from the server
  * as specified in the <a href="http://xmpp.org/extensions/xep-0060.html#schemas-pubsub">affiliation schema</a>.
- * 
+ *
  * @author Robin Collier
  */
 public class AffiliationProvider extends ExtensionElementProvider<Affiliation> {

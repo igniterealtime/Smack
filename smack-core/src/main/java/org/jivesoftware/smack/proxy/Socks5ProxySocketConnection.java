@@ -26,7 +26,7 @@ import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Socket factory for Socks5 proxy.
- * 
+ *
  * @author Atul Aggarwal
  */
 public class Socks5ProxySocketConnection implements ProxySocketConnection {
@@ -130,12 +130,12 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
                     buf[index++] = 1;
                     buf[index++] = (byte) (user.length());
                     byte[] userBytes = user.getBytes(StringUtils.UTF8);
-                    System.arraycopy(userBytes, 0, buf, index, 
+                    System.arraycopy(userBytes, 0, buf, index,
                         user.length());
                     index += user.length();
                     byte[] passwordBytes = passwd.getBytes(StringUtils.UTF8);
                     buf[index++] = (byte) (passwordBytes.length);
-                    System.arraycopy(passwordBytes, 0, buf, index, 
+                    System.arraycopy(passwordBytes, 0, buf, index,
                         passwd.length());
                     index += passwd.length();
 
@@ -258,7 +258,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
                 }
                 catch (Exception eee) {
                 }
-                throw new ProxyException(ProxyInfo.ProxyType.SOCKS5, 
+                throw new ProxyException(ProxyInfo.ProxyType.SOCKS5,
                     "server returns " + buf[1]);
             }
 
@@ -290,7 +290,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
         }
     }
 
-    private static void fill(InputStream in, byte[] buf, int len) 
+    private static void fill(InputStream in, byte[] buf, int len)
       throws IOException {
         int s = 0;
         while (s < len) {

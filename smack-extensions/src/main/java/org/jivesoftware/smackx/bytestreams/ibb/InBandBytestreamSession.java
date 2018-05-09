@@ -55,7 +55,7 @@ import org.jxmpp.jid.Jid;
  * closed individually the session will be closed automatically once the second stream is closed.
  * Use the {@link #setCloseBothStreamsEnabled(boolean)} method if both streams should be closed
  * automatically if one of them is closed.
- * 
+ *
  * @author Henning Staib
  */
 public class InBandBytestreamSession implements BytestreamSession {
@@ -87,7 +87,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
     /**
      * Constructor.
-     * 
+     *
      * @param connection the XMPP connection
      * @param byteStreamRequest the In-Band Bytestream open request for this session
      * @param remoteJID JID of the remote peer
@@ -138,7 +138,7 @@ public class InBandBytestreamSession implements BytestreamSession {
     /**
      * Returns whether both streams should be closed automatically if one of the streams is closed.
      * Default is <code>false</code>.
-     * 
+     *
      * @return <code>true</code> if both streams will be closed if one of the streams is closed,
      *         <code>false</code> if both streams can be closed independently.
      */
@@ -149,7 +149,7 @@ public class InBandBytestreamSession implements BytestreamSession {
     /**
      * Sets whether both streams should be closed automatically if one of the streams is closed.
      * Default is <code>false</code>.
-     * 
+     *
      * @param closeBothStreamsEnabled <code>true</code> if both streams should be closed if one of
      *        the streams is closed, <code>false</code> if both streams should be closed
      *        independently
@@ -166,10 +166,10 @@ public class InBandBytestreamSession implements BytestreamSession {
 
     /**
      * This method is invoked if a request to close the In-Band Bytestream has been received.
-     * 
+     *
      * @param closeRequest the close request from the remote peer
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     protected void closeByPeer(Close closeRequest) throws NotConnectedException, InterruptedException {
 
@@ -282,14 +282,14 @@ public class InBandBytestreamSession implements BytestreamSession {
 
         /**
          * Returns the stanza listener that processes In-Band Bytestream data packets.
-         * 
+         *
          * @return the data stanza listener
          */
         protected abstract StanzaListener getDataPacketListener();
 
         /**
          * Returns the stanza filter that accepts In-Band Bytestream data packets.
-         * 
+         *
          * @return the data stanza filter
          */
         protected abstract StanzaFilter getDataPacketFilter();
@@ -352,7 +352,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         /**
          * This method blocks until a data stanza is received, the stream is closed or the current
          * thread is interrupted.
-         * 
+         *
          * @return <code>true</code> if data was received, otherwise <code>false</code>
          * @throws IOException if data packets are out of sequence
          */
@@ -406,7 +406,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
         /**
          * Checks if this stream is closed and throws an IOException if necessary
-         * 
+         *
          * @throws IOException if stream is closed and no data should be read anymore
          */
         private void checkClosed() throws IOException {
@@ -633,11 +633,11 @@ public class InBandBytestreamSession implements BytestreamSession {
 
         /**
          * Writes the given data stanza to the XMPP stream.
-         * 
+         *
          * @param data the data packet
          * @throws IOException if an I/O error occurred while sending or if the stream is closed
-         * @throws NotConnectedException 
-         * @throws InterruptedException 
+         * @throws NotConnectedException
+         * @throws InterruptedException
          */
         protected abstract void writeToXML(DataPacketExtension data) throws IOException, NotConnectedException, InterruptedException;
 
@@ -695,7 +695,7 @@ public class InBandBytestreamSession implements BytestreamSession {
          * Fills the buffer with the given data and sends it over the XMPP stream if the buffers
          * capacity has been reached. This method is only called from this class so it is assured
          * that the amount of data to send is <= buffer capacity
-         * 
+         *
          * @param b the data
          * @param off the data
          * @param len the number of bytes to write
@@ -771,7 +771,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
         /**
          * Sets the close flag and optionally flushes the stream.
-         * 
+         *
          * @param flush if <code>true</code> flushes the stream
          */
         protected void closeInternal(boolean flush) {
@@ -848,8 +848,8 @@ public class InBandBytestreamSession implements BytestreamSession {
      * Process IQ stanza.
      * @param data
      * @throws NotConnectedException
-     * @throws InterruptedException 
-     * @throws NotLoggedInException 
+     * @throws InterruptedException
+     * @throws NotLoggedInException
      */
     public void processIQPacket(Data data) throws NotConnectedException, InterruptedException, NotLoggedInException {
         inputStream.dataPacketListener.processStanza(data);

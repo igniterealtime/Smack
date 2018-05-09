@@ -32,7 +32,7 @@ import org.jxmpp.jid.impl.JidCreate;
 
 /**
  * Test for the Close class.
- * 
+ *
  * @author Henning Staib
  */
 public class CloseTest extends InitExtensions {

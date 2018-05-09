@@ -32,19 +32,19 @@ import org.jivesoftware.smackx.xroster.RosterExchangeManager;
 
 /**
  * Represents XMPP Roster Item Exchange packets.<p>
- * 
- * The 'jabber:x:roster' namespace (which is not to be confused with the 'jabber:iq:roster' 
- * namespace) is used to send roster items from one client to another. A roster item is sent by 
- * adding to the &lt;message/&gt; element an &lt;x/&gt; child scoped by the 'jabber:x:roster' namespace. This 
+ *
+ * The 'jabber:x:roster' namespace (which is not to be confused with the 'jabber:iq:roster'
+ * namespace) is used to send roster items from one client to another. A roster item is sent by
+ * adding to the &lt;message/&gt; element an &lt;x/&gt; child scoped by the 'jabber:x:roster' namespace. This
  * &lt;x/&gt; element may contain one or more &lt;item/&gt; children (one for each roster item to be sent).<p>
- * 
+ *
  * Each &lt;item/&gt; element may possess the following attributes:<p>
- * 
+ *
  * &lt;jid/&gt; -- The id of the contact being sent. This attribute is required.<br>
  * &lt;name/&gt; -- A natural-language nickname for the contact. This attribute is optional.<p>
- * 
- * Each &lt;item/&gt; element may also contain one or more &lt;group/&gt; children specifying the 
- * natural-language name of a user-specified group, for the purpose of categorizing this contact 
+ *
+ * Each &lt;item/&gt; element may also contain one or more &lt;group/&gt; children specifying the
+ * natural-language name of a user-specified group, for the purpose of categorizing this contact
  * into one or more roster groups.
  *
  * @author Gaston Dombiak
@@ -67,7 +67,7 @@ public class RosterExchange implements ExtensionElement {
      * @param roster the roster to send to other XMPP entity.
      */
     public RosterExchange(Roster roster) {
-        // Add all the roster entries to the new RosterExchange 
+        // Add all the roster entries to the new RosterExchange
         for (RosterEntry rosterEntry : roster.getEntries()) {
             this.addRosterEntry(rosterEntry);
         }
@@ -79,7 +79,7 @@ public class RosterExchange implements ExtensionElement {
      * @param rosterEntry a roster entry to add.
      */
     public void addRosterEntry(RosterEntry rosterEntry) {
-        // Obtain a String[] from the roster entry groups name 
+        // Obtain a String[] from the roster entry groups name
         List<String> groupNamesList = new ArrayList<>();
         String[] groupNames;
         for (RosterGroup group : rosterEntry.getGroups()) {
@@ -116,7 +116,7 @@ public class RosterExchange implements ExtensionElement {
         return RosterExchangeManager.ELEMENT;
     }
 
-    /** 
+    /**
      * Returns the XML namespace of the extension sub-packet root element.
      * According the specification the namespace is always "jabber:x:roster"
      * (which is not to be confused with the 'jabber:iq:roster' namespace
@@ -151,7 +151,7 @@ public class RosterExchange implements ExtensionElement {
 
     /**
      * Returns the XML representation of a Roster Item Exchange according the specification.
-     * 
+     *
      * Usually the XML representation will be inside of a Message XML representation like
      * in the following example:
      * <pre>
@@ -164,7 +164,7 @@ public class RosterExchange implements ExtensionElement {
      *     &lt;/x&gt;
      * &lt;/message&gt;
      * </pre>
-     * 
+     *
      */
     @Override
     public String toXML(String enclosingNamespace) {

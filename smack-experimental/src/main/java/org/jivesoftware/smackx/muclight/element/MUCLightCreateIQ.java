@@ -32,7 +32,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * MUCLight create IQ class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */
@@ -46,7 +46,7 @@ public class MUCLightCreateIQ extends IQ {
 
     /**
      * MUCLight create IQ constructor.
-     * 
+     *
      * @param room
      * @param roomName
      * @param subject
@@ -69,7 +69,7 @@ public class MUCLightCreateIQ extends IQ {
 
     /**
      * MUCLight create IQ constructor.
-     * 
+     *
      * @param room
      * @param roomName
      * @param occupants
@@ -80,7 +80,7 @@ public class MUCLightCreateIQ extends IQ {
 
     /**
      * Get the room configuration.
-     * 
+     *
      * @return the room configuration
      */
     public MUCLightRoomConfiguration getConfiguration() {
@@ -89,7 +89,7 @@ public class MUCLightCreateIQ extends IQ {
 
     /**
      * Get the room occupants.
-     * 
+     *
      * @return the room occupants
      */
     public HashMap<Jid, MUCLightAffiliation> getOccupants() {

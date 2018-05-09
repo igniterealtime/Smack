@@ -53,9 +53,9 @@ import org.jxmpp.jid.EntityBareJid;
  * Manages Personal Event Publishing (XEP-163). A PEPManager provides a high level access to
  * PubSub personal events. It also provides an easy way
  * to hook up custom logic when events are received from another XMPP client through PEPListeners.
- * 
+ *
  * Use example:
- * 
+ *
  * <pre>
  *   PEPManager pepManager = new PEPManager(smackConnection);
  *   pepManager.addPEPListener(new PEPListener() {
@@ -64,7 +64,7 @@ import org.jxmpp.jid.EntityBareJid;
  *       }
  *   });
  * </pre>
- * 
+ *
  * @author Jeff Williams
  * @author Florian Schmaus
  */
@@ -141,14 +141,14 @@ public final class PEPManager extends Manager {
 
     /**
      * Publish an event.
-     * 
+     *
      * @param item the item to publish.
      * @param node the node to publish on.
      * @throws NotConnectedException
      * @throws InterruptedException
      * @throws XMPPErrorException
      * @throws NoResponseException
-     * @throws NotAPubSubNodeException 
+     * @throws NotAPubSubNodeException
      */
     public void publish(Item item, String node) throws NotConnectedException, InterruptedException,
                     NoResponseException, XMPPErrorException, NotAPubSubNodeException {

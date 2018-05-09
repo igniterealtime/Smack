@@ -252,7 +252,7 @@ public class RoomInfo {
      * The name returnd here was provided as value of the name attribute
      * of the returned identity within the disco#info result.
      * </p>
-     * 
+     *
      * @return the name of the room.
      */
     public String getName() {
@@ -265,7 +265,7 @@ public class RoomInfo {
      * The description returned by this method was provided as value of the form
      * field of the extended disco info result. It may be <code>null</code>.
      * </p>
-     * 
+     *
      * @return the discovered description of the room or null
      */
     public String getDescription() {

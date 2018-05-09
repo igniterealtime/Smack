@@ -39,7 +39,7 @@ import org.powermock.reflect.Whitebox;
 
 /**
  * Test for the InitiationListener class.
- * 
+ *
  * @author Henning Staib
  */
 public class InitiationListenerTest extends InitExtensions {
@@ -78,7 +78,7 @@ public class InitiationListenerTest extends InitExtensions {
     /**
      * If no listeners are registered for incoming In-Band Bytestream requests, all request should
      * be rejected with an error.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -105,7 +105,7 @@ public class InitiationListenerTest extends InitExtensions {
     /**
      * Open request with a block size that exceeds the maximum block size should be replied with an
      * resource-constraint error.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -132,7 +132,7 @@ public class InitiationListenerTest extends InitExtensions {
 
     /**
      * If a listener for all requests is registered it should be notified on incoming requests.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -160,7 +160,7 @@ public class InitiationListenerTest extends InitExtensions {
     /**
      * If a listener for a specific user in registered it should be notified on incoming requests
      * for that user.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -188,7 +188,7 @@ public class InitiationListenerTest extends InitExtensions {
     /**
      * If listener for a specific user is registered it should not be notified on incoming requests
      * from other users.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -222,7 +222,7 @@ public class InitiationListenerTest extends InitExtensions {
     /**
      * If a user specific listener and an all requests listener is registered only the user specific
      * listener should be notified.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -255,7 +255,7 @@ public class InitiationListenerTest extends InitExtensions {
     /**
      * If a user specific listener and an all requests listener is registered only the all requests
      * listener should be notified on an incoming request for another user.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -288,7 +288,7 @@ public class InitiationListenerTest extends InitExtensions {
 
     /**
      * If a request with a specific session ID should be ignored no listeners should be notified.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test

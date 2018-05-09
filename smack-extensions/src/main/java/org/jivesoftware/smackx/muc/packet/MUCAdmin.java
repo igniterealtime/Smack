@@ -23,11 +23,11 @@ import java.util.List;
 import org.jivesoftware.smack.packet.IQ;
 
 /**
- * IQ stanza that serves for kicking users, granting and revoking voice, banning users, 
- * modifying the ban list, granting and revoking membership and granting and revoking 
- * moderator privileges. All these operations are scoped by the 
+ * IQ stanza that serves for kicking users, granting and revoking voice, banning users,
+ * modifying the ban list, granting and revoking membership and granting and revoking
+ * moderator privileges. All these operations are scoped by the
  * 'http://jabber.org/protocol/muc#admin' namespace.
- * 
+ *
  * @author Gaston Dombiak
  */
 public class MUCAdmin extends IQ {
@@ -44,7 +44,7 @@ public class MUCAdmin extends IQ {
     /**
      * Returns a List of item children that holds information about roles, affiliation,
      * jids and nicks.
-     * 
+     *
      * @return a List of item children that holds information about roles, affiliation,
      *          jids and nicks.
      */
@@ -56,7 +56,7 @@ public class MUCAdmin extends IQ {
 
     /**
      * Adds an item child that holds information about roles, affiliation, jids and nicks.
-     * 
+     *
      * @param item the item child that holds information about roles, affiliation, jids and nicks.
      */
     public void addItem(MUCItem item) {

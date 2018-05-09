@@ -85,7 +85,7 @@ public final class CarbonManager extends Manager {
         });
     }
 
-    private static final StanzaFilter CARBON_EXTENSION_FILTER = 
+    private static final StanzaFilter CARBON_EXTENSION_FILTER =
                     // @formatter:off
                     new AndFilter(
                         new OrFilter(
@@ -221,12 +221,12 @@ public final class CarbonManager extends Manager {
 
     /**
      * Returns true if XMPP Carbons are supported by the server.
-     * 
+     *
      * @return true if supported
-     * @throws NotConnectedException 
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws InterruptedException
      */
     public boolean isSupportedByServer() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).serverSupportsFeature(CarbonExtension.NAMESPACE);
@@ -239,7 +239,7 @@ public final class CarbonManager extends Manager {
      * You should first check for support using isSupportedByServer().
      *
      * @param new_state whether carbons should be enabled or disabled
-     * @throws NotConnectedException 
+     * @throws NotConnectedException
      * @throws InterruptedException
      * @deprecated use {@link #enableCarbonsAsync(ExceptionCallback)} or {@link #disableCarbonsAsync(ExceptionCallback)} instead.
      */
@@ -256,7 +256,7 @@ public final class CarbonManager extends Manager {
      * because of a slow network connection). Thus, if the thread performing this operation is interrupted while the
      * queue is full, an {@link InterruptedException} is thrown.
      * </p>
-     * 
+     *
      * @param exceptionCallback the optional exception callback.
      * @since 4.2
      */
@@ -272,7 +272,7 @@ public final class CarbonManager extends Manager {
      * because of a slow network connection). Thus, if the thread performing this operation is interrupted while the
      * queue is full, an {@link InterruptedException} is thrown.
      * </p>
-     * 
+     *
      * @param exceptionCallback the optional exception callback.
      * @since 4.2
      */
@@ -302,10 +302,10 @@ public final class CarbonManager extends Manager {
      * You should first check for support using isSupportedByServer().
      *
      * @param new_state whether carbons should be enabled or disabled
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      *
      */
     public synchronized void setCarbonsEnabled(final boolean new_state) throws NoResponseException,
@@ -322,9 +322,9 @@ public final class CarbonManager extends Manager {
     /**
      * Helper method to enable carbons.
      *
-     * @throws XMPPException 
+     * @throws XMPPException
      * @throws SmackException if there was no response from the server.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public void enableCarbons() throws XMPPException, SmackException, InterruptedException {
         setCarbonsEnabled(true);
@@ -333,9 +333,9 @@ public final class CarbonManager extends Manager {
     /**
      * Helper method to disable carbons.
      *
-     * @throws XMPPException 
+     * @throws XMPPException
      * @throws SmackException if there was no response from the server.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public void disableCarbons() throws XMPPException, SmackException, InterruptedException {
         setCarbonsEnabled(false);

@@ -19,7 +19,7 @@ package org.jivesoftware.smack.sasl.javax;
 /**
  * Implementation of the SASL EXTERNAL mechanism.
  *
- * To effectively use this mechanism, Java must be configured to properly 
+ * To effectively use this mechanism, Java must be configured to properly
  * supply a client SSL certificate (of some sort) to the server. It is up
  * to the implementer to determine how to do this.  Here is one method:
  *

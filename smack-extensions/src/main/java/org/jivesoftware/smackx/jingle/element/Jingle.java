@@ -29,7 +29,7 @@ import org.jxmpp.jid.FullJid;
 
 /**
  * The Jingle element.
- * 
+ *
  * @author Florian Schmaus
  */
 public final class Jingle extends IQ {

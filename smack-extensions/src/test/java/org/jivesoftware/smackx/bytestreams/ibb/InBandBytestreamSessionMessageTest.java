@@ -51,7 +51,7 @@ import org.powermock.reflect.Whitebox;
  * Test for InBandBytestreamSession.
  * <p>
  * Tests sending data encapsulated in message stanzas.
- * 
+ *
  * @author Henning Staib
  */
 public class InBandBytestreamSessionMessageTest extends InitExtensions {
@@ -77,9 +77,9 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
 
     /**
      * Initialize fields used in the tests.
-     * @throws XMPPException 
-     * @throws SmackException 
-     * @throws InterruptedException 
+     * @throws XMPPException
+     * @throws SmackException
+     * @throws InterruptedException
      */
     @Before
     public void setup() throws XMPPException, SmackException, InterruptedException {
@@ -115,7 +115,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
 
     /**
      * Test the output stream write(byte[]) method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -140,7 +140,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
 
     /**
      * Test the output stream write(byte) method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -167,7 +167,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
 
     /**
      * Test the output stream write(byte[], int, int) method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -196,7 +196,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
 
     /**
      * Test the output stream flush() method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -223,7 +223,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
 
     /**
      * Test successive calls to the output stream flush() method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -252,7 +252,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
     /**
      * If a data stanza is received out of order the session should be closed. See XEP-0047 Section
      * 2.2.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -292,7 +292,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
 
     /**
      * Test the input stream read(byte[], int, int) method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -337,7 +337,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
 
     /**
      * Test the input stream read() method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test

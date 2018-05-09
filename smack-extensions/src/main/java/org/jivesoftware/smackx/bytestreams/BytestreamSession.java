@@ -28,14 +28,14 @@ import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamSession;
  * <p>
  * There are two implementations of the interface. See {@link Socks5BytestreamSession} and
  * {@link InBandBytestreamSession}.
- * 
+ *
  * @author Henning Staib
  */
 public interface BytestreamSession {
 
     /**
      * Returns the InputStream associated with this session to send data.
-     * 
+     *
      * @return the InputStream associated with this session to send data
      * @throws IOException if an error occurs while retrieving the input stream
      */
@@ -43,7 +43,7 @@ public interface BytestreamSession {
 
     /**
      * Returns the OutputStream associated with this session to receive data.
-     * 
+     *
      * @return the OutputStream associated with this session to receive data
      * @throws IOException if an error occurs while retrieving the output stream
      */
@@ -54,7 +54,7 @@ public interface BytestreamSession {
      * <p>
      * Closing the session will also close the input stream and the output stream associated to this
      * session.
-     * 
+     *
      * @throws IOException if an error occurs while closing the session
      */
     void close() throws IOException;
@@ -62,7 +62,7 @@ public interface BytestreamSession {
     /**
      * Returns the timeout for read operations of the input stream associated with this session. 0
      * returns implies that the option is disabled (i.e., timeout of infinity). Default is 0.
-     * 
+     *
      * @return the timeout for read operations
      * @throws IOException if there is an error in the underlying protocol
      */
@@ -75,7 +75,7 @@ public interface BytestreamSession {
      * session is still valid. The option must be enabled prior to entering the blocking operation
      * to have effect. The timeout must be &gt; 0. A timeout of zero is interpreted as an infinite
      * timeout. Default is 0.
-     * 
+     *
      * @param timeout the specified timeout, in milliseconds
      * @throws IOException if there is an error in the underlying protocol
      */

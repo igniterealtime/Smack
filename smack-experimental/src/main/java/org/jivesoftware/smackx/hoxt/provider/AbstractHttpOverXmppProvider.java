@@ -73,7 +73,7 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
      *
      * @param parser parser
      * @return Data or null if no data
-     * 
+     *
      * @throws XmlPullParserException
      * @throws IOException
      */

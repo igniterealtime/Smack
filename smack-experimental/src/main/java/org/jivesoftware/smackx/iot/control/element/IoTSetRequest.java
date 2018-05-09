@@ -35,7 +35,7 @@ public class IoTSetRequest extends IQ {
 
         /*
          * Ugly workaround for the following error prone false positive:
-         * 
+         *
          * IoTSetRequest.java:34: error: incompatible types: Collection<CAP#1> cannot be converted to Collection<SetData>
          * this.setData = Collections.unmodifiableCollection(setDataA);
          *                                                  ^

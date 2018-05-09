@@ -135,7 +135,7 @@ public class DNSUtil {
     }
 
     /**
-     * 
+     *
      * @param domain the domain.
      * @param domainType the XMPP domain type, server or client.
      * @param failedAddresses a list that will be populated with host addresses that failed to resolve.
@@ -188,7 +188,7 @@ public class DNSUtil {
      * Sort a given list of SRVRecords as described in RFC 2782
      * Note that we follow the RFC with one exception. In a group of the same priority, only the first entry
      * is calculated by random. The others are ore simply ordered by their priority.
-     * 
+     *
      * @param records
      * @return the list of resolved HostAddresses
      */

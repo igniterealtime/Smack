@@ -38,10 +38,10 @@ public class PubSubProviderTest {
     @Test
     public void subscriptionsOwnerResultTest() throws Exception {
         // @formatter:off
-        final String resultStanza = 
+        final String resultStanza =
           "<iq from='pubsub.example.org' to='julia@example.org/Smack' id='HaT4m-13' type='result'>" +
-            "<pubsub xmlns='http://jabber.org/protocol/pubsub#owner'>" + 
-              "<subscriptions node='test'>" + 
+            "<pubsub xmlns='http://jabber.org/protocol/pubsub#owner'>" +
+              "<subscriptions node='test'>" +
                 "<subscription jid='foo@example.org/Smack' subscription='subscribed' subid='58C1A6F99F2A7'/>" +
                 "<subscription jid='julia@example.org/Smack' subscription='subscribed' subid='58C18F8917321'/>" +
               "</subscriptions>" +

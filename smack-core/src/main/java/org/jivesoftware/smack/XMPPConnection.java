@@ -35,7 +35,7 @@ import org.jxmpp.jid.EntityFullJid;
  * implements shared methods which are used by the different types of connections (e.g.
  * <code>XMPPTCPConnection</code> or <code>XMPPBOSHConnection</code>). To create a connection to an XMPP server
  * a simple usage of this API might look like the following:
- * 
+ *
  * <pre>
  * // Create a connection to the igniterealtime.org XMPP server.
  * XMPPTCPConnection con = new XMPPTCPConnection("igniterealtime.org");
@@ -76,7 +76,7 @@ public interface XMPPConnection {
     /**
      * Returns the XMPP Domain of the service provided by the XMPP server and used for this connection. After
      * authenticating with the server the returned value may be different.
-     * 
+     *
      * @return the XMPP domain of this XMPP session.
      */
     DomainBareJid getXMPPServiceDomain();
@@ -84,7 +84,7 @@ public interface XMPPConnection {
     /**
      * Returns the host name of the server where the XMPP server is running. This would be the
      * IP address of the server or a name that may be resolved by a DNS server.
-     * 
+     *
      * @return the host name of the server where the XMPP server is running or null if not yet connected.
      */
     String getHost();
@@ -92,7 +92,7 @@ public interface XMPPConnection {
     /**
      * Returns the port number of the XMPP server for this connection. The default port
      * for normal connections is 5222.
-     * 
+     *
      * @return the port number of the XMPP server or 0 if not yet connected.
      */
     int getPort();
@@ -101,7 +101,7 @@ public interface XMPPConnection {
      * Returns the full XMPP address of the user that is logged in to the connection or
      * <tt>null</tt> if not logged in yet. An XMPP address is in the form
      * username@server/resource.
-     * 
+     *
      * @return the full XMPP address of the user logged in.
      */
     EntityFullJid getUser();
@@ -109,7 +109,7 @@ public interface XMPPConnection {
     /**
      * Returns the stream ID for this connection, which is the value set by the server
      * when opening an XMPP stream. This value will be <tt>null</tt> if not connected to the server.
-     * 
+     *
      * @return the ID of this connection returned from the XMPP server or <tt>null</tt> if
      *      not connected to the server.
      * @see <a href="http://xmpp.org/rfcs/rfc6120.html#streams-attr-id">RFC 6120 § 4.7.3. id</a>
@@ -118,28 +118,28 @@ public interface XMPPConnection {
 
     /**
      * Returns true if currently connected to the XMPP server.
-     * 
+     *
      * @return true if connected.
      */
     boolean isConnected();
 
     /**
      * Returns true if currently authenticated by successfully calling the login method.
-     * 
+     *
      * @return true if authenticated.
      */
     boolean isAuthenticated();
 
     /**
      * Returns true if currently authenticated anonymously.
-     * 
+     *
      * @return true if authenticated anonymously.
      */
     boolean isAnonymous();
 
     /**
-     * Returns true if the connection to the server has successfully negotiated encryption. 
-     * 
+     * Returns true if the connection to the server has successfully negotiated encryption.
+     *
      * @return true if a secure connection to the server.
      */
     boolean isSecureConnection();
@@ -149,7 +149,7 @@ public interface XMPPConnection {
      * traffic can be reduced up to 90%. Therefore, stream compression is ideal when using a slow
      * speed network connection. However, the server will need to use more CPU time in order to
      * un/compress network data so under high load the server performance might be affected.
-     * 
+     *
      * @return true if network traffic is being compressed.
      */
     boolean isUsingCompression();
@@ -173,21 +173,21 @@ public interface XMPPConnection {
      *
      * @param nonza the Nonza to send.
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     void sendNonza(Nonza nonza) throws NotConnectedException, InterruptedException;
 
     /**
      * Adds a connection listener to this connection that will be notified when
      * the connection closes or fails.
-     * 
+     *
      * @param connectionListener a connection listener.
      */
     void addConnectionListener(ConnectionListener connectionListener);
 
     /**
      * Removes a connection listener from this connection.
-     * 
+     *
      * @param connectionListener a connection listener.
      */
     void removeConnectionListener(ConnectionListener connectionListener);
@@ -214,8 +214,8 @@ public interface XMPPConnection {
      *
      * @param request the IQ request to filter responses from
      * @return a new stanza collector.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     StanzaCollector createStanzaCollectorAndSend(IQ request) throws NotConnectedException, InterruptedException;
 
@@ -224,12 +224,12 @@ public interface XMPPConnection {
      * which stanzas will be accumulated by the collector. A StanzaCollector is
      * more suitable to use than a {@link StanzaListener} when you need to wait for
      * a specific result.
-     * 
+     *
      * @param stanzaFilter the stanza filter to use.
      * @param stanza the stanza to send right after the collector got created
      * @return a new stanza collector.
-     * @throws InterruptedException 
-     * @throws NotConnectedException 
+     * @throws InterruptedException
+     * @throws NotConnectedException
      */
     StanzaCollector createStanzaCollectorAndSend(StanzaFilter stanzaFilter, Stanza stanza)
                     throws NotConnectedException, InterruptedException;
@@ -246,7 +246,7 @@ public interface XMPPConnection {
      * Otherwise make sure cancel the StanzaCollector in every case, e.g. even
      * if an exception is thrown, or otherwise you may leak the StanzaCollector.
      * </p>
-     * 
+     *
      * @param stanzaFilter the stanza filter to use.
      * @return a new stanza collector.
      */
@@ -258,7 +258,7 @@ public interface XMPPConnection {
      * Please make sure to cancel the collector when it is no longer required. See also
      * {@link #createStanzaCollector(StanzaFilter)}.
      * </p>
-     * 
+     *
      * @param configuration the stanza collector configuration.
      * @return a new stanza collector.
      * @since 4.1
@@ -267,7 +267,7 @@ public interface XMPPConnection {
 
     /**
      * Remove a stanza collector of this connection.
-     * 
+     *
      * @param collector a stanza collectors which was created for this connection.
      */
     void removeStanzaCollector(StanzaCollector collector);
@@ -309,7 +309,7 @@ public interface XMPPConnection {
      * invoked asynchronously in their own thread. Use this method if the order of the stanza listeners must not depend
      * on the order how the stanzas where received.
      * </p>
-     * 
+     *
      * @param stanzaListener the stanza listener to notify of new received stanzas.
      * @param stanzaFilter the stanza filter to use.
      * @see #addStanzaInterceptor(StanzaListener, StanzaFilter)
@@ -319,7 +319,7 @@ public interface XMPPConnection {
 
     /**
      * Removes an <b>asynchronous</b> stanza listener for received stanzas from this connection.
-     * 
+     *
      * @param stanzaListener the stanza listener to remove.
      * @return true if the stanza listener was removed
      * @since 4.1
@@ -333,7 +333,7 @@ public interface XMPPConnection {
      * that writes stanzas will be used to invoke the listeners. Therefore, each
      * stanza listener should complete all operations quickly or use a different
      * thread for processing.
-     * 
+     *
      * @param stanzaListener the stanza listener to notify of sent stanzas.
      * @param stanzaFilter   the stanza filter to use.
      * @deprecated use {@link #addStanzaSendingListener} instead
@@ -357,7 +357,7 @@ public interface XMPPConnection {
 
     /**
      * Removes a stanza listener for sending stanzas from this connection.
-     * 
+     *
      * @param stanzaListener the stanza listener to remove.
      * @deprecated use {@link #removeStanzaSendingListener} instead
      */
@@ -377,7 +377,7 @@ public interface XMPPConnection {
      * invoked every time a stanza is about to be sent by this connection. Interceptors
      * may modify the stanza to be sent. A stanza filter determines which stanzas
      * will be delivered to the interceptor.
-     * 
+     *
      * <p>
      * NOTE: For a similar functionality on incoming stanzas, see {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)}.
      * </p>
@@ -467,7 +467,7 @@ public interface XMPPConnection {
     /**
      * Set the FromMode for this connection instance. Defines how the 'from' attribute of outgoing
      * stanzas should be populated by Smack.
-     * 
+     *
      * @param fromMode
      */
     void setFromMode(FromMode fromMode);
@@ -492,7 +492,7 @@ public interface XMPPConnection {
 
     /**
      * Return true if the server supports the given stream feature.
-     * 
+     *
      * @param element
      * @param namespace
      * @return true if the server supports the stream feature.
@@ -543,7 +543,7 @@ public interface XMPPConnection {
      * invoked at most once and it will be not invoked after the connections default reply timeout
      * has been elapsed.
      * </p>
-     * 
+     *
      * @param stanza the stanza to send (required)
      * @param replyFilter the filter used to determine response stanza (required)
      * @param callback the callback invoked if there is a response (required)
@@ -563,13 +563,13 @@ public interface XMPPConnection {
      * after the connections default reply timeout, then <code>exceptionCallback</code> will be invoked
      * with a {@link SmackException.NoResponseException}. The callback will be invoked at most once.
      * </p>
-     * 
+     *
      * @param stanza the stanza to send (required)
      * @param replyFilter the filter used to determine response stanza (required)
      * @param callback the callback invoked if there is a response (required)
      * @param exceptionCallback the callback invoked if there is an exception (optional)
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      * @deprecated use {@link #sendAsync(Stanza, StanzaFilter)} instead.
      */
     @Deprecated
@@ -584,14 +584,14 @@ public interface XMPPConnection {
      * after <code>timeout</code> milliseconds, then <code>exceptionCallback</code> will be invoked
      * with a {@link SmackException.NoResponseException}. The callback will be invoked at most once.
      * </p>
-     * 
+     *
      * @param stanza the stanza to send (required)
      * @param replyFilter the filter used to determine response stanza (required)
      * @param callback the callback invoked if there is a response (required)
      * @param exceptionCallback the callback invoked if there is an exception (optional)
      * @param timeout the timeout in milliseconds to wait for a response
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      * @deprecated use {@link #sendAsync(Stanza, StanzaFilter, long)} instead.
      */
     @Deprecated
@@ -604,11 +604,11 @@ public interface XMPPConnection {
      * Send a IQ stanza and invoke <code>callback</code> if there is a result of
      * {@link org.jivesoftware.smack.packet.IQ.Type#result} with that result IQ. The callback will
      * not be invoked after the connections default reply timeout has been elapsed.
-     * 
+     *
      * @param iqRequest the IQ stanza to send (required)
      * @param callback the callback invoked if there is result response (required)
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      * @deprecated use {@link #sendIqRequestAsync(IQ)} instead.
      */
     @Deprecated
@@ -622,12 +622,12 @@ public interface XMPPConnection {
      * error as {@link XMPPException.XMPPErrorException}. If there is no response after the
      * connections default reply timeout, then <code>exceptionCallback</code> will be invoked with a
      * {@link SmackException.NoResponseException}.
-     * 
+     *
      * @param iqRequest the IQ stanza to send (required)
      * @param callback the callback invoked if there is result response (required)
      * @param exceptionCallback the callback invoked if there is an Exception optional
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      * @deprecated use {@link #sendIqRequestAsync(IQ)} instead.
      */
     @Deprecated
@@ -642,13 +642,13 @@ public interface XMPPConnection {
      * error as {@link XMPPException.XMPPErrorException}. If there is no response after
      * <code>timeout</code>, then <code>exceptionCallback</code> will be invoked with a
      * {@link SmackException.NoResponseException}.
-     * 
+     *
      * @param iqRequest the IQ stanza to send (required)
      * @param callback the callback invoked if there is result response (required)
      * @param exceptionCallback the callback invoked if there is an Exception optional
      * @param timeout the timeout in milliseconds to wait for a response
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      * @deprecated use {@link #sendIqRequestAsync(IQ, long)} instead.
      */
     @Deprecated
@@ -660,7 +660,7 @@ public interface XMPPConnection {
     /**
      * Add a callback that is called exactly once and synchronously with the incoming stanza that matches the given
      * stanza filter.
-     * 
+     *
      * @param callback the callback invoked once the stanza filter matches a stanza.
      * @param stanzaFilter the filter to match stanzas or null to match all.
      */
@@ -686,7 +686,7 @@ public interface XMPPConnection {
 
     /**
      * Unregister an IQ request handler with this connection.
-     * 
+     *
      * @param element the IQ element the IQ request handler is responsible for.
      * @param namespace the IQ namespace the IQ request handler is responsible for.
      * @param type the IQ type the IQ request handler is responsible for.
@@ -696,7 +696,7 @@ public interface XMPPConnection {
 
     /**
      * Returns the timestamp in milliseconds when the last stanza was received.
-     * 
+     *
      * @return the timestamp in milliseconds
      */
     long getLastStanzaReceived();

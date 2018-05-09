@@ -22,7 +22,7 @@ public final class StreamFeatureProviderInfo extends AbstractProviderInfo {
 
     /**
      * Defines an extension provider which implements the <code>StreamFeatureProvider</code> interface.
-     * 
+     *
      * @param elementName Element that provider parses.
      * @param namespace Namespace that provider parses.
      * @param extProvider The provider implementation.

@@ -23,7 +23,7 @@ package org.jivesoftware.smack;
  *
  * @see XMPPConnection#addConnectionListener
  * @see XMPPConnection#removeConnectionListener
- * 
+ *
  * @author Matt Tucker
  */
 public interface ConnectionListener {

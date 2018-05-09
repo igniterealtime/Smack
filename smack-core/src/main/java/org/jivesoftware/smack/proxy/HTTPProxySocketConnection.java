@@ -30,7 +30,7 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
 
 /**
  * HTTP Proxy Socket Connection which connects the socket using a HTTP Proxy.
- * 
+ *
  * @author Atul Aggarwal
  */
 class HTTPProxySocketConnection implements ProxySocketConnection {
@@ -92,7 +92,7 @@ class HTTPProxySocketConnection implements ProxySocketConnection {
 
         if (nlchars != 4) {
             throw new ProxyException(ProxyInfo.ProxyType.HTTP, "Never " +
-                "received blank line from " 
+                "received blank line from "
                 + proxyhost + ", cancelling connection");
         }
 

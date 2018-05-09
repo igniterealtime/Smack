@@ -21,8 +21,8 @@ import java.util.Map;
 
 /**
  * The "action" in the jingle packet, as an enum.
- * 
- * 
+ *
+ *
  * @author Florian Schmaus
  */
 public enum JingleAction {

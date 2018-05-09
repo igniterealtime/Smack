@@ -24,7 +24,7 @@ import org.jivesoftware.smack.test.SmackTestCase;
 
 /**
  * Test cases for adding the {@link RosterListener} in different connection states.
- * 
+ *
  * @author Henning Staib
  */
 public class RosterListenerTest extends SmackTestCase {

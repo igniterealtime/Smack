@@ -27,9 +27,9 @@ import org.jivesoftware.smackx.pubsub.EventElementType;
 import org.jivesoftware.smackx.pubsub.NodeExtension;
 
 /**
- * Parses the event element out of the message stanza from 
+ * Parses the event element out of the message stanza from
  * the server as specified in the <a href="http://xmpp.org/extensions/xep-0060.html#schemas-event">event schema</a>.
- * 
+ *
  * @author Robin Collier
  */
 public class EventProvider extends EmbeddedExtensionProvider<EventElement> {

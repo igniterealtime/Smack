@@ -129,7 +129,7 @@ public class QueueOverview implements ExtensionElement {
                         int initialDepth) throws XmlPullParserException,
                         IOException, SmackException {
             int eventType = parser.getEventType();
-            QueueOverview queueOverview = new QueueOverview();            
+            QueueOverview queueOverview = new QueueOverview();
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
             eventType = parser.next();

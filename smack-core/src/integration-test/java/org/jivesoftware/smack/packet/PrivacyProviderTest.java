@@ -22,9 +22,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.StringReader;
 
-/** 
+/**
  * Test the PrivacyProvider class with valids privacy xmls
- * 
+ *
  * @author Francisco Vives
  */
 public class PrivacyProviderTest extends SmackTestCase {
@@ -47,7 +47,7 @@ public class PrivacyProviderTest extends SmackTestCase {
 	}
 
     /**
-     * Check the parser with an xml with all kind of stanzas. 
+     * Check the parser with an xml with all kind of stanzas.
      * To create the xml string based from an xml file, replace:\n with:	"\n  + "
      */
     public void testFull() {
@@ -296,7 +296,7 @@ public class PrivacyProviderTest extends SmackTestCase {
 
 
     /**
-     * Check the parser with an xml with empty lists. It includes the active, 
+     * Check the parser with an xml with empty lists. It includes the active,
      * default and special list.
      * To create the xml string based from an xml file, replace:\n with:	"\n  + "
      */
@@ -338,7 +338,7 @@ public class PrivacyProviderTest extends SmackTestCase {
     }
 
     /**
-     * Check the parser with an xml with empty lists. It includes the active, 
+     * Check the parser with an xml with empty lists. It includes the active,
      * default and special list.
      * To create the xml string based from an xml file, replace:\n with:	"\n  + "
      */

@@ -38,7 +38,7 @@ import org.jxmpp.jid.Jid;
  * The In-Band Bytestream file transfer method, or IBB for short, transfers the
  * file over the same XML Stream used by XMPP. It is the fall-back mechanism in
  * case the SOCKS5 bytestream method of transferring files is not available.
- * 
+ *
  * @author Alexander Wenckus
  * @author Henning Staib
  * @see <a href="http://xmpp.org/extensions/xep-0047.html">XEP-0047: In-Band
@@ -50,7 +50,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
 
     /**
      * The default constructor for the In-Band Bytestream Negotiator.
-     * 
+     *
      * @param connection The connection which this negotiator works on.
      */
     protected IBBTransferNegotiator(XMPPConnection connection) {

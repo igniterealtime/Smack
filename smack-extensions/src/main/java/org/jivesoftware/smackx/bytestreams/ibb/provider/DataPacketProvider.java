@@ -27,7 +27,7 @@ import org.xmlpull.v1.XmlPullParserException;
 /**
  * Parses an In-Band Bytestream data stanza which can be a stanza extension of
  * either an IQ stanza or a message stanza.
- * 
+ *
  * @author Henning Staib
  */
 public class DataPacketProvider {

@@ -29,7 +29,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * MUC Light blocking IQ class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */
@@ -43,7 +43,7 @@ public class MUCLightBlockingIQ extends IQ {
 
     /**
      * MUC Light blocking IQ constructor.
-     * 
+     *
      * @param rooms
      * @param users
      */
@@ -55,7 +55,7 @@ public class MUCLightBlockingIQ extends IQ {
 
     /**
      * Get rooms JIDs with booleans (true if allow, false if deny).
-     * 
+     *
      * @return the rooms JIDs with booleans (true if allow, false if deny)
      */
     public HashMap<Jid, Boolean> getRooms() {
@@ -64,7 +64,7 @@ public class MUCLightBlockingIQ extends IQ {
 
     /**
      * Get users JIDs with booleans (true if allow, false if deny).
-     * 
+     *
      * @return the users JIDs with booleans (true if allow, false if deny)
      */
     public HashMap<Jid, Boolean> getUsers() {

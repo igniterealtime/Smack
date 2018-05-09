@@ -25,9 +25,9 @@ import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 import org.jivesoftware.smackx.pubsub.ItemsExtension;
 
 /**
- * Parses the <b>items</b> element out of the message event stanza from 
+ * Parses the <b>items</b> element out of the message event stanza from
  * the server as specified in the <a href="http://xmpp.org/extensions/xep-0060.html#schemas-event">items schema</a>.
- * 
+ *
  * @author Robin Collier
  */
 public class ItemsProvider extends EmbeddedExtensionProvider<ItemsExtension> {

@@ -53,7 +53,7 @@ public class OmemoInitializationTest extends AbstractOmemoIntegrationTest {
 
     /**
      * Tests, if the initialization is done properly.
-     * @throws NotAPubSubNodeException 
+     * @throws NotAPubSubNodeException
      */
     @SmackIntegrationTest
     public void initializationTest() throws XMPPException.XMPPErrorException, PubSubException.NotALeafNodeException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, SmackException.NotLoggedInException, CorruptedOmemoKeyException, NotAPubSubNodeException {

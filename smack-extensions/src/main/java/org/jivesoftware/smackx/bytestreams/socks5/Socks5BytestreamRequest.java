@@ -38,7 +38,7 @@ import org.jxmpp.util.cache.ExpirationCache;
 
 /**
  * Socks5BytestreamRequest class handles incoming SOCKS5 Bytestream requests.
- * 
+ *
  * @author Henning Staib
  */
 public class Socks5BytestreamRequest implements BytestreamRequest {
@@ -76,7 +76,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * Returns the number of connection failures it takes for a particular SOCKS5 proxy to be
      * blacklisted. When a proxy is blacklisted no more connection attempts will be made to it for a
      * period of 2 hours. Default is 2.
-     * 
+     *
      * @return the number of connection failures it takes for a particular SOCKS5 proxy to be
      *         blacklisted
      */
@@ -90,7 +90,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * period of 2 hours. Default is 2.
      * <p>
      * Setting the connection failure threshold to zero disables the blacklisting.
-     * 
+     *
      * @param connectFailureThreshold the number of connection failures it takes for a particular
      *        SOCKS5 proxy to be blacklisted
      */
@@ -100,7 +100,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
     /**
      * Creates a new Socks5BytestreamRequest.
-     * 
+     *
      * @param manager the SOCKS5 Bytestream manager
      * @param bytestreamRequest the SOCKS5 Bytestream initialization packet
      */
@@ -118,7 +118,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * <p>
      * You can set the minimum timeout for establishing a connection to one SOCKS5 proxy by invoking
      * {@link #setMinimumConnectTimeout(int)}.
-     * 
+     *
      * @return the maximum timeout to connect to SOCKS5 proxies
      */
     public int getTotalConnectTimeout() {
@@ -137,7 +137,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * <p>
      * You can set the minimum timeout for establishing a connection to one SOCKS5 proxy by invoking
      * {@link #setMinimumConnectTimeout(int)}.
-     * 
+     *
      * @param totalConnectTimeout the maximum timeout to connect to SOCKS5 proxies
      */
     public void setTotalConnectTimeout(int totalConnectTimeout) {
@@ -147,7 +147,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
     /**
      * Returns the timeout to connect to one SOCKS5 proxy while accepting the SOCKS5 Bytestream
      * request. Default is 2000ms.
-     * 
+     *
      * @return the timeout to connect to one SOCKS5 proxy
      */
     public int getMinimumConnectTimeout() {
@@ -160,7 +160,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
     /**
      * Sets the timeout to connect to one SOCKS5 proxy while accepting the SOCKS5 Bytestream
      * request. Default is 2000ms.
-     * 
+     *
      * @param minimumConnectTimeout the timeout to connect to one SOCKS5 proxy
      */
     public void setMinimumConnectTimeout(int minimumConnectTimeout) {
@@ -169,7 +169,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
     /**
      * Returns the sender of the SOCKS5 Bytestream initialization request.
-     * 
+     *
      * @return the sender of the SOCKS5 Bytestream initialization request.
      */
     @Override
@@ -179,7 +179,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
     /**
      * Returns the session ID of the SOCKS5 Bytestream initialization request.
-     * 
+     *
      * @return the session ID of the SOCKS5 Bytestream initialization request.
      */
     @Override
@@ -193,11 +193,11 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * <p>
      * Before accepting the SOCKS5 Bytestream request you can set timeouts by invoking
      * {@link #setTotalConnectTimeout(int)} and {@link #setMinimumConnectTimeout(int)}.
-     * 
+     *
      * @return the socket to send/receive data
      * @throws InterruptedException if the current thread was interrupted while waiting
-     * @throws XMPPErrorException 
-     * @throws SmackException 
+     * @throws XMPPErrorException
+     * @throws SmackException
      */
     @Override
     public Socks5BytestreamSession accept() throws InterruptedException, XMPPErrorException, SmackException {
@@ -266,8 +266,8 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
     /**
      * Rejects the SOCKS5 Bytestream request by sending a reject error to the initiator.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     @Override
     public void reject() throws NotConnectedException, InterruptedException {
@@ -277,9 +277,9 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
     /**
      * Cancels the SOCKS5 Bytestream request by sending an error to the initiator and building a
      * XMPP exception.
-     * @throws XMPPErrorException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     private void cancelRequest() throws XMPPErrorException, NotConnectedException, InterruptedException {
         String errorMessage = "Could not establish socket with any provided host";
@@ -291,7 +291,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
     /**
      * Returns the response to the SOCKS5 Bytestream request containing the SOCKS5 proxy used.
-     * 
+     *
      * @param selectedHost the used SOCKS5 proxy
      * @return the response to the SOCKS5 Bytestream request
      */
@@ -306,7 +306,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
     /**
      * Increments the connection failure counter by one for the given address.
-     * 
+     *
      * @param address the address the connection failure counter should be increased
      */
     private static void incrementConnectionFailures(String address) {
@@ -316,7 +316,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
     /**
      * Returns how often the connection to the given address failed.
-     * 
+     *
      * @param address the address
      * @return number of connection failures
      */

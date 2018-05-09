@@ -21,7 +21,7 @@ import org.jivesoftware.smackx.pubsub.LeafNode;
 
 /**
  * Defines the listener for a node being configured.
- * 
+ *
  * @see LeafNode#addConfigurationListener(NodeConfigListener)
  *
  * @author Robin Collier
@@ -30,7 +30,7 @@ public interface NodeConfigListener {
     /**
      * Called whenever the node the listener
      * is registered with is configured.
-     * 
+     *
      * @param config The configuration details.
      */
     void handleNodeConfiguration(ConfigurationEvent config);

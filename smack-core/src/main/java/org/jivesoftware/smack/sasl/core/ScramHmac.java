@@ -24,7 +24,7 @@ public interface ScramHmac {
 
     /**
      * RFC 5802 § 2.2 HMAC(key, str).
-     * 
+     *
      * @param key
      * @param str
      * @return the HMAC-SHA1 value of the input.

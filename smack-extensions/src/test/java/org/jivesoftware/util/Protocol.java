@@ -38,7 +38,7 @@ import org.jivesoftware.smack.util.XmlUtil;
  * </li>
  * </ul>
  * Example:
- * 
+ *
  * <pre>
  * <code>
  * public void methodToTest() {
@@ -47,7 +47,7 @@ import org.jivesoftware.smack.util.XmlUtil;
  *   connection.sendStanza(packet);
  *   Stanza reply = collector.nextResult();
  * }
- * 
+ *
  * public void testMethod() {
  *   EntityFullJid userJid = JidCreate.entityFullFrom("user@xmpp-server.org");
  *   DomainBareJid serverJid = JidCreate.domainBareFrom("user-server.org");
@@ -55,20 +55,20 @@ import org.jivesoftware.smack.util.XmlUtil;
  *   Protocol protocol = new Protocol();
  *   // create mocked connection
  *   XMPPConnection connection = ConnectionUtils.createMockedConnection(protocol, userJid, serverJid);
- *   
+ *
  *   // add reply stanza to protocol
  *   Stanza reply = new Packet();
  *   protocol.add(reply);
- *   
+ *
  *   // call method to test
  *   methodToTest();
- *   
+ *
  *   // verify protocol
  *   protocol.verifyAll();
  * }
  * </code>
  * </pre>
- * 
+ *
  * Additionally to adding the response to the protocol instance you can pass
  * verifications that will be executed when {@link #verifyAll()} is invoked.
  * (See {@link Verification} for more details.)
@@ -77,7 +77,7 @@ import org.jivesoftware.smack.util.XmlUtil;
  * also print out the XML messages in the order they are sent to the console.
  * This may be useful to inspect the whole protocol "by hand".
  * </p>
- * 
+ *
  * @author Henning Staib
  */
 public class Protocol {
@@ -103,7 +103,7 @@ public class Protocol {
     /**
      * Adds a responses and all verifications for the request/response pair to
      * the protocol.
-     * 
+     *
      * @param response the response for a request
      * @param verifications verifications for request/response pair
      */
@@ -155,7 +155,7 @@ public class Protocol {
 
     /**
      * Returns the responses queue.
-     * 
+     *
      * @return the responses queue
      */
     protected Queue<Stanza> getResponses() {
@@ -164,7 +164,7 @@ public class Protocol {
 
     /**
      * Returns a list of all collected requests.
-     * 
+     *
      * @return list of requests
      */
     public List<Stanza> getRequests() {

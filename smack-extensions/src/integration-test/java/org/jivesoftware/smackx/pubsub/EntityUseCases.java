@@ -25,7 +25,7 @@ import org.jivesoftware.smackx.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.pubsub.test.SingleUserTestCase;
 
 /**
- * 
+ *
  * @author Robin Collier
  *
  */
@@ -76,7 +76,7 @@ public class EntityUseCases extends SingleUserTestCase
 
 		assertTrue(subscriptions.size() < 3);
 
-		for (Subscription subscription : subscriptions) 
+		for (Subscription subscription : subscriptions)
 		{
 			assertNull(subscription.getNode());
 		}

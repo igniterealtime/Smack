@@ -32,7 +32,7 @@ import org.jivesoftware.smackx.pubsub.listener.ItemEventListener;
 import org.jivesoftware.smackx.pubsub.listener.NodeConfigListener;
 
 /**
- * 
+ *
  * @author Robin Collier
  *
  */
@@ -97,7 +97,7 @@ public class TestEvents extends SmackTestCase
 		subNode.subscribe(getConnection(1).getUser());
 		subNode.addConfigurationListener(sub1Handler);
 
-		ConfigureForm currentConfig = creatorNode.getNodeConfiguration(); 
+		ConfigureForm currentConfig = creatorNode.getNodeConfiguration();
 		ConfigureForm form = new ConfigureForm(currentConfig.createAnswerForm());
 		form.setPersistentItems(true);
 		form.setDeliverPayloads(false);
@@ -108,7 +108,7 @@ public class TestEvents extends SmackTestCase
    		assertEquals(nodeId, event.getNode());
    		assertNull(event.getConfiguration());
 
-		currentConfig = creatorNode.getNodeConfiguration(); 
+		currentConfig = creatorNode.getNodeConfiguration();
 		form = new ConfigureForm(currentConfig.createAnswerForm());
 		form.setDeliverPayloads(true);
 		creatorNode.sendConfigurationForm(form);
@@ -205,7 +205,7 @@ public class TestEvents extends SmackTestCase
 
 	/*
 	 * For this test, the following extension needs to be added to the meta-inf/smack.providers file
-	 * 
+	 *
 	 * 	 <extensionProvider>
 	 *     	<elementName>car</elementName>
 	 *      <namespace>pubsub:test:vehicle</namespace>
@@ -585,7 +585,7 @@ public class TestEvents extends SmackTestCase
 		}
 	}
 
-	private static LeafNode getPubnode(PubSubManager manager, String id, boolean persistItems, boolean deliverPayload) 
+	private static LeafNode getPubnode(PubSubManager manager, String id, boolean persistItems, boolean deliverPayload)
 		throws XMPPException
 	{
 		ConfigureForm form = new ConfigureForm(FormType.submit);

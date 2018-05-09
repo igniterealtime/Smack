@@ -70,8 +70,8 @@ public class AgentRoster {
      * Constructs a new AgentRoster.
      *
      * @param connection an XMPP connection.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     AgentRoster(XMPPConnection connection, EntityBareJid workgroupJID) throws NotConnectedException, InterruptedException {
         this.connection = connection;
@@ -93,8 +93,8 @@ public class AgentRoster {
      * Reloads the entire roster from the server. This is an asynchronous operation,
      * which means the method will return immediately, and the roster will be
      * reloaded at a later point when the server responds to the reload request.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void reload() throws NotConnectedException, InterruptedException {
         AgentStatusRequest request = new AgentStatusRequest();

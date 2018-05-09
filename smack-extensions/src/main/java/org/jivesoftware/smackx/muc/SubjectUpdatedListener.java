@@ -21,14 +21,14 @@ import org.jxmpp.jid.EntityFullJid;
 
 /**
  * A listener that is fired anytime a MUC room changes its subject.
- * 
+ *
  * @author Gaston Dombiak
  */
 public interface SubjectUpdatedListener {
 
     /**
      * Called when a MUC room has changed its subject.
-     * 
+     *
      * @param subject the new room's subject.
      * @param from the user that changed the room's subject or <code>null</code> if the room itself changed the subject.
      */

@@ -31,7 +31,7 @@ import org.jivesoftware.smack.util.FileUtils;
 /**
  * Loads the provider file defined by the URL returned by {@link #getProvidersUri()} and the generic
  * smack configuration file returned {@link #getConfigUri()}.
- * 
+ *
  * @author Florian Schmaus
  */
 public abstract class UrlInitializer implements SmackInitializer {

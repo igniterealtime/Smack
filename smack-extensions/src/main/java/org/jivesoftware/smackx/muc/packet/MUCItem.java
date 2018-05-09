@@ -68,7 +68,7 @@ public class MUCItem implements NamedElement {
 
     /**
      * Creates a new item child.
-     * 
+     *
      * @param affiliation the actor's affiliation to the room
      * @param role the privilege level of an occupant within a room.
      * @param actor
@@ -90,7 +90,7 @@ public class MUCItem implements NamedElement {
 
     /**
      * Returns the actor (JID of an occupant in the room) that was kicked or banned.
-     * 
+     *
      * @return the JID of an occupant in the room that was kicked or banned.
      */
     public Jid getActor() {
@@ -110,7 +110,7 @@ public class MUCItem implements NamedElement {
     /**
      * Returns the reason for the item child. The reason is optional and could be used to explain
      * the reason why a user (occupant) was kicked or banned.
-     * 
+     *
      * @return the reason for the item child.
      */
     public String getReason() {
@@ -122,7 +122,7 @@ public class MUCItem implements NamedElement {
      * association or connection with a room. The possible affiliations are "owner", "admin",
      * "member", and "outcast" (naturally it is also possible to have no affiliation). An
      * affiliation lasts across a user's visits to a room.
-     * 
+     *
      * @return the actor's affiliation to the room
      */
     public MUCAffiliation getAffiliation() {
@@ -132,7 +132,7 @@ public class MUCItem implements NamedElement {
     /**
      * Returns the &lt;room@service/nick&gt; by which an occupant is identified within the context of a
      * room. If the room is non-anonymous, the JID will be included in the item.
-     * 
+     *
      * @return the room JID by which an occupant is identified within the room.
      */
     public Jid getJid() {
@@ -142,7 +142,7 @@ public class MUCItem implements NamedElement {
     /**
      * Returns the new nickname of an occupant that is changing his/her nickname. The new nickname
      * is sent as part of the unavailable presence.
-     * 
+     *
      * @return the new nickname of an occupant that is changing his/her nickname.
      */
     public Resourcepart getNick() {
@@ -153,7 +153,7 @@ public class MUCItem implements NamedElement {
      * Returns the temporary position or privilege level of an occupant within a room. The possible
      * roles are "moderator", "participant", "visitor" and "none" (it is also possible to have no defined
      * role). A role lasts only for the duration of an occupant's visit to a room.
-     * 
+     *
      * @return the privilege level of an occupant within a room.
      */
     public MUCRole getRole() {

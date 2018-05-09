@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Anno van Vliet 
+ * Copyright 2014 Anno van Vliet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public abstract class ValidateElement implements ExtensionElement {
     /**
      * The 'datatype' attribute specifies the datatype. This attribute is OPTIONAL, and when not specified, defaults to
      * "xs:string".
-     * 
+     *
      * @param datatype the data type of any value contained within the {@link FormField} element.
      */
     private ValidateElement(String datatype) {
@@ -65,7 +65,7 @@ public abstract class ValidateElement implements ExtensionElement {
      * <li>Start with "x:", and specify a user-defined datatype <a
      * href="http://www.xmpp.org/extensions/xep-0122.html#nt-idp1477360">[4]</a></li>
      * </ul>
-     * 
+     *
      * @return the datatype
      */
     public String getDatatype() {
@@ -116,7 +116,7 @@ public abstract class ValidateElement implements ExtensionElement {
 
     /**
      * Check if this element is consistent according to the business rules in XEP=0122.
-     * 
+     *
      * @param formField
      */
     public abstract void checkConsistency(FormField formField);
@@ -124,7 +124,7 @@ public abstract class ValidateElement implements ExtensionElement {
     /**
      * Validation only against the datatype itself. Indicates that the value(s) should simply match the field type and
      * datatype constraints.
-     * 
+     *
      * @see ValidateElement
      */
     public static class BasicValidateElement extends ValidateElement {
@@ -167,7 +167,7 @@ public abstract class ValidateElement implements ExtensionElement {
     /**
      * For "list-single" or "list-multi", indicates that the user may enter a custom value (matching the datatype
      * constraints) or choose from the predefined values.
-     * 
+     *
      * @see ValidateElement
      */
     public static class OpenValidateElement extends ValidateElement {
@@ -207,7 +207,7 @@ public abstract class ValidateElement implements ExtensionElement {
 
     /**
      * Indicate that the value should fall within a certain range.
-     * 
+     *
      * @see ValidateElement
      */
     public static class RangeValidateElement extends ValidateElement {
@@ -222,7 +222,7 @@ public abstract class ValidateElement implements ExtensionElement {
          * @param min the minimum allowable value. This attribute is OPTIONAL. The value depends on the datatype in use.
          * @param max the maximum allowable value. This attribute is OPTIONAL. The value depends on the datatype in use.
          * @see #getDatatype()
-         * 
+         *
          */
         public RangeValidateElement(String dataType, String min, String max) {
             super(dataType);
@@ -240,7 +240,7 @@ public abstract class ValidateElement implements ExtensionElement {
 
         /**
          * The 'min' attribute specifies the minimum allowable value.
-         * 
+         *
          * @return the minimum allowable value. This attribute is OPTIONAL. The value depends on the datatype in use.
          */
         public String getMin() {
@@ -249,7 +249,7 @@ public abstract class ValidateElement implements ExtensionElement {
 
         /**
          * The 'max' attribute specifies the maximum allowable value.
-         * 
+         *
          * @return the maximum allowable value. This attribute is OPTIONAL. The value depends on the datatype in use.
          */
         public String getMax() {
@@ -273,7 +273,7 @@ public abstract class ValidateElement implements ExtensionElement {
      * defined for <a href="http://www.xmpp.org/extensions/xep-0122.html#nt-idp1501344"> POSIX extended regular
      * expressions </a> including support for <a
      * href="http://www.xmpp.org/extensions/xep-0122.html#nt-idp1502496">Unicode</a>.
-     * 
+     *
      * @see ValidateElement
      */
     public static class RegexValidateElement extends ValidateElement {
@@ -294,7 +294,7 @@ public abstract class ValidateElement implements ExtensionElement {
 
         /**
          * the expression is that defined for POSIX extended regular expressions, including support for Unicode.
-         * 
+         *
          * @return the regex
          */
         public String getRegex() {
@@ -327,7 +327,7 @@ public abstract class ValidateElement implements ExtensionElement {
          * The 'max' attribute specifies the maximum allowable number of selected/entered values. The 'min' attribute
          * specifies the minimum allowable number of selected/entered values. Both attributes are optional, but at
          * least one must bet set, and the value must be within the range of a unsigned 32-bit integer.
-         * 
+         *
          * @param min
          * @param max
          */
@@ -361,7 +361,7 @@ public abstract class ValidateElement implements ExtensionElement {
 
         /**
          * The minimum allowable number of selected/entered values.
-         * 
+         *
          * @return a positive integer, can be null
          */
         public Long getMin() {
@@ -370,7 +370,7 @@ public abstract class ValidateElement implements ExtensionElement {
 
         /**
          * The maximum allowable number of selected/entered values.
-         * 
+         *
          * @return a positive integer, can be null
          */
         public Long getMax() {
@@ -382,7 +382,7 @@ public abstract class ValidateElement implements ExtensionElement {
     /**
      * The &gt;list-range/&lt; element SHOULD be included only when the &lt;field/&gt; is of type "list-multi" and SHOULD be ignored
      * otherwise.
-     * 
+     *
      * @param formField
      */
     protected void checkListRangeConsistency(FormField formField) {

@@ -22,7 +22,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 /**
  * The types of forms supported by the PubSub specification.
- * 
+ *
  * @author Robin Collier
  */
 public enum FormNodeType {

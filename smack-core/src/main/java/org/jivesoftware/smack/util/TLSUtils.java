@@ -58,7 +58,7 @@ public class TLSUtils {
      * TLSv1.1. This method goes one step beyond and upgrades the handshake to use TLSv1 or better.
      * This method requires the underlying OS to support all of TLSv1.2 , 1.1 and 1.0.
      * </p>
-     * 
+     *
      * @param builder the configuration builder to apply this setting to
      * @param <B> Type of the ConnectionConfiguration builder.
      *
@@ -78,7 +78,7 @@ public class TLSUtils {
      * XMPP Manifesto</a>, TLSv1.2 shall be deployed, providing fallback support for SSLv3 and
      * TLSv1.1.
      * </p>
-     * 
+     *
      * @param builder the configuration builder to apply this setting to
      * @param <B> Type of the ConnectionConfiguration builder.
      *
@@ -96,7 +96,7 @@ public class TLSUtils {
      * <b>invalidates all security guarantees provided by TLS</b>. Only use this method if you understand the
      * implications.
      * </p>
-     * 
+     *
      * @param builder a connection configuration builder.
      * @param <B> Type of the ConnectionConfiguration builder.
      * @throws NoSuchAlgorithmException
@@ -125,7 +125,7 @@ public class TLSUtils {
      * <b>invalidates all security guarantees provided by TLS</b>. Only use this method if you understand the
      * implications.
      * </p>
-     * 
+     *
      * @param builder a connection configuration builder.
      * @param <B> Type of the ConnectionConfiguration builder.
      * @return the given builder.

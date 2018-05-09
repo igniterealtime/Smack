@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * MUC Light blocking IQ provider class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */

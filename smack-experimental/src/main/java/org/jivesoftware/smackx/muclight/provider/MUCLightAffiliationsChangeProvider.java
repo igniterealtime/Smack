@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * MUC Light Affiliations Change Provider class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */

@@ -22,7 +22,7 @@ import org.jivesoftware.smackx.rsm.packet.RSMSet;
 
 /**
  * MAM fin IQ class.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
  *      Archive Management</a>
  * @author Fernando Ramirez
@@ -62,7 +62,7 @@ public class MamFinIQ extends IQ {
 
     /**
      * MamFinIQ constructor.
-     * 
+     *
      * @param queryId
      * @param rsmSet
      * @param complete
@@ -81,7 +81,7 @@ public class MamFinIQ extends IQ {
 
     /**
      * Get RSM set.
-     * 
+     *
      * @return the RSM set
      */
     public RSMSet getRSMSet() {
@@ -90,7 +90,7 @@ public class MamFinIQ extends IQ {
 
     /**
      * Return if it is complete.
-     * 
+     *
      * @return true if it is complete
      */
     public boolean isComplete() {
@@ -99,7 +99,7 @@ public class MamFinIQ extends IQ {
 
     /**
      * Return if it is stable.
-     * 
+     *
      * @return true if it is stable
      */
     public boolean isStable() {
@@ -108,7 +108,7 @@ public class MamFinIQ extends IQ {
 
     /**
      * Get query id.
-     * 
+     *
      * @return the query id
      */
     public final String getQueryId() {

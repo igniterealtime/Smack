@@ -45,7 +45,7 @@ public class FormField implements NamedElement {
 
     /**
      * Form Field Types as defined in XEP-4 § 3.3.
-     * 
+     *
      * @see <a href="http://xmpp.org/extensions/xep-0004.html#protocol-fieldtypes">XEP-4 § 3.3 Field Types</a>
      */
     public enum Type {
@@ -273,7 +273,7 @@ public class FormField implements NamedElement {
      * "uniquely identifies the field in the context of the form" (if the field is not of type 'fixed', in which case
      * the field "MAY possess a 'var' attribute")
      * </p>
-     * 
+     *
      * @return the variable name of the question.
      */
     public String getVariable() {

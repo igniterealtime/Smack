@@ -33,7 +33,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Represents the state and the request of the execution of an adhoc command.
- * 
+ *
  * @author Gabriel Guardincerri
  */
 public class AdHocCommandData extends IQ {

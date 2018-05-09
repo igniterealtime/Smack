@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub;
 /**
  * This enumeration defines the possible event types that are supported within PubSub
  * event messages.
- * 
+ *
  * @author Robin Collier
  */
 public enum EventElementType {

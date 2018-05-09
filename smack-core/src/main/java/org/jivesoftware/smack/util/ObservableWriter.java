@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * An ObservableWriter is a wrapper on a Writer that notifies to its listeners when
  * writing to character streams.
- * 
+ *
  * @author Gaston Dombiak
  */
 public class ObservableWriter extends Writer {

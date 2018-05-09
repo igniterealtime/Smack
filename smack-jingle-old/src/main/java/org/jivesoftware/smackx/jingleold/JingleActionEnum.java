@@ -18,9 +18,9 @@ package org.jivesoftware.smackx.jingleold;
 
 /**
  * The "action" in the jingle packet, as an enum.
- * 
+ *
  * Changed to reflect XEP-166 rev: 20JUN07
- * 
+ *
  * @author Jeff Williams
  */
 public enum JingleActionEnum {

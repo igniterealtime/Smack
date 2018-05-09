@@ -20,12 +20,12 @@ import java.io.IOException;
 
 /**
  * An exception class to handle exceptions caused by proxy.
- * 
+ *
  * @author Atul Aggarwal
  */
 public class ProxyException extends IOException {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 

@@ -22,10 +22,10 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 /**
  * A class which represents a common element within the pubsub defined
- * schemas.  One which has a <b>node</b> as an attribute.  This class is 
- * used on its own as well as a base class for many others, since the 
+ * schemas.  One which has a <b>node</b> as an attribute.  This class is
+ * used on its own as well as a base class for many others, since the
  * node is a central concept to most pubsub functionality.
- * 
+ *
  * @author Robin Collier
  */
 public class NodeExtension implements ExtensionElement {
@@ -35,7 +35,7 @@ public class NodeExtension implements ExtensionElement {
     /**
      * Constructs a <tt>NodeExtension</tt> with an element name specified
      * by {@link PubSubElementType} and the specified node id.
-     * 
+     *
      * @param elem Defines the element name and namespace
      * @param nodeId Specifies the id of the node
      */
@@ -47,7 +47,7 @@ public class NodeExtension implements ExtensionElement {
     /**
      * Constructs a <tt>NodeExtension</tt> with an element name specified
      * by {@link PubSubElementType}.
-     * 
+     *
      * @param elem Defines the element name and namespace
      */
     public NodeExtension(PubSubElementType elem) {
@@ -56,7 +56,7 @@ public class NodeExtension implements ExtensionElement {
 
     /**
      * Gets the node id.
-     * 
+     *
      * @return The node id
      */
     public String getNode() {

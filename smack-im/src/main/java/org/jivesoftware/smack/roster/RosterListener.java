@@ -26,7 +26,7 @@ import org.jxmpp.jid.Jid;
 /**
  * A listener that is fired any time a roster is changed or the presence of
  * a user in the roster is changed.
- * 
+ *
  * @see Roster#addRosterListener(RosterListener)
  * @author Matt Tucker
  */

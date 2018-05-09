@@ -36,7 +36,7 @@ public class HostAddress {
 
     /**
      * Creates a new HostAddress with the given FQDN.
-     * 
+     *
      * @param fqdn the optional fully qualified domain name (FQDN).
      * @param port The port to connect on.
      * @param inetAddresses list of addresses.
@@ -109,7 +109,7 @@ public class HostAddress {
      * Retrieve the Exception that caused a connection failure to this HostAddress. Every
      * HostAddress found in {@link ConnectionException} will have an Exception set,
      * which can be retrieved with this method.
-     * 
+     *
      * @return the Exception causing this HostAddress to fail
      */
     public Map<InetAddress, Exception> getExceptions() {

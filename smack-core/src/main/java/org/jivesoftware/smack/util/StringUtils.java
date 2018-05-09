@@ -382,7 +382,7 @@ public class StringUtils {
 
     /**
      * Returns true if the given CharSequence is empty.
-     * 
+     *
      * @param cs
      * @return true if the given CharSequence is empty
      */

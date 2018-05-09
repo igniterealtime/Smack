@@ -21,7 +21,7 @@ import org.jivesoftware.smack.packet.IQ;
 /**
  * Defines the information required to register an IQ Provider with the {@link ProviderManager} when using the
  * {@link ProviderLoader}.
- * 
+ *
  * @author Robin Collier
  *
  */
@@ -29,7 +29,7 @@ public final class IQProviderInfo extends AbstractProviderInfo {
 
     /**
      * Defines an IQ provider which implements the <code>IQProvider</code> interface.
-     * 
+     *
      * @param elementName Element that provider parses.
      * @param namespace Namespace that provider parses.
      * @param iqProvider The provider implementation.

@@ -16,10 +16,10 @@
  */
 /**
  * Multi-User Chat Light (MUC Light) elements.
- * 
+ *
  * @see <a href=
  *      "http://mongooseim.readthedocs.io/en/latest/open-extensions/xeps/xep-muc-light.html">
  *      XEP-xxxx: Multi-User Chat Light</a>
- * 
+ *
  */
 package org.jivesoftware.smackx.muclight.element;

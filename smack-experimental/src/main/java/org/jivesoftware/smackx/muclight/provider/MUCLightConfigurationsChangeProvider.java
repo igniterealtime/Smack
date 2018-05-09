@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * MUC Light configurations change provider class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */

@@ -100,7 +100,7 @@ import org.xmlpull.v1.XmlPullParser;
 public abstract class AbstractXMPPConnection implements XMPPConnection {
     private static final Logger LOGGER = Logger.getLogger(AbstractXMPPConnection.class.getName());
 
-    /** 
+    /**
      * Counter to uniquely identify connections that are created.
      */
     private static final AtomicInteger connectionCounter = new AtomicInteger(0);
@@ -293,7 +293,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     /**
      * Create a new XMPPConnection to an XMPP server.
-     * 
+     *
      * @param configuration The configuration which is used to establish the connection.
      */
     protected AbstractXMPPConnection(ConnectionConfiguration configuration) {
@@ -355,12 +355,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * <p>
      * Listeners will be preserved from a previous connection.
      * </p>
-     * 
+     *
      * @throws XMPPException if an error occurs on the XMPP protocol level.
      * @throws SmackException if an error occurs somewhere else besides XMPP protocol level.
-     * @throws IOException 
+     * @throws IOException
      * @return a reference to this object, to chain <code>connect()</code> with <code>login()</code>.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public synchronized AbstractXMPPConnection connect() throws SmackException, IOException, XMPPException, InterruptedException {
         // Check if not already connected
@@ -395,11 +395,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * Abstract method that concrete subclasses of XMPPConnection need to implement to perform their
      * way of XMPP connection establishment. Implementations are required to perform an automatic
      * login if the previous connection state was logged (authenticated).
-     * 
+     *
      * @throws SmackException
      * @throws IOException
      * @throws XMPPException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     protected abstract void connectInternal() throws SmackException, IOException, XMPPException, InterruptedException;
 
@@ -412,7 +412,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     /**
      * Logs in to the server using the strongest SASL mechanism supported by
-     * the server. If more than the connection's default stanza timeout elapses in each step of the 
+     * the server. If more than the connection's default stanza timeout elapses in each step of the
      * authentication process without a response from the server, a
      * {@link SmackException.NoResponseException} will be thrown.
      * <p>
@@ -427,11 +427,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * {@link ConnectionConfiguration.Builder#setCallbackHandler(javax.security.auth.callback.CallbackHandler)}.
      * For more advanced login settings see {@link ConnectionConfiguration}.
      * </p>
-     * 
+     *
      * @throws XMPPException if an error occurs on the XMPP protocol level.
      * @throws SmackException if an error occurs somewhere else besides XMPP protocol level.
      * @throws IOException if an I/O error occurs during login.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public synchronized void login() throws XMPPException, SmackException, IOException, InterruptedException {
         // The previously used username, password and resource take over precedence over the
@@ -445,13 +445,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * Same as {@link #login(CharSequence, String, Resourcepart)}, but takes the resource from the connection
      * configuration.
-     * 
+     *
      * @param username
      * @param password
      * @throws XMPPException
      * @throws SmackException
      * @throws IOException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      * @see #login
      */
     public synchronized void login(CharSequence username, String password) throws XMPPException, SmackException,
@@ -462,14 +462,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * Login with the given username (authorization identity). You may omit the password if a callback handler is used.
      * If resource is null, then the server will generate one.
-     * 
+     *
      * @param username
      * @param password
      * @param resource
      * @throws XMPPException
      * @throws SmackException
      * @throws IOException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      * @see #login
      */
     public synchronized void login(CharSequence username, String password, Resourcepart resource) throws XMPPException,
@@ -580,7 +580,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * Get the name of the SASL mechanism that was used to authenticate this connection. This returns the name of
      * mechanism which was used the last time this connection was authenticated, and will return <code>null</code> if
      * this connection was not authenticated before.
-     * 
+     *
      * @return the name of the used SASL mechanism.
      * @since 4.2
      */
@@ -674,7 +674,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * Returns the SASLAuthentication manager that is responsible for authenticating with
      * the server.
-     * 
+     *
      * @return the SASLAuthentication manager that is responsible for authenticating with
      *         the server.
      */
@@ -708,9 +708,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * information such as "On vacation". Typically, just the status text of the presence
      * stanza is set with online information, but most XMPP servers will deliver the full
      * presence stanza with whatever data is set.
-     * 
+     *
      * @param unavailablePresence the optional presence stanza to send during shutdown.
-     * @throws NotConnectedException 
+     * @throws NotConnectedException
      */
     public synchronized void disconnect(Presence unavailablePresence) throws NotConnectedException {
         if (unavailablePresence != null) {
@@ -871,7 +871,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * <p>
      * Compared to {@link #firePacketInterceptors(Stanza)}, the listeners will be invoked in a new thread.
      * </p>
-     * 
+     *
      * @param packet the stanza to process.
      */
     @SuppressWarnings("javadoc")
@@ -946,7 +946,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * Since the thread that requested to send the stanza will invoke all interceptors, it
      * is important that interceptors perform their work as soon as possible so that the
      * thread does not remain blocked for a long period.
-     * 
+     *
      * @param packet the stanza that is going to be sent to the server
      */
     private void firePacketInterceptors(Stanza packet) {
@@ -970,7 +970,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * Initialize the {@link #debugger}. You can specify a customized {@link SmackDebugger}
      * by setup the system property <code>smack.debuggerClass</code> to the implementation.
-     * 
+     *
      * @throws IllegalStateException if the reader or writer isn't yet initialized.
      * @throws IllegalArgumentException if the SmackDebugger can't be loaded.
      */
@@ -1208,7 +1208,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * Sets whether the connection has already logged in the server. This method assures that the
      * {@link #wasAuthenticated} flag is never reset once it has ever been set.
-     * 
+     *
      */
     protected void setWasAuthenticated() {
         // Never reset the flag if the connection has ever been authenticated
@@ -1284,7 +1284,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         /**
          * Create a class which associates a stanza filter with a listener.
-         * 
+         *
          * @param packetListener the stanza listener.
          * @param packetFilter the associated filter or null if it listen for all packets.
          */
@@ -1312,7 +1312,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         /**
          * Create a class which associates a stanza filter with an interceptor.
-         * 
+         *
          * @param packetInterceptor the interceptor.
          * @param packetFilter the associated filter or null if it intercepts all packets.
          */
@@ -1681,7 +1681,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * Install a parsing exception callback, which will be invoked once an exception is encountered while parsing a
      * stanza.
-     * 
+     *
      * @param callback the callback to install
      */
     public void setParsingExceptionCallback(ParsingExceptionCallback callback) {
@@ -1690,7 +1690,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     /**
      * Get the current active parsing exception callback.
-     *  
+     *
      * @return the active exception callback or null if there is none
      */
     public ParsingExceptionCallback getParsingExceptionCallback() {

@@ -35,7 +35,7 @@ public interface PEPListener {
 
     /**
      * Called when PEP events are received as part of a presence subscribe or message filter.
-     *  
+     *
      * @param from the user that sent the entries.
      * @param event the event contained in the message.
      * @param message the message stanza containing the PEP event.

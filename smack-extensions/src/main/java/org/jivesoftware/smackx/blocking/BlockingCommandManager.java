@@ -46,7 +46,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Blocking command manager class.
- * 
+ *
  * @author Fernando Ramirez
  * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0191.html">XEP-0191: Blocking
@@ -159,7 +159,7 @@ public final class BlockingCommandManager extends Manager {
 
     /**
      * Returns true if Blocking Command is supported by the server.
-     * 
+     *
      * @return true if Blocking Command is supported by the server.
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -173,7 +173,7 @@ public final class BlockingCommandManager extends Manager {
 
     /**
      * Returns the block list.
-     * 
+     *
      * @return the blocking list
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -194,7 +194,7 @@ public final class BlockingCommandManager extends Manager {
 
     /**
      * Block contacts.
-     * 
+     *
      * @param jids
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -209,7 +209,7 @@ public final class BlockingCommandManager extends Manager {
 
     /**
      * Unblock contacts.
-     * 
+     *
      * @param jids
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -224,7 +224,7 @@ public final class BlockingCommandManager extends Manager {
 
     /**
      * Unblock all.
-     * 
+     *
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException

@@ -99,7 +99,7 @@ public final class JingleContent implements NamedElement {
 
     /**
      * Gets the description for this Jingle content.
-     * 
+     *
      * @return The description.
      */
     public JingleContentDescription getDescription() {
@@ -108,7 +108,7 @@ public final class JingleContent implements NamedElement {
 
     /**
      * Returns an Iterator for the JingleTransports in the packet.
-     * 
+     *
      * @return an Iterator for the JingleTransports in the packet.
      * @deprecated use {@link #getTransport()} instead.
      */
@@ -119,7 +119,7 @@ public final class JingleContent implements NamedElement {
 
     /**
      * Returns an Iterator for the JingleTransports in the packet.
-     * 
+     *
      * @return an Iterator for the JingleTransports in the packet.
      */
     public JingleContentTransport getTransport() {

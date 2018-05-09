@@ -26,7 +26,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
- * An XHTML sub-packet, which is used by XMPP clients to exchange formatted text. The XHTML 
+ * An XHTML sub-packet, which is used by XMPP clients to exchange formatted text. The XHTML
  * extension is only a subset of XHTML 1.0.
  * <p>
  * The following link summarizes the requirements of XHTML IM:
@@ -53,7 +53,7 @@ public class XHTMLExtension implements ExtensionElement {
         return ELEMENT;
     }
 
-    /** 
+    /**
      * Returns the XML namespace of the extension sub-packet root element.
      * According the specification the namespace is always "http://jabber.org/protocol/xhtml-im"
      *
@@ -66,7 +66,7 @@ public class XHTMLExtension implements ExtensionElement {
 
     /**
      * Returns the XML representation of a XHTML extension according the specification.
-     * 
+     *
      * Usually the XML representation will be inside of a Message XML representation like
      * in the following example:
      * <pre>
@@ -78,7 +78,7 @@ public class XHTMLExtension implements ExtensionElement {
      *     &lt;/html&gt;
      * &lt;/message&gt;
      * </pre>
-     * 
+     *
      */
     @Override
     public XmlStringBuilder toXML(String enclosingNamespace) {

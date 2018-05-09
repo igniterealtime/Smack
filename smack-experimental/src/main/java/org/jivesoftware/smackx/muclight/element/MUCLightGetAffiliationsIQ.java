@@ -24,7 +24,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * MUC Light get affiliations IQ class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */
@@ -37,7 +37,7 @@ public class MUCLightGetAffiliationsIQ extends IQ {
 
     /**
      * MUC Light get affiliations IQ constructor.
-     * 
+     *
      * @param roomJid
      * @param version
      */
@@ -50,7 +50,7 @@ public class MUCLightGetAffiliationsIQ extends IQ {
 
     /**
      * MUC Light get affiliations IQ constructor.
-     * 
+     *
      * @param roomJid
      */
     public MUCLightGetAffiliationsIQ(Jid roomJid) {

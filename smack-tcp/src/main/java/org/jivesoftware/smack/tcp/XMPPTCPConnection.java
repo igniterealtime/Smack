@@ -144,7 +144,7 @@ import org.xmlpull.v1.XmlPullParserException;
 /**
  * Creates a socket connection to an XMPP server. This is the default connection
  * to an XMPP server and is specified in the XMPP Core (RFC 6120).
- * 
+ *
  * @see XMPPConnection
  * @author Matt Tucker
  */
@@ -159,7 +159,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private Socket socket;
 
     /**
-     * 
+     *
      */
     private boolean disconnectedButResumeable = false;
 
@@ -179,13 +179,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     this, "initial open stream element send to server");
 
     /**
-     * 
+     *
      */
     private final SynchronizationPoint<XMPPException> maybeCompressFeaturesReceived = new SynchronizationPoint<XMPPException>(
                     this, "stream compression feature");
 
     /**
-     * 
+     *
      */
     private final SynchronizationPoint<SmackException> compressSyncPoint = new SynchronizationPoint<>(
                     this, "stream compression");
@@ -325,10 +325,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * connection settings is available using the {@link #XMPPTCPConnection(XMPPTCPConnectionConfiguration)}
      * constructor.
      * </p>
-     * 
+     *
      * @param jid the bare JID used by the client.
      * @param password the password or authentication token.
-     * @throws XmppStringprepException 
+     * @throws XmppStringprepException
      */
     public XMPPTCPConnection(CharSequence jid, String password) throws XmppStringprepException {
         this(XmppStringUtils.parseLocalpart(jid.toString()), password, XmppStringUtils.parseDomain(jid.toString()));
@@ -344,7 +344,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @param username
      * @param password
      * @param serviceName
-     * @throws XmppStringprepException 
+     * @throws XmppStringprepException
      */
     public XMPPTCPConnection(CharSequence username, String password, String serviceName) throws XmppStringprepException {
         this(XMPPTCPConnectionConfiguration.builder().setUsernameAndPassword(username, password).setXmppDomain(
@@ -626,7 +626,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @throws XMPPException if establishing a connection to the server fails.
      * @throws SmackException if the server fails to respond back or if there is anther error.
-     * @throws IOException 
+     * @throws IOException
      */
     private void initConnection() throws IOException {
         boolean isFirstInitialization = packetReader == null || packetWriter == null;
@@ -665,14 +665,14 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * The server has indicated that TLS negotiation can start. We now need to secure the
      * existing plain connection and perform a handshake. This method won't return until the
      * connection has finished the handshake or an error occurred while securing the connection.
-     * @throws IOException 
-     * @throws CertificateException 
-     * @throws NoSuchAlgorithmException 
-     * @throws NoSuchProviderException 
-     * @throws KeyStoreException 
-     * @throws UnrecoverableKeyException 
-     * @throws KeyManagementException 
-     * @throws SmackException 
+     * @throws IOException
+     * @throws CertificateException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchProviderException
+     * @throws KeyStoreException
+     * @throws UnrecoverableKeyException
+     * @throws KeyManagementException
+     * @throws SmackException
      * @throws Exception if an exception occurs.
      */
     @SuppressWarnings("LiteralClassName")
@@ -819,9 +819,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     /**
      * Returns the compression handler that can be used for one compression methods offered by the server.
-     * 
+     *
      * @return a instance of XMPPInputOutputStream or null if no suitable instance was found
-     * 
+     *
      */
     private static XMPPInputOutputStream maybeGetCompressionHandler(Compress.Feature compression) {
         for (XMPPInputOutputStream handler : SmackConfiguration.getCompressionHandlers()) {
@@ -850,10 +850,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * before authentication took place.
      * </p>
      *
-     * @throws NotConnectedException 
+     * @throws NotConnectedException
      * @throws SmackException
-     * @throws NoResponseException 
-     * @throws InterruptedException 
+     * @throws NoResponseException
+     * @throws InterruptedException
      */
     private void maybeEnableCompression() throws SmackException, InterruptedException {
         if (!config.isCompressionEnabled()) {
@@ -883,9 +883,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * </p>
      *
      * @throws XMPPException if an error occurs while trying to establish the connection.
-     * @throws SmackException 
-     * @throws IOException 
-     * @throws InterruptedException 
+     * @throws SmackException
+     * @throws IOException
+     * @throws InterruptedException
      */
     @Override
     protected void connectInternal() throws SmackException, IOException, XMPPException, InterruptedException {
@@ -967,7 +967,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * to be sent by the server.
      *
      * @throws SmackException if the parser could not be reset.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     void openStream() throws SmackException, InterruptedException {
         // If possible, provide the receiving entity of the stream open tag, i.e. the server, as much information as
@@ -1283,10 +1283,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          */
         private boolean shouldBundleAndDefer;
 
-        /** 
-        * Initializes the writer in order to be used. It is called at the first connection and also 
+        /**
+        * Initializes the writer in order to be used. It is called at the first connection and also
         * is invoked if the connection is disconnected by an error.
-        */ 
+        */
         void init() {
             shutdownDone.init();
             shutdownTimestamp = null;
@@ -1327,8 +1327,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          * Sends the specified element to the server.
          *
          * @param element the element to send.
-         * @throws NotConnectedException 
-         * @throws InterruptedException 
+         * @throws NotConnectedException
+         * @throws InterruptedException
          */
         protected void sendStreamElement(Element element) throws NotConnectedException, InterruptedException {
             throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
@@ -1349,7 +1349,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         /**
          * Shuts down the stanza writer. Once this method has been called, no further
          * packets will be written to the server.
-         * @throws InterruptedException 
+         * @throws InterruptedException
          */
         void shutdown(boolean instant) {
             instantShutdown = instant;
@@ -1547,7 +1547,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     /**
      * Set if Stream Management should be used by default for new connections.
-     * 
+     *
      * @param useSmDefault true to use Stream Management for new connections.
      */
     public static void setUseStreamManagementDefault(boolean useSmDefault) {
@@ -1556,7 +1556,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     /**
      * Set if Stream Management resumption should be used by default for new connections.
-     * 
+     *
      * @param useSmResumptionDefault true to use Stream Management resumption for new connections.
      * @deprecated use {@link #setUseStreamManagementResumptionDefault(boolean)} instead.
      */
@@ -1580,7 +1580,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     /**
      * Set if Stream Management should be used if supported by the server.
-     * 
+     *
      * @param useSm true to use Stream Management.
      */
     public void setUseStreamManagement(boolean useSm) {
@@ -1617,7 +1617,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * <p>
      * If not predicate is configured, the {@link Predicate#forMessagesOrAfter5Stanzas()} will be used.
      * </p>
-     * 
+     *
      * @param predicate the predicate to add.
      * @return if the predicate was not already active.
      */
@@ -1652,7 +1652,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @throws StreamManagementNotEnabledException if Stream Management is not enabled.
      * @throws NotConnectedException if the connection is not connected.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public void requestSmAcknowledgement() throws StreamManagementNotEnabledException, NotConnectedException, InterruptedException {
         if (!isSmEnabled()) {
@@ -1672,10 +1672,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * "Either party MAY send an &lt;a/&gt; element at any time (e.g., after it has received a certain number of stanzas,
      * or after a certain period of time), even if it has not received an &lt;r/&gt; element from the other party."
      * </p>
-     * 
+     *
      * @throws StreamManagementNotEnabledException if Stream Management is not enabled.
      * @throws NotConnectedException if the connection is not connected.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public void sendSmAcknowledgement() throws StreamManagementNotEnabledException, NotConnectedException, InterruptedException {
         if (!isSmEnabled()) {
@@ -1695,7 +1695,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * automatically removed. Consider using {@link #addStanzaIdAcknowledgedListener(String, StanzaListener)} when
      * possible.
      * </p>
-     * 
+     *
      * @param listener the listener to add.
      */
     public void addStanzaAcknowledgedListener(StanzaListener listener) {
@@ -1725,7 +1725,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * The listener will be invoked if the stanza with the given ID was acknowledged by the server. It will
      * automatically be removed after the listener was run.
      * </p>
-     * 
+     *
      * @param id the stanza ID.
      * @param listener the listener to invoke.
      * @return the previous listener for this stanza ID or null.
@@ -1750,7 +1750,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     /**
      * Remove the Stanza ID acknowledged listener for the given ID.
-     * 
+     *
      * @param id the stanza ID.
      * @return true if the listener was found and removed, false otherwise.
      */
@@ -1785,7 +1785,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     /**
      * Returns true if the stream was successfully resumed with help of Stream Management.
-     * 
+     *
      * @return true if the stream was resumed.
      */
     public boolean streamWasResumed() {
@@ -1794,7 +1794,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     /**
      * Returns true if the connection is disconnected by a Stream resumption via Stream Management is possible.
-     * 
+     *
      * @return true if disconnected but resumption possible.
      */
     public boolean isDisconnectedButSmResumptionPossible() {

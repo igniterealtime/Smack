@@ -44,7 +44,7 @@ import org.jxmpp.util.cache.LruCache;
 
 /**
  * Bits of Binary manager class.
- * 
+ *
  * @author Fernando Ramirez
  * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0231.html">XEP-0231: Bits of
@@ -67,7 +67,7 @@ public final class BoBManager extends Manager {
 
     /**
      * Get the singleton instance of BoBManager.
-     * 
+     *
      * @param connection
      * @return the instance of BoBManager
      */
@@ -113,7 +113,7 @@ public final class BoBManager extends Manager {
 
     /**
      * Returns true if Bits of Binary is supported by the server.
-     * 
+     *
      * @return true if Bits of Binary is supported by the server.
      * @throws NoResponseException
      * @throws XMPPErrorException
@@ -127,7 +127,7 @@ public final class BoBManager extends Manager {
 
     /**
      * Request BoB data.
-     * 
+     *
      * @param to
      * @param bobHash
      * @return the BoB data

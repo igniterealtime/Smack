@@ -36,7 +36,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleError;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
 
 /**
- * Jingle. 
+ * Jingle.
  *  @author Jeff Williams
  *  @see JingleSessionState
  */
@@ -97,8 +97,8 @@ public class JingleSessionStateUnknown extends JingleSessionState {
     /**
      * In the UNKNOWN state we received a <session-initiate> action.
      * This method processes that action.
-     * @throws SmackException 
-     * @throws InterruptedException 
+     * @throws SmackException
+     * @throws InterruptedException
      */
 
     private IQ receiveSessionInitiateAction(JingleSession session, Jingle inJingle) throws SmackException, InterruptedException {
@@ -149,7 +149,7 @@ public class JingleSessionStateUnknown extends JingleSessionState {
                 // Get the media negotiator that goes with the <description> of this content.
                 JingleDescription jingleDescription = jingleContent.getDescription();
 
-                // Loop through each media manager looking for the ones that matches the incoming 
+                // Loop through each media manager looking for the ones that matches the incoming
                 // session-initiate <content> choices.
                 // (Set the first media manager as the default, so that in case things don't match we can still negotiate.)
                 JingleMediaManager chosenMediaManager = session.getMediaManagers().get(0);

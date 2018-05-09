@@ -24,9 +24,9 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * Represents the <b>configuration</b> element of a PubSub message event which
- * associates a configuration form to the node which was configured.  The form 
+ * associates a configuration form to the node which was configured.  The form
  * contains the current node configuration.
- *  
+ *
  * @author Robin Collier
  */
 public class ConfigurationEvent extends NodeExtension implements EmbeddedPacketExtension {

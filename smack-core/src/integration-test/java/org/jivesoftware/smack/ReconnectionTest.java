@@ -208,7 +208,7 @@ public class ReconnectionTest extends SmackTestCase {
         private CountDownLatch countDownLatch;
 
         private XMPPTCPConnectionTestListener(CountDownLatch latch) {
-            countDownLatch = latch; 
+            countDownLatch = latch;
         }
 
         private XMPPTCPConnectionTestListener() {

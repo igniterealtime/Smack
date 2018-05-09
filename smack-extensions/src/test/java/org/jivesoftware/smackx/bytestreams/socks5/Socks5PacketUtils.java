@@ -27,7 +27,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * A collection of utility methods to create XMPP packets.
- * 
+ *
  * @author Henning Staib
  */
 public class Socks5PacketUtils {
@@ -35,7 +35,7 @@ public class Socks5PacketUtils {
     /**
      * Returns a SOCKS5 Bytestream initialization request packet. The Request doesn't contain any
      * SOCKS5 proxies.
-     * 
+     *
      * @param from the initiator
      * @param to the target
      * @param sessionID the session ID
@@ -53,7 +53,7 @@ public class Socks5PacketUtils {
     /**
      * Returns a response to a SOCKS5 Bytestream initialization request. The stanza doesn't contain
      * the uses-host information.
-     * 
+     *
      * @param from the target
      * @param to the initiator
      * @return response to a SOCKS5 Bytestream initialization request
@@ -68,7 +68,7 @@ public class Socks5PacketUtils {
 
     /**
      * Returns a response to an item discovery request. The stanza doesn't contain any items.
-     * 
+     *
      * @param from the XMPP server
      * @param to the XMPP client
      * @return response to an item discovery request
@@ -83,7 +83,7 @@ public class Socks5PacketUtils {
 
     /**
      * Returns a response to an info discovery request. The stanza doesn't contain any infos.
-     * 
+     *
      * @param from the target
      * @param to the initiator
      * @return response to an info discovery request
@@ -98,7 +98,7 @@ public class Socks5PacketUtils {
 
     /**
      * Returns a response IQ for a activation request to the proxy.
-     * 
+     *
      * @param from JID of the proxy
      * @param to JID of the client who wants to activate the SOCKS5 Bytestream
      * @return response IQ for a activation request to the proxy

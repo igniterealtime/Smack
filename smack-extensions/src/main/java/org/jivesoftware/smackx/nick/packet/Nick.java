@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * A minimalistic implementation of a {@link ExtensionElement} for nicknames.
- * 
+ *
  * @author Guus der Kinderen, guus.der.kinderen@gmail.com
  * @see <a href="http://xmpp.org/extensions/xep-0172.html">XEP-0172: User Nickname</a>
  */
@@ -44,7 +44,7 @@ public class Nick implements ExtensionElement {
 
     /**
      * The value of this nickname.
-     * 
+     *
      * @return the nickname
      */
     public String getName() {
@@ -53,7 +53,7 @@ public class Nick implements ExtensionElement {
 
     /**
      * Sets the value of this nickname.
-     * 
+     *
      * @param name
      *            the name to set
      */
@@ -63,7 +63,7 @@ public class Nick implements ExtensionElement {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jivesoftware.smack.packet.PacketExtension#getElementName()
      */
     @Override
@@ -73,7 +73,7 @@ public class Nick implements ExtensionElement {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jivesoftware.smack.packet.PacketExtension#getNamespace()
      */
     @Override
@@ -83,7 +83,7 @@ public class Nick implements ExtensionElement {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
      */
     @Override

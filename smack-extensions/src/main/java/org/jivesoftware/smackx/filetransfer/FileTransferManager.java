@@ -41,9 +41,9 @@ import org.jxmpp.jid.EntityFullJid;
  * listener will notify you when there is a new file transfer request. To create
  * the {@link IncomingFileTransfer} object accept the transfer, or, if the
  * transfer is not desirable reject it.
- * 
+ *
  * @author Alexander Wenckus
- * 
+ *
  */
 public final class FileTransferManager extends Manager {
 
@@ -64,7 +64,7 @@ public final class FileTransferManager extends Manager {
 
     /**
      * Creates a file transfer manager to initiate and receive file transfers.
-     * 
+     *
      * @param connection
      *            The XMPPConnection that the file transfers will use.
      */
@@ -89,7 +89,7 @@ public final class FileTransferManager extends Manager {
     /**
      * Add a file transfer listener to listen to incoming file transfer
      * requests.
-     * 
+     *
      * @param li
      *            The listener
      * @see #removeFileTransferListener(FileTransferListener)
@@ -101,7 +101,7 @@ public final class FileTransferManager extends Manager {
 
     /**
      * Removes a file transfer listener.
-     * 
+     *
      * @param li
      *            The file transfer listener to be removed
      * @see FileTransferListener
@@ -112,7 +112,7 @@ public final class FileTransferManager extends Manager {
 
     /**
      * Creates an OutgoingFileTransfer to send a file to another user.
-     * 
+     *
      * @param userID
      *            The fully qualified jabber ID (i.e. full JID) with resource of the user to
      *            send the file to.
@@ -136,7 +136,7 @@ public final class FileTransferManager extends Manager {
      * When the file transfer request is acceptable, this method should be
      * invoked. It will create an IncomingFileTransfer which allows the
      * transmission of the file to proceed.
-     * 
+     *
      * @param request
      *            The remote request that is being accepted.
      * @return The IncomingFileTransfer which manages the download of the file
@@ -162,7 +162,7 @@ public final class FileTransferManager extends Manager {
      * </p>
      * @param request
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     protected void rejectIncomingFileTransfer(FileTransferRequest request) throws NotConnectedException, InterruptedException {
         StreamInitiation initiation = request.getStreamInitiation();

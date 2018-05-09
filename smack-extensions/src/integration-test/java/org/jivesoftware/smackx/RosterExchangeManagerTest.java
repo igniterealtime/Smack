@@ -43,7 +43,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
 
     /**
      * High level API test.
-     * This is a simple test to use with an XMPP client and check if the client receives user1's 
+     * This is a simple test to use with an XMPP client and check if the client receives user1's
      * roster
      * 1. User_1 will send his/her roster to user_2
      */
@@ -62,7 +62,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
 
     /**
      * High level API test.
-     * This is a simple test to use with an XMPP client and check if the client receives user1's 
+     * This is a simple test to use with an XMPP client and check if the client receives user1's
      * roster groups
      * 1. User_1 will send his/her RosterGroups to user_2
      */
@@ -84,7 +84,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
      * High level API test.
      * 1. User_1 will send his/her roster to user_2
      * 2. User_2 will receive the entries and iterate over them to check if everything is fine
-     * 3. User_1 will wait several seconds for an ACK from user_2, if none is received then 
+     * 3. User_1 will wait several seconds for an ACK from user_2, if none is received then
      * something is wrong
      */
     public void testSendAndReceiveRoster() {
@@ -132,9 +132,9 @@ public class RosterExchangeManagerTest extends SmackTestCase {
     /**
      * High level API test.
      * 1. User_1 will send his/her roster to user_2
-     * 2. User_2 will automatically add the entries that receives to his/her roster in the 
+     * 2. User_2 will automatically add the entries that receives to his/her roster in the
      * corresponding group
-     * 3. User_1 will wait several seconds for an ACK from user_2, if none is received then 
+     * 3. User_1 will wait several seconds for an ACK from user_2, if none is received then
      * something is wrong
      */
     public void testSendAndAcceptRoster() {

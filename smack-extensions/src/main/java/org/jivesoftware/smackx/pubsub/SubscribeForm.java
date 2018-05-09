@@ -32,11 +32,11 @@ import org.jxmpp.util.XmppDateTime;
 /**
  * A decorator for a {@link Form} to easily enable reading and updating
  * of subscription options.  All operations read or update the underlying {@link DataForm}.
- * 
+ *
  * <p>Unlike the {@link Form}.setAnswer(XXX)} methods, which throw an exception if the field does not
  * exist, all <b>SubscribeForm.setXXX</b> methods will create the field in the wrapped form
  * if it does not already exist.
- * 
+ *
  * @author Robin Collier
  */
 public class SubscribeForm extends Form {
@@ -54,7 +54,7 @@ public class SubscribeForm extends Form {
 
     /**
      * Determines if an entity wants to receive notifications.
-     * 
+     *
      * @return true if want to receive, false otherwise
      */
     public boolean isDeliverOn() {
@@ -73,7 +73,7 @@ public class SubscribeForm extends Form {
 
     /**
      * Determines if notifications should be delivered as aggregations or not.
-     * 
+     *
      * @return true to aggregate, false otherwise
      */
     public boolean isDigestOn() {
@@ -82,8 +82,8 @@ public class SubscribeForm extends Form {
 
     /**
      * Sets whether notifications should be delivered as aggregations or not.
-     * 
-     * @param digestOn true to aggregate, false otherwise 
+     *
+     * @param digestOn true to aggregate, false otherwise
      */
     public void setDigestOn(boolean digestOn) {
         addField(SubscribeOptionFields.deliver, FormField.Type.bool);
@@ -92,7 +92,7 @@ public class SubscribeForm extends Form {
 
     /**
      * Gets the minimum number of milliseconds between sending notification digests.
-     * 
+     *
      * @return The frequency in milliseconds
      */
     public int getDigestFrequency() {
@@ -101,7 +101,7 @@ public class SubscribeForm extends Form {
 
     /**
      * Sets the minimum number of milliseconds between sending notification digests.
-     * 
+     *
      * @param frequency The frequency in milliseconds
      */
     public void setDigestFrequency(int frequency) {
@@ -111,7 +111,7 @@ public class SubscribeForm extends Form {
 
     /**
      * Get the time at which the leased subscription will expire, or has expired.
-     * 
+     *
      * @return The expiry date
      */
     public Date getExpiry() {
@@ -128,7 +128,7 @@ public class SubscribeForm extends Form {
 
     /**
      * Sets the time at which the leased subscription will expire, or has expired.
-     * 
+     *
      * @param expire The expiry date
      */
     public void setExpiry(Date expire) {
@@ -137,9 +137,9 @@ public class SubscribeForm extends Form {
     }
 
     /**
-     * Determines whether the entity wants to receive an XMPP message body in 
+     * Determines whether the entity wants to receive an XMPP message body in
      * addition to the payload format.
-     * 
+     *
      * @return true to receive the message body, false otherwise
      */
     public boolean isIncludeBody() {
@@ -147,9 +147,9 @@ public class SubscribeForm extends Form {
     }
 
     /**
-     * Sets whether the entity wants to receive an XMPP message body in 
+     * Sets whether the entity wants to receive an XMPP message body in
      * addition to the payload format.
-     * 
+     *
      * @param include true to receive the message body, false otherwise
      */
     public void setIncludeBody(boolean include) {
@@ -158,9 +158,9 @@ public class SubscribeForm extends Form {
     }
 
     /**
-     * Gets the {@link PresenceState} for which an entity wants to receive 
+     * Gets the {@link PresenceState} for which an entity wants to receive
      * notifications.
-     * 
+     *
      * @return the list of states
      */
     public List<PresenceState> getShowValues() {
@@ -175,7 +175,7 @@ public class SubscribeForm extends Form {
     /**
      * Sets the list of {@link PresenceState} for which an entity wants
      * to receive notifications.
-     * 
+     *
      * @param stateValues The list of states
      */
     public void setShowValues(Collection<PresenceState> stateValues) {

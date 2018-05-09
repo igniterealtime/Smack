@@ -19,7 +19,7 @@ package org.jivesoftware.smack;
 
 /**
  * Representation of an unparsable stanza.
- * 
+ *
  * @author Florian Schmaus
  *
  */
@@ -42,7 +42,7 @@ public class UnparseableStanza {
 
     /**
      * Retrieve the raw stanza data.
-     * 
+     *
      * @return the raw stanza data
      */
     public CharSequence getContent() {

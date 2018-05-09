@@ -34,7 +34,7 @@ import org.jxmpp.jid.impl.JidCreate;
 
 /**
  * Test for the Data class.
- * 
+ *
  * @author Henning Staib
  */
 public class DataTest extends InitExtensions {

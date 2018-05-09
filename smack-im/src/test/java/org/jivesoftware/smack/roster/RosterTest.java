@@ -57,7 +57,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Tests that verifies the correct behavior of the {@link Roster} implementation.
- * 
+ *
  * @see Roster
  * @see <a href="http://xmpp.org/rfcs/rfc3921.html#roster">Roster Management</a>
  * @author Guenther Niess
@@ -369,7 +369,7 @@ public class RosterTest extends InitSmackIm {
 
     /**
      * Tests that roster pushes with invalid from are ignored.
-     * @throws XmppStringprepException 
+     * @throws XmppStringprepException
      *
      * @see <a href="http://xmpp.org/rfcs/rfc6121.html#roster-syntax-actions-push">RFC 6121, Section 2.1.6</a>
      */
@@ -397,7 +397,7 @@ public class RosterTest extends InitSmackIm {
     /**
      * Test if adding an user with an empty group is equivalent with providing
      * no group.
-     * 
+     *
      * @see <a href="http://www.igniterealtime.org/issues/browse/SMACK-294">SMACK-294</a>
      */
     @Test(timeout = 5000)
@@ -465,7 +465,7 @@ public class RosterTest extends InitSmackIm {
     /**
      * Test processing a roster push with an empty group is equivalent with providing
      * no group.
-     * 
+     *
      * @see <a href="http://www.igniterealtime.org/issues/browse/SMACK-294">SMACK-294</a>
      */
     @Test
@@ -512,7 +512,7 @@ public class RosterTest extends InitSmackIm {
     /**
      * Remove all roster entries by iterating trough {@link Roster#getEntries()}
      * and simulating receiving roster pushes from the server.
-     * 
+     *
      * @param connection the dummy connection of which the provided roster belongs to.
      * @param roster the roster (or buddy list) which should be initialized.
      */
@@ -538,8 +538,8 @@ public class RosterTest extends InitSmackIm {
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-login"
      *     >RFC3921: Retrieving One's Roster on Login</a>.
      *
-     * @throws SmackException 
-     * @throws XmppStringprepException 
+     * @throws SmackException
+     * @throws XmppStringprepException
      */
     private void initRoster() throws InterruptedException, SmackException, XmppStringprepException {
         roster.reload();
@@ -587,7 +587,7 @@ public class RosterTest extends InitSmackIm {
      * Check Romeo's roster entry according to the example in
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-login"
      *     >RFC3921: Retrieving One's Roster on Login</a>.
-     * 
+     *
      * @param romeo the roster entry which should be verified.
      */
     public static void verifyRomeosEntry(final RosterEntry romeo) {
@@ -610,7 +610,7 @@ public class RosterTest extends InitSmackIm {
      * Check Mercutio's roster entry according to the example in
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-login"
      *     >RFC3921: Retrieving One's Roster on Login</a>.
-     *  
+     *
      * @param mercutio the roster entry which should be verified.
      */
     public static void verifyMercutiosEntry(final RosterEntry mercutio) {
@@ -629,7 +629,7 @@ public class RosterTest extends InitSmackIm {
      * Check Benvolio's roster entry according to the example in
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-login"
      *     >RFC3921: Retrieving One's Roster on Login</a>.
-     * 
+     *
      * @param benvolio the roster entry which should be verified.
      */
     public static void verifyBenvoliosEntry(final RosterEntry benvolio) {
@@ -654,7 +654,7 @@ public class RosterTest extends InitSmackIm {
 
         /**
          * Overwrite this method to check if the received update request is valid.
-         * 
+         *
          * @param updateRequest the request which would be sent to the server.
          */
         abstract void verifyUpdateRequest(RosterPacket updateRequest);
@@ -699,7 +699,7 @@ public class RosterTest extends InitSmackIm {
 
         /**
          * Returns the exception or error if something went wrong.
-         * 
+         *
          * @return the Throwable exception or error that occurred.
          */
         public Throwable getException() {
@@ -741,7 +741,7 @@ public class RosterTest extends InitSmackIm {
 
         /**
          * Get a collection of JIDs of the added roster items.
-         * 
+         *
          * @return the collection of addresses which were added.
          */
         public Collection<Jid> getAddedAddresses() {
@@ -750,7 +750,7 @@ public class RosterTest extends InitSmackIm {
 
         /**
          * Get a collection of JIDs of the deleted roster items.
-         * 
+         *
          * @return the collection of addresses which were deleted.
          */
         public Collection<Jid> getDeletedAddresses() {
@@ -759,7 +759,7 @@ public class RosterTest extends InitSmackIm {
 
         /**
          * Get a collection of JIDs of the updated roster items.
-         * 
+         *
          * @return the collection of addresses which were updated.
          */
         public Collection<Jid> getUpdatedAddresses() {

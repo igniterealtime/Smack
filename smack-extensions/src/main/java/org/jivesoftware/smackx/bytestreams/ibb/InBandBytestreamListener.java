@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
  * {@link InBandBytestreamManager#addIncomingBytestreamListener(BytestreamListener)} and
  * {@link InBandBytestreamManager#addIncomingBytestreamListener(BytestreamListener, org.jxmpp.jid.Jid)} for
  * further details.
- * 
+ *
  * @author Henning Staib
  */
 public abstract class InBandBytestreamListener implements BytestreamListener {
@@ -42,7 +42,7 @@ public abstract class InBandBytestreamListener implements BytestreamListener {
     /**
      * This listener is notified if an In-Band Bytestream request from another user has been
      * received.
-     * 
+     *
      * @param request the incoming In-Band Bytestream request
      */
     public abstract void incomingBytestreamRequest(InBandBytestreamRequest request);

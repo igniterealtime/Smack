@@ -27,7 +27,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * MUC Light configuration IQ provider class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */

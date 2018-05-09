@@ -134,13 +134,13 @@ public final class VersionManager extends Manager {
 
     /**
      * Request version information from a given JID.
-     * 
+     *
      * @param jid
      * @return the version information or {@code null} if not supported by JID
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public Version getVersion(Jid jid) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {

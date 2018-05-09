@@ -97,8 +97,8 @@ public class ItemValidationTest extends InitExtensions {
                 "<event xmlns='http://jabber.org/protocol/pubsub#event'>" +
                     "<items node='testNode'>" +
                         "<item id='testid1' />" +
-                    "</items>" + 
-                 "</event>" + 
+                    "</items>" +
+                 "</event>" +
             "</message>");
 
         Stanza message = PacketParserUtils.parseMessage(parser);
@@ -126,9 +126,9 @@ public class ItemValidationTest extends InitExtensions {
                     "<items node='testNode'>" +
                         "<item id='testid1' >" +
                             itemContent +
-                        "</item>" + 
-                    "</items>" + 
-                 "</event>" + 
+                        "</item>" +
+                    "</items>" +
+                 "</event>" +
             "</message>");
 
         Stanza message = PacketParserUtils.parseMessage(parser);
@@ -150,7 +150,7 @@ public class ItemValidationTest extends InitExtensions {
 
     @Test
     public void parseComplexItem() throws Exception {
-        String itemContent = 
+        String itemContent =
                 "<entry xmlns='http://www.w3.org/2005/Atom'>" +
                     "<title>Soliloquy</title>" +
                     "<summary>" +
@@ -172,9 +172,9 @@ public class ItemValidationTest extends InitExtensions {
                     "<items node='testNode'>" +
                         "<item id='testid1' >" +
                             itemContent +
-                        "</item>" + 
-                    "</items>" + 
-                 "</event>" + 
+                        "</item>" +
+                    "</items>" +
+                 "</event>" +
             "</message>");
 
         Stanza message = PacketParserUtils.parseMessage(parser);
@@ -204,9 +204,9 @@ public class ItemValidationTest extends InitExtensions {
                     "<items node='testNode'>" +
                         "<item id='testid1' >" +
                             itemContent +
-                        "</item>" + 
-                    "</items>" + 
-                 "</event>" + 
+                        "</item>" +
+                    "</items>" +
+                 "</event>" +
             "</message>");
 
         Stanza message = PacketParserUtils.parseMessage(parser);

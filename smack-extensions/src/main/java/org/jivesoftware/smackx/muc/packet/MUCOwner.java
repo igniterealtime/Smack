@@ -23,10 +23,10 @@ import java.util.List;
 import org.jivesoftware.smack.packet.IQ;
 
 /**
- * IQ stanza that serves for granting and revoking ownership privileges, granting 
- * and revoking administrative privileges and destroying a room. All these operations 
+ * IQ stanza that serves for granting and revoking ownership privileges, granting
+ * and revoking administrative privileges and destroying a room. All these operations
  * are scoped by the 'http://jabber.org/protocol/muc#owner' namespace.
- * 
+ *
  * @author Gaston Dombiak
  */
 public class MUCOwner extends IQ {
@@ -44,7 +44,7 @@ public class MUCOwner extends IQ {
     /**
      * Returns a List of item children that holds information about affiliation,
      * jids and nicks.
-     * 
+     *
      * @return a List of item children that holds information about affiliation,
      *          jids and nicks.
      */
@@ -58,7 +58,7 @@ public class MUCOwner extends IQ {
      * Returns a request to the server to destroy a room. The sender of the request
      * should be the room's owner. If the sender of the destroy request is not the room's owner
      * then the server will answer a "Forbidden" error.
-     * 
+     *
      * @return a request to the server to destroy a room.
      */
     public Destroy getDestroy() {
@@ -69,7 +69,7 @@ public class MUCOwner extends IQ {
      * Sets a request to the server to destroy a room. The sender of the request
      * should be the room's owner. If the sender of the destroy request is not the room's owner
      * then the server will answer a "Forbidden" error.
-     * 
+     *
      * @param destroy the request to the server to destroy a room.
      */
     public void setDestroy(Destroy destroy) {
@@ -78,7 +78,7 @@ public class MUCOwner extends IQ {
 
     /**
      * Adds an item child that holds information about affiliation, jids and nicks.
-     * 
+     *
      * @param item the item child that holds information about affiliation, jids and nicks.
      */
     public void addItem(MUCItem item) {

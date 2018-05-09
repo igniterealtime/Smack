@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub;
 import org.jivesoftware.smack.packet.PacketExtension;
 
 /**
- * 
+ *
  * @author Robin Collier
  *
  */
@@ -56,7 +56,7 @@ class CarExtension implements PacketExtension
 
 	public String toXML()
 	{
-		return "<" + getElementName() + " xmlns='" + getNamespace() + "'><paint color='" + 
+		return "<" + getElementName() + " xmlns='" + getNamespace() + "'><paint color='" +
 			getColor() + "'/><tires num='" + getNumTires() + "'/></" + getElementName() + ">";
 	}
 

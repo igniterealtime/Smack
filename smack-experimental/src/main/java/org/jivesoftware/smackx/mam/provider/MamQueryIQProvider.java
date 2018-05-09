@@ -26,11 +26,11 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * MAM Query IQ Provider class.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
  *      Archive Management</a>
  * @author Fernando Ramirez
- * 
+ *
  */
 public class MamQueryIQProvider extends IQProvider<MamQueryIQ> {
 

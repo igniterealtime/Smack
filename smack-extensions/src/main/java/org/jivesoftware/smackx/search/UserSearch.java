@@ -60,10 +60,10 @@ public class UserSearch extends SimpleIQ {
      * @param con           the current XMPPConnection.
      * @param searchService the search service to use. (ex. search.jivesoftware.com)
      * @return the search form received by the server.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public Form getSearchForm(XMPPConnection con, DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         UserSearch search = new UserSearch();
@@ -81,10 +81,10 @@ public class UserSearch extends SimpleIQ {
      * @param searchForm    the <code>Form</code> to send for querying.
      * @param searchService the search service to use. (ex. search.jivesoftware.com)
      * @return ReportedData the data found from the query.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public ReportedData sendSearchForm(XMPPConnection con, Form searchForm, DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         UserSearch search = new UserSearch();
@@ -103,10 +103,10 @@ public class UserSearch extends SimpleIQ {
      * @param searchForm    the <code>Form</code> to send for querying.
      * @param searchService the search service to use. (ex. search.jivesoftware.com)
      * @return ReportedData the data found from the query.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public ReportedData sendSimpleSearchForm(XMPPConnection con, Form searchForm, DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         SimpleUserSearch search = new SimpleUserSearch();

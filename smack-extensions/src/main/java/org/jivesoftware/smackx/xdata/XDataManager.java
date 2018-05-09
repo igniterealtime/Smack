@@ -79,7 +79,7 @@ public final class XDataManager extends Manager {
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      * @see <a href="http://xmpp.org/extensions/xep-0004.html#disco">XEP-0004: Data Forms § 6. Service Discovery</a>
      * @since 4.1
      */

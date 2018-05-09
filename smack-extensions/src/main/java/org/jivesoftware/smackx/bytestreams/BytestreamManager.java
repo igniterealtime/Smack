@@ -31,7 +31,7 @@ import org.jxmpp.jid.Jid;
  * <p>
  * There are two implementations of the interface. See {@link Socks5BytestreamManager} and
  * {@link InBandBytestreamManager}.
- * 
+ *
  * @author Henning Staib
  */
 public interface BytestreamManager {
@@ -43,14 +43,14 @@ public interface BytestreamManager {
      * See {@link Socks5BytestreamManager#addIncomingBytestreamListener(BytestreamListener)} and
      * {@link InBandBytestreamManager#addIncomingBytestreamListener(BytestreamListener)} for further
      * details.
-     * 
+     *
      * @param listener the listener to register
      */
     void addIncomingBytestreamListener(BytestreamListener listener);
 
     /**
      * Removes the given listener from the list of listeners for all incoming bytestream requests.
-     * 
+     *
      * @param listener the listener to remove
      */
     void removeIncomingBytestreamListener(BytestreamListener listener);
@@ -64,7 +64,7 @@ public interface BytestreamManager {
      * See {@link Socks5BytestreamManager#addIncomingBytestreamListener(BytestreamListener, Jid)}
      * and {@link InBandBytestreamManager#addIncomingBytestreamListener(BytestreamListener, Jid)}
      * for further details.
-     * 
+     *
      * @param listener the listener to register
      * @param initiatorJID the JID of the user that wants to establish a bytestream
      */
@@ -72,7 +72,7 @@ public interface BytestreamManager {
 
     /**
      * Removes the listener for the given user.
-     * 
+     *
      * @param initiatorJID the JID of the user the listener should be removed
      */
     void removeIncomingBytestreamListener(Jid initiatorJID);
@@ -89,7 +89,7 @@ public interface BytestreamManager {
      * <p>
      * See {@link Socks5BytestreamManager#establishSession(Jid)} and
      * {@link InBandBytestreamManager#establishSession(Jid)} for further details.
-     * 
+     *
      * @param targetJID the JID of the user a bytestream should be established
      * @return the session to send/receive data to/from the user
      * @throws XMPPException if an error occurred while establishing the session
@@ -107,7 +107,7 @@ public interface BytestreamManager {
      * <p>
      * See {@link Socks5BytestreamManager#establishSession(Jid)} and
      * {@link InBandBytestreamManager#establishSession(Jid)} for further details.
-     * 
+     *
      * @param targetJID the JID of the user a bytestream should be established
      * @param sessionID the session ID for the bytestream request
      * @return the session to send/receive data to/from the user

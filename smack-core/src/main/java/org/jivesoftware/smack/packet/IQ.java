@@ -211,7 +211,7 @@ public abstract class IQ extends Stanza {
      * </pre>
      * If your IQ does not contain any attributes or child elements (besides {@link ExtensionElement}s), consider sub-classing
      * {@link SimpleIQ} instead.
-     * 
+     *
      * @param xml a pre-created builder which already has the child element and the 'xmlns' attribute set.
      * @return the build to create the IQ child content.
      */

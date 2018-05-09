@@ -36,7 +36,7 @@ import org.jxmpp.jid.Jid;
  * methods. When implementing the actions remember that they could be invoked
  * several times, and that you must use the current stage number to know what to
  * do.
- * 
+ *
  * @author Gabriel Guardincerri
  */
 public abstract class LocalCommand extends AdHocCommand {
@@ -70,7 +70,7 @@ public abstract class LocalCommand extends AdHocCommand {
     /**
      * The sessionID is an unique identifier of an execution request. This is
      * automatically handled and should not be called.
-     * 
+     *
      * @param sessionID the unique session id of this execution
      */
     public void setSessionID(String sessionID) {
@@ -80,7 +80,7 @@ public abstract class LocalCommand extends AdHocCommand {
 
     /**
      * Returns the session ID of this execution.
-     * 
+     *
      * @return the unique session id of this execution
      */
     public String getSessionID() {
@@ -90,7 +90,7 @@ public abstract class LocalCommand extends AdHocCommand {
     /**
      * Sets the JID of the command host. This is automatically handled and should
      * not be called.
-     * 
+     *
      * @param ownerJID the JID of the owner.
      */
     public void setOwnerJID(Jid ownerJID) {
@@ -104,7 +104,7 @@ public abstract class LocalCommand extends AdHocCommand {
 
     /**
      * Returns the date the command was created.
-     * 
+     *
      * @return the date the command was created.
      */
     public long getCreationDate() {
@@ -115,7 +115,7 @@ public abstract class LocalCommand extends AdHocCommand {
      * Returns true if the current stage is the last one. If it is then the
      * execution of some action will complete the execution of the command.
      * Commands that don't have multiple stages can always return <tt>true</tt>.
-     * 
+     *
      * @return true if the command is in the last stage.
      */
     public abstract boolean isLastStage();
@@ -151,7 +151,7 @@ public abstract class LocalCommand extends AdHocCommand {
     /**
      * Increase the current stage number. This is automatically handled and should
      * not be called.
-     * 
+     *
      */
     void incrementStage() {
         currentStage++;
@@ -160,7 +160,7 @@ public abstract class LocalCommand extends AdHocCommand {
     /**
      * Decrease the current stage number. This is automatically handled and should
      * not be called.
-     * 
+     *
      */
     void decrementStage() {
         currentStage--;

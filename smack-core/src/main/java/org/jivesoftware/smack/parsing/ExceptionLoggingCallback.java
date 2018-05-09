@@ -24,9 +24,9 @@ import org.jivesoftware.smack.UnparseableStanza;
 
 /**
  * Simple parsing exception callback that only logs the encountered parsing exception to java util logging.
- * 
+ *
  * @author Florian Schmaus
- * 
+ *
  */
 public class ExceptionLoggingCallback implements ParsingExceptionCallback {
     private static final Logger LOGGER = Logger.getLogger(ExceptionLoggingCallback.class.getName());

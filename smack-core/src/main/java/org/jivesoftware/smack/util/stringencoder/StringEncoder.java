@@ -24,7 +24,7 @@ package org.jivesoftware.smack.util.stringencoder;
 public interface StringEncoder {
     /**
      * Encodes an string to another representation.
-     * 
+     *
      * @param string
      * @return the encoded String
      */
@@ -32,7 +32,7 @@ public interface StringEncoder {
 
     /**
      * Decodes an string back to it's initial representation.
-     * 
+     *
      * @param string
      * @return the decoded String
      */

@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 
 /**
  * Interface for listening to transport events.
- * 
+ *
  * @author Thiago Camargo
  */
 public interface JingleTransportListener extends JingleListener {
@@ -35,8 +35,8 @@ public interface JingleTransportListener extends JingleListener {
      *               in the local machine
      * @param remote The transport candidate that has been used for
      *               transmitting to the remote machine
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     void transportEstablished(TransportCandidate local,
                                      TransportCandidate remote) throws NotConnectedException, InterruptedException;

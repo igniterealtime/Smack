@@ -27,11 +27,11 @@ import org.jxmpp.jid.Jid;
 
 /**
  * MAM Preferences IQ class.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
  *      Archive Management</a>
  * @author Fernando Ramirez and Florian Schmaus
- * 
+ *
  */
 public class MamPrefsIQ extends IQ {
 
@@ -79,7 +79,7 @@ public class MamPrefsIQ extends IQ {
 
     /**
      * MAM preferences IQ constructor.
-     * 
+     *
      * @param alwaysJids
      * @param neverJids
      * @param defaultBehavior
@@ -94,7 +94,7 @@ public class MamPrefsIQ extends IQ {
 
     /**
      * Get the list of always store info JIDs.
-     * 
+     *
      * @return the always list
      */
     public List<Jid> getAlwaysJids() {
@@ -103,7 +103,7 @@ public class MamPrefsIQ extends IQ {
 
     /**
      * Get the list of never store info JIDs.
-     * 
+     *
      * @return the never list
      */
     public List<Jid> getNeverJids() {
@@ -112,7 +112,7 @@ public class MamPrefsIQ extends IQ {
 
     /**
      * Get the default behavior.
-     * 
+     *
      * @return the default behavior.
      */
     public DefaultBehavior getDefault() {

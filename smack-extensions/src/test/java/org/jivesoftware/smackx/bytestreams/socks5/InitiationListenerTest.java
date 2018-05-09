@@ -41,7 +41,7 @@ import org.powermock.reflect.Whitebox;
 
 /**
  * Test for the InitiationListener class.
- * 
+ *
  * @author Henning Staib
  */
 public class InitiationListenerTest {
@@ -88,7 +88,7 @@ public class InitiationListenerTest {
     /**
      * If no listeners are registered for incoming SOCKS5 Bytestream requests, all request should be
      * rejected with an error.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -111,7 +111,7 @@ public class InitiationListenerTest {
 
     /**
      * If a listener for all requests is registered it should be notified on incoming requests.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -136,7 +136,7 @@ public class InitiationListenerTest {
     /**
      * If a listener for a specific user in registered it should be notified on incoming requests
      * for that user.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -161,7 +161,7 @@ public class InitiationListenerTest {
     /**
      * If listener for a specific user is registered it should not be notified on incoming requests
      * from other users.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -192,7 +192,7 @@ public class InitiationListenerTest {
     /**
      * If a user specific listener and an all requests listener is registered only the user specific
      * listener should be notified.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -222,7 +222,7 @@ public class InitiationListenerTest {
     /**
      * If a user specific listener and an all requests listener is registered only the all requests
      * listener should be notified on an incoming request for another user.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -254,7 +254,7 @@ public class InitiationListenerTest {
 
     /**
      * If a request with a specific session ID should be ignored no listeners should be notified.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test

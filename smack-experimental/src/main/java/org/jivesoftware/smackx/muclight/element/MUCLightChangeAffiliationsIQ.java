@@ -30,7 +30,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * MUCLight change affiliations IQ class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */
@@ -43,7 +43,7 @@ public class MUCLightChangeAffiliationsIQ extends IQ {
 
     /**
      * MUCLight change affiliations IQ constructor.
-     * 
+     *
      * @param room
      * @param affiliations
      */
@@ -56,7 +56,7 @@ public class MUCLightChangeAffiliationsIQ extends IQ {
 
     /**
      * Get the affiliations.
-     * 
+     *
      * @return the affiliations
      */
     public HashMap<Jid, MUCLightAffiliation> getAffiliations() {

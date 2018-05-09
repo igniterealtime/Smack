@@ -162,9 +162,9 @@ public interface Packet extends TopLevelStreamElement {
      * Returns the first stanza extension that matches the specified element name and
      * namespace, or <tt>null</tt> if it doesn't exist. If the provided elementName is null,
      * only the namespace is matched. Stanza extensions are
-     * are arbitrary XML sub-documents in standard XMPP packets. By default, a 
-     * DefaultPacketExtension instance will be returned for each extension. However, 
-     * PacketExtensionProvider instances can be registered with the 
+     * are arbitrary XML sub-documents in standard XMPP packets. By default, a
+     * DefaultPacketExtension instance will be returned for each extension. However,
+     * PacketExtensionProvider instances can be registered with the
      * {@link org.jivesoftware.smack.provider.ProviderManager ProviderManager}
      * class to handle custom parsing. In that case, the type of the Object
      * will be determined by the provider.
@@ -184,7 +184,7 @@ public interface Packet extends TopLevelStreamElement {
 
     /**
      * Adds a collection of stanza extensions to the packet. Does nothing if extensions is null.
-     * 
+     *
      * @param extensions a collection of stanza extensions
      */
     void addExtensions(Collection<ExtensionElement> extensions);
@@ -203,7 +203,7 @@ public interface Packet extends TopLevelStreamElement {
 
     /**
      * Check if a stanza extension with the given namespace exists.
-     * 
+     *
      * @param namespace
      * @return true if a stanza extension exists, false otherwise.
      */

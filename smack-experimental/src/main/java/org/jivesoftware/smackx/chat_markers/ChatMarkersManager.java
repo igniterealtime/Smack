@@ -32,11 +32,11 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 /**
  * Chat Markers Manager class (XEP-0333).
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0333.html">XEP-0333: Chat
  *      Markers</a>
  * @author Fernando Ramirez
- * 
+ *
  */
 public final class ChatMarkersManager extends Manager {
 
@@ -53,7 +53,7 @@ public final class ChatMarkersManager extends Manager {
 
     /**
      * Get the singleton instance of ChatMarkersManager.
-     * 
+     *
      * @param connection
      * @return the instance of ChatMarkersManager
      */
@@ -74,7 +74,7 @@ public final class ChatMarkersManager extends Manager {
 
     /**
      * Returns true if Chat Markers is supported by the server.
-     * 
+     *
      * @return true if Chat Markers is supported by the server.
      * @throws NotConnectedException
      * @throws XMPPErrorException

@@ -208,7 +208,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
 
     /**
      * Add a right angle bracket '&gt;'.
-     * 
+     *
      * @return a reference to this object.
      */
     public XmlStringBuilder rightAngleBracket() {
@@ -557,7 +557,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
             if (csq instanceof XmlStringBuilder) {
                 ((XmlStringBuilder) csq).write(writer, enclosingNamespace);
             }
-            else if (csq instanceof XmlNsAttribute) { 
+            else if (csq instanceof XmlNsAttribute) {
                 XmlNsAttribute xmlNsAttribute = (XmlNsAttribute) csq;
                 if (!xmlNsAttribute.value.equals(enclosingNamespace)) {
                     writer.write(xmlNsAttribute.toString());
@@ -582,7 +582,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
             if (csq instanceof XmlStringBuilder) {
                 ((XmlStringBuilder) csq).appendXmlTo(res, enclosingNamespace);
             }
-            else if (csq instanceof XmlNsAttribute) { 
+            else if (csq instanceof XmlNsAttribute) {
                 XmlNsAttribute xmlNsAttribute = (XmlNsAttribute) csq;
                 if (!xmlNsAttribute.value.equals(enclosingNamespace)) {
                     sb.append(xmlNsAttribute);

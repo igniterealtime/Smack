@@ -49,7 +49,7 @@ import org.jxmpp.jid.impl.JidCreate;
 
 /**
  * Tests for the Socks5BytestreamRequest class.
- * 
+ *
  * @author Henning Staib
  */
 public class Socks5ByteStreamRequestTest {
@@ -67,9 +67,9 @@ public class Socks5ByteStreamRequestTest {
 
     /**
      * Initialize fields used in the tests.
-     * @throws XMPPException 
-     * @throws SmackException 
-     * @throws InterruptedException 
+     * @throws XMPPException
+     * @throws SmackException
+     * @throws InterruptedException
      */
     @Before
     public void setup() throws XMPPException, SmackException, InterruptedException {
@@ -85,7 +85,7 @@ public class Socks5ByteStreamRequestTest {
     /**
      * Accepting a SOCKS5 Bytestream request should fail if the request doesn't contain any Socks5
      * proxies.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -127,7 +127,7 @@ public class Socks5ByteStreamRequestTest {
     /**
      * Accepting a SOCKS5 Bytestream request should fail if target is not able to connect to any of
      * the provided SOCKS5 proxies.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -170,7 +170,7 @@ public class Socks5ByteStreamRequestTest {
 
     /**
      * Target should not try to connect to SOCKS5 proxies that already failed twice.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -259,7 +259,7 @@ public class Socks5ByteStreamRequestTest {
 
     /**
      * Target should not not blacklist any SOCKS5 proxies regardless of failing connections.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -316,7 +316,7 @@ public class Socks5ByteStreamRequestTest {
      * If the SOCKS5 Bytestream request contains multiple SOCKS5 proxies and the first one doesn't
      * respond, the connection attempt to this proxy should not consume the whole timeout for
      * connecting to the proxies.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -381,7 +381,7 @@ public class Socks5ByteStreamRequestTest {
 
     /**
      * Accepting the SOCKS5 Bytestream request should be successfully.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test

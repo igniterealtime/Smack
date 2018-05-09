@@ -49,8 +49,8 @@ public interface StanzaListener {
      *
      * @param packet the stanza to process.
      * @throws NotConnectedException
-     * @throws InterruptedException 
-     * @throws NotLoggedInException 
+     * @throws InterruptedException
+     * @throws NotLoggedInException
      */
     void processStanza(Stanza packet) throws NotConnectedException, InterruptedException, NotLoggedInException;
 

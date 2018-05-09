@@ -61,7 +61,7 @@ public class BasicResolverTest extends SmackTestCase {
 			public void candidateChecked(TransportCandidate cand, boolean result) {
 				if(result == true) {
 					System.out.println(cand.getIp() + " is reachable (as expected)");
-					incCounter();					
+					incCounter();
 				}
 			}
 
@@ -91,7 +91,7 @@ public class BasicResolverTest extends SmackTestCase {
 			public void candidateChecked(TransportCandidate cand, boolean result) {
 				if(result == false) {
 					System.out.println(cand.getIp() + " is _not_ reachable (as expected)");
-					incCounter();					
+					incCounter();
 				}
 			}
 

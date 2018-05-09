@@ -81,8 +81,8 @@ public class Offer {
 
     /**
      * Accepts the offer.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void accept() throws NotConnectedException, InterruptedException {
         Stanza acceptPacket = new AcceptPacket(this.session.getWorkgroupJID());
@@ -93,8 +93,8 @@ public class Offer {
 
     /**
      * Rejects the offer.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void reject() throws NotConnectedException, InterruptedException {
         RejectPacket rejectPacket = new RejectPacket(this.session.getWorkgroupJID());

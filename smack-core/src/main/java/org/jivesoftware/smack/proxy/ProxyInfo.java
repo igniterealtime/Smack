@@ -17,9 +17,9 @@
 package org.jivesoftware.smack.proxy;
 
 /**
- * Class which stores proxy information such as proxy type, host, port, 
+ * Class which stores proxy information such as proxy type, host, port,
  * authentication etc.
- * 
+ *
  * @author Atul Aggarwal
  */
 
@@ -37,7 +37,7 @@ public class ProxyInfo {
     private ProxyType proxyType;
     private final ProxySocketConnection proxySocketConnection;
 
-    public ProxyInfo(ProxyType pType, String pHost, int pPort, String pUser, 
+    public ProxyInfo(ProxyType pType, String pHost, int pPort, String pUser,
                         String pPass) {
         this.proxyType = pType;
         this.proxyAddress = pHost;
@@ -59,17 +59,17 @@ public class ProxyInfo {
         }
     }
 
-    public static ProxyInfo forHttpProxy(String pHost, int pPort, String pUser, 
+    public static ProxyInfo forHttpProxy(String pHost, int pPort, String pUser,
                                     String pPass) {
         return new ProxyInfo(ProxyType.HTTP, pHost, pPort, pUser, pPass);
     }
 
-    public static ProxyInfo forSocks4Proxy(String pHost, int pPort, String pUser, 
+    public static ProxyInfo forSocks4Proxy(String pHost, int pPort, String pUser,
                                     String pPass) {
         return new ProxyInfo(ProxyType.SOCKS4, pHost, pPort, pUser, pPass);
     }
 
-    public static ProxyInfo forSocks5Proxy(String pHost, int pPort, String pUser, 
+    public static ProxyInfo forSocks5Proxy(String pHost, int pPort, String pUser,
                                     String pPass) {
         return new ProxyInfo(ProxyType.SOCKS5, pHost, pPort, pUser, pPass);
     }

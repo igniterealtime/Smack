@@ -26,7 +26,7 @@ import org.jivesoftware.smack.proxy.ProxyInfo;
 /**
  * Configuration to use while establishing the connection to the XMPP server via
  * HTTP binding.
- * 
+ *
  * @see XMPPBOSHConnection
  * @author Guenther Niess
  */

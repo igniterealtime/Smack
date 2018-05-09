@@ -37,7 +37,7 @@ import java.util.zip.InflaterInputStream;
   * <li><a href="http://docs.oracle.com/javase/7/docs/api/java/util/zip/Deflater.html#deflate(byte[],%20int,%20int,%20int)">The required deflate() method (Java7)</a>
  * <li><a href="http://developer.android.com/reference/java/util/zip/Deflater.html#deflate(byte[],%20int,%20int,%20int)">The required deflate() method (Android)</a>
  * </ul>
- * 
+ *
  * @author Florian Schmaus
  */
 public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
@@ -74,7 +74,7 @@ public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
             /**
              * Provide a more InputStream compatible version. A return value of 1 means that it is likely to read one
              * byte without blocking, 0 means that the system is known to block for more input.
-             * 
+             *
              * @return 0 if no data is available, 1 otherwise
              * @throws IOException
              */
@@ -84,10 +84,10 @@ public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
                  * aSmack related remark (where KXmlParser is used):
                  * This is one of the funny code blocks. InflaterInputStream.available violates the contract of
                  * InputStream.available, which breaks kXML2.
-                 * 
+                 *
                  * I'm not sure who's to blame, oracle/sun for a broken api or the google guys for mixing a sun bug with
                  * a xml reader that can't handle it....
-                 * 
+                 *
                  * Anyway, this simple if breaks suns distorted reality, but helps to use the api as intended.
                  */
                 if (inf.needsInput()) {

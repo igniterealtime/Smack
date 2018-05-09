@@ -78,8 +78,8 @@ public class WorkgroupInformation implements ExtensionElement {
 
         /**
          * PacketExtensionProvider implementation.
-         * @throws IOException 
-         * @throws XmlPullParserException 
+         * @throws IOException
+         * @throws XmlPullParserException
          */
         @Override
         public WorkgroupInformation parse(XmlPullParser parser,

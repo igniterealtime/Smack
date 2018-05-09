@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * Test for the DataPacketExtension class.
- * 
+ *
  * @author Henning Staib
  */
 public class DataPacketExtensionTest extends InitExtensions {

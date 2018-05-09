@@ -24,11 +24,11 @@ import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 
 /**
  * MAM result filter class.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
  *      Archive Management</a>
  * @author Fernando Ramirez and Florian Schmaus
- * 
+ *
  */
 public class MamResultFilter extends FlexibleStanzaTypeFilter<Message> {
 

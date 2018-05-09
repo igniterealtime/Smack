@@ -115,7 +115,7 @@ public final class Roster extends Manager {
      * {@link Roster#removeEntry(RosterEntry)} , etc. except adding or removing
      * {@link RosterListener}s will throw an IllegalStateException.
      * </p>
-     * 
+     *
      * @param connection the connection the roster should be retrieved for.
      * @return the user's roster.
      */
@@ -201,7 +201,7 @@ public final class Roster extends Manager {
     private final PresencePacketListener presencePacketListener = new PresencePacketListener();
 
     /**
-     * 
+     *
      */
     private boolean rosterLoadedAtLogin = rosterLoadedAtLoginDefault;
 
@@ -437,8 +437,8 @@ public final class Roster extends Manager {
      * which means the method will return immediately, and the roster will be
      * reloaded at a later point when the server responds to the reload request.
      * @throws NotLoggedInException If not logged in.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void reload() throws NotLoggedInException, NotConnectedException, InterruptedException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
@@ -476,7 +476,7 @@ public final class Roster extends Manager {
      *
      * @throws NotLoggedInException
      * @throws NotConnectedException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      * @since 4.1
      */
     public void reloadAndWait() throws NotLoggedInException, NotConnectedException, InterruptedException {
@@ -627,8 +627,8 @@ public final class Roster extends Manager {
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
      * @throws NotLoggedInException If not logged in.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void createEntry(BareJid user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
@@ -717,7 +717,7 @@ public final class Roster extends Manager {
      * Add a subscribe listener, which is invoked on incoming subscription requests and if
      * {@link SubscriptionMode} is set to {@link SubscriptionMode#manual}. This also sets subscription
      * mode to {@link SubscriptionMode#manual}.
-     * 
+     *
      * @param subscribeListener the subscribe listener to add.
      * @return <code>true</code> if the listener was not already added.
      * @since 4.2
@@ -758,8 +758,8 @@ public final class Roster extends Manager {
      * @throws XMPPErrorException if an XMPP error occurs.
      * @throws NotLoggedInException if not logged in.
      * @throws NoResponseException SmackException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void removeEntry(RosterEntry entry) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
@@ -1124,7 +1124,7 @@ public final class Roster extends Manager {
      * having an implicit subscription to the users presence.
      * </p>
      * Note that if the roster is not loaded, then this method will always return false.
-     * 
+     *
      * @param jid
      * @return true if the given JID is allowed to see the users presence.
      * @since 4.1

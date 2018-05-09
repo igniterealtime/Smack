@@ -35,14 +35,14 @@ import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
  * <p>
  * {@link Socks5BytestreamListener} or {@link InBandBytestreamListener} provide a more specific
  * interface of the BytestreamListener.
- * 
+ *
  * @author Henning Staib
  */
 public interface BytestreamListener {
 
     /**
      * This listener is notified if a bytestream request from another user has been received.
-     * 
+     *
      * @param request the incoming bytestream request
      */
     void incomingBytestreamRequest(BytestreamRequest request);

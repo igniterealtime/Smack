@@ -72,7 +72,7 @@ public class IQTest extends SmackTestCase {
 
     /**
      * Check that sending an IQ to a full JID that is offline returns an IQ ERROR instead
-     * of being route to some other resource of the same user. 
+     * of being route to some other resource of the same user.
      */
     public void testFullJIDToOfflineUser() {
         // Request the version from the server.

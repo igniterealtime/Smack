@@ -21,23 +21,23 @@ import org.jivesoftware.smackx.pubsub.LeafNode;
 
 /**
  * Defines the listener for item deletion events from a node.
- * 
+ *
  * @see LeafNode#addItemDeleteListener(ItemDeleteListener)
- * 
+ *
  * @author Robin Collier
  */
 public interface ItemDeleteListener {
     /**
-     * Called when items are deleted from a node the listener is 
+     * Called when items are deleted from a node the listener is
      * registered with.
-     * 
+     *
      * @param items The event with item deletion details
      */
     void handleDeletedItems(ItemDeleteEvent items);
 
     /**
-     * Called when <b>all</b> items are deleted from a node the listener is 
-     * registered with. 
+     * Called when <b>all</b> items are deleted from a node the listener is
+     * registered with.
      */
     void handlePurge();
 }

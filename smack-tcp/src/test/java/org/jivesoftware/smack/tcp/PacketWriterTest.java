@@ -39,11 +39,11 @@ public class PacketWriterTest {
      * {@link PacketWriter#QUEUE_SIZE} and that
      * {@link PacketWriter#sendStanza(org.jivesoftware.smack.tcp.packet.Packet)} does unblock after the
      * interrupt.
-     * 
+     *
      * @throws InterruptedException
      * @throws BrokenBarrierException
-     * @throws NotConnectedException 
-     * @throws XmppStringprepException 
+     * @throws NotConnectedException
+     * @throws XmppStringprepException
      */
     @SuppressWarnings("javadoc")
     @Test

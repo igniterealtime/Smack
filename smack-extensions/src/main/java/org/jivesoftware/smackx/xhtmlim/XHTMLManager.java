@@ -33,10 +33,10 @@ import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 import org.jxmpp.jid.Jid;
 
 /**
- * Manages XHTML formatted texts within messages. A XHTMLManager provides a high level access to 
+ * Manages XHTML formatted texts within messages. A XHTMLManager provides a high level access to
  * get and set XHTML bodies to messages, enable and disable XHTML support and check if remote XMPP
- * clients support XHTML.   
- * 
+ * clients support XHTML.
+ *
  * @author Gaston Dombiak
  */
 public class XHTMLManager {
@@ -51,7 +51,7 @@ public class XHTMLManager {
     }
 
     /**
-     * Returns an Iterator for the XHTML bodies in the message. Returns null if 
+     * Returns an Iterator for the XHTML bodies in the message. Returns null if
      * the message does not contain an XHTML extension.
      *
      * @param message an XHTML message
@@ -94,12 +94,12 @@ public class XHTMLManager {
 
     /**
      * Enables or disables the XHTML support on a given connection.<p>
-     *  
+     *
      * Before starting to send XHTML messages to a user, check that the user can handle XHTML
-     * messages. Enable the XHTML support to indicate that this client handles XHTML messages.  
+     * messages. Enable the XHTML support to indicate that this client handles XHTML messages.
      *
      * @param connection the connection where the service will be enabled or disabled
-     * @param enabled indicates if the service will be enabled or disabled 
+     * @param enabled indicates if the service will be enabled or disabled
      */
     public static synchronized void setServiceEnabled(XMPPConnection connection, boolean enabled) {
         if (isServiceEnabled(connection) == enabled)
@@ -129,10 +129,10 @@ public class XHTMLManager {
      * @param connection the connection to use to perform the service discovery
      * @param userID the user to check. A fully qualified xmpp ID, e.g. jdoe@example.com
      * @return a boolean indicating whether the specified user handles XHTML messages
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public static boolean isServiceEnabled(XMPPConnection connection, Jid userID)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {

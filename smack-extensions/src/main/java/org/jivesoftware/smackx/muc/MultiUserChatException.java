@@ -30,7 +30,7 @@ public abstract class MultiUserChatException extends SmackException {
     }
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -39,7 +39,7 @@ public abstract class MultiUserChatException extends SmackException {
     public static class MucAlreadyJoinedException extends MultiUserChatException {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -48,12 +48,12 @@ public abstract class MultiUserChatException extends SmackException {
     /**
      * Thrown if the requested operation required the MUC to be joined by the
      * client, while the client is currently joined.
-     * 
+     *
      */
     public static class MucNotJoinedException extends MultiUserChatException {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -65,7 +65,7 @@ public abstract class MultiUserChatException extends SmackException {
     public static class MissingMucCreationAcknowledgeException extends MultiUserChatException {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -77,7 +77,7 @@ public abstract class MultiUserChatException extends SmackException {
     public static class MucConfigurationNotSupportedException extends MultiUserChatException {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -94,7 +94,7 @@ public abstract class MultiUserChatException extends SmackException {
     public static class NotAMucServiceException extends MultiUserChatException {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 

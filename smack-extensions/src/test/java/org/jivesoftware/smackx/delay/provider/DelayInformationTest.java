@@ -60,7 +60,7 @@ public class DelayInformationTest extends InitExtensions {
         String control;
         GregorianCalendar calendar = new GregorianCalendar(2002, 9 - 1, 10, 23, 8, 25);
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date date = calendar.getTime(); 
+        Date date = calendar.getTime();
 
         control = XMLBuilder.create("x")
             .a("xmlns", "jabber:x:delay")
@@ -112,7 +112,7 @@ public class DelayInformationTest extends InitExtensions {
 
         delayInfo = p.parse(PacketParserUtils.getParserFor(control));
 
-        GregorianCalendar cal = (GregorianCalendar) calendar.clone(); 
+        GregorianCalendar cal = (GregorianCalendar) calendar.clone();
         cal.add(Calendar.MILLISECOND, 120);
         assertEquals(cal.getTime(), delayInfo.getStamp());
 

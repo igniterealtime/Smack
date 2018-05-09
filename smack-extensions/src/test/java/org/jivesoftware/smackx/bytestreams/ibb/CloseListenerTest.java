@@ -35,7 +35,7 @@ import org.powermock.reflect.Whitebox;
 
 /**
  * Test for the CloseListener class.
- * 
+ *
  * @author Henning Staib
  */
 public class CloseListenerTest extends InitExtensions {
@@ -46,7 +46,7 @@ public class CloseListenerTest extends InitExtensions {
     /**
      * If a close request to an unknown session is received it should be replied
      * with an &lt;item-not-found/&gt; error.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test

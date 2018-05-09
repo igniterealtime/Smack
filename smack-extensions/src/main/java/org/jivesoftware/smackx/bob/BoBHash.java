@@ -20,7 +20,7 @@ import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Bits of Binary hash class.
- * 
+ *
  * @author Fernando Ramirez
  * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0231.html">XEP-0231: Bits of
@@ -34,7 +34,7 @@ public class BoBHash {
 
     /**
      * BoB hash constructor.
-     * 
+     *
      * @param hash
      * @param hashType
      */
@@ -46,7 +46,7 @@ public class BoBHash {
 
     /**
      * Get the hash.
-     * 
+     *
      * @return the hash
      */
     public String getHash() {
@@ -55,7 +55,7 @@ public class BoBHash {
 
     /**
      * Get the hash type.
-     * 
+     *
      * @return the hash type
      */
     public String getHashType() {
@@ -64,7 +64,7 @@ public class BoBHash {
 
     /**
      * BoB hash to src attribute string.
-     * 
+     *
      * @return src attribute string
      */
     public String toSrc() {
@@ -73,7 +73,7 @@ public class BoBHash {
 
     /**
      * BoB hash to cid attribute string.
-     * 
+     *
      * @return cid attribute string
      */
     public String getCid() {
@@ -96,7 +96,7 @@ public class BoBHash {
 
     /**
      * Get BoB hash from src attribute string.
-     * 
+     *
      * @param src
      * @return the BoB hash
      */
@@ -108,7 +108,7 @@ public class BoBHash {
 
     /**
      * Get BoB hash from cid attribute string.
-     * 
+     *
      * @param cid
      * @return the BoB hash
      */

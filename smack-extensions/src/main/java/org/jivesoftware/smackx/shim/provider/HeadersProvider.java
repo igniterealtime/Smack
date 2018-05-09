@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 
 /**
  * Parses the headers element as defined in <a href="http://xmpp.org/extensions/xep-0131">Stanza Headers and Internet Metadata (SHIM)</a>.
- * 
+ *
  * @author Robin Collier
  */
 public class HeadersProvider extends EmbeddedExtensionProvider<HeadersExtension> {

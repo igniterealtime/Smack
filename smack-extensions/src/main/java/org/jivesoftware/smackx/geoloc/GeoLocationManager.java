@@ -57,7 +57,7 @@ public final class GeoLocationManager extends Manager {
     /**
      * Retrieves a {@link GeoLocationManager} for the specified {@link XMPPConnection}, creating one if it doesn't
      * already exist.
-     * 
+     *
      * @param connection The connection the manager is attached to.
      * @return The new or existing manager.
      */
@@ -84,7 +84,7 @@ public final class GeoLocationManager extends Manager {
 
     /**
      * Returns true if the message contains a GeoLocation extension.
-     * 
+     *
      * @param message the message to check if contains a GeoLocation extension or not
      * @return a boolean indicating whether the message is a GeoLocation message
      */
@@ -94,13 +94,13 @@ public final class GeoLocationManager extends Manager {
 
     /**
      * Send geolocation through the PubSub node.
-     * 
+     *
      * @param geoLocation
      * @throws InterruptedException
      * @throws NotConnectedException
      * @throws XMPPErrorException
      * @throws NoResponseException
-     * @throws NotALeafNodeException 
+     * @throws NotALeafNodeException
      */
     public void sendGeolocation(GeoLocation geoLocation)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {
@@ -109,12 +109,12 @@ public final class GeoLocationManager extends Manager {
 
     /**
      * Send empty geolocation through the PubSub node.
-     * 
+     *
      * @throws InterruptedException
      * @throws NotConnectedException
      * @throws XMPPErrorException
      * @throws NoResponseException
-     * @throws NotALeafNodeException 
+     * @throws NotALeafNodeException
      */
     public void stopPublishingGeolocation()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {

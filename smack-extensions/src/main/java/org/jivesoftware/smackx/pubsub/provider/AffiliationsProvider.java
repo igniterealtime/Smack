@@ -29,7 +29,7 @@ import org.jivesoftware.smackx.pubsub.AffiliationsExtension;
 /**
  * Parses the affiliations element out of the reply stanza from the server
  * as specified in the <a href="http://xmpp.org/extensions/xep-0060.html#schemas-pubsub">affiliation schema</a>.
- * 
+ *
  * @author Robin Collier
  */public class AffiliationsProvider extends EmbeddedExtensionProvider<AffiliationsExtension> {
     @SuppressWarnings("unchecked")

@@ -96,7 +96,7 @@ public final class ChatManager extends Manager{
          */
         NONE,
         /**
-         * Will match on the JID in the from field of the message. 
+         * Will match on the JID in the from field of the message.
          */
         SUPPLIED_JID,
         /**
@@ -116,7 +116,7 @@ public final class ChatManager extends Manager{
     });
 
     /**
-     * Determines whether incoming messages of type normal can create chats. 
+     * Determines whether incoming messages of type normal can create chats.
      */
     private boolean normalIncluded = defaultIsNormalInclude;
 
@@ -180,7 +180,7 @@ public final class ChatManager extends Manager{
     /**
      * Determines whether incoming messages of type <i>normal</i> will be used for creating new chats or matching
      * a message to existing ones.
-     * 
+     *
      * @return true if normal is allowed, false otherwise.
      */
     public boolean isNormalIncluded() {
@@ -190,7 +190,7 @@ public final class ChatManager extends Manager{
     /**
      * Sets whether to allow incoming messages of type <i>normal</i> to be used for creating new chats or matching
      * a message to an existing one.
-     * 
+     *
      * @param normalIncluded true to allow normal, false otherwise.
      */
     public void setNormalIncluded(boolean normalIncluded) {
@@ -199,7 +199,7 @@ public final class ChatManager extends Manager{
 
     /**
      * Gets the current mode for matching messages with <b>NO</b> thread id to existing chats.
-     * 
+     *
      * @return The current mode.
      */
     public MatchMode getMatchMode() {
@@ -208,7 +208,7 @@ public final class ChatManager extends Manager{
 
     /**
      * Sets the mode for matching messages with <b>NO</b> thread id to existing chats.
-     * 
+     *
      * @param matchMode The mode to set.
      */
     public void setMatchMode(MatchMode matchMode) {
@@ -238,7 +238,7 @@ public final class ChatManager extends Manager{
 
     /**
      * Creates a new chat using the specified thread ID, then returns it.
-     * 
+     *
      * @param userJID the jid of the user this chat is with
      * @param thread the thread of the created chat.
      * @param listener the optional listener to add to the chat
@@ -309,8 +309,8 @@ public final class ChatManager extends Manager{
      * Try to get a matching chat for the given user JID, based on the {@link MatchMode}.
      * <li>NONE - return null
      * <li>SUPPLIED_JID - match the jid in the from field of the message exactly.
-     * <li>BARE_JID - if not match for from field, try the bare jid. 
-     * 
+     * <li>BARE_JID - if not match for from field, try the bare jid.
+     *
      * @param userJID jid in the from field of message.
      * @return Matching chat, or null if no match found.
      */
@@ -383,7 +383,7 @@ public final class ChatManager extends Manager{
     }
 
     StanzaCollector createStanzaCollector(Chat chat) {
-        return connection().createStanzaCollector(new AndFilter(new ThreadFilter(chat.getThreadID()), 
+        return connection().createStanzaCollector(new AndFilter(new ThreadFilter(chat.getThreadID()),
                         FromMatchesFilter.create(chat.getParticipant())));
     }
 

@@ -27,13 +27,13 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.util.XmppDateTime;
 
 /**
- * Represents extended presence information whose sole purpose is to signal the ability of 
- * the occupant to speak the MUC protocol when joining a room. If the room requires a password 
+ * Represents extended presence information whose sole purpose is to signal the ability of
+ * the occupant to speak the MUC protocol when joining a room. If the room requires a password
  * then the MUCInitialPresence should include one.
  * <p>
- * The amount of discussion history provided on entering a room (perhaps because the 
+ * The amount of discussion history provided on entering a room (perhaps because the
  * user is on a low-bandwidth connection or is using a small-footprint client) could be managed by
- * setting a configured History instance to the MUCInitialPresence instance. 
+ * setting a configured History instance to the MUCInitialPresence instance.
  *
  * @author Gaston Dombiak
  * @see MUCInitialPresence#setHistory(MUCInitialPresence.History)
@@ -45,7 +45,7 @@ public class MUCInitialPresence implements ExtensionElement {
 
     // TODO make those fields final once deprecated setter methods have been removed.
     private String password;
-    private History history; 
+    private History history;
 
     /**
      * Deprecated constructor.
@@ -94,10 +94,10 @@ public class MUCInitialPresence implements ExtensionElement {
     }
 
     /**
-     * Returns the history that manages the amount of discussion history provided on 
+     * Returns the history that manages the amount of discussion history provided on
      * entering a room.
-     * 
-     * @return the history that manages the amount of discussion history provided on 
+     *
+     * @return the history that manages the amount of discussion history provided on
      * entering a room.
      */
     public History getHistory() {
@@ -106,7 +106,7 @@ public class MUCInitialPresence implements ExtensionElement {
 
     /**
      * Returns the password to use when the room requires a password.
-     * 
+     *
      * @return the password to use when the room requires a password.
      */
     public String getPassword() {
@@ -114,10 +114,10 @@ public class MUCInitialPresence implements ExtensionElement {
     }
 
     /**
-     * Sets the History that manages the amount of discussion history provided on 
+     * Sets the History that manages the amount of discussion history provided on
      * entering a room.
-     * 
-     * @param history that manages the amount of discussion history provided on 
+     *
+     * @param history that manages the amount of discussion history provided on
      * entering a room.
      * @deprecated use {@link #MUCInitialPresence(String, int, int, int, Date)} instead.
      */
@@ -128,7 +128,7 @@ public class MUCInitialPresence implements ExtensionElement {
 
     /**
      * Sets the password to use when the room requires a password.
-     * 
+     *
      * @param password the password to use when the room requires a password.
      * @deprecated use {@link #MUCInitialPresence(String, int, int, int, Date)} instead.
      */
@@ -162,7 +162,7 @@ public class MUCInitialPresence implements ExtensionElement {
     /**
      * The History class controls the number of characters or messages to receive
      * when entering a room.
-     * 
+     *
      * @author Gaston Dombiak
      */
     public static class History implements NamedElement {
@@ -173,7 +173,7 @@ public class MUCInitialPresence implements ExtensionElement {
         private int maxChars;
         private int maxStanzas;
         private int seconds;
-        private Date since; 
+        private Date since;
 
         /**
          * Deprecated constructor.
@@ -198,7 +198,7 @@ public class MUCInitialPresence implements ExtensionElement {
 
         /**
          * Returns the total number of characters to receive in the history.
-         * 
+         *
          * @return total number of characters to receive in the history.
          */
         public int getMaxChars() {
@@ -207,7 +207,7 @@ public class MUCInitialPresence implements ExtensionElement {
 
         /**
          * Returns the total number of messages to receive in the history.
-         * 
+         *
          * @return the total number of messages to receive in the history.
          */
         public int getMaxStanzas() {
@@ -215,10 +215,10 @@ public class MUCInitialPresence implements ExtensionElement {
         }
 
         /**
-         * Returns the number of seconds to use to filter the messages received during that time. 
-         * In other words, only the messages received in the last "X" seconds will be included in 
+         * Returns the number of seconds to use to filter the messages received during that time.
+         * In other words, only the messages received in the last "X" seconds will be included in
          * the history.
-         * 
+         *
          * @return the number of seconds to use to filter the messages received during that time.
          */
         public int getSeconds() {
@@ -226,10 +226,10 @@ public class MUCInitialPresence implements ExtensionElement {
         }
 
         /**
-         * Returns the since date to use to filter the messages received during that time. 
-         * In other words, only the messages received since the datetime specified will be 
+         * Returns the since date to use to filter the messages received during that time.
+         * In other words, only the messages received since the datetime specified will be
          * included in the history.
-         * 
+         *
          * @return the since date to use to filter the messages received during that time.
          */
         public Date getSince() {
@@ -238,7 +238,7 @@ public class MUCInitialPresence implements ExtensionElement {
 
         /**
          * Sets the total number of characters to receive in the history.
-         * 
+         *
          * @param maxChars the total number of characters to receive in the history.
          * @deprecated use {@link #History(int, int, int, Date)} instead.
          */
@@ -249,7 +249,7 @@ public class MUCInitialPresence implements ExtensionElement {
 
         /**
          * Sets the total number of messages to receive in the history.
-         * 
+         *
          * @param maxStanzas the total number of messages to receive in the history.
          * @deprecated use {@link #History(int, int, int, Date)} instead.
          */
@@ -259,11 +259,11 @@ public class MUCInitialPresence implements ExtensionElement {
         }
 
         /**
-         * Sets the number of seconds to use to filter the messages received during that time. 
-         * In other words, only the messages received in the last "X" seconds will be included in 
+         * Sets the number of seconds to use to filter the messages received during that time.
+         * In other words, only the messages received in the last "X" seconds will be included in
          * the history.
-         * 
-         * @param seconds the number of seconds to use to filter the messages received during 
+         *
+         * @param seconds the number of seconds to use to filter the messages received during
          * that time.
          * @deprecated use {@link #History(int, int, int, Date)} instead.
          */
@@ -273,10 +273,10 @@ public class MUCInitialPresence implements ExtensionElement {
         }
 
         /**
-         * Sets the since date to use to filter the messages received during that time. 
-         * In other words, only the messages received since the datetime specified will be 
+         * Sets the since date to use to filter the messages received during that time.
+         * In other words, only the messages received since the datetime specified will be
          * included in the history.
-         * 
+         *
          * @param since the since date to use to filter the messages received during that time.
          * @deprecated use {@link #History(int, int, int, Date)} instead.
          */

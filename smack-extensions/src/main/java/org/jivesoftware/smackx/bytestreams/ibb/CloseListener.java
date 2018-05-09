@@ -28,7 +28,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
  * If a close request is received it looks if a stored In-Band Bytestream
  * session exists and closes it. If no session with the given session ID exists
  * an &lt;item-not-found/&gt; error is returned to the sender.
- * 
+ *
  * @author Henning Staib
  */
 class CloseListener extends AbstractIqRequestHandler {
@@ -38,7 +38,7 @@ class CloseListener extends AbstractIqRequestHandler {
 
     /**
      * Constructor.
-     * 
+     *
      * @param manager the In-Band Bytestream manager
      */
     protected CloseListener(InBandBytestreamManager manager) {

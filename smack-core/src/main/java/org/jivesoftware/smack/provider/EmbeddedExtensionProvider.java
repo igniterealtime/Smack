@@ -27,20 +27,20 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * 
- * This class simplifies parsing of embedded elements by using the 
- * <a href="http://en.wikipedia.org/wiki/Template_method_pattern">Template Method Pattern</a>.  
- * After extracting the current element attributes and content of any child elements, the template method 
+ *
+ * This class simplifies parsing of embedded elements by using the
+ * <a href="http://en.wikipedia.org/wiki/Template_method_pattern">Template Method Pattern</a>.
+ * After extracting the current element attributes and content of any child elements, the template method
  * ({@link #createReturnExtension(String, String, Map, List)} is called.  Subclasses
  * then override this method to create the specific return type.
- * 
- * <p>To use this class, you simply register your subclasses as extension providers in the 
+ *
+ * <p>To use this class, you simply register your subclasses as extension providers in the
  * <b>smack.properties</b> file.  Then they will be automatically picked up and used to parse
- * any child elements.  
- * 
+ * any child elements.
+ *
  * <pre>
  * For example, given the following message
- * 
+ *
  * &lt;message from='pubsub.shakespeare.lit' to='francisco@denmark.lit' id='foo&gt;
  *    &lt;event xmlns='http://jabber.org/protocol/pubsub#event&gt;
  *       &lt;items node='princely_musings'&gt;
@@ -54,16 +54,16 @@ import org.xmlpull.v1.XmlPullParser;
  *       &lt;/items&gt;
  *    &lt;/event&gt;
  * &lt;/message&gt;
- * 
+ *
  * I would have a classes
  * <tt>ItemsProvider</tt> extends {@link EmbeddedExtensionProvider}
  * <tt>ItemProvider</tt> extends {@link EmbeddedExtensionProvider}
  * and
  * AtomProvider extends {@link ExtensionElementProvider}
- * 
+ *
  * These classes are then registered in the meta-inf/smack.providers file
  * as follows.
- * 
+ *
  *   &lt;extensionProvider&gt;
  *      &lt;elementName&gt;items&lt;/elementName&gt;
  *      &lt;namespace&gt;http://jabber.org/protocol/pubsub#event&lt;/namespace&gt;
@@ -74,9 +74,9 @@ import org.xmlpull.v1.XmlPullParser;
  *       &lt;namespace&gt;http://jabber.org/protocol/pubsub#event&lt;/namespace&gt;
  *       &lt;className&gt;org.jivesoftware.smackx.provider.ItemProvider&lt;/className&gt;
  *   &lt;/extensionProvider&gt;
- * 
+ *
  * </pre>
- * 
+ *
  * @author Robin Collier
  */
 public abstract class EmbeddedExtensionProvider<PE extends ExtensionElement> extends ExtensionElementProvider<PE> {

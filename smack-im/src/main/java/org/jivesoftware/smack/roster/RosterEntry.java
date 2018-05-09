@@ -93,10 +93,10 @@ public final class RosterEntry extends Manager {
      * Sets the name associated with this entry.
      *
      * @param name the name.
-     * @throws NotConnectedException 
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws InterruptedException
      */
     public synchronized void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException, InterruptedException {
         // Do nothing if the name hasn't changed.
@@ -211,7 +211,7 @@ public final class RosterEntry extends Manager {
 
     /**
      * Cancel the presence subscription the XMPP entity representing this roster entry has with us.
-     * 
+     *
      * @throws NotConnectedException
      * @throws InterruptedException
      * @since 4.2
@@ -266,7 +266,7 @@ public final class RosterEntry extends Manager {
      * Indicates whether some other object is "equal to" this by comparing all members.
      * <p>
      * The {@link #equals(Object)} method returns <code>true</code> if the user JIDs are equal.
-     * 
+     *
      * @param obj the reference object with which to compare.
      * @return <code>true</code> if this object is the same as the obj argument; <code>false</code>
      *         otherwise.

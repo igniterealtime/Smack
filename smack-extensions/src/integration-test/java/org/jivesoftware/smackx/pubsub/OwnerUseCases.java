@@ -22,7 +22,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.pubsub.test.SingleUserTestCase;
 
 /**
- * 
+ *
  * @author Robin Collier
  *
  */

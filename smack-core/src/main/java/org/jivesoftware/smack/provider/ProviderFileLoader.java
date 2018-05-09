@@ -31,9 +31,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
- * Loads the {@link IQProvider} and {@link ExtensionElementProvider} information from a standard provider file in preparation 
+ * Loads the {@link IQProvider} and {@link ExtensionElementProvider} information from a standard provider file in preparation
  * for loading into the {@link ProviderManager}.
- * 
+ *
  * @author Robin Collier
  *
  */

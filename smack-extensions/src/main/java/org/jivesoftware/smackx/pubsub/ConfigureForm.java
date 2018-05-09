@@ -26,18 +26,18 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 /**
  * A decorator for a {@link Form} to easily enable reading and updating
  * of node configuration.  All operations read or update the underlying {@link DataForm}.
- * 
+ *
  * <p>Unlike the {@link Form}.setAnswer(XXX)} methods, which throw an exception if the field does not
  * exist, all <b>ConfigureForm.setXXX</b> methods will create the field in the wrapped form
- * if it does not already exist. 
- * 
+ * if it does not already exist.
+ *
  * @author Robin Collier
  */
 public class ConfigureForm extends Form {
     /**
      * Create a decorator from an existing {@link DataForm} that has been
      * retrieved from parsing a node configuration request.
-     * 
+     *
      * @param configDataForm
      */
     public ConfigureForm(DataForm configDataForm) {
@@ -48,7 +48,7 @@ public class ConfigureForm extends Form {
      * Create a decorator from an existing {@link Form} for node configuration.
      * Typically, this can be used to create a decorator for an answer form
      * by using the result of {@link #createAnswerForm()} as the input parameter.
-     * 
+     *
      * @param nodeConfigForm
      */
     public ConfigureForm(Form nodeConfigForm) {
@@ -56,8 +56,8 @@ public class ConfigureForm extends Form {
     }
 
     /**
-     * Create a new form for configuring a node.  This would typically only be used 
-     * when creating and configuring a node at the same time via {@link PubSubManager#createNode(String, Form)}, since 
+     * Create a new form for configuring a node.  This would typically only be used
+     * when creating and configuring a node at the same time via {@link PubSubManager#createNode(String, Form)}, since
      * configuration of an existing node is typically accomplished by calling {@link LeafNode#getNodeConfiguration()} and
      * using the resulting form to create a answer form.  See {@link #ConfigureForm(Form)}.
      * @param formType
@@ -68,7 +68,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Get the currently configured {@link AccessModel}, null if it is not set.
-     * 
+     *
      * @return The current {@link AccessModel}
      */
     public AccessModel getAccessModel() {
@@ -82,7 +82,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets the value of access model.
-     * 
+     *
      * @param accessModel
      */
     public void setAccessModel(AccessModel accessModel) {
@@ -91,9 +91,9 @@ public class ConfigureForm extends Form {
     }
 
     /**
-     * Returns the URL of an XSL transformation which can be applied to payloads in order to 
+     * Returns the URL of an XSL transformation which can be applied to payloads in order to
      * generate an appropriate message body element.
-     * 
+     *
      * @return URL to an XSL
      */
     public String getBodyXSLT() {
@@ -101,9 +101,9 @@ public class ConfigureForm extends Form {
     }
 
     /**
-     * Set the URL of an XSL transformation which can be applied to payloads in order to 
+     * Set the URL of an XSL transformation which can be applied to payloads in order to
      * generate an appropriate message body element.
-     * 
+     *
      * @param bodyXslt The URL of an XSL
      */
     public void setBodyXSLT(String bodyXslt) {
@@ -113,7 +113,7 @@ public class ConfigureForm extends Form {
 
     /**
      * The id's of the child nodes associated with a collection node (both leaf and collection).
-     * 
+     *
      * @return list of child nodes.
      */
     public List<String> getChildren() {
@@ -122,7 +122,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Set the list of child node ids that are associated with a collection node.
-     * 
+     *
      * @param children
      */
     public void setChildren(List<String> children) {
@@ -132,7 +132,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Returns the policy that determines who may associate children with the node.
-     *  
+     *
      * @return The current policy
      */
     public ChildrenAssociationPolicy getChildrenAssociationPolicy() {
@@ -146,7 +146,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets the policy that determines who may associate children with the node.
-     * 
+     *
      * @param policy The policy being set
      */
     public void setChildrenAssociationPolicy(ChildrenAssociationPolicy policy) {
@@ -157,10 +157,10 @@ public class ConfigureForm extends Form {
     }
 
     /**
-     * List of JID's that are on the whitelist that determines who can associate child nodes 
+     * List of JID's that are on the whitelist that determines who can associate child nodes
      * with the collection node.  This is only relevant if {@link #getChildrenAssociationPolicy()} is set to
      * {@link ChildrenAssociationPolicy#whitelist}.
-     * 
+     *
      * @return List of the whitelist
      */
     public List<String> getChildrenAssociationWhitelist() {
@@ -168,10 +168,10 @@ public class ConfigureForm extends Form {
     }
 
     /**
-     * Set the JID's in the whitelist of users that can associate child nodes with the collection 
+     * Set the JID's in the whitelist of users that can associate child nodes with the collection
      * node.  This is only relevant if {@link #getChildrenAssociationPolicy()} is set to
      * {@link ChildrenAssociationPolicy#whitelist}.
-     * 
+     *
      * @param whitelist The list of JID's
      */
     public void setChildrenAssociationWhitelist(List<String> whitelist) {
@@ -181,7 +181,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Gets the maximum number of child nodes that can be associated with the collection node.
-     * 
+     *
      * @return The maximum number of child nodes
      */
     public int getChildrenMax() {
@@ -190,7 +190,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Set the maximum number of child nodes that can be associated with a collection node.
-     * 
+     *
      * @param max The maximum number of child nodes.
      */
     public void setChildrenMax(int max) {
@@ -200,7 +200,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Gets the collection node which the node is affiliated with.
-     * 
+     *
      * @return The collection node id
      */
     public String getCollection() {
@@ -209,7 +209,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets the collection node which the node is affiliated with.
-     * 
+     *
      * @param collection The node id of the collection node
      */
     public void setCollection(String collection) {
@@ -221,7 +221,7 @@ public class ConfigureForm extends Form {
      * Gets the URL of an XSL transformation which can be applied to the payload
      * format in order to generate a valid Data Forms result that the client could
      * display using a generic Data Forms rendering engine.
-     * 
+     *
      * @return The URL of an XSL transformation
      */
     public String getDataformXSLT() {
@@ -232,7 +232,7 @@ public class ConfigureForm extends Form {
      * Sets the URL of an XSL transformation which can be applied to the payload
      * format in order to generate a valid Data Forms result that the client could
      * display using a generic Data Forms rendering engine.
-     * 
+     *
      * @param url The URL of an XSL transformation
      */
     public void setDataformXSLT(String url) {
@@ -242,7 +242,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Does the node deliver payloads with event notifications.
-     * 
+     *
      * @return true if it does, false otherwise
      */
     public boolean isDeliverPayloads() {
@@ -251,7 +251,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets whether the node will deliver payloads with event notifications.
-     * 
+     *
      * @param deliver true if the payload will be delivered, false otherwise
      */
     public void setDeliverPayloads(boolean deliver) {
@@ -261,7 +261,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Determines who should get replies to items.
-     * 
+     *
      * @return Who should get the reply
      */
     public ItemReply getItemReply() {
@@ -275,7 +275,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets who should get the replies to items.
-     * 
+     *
      * @param reply Defines who should get the reply
      */
     public void setItemReply(ItemReply reply) {
@@ -286,7 +286,7 @@ public class ConfigureForm extends Form {
     /**
      * Gets the maximum number of items to persisted to this node if {@link #isPersistItems()} is
      * true.
-     * 
+     *
      * @return The maximum number of items to persist
      */
     public int getMaxItems() {
@@ -296,7 +296,7 @@ public class ConfigureForm extends Form {
     /**
      * Set the maximum number of items to persisted to this node if {@link #isPersistItems()} is
      * true.
-     * 
+     *
      * @param max The maximum number of items to persist
      */
     public void setMaxItems(int max) {
@@ -306,7 +306,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Gets the maximum payload size in bytes.
-     * 
+     *
      * @return The maximum payload size
      */
     public int getMaxPayloadSize() {
@@ -315,7 +315,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets the maximum payload size in bytes.
-     * 
+     *
      * @param max The maximum payload size
      */
     public void setMaxPayloadSize(int max) {
@@ -325,7 +325,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Gets the node type.
-     * 
+     *
      * @return The node type
      */
     public NodeType getNodeType() {
@@ -339,7 +339,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets the node type.
-     * 
+     *
      * @param type The node type
      */
     public void setNodeType(NodeType type) {
@@ -349,7 +349,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Determines if subscribers should be notified when the configuration changes.
-     * 
+     *
      * @return true if they should be notified, false otherwise
      */
     public boolean isNotifyConfig() {
@@ -358,7 +358,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets whether subscribers should be notified when the configuration changes.
-     * 
+     *
      * @param notify true if subscribers should be notified, false otherwise
      */
     public void setNotifyConfig(boolean notify) {
@@ -368,7 +368,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Determines whether subscribers should be notified when the node is deleted.
-     * 
+     *
      * @return true if subscribers should be notified, false otherwise
      */
     public boolean isNotifyDelete() {
@@ -377,7 +377,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets whether subscribers should be notified when the node is deleted.
-     * 
+     *
      * @param notify true if subscribers should be notified, false otherwise
      */
     public void setNotifyDelete(boolean notify)  {
@@ -386,9 +386,9 @@ public class ConfigureForm extends Form {
     }
 
     /**
-     * Determines whether subscribers should be notified when items are deleted 
+     * Determines whether subscribers should be notified when items are deleted
      * from the node.
-     * 
+     *
      * @return true if subscribers should be notified, false otherwise
      */
     public boolean isNotifyRetract() {
@@ -396,9 +396,9 @@ public class ConfigureForm extends Form {
     }
 
     /**
-     * Sets whether subscribers should be notified when items are deleted 
+     * Sets whether subscribers should be notified when items are deleted
      * from the node.
-     * 
+     *
      * @param notify true if subscribers should be notified, false otherwise
      */
     public void setNotifyRetract(boolean notify)  {
@@ -432,7 +432,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Determines whether items should be persisted in the node.
-     * 
+     *
      * @return true if items are persisted
      */
     public boolean isPersistItems() {
@@ -441,7 +441,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets whether items should be persisted in the node.
-     * 
+     *
      * @param persist true if items should be persisted, false otherwise
      */
     public void setPersistentItems(boolean persist)  {
@@ -451,7 +451,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Determines whether to deliver notifications to available users only.
-     * 
+     *
      * @return true if users must be available
      */
     public boolean isPresenceBasedDelivery() {
@@ -460,7 +460,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets whether to deliver notifications to available users only.
-     * 
+     *
      * @param presenceBased true if user must be available, false otherwise
      */
     public void setPresenceBasedDelivery(boolean presenceBased)  {
@@ -470,7 +470,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Gets the publishing model for the node, which determines who may publish to it.
-     * 
+     *
      * @return The publishing model
      */
     public PublishModel getPublishModel() {
@@ -484,7 +484,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets the publishing model for the node, which determines who may publish to it.
-     * 
+     *
      * @param publish The enum representing the possible options for the publishing model
      */
     public void setPublishModel(PublishModel publish)  {
@@ -494,7 +494,7 @@ public class ConfigureForm extends Form {
 
     /**
      * List of the multi user chat rooms that are specified as reply rooms.
-     * 
+     *
      * @return The reply room JID's
      */
     public List<String> getReplyRoom() {
@@ -503,7 +503,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets the multi user chat rooms that are specified as reply rooms.
-     * 
+     *
      * @param replyRooms The multi user chat room to use as reply rooms
      */
     public void setReplyRoom(List<String> replyRooms)  {
@@ -513,7 +513,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Gets the specific JID's for reply to.
-     *  
+     *
      * @return The JID's
      */
     public List<String> getReplyTo() {
@@ -522,7 +522,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets the specific JID's for reply to.
-     * 
+     *
      * @param replyTos The JID's to reply to
      */
     public void setReplyTo(List<String> replyTos) {
@@ -532,7 +532,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Gets the roster groups that are allowed to subscribe and retrieve items.
-     *  
+     *
      * @return The roster groups
      */
     public List<String> getRosterGroupsAllowed() {
@@ -541,7 +541,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets the roster groups that are allowed to subscribe and retrieve items.
-     * 
+     *
      * @param groups The roster groups
      */
     public void setRosterGroupsAllowed(List<String> groups) {
@@ -551,7 +551,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Determines if subscriptions are allowed.
-     * 
+     *
      * @return true if subscriptions are allowed, false otherwise
      * @deprecated use {@link #isSubscribe()} instead
      */
@@ -562,7 +562,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Determines if subscriptions are allowed.
-     * 
+     *
      * @return true if subscriptions are allowed, false otherwise
      */
     public boolean isSubscribe() {
@@ -571,7 +571,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets whether subscriptions are allowed.
-     * 
+     *
      * @param subscribe true if they are, false otherwise
      */
     public void setSubscribe(boolean subscribe) {
@@ -581,7 +581,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Gets the human readable node title.
-     * 
+     *
      * @return The node title
      */
     @Override
@@ -591,7 +591,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets a human readable title for the node.
-     * 
+     *
      * @param title The node title
      */
     @Override
@@ -602,7 +602,7 @@ public class ConfigureForm extends Form {
 
     /**
      * The type of node data, usually specified by the namespace of the payload (if any).
-     * 
+     *
      * @return The type of node data
      */
     public String getDataType() {
@@ -611,7 +611,7 @@ public class ConfigureForm extends Form {
 
     /**
      * Sets the type of node data, usually specified by the namespace of the payload (if any).
-     * 
+     *
      * @param type The type of node data
      */
     public void setDataType(String type)  {

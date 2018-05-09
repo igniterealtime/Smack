@@ -33,9 +33,9 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * The StreamInitiationProvider parses StreamInitiation packets.
- * 
+ *
  * @author Alexander Wenckus
- * 
+ *
  */
 public class StreamInitiationProvider extends IQProvider<StreamInitiation> {
     private static final Logger LOGGER = Logger.getLogger(StreamInitiationProvider.class.getName());

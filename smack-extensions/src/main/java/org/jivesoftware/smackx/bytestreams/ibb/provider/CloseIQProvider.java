@@ -24,7 +24,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Parses a close In-Band Bytestream packet.
- * 
+ *
  * @author Henning Staib
  */
 public class CloseIQProvider extends IQProvider<Close> {

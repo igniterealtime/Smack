@@ -22,7 +22,7 @@ import org.jivesoftware.smackx.pubsub.LeafNode;
 
 /**
  * Defines the listener for items being published to a node.
- * 
+ *
  * @see LeafNode#addItemEventListener(ItemEventListener)
  *
  * @author Robin Collier
@@ -31,7 +31,7 @@ public interface ItemEventListener<T extends Item> {
     /**
      * Called whenever an item is published to the node the listener
      * is registered with.
-     * 
+     *
      * @param items The publishing details.
      */
     void handlePublishedItems(ItemPublishEvent<T> items);

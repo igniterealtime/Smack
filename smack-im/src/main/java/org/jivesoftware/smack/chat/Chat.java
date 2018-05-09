@@ -35,7 +35,7 @@ import org.jxmpp.jid.EntityJid;
  * don't send thread IDs at all. Therefore, if a message without a thread ID
  * arrives it is routed to the most recently created Chat with the message
  * sender.
- * 
+ *
  * @author Matt Tucker
  * @deprecated use <code>org.jivesoftware.smack.chat2.Chat</code> from <code>smack-extensions</code> instead.
  */
@@ -94,8 +94,8 @@ public class Chat {
      * </pre>
      *
      * @param text the text to send.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void sendMessage(String text) throws NotConnectedException, InterruptedException {
         Message message = new Message();
@@ -108,8 +108,8 @@ public class Chat {
      * and message type of the message will automatically set to those of this chat.
      *
      * @param message the message to send.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void sendMessage(Message message) throws NotConnectedException, InterruptedException {
         // Force the recipient, message type, and thread ID since the user elected

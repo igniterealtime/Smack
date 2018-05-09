@@ -66,10 +66,10 @@ public class UserSearchManager {
      *
      * @param searchService the search service to query.
      * @return the form to fill out to perform a search.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public Form getSearchForm(DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return userSearch.getSearchForm(con, searchService);
@@ -82,10 +82,10 @@ public class UserSearchManager {
      * @param searchForm    the <code>Form</code> to submit for searching.
      * @param searchService the name of the search service to use.
      * @return the ReportedData returned by the server.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public ReportedData getSearchResults(Form searchForm, DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return userSearch.sendSearchForm(con, searchForm, searchService);
@@ -96,10 +96,10 @@ public class UserSearchManager {
      * Returns a collection of search services found on the server.
      *
      * @return a Collection of search services found on the server.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public List<DomainBareJid> getSearchServices() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(con);

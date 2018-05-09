@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
  * when arguments must be passed into the constructor or when using a dependency injection
  * framework. When a LocalCommandFactory isn't used, you can provide the AdHocCommandManager
  * a Class object instead. For more details, see
- * {@link AdHocCommandManager#registerCommand(String, String, LocalCommandFactory)}. 
+ * {@link AdHocCommandManager#registerCommand(String, String, LocalCommandFactory)}.
  *
  * @author Matt Tucker
  */
@@ -36,10 +36,10 @@ public interface LocalCommandFactory {
      * @return a LocalCommand instance.
      * @throws InstantiationException if creating an instance failed.
      * @throws IllegalAccessException if creating an instance is not allowed.
-     * @throws SecurityException 
-     * @throws NoSuchMethodException 
-     * @throws InvocationTargetException 
-     * @throws IllegalArgumentException 
+     * @throws SecurityException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalArgumentException
      */
     LocalCommand getInstance() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 

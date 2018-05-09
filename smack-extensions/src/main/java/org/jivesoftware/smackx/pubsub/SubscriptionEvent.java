@@ -21,18 +21,18 @@ import java.util.List;
 
 /**
  * Base class to represents events that are associated to subscriptions.
- * 
+ *
  * @author Robin Collier
  */
 public abstract class SubscriptionEvent extends NodeEvent {
     private List<String> subIds = Collections.emptyList();
 
     /**
-     * Construct an event with no subscription id's.  This can 
+     * Construct an event with no subscription id's.  This can
      * occur when there is only one subscription to a node.  The
-     * event may or may not report the subscription id along 
+     * event may or may not report the subscription id along
      * with the event.
-     * 
+     *
      * @param nodeId The id of the node the event came from
      */
     protected SubscriptionEvent(String nodeId) {
@@ -41,7 +41,7 @@ public abstract class SubscriptionEvent extends NodeEvent {
 
     /**
      * Construct an event with multiple subscriptions.
-     * 
+     *
      * @param nodeId The id of the node the event came from
      * @param subscriptionIds The list of subscription id's
      */
@@ -52,9 +52,9 @@ public abstract class SubscriptionEvent extends NodeEvent {
             subIds = subscriptionIds;
     }
 
-    /** 
+    /**
      * Get the subscriptions this event is associated with.
-     * 
+     *
      * @return List of subscription id's
      */
     public List<String> getSubscriptions() {
@@ -63,7 +63,7 @@ public abstract class SubscriptionEvent extends NodeEvent {
 
     /**
      * Set the list of subscription id's for this event.
-     * 
+     *
      * @param subscriptionIds The list of subscription id's
      */
     protected void setSubscriptions(List<String> subscriptionIds) {

@@ -27,7 +27,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Unblock contact IQ class.
- * 
+ *
  * @author Fernando Ramirez
  * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0191.html">XEP-0191: Blocking
@@ -49,7 +49,7 @@ public class UnblockContactsIQ extends IQ {
 
     /**
      * Unblock contacts IQ constructor.
-     * 
+     *
      * @param jids
      */
     public UnblockContactsIQ(List<Jid> jids) {
@@ -63,7 +63,7 @@ public class UnblockContactsIQ extends IQ {
     }
 
     /**
-     * Constructs a new unblock IQ which will unblock <b>all</b> JIDs. 
+     * Constructs a new unblock IQ which will unblock <b>all</b> JIDs.
      */
     public UnblockContactsIQ() {
         this(null);
@@ -71,7 +71,7 @@ public class UnblockContactsIQ extends IQ {
 
     /**
      * Get the JIDs. This may return null, which means that all JIDs should be or where unblocked.
-     * 
+     *
      * @return the list of JIDs or <code>null</code>.
      */
     public List<Jid> getJids() {

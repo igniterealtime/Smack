@@ -27,10 +27,10 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 /**
  * Represents the top level element of a PubSub event extension.  All types of PubSub events are
- * represented by this class.  The specific type can be found by {@link #getEventType()}.  The 
+ * represented by this class.  The specific type can be found by {@link #getEventType()}.  The
  * embedded event information, which is specific to the event type, can be retrieved by the {@link #getEvent()}
  * method.
- * 
+ *
  * @author Robin Collier
  */
 public class EventElement implements EmbeddedPacketExtension {

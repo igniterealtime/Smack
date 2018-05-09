@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Anno van Vliet 
+ * Copyright 2014 Anno van Vliet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * DataLayout Extension according to XEP-0141: Data Forms Layout.
- * Defines a backwards-compatible extension to the XMPP Data Forms protocol that 
- * enables an application to specify form layouts, including the layout of 
+ * Defines a backwards-compatible extension to the XMPP Data Forms protocol that
+ * enables an application to specify form layouts, including the layout of
  * form fields, sections within pages, and subsections within sections.
  *
  * @author Anno van Vliet
@@ -61,7 +61,7 @@ public class DataLayout implements ExtensionElement {
 
     /**
      * Gets the value of the label property.
-     * 
+     *
      * @return possible object is {@link String }
      */
     public String getLabel() {
@@ -136,7 +136,7 @@ public class DataLayout implements ExtensionElement {
 
         /**
          * Gets the value of the var property.
-         * 
+         *
          * @return possible object is {@link String }
          */
         public String getVar() {
@@ -172,7 +172,7 @@ public class DataLayout implements ExtensionElement {
          * method for the sectionLayout property.
          * <p>
          * For example, to add a new item, do as follows:
-         * 
+         *
          * <pre>
          * getSectionLayout().add(newItem);
          * </pre>
@@ -199,7 +199,7 @@ public class DataLayout implements ExtensionElement {
 
         /**
          * Gets the value of the label property.
-         * 
+         *
          * @return possible object is {@link String }
          */
         public String getLabel() {
@@ -252,7 +252,7 @@ public class DataLayout implements ExtensionElement {
 
         /**
          * Gets the value of the var property.
-         * 
+         *
          * @return possible object is {@link String }
          */
         public String getText() {

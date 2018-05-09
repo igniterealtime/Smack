@@ -50,9 +50,9 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
      *
      * @param parser the structure to parse
      * @return a transport element.
-     * @throws IOException 
-     * @throws XmlPullParserException 
-     * @throws SmackException 
+     * @throws IOException
+     * @throws XmlPullParserException
+     * @throws SmackException
      */
     @Override
     public JingleTransport parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException  {

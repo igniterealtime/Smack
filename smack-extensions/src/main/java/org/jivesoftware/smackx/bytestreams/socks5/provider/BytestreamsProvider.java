@@ -30,7 +30,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parses a bytestream packet.
- * 
+ *
  * @author Alexander Wenckus
  */
 public class BytestreamsProvider extends IQProvider<Bytestream> {

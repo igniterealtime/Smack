@@ -42,10 +42,10 @@ public class SharedGroupManager {
      *
      * @param connection connection to use to get the user's shared groups.
      * @return collection with the shared groups' name of the logged user.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public static List<String> getSharedGroups(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Discover the shared groups of the logged user

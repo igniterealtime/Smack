@@ -23,9 +23,9 @@ import org.jivesoftware.smack.UnparseableStanza;
 /**
  * Parsing exception callback class that simply throws the encountered parsing exception. This usually leads to an
  * {@link ConnectionListener#connectionClosedOnError(Exception)} and disconnect of the connection.
- * 
+ *
  * @author Florian Schmaus
- * 
+ *
  */
 public class ExceptionThrowingCallback implements ParsingExceptionCallback {
 

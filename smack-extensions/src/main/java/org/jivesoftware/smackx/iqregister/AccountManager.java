@@ -131,10 +131,10 @@ public final class AccountManager extends Manager {
      * behavior is to only create new accounts before having logged in to a server.
      *
      * @return true if the server support creating new accounts.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public boolean supportsAccountCreation() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // TODO: Replace this body with isSupported() and possible deprecate this method.
@@ -176,10 +176,10 @@ public final class AccountManager extends Manager {
      * the user's email address.
      *
      * @return the required account attributes.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public Set<String> getAccountAttributes() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         if (info == null) {
@@ -200,10 +200,10 @@ public final class AccountManager extends Manager {
      * @param name the name of the account attribute to return its value.
      * @return the value of the account attribute or <tt>null</tt> if an account
      * attribute wasn't found for the requested name.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public String getAccountAttribute(String name) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         if (info == null) {
@@ -218,10 +218,10 @@ public final class AccountManager extends Manager {
      * that will complete the registration process.
      *
      * @return the account creation instructions, or <tt>null</tt> if there are none.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public String getAccountInstructions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         if (info == null) {
@@ -240,10 +240,10 @@ public final class AccountManager extends Manager {
      *
      * @param username the username.
      * @param password the password.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void createAccount(Localpart username, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         // Create a map for all the required attributes, but give them blank values.
@@ -264,8 +264,8 @@ public final class AccountManager extends Manager {
      * @param attributes the account attributes.
      * @throws XMPPErrorException if an error occurs creating the account.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      * @see #getAccountAttributes()
      */
     public void createAccount(Localpart username, String password, Map<String, String> attributes)
@@ -298,8 +298,8 @@ public final class AccountManager extends Manager {
      * @throws IllegalStateException if not currently logged-in to the server.
      * @throws XMPPErrorException if an error occurs when changing the password.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void changePassword(String newPassword) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (!connection().isSecureConnection() && !allowSensitiveOperationOverInsecureConnection) {
@@ -322,8 +322,8 @@ public final class AccountManager extends Manager {
      * @throws IllegalStateException if not currently logged-in to the server.
      * @throws XMPPErrorException if an error occurs when deleting the account.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void deleteAccount() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Map<String, String> attributes = new HashMap<>();
@@ -356,10 +356,10 @@ public final class AccountManager extends Manager {
 
     /**
      * Gets the account registration info from the server.
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      *
      * @throws XMPPException if an error occurs.
      * @throws SmackException if there was no response from the server.

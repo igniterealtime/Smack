@@ -24,11 +24,11 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Acknowledged extension provider class (XEP-0333).
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0333.html">XEP-0333: Chat
  *      Markers</a>
  * @author Fernando Ramirez
- * 
+ *
  */
 public class AcknowledgedProvider extends ExtensionElementProvider<AcknowledgedExtension> {
 

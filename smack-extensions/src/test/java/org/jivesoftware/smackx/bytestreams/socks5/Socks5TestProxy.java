@@ -35,7 +35,7 @@ import org.jivesoftware.smack.util.StringUtils;
 /**
  * Simple SOCKS5 proxy for testing purposes. It is almost the same as the Socks5Proxy class but the
  * port can be configured more easy and it all connections are allowed.
- * 
+ *
  * @author Henning Staib
  */
 public final class Socks5TestProxy {
@@ -71,7 +71,7 @@ public final class Socks5TestProxy {
 
     /**
      * Returns the local SOCKS5 proxy server.
-     * 
+     *
      * @param port of the test proxy
      * @return the local SOCKS5 proxy server
      */
@@ -144,7 +144,7 @@ public final class Socks5TestProxy {
 
     /**
      * Returns the host address of the local SOCKS5 proxy server.
-     * 
+     *
      * @return the host address of the local SOCKS5 proxy server
      */
     public static String getAddress() {
@@ -158,7 +158,7 @@ public final class Socks5TestProxy {
 
     /**
      * Returns the port of the local SOCKS5 proxy server. If it is not running -1 will be returned.
-     * 
+     *
      * @return the port of the local SOCKS5 proxy server or -1 if proxy is not running
      */
     public int getPort() {
@@ -170,7 +170,7 @@ public final class Socks5TestProxy {
 
     /**
      * Returns the socket for the given digest.
-     * 
+     *
      * @param digest identifying the connection
      * @return socket or null if there is no socket for the given digest
      */
@@ -193,7 +193,7 @@ public final class Socks5TestProxy {
 
     /**
      * Returns true if the local SOCKS5 proxy server is running, otherwise false.
-     * 
+     *
      * @return true if the local SOCKS5 proxy server is running, otherwise false
      */
     public boolean isRunning() {
@@ -202,7 +202,7 @@ public final class Socks5TestProxy {
 
     /**
      * Implementation of a simplified SOCKS5 proxy server.
-     * 
+     *
      * @author Henning Staib
      */
     class Socks5ServerProcess implements Runnable {
@@ -248,7 +248,7 @@ public final class Socks5TestProxy {
 
         /**
          * Negotiates a SOCKS5 connection and stores it on success.
-         * 
+         *
          * @param socket connection to the client
          * @throws SmackException if client requests a connection in an unsupported way
          * @throws IOException if a network error occurred

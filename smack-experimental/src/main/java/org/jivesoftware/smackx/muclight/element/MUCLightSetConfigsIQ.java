@@ -28,7 +28,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * MUC Light set configurations IQ class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */
@@ -43,7 +43,7 @@ public class MUCLightSetConfigsIQ extends IQ {
 
     /**
      * MUC Light set configuration IQ constructor.
-     * 
+     *
      * @param roomJid
      * @param roomName
      * @param subject
@@ -60,7 +60,7 @@ public class MUCLightSetConfigsIQ extends IQ {
 
     /**
      * MUC Light set configuration IQ constructor.
-     * 
+     *
      * @param roomJid
      * @param roomName
      * @param customConfigs

@@ -35,7 +35,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
  * Data packets belonging to a running In-Band Bytestream session are processed
  * by more specific listeners registered when an {@link InBandBytestreamSession}
  * is created.
- * 
+ *
  * @author Henning Staib
  */
 class DataListener extends AbstractIqRequestHandler {
@@ -45,7 +45,7 @@ class DataListener extends AbstractIqRequestHandler {
 
     /**
      * Constructor.
-     * 
+     *
      * @param manager the In-Band Bytestream manager
      */
     DataListener(InBandBytestreamManager manager) {

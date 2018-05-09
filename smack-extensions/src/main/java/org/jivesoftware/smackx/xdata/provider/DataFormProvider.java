@@ -37,7 +37,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The DataFormProvider parses DataForm packets.
- * 
+ *
  * @author Gaston Dombiak
  */
 public class DataFormProvider extends ExtensionElementProvider<DataForm> {

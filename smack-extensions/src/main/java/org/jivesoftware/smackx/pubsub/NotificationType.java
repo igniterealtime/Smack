@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub;
 /**
  * Specify the delivery style for event notifications.  Denotes possible values
  * for {@link ConfigureForm#setNotificationType(NotificationType)}.
- * 
+ *
  * @author Timothy Pitt
  */
 public enum NotificationType {

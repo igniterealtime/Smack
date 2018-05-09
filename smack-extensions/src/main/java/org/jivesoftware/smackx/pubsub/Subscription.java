@@ -22,7 +22,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Represents a subscription to node for both requests and replies.
- * 
+ *
  * @author Robin Collier
  */
 public class Subscription extends NodeExtension {
@@ -32,13 +32,13 @@ public class Subscription extends NodeExtension {
     protected boolean configRequired = false;
 
     public enum State {
-        subscribed, unconfigured, pending, none 
+        subscribed, unconfigured, pending, none
     }
 
     /**
      * Used to constructs a subscription request to the root node with the specified
      * JID.
-     * 
+     *
      * @param subscriptionJid The subscriber JID
      */
     public Subscription(Jid subscriptionJid) {
@@ -48,7 +48,7 @@ public class Subscription extends NodeExtension {
     /**
      * Used to constructs a subscription request to the specified node with the specified
      * JID.
-     * 
+     *
      * @param subscriptionJid The subscriber JID
      * @param nodeId The node id
      */
@@ -67,9 +67,9 @@ public class Subscription extends NodeExtension {
     }
 
     /**
-     * Constructs a representation of a subscription reply to the specified node 
+     * Constructs a representation of a subscription reply to the specified node
      * and JID.  The server will have supplied the subscription id and current state.
-     * 
+     *
      * @param jid The JID the request was made under
      * @param nodeId The node subscribed to
      * @param subscriptionId The id of this subscription
@@ -83,15 +83,15 @@ public class Subscription extends NodeExtension {
     }
 
     /**
-     * Constructs a representation of a subscription reply to the specified node 
+     * Constructs a representation of a subscription reply to the specified node
      * and JID.  The server will have supplied the subscription id and current state
      * and whether the subscription need to be configured.
-     * 
+     *
      * @param jid The JID the request was made under
      * @param nodeId The node subscribed to
      * @param subscriptionId The id of this subscription
      * @param state The current state of the subscription
-     * @param configRequired Is configuration required to complete the subscription 
+     * @param configRequired Is configuration required to complete the subscription
      */
     public Subscription(Jid jid, String nodeId, String subscriptionId, State state, boolean configRequired) {
         super(PubSubElementType.SUBSCRIPTION, nodeId);
@@ -103,7 +103,7 @@ public class Subscription extends NodeExtension {
 
     /**
      * Gets the JID the subscription is created for.
-     * 
+     *
      * @return The JID
      */
     public Jid getJid() {
@@ -112,7 +112,7 @@ public class Subscription extends NodeExtension {
 
     /**
      * Gets the subscription id.
-     * 
+     *
      * @return The subscription id
      */
     public String getId() {
@@ -121,7 +121,7 @@ public class Subscription extends NodeExtension {
 
     /**
      * Gets the current subscription state.
-     * 
+     *
      * @return Current subscription state
      */
     public State getState() {
@@ -130,7 +130,7 @@ public class Subscription extends NodeExtension {
 
     /**
      * This value is only relevant when the {@link #getState()} is {@link State#unconfigured}.
-     * 
+     *
      * @return true if configuration is required, false otherwise
      */
     public boolean isConfigRequired() {

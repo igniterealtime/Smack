@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.jingleold;
 
 /**
- * Jingle negotiator state. 
+ * Jingle negotiator state.
  *  @author Jeff Williams
  */
 public enum JingleNegotiatorState {

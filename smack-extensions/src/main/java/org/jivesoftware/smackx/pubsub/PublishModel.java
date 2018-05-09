@@ -17,9 +17,9 @@
 package org.jivesoftware.smackx.pubsub;
 
 /**
- * Determines who may publish to a node.  Denotes possible values 
+ * Determines who may publish to a node.  Denotes possible values
  * for {@link ConfigureForm#setPublishModel(PublishModel)}.
- * 
+ *
  * @author Robin Collier
  */
 public enum PublishModel {

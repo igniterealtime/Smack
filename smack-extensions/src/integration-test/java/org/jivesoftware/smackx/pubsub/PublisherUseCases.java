@@ -26,7 +26,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.jivesoftware.smackx.pubsub.test.SingleUserTestCase;
 
 /**
- * 
+ *
  * @author Robin Collier
  *
  */
@@ -69,9 +69,9 @@ public class PublisherUseCases extends SingleUserTestCase
 	public void testSendNodeTrPay_WithPayload() throws XMPPException
 	{
 		LeafNode node = getPubnode(false, true);
-		node.send(new PayloadItem<SimplePayload>(null, 
+		node.send(new PayloadItem<SimplePayload>(null,
 						new SimplePayload("book", "pubsub:test:book", "<book xmlns='pubsub:test:book'><title>Lord of the Rings</title></book>")));
-		node.send(new PayloadItem<SimplePayload>("test" + System.currentTimeMillis(), 
+		node.send(new PayloadItem<SimplePayload>("test" + System.currentTimeMillis(),
 						new SimplePayload("book", "pubsub:test:book", "<book xmlns='pubsub:test:book'><title>Two Towers</title></book>")));
 	}
 
@@ -80,18 +80,18 @@ public class PublisherUseCases extends SingleUserTestCase
 		LeafNode node = getPubnode(true, false);
 		node.send(new Item());
 		node.send(new Item("test" + System.currentTimeMillis()));
-		node.send(new PayloadItem<SimplePayload>(null, 
+		node.send(new PayloadItem<SimplePayload>(null,
 						new SimplePayload("book", "pubsub:test:book", "<book xmlns='pubsub:test:book'><title>Lord of the Rings</title></book>")));
-		node.send(new PayloadItem<SimplePayload>("test" + System.currentTimeMillis(), 
+		node.send(new PayloadItem<SimplePayload>("test" + System.currentTimeMillis(),
 						new SimplePayload("book", "pubsub:test:book", "<book xmlns='pubsub:test:book'><title>Two Towers</title></book>")));
 	}
 
 	public void testSendPerPay_WithPayload() throws Exception
 	{
 		LeafNode node = getPubnode(true, true);
-		node.send(new PayloadItem<SimplePayload>(null, 
+		node.send(new PayloadItem<SimplePayload>(null,
 						new SimplePayload("book", "pubsub:test:book", "<book xmlns='pubsub:test:book'><title>Lord of the Rings</title></book>")));
-		node.send(new PayloadItem<SimplePayload>("test" + System.currentTimeMillis(), 
+		node.send(new PayloadItem<SimplePayload>("test" + System.currentTimeMillis(),
 						new SimplePayload("book", "pubsub:test:book", "<book xmlns='pubsub:test:book'><title>Two Towers</title></book>")));
 	}
 

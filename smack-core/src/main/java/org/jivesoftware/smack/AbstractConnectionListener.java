@@ -21,7 +21,7 @@ package org.jivesoftware.smack;
  * methods defined by the {@link ConnectionListener} interface. This is a
  * convenience class which should be used in case you do not need to implement
  * all methods.
- * 
+ *
  * @author Henning Staib
  */
 public class AbstractConnectionListener implements ConnectionListener {

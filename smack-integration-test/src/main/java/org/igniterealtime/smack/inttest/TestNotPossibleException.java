@@ -19,7 +19,7 @@ package org.igniterealtime.smack.inttest;
 public class TestNotPossibleException extends Exception {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 

@@ -44,7 +44,7 @@ import org.jxmpp.jid.impl.JidCreate;
 
 /**
  * Tests that verifies the correct behavior of the pre-approval implementation.
- * 
+ *
  * @see <a href="http://xmpp.org/rfcs/rfc6121.html#sub-preapproval">Pre-Approving a Subscription Request</a>
  * @author Tomáš Havlas
  */
@@ -145,7 +145,7 @@ public class SubscriptionPreApprovalTest extends InitSmackIm {
 
         /**
          * Overwrite this method to check if the received roster update request is valid.
-         * 
+         *
          * @param updateRequest the request which would be sent to the server.
          */
         abstract void verifyRosterUpdateRequest(RosterPacket updateRequest);
@@ -200,7 +200,7 @@ public class SubscriptionPreApprovalTest extends InitSmackIm {
 
         /**
          * Returns the exception or error if something went wrong.
-         * 
+         *
          * @return the Throwable exception or error that occurred.
          */
         public Throwable getException() {

@@ -146,7 +146,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * @return true if the presence type is available.
      */
     public boolean isAvailable() {
-        return type == Type.available;    
+        return type == Type.available;
     }
 
     /**
@@ -160,7 +160,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * @return true if the presence type is available and the presence mode is away, xa, or dnd.
      */
     public boolean isAway() {
-        return type == Type.available && (mode == Mode.away || mode == Mode.xa || mode == Mode.dnd); 
+        return type == Type.available && (mode == Mode.away || mode == Mode.xa || mode == Mode.dnd);
     }
 
     /**
@@ -378,7 +378,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
          * Converts a String into the corresponding types. Valid String values that can be converted
          * to types are: "available", "unavailable", "subscribe", "subscribed", "unsubscribe",
          * "unsubscribed" and "error".
-         * 
+         *
          * @param string the String value to covert.
          * @return the corresponding Type.
          * @throws IllegalArgumentException when not able to parse the string parameter
@@ -422,7 +422,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         /**
          * Converts a String into the corresponding types. Valid String values that can be converted
          * to types are: "chat", "available", "away", "xa", and "dnd".
-         * 
+         *
          * @param string the String value to covert.
          * @return the corresponding Type.
          * @throws IllegalArgumentException when not able to parse the string parameter

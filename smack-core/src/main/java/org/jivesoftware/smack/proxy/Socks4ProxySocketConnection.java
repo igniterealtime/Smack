@@ -27,7 +27,7 @@ import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Socket factory for socks4 proxy.
- *  
+ *
  * @author Atul Aggarwal
  */
 public class Socks4ProxySocketConnection implements ProxySocketConnection {
@@ -101,7 +101,7 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
     consulting IDENT, cf. RFC 1413.  If the request is granted, the SOCKS
     server makes a connection to the specified port of the destination host.
     A reply packet is sent to the client when this connection is established,
-    or when the request is rejected or the operation fails. 
+    or when the request is rejected or the operation fails.
 
            +----+----+----+----+----+----+----+----+
            | VN | CD | DSTPORT |      DSTIP        |
@@ -126,13 +126,13 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
             while (s < len) {
                 int i = in.read(buf, s, len - s);
                 if (i <= 0) {
-                    throw new ProxyException(ProxyInfo.ProxyType.SOCKS4, 
+                    throw new ProxyException(ProxyInfo.ProxyType.SOCKS4,
                         "stream is closed");
                 }
                 s += i;
             }
             if (buf[0] != 0) {
-                throw new ProxyException(ProxyInfo.ProxyType.SOCKS4, 
+                throw new ProxyException(ProxyInfo.ProxyType.SOCKS4,
                     "server returns VN " + buf[0]);
             }
             if (buf[1] != 90) {

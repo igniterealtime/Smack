@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 /**
  * Defines all the possible element types as defined for all the pubsub
  * schemas in all 3 namespaces.
- * 
+ *
  * @author Robin Collier
  */
 public enum PubSubElementType {

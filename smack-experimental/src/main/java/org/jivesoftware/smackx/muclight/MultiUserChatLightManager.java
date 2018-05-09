@@ -43,7 +43,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Multi-User Chat Light manager class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */
@@ -157,7 +157,7 @@ public final class MultiUserChatLightManager extends Manager {
 
     /**
      * Get users and rooms blocked.
-     * 
+     *
      * @param mucLightService
      * @return the list of users and rooms blocked
      * @throws NoResponseException
@@ -183,7 +183,7 @@ public final class MultiUserChatLightManager extends Manager {
 
     /**
      * Get rooms blocked.
-     * 
+     *
      * @param mucLightService
      * @return the list of rooms blocked
      * @throws NoResponseException
@@ -205,7 +205,7 @@ public final class MultiUserChatLightManager extends Manager {
 
     /**
      * Get users blocked.
-     * 
+     *
      * @param mucLightService
      * @return the list of users blocked
      * @throws NoResponseException
@@ -241,7 +241,7 @@ public final class MultiUserChatLightManager extends Manager {
 
     /**
      * Block a room.
-     * 
+     *
      * @param mucLightService
      * @param roomJid
      * @throws NoResponseException
@@ -258,7 +258,7 @@ public final class MultiUserChatLightManager extends Manager {
 
     /**
      * Block rooms.
-     * 
+     *
      * @param mucLightService
      * @param roomsJids
      * @throws NoResponseException
@@ -285,7 +285,7 @@ public final class MultiUserChatLightManager extends Manager {
 
     /**
      * Block a user.
-     * 
+     *
      * @param mucLightService
      * @param userJid
      * @throws NoResponseException
@@ -302,7 +302,7 @@ public final class MultiUserChatLightManager extends Manager {
 
     /**
      * Block users.
-     * 
+     *
      * @param mucLightService
      * @param usersJids
      * @throws NoResponseException
@@ -329,7 +329,7 @@ public final class MultiUserChatLightManager extends Manager {
 
     /**
      * Unblock a room.
-     * 
+     *
      * @param mucLightService
      * @param roomJid
      * @throws NoResponseException
@@ -346,7 +346,7 @@ public final class MultiUserChatLightManager extends Manager {
 
     /**
      * Unblock rooms.
-     * 
+     *
      * @param mucLightService
      * @param roomsJids
      * @throws NoResponseException
@@ -373,7 +373,7 @@ public final class MultiUserChatLightManager extends Manager {
 
     /**
      * Unblock a user.
-     * 
+     *
      * @param mucLightService
      * @param userJid
      * @throws NoResponseException
@@ -390,7 +390,7 @@ public final class MultiUserChatLightManager extends Manager {
 
     /**
      * Unblock users.
-     * 
+     *
      * @param mucLightService
      * @param usersJids
      * @throws NoResponseException

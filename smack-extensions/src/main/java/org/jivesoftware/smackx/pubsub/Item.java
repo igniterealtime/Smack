@@ -25,29 +25,29 @@ import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
  * This class represents an item that has been, or will be published to a
  * PubSub node.  An <tt>Item</tt> has several properties that are dependent
  * on the configuration of the node to which it has been or will be published.
- * 
+ *
  * <h3>An Item received from a node (via {@link LeafNode#getItems()} or {@link LeafNode#addItemEventListener(org.jivesoftware.smackx.pubsub.listener.ItemEventListener)}</h3>
  * <ul>
  * <li>Will always have an id (either user or server generated) unless node configuration has both
  * {@link ConfigureForm#isPersistItems()} and {@link ConfigureForm#isDeliverPayloads()}set to false.
- * <li>Will have a payload if the node configuration has {@link ConfigureForm#isDeliverPayloads()} set 
+ * <li>Will have a payload if the node configuration has {@link ConfigureForm#isDeliverPayloads()} set
  * to true, otherwise it will be null.
  * </ul>
- * 
+ *
  * <h3>An Item created to send to a node (via {@link LeafNode#publish()} or {@link LeafNode#publish()}</h3>
  * <ul>
- * <li>The id is optional, since the server will generate one if necessary, but should be used if it is 
+ * <li>The id is optional, since the server will generate one if necessary, but should be used if it is
  * meaningful in the context of the node.  This value must be unique within the node that it is sent to, since
  * resending an item with the same id will overwrite the one that already exists if the items are persisted.
  * <li>Will require payload if the node configuration has {@link ConfigureForm#isDeliverPayloads()} set
  * to true.
  * </ul>
- * 
+ *
  * <p>
  * To customise the payload object being returned from the {@link PayloadItem#getPayload()} method, you can
  * add a custom parser as explained in {@link ItemProvider}.
  * </p>
- * 
+ *
  * @author Robin Collier
  */
 public class Item extends NodeExtension {

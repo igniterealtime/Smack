@@ -28,7 +28,7 @@ package org.jivesoftware.smackx.jingleold.listeners;
  * listener when a new session request is received. In this case, the
  * <i>sessionRequested()</i> of the listener will be executed, and the listener
  * will be able to <i>accept()</i> or <i>decline()</i> the invitation.
- * 
+ *
   * @author Thiago Camargo
  */
 public interface JingleListener {

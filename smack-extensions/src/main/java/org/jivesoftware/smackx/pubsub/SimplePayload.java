@@ -29,9 +29,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * The default payload representation for {@link PayloadItem#getPayload()}.  It simply 
+ * The default payload representation for {@link PayloadItem#getPayload()}.  It simply
  * stores the XML payload as a string.
- *  
+ *
  * @author Robin Collier
  */
 public class SimplePayload implements ExtensionElement {
@@ -62,9 +62,9 @@ public class SimplePayload implements ExtensionElement {
     }
 
     /**
-     * Construct a <tt>SimplePayload</tt> object with the specified element name, 
+     * Construct a <tt>SimplePayload</tt> object with the specified element name,
      * namespace and content.  The content must be well formed XML.
-     * 
+     *
      * @param elementName The root element name (of the payload)
      * @param namespace The namespace of the payload, null if there is none
      * @param xmlPayload The payload data

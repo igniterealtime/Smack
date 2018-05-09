@@ -243,7 +243,7 @@ public class SynchronizationPoint<E extends Exception> {
      * {@link #reportSuccess()}, {@link #reportFailure()} and {@link #reportFailure(Exception)} will either set this
      * synchronization point to {@link State#Success} or {@link State#Failure}. If none of them is set after the
      * connections reply timeout, this method will set the state of {@link State#NoResponse}.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     private void waitForConditionOrTimeout() throws InterruptedException {
         long remainingWait = TimeUnit.MILLISECONDS.toNanos(connection.getReplyTimeout());

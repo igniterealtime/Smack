@@ -28,7 +28,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Block list IQ class.
- * 
+ *
  * @author Fernando Ramirez
  * @see <a href="http://xmpp.org/extensions/xep-0191.html">XEP-0191: Blocking
  *      Command</a>
@@ -49,7 +49,7 @@ public class BlockListIQ extends IQ {
 
     /**
      * Block list IQ constructor.
-     * 
+     *
      * @param jids
      */
     public BlockListIQ(List<Jid> jids) {
@@ -70,7 +70,7 @@ public class BlockListIQ extends IQ {
 
     /**
      * Get the JIDs as unmodifiable list.
-     * 
+     *
      * @return the blocked JIDs
      */
     public List<Jid> getBlockedJids() {

@@ -124,12 +124,12 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
 
     /**
      * Test if entity caps actually prevent a disco info request and reply.
-     * 
+     *
      * @throws XMPPException
-     * @throws InterruptedException 
-     * @throws NotConnectedException 
-     * @throws NoResponseException 
-     * 
+     * @throws InterruptedException
+     * @throws NotConnectedException
+     * @throws NoResponseException
+     *
      */
     @SmackIntegrationTest
     public void testPreventDiscoInfo() throws Exception {

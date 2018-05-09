@@ -182,9 +182,9 @@ public final class FileTransferNegotiator extends Manager {
      * @return The file transfer object that handles the transfer
      * @throws NoStreamMethodsOfferedException If there are either no stream methods contained in the packet, or
      *                       there is not an appropriate stream method.
-     * @throws NotConnectedException 
-     * @throws NoAcceptableTransferMechanisms 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws NoAcceptableTransferMechanisms
+     * @throws InterruptedException
      */
     public StreamNegotiator selectStreamNegotiator(
             FileTransferRequest request) throws NotConnectedException, NoStreamMethodsOfferedException, NoAcceptableTransferMechanisms, InterruptedException {
@@ -239,7 +239,7 @@ public final class FileTransferNegotiator extends Manager {
             throw new FileTransferException.NoAcceptableTransferMechanisms();
         }
 
-        if (isByteStream && isIBB) { 
+        if (isByteStream && isIBB) {
             return new FaultTolerantNegotiator(connection(),
                     byteStreamTransferManager,
                     inbandTransferManager);
@@ -296,10 +296,10 @@ public final class FileTransferNegotiator extends Manager {
      *                        user to respond. If they do not respond in time, this
      * @return Returns the stream negotiator selected by the peer.
      * @throws XMPPErrorException Thrown if there is an error negotiating the file transfer.
-     * @throws NotConnectedException 
-     * @throws NoResponseException 
-     * @throws NoAcceptableTransferMechanisms 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws NoResponseException
+     * @throws NoAcceptableTransferMechanisms
+     * @throws InterruptedException
      */
     public StreamNegotiator negotiateOutgoingTransfer(final Jid userID,
             final String streamID, final String fileName, final long size,

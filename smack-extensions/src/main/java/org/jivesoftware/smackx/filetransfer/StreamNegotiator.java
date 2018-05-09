@@ -152,7 +152,7 @@ public abstract class StreamNegotiator extends Manager {
      * @throws XMPPErrorException If an error occurs during this process an XMPPException is
      *                       thrown.
      * @throws InterruptedException If thread is interrupted.
-     * @throws SmackException 
+     * @throws SmackException
      */
     public abstract InputStream createIncomingStream(StreamInitiation initiation)
             throws XMPPErrorException, InterruptedException, SmackException;
@@ -168,9 +168,9 @@ public abstract class StreamNegotiator extends Manager {
      * @param target    The fully-qualified JID of the target or receiver of the file
      *                  transfer.
      * @return The negotiated stream ready for data.
-     * @throws SmackException 
-     * @throws XMPPException 
-     * @throws InterruptedException 
+     * @throws SmackException
+     * @throws XMPPException
+     * @throws InterruptedException
      */
     public abstract OutputStream createOutgoingStream(String streamID,
             Jid initiator, Jid target) throws SmackException, XMPPException, InterruptedException;

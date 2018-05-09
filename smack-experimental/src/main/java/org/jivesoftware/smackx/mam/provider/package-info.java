@@ -17,9 +17,9 @@
 
 /**
  * Provider classes of Message Archive Management (MAM) XEP-0313.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
  *      Archive Management</a>
- * 
+ *
  */
 package org.jivesoftware.smackx.mam.provider;

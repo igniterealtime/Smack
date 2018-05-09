@@ -452,7 +452,7 @@ public class PrivacyTest extends SmackTestCase {
 	    		// Look for the same server and original items
 	    		receivedItem = privacyItems.get(j);
 	    		index = 0;
-	    		while ((index < originalPrivacyItems.length) 
+	    		while ((index < originalPrivacyItems.length)
 	    				&& (originalPrivacyItems[index].getOrder() != receivedItem.getOrder())) {
 	    			index++;
 				}
@@ -484,7 +484,7 @@ public class PrivacyTest extends SmackTestCase {
     /**
      * This class supports automated tests about privacy communication from the
      * server to the client.
-     * 
+     *
      * @author Francisco Vives
      */
 

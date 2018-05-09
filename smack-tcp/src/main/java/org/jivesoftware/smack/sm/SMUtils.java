@@ -29,7 +29,7 @@ public class SMUtils {
      * "In the unlikely case that the number of stanzas handled during a stream management session exceeds the number
      * of digits that can be represented by the unsignedInt datatype as specified in XML Schema Part 2 [10]
      * (i.e., 2^32), the value of 'h' SHALL be reset from 2^32-1 back to zero (rather than being incremented to 2^32)."
-     * 
+     *
      * @param height
      * @return the incremented height
      */
@@ -41,7 +41,7 @@ public class SMUtils {
      * Calculates the delta of the last known stanza handled count and the new
      * reported stanza handled count while considering that the new value may be
      * wrapped after 2^32-1.
-     * 
+     *
      * @param reportedHandledCount
      * @param lastKnownHandledCount
      * @return the delta

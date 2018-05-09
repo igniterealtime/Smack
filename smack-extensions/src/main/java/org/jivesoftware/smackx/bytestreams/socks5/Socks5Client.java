@@ -41,7 +41,7 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
  * The SOCKS5 client class handles establishing a connection to a SOCKS5 proxy. Connecting to a
  * SOCKS5 proxy requires authentication. This implementation only supports the no-authentication
  * authentication method.
- * 
+ *
  * @author Henning Staib
  */
 public class Socks5Client {
@@ -56,7 +56,7 @@ public class Socks5Client {
 
     /**
      * Constructor for a SOCKS5 client.
-     * 
+     *
      * @param streamHost containing network settings of the SOCKS5 proxy
      * @param digest identifying the SOCKS5 Bytestream
      */
@@ -68,14 +68,14 @@ public class Socks5Client {
     /**
      * Returns the initialized socket that can be used to transfer data between peers via the SOCKS5
      * proxy.
-     * 
+     *
      * @param timeout timeout to connect to SOCKS5 proxy in milliseconds
      * @return socket the initialized socket
      * @throws IOException if initializing the socket failed due to a network error
      * @throws TimeoutException if connecting to SOCKS5 proxy timed out
      * @throws InterruptedException if the current thread was interrupted while waiting
      * @throws SmackException if the connection to the SOCKS5 proxy failed
-     * @throws XMPPException 
+     * @throws XMPPException
      */
     public Socket getSocket(int timeout) throws IOException, InterruptedException,
                     TimeoutException, SmackException, XMPPException {
@@ -139,10 +139,10 @@ public class Socks5Client {
      * Initializes the connection to the SOCKS5 proxy by negotiating authentication method and
      * requesting a stream for the given digest. Currently only the no-authentication method is
      * supported by the Socks5Client.
-     * 
+     *
      * @param socket connected to a SOCKS5 proxy
-     * @throws SmackException 
-     * @throws IOException 
+     * @throws SmackException
+     * @throws IOException
      */
     protected void establish(Socket socket) throws SmackException, IOException {
 
@@ -196,7 +196,7 @@ public class Socks5Client {
      * type "domain" and the digest as address.
      * <p>
      * (see <a href="http://tools.ietf.org/html/rfc1928">RFC1928</a>)
-     * 
+     *
      * @return SOCKS5 connection request message
      */
     private byte[] createSocks5ConnectRequest() {

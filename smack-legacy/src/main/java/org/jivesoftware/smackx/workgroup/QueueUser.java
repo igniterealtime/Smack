@@ -69,7 +69,7 @@ public class QueueUser {
     }
 
     /**
-     * Get the estimated remaining time. 
+     * Get the estimated remaining time.
      * @return the estimated time remaining of the customer in the queue in seconds, or -1 if
      *          if the update which this instance embodies is only a position update instead
      */

@@ -20,7 +20,7 @@ import java.util.Collection;
 
 /**
  * Used to load providers into the {@link ProviderManager}.
- * 
+ *
  * @author Robin Collier
  */
 public interface ProviderLoader {
@@ -40,7 +40,7 @@ public interface ProviderLoader {
     /**
      * Provides the stream feature providers information for the creation of stream feature
      * providers to be added to the <code>ProviderManager</code>.
-     * 
+     *
      * @return The extension provider info to load.
      */
     Collection<StreamFeatureProviderInfo> getStreamFeatureProviderInfo();

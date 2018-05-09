@@ -262,7 +262,7 @@ public abstract class ScramMechanism extends SASLMechanism {
     }
 
     /**
-     * 
+     *
      * @return the Channel Binding data.
      * @throws SmackException
      */
@@ -356,11 +356,11 @@ public abstract class ScramMechanism extends SASLMechanism {
 
     /**
      * RFC 5802 § 2.2 HMAC(key, str)
-     * 
+     *
      * @param key
      * @param str
      * @return the HMAC-SHA1 value of the input.
-     * @throws SmackException 
+     * @throws SmackException
      */
     private byte[] hmac(byte[] key, byte[] str) throws SmackException {
         try {
@@ -377,12 +377,12 @@ public abstract class ScramMechanism extends SASLMechanism {
      * Hi() is, essentially, PBKDF2 [RFC2898] with HMAC() as the pseudorandom function
      * (PRF) and with dkLen == output length of HMAC() == output length of H().
      * </p>
-     * 
+     *
      * @param normalizedPassword the normalized password.
      * @param salt
      * @param iterations
      * @return the result of the Hi function.
-     * @throws SmackException 
+     * @throws SmackException
      */
     private byte[] hi(String normalizedPassword, byte[] salt, int iterations) throws SmackException {
         byte[] key;

@@ -29,14 +29,14 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parser for a Jingle description.
- * 
+ *
  * @author Alvaro Saurin
  */
 public abstract class JingleDescriptionProvider extends ExtensionElementProvider<JingleDescription> {
 
     /**
      * Parse a iq/jingle/description/payload-type element.
-     * 
+     *
      * @param parser
      *            the input to parse
      * @return a payload type element
@@ -63,13 +63,13 @@ public abstract class JingleDescriptionProvider extends ExtensionElementProvider
 
     /**
      * Parse a iq/jingle/description element.
-     * 
+     *
      * @param parser
      *            the input to parse
      * @return a description element
-     * @throws SmackException 
-     * @throws IOException 
-     * @throws XmlPullParserException 
+     * @throws SmackException
+     * @throws IOException
+     * @throws XmlPullParserException
      */
     @Override
     public JingleDescription parse(XmlPullParser parser, int initialDepth) throws SmackException, XmlPullParserException, IOException {

@@ -50,7 +50,7 @@ import org.jxmpp.jid.JidTestUtil;
 
 /**
  * Test for Socks5ClientForInitiator class.
- * 
+ *
  * @author Henning Staib
  */
 public class Socks5ClientForInitiatorTest {
@@ -74,9 +74,9 @@ public class Socks5ClientForInitiatorTest {
 
     /**
      * Initialize fields used in the tests.
-     * @throws XMPPException 
-     * @throws SmackException 
-     * @throws InterruptedException 
+     * @throws XMPPException
+     * @throws SmackException
+     * @throws InterruptedException
      */
     @Before
     public void setup() throws XMPPException, SmackException, InterruptedException {
@@ -90,7 +90,7 @@ public class Socks5ClientForInitiatorTest {
 
     /**
      * If the target is not connected to the local SOCKS5 proxy an exception should be thrown.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -128,7 +128,7 @@ public class Socks5ClientForInitiatorTest {
 
     /**
      * Initiator and target should successfully connect to the local SOCKS5 proxy.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -197,7 +197,7 @@ public class Socks5ClientForInitiatorTest {
     /**
      * If the initiator can connect to a SOCKS5 proxy but activating the stream fails an exception
      * should be thrown.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -241,7 +241,7 @@ public class Socks5ClientForInitiatorTest {
     /**
      * Target and initiator should successfully connect to a "remote" SOCKS5 proxy and the initiator
      * activates the bytestream.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test

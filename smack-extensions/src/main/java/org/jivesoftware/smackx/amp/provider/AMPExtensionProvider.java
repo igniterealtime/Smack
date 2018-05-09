@@ -38,8 +38,8 @@ public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension>
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.
-     * @throws IOException 
-     * @throws XmlPullParserException 
+     * @throws IOException
+     * @throws XmlPullParserException
      */
     @Override
     public AMPExtension parse(XmlPullParser parser, int initialDepth)

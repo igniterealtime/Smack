@@ -44,21 +44,19 @@
 		<!--
 			Explaining the following Regex
 
-			^   \s*   [\S && [^  \*/]]+   \s+   $
-			|    |        |           |    |    +- End of Line (6)
-			|    |        |           |    +- At least one whitespace (5)
-			|    |        |           +- At least one or more of the previous character class (4)
-			|    |        +- All non-whitespace characters except '*' and '/' (to exclude javadoc) (3)
-			|    +- Zero or more space characters (2)
-			+- Start of Line (1)
+			           \s+   $
+			            |    +- End of Line (2)
+			            +- At least one whitespace (1)
 
 			Rationale:
-			Matches trailing whitespace (5) in lines containing at least one (4) non-whitespace character
-			that is not one of the characters used by javadoc (3).
+			Matches trailing whitespace (2) in lines containing at least one (1) non-whitespace character
 		-->
-		<property name="format" value="^\s*[\S&amp;&amp;[^\*/]]+\s+$"/>
+		<property name="format" value="\s+$"/>
 		<property name="message" value="Line containing trailing whitespace character(s)"/>
 	</module>
+	<!-- <module name="RegexpSingleline"> -->
+	<!--   <property name="format" value="fqdn"/> -->
+	<!-- </module> -->
 	<module name="RegexpSingleline">
 		<property name="format" value="^\s*//[^\s]"/>
 		<property name="message" value="Comment start ('//') followed by non-space character. You would not continue after a punctuation without a space, would you?"/>

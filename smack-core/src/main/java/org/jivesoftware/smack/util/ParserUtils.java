@@ -131,7 +131,7 @@ public class ParserUtils {
 
     /**
      * Get the boolean value of an argument.
-     * 
+     *
      * @param parser
      * @param name
      * @return the boolean value or null of no argument of the given name exists

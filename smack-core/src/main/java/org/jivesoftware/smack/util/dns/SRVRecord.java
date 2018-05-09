@@ -29,7 +29,7 @@ import org.minidns.dnsname.DnsName;
  * @see <a href="http://tools.ietf.org/html/rfc2782">RFC 2782: A DNS RR for specifying the location of services (DNS
  * SRV)</a>
  * @author Florian Schmaus
- * 
+ *
  */
 public class SRVRecord extends HostAddress implements Comparable<SRVRecord> {
 
@@ -38,7 +38,7 @@ public class SRVRecord extends HostAddress implements Comparable<SRVRecord> {
 
     /**
      * SRV Record constructor.
-     * 
+     *
      * @param fqdn Fully qualified domain name
      * @param port The connection port
      * @param priority Priority of the target host

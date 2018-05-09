@@ -25,13 +25,13 @@ import org.jivesoftware.smackx.xdata.Form;
 
 /**
  * Utility for extracting information from packets.
- * 
+ *
  * @author Robin Collier
  */
 public class NodeUtils {
-    /** 
+    /**
      * Get a {@link ConfigureForm} from a packet.
-     * 
+     *
      * @param packet
      * @param elem
      * @return The configuration form

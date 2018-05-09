@@ -90,13 +90,13 @@ public abstract class TransportResolver {
 
     /**
      * Initialize the Resolver.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public abstract void initialize() throws XMPPException, SmackException, InterruptedException;
 
     /**
      * Start a the resolution.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public abstract void resolve(JingleSession session) throws XMPPException, SmackException, InterruptedException;
 
@@ -211,8 +211,8 @@ public abstract class TransportResolver {
      * Trigger a new candidate added event.
      *
      * @param cand The candidate added to the list of candidates.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     protected void triggerCandidateAdded(TransportCandidate cand) throws NotConnectedException, InterruptedException {
         Iterator<TransportResolverListener> iter = getListenersList().iterator();
@@ -269,8 +269,8 @@ public abstract class TransportResolver {
      * Add a new transport candidate
      *
      * @param cand The candidate to add
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     protected void addCandidate(TransportCandidate cand) throws NotConnectedException, InterruptedException {
         synchronized (candidates) {
@@ -360,8 +360,8 @@ public abstract class TransportResolver {
 
     /**
      * Initialize Transport Resolver and wait until it is completely uninitialized.
-     * @throws SmackException 
-     * @throws InterruptedException 
+     * @throws SmackException
+     * @throws InterruptedException
      */
     public void initializeAndWait() throws XMPPException, SmackException, InterruptedException {
         this.initialize();

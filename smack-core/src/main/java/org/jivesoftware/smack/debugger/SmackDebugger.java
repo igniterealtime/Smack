@@ -26,12 +26,12 @@ import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jxmpp.jid.EntityFullJid;
 
 /**
- * Interface that allows for implementing classes to debug XML traffic. That is a GUI window that 
+ * Interface that allows for implementing classes to debug XML traffic. That is a GUI window that
  * displays XML traffic.<p>
- * 
- * Every implementation of this interface <b>must</b> have a public constructor with the following 
+ *
+ * Every implementation of this interface <b>must</b> have a public constructor with the following
  * arguments: XMPPConnection, Writer, Reader.
- * 
+ *
  * @author Gaston Dombiak
  */
 public abstract class SmackDebugger {
@@ -43,10 +43,10 @@ public abstract class SmackDebugger {
     }
 
     /**
-     * Called when a user has logged in to the server. The user could be an anonymous user, this 
-     * means that the user would be of the form host/resource instead of the form 
+     * Called when a user has logged in to the server. The user could be an anonymous user, this
+     * means that the user would be of the form host/resource instead of the form
      * user@host/resource.
-     * 
+     *
      * @param user the user@host/resource that has just logged in
      */
     // TODO: Should be replaced with a connection listener authenticed().

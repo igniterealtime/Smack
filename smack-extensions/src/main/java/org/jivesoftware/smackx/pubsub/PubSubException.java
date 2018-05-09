@@ -25,7 +25,7 @@ import org.jxmpp.jid.BareJid;
 public abstract class PubSubException extends SmackException {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -42,7 +42,7 @@ public abstract class PubSubException extends SmackException {
     public static class NotALeafNodeException extends PubSubException {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -62,7 +62,7 @@ public abstract class PubSubException extends SmackException {
     public static class NotAPubSubNodeException extends PubSubException {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 

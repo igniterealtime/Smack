@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParser;
  * element does not follow the specification, for example by putting a string where only integers are allowed, then a
  * {@link org.jivesoftware.smack.SmackException} should be thrown.
  * </p>
- * 
+ *
  * @author Florian Schmaus
  * @param <E> the type of the resulting element.
  */

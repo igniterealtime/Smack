@@ -61,7 +61,7 @@ public class AbstractError {
      * <p>
      * Returns the descriptive text of this SASLFailure in the system default language if possible. May return null.
      * </p>
-     * 
+     *
      * @return the descriptive text or null.
      */
     public String getDescriptiveText() {
@@ -81,7 +81,7 @@ public class AbstractError {
      * <p>
      * Returns the descriptive text of this SASLFailure in the given language. May return null if not available.
      * </p>
-     * 
+     *
      * @param xmllang the language.
      * @return the descriptive text or null.
      */
@@ -92,7 +92,7 @@ public class AbstractError {
 
     /**
      * Returns the first stanza extension that matches the specified element name and
-     * namespace, or <tt>null</tt> if it doesn't exist. 
+     * namespace, or <tt>null</tt> if it doesn't exist.
      *
      * @param elementName the XML element name of the stanza extension.
      * @param namespace the XML element namespace of the stanza extension.

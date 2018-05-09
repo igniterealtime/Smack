@@ -52,7 +52,7 @@ import org.powermock.reflect.Whitebox;
  * <p>
  * Tests the basic behavior of an In-Band Bytestream session along with sending data encapsulated in
  * IQ stanzas.
- * 
+ *
  * @author Henning Staib
  */
 public class InBandBytestreamSessionTest extends InitExtensions {
@@ -78,9 +78,9 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * Initialize fields used in the tests.
-     * @throws XMPPException 
-     * @throws SmackException 
-     * @throws InterruptedException 
+     * @throws XMPPException
+     * @throws SmackException
+     * @throws InterruptedException
      */
     @Before
     public void setup() throws XMPPException, SmackException, InterruptedException {
@@ -114,7 +114,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * Test the output stream write(byte[]) method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -140,7 +140,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * Test the output stream write(byte) method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -168,7 +168,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * Test the output stream write(byte[], int, int) method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -198,7 +198,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * Test the output stream flush() method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -226,7 +226,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * Test successive calls to the output stream flush() method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -255,7 +255,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * Test that the data is correctly chunked.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -298,7 +298,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * If the input stream is closed the output stream should not be closed as well.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -337,7 +337,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * Valid data packets should be confirmed.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -363,7 +363,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
     /**
      * If the data stanza has a sequence that is already used an 'unexpected-request' error should
      * be returned. See XEP-0047 Section 2.2.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -405,7 +405,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
     /**
      * If the data stanza contains invalid Base64 encoding an 'bad-request' error should be
      * returned. See XEP-0047 Section 2.2.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -441,7 +441,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
     /**
      * If a data stanza is received out of order the session should be closed. See XEP-0047 Section
      * 2.2.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -484,7 +484,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * Test the input stream read(byte[], int, int) method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -531,7 +531,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * Test the input stream read() method.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -575,7 +575,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * If the output stream is closed the input stream should not be closed as well.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -618,7 +618,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * If the input stream is closed concurrently there should be no deadlock.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test

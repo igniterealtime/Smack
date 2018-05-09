@@ -96,7 +96,7 @@ public class JingleProviderTest extends SmackTestCase {
 
 			System.out.println("Sent:     " + iqSent.toXML());
 			System.out.println("Received: " + jin.toXML());
-		}		
+		}
 	}
 
 	/**

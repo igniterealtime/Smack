@@ -21,7 +21,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
- * An XHTMLText represents formatted text. This class also helps to build valid 
+ * An XHTMLText represents formatted text. This class also helps to build valid
  * XHTML tags.
  *
  * @author Gaston Dombiak
@@ -34,7 +34,7 @@ public class XHTMLText {
 
     /**
      * Creates a new XHTMLText with body tag params.
-     * 
+     *
      * @param style the XHTML style of the body
      * @param lang the language of the body
      */
@@ -48,7 +48,7 @@ public class XHTMLText {
 
     /**
      * Appends a tag that indicates that an anchor section begins.
-     * 
+     *
      * @param href indicates the URL being linked to
      * @param style the XHTML style of the anchor
      * @return this.
@@ -74,7 +74,7 @@ public class XHTMLText {
     public static final String BLOCKQUOTE = "blockquote";
     /**
      * Appends a tag that indicates that a blockquote section begins.
-     * 
+     *
      * @param style the XHTML style of the blockquote
      * @return this.
      */
@@ -97,7 +97,7 @@ public class XHTMLText {
 
     /**
      * Appends a tag that indicates that a body section begins.
-     * 
+     *
      * @param style the XHTML style of the body
      * @param lang the language of the body
      * @return this.
@@ -191,7 +191,7 @@ public class XHTMLText {
 
     /**
      * Appends a tag that indicates a header, a title of a section of the message.
-     * 
+     *
      * @param level the level of the Header. It must be a value between 1 and 3
      * @param style the XHTML style of the blockquote
      *
@@ -209,7 +209,7 @@ public class XHTMLText {
 
     /**
      * Appends a tag that indicates that a header section ends.
-     * 
+     *
      * @param level the level of the Header. It must be a value between 1 and 3
      * @return this.
      */
@@ -225,7 +225,7 @@ public class XHTMLText {
 
     /**
      * Appends a tag that indicates an image.
-     * 
+     *
      * @param align how text should flow around the picture
      * @param alt the text to show if you don't show the picture
      * @param height how tall is the picture
@@ -250,7 +250,7 @@ public class XHTMLText {
 
     /**
      * Appends a tag that indicates the start of a new line item within a list.
-     * 
+     *
      * @param style the style of the line item
      *
      * @return this.
@@ -273,9 +273,9 @@ public class XHTMLText {
     }
 
     /**
-     * Appends a tag that creates an ordered list. "Ordered" means that the order of the items 
-     * in the list is important. To show this, browsers automatically number the list. 
-     * 
+     * Appends a tag that creates an ordered list. "Ordered" means that the order of the items
+     * in the list is important. To show this, browsers automatically number the list.
+     *
      * @param style the style of the ordered list
      *
      * @return this.
@@ -300,9 +300,9 @@ public class XHTMLText {
     public static final String UL = "ul";
 
     /**
-     * Appends a tag that creates an unordered list. The unordered part means that the items 
+     * Appends a tag that creates an unordered list. The unordered part means that the items
      * in the list are not in any particular order.
-     * 
+     *
      * @param style the style of the unordered list
      *
      * @return this.
@@ -327,9 +327,9 @@ public class XHTMLText {
     public static final String P = "p";
 
     /**
-     * Appends a tag that indicates the start of a new paragraph. This is usually rendered 
+     * Appends a tag that indicates the start of a new paragraph. This is usually rendered
      * with two carriage returns, producing a single blank line in between the two paragraphs.
-     * 
+     *
      * @param style the style of the paragraph
      *
      * @return this.
@@ -342,7 +342,7 @@ public class XHTMLText {
     }
 
     /**
-     * Appends a tag that indicates the end of a new paragraph. This is usually rendered 
+     * Appends a tag that indicates the end of a new paragraph. This is usually rendered
      * with two carriage returns, producing a single blank line in between the two paragraphs.
      *
      * @return this.
@@ -356,7 +356,7 @@ public class XHTMLText {
 
     /**
      * Appends a tag that indicates that an inlined quote section begins.
-     * 
+     *
      * @param style the style of the inlined quote
      *
      * @return this.
@@ -382,7 +382,7 @@ public class XHTMLText {
 
     /**
      * Appends a tag that allows to set the fonts for a span of text.
-     * 
+     *
      * @param style the style for a span of text
      *
      * @return this.
@@ -428,7 +428,7 @@ public class XHTMLText {
 
     /**
      * Appends a given text to the XHTMLText.
-     * 
+     *
      * @param textToAppend the text to append
      *
      * @return this.
@@ -440,8 +440,8 @@ public class XHTMLText {
 
     /**
      * Returns the text of the XHTMLText.
-     * 
-     * @return the text of the XHTMLText   
+     *
+     * @return the text of the XHTMLText
      */
     @Override
     public String toString() {

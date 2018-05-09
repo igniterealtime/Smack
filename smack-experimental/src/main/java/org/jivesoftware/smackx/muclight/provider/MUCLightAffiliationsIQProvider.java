@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * MUC Light affiliations IQ provider class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */

@@ -31,41 +31,41 @@ import org.jxmpp.jid.Jid;
  * <p>
  * There are two implementations of the interface. See {@link Socks5BytestreamRequest} and
  * {@link InBandBytestreamRequest}.
- * 
+ *
  * @author Henning Staib
  */
 public interface BytestreamRequest {
 
     /**
      * Returns the sender of the bytestream open request.
-     * 
+     *
      * @return the sender of the bytestream open request
      */
     Jid getFrom();
 
     /**
      * Returns the session ID of the bytestream open request.
-     * 
+     *
      * @return the session ID of the bytestream open request
      */
     String getSessionID();
 
     /**
      * Accepts the bytestream open request and returns the session to send/receive data.
-     * 
+     *
      * @return the session to send/receive data
      * @throws XMPPErrorException if an error occurred while accepting the bytestream request
      * @throws InterruptedException if the thread was interrupted while waiting in a blocking
      *         operation
-     * @throws NoResponseException 
-     * @throws SmackException 
+     * @throws NoResponseException
+     * @throws SmackException
      */
     BytestreamSession accept() throws InterruptedException, XMPPErrorException, SmackException;
 
     /**
      * Rejects the bytestream request by sending a reject error to the initiator.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     void reject() throws NotConnectedException, InterruptedException;
 

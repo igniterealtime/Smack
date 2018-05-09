@@ -120,7 +120,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
          * Sets Headers element.
          *
          * @param headers Headers element
-         * 
+         *
          * @return the builder
          */
         public B setHeaders(HeadersExtension headers) {

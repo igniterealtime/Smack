@@ -26,7 +26,7 @@ import org.jivesoftware.smackx.forward.packet.Forwarded;
  * Stanza extension for XEP-0280: Message Carbons. The extension
  * <a href="http://xmpp.org/extensions/xep-0280.html">XEP-0280</a> is
  * meant to synchronize a message flow to multiple presences of a user.
- * 
+ *
  * <p>
  * It accomplishes this by wrapping a {@link Forwarded} stanza in a <b>sent</b>
  * or <b>received</b> element
@@ -41,7 +41,7 @@ public class CarbonExtension implements ExtensionElement {
 
     /**
      * Construct a Carbon message extension.
-     * 
+     *
      * @param dir Determines if the carbon is being sent/received
      * @param fwd The forwarded message.
      */
@@ -130,7 +130,7 @@ public class CarbonExtension implements ExtensionElement {
 
     /**
      * Stanza extension indicating that a message may not be carbon-copied.  Adding this
-     * extension to any message will disallow that message from being copied. 
+     * extension to any message will disallow that message from being copied.
      */
     public static final class Private implements ExtensionElement {
         public static final Private INSTANCE = new Private();
@@ -157,7 +157,7 @@ public class CarbonExtension implements ExtensionElement {
         /**
          * Marks a message "private", so that it will not be carbon-copied, by adding private packet
          * extension to the message.
-         * 
+         *
          * @param message the message to add the private extension to
          */
         public static void addTo(Message message) {

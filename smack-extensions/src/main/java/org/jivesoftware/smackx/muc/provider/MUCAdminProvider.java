@@ -28,7 +28,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The MUCAdminProvider parses MUCAdmin packets. (@see MUCAdmin)
- * 
+ *
  * @author Gaston Dombiak
  */
 public class MUCAdminProvider extends IQProvider<MUCAdmin> {

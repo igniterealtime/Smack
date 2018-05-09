@@ -29,11 +29,11 @@ import org.jxmpp.jid.BareJid;
 /**
  * Represents a affiliation between a user and a node, where the {@link Type} defines
  * the type of affiliation.
- * 
- * Affiliations are retrieved from the {@link PubSubManager#getAffiliations()} method, which 
- * gets affiliations for the calling user, based on the identity that is associated with 
+ *
+ * Affiliations are retrieved from the {@link PubSubManager#getAffiliations()} method, which
+ * gets affiliations for the calling user, based on the identity that is associated with
  * the {@link XMPPConnection}.
- * 
+ *
  * @author Robin Collier
  */
 public class Affiliation implements ExtensionElement {
@@ -70,7 +70,7 @@ public class Affiliation implements ExtensionElement {
 
     /**
      * Constructs an affiliation.
-     * 
+     *
      * @param node The node the user is affiliated with.
      * @param affiliation the optional affiliation.
      */
@@ -80,7 +80,7 @@ public class Affiliation implements ExtensionElement {
 
     /**
      * Constructs an affiliation.
-     * 
+     *
      * @param node The node the user is affiliated with.
      * @param affiliation the optional affiliation.
      * @param namespace the affiliation's namespace.

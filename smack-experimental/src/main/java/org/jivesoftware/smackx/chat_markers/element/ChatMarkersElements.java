@@ -22,11 +22,11 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Chat Markers elements (XEP-0333).
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0333.html">XEP-0333: Chat
  *      Markers</a>
  * @author Fernando Ramirez
- * 
+ *
  */
 public class ChatMarkersElements {
 
@@ -34,7 +34,7 @@ public class ChatMarkersElements {
 
     /**
      * Markable extension class.
-     * 
+     *
      * @see <a href="http://xmpp.org/extensions/xep-0333.html">XEP-0333: Chat
      *      Markers</a>
      * @author Fernando Ramirez
@@ -74,7 +74,7 @@ public class ChatMarkersElements {
 
     /**
      * Received extension class.
-     * 
+     *
      * @see <a href="http://xmpp.org/extensions/xep-0333.html">XEP-0333: Chat
      *      Markers</a>
      * @author Fernando Ramirez
@@ -95,7 +95,7 @@ public class ChatMarkersElements {
 
         /**
          * Get the id.
-         * 
+         *
          * @return the id
          */
         public String getId() {
@@ -127,7 +127,7 @@ public class ChatMarkersElements {
 
     /**
      * Displayed extension class.
-     * 
+     *
      * @see <a href="http://xmpp.org/extensions/xep-0333.html">XEP-0333: Chat
      *      Markers</a>
      * @author Fernando Ramirez
@@ -148,7 +148,7 @@ public class ChatMarkersElements {
 
         /**
          * Get the id.
-         * 
+         *
          * @return the id
          */
         public String getId() {
@@ -180,7 +180,7 @@ public class ChatMarkersElements {
 
     /**
      * Acknowledged extension class.
-     * 
+     *
      * @see <a href="http://xmpp.org/extensions/xep-0333.html">XEP-0333: Chat
      *      Markers</a>
      * @author Fernando Ramirez
@@ -201,7 +201,7 @@ public class ChatMarkersElements {
 
         /**
          * Get the id.
-         * 
+         *
          * @return the id
          */
         public String getId() {

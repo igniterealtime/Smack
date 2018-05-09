@@ -25,7 +25,7 @@ import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 
 /**
- * 
+ *
  * @author Robin Collier
  *
  */

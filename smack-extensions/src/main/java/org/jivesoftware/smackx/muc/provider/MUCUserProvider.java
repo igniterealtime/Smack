@@ -30,7 +30,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * The MUCUserProvider parses packets with extended presence information about 
+ * The MUCUserProvider parses packets with extended presence information about
  * roles and affiliations.
  *
  * @author Gaston Dombiak
@@ -42,8 +42,8 @@ public class MUCUserProvider extends ExtensionElementProvider<MUCUser> {
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.
-     * @throws IOException 
-     * @throws XmlPullParserException 
+     * @throws IOException
+     * @throws XmlPullParserException
      */
     @Override
     public MUCUser parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {

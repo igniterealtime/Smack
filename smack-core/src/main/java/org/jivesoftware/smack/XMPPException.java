@@ -71,7 +71,7 @@ public abstract class XMPPException extends Exception {
 
     public static class XMPPErrorException extends XMPPException {
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 212790389529249604L;
         private final StanzaError error;
@@ -121,7 +121,7 @@ public abstract class XMPPException extends Exception {
         /**
          * Returns the XMPPError associated with this exception, or <tt>null</tt> if there isn't
          * one.
-         * 
+         *
          * @return the XMPPError associated with this exception.
          */
         public StanzaError getXMPPError() {
@@ -174,7 +174,7 @@ public abstract class XMPPException extends Exception {
     public static class FailedNonzaException extends XMPPException {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -198,7 +198,7 @@ public abstract class XMPPException extends Exception {
 
     public static class StreamErrorException extends XMPPException {
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 3400556867134848886L;
         private final StreamError streamError;
@@ -207,7 +207,7 @@ public abstract class XMPPException extends Exception {
          * Creates a new XMPPException with the stream error that was the root case of the
          * exception. When a stream error is received from the server then the underlying connection
          * will be closed by the server.
-         * 
+         *
          * @param streamError the root cause of the exception.
          */
         public StreamErrorException(StreamError streamError) {
@@ -220,7 +220,7 @@ public abstract class XMPPException extends Exception {
         /**
          * Returns the StreamError associated with this exception. The underlying TCP connection is
          * closed by the server after sending the stream error to the client.
-         * 
+         *
          * @return the StreamError associated with this exception.
          */
         public StreamError getStreamError() {

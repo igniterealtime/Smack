@@ -142,7 +142,7 @@ public class StanzaCollectorTest {
             consumer1.interrupt();
         } catch (InterruptedException e) {
         }
-        // We cannot guarantee that this is going to pass due to the possible issue of timing between consumer 1 
+        // We cannot guarantee that this is going to pass due to the possible issue of timing between consumer 1
         // and main, but the probability is extremely remote.
         assertNull(collector.pollResult());
     }

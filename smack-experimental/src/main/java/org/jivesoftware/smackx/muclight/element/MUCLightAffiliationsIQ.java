@@ -30,7 +30,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * MUC Light affiliations response IQ class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */
@@ -44,7 +44,7 @@ public class MUCLightAffiliationsIQ extends IQ {
 
     /**
      * MUC Light affiliations response IQ constructor.
-     * 
+     *
      * @param version
      * @param affiliations
      */
@@ -70,7 +70,7 @@ public class MUCLightAffiliationsIQ extends IQ {
 
     /**
      * Returns the version.
-     * 
+     *
      * @return the version
      */
     public String getVersion() {
@@ -79,7 +79,7 @@ public class MUCLightAffiliationsIQ extends IQ {
 
     /**
      * Returns the room affiliations.
-     * 
+     *
      * @return the affiliations of the room
      */
     public HashMap<Jid, MUCLightAffiliation> getAffiliations() {

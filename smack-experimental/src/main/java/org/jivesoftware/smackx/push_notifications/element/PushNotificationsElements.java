@@ -26,11 +26,11 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Push Notifications elements.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0357.html">XEP-0357: Push
  *      Notifications</a>
  * @author Fernando Ramirez
- * 
+ *
  */
 public class PushNotificationsElements {
 
@@ -61,7 +61,7 @@ public class PushNotificationsElements {
 
         /**
          * Get the node.
-         * 
+         *
          * @return the node
          */
         public String getNode() {
@@ -70,7 +70,7 @@ public class PushNotificationsElements {
 
         /**
          * Get the user JID.
-         * 
+         *
          * @return the user JID
          */
         public Jid getUserJid() {

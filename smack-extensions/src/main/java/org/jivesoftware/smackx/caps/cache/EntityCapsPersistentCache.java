@@ -21,7 +21,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 public interface EntityCapsPersistentCache {
     /**
      * Add an DiscoverInfo to the persistent Cache.
-     * 
+     *
      * @param nodeVer
      * @param info
      */

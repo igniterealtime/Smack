@@ -33,7 +33,7 @@ import org.jxmpp.jid.parts.Resourcepart;
  * <p>
  * A builder for this can be obtained by calling {@link MultiUserChat#getEnterConfigurationBuilder(Resourcepart)}.
  * </p>
- * 
+ *
  * @author Florian Schmaus
  * @since 4.2
  */
@@ -140,7 +140,7 @@ public final class MucEnterConfiguration {
 
         /**
          * Request that that MUC is going to sent us no history when joining.
-         * 
+         *
          * @return a reference to this builder.
          */
         public Builder requestNoHistory() {
@@ -153,7 +153,7 @@ public final class MucEnterConfiguration {
 
         /**
          * Sets the total number of characters to receive in the history.
-         * 
+         *
          * @param maxChars the total number of characters to receive in the history.
          * @return a reference to this builder.
          */
@@ -164,7 +164,7 @@ public final class MucEnterConfiguration {
 
         /**
          * Sets the total number of messages to receive in the history.
-         * 
+         *
          * @param maxStanzas the total number of messages to receive in the history.
          * @return a reference to this builder.
          */
@@ -174,11 +174,11 @@ public final class MucEnterConfiguration {
         }
 
         /**
-         * Sets the number of seconds to use to filter the messages received during that time. 
-         * In other words, only the messages received in the last "X" seconds will be included in 
+         * Sets the number of seconds to use to filter the messages received during that time.
+         * In other words, only the messages received in the last "X" seconds will be included in
          * the history.
-         * 
-         * @param seconds the number of seconds to use to filter the messages received during 
+         *
+         * @param seconds the number of seconds to use to filter the messages received during
          * that time.
          * @return a reference to this builder.
          */
@@ -188,10 +188,10 @@ public final class MucEnterConfiguration {
         }
 
         /**
-         * Sets the since date to use to filter the messages received during that time. 
-         * In other words, only the messages received since the datetime specified will be 
+         * Sets the since date to use to filter the messages received during that time.
+         * In other words, only the messages received since the datetime specified will be
          * included in the history.
-         * 
+         *
          * @param since the since date to use to filter the messages received during that time.
          * @return a reference to this builder.
          */

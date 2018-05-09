@@ -20,7 +20,7 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
 
 /**
  * Inteface used to dispatch a event when a Jingle session is created.
- * 
+ *
  * @author Thiago Camargo
  */
 public interface CreatedJingleSessionListener {

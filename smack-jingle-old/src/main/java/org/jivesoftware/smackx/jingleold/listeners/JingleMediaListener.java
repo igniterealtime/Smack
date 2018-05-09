@@ -30,8 +30,8 @@ public interface JingleMediaListener extends JingleListener {
      * Notification that the jmf has been negotiated and established.
      *
      * @param pt The payload type agreed.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     void mediaEstablished(PayloadType pt) throws NotConnectedException, InterruptedException;
 

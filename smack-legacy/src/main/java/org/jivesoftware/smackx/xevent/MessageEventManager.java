@@ -42,10 +42,10 @@ import org.jivesoftware.smackx.xevent.packet.MessageEvent;
 import org.jxmpp.jid.Jid;
 
 /**
- * 
+ *
  * Manages message events requests and notifications. A MessageEventManager provides a high
- * level access to request for notifications and send event notifications. It also provides 
- * an easy way to hook up custom logic when requests or notifications are received. 
+ * level access to request for notifications and send event notifications. It also provides
+ * an easy way to hook up custom logic when requests or notifications are received.
  *
  * @author Gaston Dombiak
  * @see <a href="http://xmpp.org/extensions/xep-0022.html">XEP-22: Message Events</a>
@@ -105,7 +105,7 @@ public final class MessageEventManager extends Manager {
      * Adds event notification requests to a message. For each event type that
      * the user wishes event notifications from the message recipient for, <tt>true</tt>
      * should be passed in to this method.
-     * 
+     *
      * @param message the message to add the requested notifications.
      * @param offline specifies if the offline event is requested.
      * @param delivered specifies if the delivered event is requested.
@@ -206,11 +206,11 @@ public final class MessageEventManager extends Manager {
 
     /**
      * Sends the notification that the message was delivered to the sender of the original message.
-     * 
+     *
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void sendDeliveredNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
@@ -226,11 +226,11 @@ public final class MessageEventManager extends Manager {
 
     /**
      * Sends the notification that the message was displayed to the sender of the original message.
-     * 
+     *
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void sendDisplayedNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
@@ -246,11 +246,11 @@ public final class MessageEventManager extends Manager {
 
     /**
      * Sends the notification that the receiver of the message is composing a reply.
-     * 
+     *
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void sendComposingNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
@@ -266,11 +266,11 @@ public final class MessageEventManager extends Manager {
 
     /**
      * Sends the notification that the receiver of the message has cancelled composing a reply.
-     * 
+     *
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public void sendCancelledNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send

@@ -31,7 +31,7 @@ public interface MessageEventNotificationListener {
 
     /**
      * Called when a notification of message delivered is received.
-     *  
+     *
      * @param from the user that sent the notification.
      * @param packetID the id of the message that was sent.
      */
@@ -39,16 +39,16 @@ public interface MessageEventNotificationListener {
 
     /**
      * Called when a notification of message displayed is received.
-     *  
+     *
      * @param from the user that sent the notification.
      * @param packetID the id of the message that was sent.
      */
     void displayedNotification(Jid from, String packetID);
 
     /**
-     * Called when a notification that the receiver of the message is composing a reply is 
+     * Called when a notification that the receiver of the message is composing a reply is
      * received.
-     *  
+     *
      * @param from the user that sent the notification.
      * @param packetID the id of the message that was sent.
      */
@@ -56,16 +56,16 @@ public interface MessageEventNotificationListener {
 
     /**
      * Called when a notification that the receiver of the message is offline is received.
-     *  
+     *
      * @param from the user that sent the notification.
      * @param packetID the id of the message that was sent.
      */
     void offlineNotification(Jid from, String packetID);
 
     /**
-     * Called when a notification that the receiver of the message cancelled the reply 
+     * Called when a notification that the receiver of the message cancelled the reply
      * is received.
-     *  
+     *
      * @param from the user that sent the notification.
      * @param packetID the id of the message that was sent.
      */

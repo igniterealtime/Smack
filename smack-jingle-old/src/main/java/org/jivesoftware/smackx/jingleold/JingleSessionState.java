@@ -25,11 +25,11 @@ import org.jivesoftware.smackx.jingleold.packet.Jingle;
  *  Implement the Jingle Session state using the State Behavioral pattern.
  *  (From the book Design Patterns, AKA GoF.)
  *  These classes also employ the Flyweight and Singleton patterns as recommended for the State pattern by GoF.
- *  
+ *
  *  There seems to be three ways to go with the State pattern in Java: interface, abstract class and enums.
  *  Most of the accepted models use abstract classes.  It wasn't clear to me that any of the three models was
  *  superior, so I went with the most common example.
- *  
+ *
  *  @author Jeff Williams
  */
 public abstract class JingleSessionState {
@@ -55,7 +55,7 @@ public abstract class JingleSessionState {
     /**
      * Process an incoming Jingle Packet.
      * When you look at the GoF State pattern this method roughly corresponds to example on p310: ProcessOctect().
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public abstract IQ processJingle(JingleSession session, Jingle jingle, JingleActionEnum action) throws SmackException, InterruptedException;
 

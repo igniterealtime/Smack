@@ -83,10 +83,10 @@ public class MucConfigFormManager {
      * </p>
      *
      * @param multiUserChat the MUC for this configuration form.
-     * @throws InterruptedException 
-     * @throws NotConnectedException 
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
+     * @throws InterruptedException
+     * @throws NotConnectedException
+     * @throws XMPPErrorException
+     * @throws NoResponseException
      */
     MucConfigFormManager(MultiUserChat multiUserChat) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {

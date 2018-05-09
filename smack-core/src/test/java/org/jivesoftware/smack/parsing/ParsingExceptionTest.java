@@ -53,7 +53,7 @@ public class ParsingExceptionTest {
 
     @Test
     public void consumeUnparsedInput() throws Exception {
-        final String MESSAGE_EXCEPTION_ELEMENT = 
+        final String MESSAGE_EXCEPTION_ELEMENT =
                         "<" + ThrowException.ELEMENT + " xmlns='" + ThrowException.NAMESPACE + "'>" +
                             "<nothingInHere>" +
                             "</nothingInHere>" +

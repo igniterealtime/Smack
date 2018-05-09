@@ -27,7 +27,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Block contact IQ class.
- * 
+ *
  * @author Fernando Ramirez
  * @see <a href="http://xmpp.org/extensions/xep-0191.html">XEP-0191: Blocking
  *      Command</a>
@@ -48,7 +48,7 @@ public class BlockContactsIQ extends IQ {
 
     /**
      * Block list IQ constructor.
-     * 
+     *
      * @param jids
      */
     public BlockContactsIQ(List<Jid> jids) {
@@ -59,7 +59,7 @@ public class BlockContactsIQ extends IQ {
 
     /**
      * Get the JID.
-     * 
+     *
      * @return the list of JIDs
      */
     public List<Jid> getJids() {

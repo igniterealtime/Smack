@@ -27,7 +27,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parses the header element as defined in <a href="http://xmpp.org/extensions/xep-0131">Stanza Headers and Internet Metadata (SHIM)</a>.
- * 
+ *
  * @author Robin Collier
  */
 public class HeaderProvider extends ExtensionElementProvider<Header> {

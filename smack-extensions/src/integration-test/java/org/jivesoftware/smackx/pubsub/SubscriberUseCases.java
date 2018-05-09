@@ -30,7 +30,7 @@ import org.jivesoftware.smackx.FormField;
 import org.jivesoftware.smackx.pubsub.test.SingleUserTestCase;
 
 /**
- * 
+ *
  * @author Robin Collier
  *
  */
@@ -138,17 +138,17 @@ public class SubscriberUseCases extends SingleUserTestCase
 	}
 
 //	public void testSubscribeWithConfig() throws Exception
-//	{		
+//	{
 //		LeafNode node = getPubnode(false, false);
 //
 //		Subscription sub = node.subscribe(getBareJID(0));
-//		
+//
 //		assertEquals(getBareJID(0), sub.getJid());
 //		assertNotNull(sub.getId());
 //		assertEquals(node.getId(), sub.getNode());
 //		assertEquals(true, sub.isConfigRequired());
 //	}
-//	
+//
 	public void testGetItems() throws Exception
 	{
 		LeafNode node = getPubnode(true, false);
@@ -197,7 +197,7 @@ public class SubscriberUseCases extends SingleUserTestCase
 		List<PayloadItem<SimplePayload>> payloadItems = payloadNode.getItems();
 		Map<String, PayloadItem<SimplePayload>> idMap = new HashMap<String, PayloadItem<SimplePayload>>();
 
-		for (PayloadItem<SimplePayload> payloadItem : payloadItems) 
+		for (PayloadItem<SimplePayload> payloadItem : payloadItems)
 		{
 			idMap.put(payloadItem.getId(), payloadItem);
 		}
@@ -262,9 +262,9 @@ public class SubscriberUseCases extends SingleUserTestCase
 		assertTrue(listContainsId("5", items));
 	}
 
-	private static boolean listContainsId(String id, List<Item> items) 
+	private static boolean listContainsId(String id, List<Item> items)
 	{
-		for (Item item : items) 
+		for (Item item : items)
 		{
 			if (item.getId().equals(id))
 				return true;

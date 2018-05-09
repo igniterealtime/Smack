@@ -34,7 +34,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 
 /**
  * Tests the DataForms extensions.
- * 
+ *
  * @author Gaston Dombiak
  */
 public class FormTest extends AbstractSmackIntegrationTest {
@@ -48,8 +48,8 @@ public class FormTest extends AbstractSmackIntegrationTest {
      * 2. Retrieve the form to fill out, complete it and return it to the requestor
      * 3. Retrieve the completed form and check that everything is OK
      *
-     * @throws InterruptedException 
-     * @throws NotConnectedException 
+     * @throws InterruptedException
+     * @throws NotConnectedException
      */
     @SuppressWarnings("deprecation")
     @SmackIntegrationTest

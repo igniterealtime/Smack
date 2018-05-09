@@ -174,8 +174,8 @@ public class STUN extends SimpleIQ {
      *
      * @param connection
      * @return the STUN server address
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     @SuppressWarnings("deprecation")
     public static STUN getSTUNServer(XMPPConnection connection) throws NotConnectedException, InterruptedException {
@@ -202,9 +202,9 @@ public class STUN extends SimpleIQ {
      *
      * @param connection the connection
      * @return true if the server support STUN
-     * @throws SmackException 
-     * @throws XMPPException 
-     * @throws InterruptedException 
+     * @throws SmackException
+     * @throws XMPPException
+     * @throws InterruptedException
      */
     public static boolean serviceAvailable(XMPPConnection connection) throws XMPPException, SmackException, InterruptedException {
 

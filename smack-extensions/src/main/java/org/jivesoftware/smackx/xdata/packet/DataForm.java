@@ -84,17 +84,17 @@ public class DataForm implements ExtensionElement {
     /**
      * Returns the meaning of the data within the context. The data could be part of a form
      * to fill out, a form submission or data results.
-     * 
+     *
      * @return the form's type.
      */
     public Type getType() {
-        return type; 
+        return type;
     }
 
     /**
-     * Returns the description of the data. It is similar to the title on a web page or an X 
+     * Returns the description of the data. It is similar to the title on a web page or an X
      * window.  You can put a &lt;title/&gt; on either a form to fill out, or a set of data results.
-     * 
+     *
      * @return description of the data.
      */
     public String getTitle() {
@@ -102,11 +102,11 @@ public class DataForm implements ExtensionElement {
     }
 
     /**
-     * Returns a List of the list of instructions that explain how to fill out the form and 
-     * what the form is about. The dataform could include multiple instructions since each 
-     * instruction could not contain newlines characters. Join the instructions together in order 
+     * Returns a List of the list of instructions that explain how to fill out the form and
+     * what the form is about. The dataform could include multiple instructions since each
+     * instruction could not contain newlines characters. Join the instructions together in order
      * to show them to the user.
-     * 
+     *
      * @return a List of the list of instructions that explain how to fill out the form.
      */
     public List<String> getInstructions() {
@@ -117,7 +117,7 @@ public class DataForm implements ExtensionElement {
 
     /**
      * Returns the fields that will be returned from a search.
-     * 
+     *
      * @return fields that will be returned from a search.
      */
     public ReportedData getReportedData() {
@@ -185,7 +185,7 @@ public class DataForm implements ExtensionElement {
     /**
      * Sets the description of the data. It is similar to the title on a web page or an X window.
      * You can put a &lt;title/&gt; on either a form to fill out, or a set of data results.
-     * 
+     *
      * @param title description of the data.
      */
     public void setTitle(String title) {
@@ -193,10 +193,10 @@ public class DataForm implements ExtensionElement {
     }
 
     /**
-     * Sets the list of instructions that explain how to fill out the form and what the form is 
-     * about. The dataform could include multiple instructions since each instruction could not 
-     * contain newlines characters. 
-     * 
+     * Sets the list of instructions that explain how to fill out the form and what the form is
+     * about. The dataform could include multiple instructions since each instruction could not
+     * contain newlines characters.
+     *
      * @param instructions list of instructions that explain how to fill out the form.
      */
     public void setInstructions(List<String> instructions) {
@@ -208,7 +208,7 @@ public class DataForm implements ExtensionElement {
 
     /**
      * Sets the fields that will be returned from a search.
-     * 
+     *
      * @param reportedData the fields that will be returned from a search.
      */
     public void setReportedData(ReportedData reportedData) {
@@ -217,7 +217,7 @@ public class DataForm implements ExtensionElement {
 
     /**
      * Adds a new field as part of the form.
-     * 
+     *
      * @param field the field to add to the form.
      */
     public void addField(FormField field) {
@@ -235,10 +235,10 @@ public class DataForm implements ExtensionElement {
     }
 
     /**
-     * Adds a new instruction to the list of instructions that explain how to fill out the form 
-     * and what the form is about. The dataform could include multiple instructions since each 
-     * instruction could not contain newlines characters. 
-     * 
+     * Adds a new instruction to the list of instructions that explain how to fill out the form
+     * and what the form is about. The dataform could include multiple instructions since each
+     * instruction could not contain newlines characters.
+     *
      * @param instruction the new instruction that explain how to fill out the form.
      */
     public void addInstruction(String instruction) {
@@ -249,7 +249,7 @@ public class DataForm implements ExtensionElement {
 
     /**
      * Adds a new item returned from a search.
-     * 
+     *
      * @param item the item returned from a search.
      */
     public void addItem(Item item) {
@@ -329,8 +329,8 @@ public class DataForm implements ExtensionElement {
     }
 
     /**
-     * 
-     * Represents the fields that will be returned from a search. This information is useful when 
+     *
+     * Represents the fields that will be returned from a search. This information is useful when
      * you try to use the jabber:iq:search namespace to return dynamic form information.
      *
      * @author Gaston Dombiak
@@ -346,7 +346,7 @@ public class DataForm implements ExtensionElement {
 
         /**
          * Returns the fields returned from a search.
-         * 
+         *
          * @return the fields returned from a search.
          */
         public List<FormField> getFields() {
@@ -366,7 +366,7 @@ public class DataForm implements ExtensionElement {
     }
 
     /**
-     * 
+     *
      * Represents items of reported data.
      *
      * @author Gaston Dombiak
@@ -382,7 +382,7 @@ public class DataForm implements ExtensionElement {
 
         /**
          * Returns the fields that define the data that goes with the item.
-         * 
+         *
          * @return the fields that define the data that goes with the item.
          */
         public List<FormField> getFields() {

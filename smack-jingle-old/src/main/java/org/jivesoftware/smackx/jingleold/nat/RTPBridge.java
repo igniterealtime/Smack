@@ -392,8 +392,8 @@ public class RTPBridge extends IQ {
      * @param connection
      * @param sessionID
      * @return the new RTPBridge
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     @SuppressWarnings("deprecation")
     public static RTPBridge getRTPBridge(XMPPConnection connection, String sessionID) throws NotConnectedException, InterruptedException {
@@ -420,10 +420,10 @@ public class RTPBridge extends IQ {
      *
      * @param connection
      * @return true if the server supports the RTPBridge service
-     * @throws XMPPErrorException 
-     * @throws NoResponseException 
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     public static boolean serviceAvailable(XMPPConnection connection) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
@@ -460,8 +460,8 @@ public class RTPBridge extends IQ {
      *
      * @param connection
      * @return the RTPBridge
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     @SuppressWarnings("deprecation")
     public static RTPBridge relaySession(XMPPConnection connection, String sessionID, String pass, TransportCandidate proxyCandidate, TransportCandidate localCandidate) throws NotConnectedException, InterruptedException {
@@ -497,8 +497,8 @@ public class RTPBridge extends IQ {
      *
      * @param xmppConnection
      * @return public IP String or null if not found
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     @SuppressWarnings("deprecation")
     public static String getPublicIP(XMPPConnection xmppConnection) throws NotConnectedException, InterruptedException {

@@ -27,7 +27,7 @@ import org.junit.Test;
 
 /**
  * Tests the behavior of the roster if the connection is not authenticated yet.
- * 
+ *
  * @author Henning Staib
  */
 public class RosterOfflineTest {

@@ -78,7 +78,7 @@ public class RosterSmackTest extends SmackTestCase {
 
                 @Override
                 public void entriesAdded(Collection<String> addresses) {}
-            }; 
+            };
 
             roster.addRosterListener(latchCounter);
 
@@ -422,7 +422,7 @@ public class RosterSmackTest extends SmackTestCase {
 
     /**
      * Test presence management.<p>
-     * 
+     *
      * 1. Log in user0 from a client and user1 from 2 clients
      * 2. Create presence subscription of type BOTH between 2 users
      * 3. Check that presence is correctly delivered to both users
@@ -699,12 +699,12 @@ public class RosterSmackTest extends SmackTestCase {
         public void entriesUpdated(Collection<String> addresses) {}
 
         @Override
-        public void entriesDeleted(Collection<String> addresses) {                
+        public void entriesDeleted(Collection<String> addresses) {
             latch.countDown();
         }
 
         @Override
         public void entriesAdded(Collection<String> addresses) {}
-    }; 
+    };
 
 }

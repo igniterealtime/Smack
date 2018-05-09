@@ -27,15 +27,15 @@ import org.jivesoftware.smack.UnparseableStanza;
  * <p>
  * Smack provides 2 predefined ParsingExceptionCallback's: {@link ExceptionLoggingCallback} and {@link ExceptionThrowingCallback}.
  * </p>
- * 
+ *
  * @author Florian Schmaus
- * 
+ *
  */
 public interface ParsingExceptionCallback {
 
     /**
      * Called when parsing a stanza caused an exception.
-     * 
+     *
      * @param stanzaData the raw stanza data that caused the exception
      * @throws Exception
      */

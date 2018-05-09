@@ -25,10 +25,10 @@ import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 import org.jivesoftware.smackx.pubsub.RetractItem;
 
 /**
- * Parses the <b>retract</b> element out of the message event stanza from 
+ * Parses the <b>retract</b> element out of the message event stanza from
  * the server as specified in the <a href="http://xmpp.org/extensions/xep-0060.html#schemas-event">retract schema</a>.
  * This element is a child of the <b>items</b> element.
- * 
+ *
  * @author Robin Collier
  */
 public class RetractEventProvider extends EmbeddedExtensionProvider<RetractItem> {

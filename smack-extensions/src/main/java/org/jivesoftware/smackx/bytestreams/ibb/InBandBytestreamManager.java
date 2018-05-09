@@ -79,7 +79,7 @@ import org.jxmpp.jid.Jid;
  * <p>
  * If no {@link InBandBytestreamListener}s are registered, all incoming In-Band bytestream requests
  * will be rejected by returning a &lt;not-acceptable/&gt; error to the initiator.
- * 
+ *
  * @author Henning Staib
  */
 public final class InBandBytestreamManager extends Manager implements BytestreamManager {
@@ -186,7 +186,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     /**
      * Returns the InBandBytestreamManager to handle In-Band Bytestreams for a given
      * {@link XMPPConnection}.
-     * 
+     *
      * @param connection the XMPP connection
      * @return the InBandBytestreamManager for the given XMPP connection
      */
@@ -203,7 +203,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
 
     /**
      * Constructor.
-     * 
+     *
      * @param connection the XMPP connection
      */
     private InBandBytestreamManager(XMPPConnection connection) {
@@ -233,7 +233,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * Socks5 bytestream requests sent in the context of <a
      * href="http://xmpp.org/extensions/xep-0096.html">XEP-0096</a> file transfer. (See
      * {@link FileTransferManager})
-     * 
+     *
      * @param listener the listener to register
      */
     @Override
@@ -244,7 +244,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     /**
      * Removes the given listener from the list of listeners for all incoming In-Band Bytestream
      * requests.
-     * 
+     *
      * @param listener the listener to remove
      */
     @Override
@@ -266,7 +266,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * Socks5 bytestream requests sent in the context of <a
      * href="http://xmpp.org/extensions/xep-0096.html">XEP-0096</a> file transfer. (See
      * {@link FileTransferManager})
-     * 
+     *
      * @param listener the listener to register
      * @param initiatorJID the JID of the user that wants to establish an In-Band Bytestream
      */
@@ -277,7 +277,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
 
     /**
      * Removes the listener for the given user.
-     * 
+     *
      * @param initiatorJID the JID of the user the listener should be removed
      */
     @Override
@@ -292,7 +292,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * <p>
      * This method should be used if you are awaiting an In-Band Bytestream request as a reply to
      * another stanza (e.g. file transfer).
-     * 
+     *
      * @param sessionID to be ignored
      */
     public void ignoreBytestreamRequestOnce(String sessionID) {
@@ -305,7 +305,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * <p>
      * The recommended default block size is 4096 bytes. See <a
      * href="http://xmpp.org/extensions/xep-0047.html#usage">XEP-0047</a> Section 5.
-     * 
+     *
      * @return the default block size
      */
     public int getDefaultBlockSize() {
@@ -319,7 +319,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * The default block size must be between 1 and 65535 bytes. The recommended default block size
      * is 4096 bytes. See <a href="http://xmpp.org/extensions/xep-0047.html#usage">XEP-0047</a>
      * Section 5.
-     * 
+     *
      * @param defaultBlockSize the default block size to set
      */
     public void setDefaultBlockSize(int defaultBlockSize) {
@@ -338,7 +338,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * block size.
      * <p>
      * The default maximum block size is 65535 bytes.
-     * 
+     *
      * @return the maximum block size
      */
     public int getMaximumBlockSize() {
@@ -353,7 +353,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * Incoming In-Band Bytestream open request will be rejected with an
      * &lt;resource-constraint/&gt; error if the block size is greater then the maximum allowed
      * block size.
-     * 
+     *
      * @param maximumBlockSize the maximum block size to set
      */
     public void setMaximumBlockSize(int maximumBlockSize) {
@@ -369,7 +369,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * <p>
      * Default is {@link StanzaType#IQ}. See <a
      * href="http://xmpp.org/extensions/xep-0047.html#message">XEP-0047</a> Section 4.
-     * 
+     *
      * @return the stanza used to send data packets
      */
     public StanzaType getStanza() {
@@ -381,7 +381,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * <p>
      * The use of {@link StanzaType#IQ} is recommended. See <a
      * href="http://xmpp.org/extensions/xep-0047.html#message">XEP-0047</a> Section 4.
-     * 
+     *
      * @param stanza the stanza to set
      */
     public void setStanza(StanzaType stanza) {
@@ -398,13 +398,13 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * <p>
      * To establish an In-Band Bytestream after negotiation the kind of data to be sent (e.g. file
      * transfer) use {@link #establishSession(Jid, String)}.
-     * 
+     *
      * @param targetJID the JID of the user an In-Band Bytestream should be established
      * @return the session to send/receive data to/from the user
      * @throws XMPPException if the user doesn't support or accept in-band bytestreams, or if the
      *         user prefers smaller block sizes
      * @throws SmackException if there was no response from the server.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     @Override
     public InBandBytestreamSession establishSession(Jid targetJID) throws XMPPException, SmackException, InterruptedException {
@@ -415,15 +415,15 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     /**
      * Establishes an In-Band Bytestream with the given user using the given session ID and returns
      * the session to send/receive data to/from the user.
-     * 
+     *
      * @param targetJID the JID of the user an In-Band Bytestream should be established
      * @param sessionID the session ID for the In-Band Bytestream request
      * @return the session to send/receive data to/from the user
      * @throws XMPPErrorException if the user doesn't support or accept in-band bytestreams, or if the
      *         user prefers smaller block sizes
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     @Override
     public InBandBytestreamSession establishSession(Jid targetJID, String sessionID)
@@ -446,10 +446,10 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     /**
      * Responses to the given IQ packet's sender with an XMPP error that an In-Band Bytestream is
      * not accepted.
-     * 
+     *
      * @param request IQ stanza that should be answered with a not-acceptable error
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     protected void replyRejectPacket(IQ request) throws NotConnectedException, InterruptedException {
         IQ error = IQ.createErrorResponse(request, StanzaError.Condition.not_acceptable);
@@ -459,10 +459,10 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     /**
      * Responses to the given IQ packet's sender with an XMPP error that an In-Band Bytestream open
      * request is rejected because its block size is greater than the maximum allowed block size.
-     * 
+     *
      * @param request IQ stanza that should be answered with a resource-constraint error
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     protected void replyResourceConstraintPacket(IQ request) throws NotConnectedException, InterruptedException {
         IQ error = IQ.createErrorResponse(request, StanzaError.Condition.resource_constraint);
@@ -472,10 +472,10 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     /**
      * Responses to the given IQ packet's sender with an XMPP error that an In-Band Bytestream
      * session could not be found.
-     * 
+     *
      * @param request IQ stanza that should be answered with a item-not-found error
-     * @throws NotConnectedException 
-     * @throws InterruptedException 
+     * @throws NotConnectedException
+     * @throws InterruptedException
      */
     protected void replyItemNotFoundPacket(IQ request) throws NotConnectedException, InterruptedException {
         IQ error = IQ.createErrorResponse(request, StanzaError.Condition.item_not_found);
@@ -484,7 +484,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
 
     /**
      * Returns a new unique session ID.
-     * 
+     *
      * @return a new unique session ID
      */
     private static String getNextSessionID() {
@@ -496,7 +496,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
 
     /**
      * Returns the XMPP connection.
-     * 
+     *
      * @return the XMPP connection
      */
     protected XMPPConnection getConnection() {
@@ -506,7 +506,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     /**
      * Returns the {@link InBandBytestreamListener} that should be informed if a In-Band Bytestream
      * request from the given initiator JID is received.
-     * 
+     *
      * @param initiator the initiator's JID
      * @return the listener
      */
@@ -517,7 +517,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     /**
      * Returns a list of {@link InBandBytestreamListener} that are informed if there are no
      * listeners for a specific initiator.
-     * 
+     *
      * @return list of listeners
      */
     protected List<BytestreamListener> getAllRequestListeners() {
@@ -526,7 +526,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
 
     /**
      * Returns the sessions map.
-     * 
+     *
      * @return the sessions map
      */
     protected Map<String, InBandBytestreamSession> getSessions() {
@@ -535,7 +535,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
 
     /**
      * Returns the list of session IDs that should be ignored by the InitialtionListener
-     * 
+     *
      * @return list of session IDs
      */
     protected List<String> getIgnoredBytestreamRequests() {

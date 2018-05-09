@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parses an In-Band Bytestream open packet.
- * 
+ *
  * @author Henning Staib
  */
 public class OpenIQProvider extends IQProvider<Open> {

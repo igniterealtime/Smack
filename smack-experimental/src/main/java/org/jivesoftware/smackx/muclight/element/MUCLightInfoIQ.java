@@ -30,7 +30,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * MUC Light info response IQ class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */
@@ -45,7 +45,7 @@ public class MUCLightInfoIQ extends IQ {
 
     /**
      * MUCLight info response IQ constructor.
-     * 
+     *
      * @param version
      * @param configuration
      * @param occupants
@@ -69,7 +69,7 @@ public class MUCLightInfoIQ extends IQ {
 
     /**
      * Returns the version.
-     * 
+     *
      * @return the version
      */
     public String getVersion() {
@@ -78,7 +78,7 @@ public class MUCLightInfoIQ extends IQ {
 
     /**
      * Returns the room configuration.
-     * 
+     *
      * @return the configuration of the room
      */
     public MUCLightRoomConfiguration getConfiguration() {
@@ -87,7 +87,7 @@ public class MUCLightInfoIQ extends IQ {
 
     /**
      * Returns the room occupants.
-     * 
+     *
      * @return the occupants of the room
      */
     public HashMap<Jid, MUCLightAffiliation> getOccupants() {

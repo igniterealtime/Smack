@@ -53,7 +53,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * (<a href="http://www.xmpp.org/extensions/jep-0045.html">XEP-45</a>). However, most
  * existing clients still use this older protocol. Once MUC support becomes more
  * widespread, this API may be deprecated.
- * 
+ *
  * @author Matt Tucker
  */
 public class GroupChatInvitation implements ExtensionElement {

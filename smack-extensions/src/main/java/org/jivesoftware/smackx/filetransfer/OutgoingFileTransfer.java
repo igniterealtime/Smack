@@ -122,7 +122,7 @@ public class OutgoingFileTransfer extends FileTransfer {
      *             Thrown if an error occurs during the file transfer
      *             negotiation process.
      * @throws SmackException if there was no response from the server.
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public synchronized OutputStream sendFile(String fileName, long fileSize,
             String description) throws XMPPException, SmackException, InterruptedException {

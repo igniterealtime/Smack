@@ -39,11 +39,11 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Push Notifications manager class.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0357.html">XEP-0357: Push
  *      Notifications</a>
  * @author Fernando Ramirez
- * 
+ *
  */
 public final class PushNotificationsManager extends Manager {
 
@@ -97,7 +97,7 @@ public final class PushNotificationsManager extends Manager {
 
     /**
      * Enable push notifications.
-     * 
+     *
      * @param pushJid
      * @param node
      * @return true if it was successfully enabled, false if not
@@ -113,7 +113,7 @@ public final class PushNotificationsManager extends Manager {
 
     /**
      * Enable push notifications.
-     * 
+     *
      * @param pushJid
      * @param node
      * @param publishOptions
@@ -132,7 +132,7 @@ public final class PushNotificationsManager extends Manager {
 
     /**
      * Disable all push notifications.
-     * 
+     *
      * @param pushJid
      * @return true if it was successfully disabled, false if not
      * @throws NoResponseException
@@ -147,7 +147,7 @@ public final class PushNotificationsManager extends Manager {
 
     /**
      * Disable push notifications of an specific node.
-     * 
+     *
      * @param pushJid
      * @param node
      * @return true if it was successfully disabled, false if not

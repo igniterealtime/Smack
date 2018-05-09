@@ -29,10 +29,10 @@ import org.jivesoftware.smack.packet.NamedElement;
  * <li>It can represent a request to delete a list of items.
  * <li>It can represent a request to get existing items.
  * </ul>
- * 
- * <p><b>Please note, this class is used for internal purposes, and is not required for usage of 
+ *
+ * <p><b>Please note, this class is used for internal purposes, and is not required for usage of
  * pubsub functionality.</b></p>
- * 
+ *
  * @author Robin Collier
  */
 public class ItemsExtension extends NodeExtension implements EmbeddedPacketExtension {
@@ -66,19 +66,19 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 
     /**
      * Construct an instance with a list representing items that have been published or deleted.
-     * 
+     *
      * <p>Valid scenarios are:</p>
      * <ul>
      * <li>Request items from node - itemsType = {@link ItemsElementType#items}, items = list of {@link Item} and an
      * optional value for the <b>max_items</b> attribute.
      * <li>Request to delete items - itemsType = {@link ItemsElementType#retract}, items = list of {@link Item} containing
      * only id's and an optional value for the <b>notify</b> attribute.
-     * <li>Items published event - itemsType = {@link ItemsElementType#items}, items = list of {@link Item} and 
+     * <li>Items published event - itemsType = {@link ItemsElementType#items}, items = list of {@link Item} and
      * attributeValue = <code>null</code>
-     * <li>Items deleted event -  itemsType = {@link ItemsElementType#items}, items = list of {@link RetractItem} and 
-     * attributeValue = <code>null</code> 
+     * <li>Items deleted event -  itemsType = {@link ItemsElementType#items}, items = list of {@link RetractItem} and
+     * attributeValue = <code>null</code>
      * </ul>
-     * 
+     *
      * @param itemsType Type of representation
      * @param nodeId The node to which the items are being sent or deleted
      * @param items The list of {@link Item} or {@link RetractItem}
@@ -91,19 +91,19 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 
     /**
      * Construct an instance with a list representing items that have been published or deleted.
-     * 
+     *
      * <p>Valid scenarios are:</p>
      * <ul>
      * <li>Request items from node - itemsType = {@link ItemsElementType#items}, items = list of {@link Item} and an
      * optional value for the <b>max_items</b> attribute.
      * <li>Request to delete items - itemsType = {@link ItemsElementType#retract}, items = list of {@link Item} containing
      * only id's and an optional value for the <b>notify</b> attribute.
-     * <li>Items published event - itemsType = {@link ItemsElementType#items}, items = list of {@link Item} and 
+     * <li>Items published event - itemsType = {@link ItemsElementType#items}, items = list of {@link Item} and
      * attributeValue = <code>null</code>
-     * <li>Items deleted event -  itemsType = {@link ItemsElementType#items}, items = list of {@link RetractItem} and 
+     * <li>Items deleted event -  itemsType = {@link ItemsElementType#items}, items = list of {@link RetractItem} and
      * attributeValue = <code>null</code>
      * </ul>
-     * 
+     *
      * @param nodeId The node to which the items are being sent or deleted
      * @param items The list of {@link Item} or {@link RetractItem}
      * @param notify
@@ -111,13 +111,13 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
     public ItemsExtension(String nodeId, List<? extends ExtensionElement> items, boolean notify) {
         super(ItemsElementType.retract.getNodeElement(), nodeId);
         type = ItemsElementType.retract;
-        this.items = items; 
+        this.items = items;
         this.notify = notify;
     }
 
     /**
      * Get the type of element.
-     * 
+     *
      * @return The element type
      */
     public ItemsElementType getItemsElementType() {
@@ -132,7 +132,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 
     /**
      * Gets the items related to the type of request or event.
-     * 
+     *
      * @return List of {@link Item}, {@link RetractItem}, or null
      */
     public List<? extends NamedElement> getItems() {
@@ -141,7 +141,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 
     /**
      * Gets the value of the optional attribute related to the {@link ItemsElementType}.
-     * 
+     *
      * @return The attribute value
      */
     public boolean getNotify() {

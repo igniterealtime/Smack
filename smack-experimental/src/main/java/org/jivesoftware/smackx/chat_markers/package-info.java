@@ -16,9 +16,9 @@
  */
 /**
  * XEP-0333: Chat Markers.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0333.html">XEP-0333: Chat
  *      Markers</a>
- * 
+ *
  */
 package org.jivesoftware.smackx.chat_markers;

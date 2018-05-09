@@ -23,7 +23,7 @@ import java.util.List;
 public final class MultipleCryptoFailedException extends CryptoFailedException {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 

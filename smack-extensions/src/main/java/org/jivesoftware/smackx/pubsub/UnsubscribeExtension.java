@@ -21,7 +21,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents an unsubscribe element.
- * 
+ *
  * @author Robin Collier
  */
 public class UnsubscribeExtension extends NodeExtension {

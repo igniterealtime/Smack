@@ -171,8 +171,8 @@ public class DataValidationTest {
     /**
      * @param output
      * @return
-     * @throws XmlPullParserException 
-     * @throws IOException 
+     * @throws XmlPullParserException
+     * @throws IOException
      */
     private static XmlPullParser getParser(String output) throws XmlPullParserException, IOException {
         return TestUtils.getParser(output, "validate");

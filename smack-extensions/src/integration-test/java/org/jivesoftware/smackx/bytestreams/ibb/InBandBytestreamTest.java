@@ -34,7 +34,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 
 /**
  * Test for In-Band Bytestreams with real XMPP servers.
- * 
+ *
  * @author Henning Staib
  */
 public class InBandBytestreamTest extends SmackTestCase {
@@ -49,7 +49,7 @@ public class InBandBytestreamTest extends SmackTestCase {
     /**
      * Target should respond with not-acceptable error if no listeners for incoming In-Band
      * Bytestream requests are registered.
-     * 
+     *
      * @throws XMPPException should not happen
      */
     public void testRespondWithErrorOnInBandBytestreamRequest() throws XMPPException {
@@ -73,7 +73,7 @@ public class InBandBytestreamTest extends SmackTestCase {
 
     /**
      * An In-Band Bytestream should be successfully established using IQ stanzas.
-     * 
+     *
      * @throws Exception should not happen
      */
     public void testInBandBytestreamWithIQStanzas() throws Exception {
@@ -127,7 +127,7 @@ public class InBandBytestreamTest extends SmackTestCase {
 
     /**
      * An In-Band Bytestream should be successfully established using message stanzas.
-     * 
+     *
      * @throws Exception should not happen
      */
     public void testInBandBytestreamWithMessageStanzas() throws Exception {
@@ -183,7 +183,7 @@ public class InBandBytestreamTest extends SmackTestCase {
     /**
      * An In-Band Bytestream should be successfully established using IQ stanzas. The established
      * session should transfer data bidirectional.
-     * 
+     *
      * @throws Exception should not happen
      */
     public void testBiDirectionalInBandBytestream() throws Exception {

@@ -21,7 +21,7 @@ import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smack.util.StringUtils;
 
 /**
- * Includes set of login tests. 
+ * Includes set of login tests.
  *
  * @author Gaston Dombiak
  */

@@ -20,7 +20,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Represents a request to subscribe to a node.
- * 
+ *
  * @author Robin Collier
  */
 public class GetItemsRequest extends NodeExtension {

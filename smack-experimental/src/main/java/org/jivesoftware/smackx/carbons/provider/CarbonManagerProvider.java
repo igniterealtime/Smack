@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParser;
 /**
  * This class implements the {@link ExtensionElementProvider} to parse
  * carbon copied messages from a packet.  It will return a {@link CarbonExtension} stanza extension.
- * 
+ *
  * @author Georg Lukas
  *
  */

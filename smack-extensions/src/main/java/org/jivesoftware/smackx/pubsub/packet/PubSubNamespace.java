@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub.packet;
 /**
  * Defines all the valid namespaces that are used with the {@link PubSub} packet
  * as defined by the specification.
- * 
+ *
  * @author Robin Collier
  */
 public enum PubSubNamespace {

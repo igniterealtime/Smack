@@ -86,7 +86,7 @@ public class OmemoMessageSendingTest extends AbstractOmemoIntegrationTest {
      * @throws UndecidedOmemoIdentityException
      * @throws NoSuchAlgorithmException
      * @throws CryptoFailedException
-     * @throws NotAPubSubNodeException 
+     * @throws NotAPubSubNodeException
      */
     @SmackIntegrationTest
     public void messageSendingTest()

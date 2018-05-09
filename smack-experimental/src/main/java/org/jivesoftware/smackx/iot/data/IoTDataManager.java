@@ -50,7 +50,7 @@ import org.jxmpp.jid.EntityFullJid;
 
 /**
  * A manager for XEP-0323: Internet of Things - Sensor Data.
- * 
+ *
  * @author Florian Schmaus {@literal <flo@geekplace.eu>}
  * @see <a href="http://xmpp.org/extensions/xep-0323.html">XEP-0323: Internet of Things - Sensor Data</a>
  */

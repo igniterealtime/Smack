@@ -41,7 +41,7 @@ import org.minidns.dnsname.DnsName;
 
 /**
  * A DNS resolver (mostly for SRV records), which makes use of the API provided in the javax.* namespace.
- * 
+ *
  * @author Florian Schmaus
  *
  */

@@ -23,11 +23,11 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
  * MAM Query IQ class.
- * 
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
  *      Archive Management</a>
  * @author Fernando Ramirez and Florian Schmaus
- * 
+ *
  */
 public class MamQueryIQ extends IQ {
 
@@ -47,7 +47,7 @@ public class MamQueryIQ extends IQ {
 
     /**
      * MAM query IQ constructor.
-     * 
+     *
      * @param queryId
      */
     public MamQueryIQ(String queryId) {
@@ -57,7 +57,7 @@ public class MamQueryIQ extends IQ {
 
     /**
      * MAM query IQ constructor.
-     * 
+     *
      * @param form
      */
     public MamQueryIQ(DataForm form) {
@@ -66,7 +66,7 @@ public class MamQueryIQ extends IQ {
 
     /**
      * MAM query IQ constructor.
-     * 
+     *
      * @param queryId
      * @param form
      */
@@ -76,7 +76,7 @@ public class MamQueryIQ extends IQ {
 
     /**
      * MAM query IQ constructor.
-     * 
+     *
      * @param queryId
      * @param node
      * @param dataForm
@@ -102,7 +102,7 @@ public class MamQueryIQ extends IQ {
 
     /**
      * Get query id.
-     * 
+     *
      * @return the query id
      */
     public String getQueryId() {
@@ -111,7 +111,7 @@ public class MamQueryIQ extends IQ {
 
     /**
      * Get the Node name.
-     * 
+     *
      * @return the node
      */
     public String getNode() {

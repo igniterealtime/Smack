@@ -40,7 +40,7 @@ import org.jxmpp.jid.JidTestUtil;
 
 /**
  * Test for Socks5Client class.
- * 
+ *
  * @author Henning Staib
  */
 public class Socks5ClientTest {
@@ -54,7 +54,7 @@ public class Socks5ClientTest {
 
     /**
      * Initialize fields used in the tests.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Before
@@ -68,7 +68,7 @@ public class Socks5ClientTest {
     /**
      * A SOCKS5 client MUST close connection if server doesn't accept any of the given
      * authentication methods. (See RFC1928 Section 3)
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -126,7 +126,7 @@ public class Socks5ClientTest {
 
     /**
      * The SOCKS5 client should close connection if server replies in an unsupported way.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -188,7 +188,7 @@ public class Socks5ClientTest {
 
     /**
      * The SOCKS5 client should close connection if server replies with an error.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -254,7 +254,7 @@ public class Socks5ClientTest {
 
     /**
      * The SOCKS5 client should successfully connect to the SOCKS5 server.
-     * 
+     *
      * @throws Exception should not happen
      */
     @Test
@@ -330,7 +330,7 @@ public class Socks5ClientTest {
 
     /**
      * Close fake SOCKS5 proxy.
-     * 
+     *
      * @throws Exception should not happen
      */
     @After

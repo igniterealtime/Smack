@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.hints.element;
 import org.jivesoftware.smack.packet.Message;
 
 /**
- * A "no copy" hint. Messages with this hint should not be copied to addresses other than the one to which it is addressed. 
+ * A "no copy" hint. Messages with this hint should not be copied to addresses other than the one to which it is addressed.
  *
  * @see <a href="https://xmpp.org/extensions/xep-0334.html#no-copy">XEP-0344 § 4.3 No copies</a>
  */

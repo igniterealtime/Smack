@@ -37,7 +37,7 @@ import org.jxmpp.jid.Jid;
 /**
  * Negotiates a SOCKS5 Bytestream to be used for file transfers. The implementation is based on the
  * {@link Socks5BytestreamManager} and the {@link Socks5BytestreamRequest}.
- * 
+ *
  * @author Henning Staib
  * @see <a href="http://xmpp.org/extensions/xep-0065.html">XEP-0065: SOCKS5 Bytestreams</a>
  */

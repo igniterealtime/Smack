@@ -25,7 +25,7 @@ import org.jivesoftware.smackx.jingleold.media.PayloadType;
 
 /**
  * A Fixed Jingle Transport Manager implementation.
- *  
+ *
  */
 public class FixedTransportManager extends JingleTransportManager implements JingleSessionListener, CreatedJingleSessionListener {
 

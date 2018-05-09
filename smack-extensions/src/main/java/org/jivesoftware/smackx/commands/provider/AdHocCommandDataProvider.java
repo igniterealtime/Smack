@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 /**
  * The AdHocCommandDataProvider parses AdHocCommandData packets.
- * 
+ *
  * @author Gabriel Guardincerri
  */
 public class AdHocCommandDataProvider extends IQProvider<AdHocCommandData> {

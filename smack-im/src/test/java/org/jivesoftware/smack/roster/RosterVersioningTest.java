@@ -97,8 +97,8 @@ public class RosterVersioningTest {
     /**
      * Tests that receiving an empty roster result causes the roster to be populated
      * by all entries of the roster store.
-     * @throws SmackException 
-     * @throws XMPPException 
+     * @throws SmackException
+     * @throws XMPPException
      */
     @Test(timeout = 300000)
     public void testEqualVersionStored() throws InterruptedException, IOException, XMPPException, SmackException {
@@ -131,9 +131,9 @@ public class RosterVersioningTest {
 
     /**
      * Tests that a non-empty roster result empties the store.
-     * @throws SmackException 
-     * @throws XMPPException 
-     * @throws XmppStringprepException 
+     * @throws SmackException
+     * @throws XMPPException
+     * @throws XmppStringprepException
      */
     @Test(timeout = 5000)
     public void testOtherVersionStored() throws XMPPException, SmackException, XmppStringprepException {

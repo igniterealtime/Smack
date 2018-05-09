@@ -24,7 +24,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * MUC Light get info IQ class.
- * 
+ *
  * @author Fernando Ramirez
  *
  */
@@ -37,7 +37,7 @@ public class MUCLightGetInfoIQ extends IQ {
 
     /**
      * MUC Light get info IQ constructor.
-     * 
+     *
      * @param roomJid
      * @param version
      */
@@ -50,7 +50,7 @@ public class MUCLightGetInfoIQ extends IQ {
 
     /**
      * MUC Light get info IQ constructor.
-     * 
+     *
      * @param roomJid
      */
     public MUCLightGetInfoIQ(Jid roomJid) {

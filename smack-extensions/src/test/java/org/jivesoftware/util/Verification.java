@@ -25,10 +25,10 @@ import org.jivesoftware.smack.packet.Stanza;
  * Implement this interface to verify a request/response pair.
  * <p>
  * For convenience there are some useful predefined implementations.
- * 
+ *
  * @param <T> class of the request
  * @param <S> class of the response
- * 
+ *
  * @author Henning Staib
  */
 public interface Verification<T extends Stanza, S extends Stanza> {
@@ -96,7 +96,7 @@ public interface Verification<T extends Stanza, S extends Stanza> {
 
     /**
      * Implement this method to make assertions of the request/response pairs.
-     * 
+     *
      * @param request the request collected by the mocked XMPP connection
      * @param response the response added to the protocol instance
      */

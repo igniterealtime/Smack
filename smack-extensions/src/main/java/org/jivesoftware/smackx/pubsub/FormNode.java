@@ -21,9 +21,9 @@ import org.jivesoftware.smackx.xdata.Form;
 /**
  * Generic stanza extension which represents any PubSub form that is
  * parsed from the incoming stream or being sent out to the server.
- * 
+ *
  * Form types are defined in {@link FormNodeType}.
- * 
+ *
  * @author Robin Collier
  */
 public class FormNode extends NodeExtension {
@@ -31,7 +31,7 @@ public class FormNode extends NodeExtension {
 
     /**
      * Create a {@link FormNode} which contains the specified form.
-     * 
+     *
      * @param formType The type of form being sent
      * @param submitForm The form
      */
@@ -44,9 +44,9 @@ public class FormNode extends NodeExtension {
     }
 
     /**
-     * Create a {@link FormNode} which contains the specified form, which is 
+     * Create a {@link FormNode} which contains the specified form, which is
      * associated with the specified node.
-     * 
+     *
      * @param formType The type of form being sent
      * @param nodeId The node the form is associated with
      * @param submitForm The form
@@ -61,7 +61,7 @@ public class FormNode extends NodeExtension {
 
     /**
      * Get the Form that is to be sent, or was retrieved from the server.
-     * 
+     *
      * @return The form
      */
     public Form getForm() {
