@@ -977,30 +977,6 @@ public class PacketParserUtils {
 
     }
 
-    @Deprecated
-    public static void addPacketExtension(Stanza packet, XmlPullParser parser) throws Exception {
-        addExtensionElement(packet, parser);
-    }
-
-    @Deprecated
-    public static void addPacketExtension(Stanza packet, XmlPullParser parser, String elementName, String namespace)
-                    throws Exception {
-        addExtensionElement(packet, parser, elementName, namespace);
-    }
-
-    @Deprecated
-    public static void addPacketExtension(Collection<ExtensionElement> collection, XmlPullParser parser)
-                    throws Exception {
-        addExtensionElement(collection, parser, parser.getName(), parser.getNamespace());
-    }
-
-    @Deprecated
-    public static void addPacketExtension(Collection<ExtensionElement> collection, XmlPullParser parser,
-                    String elementName, String namespace) throws Exception {
-        addExtensionElement(collection, parser, elementName, namespace);
-    }
-
-
     public static void addExtensionElement(Stanza packet, XmlPullParser parser)
                     throws Exception {
         ParserUtils.assertAtStartTag(parser);
