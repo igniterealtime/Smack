@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.ErrorIQ;
@@ -71,6 +72,9 @@ public class PacketParserUtils {
     public static final boolean XML_PULL_PARSER_SUPPORTS_ROUNDTRIP;
 
     static {
+        // Ensure that Smack is initialized.
+        SmackConfiguration.getVersion();
+
         XmlPullParser xmlPullParser;
         boolean roundtrip = false;
         try {

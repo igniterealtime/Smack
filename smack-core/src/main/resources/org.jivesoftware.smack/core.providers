@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!-- Providers for core elements -->
-<smackProviders>
-    <extensionProvider>
-      <elementName>body</elementName>
-      <namespace>jabber:client</namespace>
-      <className>org.jivesoftware.smack.provider.BodyElementProvider</className>
-    </extensionProvider>
-</smackProviders>
