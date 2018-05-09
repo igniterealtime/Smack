@@ -559,16 +559,11 @@ public class SmackIntegrationTestFramework {
         if (StringUtils.isNullOrEmpty(accountPassword)) {
             accountPassword = StringUtils.insecureRandomString(16);
         }
-        // @formatter:off
-        Builder builder = XMPPTCPConnectionConfiguration.builder()
-                        .setXmppDomain(config.service)
-                        .setUsernameAndPassword(accountUsername, accountPassword)
-                        .setResource(middlefix + '-' + testRunResult.testRunId)
-                        .setSecurityMode(config.securityMode);
-        // @formatter:on
-        if (config.tlsContext != null) {
-            builder.setCustomSSLContext(config.tlsContext);
-        }
+
+        Builder builder = getConnectionConfigurationBuilder(config);
+        builder.setUsernameAndPassword(accountUsername, accountPassword)
+               .setResource(middlefix + '-' + testRunResult.testRunId);
+
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
         connection.connect();
         if (config.isAccountRegistrationPossible()) {
@@ -588,10 +583,7 @@ public class SmackIntegrationTestFramework {
         return connection;
     }
 
-    static XMPPTCPConnection getConnectedConnection(SmackIntegrationTestEnvironment environment, int connectionId)
-                    throws KeyManagementException, NoSuchAlgorithmException, InterruptedException,
-                    SmackException, IOException, XMPPException {
-        Configuration config = environment.configuration;
+    static XMPPTCPConnectionConfiguration.Builder getConnectionConfigurationBuilder(Configuration config) {
         XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
         if (config.tlsContext != null) {
             builder.setCustomSSLContext(config.tlsContext);
@@ -610,6 +602,15 @@ public class SmackIntegrationTestFramework {
             // Nothing to do :).
             break;
         }
+
+        return builder;
+    }
+
+    static XMPPTCPConnection getConnectedConnection(SmackIntegrationTestEnvironment environment, int connectionId)
+                    throws KeyManagementException, NoSuchAlgorithmException, InterruptedException,
+                    SmackException, IOException, XMPPException {
+        Configuration config = environment.configuration;
+        XMPPTCPConnectionConfiguration.Builder builder = getConnectionConfigurationBuilder(config);
 
         XMPPTCPConnection connection = new XMPPTCPConnection(builder.build());
         connection.connect();
