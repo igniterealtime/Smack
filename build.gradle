@@ -310,7 +310,7 @@ subprojects {
 
 	checkstyle {
 		configFile = new File(rootConfigDir, 'checkstyle.xml')
-		toolVersion = '8.8'
+		toolVersion = '8.10'
 	}
 	task sourcesJar(type: Jar, dependsOn: classes) {
 		classifier = 'sources'
