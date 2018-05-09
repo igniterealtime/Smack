@@ -24,7 +24,7 @@ dependencies {
 	testCompile "org.powermock:powermock-module-junit4:$powerMockVersion"
 	testCompile "org.powermock:powermock-module-junit4-rule:$powerMockVersion"
 	testCompile "org.powermock:powermock-api-mockito2:$powerMockVersion"
-	testCompile 'com.jamesmurty.utils:java-xmlbuilder:0.6'
+	testCompile 'com.jamesmurty.utils:java-xmlbuilder:1.2'
 	testCompile 'net.iharder:base64:2.3.8'
 }
 
