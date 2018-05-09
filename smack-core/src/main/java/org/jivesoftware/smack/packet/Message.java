@@ -455,13 +455,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         if (language == null && this.language != null) {
             return this.language;
         }
-        else if (language == null) {
-            return getDefaultLanguage();
-        }
-        else {
-            return language;
-        }
-
+        return language;
     }
 
     @Override
