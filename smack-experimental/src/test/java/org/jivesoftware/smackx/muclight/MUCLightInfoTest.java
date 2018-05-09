@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.muclight;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightGetInfoIQ;
@@ -45,7 +46,7 @@ public class MUCLightInfoTest {
         MUCLightGetInfoIQ mucLightGetInfoIQWithVersion = new MUCLightGetInfoIQ(
                 JidCreate.from("coven@muclight.shakespeare.lit"), "abcdefg");
         mucLightGetInfoIQWithVersion.setStanzaId("getinfo1");
-        Assert.assertEquals(mucLightGetInfoIQWithVersion.toXML(null).toString(), exampleWithVersion);
+        Assert.assertEquals(mucLightGetInfoIQWithVersion.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), exampleWithVersion);
     }
 
     @Test
@@ -53,7 +54,7 @@ public class MUCLightInfoTest {
         MUCLightGetInfoIQ mucLightGetInfoIQWithoutVersion = new MUCLightGetInfoIQ(
                 JidCreate.from("coven@muclight.shakespeare.lit"), null);
         mucLightGetInfoIQWithoutVersion.setStanzaId("getinfo1");
-        Assert.assertEquals(mucLightGetInfoIQWithoutVersion.toXML(null).toString(), exampleWithoutVersion);
+        Assert.assertEquals(mucLightGetInfoIQWithoutVersion.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), exampleWithoutVersion);
     }
 
     @Test

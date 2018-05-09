@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muclight;
 import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightAffiliationsIQ;
@@ -45,7 +46,7 @@ public class MUCLightGetAffiliationsTest {
         MUCLightGetAffiliationsIQ mucLightGetAffiliationsIQ = new MUCLightGetAffiliationsIQ(
                 JidCreate.from("coven@muclight.shakespeare.lit"), "abcdefg");
         mucLightGetAffiliationsIQ.setStanzaId("getmembers");
-        Assert.assertEquals(getAffiliationsIQExample, mucLightGetAffiliationsIQ.toXML(null).toString());
+        Assert.assertEquals(getAffiliationsIQExample, mucLightGetAffiliationsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class HeadersProviderTest {
     public void headersInMessageTest() throws Exception {
         // @formatter:off
         final String messageStanza = 
-          "<message from='romeo@shakespeare.lit/orchard' to='juliet@capulet.com' type='chat'>" +
+          "<message xmlns='jabber:client' from='romeo@shakespeare.lit/orchard' to='juliet@capulet.com' type='chat'>" +
             "<body>Wherefore are thou?!?</body>" + 
             "<headers xmlns='http://jabber.org/protocol/shim'>" +
              "<header name='Urgency'>high</header>" +

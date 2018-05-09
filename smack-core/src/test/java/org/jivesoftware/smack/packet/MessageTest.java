@@ -49,7 +49,7 @@ public class MessageTest {
         Message messageTypeInConstructor = new Message(null, Message.Type.chat);
         messageTypeInConstructor.setStanzaId(null);
         assertEquals(type, messageTypeInConstructor.getType());
-        assertXMLEqual(control, messageTypeInConstructor.toXML(null).toString());
+        assertXMLEqual(control, messageTypeInConstructor.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         controlBuilder = new StringBuilder();
         controlBuilder.append("<message")
@@ -62,7 +62,7 @@ public class MessageTest {
         Message messageTypeSet = getNewMessage();
         messageTypeSet.setType(type2);
         assertEquals(type2, messageTypeSet.getType());
-        assertXMLEqual(control, messageTypeSet.toXML(null).toString());
+        assertXMLEqual(control, messageTypeSet.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test(expected = NullPointerException.class)
@@ -87,7 +87,7 @@ public class MessageTest {
         message.setSubject(messageSubject);
 
         assertEquals(messageSubject, message.getSubject());
-        assertXMLEqual(control, message.toXML(null).toString());
+        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -106,7 +106,7 @@ public class MessageTest {
         message.setBody(messageBody);
 
         assertEquals(messageBody, message.getBody());
-        assertXMLEqual(control, message.toXML(null).toString());
+        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -183,7 +183,7 @@ public class MessageTest {
         message.setThread(messageThread);
 
         assertEquals(messageThread, message.getThread());
-        assertXMLEqual(control, message.toXML(null).toString());
+        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -201,7 +201,7 @@ public class MessageTest {
         Message message = getNewMessage();
         message.setLanguage(lang);
 
-        assertXMLEqual(control, message.toXML(null).toString());
+        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     private static Message getNewMessage() {

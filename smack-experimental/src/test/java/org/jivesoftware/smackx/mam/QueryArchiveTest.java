@@ -23,6 +23,7 @@ import java.util.TimeZone;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
+import org.jivesoftware.smack.packet.StreamOpen;
 
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
@@ -45,7 +46,7 @@ public class QueryArchiveTest extends MamTest {
             + "<result xmlns='urn:xmpp:mam:1' queryid='g27' id='34482-21985-73620'>"
             + "<forwarded xmlns='urn:xmpp:forward:0'>"
             + "<delay xmlns='urn:xmpp:delay' stamp='2002-10-13T23:58:37.000+00:00'></delay>" + "<message "
-            + "from='coven@chat.shakespeare.lit/firstwitch' " + "id='162BEBB1-F6DB-4D9A-9BD8-CFDCC801A0B2' "
+            + "xmlns='jabber:client' from='coven@chat.shakespeare.lit/firstwitch' " + "id='162BEBB1-F6DB-4D9A-9BD8-CFDCC801A0B2' "
             + "type='chat'>" + "<body>Thrice the brinded cat hath mew.</body>" + "</message>" + "</forwarded>"
             + "</result>" + "</message>";
 
@@ -55,7 +56,7 @@ public class QueryArchiveTest extends MamTest {
         MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.setStanzaId("sarasa");
-        Assert.assertEquals(mamQueryIQ.toXML(null).toString(), mamSimpleQueryIQ);
+        Assert.assertEquals(mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), mamSimpleQueryIQ);
     }
 
     @Test
@@ -80,7 +81,8 @@ public class QueryArchiveTest extends MamTest {
 
         message.addExtension(new MamResultExtension("g27", "34482-21985-73620", forwarded));
 
-        Assert.assertEquals(message.toXML(null).toString(), mamQueryResultExample);
+        // FIXME: The order of assertEquals is reversed, fix it by switching it.
+        Assert.assertEquals(message.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), mamQueryResultExample);
 
         MamResultExtension mamResultExtension = MamResultExtension.from(message);
 

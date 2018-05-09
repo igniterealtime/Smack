@@ -26,16 +26,16 @@ import org.junit.Test;
 
 public class MUCLightConfigurationsChangeExtensionTest {
 
-    private static final String messageWithSubjectChangeExample = "<message to='crone1@shakespeare.lit' from='coven@muclight.shakespeare.lit' id='newsubject' type='groupchat'>"
+    private static final String messageWithSubjectChangeExample = "<message xmlns='jabber:client' to='crone1@shakespeare.lit' from='coven@muclight.shakespeare.lit' id='newsubject' type='groupchat'>"
             + "<body></body>" + "<x xmlns='urn:xmpp:muclight:0#configuration'>"
             + "<prev-version>asdfghj000</prev-version>" + "<version>asdfghj</version>"
             + "<subject>To be or not to be?</subject>" + "</x>" + "</message>";
 
-    private static final String messageWithRoomNameChangeExample = "<message to='crone1@shakespeare.lit' from='coven@muclight.shakespeare.lit' id='newsubject' type='groupchat'>"
+    private static final String messageWithRoomNameChangeExample = "<message xmlns='jabber:client' to='crone1@shakespeare.lit' from='coven@muclight.shakespeare.lit' id='newsubject' type='groupchat'>"
             + "<body></body>" + "<x xmlns='urn:xmpp:muclight:0#configuration'>" + "<prev-version>zaqwsx</prev-version>"
             + "<version>zxcvbnm</version>" + "<roomname>A Darker Cave</roomname>" + "</x>" + "</message>";
 
-    private static final String messageWithConfigsChangeExample = "<message to='crone1@shakespeare.lit' from='coven@muclight.shakespeare.lit' id='newsubject' type='groupchat'>"
+    private static final String messageWithConfigsChangeExample = "<message xmlns='jabber:client' to='crone1@shakespeare.lit' from='coven@muclight.shakespeare.lit' id='newsubject' type='groupchat'>"
             + "<body></body>" + "<x xmlns='urn:xmpp:muclight:0#configuration'>" + "<prev-version>zaqwsx</prev-version>"
             + "<version>zxcvbnm</version>" + "<roomname>A Darker Cave</roomname>" + "<color>blue</color>" + "</x>"
             + "</message>";

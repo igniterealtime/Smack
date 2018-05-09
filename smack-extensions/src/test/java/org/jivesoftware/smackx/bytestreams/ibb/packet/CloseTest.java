@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.StreamOpen;
 
 import org.jivesoftware.smackx.InitExtensions;
 
@@ -80,7 +81,7 @@ public class CloseTest extends InitExtensions {
         close.setTo(JidCreate.from("juliet@capulet.lit/balcony"));
         close.setStanzaId("us71g45j");
 
-        assertXMLEqual(control, close.toXML(null).toString());
+        assertXMLEqual(control, close.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
 }

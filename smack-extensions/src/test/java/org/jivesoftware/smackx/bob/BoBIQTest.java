@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.bob;
 
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
@@ -45,7 +46,7 @@ public class BoBIQTest extends SmackTestSuite {
         createdBoBIQ.setTo(JidCreate.from("ladymacbeth@shakespeare.lit/castle"));
         createdBoBIQ.setType(Type.get);
 
-        Assert.assertEquals(sampleBoBIQRequest, createdBoBIQ.toXML(null).toString());
+        Assert.assertEquals(sampleBoBIQRequest, createdBoBIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -65,7 +66,7 @@ public class BoBIQTest extends SmackTestSuite {
         Assert.assertEquals(bobIQ.getBoBData().getMaxAge(), createdBoBIQ.getBoBData().getMaxAge());
         Assert.assertEquals(bobIQ.getBoBData().getType(), createdBoBIQ.getBoBData().getType());
         Assert.assertEquals(bobIQ.getBoBData().getContentBase64Encoded(), createdBoBIQ.getBoBData().getContentBase64Encoded());
-        Assert.assertEquals(bobIQ.toXML(null).toString(), createdBoBIQ.toXML(null).toString());
+        Assert.assertEquals(bobIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), createdBoBIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
 }

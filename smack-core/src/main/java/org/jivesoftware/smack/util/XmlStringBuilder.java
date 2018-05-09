@@ -457,8 +457,12 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     }
 
     public XmlStringBuilder append(Collection<? extends Element> elements) {
+        return append(elements, null);
+    }
+
+    public XmlStringBuilder append(Collection<? extends Element> elements, String enclosingNamespace) {
         for (Element element : elements) {
-            append(element.toXML(null));
+            append(element.toXML(enclosingNamespace));
         }
         return this;
     }

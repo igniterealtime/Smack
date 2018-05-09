@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.packet.StreamOpen;
+
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -44,7 +46,7 @@ public class RetrieveFormFieldsTest extends MamTest {
         MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId);
         mamQueryIQ.setStanzaId("sarasa");
 
-        Assert.assertEquals(mamQueryIQ.toXML(null).toString(), retrieveFormFieldStanza);
+        Assert.assertEquals(mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), retrieveFormFieldStanza);
     }
 
     @Test

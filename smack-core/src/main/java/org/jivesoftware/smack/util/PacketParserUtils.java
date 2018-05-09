@@ -246,26 +246,10 @@ public class PacketParserUtils {
                 switch (elementName) {
                 case "subject":
                     String xmlLangSubject = getLanguageAttribute(parser);
-                    if (xmlLangSubject == null) {
-                        xmlLangSubject = defaultLanguage;
-                    }
-
                     String subject = parseElementText(parser);
 
                     if (message.getSubject(xmlLangSubject) == null) {
                         message.addSubject(xmlLangSubject, subject);
-                    }
-                    break;
-                case Message.BODY:
-                    String xmlLang = getLanguageAttribute(parser);
-                    if (xmlLang == null) {
-                        xmlLang = defaultLanguage;
-                    }
-
-                    String body = parseElementText(parser);
-
-                    if (message.getBody(xmlLang) == null) {
-                        message.addBody(xmlLang, body);
                     }
                     break;
                 case "thread":
@@ -290,6 +274,11 @@ public class PacketParserUtils {
         }
 
         message.setThread(thread);
+
+        // TODO check for duplicate body elements. This means we need to check for duplicate xml:lang pairs and for
+        // situations where we have a body element with an explicit xml lang set and once where the value is inherited
+        // and both values are equal.
+
         return message;
     }
 

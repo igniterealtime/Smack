@@ -470,7 +470,15 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @return the removed stanza extension or null.
      */
     public ExtensionElement removeExtension(ExtensionElement extension)  {
-        return removeExtension(extension.getElementName(), extension.getNamespace());
+        String key = XmppStringUtils.generateKey(extension.getElementName(), extension.getNamespace());
+        synchronized (packetExtensions) {
+            List<ExtensionElement> list = packetExtensions.getAll(key);
+            boolean removed = list.remove(extension);
+            if (removed) {
+                return extension;
+            }
+        }
+        return null;
     }
 
     /**
@@ -478,22 +486,6 @@ public abstract class Stanza implements TopLevelStreamElement {
      */
     @Override
     public abstract String toString();
-
-    /**
-     * Returns the extension sub-packets (including properties data) as an XML
-     * String, or the Empty String if there are no stanza extensions.
-     *
-     * @return the extension sub-packets as XML or the Empty String if there
-     * are no stanza extensions.
-     */
-    protected final XmlStringBuilder getExtensionsXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        // Add in all standard extension sub-packets.
-        for (ExtensionElement extension : getExtensions()) {
-            xml.append(extension.toXML(null));
-        }
-        return xml;
-    }
 
     /**
      * Returns the default language used for all messages containing localized content.
@@ -507,13 +499,26 @@ public abstract class Stanza implements TopLevelStreamElement {
     /**
      * Add to, from, id and 'xml:lang' attributes
      *
-     * @param xml
+     * @param xml the {@link XmlStringBuilder}.
+     * @param enclosingNamespace the enclosing XML namespace.
+     * @return the set namespace for this stanza.
      */
-    protected void addCommonAttributes(XmlStringBuilder xml) {
+    protected String addCommonAttributes(XmlStringBuilder xml, String enclosingNamespace) {
+        String namespace;
+        if (enclosingNamespace == null || !enclosingNamespace.equals(StreamOpen.CLIENT_NAMESPACE)
+                || !enclosingNamespace.equals(StreamOpen.SERVER_NAMESPACE)) {
+            namespace = StreamOpen.CLIENT_NAMESPACE;
+        } else {
+            namespace = enclosingNamespace;
+        }
+
+        xml.xmlnsAttribute(namespace);
         xml.optAttribute("to", getTo());
         xml.optAttribute("from", getFrom());
         xml.optAttribute("id", getStanzaId());
         xml.xmllangAttribute(getLanguage());
+
+        return namespace;
     }
 
     protected void logCommonAttributes(StringBuilder sb) {

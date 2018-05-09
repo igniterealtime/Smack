@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightBlockingIQ;
@@ -61,7 +62,7 @@ public class MUCLightBlockingTest {
         mucLightBlockingIQ.setStanzaId("getblock1");
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
 
-        Assert.assertEquals(getBlockingListIQExample, mucLightBlockingIQ.toXML(null).toString());
+        Assert.assertEquals(getBlockingListIQExample, mucLightBlockingIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -88,7 +89,7 @@ public class MUCLightBlockingTest {
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
         mucLightBlockingIQ.setStanzaId("block1");
 
-        Assert.assertEquals(blockingRoomsIQExample, mucLightBlockingIQ.toXML(null).toString());
+        Assert.assertEquals(blockingRoomsIQExample, mucLightBlockingIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -102,7 +103,7 @@ public class MUCLightBlockingTest {
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
         mucLightBlockingIQ.setStanzaId("block2");
 
-        Assert.assertEquals(blockingUsersIQExample, mucLightBlockingIQ.toXML(null).toString());
+        Assert.assertEquals(blockingUsersIQExample, mucLightBlockingIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -118,7 +119,7 @@ public class MUCLightBlockingTest {
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
         mucLightBlockingIQ.setStanzaId("unblock1");
 
-        Assert.assertEquals(unblockingUsersAndRoomsExample, mucLightBlockingIQ.toXML(null).toString());
+        Assert.assertEquals(unblockingUsersAndRoomsExample, mucLightBlockingIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
 }

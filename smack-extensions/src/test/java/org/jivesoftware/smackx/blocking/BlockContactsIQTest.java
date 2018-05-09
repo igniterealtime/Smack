@@ -31,10 +31,10 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class BlockContactsIQTest {
 
-    private static final String blockContactIQExample = "<iq id='block1' type='set'>" + "<block xmlns='urn:xmpp:blocking'>"
+    private static final String blockContactIQExample = "<iq xmlns='jabber:client' id='block1' type='set'>" + "<block xmlns='urn:xmpp:blocking'>"
             + "<item jid='romeo@montague.net'/>" + "<item jid='pepe@montague.net'/>" + "</block>" + "</iq>";
 
-    private static final String blockContactPushIQExample = "<iq to='juliet@capulet.com/chamber' type='set' id='push1'>"
+    private static final String blockContactPushIQExample = "<iq xmlns='jabber:client' to='juliet@capulet.com/chamber' type='set' id='push1'>"
             + "<block xmlns='urn:xmpp:blocking'>" + "<item jid='romeo@montague.net'/>"
             + "<item jid='pepe@montague.net'/>" + "</block>" + "</iq>";
 

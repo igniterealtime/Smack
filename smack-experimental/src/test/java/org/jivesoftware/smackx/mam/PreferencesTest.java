@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.mam;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.packet.StreamOpen;
+
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
@@ -41,7 +43,7 @@ public class PreferencesTest {
     public void checkRetrievePrefsStanza() throws Exception {
         MamPrefsIQ mamPrefIQ = new MamPrefsIQ();
         mamPrefIQ.setStanzaId("sarasa");
-        Assert.assertEquals(mamPrefIQ.toXML(null).toString(), retrievePrefsStanzaExample);
+        Assert.assertEquals(mamPrefIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), retrievePrefsStanzaExample);
     }
 
     @Test
@@ -55,7 +57,7 @@ public class PreferencesTest {
 
         MamPrefsIQ mamPrefIQ =  new MamPrefsIQ(alwaysJids, neverJids, DefaultBehavior.roster);
         mamPrefIQ.setStanzaId("sarasa");
-        Assert.assertEquals(mamPrefIQ.toXML(null).toString(), updatePrefsStanzaExample);
+        Assert.assertEquals(mamPrefIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), updatePrefsStanzaExample);
     }
 
 }

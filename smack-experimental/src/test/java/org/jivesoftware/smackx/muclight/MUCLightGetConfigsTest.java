@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muclight;
 import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightConfigurationIQ;
@@ -48,7 +49,7 @@ public class MUCLightGetConfigsTest {
         MUCLightGetConfigsIQ mucLightGetConfigsIQ = new MUCLightGetConfigsIQ(
                 JidCreate.from("coven@muclight.shakespeare.lit"), "abcdefg");
         mucLightGetConfigsIQ.setStanzaId("config0");
-        Assert.assertEquals(getConfigsIQExample, mucLightGetConfigsIQ.toXML(null).toString());
+        Assert.assertEquals(getConfigsIQExample, mucLightGetConfigsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test

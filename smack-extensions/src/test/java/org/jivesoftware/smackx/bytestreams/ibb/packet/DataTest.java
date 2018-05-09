@@ -23,6 +23,7 @@ import static org.mockito.Mockito.mock;
 import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
 import org.jivesoftware.smackx.InitExtensions;
@@ -77,7 +78,7 @@ public class DataTest extends InitExtensions {
         data.setTo(JidCreate.from("juliet@capulet.lit/balcony"));
         data.setStanzaId("kr91n475");
 
-        assertXMLEqual(control, data.toXML(null).toString());
+        assertXMLEqual(control, data.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
 }

@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.muclight;
 
 import java.util.HashMap;
 
+import org.jivesoftware.smack.packet.StreamOpen;
+
 import org.jivesoftware.smackx.muclight.element.MUCLightSetConfigsIQ;
 
 import org.junit.Assert;
@@ -47,7 +49,7 @@ public class MUCLightSetConfigsIQTest {
                 JidCreate.from("coven@muclight.shakespeare.lit"), "A Darker Cave", customConfigs);
         mucLightSetConfigsIQ.setStanzaId("conf1");
 
-        Assert.assertEquals(setConfigsIQExample, mucLightSetConfigsIQ.toXML(null).toString());
+        Assert.assertEquals(setConfigsIQExample, mucLightSetConfigsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -56,7 +58,7 @@ public class MUCLightSetConfigsIQTest {
                 JidCreate.from("coven@muclight.shakespeare.lit"), "A Darker Cave", null);
         mucLightChangeRoomNameIQ.setStanzaId("roomName1");
 
-        Assert.assertEquals(changeRoomNameIQExample, mucLightChangeRoomNameIQ.toXML(null).toString());
+        Assert.assertEquals(changeRoomNameIQExample, mucLightChangeRoomNameIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -65,7 +67,7 @@ public class MUCLightSetConfigsIQTest {
                 JidCreate.from("coven@muclight.shakespeare.lit"), null, "To be or not to be?", null);
         mucLightChangeSubjectIQ.setStanzaId("subject1");
 
-        Assert.assertEquals(changeSubjectIQExample, mucLightChangeSubjectIQ.toXML(null).toString());
+        Assert.assertEquals(changeSubjectIQExample, mucLightChangeSubjectIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
 }

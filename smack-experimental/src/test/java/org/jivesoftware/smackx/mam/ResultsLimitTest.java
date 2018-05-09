@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.mam;
 import java.lang.reflect.Method;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.StreamOpen;
 
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
@@ -46,7 +47,7 @@ public class ResultsLimitTest extends MamTest {
         mamQueryIQ.setStanzaId("sarasa");
 
         methodAddResultsLimit.invoke(mamManager, 10, mamQueryIQ);
-        Assert.assertEquals(mamQueryIQ.toXML(null).toString(), resultsLimitStanza);
+        Assert.assertEquals(mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), resultsLimitStanza);
     }
 
 }

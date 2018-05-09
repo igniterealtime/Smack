@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class JivePropertiesExtensionTest extends InitExtensions {
     @Test
     public void checkProvider() throws Exception {
         // @formatter:off
-        String properties = "<message from='romeo@example.net/orchard' to='juliet@example.com/balcony'>"
+        String properties = "<message xmlns='jabber:client' from='romeo@example.net/orchard' to='juliet@example.com/balcony'>"
                         + "<body>Neither, fair saint, if either thee dislike.</body>"
                         + "<properties xmlns='http://www.jivesoftware.com/xmlns/xmpp/properties'>"
                         + "<property>"

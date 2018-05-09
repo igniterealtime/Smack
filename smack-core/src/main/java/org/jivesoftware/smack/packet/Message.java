@@ -66,7 +66,6 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     private String thread = null;
 
     private final Set<Subject> subjects = new HashSet<Subject>();
-    private final Set<Body> bodies = new HashSet<Body>();
 
     /**
      * Creates a new, "normal" message.
@@ -142,7 +141,6 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         this.type = other.type;
         this.thread = other.thread;
         this.subjects.addAll(other.subjects);
-        this.bodies.addAll(other.bodies);
     }
 
     /**
@@ -197,7 +195,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     private Subject getMessageSubject(String language) {
         language = determineLanguage(language);
         for (Subject subject : subjects) {
-            if (language.equals(subject.language)) {
+            if (Objects.equals(language, subject.language)) {
                 return subject;
             }
         }
@@ -296,7 +294,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * @return the body of the message.
      */
     public String getBody() {
-        return getBody(null);
+        return getBody(language);
     }
 
     /**
@@ -331,7 +329,13 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * @since 3.0.2
      */
     public Set<Body> getBodies() {
-        return Collections.unmodifiableSet(bodies);
+        List<ExtensionElement> bodiesList = getExtensions(Body.ELEMENT, Body.NAMESPACE);
+        Set<Body> resultSet = new HashSet<>(bodiesList.size());
+        for (ExtensionElement extensionElement : bodiesList) {
+            Body body = (Body) extensionElement;
+            resultSet.add(body);
+        }
+        return resultSet;
     }
 
     /**
@@ -375,8 +379,11 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      */
     public Body addBody(String language, String body) {
         language = determineLanguage(language);
+
+        removeBody(language);
+
         Body messageBody = new Body(language, body);
-        bodies.add(messageBody);
+        addExtension(messageBody);
         return messageBody;
     }
 
@@ -406,7 +413,8 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * @since 3.0.2
      */
     public boolean removeBody(Body body) {
-        return bodies.remove(body);
+        ExtensionElement removedElement = removeExtension(body);
+        return removedElement != null;
     }
 
     /**
@@ -418,7 +426,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     public List<String> getBodyLanguages() {
         Body defaultBody = getMessageBody(null);
         List<String> languages = new ArrayList<String>();
-        for (Body body : bodies) {
+        for (Body body : getBodies()) {
             if (!body.equals(defaultBody)) {
                 languages.add(body.language);
             }
@@ -472,9 +480,9 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
 
     @Override
     public XmlStringBuilder toXML(String enclosingNamespace) {
-        XmlStringBuilder buf = new XmlStringBuilder();
+        XmlStringBuilder buf = new XmlStringBuilder(enclosingNamespace);
         buf.halfOpenElement(ELEMENT);
-        addCommonAttributes(buf);
+        enclosingNamespace = addCommonAttributes(buf, enclosingNamespace);
         buf.optAttribute("type", type);
         buf.rightAngleBracket();
 
@@ -490,25 +498,15 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
                 continue;
             buf.append(subject.toXML(null));
         }
-        // Add the body in the default language
-        Body defaultBody = getMessageBody(null);
-        if (defaultBody != null) {
-            buf.element("body", defaultBody.message);
-        }
-        // Add the bodies in other languages
-        for (Body body : getBodies()) {
-            // Skip the default language
-            if (body.equals(defaultBody))
-                continue;
-            buf.append(body.toXML(enclosingNamespace));
-        }
         buf.optElement("thread", thread);
         // Append the error subpacket if the message type is an error.
         if (type == Type.error) {
             appendErrorIfExists(buf);
         }
-        // Add packet extensions, if any are defined.
-        buf.append(getExtensionsXML());
+
+        // Add extension elements, if any are defined.
+        buf.append(getExtensions(), enclosingNamespace);
+
         buf.closeElement(ELEMENT);
         return buf;
     }

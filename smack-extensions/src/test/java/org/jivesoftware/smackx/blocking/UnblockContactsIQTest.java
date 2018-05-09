@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.blocking.element.UnblockContactsIQ;
@@ -53,7 +54,7 @@ public class UnblockContactsIQTest {
         UnblockContactsIQ unblockContactIQ = new UnblockContactsIQ(jids);
         unblockContactIQ.setStanzaId("unblock1");
 
-        Assert.assertEquals(unblockContactIQExample, unblockContactIQ.toXML(null).toString());
+        Assert.assertEquals(unblockContactIQExample, unblockContactIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -68,7 +69,7 @@ public class UnblockContactsIQTest {
     public void checkUnblockAllIQStanza() throws Exception {
         UnblockContactsIQ unblockAllIQ = new UnblockContactsIQ(null);
         unblockAllIQ.setStanzaId("unblock2");
-        Assert.assertEquals(unblockAllIQExample, unblockAllIQ.toXML(null).toString());
+        Assert.assertEquals(unblockAllIQExample, unblockAllIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test

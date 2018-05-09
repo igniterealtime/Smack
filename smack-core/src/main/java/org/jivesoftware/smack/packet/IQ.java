@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack.packet;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.jivesoftware.smack.util.Objects;
@@ -128,7 +129,7 @@ public abstract class IQ extends Stanza {
     public final XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder(enclosingNamespace);
         buf.halfOpenElement(IQ_ELEMENT);
-        addCommonAttributes(buf);
+        addCommonAttributes(buf, enclosingNamespace);
         if (type == null) {
             buf.attribute("type", "get");
         }
@@ -158,9 +159,10 @@ public abstract class IQ extends Stanza {
             IQChildElementXmlStringBuilder iqChildElement = getIQChildElementBuilder(new IQChildElementXmlStringBuilder(this));
             if (iqChildElement != null) {
                 xml.append(iqChildElement);
-                XmlStringBuilder extensionsXml = getExtensionsXML();
+
+                List<ExtensionElement> extensionsXml = getExtensions();
                 if (iqChildElement.isEmptyElement) {
-                    if (extensionsXml.length() == 0) {
+                    if (extensionsXml.isEmpty()) {
                          xml.closeEmptyElement();
                          return xml;
                     } else {

@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.blocking;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.blocking.element.BlockListIQ;
@@ -42,7 +43,7 @@ public class GetBlockingListTest {
         BlockListIQ getBlockListIQ = new BlockListIQ(null);
         getBlockListIQ.setType(Type.get);
         getBlockListIQ.setStanzaId("blocklist1");
-        Assert.assertEquals(getBlockingListIQExample, getBlockListIQ.toXML(null).toString());
+        Assert.assertEquals(getBlockingListIQExample, getBlockListIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test

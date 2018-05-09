@@ -273,9 +273,9 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
 
     @Override
     public XmlStringBuilder toXML(String enclosingNamespace) {
-        XmlStringBuilder buf = new XmlStringBuilder();
+        XmlStringBuilder buf = new XmlStringBuilder(enclosingNamespace);
         buf.halfOpenElement(ELEMENT);
-        addCommonAttributes(buf);
+        addCommonAttributes(buf, enclosingNamespace);
         if (type != Type.available) {
             buf.attribute("type", type);
         }
@@ -288,7 +288,8 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         if (mode != null && mode != Mode.available) {
             buf.element("show", mode);
         }
-        buf.append(getExtensionsXML());
+
+        buf.append(getExtensions(), enclosingNamespace);
 
         // Add the error sub-packet, if there is one.
         appendErrorIfExists(buf);

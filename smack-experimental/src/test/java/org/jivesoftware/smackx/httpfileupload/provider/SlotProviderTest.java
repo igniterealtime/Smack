@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017 Grigory Fedorov, Florian Schmaus
+ * Copyright © 2017-2018 Grigory Fedorov, Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
@@ -68,7 +69,7 @@ public class SlotProviderTest {
 
         checkUrls(slot);
 
-        assertXMLEqual(SLOT_IQ, slot.toXML(null).toString());
+        assertXMLEqual(SLOT_IQ, slot.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     private static final String SLOT_V0_2_IQ =
@@ -88,7 +89,7 @@ public class SlotProviderTest {
 
         checkUrls(slot);
 
-        String slotXml = slot.toXML(null).toString();
+        String slotXml = slot.toXML(StreamOpen.CLIENT_NAMESPACE).toString();
         assertXMLEqual(SLOT_V0_2_IQ, slotXml);
     }
 
@@ -112,7 +113,7 @@ public class SlotProviderTest {
 
         checkUrls(slot);
 
-        String slotXml = slot.toXML(null).toString();
+        String slotXml = slot.toXML(StreamOpen.CLIENT_NAMESPACE).toString();
         assertXMLEqual(SLOT_WITH_HEADERS_IQ, slotXml);
     }
 

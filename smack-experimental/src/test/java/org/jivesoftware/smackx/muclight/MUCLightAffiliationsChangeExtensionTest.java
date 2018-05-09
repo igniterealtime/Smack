@@ -30,19 +30,19 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class MUCLightAffiliationsChangeExtensionTest {
 
-    private static final String exampleMessageStanza = "<message " + "to='coven@muclight.shakespeare.lit' id='member1' type='groupchat'>"
+    private static final String exampleMessageStanza = "<message xmlns='jabber:client' to='coven@muclight.shakespeare.lit' id='member1' type='groupchat'>"
             + "<x xmlns='urn:xmpp:muclight:0#affiliations'>"
             + "<user affiliation='owner'>sarasa2@shakespeare.lit</user>"
             + "<user affiliation='member'>sarasa1@shakespeare.lit</user>"
             + "<user affiliation='none'>sarasa3@shakespeare.lit</user>" + "</x>" + "</message>";
 
-    private static final String exampleMessageStanzaWithVersion = "<message "
+    private static final String exampleMessageStanzaWithVersion = "<message xmlns='jabber:client' "
             + "to='coven@muclight.shakespeare.lit' id='member1' type='groupchat'>"
             + "<x xmlns='urn:xmpp:muclight:0#affiliations'>" + "<version>qwerty</version>"
             + "<user affiliation='member'>sarasa1@shakespeare.lit</user>"
             + "<user affiliation='none'>sarasa3@shakespeare.lit</user>" + "</x>" + "<body></body>" + "</message>";
 
-    private static final String exampleMessageStanzaWithPrevVersion = "<message "
+    private static final String exampleMessageStanzaWithPrevVersion = "<message xmlns='jabber:client' "
             + "to='coven@muclight.shakespeare.lit' id='member1' type='groupchat'>"
             + "<x xmlns='urn:xmpp:muclight:0#affiliations'>" + "<prev-version>njiokm</prev-version>"
             + "<version>qwerty</version>" + "<user affiliation='owner'>sarasa2@shakespeare.lit</user>"
