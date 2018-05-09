@@ -15,7 +15,11 @@ dependencies {
 	compile project(':smack-debug')
 	compile 'org.reflections:reflections:0.9.9-RC1'
 	compile 'eu.geekplace.javapinning:java-pinning-java7:1.1.0-alpha1'
-	compile "junit:junit:$junitVersion"
+	// Note that the junit-vintage-engine runtime dependency is not
+	// directly required, but it declares a dependency to
+	// junit:junit:4.12, which we currently need in sinttest, since it
+	// (ab)uses @Before from org.junit
+	compile "org.junit.vintage:junit-vintage-engine:$junitVersion"
 	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
 }
 
