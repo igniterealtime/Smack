@@ -70,7 +70,7 @@ public class Forwarded implements ExtensionElement {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         xml.optElement(getDelayInformation());
-        xml.append(forwardedPacket.toXML(null));
+        xml.append(forwardedPacket.toXML(NAMESPACE));
         xml.closeElement(this);
         return xml;
     }
