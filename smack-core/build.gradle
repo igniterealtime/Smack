@@ -6,6 +6,10 @@ apply plugin: 'osgi'
 description = """\
 Smack core components."""
 
+ext {
+	xmlUnitVersion = "2.6.0"
+}
+
 dependencies {
 	compile 'xpp3:xpp3:1.1.4c'
 	compile "org.jxmpp:jxmpp-core:$jxmppVersion"
@@ -13,7 +17,8 @@ dependencies {
 	compile "org.minidns:minidns-core:$miniDnsVersion"
 	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
 	testCompile "junit:junit:$junitVersion"
-	testCompile 'xmlunit:xmlunit:1.5'
+	testCompile "org.xmlunit:xmlunit-core:$xmlUnitVersion"
+	testCompile "org.xmlunit:xmlunit-legacy:$xmlUnitVersion"
 	testCompile "org.powermock:powermock-module-junit4:1.6.4"
 	testCompile "org.powermock:powermock-module-junit4-rule:1.6.4"
 	testCompile "org.powermock:powermock-api-mockito:1.6.4"
