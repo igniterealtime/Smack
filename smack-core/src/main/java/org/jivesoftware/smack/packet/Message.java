@@ -544,9 +544,6 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         private final String language;
 
         private Subject(String language, String subject) {
-            if (language == null) {
-                throw new NullPointerException("Language cannot be null.");
-            }
             if (subject == null) {
                 throw new NullPointerException("Subject cannot be null.");
             }
@@ -577,7 +574,9 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + this.language.hashCode();
+            if (language != null) {
+                result = prime * result + this.language.hashCode();
+            }
             result = prime * result + this.subject.hashCode();
             return result;
         }
@@ -611,7 +610,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         @Override
         public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(getElementName()).xmllangAttribute(getLanguage()).rightAngleBracket();
+            xml.halfOpenElement(getElementName()).optXmlLangAttribute(getLanguage()).rightAngleBracket();
             xml.escape(subject);
             xml.closeElement(getElementName());
             return xml;
