@@ -954,7 +954,10 @@ public class PacketParserUtils {
         ParserUtils.assertAtStartTag(parser);
         final int initialDepth = parser.getDepth();
         boolean optional = false;
-        if (!parser.isEmptyElementTag()) {
+        if (parser.isEmptyElementTag()) {
+            return new Session.Feature(optional);
+        }
+
         outerloop: while (true) {
             int event = parser.next();
             switch (event) {
@@ -972,9 +975,8 @@ public class PacketParserUtils {
                 }
             }
         }
-        }
-        return new Session.Feature(optional);
 
+        return new Session.Feature(optional);
     }
 
     public static void addExtensionElement(Stanza packet, XmlPullParser parser)
