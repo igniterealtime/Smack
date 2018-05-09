@@ -8,6 +8,7 @@ Smack core components."""
 
 ext {
 	xmlUnitVersion = "2.6.0"
+	powerMockVersion = "1.7.3"
 }
 
 dependencies {
@@ -20,10 +21,9 @@ dependencies {
 	testCompile "org.junit.vintage:junit-vintage-engine:$junitVersion"
 	testCompile "org.xmlunit:xmlunit-core:$xmlUnitVersion"
 	testCompile "org.xmlunit:xmlunit-legacy:$xmlUnitVersion"
-	testCompile "org.powermock:powermock-module-junit4:1.6.4"
-	testCompile "org.powermock:powermock-module-junit4-rule:1.6.4"
-	testCompile "org.powermock:powermock-api-mockito:1.6.4"
-	testCompile "org.powermock:powermock-classloading-xstream:1.6.4"
+	testCompile "org.powermock:powermock-module-junit4:$powerMockVersion"
+	testCompile "org.powermock:powermock-module-junit4-rule:$powerMockVersion"
+	testCompile "org.powermock:powermock-api-mockito2:$powerMockVersion"
 	testCompile 'com.jamesmurty.utils:java-xmlbuilder:0.6'
 	testCompile 'net.iharder:base64:2.3.8'
 }
