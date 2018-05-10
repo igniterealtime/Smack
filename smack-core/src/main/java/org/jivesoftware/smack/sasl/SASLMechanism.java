@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014-2016 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smack.sasl;
 
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
+
 import javax.net.ssl.SSLSession;
 import javax.security.auth.callback.CallbackHandler;
 
@@ -25,7 +28,6 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.AuthMechanism;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Response;
-import org.jivesoftware.smack.util.StringTransformer;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -53,22 +55,6 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     public static final String EXTERNAL = "EXTERNAL";
     public static final String GSSAPI = "GSSAPI";
     public static final String PLAIN = "PLAIN";
-
-    // TODO Remove once Smack's min Android API is 9, where java.text.Normalizer is available
-    private static StringTransformer saslPrepTransformer;
-
-    /**
-     * Set the SASLPrep StringTransformer.
-     * <p>
-     * A simple SASLPrep StringTransformer would be for example: <code>java.text.Normalizer.normalize(string, Form.NFKC);</code>
-     * </p>
-     *
-     * @param stringTransformer set StringTransformer to use for SASLPrep.
-     * @see <a href="http://tools.ietf.org/html/rfc4013">RFC 4013 - SASLprep: Stringprep Profile for User Names and Passwords</a>
-     */
-    public static void setSaslPrepTransformer(StringTransformer stringTransformer) {
-        saslPrepTransformer = stringTransformer;
-    }
 
     protected XMPPConnection connection;
 
@@ -319,11 +305,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @see <a href="http://tools.ietf.org/html/rfc4013">RFC 4013 - SASLprep: Stringprep Profile for User Names and Passwords</a>
      */
     protected static String saslPrep(String string) {
-        StringTransformer stringTransformer = saslPrepTransformer;
-        if (stringTransformer != null) {
-            return stringTransformer.transform(string);
-        }
-        return string;
+        return Normalizer.normalize(string, Form.NFKC);
     }
 
     @Override
