@@ -20,7 +20,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -134,7 +133,11 @@ public final class MultiUserChatManager extends Manager {
                     new NotFilter(MessageTypeFilter.ERROR));
 
     private final Set<InvitationListener> invitationsListeners = new CopyOnWriteArraySet<InvitationListener>();
-    private final Set<EntityBareJid> joinedRooms = new HashSet<>();
+
+    /**
+     * The XMPP addresses of currently joined rooms.
+     */
+    private final Set<EntityBareJid> joinedRooms = new CopyOnWriteArraySet<>();
 
     /**
      * A Map of MUC JIDs to {@link MultiUserChat} instances. We use weak references for the values in order to allow
