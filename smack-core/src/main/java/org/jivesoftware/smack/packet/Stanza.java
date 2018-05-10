@@ -394,7 +394,10 @@ public abstract class Stanza implements TopLevelStreamElement {
     public ExtensionElement overrideExtension(ExtensionElement extension) {
         if (extension == null) return null;
         synchronized (packetExtensions) {
-            ExtensionElement removedExtension = removeExtension(extension);
+            // Note that we need to use removeExtension(String, String) here. If would use
+            // removeExtension(ExtensionElement) then we would remove based on the equality of ExtensionElement, which
+            // is not what we want in this case.
+            ExtensionElement removedExtension = removeExtension(extension.getElementName(), extension.getNamespace());
             addExtension(extension);
             return removedExtension;
         }
