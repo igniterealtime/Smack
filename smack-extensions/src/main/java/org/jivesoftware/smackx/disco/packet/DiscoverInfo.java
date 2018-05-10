@@ -469,6 +469,11 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         public Identity clone() {
             return new Identity(this);
         }
+
+        @Override
+        public String toString() {
+            return toXML().toString();
+        }
     }
 
     /**
@@ -536,6 +541,11 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         @Override
         public Feature clone() {
             return new Feature(this);
+        }
+
+        @Override
+        public String toString() {
+            return toXML().toString();
         }
     }
 }
