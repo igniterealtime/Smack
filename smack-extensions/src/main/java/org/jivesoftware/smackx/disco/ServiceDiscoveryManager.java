@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -44,7 +45,6 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 
-import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
@@ -74,13 +74,15 @@ public final class ServiceDiscoveryManager extends Manager {
     private static final String DEFAULT_IDENTITY_CATEGORY = "client";
     private static final String DEFAULT_IDENTITY_TYPE = "pc";
 
+    private static final List<DiscoInfoLookupShortcutMechanism> discoInfoLookupShortcutMechanisms = new ArrayList<>(2);
+
     private static DiscoverInfo.Identity defaultIdentity = new Identity(DEFAULT_IDENTITY_CATEGORY,
             DEFAULT_IDENTITY_NAME, DEFAULT_IDENTITY_TYPE);
 
     private final Set<DiscoverInfo.Identity> identities = new HashSet<>();
     private DiscoverInfo.Identity identity = defaultIdentity;
 
-    private EntityCapsManager capsManager;
+    private final Set<EntityCapabilitiesChangedListener> entityCapabilitiesChangedListeners = new CopyOnWriteArraySet<>();
 
     private static final Map<XMPPConnection, ServiceDiscoveryManager> instances = new WeakHashMap<>();
 
@@ -488,30 +490,19 @@ public final class ServiceDiscoveryManager extends Manager {
         if (entityID == null)
             return discoverInfo(null, null);
 
-        // Check if the have it cached in the Entity Capabilities Manager
-        DiscoverInfo info = EntityCapsManager.getDiscoverInfoByUser(entityID);
-
-        if (info != null) {
-            // We were able to retrieve the information from Entity Caps and
-            // avoided a disco request, hurray!
-            return info;
+        synchronized (discoInfoLookupShortcutMechanisms) {
+            for (DiscoInfoLookupShortcutMechanism discoInfoLookupShortcutMechanism : discoInfoLookupShortcutMechanisms) {
+                DiscoverInfo info = discoInfoLookupShortcutMechanism.getDiscoverInfoByUser(this, entityID);
+                if (info != null) {
+                    // We were able to retrieve the information from Entity Caps and
+                    // avoided a disco request, hurray!
+                    return info;
+                }
+            }
         }
 
-        // Try to get the newest node#version if it's known, otherwise null is
-        // returned
-        EntityCapsManager.NodeVerHash nvh = EntityCapsManager.getNodeVerHashByJid(entityID);
-
-        // Discover by requesting the information from the remote entity
-        // Note that wee need to use NodeVer as argument for Node if it exists
-        info = discoverInfo(entityID, nvh != null ? nvh.getNodeVer() : null);
-
-        // If the node version is known, store the new entry.
-        if (nvh != null) {
-            if (EntityCapsManager.verifyDiscoverInfoVersion(nvh.getVer(), nvh.getHash(), info))
-                EntityCapsManager.addDiscoverInfoByNode(nvh.getNodeVer(), info);
-        }
-
-        return info;
+        // Last resort: Standard discovery.
+        return discoverInfo(entityID, null);
     }
 
     /**
@@ -933,24 +924,29 @@ public final class ServiceDiscoveryManager extends Manager {
         return findService(feature, useCache, null, null);
     }
 
-    /**
-     * Entity Capabilities
-     */
-
-    /**
-     * Loads the ServiceDiscoveryManager with an EntityCapsManger that speeds up certain lookups.
-     *
-     * @param manager
-     */
-    public void setEntityCapsManager(EntityCapsManager manager) {
-        capsManager = manager;
+    public boolean addEntityCapabilitiesChangedListener(EntityCapabilitiesChangedListener entityCapabilitiesChangedListener) {
+        return entityCapabilitiesChangedListeners.add(entityCapabilitiesChangedListener);
     }
 
     /**
-     * Updates the Entity Capabilities Verification String if EntityCaps is enabled.
+     * Notify the {@link EntityCapabilitiesChangedListener} about changed capabilities.
      */
     private void renewEntityCapsVersion() {
-        if (capsManager != null && capsManager.entityCapsEnabled())
-            capsManager.updateLocalEntityCaps();
+        for (EntityCapabilitiesChangedListener entityCapabilitiesChangedListener : entityCapabilitiesChangedListeners) {
+            entityCapabilitiesChangedListener.onEntityCapailitiesChanged();
+        }
+    }
+
+    public static void addDiscoInfoLookupShortcutMechanism(DiscoInfoLookupShortcutMechanism discoInfoLookupShortcutMechanism) {
+        synchronized (discoInfoLookupShortcutMechanisms) {
+            discoInfoLookupShortcutMechanisms.add(discoInfoLookupShortcutMechanism);
+            Collections.sort(discoInfoLookupShortcutMechanisms);
+        }
+    }
+
+    public static void removeDiscoInfoLookupShortcutMechanism(DiscoInfoLookupShortcutMechanism discoInfoLookupShortcutMechanism) {
+        synchronized (discoInfoLookupShortcutMechanisms) {
+            discoInfoLookupShortcutMechanisms.remove(discoInfoLookupShortcutMechanism);
+        }
     }
 }

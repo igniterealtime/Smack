@@ -59,6 +59,8 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
+import org.jivesoftware.smackx.disco.DiscoInfoLookupShortcutMechanism;
+import org.jivesoftware.smackx.disco.EntityCapabilitiesChangedListener;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Feature;
@@ -128,6 +130,36 @@ public final class EntityCapsManager extends Manager {
         } catch (NoSuchAlgorithmException e) {
             // Ignore
         }
+
+        ServiceDiscoveryManager.addDiscoInfoLookupShortcutMechanism(new DiscoInfoLookupShortcutMechanism("XEP-0115: Entity Capabilities", 100) {
+            @Override
+            public DiscoverInfo getDiscoverInfoByUser(ServiceDiscoveryManager serviceDiscoveryManager, Jid jid) {
+                DiscoverInfo info = EntityCapsManager.getDiscoverInfoByUser(jid);
+                if (info != null) {
+                    return info;
+                }
+
+                NodeVerHash nodeVerHash = getNodeVerHashByJid(jid);
+                if (nodeVerHash == null) {
+                    return null;
+                }
+
+                try {
+                    info = serviceDiscoveryManager.discoverInfo(jid, nodeVerHash.getNodeVer());
+                } catch (NoResponseException | XMPPErrorException | NotConnectedException | InterruptedException e) {
+                    // TODO log
+                    return null;
+                }
+
+                if (verifyDiscoverInfoVersion(nodeVerHash.getVer(), nodeVerHash.getHash(), info)) {
+                    addDiscoverInfoByNode(nodeVerHash.getNodeVer(), info);
+                } else {
+                    // TODO log
+                }
+
+                return info;
+            }
+        });
     }
 
     /**
@@ -148,7 +180,7 @@ public final class EntityCapsManager extends Manager {
      * @param info
      *            DiscoverInfo for the specified node.
      */
-    public static void addDiscoverInfoByNode(String nodeVer, DiscoverInfo info) {
+    static void addDiscoverInfoByNode(String nodeVer, DiscoverInfo info) {
         CAPS_CACHE.put(nodeVer, info);
 
         if (persistentCache != null)
@@ -365,7 +397,16 @@ public final class EntityCapsManager extends Manager {
         connection.addStanzaInterceptor(packetInterceptor, PresenceTypeFilter.AVAILABLE);
         // It's important to do this as last action. Since it changes the
         // behavior of the SDM in some ways
-        sdm.setEntityCapsManager(this);
+        sdm.addEntityCapabilitiesChangedListener(new EntityCapabilitiesChangedListener() {
+            @Override
+            public void onEntityCapailitiesChanged() {
+                if (!entityCapsEnabled()) {
+                    return;
+                }
+
+                updateLocalEntityCaps();
+            }
+        });
     }
 
     public static synchronized EntityCapsManager getInstanceFor(XMPPConnection connection) {
@@ -473,7 +514,7 @@ public final class EntityCapsManager extends Manager {
      * presence is send to inform others about your new Entity Caps node string.
      *
      */
-    public void updateLocalEntityCaps() {
+    private void updateLocalEntityCaps() {
         XMPPConnection connection = connection();
 
         DiscoverInfo discoverInfo = new DiscoverInfo();
