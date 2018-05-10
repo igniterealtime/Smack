@@ -16,15 +16,9 @@
  */
 package org.jivesoftware.smack;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -145,41 +139,13 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
         return getOrThrowExecutionException();
     }
 
-    private static final ExecutorService EXECUTOR_SERVICE;
-
-    static {
-        ThreadFactory threadFactory = new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread thread = new Thread(r);
-                thread.setDaemon(true);
-                thread.setName("SmackFuture Thread");
-                return thread;
-            }
-        };
-        BlockingQueue<Runnable> blockingQueue = new ArrayBlockingQueue<>(128);
-        RejectedExecutionHandler rejectedExecutionHandler = new RejectedExecutionHandler() {
-            @Override
-            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-                r.run();
-            }
-        };
-        int cores = Runtime.getRuntime().availableProcessors();
-        int maximumPoolSize = cores <= 4 ? 2 : cores;
-        ExecutorService executorService = new ThreadPoolExecutor(0, maximumPoolSize, 60L, TimeUnit.SECONDS,
-                        blockingQueue, threadFactory, rejectedExecutionHandler);
-
-        EXECUTOR_SERVICE = executorService;
-    }
-
-    @SuppressWarnings("FutureReturnValueIgnored")
     protected final synchronized void maybeInvokeCallbacks() {
         if (cancelled) {
             return;
         }
 
         if (result != null && successCallback != null) {
-            EXECUTOR_SERVICE.submit(new Runnable() {
+            AbstractXMPPConnection.asyncGo(new Runnable() {
                 @Override
                 public void run() {
                     successCallback.onSuccess(result);
@@ -187,7 +153,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
             });
         }
         else if (exception != null && exceptionCallback != null) {
-            EXECUTOR_SERVICE.submit(new Runnable() {
+            AbstractXMPPConnection.asyncGo(new Runnable() {
                 @Override
                 public void run() {
                     exceptionCallback.processException(exception);
