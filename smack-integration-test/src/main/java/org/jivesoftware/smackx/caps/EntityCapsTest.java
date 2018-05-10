@@ -169,7 +169,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
         DiscoverInfo info = sdmOne.discoverInfo(conTwo.getUser());
         // that discovery should cause a disco#info
         assertTrue(discoInfoSend.get());
-        assertTrue(info.containsFeature(dummyFeature));
+        assertTrue("The info response '" + info + "' does not contain the expected feature '" + dummyFeature + '\'', info.containsFeature(dummyFeature));
         discoInfoSend.set(false);
 
         // discover that
