@@ -20,6 +20,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -144,7 +145,7 @@ public final class MultiUserChatManager extends Manager {
      * those instances to get garbage collected. Note that MultiUserChat instances can not get garbage collected while
      * the user is joined, because then the MUC will have PacketListeners added to the XMPPConnection.
      */
-    private final Map<EntityBareJid, WeakReference<MultiUserChat>> multiUserChats = new HashMap<>();
+    private final Map<EntityBareJid, WeakReference<MultiUserChat>> multiUserChats = new CleaningWeakReferenceMap<>();
 
     private boolean autoJoinOnReconnect;
 
@@ -479,4 +480,64 @@ public final class MultiUserChatManager extends Manager {
     void removeJoinedRoom(EntityBareJid room) {
         joinedRooms.remove(room);
     }
+
+    /**
+     * Extends a {@link HashMap} with {@link WeakReference} values, so that
+     * weak references which have been cleared are periodically removed from
+     * the map. The cleaning occurs as part of {@link #put}, after a specific
+     * number ({@link #CLEAN_INTERVAL}) of calls to {@link #put}.
+     *
+     * @param <K> The key type.
+     * @param <V> The value type.
+     */
+    private static class CleaningWeakReferenceMap<K, V>
+        extends HashMap<K, WeakReference<V>>
+    {
+        private static final long serialVersionUID = 0L;
+
+        /**
+         * The number of calls to {@link #put} after which to clean this map
+         * (i.e. remove cleared {@link WeakReference}s from it).
+         */
+        private static int CLEAN_INTERVAL = 50;
+
+        /**
+         * The number of times {@link #put} has been called on this instance
+         * since the last time it was {@link #clean}ed.
+         */
+        private int numberOfInsertsSinceLastClean = 0;
+
+        @Override
+        public WeakReference<V> put(K key, WeakReference<V> value)
+        {
+            WeakReference<V> ret = super.put(key, value);
+
+            if (numberOfInsertsSinceLastClean++ > CLEAN_INTERVAL)
+            {
+                numberOfInsertsSinceLastClean = 0;
+                clean();
+            }
+
+            return ret;
+        }
+
+        /**
+         * Removes all cleared entries from this map (i.e. entries whose value
+         * is a cleared {@link WeakReference}).
+         */
+        private void clean()
+        {
+            Iterator<Entry<K, WeakReference<V>>> iter = entrySet().iterator();
+            while (iter.hasNext())
+            {
+                Entry<K, WeakReference<V>> e = iter.next();
+                if (e != null && e.getValue() != null
+                    && e.getValue().get() == null)
+                {
+                    iter.remove();
+                }
+            }
+        }
+    }
+
 }
