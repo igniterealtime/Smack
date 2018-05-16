@@ -344,6 +344,29 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected abstract void sendStanzaInternal(Stanza packet) throws NotConnectedException, InterruptedException;
 
     @Override
+    public boolean trySendStanza(Stanza stanza) throws NotConnectedException {
+        // Default implementation which falls back to sendStanza() as mentioned in the methods javadoc. May be
+        // overwritten by subclasses.
+        try {
+            sendStanza(stanza);
+        } catch (InterruptedException e) {
+            LOGGER.log(Level.FINER,
+                            "Thread blocked in fallback implementation of trySendStanza(Stanza) was interrupted", e);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean trySendStanza(Stanza stanza, long timeout, TimeUnit unit)
+                    throws NotConnectedException, InterruptedException {
+        // Default implementation which falls back to sendStanza() as mentioned in the methods javadoc. May be
+        // overwritten by subclasses.
+        sendStanza(stanza);
+        return true;
+    }
+
+    @Override
     public abstract void sendNonza(Nonza element) throws NotConnectedException, InterruptedException;
 
     @Override

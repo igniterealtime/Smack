@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack;
 
+import java.util.concurrent.TimeUnit;
+
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -162,6 +164,44 @@ public interface XMPPConnection {
      * @throws InterruptedException
      * */
     void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException;
+
+    /**
+     * Try to send the given stanza. Returns {@code true} if the stanza was successfully put into the outgoing stanza
+     * queue, otherwise, if {@code false} is returned, the stanza could not be scheduled for sending (for example
+     * because the outgoing element queue is full). Note that this means that the stanza possibly was not put onto the
+     * wire, even if {@code true} is returned, it just has been successfully scheduled for sending.
+     * <p>
+     * <b>Note:</b> Implementations are not required to provide that functionality. In that case this method is mapped
+     * to {@link #sendStanza(Stanza)} and will possibly block until the stanza could be scheduled for sending.
+     * </p>
+     *
+     * @param stanza the stanza to send.
+     * @return {@code true} if the stanza was successfully scheduled to be send, {@code false} otherwise.
+     * @throws NotConnectedException if the connection is not connected.
+     * @since 4.4
+     */
+    boolean trySendStanza(Stanza stanza) throws NotConnectedException;
+
+    /**
+     * Try to send the given stanza. Returns {@code true} if the stanza was successfully put into the outgoing stanza
+     * queue within the given timeout period, otherwise, if {@code false} is returned, the stanza could not be scheduled
+     * for sending (for example because the outgoing element queue is full). Note that this means that the stanza
+     * possibly was not put onto the wire, even if {@code true} is returned, it just has been successfully scheduled for
+     * sending.
+     * <p>
+     * <b>Note:</b> Implementations are not required to provide that functionality. In that case this method is mapped
+     * to {@link #sendStanza(Stanza)} and will possibly block until the stanza could be scheduled for sending.
+     * </p>
+     *
+     * @param stanza the stanza to send.
+     * @param timeout how long to wait before giving up, in units of {@code unit}.
+     * @param unit a {@code TimeUnit} determining how to interpret the {@code timeout} parameter.
+     * @return {@code true} if the stanza was successfully scheduled to be send, {@code false} otherwise.
+     * @throws NotConnectedException if the connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @since 4.4
+     */
+    boolean trySendStanza(Stanza stanza, long timeout, TimeUnit unit)  throws NotConnectedException, InterruptedException;
 
     /**
      * Send a Nonza.
