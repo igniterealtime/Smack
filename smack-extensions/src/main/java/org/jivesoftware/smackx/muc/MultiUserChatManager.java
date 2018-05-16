@@ -491,8 +491,7 @@ public final class MultiUserChatManager extends Manager {
      * @param <V> The value type.
      */
     private static class CleaningWeakReferenceMap<K, V>
-        extends HashMap<K, WeakReference<V>>
-    {
+        extends HashMap<K, WeakReference<V>> {
         private static final long serialVersionUID = 0L;
 
         /**
@@ -508,12 +507,10 @@ public final class MultiUserChatManager extends Manager {
         private int numberOfInsertsSinceLastClean = 0;
 
         @Override
-        public WeakReference<V> put(K key, WeakReference<V> value)
-        {
+        public WeakReference<V> put(K key, WeakReference<V> value) {
             WeakReference<V> ret = super.put(key, value);
 
-            if (numberOfInsertsSinceLastClean++ > CLEAN_INTERVAL)
-            {
+            if (numberOfInsertsSinceLastClean++ > CLEAN_INTERVAL) {
                 numberOfInsertsSinceLastClean = 0;
                 clean();
             }
@@ -525,15 +522,12 @@ public final class MultiUserChatManager extends Manager {
          * Removes all cleared entries from this map (i.e. entries whose value
          * is a cleared {@link WeakReference}).
          */
-        private void clean()
-        {
+        private void clean() {
             Iterator<Entry<K, WeakReference<V>>> iter = entrySet().iterator();
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 Entry<K, WeakReference<V>> e = iter.next();
                 if (e != null && e.getValue() != null
-                    && e.getValue().get() == null)
-                {
+                    && e.getValue().get() == null) {
                     iter.remove();
                 }
             }
