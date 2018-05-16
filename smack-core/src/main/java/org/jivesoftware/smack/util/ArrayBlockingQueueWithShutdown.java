@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -259,6 +259,25 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
             insert(e);
         }
         finally {
+            lock.unlock();
+        }
+    }
+
+    public boolean tryPut(E e) {
+        checkNotNull(e);
+
+        boolean locked = lock.tryLock();
+        if (!locked) {
+            return false;
+        }
+        try {
+            if (isShutdown || isFull()) {
+                return false;
+            }
+
+            insert(e);
+            return true;
+        } finally {
             lock.unlock();
         }
     }
