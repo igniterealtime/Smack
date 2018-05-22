@@ -31,6 +31,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -153,6 +154,26 @@ public final class FileUtils {
         catch (IOException e) {
             LOGGER.log(Level.WARNING, "writeFile", e);
             return false;
+        }
+    }
+
+    public static void deleteDirectory(File root) {
+        File[] currList;
+        Stack<File> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            if (stack.lastElement().isDirectory()) {
+                currList = stack.lastElement().listFiles();
+                if (currList != null && currList.length > 0) {
+                    for (File curr : currList) {
+                        stack.push(curr);
+                    }
+                } else {
+                    stack.pop().delete();
+                }
+            } else {
+                stack.pop().delete();
+            }
         }
     }
 }
