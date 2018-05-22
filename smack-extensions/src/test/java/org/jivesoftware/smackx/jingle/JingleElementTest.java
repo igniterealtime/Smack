@@ -25,6 +25,7 @@ import java.io.IOException;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
@@ -74,7 +75,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</reason>" +
                         "</jingle>";
         String xml = getIQXML(romeo, juliet, terminate.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, terminate.toXML(null).toString());
+        assertXMLEqual(xml, terminate.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         JingleElement jingle = new JingleProvider().parse(TestUtils.getParser(jingleXML));
         assertNotNull(jingle);
         assertEquals(jingle.getAction(), JingleAction.session_terminate);
@@ -93,7 +94,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</reason>" +
                         "</jingle>";
         String xml = getIQXML(romeo, juliet, success.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, success.toXML(null).toString());
+        assertXMLEqual(xml, success.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         JingleElement jingle = new JingleProvider().parse(TestUtils.getParser(jingleXML));
         assertNotNull(jingle);
         assertEquals(jingle.getAction(), JingleAction.session_terminate);
@@ -112,7 +113,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</reason>" +
                         "</jingle>";
         String xml = getIQXML(romeo, juliet, busy.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, busy.toXML(null).toString());
+        assertXMLEqual(xml, busy.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         JingleElement jingle = new JingleProvider().parse(TestUtils.getParser(jingleXML));
         assertNotNull(jingle);
         assertEquals(jingle.getAction(), JingleAction.session_terminate);
@@ -133,7 +134,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</reason>" +
                         "</jingle>";
         String xml = getIQXML(romeo, juliet, busy.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, busy.toXML(null).toString());
+        assertXMLEqual(xml, busy.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         JingleElement jingle = new JingleProvider().parse(TestUtils.getParser(jingleXML));
         assertNotNull(jingle);
         assertEquals(jingle.getAction(), JingleAction.session_terminate);
@@ -154,7 +155,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</reason>" +
                         "</jingle>";
         String xml = getIQXML(romeo, juliet, cancel.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, cancel.toXML(null).toString());
+        assertXMLEqual(xml, cancel.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         JingleElement jingle = new JingleProvider().parse(TestUtils.getParser(jingleXML));
         assertNotNull(jingle);
         assertEquals(jingle.getAction(), JingleAction.session_terminate);
@@ -173,7 +174,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</reason>" +
                         "</jingle>";
         String xml = getIQXML(romeo, juliet, unsupportedTransports.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, unsupportedTransports.toXML(null).toString());
+        assertXMLEqual(xml, unsupportedTransports.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         JingleElement jingle = new JingleProvider().parse(TestUtils.getParser(jingleXML));
         assertNotNull(jingle);
         assertEquals(jingle.getAction(), JingleAction.session_terminate);
@@ -192,7 +193,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</reason>" +
                         "</jingle>";
         String xml = getIQXML(romeo, juliet, unsupportedApplications.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, unsupportedApplications.toXML(null).toString());
+        assertXMLEqual(xml, unsupportedApplications.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         JingleElement jingle = new JingleProvider().parse(TestUtils.getParser(jingleXML));
         assertNotNull(jingle);
         assertEquals(jingle.getAction(), JingleAction.session_terminate);
@@ -211,7 +212,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</reason>" +
                         "</jingle>";
         String xml = getIQXML(romeo, juliet, failedTransport.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, failedTransport.toXML(null).toString());
+        assertXMLEqual(xml, failedTransport.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         assertEquals(JingleAction.session_terminate, failedTransport.getAction());
         assertEquals(JingleReasonElement.Reason.failed_transport, failedTransport.getReason().asEnum());
     }
@@ -228,7 +229,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</reason>" +
                         "</jingle>";
         String xml = getIQXML(romeo, juliet, failedApplication.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, failedApplication.toXML(null).toString());
+        assertXMLEqual(xml, failedApplication.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         assertEquals(JingleAction.session_terminate, failedApplication.getAction());
         assertEquals(JingleReasonElement.Reason.failed_application, failedApplication.getReason().asEnum());
     }
@@ -241,7 +242,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "action='session-info' " +
                         "sid='thisisit'/>";
         String xml = getIQXML(romeo, juliet, ping.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, ping.toXML(null).toString());
+        assertXMLEqual(xml, ping.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         JingleElement jingle = new JingleProvider().parse(TestUtils.getParser(jingleXML));
         assertNotNull(jingle);
         assertEquals(JingleAction.session_info, jingle.getAction());
@@ -260,7 +261,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</reason>" +
                         "</jingle>";
         String xml = getIQXML(romeo, juliet, cancel.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, cancel.toXML(null).toString());
+        assertXMLEqual(xml, cancel.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         JingleElement jingle = new JingleProvider().parse(TestUtils.getParser(jingleXML));
         assertNotNull(jingle);
         assertEquals(JingleAction.session_terminate, jingle.getAction());
@@ -284,7 +285,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</reason>" +
                         "</jingle>";
         String xml = getIQXML(romeo, juliet, terminate.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, terminate.toXML(null).toString());
+        assertXMLEqual(xml, terminate.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         assertEquals(JingleReasonElement.Reason.incompatible_parameters, terminate.getReason().asEnum());
         assertEquals("incompatibleSID", terminate.getSid());
     }
@@ -304,7 +305,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</content>" +
                         "</jingle>";
         String xml = getIQXML(juliet, romeo, transportAccept.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, transportAccept.toXML(null).toString());
+        assertXMLEqual(xml, transportAccept.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         assertEquals(JingleAction.transport_accept, transportAccept.getAction());
         assertEquals("transAcc", transportAccept.getSid());
     }
@@ -329,7 +330,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "</content>" +
                         "</jingle>";
         String xml = getIQXML(juliet, romeo, transportReplace.getStanzaId(), jingleXML);
-        assertXMLEqual(xml, transportReplace.toXML(null).toString());
+        assertXMLEqual(xml, transportReplace.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         assertEquals(JingleAction.transport_replace, transportReplace.getAction());
         assertEquals("transAcc", transportReplace.getSid());
     }
@@ -347,7 +348,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "<bad-request xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
                         "</error>" +
                         "</iq>";
-        assertXMLEqual(xml, error.toXML(null).toString());
+        assertXMLEqual(xml, error.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -364,7 +365,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "<tie-break xmlns='urn:xmpp:jingle:errors:1'/>" +
                         "</error>" +
                         "</iq>";
-        assertXMLEqual(xml, error.toXML(null).toString());
+        assertXMLEqual(xml, error.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -381,7 +382,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "<unknown-session xmlns='urn:xmpp:jingle:errors:1'/>" +
                         "</error>" +
                         "</iq>";
-        assertXMLEqual(xml, error.toXML(null).toString());
+        assertXMLEqual(xml, error.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -397,7 +398,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "<service-unavailable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
                         "</error>" +
                         "</iq>";
-        assertXMLEqual(xml, error.toXML(null).toString());
+        assertXMLEqual(xml, error.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -414,7 +415,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "<out-of-order xmlns='urn:xmpp:jingle:errors:1'/>" +
                         "</error>" +
                         "</iq>";
-        assertXMLEqual(xml, error.toXML(null).toString());
+        assertXMLEqual(xml, error.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -431,7 +432,7 @@ public class JingleElementTest extends SmackTestSuite {
                         "<unsupported-info xmlns='urn:xmpp:jingle:errors:1'/>" +
                         "</error>" +
                         "</iq>";
-        assertXMLEqual(xml, error.toXML(null).toString());
+        assertXMLEqual(xml, error.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     public static String getIQXML(FullJid from, FullJid to, String stanzaId, String jingleXML) {

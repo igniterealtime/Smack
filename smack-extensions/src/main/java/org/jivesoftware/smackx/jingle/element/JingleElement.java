@@ -31,7 +31,7 @@ import org.jxmpp.jid.FullJid;
 
 /**
  * The Jingle element. This represents a {@link JingleSession}.
- * 
+ *
  * @author Florian Schmaus
  */
 public final class JingleElement extends IQ {
