@@ -417,11 +417,16 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         /**
          * Do not disturb.
          */
-        dnd;
+        dnd,
+
+        /**
+         * Online. At least Psi-plus send it.
+         */
+        online;
 
         /**
          * Converts a String into the corresponding types. Valid String values that can be converted
-         * to types are: "chat", "available", "away", "xa", and "dnd".
+         * to types are: "chat", "available", "away", "xa", "dnd" and "online".
          *
          * @param string the String value to covert.
          * @return the corresponding Type.
