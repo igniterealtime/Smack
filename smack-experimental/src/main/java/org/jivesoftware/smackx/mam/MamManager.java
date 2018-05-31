@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016-2017 Florian Schmaus, Fernando Ramirez
+ * Copyright © 2017-2018 Florian Schmaus, 2016-2017 Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.mam.filter.MamResultFilter;
+import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -82,10 +83,24 @@ public final class MamManager extends Manager {
      * Get a MamManager for the MAM archive of the local entity (the "user") of the given connection.
      *
      * @param connection the XMPP connection to get the archive for.
-     * @return the instance of MamManager
+     * @return the instance of MamManager.
      */
     public static MamManager getInstanceFor(XMPPConnection connection) {
-        return getInstanceFor(connection, null);
+        return getInstanceFor(connection, (Jid) null);
+    }
+
+    /**
+     * Get a MamManager for the MAM archive of the given {@code MultiUserChat}. Note that not all MUCs support MAM,
+     * hence it is recommended to use {@link #isSupported()} to check if MAM is supported by the MUC.
+     *
+     * @param multiUserChat the MultiUserChat to retrieve the MamManager for.
+     * @return the MamManager for the given MultiUserChat.
+     * @since 4.3.0
+     */
+    public static MamManager getInstanceFor(MultiUserChat multiUserChat) {
+        XMPPConnection connection = multiUserChat.getXmppConnection();
+        Jid archiveAddress = multiUserChat.getRoom();
+        return getInstanceFor(connection, archiveAddress);
     }
 
     public static synchronized MamManager getInstanceFor(XMPPConnection connection, Jid archiveAddress) {
