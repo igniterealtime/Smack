@@ -113,6 +113,24 @@ public final class MamManager extends Manager {
     }
 
     /**
+     * The the XMPP address of this MAM archive. Note that this method may return {@code null} if this MamManager
+     * handles the local entity's archive and if the connection has never been authenticated at least once.
+     *
+     * @return the XMPP address of this MAM archive or {@code null}.
+     * @since 4.3.0
+     */
+    public Jid getArchiveAddress() {
+        if (archiveAddress == null) {
+            EntityFullJid localJid = connection().getUser();
+            if (localJid == null) {
+                return null;
+            }
+            return localJid.asBareJid();
+        }
+        return archiveAddress;
+    }
+
+    /**
      * Query archive with a maximum amount of results.
      *
      * @param max
