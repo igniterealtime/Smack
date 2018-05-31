@@ -79,9 +79,9 @@ public final class MamManager extends Manager {
     private static final Map<XMPPConnection, Map<Jid, MamManager>> INSTANCES = new WeakHashMap<>();
 
     /**
-     * Get the singleton instance of MamManager.
+     * Get a MamManager for the MAM archive of the local entity (the "user") of the given connection.
      *
-     * @param connection
+     * @param connection the XMPP connection to get the archive for.
      * @return the instance of MamManager
      */
     public static MamManager getInstanceFor(XMPPConnection connection) {
