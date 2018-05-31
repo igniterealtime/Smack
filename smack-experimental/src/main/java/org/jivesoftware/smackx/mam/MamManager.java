@@ -609,9 +609,9 @@ public final class MamManager extends Manager {
     }
 
     /**
-     * Check if MAM is supported for the XMPP connection managed by this MamManager.
+     * Check if this MamManager's archive address supports MAM.
      *
-     * @return true if MAM is supported for the XMPP connection, <code>false</code>otherwhise.
+     * @return true if MAM is supported, <code>false</code>otherwise.
      *
      * @throws NoResponseException
      * @throws XMPPErrorException
