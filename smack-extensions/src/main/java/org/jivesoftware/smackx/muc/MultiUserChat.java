@@ -2442,6 +2442,16 @@ public class MultiUserChat {
         }
     }
 
+    /**
+     * Get the XMPP connection associated with this chat instance.
+     *
+     * @return the associated XMPP connection.
+     * @since 4.3.0
+     */
+    public XMPPConnection getXmppConnection() {
+        return connection;
+    }
+
     @Override
     public String toString() {
         return "MUC: " + room + "(" + connection.getUser() + ")";
