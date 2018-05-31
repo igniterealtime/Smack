@@ -263,20 +263,45 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
         }
     }
 
-    public boolean tryPut(E e) {
+    public enum TryPutResult {
+        /**
+         * The method was unable to acquire the queue lock.
+         */
+        couldNotLock,
+
+        /**
+         * The queue was shut down.
+         */
+        queueWasShutDown,
+
+        /**
+         * The method was unable to put another element into the queue because the queue was full.
+         */
+        queueWasFull,
+
+        /**
+         * The element was successfully placed into the queue.
+         */
+        putSuccessful,
+    }
+
+    public TryPutResult tryPut(E e) {
         checkNotNull(e);
 
         boolean locked = lock.tryLock();
         if (!locked) {
-            return false;
+            return TryPutResult.couldNotLock;
         }
         try {
-            if (isShutdown || isFull()) {
-                return false;
+            if (isShutdown) {
+                return TryPutResult.queueWasShutDown;
+            }
+            if (isFull()) {
+                return TryPutResult.queueWasFull;
             }
 
             insert(e);
-            return true;
+            return TryPutResult.putSuccessful;
         } finally {
             lock.unlock();
         }
