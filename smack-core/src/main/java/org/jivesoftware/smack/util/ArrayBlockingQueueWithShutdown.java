@@ -360,6 +360,72 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
         }
     }
 
+    public enum TryTakeResultCode {
+        /**
+         * The method was unable to acquire the queue lock.
+         */
+        couldNotLock,
+
+        /**
+         * The queue was shut down.
+         */
+        queueWasShutDown,
+
+        /**
+         * The queue was empty.
+         */
+        queueWasEmpty,
+
+        /**
+         * An element was successfully removed from the queue.
+         */
+        takeSuccessful,
+    }
+
+    public static final class TryTakeResult<E> {
+        private final E element;
+        private final TryTakeResultCode resultCode;
+
+        private TryTakeResult(TryTakeResultCode resultCode) {
+            assert resultCode != null;
+            this.resultCode = resultCode;
+            this.element = null;
+        }
+
+        private TryTakeResult(E element) {
+            assert element != null;
+            this.resultCode = TryTakeResultCode.takeSuccessful;
+            this.element = element;
+        }
+
+        public TryTakeResultCode getResultCode() {
+            return resultCode;
+        }
+
+        public E getElement() {
+            return element;
+        }
+    }
+
+    public TryTakeResult<E> tryTake() {
+        boolean locked = lock.tryLock();
+        if (!locked) {
+            return new TryTakeResult<E>(TryTakeResultCode.couldNotLock);
+        }
+        try {
+            if (isShutdown) {
+                return new TryTakeResult<E>(TryTakeResultCode.queueWasShutDown);
+            }
+            if (hasNoElements()) {
+                return new TryTakeResult<E>(TryTakeResultCode.queueWasEmpty);
+            }
+            E element = extract();
+            return new TryTakeResult<E>(element);
+        } finally {
+            lock.unlock();
+        }
+    }
+
     @Override
     public E poll(long timeout, TimeUnit unit) throws InterruptedException {
         long nanos = unit.toNanos(timeout);
