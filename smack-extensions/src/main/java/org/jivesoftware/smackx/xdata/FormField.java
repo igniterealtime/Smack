@@ -17,8 +17,10 @@
 
 package org.jivesoftware.smackx.xdata;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.NamedElement;
@@ -26,6 +28,8 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
+
+import org.jxmpp.util.XmppDateTime;
 
 /**
  * Represents a field of a form. The field could be used to represent a question to complete,
@@ -267,6 +271,21 @@ public class FormField implements NamedElement {
     }
 
     /**
+     * Parses the first value of this form field as XEP-0082 date/time format and returns a date instance or {@code null}.
+     *
+     * @return a Date instance representing the date/time information of the first value of this field.
+     * @throws ParseException if parsing fails.
+     * @since 4.3.0
+     */
+    public Date getFirstValueAsDate() throws ParseException {
+        String valueString = getFirstValue();
+        if (valueString == null) {
+            return null;
+        }
+        return XmppDateTime.parseXEP0082Date(valueString);
+    }
+
+    /**
      * Returns the variable name that the question is filling out.
      * <p>
      * According to XEP-4 § 3.2 the variable name (the 'var' attribute)
@@ -359,6 +378,18 @@ public class FormField implements NamedElement {
         synchronized (values) {
             values.add(value);
         }
+    }
+
+    /**
+     * Adds the given Date as XEP-0082 formated string by invoking {@link #addValue(CharSequence)} after the date
+     * instance was formated.
+     *
+     * @param date the date instance to add as XEP-0082 formated string.
+     * @since 4.3.0
+     */
+    public void addValue(Date date) {
+        String dateString = XmppDateTime.formatXEP0082Date(date);
+        addValue(dateString);
     }
 
     /**
