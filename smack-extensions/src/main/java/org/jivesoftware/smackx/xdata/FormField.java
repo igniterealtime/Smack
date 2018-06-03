@@ -378,7 +378,7 @@ public class FormField implements NamedElement {
      */
     protected void resetValues() {
         synchronized (values) {
-            values.removeAll(new ArrayList<>(values));
+            values.clear();
         }
     }
 
