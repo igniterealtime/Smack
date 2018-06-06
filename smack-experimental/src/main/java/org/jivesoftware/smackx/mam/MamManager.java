@@ -51,7 +51,6 @@ import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
-import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
@@ -636,8 +635,9 @@ public final class MamManager extends Manager {
      * @see <a href="https://xmpp.org/extensions/xep-0313.html#support">XEP-0313 § 7. Determining support</a>
      */
     public boolean isSupported() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        BareJid myBareJid = connection().getUser().asBareJid();
-        return serviceDiscoveryManager.supportsFeature(myBareJid, MamElements.NAMESPACE);
+        // Note that this may return 'null' but SDM's supportsFeature() does the right thing™ then.
+        Jid archiveAddress = getArchiveAddress();
+        return serviceDiscoveryManager.supportsFeature(archiveAddress, MamElements.NAMESPACE);
     }
 
     private static DataForm getNewMamForm() {
