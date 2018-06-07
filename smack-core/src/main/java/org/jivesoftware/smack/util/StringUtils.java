@@ -451,6 +451,16 @@ public class StringUtils {
         return cs;
     }
 
+    public static <CS extends CharSequence> CS requireNullOrNotEmpty(CS cs, String message) {
+        if (cs == null) {
+            return null;
+        }
+        if (cs.toString().isEmpty()) {
+            throw new IllegalArgumentException(message);
+        }
+        return cs;
+    }
+
     /**
      * Return the String representation of the given char sequence if it is not null.
      *
