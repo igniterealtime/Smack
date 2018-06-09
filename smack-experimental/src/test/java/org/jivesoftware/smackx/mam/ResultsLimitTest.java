@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2016 Fernando Ramirez, 2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,10 @@
  */
 package org.jivesoftware.smackx.mam;
 
-import java.lang.reflect.Method;
-
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
 
+import org.jivesoftware.smackx.mam.MamManager.MamQueryArgs;
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -37,16 +36,14 @@ public class ResultsLimitTest extends MamTest {
 
     @Test
     public void checkResultsLimit() throws Exception {
-        Method methodAddResultsLimit = MamManager.class.getDeclaredMethod("addResultsLimit", Integer.class,
-                MamQueryIQ.class);
-        methodAddResultsLimit.setAccessible(true);
 
         DataForm dataForm = getNewMamForm();
         MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.setStanzaId("sarasa");
 
-        methodAddResultsLimit.invoke(mamManager, 10, mamQueryIQ);
+        MamQueryArgs mamQueryArgs = MamQueryArgs.builder().setResultPageSize(10).build();
+        mamQueryArgs.maybeAddRsmSet(mamQueryIQ);
         Assert.assertEquals(mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), resultsLimitStanza);
     }
 

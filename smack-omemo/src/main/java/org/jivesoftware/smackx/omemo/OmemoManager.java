@@ -325,16 +325,16 @@ public final class OmemoManager extends Manager {
      * Return a list of all OMEMO messages that were found in the MAM query result, that could be successfully decrypted.
      * Normal cleartext messages are also added to this list.
      *
-     * @param mamQueryResult mamQueryResult
+     * @param mamQuery The MAM query
      * @return list of decrypted OmemoMessages
      * @throws InterruptedException                 Exception
      * @throws XMPPException.XMPPErrorException     Exception
      * @throws SmackException.NotConnectedException Exception
      * @throws SmackException.NoResponseException   Exception
      */
-    public List<ClearTextMessage> decryptMamQueryResult(MamManager.MamQueryResult mamQueryResult) throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException {
+    public List<ClearTextMessage> decryptMamQueryResult(MamManager.MamQuery mamQuery) throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException {
         List<ClearTextMessage> l = new ArrayList<>();
-        l.addAll(getOmemoService().decryptMamQueryResult(this, mamQueryResult));
+        l.addAll(getOmemoService().decryptMamQueryResult(this, mamQuery));
         return l;
     }
 
