@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2017 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2018 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class StanzaCollector {
 
     private final Stanza request;
 
-    private boolean cancelled = false;
+    private volatile boolean cancelled = false;
 
     /**
      * Creates a new stanza collector. If the stanza filter is <tt>null</tt>, then
