@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -266,6 +268,27 @@ public class StanzaCollector {
         XMPPErrorException.ifHasErrorThenThrow(result);
 
         return result;
+    }
+
+    private List<Stanza> collectedCache;
+
+    /**
+     * Return a list of all collected stanzas. This method must be invoked after the collector has been cancelled.
+     *
+     * @return a list of collected stanzas.
+     * @since 4.3.0
+     */
+    public List<Stanza> getCollectedStanzasAfterCancelled() {
+        if (!cancelled) {
+            throw new IllegalStateException("Stanza collector was not yet cancelled");
+        }
+
+        if (collectedCache == null) {
+            collectedCache = new ArrayList<>(getCollectedCount());
+            resultQueue.drainTo(collectedCache);
+        }
+
+        return collectedCache;
     }
 
     /**
