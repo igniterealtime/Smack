@@ -300,7 +300,7 @@ public class StanzaCollector {
 
     private void throwIfCancelled() {
         if (cancelled) {
-            throw new IllegalStateException("Packet collector already cancelled");
+            throw new IllegalStateException("Stanza collector already cancelled");
         }
     }
 
