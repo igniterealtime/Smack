@@ -764,6 +764,11 @@ public class MultiUserChat {
         // throw.
         userHasLeft();
 
+        final EntityFullJid myRoomJid = this.myRoomJid;
+        if (myRoomJid == null) {
+            return;
+        }
+
         // We leave a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
         Presence leavePresence = new Presence(Presence.Type.unavailable);
