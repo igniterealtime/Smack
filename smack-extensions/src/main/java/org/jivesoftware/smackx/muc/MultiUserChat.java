@@ -57,7 +57,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.Objects;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -149,7 +149,7 @@ public class MultiUserChat {
     private final StanzaListener declinesListener;
 
     private String subject;
-    private Resourcepart nickname;
+    private EntityFullJid myRoomJid;
     private boolean joined = false;
     private StanzaCollector messageCollector;
 
@@ -208,7 +208,7 @@ public class MultiUserChat {
                     LOGGER.warning("Presence not from a full JID: " + presence.getFrom());
                     return;
                 }
-                final String myRoomJID = MultiUserChat.this.room + "/" + nickname;
+                final EntityFullJid myRoomJID = myRoomJid;
                 final boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
 
                 asyncButOrdered.performAsyncButOrdered(MultiUserChat.this, new Runnable() {
@@ -383,12 +383,18 @@ public class MultiUserChat {
 
         // This presence must be send from a full JID. We use the resourcepart of this JID as nick, since the room may
         // performed roomnick rewriting
-        this.nickname = presence.getFrom().asEntityFullJidIfPossible().getResourcepart();
+        Resourcepart receivedNickname = presence.getFrom().getResourceOrThrow();
+        setNickname(receivedNickname);
+
         joined = true;
 
         // Update the list of joined rooms
         multiUserChatManager.addJoinedRoom(room);
         return presence;
+    }
+
+    private void setNickname(Resourcepart nickname) {
+        this.myRoomJid = JidCreate.entityFullFrom(room, nickname);
     }
 
     /**
@@ -486,6 +492,7 @@ public class MultiUserChat {
      * @deprecated use {@link #createOrJoin(MucEnterConfiguration)} instead.
      */
     @Deprecated
+    // TODO Remove in Smack 4.4
     public MucCreateConfigFormHandle createOrJoin(Resourcepart nickname, String password, @SuppressWarnings("deprecation") DiscussionHistory history, long timeout)
                     throws NoResponseException, XMPPErrorException, InterruptedException, MucAlreadyJoinedException, NotConnectedException, NotAMucServiceException {
         MucEnterConfiguration.Builder builder = getEnterConfigurationBuilder(nickname).withPassword(
@@ -684,6 +691,7 @@ public class MultiUserChat {
      * @deprecated use {@link #join(MucEnterConfiguration)} instead.
      */
     @Deprecated
+    // TODO Remove in Smack 4.4
     public void join(
         Resourcepart nickname,
         String password,
@@ -756,10 +764,15 @@ public class MultiUserChat {
         // throw.
         userHasLeft();
 
+        final EntityFullJid myRoomJid = this.myRoomJid;
+        if (myRoomJid == null) {
+            return;
+        }
+
         // We leave a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
         Presence leavePresence = new Presence(Presence.Type.unavailable);
-        leavePresence.setTo(JidCreate.fullFrom(room, nickname));
+        leavePresence.setTo(myRoomJid);
         connection.sendStanza(leavePresence);
     }
 
@@ -1096,7 +1109,11 @@ public class MultiUserChat {
      * @return the nickname currently being used.
      */
     public Resourcepart getNickname() {
-        return nickname;
+        final EntityFullJid myRoomJid = this.myRoomJid;
+        if (myRoomJid == null) {
+            return null;
+        }
+        return myRoomJid.getResourcepart();
     }
 
     /**
@@ -1114,7 +1131,7 @@ public class MultiUserChat {
      * @throws MucNotJoinedException
      */
     public synchronized void changeNickname(Resourcepart nickname) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, MucNotJoinedException  {
-        StringUtils.requireNotNullOrEmpty(nickname, "Nickname must not be null or blank.");
+        Objects.requireNonNull(nickname, "Nickname must not be null or blank.");
         // Check that we already have joined the room before attempting to change the
         // nickname.
         if (!joined) {
@@ -1137,7 +1154,8 @@ public class MultiUserChat {
         // exception will be thrown
         response.nextResultOrThrow();
 
-        this.nickname = nickname;
+        // TODO: Shouldn't this handle nickname rewriting by the MUC service?
+        setNickname(nickname);
     }
 
     /**
@@ -1152,7 +1170,11 @@ public class MultiUserChat {
      * @throws MucNotJoinedException
      */
     public void changeAvailabilityStatus(String status, Presence.Mode mode) throws NotConnectedException, InterruptedException, MucNotJoinedException {
-        StringUtils.requireNotNullOrEmpty(nickname, "Nickname must not be null or blank.");
+        final EntityFullJid myRoomJid = this.myRoomJid;
+        if (myRoomJid == null) {
+            throw new MucNotJoinedException(this);
+        }
+
         // Check that we already have joined the room before attempting to change the
         // availability status.
         if (!joined) {
@@ -1163,7 +1185,7 @@ public class MultiUserChat {
         Presence joinPresence = new Presence(Presence.Type.available);
         joinPresence.setStatus(status);
         joinPresence.setMode(mode);
-        joinPresence.setTo(JidCreate.fullFrom(room, nickname));
+        joinPresence.setTo(myRoomJid);
 
         // Send join packet.
         connection.sendStanza(joinPresence);
@@ -2398,7 +2420,7 @@ public class MultiUserChat {
 
                 // Reset occupant information.
                 occupantsMap.clear();
-                nickname = null;
+                myRoomJid = null;
                 userHasLeft();
             }
             else {
@@ -2418,7 +2440,7 @@ public class MultiUserChat {
 
                 // Reset occupant information.
                 occupantsMap.clear();
-                nickname = null;
+                myRoomJid = null;
                 userHasLeft();
             }
         }
@@ -2437,9 +2459,19 @@ public class MultiUserChat {
 
             // Reset occupant information.
             occupantsMap.clear();
-            nickname = null;
+            myRoomJid = null;
             userHasLeft();
         }
+    }
+
+    /**
+     * Get the XMPP connection associated with this chat instance.
+     *
+     * @return the associated XMPP connection.
+     * @since 4.3.0
+     */
+    public XMPPConnection getXmppConnection() {
+        return connection;
     }
 
     @Override

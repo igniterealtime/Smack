@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2017 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2018 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -55,7 +57,7 @@ public class StanzaCollector {
 
     private final Stanza request;
 
-    private boolean cancelled = false;
+    private volatile boolean cancelled = false;
 
     /**
      * Creates a new stanza collector. If the stanza filter is <tt>null</tt>, then
@@ -268,6 +270,27 @@ public class StanzaCollector {
         return result;
     }
 
+    private List<Stanza> collectedCache;
+
+    /**
+     * Return a list of all collected stanzas. This method must be invoked after the collector has been cancelled.
+     *
+     * @return a list of collected stanzas.
+     * @since 4.3.0
+     */
+    public List<Stanza> getCollectedStanzasAfterCancelled() {
+        if (!cancelled) {
+            throw new IllegalStateException("Stanza collector was not yet cancelled");
+        }
+
+        if (collectedCache == null) {
+            collectedCache = new ArrayList<>(getCollectedCount());
+            resultQueue.drainTo(collectedCache);
+        }
+
+        return collectedCache;
+    }
+
     /**
      * Get the number of collected stanzas this stanza collector has collected so far.
      *
@@ -300,7 +323,7 @@ public class StanzaCollector {
 
     private void throwIfCancelled() {
         if (cancelled) {
-            throw new IllegalStateException("Packet collector already cancelled");
+            throw new IllegalStateException("Stanza collector already cancelled");
         }
     }
 

@@ -210,6 +210,7 @@ public final class Socks5Proxy {
 
             if (this.serverSocket != null) {
                 this.serverThread = new Thread(this.serverProcess);
+                this.serverThread.setName("Smack Local SOCKS5 Proxy");
                 this.serverThread.start();
             }
         }

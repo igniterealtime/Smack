@@ -75,7 +75,9 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
      * @return the XmlStringBuilder
      */
     public XmlStringBuilder element(String name, String content) {
-        assert content != null;
+        if (content.isEmpty()) {
+            return emptyElement(name);
+        }
         openElement(name);
         escape(content);
         closeElement(name);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,14 @@ import org.xml.sax.SAXException;
 
 public class XmlUnitUtils {
 
+    // TOOD: Remove this method.
     public static void assertSimilar(CharSequence expected, CharSequence actual) throws SAXException, IOException {
+        assertXmlSimilar(expected, actual);
+    }
+
+    public static void assertXmlSimilar(CharSequence expected, CharSequence actual) throws SAXException, IOException {
         Diff diff = new Diff(expected.toString(), actual.toString());
         diff.overrideElementQualifier(new RecursiveElementNameAndTextQualifier());
         assertXMLEqual(diff, true);
     }
-
 }

@@ -54,7 +54,6 @@ import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smackx.carbons.CarbonCopyReceivedListener;
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
-import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
@@ -1127,21 +1126,21 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @throws SmackException.NotConnectedException
      * @throws SmackException.NoResponseException
      */
-    List<ClearTextMessage> decryptMamQueryResult(OmemoManager omemoManager, MamManager.MamQueryResult mamQueryResult)
+    List<ClearTextMessage> decryptMamQueryResult(OmemoManager omemoManager, MamManager.MamQuery mamQuery)
             throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException {
         List<ClearTextMessage> result = new ArrayList<>();
-        for (Forwarded f : mamQueryResult.forwardedMessages) {
-            if (OmemoManager.stanzaContainsOmemoElement(f.getForwardedStanza())) {
+        for (Message message : mamQuery.getMessages()) {
+            if (OmemoManager.stanzaContainsOmemoElement(message)) {
                 // Decrypt OMEMO messages
                 try {
-                    result.add(processLocalMessage(omemoManager, f.getForwardedStanza().getFrom().asBareJid(), (Message) f.getForwardedStanza()));
+                    result.add(processLocalMessage(omemoManager, message.getFrom().asBareJid(), message));
                 } catch (NoRawSessionException | CorruptedOmemoKeyException | CryptoFailedException e) {
                     LOGGER.log(Level.WARNING, "decryptMamQueryResult failed to decrypt message from "
-                            + f.getForwardedStanza().getFrom() + " due to corrupted session/key: " + e.getMessage());
+                            + message.getFrom() + " due to corrupted session/key: " + e.getMessage());
                 }
             } else {
                 // Wrap cleartext messages
-                Message m = (Message) f.getForwardedStanza();
+                Message m = message;
                 result.add(new ClearTextMessage(m.getBody(), m,
                         new OmemoMessageInformation(null, null, OmemoMessageInformation.CARBON.NONE, false)));
             }

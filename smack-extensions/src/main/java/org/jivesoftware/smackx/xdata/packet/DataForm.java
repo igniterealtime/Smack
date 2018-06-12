@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.xdata.packet;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -232,6 +233,26 @@ public class DataForm implements ExtensionElement {
         synchronized (fields) {
             fields.put(fieldVariableName, field);
         }
+    }
+
+    /**
+     * Add the given fields to this form.
+     *
+     * @param fieldsToAdd
+     * @return true if a field was overridden.
+     * @since 4.3.0
+     */
+    public boolean addFields(Collection<FormField> fieldsToAdd) {
+        boolean fieldOverridden = false;
+        synchronized (fields) {
+            for (FormField field : fieldsToAdd) {
+                FormField previousField = fields.put(field.getVariable(), field);
+                if (previousField != null) {
+                    fieldOverridden = true;
+                }
+            }
+        }
+        return fieldOverridden;
     }
 
     /**

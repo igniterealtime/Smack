@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2016 Fernando Ramirez, 2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,17 @@
  */
 package org.jivesoftware.smackx.mam;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
+import static org.junit.Assert.assertEquals;
 
 import org.jivesoftware.smack.packet.StreamOpen;
 
+import org.jivesoftware.smackx.mam.MamManager.MamQueryArgs;
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 public class RetrieveFormFieldsTest extends MamTest {
@@ -46,19 +45,11 @@ public class RetrieveFormFieldsTest extends MamTest {
         MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId);
         mamQueryIQ.setStanzaId("sarasa");
 
-        Assert.assertEquals(mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), retrieveFormFieldStanza);
+        assertEquals(retrieveFormFieldStanza, mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
     public void checkAddAdditionalFieldsStanza() throws Exception {
-        Method methodAddAdditionalFields = MamManager.class.getDeclaredMethod("addAdditionalFields", List.class,
-                DataForm.class);
-        methodAddAdditionalFields.setAccessible(true);
-
-        DataForm dataForm = getNewMamForm();
-
-        List<FormField> additionalFields = new ArrayList<>();
-
         FormField field1 = new FormField("urn:example:xmpp:free-text-search");
         field1.setType(FormField.Type.text_single);
         field1.addValue("Hi");
@@ -67,14 +58,15 @@ public class RetrieveFormFieldsTest extends MamTest {
         field2.setType(FormField.Type.jid_single);
         field2.addValue("Hi2");
 
-        additionalFields.add(field1);
-        additionalFields.add(field2);
-
-        methodAddAdditionalFields.invoke(mamManager, additionalFields, dataForm);
+        MamQueryArgs mamQueryArgs = MamQueryArgs.builder()
+                        .withAdditionalFormField(field1)
+                        .withAdditionalFormField(field2)
+                        .build();
+        DataForm dataForm = mamQueryArgs.getDataForm();
 
         String dataFormResult = dataForm.toXML(null).toString();
 
-        Assert.assertEquals(dataFormResult, additionalFieldsStanza);
+        assertXmlSimilar(additionalFieldsStanza, dataFormResult);
     }
 
 }
