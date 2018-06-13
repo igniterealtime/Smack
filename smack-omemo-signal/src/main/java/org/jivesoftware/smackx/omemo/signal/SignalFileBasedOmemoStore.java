@@ -42,18 +42,15 @@ import org.whispersystems.libsignal.state.SignedPreKeyRecord;
  */
 @SuppressWarnings("unused")
 public class SignalFileBasedOmemoStore
-        extends FileBasedOmemoStore<IdentityKeyPair, IdentityKey, PreKeyRecord, SignedPreKeyRecord, SessionRecord, SignalProtocolAddress, ECPublicKey, PreKeyBundle, SessionCipher> {
-
-    public SignalFileBasedOmemoStore() {
-        super();
-    }
+        extends FileBasedOmemoStore<IdentityKeyPair, IdentityKey, PreKeyRecord, SignedPreKeyRecord, SessionRecord,
+        SignalProtocolAddress, ECPublicKey, PreKeyBundle, SessionCipher> {
 
     public SignalFileBasedOmemoStore(File base) {
         super(base);
     }
 
     @Override
-    public OmemoKeyUtil<IdentityKeyPair, IdentityKey, PreKeyRecord, SignedPreKeyRecord, SessionRecord, SignalProtocolAddress, ECPublicKey, PreKeyBundle, SessionCipher> keyUtil() {
+    public OmemoKeyUtil<IdentityKeyPair, IdentityKey, PreKeyRecord, SignedPreKeyRecord, SessionRecord, ECPublicKey, PreKeyBundle> keyUtil() {
         return new SignalOmemoKeyUtil();
     }
 }

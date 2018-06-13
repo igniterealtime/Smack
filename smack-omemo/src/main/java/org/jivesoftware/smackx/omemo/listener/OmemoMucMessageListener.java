@@ -16,13 +16,9 @@
  */
 package org.jivesoftware.smackx.omemo.listener;
 
-import org.jivesoftware.smack.packet.Message;
-
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.muc.MultiUserChat;
-import org.jivesoftware.smackx.omemo.internal.CipherAndAuthTag;
-import org.jivesoftware.smackx.omemo.internal.OmemoMessageInformation;
-
-import org.jxmpp.jid.BareJid;
+import org.jivesoftware.smackx.omemo.OmemoMessage;
 
 /**
  * Listener interface that allows implementations to receive decrypted OMEMO MUC messages.
@@ -33,24 +29,8 @@ public interface OmemoMucMessageListener {
     /**
      * Gets called whenever an OMEMO message has been received in a MultiUserChat and successfully decrypted.
      * @param muc MultiUserChat the message was sent in
-     * @param from the bareJid of the sender
-     * @param decryptedBody the decrypted Body of the message
-     * @param message the original message with encrypted element
-     * @param wrappingMessage in case of a carbon copy, this is the wrapping message
-     * @param omemoInformation information about the encryption of the message
+     * @param stanza Original Stanza
+     * @param decryptedOmemoMessage decrypted Omemo message
      */
-    void onOmemoMucMessageReceived(MultiUserChat muc, BareJid from, String decryptedBody, Message message,
-                                   Message wrappingMessage, OmemoMessageInformation omemoInformation);
-
-    /**
-     * Gets called, whenever an OmemoElement without a body (an OmemoKeyTransportElement) is received.
-     *
-     * @param muc               MultiUserChat the message was sent in
-     * @param from              bareJid of the sender
-     * @param cipherAndAuthTag  transportedKey along with an optional authTag
-     * @param message           Message that contained the KeyTransport
-     * @param wrappingMessage   Wrapping message (eg. carbon), or null
-     * @param omemoInformation  Information about the messages encryption etc.
-     */
-    void onOmemoKeyTransportReceived(MultiUserChat muc, BareJid from, CipherAndAuthTag cipherAndAuthTag, Message message, Message wrappingMessage, OmemoMessageInformation omemoInformation);
+    void onOmemoMucMessageReceived(MultiUserChat muc, Stanza stanza, OmemoMessage.Received decryptedOmemoMessage);
 }

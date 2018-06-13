@@ -16,6 +16,10 @@
  */
 package org.jivesoftware.smackx.omemo.exceptions;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Exception gets thrown when some cryptographic function failed.
  *
@@ -25,11 +29,18 @@ public class CryptoFailedException extends Exception {
 
     private static final long serialVersionUID = 3466888654338119924L;
 
+    private final ArrayList<Exception> exceptions = new ArrayList<>();
+
     public CryptoFailedException(String message) {
         super(message);
     }
 
     public CryptoFailedException(Exception e) {
         super(e);
+        exceptions.add(e);
+    }
+
+    public List<Exception> getExceptions() {
+        return Collections.unmodifiableList(exceptions);
     }
 }

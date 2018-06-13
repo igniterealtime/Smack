@@ -16,17 +16,13 @@
  */
 package org.jivesoftware.smackx.omemo.element;
 
-import java.util.ArrayList;
-
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
 /**
- * Class that represents a OmemoElement.
- * TODO: Move functionality here.
+ * Class that represents an OmemoElement.
  *
  * @author Paul Schaub
  */
@@ -35,17 +31,11 @@ public abstract class OmemoElement implements ExtensionElement {
     public static final int TYPE_OMEMO_PREKEY_MESSAGE = 1;
     public static final int TYPE_OMEMO_MESSAGE = 0;
 
-    public static final String ENCRYPTED = "encrypted";
-    public static final String HEADER = "header";
-    public static final String SID = "sid";
-    public static final String KEY = "key";
-    public static final String RID = "rid";
-    public static final String PREKEY = "prekey";
-    public static final String IV = "iv";
-    public static final String PAYLOAD = "payload";
+    public static final String NAME_ENCRYPTED = "encrypted";
+    public static final String ATTR_PAYLOAD = "payload";
 
-    protected final OmemoElement.OmemoHeader header;
-    protected final byte[] payload;
+    private final OmemoHeaderElement header;
+    private final byte[] payload;
 
     /**
      * Create a new OmemoMessageElement from a header and a payload.
@@ -53,12 +43,12 @@ public abstract class OmemoElement implements ExtensionElement {
      * @param header  header of the message
      * @param payload payload
      */
-    public OmemoElement(OmemoElement.OmemoHeader header, byte[] payload) {
+    public OmemoElement(OmemoHeaderElement header, byte[] payload) {
         this.header = Objects.requireNonNull(header);
         this.payload = payload;
     }
 
-    public OmemoElement.OmemoHeader getHeader() {
+    public OmemoHeaderElement getHeader() {
         return header;
     }
 
@@ -82,113 +72,22 @@ public abstract class OmemoElement implements ExtensionElement {
         return payload != null;
     }
 
-    /**
-     * Header element of the message. The header contains information about the sender and the encrypted keys for
-     * the recipients, as well as the iv element for AES.
-     */
-    public static class OmemoHeader implements NamedElement {
-        private final int sid;
-        private final ArrayList<Key> keys;
-        private final byte[] iv;
+    @Override
+    public XmlStringBuilder toXML(String enclosingNamespace) {
+        XmlStringBuilder sb = new XmlStringBuilder(this, enclosingNamespace).rightAngleBracket();
 
-        public OmemoHeader(int sid, ArrayList<OmemoHeader.Key> keys, byte[] iv) {
-            this.sid = sid;
-            this.keys = keys;
-            this.iv = iv;
+        sb.element(header);
+
+        if (payload != null) {
+            sb.openElement(ATTR_PAYLOAD).append(Base64.encodeToString(payload)).closeElement(ATTR_PAYLOAD);
         }
 
-        /**
-         * Return the deviceId of the sender of the message.
-         *
-         * @return senders id
-         */
-        public int getSid() {
-            return sid;
-        }
+        sb.closeElement(this);
+        return sb;
+    }
 
-        public ArrayList<OmemoHeader.Key> getKeys() {
-            return new ArrayList<>(keys);
-        }
-
-        public byte[] getIv() {
-            return iv != null ? iv.clone() : null;
-        }
-
-        @Override
-        public String getElementName() {
-            return HEADER;
-        }
-
-        @Override
-        public CharSequence toXML(String enclosingNamespace) {
-            XmlStringBuilder sb = new XmlStringBuilder(this);
-            sb.attribute(SID, getSid()).rightAngleBracket();
-
-            for (OmemoHeader.Key k : getKeys()) {
-                sb.element(k);
-            }
-
-            sb.openElement(IV).append(Base64.encodeToString(getIv())).closeElement(IV);
-
-            return sb.closeElement(this);
-        }
-
-        /**
-         * Small class to collect key (byte[]), its id and whether its a prekey or not.
-         */
-        public static class Key implements NamedElement {
-            final byte[] data;
-            final int id;
-            final boolean preKey;
-
-            public Key(byte[] data, int id) {
-                this.data = data;
-                this.id = id;
-                this.preKey = false;
-            }
-
-            public Key(byte[] data, int id, boolean preKey) {
-                this.data = data;
-                this.id = id;
-                this.preKey = preKey;
-            }
-
-            public int getId() {
-                return this.id;
-            }
-
-            public byte[] getData() {
-                return this.data;
-            }
-
-            public boolean isPreKey() {
-                return this.preKey;
-            }
-
-            @Override
-            public String toString() {
-                return Integer.toString(id);
-            }
-
-            @Override
-            public String getElementName() {
-                return KEY;
-            }
-
-            @Override
-            public CharSequence toXML(String enclosingNamespace) {
-                XmlStringBuilder sb = new XmlStringBuilder(this);
-
-                if (isPreKey()) {
-                    sb.attribute(PREKEY, true);
-                }
-
-                sb.attribute(RID, getId());
-                sb.rightAngleBracket();
-                sb.append(Base64.encodeToString(getData()));
-                sb.closeElement(this);
-                return sb;
-            }
-        }
+    @Override
+    public String getElementName() {
+        return NAME_ENCRYPTED;
     }
 }
