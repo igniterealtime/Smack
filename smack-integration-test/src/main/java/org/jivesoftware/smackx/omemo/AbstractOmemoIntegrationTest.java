@@ -16,40 +16,21 @@
  */
 package org.jivesoftware.smackx.omemo;
 
-import java.io.File;
-import java.util.logging.Level;
-
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 /**
  * Super class for OMEMO integration tests.
  */
 public abstract class AbstractOmemoIntegrationTest extends AbstractSmackIntegrationTest {
 
-    private static final File storePath;
-
-    static {
-        String userHome = System.getProperty("user.home");
-        if (userHome != null) {
-            File f = new File(userHome);
-            storePath = new File(f, ".config/smack-integration-test/store");
-        } else {
-            storePath = new File("int_test_omemo_store");
-        }
-    }
-
     public AbstractOmemoIntegrationTest(SmackIntegrationTestEnvironment environment) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, TestNotPossibleException {
         super(environment);
-        if (OmemoConfiguration.getFileBasedOmemoStoreDefaultPath() == null) {
-            OmemoConfiguration.setFileBasedOmemoStoreDefaultPath(storePath);
-        }
+
         // Test for server support
         if (!OmemoManager.serverSupportsOmemo(connection, connection.getXMPPServiceDomain())) {
             throw new TestNotPossibleException("Server does not support OMEMO (PubSub)");
@@ -59,23 +40,8 @@ public abstract class AbstractOmemoIntegrationTest extends AbstractSmackIntegrat
         if (!OmemoService.isServiceRegistered()) {
             throw new TestNotPossibleException("No OmemoService registered.");
         }
+
+        OmemoConfiguration.setCompleteSessionWithEmptyMessage(true);
+        OmemoConfiguration.setRepairBrokenSessionsWithPrekeyMessages(true);
     }
-
-    @BeforeClass
-    public void beforeTest() {
-        LOGGER.log(Level.INFO, "START EXECUTION");
-        OmemoIntegrationTestHelper.deletePath(storePath);
-        before();
-    }
-
-    @AfterClass
-    public void afterTest() {
-        after();
-        OmemoIntegrationTestHelper.deletePath(storePath);
-        LOGGER.log(Level.INFO, "END EXECUTION");
-    }
-
-    public abstract void before();
-
-    public abstract void after();
 }

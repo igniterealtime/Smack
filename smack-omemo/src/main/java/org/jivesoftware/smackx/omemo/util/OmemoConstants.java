@@ -37,7 +37,7 @@ public final class OmemoConstants {
     /**
      * How many preKeys do we want to publish?
      */
-    public static final int TARGET_PRE_KEY_COUNT = 100;
+    public static final int PRE_KEY_COUNT_PER_BUNDLE = 100;
 
     /**
      * Return the node name of the PEP node containing the device bundle of the device with device id deviceId.
@@ -49,7 +49,7 @@ public final class OmemoConstants {
         return PEP_NODE_BUNDLES + ":" + deviceId;
     }
 
-    public static final String BODY_OMEMO_HINT = "I sent you an OMEMO encrypted message but your client doesn’t seem to support that. Find more information on https://conversations.im/omemo";
+    public static final String BODY_OMEMO_HINT = "I sent you an OMEMO encrypted message but your client doesn't seem to support that. Find more information on https://conversations.im/omemo";
 
     /**
      * Information about the keys used for message encryption.

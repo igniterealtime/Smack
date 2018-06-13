@@ -19,18 +19,14 @@ package org.jivesoftware.smackx.omemo.util;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smackx.omemo.OmemoFingerprint;
-import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jivesoftware.smackx.omemo.OmemoStore;
-import org.jivesoftware.smackx.omemo.element.OmemoBundleVAxolotlElement;
+import org.jivesoftware.smackx.omemo.element.OmemoBundleElement;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
-import org.jivesoftware.smackx.omemo.internal.OmemoSession;
-
-import org.jxmpp.stringprep.XmppStringprepException;
+import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 
 /**
  * Class that is used to convert bytes to keys and vice versa.
@@ -40,13 +36,11 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * @param <T_PreKey>    PreKey class
  * @param <T_SigPreKey> SignedPreKey class
  * @param <T_Sess>      Session class
- * @param <T_Addr>      Address class
  * @param <T_ECPub>     Elliptic Curve PublicKey class
  * @param <T_Bundle>    Bundle class
- * @param <T_Ciph>      Cipher class
  * @author Paul Schaub
  */
-public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> {
+public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_ECPub, T_Bundle> {
     private static final Logger LOGGER = Logger.getLogger(OmemoKeyUtil.class.getName());
 
     public final Bundle BUNDLE = new Bundle();
@@ -63,7 +57,7 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
          * @return identityKey
          * @throws CorruptedOmemoKeyException if the key is damaged/malformed
          */
-        public T_IdKey identityKey(OmemoBundleVAxolotlElement bundle) throws CorruptedOmemoKeyException {
+        public T_IdKey identityKey(OmemoBundleElement bundle) throws CorruptedOmemoKeyException {
             return identityKeyFromBytes(bundle.getIdentityKey());
         }
 
@@ -74,7 +68,7 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
          * @return singedPreKey
          * @throws CorruptedOmemoKeyException if the key is damaged/malformed
          */
-        public T_ECPub signedPreKeyPublic(OmemoBundleVAxolotlElement bundle) throws CorruptedOmemoKeyException {
+        public T_ECPub signedPreKeyPublic(OmemoBundleElement bundle) throws CorruptedOmemoKeyException {
             return signedPreKeyPublicFromBytes(bundle.getSignedPreKey());
         }
 
@@ -84,7 +78,7 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
          * @param bundle OmemoBundleElement
          * @return signedPreKeyId
          */
-        public int signedPreKeyId(OmemoBundleVAxolotlElement bundle) {
+        public int signedPreKeyId(OmemoBundleElement bundle) {
             return bundle.getSignedPreKeyId();
         }
 
@@ -94,7 +88,7 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
          * @param bundle OmemoBundleElement
          * @return signature
          */
-        public byte[] signedPreKeySignature(OmemoBundleVAxolotlElement bundle) {
+        public byte[] signedPreKeySignature(OmemoBundleElement bundle) {
             return bundle.getSignedPreKeySignature();
         }
 
@@ -106,7 +100,7 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
          * @return the preKey
          * @throws CorruptedOmemoKeyException when the key cannot be parsed from bytes
          */
-        public T_ECPub preKeyPublic(OmemoBundleVAxolotlElement bundle, int keyId) throws CorruptedOmemoKeyException {
+        public T_ECPub preKeyPublic(OmemoBundleElement bundle, int keyId) throws CorruptedOmemoKeyException {
             return preKeyPublicFromBytes(bundle.getPreKey(keyId));
         }
 
@@ -120,7 +114,7 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
          * @return a HashMap with one T_Bundle per preKey and the preKeyId as key
          * @throws CorruptedOmemoKeyException when one of the keys cannot be parsed
          */
-        public HashMap<Integer, T_Bundle> bundles(OmemoBundleVAxolotlElement bundle, OmemoDevice contact) throws CorruptedOmemoKeyException {
+        public HashMap<Integer, T_Bundle> bundles(OmemoBundleElement bundle, OmemoDevice contact) throws CorruptedOmemoKeyException {
             HashMap<Integer, T_Bundle> bundles = new HashMap<>();
             for (int deviceId : bundle.getPreKeys().keySet()) {
                 try {
@@ -207,7 +201,7 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param count   how many keys do we want to generate
      * @return Map of new preKeys
      */
-    public abstract HashMap<Integer, T_PreKey> generateOmemoPreKeys(int startId, int count);
+    public abstract TreeMap<Integer, T_PreKey> generateOmemoPreKeys(int startId, int count);
 
     /**
      * Generate a new signed preKey.
@@ -259,7 +253,7 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @return PreKeyBundle (T_PreKey)
      * @throws CorruptedOmemoKeyException if some key is damaged or malformed
      */
-    public abstract T_Bundle bundleFromOmemoBundle(OmemoBundleVAxolotlElement bundle, OmemoDevice contact, int keyId) throws CorruptedOmemoKeyException;
+    public abstract T_Bundle bundleFromOmemoBundle(OmemoBundleElement bundle, OmemoDevice contact, int keyId) throws CorruptedOmemoKeyException;
 
     /**
      * Extract the signature from a signedPreKey.
@@ -330,7 +324,7 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param preKeyHashMap HashMap of preKeys
      * @return HashMap of byte arrays but with the same keyIds as key
      */
-    public HashMap<Integer, byte[]> preKeyPublisKeysForBundle(HashMap<Integer, T_PreKey> preKeyHashMap) {
+    public HashMap<Integer, byte[]> preKeyPublicKeysForBundle(TreeMap<Integer, T_PreKey> preKeyHashMap) {
         HashMap<Integer, byte[]> out = new HashMap<>();
         for (Map.Entry<Integer, T_PreKey> e : preKeyHashMap.entrySet()) {
             out.put(e.getKey(), preKeyForBundle(e.getValue()));
@@ -341,7 +335,7 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
     /**
      * Prepare a public signedPreKey for transport in a bundle.
      *
-     * @param signedPreKey signedPrekey
+     * @param signedPreKey signedPreKey
      * @return signedPreKey as byte array
      */
     public abstract byte[] signedPreKeyPublicForBundle(T_SigPreKey signedPreKey);
@@ -352,32 +346,14 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param identityKey identityKey
      * @return fingerprint of the key
      */
-    public abstract OmemoFingerprint getFingerprint(T_IdKey identityKey);
+    public abstract OmemoFingerprint getFingerprintOfIdentityKey(T_IdKey identityKey);
 
     /**
-     * Create a new crypto-specific Session object.
-     *
-     * @param omemoManager  omemoManager of our device.
-     * @param omemoStore    omemoStore where we can save the session, get keys from etc.
-     * @param from          the device we want to create the session with.
-     * @return a new session
+     * Returns the fingerprint of the public key of an identityKeyPair.
+     * @param identityKeyPair IdentityKeyPair.
+     * @return fingerprint of the public key.
      */
-    public abstract OmemoSession<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph>
-    createOmemoSession(OmemoManager omemoManager, OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> omemoStore,
-                       OmemoDevice from);
-
-    /**
-     * Create a new concrete OmemoSession with a contact.
-     *
-     * @param omemoManager  omemoManager of our device.
-     * @param omemoStore    omemoStore
-     * @param device        device to establish the session with
-     * @param identityKey   identityKey of the device
-     * @return concrete OmemoSession
-     */
-    public abstract OmemoSession<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph>
-    createOmemoSession(OmemoManager omemoManager, OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> omemoStore,
-                       OmemoDevice device, T_IdKey identityKey);
+    public abstract OmemoFingerprint getFingerprintOfIdentityKeyPair(T_IdKeyPair identityKeyPair);
 
     /**
      * Deserialize a raw OMEMO Session from bytes.
@@ -395,43 +371,6 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @return byte array
      */
     public abstract byte[] rawSessionToBytes(T_Sess session);
-
-    /**
-     * Convert an OmemoDevice to a crypto-lib specific contact format.
-     *
-     * @param contact omemoContact
-     * @return crypto-lib specific contact object
-     */
-    public abstract T_Addr omemoDeviceAsAddress(OmemoDevice contact);
-
-    /**
-     * Convert a crypto-lib specific contact object into an OmemoDevice.
-     *
-     * @param address contact
-     * @return as OmemoDevice
-     * @throws XmppStringprepException if the address is not a valid BareJid
-     */
-    public abstract OmemoDevice addressAsOmemoDevice(T_Addr address) throws XmppStringprepException;
-
-    public static String prettyFingerprint(OmemoFingerprint fingerprint) {
-        return prettyFingerprint(fingerprint.toString());
-    }
-
-    /**
-     * Split the fingerprint in blocks of 8 characters with spaces between.
-     *
-     * @param ugly fingerprint as continuous string
-     * @return fingerprint with spaces for better readability
-     */
-    public static String prettyFingerprint(String ugly) {
-        if (ugly == null) return null;
-        String pretty = "";
-        for (int i = 0; i < 8; i++) {
-            if (i != 0) pretty += " ";
-            pretty += ugly.substring(8 * i, 8 * (i + 1));
-        }
-        return pretty;
-    }
 
     /**
      * Add integers modulo MAX_VALUE.

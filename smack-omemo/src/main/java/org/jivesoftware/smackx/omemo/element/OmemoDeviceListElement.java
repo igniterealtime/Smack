@@ -23,6 +23,7 @@ import java.util.Set;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 
 /**
  * A OMEMO device list update containing the IDs of all active devices of a contact.
@@ -43,6 +44,10 @@ public abstract class OmemoDeviceListElement implements ExtensionElement {
     public OmemoDeviceListElement(Set<Integer> deviceIds) {
         deviceIds = Objects.requireNonNull(deviceIds);
         this.deviceIds = Collections.unmodifiableSet(deviceIds);
+    }
+
+    public OmemoDeviceListElement(OmemoCachedDeviceList cachedList) {
+        this.deviceIds = Collections.unmodifiableSet(cachedList.getActiveDevices());
     }
 
     public Set<Integer> getDeviceIds() {

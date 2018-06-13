@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.omemo.internal;
 
+import org.jivesoftware.smackx.omemo.util.OmemoConstants;
+
 import org.jxmpp.jid.BareJid;
 
 /**
@@ -73,5 +75,13 @@ public class OmemoDevice {
         Integer i;
         i = jid.hashCode() + deviceId;
         return i.hashCode();
+    }
+
+    /**
+     * Return the name of the PubSub {@link org.jivesoftware.smackx.pubsub.LeafNode} of this device.
+     * @return node name.
+     */
+    public String getBundleNodeName() {
+        return OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(getDeviceId());
     }
 }

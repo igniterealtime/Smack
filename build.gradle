@@ -548,10 +548,12 @@ task clirrRootReport(type: org.kordamp.gradle.clirr.ClirrReportTask) {
 }
 
 task integrationTest {
+	description 'Verify correct functionality of Smack by running some integration tests.'
 	dependsOn project(':smack-integration-test').tasks.run
 }
 
 task omemoSignalIntTest {
+	description 'Run integration tests of the smack-omemo module in combination with smack-omemo-signal.'
 	dependsOn project(':smack-omemo-signal-integration-test').tasks.run
 }
 

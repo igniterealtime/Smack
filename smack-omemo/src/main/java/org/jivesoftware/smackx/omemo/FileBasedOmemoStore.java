@@ -21,20 +21,22 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.Stack;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.util.StringUtils;
-
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
-import org.jivesoftware.smackx.omemo.internal.CachedDeviceList;
+import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 
 import org.jxmpp.jid.BareJid;
@@ -47,12 +49,8 @@ import org.jxmpp.jid.BareJid;
 public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph>
         extends OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> {
 
-    private static final Logger LOGGER = Logger.getLogger(FileBasedOmemoStore.class.getSimpleName());
     private final FileHierarchy hierarchy;
-
-    public FileBasedOmemoStore() {
-        this(OmemoConfiguration.getFileBasedOmemoStoreDefaultPath());
-    }
+    private static final Logger LOGGER = Logger.getLogger(FileBasedOmemoStore.class.getName());
 
     public FileBasedOmemoStore(File basePath) {
         super();
@@ -63,335 +61,233 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
-    public boolean isFreshInstallation(OmemoManager omemoManager) {
-        File userDirectory = hierarchy.getUserDeviceDirectory(omemoManager);
-        File[] files = userDirectory.listFiles();
-        return files == null || files.length == 0;
+    public T_IdKeyPair loadOmemoIdentityKeyPair(OmemoDevice userDevice)
+            throws CorruptedOmemoKeyException {
+        File identityKeyPairPath = hierarchy.getIdentityKeyPairPath(userDevice);
+        return keyUtil().identityKeyPairFromBytes(readBytes(identityKeyPairPath));
     }
 
     @Override
-    public int getDefaultDeviceId(BareJid user) {
-        try {
-            return readInt(hierarchy.getDefaultDeviceIdPath(user));
-        } catch (IOException e) {
-            return -1;
+    public void storeOmemoIdentityKeyPair(OmemoDevice userDevice, T_IdKeyPair identityKeyPair) {
+        File identityKeyPairPath = hierarchy.getIdentityKeyPairPath(userDevice);
+        writeBytes(identityKeyPairPath, keyUtil().identityKeyPairToBytes(identityKeyPair));
+    }
+
+    @Override
+    public void removeOmemoIdentityKeyPair(OmemoDevice userDevice) {
+        File identityKeyPairPath = hierarchy.getIdentityKeyPairPath(userDevice);
+        if (!identityKeyPairPath.delete()) {
+            LOGGER.log(Level.WARNING, "Could not delete OMEMO IdentityKeyPair " + identityKeyPairPath.getAbsolutePath());
         }
     }
 
     @Override
-    public void setDefaultDeviceId(BareJid user, int defaultDeviceId) {
-        File defaultDeviceIdPath = hierarchy.getDefaultDeviceIdPath(user);
-
-        if (defaultDeviceIdPath == null) {
-            LOGGER.log(Level.SEVERE, "defaultDeviceIdPath is null!");
-        }
-
-        try {
-            writeInt(defaultDeviceIdPath, defaultDeviceId);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write defaultDeviceId: " + e, e);
-        }
+    public T_IdKey loadOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactsDevice)
+            throws CorruptedOmemoKeyException {
+        File identityKeyPath = hierarchy.getContactsIdentityKeyPath(userDevice, contactsDevice);
+        byte[] bytes = readBytes(identityKeyPath);
+        return bytes != null ? keyUtil().identityKeyFromBytes(bytes) : null;
     }
 
     @Override
-    public int loadLastPreKeyId(OmemoManager omemoManager) {
-        try {
-            int l = readInt(hierarchy.getLastPreKeyIdPath(omemoManager));
-            return l == -1 ? 0 : l;
-        } catch (IOException e) {
-            return 0;
+    public void storeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactsDevice, T_IdKey t_idKey) {
+        File identityKeyPath = hierarchy.getContactsIdentityKeyPath(userDevice, contactsDevice);
+        writeBytes(identityKeyPath, keyUtil().identityKeyToBytes(t_idKey));
+    }
+
+    @Override
+    public void removeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+        File identityKeyPath = hierarchy.getContactsIdentityKeyPath(userDevice, contactsDevice);
+        if (!identityKeyPath.delete()) {
+            LOGGER.log(Level.WARNING, "Could not delete OMEMO identityKey " + identityKeyPath.getAbsolutePath());
         }
     }
 
     @Override
-    public void storeLastPreKeyId(OmemoManager omemoManager, int currentPreKeyId) {
-        try {
-            writeInt(hierarchy.getLastPreKeyIdPath(omemoManager), currentPreKeyId);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write lastPreKeyId: " + e, e);
+    public SortedSet<Integer> localDeviceIdsOf(BareJid localUser) {
+        SortedSet<Integer> deviceIds = new TreeSet<>();
+        File userDir = hierarchy.getUserDirectory(localUser);
+        File[] list = userDir.listFiles();
+        for (File d : (list != null ? list : new File[] {})) {
+            if (d.isDirectory()) {
+                try {
+                    deviceIds.add(Integer.parseInt(d.getName()));
+                } catch (NumberFormatException e) {
+                    // ignore
+                }
+            }
+        }
+        return deviceIds;
+    }
+
+    @Override
+    public void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) {
+        File lastMessageReceived = hierarchy.getLastMessageReceivedDatePath(userDevice, contactsDevice);
+        writeLong(lastMessageReceived, date.getTime());
+    }
+
+    @Override
+    public Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+        File lastMessageReceived = hierarchy.getLastMessageReceivedDatePath(userDevice, contactsDevice);
+        Long date = readLong(lastMessageReceived);
+        return date != null ? new Date(date) : null;
+    }
+
+    @Override
+    public void setDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) {
+        File lastDeviceIdPublished = hierarchy.getLastDeviceIdPublicationDatePath(userDevice, contactsDevice);
+        writeLong(lastDeviceIdPublished, date.getTime());
+    }
+
+    @Override
+    public Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+        File lastDeviceIdPublished = hierarchy.getLastDeviceIdPublicationDatePath(userDevice, contactsDevice);
+        Long date = readLong(lastDeviceIdPublished);
+        return date != null ? new Date(date) : null;
+    }
+
+    @Override
+    public void setDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice, Date date) {
+        File lastSignedPreKeyRenewal = hierarchy.getLastSignedPreKeyRenewal(userDevice);
+        writeLong(lastSignedPreKeyRenewal, date.getTime());
+    }
+
+    @Override
+    public Date getDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice) {
+        File lastSignedPreKeyRenewal = hierarchy.getLastSignedPreKeyRenewal(userDevice);
+        Long date = readLong(lastSignedPreKeyRenewal);
+        return date != null ? new Date(date) : null;
+    }
+
+    @Override
+    public T_PreKey loadOmemoPreKey(OmemoDevice userDevice, int preKeyId) {
+        File preKeyPath = hierarchy.getPreKeyPath(userDevice, preKeyId);
+        byte[] bytes = readBytes(preKeyPath);
+
+        if (bytes != null) {
+            try {
+                return keyUtil().preKeyFromBytes(bytes);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Could not deserialize preKey from bytes.", e);
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public void storeOmemoPreKey(OmemoDevice userDevice, int preKeyId, T_PreKey t_preKey) {
+        File preKeyPath = hierarchy.getPreKeyPath(userDevice, preKeyId);
+        writeBytes(preKeyPath, keyUtil().preKeyToBytes(t_preKey));
+    }
+
+    @Override
+    public void removeOmemoPreKey(OmemoDevice userDevice, int preKeyId) {
+        File preKeyPath = hierarchy.getPreKeyPath(userDevice, preKeyId);
+        if (!preKeyPath.delete()) {
+            LOGGER.log(Level.WARNING, "Deleting OMEMO preKey " + preKeyPath.getAbsolutePath() + " failed.");
         }
     }
 
     @Override
-    public T_IdKeyPair loadOmemoIdentityKeyPair(OmemoManager omemoManager) throws CorruptedOmemoKeyException {
-        File identityKeyPairPath = hierarchy.getIdentityKeyPairPath(omemoManager);
-        try {
-            byte[] bytes = readBytes(identityKeyPairPath);
-            return bytes != null ? keyUtil().identityKeyPairFromBytes(bytes) : null;
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public void storeOmemoIdentityKeyPair(OmemoManager omemoManager, T_IdKeyPair identityKeyPair) {
-        File identityKeyPairPath = hierarchy.getIdentityKeyPairPath(omemoManager);
-        try {
-            writeBytes(identityKeyPairPath, keyUtil().identityKeyPairToBytes(identityKeyPair));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write omemoIdentityKeyPair: " + e, e);
-        }
-    }
-
-    @Override
-    public T_IdKey loadOmemoIdentityKey(OmemoManager omemoManager, OmemoDevice device) throws CorruptedOmemoKeyException {
-        File identityKeyPath = hierarchy.getContactsIdentityKeyPath(omemoManager, device);
-        try {
-            byte[] bytes = readBytes(identityKeyPath);
-            return bytes != null ? keyUtil().identityKeyFromBytes(bytes) : null;
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public void storeOmemoIdentityKey(OmemoManager omemoManager, OmemoDevice device, T_IdKey t_idKey) {
-        File identityKeyPath = hierarchy.getContactsIdentityKeyPath(omemoManager, device);
-        try {
-            writeBytes(identityKeyPath, keyUtil().identityKeyToBytes(t_idKey));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write omemoIdentityKey of " + device + ": " + e, e);
-        }
-    }
-
-    @Override
-    public boolean isTrustedOmemoIdentity(OmemoManager omemoManager, OmemoDevice device, OmemoFingerprint fingerprint) {
-        File trustPath = hierarchy.getContactsTrustPath(omemoManager, device);
-        try {
-            String depositedFingerprint = new String(readBytes(trustPath), StringUtils.UTF8);
-
-            return  depositedFingerprint.length() > 2
-                    && depositedFingerprint.charAt(0) == '1'
-                    && new OmemoFingerprint(depositedFingerprint.substring(2)).equals(fingerprint);
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
-    @Override
-    public boolean isDecidedOmemoIdentity(OmemoManager omemoManager, OmemoDevice device, OmemoFingerprint fingerprint) {
-        File trustPath = hierarchy.getContactsTrustPath(omemoManager, device);
-        try {
-            String depositedFingerprint = new String(readBytes(trustPath), StringUtils.UTF8);
-
-            return  depositedFingerprint.length() > 2
-                    && (depositedFingerprint.charAt(0) == '1' || depositedFingerprint.charAt(0) == '2')
-                    && new OmemoFingerprint(depositedFingerprint.substring(2)).equals(fingerprint);
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
-    @Override
-    public void trustOmemoIdentity(OmemoManager omemoManager, OmemoDevice device, OmemoFingerprint fingerprint) {
-        File trustPath = hierarchy.getContactsTrustPath(omemoManager, device);
-        try {
-            writeBytes(trustPath, ("1 " + fingerprint.toString()).getBytes(StringUtils.UTF8));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not trust " + device + ": " + e, e);
-        }
-    }
-
-    @Override
-    public void distrustOmemoIdentity(OmemoManager omemoManager, OmemoDevice device, OmemoFingerprint fingerprint) {
-        File trustPath = hierarchy.getContactsTrustPath(omemoManager, device);
-        try {
-            writeBytes(trustPath, ("2 " + fingerprint.toString()).getBytes(StringUtils.UTF8));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not distrust " + device + ": " + e, e);
-        }
-    }
-
-    @Override
-    public void setDateOfLastReceivedMessage(OmemoManager omemoManager, OmemoDevice from, Date date) {
-        File lastMessageReceived = hierarchy.getLastMessageReceivedDatePath(omemoManager, from);
-        try {
-            writeLong(lastMessageReceived, date.getTime());
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write date of last received message from " + from + ": " + e, e);
-        }
-    }
-
-    @Override
-    public Date getDateOfLastReceivedMessage(OmemoManager omemoManager, OmemoDevice from) {
-        File lastMessageReceived = hierarchy.getLastMessageReceivedDatePath(omemoManager, from);
-        try {
-            long date = readLong(lastMessageReceived);
-            return date != -1 ? new Date(date) : null;
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public void setDateOfLastSignedPreKeyRenewal(OmemoManager omemoManager, Date date) {
-        File lastSignedPreKeyRenewal = hierarchy.getLastSignedPreKeyRenewal(omemoManager);
-        try {
-            writeLong(lastSignedPreKeyRenewal, date.getTime());
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write date of last singedPreKey renewal for "
-                    + omemoManager.getOwnDevice() + ": " + e, e);
-        }
-    }
-
-    @Override
-    public Date getDateOfLastSignedPreKeyRenewal(OmemoManager omemoManager) {
-        File lastSignedPreKeyRenewal = hierarchy.getLastSignedPreKeyRenewal(omemoManager);
-
-        try {
-            long date = readLong(lastSignedPreKeyRenewal);
-            return date != -1 ? new Date(date) : null;
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public T_PreKey loadOmemoPreKey(OmemoManager omemoManager, int preKeyId) {
-        File preKeyPath = hierarchy.getPreKeyPath(omemoManager, preKeyId);
-        try {
-            byte[] bytes = readBytes(preKeyPath);
-            return bytes != null ? keyUtil().preKeyFromBytes(bytes) : null;
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public void storeOmemoPreKey(OmemoManager omemoManager, int preKeyId, T_PreKey t_preKey) {
-        File preKeyPath = hierarchy.getPreKeyPath(omemoManager, preKeyId);
-        try {
-            writeBytes(preKeyPath, keyUtil().preKeyToBytes(t_preKey));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write preKey with id " + preKeyId + ": " + e, e);
-        }
-    }
-
-    @Override
-    public void removeOmemoPreKey(OmemoManager omemoManager, int preKeyId) {
-        File preKeyPath = hierarchy.getPreKeyPath(omemoManager, preKeyId);
-        preKeyPath.delete();
-    }
-
-    @Override
-    public int loadCurrentSignedPreKeyId(OmemoManager omemoManager) {
-        File currentSignedPreKeyIdPath = hierarchy.getCurrentSignedPreKeyIdPath(omemoManager);
-        try {
-            int i = readInt(currentSignedPreKeyIdPath);
-            return i == -1 ? 0 : i;
-        } catch (IOException e) {
-            return 0;
-        }
-    }
-
-    @Override
-    public void storeCurrentSignedPreKeyId(OmemoManager omemoManager, int currentSignedPreKeyId) {
-        File currentSignedPreKeyIdPath = hierarchy.getCurrentSignedPreKeyIdPath(omemoManager);
-        try {
-            writeInt(currentSignedPreKeyIdPath, currentSignedPreKeyId);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write currentSignedPreKeyId "
-                    + currentSignedPreKeyId + " for " + omemoManager.getOwnDevice() + ": "
-                    + e, e);
-        }
-    }
-
-    @Override
-    public HashMap<Integer, T_PreKey> loadOmemoPreKeys(OmemoManager omemoManager) {
-        File preKeyDirectory = hierarchy.getPreKeysDirectory(omemoManager);
-        HashMap<Integer, T_PreKey> preKeys = new HashMap<>();
+    public TreeMap<Integer, T_PreKey> loadOmemoPreKeys(OmemoDevice userDevice) {
+        File preKeyDirectory = hierarchy.getPreKeysDirectory(userDevice);
+        TreeMap<Integer, T_PreKey> preKeys = new TreeMap<>();
 
         if (preKeyDirectory == null) {
             return preKeys;
         }
 
         File[] keys = preKeyDirectory.listFiles();
+
         for (File f : keys != null ? keys : new File[0]) {
-
-            try {
-                byte[] bytes = readBytes(f);
-                if (bytes == null) {
-                    continue;
+            byte[] bytes = readBytes(f);
+            if (bytes != null) {
+                try {
+                    T_PreKey p = keyUtil().preKeyFromBytes(bytes);
+                    preKeys.put(Integer.parseInt(f.getName()), p);
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Could not deserialize preKey from bytes.", e);
                 }
-                T_PreKey p = keyUtil().preKeyFromBytes(bytes);
-                preKeys.put(Integer.parseInt(f.getName()), p);
-
-            } catch (IOException e) {
-                // Do nothing.
             }
         }
+
         return preKeys;
     }
 
     @Override
-    public T_SigPreKey loadOmemoSignedPreKey(OmemoManager omemoManager, int signedPreKeyId) {
-        File signedPreKeyPath = new File(hierarchy.getSignedPreKeysDirectory(omemoManager), Integer.toString(signedPreKeyId));
-        try {
-            byte[] bytes = readBytes(signedPreKeyPath);
-            return bytes != null ? keyUtil().signedPreKeyFromBytes(bytes) : null;
-        } catch (IOException e) {
-            return null;
+    public T_SigPreKey loadOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId) {
+        File signedPreKeyPath = new File(hierarchy.getSignedPreKeysDirectory(userDevice), Integer.toString(signedPreKeyId));
+        byte[] bytes = readBytes(signedPreKeyPath);
+        if (bytes != null) {
+            try {
+                return keyUtil().signedPreKeyFromBytes(bytes);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Could not deserialize signed preKey from bytes.", e);
+            }
         }
+        return null;
     }
 
     @Override
-    public HashMap<Integer, T_SigPreKey> loadOmemoSignedPreKeys(OmemoManager omemoManager) {
-        File signedPreKeysDirectory = hierarchy.getSignedPreKeysDirectory(omemoManager);
-        HashMap<Integer, T_SigPreKey> signedPreKeys = new HashMap<>();
+    public TreeMap<Integer, T_SigPreKey> loadOmemoSignedPreKeys(OmemoDevice userDevice) {
+        File signedPreKeysDirectory = hierarchy.getSignedPreKeysDirectory(userDevice);
+        TreeMap<Integer, T_SigPreKey> signedPreKeys = new TreeMap<>();
 
         if (signedPreKeysDirectory == null) {
             return signedPreKeys;
         }
 
         File[] keys = signedPreKeysDirectory.listFiles();
+
         for (File f : keys != null ? keys : new File[0]) {
-
-            try {
-                byte[] bytes = readBytes(f);
-                if (bytes == null) {
-                    continue;
+            byte[] bytes = readBytes(f);
+            if (bytes != null) {
+                try {
+                    T_SigPreKey p = keyUtil().signedPreKeyFromBytes(bytes);
+                    signedPreKeys.put(Integer.parseInt(f.getName()), p);
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Could not deserialize signed preKey.", e);
                 }
-                T_SigPreKey p = keyUtil().signedPreKeyFromBytes(bytes);
-                signedPreKeys.put(Integer.parseInt(f.getName()), p);
-
-            } catch (IOException e) {
-                // Do nothing.
             }
         }
+
         return signedPreKeys;
     }
 
     @Override
-    public void storeOmemoSignedPreKey(OmemoManager omemoManager, int signedPreKeyId, T_SigPreKey signedPreKey) {
-        File signedPreKeyPath = new File(hierarchy.getSignedPreKeysDirectory(omemoManager), Integer.toString(signedPreKeyId));
-        try {
-            writeBytes(signedPreKeyPath, keyUtil().signedPreKeyToBytes(signedPreKey));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write signedPreKey " + signedPreKey
-                    + " for " + omemoManager.getOwnDevice() + ": " + e, e);
+    public void storeOmemoSignedPreKey(OmemoDevice userDevice,
+                                       int signedPreKeyId,
+                                       T_SigPreKey signedPreKey) {
+        File signedPreKeyPath = new File(hierarchy.getSignedPreKeysDirectory(userDevice), Integer.toString(signedPreKeyId));
+        writeBytes(signedPreKeyPath, keyUtil().signedPreKeyToBytes(signedPreKey));
+    }
+
+    @Override
+    public void removeOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId) {
+        File signedPreKeyPath = new File(hierarchy.getSignedPreKeysDirectory(userDevice), Integer.toString(signedPreKeyId));
+        if (!signedPreKeyPath.delete()) {
+            LOGGER.log(Level.WARNING, "Deleting signed OMEMO preKey " + signedPreKeyPath.getAbsolutePath() + " failed.");
         }
     }
 
     @Override
-    public void removeOmemoSignedPreKey(OmemoManager omemoManager, int signedPreKeyId) {
-        File signedPreKeyPath = new File(hierarchy.getSignedPreKeysDirectory(omemoManager), Integer.toString(signedPreKeyId));
-        signedPreKeyPath.delete();
-    }
-
-    @Override
-    public T_Sess loadRawSession(OmemoManager omemoManager, OmemoDevice device) {
-        File sessionPath = hierarchy.getContactsSessionPath(omemoManager, device);
-        try {
-            byte[] bytes = readBytes(sessionPath);
-            return bytes != null ? keyUtil().rawSessionFromBytes(bytes) : null;
-        } catch (IOException e) {
-            return null;
+    public T_Sess loadRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+        File sessionPath = hierarchy.getContactsSessionPath(userDevice, contactsDevice);
+        byte[] bytes = readBytes(sessionPath);
+        if (bytes != null) {
+            try {
+                return keyUtil().rawSessionFromBytes(bytes);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Could not deserialize raw session.", e);
+            }
         }
+        return null;
     }
 
     @Override
-    public HashMap<Integer, T_Sess> loadAllRawSessionsOf(OmemoManager omemoManager, BareJid contact) {
-        File contactsDirectory = hierarchy.getContactsDir(omemoManager, contact);
+    public HashMap<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) {
+        File contactsDirectory = hierarchy.getContactsDir(userDevice, contact);
         HashMap<Integer, T_Sess> sessions = new HashMap<>();
         String[] devices = contactsDirectory.list();
 
@@ -403,238 +299,180 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
                 continue;
             }
             OmemoDevice device = new OmemoDevice(contact, id);
-            File session = hierarchy.getContactsSessionPath(omemoManager, device);
+            File session = hierarchy.getContactsSessionPath(userDevice, device);
 
-            try {
-                byte[] bytes = readBytes(session);
-                if (bytes == null) {
-                    continue;
+            byte[] bytes = readBytes(session);
+
+            if (bytes != null) {
+                try {
+                    T_Sess s = keyUtil().rawSessionFromBytes(bytes);
+                    sessions.put(id, s);
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Could not deserialize raw session.", e);
                 }
-                T_Sess s = keyUtil().rawSessionFromBytes(bytes);
-                sessions.put(id, s);
-
-            } catch (IOException e) {
-                // Do nothing.
             }
+
         }
         return sessions;
     }
 
     @Override
-    public void storeRawSession(OmemoManager omemoManager, OmemoDevice device, T_Sess session) {
-        File sessionPath = hierarchy.getContactsSessionPath(omemoManager, device);
-        try {
-            writeBytes(sessionPath, keyUtil().rawSessionToBytes(session));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write session between our device " + omemoManager.getOwnDevice()
-                    + " and their device " + device + ": " + e.getMessage());
+    public void storeRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice, T_Sess session) {
+        File sessionPath = hierarchy.getContactsSessionPath(userDevice, contactsDevice);
+        writeBytes(sessionPath, keyUtil().rawSessionToBytes(session));
+    }
+
+    @Override
+    public void removeRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+        File sessionPath = hierarchy.getContactsSessionPath(userDevice, contactsDevice);
+        if (!sessionPath.delete()) {
+            LOGGER.log(Level.WARNING, "Deleting raw OMEMO session " + sessionPath.getAbsolutePath() + " failed.");
         }
     }
 
     @Override
-    public void removeRawSession(OmemoManager omemoManager, OmemoDevice device) {
-        File sessionPath = hierarchy.getContactsSessionPath(omemoManager, device);
-        sessionPath.delete();
-    }
-
-    @Override
-    public void removeAllRawSessionsOf(OmemoManager omemoManager, BareJid contact) {
-        File contactsDirectory = hierarchy.getContactsDir(omemoManager, contact);
+    public void removeAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) {
+        File contactsDirectory = hierarchy.getContactsDir(userDevice, contact);
         String[] devices = contactsDirectory.list();
 
         for (String deviceId : devices != null ? devices : new String[0]) {
-            int id;
-            try {
-                id = Integer.parseInt(deviceId);
-            } catch (NumberFormatException e) {
-                continue;
-            }
+            int id = Integer.parseInt(deviceId);
             OmemoDevice device = new OmemoDevice(contact, id);
-            File session = hierarchy.getContactsSessionPath(omemoManager, device);
-            session.delete();
+            File session = hierarchy.getContactsSessionPath(userDevice, device);
+            if (!session.delete()) {
+                LOGGER.log(Level.WARNING, "Deleting raw OMEMO session " + session.getAbsolutePath() + "failed.");
+            }
         }
     }
 
     @Override
-    public boolean containsRawSession(OmemoManager omemoManager, OmemoDevice device) {
-        File session = hierarchy.getContactsSessionPath(omemoManager, device);
+    public boolean containsRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+        File session = hierarchy.getContactsSessionPath(userDevice, contactsDevice);
         return session.exists();
     }
 
     @Override
-    public CachedDeviceList loadCachedDeviceList(OmemoManager omemoManager, BareJid contact) {
-        CachedDeviceList cachedDeviceList = new CachedDeviceList();
+    public OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice, BareJid contact) {
+        OmemoCachedDeviceList cachedDeviceList = new OmemoCachedDeviceList();
 
         if (contact == null) {
-            return null;
+            throw new IllegalArgumentException("Contact can not be null.");
         }
 
         // active
-        File activeDevicesPath = hierarchy.getContactsActiveDevicesPath(omemoManager, contact);
-        try {
-            cachedDeviceList.getActiveDevices().addAll(readIntegers(activeDevicesPath));
-        } catch (IOException e) {
-            // Don't worry...
+        File activeDevicesPath = hierarchy.getContactsActiveDevicesPath(userDevice, contact);
+        Set<Integer> active = readIntegers(activeDevicesPath);
+        if (active != null) {
+            cachedDeviceList.getActiveDevices().addAll(active);
         }
 
         // inactive
-        File inactiveDevicesPath = hierarchy.getContactsInactiveDevicesPath(omemoManager, contact);
-        try {
-            cachedDeviceList.getInactiveDevices().addAll(readIntegers(inactiveDevicesPath));
-        } catch (IOException e) {
-            // It's ok :)
+        File inactiveDevicesPath = hierarchy.getContactsInactiveDevicesPath(userDevice, contact);
+        Set<Integer> inactive = readIntegers(inactiveDevicesPath);
+        if (inactive != null) {
+            cachedDeviceList.getInactiveDevices().addAll(inactive);
         }
 
         return cachedDeviceList;
     }
 
     @Override
-    public void storeCachedDeviceList(OmemoManager omemoManager, BareJid contact, CachedDeviceList deviceList) {
+    public void storeCachedDeviceList(OmemoDevice userDevice,
+                                      BareJid contact,
+                                      OmemoCachedDeviceList contactsDeviceList) {
         if (contact == null) {
             return;
         }
 
-        File activeDevices = hierarchy.getContactsActiveDevicesPath(omemoManager, contact);
-        try {
-            writeIntegers(activeDevices, deviceList.getActiveDevices());
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write active devices of deviceList of "
-                    + contact + ": " + e.getMessage());
-        }
+        File activeDevices = hierarchy.getContactsActiveDevicesPath(userDevice, contact);
+        writeIntegers(activeDevices, contactsDeviceList.getActiveDevices());
 
-        File inactiveDevices = hierarchy.getContactsInactiveDevicesPath(omemoManager, contact);
-        try {
-            writeIntegers(inactiveDevices, deviceList.getInactiveDevices());
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write inactive devices of deviceList of "
-                    + contact + ": " + e.getMessage());
-        }
+        File inactiveDevices = hierarchy.getContactsInactiveDevicesPath(userDevice, contact);
+        writeIntegers(inactiveDevices, contactsDeviceList.getInactiveDevices());
     }
 
     @Override
-    public void purgeOwnDeviceKeys(OmemoManager omemoManager) {
-        File deviceDirectory = hierarchy.getUserDeviceDirectory(omemoManager);
+    public void purgeOwnDeviceKeys(OmemoDevice userDevice) {
+        File deviceDirectory = hierarchy.getUserDeviceDirectory(userDevice);
         deleteDirectory(deviceDirectory);
     }
 
-    private void writeInt(File target, int i) throws IOException {
+    private static void writeLong(File target, long i) {
         if (target == null) {
-            throw new IOException("Could not write integer to null-path.");
+            LOGGER.log(Level.WARNING, "Could not write long to null-path.");
+            return;
         }
-
-        FileHierarchy.createFile(target);
-
-        IOException io = null;
-        DataOutputStream out = null;
-        try {
-            out = new DataOutputStream(new FileOutputStream(target));
-            out.writeInt(i);
-        } catch (IOException e) {
-            io = e;
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-        }
-
-        if (io != null) {
-            throw io;
-        }
-    }
-
-    private int readInt(File target) throws IOException {
-        if (target == null) {
-            throw new IOException("Could not read integer from null-path.");
-        }
-
-        IOException io = null;
-        int i = -1;
-        DataInputStream in = null;
 
         try {
-            in = new DataInputStream(new FileInputStream(target));
-            i = in.readInt();
-
+            FileHierarchy.createFile(target);
         } catch (IOException e) {
-            io = e;
-
-        } finally {
-            if (in != null) {
-                in.close();
-            }
+            LOGGER.log(Level.SEVERE, "Could not create file.", e);
+            return;
         }
 
-        if (io != null) {
-            throw io;
-        }
-        return i;
-    }
-
-    private void writeLong(File target, long i) throws IOException {
-        if (target == null) {
-            throw new IOException("Could not write long to null-path.");
-        }
-
-        FileHierarchy.createFile(target);
-
-        IOException io = null;
         DataOutputStream out = null;
         try {
             out = new DataOutputStream(new FileOutputStream(target));
             out.writeLong(i);
 
         } catch (IOException e) {
-            io = e;
+            LOGGER.log(Level.SEVERE, "Could not write longs to file.", e);
 
         } finally {
             if (out != null) {
-                out.close();
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "Could not close OutputStream.", e);
+                }
             }
-        }
-
-        if (io != null) {
-            throw io;
         }
     }
 
-    private long readLong(File target) throws IOException {
+    private static Long readLong(File target) {
         if (target == null) {
-            throw new IOException("Could not read long from null-path.");
+            LOGGER.log(Level.WARNING, "Could not read long from null-path.");
+            return null;
         }
 
-        IOException io = null;
-        long l = -1;
+        Long l;
         DataInputStream in = null;
 
         try {
             in = new DataInputStream(new FileInputStream(target));
             l = in.readLong();
-
+        } catch (FileNotFoundException e) {
+            l = null;
         } catch (IOException e) {
-            io = e;
-
+            LOGGER.log(Level.SEVERE, "Could not read long from file.", e);
+            return null;
         } finally {
             if (in != null) {
-                in.close();
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "Could not close InputStream.", e);
+                }
             }
-        }
-
-        if (io != null) {
-            throw io;
         }
 
         return l;
     }
 
-    private void writeBytes(File target, byte[] bytes) throws IOException {
+    private static void writeBytes(File target, byte[] bytes) {
         if (target == null) {
-            throw new IOException("Could not write bytes to null-path.");
+            LOGGER.log(Level.WARNING, "Could not write bytes to null-path.");
+            return;
         }
 
         // Create file
-        FileHierarchy.createFile(target);
+        try {
+            FileHierarchy.createFile(target);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Could not create file.", e);
+            return;
+        }
 
-        IOException io = null;
         DataOutputStream out = null;
 
         try {
@@ -642,55 +480,56 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             out.write(bytes);
 
         } catch (IOException e) {
-            io = e;
+            LOGGER.log(Level.SEVERE, "Could not write bytes to file.", e);
 
         } finally {
             if (out != null) {
-                out.close();
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "Could not close OutputStream.", e);
+                }
             }
-        }
-
-        if (io != null) {
-            throw io;
         }
     }
 
-    private byte[] readBytes(File target) throws IOException {
+    private static byte[] readBytes(File target) {
         if (target == null) {
-            throw new IOException("Could not read bytes from null-path.");
+            LOGGER.log(Level.WARNING, "Could not read bytes from null-path.");
+            return null;
         }
 
         byte[] b = null;
-        IOException io = null;
         DataInputStream in = null;
 
         try {
             in = new DataInputStream(new FileInputStream(target));
-            b = new byte[in.available()];
+            b = new byte[(int) target.length()];
             in.read(b);
-
+        } catch (FileNotFoundException e) {
+            b = null;
         } catch (IOException e) {
-            io = e;
+            LOGGER.log(Level.SEVERE, "Could not read bytes from file.", e);
 
         } finally {
             if (in != null) {
-                in.close();
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "Could not close InputStream.", e);
+                }
             }
-        }
-
-        if (io != null) {
-            throw io;
         }
 
         return b;
     }
 
-    private void writeIntegers(File target, Set<Integer> integers) throws IOException {
+    private static void writeIntegers(File target, Set<Integer> integers) {
         if (target == null) {
-            throw new IOException("Could not write integers to null-path.");
+            LOGGER.log(Level.WARNING, "Could not write integers to null-path.");
+            return;
         }
 
-        IOException io = null;
         DataOutputStream out = null;
 
         try {
@@ -700,26 +539,26 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             }
 
         } catch (IOException e) {
-            io = e;
+            LOGGER.log(Level.SEVERE, "Could not write integers to file.", e);
 
         } finally {
             if (out != null) {
-                out.close();
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "Could not close OutputStream.", e);
+                }
             }
-        }
-
-        if (io != null) {
-            throw io;
         }
     }
 
-    private Set<Integer> readIntegers(File target) throws IOException {
+    private static Set<Integer> readIntegers(File target) {
         if (target == null) {
-            throw new IOException("Could not write integers to null-path.");
+            LOGGER.log(Level.WARNING, "Could not read integers from null-path.");
+            return null;
         }
 
         HashSet<Integer> integers = new HashSet<>();
-        IOException io = null;
         DataInputStream in = null;
 
         try {
@@ -733,22 +572,139 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
                 // Reached end of the list.
             }
 
+        } catch (FileNotFoundException e) {
+            integers = null;
         } catch (IOException e) {
-            io = e;
-
+            LOGGER.log(Level.SEVERE, "Could not read integers.", e);
         } finally {
             if (in != null) {
-                in.close();
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "Could not close InputStream.", e);
+                }
             }
-        }
-
-        if (io != null) {
-            throw io;
         }
 
         return integers;
     }
 
+    /**
+     * One day... *sheds a tear*
+     * TODO Use methods below once Smack's minimum Android API level is 19 or higher
+     */
+    /*
+    private static void writeLong(File target, long i)
+            throws IOException
+    {
+        if (target == null) {
+            throw new IOException("Could not write long to null-path.");
+        }
+
+        FileHierarchy.createFile(target);
+
+        try (DataOutputStream out = new DataOutputStream(new FileOutputStream(target))) {
+            out.writeLong(i);
+        }
+    }
+
+    private static Long readLong(File target)
+            throws IOException
+    {
+        if (target == null) {
+            throw new IOException("Could not read long from null-path.");
+        }
+
+        if (!target.exists() || !target.isFile()) {
+            return null;
+        }
+
+        try (DataInputStream in = new DataInputStream(new FileInputStream(target))) {
+            return in.readLong();
+        }
+    }
+
+    private static void writeBytes(File target, byte[] bytes)
+            throws IOException
+    {
+        if (target == null) {
+            throw new IOException("Could not write bytes to null-path.");
+        }
+
+        // Create file
+        FileHierarchy.createFile(target);
+
+        try (DataOutputStream out = new DataOutputStream(new FileOutputStream(target))) {
+            out.write(bytes);
+        }
+    }
+
+    private static byte[] readBytes(File target)
+            throws IOException
+    {
+        if (target == null) {
+            throw new IOException("Could not read bytes from null-path.");
+        }
+
+        if (!target.exists() || !target.isFile()) {
+            return null;
+        }
+
+        byte[] b = new byte[(int) target.length()];
+        try (DataInputStream in = new DataInputStream(new FileInputStream(target))) {
+            in.read(b);
+        }
+
+        return b;
+    }
+
+    private static void writeIntegers(File target, Set<Integer> integers)
+            throws IOException
+    {
+        if (target == null) {
+            throw new IOException("Could not write integers to null-path.");
+        }
+
+        FileHierarchy.createFile(target);
+
+        try (DataOutputStream out = new DataOutputStream(new FileOutputStream(target))) {
+            for (int i : integers) {
+                out.writeInt(i);
+            }
+        }
+    }
+
+    private static Set<Integer> readIntegers(File target)
+            throws IOException
+    {
+        if (target == null) {
+            throw new IOException("Could not write integers to null-path.");
+        }
+
+        if (!target.exists() || !target.isFile()) {
+            return null;
+        }
+
+        HashSet<Integer> integers = new HashSet<>();
+
+        try (DataInputStream in = new DataInputStream(new FileInputStream(target))) {
+            while (true) {
+                try {
+                    integers.add(in.readInt());
+                } catch (EOFException e) {
+                    break;
+                }
+            }
+        }
+
+        return integers;
+    }
+     */
+
+    /**
+     * Delete a directory with all subdirectories.
+     * @param root
+     */
     public static void deleteDirectory(File root) {
         File[] currList;
         Stack<File> stack = new Stack<>();
@@ -770,18 +726,15 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     /**
-     * This class represents the directory structure of the FileBasedOmemoStoreV2.
+     * This class represents the directory structure of the FileBasedOmemoStore.
      * The directory looks as follows:
      *
      *  OMEMO_Store/
      *      'romeo@montague.lit'/                           //Our bareJid
      *          ...
      *      'juliet@capulet.lit'/                           //Our other bareJid
-     *          defaultDeviceId
      *          '13371234'/                                 //deviceId
      *              identityKeyPair                         //Our identityKeyPair
-     *              lastPreKeyId                            //Id of the last preKey we generated
-     *              currentSignedPreKeyId                   //Id of the currently used signedPreKey
      *              lastSignedPreKeyRenewal                 //Date of when the signedPreKey was last renewed.
      *              preKeys/                                //Our preKeys
      *                  '1'
@@ -807,19 +760,16 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
         static final String STORE = "OMEMO_Store";
         static final String CONTACTS = "contacts";
-        static final String DEFAULT_DEVICE_ID = "defaultDeviceId";
         static final String IDENTITY_KEY = "identityKey";
         static final String IDENTITY_KEY_PAIR = "identityKeyPair";
         static final String PRE_KEYS = "preKeys";
         static final String LAST_MESSAGE_RECEVIED_DATE = "lastMessageReceivedDate";
-        static final String LAST_PRE_KEY_ID = "lastPreKeyId";
+        static final String LAST_DEVICEID_PUBLICATION_DATE = "lastDeviceIdPublicationDate";
         static final String SIGNED_PRE_KEYS = "signedPreKeys";
-        static final String CURRENT_SIGNED_PRE_KEY_ID = "currentSignedPreKeyId";
         static final String LAST_SIGNED_PRE_KEY_RENEWAL = "lastSignedPreKeyRenewal";
         static final String SESSION = "session";
         static final String DEVICE_LIST_ACTIVE = "activeDevices";
         static final String DEVICE_LIST_INAVTIVE = "inactiveDevices";
-        static final String TRUST = "trust";
 
         File basePath;
 
@@ -832,84 +782,75 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             return createDirectory(basePath, STORE);
         }
 
+        File getUserDirectory(OmemoDevice userDevice) {
+            return getUserDirectory(userDevice.getJid());
+        }
+
         File getUserDirectory(BareJid bareJid) {
             return createDirectory(getStoreDirectory(), bareJid.toString());
         }
 
-        File getUserDeviceDirectory(OmemoManager omemoManager) {
-            return createDirectory(getUserDirectory(omemoManager.getOwnJid()),
-                    Integer.toString(omemoManager.getDeviceId()));
+        File getUserDeviceDirectory(OmemoDevice userDevice) {
+            return createDirectory(getUserDirectory(userDevice.getJid()),
+                    Integer.toString(userDevice.getDeviceId()));
         }
 
-        File getContactsDir(OmemoManager omemoManager) {
-            return createDirectory(getUserDeviceDirectory(omemoManager), CONTACTS);
+        File getContactsDir(OmemoDevice userDevice) {
+            return createDirectory(getUserDeviceDirectory(userDevice), CONTACTS);
         }
 
-        File getContactsDir(OmemoManager omemoManager, BareJid contact) {
-            return createDirectory(getContactsDir(omemoManager), contact.toString());
+        File getContactsDir(OmemoDevice userDevice, BareJid contact) {
+            return createDirectory(getContactsDir(userDevice), contact.toString());
         }
 
-        File getContactsDir(OmemoManager omemoManager, OmemoDevice omemoDevice) {
-            return createDirectory(getContactsDir(omemoManager, omemoDevice.getJid()),
-                    Integer.toString(omemoDevice.getDeviceId()));
+        File getContactsDir(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+            return createDirectory(getContactsDir(userDevice, contactsDevice.getJid()),
+                    Integer.toString(contactsDevice.getDeviceId()));
         }
 
-        File getIdentityKeyPairPath(OmemoManager omemoManager) {
-            return new File(getUserDeviceDirectory(omemoManager), IDENTITY_KEY_PAIR);
+        File getIdentityKeyPairPath(OmemoDevice userDevice) {
+            return new File(getUserDeviceDirectory(userDevice), IDENTITY_KEY_PAIR);
         }
 
-        File getPreKeysDirectory(OmemoManager omemoManager) {
-            return createDirectory(getUserDeviceDirectory(omemoManager), PRE_KEYS);
+        File getPreKeysDirectory(OmemoDevice userDevice) {
+            return createDirectory(getUserDeviceDirectory(userDevice), PRE_KEYS);
         }
 
-        File getPreKeyPath(OmemoManager omemoManager, int preKeyId) {
-            return new File(getPreKeysDirectory(omemoManager), Integer.toString(preKeyId));
+        File getPreKeyPath(OmemoDevice userDevice, int preKeyId) {
+            return new File(getPreKeysDirectory(userDevice), Integer.toString(preKeyId));
         }
 
-        File getLastMessageReceivedDatePath(OmemoManager omemoManager, OmemoDevice device) {
-            return new File(getContactsDir(omemoManager, device), LAST_MESSAGE_RECEVIED_DATE);
+        File getLastMessageReceivedDatePath(OmemoDevice userDevice, OmemoDevice device) {
+            return new File(getContactsDir(userDevice, device), LAST_MESSAGE_RECEVIED_DATE);
         }
 
-        File getLastPreKeyIdPath(OmemoManager omemoManager) {
-            return new File(getUserDeviceDirectory(omemoManager), LAST_PRE_KEY_ID);
+        File getLastDeviceIdPublicationDatePath(OmemoDevice userDevice, OmemoDevice device) {
+            return new File(getContactsDir(userDevice, device), LAST_DEVICEID_PUBLICATION_DATE);
         }
 
-        File getSignedPreKeysDirectory(OmemoManager omemoManager) {
-            return createDirectory(getUserDeviceDirectory(omemoManager), SIGNED_PRE_KEYS);
+        File getSignedPreKeysDirectory(OmemoDevice userDevice) {
+            return createDirectory(getUserDeviceDirectory(userDevice), SIGNED_PRE_KEYS);
         }
 
-        File getCurrentSignedPreKeyIdPath(OmemoManager omemoManager) {
-            return new File(getUserDeviceDirectory(omemoManager), CURRENT_SIGNED_PRE_KEY_ID);
+        File getLastSignedPreKeyRenewal(OmemoDevice userDevice) {
+            return new File(getUserDeviceDirectory(userDevice), LAST_SIGNED_PRE_KEY_RENEWAL);
         }
 
-        File getLastSignedPreKeyRenewal(OmemoManager omemoManager) {
-            return new File(getUserDeviceDirectory(omemoManager), LAST_SIGNED_PRE_KEY_RENEWAL);
-        }
-
-        File getDefaultDeviceIdPath(BareJid bareJid) {
-            return new File(getUserDirectory(bareJid), DEFAULT_DEVICE_ID);
-        }
-
-        File getContactsIdentityKeyPath(OmemoManager omemoManager, OmemoDevice omemoDevice) {
-            return new File(getContactsDir(omemoManager, omemoDevice), IDENTITY_KEY);
+        File getContactsIdentityKeyPath(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+            return new File(getContactsDir(userDevice, contactsDevice), IDENTITY_KEY);
 
         }
 
-        File getContactsSessionPath(OmemoManager omemoManager, OmemoDevice omemoDevice) {
-            return new File(getContactsDir(omemoManager, omemoDevice), SESSION);
+        File getContactsSessionPath(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+            return new File(getContactsDir(userDevice, contactsDevice), SESSION);
         }
 
-        File getContactsActiveDevicesPath(OmemoManager omemoManager, BareJid contact) {
-            return new File(getContactsDir(omemoManager, contact), DEVICE_LIST_ACTIVE);
+        File getContactsActiveDevicesPath(OmemoDevice userDevice, BareJid contact) {
+            return new File(getContactsDir(userDevice, contact), DEVICE_LIST_ACTIVE);
         }
 
-        File getContactsInactiveDevicesPath(OmemoManager omemoManager, BareJid contact) {
-            return new File(getContactsDir(omemoManager, contact), DEVICE_LIST_INAVTIVE);
-        }
-
-        File getContactsTrustPath(OmemoManager omemoManager, OmemoDevice omemoDevice) {
-            return new File(getContactsDir(omemoManager, omemoDevice), TRUST);
-
+        File getContactsInactiveDevicesPath(OmemoDevice userDevice, BareJid contact) {
+            return new File(getContactsDir(userDevice, contact), DEVICE_LIST_INAVTIVE);
         }
 
         private static File createFile(File f) throws IOException {
@@ -918,10 +859,6 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             f.createNewFile();
             return f;
 
-        }
-
-        private static File createFile(File dir, String filename) throws IOException {
-            return createFile(new File(dir, filename));
         }
 
         private static File createDirectory(File dir, String subdir) {

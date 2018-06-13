@@ -23,7 +23,6 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.PROVIDER;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
@@ -38,11 +37,13 @@ import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
  */
 public class CipherAndAuthTag {
     private final byte[] key, iv, authTag;
+    private final boolean wasPreKey;
 
-    public CipherAndAuthTag(byte[] key, byte[] iv, byte[] authTag) throws CryptoFailedException {
+    public CipherAndAuthTag(byte[] key, byte[] iv, byte[] authTag, boolean wasPreKey) {
         this.authTag = authTag;
         this.key = key;
         this.iv = iv;
+        this.wasPreKey = wasPreKey;
     }
 
     public Cipher getCipher() throws CryptoFailedException {
@@ -81,5 +82,9 @@ public class CipherAndAuthTag {
             return iv.clone();
         }
         return null;
+    }
+
+    public boolean wasPreKeyEncrypted() {
+        return wasPreKey;
     }
 }

@@ -28,7 +28,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -39,16 +38,21 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.jivesoftware.smack.util.StringUtils;
-
-import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jivesoftware.smackx.omemo.OmemoStore;
-import org.jivesoftware.smackx.omemo.element.OmemoVAxolotlElement;
+import org.jivesoftware.smackx.omemo.OmemoRatchet;
+import org.jivesoftware.smackx.omemo.OmemoService;
+import org.jivesoftware.smackx.omemo.element.OmemoElement;
+import org.jivesoftware.smackx.omemo.element.OmemoElement_VAxolotl;
+import org.jivesoftware.smackx.omemo.element.OmemoHeaderElement_VAxolotl;
+import org.jivesoftware.smackx.omemo.element.OmemoKeyElement;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
-import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
+import org.jivesoftware.smackx.omemo.exceptions.NoIdentityKeyException;
 import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
+import org.jivesoftware.smackx.omemo.exceptions.UntrustedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.CiphertextTuple;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
-import org.jivesoftware.smackx.omemo.internal.OmemoSession;
+import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
+import org.jivesoftware.smackx.omemo.trust.OmemoTrustCallback;
+
 
 /**
  * Class used to build OMEMO messages.
@@ -65,22 +69,27 @@ import org.jivesoftware.smackx.omemo.internal.OmemoSession;
  * @author Paul Schaub
  */
 public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> {
-    private final OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> omemoStore;
-    private final OmemoManager omemoManager;
 
-    private byte[] messageKey = generateKey();
-    private byte[] initializationVector = generateIv();
+    private final OmemoDevice userDevice;
+    private final OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> ratchet;
+    private final OmemoTrustCallback trustCallback;
+
+    private byte[] messageKey;
+    private final byte[] initializationVector;
 
     private byte[] ciphertextMessage;
-    private final ArrayList<OmemoVAxolotlElement.OmemoHeader.Key> keys = new ArrayList<>();
+    private final ArrayList<OmemoKeyElement> keys = new ArrayList<>();
 
     /**
-     * Create a OmemoMessageBuilder.
+     * Create an OmemoMessageBuilder.
      *
-     * @param omemoManager      OmemoManager of our device.
-     * @param omemoStore        OmemoStore.
-     * @param aesKey            AES key that will be transported to the recipient. This is used eg. to encrypt the body.
-     * @param iv                IV
+     * @param userDevice our OmemoDevice
+     * @param callback trustCallback for querying trust decisions
+     * @param ratchet our OmemoRatchet
+     * @param aesKey aes message key used for message encryption
+     * @param iv initialization vector used for message encryption
+     * @param message message we want to send
+     *
      * @throws NoSuchPaddingException
      * @throws BadPaddingException
      * @throws InvalidKeyException
@@ -90,23 +99,31 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws NoSuchProviderException
      * @throws InvalidAlgorithmParameterException
      */
-    public OmemoMessageBuilder(OmemoManager omemoManager,
-                               OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> omemoStore,
-                               byte[] aesKey, byte[] iv)
-            throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException,
+    public OmemoMessageBuilder(OmemoDevice userDevice,
+                               OmemoTrustCallback callback,
+                               OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> ratchet,
+                               byte[] aesKey,
+                               byte[] iv,
+                               String message)
+            throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException,
+            IllegalBlockSizeException,
             UnsupportedEncodingException, NoSuchProviderException, InvalidAlgorithmParameterException {
-        this.omemoStore = omemoStore;
-        this.omemoManager = omemoManager;
+        this.userDevice = userDevice;
+        this.trustCallback = callback;
+        this.ratchet = ratchet;
         this.messageKey = aesKey;
         this.initializationVector = iv;
+        setMessage(message);
     }
 
     /**
-     * Create a new OmemoMessageBuilder with random IV and AES key.
+     * Create an OmemoMessageBuilder.
      *
-     * @param omemoManager  omemoManager of our device.
-     * @param omemoStore    omemoStore.
-     * @param message       Messages body.
+     * @param userDevice our OmemoDevice
+     * @param callback trustCallback for querying trust decisions
+     * @param ratchet our OmemoRatchet
+     * @param message message we want to send
+     *
      * @throws NoSuchPaddingException
      * @throws BadPaddingException
      * @throws InvalidKeyException
@@ -116,30 +133,32 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws NoSuchProviderException
      * @throws InvalidAlgorithmParameterException
      */
-    public OmemoMessageBuilder(OmemoManager omemoManager,
-                               OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> omemoStore, String message)
+    public OmemoMessageBuilder(OmemoDevice userDevice,
+                               OmemoTrustCallback callback,
+                               OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> ratchet,
+                               String message)
             throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException,
             UnsupportedEncodingException, NoSuchProviderException, InvalidAlgorithmParameterException {
-        this.omemoManager = omemoManager;
-        this.omemoStore = omemoStore;
-        this.setMessage(message);
+        this(userDevice, callback, ratchet, generateKey(KEYTYPE, KEYLENGTH), generateIv(), message);
     }
 
     /**
-     * Create an AES messageKey and use it to encrypt the message.
-     * Optionally append the Auth Tag of the encrypted message to the messageKey afterwards.
+     * Encrypt the message with the aes key.
+     * Move the AuthTag from the end of the cipherText to the end of the messageKey afterwards.
+     * This prevents an attacker which compromised one recipient device to switch out the cipherText for other recipients.
+     * @see <a href="https://conversations.im/omemo/audit.pdf">OMEMO security audit</a>.
      *
-     * @param message content of the message
-     * @throws NoSuchPaddingException               When no Cipher could be instantiated.
-     * @throws NoSuchAlgorithmException             when no Cipher could be instantiated.
-     * @throws NoSuchProviderException              when BouncyCastle could not be found.
-     * @throws InvalidAlgorithmParameterException   when the Cipher could not be initialized
-     * @throws InvalidKeyException                  when the generated key is invalid
-     * @throws UnsupportedEncodingException         when UTF8 is unavailable
-     * @throws BadPaddingException                  when cipher.doFinal gets wrong padding
-     * @throws IllegalBlockSizeException            when cipher.doFinal gets wrong Block size.
+     * @param message plaintext message
+     * @throws NoSuchPaddingException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchProviderException
+     * @throws InvalidAlgorithmParameterException
+     * @throws InvalidKeyException
+     * @throws UnsupportedEncodingException
+     * @throws BadPaddingException
+     * @throws IllegalBlockSizeException
      */
-    public void setMessage(String message) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, UnsupportedEncodingException, BadPaddingException, IllegalBlockSizeException {
+    private void setMessage(String message) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, UnsupportedEncodingException, BadPaddingException, IllegalBlockSizeException {
         if (message == null) {
             return;
         }
@@ -159,50 +178,71 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         byte[] clearKeyWithAuthTag = new byte[messageKey.length + 16];
         byte[] cipherTextWithoutAuthTag = new byte[ciphertext.length - 16];
 
-        System.arraycopy(messageKey, 0, clearKeyWithAuthTag, 0, 16);
-        System.arraycopy(ciphertext, 0, cipherTextWithoutAuthTag, 0, cipherTextWithoutAuthTag.length);
-        System.arraycopy(ciphertext, ciphertext.length - 16, clearKeyWithAuthTag, 16, 16);
+        moveAuthTag(messageKey, ciphertext, clearKeyWithAuthTag, cipherTextWithoutAuthTag);
 
         ciphertextMessage = cipherTextWithoutAuthTag;
         messageKey = clearKeyWithAuthTag;
     }
 
     /**
-     * Add a new recipient device to the message.
+     * Move the auth tag from the end of the cipherText to the messageKey.
      *
-     * @param device recipient device
-     * @throws CryptoFailedException                when encrypting the messageKey fails
-     * @throws UndecidedOmemoIdentityException
-     * @throws CorruptedOmemoKeyException
+     * @param messageKey source messageKey without authTag
+     * @param cipherText source cipherText with authTag
+     * @param messageKeyWithAuthTag destination messageKey with authTag
+     * @param cipherTextWithoutAuthTag destination cipherText without authTag
      */
-    public void addRecipient(OmemoDevice device) throws CryptoFailedException, UndecidedOmemoIdentityException, CorruptedOmemoKeyException {
-        addRecipient(device, false);
+    static void moveAuthTag(byte[] messageKey,
+                            byte[] cipherText,
+                            byte[] messageKeyWithAuthTag,
+                            byte[] cipherTextWithoutAuthTag) {
+        // Check dimensions of arrays
+        if (messageKeyWithAuthTag.length != messageKey.length + 16) {
+            throw new IllegalArgumentException("Length of messageKeyWithAuthTag must be length of messageKey + " +
+                    "length of AuthTag (16)");
+        }
+
+        if (cipherTextWithoutAuthTag.length != cipherText.length - 16) {
+            throw new IllegalArgumentException("Length of cipherTextWithoutAuthTag must be length of cipherText " +
+            "- length of AuthTag (16)");
+        }
+
+        // Move auth tag from cipherText to messageKey
+        System.arraycopy(messageKey, 0, messageKeyWithAuthTag, 0, 16);
+        System.arraycopy(cipherText, 0, cipherTextWithoutAuthTag, 0, cipherTextWithoutAuthTag.length);
+        System.arraycopy(cipherText, cipherText.length - 16, messageKeyWithAuthTag, 16, 16);
     }
 
     /**
      * Add a new recipient device to the message.
-     * @param device recipient device
-     * @param ignoreTrust ignore current trust state? Useful for keyTransportMessages that are sent to repair a session
-     * @throws CryptoFailedException
-     * @throws UndecidedOmemoIdentityException
-     * @throws CorruptedOmemoKeyException
+     *
+     * @param contactsDevice device of the recipient
+     * @throws NoIdentityKeyException if we have no identityKey of that device. Can be fixed by fetching and
+     *                                processing the devices bundle.
+     * @throws CorruptedOmemoKeyException if the identityKey of that device is corrupted.
+     * @throws UndecidedOmemoIdentityException if the user hasn't yet decided whether to trust that device or not.
+     * @throws UntrustedOmemoIdentityException if the user has decided not to trust that device.
      */
-    public void addRecipient(OmemoDevice device, boolean ignoreTrust) throws
-            CryptoFailedException, UndecidedOmemoIdentityException, CorruptedOmemoKeyException {
-        OmemoSession<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> session =
-                omemoStore.getOmemoSessionOf(omemoManager, device);
+    public void addRecipient(OmemoDevice contactsDevice)
+            throws NoIdentityKeyException, CorruptedOmemoKeyException, UndecidedOmemoIdentityException,
+            UntrustedOmemoIdentityException {
 
-        if (session != null) {
-            if (!ignoreTrust && !omemoStore.isDecidedOmemoIdentity(omemoManager, device, session.getIdentityKey())) {
-                // Warn user of undecided device
-                throw new UndecidedOmemoIdentityException(device);
-            }
+        OmemoFingerprint fingerprint;
+        fingerprint = OmemoService.getInstance().getOmemoStoreBackend().getFingerprint(userDevice, contactsDevice);
 
-            if (!ignoreTrust && omemoStore.isTrustedOmemoIdentity(omemoManager, device, session.getIdentityKey())) {
-                // Encrypt key and save to header
-                CiphertextTuple encryptedKey = session.encryptMessageKey(messageKey);
-                keys.add(new OmemoVAxolotlElement.OmemoHeader.Key(encryptedKey.getCiphertext(), device.getDeviceId(), encryptedKey.isPreKeyMessage()));
-            }
+        switch (trustCallback.getTrust(contactsDevice, fingerprint)) {
+
+            case undecided:
+                throw new UndecidedOmemoIdentityException(contactsDevice);
+
+            case trusted:
+                CiphertextTuple encryptedKey = ratchet.doubleRatchetEncrypt(contactsDevice, messageKey);
+                keys.add(new OmemoKeyElement(encryptedKey.getCiphertext(), contactsDevice.getDeviceId(), encryptedKey.isPreKeyMessage()));
+                break;
+
+            case untrusted:
+                throw new UntrustedOmemoIdentityException(contactsDevice, fingerprint);
+
         }
     }
 
@@ -211,24 +251,26 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @return OmemoMessageElement
      */
-    public OmemoVAxolotlElement finish() {
-        OmemoVAxolotlElement.OmemoHeader header = new OmemoVAxolotlElement.OmemoHeader(
-                omemoManager.getDeviceId(),
+    public OmemoElement finish() {
+        OmemoHeaderElement_VAxolotl header = new OmemoHeaderElement_VAxolotl(
+                userDevice.getDeviceId(),
                 keys,
                 initializationVector
         );
-        return new OmemoVAxolotlElement(header, ciphertextMessage);
+        return new OmemoElement_VAxolotl(header, ciphertextMessage);
     }
 
     /**
      * Generate a new AES key used to encrypt the message.
      *
+     * @param keyType Key Type
+     * @param keyLength Key Length in bit
      * @return new AES key
      * @throws NoSuchAlgorithmException
      */
-    public static byte[] generateKey() throws NoSuchAlgorithmException {
-        KeyGenerator generator = KeyGenerator.getInstance(KEYTYPE);
-        generator.init(KEYLENGTH);
+    public static byte[] generateKey(String keyType, int keyLength) throws NoSuchAlgorithmException {
+        KeyGenerator generator = KeyGenerator.getInstance(keyType);
+        generator.init(keyLength);
         return generator.generateKey().getEncoded();
     }
 
@@ -242,13 +284,5 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         byte[] iv = new byte[16];
         random.nextBytes(iv);
         return iv;
-    }
-
-    public byte[] getCiphertextMessage() {
-        return ciphertextMessage;
-    }
-
-    public byte[] getMessageKey() {
-        return messageKey;
     }
 }
