@@ -80,7 +80,6 @@ import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
-import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -859,12 +858,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
-    @Deprecated
-    @Override
-    public void addPacketSendingListener(StanzaListener packetListener, StanzaFilter packetFilter) {
-        addStanzaSendingListener(packetListener, packetFilter);
-    }
-
     @Override
     public void addStanzaSendingListener(StanzaListener packetListener, StanzaFilter packetFilter) {
         if (packetListener == null) {
@@ -874,12 +867,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         synchronized (sendListeners) {
             sendListeners.put(packetListener, wrapper);
         }
-    }
-
-    @Deprecated
-    @Override
-    public void removePacketSendingListener(StanzaListener packetListener) {
-        removeStanzaSendingListener(packetListener);
     }
 
     @Override
@@ -932,13 +919,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         });
     }
 
-    @Deprecated
-    @Override
-    public void addPacketInterceptor(StanzaListener packetInterceptor,
-                                     StanzaFilter packetFilter) {
-        addStanzaInterceptor(packetInterceptor, packetFilter);
-    }
-
     @Override
     public void addStanzaInterceptor(StanzaListener packetInterceptor,
             StanzaFilter packetFilter) {
@@ -949,12 +929,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         synchronized (interceptors) {
             interceptors.put(packetInterceptor, interceptorWrapper);
         }
-    }
-
-    @Deprecated
-    @Override
-    public void removePacketInterceptor(StanzaListener packetInterceptor) {
-        removeStanzaInterceptor(packetInterceptor);
     }
 
     @Override
@@ -1453,22 +1427,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         streamFeatures.put(key, feature);
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
-                    StanzaListener callback) throws NotConnectedException, InterruptedException {
-        sendStanzaWithResponseCallback(stanza, replyFilter, callback, null);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void sendStanzaWithResponseCallback(Stanza stanza, StanzaFilter replyFilter,
-                    StanzaListener callback, ExceptionCallback exceptionCallback)
-                    throws NotConnectedException, InterruptedException {
-        sendStanzaWithResponseCallback(stanza, replyFilter, callback, exceptionCallback,
-                        getReplyTimeout());
-    }
-
     @Override
     public SmackFuture<IQ, Exception> sendIqRequestAsync(IQ request) {
         return sendIqRequestAsync(request, getReplyTimeout());
@@ -1548,88 +1506,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
 
         return future;
-    }
-
-    @SuppressWarnings({ "FutureReturnValueIgnored", "deprecation" })
-    @Override
-    public void sendStanzaWithResponseCallback(Stanza stanza, final StanzaFilter replyFilter,
-                    final StanzaListener callback, final ExceptionCallback exceptionCallback,
-                    long timeout) throws NotConnectedException, InterruptedException {
-        Objects.requireNonNull(stanza, "stanza must not be null");
-        // While Smack allows to add PacketListeners with a PacketFilter value of 'null', we
-        // disallow it here in the async API as it makes no sense
-        Objects.requireNonNull(replyFilter, "replyFilter must not be null");
-        Objects.requireNonNull(callback, "callback must not be null");
-
-        final StanzaListener packetListener = new StanzaListener() {
-            @Override
-            public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException, NotLoggedInException {
-                boolean removed = removeAsyncStanzaListener(this);
-                if (!removed) {
-                    // We lost a race against the "no response" handling runnable. Avoid calling the callback, as the
-                    // exception callback will be invoked (if any).
-                    return;
-                }
-                try {
-                    XMPPErrorException.ifHasErrorThenThrow(packet);
-                    callback.processStanza(packet);
-                }
-                catch (XMPPErrorException e) {
-                    if (exceptionCallback != null) {
-                        exceptionCallback.processException(e);
-                    }
-                }
-            }
-        };
-        schedule(new Runnable() {
-            @Override
-            public void run() {
-                boolean removed = removeAsyncStanzaListener(packetListener);
-                // If the packetListener got removed, then it was never run and
-                // we never received a response, inform the exception callback
-                if (removed && exceptionCallback != null) {
-                    Exception exception;
-                    if (!isConnected()) {
-                        // If the connection is no longer connected, throw a not connected exception.
-                        exception = new NotConnectedException(AbstractXMPPConnection.this, replyFilter);
-                    } else {
-                        exception = NoResponseException.newWith(AbstractXMPPConnection.this, replyFilter);
-                    }
-                    final Exception exceptionToProcess = exception;
-                    Async.go(new Runnable() {
-                        @Override
-                        public void run() {
-                            exceptionCallback.processException(exceptionToProcess);
-                        }
-                    });
-                }
-            }
-        }, timeout, TimeUnit.MILLISECONDS);
-        addAsyncStanzaListener(packetListener, replyFilter);
-        sendStanza(stanza);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback)
-                    throws NotConnectedException, InterruptedException {
-        sendIqWithResponseCallback(iqRequest, callback, null);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void sendIqWithResponseCallback(IQ iqRequest, StanzaListener callback,
-                    ExceptionCallback exceptionCallback) throws NotConnectedException, InterruptedException {
-        sendIqWithResponseCallback(iqRequest, callback, exceptionCallback, getReplyTimeout());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void sendIqWithResponseCallback(IQ iqRequest, final StanzaListener callback,
-                    final ExceptionCallback exceptionCallback, long timeout)
-                    throws NotConnectedException, InterruptedException {
-        StanzaFilter replyFilter = new IQReplyFilter(iqRequest, this);
-        sendStanzaWithResponseCallback(iqRequest, replyFilter, callback, exceptionCallback, timeout);
     }
 
     @SuppressWarnings("FutureReturnValueIgnored")
