@@ -265,33 +265,6 @@ public final class AdHocCommandManager extends Manager {
     }
 
     /**
-     * Publish the commands to an specific JID.
-     *
-     * @param jid the full JID to publish the commands to.
-     * @throws XMPPException if the operation failed for some reason.
-     * @throws SmackException if there was no response from the server.
-     * @throws InterruptedException
-     * @deprecated This method uses no longer existent XEP-0030 features and will be removed.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    // TODO: Remove in Smack 4.4.
-    public void publishCommands(Jid jid) throws XMPPException, SmackException, InterruptedException {
-        // Collects the commands to publish as items
-        DiscoverItems discoverItems = new DiscoverItems();
-        Collection<AdHocCommandInfo> xCommandsList = getRegisteredCommands();
-
-        for (AdHocCommandInfo info : xCommandsList) {
-            DiscoverItems.Item item = new DiscoverItems.Item(info.getOwnerJID());
-            item.setName(info.getName());
-            item.setNode(info.getNode());
-            discoverItems.addItem(item);
-        }
-
-        serviceDiscoveryManager.publishItems(jid, NAMESPACE, discoverItems);
-    }
-
-    /**
      * Returns a command that represents an instance of a command in a remote
      * host. It is used to execute remote commands. The concept is similar to
      * RMI. Every invocation on this command is equivalent to an invocation in
