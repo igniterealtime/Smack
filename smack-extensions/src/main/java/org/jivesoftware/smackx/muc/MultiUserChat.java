@@ -472,36 +472,6 @@ public class MultiUserChat {
     }
 
     /**
-     * Like {@link #create(Resourcepart)}, but will return true if the room creation was acknowledged by
-     * the service (with an 201 status code). It's up to the caller to decide, based on the return
-     * value, if he needs to continue sending the room configuration. If false is returned, the room
-     * already existed and the user is able to join right away, without sending a form.
-     *
-     * @param nickname the nickname to use.
-     * @param password the password to use.
-     * @param history the amount of discussion history to receive while joining a room.
-     * @param timeout the amount of time to wait for a reply from the MUC service(in milliseconds).
-     * @return A {@link MucCreateConfigFormHandle} if the room was created while joining, or {@code null} if the room was just joined.
-     * @throws XMPPErrorException if the room couldn't be created for some reason (e.g. 405 error if
-     *         the user is not allowed to create the room)
-     * @throws NoResponseException if there was no response from the server.
-     * @throws InterruptedException
-     * @throws MucAlreadyJoinedException if the MUC is already joined
-     * @throws NotConnectedException
-     * @throws NotAMucServiceException
-     * @deprecated use {@link #createOrJoin(MucEnterConfiguration)} instead.
-     */
-    @Deprecated
-    // TODO Remove in Smack 4.4
-    public MucCreateConfigFormHandle createOrJoin(Resourcepart nickname, String password, @SuppressWarnings("deprecation") DiscussionHistory history, long timeout)
-                    throws NoResponseException, XMPPErrorException, InterruptedException, MucAlreadyJoinedException, NotConnectedException, NotAMucServiceException {
-        MucEnterConfiguration.Builder builder = getEnterConfigurationBuilder(nickname).withPassword(
-                        password).timeoutAfter(timeout);
-
-        return createOrJoin(builder.build());
-    }
-
-    /**
      * Like {@link #create(Resourcepart)}, but will return a {@link MucCreateConfigFormHandle} if the room creation was acknowledged by
      * the service (with an 201 status code). It's up to the caller to decide, based on the return
      * value, if he needs to continue sending the room configuration. If {@code null} is returned, the room
@@ -657,50 +627,6 @@ public class MultiUserChat {
     public void join(Resourcepart nickname, String password) throws XMPPErrorException, InterruptedException, NoResponseException, NotConnectedException, NotAMucServiceException {
         MucEnterConfiguration.Builder builder = getEnterConfigurationBuilder(nickname).withPassword(
                         password);
-        join(builder.build());
-    }
-
-    /**
-     * Joins the chat room using the specified nickname and password. If already joined
-     * using another nickname, this method will first leave the room and then
-     * re-join using the new nickname.<p>
-     *
-     * To control the amount of history to receive while joining a room you will need to provide
-     * a configured DiscussionHistory object.<p>
-     *
-     * A password is required when joining password protected rooms. If the room does
-     * not require a password there is no need to provide one.<p>
-     *
-     * If the room does not already exist when the user seeks to enter it, the server will
-     * decide to create a new room or not.
-     *
-     * @param nickname the nickname to use.
-     * @param password the password to use.
-     * @param history the amount of discussion history to receive while joining a room.
-     * @param timeout the amount of time to wait for a reply from the MUC service(in milleseconds).
-     * @throws XMPPErrorException if an error occurs joining the room. In particular, a
-     *      401 error can occur if no password was provided and one is required; or a
-     *      403 error can occur if the user is banned; or a
-     *      404 error can occur if the room does not exist or is locked; or a
-     *      407 error can occur if user is not on the member list; or a
-     *      409 error can occur if someone is already in the group chat with the same nickname.
-     * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws NotAMucServiceException
-     * @deprecated use {@link #join(MucEnterConfiguration)} instead.
-     */
-    @Deprecated
-    // TODO Remove in Smack 4.4
-    public void join(
-        Resourcepart nickname,
-        String password,
-        @SuppressWarnings("deprecation") DiscussionHistory history,
-        long timeout)
-        throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException, NotAMucServiceException {
-        MucEnterConfiguration.Builder builder = getEnterConfigurationBuilder(nickname).withPassword(
-                        password).timeoutAfter(timeout);
-
         join(builder.build());
     }
 
