@@ -19,6 +19,8 @@ package org.jivesoftware.smack.util;
 import static org.junit.Assert.assertEquals;
 
 import org.jivesoftware.smack.util.DNSUtil.DomainType;
+import org.jivesoftware.smack.util.dns.SmackDaneProvider;
+import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 
 import org.junit.Test;
 
@@ -33,4 +35,18 @@ public class DnsUtilTest {
         assertEquals(DNSUtil.XMPP_SERVER_DNS_SRV_PREFIX, server.srvPrefix.ace);
     }
 
+    private static final SmackDaneProvider DNS_UTIL_TEST_DANE_PROVIDER = new SmackDaneProvider() {
+        @Override
+        public SmackDaneVerifier newInstance() {
+            throw new AssertionError();
+        }
+    };
+
+    @Test
+    public void daneProviderTest() {
+        DNSUtil.setDaneProvider(DNS_UTIL_TEST_DANE_PROVIDER);
+        SmackDaneProvider currentDaneProvider = DNSUtil.getDaneProvider();
+
+        assertEquals(DNS_UTIL_TEST_DANE_PROVIDER, currentDaneProvider);
+    }
 }

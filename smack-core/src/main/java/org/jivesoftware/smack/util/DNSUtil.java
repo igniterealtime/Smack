@@ -72,7 +72,7 @@ public class DNSUtil {
      * @param daneProvider
      */
     public static void setDaneProvider(SmackDaneProvider daneProvider) {
-        daneProvider = Objects.requireNonNull(daneProvider);
+        DNSUtil.daneProvider = Objects.requireNonNull(daneProvider);
     }
 
     /**
