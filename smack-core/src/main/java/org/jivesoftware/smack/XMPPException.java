@@ -69,6 +69,10 @@ public abstract class XMPPException extends Exception {
         super(message, wrappedThrowable);
     }
 
+    /**
+     * An exception caused by an XMPP error stanza response on the protocol level. You can examine the underlying
+     * {@link StanzaError} by calling {@link #getStanzaError()}.
+     */
     public static class XMPPErrorException extends XMPPException {
         /**
          *
