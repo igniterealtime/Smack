@@ -70,7 +70,7 @@ public class SignalOmemoKeyUtil extends OmemoKeyUtil<IdentityKeyPair, IdentityKe
         try {
             return KeyHelper.generateSignedPreKey(identityKeyPair, currentPreKeyId);
         } catch (InvalidKeyException e) {
-            throw new CorruptedOmemoKeyException(e.getMessage());
+            throw new CorruptedOmemoKeyException(e);
         }
     }
 
@@ -102,7 +102,7 @@ public class SignalOmemoKeyUtil extends OmemoKeyUtil<IdentityKeyPair, IdentityKe
         try {
             return new IdentityKeyPair(data);
         } catch (InvalidKeyException e) {
-            throw new CorruptedOmemoKeyException(e.getMessage());
+            throw new CorruptedOmemoKeyException(e);
         }
     }
 
@@ -112,7 +112,7 @@ public class SignalOmemoKeyUtil extends OmemoKeyUtil<IdentityKeyPair, IdentityKe
         try {
             return new IdentityKey(data, 0);
         } catch (InvalidKeyException e) {
-            throw new CorruptedOmemoKeyException(e.getMessage());
+            throw new CorruptedOmemoKeyException(e);
         }
     }
 
@@ -122,7 +122,7 @@ public class SignalOmemoKeyUtil extends OmemoKeyUtil<IdentityKeyPair, IdentityKe
         try {
             return Curve.decodePoint(data, 0);
         } catch (InvalidKeyException e) {
-            throw new CorruptedOmemoKeyException(e.getMessage());
+            throw new CorruptedOmemoKeyException(e);
         }
     }
 

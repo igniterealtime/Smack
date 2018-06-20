@@ -27,4 +27,8 @@ public class CorruptedOmemoKeyException extends Exception {
     public CorruptedOmemoKeyException(String message) {
         super(message);
     }
+
+    public CorruptedOmemoKeyException(Exception exception) {
+        super(exception);
+    }
 }

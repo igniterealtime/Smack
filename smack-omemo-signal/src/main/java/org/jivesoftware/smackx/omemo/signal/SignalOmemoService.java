@@ -104,7 +104,7 @@ public final class SignalOmemoService
             builder.process(contactsBundle);
             LOGGER.log(Level.FINE, "Session built with " + contactsDevice);
         } catch (org.whispersystems.libsignal.InvalidKeyException e) {
-            throw new CorruptedOmemoKeyException(e.getMessage());
+            throw new CorruptedOmemoKeyException(e);
         } catch (UntrustedIdentityException e) {
             // This should never happen.
             throw new AssertionError(e);
