@@ -460,7 +460,7 @@ public final class AdHocCommandManager extends Manager {
                 // If there is an exception caused by the next, complete,
                 // prev or cancel method, then that error is returned to the
                 // requester.
-                StanzaError error = e.getXMPPError();
+                StanzaError error = e.getStanzaError();
 
                 // If the error type is cancel, then the execution is
                 // canceled therefore the status must show that, and the
@@ -570,7 +570,7 @@ public final class AdHocCommandManager extends Manager {
                     // If there is an exception caused by the next, complete,
                     // prev or cancel method, then that error is returned to the
                     // requester.
-                    StanzaError error = e.getXMPPError();
+                    StanzaError error = e.getStanzaError();
 
                     // If the error type is cancel, then the execution is
                     // canceled therefore the status must show that, and the

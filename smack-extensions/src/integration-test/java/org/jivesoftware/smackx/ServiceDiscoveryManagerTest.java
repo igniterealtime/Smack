@@ -77,7 +77,7 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
             fail("Unexpected identities were returned instead of a 404 error");
         }
         catch (XMPPException e) {
-            assertEquals("Incorrect error", 404, e.getXMPPError().getCode());
+            assertEquals("Incorrect error", 404, e.getStanzaError().getCode());
         }
         catch (Exception e) {
             e.printStackTrace();

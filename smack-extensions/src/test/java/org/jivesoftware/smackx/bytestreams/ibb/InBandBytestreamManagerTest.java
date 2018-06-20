@@ -125,7 +125,7 @@ public class InBandBytestreamManagerTest extends InitExtensions {
         }
         catch (XMPPErrorException e) {
             assertEquals(StanzaError.Condition.feature_not_implemented,
-                            e.getXMPPError().getCondition());
+                            e.getStanzaError().getCondition());
         }
 
     }

@@ -120,7 +120,7 @@ public class LoginTest extends SmackTestCase {
                 conn.getAccountManager().createAccount("user_1", "user_1", getAccountCreationParameters());
             } catch (XMPPException e) {
                 // Do nothing if the account already exists
-                if (e.getXMPPError().getCode() != 409) {
+                if (e.getStanzaError().getCode() != 409) {
                     throw e;
                 }
                 // Else recreate the connection, ins case the server closed it as
@@ -141,8 +141,8 @@ public class LoginTest extends SmackTestCase {
             }
 
         } catch (XMPPException e) {
-            if (e.getXMPPError() != null) {
-                assertEquals("Wrong error code returned", 406, e.getXMPPError().getCode());
+            if (e.getStanzaError() != null) {
+                assertEquals("Wrong error code returned", 406, e.getStanzaError().getCode());
             } else {
                 fail(e.getMessage());
             }

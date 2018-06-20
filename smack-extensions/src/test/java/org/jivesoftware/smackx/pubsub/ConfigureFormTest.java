@@ -77,7 +77,7 @@ public class ConfigureFormTest extends InitExtensions {
             fail();
         }
         catch (XMPPErrorException e) {
-            Assert.assertEquals(StanzaError.Type.AUTH, e.getXMPPError().getType());
+            Assert.assertEquals(StanzaError.Type.AUTH, e.getStanzaError().getType());
         }
     }
 

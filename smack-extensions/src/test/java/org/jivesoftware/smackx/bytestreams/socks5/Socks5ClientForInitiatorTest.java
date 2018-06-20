@@ -231,7 +231,7 @@ public class Socks5ClientForInitiatorTest {
             fail("exception should be thrown");
         }
         catch (XMPPErrorException e) {
-            assertTrue(StanzaError.Condition.internal_server_error.equals(e.getXMPPError().getCondition()));
+            assertTrue(StanzaError.Condition.internal_server_error.equals(e.getStanzaError().getCondition()));
             protocol.verifyAll();
         }
 

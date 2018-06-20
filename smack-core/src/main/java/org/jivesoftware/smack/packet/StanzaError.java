@@ -62,9 +62,16 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @see <a href="http://xmpp.org/rfcs/rfc6120.html#stanzas-error-syntax">RFC 6120 - 8.3.2 Syntax: The Syntax of XMPP error stanzas</a>
  */
 // TODO Use StanzaErrorTextElement here.
-public class StanzaError extends AbstractError {
+public class StanzaError extends AbstractError implements ExtensionElement {
 
-    public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-stanzas";
+    public static final String ERROR_CONDITION_AND_TEXT_NAMESPACE = "urn:ietf:params:xml:ns:xmpp-stanzas";
+
+    /**
+     * TODO describe me.
+     */
+    @Deprecated
+    public static final String NAMESPACE = ERROR_CONDITION_AND_TEXT_NAMESPACE;
+
     public static final String ERROR = "error";
 
     private static final Logger LOGGER = Logger.getLogger(StanzaError.class.getName());
@@ -117,7 +124,7 @@ public class StanzaError extends AbstractError {
      */
     public StanzaError(Condition condition, String conditionText, String errorGenerator, Type type, Map<String, String> descriptiveTexts,
             List<ExtensionElement> extensions, Stanza stanza) {
-        super(descriptiveTexts, NAMESPACE, extensions);
+        super(descriptiveTexts, ERROR_CONDITION_AND_TEXT_NAMESPACE, extensions);
         this.condition = Objects.requireNonNull(condition, "condition must not be null");
         this.stanza = stanza;
         // Some implementations may send the condition as non-empty element containing the empty string, that is
@@ -197,20 +204,34 @@ public class StanzaError extends AbstractError {
         return sb.toString();
     }
 
+    @Override
+    public String getElementName() {
+        return ERROR;
+    }
+
+    @Override
+    public String getNamespace() {
+        return StreamOpen.CLIENT_NAMESPACE;
+    }
+
     /**
      * Returns the error as XML.
      *
      * @return the error as XML.
      */
     public XmlStringBuilder toXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(ERROR);
+        return toXML(null);
+    }
+
+    @Override
+    public XmlStringBuilder toXML(String enclosingNamespace) {
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
         xml.attribute("type", type.toString());
         xml.optAttribute("by", errorGenerator);
         xml.rightAngleBracket();
 
         xml.halfOpenElement(condition.toString());
-        xml.xmlnsAttribute(NAMESPACE);
+        xml.xmlnsAttribute(ERROR_CONDITION_AND_TEXT_NAMESPACE);
         if (conditionText != null) {
             xml.rightAngleBracket();
             xml.escape(conditionText);
@@ -222,7 +243,7 @@ public class StanzaError extends AbstractError {
 
         addDescriptiveTextsAndExtensions(xml);
 
-        xml.closeElement(ERROR);
+        xml.closeElement(this);
         return xml;
     }
 

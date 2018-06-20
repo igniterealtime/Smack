@@ -58,7 +58,7 @@ public class ParseStreamManagement {
             case XmlPullParser.START_TAG:
                 name = parser.getName();
                 String namespace = parser.getNamespace();
-                if (StanzaError.NAMESPACE.equals(namespace)) {
+                if (StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE.equals(namespace)) {
                     if (name.equals(AbstractTextElement.ELEMENT)) {
                         String lang = ParserUtils.getXmlLang(parser);
                         String text = parser.nextText();

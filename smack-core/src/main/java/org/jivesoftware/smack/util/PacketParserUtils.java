@@ -855,7 +855,7 @@ public class PacketParserUtils {
                 String name = parser.getName();
                 String namespace = parser.getNamespace();
                 switch (namespace) {
-                case StanzaError.NAMESPACE:
+                case StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE:
                     switch (name) {
                     case Stanza.TEXT:
                         descriptiveTexts = parseDescriptiveTexts(parser, descriptiveTexts);

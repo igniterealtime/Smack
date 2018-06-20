@@ -47,7 +47,7 @@ public class PublisherUseCases extends SingleUserTestCase
 			fail("Exception should be thrown when there is no payload");
 		}
 		catch (XMPPException e) {
-			XMPPError err = e.getXMPPError();
+			XMPPError err = e.getStanzaError();
 			assertTrue(err.getType().equals(XMPPError.Type.MODIFY));
 			assertTrue(err.getCondition().equals(Condition.bad_request.toString()));
 			assertNotNull(err.getExtension("payload-required", PubSubNamespace.ERROR.getXmlns()));
@@ -59,7 +59,7 @@ public class PublisherUseCases extends SingleUserTestCase
 			fail("Exception should be thrown when there is no payload");
 		}
 		catch (XMPPException e) {
-			XMPPError err = e.getXMPPError();
+			XMPPError err = e.getStanzaError();
 			assertTrue(err.getType().equals(XMPPError.Type.MODIFY));
 			assertTrue(err.getCondition().equals(Condition.bad_request.toString()));
 			assertNotNull(err.getExtension("payload-required", PubSubNamespace.ERROR.getXmlns()));
@@ -104,7 +104,7 @@ public class PublisherUseCases extends SingleUserTestCase
 			fail("Exception should be thrown when there is no payload");
 		}
 		catch (XMPPException e) {
-			XMPPError err = e.getXMPPError();
+			XMPPError err = e.getStanzaError();
 			assertTrue(err.getType().equals(XMPPError.Type.MODIFY));
 			assertTrue(err.getCondition().equals(Condition.bad_request.toString()));
 			assertNotNull(err.getExtension("payload-required", PubSubNamespace.ERROR.getXmlns()));
@@ -116,7 +116,7 @@ public class PublisherUseCases extends SingleUserTestCase
 			fail("Exception should be thrown when there is no payload");
 		}
 		catch (XMPPException e) {
-			XMPPError err = e.getXMPPError();
+			XMPPError err = e.getStanzaError();
 			assertTrue(err.getType().equals(XMPPError.Type.MODIFY));
 			assertTrue(err.getCondition().equals(Condition.bad_request.toString()));
 			assertNotNull(err.getExtension("payload-required", PubSubNamespace.ERROR.getXmlns()));

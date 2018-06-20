@@ -344,7 +344,7 @@ public class OutgoingFileTransfer extends FileTransfer {
     }
 
     private void handleXMPPException(XMPPErrorException e) {
-        StanzaError error = e.getXMPPError();
+        StanzaError error = e.getStanzaError();
         if (error != null) {
             switch (error.getCondition()) {
             case forbidden:
