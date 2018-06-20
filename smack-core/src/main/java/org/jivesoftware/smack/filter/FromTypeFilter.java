@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus.
+ * Copyright 2017-2018 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ public final class FromTypeFilter extends AbstractJidTypeFilter {
     public static final FromTypeFilter ENTITY_BARE_JID = new FromTypeFilter(JidType.entityBare);
     public static final FromTypeFilter DOMAIN_FULL_JID = new FromTypeFilter(JidType.domainFull);
     public static final FromTypeFilter DOMAIN_BARE_JID = new FromTypeFilter(JidType.domainBare);
+    public static final FromTypeFilter FROM_ANY_JID = new FromTypeFilter(JidType.any);
 
     private FromTypeFilter(JidType jidType) {
         super(jidType);
