@@ -385,8 +385,8 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
                 }
             }
 
-            // Ignore stale devices
-            if (OmemoConfiguration.getIgnoreStaleDevices()) {
+            // Ignore own stale devices
+            if (contactsDevice.getJid().equals(userDevice.getJid()) && OmemoConfiguration.getIgnoreStaleDevices()) {
 
                 Date lastMessageDate = getOmemoStoreBackend().getDateOfLastReceivedMessage(userDevice, contactsDevice);
                 if (lastMessageDate == null) {
