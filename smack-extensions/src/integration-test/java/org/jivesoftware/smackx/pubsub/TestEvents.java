@@ -67,7 +67,7 @@ public class TestEvents extends SmackTestCase
 		}
 		catch (XMPPException e)
 		{
-			if (e.getXMPPError().getType() == Type.CANCEL && e.getXMPPError().getCondition().equals("item-not-found"))
+			if (e.getStanzaError().getType() == Type.CANCEL && e.getXMPPError().getCondition().equals("item-not-found"))
 				creatorNode = creatorMgr.createNode(nodeId);
 			else
 				throw e;

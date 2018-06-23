@@ -451,7 +451,7 @@ public class Socks5ByteStreamManagerTest {
         }
         catch (XMPPErrorException e) {
             protocol.verifyAll();
-            assertEquals(rejectPacket.getError(), e.getXMPPError());
+            assertEquals(rejectPacket.getError(), e.getStanzaError());
         }
         catch (Exception e) {
             fail(e.getMessage());

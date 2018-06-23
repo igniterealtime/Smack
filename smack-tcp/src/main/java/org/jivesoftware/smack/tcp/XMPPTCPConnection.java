@@ -1139,7 +1139,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             break;
                         case Failed.ELEMENT:
                             Failed failed = ParseStreamManagement.failed(parser);
-                            FailedNonzaException xmppException = new FailedNonzaException(failed, failed.getXMPPErrorCondition());
+                            FailedNonzaException xmppException = new FailedNonzaException(failed, failed.getStanzaErrorCondition());
                             // If only XEP-198 would specify different failure elements for the SM
                             // enable and SM resume failure case. But this is not the case, so we
                             // need to determine if this is a 'Failed' response for either 'Enable'

@@ -221,7 +221,7 @@ public final class PrivateDataManager extends Manager {
             return true;
         }
         catch (XMPPErrorException e) {
-            if (e.getXMPPError().getCondition() == Condition.service_unavailable) {
+            if (e.getStanzaError().getCondition() == Condition.service_unavailable) {
                 return false;
             }
             else {

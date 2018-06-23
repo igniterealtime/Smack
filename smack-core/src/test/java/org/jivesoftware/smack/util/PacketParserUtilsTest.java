@@ -906,10 +906,10 @@ public class PacketParserUtilsTest {
                 .build();
         final String errorXml = XMLBuilder
                 .create(StanzaError.ERROR).a("type", "cancel").up()
-                .element("internal-server-error", StanzaError.NAMESPACE).up()
-                .element("text", StanzaError.NAMESPACE).t(text).up()
+                .element("internal-server-error", StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE).up()
+                .element("text", StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE).t(text).up()
                 .asString();
-        XmlUnitUtils.assertSimilar(errorXml, error.toXML());
+        XmlUnitUtils.assertSimilar(errorXml, error.toXML(StreamOpen.CLIENT_NAMESPACE));
     }
 
     @Test
@@ -917,8 +917,8 @@ public class PacketParserUtilsTest {
         final String text = "Dummy descriptive text";
         final String errorXml = XMLBuilder
             .create(StanzaError.ERROR).a("type", "cancel").up()
-            .element("internal-server-error", StanzaError.NAMESPACE).up()
-            .element("text", StanzaError.NAMESPACE).t(text).up()
+            .element("internal-server-error", StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE).up()
+            .element("text", StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE).t(text).up()
             .asString();
         XmlPullParser parser = TestUtils.getParser(errorXml);
         StanzaError error = PacketParserUtils.parseError(parser).build();

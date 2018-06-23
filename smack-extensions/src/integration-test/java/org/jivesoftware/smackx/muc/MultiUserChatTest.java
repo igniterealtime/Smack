@@ -527,7 +527,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 fail("Other user was able to join with other user's reserved nickname");
             }
             catch (XMPPException e) {
-                XMPPError xmppError = e.getXMPPError();
+                XMPPError xmppError = e.getStanzaError();
                 assertNotNull(
                     "No XMPPError was received when joining with other user's reserved nickname",
                     xmppError);
@@ -551,7 +551,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 muc3.sendRegistrationForm(answerForm);
             }
             catch (XMPPException e) {
-                XMPPError xmppError = e.getXMPPError();
+                XMPPError xmppError = e.getStanzaError();
                 assertNotNull(
                     "No XMPPError was received when reserving an already reserved nickname",
                     xmppError);
@@ -605,7 +605,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 fail("User2 was allowed to change the room's subject");
             }
             catch (XMPPException e) {
-                XMPPError xmppError = e.getXMPPError();
+                XMPPError xmppError = e.getStanzaError();
                 assertNotNull(
                     "No XMPPError was received when changing the room's subject",
                     xmppError);
@@ -677,7 +677,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 fail("User2 was able to kick a room owner");
             }
             catch (XMPPException e) {
-                XMPPError xmppError = e.getXMPPError();
+                XMPPError xmppError = e.getStanzaError();
                 assertNotNull("No XMPPError was received when kicking a room owner", xmppError);
                 assertEquals(
                     "A simple participant was able to kick another participant from the room",
@@ -754,7 +754,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 fail("User2 was able to ban a room owner");
             }
             catch (XMPPException e) {
-                XMPPError xmppError = e.getXMPPError();
+                XMPPError xmppError = e.getStanzaError();
                 assertNotNull("No XMPPError was received when banning a room owner", xmppError);
                 assertEquals(
                     "A simple participant was able to ban another participant from the room",
@@ -842,7 +842,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 fail("User2 was able to grant voice");
             }
             catch (XMPPException e) {
-                XMPPError xmppError = e.getXMPPError();
+                XMPPError xmppError = e.getStanzaError();
                 assertNotNull("No XMPPError was received granting voice", xmppError);
                 assertEquals(
                     "A visitor was able to grant voice to another visitor",
@@ -947,7 +947,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 fail("User2 was able to grant moderator privileges");
             }
             catch (XMPPException e) {
-                XMPPError xmppError = e.getXMPPError();
+                XMPPError xmppError = e.getStanzaError();
                 assertNotNull("No XMPPError was received granting moderator privileges", xmppError);
                 assertEquals(
                     "A visitor was able to grant moderator privileges to another visitor",
@@ -1078,7 +1078,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 fail("User2 was able to grant membership privileges");
             }
             catch (XMPPException e) {
-                XMPPError xmppError = e.getXMPPError();
+                XMPPError xmppError = e.getStanzaError();
                 assertNotNull(
                     "No XMPPError was received granting membership privileges",
                     xmppError);
@@ -1188,7 +1188,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 fail("User2 was able to grant admin privileges");
             }
             catch (XMPPException e) {
-                XMPPError xmppError = e.getXMPPError();
+                XMPPError xmppError = e.getStanzaError();
                 assertNotNull("No XMPPError was received granting admin privileges", xmppError);
                 assertEquals(
                     "A visitor was able to grant admin privileges to another visitor",
@@ -1363,7 +1363,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 fail("User2 was able to grant ownership privileges");
             }
             catch (XMPPException e) {
-                XMPPError xmppError = e.getXMPPError();
+                XMPPError xmppError = e.getStanzaError();
                 assertNotNull("No XMPPError was received granting ownership privileges", xmppError);
                 assertEquals(
                     "A visitor was able to grant ownership privileges to another visitor",
@@ -1609,7 +1609,7 @@ public class MultiUserChatTest extends SmackTestCase {
                 fail("User2 was able to get the list of owners");
             }
             catch (XMPPException e) {
-                XMPPError xmppError = e.getXMPPError();
+                XMPPError xmppError = e.getStanzaError();
                 assertNotNull("No XMPPError was received getting the list of owners", xmppError);
                 assertEquals(
                     "A member was able to get the list of owners",

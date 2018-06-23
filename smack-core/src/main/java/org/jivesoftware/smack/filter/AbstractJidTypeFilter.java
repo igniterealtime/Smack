@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus.
+ * Copyright 2017-2018 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ public abstract class AbstractJidTypeFilter implements StanzaFilter {
         entityBare,
         domainFull,
         domainBare,
+        any,
         ;
     }
 
@@ -55,6 +56,8 @@ public abstract class AbstractJidTypeFilter implements StanzaFilter {
             return jid.isDomainFullJid();
         case domainBare:
             return jid.isDomainBareJid();
+        case any:
+            return true;
         default:
             throw new AssertionError();
         }

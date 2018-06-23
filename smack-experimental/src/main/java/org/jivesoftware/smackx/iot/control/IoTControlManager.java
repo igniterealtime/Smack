@@ -90,7 +90,7 @@ public final class IoTControlManager extends IoTManager {
                 try {
                     controlRequest.processRequest(iotSetRequest.getFrom(), iotSetRequest.getSetData());
                 } catch (XMPPErrorException e) {
-                    return IQ.createErrorResponse(iotSetRequest, e.getXMPPError());
+                    return IQ.createErrorResponse(iotSetRequest, e.getStanzaError());
                 }
 
                 return new IoTSetResponse(iotSetRequest);

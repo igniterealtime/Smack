@@ -228,7 +228,7 @@ public class PrivacyTest extends SmackTestCase {
                 // The list should not exist and an error will be raised
                 privacyManager.getDefaultList();
             } catch (XMPPException xmppException) {
-                assertEquals(404, xmppException.getXMPPError().getCode());
+                assertEquals(404, xmppException.getStanzaError().getCode());
             }
 
 	    	assertEquals(null, null);
@@ -255,7 +255,7 @@ public class PrivacyTest extends SmackTestCase {
                 // The list should not exist and an error will be raised
                 privacyManager.getActiveList();
             } catch (XMPPException xmppException) {
-                assertEquals(404, xmppException.getXMPPError().getCode());
+                assertEquals(404, xmppException.getStanzaError().getCode());
             }
 
             assertEquals(null, null);
@@ -341,7 +341,7 @@ public class PrivacyTest extends SmackTestCase {
                 // The list should not exist and an error will be raised
                 privacyManager.getPrivacyList(listName);
             } catch (XMPPException xmppException) {
-                assertEquals(404, xmppException.getXMPPError().getCode());
+                assertEquals(404, xmppException.getStanzaError().getCode());
             }
         } catch (Exception e) {
             e.printStackTrace();

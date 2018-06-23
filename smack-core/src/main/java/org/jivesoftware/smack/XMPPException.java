@@ -69,6 +69,10 @@ public abstract class XMPPException extends Exception {
         super(message, wrappedThrowable);
     }
 
+    /**
+     * An exception caused by an XMPP error stanza response on the protocol level. You can examine the underlying
+     * {@link StanzaError} by calling {@link #getStanzaError()}.
+     */
     public static class XMPPErrorException extends XMPPException {
         /**
          *
@@ -123,8 +127,20 @@ public abstract class XMPPException extends Exception {
          * one.
          *
          * @return the XMPPError associated with this exception.
+         * @deprecated use {@link #getStanzaError()} instead.
          */
+        @Deprecated
+        // TODO Remove in Smack 4.4.
         public StanzaError getXMPPError() {
+            return error;
+        }
+
+        /**
+         * Returns the stanza error extension element associated with this exception.
+         *
+         * @return the stanza error extension element associated with this exception.
+         */
+        public StanzaError getStanzaError() {
             return error;
         }
 

@@ -94,7 +94,7 @@ public class CompressionTest extends SmackTestCase {
             setupConnection.getAccountManager().createAccount("user0", "user0");
         } catch (XMPPException e) {
             // Do nothing if the accout already exists
-            if (e.getXMPPError().getCode() != 409) {
+            if (e.getStanzaError().getCode() != 409) {
                 throw e;
             }
         }

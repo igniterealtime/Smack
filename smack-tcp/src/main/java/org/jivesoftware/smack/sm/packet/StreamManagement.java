@@ -211,7 +211,7 @@ public class StreamManagement {
             }
         }
 
-        public StanzaError.Condition getXMPPErrorCondition() {
+        public StanzaError.Condition getStanzaErrorCondition() {
             return condition;
         }
 
@@ -228,7 +228,7 @@ public class StreamManagement {
                 if (condition != null) {
                     xml.rightAngleBracket();
                     xml.append(condition.toString());
-                    xml.xmlnsAttribute(StanzaError.NAMESPACE);
+                    xml.xmlnsAttribute(StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE);
                     xml.closeEmptyElement();
                 }
                 xml.append(textElements);

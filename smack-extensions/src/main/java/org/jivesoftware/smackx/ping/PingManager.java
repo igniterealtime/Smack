@@ -149,7 +149,7 @@ public final class PingManager extends Manager {
             return true;
         }
 
-        final StanzaError xmppError = xmppErrorException.getXMPPError();
+        final StanzaError xmppError = xmppErrorException.getStanzaError();
 
         // We may received an error response from an intermediate service returning an error like
         // 'remote-server-not-found' or 'remote-server-timeout' to us (which would fake the 'from' address,

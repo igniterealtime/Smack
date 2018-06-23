@@ -110,7 +110,7 @@ public class Socks5ByteStreamRequestTest {
             fail("exception should be thrown");
         }
         catch (XMPPErrorException e) {
-            assertTrue(e.getXMPPError().getDescriptiveText("en").contains("Could not establish socket with any provided host"));
+            assertTrue(e.getStanzaError().getDescriptiveText("en").contains("Could not establish socket with any provided host"));
         }
 
         // verify targets response
@@ -154,7 +154,7 @@ public class Socks5ByteStreamRequestTest {
             fail("exception should be thrown");
         }
         catch (XMPPErrorException e) {
-            assertTrue(e.getXMPPError().getDescriptiveText("en").contains("Could not establish socket with any provided host"));
+            assertTrue(e.getStanzaError().getDescriptiveText("en").contains("Could not establish socket with any provided host"));
         }
 
         // verify targets response
@@ -201,7 +201,7 @@ public class Socks5ByteStreamRequestTest {
                 fail("exception should be thrown");
             }
             catch (XMPPErrorException e) {
-                assertTrue(e.getXMPPError().getDescriptiveText("en").contains(
+                assertTrue(e.getStanzaError().getDescriptiveText("en").contains(
                                 "Could not establish socket with any provided host"));
             }
 
@@ -293,7 +293,7 @@ public class Socks5ByteStreamRequestTest {
                 fail("exception should be thrown");
             }
             catch (XMPPErrorException e) {
-                assertTrue(e.getXMPPError().getDescriptiveText("en").contains(
+                assertTrue(e.getStanzaError().getDescriptiveText("en").contains(
                                 "Could not establish socket with any provided host"));
             }
 

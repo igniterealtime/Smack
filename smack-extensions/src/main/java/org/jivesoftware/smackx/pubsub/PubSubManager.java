@@ -276,12 +276,12 @@ public final class PubSubManager extends Manager {
             return createNode(id);
         }
         catch (XMPPErrorException e1) {
-            if (e1.getXMPPError().getCondition() == Condition.item_not_found) {
+            if (e1.getStanzaError().getCondition() == Condition.item_not_found) {
                 try {
                     return createNode(id);
                 }
                 catch (XMPPErrorException e2) {
-                    if (e2.getXMPPError().getCondition() == Condition.conflict) {
+                    if (e2.getStanzaError().getCondition() == Condition.conflict) {
                         // The node was created in the meantime, re-try getNode(). Note that this case should be rare.
                         try {
                             return getNode(id);
@@ -294,7 +294,7 @@ public final class PubSubManager extends Manager {
                     throw e2;
                 }
             }
-            if (e1.getXMPPError().getCondition() == Condition.service_unavailable) {
+            if (e1.getStanzaError().getCondition() == Condition.service_unavailable) {
                 // This could be caused by Prosody bug #805 (see https://prosody.im/issues/issue/805). Prosody does not
                 // answer to disco#info requests on the node ID, which makes it undecidable if a node is a leaf or
                 // collection node.
@@ -326,7 +326,7 @@ public final class PubSubManager extends Manager {
             node = getNode(id);
         }
         catch (XMPPErrorException e) {
-            if (e.getXMPPError().getCondition() == Condition.service_unavailable) {
+            if (e.getStanzaError().getCondition() == Condition.service_unavailable) {
                 // This could be caused by Prosody bug #805 (see https://prosody.im/issues/issue/805). Prosody does not
                 // answer to disco#info requests on the node ID, which makes it undecidable if a node is a leaf or
                 // collection node.
@@ -349,7 +349,7 @@ public final class PubSubManager extends Manager {
             // Try to ensure that this is not a collection node by asking for one item form the node.
             leafNode.getItems(1);
         } catch (XMPPErrorException e) {
-            Condition condition = e.getXMPPError().getCondition();
+            Condition condition = e.getStanzaError().getCondition();
             if (condition == Condition.feature_not_implemented) {
                 // XEP-0060 § 6.5.9.5: Item retrieval not supported, e.g. because node is a collection node
                 throw new PubSubException.NotALeafNodeException(id, pubSubService);
@@ -369,7 +369,7 @@ public final class PubSubManager extends Manager {
             return createNode(id);
         }
         catch (XMPPErrorException e1) {
-            if (e1.getXMPPError().getCondition() == Condition.conflict) {
+            if (e1.getStanzaError().getCondition() == Condition.conflict) {
                 return getLeafNodeProsodyWorkaround(id);
             }
             throw e1;
@@ -556,7 +556,7 @@ public final class PubSubManager extends Manager {
             leafNode = createNode();
         }
         catch (XMPPErrorException e) {
-            if (e.getXMPPError().getCondition() == StanzaError.Condition.forbidden) {
+            if (e.getStanzaError().getCondition() == StanzaError.Condition.forbidden) {
                 return false;
             }
             throw e;

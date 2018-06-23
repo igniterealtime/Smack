@@ -85,8 +85,8 @@ public class SmackIntegrationTestFrameworkUnitTest {
         FailedTest failedTest = failedTests.get(0);
         assertTrue(failedTest.failureReason instanceof XMPPErrorException);
         XMPPErrorException ex = (XMPPErrorException) failedTest.failureReason;
-        assertEquals(StanzaError.Condition.bad_request, ex.getXMPPError().getCondition());
-        assertEquals(ThrowsNonFatalExceptionDummyTest.DESCRIPTIVE_TEXT, ex.getXMPPError().getDescriptiveText());
+        assertEquals(StanzaError.Condition.bad_request, ex.getStanzaError().getCondition());
+        assertEquals(ThrowsNonFatalExceptionDummyTest.DESCRIPTIVE_TEXT, ex.getStanzaError().getDescriptiveText());
     }
 
     public static class ThrowsNonFatalExceptionDummyTest extends AbstractSmackIntegrationTest {
