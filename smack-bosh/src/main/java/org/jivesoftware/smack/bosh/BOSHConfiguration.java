@@ -19,6 +19,8 @@ package org.jivesoftware.smack.bosh;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.proxy.ProxyInfo;
@@ -34,6 +36,7 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
 
     private final boolean https;
     private final String file;
+    private Map<String, String> httpHeaders;
 
     private BOSHConfiguration(Builder builder) {
         super(builder);
@@ -49,6 +52,7 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
         } else {
             file = builder.file;
         }
+        httpHeaders = builder.httpHeaders;
     }
 
     public boolean isProxyEnabled() {
@@ -76,6 +80,10 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
         return new URI((https ? "https://" : "http://") + this.host + ":" + this.port + file);
     }
 
+    public Map<String, String> getHttpHeaders() {
+        return httpHeaders;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -83,6 +91,7 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
     public static final class Builder extends ConnectionConfiguration.Builder<Builder, BOSHConfiguration> {
         private boolean https;
         private String file;
+        private Map<String, String> httpHeaders = new HashMap<>();
 
         private Builder() {
         }
@@ -98,6 +107,11 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
 
         public Builder setFile(String file) {
             this.file = file;
+            return this;
+        }
+
+        public Builder addHttpHeader(String name, String value) {
+            httpHeaders.put(name, value);
             return this;
         }
 

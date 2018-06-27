@@ -4,5 +4,5 @@ This API is considered beta quality."""
 
 dependencies {
 	compile project(':smack-core')
-	compile 'org.igniterealtime.jbosh:jbosh:[0.9,0.10)'
+	compile 'org.igniterealtime.jbosh:jbosh:[0.9.1,0.10)'
 }
