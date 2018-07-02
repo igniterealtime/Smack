@@ -224,6 +224,22 @@ public class ParserUtils {
         }
     }
 
+    public static Short getShortAttribute(XmlPullParser parser, String name) {
+        String valueString = parser.getAttributeValue("", name);
+        if (valueString == null) {
+            return null;
+        }
+        return Short.valueOf(valueString);
+    }
+
+    public static short getShortAttribute(XmlPullParser parser, String name, short defaultValue) {
+        Short s = getShortAttribute(parser, name);
+        if (s == null) {
+            return defaultValue;
+        }
+        return s;
+    }
+
     public static Date getDateFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
         String dateString = parser.nextText();
         return XmppDateTime.parseDate(dateString);

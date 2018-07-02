@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
-import org.jivesoftware.smackx.omemo.element.OmemoBundleVAxolotlElement;
+import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VAxolotl;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -40,9 +40,9 @@ import org.xmlpull.v1.XmlPullParser;
  *
  * @author Paul Schaub
  */
-public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoBundleVAxolotlElement> {
+public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoBundleElement_VAxolotl> {
     @Override
-    public OmemoBundleVAxolotlElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public OmemoBundleElement_VAxolotl parse(XmlPullParser parser, int initialDepth) throws Exception {
         boolean stop = false;
         boolean inPreKeys = false;
 
@@ -96,6 +96,6 @@ public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoB
                     break;
             }
         }
-        return new OmemoBundleVAxolotlElement(signedPreKeyId, signedPreKey, signedPreKeySignature, identityKey, preKeys);
+        return new OmemoBundleElement_VAxolotl(signedPreKeyId, signedPreKey, signedPreKeySignature, identityKey, preKeys);
     }
 }

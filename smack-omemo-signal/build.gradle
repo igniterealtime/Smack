@@ -10,7 +10,8 @@ dependencies {
 	compile project(":smack-im")
 	compile project(":smack-extensions")
 	compile project(":smack-omemo")
-	compile 'org.whispersystems:signal-protocol-java:2.4.0'
+	compile 'org.whispersystems:signal-protocol-java:2.6.2'
 
 	testCompile project(path: ":smack-core", configuration: "testRuntime")
+	testCompile project(path: ":smack-omemo", configuration: "testRuntime")
 }

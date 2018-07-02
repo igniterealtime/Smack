@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -263,6 +263,50 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
         }
     }
 
+    public enum TryPutResult {
+        /**
+         * The method was unable to acquire the queue lock.
+         */
+        couldNotLock,
+
+        /**
+         * The queue was shut down.
+         */
+        queueWasShutDown,
+
+        /**
+         * The method was unable to put another element into the queue because the queue was full.
+         */
+        queueWasFull,
+
+        /**
+         * The element was successfully placed into the queue.
+         */
+        putSuccessful,
+    }
+
+    public TryPutResult tryPut(E e) {
+        checkNotNull(e);
+
+        boolean locked = lock.tryLock();
+        if (!locked) {
+            return TryPutResult.couldNotLock;
+        }
+        try {
+            if (isShutdown) {
+                return TryPutResult.queueWasShutDown;
+            }
+            if (isFull()) {
+                return TryPutResult.queueWasFull;
+            }
+
+            insert(e);
+            return TryPutResult.putSuccessful;
+        } finally {
+            lock.unlock();
+        }
+    }
+
     @Override
     public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
         checkNotNull(e);
@@ -312,6 +356,72 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
             return e;
         }
         finally {
+            lock.unlock();
+        }
+    }
+
+    public enum TryTakeResultCode {
+        /**
+         * The method was unable to acquire the queue lock.
+         */
+        couldNotLock,
+
+        /**
+         * The queue was shut down.
+         */
+        queueWasShutDown,
+
+        /**
+         * The queue was empty.
+         */
+        queueWasEmpty,
+
+        /**
+         * An element was successfully removed from the queue.
+         */
+        takeSuccessful,
+    }
+
+    public static final class TryTakeResult<E> {
+        private final E element;
+        private final TryTakeResultCode resultCode;
+
+        private TryTakeResult(TryTakeResultCode resultCode) {
+            assert resultCode != null;
+            this.resultCode = resultCode;
+            this.element = null;
+        }
+
+        private TryTakeResult(E element) {
+            assert element != null;
+            this.resultCode = TryTakeResultCode.takeSuccessful;
+            this.element = element;
+        }
+
+        public TryTakeResultCode getResultCode() {
+            return resultCode;
+        }
+
+        public E getElement() {
+            return element;
+        }
+    }
+
+    public TryTakeResult<E> tryTake() {
+        boolean locked = lock.tryLock();
+        if (!locked) {
+            return new TryTakeResult<E>(TryTakeResultCode.couldNotLock);
+        }
+        try {
+            if (isShutdown) {
+                return new TryTakeResult<E>(TryTakeResultCode.queueWasShutDown);
+            }
+            if (hasNoElements()) {
+                return new TryTakeResult<E>(TryTakeResultCode.queueWasEmpty);
+            }
+            E element = extract();
+            return new TryTakeResult<E>(element);
+        } finally {
             lock.unlock();
         }
     }

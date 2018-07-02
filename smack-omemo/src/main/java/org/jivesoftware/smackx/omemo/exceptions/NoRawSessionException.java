@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.omemo.exceptions;
 
+import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
+
 /**
  * Exception that gets thrown whenever a OmemoMessage arrives that no OmemoSession was found for to decrypt it.
  *
@@ -25,7 +27,14 @@ public class NoRawSessionException extends Exception {
 
     private static final long serialVersionUID = 3466888654338119954L;
 
-    public NoRawSessionException(Exception e) {
+    private final OmemoDevice device;
+
+    public NoRawSessionException(OmemoDevice device, Exception e) {
         super(e);
+        this.device = device;
+    }
+
+    public OmemoDevice getDeviceWithoutSession() {
+        return device;
     }
 }

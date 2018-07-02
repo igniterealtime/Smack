@@ -9,5 +9,7 @@ dependencies {
 	compile project(":smack-extensions")
 	compile project(":smack-experimental")
 
+	compile "org.bouncycastle:bcprov-jdk15on:1.59"
+
 	testCompile project(path: ":smack-core", configuration: "testRuntime")
 }
