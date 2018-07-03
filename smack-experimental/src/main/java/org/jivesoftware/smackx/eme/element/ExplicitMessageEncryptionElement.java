@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.eme.element;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
@@ -144,5 +145,50 @@ public class ExplicitMessageEncryptionElement implements ExtensionElement {
 
     public static ExplicitMessageEncryptionElement from(Message message) {
         return message.getExtension(ELEMENT, NAMESPACE);
+    }
+
+    /**
+     * Return true, if the {@code message} already contains an EME element with the specified {@code protocolNamespace}.
+     *
+     * @param message message
+     * @param protocolNamespace namespace
+     * @return true if message has EME element for that namespace, otherwise false
+     */
+    public static boolean hasProtocol(Message message, String protocolNamespace) {
+        List<ExplicitMessageEncryptionElement> emeElements = message.getExtension(
+                ExplicitMessageEncryptionElement.ELEMENT,
+                ExplicitMessageEncryptionElement.NAMESPACE);
+
+        for (ExplicitMessageEncryptionElement e : emeElements) {
+            if (e.getEncryptionNamespace().equals(protocolNamespace)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Return true, if the {@code message} already contains an EME element with the specified protocol namespace.
+     *
+     * @param message message
+     * @param protocol protocol
+     * @return true if message has EME element for that namespace, otherwise false
+     */
+    public static boolean hasProtocol(Message message, ExplicitMessageEncryptionProtocol protocol) {
+        return hasProtocol(message, protocol.namespace);
+    }
+
+    /**
+     * Add an EME element containing the specified {@code protocol} namespace to the message.
+     * In case there is already an element with that protocol, we do nothing.
+     *
+     * @param message message
+     * @param protocol encryption protocol
+     */
+    public static void set(Message message, ExplicitMessageEncryptionProtocol protocol) {
+        if (!hasProtocol(message, protocol.namespace)) {
+            message.addExtension(new ExplicitMessageEncryptionElement(protocol));
+        }
     }
 }
