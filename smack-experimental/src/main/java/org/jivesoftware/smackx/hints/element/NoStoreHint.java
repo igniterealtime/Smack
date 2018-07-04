@@ -56,6 +56,6 @@ public final class NoStoreHint extends MessageProcessingHint {
     }
 
     public static void set(Message message) {
-        message.addExtension(INSTANCE);
+        message.overrideExtension(INSTANCE);
     }
 }

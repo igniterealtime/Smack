@@ -56,6 +56,6 @@ public final class StoreHint extends MessageProcessingHint {
     }
 
     public static void set(Message message) {
-        message.addExtension(INSTANCE);
+        message.overrideExtension(INSTANCE);
     }
 }
