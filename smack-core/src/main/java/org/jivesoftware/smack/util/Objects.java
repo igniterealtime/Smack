@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.util.Collection;
+
 public class Objects {
 
     public static <T> T requireNonNull(T obj, String message) {
@@ -27,6 +29,13 @@ public class Objects {
 
     public static <T> T requireNonNull(T obj) {
         return requireNonNull(obj, null);
+    }
+
+    public static <T extends Collection<?>> T requireNonNullOrEmpty(T collection, String message) {
+        if (requireNonNull(collection).isEmpty()) {
+            throw new IllegalArgumentException(message);
+        }
+        return collection;
     }
 
     public static boolean equals(Object a, Object b) {
