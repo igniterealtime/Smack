@@ -68,7 +68,7 @@ public final class Jingle extends IQ {
     private Jingle(String sessionId, JingleAction action, FullJid initiator, FullJid responder, JingleReason reason,
                     List<JingleContent> contents) {
         super(ELEMENT, NAMESPACE);
-        this.sessionId = StringUtils.requireNotNullOrEmpty(sessionId, "Jingle session ID must not be null");
+        this.sessionId = StringUtils.requireNotNullNorEmpty(sessionId, "Jingle session ID must not be null");
         this.action = Objects.requireNonNull(action, "Jingle action must not be null");
         this.initiator = initiator;
         this.responder = responder;
@@ -190,7 +190,7 @@ public final class Jingle extends IQ {
         }
 
         public Builder setSessionId(String sessionId) {
-            StringUtils.requireNotNullOrEmpty(sessionId, "Session ID must not be null or empty");
+            StringUtils.requireNotNullNorEmpty(sessionId, "Session ID must not be null nor empty");
             this.sid = sessionId;
             return this;
         }

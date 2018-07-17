@@ -27,7 +27,7 @@ public abstract class AbstractTextElement implements ExtensionElement {
     private final String lang;
 
     protected AbstractTextElement(String text, String lang) {
-        this.text = StringUtils.requireNotNullOrEmpty(text, "Text must not be null or empty");
+        this.text = StringUtils.requireNotNullNorEmpty(text, "Text must not be null nor empty");
         this.lang = lang;
     }
 

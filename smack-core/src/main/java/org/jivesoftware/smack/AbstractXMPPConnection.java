@@ -497,7 +497,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     public synchronized void login(CharSequence username, String password, Resourcepart resource) throws XMPPException,
                     SmackException, IOException, InterruptedException {
         if (!config.allowNullOrEmptyUsername) {
-            StringUtils.requireNotNullOrEmpty(username, "Username must not be null or empty");
+            StringUtils.requireNotNullNorEmpty(username, "Username must not be null nor empty");
         }
         throwNotConnectedExceptionIfAppropriate("Did you call connect() before login()?");
         throwAlreadyLoggedInExceptionIfAppropriate();

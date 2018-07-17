@@ -156,7 +156,7 @@ public class FormField implements NamedElement {
      * @param variable the variable name of the question.
      */
     public FormField(String variable) {
-        this.variable = StringUtils.requireNotNullOrEmpty(variable, "Variable must not be null or empty");
+        this.variable = StringUtils.requireNotNullNorEmpty(variable, "Variable must not be null nor empty");
     }
 
     /**

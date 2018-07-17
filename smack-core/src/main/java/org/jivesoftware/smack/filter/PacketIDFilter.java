@@ -50,7 +50,7 @@ public class PacketIDFilter implements StanzaFilter {
      */
     @Deprecated
     public PacketIDFilter(String packetID) {
-        StringUtils.requireNotNullOrEmpty(packetID, "Packet ID must not be null or empty.");
+        StringUtils.requireNotNullNorEmpty(packetID, "Packet ID must not be null nor empty.");
         this.packetID = packetID;
     }
 

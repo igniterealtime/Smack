@@ -86,7 +86,7 @@ public class Affiliation implements ExtensionElement {
      * @param namespace the affiliation's namespace.
      */
     public Affiliation(String node, Type affiliation, AffiliationNamespace namespace) {
-        this.node = StringUtils.requireNotNullOrEmpty(node, "node must not be null or empty");
+        this.node = StringUtils.requireNotNullNorEmpty(node, "node must not be null nor empty");
         this.affiliation = affiliation;
         this.jid = null;
         this.namespace = Objects.requireNonNull(namespace);

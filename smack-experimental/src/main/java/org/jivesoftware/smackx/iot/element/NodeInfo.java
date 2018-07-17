@@ -37,7 +37,7 @@ public final class NodeInfo {
     }
 
     public NodeInfo(String nodeId, String sourceId, String cacheType) {
-        this.nodeId = StringUtils.requireNotNullOrEmpty(nodeId, "Node ID must not be null or empty");
+        this.nodeId = StringUtils.requireNotNullNorEmpty(nodeId, "Node ID must not be null nor empty");
         this.sourceId = sourceId;
         this.cacheType = cacheType;
     }

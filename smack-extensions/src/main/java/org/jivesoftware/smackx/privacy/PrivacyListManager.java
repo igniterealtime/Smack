@@ -399,7 +399,7 @@ public final class PrivacyListManager extends Manager {
      * @throws InterruptedException
      */
     public PrivacyList getPrivacyList(String listName) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
-        listName = StringUtils.requireNotNullOrEmpty(listName, "List name must not be null");
+        listName = StringUtils.requireNotNullNorEmpty(listName, "List name must not be null");
         return new PrivacyList(false, false, listName, getPrivacyListItems(listName));
     }
 

@@ -31,7 +31,15 @@ public class Objects {
         return requireNonNull(obj, null);
     }
 
-    public static <T extends Collection<?>> T requireNonNullOrEmpty(T collection, String message) {
+    /**
+     * Require a collection to be neither null, nor empty.
+     *
+     * @param collection collection
+     * @param message error message
+     * @param <T> Collection type
+     * @return collection
+     */
+    public static <T extends Collection<?>> T requireNonNullNorEmpty(T collection, String message) {
         if (requireNonNull(collection).isEmpty()) {
             throw new IllegalArgumentException(message);
         }

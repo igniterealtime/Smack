@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack.packet;
 
-import static org.jivesoftware.smack.util.StringUtils.requireNotNullOrEmpty;
+import static org.jivesoftware.smack.util.StringUtils.requireNotNullNorEmpty;
 
 import java.util.Collection;
 import java.util.List;
@@ -122,7 +122,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      */
     public void setStanzaId(String id) {
         if (id != null) {
-            requireNotNullOrEmpty(id, "id must either be null or not the empty String");
+            requireNotNullNorEmpty(id, "id must either be null or not the empty String");
         }
         this.id = id;
     }
@@ -324,8 +324,8 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @since 4.1
      */
     public List<ExtensionElement> getExtensions(String elementName, String namespace) {
-        requireNotNullOrEmpty(elementName, "elementName must not be null or empty");
-        requireNotNullOrEmpty(namespace, "namespace must not be null or empty");
+        requireNotNullNorEmpty(elementName, "elementName must not be null nor empty");
+        requireNotNullNorEmpty(namespace, "namespace must not be null nor empty");
         String key = XmppStringUtils.generateKey(elementName, namespace);
         return packetExtensions.getAll(key);
     }

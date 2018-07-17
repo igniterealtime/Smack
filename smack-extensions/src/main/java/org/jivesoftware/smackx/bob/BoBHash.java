@@ -39,8 +39,8 @@ public class BoBHash {
      * @param hashType
      */
     public BoBHash(String hash, String hashType) {
-        this.hash = StringUtils.requireNotNullOrEmpty(hash, "hash must not be null or empty");
-        this.hashType = StringUtils.requireNotNullOrEmpty(hashType, "hashType must not be null or empty");
+        this.hash = StringUtils.requireNotNullNorEmpty(hash, "hash must not be null nor empty");
+        this.hashType = StringUtils.requireNotNullNorEmpty(hashType, "hashType must not be null nor empty");
         this.cid = this.hashType + '+' + this.hash + "@bob.xmpp.org";
     }
 

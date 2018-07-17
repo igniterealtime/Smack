@@ -57,8 +57,8 @@ public class SimplePayload implements ExtensionElement {
 
         payload = xmlPayload;
 
-        elemName = StringUtils.requireNotNullOrEmpty(qname.getLocalPart(), "Could not determine element name from XML payload");
-        ns = StringUtils.requireNotNullOrEmpty(qname.getNamespaceURI(), "Could not determine namespace from XML payload");
+        elemName = StringUtils.requireNotNullNorEmpty(qname.getLocalPart(), "Could not determine element name from XML payload");
+        ns = StringUtils.requireNotNullNorEmpty(qname.getNamespaceURI(), "Could not determine namespace from XML payload");
     }
 
     /**

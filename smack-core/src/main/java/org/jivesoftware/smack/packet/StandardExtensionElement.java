@@ -66,8 +66,8 @@ public final class StandardExtensionElement implements ExtensionElement {
 
     private StandardExtensionElement(String name, String namespace, Map<String, String> attributes, String text,
                     MultiMap<String, StandardExtensionElement> elements) {
-        this.name = StringUtils.requireNotNullOrEmpty(name, "Name must not be null or empty");
-        this.namespace = StringUtils.requireNotNullOrEmpty(namespace, "Namespace must not be null or empty");
+        this.name = StringUtils.requireNotNullNorEmpty(name, "Name must not be null nor empty");
+        this.namespace = StringUtils.requireNotNullNorEmpty(namespace, "Namespace must not be null nor empty");
         if (attributes == null) {
             this.attributes = Collections.emptyMap();
         }
@@ -173,7 +173,7 @@ public final class StandardExtensionElement implements ExtensionElement {
         }
 
         public Builder addAttribute(String name, String value) {
-            StringUtils.requireNotNullOrEmpty(name, "Attribute name must be set");
+            StringUtils.requireNotNullNorEmpty(name, "Attribute name must be set");
             Objects.requireNonNull(value, "Attribute value must be not null");
             if (attributes == null) {
                 attributes = new LinkedHashMap<>();
