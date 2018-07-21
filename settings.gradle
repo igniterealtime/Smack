@@ -26,4 +26,7 @@ include 'smack-core',
 		'smack-omemo',
 		'smack-omemo-signal',
 		'smack-omemo-signal-integration-test',
-		'smack-repl'
+		'smack-repl',
+		'smack-openpgp',
+		'smack-openpgp-bouncycastle'
+

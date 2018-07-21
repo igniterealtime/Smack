@@ -1,0 +1,12 @@
+description = """\
+Smack API for OpenPGP using Bouncycastle."""
+
+// Note that the test dependencies (junit, …) are inferred from the
+// sourceSet.test of the core subproject
+dependencies {
+	compile project(':smack-core')
+	compile project(':smack-openpgp')
+	compile 'org.bouncycastle:bcpg-jdk15on:1.56'
+	testCompile project(path: ":smack-core", configuration: "testRuntime")
+	testCompile project(path: ":smack-core", configuration: "archives")
+}
