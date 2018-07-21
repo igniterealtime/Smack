@@ -155,11 +155,12 @@ public class ExplicitMessageEncryptionElement implements ExtensionElement {
      * @return true if message has EME element for that namespace, otherwise false
      */
     public static boolean hasProtocol(Message message, String protocolNamespace) {
-        List<ExplicitMessageEncryptionElement> emeElements = message.getExtension(
+        List<ExtensionElement> extensionElements = message.getExtensions(
                 ExplicitMessageEncryptionElement.ELEMENT,
                 ExplicitMessageEncryptionElement.NAMESPACE);
 
-        for (ExplicitMessageEncryptionElement e : emeElements) {
+        for (ExtensionElement extensionElement : extensionElements) {
+            ExplicitMessageEncryptionElement e = (ExplicitMessageEncryptionElement) extensionElement;
             if (e.getEncryptionNamespace().equals(protocolNamespace)) {
                 return true;
             }
