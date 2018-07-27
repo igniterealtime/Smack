@@ -169,11 +169,14 @@ public final class ChatMarkersManager extends Manager {
                         for (ChatMarkersListener listener : finalListeners) {
                             if (ChatMarkersElements.MarkableExtension.from(message) != null) {
                                 listener.newChatMarkerMessage(ChatMarkersState.markable, message, chat);
-                            } else if (ChatMarkersElements.ReceivedExtension.from(message) != null) {
+                            }
+                            else if (ChatMarkersElements.ReceivedExtension.from(message) != null) {
                                 listener.newChatMarkerMessage(ChatMarkersState.received, message, chat);
-                            } else if (ChatMarkersElements.DisplayedExtension.from(message) != null) {
+                            }
+                            else if (ChatMarkersElements.DisplayedExtension.from(message) != null) {
                                 listener.newChatMarkerMessage(ChatMarkersState.displayed, message, chat);
-                            } else if (ChatMarkersElements.AcknowledgedExtension.from(message) != null) {
+                            }
+                            else if (ChatMarkersElements.AcknowledgedExtension.from(message) != null) {
                                 listener.newChatMarkerMessage(ChatMarkersState.acknowledged, message, chat);
                             }
                         }
@@ -250,7 +253,8 @@ public final class ChatMarkersManager extends Manager {
             try {
                 state = ChatState.valueOf(chatStateElementName);
                 return !(state == ChatState.active);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 return true;
             }
         }
