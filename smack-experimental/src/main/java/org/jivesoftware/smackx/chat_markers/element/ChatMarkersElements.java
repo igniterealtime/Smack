@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.chat_markers.element;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.chat_markers.ChatMarkersState;
 
 /**
  * Chat Markers elements (XEP-0333).
@@ -45,7 +46,7 @@ public class ChatMarkersElements {
         /**
          * markable element.
          */
-        public static final String ELEMENT = "markable";
+        public static final String ELEMENT = ChatMarkersState.markable.toString();
 
         public MarkableExtension() {
         }
@@ -85,7 +86,7 @@ public class ChatMarkersElements {
         /**
          * received element.
          */
-        public static final String ELEMENT = "received";
+        public static final String ELEMENT = ChatMarkersState.received.toString();
 
         private final String id;
 
@@ -138,7 +139,7 @@ public class ChatMarkersElements {
         /**
          * displayed element.
          */
-        public static final String ELEMENT = "displayed";
+        public static final String ELEMENT = ChatMarkersState.displayed.toString();
 
         private final String id;
 
@@ -191,7 +192,7 @@ public class ChatMarkersElements {
         /**
          * acknowledged element.
          */
-        public static final String ELEMENT = "acknowledged";
+        public static final String ELEMENT = ChatMarkersState.acknowledged.toString();
 
         private final String id;
 
