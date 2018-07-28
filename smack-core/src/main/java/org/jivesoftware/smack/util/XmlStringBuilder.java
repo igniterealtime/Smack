@@ -372,7 +372,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         private final String xmlFragment;
 
         private XmlNsAttribute(String value) {
-            this.value = StringUtils.requireNotNullOrEmpty(value, "Value must not be null");
+            this.value = StringUtils.requireNotNullNorEmpty(value, "Value must not be null");
             this.xmlFragment = " xmlns='" + value + '\'';
         }
 

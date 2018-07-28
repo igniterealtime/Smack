@@ -75,7 +75,7 @@ public final class JingleContent implements NamedElement {
                     JingleContentDescription description, JingleContentTransport transport) {
         this.creator = Objects.requireNonNull(creator, "Jingle content creator must not be null");
         this.disposition = disposition;
-        this.name = StringUtils.requireNotNullOrEmpty(name, "Jingle content name must not be null or empty");
+        this.name = StringUtils.requireNotNullNorEmpty(name, "Jingle content name must not be null nor empty");
         this.senders = senders;
         this.description = description;
         this.transport = transport;

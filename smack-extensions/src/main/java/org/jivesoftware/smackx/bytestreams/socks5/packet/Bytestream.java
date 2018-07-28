@@ -288,7 +288,7 @@ public class Bytestream extends IQ {
          */
         public StreamHost(final Jid JID, final String address, int port) {
             this.JID = Objects.requireNonNull(JID, "StreamHost JID must not be null");
-            this.addy = StringUtils.requireNotNullOrEmpty(address, "StreamHost address must not be null");
+            this.addy = StringUtils.requireNotNullNorEmpty(address, "StreamHost address must not be null");
             this.port = port;
         }
 

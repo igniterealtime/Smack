@@ -894,8 +894,8 @@ public abstract class ConnectionConfiguration {
          * @return a reference to this builder.
          */
         public B addEnabledSaslMechanism(String saslMechanism) {
-            return addEnabledSaslMechanism(Arrays.asList(StringUtils.requireNotNullOrEmpty(saslMechanism,
-                            "saslMechanism must not be null or empty")));
+            return addEnabledSaslMechanism(Arrays.asList(StringUtils.requireNotNullNorEmpty(saslMechanism,
+                            "saslMechanism must not be null nor empty")));
         }
 
         /**

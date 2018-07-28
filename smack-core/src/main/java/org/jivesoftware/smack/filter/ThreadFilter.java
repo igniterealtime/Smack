@@ -35,7 +35,7 @@ public class ThreadFilter extends FlexibleStanzaTypeFilter<Message> implements S
      * @param thread the thread value to filter for.
      */
     public ThreadFilter(String thread) {
-        StringUtils.requireNotNullOrEmpty(thread, "Thread must not be null or empty.");
+        StringUtils.requireNotNullNorEmpty(thread, "Thread must not be null nor empty.");
         this.thread = thread;
     }
 

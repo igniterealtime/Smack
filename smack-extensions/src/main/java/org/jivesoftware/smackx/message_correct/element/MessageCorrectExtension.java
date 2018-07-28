@@ -55,7 +55,7 @@ public class MessageCorrectExtension implements ExtensionElement {
     private final String idInitialMessage;
 
     public MessageCorrectExtension(String idInitialMessage) {
-        this.idInitialMessage = StringUtils.requireNotNullOrEmpty(idInitialMessage, "idInitialMessage must not be null");
+        this.idInitialMessage = StringUtils.requireNotNullNorEmpty(idInitialMessage, "idInitialMessage must not be null");
     }
 
     public String getIdInitialMessage() {

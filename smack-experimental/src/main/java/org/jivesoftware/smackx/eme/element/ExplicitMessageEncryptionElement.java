@@ -87,7 +87,7 @@ public class ExplicitMessageEncryptionElement implements ExtensionElement {
     }
 
     public ExplicitMessageEncryptionElement(String encryptionNamespace, String name) {
-        this.encryptionNamespace = StringUtils.requireNotNullOrEmpty(encryptionNamespace,
+        this.encryptionNamespace = StringUtils.requireNotNullNorEmpty(encryptionNamespace,
                         "encryptionNamespace must not be null");
         this.name = name;
     }

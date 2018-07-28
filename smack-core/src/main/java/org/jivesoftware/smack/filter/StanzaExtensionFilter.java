@@ -40,7 +40,7 @@ public class StanzaExtensionFilter implements StanzaFilter {
      * @param namespace the XML namespace of the stanza extension.
      */
     public StanzaExtensionFilter(String elementName, String namespace) {
-        StringUtils.requireNotNullOrEmpty(namespace, "namespace must not be null or empty");
+        StringUtils.requireNotNullNorEmpty(namespace, "namespace must not be null nor empty");
 
         this.elementName = elementName;
         this.namespace = namespace;

@@ -218,19 +218,19 @@ public final class Configuration {
         }
 
         public Builder setAdminAccountUsernameAndPassword(String adminAccountUsername, String adminAccountPassword) {
-            this.adminAccountUsername = StringUtils.requireNotNullOrEmpty(adminAccountUsername, "adminAccountUsername must not be null or empty");
-            this.adminAccountPassword = StringUtils.requireNotNullOrEmpty(adminAccountPassword, "adminAccountPassword must no be null or empty");
+            this.adminAccountUsername = StringUtils.requireNotNullNorEmpty(adminAccountUsername, "adminAccountUsername must not be null nor empty");
+            this.adminAccountPassword = StringUtils.requireNotNullNorEmpty(adminAccountPassword, "adminAccountPassword must no be null nor empty");
             return this;
         }
 
         public Builder setUsernamesAndPassword(String accountOneUsername, String accountOnePassword,
                         String accountTwoUsername, String accountTwoPassword, String accountThreeUsername, String accountThreePassword) {
-            this.accountOneUsername = StringUtils.requireNotNullOrEmpty(accountOneUsername, "accountOneUsername must not be null or empty");
-            this.accountOnePassword = StringUtils.requireNotNullOrEmpty(accountOnePassword, "accountOnePassword must not be null or empty");
-            this.accountTwoUsername = StringUtils.requireNotNullOrEmpty(accountTwoUsername, "accountTwoUsername must not be null or empty");
-            this.accountTwoPassword = StringUtils.requireNotNullOrEmpty(accountTwoPassword, "accountTwoPasswordmust not be null or empty");
-            this.accountThreeUsername = StringUtils.requireNotNullOrEmpty(accountThreeUsername, "accountThreeUsername must not be null or empty");
-            this.accountThreePassword = StringUtils.requireNotNullOrEmpty(accountThreePassword, "accountThreePassword must not be null or empty");
+            this.accountOneUsername = StringUtils.requireNotNullNorEmpty(accountOneUsername, "accountOneUsername must not be null nor empty");
+            this.accountOnePassword = StringUtils.requireNotNullNorEmpty(accountOnePassword, "accountOnePassword must not be null nor empty");
+            this.accountTwoUsername = StringUtils.requireNotNullNorEmpty(accountTwoUsername, "accountTwoUsername must not be null nor empty");
+            this.accountTwoPassword = StringUtils.requireNotNullNorEmpty(accountTwoPassword, "accountTwoPasswordmust not be null nor empty");
+            this.accountThreeUsername = StringUtils.requireNotNullNorEmpty(accountThreeUsername, "accountThreeUsername must not be null nor empty");
+            this.accountThreePassword = StringUtils.requireNotNullNorEmpty(accountThreePassword, "accountThreePassword must not be null nor empty");
             return this;
         }
 

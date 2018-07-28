@@ -318,8 +318,8 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
          * @param lang the entity's lang.
          */
         public Identity(String category, String type, String name, String lang) {
-            this.category = StringUtils.requireNotNullOrEmpty(category, "category cannot be null");
-            this.type = StringUtils.requireNotNullOrEmpty(type, "type cannot be null");
+            this.category = StringUtils.requireNotNullNorEmpty(category, "category cannot be null");
+            this.type = StringUtils.requireNotNullNorEmpty(type, "type cannot be null");
             this.key = XmppStringUtils.generateKey(category, type);
             this.name = name;
             this.lang = lang;
@@ -500,7 +500,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
          * @param variable the feature's variable.
          */
         public Feature(String variable) {
-            this.variable = StringUtils.requireNotNullOrEmpty(variable, "variable cannot be null");
+            this.variable = StringUtils.requireNotNullNorEmpty(variable, "variable cannot be null");
         }
 
         /**

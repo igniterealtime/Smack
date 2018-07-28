@@ -39,8 +39,8 @@ public class SaslStreamElements {
 
         public AuthMechanism(String mechanism, String authenticationText) {
             this.mechanism = Objects.requireNonNull(mechanism, "SASL mechanism shouldn't be null.");
-            this.authenticationText = StringUtils.requireNotNullOrEmpty(authenticationText,
-                            "SASL authenticationText must not be null or empty (RFC6120 6.4.2)");
+            this.authenticationText = StringUtils.requireNotNullNorEmpty(authenticationText,
+                            "SASL authenticationText must not be null nor empty (RFC6120 6.4.2)");
         }
 
         @Override

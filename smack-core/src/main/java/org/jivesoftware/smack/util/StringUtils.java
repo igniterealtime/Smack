@@ -444,7 +444,29 @@ public class StringUtils {
         return csOne.toString().compareTo(csTwo.toString());
     }
 
+    /**
+     * Require a {@link CharSequence} to be neither null, nor empty.
+     *
+     * @deprecated use {@link #requireNotNullNorEmpty(CharSequence, String)} instead.
+     * @param cs CharSequence
+     * @param message error message
+     * @param <CS> CharSequence type
+     * @return cs
+     */
+    @Deprecated
     public static <CS extends CharSequence> CS requireNotNullOrEmpty(CS cs, String message) {
+        return requireNotNullNorEmpty(cs, message);
+    }
+
+    /**
+     * Require a {@link CharSequence} to be neither null, nor empty.
+     *
+     * @param cs CharSequence
+     * @param message error message
+     * @param <CS> CharSequence type
+     * @return cs
+     */
+    public static <CS extends CharSequence> CS requireNotNullNorEmpty(CS cs, String message) {
         if (isNullOrEmpty(cs)) {
             throw new IllegalArgumentException(message);
         }
