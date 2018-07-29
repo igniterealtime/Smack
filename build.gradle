@@ -79,6 +79,7 @@ allprojects {
 			':smack-experimental',
 			':smack-omemo',
 			':smack-omemo-signal',
+			':smack-openpgp',
 		].collect{ project(it) }
 		androidBootClasspathProjects = [
 			':smack-android',

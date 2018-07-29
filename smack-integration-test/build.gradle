@@ -12,6 +12,7 @@ dependencies {
 	compile project(':smack-extensions')
 	compile project(':smack-experimental')
 	compile project(':smack-omemo')
+	compile project(':smack-openpgp')
 	compile project(':smack-debug')
 	compile project(path: ":smack-omemo", configuration: "testRuntime")
 	compile 'org.reflections:reflections:0.9.9-RC1'
