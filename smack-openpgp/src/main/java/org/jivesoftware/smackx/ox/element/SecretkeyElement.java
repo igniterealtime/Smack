@@ -25,8 +25,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 /**
  * This class represents a secretkey element which contains a users OpenPGP secret key.
  *
- * TODO: Update reflink
- * @see <a href="https://xmpp.org/extensions/xep-0373.html#sect-idm46443026813600">
+ * @see <a href="https://xmpp.org/extensions/xep-0373.html#client-receives-secret-response">
  *     XEP-0373: §5.2.2 PEP Service Success Response</a>
  */
 public class SecretkeyElement implements ExtensionElement {
