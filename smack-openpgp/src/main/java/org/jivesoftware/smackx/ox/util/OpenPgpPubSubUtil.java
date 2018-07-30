@@ -60,10 +60,8 @@ public class OpenPgpPubSubUtil {
 
     /**
      * Name of the OX secret key node.
-     * TODO: Update once my PR gets merged.
-     * @see <a href="https://github.com/xsf/xeps/pull/669">xsf/xeps#669</a>
      */
-    public static final String PEP_NODE_SECRET_KEY = "urn:xmpp:openpgp:secret-key:0";
+    public static final String PEP_NODE_SECRET_KEY = "urn:xmpp:openpgp:0:secret-key";
 
     /**
      * Feature to be announced using the {@link ServiceDiscoveryManager} to subscribe to the OX metadata node.
