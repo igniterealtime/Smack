@@ -96,6 +96,8 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | Stable and Unique Stanza IDs                              | [XEP-0359](https://xmpp.org/extensions/xep-0359.html)  | 0.5.0     | This specification describes unique and stable IDs for messages. |
 | HTTP File Upload                                          | [XEP-0363](https://xmpp.org/extensions/xep-0363.html)  | 0.3.1     | Protocol to request permissions to upload a file to an HTTP server and get a shareable URL. |
 | References                                                | [XEP-0372](https://xmpp.org/extensions/xep-0363.html)  | 0.2.0     | Add references like mentions or external data to stanzas. |
+| [OpenPGP for XMPP](ox.md)                                 | [XEP-0373](https://xmpp.org/extensions/xep-0373.html)  | 0.3.2     | Utilize OpenPGP to exchange encrypted and signed content. |
+| [OpenPGP for XMPP: Instant Messaging](ox-im.md)           | [XEP-0374](https://xmpp.org/extensions/xep-0374.html)  | 0.2.0     | OpenPGP encrypted Instant Messaging. |
 | [Spoiler Messages](spoiler.md)                            | [XEP-0382](https://xmpp.org/extensions/xep-0382.html)  | 0.2.0     | Indicate that the body of a message should be treated as a spoiler. |
 | [OMEMO Multi End Message and Object Encryption](omemo.md) | [XEP-0384](https://xmpp.org/extensions/xep-0384.html)  | n/a       | Encrypt messages using OMEMO encryption (currently only with smack-omemo-signal -> GPLv3). |
 | [Consistent Color Generation](consistent_colors.md)       | [XEP-0392](https://xmpp.org/extensions/xep-0392.html)  | 0.4.0     | Generate consistent colors for identifiers like usernames to provide a consistent user experience. |

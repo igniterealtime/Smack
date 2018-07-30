@@ -1,0 +1,19 @@
+description = """\
+Smack API for XEP-0373: OpenPGP for XMPP."""
+
+repositories {
+	mavenCentral()
+}
+
+// Note that the test dependencies (junit, …) are inferred from the
+// sourceSet.test of the core subproject
+dependencies {
+	compile project(':smack-core')
+	compile project(':smack-extensions')
+	compile project(':smack-experimental')
+
+	compile 'org.pgpainless:pgpainless-core:0.0.1-alpha2'
+
+	testCompile project(path: ":smack-core", configuration: "testRuntime")
+	testCompile project(path: ":smack-core", configuration: "archives")
+}

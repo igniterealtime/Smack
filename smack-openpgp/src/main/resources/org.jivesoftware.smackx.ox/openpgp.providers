@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!-- Providers for OpenPGP for XMPP -->
+<smackProviders>
+
+    <!-- Stanza extensions -->
+    <extensionProvider>
+      <elementName>openpgp</elementName>
+      <namespace>urn:xmpp:openpgp:0</namespace>
+      <className>org.jivesoftware.smackx.ox.provider.OpenPgpElementProvider</className>
+    </extensionProvider>
+
+   <!-- PubSub extensions -->
+    <extensionProvider>
+      <elementName>pubkey</elementName>
+      <namespace>urn:xmpp:openpgp:0</namespace>
+      <className>org.jivesoftware.smackx.ox.provider.PubkeyElementProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+      <elementName>secretkey</elementName>
+      <namespace>urn:xmpp:openpgp:0</namespace>
+      <className>org.jivesoftware.smackx.ox.provider.SecretkeyElementProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+      <elementName>public-keys-list</elementName>
+      <namespace>urn:xmpp:openpgp:0</namespace>
+      <className>org.jivesoftware.smackx.ox.provider.PublicKeysListElementProvider</className>
+    </extensionProvider>
+</smackProviders>
