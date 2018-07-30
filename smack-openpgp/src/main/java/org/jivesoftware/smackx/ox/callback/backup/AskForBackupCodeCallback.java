@@ -22,9 +22,8 @@ public interface AskForBackupCodeCallback {
      * This callback is used to ask the user to provide a backup code.
      * The backup code must follow the format described in XEP-0373 §5.3
      *
-     * TODO: Update reflink
-     * @see <a href="https://xmpp.org/extensions/xep-0373.html#sect-idm139662753819792">
-     *     XEP-0373 §5.3 about the format of the backup code</a>
+     * @see <a href="https://xmpp.org/extensions/xep-0373.html#backup-encryption">
+     *     XEP-0373 §5.4 Encrypting the Secret Key Backup</a>
      *
      * @return backup code provided by the user.
      */

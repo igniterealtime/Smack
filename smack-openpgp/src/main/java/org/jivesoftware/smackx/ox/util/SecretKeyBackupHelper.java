@@ -45,8 +45,8 @@ public class SecretKeyBackupHelper {
      * Generate a secure backup code.
      * This code can be used to encrypt a secret key backup and follows the form described in XEP-0373 §5.3.
      *
-     * TODO: Update reflink
-     * @see <a href="https://xmpp.org/extensions/xep-0373.html#sect-idm140425111347232">XEP-0373 §5.3</a>
+     * @see <a href="https://xmpp.org/extensions/xep-0373.html#backup-encryption">
+     *     XEP-0373 §5.4 Encrypting the Secret Key Backup</a>
      *
      * @return backup code
      */
@@ -112,9 +112,8 @@ public class SecretKeyBackupHelper {
      * Create a {@link SecretkeyElement} which contains the secret keys which are serialized in {@code keys} and is
      * symmetrically encrypted using the {@code backupCode}.
      *
-     * TODO: Update reflink
-     * @see <a href="https://xmpp.org/extensions/xep-0373.html#sect-idm45948286262768">
-     *     XEP-0373 about secret key backup requirements</a>
+     * @see <a href="https://xmpp.org/extensions/xep-0373.html#backup-encryption">
+     *     XEP-0373 §5.4 Encrypting the Secret Key Backup</a>
      *
      * @param keys serialized OpenPGP secret keys in transferable key format
      * @param backupCode passphrase for symmetric encryption
