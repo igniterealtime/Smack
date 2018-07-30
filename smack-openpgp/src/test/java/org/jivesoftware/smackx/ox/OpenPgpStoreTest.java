@@ -35,8 +35,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jivesoftware.smack.test.util.FileTestUtil;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smackx.ox.callback.SecretKeyPassphraseCallback;
 import org.jivesoftware.smackx.ox.exception.MissingUserIdOnKeyException;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpStore;
@@ -65,7 +65,7 @@ import org.pgpainless.util.Passphrase;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class OpenPgpStoreTest extends SmackTestSuite {
 
-    private static File storagePath;
+    private static final File storagePath;
 
     private static final BareJid alice = JidTestUtil.BARE_JID_1;
     private static final BareJid bob = JidTestUtil.BARE_JID_2;
@@ -78,7 +78,7 @@ public class OpenPgpStoreTest extends SmackTestSuite {
     private final OpenPgpStore openPgpStoreInstance2;
 
     static {
-        storagePath = FileUtils.getTempDir("storeTest");
+        storagePath = FileTestUtil.getTempDir("storeTest");
         Security.addProvider(new BouncyCastleProvider());
     }
 
@@ -101,7 +101,7 @@ public class OpenPgpStoreTest extends SmackTestSuite {
     @Before
     @After
     public void deletePath() {
-        FileUtils.deleteDirectory(storagePath);
+        FileTestUtil.deleteDirectory(storagePath);
     }
 
     /*

@@ -34,8 +34,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.test.util.FileTestUtil;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
 import org.jivesoftware.smackx.ox.OpenPgpContact;
@@ -62,7 +62,7 @@ public class OXInstantMessagingManagerTest extends SmackTestSuite {
     private static final File basePath;
 
     static {
-        basePath = FileUtils.getTempDir("ox_im_test_" + StringUtils.randomString(10));
+        basePath = FileTestUtil.getTempDir("ox_im_test_" + StringUtils.randomString(10));
     }
 
     @Test
@@ -170,6 +170,6 @@ public class OXInstantMessagingManagerTest extends SmackTestSuite {
     @AfterClass
     @BeforeClass
     public static void deleteDirs() {
-        FileUtils.deleteDirectory(basePath);
+        FileTestUtil.deleteDirectory(basePath);
     }
 }

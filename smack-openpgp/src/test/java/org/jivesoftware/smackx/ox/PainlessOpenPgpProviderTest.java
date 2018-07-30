@@ -32,8 +32,8 @@ import java.util.List;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.test.util.FileTestUtil;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smackx.ox.crypto.OpenPgpElementAndMetadata;
 import org.jivesoftware.smackx.ox.crypto.PainlessOpenPgpProvider;
 import org.jivesoftware.smackx.ox.element.CryptElement;
@@ -62,13 +62,13 @@ public class PainlessOpenPgpProviderTest extends SmackTestSuite {
     private static final BareJid bob = JidTestUtil.BARE_JID_2;
 
     static {
-        storagePath = FileUtils.getTempDir("smack-painlessprovidertest");
+        storagePath = FileTestUtil.getTempDir("smack-painlessprovidertest");
     }
 
     @BeforeClass
     @AfterClass
     public static void deletePath() {
-        FileUtils.deleteDirectory(storagePath);
+        FileTestUtil.deleteDirectory(storagePath);
     }
 
     @Test
