@@ -70,7 +70,7 @@ public final class JingleElement extends IQ {
     private JingleElement(String sessionId, JingleAction action, FullJid initiator, FullJid responder, JingleReasonElement reason,
                           List<JingleContentElement> contents) {
         super(ELEMENT, NAMESPACE);
-        this.sessionId = StringUtils.requireNotNullOrEmpty(sessionId, "Jingle session ID must not be null");
+        this.sessionId = StringUtils.requireNotNullNorEmpty(sessionId, "Jingle session ID must not be null");
         this.action = Objects.requireNonNull(action, "Jingle action must not be null");
         this.initiator = initiator;
         this.responder = responder;
