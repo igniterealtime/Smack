@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.test.util;
 
 import java.io.File;
+import java.util.Stack;
 
 public class FileTestUtil {
 
@@ -38,6 +39,34 @@ public class FileTestUtil {
             return new File(temp);
         } else {
             return new File(temp, suffix);
+        }
+    }
+
+    /**
+     * Recursively delete a directory and its contents.
+     *
+     * @param root root directory
+     */
+    public static void deleteDirectory(File root) {
+        if (!root.exists()) {
+            return;
+        }
+        File[] currList;
+        Stack<File> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            if (stack.lastElement().isDirectory()) {
+                currList = stack.lastElement().listFiles();
+                if (currList != null && currList.length > 0) {
+                    for (File curr : currList) {
+                        stack.push(curr);
+                    }
+                } else {
+                    stack.pop().delete();
+                }
+            } else {
+                stack.pop().delete();
+            }
         }
     }
 }

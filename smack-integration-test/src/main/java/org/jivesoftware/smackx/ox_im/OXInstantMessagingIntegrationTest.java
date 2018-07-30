@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.util.FileUtils;
+import org.jivesoftware.smack.test.util.FileTestUtil;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.ox.AbstractOpenPgpIntegrationTest;
 import org.jivesoftware.smackx.ox.OpenPgpContact;
@@ -49,8 +49,8 @@ import org.pgpainless.key.protection.UnprotectedKeysProtector;
 public class OXInstantMessagingIntegrationTest extends AbstractOpenPgpIntegrationTest {
 
     private static final String sessionId = StringUtils.randomString(10);
-    private static final File aliceStorePath = FileUtils.getTempDir("basic_ox_messaging_test_alice_" + sessionId);
-    private static final File bobStorePath = FileUtils.getTempDir("basic_ox_messaging_test_bob_" + sessionId);
+    private static final File aliceStorePath = FileTestUtil.getTempDir("basic_ox_messaging_test_alice_" + sessionId);
+    private static final File bobStorePath = FileTestUtil.getTempDir("basic_ox_messaging_test_bob_" + sessionId);
 
     private OpenPgpV4Fingerprint aliceFingerprint = null;
     private OpenPgpV4Fingerprint bobFingerprint = null;
@@ -97,8 +97,8 @@ public class OXInstantMessagingIntegrationTest extends AbstractOpenPgpIntegratio
     @AfterClass
     public static void deleteStore() {
         LOGGER.log(Level.INFO, "Deleting storage directories...");
-        FileUtils.deleteDirectory(aliceStorePath);
-        FileUtils.deleteDirectory(bobStorePath);
+        FileTestUtil.deleteDirectory(aliceStorePath);
+        FileTestUtil.deleteDirectory(bobStorePath);
     }
 
     @SmackIntegrationTest
