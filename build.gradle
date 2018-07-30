@@ -15,7 +15,7 @@ buildscript {
 }
 
 plugins {
-    id 'ru.vyarus.animalsniffer' version '1.4.3'
+    id 'ru.vyarus.animalsniffer' version '1.4.5'
 }
 
 apply plugin: 'org.kordamp.gradle.markdown'
