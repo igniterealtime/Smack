@@ -544,7 +544,7 @@ public abstract class Stanza implements TopLevelStreamElement {
     protected void appendErrorIfExists(XmlStringBuilder xml) {
         StanzaError error = getError();
         if (error != null) {
-            xml.append(error.toXML());
+            xml.append(error.toXML(StreamOpen.CLIENT_NAMESPACE));
         }
     }
 }
