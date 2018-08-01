@@ -501,7 +501,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         buf.optElement("thread", thread);
         // Append the error subpacket if the message type is an error.
         if (type == Type.error) {
-            appendErrorIfExists(buf);
+            appendErrorIfExists(buf, enclosingNamespace);
         }
 
         // Add extension elements, if any are defined.
