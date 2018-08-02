@@ -20,21 +20,34 @@ import org.jivesoftware.smack.packet.Stanza;
 
 import org.jxmpp.jid.Jid;
 
-public final class FromTypeFilter extends AbstractExactJidTypeFilter {
+public abstract class AbstractExactJidTypeFilter extends AbstractJidTypeFilter {
 
-    public static final FromTypeFilter ENTITY_FULL_JID = new FromTypeFilter(JidType.entityFull);
-    public static final FromTypeFilter ENTITY_BARE_JID = new FromTypeFilter(JidType.entityBare);
-    public static final FromTypeFilter DOMAIN_FULL_JID = new FromTypeFilter(JidType.domainFull);
-    public static final FromTypeFilter DOMAIN_BARE_JID = new FromTypeFilter(JidType.domainBare);
-    public static final FromTypeFilter FROM_ANY_JID = new FromTypeFilter(JidType.any);
-
-    private FromTypeFilter(JidType jidType) {
+    protected AbstractExactJidTypeFilter(JidType jidType) {
         super(jidType);
     }
 
     @Override
-    protected Jid getJidToInspect(Stanza stanza) {
-        return stanza.getFrom();
+    public final boolean accept(Stanza stanza) {
+        final Jid jid = getJidToInspect(stanza);
+
+        if (jid == null) {
+            return false;
+        }
+
+        switch (jidType) {
+        case entityFull:
+            return jid.isEntityFullJid();
+        case entityBare:
+            return jid.isEntityBareJid();
+        case domainFull:
+            return jid.isDomainFullJid();
+        case domainBare:
+            return jid.isDomainBareJid();
+        case any:
+            return true;
+        default:
+            throw new AssertionError();
+        }
     }
 
 }

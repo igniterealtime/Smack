@@ -31,36 +31,12 @@ public abstract class AbstractJidTypeFilter implements StanzaFilter {
         ;
     }
 
-    private final JidType jidType;
+    protected final JidType jidType;
 
     protected AbstractJidTypeFilter(JidType jidType) {
         this.jidType = jidType;
     }
 
     protected abstract Jid getJidToInspect(Stanza stanza);
-
-    @Override
-    public final boolean accept(Stanza stanza) {
-        final Jid jid = getJidToInspect(stanza);
-
-        if (jid == null) {
-            return false;
-        }
-
-        switch (jidType) {
-        case entityFull:
-            return jid.isEntityFullJid();
-        case entityBare:
-            return jid.isEntityBareJid();
-        case domainFull:
-            return jid.isDomainFullJid();
-        case domainBare:
-            return jid.isDomainBareJid();
-        case any:
-            return true;
-        default:
-            throw new AssertionError();
-        }
-    }
 
 }
