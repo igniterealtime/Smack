@@ -29,7 +29,7 @@ import javax.net.ssl.HostnameVerifier;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.debugger.ReflectionDebuggerFactory;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
-import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
+import org.jivesoftware.smack.parsing.ExceptionThrowingCallbackWithHint;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.util.Objects;
 
@@ -80,7 +80,7 @@ public final class SmackConfiguration {
      * The default parsing exception callback is {@link ExceptionThrowingCallback} which will
      * throw an exception and therefore disconnect the active connection.
      */
-    private static ParsingExceptionCallback defaultCallback = new ExceptionThrowingCallback();
+    private static ParsingExceptionCallback defaultCallback = new ExceptionThrowingCallbackWithHint();
 
     private static HostnameVerifier defaultHostnameVerififer;
 
