@@ -1,7 +1,7 @@
 allprojects {
 	ext {
-		shortVersion = '4.3.0'
-		isSnapshot = false
+		shortVersion = '4.3.1'
+		isSnapshot = true
 		jxmppVersion = '0.6.3'
 		miniDnsVersion = '0.3.2'
 		smackMinAndroidSdk = 9
