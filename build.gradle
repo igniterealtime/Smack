@@ -234,13 +234,15 @@ task javadocAll(type: Javadoc) {
 	classpath = files(subprojects.collect {project ->
 		project.sourceSets.main.compileClasspath})
 	classpath += files(androidBootClasspath)
-	options.linkSource = true
-	options.use = true
-	options.links = [
+	options {
+		linkSource = true
+		use = true
+		links = [
 		"https://docs.oracle.com/javase/${sourceCompatibility.getMajorVersion()}/docs/api/",
 		"https://jxmpp.org/releases/$jxmppVersion/javadoc/",
 		"https://minidns.org/releases/$miniDnsVersion/javadoc/",
 		] as String[]
+	}
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
