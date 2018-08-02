@@ -30,8 +30,18 @@ import org.jxmpp.jid.BareJid;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
 import org.pgpainless.util.BCUtil;
 
+/**
+ * This class acts as our own OpenPGP identity. It can be seen as a special view on the {@link OpenPgpStore}, giving
+ * access to our own encryption keys etc.
+ */
 public class OpenPgpSelf extends OpenPgpContact {
 
+    /**
+     * Constructor.
+     *
+     * @param jid our own {@link BareJid}. This is needed to access our keys in the store.
+     * @param store the store.
+     */
     OpenPgpSelf(BareJid jid, OpenPgpStore store) {
         super(jid, store);
     }

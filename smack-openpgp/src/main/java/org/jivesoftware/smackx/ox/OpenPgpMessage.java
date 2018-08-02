@@ -31,7 +31,18 @@ import org.pgpainless.decryption_verification.OpenPgpMetadata;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * This class embodies a decrypted {@link OpenPgpElement}.
+ * This class embodies a decrypted and/or verified {@link OpenPgpElement}.
+ * <br>
+ * The content can be one of the following three {@link OpenPgpContentElement}s:
+ * <br><br>
+ * {@link SignElement}: The content is expected to be signed with the senders key, but unencrypted.<br>
+ * {@link CryptElement}: The content is expected to be encrypted, but not signed.<br>
+ * {@link SigncryptElement}: The content is expected to be signed with the senders key and encrypted.<br>
+ * <br>
+ * To determine, of which nature the content of the message is, use {@link #getState()}. You should utilize this
+ * information to cast the return value of {@link #getOpenPgpContentElement()} correctly.
+ * <br>
+ * Use {@link #getMetadata()} in order to get information about the messages encryption status, its signatures etc.
  */
 public class OpenPgpMessage {
 

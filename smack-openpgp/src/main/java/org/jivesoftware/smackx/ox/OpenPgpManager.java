@@ -140,6 +140,15 @@ import org.xmlpull.v1.XmlPullParserException;
  * {@link OpenPgpSelf}, which encapsulates your own OpenPGP identity. Both classes can be used to acquire information
  * about the OpenPGP keys of a user.
  *
+ * <h2>Elements</h2>
+ *
+ * OpenPGP for XMPP defines multiple different element classes which contain the users messages.
+ * The outermost element is the {@link OpenPgpElement}, which contains an OpenPGP encrypted content element.
+ *
+ * The content can be either a {@link SignElement}, {@link CryptElement} or {@link SigncryptElement}, depending on the use-case.
+ * Those content elements contain the actual payload. If an {@link OpenPgpElement} is decrypted, it will be returned in
+ * form of an {@link OpenPgpMessage}, which represents the decrypted message + metadata.
+ *
  * @see <a href="https://xmpp.org/extensions/xep-0373.html">
  *     XEP-0373: OpenPGP for XMPP</a>
  */
@@ -518,8 +527,21 @@ public final class OpenPgpManager extends Manager {
         }
     }
 
-    public OpenPgpMessage decryptOpenPgpElement(OpenPgpElement element, OpenPgpContact contact) throws SmackException.NotLoggedInException, IOException, PGPException {
-        return provider.decryptAndOrVerify(element, getOpenPgpSelf(), contact);
+    /**
+     * Decrypt and or verify an {@link OpenPgpElement} and return the decrypted {@link OpenPgpMessage}.
+     *
+     * @param element {@link OpenPgpElement} containing the message.
+     * @param sender {@link OpenPgpContact} who sent the message.
+     *
+     * @return decrypted and/or verified message
+     *
+     * @throws SmackException.NotLoggedInException in case we aren't logged in (we need to know our jid)
+     * @throws IOException IO error (reading keys, streams etc)
+     * @throws PGPException in case of an PGP error
+     */
+    public OpenPgpMessage decryptOpenPgpElement(OpenPgpElement element, OpenPgpContact sender)
+            throws SmackException.NotLoggedInException, IOException, PGPException {
+        return provider.decryptAndOrVerify(element, getOpenPgpSelf(), sender);
     }
 
     private final IncomingChatMessageListener incomingOpenPgpMessageListener =

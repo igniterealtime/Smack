@@ -38,6 +38,7 @@ import org.jivesoftware.smackx.ox.OpenPgpContact;
 import org.jivesoftware.smackx.ox.OpenPgpManager;
 import org.jivesoftware.smackx.ox.OpenPgpMessage;
 import org.jivesoftware.smackx.ox.crypto.OpenPgpElementAndMetadata;
+import org.jivesoftware.smackx.ox.element.OpenPgpContentElement;
 import org.jivesoftware.smackx.ox.element.OpenPgpElement;
 import org.jivesoftware.smackx.ox.element.SigncryptElement;
 import org.jivesoftware.smackx.ox.listener.SigncryptElementReceivedListener;
@@ -47,6 +48,7 @@ import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.pgpainless.decryption_verification.OpenPgpMetadata;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Entry point of Smacks API for XEP-0374: OpenPGP for XMPP: Instant Messaging.
@@ -312,6 +314,33 @@ public final class OXInstantMessagingManager extends Manager {
                 openPgpManager.getOpenPgpSelf(), contacts);
 
         return encrypted;
+    }
+
+    /**
+     * Manually decrypt and verify an {@link OpenPgpElement}.
+     *
+     * @param element encrypted, signed {@link OpenPgpElement}.
+     * @param sender sender of the message.
+     *
+     * @return decrypted, verified message
+     *
+     * @throws SmackException.NotLoggedInException In case we are not logged in (we need our jid to access our keys)
+     * @throws PGPException in case of an PGP error
+     * @throws IOException in case of an IO error (reading keys, streams etc)
+     * @throws XmlPullParserException in case that the content of the {@link OpenPgpElement} is not a valid
+     * {@link OpenPgpContentElement} or broken XML.
+     * @throws IllegalArgumentException if the elements content is not a {@link SigncryptElement}. This happens, if the
+     * element likely is not an OX message.
+     */
+    public OpenPgpMessage decryptAndVerify(OpenPgpElement element, OpenPgpContact sender)
+            throws SmackException.NotLoggedInException, PGPException, IOException, XmlPullParserException {
+
+        OpenPgpMessage decrypted = openPgpManager.decryptOpenPgpElement(element, sender);
+        if (decrypted.getState() != OpenPgpMessage.State.signcrypt) {
+            throw new IllegalArgumentException("Decrypted message does appear to not be an OX message. (State: " + decrypted.getState() + ")");
+        }
+
+        return decrypted;
     }
 
     /**
