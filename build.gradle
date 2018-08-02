@@ -242,6 +242,7 @@ task javadocAll(type: Javadoc) {
 		"https://jxmpp.org/releases/$jxmppVersion/javadoc/",
 		"https://minidns.org/releases/$miniDnsVersion/javadoc/",
 		] as String[]
+		overview = "$projectDir/resources/javadoc-overview.html"
 	}
 }
 
