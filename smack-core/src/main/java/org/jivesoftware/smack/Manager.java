@@ -23,6 +23,9 @@ import java.util.concurrent.TimeUnit;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.util.Objects;
 
+/**
+ * Managers provide the high-level API of certain functionality (often standardized by XMPP Extension Protocols).
+ */
 public abstract class Manager {
 
     final WeakReference<XMPPConnection> weakConnection;
