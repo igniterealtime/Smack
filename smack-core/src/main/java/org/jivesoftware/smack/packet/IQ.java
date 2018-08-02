@@ -137,7 +137,7 @@ public abstract class IQ extends Stanza {
             buf.attribute("type", type.toString());
         }
         buf.rightAngleBracket();
-        buf.append(getChildElementXML());
+        buf.append(getChildElementXML(enclosingNamespace));
         buf.closeElement(IQ_ELEMENT);
         return buf;
     }
@@ -149,10 +149,22 @@ public abstract class IQ extends Stanza {
      * @return the child element section of the IQ XML.
      */
     public final XmlStringBuilder getChildElementXML() {
+        return getChildElementXML(null);
+    }
+
+    /**
+     * Returns the sub-element XML section of the IQ packet, or the empty String if there
+     * isn't one.
+     *
+     * @param enclosingNamespace the enclosing XML namespace.
+     * @return the child element section of the IQ XML.
+     * @since 4.3.0
+     */
+    public final XmlStringBuilder getChildElementXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder();
         if (type == Type.error) {
             // Add the error sub-packet, if there is one.
-            appendErrorIfExists(xml);
+            appendErrorIfExists(xml, enclosingNamespace);
         }
         else if (childElementName != null) {
             // Add the query section if there is one.

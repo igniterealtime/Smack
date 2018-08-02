@@ -292,7 +292,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         buf.append(getExtensions(), enclosingNamespace);
 
         // Add the error sub-packet, if there is one.
-        appendErrorIfExists(buf);
+        appendErrorIfExists(buf, enclosingNamespace);
 
         buf.closeElement(ELEMENT);
 

@@ -39,7 +39,6 @@ import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
-import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -235,7 +234,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
 
     private void sendElement(Element element) {
         try {
-            send(ComposableBody.builder().setPayloadXML(element.toXML(StreamOpen.CLIENT_NAMESPACE).toString()).build());
+            send(ComposableBody.builder().setPayloadXML(element.toXML(BOSH_URI).toString()).build());
             if (element instanceof Stanza) {
                 firePacketSendingListeners((Stanza) element);
             }

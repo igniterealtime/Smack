@@ -96,6 +96,38 @@ import org.minidns.dnsname.DnsName;
 import org.xmlpull.v1.XmlPullParser;
 
 
+/**
+ * This abstract class is commonly used as super class for XMPP connection mechanisms like TCP and BOSH. Hence it
+ * provides the methods for connection state management, like {@link #connect()}, {@link #login()} and
+ * {@link #disconnect()} (which are deliberately not provided by the {@link XMPPConnection} interface).
+ * <p>
+ * <b>Note:</b> The default entry point to Smack's documentation is {@link XMPPConnection}. If you are getting started
+ * with Smack, then head over to {@link XMPPConnection} and the come back here.
+ * </p>
+ * <h2>Parsing Exceptions</h2>
+ * <p>
+ * In case a Smack parser (Provider) throws those exceptions are handled over to the {@link ParsingExceptionCallback}. A
+ * common cause for a provider throwing is illegal input, for example a non-numeric String where only Integers are
+ * allowed. Smack's <em>default behavior</em> follows the <b>"fail-hard per default"</b> principle leading to a
+ * termination of the connection on parsing exceptions. This default was chosen to make users eventually aware that they
+ * should configure their own callback and handle those exceptions to prevent the disconnect. Handle a parsing exception
+ * could be as simple as using a non-throwing no-op callback, which would cause the faulty stream element to be taken
+ * out of the stream, i.e., Smack behaves like that element was never received.
+ * </p>
+ * <p>
+ * If the parsing exception is because Smack received illegal input, then please consider informing the authors of the
+ * originating entity about that. If it was thrown because of an bug in a Smack parser, then please consider filling a
+ * bug with Smack.
+ * </p>
+ * <h3>Managing the parsing exception callback</h3>
+ * <p>
+ * The "fail-hard per default" behavior is achieved by using the
+ * {@link org.jivesoftware.smack.parsing.ExceptionThrowingCallbackWithHint} as default parsing exception callback. You
+ * can change the behavior using {@link #setParsingExceptionCallback(ParsingExceptionCallback)} to set a new callback.
+ * Use {@link org.jivesoftware.smack.SmackConfiguration#setDefaultParsingExceptionCallback(ParsingExceptionCallback)} to
+ * set the default callback.
+ * </p>
+ */
 public abstract class AbstractXMPPConnection implements XMPPConnection {
     private static final Logger LOGGER = Logger.getLogger(AbstractXMPPConnection.class.getName());
 
