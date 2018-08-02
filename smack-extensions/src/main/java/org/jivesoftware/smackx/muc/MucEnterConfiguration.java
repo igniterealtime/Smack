@@ -69,7 +69,7 @@ public final class MucEnterConfiguration {
     }
 
     Presence getJoinPresence(MultiUserChat multiUserChat) {
-        final EntityFullJid jid = JidCreate.fullFrom(multiUserChat.getRoom(), nickname);
+        final EntityFullJid jid = JidCreate.entityFullFrom(multiUserChat.getRoom(), nickname);
         joinPresence.setTo(jid);
         return joinPresence;
     }

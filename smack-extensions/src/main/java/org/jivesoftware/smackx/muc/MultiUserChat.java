@@ -1063,7 +1063,7 @@ public class MultiUserChat {
         if (!joined) {
             throw new MucNotJoinedException(this);
         }
-        final EntityFullJid jid = JidCreate.fullFrom(room, nickname);
+        final EntityFullJid jid = JidCreate.entityFullFrom(room, nickname);
         // We change the nickname by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
         // We don't have to signal the MUC support again
