@@ -48,7 +48,6 @@ Donate
 If you find Smack useful and feel like donating, then you can use one of the following systems:
 
 - Donate via Bitcoin: 1LiU78z3498wu3jwRPKbvovKAHjTcpVbuK
-- [Donate via Flattr](https://flattr.com/thing/3480125)
 
 Contact
 -------
