@@ -90,9 +90,14 @@ public final class FileUtils {
         InputStream is = getStreamForUri(uri, null);
         InputStreamReader sr = new InputStreamReader(is, StringUtils.UTF8);
         BufferedReader br = new BufferedReader(sr);
-        String line;
-        while ((line = br.readLine()) != null) {
-            set.add(line);
+        try {
+            String line;
+            while ((line = br.readLine()) != null) {
+                set.add(line);
+            }
+        }
+        finally {
+            br.close();
         }
         return true;
     }
