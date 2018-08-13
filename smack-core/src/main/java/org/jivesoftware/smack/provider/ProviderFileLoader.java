@@ -145,7 +145,7 @@ public class ProviderFileLoader implements ProviderLoader {
                 providerStream.close();
             }
             catch (Exception e) {
-                // Ignore.
+                LOGGER.log(Level.WARNING, "Exception closing provider stream", e);
             }
         }
     }
