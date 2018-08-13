@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.initializer;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.LinkedList;
@@ -39,7 +40,7 @@ public abstract class UrlInitializer implements SmackInitializer {
 
     @Override
     public List<Exception> initialize() {
-        InputStream is;
+        InputStream is = null;
         final ClassLoader classLoader = this.getClass().getClassLoader();
         final List<Exception> exceptions = new LinkedList<Exception>();
         final String providerUriString = getProvidersUri();
@@ -56,6 +57,8 @@ public abstract class UrlInitializer implements SmackInitializer {
             catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Error trying to load provider file " + providerUriString, e);
                 exceptions.add(e);
+            } finally {
+                maybeClose(is);
             }
         }
         final String configUriString = getConfigUri();
@@ -67,6 +70,8 @@ public abstract class UrlInitializer implements SmackInitializer {
             }
             catch (Exception e) {
                 exceptions.add(e);
+            } finally {
+                maybeClose(is);
             }
         }
         return exceptions;
@@ -78,5 +83,17 @@ public abstract class UrlInitializer implements SmackInitializer {
 
     protected String getConfigUri() {
         return null;
+    }
+
+    private static void maybeClose(InputStream is) {
+        if (is == null) {
+            return;
+        }
+        try {
+            is.close();
+        }
+        catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Could not close input stream", e);
+        }
     }
 }
