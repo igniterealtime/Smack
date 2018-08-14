@@ -364,7 +364,11 @@ public final class ReconnectionManager {
      * @return true if automatic reconnection is allowed.
      */
     private boolean isReconnectionPossible(XMPPConnection connection) {
-        return !done && !connection.isConnected()
+        //While reconnection, in between connection and login function, net loss then "connection.isConneced()" function retuen true. so authentication not done and reconnection become currupted.
+        // so we will check for authentication.
+        /*return !done && !connection.isConnected()
+                && isAutomaticReconnectEnabled();*/
+        return !done && !connection.isAuthenticated()
                 && isAutomaticReconnectEnabled();
     }
 
