@@ -34,7 +34,7 @@ import org.jivesoftware.smackx.ox.OpenPgpManager;
 import org.jivesoftware.smackx.ox.element.PubkeyElement;
 import org.jivesoftware.smackx.ox.element.PublicKeysListElement;
 import org.jivesoftware.smackx.ox.element.SecretkeyElement;
-import org.jivesoftware.smackx.pep.PEPManager;
+import org.jivesoftware.smackx.pep.PepManager;
 import org.jivesoftware.smackx.pubsub.AccessModel;
 import org.jivesoftware.smackx.pubsub.ConfigureForm;
 import org.jivesoftware.smackx.pubsub.Item;
@@ -123,7 +123,7 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NotConnectedException if we are not connected.
      * @throws SmackException.NoResponseException if the server doesn't respond.
      */
-    public static void publishPublicKey(PEPManager pepManager, PubkeyElement pubkeyElement, OpenPgpV4Fingerprint fingerprint)
+    public static void publishPublicKey(PepManager pepManager, PubkeyElement pubkeyElement, OpenPgpV4Fingerprint fingerprint)
             throws InterruptedException, PubSubException.NotALeafNodeException,
             XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException {
 
@@ -227,7 +227,7 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NoResponseException if the server doesn't respond.
      * @return <code>true</code> if the node existed and was deleted, <code>false</code> if the node did not exist.
      */
-    public static boolean deletePubkeysListNode(PEPManager pepManager)
+    public static boolean deletePubkeysListNode(PepManager pepManager)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
         PubSubManager pm = pepManager.getPepPubSubManager();
@@ -246,7 +246,7 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NoResponseException if the server doesn't respond.
      * @return <code>true</code> if the node existed and was deleted, <code>false</code> if the node did not exist.
      */
-    public static boolean deletePublicKeyNode(PEPManager pepManager, OpenPgpV4Fingerprint fingerprint)
+    public static boolean deletePublicKeyNode(PepManager pepManager, OpenPgpV4Fingerprint fingerprint)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
         PubSubManager pm = pepManager.getPepPubSubManager();
@@ -346,7 +346,7 @@ public class OpenPgpPubSubUtil {
         if (!OpenPgpManager.serverSupportsSecretKeyBackups(connection)) {
             throw new SmackException.FeatureNotSupportedException("http://jabber.org/protocol/pubsub#access-whitelist");
         }
-        PubSubManager pm = PEPManager.getInstanceFor(connection).getPepPubSubManager();
+        PubSubManager pm = PepManager.getInstanceFor(connection).getPepPubSubManager();
         LeafNode secretKeyNode = pm.getOrCreateLeafNode(PEP_NODE_SECRET_KEY);
         OpenPgpPubSubUtil.changeAccessModelIfNecessary(secretKeyNode, AccessModel.whitelist);
 
@@ -368,7 +368,7 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NotConnectedException if we are not connected
      * @throws SmackException.NoResponseException /watch?v=7U0FzQzJzyI
      */
-    public static SecretkeyElement fetchSecretKey(PEPManager pepManager)
+    public static SecretkeyElement fetchSecretKey(PepManager pepManager)
             throws InterruptedException, PubSubException.NotALeafNodeException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException {
         PubSubManager pm = pepManager.getPepPubSubManager();
@@ -393,7 +393,7 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NoResponseException if the server sends no response
      * @return <code>true</code> if the node existed and was deleted, <code>false</code> if the node did not exist.
      */
-    public static boolean deleteSecretKeyNode(PEPManager pepManager)
+    public static boolean deleteSecretKeyNode(PepManager pepManager)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
         PubSubManager pm = pepManager.getPepPubSubManager();

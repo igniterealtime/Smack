@@ -67,8 +67,8 @@ import org.jivesoftware.smackx.ox.store.definition.OpenPgpStore;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpTrustStore;
 import org.jivesoftware.smackx.ox.util.OpenPgpPubSubUtil;
 import org.jivesoftware.smackx.ox.util.SecretKeyBackupHelper;
-import org.jivesoftware.smackx.pep.PEPListener;
-import org.jivesoftware.smackx.pep.PEPManager;
+import org.jivesoftware.smackx.pep.PepListener;
+import org.jivesoftware.smackx.pep.PepManager;
 import org.jivesoftware.smackx.pubsub.EventElement;
 import org.jivesoftware.smackx.pubsub.ItemsExtension;
 import org.jivesoftware.smackx.pubsub.LeafNode;
@@ -166,7 +166,7 @@ public final class OpenPgpManager extends Manager {
      */
     private OpenPgpProvider provider;
 
-    private final PEPManager pepManager;
+    private final PepManager pepManager;
 
     private final Set<SigncryptElementReceivedListener> signcryptElementReceivedListeners = new HashSet<>();
     private final Set<SignElementReceivedListener> signElementReceivedListeners = new HashSet<>();
@@ -180,7 +180,7 @@ public final class OpenPgpManager extends Manager {
     private OpenPgpManager(XMPPConnection connection) {
         super(connection);
         ChatManager.getInstanceFor(connection).addIncomingListener(incomingOpenPgpMessageListener);
-        pepManager = PEPManager.getInstanceFor(connection);
+        pepManager = PepManager.getInstanceFor(connection);
     }
 
     /**
@@ -238,7 +238,7 @@ public final class OpenPgpManager extends Manager {
     /**
      * Generate a fresh OpenPGP key pair, given we don't have one already.
      * Publish the public key to the Public Key Node and update the Public Key Metadata Node with our keys fingerprint.
-     * Lastly register a {@link PEPListener} which listens for updates to Public Key Metadata Nodes.
+     * Lastly register a {@link PepListener} which listens for updates to Public Key Metadata Nodes.
      *
      * @throws NoSuchAlgorithmException if we are missing an algorithm to generate a fresh key pair.
      * @throws NoSuchProviderException if we are missing a suitable {@link java.security.Provider}.
@@ -278,7 +278,7 @@ public final class OpenPgpManager extends Manager {
         publishPublicKey(pepManager, pubkeyElement, primaryFingerprint);
 
         // Subscribe to public key changes
-        PEPManager.getInstanceFor(connection()).addPEPListener(metadataListener);
+        PepManager.getInstanceFor(connection()).addPepListener(metadataListener);
         ServiceDiscoveryManager.getInstanceFor(connection())
                 .addFeature(PEP_NODE_PUBLIC_KEYS_NOTIFY);
     }
@@ -380,7 +380,7 @@ public final class OpenPgpManager extends Manager {
      * Remove the metadata listener. This method is mainly used in tests.
      */
     public void stopMetadataListener() {
-        PEPManager.getInstanceFor(connection()).removePEPListener(metadataListener);
+        PepManager.getInstanceFor(connection()).removePepListener(metadataListener);
     }
 
     /**
@@ -497,11 +497,11 @@ public final class OpenPgpManager extends Manager {
      */
 
     /**
-     * {@link PEPListener} that listens for changes to the OX public keys metadata node.
+     * {@link PepListener} that listens for changes to the OX public keys metadata node.
      *
      * @see <a href="https://xmpp.org/extensions/xep-0373.html#pubsub-notifications">XEP-0373 §4.4</a>
      */
-    private final PEPListener metadataListener = new PEPListener() {
+    private final PepListener metadataListener = new PepListener() {
         @Override
         public void eventReceived(final EntityBareJid from, final EventElement event, final Message message) {
             if (PEP_NODE_PUBLIC_KEYS.equals(event.getEvent().getNode())) {

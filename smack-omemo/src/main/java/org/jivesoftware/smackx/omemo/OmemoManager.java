@@ -71,8 +71,8 @@ import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.OmemoTrustCallback;
 import org.jivesoftware.smackx.omemo.trust.TrustState;
 import org.jivesoftware.smackx.omemo.util.MessageOrOmemoMessage;
-import org.jivesoftware.smackx.pep.PEPListener;
-import org.jivesoftware.smackx.pep.PEPManager;
+import org.jivesoftware.smackx.pep.PepListener;
+import org.jivesoftware.smackx.pep.PepManager;
 import org.jivesoftware.smackx.pubsub.EventElement;
 import org.jivesoftware.smackx.pubsub.ItemsExtension;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
@@ -877,16 +877,16 @@ public final class OmemoManager extends Manager {
      * after {@link #stopStanzaAndPEPListeners()} was called.
      */
     public void resumeStanzaAndPEPListeners() {
-        PEPManager pepManager = PEPManager.getInstanceFor(connection());
+        PepManager pepManager = PepManager.getInstanceFor(connection());
         CarbonManager carbonManager = CarbonManager.getInstanceFor(connection());
 
         // Remove listeners to avoid them getting added twice
         connection().removeAsyncStanzaListener(internalOmemoMessageStanzaListener);
         carbonManager.removeCarbonCopyReceivedListener(internalOmemoCarbonCopyListener);
-        pepManager.removePEPListener(deviceListUpdateListener);
+        pepManager.removePepListener(deviceListUpdateListener);
 
         // Add listeners
-        pepManager.addPEPListener(deviceListUpdateListener);
+        pepManager.addPepListener(deviceListUpdateListener);
         connection().addAsyncStanzaListener(internalOmemoMessageStanzaListener, omemoMessageStanzaFilter);
         carbonManager.addCarbonCopyReceivedListener(internalOmemoCarbonCopyListener);
     }
@@ -895,7 +895,7 @@ public final class OmemoManager extends Manager {
      * Remove active stanza listeners needed for OMEMO.
      */
     public void stopStanzaAndPEPListeners() {
-        PEPManager.getInstanceFor(connection()).removePEPListener(deviceListUpdateListener);
+        PepManager.getInstanceFor(connection()).removePepListener(deviceListUpdateListener);
         connection().removeAsyncStanzaListener(internalOmemoMessageStanzaListener);
         CarbonManager.getInstanceFor(connection()).removeCarbonCopyReceivedListener(internalOmemoCarbonCopyListener);
     }
@@ -990,7 +990,7 @@ public final class OmemoManager extends Manager {
     /**
      * PEPListener that listens for OMEMO deviceList updates.
      */
-    private final PEPListener deviceListUpdateListener = new PEPListener() {
+    private final PepListener deviceListUpdateListener = new PepListener() {
         @Override
         public void eventReceived(EntityBareJid from, EventElement event, Message message) {
 

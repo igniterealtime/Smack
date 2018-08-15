@@ -31,7 +31,7 @@ import org.jxmpp.jid.EntityBareJid;
  * @author Jeff Williams
  * @author Florian Schmaus
  */
-public interface PEPListener {
+public interface PepListener {
 
     /**
      * Called when PEP events are received as part of a presence subscribe or message filter.

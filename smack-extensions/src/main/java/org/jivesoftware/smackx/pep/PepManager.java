@@ -57,8 +57,8 @@ import org.jxmpp.jid.EntityBareJid;
  * Use example:
  *
  * <pre>
- *   PEPManager pepManager = PEPManager.getInstanceFor(smackConnection);
- *   pepManager.addPEPListener(new PEPListener() {
+ *   PepManager pepManager = PepManager.getInstanceFor(smackConnection);
+ *   pepManager.addPepListener(new PepListener() {
  *       public void eventReceived(EntityBareJid from, EventElement event, Message message) {
  *           LOGGER.debug("Event received: " + event);
  *       }
@@ -68,14 +68,14 @@ import org.jxmpp.jid.EntityBareJid;
  * @author Jeff Williams
  * @author Florian Schmaus
  */
-public final class PEPManager extends Manager {
+public final class PepManager extends Manager {
 
-    private static final Map<XMPPConnection, PEPManager> INSTANCES = new WeakHashMap<>();
+    private static final Map<XMPPConnection, PepManager> INSTANCES = new WeakHashMap<>();
 
-    public static synchronized PEPManager getInstanceFor(XMPPConnection connection) {
-        PEPManager pepManager = INSTANCES.get(connection);
+    public static synchronized PepManager getInstanceFor(XMPPConnection connection) {
+        PepManager pepManager = INSTANCES.get(connection);
         if (pepManager == null) {
-            pepManager = new PEPManager(connection);
+            pepManager = new PepManager(connection);
             INSTANCES.put(connection, pepManager);
         }
         return pepManager;
@@ -85,7 +85,7 @@ public final class PEPManager extends Manager {
             new FromJidTypeFilter(JidType.BareJid),
             EventExtensionFilter.INSTANCE);
 
-    private final Set<PEPListener> pepListeners = new CopyOnWriteArraySet<>();
+    private final Set<PepListener> pepListeners = new CopyOnWriteArraySet<>();
 
     private final AsyncButOrdered<EntityBareJid> asyncButOrdered = new AsyncButOrdered<>();
 
@@ -96,7 +96,7 @@ public final class PEPManager extends Manager {
      *
      * @param connection an XMPPConnection which is used to send and receive messages.
      */
-    private PEPManager(XMPPConnection connection) {
+    private PepManager(XMPPConnection connection) {
         super(connection);
         StanzaListener packetListener = new StanzaListener() {
             @Override
@@ -109,7 +109,7 @@ public final class PEPManager extends Manager {
                 asyncButOrdered.performAsyncButOrdered(from, new Runnable() {
                     @Override
                     public void run() {
-                        for (PEPListener listener : pepListeners) {
+                        for (PepListener listener : pepListeners) {
                             listener.eventReceived(from, event, message);
                         }
                     }
@@ -133,7 +133,7 @@ public final class PEPManager extends Manager {
      * @param pepListener a roster exchange listener.
      * @return true if pepListener was added.
      */
-    public boolean addPEPListener(PEPListener pepListener) {
+    public boolean addPepListener(PepListener pepListener) {
         return pepListeners.add(pepListener);
     }
 
@@ -143,7 +143,7 @@ public final class PEPManager extends Manager {
      * @param pepListener a roster exchange listener.
      * @return true, if pepListener was removed.
      */
-    public boolean removePEPListener(PEPListener pepListener) {
+    public boolean removePepListener(PepListener pepListener) {
         return pepListeners.remove(pepListener);
     }
 

@@ -20,7 +20,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.ox.util.OpenPgpPubSubUtil;
-import org.jivesoftware.smackx.pep.PEPManager;
+import org.jivesoftware.smackx.pep.PepManager;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -37,9 +37,9 @@ public abstract class AbstractOpenPgpIntegrationTest extends AbstractSmackIntegr
     protected final BareJid bob;
     protected final BareJid chloe;
 
-    protected final PEPManager alicePepManager;
-    protected final PEPManager bobPepManager;
-    protected final PEPManager chloePepManager;
+    protected final PepManager alicePepManager;
+    protected final PepManager bobPepManager;
+    protected final PepManager chloePepManager;
 
     protected AbstractOpenPgpIntegrationTest(SmackIntegrationTestEnvironment environment)
             throws XMPPException.XMPPErrorException, TestNotPossibleException, SmackException.NotConnectedException,
@@ -58,9 +58,9 @@ public abstract class AbstractOpenPgpIntegrationTest extends AbstractSmackIntegr
         this.bob = bobConnection.getUser().asBareJid();
         this.chloe = chloeConnection.getUser().asBareJid();
 
-        this.alicePepManager = PEPManager.getInstanceFor(aliceConnection);
-        this.bobPepManager = PEPManager.getInstanceFor(bobConnection);
-        this.chloePepManager = PEPManager.getInstanceFor(chloeConnection);
+        this.alicePepManager = PepManager.getInstanceFor(aliceConnection);
+        this.bobPepManager = PepManager.getInstanceFor(bobConnection);
+        this.chloePepManager = PepManager.getInstanceFor(chloeConnection);
 
         OpenPgpPubSubUtil.deletePubkeysListNode(alicePepManager);
         OpenPgpPubSubUtil.deletePubkeysListNode(bobPepManager);
@@ -70,7 +70,7 @@ public abstract class AbstractOpenPgpIntegrationTest extends AbstractSmackIntegr
     private static void throwIfPubSubNotSupported(XMPPConnection connection)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException, TestNotPossibleException {
-        if (!PEPManager.getInstanceFor(connection).isSupported()) {
+        if (!PepManager.getInstanceFor(connection).isSupported()) {
             throw new TestNotPossibleException("Server " + connection.getXMPPServiceDomain().toString() +
                     " does not support PEP.");
         }
