@@ -224,20 +224,13 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NotConnectedException if we are not connected.
      * @throws InterruptedException if the thread is interrupted.
      * @throws SmackException.NoResponseException if the server doesn't respond.
+     * @return <code>true</code> if the node existed and was deleted, <code>false</code> if the node did not exist.
      */
-    public static void deletePubkeysListNode(XMPPConnection connection)
+    public static boolean deletePubkeysListNode(XMPPConnection connection)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
         PubSubManager pm = PubSubManager.getInstance(connection, connection.getUser().asBareJid());
-        try {
-            pm.deleteNode(PEP_NODE_PUBLIC_KEYS);
-        } catch (XMPPException.XMPPErrorException e) {
-            if (e.getStanzaError().getCondition() == StanzaError.Condition.item_not_found) {
-                LOGGER.log(Level.FINE, "Node does not exist. No need to delete it.");
-            } else {
-                throw e;
-            }
-        }
+        return pm.deleteNode(PEP_NODE_PUBLIC_KEYS);
     }
 
     /**
@@ -250,20 +243,13 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NotConnectedException if we are not connected.
      * @throws InterruptedException if the thread gets interrupted.
      * @throws SmackException.NoResponseException if the server doesn't respond.
+     * @return <code>true</code> if the node existed and was deleted, <code>false</code> if the node did not exist.
      */
-    public static void deletePublicKeyNode(XMPPConnection connection, OpenPgpV4Fingerprint fingerprint)
+    public static boolean deletePublicKeyNode(XMPPConnection connection, OpenPgpV4Fingerprint fingerprint)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
         PubSubManager pm = PubSubManager.getInstance(connection, connection.getUser().asBareJid());
-        try {
-            pm.deleteNode(PEP_NODE_PUBLIC_KEY(fingerprint));
-        } catch (XMPPException.XMPPErrorException e) {
-            if (e.getStanzaError().getCondition() == StanzaError.Condition.item_not_found) {
-                LOGGER.log(Level.FINE, "Node does not exist. No need to delete it.");
-            } else {
-                throw e;
-            }
-        }
+        return pm.deleteNode(PEP_NODE_PUBLIC_KEY(fingerprint));
     }
 
 
@@ -404,12 +390,13 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NotConnectedException if we are not connected
      * @throws InterruptedException if the thread gets interrupted
      * @throws SmackException.NoResponseException if the server sends no response
+     * @return <code>true</code> if the node existed and was deleted, <code>false</code> if the node did not exist.
      */
-    public static void deleteSecretKeyNode(XMPPConnection connection)
+    public static boolean deleteSecretKeyNode(XMPPConnection connection)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
         PubSubManager pm = PubSubManager.getInstance(connection);
-        pm.deleteNode(PEP_NODE_SECRET_KEY);
+        return pm.deleteNode(PEP_NODE_SECRET_KEY);
     }
 
     /**

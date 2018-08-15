@@ -471,10 +471,21 @@ public final class PubSubManager extends Manager {
      * @throws NoResponseException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @return <code>true</code> if this node existed and was deleted and <code>false</code> if this node did not exist.
      */
-    public void deleteNode(String nodeId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.DELETE, nodeId), PubSubElementType.DELETE.getNamespace());
+    public boolean deleteNode(String nodeId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        boolean res = true;
+        try {
+            sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.DELETE, nodeId), PubSubElementType.DELETE.getNamespace());
+        } catch (XMPPErrorException e) {
+            if (e.getStanzaError().getCondition() == StanzaError.Condition.item_not_found) {
+                res = false;
+            } else {
+                throw e;
+            }
+        }
         nodeMap.remove(nodeId);
+        return res;
     }
 
     /**
