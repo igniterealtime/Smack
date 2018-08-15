@@ -34,6 +34,7 @@ import org.jivesoftware.smackx.ox.OpenPgpManager;
 import org.jivesoftware.smackx.ox.element.PubkeyElement;
 import org.jivesoftware.smackx.ox.element.PublicKeysListElement;
 import org.jivesoftware.smackx.ox.element.SecretkeyElement;
+import org.jivesoftware.smackx.pep.PEPManager;
 import org.jivesoftware.smackx.pubsub.AccessModel;
 import org.jivesoftware.smackx.pubsub.ConfigureForm;
 import org.jivesoftware.smackx.pubsub.Item;
@@ -111,7 +112,7 @@ public class OpenPgpPubSubUtil {
      *
      * @see <a href="https://xmpp.org/extensions/xep-0373.html#annoucning-pubkey">XEP-0373 §4.1</a>
      *
-     * @param connection XMPP connection
+     * @param pepManager The PEP manager.
      * @param pubkeyElement {@link PubkeyElement} containing the public key
      * @param fingerprint fingerprint of the public key
      *
@@ -122,12 +123,12 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NotConnectedException if we are not connected.
      * @throws SmackException.NoResponseException if the server doesn't respond.
      */
-    public static void publishPublicKey(XMPPConnection connection, PubkeyElement pubkeyElement, OpenPgpV4Fingerprint fingerprint)
+    public static void publishPublicKey(PEPManager pepManager, PubkeyElement pubkeyElement, OpenPgpV4Fingerprint fingerprint)
             throws InterruptedException, PubSubException.NotALeafNodeException,
             XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException {
 
         String keyNodeName = PEP_NODE_PUBLIC_KEY(fingerprint);
-        PubSubManager pm = PubSubManager.getInstance(connection, connection.getUser().asBareJid());
+        PubSubManager pm = pepManager.getPepPubSubManager();
 
         // Check if key available at data node
         // If not, publish key to data node
@@ -179,7 +180,7 @@ public class OpenPgpPubSubUtil {
     public static PublicKeysListElement fetchPubkeysList(XMPPConnection connection)
             throws InterruptedException, XMPPException.XMPPErrorException, PubSubException.NotAPubSubNodeException,
             PubSubException.NotALeafNodeException, SmackException.NotConnectedException, SmackException.NoResponseException {
-        return fetchPubkeysList(connection, connection.getUser().asBareJid());
+        return fetchPubkeysList(connection, null);
     }
 
 
@@ -218,7 +219,7 @@ public class OpenPgpPubSubUtil {
     /**
      * Delete our metadata node.
      *
-     * @param connection XMPP connection
+     * @param pepManager The PEP manager.
      *
      * @throws XMPPException.XMPPErrorException in case of an XMPP protocol error.
      * @throws SmackException.NotConnectedException if we are not connected.
@@ -226,17 +227,17 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NoResponseException if the server doesn't respond.
      * @return <code>true</code> if the node existed and was deleted, <code>false</code> if the node did not exist.
      */
-    public static boolean deletePubkeysListNode(XMPPConnection connection)
+    public static boolean deletePubkeysListNode(PEPManager pepManager)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
-        PubSubManager pm = PubSubManager.getInstance(connection, connection.getUser().asBareJid());
+        PubSubManager pm = pepManager.getPepPubSubManager();
         return pm.deleteNode(PEP_NODE_PUBLIC_KEYS);
     }
 
     /**
      * Delete the public key node of the key with fingerprint {@code fingerprint}.
      *
-     * @param connection XMPP connection
+     * @param pepManager The PEP manager.
      * @param fingerprint fingerprint of the key we want to delete
      *
      * @throws XMPPException.XMPPErrorException in case of an XMPP protocol error.
@@ -245,10 +246,10 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NoResponseException if the server doesn't respond.
      * @return <code>true</code> if the node existed and was deleted, <code>false</code> if the node did not exist.
      */
-    public static boolean deletePublicKeyNode(XMPPConnection connection, OpenPgpV4Fingerprint fingerprint)
+    public static boolean deletePublicKeyNode(PEPManager pepManager, OpenPgpV4Fingerprint fingerprint)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
-        PubSubManager pm = PubSubManager.getInstance(connection, connection.getUser().asBareJid());
+        PubSubManager pm = pepManager.getPepPubSubManager();
         return pm.deleteNode(PEP_NODE_PUBLIC_KEY(fingerprint));
     }
 
@@ -345,7 +346,7 @@ public class OpenPgpPubSubUtil {
         if (!OpenPgpManager.serverSupportsSecretKeyBackups(connection)) {
             throw new SmackException.FeatureNotSupportedException("http://jabber.org/protocol/pubsub#access-whitelist");
         }
-        PubSubManager pm = PubSubManager.getInstance(connection, connection.getUser().asBareJid());
+        PubSubManager pm = PEPManager.getInstanceFor(connection).getPepPubSubManager();
         LeafNode secretKeyNode = pm.getOrCreateLeafNode(PEP_NODE_SECRET_KEY);
         OpenPgpPubSubUtil.changeAccessModelIfNecessary(secretKeyNode, AccessModel.whitelist);
 
@@ -358,7 +359,7 @@ public class OpenPgpPubSubUtil {
      * @see <a href="https://xmpp.org/extensions/xep-0373.html#synchro-pep">
      *      XEP-0373 §5. Synchronizing the Secret Key with a Private PEP Node</a>
      *
-     * @param connection {@link XMPPConnection} of the user.
+     * @param pepManager the PEP manager.
      * @return the secret key node or null, if it doesn't exist.
      *
      * @throws InterruptedException if the thread gets interrupted
@@ -367,10 +368,10 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NotConnectedException if we are not connected
      * @throws SmackException.NoResponseException /watch?v=7U0FzQzJzyI
      */
-    public static SecretkeyElement fetchSecretKey(XMPPConnection connection)
+    public static SecretkeyElement fetchSecretKey(PEPManager pepManager)
             throws InterruptedException, PubSubException.NotALeafNodeException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException {
-        PubSubManager pm = PubSubManager.getInstance(connection, connection.getUser().asBareJid());
+        PubSubManager pm = pepManager.getPepPubSubManager();
         LeafNode secretKeyNode = pm.getOrCreateLeafNode(PEP_NODE_SECRET_KEY);
         List<PayloadItem<SecretkeyElement>> list = secretKeyNode.getItems(1);
         if (list.size() == 0) {
@@ -384,7 +385,7 @@ public class OpenPgpPubSubUtil {
     /**
      * Delete the private backup node.
      *
-     * @param connection {@link XMPPConnection} of the user.
+     * @param pepManager the PEP manager.
      *
      * @throws XMPPException.XMPPErrorException if there is an XMPP protocol related issue
      * @throws SmackException.NotConnectedException if we are not connected
@@ -392,10 +393,10 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NoResponseException if the server sends no response
      * @return <code>true</code> if the node existed and was deleted, <code>false</code> if the node did not exist.
      */
-    public static boolean deleteSecretKeyNode(XMPPConnection connection)
+    public static boolean deleteSecretKeyNode(PEPManager pepManager)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
-        PubSubManager pm = PubSubManager.getInstance(connection);
+        PubSubManager pm = pepManager.getPepPubSubManager();
         return pm.deleteNode(PEP_NODE_SECRET_KEY);
     }
 

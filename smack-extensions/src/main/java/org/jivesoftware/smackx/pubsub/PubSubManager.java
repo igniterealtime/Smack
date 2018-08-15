@@ -114,23 +114,36 @@ public final class PubSubManager extends Manager {
     }
 
     /**
-     * Get the PubSub manager for the given connection and PubSub service.
+     * Get the PubSub manager for the given connection and PubSub service. Use <code>null</code> as argument for
+     * pubSubService to retrieve a PubSubManager for the users PEP service.
      *
      * @param connection the XMPP connection.
-     * @param pubSubService the PubSub service.
+     * @param pubSubService the PubSub service, may be <code>null</code>.
      * @return a PubSub manager for the connection and service.
      */
-    public static synchronized PubSubManager getInstance(XMPPConnection connection, BareJid pubSubService) {
-        Map<BareJid, PubSubManager> managers = INSTANCES.get(connection);
-        if (managers == null) {
-            managers = new HashMap<>();
-            INSTANCES.put(connection, managers);
+    public static PubSubManager getInstance(XMPPConnection connection, BareJid pubSubService) {
+        if (pubSubService != null && connection.isAuthenticated() && connection.getUser().asBareJid().equals(pubSubService)) {
+            // PEP service.
+            pubSubService = null;
         }
-        PubSubManager pubSubManager = managers.get(pubSubService);
-        if (pubSubManager == null) {
-            pubSubManager = new PubSubManager(connection, pubSubService);
-            managers.put(pubSubService, pubSubManager);
+
+        PubSubManager pubSubManager;
+        Map<BareJid, PubSubManager> managers;
+        synchronized (INSTANCES) {
+            managers = INSTANCES.get(connection);
+            if (managers == null) {
+                managers = new HashMap<>();
+                INSTANCES.put(connection, managers);
+            }
         }
+        synchronized (managers) {
+            pubSubManager = managers.get(pubSubService);
+            if (pubSubManager == null) {
+                pubSubManager = new PubSubManager(connection, pubSubService);
+                managers.put(pubSubService, pubSubManager);
+            }
+        }
+
         return pubSubManager;
     }
 

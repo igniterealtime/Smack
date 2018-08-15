@@ -37,6 +37,10 @@ public abstract class AbstractOpenPgpIntegrationTest extends AbstractSmackIntegr
     protected final BareJid bob;
     protected final BareJid chloe;
 
+    protected final PEPManager alicePepManager;
+    protected final PEPManager bobPepManager;
+    protected final PEPManager chloePepManager;
+
     protected AbstractOpenPgpIntegrationTest(SmackIntegrationTestEnvironment environment)
             throws XMPPException.XMPPErrorException, TestNotPossibleException, SmackException.NotConnectedException,
             InterruptedException, SmackException.NoResponseException {
@@ -54,9 +58,13 @@ public abstract class AbstractOpenPgpIntegrationTest extends AbstractSmackIntegr
         this.bob = bobConnection.getUser().asBareJid();
         this.chloe = chloeConnection.getUser().asBareJid();
 
-        OpenPgpPubSubUtil.deletePubkeysListNode(aliceConnection);
-        OpenPgpPubSubUtil.deletePubkeysListNode(bobConnection);
-        OpenPgpPubSubUtil.deletePubkeysListNode(chloeConnection);
+        this.alicePepManager = PEPManager.getInstanceFor(aliceConnection);
+        this.bobPepManager = PEPManager.getInstanceFor(bobConnection);
+        this.chloePepManager = PEPManager.getInstanceFor(chloeConnection);
+
+        OpenPgpPubSubUtil.deletePubkeysListNode(alicePepManager);
+        OpenPgpPubSubUtil.deletePubkeysListNode(bobPepManager);
+        OpenPgpPubSubUtil.deletePubkeysListNode(chloePepManager);
     }
 
     private static void throwIfPubSubNotSupported(XMPPConnection connection)

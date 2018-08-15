@@ -89,6 +89,8 @@ public final class PEPManager extends Manager {
 
     private final AsyncButOrdered<EntityBareJid> asyncButOrdered = new AsyncButOrdered<>();
 
+    private final PubSubManager pepPubSubManager;
+
     /**
      * Creates a new PEP exchange manager.
      *
@@ -116,6 +118,12 @@ public final class PEPManager extends Manager {
         };
         // TODO Add filter to check if from supports PubSub as per xep163 2 2.4
         connection.addSyncStanzaListener(packetListener, FROM_BARE_JID_WITH_EVENT_EXTENSION_FILTER);
+
+        pepPubSubManager = PubSubManager.getInstance(connection, null);
+    }
+
+    public PubSubManager getPepPubSubManager() {
+        return pepPubSubManager;
     }
 
     /**

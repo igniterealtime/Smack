@@ -167,14 +167,14 @@ public class OXInstantMessagingIntegrationTest extends AbstractOpenPgpIntegratio
     public void deleteKeyMetadata()
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
-        OpenPgpPubSubUtil.deletePubkeysListNode(aliceConnection);
-        OpenPgpPubSubUtil.deletePubkeysListNode(bobConnection);
+        OpenPgpPubSubUtil.deletePubkeysListNode(alicePepManager);
+        OpenPgpPubSubUtil.deletePubkeysListNode(bobPepManager);
 
         if (aliceFingerprint != null) {
-            OpenPgpPubSubUtil.deletePublicKeyNode(aliceConnection, aliceFingerprint);
+            OpenPgpPubSubUtil.deletePublicKeyNode(alicePepManager, aliceFingerprint);
         }
         if (bobFingerprint != null) {
-            OpenPgpPubSubUtil.deletePublicKeyNode(bobConnection, bobFingerprint);
+            OpenPgpPubSubUtil.deletePublicKeyNode(bobPepManager, bobFingerprint);
         }
 
         if (aliceOpenPgp != null) {

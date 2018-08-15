@@ -119,7 +119,7 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
     public void cleanUp()
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
-        OpenPgpPubSubUtil.deleteSecretKeyNode(aliceConnection);
+        OpenPgpPubSubUtil.deleteSecretKeyNode(alicePepManager);
 
         if (openPgpManager != null) {
             openPgpManager.stopMetadataListener();

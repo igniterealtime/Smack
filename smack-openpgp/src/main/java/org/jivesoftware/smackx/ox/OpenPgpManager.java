@@ -166,6 +166,8 @@ public final class OpenPgpManager extends Manager {
      */
     private OpenPgpProvider provider;
 
+    private final PEPManager pepManager;
+
     private final Set<SigncryptElementReceivedListener> signcryptElementReceivedListeners = new HashSet<>();
     private final Set<SignElementReceivedListener> signElementReceivedListeners = new HashSet<>();
     private final Set<CryptElementReceivedListener> cryptElementReceivedListeners = new HashSet<>();
@@ -178,6 +180,7 @@ public final class OpenPgpManager extends Manager {
     private OpenPgpManager(XMPPConnection connection) {
         super(connection);
         ChatManager.getInstanceFor(connection).addIncomingListener(incomingOpenPgpMessageListener);
+        pepManager = PEPManager.getInstanceFor(connection);
     }
 
     /**
@@ -272,7 +275,7 @@ public final class OpenPgpManager extends Manager {
         }
 
         // publish it
-        publishPublicKey(connection(), pubkeyElement, primaryFingerprint);
+        publishPublicKey(pepManager, pubkeyElement, primaryFingerprint);
 
         // Subscribe to public key changes
         PEPManager.getInstanceFor(connection()).addPEPListener(metadataListener);
@@ -439,7 +442,7 @@ public final class OpenPgpManager extends Manager {
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException, SmackException.NotLoggedInException {
         throwIfNotAuthenticated();
-        OpenPgpPubSubUtil.deleteSecretKeyNode(connection());
+        OpenPgpPubSubUtil.deleteSecretKeyNode(pepManager);
     }
 
     /**
@@ -467,7 +470,7 @@ public final class OpenPgpManager extends Manager {
             NoBackupFoundException, PGPException {
         throwIfNoProviderSet();
         throwIfNotAuthenticated();
-        SecretkeyElement backup = OpenPgpPubSubUtil.fetchSecretKey(connection());
+        SecretkeyElement backup = OpenPgpPubSubUtil.fetchSecretKey(pepManager);
         if (backup == null) {
             throw new NoBackupFoundException();
         }
