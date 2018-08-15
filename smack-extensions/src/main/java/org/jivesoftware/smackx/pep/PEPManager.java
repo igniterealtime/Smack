@@ -57,7 +57,7 @@ import org.jxmpp.jid.EntityBareJid;
  * Use example:
  *
  * <pre>
- *   PEPManager pepManager = new PEPManager(smackConnection);
+ *   PEPManager pepManager = PEPManager.getInstanceFor(smackConnection);
  *   pepManager.addPEPListener(new PEPListener() {
  *       public void eventReceived(EntityBareJid from, EventElement event, Message message) {
  *           LOGGER.debug("Event received: " + event);
