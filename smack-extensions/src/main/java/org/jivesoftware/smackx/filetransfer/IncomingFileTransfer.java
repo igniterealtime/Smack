@@ -27,12 +27,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.util.CloseableUtil;
 
 
 /**
@@ -158,20 +158,8 @@ public class IncomingFileTransfer extends FileTransfer {
                 if (getStatus().equals(Status.in_progress)) {
                     setStatus(Status.complete);
                 }
-                if (inputStream != null) {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                        LOGGER.log(Level.WARNING, "Closing input stream", e);
-                    }
-                }
-                if (outputStream != null) {
-                    try {
-                        outputStream.close();
-                    } catch (IOException e) {
-                        LOGGER.log(Level.WARNING, "Closing output stream", e);
-                    }
-                }
+                CloseableUtil.maybeClose(inputStream, LOGGER);
+                CloseableUtil.maybeClose(outputStream, LOGGER);
             }
         }, "File Transfer " + streamID);
         transferThread.start();

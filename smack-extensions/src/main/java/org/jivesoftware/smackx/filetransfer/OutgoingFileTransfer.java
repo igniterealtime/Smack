@@ -22,7 +22,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
@@ -30,6 +29,7 @@ import org.jivesoftware.smack.SmackException.IllegalStateChangeException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.util.CloseableUtil;
 
 import org.jxmpp.jid.Jid;
 
@@ -258,19 +258,8 @@ public class OutgoingFileTransfer extends FileTransfer {
                     setStatus(FileTransfer.Status.error);
                     setException(e);
                 } finally {
-                        if (inputStream != null) {
-                            try {
-                                inputStream.close();
-                            } catch (IOException e) {
-                                LOGGER.log(Level.WARNING, "Closing input stream", e);
-                            }
-                        }
-
-                        try {
-                            outputStream.close();
-                        } catch (IOException e) {
-                            LOGGER.log(Level.WARNING, "Closing output stream", e);
-                        }
+                    CloseableUtil.maybeClose(inputStream, LOGGER);
+                    CloseableUtil.maybeClose(outputStream, LOGGER);
                 }
                 updateStatus(Status.in_progress, FileTransfer.Status.complete);
                 }
@@ -325,16 +314,8 @@ public class OutgoingFileTransfer extends FileTransfer {
                     setStatus(FileTransfer.Status.error);
                     setException(e);
                 } finally {
-                    try {
-                        if (in != null) {
-                            in.close();
-                        }
-
-                        outputStream.flush();
-                        outputStream.close();
-                    } catch (IOException e) {
-                        /* Do Nothing */
-                    }
+                    CloseableUtil.maybeClose(in, LOGGER);
+                    CloseableUtil.maybeClose(outputStream, LOGGER);
                 }
                 updateStatus(Status.in_progress, FileTransfer.Status.complete);
                 }

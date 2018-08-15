@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -191,22 +192,8 @@ public class JivePropertiesExtension implements ExtensionElement {
                     valueStr = "Serializing error: " + e.getMessage();
                 }
                 finally {
-                    if (out != null) {
-                        try {
-                            out.close();
-                        }
-                        catch (Exception e) {
-                            // Ignore.
-                        }
-                    }
-                    if (byteStream != null) {
-                        try {
-                            byteStream.close();
-                        }
-                        catch (Exception e) {
-                            // Ignore.
-                        }
-                    }
+                    CloseableUtil.maybeClose(out, LOGGER);
+                    CloseableUtil.maybeClose(byteStream, LOGGER);
                 }
             }
             xml.attribute("type", type);

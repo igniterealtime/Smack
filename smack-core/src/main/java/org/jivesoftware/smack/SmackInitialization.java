@@ -18,7 +18,6 @@
 package org.jivesoftware.smack;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
@@ -37,6 +36,7 @@ import org.jivesoftware.smack.sasl.core.SASLAnonymous;
 import org.jivesoftware.smack.sasl.core.SASLXOauth2Mechanism;
 import org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism;
 import org.jivesoftware.smack.sasl.core.ScramSha1PlusMechanism;
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -61,17 +61,15 @@ public final class SmackInitialization {
      */
     static {
         String smackVersion;
+        BufferedReader reader = null;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(FileUtils.getStreamForClasspathFile("org.jivesoftware.smack/version", null), StringUtils.UTF8));
+            reader = new BufferedReader(new InputStreamReader(FileUtils.getStreamForClasspathFile("org.jivesoftware.smack/version", null), StringUtils.UTF8));
             smackVersion = reader.readLine();
-            try {
-                reader.close();
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "IOException closing stream", e);
-            }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Could not determine Smack version", e);
             smackVersion = "unknown";
+        } finally {
+            CloseableUtil.maybeClose(reader, LOGGER);
         }
         SMACK_VERSION = smackVersion;
 
@@ -146,12 +144,7 @@ public final class SmackInitialization {
             eventType = parser.next();
         }
         while (eventType != XmlPullParser.END_DOCUMENT);
-        try {
-            cfgFileStream.close();
-        }
-        catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error while closing config file input stream", e);
-        }
+        CloseableUtil.maybeClose(cfgFileStream, LOGGER);
     }
 
     private static void parseClassesToLoad(XmlPullParser parser, boolean optional,

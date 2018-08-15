@@ -21,7 +21,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.logging.Logger;
 
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.StringUtils;
 
 /**
@@ -30,6 +32,8 @@ import org.jivesoftware.smack.util.StringUtils;
  * @author Atul Aggarwal
  */
 public class Socks5ProxySocketConnection implements ProxySocketConnection {
+    private static final Logger LOGGER = Logger.getLogger(Socks5ProxySocketConnection.class.getName());
+
     private final ProxyInfo proxy;
 
     Socks5ProxySocketConnection(ProxyInfo proxy) {
@@ -164,11 +168,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
             }
 
             if (!check) {
-                try {
-                    socket.close();
-                }
-                catch (Exception eee) {
-                }
+                CloseableUtil.maybeClose(socket, LOGGER);
                 throw new ProxyException(ProxyInfo.ProxyType.SOCKS5,
                     "fail in SOCKS5 proxy");
             }
@@ -253,11 +253,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
             fill(in, buf, 4);
 
             if (buf[1] != 0) {
-                try {
-                    socket.close();
-                }
-                catch (Exception eee) {
-                }
+                CloseableUtil.maybeClose(socket, LOGGER);
                 throw new ProxyException(ProxyInfo.ProxyType.SOCKS5,
                     "server returns " + buf[1]);
             }
@@ -280,11 +276,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
             throw e;
         }
         catch (Exception e) {
-            try {
-                socket.close();
-            }
-            catch (Exception eee) {
-            }
+            CloseableUtil.maybeClose(socket, LOGGER);
             // TODO convert to IOException(e) when minimum Android API level is 9 or higher
             throw new IOException(e.getLocalizedMessage());
         }

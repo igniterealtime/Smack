@@ -38,6 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.StringUtils;
 
 /**
@@ -409,14 +410,7 @@ public final class Socks5Proxy {
                      */
                 }
                 catch (Exception e) {
-                    try {
-                        if (socket != null) {
-                            socket.close();
-                        }
-                    }
-                    catch (IOException e1) {
-                        /* do nothing */
-                    }
+                    CloseableUtil.maybeClose(socket, LOGGER);
                 }
             }
 

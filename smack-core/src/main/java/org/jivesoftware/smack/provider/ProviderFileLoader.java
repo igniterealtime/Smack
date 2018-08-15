@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.CloseableUtil;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -141,12 +142,7 @@ public class ProviderFileLoader implements ProviderLoader {
             exceptions.add(e);
         }
         finally {
-            try {
-                providerStream.close();
-            }
-            catch (Exception e) {
-                LOGGER.log(Level.WARNING, "Exception closing provider stream", e);
-            }
+            CloseableUtil.maybeClose(providerStream, LOGGER);
         }
     }
 

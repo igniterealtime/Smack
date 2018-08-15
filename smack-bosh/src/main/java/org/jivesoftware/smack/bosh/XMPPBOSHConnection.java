@@ -41,6 +41,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.igniterealtime.jbosh.AbstractBody;
@@ -261,28 +262,13 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         isFirstInitialization = false;
 
         // Close down the readers and writers.
-        if (readerPipe != null) {
-            try {
-                readerPipe.close();
-            }
-            catch (Throwable ignore) { /* ignore */ }
-            reader = null;
-        }
-        if (reader != null) {
-            try {
-                reader.close();
-            }
-            catch (Throwable ignore) { /* ignore */ }
-            reader = null;
-        }
-        if (writer != null) {
-            try {
-                writer.close();
-            }
-            catch (Throwable ignore) { /* ignore */ }
-            writer = null;
-        }
+        CloseableUtil.maybeClose(readerPipe, LOGGER);
+        CloseableUtil.maybeClose(reader, LOGGER);
+        CloseableUtil.maybeClose(writer, LOGGER);
 
+        readerPipe = null;
+        reader = null;
+        writer = null;
         readerConsumer = null;
     }
 

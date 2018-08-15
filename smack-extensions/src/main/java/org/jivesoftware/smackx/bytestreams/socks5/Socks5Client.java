@@ -29,11 +29,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 
@@ -97,11 +97,7 @@ public class Socks5Client {
                 }
                 catch (SmackException e) {
                     if (!socket.isClosed()) {
-                        try {
-                            socket.close();
-                        } catch (IOException e2) {
-                            LOGGER.log(Level.WARNING, "Could not close SOCKS5 socket", e2);
-                        }
+                        CloseableUtil.maybeClose(socket, LOGGER);
                     }
                     throw e;
                 }

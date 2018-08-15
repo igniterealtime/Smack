@@ -43,7 +43,7 @@ import org.pgpainless.util.BCUtil;
 
 public abstract class AbstractOpenPgpKeyStore implements OpenPgpKeyStore {
 
-    private static final Logger LOGGER = Logger.getLogger(AbstractOpenPgpKeyStore.class.getName());
+    protected static final Logger LOGGER = Logger.getLogger(AbstractOpenPgpKeyStore.class.getName());
 
     protected Map<BareJid, PGPPublicKeyRingCollection> publicKeyRingCollections = new HashMap<>();
     protected Map<BareJid, PGPSecretKeyRingCollection> secretKeyRingCollections = new HashMap<>();

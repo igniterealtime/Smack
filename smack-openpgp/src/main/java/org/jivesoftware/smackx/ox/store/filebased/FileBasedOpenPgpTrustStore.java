@@ -28,6 +28,7 @@ import java.io.OutputStreamWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smackx.ox.store.abstr.AbstractOpenPgpTrustStore;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpTrustStore;
 import org.jivesoftware.smackx.ox.util.FileUtils;
@@ -82,21 +83,14 @@ public class FileBasedOpenPgpTrustStore extends AbstractOpenPgpTrustStore {
                             file.getAbsolutePath());
                 }
             }
-            reader.close();
             return trust != null ? trust : Trust.undecided;
         } catch (IOException e) {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException ignored) {
-                    // Don't care
-                }
-            }
-
             if (e instanceof FileNotFoundException) {
                 return Trust.undecided;
             }
             throw e;
+        } finally {
+            CloseableUtil.maybeClose(reader, LOGGER);
         }
     }
 
@@ -134,17 +128,8 @@ public class FileBasedOpenPgpTrustStore extends AbstractOpenPgpTrustStore {
             writer = new BufferedWriter(osw);
 
             writer.write(trust.toString());
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException ignored) {
-                    // Don't care
-                }
-            }
-            throw e;
+        } finally {
+            CloseableUtil.maybeClose(writer, LOGGER);
         }
     }
 

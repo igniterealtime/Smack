@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smack.initializer;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.LinkedList;
@@ -27,6 +26,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackInitialization;
 import org.jivesoftware.smack.provider.ProviderFileLoader;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.FileUtils;
 
 /**
@@ -86,14 +86,6 @@ public abstract class UrlInitializer implements SmackInitializer {
     }
 
     private static void maybeClose(InputStream is) {
-        if (is == null) {
-            return;
-        }
-        try {
-            is.close();
-        }
-        catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Could not close input stream", e);
-        }
+        CloseableUtil.maybeClose(is, LOGGER);
     }
 }

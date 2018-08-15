@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.Map;
 
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.ox.store.abstr.AbstractOpenPgpKeyStore;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpKeyStore;
@@ -82,16 +83,8 @@ public class FileBasedOpenPgpKeyStore extends AbstractOpenPgpKeyStore {
         try {
             outputStream = prepareFileOutputStream(file);
             publicKeys.encode(outputStream);
-            outputStream.close();
-        } catch (IOException e) {
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException ignored) {
-                    // Don't care
-                }
-            }
-            throw e;
+        } finally {
+            CloseableUtil.maybeClose(outputStream, LOGGER);
         }
     }
 
@@ -113,16 +106,8 @@ public class FileBasedOpenPgpKeyStore extends AbstractOpenPgpKeyStore {
         try {
             outputStream = prepareFileOutputStream(file);
             secretKeys.encode(outputStream);
-            outputStream.close();
-        } catch (IOException e) {
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException ignored) {
-                    // Don't care
-                }
-            }
-            throw e;
+        } finally {
+            CloseableUtil.maybeClose(outputStream, LOGGER);
         }
     }
 

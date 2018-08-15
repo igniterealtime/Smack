@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Florian Schmaus
+ * Copyright 2015-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,9 @@
  */
 package org.jivesoftware.smack.util.dns.minidns;
 
-import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.KeyManager;
@@ -29,6 +27,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 
 import org.minidns.dane.DaneVerifier;
@@ -64,11 +63,7 @@ public class MiniDnsDaneVerifier implements SmackDaneVerifier {
         // DANE verification was successful, but according to the TLSA RR we also must perform PKIX validation.
         if (expectingTrustManager.hasException()) {
             // PKIX validation has failed. Throw an exception but close the socket first.
-            try {
-                sslSocket.close();
-            } catch (IOException e) {
-                LOGGER.log(Level.FINER, "Closing TLS socket failed", e);
-            }
+            CloseableUtil.maybeClose(sslSocket, LOGGER);
             throw expectingTrustManager.getException();
         }
     }

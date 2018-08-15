@@ -125,6 +125,7 @@ import org.jivesoftware.smack.sm.predicates.Predicate;
 import org.jivesoftware.smack.sm.provider.ParseStreamManagement;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.Async;
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
@@ -506,11 +507,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
         LOGGER.finer("PacketReader has been shut down");
 
-        try {
-                socket.close();
-        } catch (Exception e) {
-                LOGGER.log(Level.WARNING, "shutdown", e);
-        }
+        CloseableUtil.maybeClose(socket, LOGGER);
 
         setWasAuthenticated();
         // If we are able to resume the stream, then don't set

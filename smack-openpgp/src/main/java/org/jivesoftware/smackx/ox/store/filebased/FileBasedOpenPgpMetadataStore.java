@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smackx.ox.store.abstr.AbstractOpenPgpMetadataStore;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpMetadataStore;
 import org.jivesoftware.smackx.ox.util.FileUtils;
@@ -110,18 +111,9 @@ public class FileBasedOpenPgpMetadataStore extends AbstractOpenPgpMetadataStore 
                 }
             }
 
-            reader.close();
             return fingerprintDateMap;
-
-        } catch (IOException e) {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException ignored) {
-                    // Don't care
-                }
-            }
-            throw e;
+        } finally {
+            CloseableUtil.maybeClose(reader, LOGGER);
         }
     }
 
@@ -166,17 +158,8 @@ public class FileBasedOpenPgpMetadataStore extends AbstractOpenPgpMetadataStore 
                 writer.write(line);
                 writer.newLine();
             }
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException ignored) {
-                    // Don't care
-                }
-            }
-            throw e;
+        } finally {
+            CloseableUtil.maybeClose(writer, LOGGER);
         }
     }
 
@@ -184,6 +167,7 @@ public class FileBasedOpenPgpMetadataStore extends AbstractOpenPgpMetadataStore 
         return new File(FileBasedOpenPgpStore.getContactsPath(basePath, contact), ANNOUNCED);
     }
 
+    // TODO: This method appears to be unused. Remove it?
     private File getRetrievedFingerprintsPath(BareJid contact) {
         return new File(FileBasedOpenPgpStore.getContactsPath(basePath, contact), RETRIEVED);
     }

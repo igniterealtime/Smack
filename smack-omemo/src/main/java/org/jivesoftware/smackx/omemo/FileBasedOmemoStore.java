@@ -35,6 +35,8 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.util.CloseableUtil;
+
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
@@ -417,15 +419,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Could not write longs to file.", e);
-
         } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Could not close OutputStream.", e);
-                }
-            }
+            CloseableUtil.maybeClose(out, LOGGER);
         }
     }
 
@@ -447,13 +442,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             LOGGER.log(Level.SEVERE, "Could not read long from file.", e);
             return null;
         } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Could not close InputStream.", e);
-                }
-            }
+            CloseableUtil.maybeClose(in, LOGGER);
         }
 
         return l;
@@ -481,15 +470,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Could not write bytes to file.", e);
-
         } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Could not close OutputStream.", e);
-                }
-            }
+            CloseableUtil.maybeClose(out, LOGGER);
         }
     }
 
@@ -510,15 +492,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             b = null;
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Could not read bytes from file.", e);
-
         } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Could not close InputStream.", e);
-                }
-            }
+            CloseableUtil.maybeClose(in, LOGGER);
         }
 
         return b;
@@ -540,15 +515,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Could not write integers to file.", e);
-
         } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Could not close OutputStream.", e);
-                }
-            }
+            CloseableUtil.maybeClose(out, LOGGER);
         }
     }
 
@@ -577,13 +545,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Could not read integers.", e);
         } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Could not close InputStream.", e);
-                }
-            }
+            CloseableUtil.maybeClose(in, LOGGER);
         }
 
         return integers;
