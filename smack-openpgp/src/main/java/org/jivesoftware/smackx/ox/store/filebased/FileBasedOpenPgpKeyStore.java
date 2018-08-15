@@ -16,9 +16,6 @@
  */
 package org.jivesoftware.smackx.ox.store.filebased;
 
-import static org.jivesoftware.smackx.ox.util.FileUtils.prepareFileInputStream;
-import static org.jivesoftware.smackx.ox.util.FileUtils.prepareFileOutputStream;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -28,6 +25,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.jivesoftware.smack.util.CloseableUtil;
+import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.ox.store.abstr.AbstractOpenPgpKeyStore;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpKeyStore;
@@ -81,7 +79,7 @@ public class FileBasedOpenPgpKeyStore extends AbstractOpenPgpKeyStore {
 
         OutputStream outputStream = null;
         try {
-            outputStream = prepareFileOutputStream(file);
+            outputStream = FileUtils.prepareFileOutputStream(file);
             publicKeys.encode(outputStream);
         } finally {
             CloseableUtil.maybeClose(outputStream, LOGGER);
@@ -104,7 +102,7 @@ public class FileBasedOpenPgpKeyStore extends AbstractOpenPgpKeyStore {
 
         OutputStream outputStream = null;
         try {
-            outputStream = prepareFileOutputStream(file);
+            outputStream = FileUtils.prepareFileOutputStream(file);
             secretKeys.encode(outputStream);
         } finally {
             CloseableUtil.maybeClose(outputStream, LOGGER);
@@ -118,7 +116,7 @@ public class FileBasedOpenPgpKeyStore extends AbstractOpenPgpKeyStore {
 
         FileInputStream inputStream;
         try {
-            inputStream = prepareFileInputStream(file);
+            inputStream = FileUtils.prepareFileInputStream(file);
         } catch (FileNotFoundException e) {
             return null;
         }
@@ -134,7 +132,7 @@ public class FileBasedOpenPgpKeyStore extends AbstractOpenPgpKeyStore {
 
         FileInputStream inputStream;
         try {
-            inputStream = prepareFileInputStream(file);
+            inputStream = FileUtils.prepareFileInputStream(file);
         } catch (FileNotFoundException e) {
             return null;
         }

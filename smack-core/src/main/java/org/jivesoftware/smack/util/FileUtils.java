@@ -18,7 +18,9 @@ package org.jivesoftware.smack.util;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -158,6 +160,40 @@ public final class FileUtils {
         catch (IOException e) {
             LOGGER.log(Level.WARNING, "writeFile", e);
             return false;
+        }
+    }
+
+    public static FileOutputStream prepareFileOutputStream(File file) throws IOException {
+        if (!file.exists()) {
+
+            // Create parent directory
+            File parent = file.getParentFile();
+            if (!parent.exists() && !parent.mkdirs()) {
+                throw new IOException("Cannot create directory " + parent.getAbsolutePath());
+            }
+
+            // Create file
+            if (!file.createNewFile()) {
+                throw new IOException("Cannot create file " + file.getAbsolutePath());
+            }
+        }
+
+        if (file.isDirectory()) {
+            throw new AssertionError("File " + file.getAbsolutePath() + " is not a file!");
+        }
+
+        return new FileOutputStream(file);
+    }
+
+    public static FileInputStream prepareFileInputStream(File file) throws IOException {
+        if (file.exists()) {
+            if (file.isFile()) {
+                return new FileInputStream(file);
+            } else {
+                throw new IOException("File " + file.getAbsolutePath() + " is not a file!");
+            }
+        } else {
+            throw new FileNotFoundException("File " + file.getAbsolutePath() + " not found.");
         }
     }
 }
