@@ -160,9 +160,7 @@ public final class PepManager extends Manager {
      */
     public void publish(Item item, String node) throws NotConnectedException, InterruptedException,
                     NoResponseException, XMPPErrorException, NotAPubSubNodeException {
-        XMPPConnection connection = connection();
-        PubSubManager pubSubManager = PubSubManager.getInstance(connection, connection.getUser().asEntityBareJid());
-        LeafNode pubSubNode = pubSubManager.getNode(node);
+        LeafNode pubSubNode = pepPubSubManager.getNode(node);
         pubSubNode.publish(item);
     }
 
