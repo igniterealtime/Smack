@@ -435,6 +435,14 @@ public final class MamManager extends Manager {
                 return this;
             }
 
+            /**
+             * Query from the last, i.e. most recent, page of the archive. This will return the very last page of the
+             * archive holding the most recent matching messages. You usually would page backwards from there on.
+             *
+             * @return a reference to this builder.
+             * @see <a href="https://xmpp.org/extensions/xep-0059.html#last">XEP-0059 § 2.5. Requesting the Last Page in
+             *      a Result Set</a>
+             */
             public Builder queryLastPage() {
                 return beforeUid("");
             }
