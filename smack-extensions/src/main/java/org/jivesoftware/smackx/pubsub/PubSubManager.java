@@ -233,7 +233,6 @@ public final class PubSubManager extends Manager {
      * exception if it does not.
      *
      * @param id - The unique id of the node
-     * @param <T> type of the node.
      *
      * @return the node
      * @throws XMPPErrorException The node does not exist
@@ -242,7 +241,7 @@ public final class PubSubManager extends Manager {
      * @throws InterruptedException
      * @throws NotAPubSubNodeException
      */
-    public <T extends Node> T getNode(String id) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotAPubSubNodeException {
+    public Node getNode(String id) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotAPubSubNodeException {
         Node node = nodeMap.get(id);
 
         if (node == null) {
@@ -263,9 +262,7 @@ public final class PubSubManager extends Manager {
             }
             nodeMap.put(id, node);
         }
-        @SuppressWarnings("unchecked")
-        T res = (T) node;
-        return res;
+        return node;
     }
 
     /**
@@ -283,7 +280,7 @@ public final class PubSubManager extends Manager {
     public LeafNode getOrCreateLeafNode(final String id)
                     throws NoResponseException, NotConnectedException, InterruptedException, XMPPErrorException, NotALeafNodeException {
         try {
-            return getNode(id);
+            return getLeafNode(id);
         }
         catch (NotAPubSubNodeException e) {
             return createNode(id);
@@ -297,7 +294,7 @@ public final class PubSubManager extends Manager {
                     if (e2.getStanzaError().getCondition() == Condition.conflict) {
                         // The node was created in the meantime, re-try getNode(). Note that this case should be rare.
                         try {
-                            return getNode(id);
+                            return getLeafNode(id);
                         }
                         catch (NotAPubSubNodeException e) {
                             // Should not happen
