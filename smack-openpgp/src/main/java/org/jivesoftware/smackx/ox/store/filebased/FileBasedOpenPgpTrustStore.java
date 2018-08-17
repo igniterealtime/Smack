@@ -102,19 +102,7 @@ public class FileBasedOpenPgpTrustStore extends AbstractOpenPgpTrustStore {
             FileUtils.maybeDeleteFileOrThrow(file);
         }
 
-        File parent = file.getParentFile();
-        if (!parent.exists() && !parent.mkdirs()) {
-            throw new IOException("Cannot create directory " + parent.getAbsolutePath());
-        }
-        if (!file.exists()) {
-            if (!file.createNewFile()) {
-                throw new IOException("Cannot create file " + file.getAbsolutePath());
-            }
-        } else {
-            if (file.isDirectory()) {
-                throw new IOException("File " + file.getAbsolutePath() + " is a directory.");
-            }
-        }
+        FileUtils.maybeCreateFileWithParentDirectories(file);
 
         BufferedWriter writer = null;
         try {

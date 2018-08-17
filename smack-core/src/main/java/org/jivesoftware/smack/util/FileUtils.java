@@ -207,4 +207,28 @@ public final class FileUtils {
             throw new IOException("Could not delete file " + file);
         }
     }
+
+    public static void maybeCreateFileWithParentDirectories(File file) throws IOException {
+        File parent = file.getParentFile();
+        if (!parent.exists() && !parent.mkdirs()) {
+            throw new IOException("Cannot create directory " + parent);
+        }
+
+        if (file.isFile()) {
+            return;
+        }
+
+        if (!file.exists()) {
+            if (file.createNewFile()) {
+                return;
+            }
+            throw new IOException("Cannot create file " + file);
+        }
+
+        if (file.isDirectory()) {
+            throw new IOException("File " + file + " exists, but is a directory.");
+        } else {
+            throw new IOException("File " + file + " exists, but is neither a file nor a directory");
+        }
+    }
 }
