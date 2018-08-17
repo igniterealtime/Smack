@@ -79,6 +79,7 @@ public class FileBasedOpenPgpMetadataStore extends AbstractOpenPgpMetadataStore 
     }
 
     static Map<OpenPgpV4Fingerprint, Date> readFingerprintsAndDates(File source) throws IOException {
+        // TODO: Why do we not throw a FileNotFoundException here?
         if (!source.exists() || source.isDirectory()) {
             return new HashMap<>();
         }
