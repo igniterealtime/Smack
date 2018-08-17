@@ -113,13 +113,10 @@ public class FileBasedOpenPgpKeyStore extends AbstractOpenPgpKeyStore {
     public PGPPublicKeyRingCollection readPublicKeysOf(BareJid owner)
             throws IOException, PGPException {
         File file = getPublicKeyRingPath(owner);
-
-        FileInputStream inputStream;
-        try {
-            inputStream = FileUtils.prepareFileInputStream(file);
-        } catch (FileNotFoundException e) {
+        if (!file.exists()) {
             return null;
         }
+        FileInputStream inputStream = FileUtils.prepareFileInputStream(file);
 
         PGPPublicKeyRingCollection collection = PGPainless.readKeyRing().publicKeyRingCollection(inputStream);
         inputStream.close();
@@ -129,13 +126,10 @@ public class FileBasedOpenPgpKeyStore extends AbstractOpenPgpKeyStore {
     @Override
     public PGPSecretKeyRingCollection readSecretKeysOf(BareJid owner) throws IOException, PGPException {
         File file = getSecretKeyRingPath(owner);
-
-        FileInputStream inputStream;
-        try {
-            inputStream = FileUtils.prepareFileInputStream(file);
-        } catch (FileNotFoundException e) {
+        if (!file.exists()) {
             return null;
         }
+        FileInputStream inputStream = FileUtils.prepareFileInputStream(file);
 
         PGPSecretKeyRingCollection collection = PGPainless.readKeyRing().secretKeyRingCollection(inputStream);
         inputStream.close();
