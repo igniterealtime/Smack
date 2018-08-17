@@ -79,8 +79,8 @@ public class FileBasedOpenPgpTrustStore extends AbstractOpenPgpTrustStore {
                     trust = Trust.valueOf(line);
                     break;
                 } catch (IllegalArgumentException e) {
-                    LOGGER.log(Level.WARNING, "Skipping invalid trust record in line " + lineNr + " of file " +
-                            file.getAbsolutePath());
+                    LOGGER.log(Level.WARNING, "Skipping invalid trust record in line " + lineNr + " \"" + line
+                            + "\" of file " + file.getAbsolutePath());
                 }
             }
             return trust != null ? trust : Trust.undecided;
