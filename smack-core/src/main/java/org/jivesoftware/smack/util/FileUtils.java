@@ -196,4 +196,15 @@ public final class FileUtils {
             throw new FileNotFoundException("File " + file.getAbsolutePath() + " not found.");
         }
     }
+
+    public static void maybeDeleteFileOrThrow(File file) throws IOException {
+        if (!file.exists()) {
+            return;
+        }
+
+        boolean successfullyDeleted = file.delete();
+        if (!successfullyDeleted) {
+            throw new IOException("Could not delete file " + file);
+        }
+    }
 }

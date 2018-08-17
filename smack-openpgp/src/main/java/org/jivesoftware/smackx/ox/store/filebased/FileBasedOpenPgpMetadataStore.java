@@ -122,12 +122,7 @@ public class FileBasedOpenPgpMetadataStore extends AbstractOpenPgpMetadataStore 
             throws IOException {
 
         if (data == null || data.isEmpty()) {
-            if (!destination.exists()) {
-                return;
-            }
-            if (!destination.delete()) {
-                throw new IOException("Cannot delete file " + destination.getAbsolutePath());
-            }
+            FileUtils.maybeDeleteFileOrThrow(destination);
             return;
         }
 

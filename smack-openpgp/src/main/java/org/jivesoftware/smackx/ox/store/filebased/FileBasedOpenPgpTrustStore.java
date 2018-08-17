@@ -99,12 +99,7 @@ public class FileBasedOpenPgpTrustStore extends AbstractOpenPgpTrustStore {
         File file = getTrustPath(owner, fingerprint);
 
         if (trust == null || trust == Trust.undecided) {
-            if (!file.exists()) {
-                return;
-            }
-            if (!file.delete()) {
-                throw new IOException("Could not delete file " + file.getAbsolutePath());
-            }
+            FileUtils.maybeDeleteFileOrThrow(file);
         }
 
         File parent = file.getParentFile();

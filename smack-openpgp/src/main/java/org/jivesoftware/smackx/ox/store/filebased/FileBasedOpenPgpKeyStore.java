@@ -18,7 +18,6 @@ package org.jivesoftware.smackx.ox.store.filebased;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
@@ -68,12 +67,7 @@ public class FileBasedOpenPgpKeyStore extends AbstractOpenPgpKeyStore {
         File file = getPublicKeyRingPath(owner);
 
         if (publicKeys == null) {
-            if (!file.exists()) {
-                return;
-            }
-            if (!file.delete()) {
-                throw new IOException("Could not delete file " + file.getAbsolutePath());
-            }
+            FileUtils.maybeDeleteFileOrThrow(file);
             return;
         }
 
@@ -91,12 +85,7 @@ public class FileBasedOpenPgpKeyStore extends AbstractOpenPgpKeyStore {
         File file = getSecretKeyRingPath(owner);
 
         if (secretKeys == null) {
-            if (!file.exists()) {
-                return;
-            }
-            if (!file.delete()) {
-                throw new IOException("Could not delete file " + file.getAbsolutePath());
-            }
+            FileUtils.maybeDeleteFileOrThrow(file);
             return;
         }
 
