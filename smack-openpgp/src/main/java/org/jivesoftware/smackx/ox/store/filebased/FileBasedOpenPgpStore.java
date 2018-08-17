@@ -36,6 +36,7 @@ public class FileBasedOpenPgpStore extends AbstractOpenPgpStore {
     }
 
     public static File getContactsPath(File basePath, BareJid jid) {
+        // TODO: This is not filesystem agnostic, the jid should be base32 encoded.
         return new File(basePath, Objects.requireNonNull(jid.toString()));
     }
 

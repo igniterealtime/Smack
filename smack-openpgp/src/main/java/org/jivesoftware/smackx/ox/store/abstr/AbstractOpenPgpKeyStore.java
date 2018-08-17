@@ -157,6 +157,7 @@ public abstract class AbstractOpenPgpKeyStore implements OpenPgpKeyStore {
     public void importSecretKey(BareJid owner, PGPSecretKeyRing secretKeys)
             throws IOException, PGPException, MissingUserIdOnKeyException {
 
+        // TODO: Avoid 'new' use instance method.
         if (!new BareJidUserId.SecRingSelectionStrategy().accept(owner, secretKeys)) {
             throw new MissingUserIdOnKeyException(owner, new OpenPgpV4Fingerprint(secretKeys));
         }
