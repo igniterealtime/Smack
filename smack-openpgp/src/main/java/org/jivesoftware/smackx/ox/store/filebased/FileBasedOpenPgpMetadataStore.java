@@ -56,7 +56,6 @@ import org.pgpainless.key.OpenPgpV4Fingerprint;
 public class FileBasedOpenPgpMetadataStore extends AbstractOpenPgpMetadataStore {
 
     public static final String ANNOUNCED = "announced.list";
-    public static final String RETRIEVED = "retrieved.list";
 
     private static final Logger LOGGER = Logger.getLogger(FileBasedOpenPgpMetadataStore.class.getName());
 
@@ -146,10 +145,5 @@ public class FileBasedOpenPgpMetadataStore extends AbstractOpenPgpMetadataStore 
 
     private File getAnnouncedFingerprintsPath(BareJid contact) {
         return new File(FileBasedOpenPgpStore.getContactsPath(basePath, contact), ANNOUNCED);
-    }
-
-    // TODO: This method appears to be unused. Remove it?
-    private File getRetrievedFingerprintsPath(BareJid contact) {
-        return new File(FileBasedOpenPgpStore.getContactsPath(basePath, contact), RETRIEVED);
     }
 }
