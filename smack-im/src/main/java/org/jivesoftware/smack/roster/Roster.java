@@ -33,7 +33,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -308,7 +308,7 @@ public final class Roster extends Manager {
         }, PresenceTypeFilter.SUBSCRIBE);
 
         // Listen for connection events
-        connection.addConnectionListener(new AbstractConnectionListener() {
+        connection.addConnectionListener(new AbstractConnectionClosedListener() {
 
             @Override
             public void authenticated(XMPPConnection connection, boolean resumed) {
@@ -333,11 +333,10 @@ public final class Roster extends Manager {
             }
 
             @Override
-            public void connectionClosed() {
+            public void connectionTerminated(){
                 // Changes the presence available contacts to unavailable
                 setOfflinePresencesAndResetLoaded();
             }
-
         });
 
         connection.addStanzaSendingListener(new StanzaListener() {
