@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2011-2014 Florian Schmaus
+ * Copyright © 2011-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
     private static final Logger LOGGER = Logger.getLogger(SimpleDirectoryPersistentCache.class.getName());
 
     private final File cacheDir;
-    private final StringEncoder filenameEncoder;
+    private final StringEncoder<String> filenameEncoder;
 
     /**
      * Creates a new SimpleDirectoryPersistentCache Object. Make sure that the
@@ -69,7 +69,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
      * @param cacheDir The directory where the cache will be stored.
      * @param filenameEncoder Encodes the node string into a filename.
      */
-    public SimpleDirectoryPersistentCache(File cacheDir, StringEncoder filenameEncoder) {
+    public SimpleDirectoryPersistentCache(File cacheDir, StringEncoder<String> filenameEncoder) {
         if (!cacheDir.exists())
             throw new IllegalStateException("Cache directory \"" + cacheDir + "\" does not exist");
         if (!cacheDir.isDirectory())

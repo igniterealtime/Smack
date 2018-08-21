@@ -75,7 +75,7 @@ public class EntityCapsManagerTest extends InitExtensions {
         assertTrue(di.containsDuplicateIdentities());
     }
 
-    private static void testSimpleDirectoryCache(StringEncoder stringEncoder) throws IOException {
+    private static void testSimpleDirectoryCache(StringEncoder<String> stringEncoder) throws IOException {
 
         EntityCapsPersistentCache cache = new SimpleDirectoryPersistentCache(createTempDirectory());
         EntityCapsManager.setPersistentCache(cache);

@@ -33,7 +33,7 @@ import org.jivesoftware.smack.util.stringencoder.StringEncoder;
  *
  * @author Robin Collier
  */
-public final class Java7Base64UrlSafeEncoder implements StringEncoder {
+public final class Java7Base64UrlSafeEncoder implements StringEncoder<String> {
 
     private static final Java7Base64UrlSafeEncoder instance = new Java7Base64UrlSafeEncoder();
 

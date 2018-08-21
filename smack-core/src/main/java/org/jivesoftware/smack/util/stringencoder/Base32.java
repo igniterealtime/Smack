@@ -34,7 +34,7 @@ import org.jivesoftware.smack.util.StringUtils;
  */
 public class Base32 {
 
-    private static final StringEncoder base32Stringencoder = new StringEncoder() {
+    private static final StringEncoder<String> base32Stringencoder = new StringEncoder<String>() {
 
         @Override
         public String encode(String string) {
@@ -49,7 +49,7 @@ public class Base32 {
     };
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ2345678";
 
-    public static StringEncoder getStringEncoder() {
+    public static StringEncoder<String> getStringEncoder() {
         return base32Stringencoder;
     }
 
