@@ -39,32 +39,41 @@ public interface RosterStore {
 
     /**
      * This method returns the roster item in this store for the given JID.
+     *
      * @param bareJid The bare JID of the RosterEntry
      * @return The {@link org.jivesoftware.smack.roster.RosterEntry} which belongs to that user
      */
     RosterPacket.Item getEntry(Jid bareJid);
+
     /**
      * This method returns the version number as specified by the "ver" attribute
      * of the local store. For a fresh store, this MUST be the empty string.
+     *
      * @return local roster version
      */
     String getRosterVersion();
+
     /**
      * This method stores a new roster entry in this store or updates an existing one.
+     *
      * @param item the entry to store
      * @param version the new roster version
      * @return True if successful
      */
     boolean addEntry(RosterPacket.Item item, String version);
+
     /**
      * This method updates the store so that it contains only the given entries.
+     *
      * @param items the entries to store
      * @param version the new roster version
      * @return True if successful
      */
     boolean resetEntries(Collection<RosterPacket.Item> items, String version);
+
     /**
      * Removes an entry from the store.
+     *
      * @param bareJid The bare JID of the entry to be removed
      * @param version the new roster version
      * @return True if successful
