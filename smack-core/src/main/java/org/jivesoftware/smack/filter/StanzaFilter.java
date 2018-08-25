@@ -41,6 +41,11 @@ import org.jivesoftware.smack.packet.Stanza;
  * // Create a new stanza collector using the filter we created.
  * StanzaCollector myCollector = connection.createStanzaCollector(myFilter);
  * </pre>
+ * <p>
+ * As a rule of thumb: If you have a predicate method, that is, a method which takes a single Stanza as argument, is pure
+ * (side effect free) and returns only a boolean, then it is a good indicator that the logic should be put into a
+ * {@link StanzaFilter} (and be referenced in {@link org.jivesoftware.smack.StanzaListener}).
+ * </p>
  *
  * @see org.jivesoftware.smack.StanzaCollector
  * @see org.jivesoftware.smack.StanzaListener
