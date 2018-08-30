@@ -253,6 +253,16 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      */
     @Override
     protected void shutdown() {
+
+        if (client != null) {
+            try {
+                client.disconnect();
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "shutdown", e);
+            }
+            client = null;
+        }
+
         setWasAuthenticated();
         sessionID = null;
         done = true;
