@@ -46,6 +46,7 @@ import org.jivesoftware.smack.XMPPException;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
@@ -656,10 +657,20 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
 
         // refreshOmemoDeviceList;
         OmemoDeviceListElement publishedList;
+
         try {
             publishedList = fetchDeviceList(connection, userDevice.getJid());
         } catch (PubSubException.NotAPubSubNodeException e) {
+            // Node is not a PubSub node. This might happen on some ejabberd servers.
             publishedList = null;
+        } catch (XMPPException.XMPPErrorException e) {
+            if (e.getStanzaError().getCondition() == StanzaError.Condition.item_not_found) {
+                // Items not found -> items do not exist
+                publishedList = null;
+            } else {
+                // Some other error -> throw
+                throw e;
+            }
         }
         if (publishedList == null) {
             publishedList = new OmemoDeviceListElement_VAxolotl(Collections.<Integer>emptySet());
