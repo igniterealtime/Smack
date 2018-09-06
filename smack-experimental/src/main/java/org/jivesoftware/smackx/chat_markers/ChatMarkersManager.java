@@ -92,6 +92,8 @@ public final class ChatMarkersManager extends Manager {
 
     private final AsyncButOrdered<Chat> asyncButOrdered = new AsyncButOrdered<>();
 
+    private final ChatManager chatManager;
+
     /**
      * Get the singleton instance of ChatMarkersManager.
      *
@@ -111,6 +113,9 @@ public final class ChatMarkersManager extends Manager {
 
     private ChatMarkersManager(XMPPConnection connection) {
         super(connection);
+
+        chatManager = ChatManager.getInstanceFor(connection);
+
         connection.addStanzaInterceptor(new StanzaListener() {
             @Override
             public void processStanza(Stanza packet)
@@ -135,7 +140,7 @@ public final class ChatMarkersManager extends Manager {
 
                 EntityFullJid fullFrom = message.getFrom().asEntityFullJidIfPossible();
                 EntityBareJid bareFrom = fullFrom.asEntityBareJid();
-                final Chat chat = ChatManager.getInstanceFor(connection()).chatWith(bareFrom);
+                final Chat chat = chatManager.chatWith(bareFrom);
 
                 asyncButOrdered.performAsyncButOrdered(chat, new Runnable() {
                     @Override
