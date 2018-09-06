@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Fernando Ramirez
+ * Copyright © 2016 Fernando Ramirez, 2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,6 @@ import org.jivesoftware.smackx.chat_markers.filter.EligibleForChatMarker;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.EntityFullJid;
 
 /**
  * Chat Markers Manager class (XEP-0333).
@@ -138,8 +137,10 @@ public final class ChatMarkersManager extends Manager {
                     SmackException.NotLoggedInException {
                 final Message message = (Message) packet;
 
-                EntityFullJid fullFrom = message.getFrom().asEntityFullJidIfPossible();
-                EntityBareJid bareFrom = fullFrom.asEntityBareJid();
+                // Note that this listener is used together with a PossibleFromTypeFilter.ENTITY_BARE_JID filter, hence
+                // every message is guaranteed to have a from address which is representable as bare JID.
+                EntityBareJid bareFrom = message.getFrom().asEntityBareJidOrThrow();
+
                 final Chat chat = chatManager.chatWith(bareFrom);
 
                 asyncButOrdered.performAsyncButOrdered(chat, new Runnable() {
