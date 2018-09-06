@@ -35,6 +35,7 @@ public final class MessageTypeFilter extends FlexibleStanzaTypeFilter<Message> {
     public static final StanzaFilter HEADLINE = new MessageTypeFilter(Type.headline);
     public static final StanzaFilter ERROR = new MessageTypeFilter(Type.error);
     public static final StanzaFilter NORMAL_OR_CHAT = new OrFilter(NORMAL, CHAT);
+    public static final StanzaFilter NORMAL_OR_CHAT_OR_GROUPCHAT  = new OrFilter(NORMAL_OR_CHAT, GROUPCHAT);
     public static final StanzaFilter NORMAL_OR_CHAT_OR_HEADLINE = new OrFilter(NORMAL_OR_CHAT,
                     HEADLINE);
 
