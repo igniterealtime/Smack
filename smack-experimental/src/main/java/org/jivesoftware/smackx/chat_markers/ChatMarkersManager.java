@@ -74,14 +74,14 @@ public final class ChatMarkersManager extends Manager {
 
     // @FORMATTER:OFF
     private static final StanzaFilter INCOMING_MESSAGE_FILTER = new AndFilter(
-            MessageTypeFilter.NORMAL_OR_CHAT_OR_GROUPCHAT,
+            MessageTypeFilter.NORMAL_OR_CHAT,
             new StanzaExtensionFilter(ChatMarkersElements.NAMESPACE),
             PossibleFromTypeFilter.ENTITY_BARE_JID,
             EligibleForChatMarker.INSTANCE
     );
 
     private static final StanzaFilter OUTGOING_MESSAGE_FILTER = new AndFilter(
-            MessageTypeFilter.NORMAL_OR_CHAT_OR_GROUPCHAT,
+            MessageTypeFilter.NORMAL_OR_CHAT,
             MessageWithBodiesFilter.INSTANCE,
             new NotFilter(ChatMarkersFilter.INSTANCE),
             EligibleForChatMarker.INSTANCE
