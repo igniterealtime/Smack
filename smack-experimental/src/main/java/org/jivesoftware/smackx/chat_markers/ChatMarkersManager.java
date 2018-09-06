@@ -204,44 +204,4 @@ public final class ChatMarkersManager extends Manager {
     public boolean removeIncomingChatMarkerMessageListener(ChatMarkersListener listener) {
         return incomingListeners.remove(listener);
     }
-
-    public void markMessageAsReceived(Message message)
-            throws
-            NotConnectedException,
-            InterruptedException,
-            IllegalArgumentException {
-        if (message == null) {
-            throw new IllegalArgumentException("To and From needed");
-        }
-        message.addExtension(new ChatMarkersElements.ReceivedExtension(message.getStanzaId()));
-        sendChatMarkerMessage(message);
-    }
-
-    public void markMessageAsDisplayed(Message message)
-            throws
-            NotConnectedException,
-            InterruptedException,
-            IllegalArgumentException {
-        if (message == null) {
-            throw new IllegalArgumentException("To and From needed");
-        }
-        message.addExtension(new ChatMarkersElements.DisplayedExtension(message.getStanzaId()));
-        sendChatMarkerMessage(message);
-    }
-
-    public void markMessageAsAcknowledged(Message message)
-            throws
-            NotConnectedException,
-            InterruptedException,
-            IllegalArgumentException {
-        if (message == null) {
-            throw new IllegalArgumentException("To and From needed");
-        }
-        message.addExtension(new ChatMarkersElements.AcknowledgedExtension(message.getStanzaId()));
-        sendChatMarkerMessage(message);
-    }
-
-    private void sendChatMarkerMessage(Message message) throws NotConnectedException, InterruptedException {
-        connection().sendStanza(message);
-    }
 }
