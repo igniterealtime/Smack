@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.chat_markers.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.chat_markers.ChatMarkersState;
 
@@ -93,7 +94,7 @@ public class ChatMarkersElements {
         private final String id;
 
         public ReceivedExtension(String id) {
-            this.id = id;
+            this.id = StringUtils.requireNotNullNorEmpty(id, "Message ID must not be null");
         }
 
         /**
@@ -146,7 +147,7 @@ public class ChatMarkersElements {
         private final String id;
 
         public DisplayedExtension(String id) {
-            this.id = id;
+            this.id = StringUtils.requireNotNullNorEmpty(id, "Message ID must not be null");
         }
 
         /**
@@ -199,7 +200,7 @@ public class ChatMarkersElements {
         private final String id;
 
         public AcknowledgedExtension(String id) {
-            this.id = id;
+            this.id = StringUtils.requireNotNullNorEmpty(id, "Message id must not be null");
         }
 
         /**
