@@ -16,10 +16,10 @@
  */
 package org.jivesoftware.smackx.chat_markers;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -87,11 +87,15 @@ public final class ChatMarkersManager extends Manager {
     );
     // @FORMATTER:ON
 
-    private final Set<ChatMarkersListener> incomingListeners = new CopyOnWriteArraySet<>();
+    private final Set<ChatMarkersListener> incomingListeners = new HashSet<>();
 
     private final AsyncButOrdered<Chat> asyncButOrdered = new AsyncButOrdered<>();
 
     private final ChatManager chatManager;
+
+    private final ServiceDiscoveryManager serviceDiscoveryManager;
+
+    private boolean enabled;
 
     /**
      * Get the singleton instance of ChatMarkersManager.
@@ -166,7 +170,7 @@ public final class ChatMarkersManager extends Manager {
             }
         }, INCOMING_MESSAGE_FILTER);
 
-        ServiceDiscoveryManager.getInstanceFor(connection).addFeature(ChatMarkersElements.NAMESPACE);
+        serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
     }
 
     /**
@@ -191,8 +195,13 @@ public final class ChatMarkersManager extends Manager {
      * @param listener ChatMarkersListener
      * @return true, if the listener was not registered before
      */
-    public boolean addIncomingChatMarkerMessageListener(ChatMarkersListener listener) {
-        return incomingListeners.add(listener);
+    public synchronized boolean addIncomingChatMarkerMessageListener(ChatMarkersListener listener) {
+        boolean res = incomingListeners.add(listener);
+        if (!enabled) {
+            serviceDiscoveryManager.addFeature(ChatMarkersElements.NAMESPACE);
+            enabled = true;
+        }
+        return res;
     }
 
     /**
@@ -201,7 +210,12 @@ public final class ChatMarkersManager extends Manager {
      * @param listener ChatMarkersListener
      * @return true, if the listener was registered before
      */
-    public boolean removeIncomingChatMarkerMessageListener(ChatMarkersListener listener) {
-        return incomingListeners.remove(listener);
+    public synchronized boolean removeIncomingChatMarkerMessageListener(ChatMarkersListener listener) {
+        boolean res = incomingListeners.remove(listener);
+        if (incomingListeners.isEmpty() && enabled) {
+            serviceDiscoveryManager.removeFeature(ChatMarkersElements.NAMESPACE);
+            enabled = false;
+        }
+        return res;
     }
 }
