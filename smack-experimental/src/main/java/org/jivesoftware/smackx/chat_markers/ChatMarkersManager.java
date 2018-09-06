@@ -125,7 +125,7 @@ public final class ChatMarkersManager extends Manager {
                     SmackException.NotLoggedInException {
                 Message message = (Message) packet;
                 // add a markable extension
-                message.addExtension(new ChatMarkersElements.MarkableExtension());
+                message.addExtension(ChatMarkersElements.MarkableExtension.INSTANCE);
             }
         }, OUTGOING_MESSAGE_FILTER);
 

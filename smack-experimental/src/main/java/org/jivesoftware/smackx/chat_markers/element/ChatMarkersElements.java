@@ -41,14 +41,16 @@ public class ChatMarkersElements {
      * @author Fernando Ramirez
      *
      */
-    public static class MarkableExtension implements ExtensionElement {
+    public static final class MarkableExtension implements ExtensionElement {
+
+        public static final MarkableExtension INSTANCE = new MarkableExtension();
 
         /**
          * markable element.
          */
         public static final String ELEMENT = ChatMarkersState.markable.toString();
 
-        public MarkableExtension() {
+        private MarkableExtension() {
         }
 
         @Override

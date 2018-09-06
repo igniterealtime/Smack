@@ -41,7 +41,7 @@ public class MarkableExtensionTest {
         Message message = new Message(JidCreate.from("ingrichard@royalty.england.lit/throne"));
         message.setStanzaId("message-1");
         message.setBody("My lord, dispatch; read o'er these articles.");
-        message.addExtension(new ChatMarkersElements.MarkableExtension());
+        message.addExtension(ChatMarkersElements.MarkableExtension.INSTANCE);
         Assert.assertEquals(markableMessageStanza, message.toXML(null).toString());
     }
 

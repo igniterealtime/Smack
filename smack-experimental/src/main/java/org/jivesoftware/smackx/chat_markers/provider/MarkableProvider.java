@@ -34,7 +34,7 @@ public class MarkableProvider extends ExtensionElementProvider<MarkableExtension
 
     @Override
     public MarkableExtension parse(XmlPullParser parser, int initialDepth) throws Exception {
-        return new MarkableExtension();
+        return MarkableExtension.INSTANCE;
     }
 
 }
