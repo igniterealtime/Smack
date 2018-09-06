@@ -44,7 +44,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements;
 import org.jivesoftware.smackx.chat_markers.filter.ChatMarkersFilter;
-import org.jivesoftware.smackx.chat_markers.filter.EligibleForChatMarker;
+import org.jivesoftware.smackx.chat_markers.filter.EligibleForChatMarkerFilter;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 import org.jxmpp.jid.EntityBareJid;
@@ -76,14 +76,14 @@ public final class ChatMarkersManager extends Manager {
             MessageTypeFilter.NORMAL_OR_CHAT,
             new StanzaExtensionFilter(ChatMarkersElements.NAMESPACE),
             PossibleFromTypeFilter.ENTITY_BARE_JID,
-            EligibleForChatMarker.INSTANCE
+            EligibleForChatMarkerFilter.INSTANCE
     );
 
     private static final StanzaFilter OUTGOING_MESSAGE_FILTER = new AndFilter(
             MessageTypeFilter.NORMAL_OR_CHAT,
             MessageWithBodiesFilter.INSTANCE,
             new NotFilter(ChatMarkersFilter.INSTANCE),
-            EligibleForChatMarker.INSTANCE
+            EligibleForChatMarkerFilter.INSTANCE
     );
     // @FORMATTER:ON
 

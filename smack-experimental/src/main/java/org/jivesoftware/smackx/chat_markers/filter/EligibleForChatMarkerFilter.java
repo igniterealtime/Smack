@@ -29,11 +29,11 @@ import org.jivesoftware.smackx.chatstates.ChatStateManager;
  * @see <a href="http://xmpp.org/extensions/xep-0333.html">XEP-0333: Chat
  * Markers</a>
  */
-public final class EligibleForChatMarker extends StanzaExtensionFilter {
+public final class EligibleForChatMarkerFilter extends StanzaExtensionFilter {
 
-    public static final EligibleForChatMarker INSTANCE = new EligibleForChatMarker(ChatStateManager.NAMESPACE);
+    public static final EligibleForChatMarkerFilter INSTANCE = new EligibleForChatMarkerFilter(ChatStateManager.NAMESPACE);
 
-    private EligibleForChatMarker(String namespace) {
+    private EligibleForChatMarkerFilter(String namespace) {
         super(namespace);
     }
 
