@@ -62,7 +62,7 @@ import org.jxmpp.jid.EntityFullJid;
  * <p>
  * Note that <b>it is important to match the 'from' attribute of the message wrapping a carbon copy</b>, as otherwise it would
  * may be possible for others to impersonate users. Smack's CarbonManager takes care of that in
- * {@link CarbonCopyReceivedListener}s which where registered with
+ * {@link CarbonCopyReceivedListener}s which were registered with
  * {@link #addCarbonCopyReceivedListener(CarbonCopyReceivedListener)}.
  * </p>
  * <p>
