@@ -29,7 +29,7 @@ Smack uses the following logic to decide the debugger console to use:
 
 `java -Dsmack.debuggerClass=my.company.com.MyDebugger SomeApp `
 
-  2. If step 1 fails then Smack will try to use the enhanced debugger. The file `smackx-debug.jar` contains the enhanced debugger. Therefore you will need to place the jar file in the classpath. For situations where space is an issue you may want to only deploy `smack-core.jar` in which case the enhanced and lite debugger won't be available, but only the console debugger.
+  2. If step 1 fails then Smack will try to use the enhanced debugger. The file `smack-debug.jar` contains the enhanced debugger. Therefore you will need to place the jar file in the classpath. For situations where space is an issue you may want to only deploy `smack-core.jar` in which case the enhanced and lite debugger won't be available, but only the console debugger.
 
   3. The last option if the previous two steps fail is to use the console debugger. The console debugger is a very good option for situations where you need to have low memory footprint.
 
