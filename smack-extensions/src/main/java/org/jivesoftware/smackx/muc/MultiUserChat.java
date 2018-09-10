@@ -47,6 +47,7 @@ import org.jivesoftware.smack.filter.MessageWithSubjectFilter;
 import org.jivesoftware.smack.filter.MessageWithThreadFilter;
 import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.OrFilter;
+import org.jivesoftware.smack.filter.PossibleFromTypeFilter;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
@@ -203,11 +204,7 @@ public class MultiUserChat {
             @Override
             public void processStanza(final Stanza packet) {
                 final Presence presence = (Presence) packet;
-                final EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
-                if (from == null) {
-                    LOGGER.warning("Presence not from a full JID: " + presence.getFrom());
-                    return;
-                }
+                final EntityFullJid from = presence.getFrom().asEntityFullJidOrThrow();
                 final EntityFullJid myRoomJID = myRoomJid;
                 final boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
 
@@ -342,7 +339,8 @@ public class MultiUserChat {
         // Setup the messageListeners and presenceListeners *before* the join presence is send.
         connection.addSyncStanzaListener(messageListener, fromRoomGroupchatFilter);
         connection.addSyncStanzaListener(presenceListener, new AndFilter(fromRoomFilter,
-                        StanzaTypeFilter.PRESENCE));
+                        StanzaTypeFilter.PRESENCE,
+                        PossibleFromTypeFilter.ENTITY_FULL_JID));
         // @formatter:off
         connection.addSyncStanzaListener(subjectListener,
                         new AndFilter(fromRoomFilter,
