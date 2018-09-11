@@ -58,10 +58,16 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
     }
 
     private void insert(E e) {
+        insert(e, true);
+    }
+
+    private void insert(E e, boolean signalNotEmpty) {
         items[putIndex] = e;
         putIndex = inc(putIndex);
         count++;
-        notEmpty.signal();
+        if (signalNotEmpty) {
+            notEmpty.signal();
+        }
     }
 
     private E extract() {
@@ -226,6 +232,22 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
         }
     }
 
+    private void putInternal(E e, boolean signalNotEmpty) throws InterruptedException {
+        assert lock.isHeldByCurrentThread();
+
+        while (isFull()) {
+            try {
+                notFull.await();
+                checkNotShutdown();
+            }
+            catch (InterruptedException ie) {
+                notFull.signal();
+                throw ie;
+            }
+        }
+        insert(e, signalNotEmpty);
+    }
+
     /**
      * Inserts the specified element into this queue, waiting if necessary
      * for space to become available.
@@ -246,19 +268,23 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
         lock.lockInterruptibly();
 
         try {
-            while (isFull()) {
-                try {
-                    notFull.await();
-                    checkNotShutdown();
-                }
-                catch (InterruptedException ie) {
-                    notFull.signal();
-                    throw ie;
-                }
-            }
-            insert(e);
+            putInternal(e, true);
         }
         finally {
+            lock.unlock();
+        }
+    }
+
+    public void putAll(Collection<? extends E> elements) throws InterruptedException {
+        checkNotNull(elements);
+        lock.lockInterruptibly();
+
+        try {
+            for (E element : elements) {
+                putInternal(element, false);
+            }
+        } finally {
+            notEmpty.signalAll();
             lock.unlock();
         }
     }
