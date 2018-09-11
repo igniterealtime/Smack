@@ -100,6 +100,9 @@ public class StreamOpen implements Nonza {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement(getElementName());
         // We always want to state 'xmlns' for stream open tags.
+        if (enclosingNamespace == null) {
+            enclosingNamespace = CLIENT_NAMESPACE;
+        }
         xml.attribute("xmlns", enclosingNamespace);
 
         xml.attribute("to", to);
