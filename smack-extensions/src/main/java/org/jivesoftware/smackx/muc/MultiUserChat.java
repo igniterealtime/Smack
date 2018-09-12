@@ -205,7 +205,6 @@ public class MultiUserChat {
                 final Presence presence = (Presence) packet;
                 final EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
                 if (from == null) {
-                    LOGGER.warning("Presence not from a full JID: " + presence.getFrom());
                     return;
                 }
                 final EntityFullJid myRoomJID = myRoomJid;
