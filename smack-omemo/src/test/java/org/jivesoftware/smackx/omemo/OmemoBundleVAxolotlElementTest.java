@@ -26,11 +26,11 @@ import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
-
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VAxolotl;
 import org.jivesoftware.smackx.omemo.provider.OmemoBundleVAxolotlProvider;
 
 import org.junit.Test;
+import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Test serialization and parsing of the OmemoBundleVAxolotlElement.
@@ -94,5 +94,19 @@ public class OmemoBundleVAxolotlElementTest extends SmackTestSuite {
         assertTrue("B64-decoded first preKey must match.", Arrays.equals(firstPreKey, parsed.getPreKey(220)));
         assertTrue("B64-decoded second preKey must match.", Arrays.equals(secondPreKey, parsed.getPreKey(284)));
         assertEquals("toString outputs must match.", bundle.toString(), parsed.toString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void emptyPreKeysShouldFailTest() throws Exception {
+        String s = "<bundle xmlns='eu.siacs.conversations.axolotl'><signedPreKeyPublic signedPreKeyId='1'>BU4bJ18+rqbSnBblZU8pR/s+impyhoL9AJssJIE59fZb</signedPreKeyPublic><signedPreKeySignature>MaQtv7ySqHpPr0gkVtMp4KmWC61Hnfs5a7/cKEhrX8n12evGdkg4fNf3Q/ufgmJu5dnup9pkTA1pj00dTbtXjw==</signedPreKeySignature><identityKey>BWO0QOem1YXIJuT61cxXpG/mKlvISDwZxQJHW2/7eVki</identityKey><prekeys></prekeys></bundle>";
+        XmlPullParser parser = TestUtils.getParser(s);
+        new OmemoBundleVAxolotlProvider().parse(parser);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void missingPreKeysShouldAlsoFailTest() throws Exception {
+        String s = "<bundle xmlns='eu.siacs.conversations.axolotl'><signedPreKeyPublic signedPreKeyId='1'>BU4bJ18+rqbSnBblZU8pR/s+impyhoL9AJssJIE59fZb</signedPreKeyPublic><signedPreKeySignature>MaQtv7ySqHpPr0gkVtMp4KmWC61Hnfs5a7/cKEhrX8n12evGdkg4fNf3Q/ufgmJu5dnup9pkTA1pj00dTbtXjw==</signedPreKeySignature><identityKey>BWO0QOem1YXIJuT61cxXpG/mKlvISDwZxQJHW2/7eVki</identityKey></bundle>";
+        XmlPullParser parser = TestUtils.getParser(s);
+        new OmemoBundleVAxolotlProvider().parse(parser);
     }
 }
