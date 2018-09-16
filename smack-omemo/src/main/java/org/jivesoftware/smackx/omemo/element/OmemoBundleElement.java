@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -59,10 +60,17 @@ public abstract class OmemoBundleElement implements ExtensionElement {
      * @param preKeysB64 HashMap of base64 encoded preKeys
      */
     public OmemoBundleElement(int signedPreKeyId, String signedPreKeyB64, String signedPreKeySigB64, String identityKeyB64, HashMap<Integer, String> preKeysB64) {
+        if (signedPreKeyId <= 0) {
+            throw new IllegalArgumentException("signedPreKeyId MUST be greater than 0.");
+        }
         this.signedPreKeyId = signedPreKeyId;
-        this.signedPreKeyB64 = signedPreKeyB64;
-        this.signedPreKeySignatureB64 = signedPreKeySigB64;
-        this.identityKeyB64 = identityKeyB64;
+        this.signedPreKeyB64 = StringUtils.requireNotNullNorEmpty(signedPreKeyB64, "signedPreKeyB64 MUST NOT be null nor empty.");
+        this.signedPreKeySignatureB64 = StringUtils.requireNotNullNorEmpty(signedPreKeySigB64, "signedPreKeySigB64 MUST NOT be null nor empty.");
+        this.identityKeyB64 = StringUtils.requireNotNullNorEmpty(identityKeyB64, "identityKeyB64 MUST NOT be null nor empty.");
+
+        if (preKeysB64 == null || preKeysB64.isEmpty()) {
+            throw new IllegalArgumentException("PreKeys MUST NOT be null nor empty.");
+        }
         this.preKeysB64 = preKeysB64;
     }
 
@@ -76,22 +84,27 @@ public abstract class OmemoBundleElement implements ExtensionElement {
      * @param preKeys HashMap of preKeys
      */
     public OmemoBundleElement(int signedPreKeyId, byte[] signedPreKey, byte[] signedPreKeySig, byte[] identityKey, HashMap<Integer, byte[]> preKeys) {
-        this.signedPreKeyId = signedPreKeyId;
-
+        this(signedPreKeyId,
+                signedPreKey != null ? Base64.encodeToString(signedPreKey) : null,
+                signedPreKeySig != null ? Base64.encodeToString(signedPreKeySig) : null,
+                identityKey != null ? Base64.encodeToString(identityKey) : null,
+                base64EncodePreKeys(preKeys));
         this.signedPreKey = signedPreKey;
-        this.signedPreKeyB64 = Base64.encodeToString(signedPreKey);
-
         this.signedPreKeySignature = signedPreKeySig;
-        this.signedPreKeySignatureB64 = Base64.encodeToString(signedPreKeySignature);
-
         this.identityKey = identityKey;
-        this.identityKeyB64 = Base64.encodeToString(identityKey);
-
         this.preKeys = preKeys;
-        this.preKeysB64 = new HashMap<>();
-        for (int id : preKeys.keySet()) {
-            preKeysB64.put(id, Base64.encodeToString(preKeys.get(id)));
+    }
+
+    private static HashMap<Integer, String> base64EncodePreKeys(HashMap<Integer, byte[]> preKeys) {
+        if (preKeys == null) {
+            return null;
         }
+
+        HashMap<Integer, String> converted = new HashMap<>();
+        for (Integer id : preKeys.keySet()) {
+            converted.put(id, Base64.encodeToString(preKeys.get(id)));
+        }
+        return converted;
     }
 
     /**
