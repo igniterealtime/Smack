@@ -55,7 +55,6 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
 
     public XmlStringBuilder(ExtensionElement ee, String enclosingNamespace) {
         this(enclosingNamespace);
-        String namespace = ee.getNamespace();
         prelude(ee);
     }
 
