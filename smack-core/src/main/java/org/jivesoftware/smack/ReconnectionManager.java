@@ -233,7 +233,6 @@ public final class ReconnectionManager {
             /**
              * The process will try the reconnection until the connection succeed or the user cancel it
              */
-            @SuppressWarnings("deprecation")
             @Override
             public void run() {
                 final AbstractXMPPConnection connection = weakRefConnection.get();
