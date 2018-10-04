@@ -37,6 +37,7 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.filter.NotFilter;
+import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PossibleFromTypeFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
@@ -73,14 +74,14 @@ public final class ChatMarkersManager extends Manager {
 
     // @FORMATTER:OFF
     private static final StanzaFilter INCOMING_MESSAGE_FILTER = new AndFilter(
-            MessageTypeFilter.NORMAL_OR_CHAT,
+            new OrFilter(MessageTypeFilter.NORMAL_OR_CHAT, MessageTypeFilter.GROUPCHAT),
             new StanzaExtensionFilter(ChatMarkersElements.NAMESPACE),
             PossibleFromTypeFilter.ENTITY_BARE_JID,
             EligibleForChatMarkerFilter.INSTANCE
     );
 
     private static final StanzaFilter OUTGOING_MESSAGE_FILTER = new AndFilter(
-            MessageTypeFilter.NORMAL_OR_CHAT,
+            new OrFilter(MessageTypeFilter.NORMAL_OR_CHAT, MessageTypeFilter.GROUPCHAT),
             MessageWithBodiesFilter.INSTANCE,
             new NotFilter(ChatMarkersFilter.INSTANCE),
             EligibleForChatMarkerFilter.INSTANCE
@@ -144,8 +145,13 @@ public final class ChatMarkersManager extends Manager {
                 // Note that this listener is used together with a PossibleFromTypeFilter.ENTITY_BARE_JID filter, hence
                 // every message is guaranteed to have a from address which is representable as bare JID.
                 EntityBareJid bareFrom = message.getFrom().asEntityBareJidOrThrow();
+                Chat tempChat = null;
+                try {
+                    tempChat = chatManager.chatWith(bareFrom);
+                } catch (Exception e) {
 
-                final Chat chat = chatManager.chatWith(bareFrom);
+                }
+                final Chat chat = tempChat;
 
                 asyncButOrdered.performAsyncButOrdered(chat, new Runnable() {
                     @Override
@@ -217,5 +223,42 @@ public final class ChatMarkersManager extends Manager {
             enabled = false;
         }
         return res;
+    }
+
+    /**
+     * Send a message stanza to the recipient defined in the <tt>To</tt> getter from the <tt>Message</tt>.
+     *
+     * @param message          instance of {@link Message} with a To previous defined.
+     * @param chatMarkersState one of the values given in {@link ChatMarkersState}.
+     * @param messageId        id of the message to be updated.
+     * @throws NotConnectedException if the connection is not connected.
+     * @throws InterruptedException  if the connection is interrupted.
+     * @throws IllegalStateException if one of the params don't match the rules.
+     */
+    public void markMessage(Message message, ChatMarkersState chatMarkersState, String messageId)
+            throws
+            NotConnectedException,
+            InterruptedException,
+            IllegalStateException {
+        if (message == null) {
+            throw new IllegalStateException("Message must not be null");
+        }
+
+        if (message.getTo() == null) {
+            throw new IllegalStateException("To attribute must not be null");
+        }
+
+        if (message.getStanzaId() == null) {
+            message.setStanzaId();
+        }
+
+        if (chatMarkersState == ChatMarkersState.received) {
+            message.addExtension(new ChatMarkersElements.ReceivedExtension(messageId));
+        } else if (chatMarkersState == ChatMarkersState.displayed) {
+            message.addExtension(new ChatMarkersElements.DisplayedExtension(messageId));
+        } else if (chatMarkersState == ChatMarkersState.acknowledged) {
+            message.addExtension(new ChatMarkersElements.AcknowledgedExtension(messageId));
+        }
+        connection().sendStanza(message);
     }
 }
