@@ -43,6 +43,7 @@ import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements;
 import org.jivesoftware.smackx.chat_markers.filter.ChatMarkersFilter;
 import org.jivesoftware.smackx.chat_markers.filter.EligibleForChatMarkerFilter;
@@ -240,9 +241,7 @@ public final class ChatMarkersManager extends Manager {
             NotConnectedException,
             InterruptedException,
             IllegalStateException {
-        if (message == null) {
-            throw new IllegalStateException("Message must not be null");
-        }
+        Objects.requireNonNull(message, "Message must not be null");
 
         if (message.getTo() == null) {
             throw new IllegalStateException("To attribute must not be null");
@@ -252,12 +251,18 @@ public final class ChatMarkersManager extends Manager {
             message.setStanzaId();
         }
 
-        if (chatMarkersState == ChatMarkersState.received) {
-            message.addExtension(new ChatMarkersElements.ReceivedExtension(messageId));
-        } else if (chatMarkersState == ChatMarkersState.displayed) {
-            message.addExtension(new ChatMarkersElements.DisplayedExtension(messageId));
-        } else if (chatMarkersState == ChatMarkersState.acknowledged) {
-            message.addExtension(new ChatMarkersElements.AcknowledgedExtension(messageId));
+        switch (chatMarkersState) {
+            case received:
+                message.addExtension(new ChatMarkersElements.ReceivedExtension(messageId));
+                break;
+            case displayed:
+                message.addExtension(new ChatMarkersElements.DisplayedExtension(messageId));
+                break;
+            case acknowledged:
+                message.addExtension(new ChatMarkersElements.AcknowledgedExtension(messageId));
+                break;
+            default:
+                throw new IllegalStateException("markable is automatically set in outgoing messages.");
         }
         connection().sendStanza(message);
     }
