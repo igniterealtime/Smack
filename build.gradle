@@ -193,6 +193,16 @@ allprojects {
 			// work, we extra add '-quiet', which is added anyway by
 			// gradle.
 			options.addStringOption('Xdoclint:all', '-quiet')
+
+			// TODO: Add
+
+			// Treat warnings as errors.
+			// See also https://bugs.openjdk.java.net/browse/JDK-8200363
+			// options.addStringOption('Xwerror', '-quiet')
+
+			// after all javadoc warnings have been resolved and
+			// remove Xwerror from the subprojects build.gradle files
+			// (e.g. smack-android-extensions).
 		}
 	}
 	tasks.withType(Javadoc) {
