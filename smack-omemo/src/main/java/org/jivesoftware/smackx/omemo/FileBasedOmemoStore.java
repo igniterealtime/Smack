@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -351,6 +352,24 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     public boolean containsRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice) {
         File session = hierarchy.getContactsSessionPath(userDevice, contactsDevice);
         return session.exists();
+    }
+
+    @Override
+    public void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter) {
+        File messageCounterFile = hierarchy.getDevicesMessageCounterPath(userDevice, contactsDevice);
+        writeIntegers(messageCounterFile, Collections.singleton(counter));
+    }
+
+    @Override
+    public int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+        File messageCounterFile = hierarchy.getDevicesMessageCounterPath(userDevice, contactsDevice);
+        Set<Integer> integers = readIntegers(messageCounterFile);
+
+        if (integers == null || integers.isEmpty()) {
+            return 0;
+        }
+
+        return integers.iterator().next();
     }
 
     @Override
@@ -732,6 +751,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         static final String SESSION = "session";
         static final String DEVICE_LIST_ACTIVE = "activeDevices";
         static final String DEVICE_LIST_INAVTIVE = "inactiveDevices";
+        static final String MESSAGE_COUNTER = "messageCounter";
 
         File basePath;
 
@@ -813,6 +833,10 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
         File getContactsInactiveDevicesPath(OmemoDevice userDevice, BareJid contact) {
             return new File(getContactsDir(userDevice, contact), DEVICE_LIST_INAVTIVE);
+        }
+
+        File getDevicesMessageCounterPath(OmemoDevice userDevice, OmemoDevice otherDevice) {
+            return new File(getContactsDir(userDevice, otherDevice), MESSAGE_COUNTER);
         }
 
         private static File createFile(File f) throws IOException {
