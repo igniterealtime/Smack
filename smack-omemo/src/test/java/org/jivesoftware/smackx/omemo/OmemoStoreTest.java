@@ -315,6 +315,13 @@ public abstract class OmemoStoreTest<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey
     }
 
     @Test
+    public void loadStoreMessageCounterTest() {
+        assertEquals(0, store.loadOmemoMessageCounter(alice, bob));
+        store.storeOmemoMessageCounter(alice, bob, 20);
+        assertEquals(20, store.loadOmemoMessageCounter(alice, bob));
+    }
+
+    @Test
     public void getFingerprint() throws IOException, CorruptedOmemoKeyException {
         assertNull("Method must return null for a non-existent fingerprint.", store.getFingerprint(alice));
         store.storeOmemoIdentityKeyPair(alice, store.generateOmemoIdentityKeyPair());
