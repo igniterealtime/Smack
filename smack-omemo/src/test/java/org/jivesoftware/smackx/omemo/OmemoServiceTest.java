@@ -32,7 +32,6 @@ import org.jxmpp.stringprep.XmppStringprepException;
 public class OmemoServiceTest extends SmackTestSuite {
 
     private static final long ONE_HOUR = 1000L * 60 * 60;
-    private static final int IGNORE_STALE = OmemoConfiguration.getIgnoreStaleDevicesAfterHours();
     private static final int DELETE_STALE = OmemoConfiguration.getDeleteStaleDevicesAfterHours();
 
     @Test(expected = IllegalStateException.class)
@@ -55,15 +54,9 @@ public class OmemoServiceTest extends SmackTestSuite {
         OmemoDevice other = new OmemoDevice(JidCreate.bareFrom("bob@builder.tv"), 444);
 
         Date now = new Date();
-        Date ignoreMe = new Date(now.getTime() - ((IGNORE_STALE + 1) * ONE_HOUR));
         Date deleteMe = new Date(now.getTime() - ((DELETE_STALE + 1) * ONE_HOUR));
-        Date imFine = new Date(now.getTime() - ONE_HOUR);
-
-        // One hour "old" devices are (probably) not not stale
-        assertFalse(OmemoService.isStale(user, other, imFine, IGNORE_STALE));
 
         // Devices one hour "older" than max ages are stale
-        assertTrue(OmemoService.isStale(user, other, ignoreMe, IGNORE_STALE));
         assertTrue(OmemoService.isStale(user, other, deleteMe, DELETE_STALE));
 
         // Own device is never stale, no matter how old

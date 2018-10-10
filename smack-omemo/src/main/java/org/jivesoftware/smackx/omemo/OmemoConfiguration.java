@@ -23,31 +23,56 @@ package org.jivesoftware.smackx.omemo;
  */
 public final class OmemoConfiguration {
 
+    private static boolean IGNORE_READ_ONLY_DEVICES = true;
+    private static int MAX_READ_ONLY_MESSAGE_COUNT = 400;
+
     /**
-     * Ignore own other stale devices that we did not receive a message from for a period of time.
-     * Ignoring means do not encrypt messages for them. This helps to mitigate stale devices that threaten
-     * forward secrecy by never advancing ratchets.
+     * Set to true, in order to ignore read-only devices.
+     *
+     * @param ignore ignore read-only devices
+     * @see <a href="TODO: Add URL">Blog Post explaining the danger of read-only devices.</a>
      */
-    private static boolean IGNORE_STALE_DEVICES = true;
-    private static int IGNORE_STALE_DEVICE_AFTER_HOURS = 24 * 7;         //One week
-
-    public static void setIgnoreStaleDevices(boolean ignore) {
-        IGNORE_STALE_DEVICES = ignore;
+    public static void setIgnoreReadOnlyDevices(boolean ignore) {
+        IGNORE_READ_ONLY_DEVICES = ignore;
     }
 
-    public static boolean getIgnoreStaleDevices() {
-        return IGNORE_STALE_DEVICES;
+    /**
+     * Return true, if the client should stop encrypting messages to a read-only device.
+     *
+     * @return true if read-only devices should get ignored after a certain amount of unanswered messages.
+     * @see <a href="TODO: Add URL">Blog Post explaining the danger of read-only devices.</a>
+     */
+    public static boolean getIgnoreReadOnlyDevices() {
+        return IGNORE_READ_ONLY_DEVICES;
     }
 
-    public static void setIgnoreStaleDevicesAfterHours(int hours) {
-        if (hours <= 0) {
-            throw new IllegalArgumentException("Hours must be greater than 0.");
+    /**
+     * Set the maximum amount of messages that the client is allowed to send to a read-only device without getting a
+     * response. Once the message counter of a device reaches that value, the client will stop encrypting messages for
+     * the device (given that {@link #getIgnoreReadOnlyDevices()} is true).
+     * This threshold is used to prevent read-only devices from weakening forward secrecy.
+     *
+     * @param maxReadOnlyMessageCount maximum number of allowed messages to a read-only device.
+     * @see <a href="TODO: Add URL">Blog Post explaining the danger of read-only devices.</a>
+     */
+    public static void setMaxReadOnlyMessageCount(int maxReadOnlyMessageCount) {
+        if (maxReadOnlyMessageCount <= 0) {
+            throw new IllegalArgumentException("maxReadOnlyMessageCount MUST be greater than 0.");
         }
-        IGNORE_STALE_DEVICE_AFTER_HOURS = hours;
+        MAX_READ_ONLY_MESSAGE_COUNT = maxReadOnlyMessageCount;
     }
 
-    public static int getIgnoreStaleDevicesAfterHours() {
-        return IGNORE_STALE_DEVICE_AFTER_HOURS;
+    /**
+     * Get the maximum amount of messages that the client is allowed to send to a read-only device without getting a
+     * response. Once the message counter of a device reaches that value, the client will stop encrypting messages for
+     * the device (given that {@link #getIgnoreReadOnlyDevices()} is true).
+     * This threshold is used to prevent read-only devices from weakening forward secrecy.
+     *
+     * @return maximum number of allowed messages to a read-only device.
+     * @see <a href="TODO: Add URL">Blog Post explaining the danger of read-only devices.</a>
+     */
+    public static int getMaxReadOnlyMessageCount() {
+        return MAX_READ_ONLY_MESSAGE_COUNT;
     }
 
     /**
