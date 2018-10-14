@@ -261,12 +261,14 @@ public class FormField implements NamedElement {
      */
     public String getFirstValue() {
         CharSequence firstValue;
+
         synchronized (values) {
+            if (values.isEmpty()) {
+                return null;
+            }
             firstValue = values.get(0);
         }
-        if (firstValue == null) {
-            return null;
-        }
+
         return firstValue.toString();
     }
 

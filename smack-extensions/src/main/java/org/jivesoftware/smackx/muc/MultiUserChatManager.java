@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muc;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -392,8 +393,31 @@ public final class MultiUserChatManager extends Manager {
      * @throws NotConnectedException
      * @throws InterruptedException
      * @throws NotAMucServiceException
+     * @deprecated use {@link #getRoomsHostedBy(DomainBareJid)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.4.
     public List<HostedRoom> getHostedRooms(DomainBareJid serviceName) throws NoResponseException, XMPPErrorException,
+                    NotConnectedException, InterruptedException, NotAMucServiceException {
+        Map<EntityBareJid, HostedRoom> hostedRooms = getRoomsHostedBy(serviceName);
+        return new ArrayList<>(hostedRooms.values());
+    }
+
+    /**
+     * Returns a Map of HostedRooms where each HostedRoom has the XMPP address of the room and the room's name.
+     * Once discovered the rooms hosted by a chat service it is possible to discover more detailed room information or
+     * join the room.
+     *
+     * @param serviceName the service that is hosting the rooms to discover.
+     * @return a map from the room's address to its HostedRoom information.
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws NotAMucServiceException
+     * @since 4.3.1
+     */
+    public Map<EntityBareJid, HostedRoom> getRoomsHostedBy(DomainBareJid serviceName) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException, NotAMucServiceException {
         if (!providesMucService(serviceName)) {
             throw new NotAMucServiceException(serviceName);
@@ -401,10 +425,14 @@ public final class MultiUserChatManager extends Manager {
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection());
         DiscoverItems discoverItems = discoManager.discoverItems(serviceName);
         List<DiscoverItems.Item> items = discoverItems.getItems();
-        List<HostedRoom> answer = new ArrayList<HostedRoom>(items.size());
+
+        Map<EntityBareJid, HostedRoom> answer = new HashMap<>(items.size());
         for (DiscoverItems.Item item : items) {
-            answer.add(new HostedRoom(item));
+            HostedRoom hostedRoom = new HostedRoom(item);
+            HostedRoom previousRoom = answer.put(hostedRoom.getJid(), hostedRoom);
+            assert previousRoom == null;
         }
+
         return answer;
     }
 
