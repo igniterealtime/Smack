@@ -3,7 +3,7 @@ allprojects {
 		shortVersion = '4.4.0-alpha2'
 		isSnapshot = true
 		jxmppVersion = '0.7.0-alpha2'
-		miniDnsVersion = '0.4.0-alpha1'
+		miniDnsVersion = '0.4.0-alpha2'
 		smackMinAndroidSdk = 9
 	}
 }
