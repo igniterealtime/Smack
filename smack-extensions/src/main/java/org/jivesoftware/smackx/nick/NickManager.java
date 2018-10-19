@@ -1,12 +1,13 @@
 /**
+ *
  * Copyright 2018 Miguel Hincapie.
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +15,11 @@
  * limitations under the License.
  */
 package org.jivesoftware.smackx.nick;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.Manager;
@@ -26,18 +32,17 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.nick.filter.NickFilter;
 import org.jivesoftware.smackx.nick.packet.Nick;
+
 import org.jxmpp.jid.EntityBareJid;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
 
 /**
+ * Implementation of XEP-0172.
+ *
  * @author Miguel Hincapie 2018
  * @see <a href="http://xmpp.org/extensions/xep-0172.html">XEP-0172: User Nickname</a>
  */
-public class NickManager extends Manager {
+public final class NickManager extends Manager {
 
     private static final Map<XMPPConnection, NickManager> INSTANCES = new WeakHashMap<>();
 

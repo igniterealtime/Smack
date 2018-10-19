@@ -21,10 +21,12 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smackx.nick.packet.Nick;
 
 /**
+ * Used with NickManager.
+ *
  * @author Miguel Hincapie 2018
  * @see <a href="http://xmpp.org/extensions/xep-0172.html">XEP-0172: User Nickname</a>
  */
-public class NickFilter extends StanzaExtensionFilter {
+public final class NickFilter extends StanzaExtensionFilter {
 
     public static final StanzaFilter INSTANCE = new NickFilter(Nick.NAMESPACE);
 

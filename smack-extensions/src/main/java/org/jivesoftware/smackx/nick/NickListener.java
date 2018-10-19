@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.nick;
 import org.jivesoftware.smack.packet.Message;
 
 /**
+ * Used with NickManager.
+ *
  * @author Miguel Hincapie 2018
  * @see <a href="http://xmpp.org/extensions/xep-0172.html">XEP-0172: User Nickname</a>
  */
