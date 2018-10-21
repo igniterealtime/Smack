@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -37,10 +38,10 @@ public class Nick implements ExtensionElement {
 
     public static final String ELEMENT_NAME = "nick";
 
-    private String name = null;
+    private final String name;
 
     public Nick(String name) {
-        this.name = name;
+        this.name = StringUtils.requireNotNullNorEmpty(name, "Nickname must be given");
     }
 
     /**
@@ -50,16 +51,6 @@ public class Nick implements ExtensionElement {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Sets the value of this nickname.
-     *
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
