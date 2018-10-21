@@ -62,31 +62,16 @@ public class Nick implements ExtensionElement {
         this.name = name;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.jivesoftware.smack.packet.PacketExtension#getElementName()
-     */
     @Override
     public String getElementName() {
         return ELEMENT_NAME;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.jivesoftware.smack.packet.PacketExtension#getNamespace()
-     */
     @Override
     public String getNamespace() {
         return NAMESPACE;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
-     */
     @Override
     public XmlStringBuilder toXML(String enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
