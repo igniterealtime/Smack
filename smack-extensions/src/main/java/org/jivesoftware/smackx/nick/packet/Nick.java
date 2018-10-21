@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -87,15 +88,14 @@ public class Nick implements ExtensionElement {
      * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
      */
     @Override
-    public String toXML(String enclosingNamespace) {
-        final StringBuilder buf = new StringBuilder();
+    public XmlStringBuilder toXML(String enclosingNamespace) {
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+        xml.rightAngleBracket();
 
-        buf.append('<').append(ELEMENT_NAME).append(" xmlns=\"").append(
-                NAMESPACE).append("\">");
-        buf.append(getName());
-        buf.append("</").append(ELEMENT_NAME).append('>');
+        xml.escape(getName());
 
-        return buf.toString();
+        xml.closeElement(this);
+        return xml;
     }
 
     public static class Provider extends ExtensionElementProvider<Nick> {
