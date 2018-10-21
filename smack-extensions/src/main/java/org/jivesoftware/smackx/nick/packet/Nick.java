@@ -16,15 +16,9 @@
  */
 package org.jivesoftware.smackx.nick.packet;
 
-import java.io.IOException;
-
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * A minimalistic implementation of a {@link ExtensionElement} for nicknames.
@@ -72,16 +66,5 @@ public class Nick implements ExtensionElement {
 
         xml.closeElement(this);
         return xml;
-    }
-
-    public static class Provider extends ExtensionElementProvider<Nick> {
-
-        @Override
-        public Nick parse(XmlPullParser parser, int initialDepth)
-                        throws XmlPullParserException, IOException {
-            final String name = parser.nextText();
-
-            return new Nick(name);
-        }
     }
 }
