@@ -29,7 +29,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.nick.filter.NickFilter;
 import org.jivesoftware.smackx.nick.packet.Nick;
 
@@ -98,7 +97,7 @@ public final class NickManager extends Manager {
             SmackException.NotLoggedInException,
             InterruptedException,
             SmackException.NotConnectedException {
-        sendNickMessage(createNickMessage(to, nickname));
+        sendStanza(createNickMessage(to, nickname));
     }
 
     /**
@@ -109,17 +108,15 @@ public final class NickManager extends Manager {
      * @return instance of Message stanza.
      */
     private Message createNickMessage(EntityBareJid to, String nickName) {
-        String escapedNickName = StringUtils.escapeForXml(nickName).toString();
         Message message = new Message();
-        message.setFrom(connection().getUser());
         message.setTo(to);
         message.setType(Message.Type.chat);
         message.setStanzaId();
-        message.addExtension(new Nick(escapedNickName));
+        message.addExtension(new Nick(nickName));
         return message;
     }
 
-    private void sendNickMessage(Message message)
+    private void sendStanza(Message message)
             throws
             SmackException.NotLoggedInException,
             SmackException.NotConnectedException,
