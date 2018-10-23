@@ -28,9 +28,9 @@ import org.jivesoftware.smackx.nick.packet.Nick;
  */
 public final class NickFilter extends StanzaExtensionFilter {
 
-    public static final StanzaFilter INSTANCE = new NickFilter(Nick.NAMESPACE);
+    public static final StanzaFilter INSTANCE = new NickFilter(Nick.ELEMENT_NAME, Nick.NAMESPACE);
 
-    private NickFilter(String namespace) {
-        super(namespace);
+    private NickFilter(String elementName, String namespace) {
+        super(elementName, namespace);
     }
 }
