@@ -256,8 +256,12 @@ public class StanzaCollector {
      */
     public <P extends Stanza> P nextResultOrThrow(long timeout) throws NoResponseException,
                     XMPPErrorException, InterruptedException, NotConnectedException {
-        P result = nextResult(timeout);
-        cancel();
+        P result;
+        try {
+            result = nextResult(timeout);
+        } finally {
+            cancel();
+        }
         if (result == null) {
             if (!connection.isConnected()) {
                 throw new NotConnectedException(connection, packetFilter);

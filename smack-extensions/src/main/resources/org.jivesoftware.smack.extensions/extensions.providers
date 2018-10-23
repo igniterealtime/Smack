@@ -411,7 +411,7 @@
     <extensionProvider>
         <elementName>nick</elementName>
         <namespace>http://jabber.org/protocol/nick</namespace>
-        <className>org.jivesoftware.smackx.nick.packet.Nick$Provider</className>
+        <className>org.jivesoftware.smackx.nick.provider.NickProvider</className>
     </extensionProvider>
 
     <!-- Attention -->

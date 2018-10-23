@@ -481,7 +481,9 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     }
 
     public XmlStringBuilder emptyElement(Enum<?> element) {
-        return emptyElement(element.name());
+        // Use Enum.toString() instead Enum.name() here, since some enums override toString() in order to replace
+        // underscores ('_') with dash ('-') for example (name() is declared final in Enum).
+        return emptyElement(element.toString());
     }
 
     public XmlStringBuilder emptyElement(String element) {
