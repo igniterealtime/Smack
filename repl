@@ -45,4 +45,4 @@ java "${EXTRA_JAVA_ARGS[@]}" \
 	-Dscala.usejavacp=true \
 	-classpath "${GRADLE_CLASSPATH}" \
 	ammonite.Main \
-	-f smack-repl/scala.repl
+	--predef "smack-repl/scala.repl"
