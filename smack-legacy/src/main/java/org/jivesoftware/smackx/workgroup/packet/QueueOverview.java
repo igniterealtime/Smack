@@ -133,8 +133,8 @@ public class QueueOverview implements ExtensionElement {
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
             eventType = parser.next();
-            while ((eventType != XmlPullParser.END_TAG)
-                         || (!ELEMENT_NAME.equals(parser.getName()))) {
+            while (eventType != XmlPullParser.END_TAG
+                         || !ELEMENT_NAME.equals(parser.getName())) {
                 if ("count".equals(parser.getName())) {
                     queueOverview.setUserCount(Integer.parseInt(parser.nextText()));
                 }
@@ -143,7 +143,7 @@ public class QueueOverview implements ExtensionElement {
                 }
                 else if ("oldest".equals(parser.getName())) {
                     try {
-                        queueOverview.setOldestEntry((dateFormat.parse(parser.nextText())));
+                        queueOverview.setOldestEntry(dateFormat.parse(parser.nextText()));
                     } catch (ParseException e) {
                         throw new SmackException(e);
                     }

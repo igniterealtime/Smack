@@ -89,7 +89,7 @@ public class BytestreamsProvider extends IQProvider<Bytestream> {
         if (mode == null) {
             toReturn.setMode(Mode.tcp);
         } else {
-            toReturn.setMode((Bytestream.Mode.fromName(mode)));
+            toReturn.setMode(Bytestream.Mode.fromName(mode));
         }
         toReturn.setSessionID(id);
         return toReturn;

@@ -480,7 +480,7 @@ public class FormField implements NamedElement {
      *
      * @author Gaston Dombiak
      */
-    public static class Option implements NamedElement {
+    public static final class Option implements NamedElement {
 
         public static final String ELEMENT = "option";
 

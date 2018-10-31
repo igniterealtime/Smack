@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  *
  * @author Thiago Camargo
  */
-public class ICECandidate extends TransportCandidate implements Comparable<ICECandidate> {
+public final class ICECandidate extends TransportCandidate implements Comparable<ICECandidate> {
 
     private static final Logger LOGGER = Logger.getLogger(ICECandidate.class.getName());
 

@@ -269,9 +269,9 @@ public class Bytestream extends IQ {
 
         public static String ELEMENTNAME = "streamhost";
 
-        private final Jid JID;
+        private final Jid jid;
 
-        private final String addy;
+        private final String address;
 
         private final int port;
 
@@ -282,13 +282,13 @@ public class Bytestream extends IQ {
         /**
          * Default constructor.
          *
-         * @param JID The JID of the stream host.
+         * @param jid The JID of the stream host.
          * @param address The internet address of the stream host.
          * @param port port of the stream host.
          */
-        public StreamHost(final Jid JID, final String address, int port) {
-            this.JID = Objects.requireNonNull(JID, "StreamHost JID must not be null");
-            this.addy = StringUtils.requireNotNullNorEmpty(address, "StreamHost address must not be null");
+        public StreamHost(final Jid jid, final String address, int port) {
+            this.jid = Objects.requireNonNull(jid, "StreamHost JID must not be null");
+            this.address = StringUtils.requireNotNullNorEmpty(address, "StreamHost address must not be null");
             this.port = port;
         }
 
@@ -298,7 +298,7 @@ public class Bytestream extends IQ {
          * @return Returns the JID of the stream host.
          */
         public Jid getJID() {
-            return JID;
+            return jid;
         }
 
         /**
@@ -307,7 +307,7 @@ public class Bytestream extends IQ {
          * @return Returns the internet address of the stream host.
          */
         public String getAddress() {
-            return addy;
+            return address;
         }
 
         /**
@@ -349,15 +349,15 @@ public class Bytestream extends IQ {
 
         public static String ELEMENTNAME = "streamhost-used";
 
-        private final Jid JID;
+        private final Jid jid;
 
         /**
          * Default constructor.
          *
-         * @param JID The JID of the selected stream host.
+         * @param jid The JID of the selected stream host.
          */
-        public StreamHostUsed(final Jid JID) {
-            this.JID = JID;
+        public StreamHostUsed(final Jid jid) {
+            this.jid = jid;
         }
 
         /**
@@ -366,7 +366,7 @@ public class Bytestream extends IQ {
          * @return Returns the JID of the selected stream host.
          */
         public Jid getJID() {
-            return JID;
+            return jid;
         }
 
         @Override

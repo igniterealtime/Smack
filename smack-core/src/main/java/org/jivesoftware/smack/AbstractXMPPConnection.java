@@ -1128,8 +1128,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
                     // If the IQ stanza is of type "get" or "set" with no registered IQ request handler, then answer an
                     // IQ of type 'error' with condition 'service-unavailable'.
-                    ErrorIQ errorIQ = IQ.createErrorResponse(iq, StanzaError.getBuilder((
-                                    replyCondition)));
+                    ErrorIQ errorIQ = IQ.createErrorResponse(iq, StanzaError.getBuilder(
+                                    replyCondition));
                     try {
                         sendStanza(errorIQ);
                     }

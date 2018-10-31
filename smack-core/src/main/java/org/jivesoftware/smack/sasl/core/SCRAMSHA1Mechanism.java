@@ -36,7 +36,7 @@ public class SCRAMSHA1Mechanism extends ScramMechanism {
                 return MAC.hmacsha1(key, str);
             }
         };
-        NAME = (new SCRAMSHA1Mechanism()).getName();
+        NAME = new SCRAMSHA1Mechanism().getName();
     }
 
     public static final String NAME;

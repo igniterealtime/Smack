@@ -19,7 +19,7 @@ package org.jivesoftware.smack.im;
 public class InitSmackIm {
 
     static {
-        (new SmackImInitializer()).initialize();
+        new SmackImInitializer().initialize();
     }
 
 }

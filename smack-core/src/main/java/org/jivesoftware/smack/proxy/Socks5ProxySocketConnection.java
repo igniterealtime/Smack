@@ -102,7 +102,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
             fill(in, buf, 2);
 
             boolean check = false;
-            switch ((buf[1]) & 0xff) {
+            switch (buf[1] & 0xff) {
                 case 0:                // NO AUTHENTICATION REQUIRED
                     check = true;
                     break;
@@ -132,13 +132,13 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
 */
                     index = 0;
                     buf[index++] = 1;
-                    buf[index++] = (byte) (user.length());
+                    buf[index++] = (byte) user.length();
                     byte[] userBytes = user.getBytes(StringUtils.UTF8);
                     System.arraycopy(userBytes, 0, buf, index,
                         user.length());
                     index += user.length();
                     byte[] passwordBytes = passwd.getBytes(StringUtils.UTF8);
-                    buf[index++] = (byte) (passwordBytes.length);
+                    buf[index++] = (byte) passwordBytes.length;
                     System.arraycopy(passwordBytes, 0, buf, index,
                         passwd.length());
                     index += passwd.length();
@@ -207,7 +207,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
             byte[] hostb = host.getBytes(StringUtils.UTF8);
             int len = hostb.length;
             buf[index++] = 3;      // DOMAINNAME
-            buf[index++] = (byte) (len);
+            buf[index++] = (byte) len;
             System.arraycopy(hostb, 0, buf, index, len);
             index += len;
             buf[index++] = (byte) (port >>> 8);

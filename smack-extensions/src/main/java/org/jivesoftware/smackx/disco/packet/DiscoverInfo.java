@@ -268,7 +268,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
      * attributes.
      *
      */
-    public static class Identity implements Comparable<Identity>, TypedCloneable<Identity> {
+    public static final class Identity implements Comparable<Identity>, TypedCloneable<Identity> {
 
         private final String category;
         private final String type;
@@ -482,7 +482,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
      * as well as specific feature types of interest, if any (e.g., for the purpose of feature
      * negotiation).
      */
-    public static class Feature implements TypedCloneable<Feature> {
+    public static final class Feature implements TypedCloneable<Feature> {
 
         private final String variable;
 

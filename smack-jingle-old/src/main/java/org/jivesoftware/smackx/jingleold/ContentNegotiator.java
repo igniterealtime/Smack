@@ -230,12 +230,12 @@ public class ContentNegotiator extends JingleNegotiator {
         boolean result = true;
 
         MediaNegotiator mediaNeg = getMediaNegotiator();
-        if ((mediaNeg == null) || (!mediaNeg.isFullyEstablished())) {
+        if ((mediaNeg == null) || !mediaNeg.isFullyEstablished()) {
             result = false;
         }
 
         TransportNegotiator transNeg = getTransportNegotiator();
-        if ((transNeg == null) || (!transNeg.isFullyEstablished())) {
+        if ((transNeg == null) || !transNeg.isFullyEstablished()) {
             result = false;
         }
 

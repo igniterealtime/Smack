@@ -112,7 +112,10 @@ public class HashElement implements ExtensionElement {
         if (other == null || !(other instanceof HashElement)) {
             return false;
         }
-        return this.hashCode() == other.hashCode();
+
+        HashElement otherHashElement = (HashElement) other;
+        return this.getAlgorithm() == otherHashElement.getAlgorithm() &&
+            this.getHashB64().equals(otherHashElement.getHashB64());
     }
 
     @Override

@@ -127,7 +127,7 @@ public class AgentStatusRequest extends IQ {
             boolean done = false;
             while (!done) {
                 int eventType = parser.next();
-                if ((eventType == XmlPullParser.START_TAG) && ("agent".equals(parser.getName()))) {
+                if (eventType == XmlPullParser.START_TAG && "agent".equals(parser.getName())) {
                     statusRequest.agents.add(parseAgent(parser));
                 }
                 else if (eventType == XmlPullParser.END_TAG &&
@@ -146,7 +146,7 @@ public class AgentStatusRequest extends IQ {
             String name = null;
             while (!done) {
                 int eventType = parser.next();
-                if ((eventType == XmlPullParser.START_TAG) && ("name".equals(parser.getName()))) {
+                if (eventType == XmlPullParser.START_TAG && "name".equals(parser.getName())) {
                     name = parser.nextText();
                 }
                 else if (eventType == XmlPullParser.END_TAG &&

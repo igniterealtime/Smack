@@ -136,7 +136,7 @@ public class ChatSettings extends IQ {
             boolean done = false;
             while (!done) {
                 int eventType = parser.next();
-                if ((eventType == XmlPullParser.START_TAG) && ("chat-setting".equals(parser.getName()))) {
+                if (eventType == XmlPullParser.START_TAG && "chat-setting".equals(parser.getName())) {
                     chatSettings.addSetting(parseChatSetting(parser));
 
                 }
@@ -156,13 +156,13 @@ public class ChatSettings extends IQ {
 
             while (!done) {
                 int eventType = parser.next();
-                if ((eventType == XmlPullParser.START_TAG) && ("key".equals(parser.getName()))) {
+                if (eventType == XmlPullParser.START_TAG && "key".equals(parser.getName())) {
                     key = parser.nextText();
                 }
-                else if ((eventType == XmlPullParser.START_TAG) && ("value".equals(parser.getName()))) {
+                else if (eventType == XmlPullParser.START_TAG && "value".equals(parser.getName())) {
                     value = parser.nextText();
                 }
-                else if ((eventType == XmlPullParser.START_TAG) && ("type".equals(parser.getName()))) {
+                else if (eventType == XmlPullParser.START_TAG && "type".equals(parser.getName())) {
                     type = Integer.parseInt(parser.nextText());
                 }
                 else if (eventType == XmlPullParser.END_TAG && "chat-setting".equals(parser.getName())) {

@@ -216,7 +216,7 @@ public final class PubSubManager extends Manager {
             FormField nodeTypeField = config.getField(ConfigureNodeFields.node_type.getFieldName());
 
             if (nodeTypeField != null)
-                isLeafNode = nodeTypeField.getValues().get(0).equals(NodeType.leaf.toString());
+                isLeafNode = nodeTypeField.getValues().get(0).toString().equals(NodeType.leaf.toString());
         }
 
         // Errors will cause exceptions in getReply, so it only returns

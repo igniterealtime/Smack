@@ -73,7 +73,7 @@ public class BridgedResolver extends TransportResolver {
 
         clearCandidates();
 
-        sid = Math.abs(random.nextLong());
+        sid = random.nextInt(Integer.MAX_VALUE);
 
         RTPBridge rtpBridge = RTPBridge.getRTPBridge(connection, String.valueOf(sid));
 

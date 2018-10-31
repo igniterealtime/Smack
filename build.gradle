@@ -10,12 +10,12 @@ buildscript {
         classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
 		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.2'
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
-		classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.13'
     }
 }
 
 plugins {
     id 'ru.vyarus.animalsniffer' version '1.4.5'
+	id 'net.ltgt.errorprone' version '0.6'
 }
 
 apply plugin: 'org.kordamp.gradle.markdown'
@@ -156,9 +156,8 @@ allprojects {
 			// e.g. JAVA7_HOME. See SMACK-651.
 			'-Xlint:-options',
 			'-Werror',
-			// Needed because since adding gradle-errorprone-plugin
-			// See https://github.com/tbroyer/gradle-errorprone-plugin/issues/15
-			'-Xlint:-path',
+		]
+		options.errorprone.errorproneArgs = [
 			// Disable errorprone checks
 			'-Xep:TypeParameterUnusedInFormals:OFF',
 			// Disable errorpone StringSplitter check, as it
@@ -170,6 +169,8 @@ allprojects {
 			// TODO: change sinttest so that it has it's own
 			// BeforeClass and re-enable this check.
 			'-Xep:JUnit4ClassAnnotationNonStatic:OFF',
+			// Disabled but should be re-enabled at some point
+			//'-Xep:InconsistentCapitalization:OFF',
 		]
 	}
 
@@ -211,7 +212,8 @@ allprojects {
 	}
 
 	dependencies {
-		errorprone 'com.google.errorprone:error_prone_core:2.2.0'
+		errorprone 'com.google.errorprone:error_prone_core:2.3.2'
+		errorproneJavac('com.google.errorprone:javac:9+181-r4173-1')
 	}
 
 	// Make all project's 'test' target depend on javadoc, so that

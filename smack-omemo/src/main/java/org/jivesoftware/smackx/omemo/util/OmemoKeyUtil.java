@@ -40,6 +40,7 @@ import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
  * @param <T_Bundle>    Bundle class
  * @author Paul Schaub
  */
+@SuppressWarnings("InconsistentCapitalization")
 public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_ECPub, T_Bundle> {
     private static final Logger LOGGER = Logger.getLogger(OmemoKeyUtil.class.getName());
 

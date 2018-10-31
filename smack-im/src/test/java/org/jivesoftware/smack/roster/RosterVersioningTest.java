@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.jivesoftware.smack.ConnectionConfiguration.Builder;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -71,7 +71,7 @@ public class RosterVersioningTest {
         DirectoryRosterStore store = DirectoryRosterStore.init(tmpFolder.newFolder("store"));
         populateStore(store);
 
-        Builder<?, ?> builder = DummyConnection.getDummyConfigurationBuilder();
+        ConnectionConfiguration.Builder<?, ?> builder = DummyConnection.getDummyConfigurationBuilder();
         connection = new DummyConnection(builder.build());
         connection.connect();
         connection.login();
@@ -175,6 +175,7 @@ public class RosterVersioningTest {
     /**
      * Test roster versioning with roster pushes.
      */
+    @SuppressWarnings("UndefinedEquals")
     @Test(timeout = 5000)
     public void testRosterVersioningWithCachedRosterAndPushes() throws Throwable {
         answerWithEmptyRosterResult();

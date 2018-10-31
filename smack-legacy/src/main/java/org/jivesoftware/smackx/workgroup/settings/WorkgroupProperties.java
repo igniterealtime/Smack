@@ -103,13 +103,13 @@ public class WorkgroupProperties extends IQ {
 
             while (!done) {
                 int eventType = parser.next();
-                if ((eventType == XmlPullParser.START_TAG) && ("authRequired".equals(parser.getName()))) {
+                if (eventType == XmlPullParser.START_TAG && "authRequired".equals(parser.getName())) {
                     props.setAuthRequired(Boolean.valueOf(parser.nextText()).booleanValue());
                 }
-                else if ((eventType == XmlPullParser.START_TAG) && ("email".equals(parser.getName()))) {
+                else if (eventType == XmlPullParser.START_TAG && "email".equals(parser.getName())) {
                     props.setEmail(parser.nextText());
                 }
-                else if ((eventType == XmlPullParser.START_TAG) && ("name".equals(parser.getName()))) {
+                else if (eventType == XmlPullParser.START_TAG && "name".equals(parser.getName())) {
                     props.setFullName(parser.nextText());
                 }
                 else if (eventType == XmlPullParser.END_TAG && "workgroup-properties".equals(parser.getName())) {
