@@ -22,6 +22,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -1220,6 +1221,19 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         ASYNC_BUT_ORDERED.performAsyncButOrdered(this, new Runnable() {
             @Override
             public void run() {
+                // As listeners are able to remove themselves and because the timepoint where it is decided to invoke a
+                // listener is a different timepoint where the listener is actually invoked (here), we have to check
+                // again if the listener is still active.
+                Iterator<StanzaListener> it = listenersToNotify.iterator();
+                synchronized (syncRecvListeners) {
+                    while (it.hasNext()) {
+                        StanzaListener stanzaListener = it.next();
+                        if (!syncRecvListeners.containsKey(stanzaListener)) {
+                            // The listener was removed from syncRecvListener, also remove him from listenersToNotify.
+                            it.remove();
+                        }
+                    }
+                }
                 for (StanzaListener listener : listenersToNotify) {
                     try {
                         listener.processStanza(packet);
