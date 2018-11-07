@@ -419,24 +419,24 @@ public final class PingManager extends Manager {
             // Ping has been disabled
             return;
         }
-       
+
         if (connection.isAuthenticated()) {
             boolean res = false;
 
             for (int i = 0; i < TRIES; i++) {
-            	{// check if there was an package meanwhile, then we don't need a ping...
-            		long lastStanzaReceived = connection.getLastStanzaReceived();
-	    	        if (lastStanzaReceived > 0) {
-	    	            long now = System.currentTimeMillis();
-	    	            // Delta since the last stanza was received
-	    	            int deltaInSeconds = (int)  ((now - lastStanzaReceived) / 1000);
-	    	            // If the delta is small then the ping interval, then we can defer the ping
-	    	            if (deltaInSeconds < pingInterval) {
-	    	                maybeSchedulePingServerTask(deltaInSeconds);
-	    	                return;
-	    	            }
-	    	        }
-            	}
+                // check if there was an package meanwhile, then we don't need a ping...
+                long lastStanzaReceived = connection.getLastStanzaReceived();
+                if (lastStanzaReceived > 0) {
+                    long now = System.currentTimeMillis();
+                    // Delta since the last stanza was received
+                    int deltaInSeconds = (int)  ((now - lastStanzaReceived) / 1000);
+                    // If the delta is small then the ping interval, then we can defer the ping
+                    if (deltaInSeconds < pingInterval) {
+                        maybeSchedulePingServerTask(deltaInSeconds);
+                        return;
+                    }
+                }
+
                 if (i != 0) {
                     try {
                         Thread.sleep(DELTA);
