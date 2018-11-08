@@ -37,7 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.CloseableUtil;
-
+import org.jivesoftware.smack.util.stringencoder.BareJidEncoder;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
@@ -54,6 +54,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
     private final FileHierarchy hierarchy;
     private static final Logger LOGGER = Logger.getLogger(FileBasedOmemoStore.class.getName());
+    private static BareJidEncoder bareJidEncoder = new BareJidEncoder.UrlSafeEncoder();
 
     public FileBasedOmemoStore(File basePath) {
         super();
@@ -769,7 +770,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         }
 
         File getUserDirectory(BareJid bareJid) {
-            return createDirectory(getStoreDirectory(), bareJid.toString());
+            return createDirectory(getStoreDirectory(), bareJidEncoder.encode(bareJid));
         }
 
         File getUserDeviceDirectory(OmemoDevice userDevice) {
@@ -782,7 +783,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         }
 
         File getContactsDir(OmemoDevice userDevice, BareJid contact) {
-            return createDirectory(getContactsDir(userDevice), contact.toString());
+            return createDirectory(getContactsDir(userDevice), bareJidEncoder.encode(contact));
         }
 
         File getContactsDir(OmemoDevice userDevice, OmemoDevice contactsDevice) {
@@ -860,5 +861,16 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             f.mkdirs();
             return f;
         }
+    }
+
+    /**
+     * Convert {@link BareJid BareJids} to Strings using the legacy {@link BareJid#toString()} method instead of the
+     * proper, url safe {@link BareJid#asUrlEncodedString()} method.
+     * While it is highly advised to use the new format, you can use this method to stay backwards compatible to data
+     * sets created by the old implementation.
+     */
+    @SuppressWarnings("deprecation")
+    public static void useLegacyBareJidEncoding() {
+        bareJidEncoder = new BareJidEncoder.LegacyEncoder();
     }
 }
