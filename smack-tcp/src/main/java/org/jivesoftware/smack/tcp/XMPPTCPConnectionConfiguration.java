@@ -41,8 +41,6 @@ public final class XMPPTCPConnectionConfiguration extends ConnectionConfiguratio
      */
     public static int DEFAULT_CONNECT_TIMEOUT = 30000;
 
-    private final boolean compressionEnabled;
-
     /**
      * How long the socket will wait until a TCP connection is established (in milliseconds).
      */
@@ -50,21 +48,7 @@ public final class XMPPTCPConnectionConfiguration extends ConnectionConfiguratio
 
     private XMPPTCPConnectionConfiguration(Builder builder) {
         super(builder);
-        compressionEnabled = builder.compressionEnabled;
         connectTimeout = builder.connectTimeout;
-    }
-
-    /**
-     * Returns true if the connection is going to use stream compression. Stream compression
-     * will be requested after TLS was established (if TLS was enabled) and only if the server
-     * offered stream compression. With stream compression network traffic can be reduced
-     * up to 90%. By default compression is disabled.
-     *
-     * @return true if the connection is going to use stream compression.
-     */
-    @Override
-    public boolean isCompressionEnabled() {
-        return compressionEnabled;
     }
 
     /**
@@ -89,20 +73,6 @@ public final class XMPPTCPConnectionConfiguration extends ConnectionConfiguratio
         private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 
         private Builder() {
-        }
-
-        /**
-         * Sets if the connection is going to use stream compression. Stream compression
-         * will be requested after TLS was established (if TLS was enabled) and only if the server
-         * offered stream compression. With stream compression network traffic can be reduced
-         * up to 90%. By default compression is disabled.
-         *
-         * @param compressionEnabled if the connection is going to use stream compression.
-         * @return a reference to this object.
-         */
-        public Builder setCompressionEnabled(boolean compressionEnabled) {
-            this.compressionEnabled = compressionEnabled;
-            return this;
         }
 
         /**
