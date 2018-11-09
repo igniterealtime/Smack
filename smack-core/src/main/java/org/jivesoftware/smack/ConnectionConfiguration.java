@@ -125,6 +125,8 @@ public abstract class ConnectionConfiguration {
 
     private final Set<String> enabledSaslMechanisms;
 
+    private final boolean compressionEnabled;
+
     protected ConnectionConfiguration(Builder<?,?> builder) {
         authzid = builder.authzid;
         username = builder.username;
@@ -161,6 +163,8 @@ public abstract class ConnectionConfiguration {
         debuggerFactory = builder.debuggerFactory;
         allowNullOrEmptyUsername = builder.allowEmptyOrNullUsername;
         enabledSaslMechanisms = builder.enabledSaslMechanisms;
+
+        compressionEnabled = builder.compressionEnabled;
 
         // If the enabledSaslmechanisms are set, then they must not be empty
         assert (enabledSaslMechanisms != null ? !enabledSaslMechanisms.isEmpty() : true);
@@ -440,8 +444,7 @@ public abstract class ConnectionConfiguration {
      * @return true if the connection is going to use stream compression.
      */
     public boolean isCompressionEnabled() {
-        // Compression for non-TCP connections is always disabled
-        return false;
+        return compressionEnabled;
     }
 
     /**
@@ -513,6 +516,7 @@ public abstract class ConnectionConfiguration {
         private boolean saslMechanismsSealed;
         private Set<String> enabledSaslMechanisms;
         private X509TrustManager customX509TrustManager;
+        private boolean compressionEnabled = false;
 
         protected Builder() {
             if (SmackConfiguration.DEBUG) {
@@ -945,6 +949,21 @@ public abstract class ConnectionConfiguration {
             this.authzid = authzid;
             return getThis();
         }
+
+        /**
+         * Sets if the connection is going to use compression (default false).
+         *
+         * Compression is only activated if the server offers compression. With compression network
+         * traffic can be reduced up to 90%. By default compression is disabled.
+         *
+         * @param compressionEnabled if the connection is going to use compression on the HTTP level.
+         * @return a reference to this object.
+         */
+        public B setCompressionEnabled(boolean compressionEnabled) {
+            this.compressionEnabled = compressionEnabled;
+            return getThis();
+        }
+
 
         public abstract C build();
 

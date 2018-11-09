@@ -157,6 +157,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             if (config.isProxyEnabled()) {
                 cfgBuilder.setProxy(config.getProxyAddress(), config.getProxyPort());
             }
+            cfgBuilder.setCompressionEnabled(config.isCompressionEnabled());
+
             client = BOSHClient.create(cfgBuilder.build());
 
             client.addBOSHClientConnListener(new BOSHConnectionListener());
