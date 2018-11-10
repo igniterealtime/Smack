@@ -55,7 +55,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Stream Initation                            | [XEP-0095](https://xmpp.org/extensions/xep-0095.html)  | n/a       | Initiating a data stream between any two XMPP entities. |
 | [SI File Transfer](filetransfer.md)         | [XEP-0096](https://xmpp.org/extensions/xep-0096.html)  | n/a       | Transfer files between two users over XMPP. |
 | [Entity Capabilities](caps.md)              | [XEP-0115](https://xmpp.org/extensions/xep-0115.html)  | n/a       | Broadcasting and dynamic discovery of entity capabilities. |
-| [Jingle](jingle.html)                       | [XEP-0116](http://xmpp.org/extensions/xep-0166.html)   | n/a       | Initiate and manage sessions between two XMPP entities. |
+| [Jingle](jingle.html)                       | [XEP-0116](https://xmpp.org/extensions/xep-0166.html)  | n/a       | Initiate and manage sessions between two XMPP entities. |
 | Data Forms Validation                       | [XEP-0122](https://xmpp.org/extensions/xep-0122.html)  | n/a       | Enables an application to specify additional validation guidelines . |
 | Service Administration                      | [XEP-0133](https://xmpp.org/extensions/xep-0133.html)  | n/a       | Recommended best practices for service-level administration of servers and components using Ad-Hoc Commands. |
 | Stream Compression                          | [XEP-0138](https://xmpp.org/extensions/xep-0138.html)  | n/a       | Support for optional compression of the XMPP stream.
@@ -87,7 +87,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | [Internet of Things - Provisioning](iot.md)               | [XEP-0324](https://xmpp.org/extensions/xep-0324.html)  | n/a       | Provisioning, access rights and user privileges for the Internet of Things. |
 | [Internet of Things - Control](iot.md)                    | [XEP-0325](https://xmpp.org/extensions/xep-0325.html)  | n/a       | Describes how to control devices or actuators in an XMPP-based sensor network. |
 | [HTTP over XMPP transport](hoxt.md)                       | [XEP-0332](https://xmpp.org/extensions/xep-0332.html)  | n/a       | Allows to transport HTTP communication over XMPP peer-to-peer networks. |
-| Chat Markers         			  			                | [XEP-0333](https://xmpp.org/extensions/xep-0333.html)  | n/a       | A solution of marking the last received, displayed and acknowledged message in a chat. |
+| Chat Markers                                              | [XEP-0333](https://xmpp.org/extensions/xep-0333.html)  | n/a       | A solution of marking the last received, displayed and acknowledged message in a chat. |
 | Message Processing Hints                                  | [XEP-0334](https://xmpp.org/extensions/xep-0334.html)  | n/a       | Hints to entities routing or receiving a message. |
 | JSON Containers                                           | [XEP-0335](https://xmpp.org/extensions/xep-0335.html)  | n/a       | Encapsulation of JSON data within XMPP Stanzas. |
 | [Internet of Things - Discovery](iot.md)                  | [XEP-0347](https://xmpp.org/extensions/xep-0347.html)  | n/a       | Describes how Things can be installed and discovered by their owners. |
