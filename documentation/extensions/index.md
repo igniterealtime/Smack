@@ -54,6 +54,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Software Version                            | [XEP-0092](https://xmpp.org/extensions/xep-0092.html)  | n/a       | Retrieve and announce the software application of an XMPP entity. |
 | Stream Initation                            | [XEP-0095](https://xmpp.org/extensions/xep-0095.html)  | n/a       | Initiating a data stream between any two XMPP entities. |
 | [SI File Transfer](filetransfer.md)         | [XEP-0096](https://xmpp.org/extensions/xep-0096.html)  | n/a       | Transfer files between two users over XMPP. |
+| User Mood                                   | [XEP-0107](https://xmpp.org/extensions/xep-0107.html)  | 1.2.1     | Communicate the users current mood. |
 | [Entity Capabilities](caps.md)              | [XEP-0115](https://xmpp.org/extensions/xep-0115.html)  | n/a       | Broadcasting and dynamic discovery of entity capabilities. |
 | [Jingle](jingle.html)                       | [XEP-0116](https://xmpp.org/extensions/xep-0166.html)  | n/a       | Initiate and manage sessions between two XMPP entities. |
 | Data Forms Validation                       | [XEP-0122](https://xmpp.org/extensions/xep-0122.html)  | n/a       | Enables an application to specify additional validation guidelines . |

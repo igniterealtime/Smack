@@ -582,4 +582,11 @@
       <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0107: User Mood -->
+    <extensionProvider>
+          <elementName>mood</elementName>
+          <namespace>http://jabber.org/protocol/mood</namespace>
+          <className>org.jivesoftware.smackx.mood.provider.MoodProvider</className>
+        </extensionProvider>
+
 </smackProviders>
