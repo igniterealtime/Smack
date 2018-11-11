@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2017 Florian Schmaus
+ * Copyright 2016-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.FullJid;
 
@@ -35,7 +36,7 @@ public class LowLevelRosterIntegrationTest extends AbstractSmackLowLevelIntegrat
 
     @SmackIntegrationTest
     public void testPresenceEventListenersOffline(final XMPPTCPConnection conOne, final XMPPTCPConnection conTwo) throws TimeoutException, Exception {
-        RosterIntegrationTest.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
+        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
 
         final Roster rosterOne = Roster.getInstanceFor(conOne);
         final Roster rosterTwo = Roster.getInstanceFor(conTwo);
@@ -46,7 +47,7 @@ public class LowLevelRosterIntegrationTest extends AbstractSmackLowLevelIntegrat
 
         // TODO Change timeout form '5000' to something configurable.
         final long timeout = 5000;
-        RosterIntegrationTest.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
+        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
         final SimpleResultSyncPoint offlineTriggered = new SimpleResultSyncPoint();
 

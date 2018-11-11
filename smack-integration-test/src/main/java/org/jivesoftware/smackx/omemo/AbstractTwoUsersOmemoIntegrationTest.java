@@ -23,10 +23,10 @@ import java.util.logging.Level;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.roster.RosterIntegrationTest;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
+import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -54,7 +54,7 @@ public abstract class AbstractTwoUsersOmemoIntegrationTest extends AbstractOmemo
         assertFalse(alice.getDeviceId().equals(bob.getDeviceId()));
 
         // Subscribe presences
-        RosterIntegrationTest.ensureBothAccountsAreSubscribedToEachOther(alice.getConnection(), bob.getConnection(), timeout);
+        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(alice.getConnection(), bob.getConnection(), timeout);
 
         OmemoManagerSetupHelper.trustAllIdentitiesWithTests(alice, bob);    // Alice trusts Bob's devices
         OmemoManagerSetupHelper.trustAllIdentitiesWithTests(bob, alice);    // Bob trusts Alice' and Mallory's devices

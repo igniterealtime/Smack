@@ -19,12 +19,13 @@ package org.jivesoftware.smackx.mood;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.roster.RosterIntegrationTest;
+
 import org.jivesoftware.smackx.mood.element.MoodElement;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.junit.AfterClass;
 import org.jxmpp.jid.BareJid;
@@ -42,7 +43,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
 
     @SmackIntegrationTest
     public void test() throws Exception {
-        RosterIntegrationTest.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
+        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
         final SimpleResultSyncPoint moodReceived = new SimpleResultSyncPoint();
 
@@ -64,6 +65,6 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
     public void unsubscribe()
             throws SmackException.NotLoggedInException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
-        RosterIntegrationTest.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
+        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
     }
 }
