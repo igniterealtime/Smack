@@ -186,6 +186,11 @@ public class StreamError extends AbstractError implements Nonza {
         }
 
         public static Condition fromString(String string) {
+            // Backwards compatibility for older implementations still using RFC 3920. RFC 6120
+            // changed 'xml-not-well-formed' to 'not-well-formed'.
+            if ("xml-not-well-formed".equals(string)) {
+                string = "not-well-formed";
+            }
             string = string.replace('-', '_');
             Condition condition = null;
             try {
