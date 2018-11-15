@@ -995,7 +995,7 @@ public final class MamManager extends Manager {
         public List<Message> pagePrevious(int count) throws NoResponseException, XMPPErrorException,
                         NotConnectedException, NotLoggedInException, InterruptedException {
             RSMSet previousResultRsmSet = getPreviousRsmSet();
-            RSMSet requestRsmSet = new RSMSet(count, previousResultRsmSet.getLast(), RSMSet.PageDirection.before);
+            RSMSet requestRsmSet = new RSMSet(count, previousResultRsmSet.getFirst(), RSMSet.PageDirection.before);
             return page(requestRsmSet);
         }
 
