@@ -16,12 +16,13 @@
  */
 package org.igniterealtime.smack.scala.util
 
-import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.impl.JidCreate;
 import scala.language.postfixOps
 
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jxmpp.jid.DomainBareJid
+import org.jxmpp.jid.impl.JidCreate
+
+import org.jivesoftware.smack.tcp.XMPPTCPConnection
+import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration
 
 import org.jivesoftware.smackx.iqregister.AccountManager
 
