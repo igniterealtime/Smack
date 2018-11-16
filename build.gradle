@@ -176,6 +176,7 @@ allprojects {
 
 	tasks.withType(ScalaCompile) {
 		scalaCompileOptions.additionalParameters = [
+			'-Xfatal-warnings',
 			'-feature',
 		]
 	}
