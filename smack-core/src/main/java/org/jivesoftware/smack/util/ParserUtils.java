@@ -141,7 +141,7 @@ public class ParserUtils {
         if (valueString == null)
             return null;
         valueString = valueString.toLowerCase(Locale.US);
-        return valueString.equals("true") || valueString.equals("0");
+        return valueString.equals("true") || valueString.equals("1");
     }
 
     public static boolean getBooleanAttribute(XmlPullParser parser, String name,
