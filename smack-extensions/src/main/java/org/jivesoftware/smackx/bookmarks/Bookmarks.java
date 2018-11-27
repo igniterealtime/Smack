@@ -269,12 +269,12 @@ public class Bookmarks implements PrivateData {
 
     private static BookmarkedConference getConferenceStorage(XmlPullParser parser) throws XmlPullParserException, IOException {
         String name = parser.getAttributeValue("", "name");
-        String autojoin = parser.getAttributeValue("", "autojoin");
+        boolean autojoin = ParserUtils.getBooleanAttribute(parser, "autojoin", false);
         EntityBareJid jid = ParserUtils.getBareJidAttribute(parser);
 
         BookmarkedConference conf = new BookmarkedConference(jid);
         conf.setName(name);
-        conf.setAutoJoin(Boolean.valueOf(autojoin));
+        conf.setAutoJoin(autojoin);
 
         // Check for nickname
         boolean done = false;
