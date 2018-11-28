@@ -284,6 +284,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private final Collection<StanzaListener> stanzaAcknowledgedListeners = new ConcurrentLinkedQueue<>();
 
     /**
+     * These listeners are invoked for every stanza that got dropped.
+     * <p>
+     * We use a {@link ConcurrentLinkedQueue} here in order to allow the listeners to remove
+     * themselves after they have been invoked.
+     * </p>
+     */
+    private final Collection<StanzaListener> stanzaDroppedListeners = new ConcurrentLinkedQueue<>();
+
+    /**
      * This listeners are invoked for a acknowledged stanza that has the given stanza ID. They will
      * only be invoked once and automatically removed after that.
      */
@@ -447,9 +456,24 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
             }
         }
-        // (Re-)send the stanzas *after* we tried to enable SM
-        for (Stanza stanza : previouslyUnackedStanzas) {
-            sendStanzaInternal(stanza);
+        // Inform client about failed resumption if possible, resend stanzas otherwise
+        // Process the stanzas synchronously so a client can re-queue them for transmission
+        // before it is informed about connection success
+        if (!stanzaDroppedListeners.isEmpty()) {
+            for (Stanza stanza : previouslyUnackedStanzas) {
+                for (StanzaListener listener : stanzaDroppedListeners) {
+                    try {
+                        listener.processStanza(stanza);
+                    }
+                    catch (InterruptedException | NotConnectedException | NotLoggedInException e) {
+                        LOGGER.log(Level.FINER, "StanzaDroppedListener received exception", e);
+                    }
+                }
+            }
+        } else {
+            for (Stanza stanza : previouslyUnackedStanzas) {
+                sendStanzaInternal(stanza);
+            }
         }
 
         afterSuccessfulLogin(false);
@@ -1785,6 +1809,32 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     public void removeAllStanzaAcknowledgedListeners() {
         stanzaAcknowledgedListeners.clear();
+    }
+
+    /**
+     * Add a Stanza dropped listener.
+     * <p>
+     * Those listeners will be invoked every time a Stanza has been dropped due to a failed SM resume. They will not get
+     * automatically removed. If at least one StanzaDroppedListener is configured, no attempt will be made to retransmit
+     * the Stanzas.
+     * </p>
+     *
+     * @param listener the listener to add.
+     * @since 4.3.3
+     */
+    public void addStanzaDroppedListener(StanzaListener listener) {
+        stanzaDroppedListeners.add(listener);
+    }
+
+    /**
+     * Remove the given Stanza dropped listener.
+     *
+     * @param listener the listener.
+     * @return true if the listener was removed.
+     * @since 4.3.3
+     */
+    public boolean removeStanzaDroppedListener(StanzaListener listener) {
+        return stanzaDroppedListeners.remove(listener);
     }
 
     /**
