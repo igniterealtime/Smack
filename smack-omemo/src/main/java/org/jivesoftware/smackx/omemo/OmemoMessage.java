@@ -127,8 +127,7 @@ public class OmemoMessage {
          */
         public Message asMessage(Jid recipient) {
 
-            Message messageStanza = new Message();
-            messageStanza.setTo(recipient);
+            Message messageStanza = new Message(recipient, Message.Type.chat);
             messageStanza.addExtension(getElement());
 
             if (OmemoConfiguration.getAddOmemoHintBody()) {
