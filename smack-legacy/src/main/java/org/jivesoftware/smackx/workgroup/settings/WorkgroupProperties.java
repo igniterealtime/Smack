@@ -104,7 +104,9 @@ public class WorkgroupProperties extends IQ {
             while (!done) {
                 int eventType = parser.next();
                 if ((eventType == XmlPullParser.START_TAG) && ("authRequired".equals(parser.getName()))) {
+                    // CHECKSTYLE:OFF
                     props.setAuthRequired(Boolean.valueOf(parser.nextText()).booleanValue());
+                    // CHECKSTYLE:ON
                 }
                 else if ((eventType == XmlPullParser.START_TAG) && ("email".equals(parser.getName()))) {
                     props.setEmail(parser.nextText());
