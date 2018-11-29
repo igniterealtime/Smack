@@ -130,6 +130,27 @@ public class ParserUtils {
     }
 
     /**
+     * Prase a string to a boolean value as per "xs:boolean". Valid input strings are "true", "1" for true, and "false", "0" for false.
+     *
+     * @param booleanString the input string.
+     * @return the boolean representation of the input string
+     * @throws IllegalArgumentException if the input string is not valid.
+     * @since 4.3.2
+     */
+    public static boolean parseXmlBoolean(String booleanString) {
+        switch (booleanString) {
+        case "true":
+        case "1":
+            return true;
+        case "false":
+        case "0":
+            return false;
+        default:
+            throw new IllegalArgumentException(booleanString + " is not a valid boolean string");
+        }
+    }
+
+    /**
      * Get the boolean value of an argument.
      *
      * @param parser
@@ -141,7 +162,7 @@ public class ParserUtils {
         if (valueString == null)
             return null;
         valueString = valueString.toLowerCase(Locale.US);
-        return valueString.equals("true") || valueString.equals("0");
+        return parseXmlBoolean(valueString);
     }
 
     public static boolean getBooleanAttribute(XmlPullParser parser, String name,
