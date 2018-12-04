@@ -20,7 +20,9 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.PRE_KEY_COUNT_PE
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -55,6 +57,9 @@ import org.jxmpp.jid.BareJid;
  */
 public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> {
     private static final Logger LOGGER = Logger.getLogger(OmemoStore.class.getName());
+
+    private final Map<OmemoDevice, Boolean> postponePreKeyDeletion = new HashMap<>();
+    private final Map<OmemoDevice, Set<Integer>> preKeyDeletionQueues = new HashMap<>();
 
     /**
      * Create a new OmemoStore.
@@ -122,6 +127,51 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         storeCachedDeviceList(userDevice, contact, cached);
 
         return cached;
+    }
+
+    public boolean isPostponingPreKeyDeletion(OmemoDevice userDevice) {
+        synchronized (postponePreKeyDeletion) {
+            Boolean postpone = postponePreKeyDeletion.get(userDevice);
+            if (postpone == null) {
+                postponePreKeyDeletion.put(userDevice, Boolean.FALSE);
+                postpone = Boolean.FALSE;
+            }
+            return postpone;
+        }
+    }
+
+    public void postponePreKeyDeletion(OmemoDevice userDevice) {
+        synchronized (postponePreKeyDeletion) {
+            postponePreKeyDeletion.put(userDevice, Boolean.TRUE);
+        }
+    }
+
+    public void resumePreKeyDeletion(OmemoDevice userDevice) {
+        synchronized (postponePreKeyDeletion) {
+            postponePreKeyDeletion.put(userDevice, Boolean.FALSE);
+            deleteQueuedPreKeys(userDevice);
+        }
+    }
+
+    public void queuePreKeyForDeletion(OmemoDevice userDevice, int deviceId) {
+        Set<Integer> preKeyIds = preKeyDeletionQueues.get(userDevice);
+        if (preKeyIds == null) {
+            preKeyIds = new HashSet<>();
+            preKeyDeletionQueues.put(userDevice, preKeyIds);
+        }
+        preKeyIds.add(deviceId);
+    }
+
+    public void deleteQueuedPreKeys(OmemoDevice userDevice) {
+        Set<Integer> queuedPreKeys = preKeyDeletionQueues.get(userDevice);
+        if (queuedPreKeys == null) {
+            return;
+        }
+
+        for (Integer id : queuedPreKeys) {
+            removeOmemoPreKey(userDevice, id);
+        }
+
     }
 
     /**
@@ -404,6 +454,16 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
     public void storeOmemoPreKeys(OmemoDevice userDevice, TreeMap<Integer, T_PreKey> preKeyHashMap) {
         for (Map.Entry<Integer, T_PreKey> entry : preKeyHashMap.entrySet()) {
             storeOmemoPreKey(userDevice, entry.getKey(), entry.getValue());
+        }
+    }
+
+    public void removeOrQueueOmemoPreKey(OmemoDevice userDevice, int preKeyId) {
+        synchronized (postponePreKeyDeletion) {
+            if (isPostponingPreKeyDeletion(userDevice)) {
+                queuePreKeyForDeletion(userDevice, preKeyId);
+            } else {
+                removeOmemoPreKey(userDevice, preKeyId);
+            }
         }
     }
 

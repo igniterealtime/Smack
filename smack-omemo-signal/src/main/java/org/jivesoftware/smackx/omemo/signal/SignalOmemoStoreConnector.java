@@ -143,7 +143,7 @@ public class SignalOmemoStoreConnector
 
     @Override
     public void removePreKey(int i) {
-        omemoStore.removeOmemoPreKey(getOurDevice(), i);
+        omemoStore.removeOrQueueOmemoPreKey(getOurDevice(), i);
     }
 
     @Override
