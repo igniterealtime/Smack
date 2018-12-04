@@ -18,6 +18,7 @@
 package org.jivesoftware.smack;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.KeyStore;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,6 +46,7 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.minidns.dnsname.DnsName;
+import org.minidns.util.InetAddressUtil;
 
 /**
  * Configuration to use while establishing the connection to the server.
@@ -169,6 +171,14 @@ public abstract class ConnectionConfiguration {
             throw new IllegalStateException("You can not use a custom SSL context with DNSSEC enabled");
         }
 
+    }
+
+    DnsName getHost() {
+        return host;
+    }
+
+    InetAddress getHostAddress() {
+        return hostAddress;
     }
 
     /**
@@ -639,6 +649,33 @@ public abstract class ConnectionConfiguration {
          */
         public B setHost(DnsName host) {
             this.host = host;
+            return getThis();
+        }
+
+        /**
+         * Set the host to connect to by either its fully qualified domain name (FQDN) or its IP.
+         *
+         * @param fqdnOrIp a CharSequence either representing the FQDN or the IP of the host.
+         * @return a reference to this builder.
+         * @see #setHost(DnsName)
+         * @see #setHostAddress(InetAddress)
+         * @since 4.3.2
+         */
+        public B setHostAddressByNameOrIp(CharSequence fqdnOrIp) {
+            String fqdnOrIpString = fqdnOrIp.toString();
+            if (InetAddressUtil.isIpAddress(fqdnOrIp)) {
+                InetAddress hostInetAddress;
+                try {
+                    hostInetAddress = InetAddress.getByName(fqdnOrIpString);
+                }
+                catch (UnknownHostException e) {
+                    // Should never happen.
+                    throw new AssertionError(e);
+                }
+                setHostAddress(hostInetAddress);
+            } else {
+                setHost(fqdnOrIpString);
+            }
             return getThis();
         }
 
