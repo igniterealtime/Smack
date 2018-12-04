@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -270,6 +272,54 @@ public final class OmemoManager extends Manager {
                 }
             }
         });
+    }
+
+    /**
+     * Temporarily postpone the deletion of used PreKeys for {@code millis} milliseconds.
+     * During that period, used preKeys will not be deleted immediately, but rather queued for later deletion.
+     * Once the time period has past, queued preKeys are deleted and normal behaviour is resumed.
+     *
+     * Recommended values for {@code millis} are around 1000 * 60 * 3.
+     *
+     * @param millis period in milliseconds from now, in which preKeys are not deleted immediately.
+     */
+    public void temporarilyPostponePreKeyDeletion(long millis) {
+        final OmemoStore<?,?,?,?,?,?,?,?,?> store = getOmemoService().getOmemoStoreBackend();
+        final OmemoDevice userDevice = getOwnDevice();
+
+        if (userDevice == null) {
+            throw new IllegalStateException("No OmemoDevice has been determined yet. OmemoManager needs to be initialized.");
+        }
+
+        store.postponePreKeyDeletion(userDevice);
+        ScheduledFuture<?> result = schedule(new Runnable() {
+            @Override
+            public void run() {
+                Async.go(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Delete any queued preKeys and resume default deletion behaviour
+                        store.resumePreKeyDeletion(userDevice);
+
+                        // Count preKeys and generate new ones
+                        int preKeyCount = store.loadOmemoPreKeys(userDevice).size();
+                        try {
+                            store.replenishKeys(userDevice);
+
+                            // If necessary, publish new bundle
+                            if (preKeyCount != store.loadOmemoPreKeys(userDevice).size()) {
+                                OmemoBundleElement bundle = store.packOmemoBundle(userDevice);
+                                OmemoService.publishBundle(getConnection(), userDevice, bundle);
+                            }
+                        } catch (CorruptedOmemoKeyException e) {
+                            LOGGER.log(Level.SEVERE, "Omemo IdentityKey seems to be corrupted for " + userDevice, e);
+                        } catch (InterruptedException | SmackException.NoResponseException | XMPPException.XMPPErrorException | SmackException.NotConnectedException e) {
+                            LOGGER.log(Level.SEVERE, "Exception while publishing OMEMO bundle.", e);
+                        }
+                    }
+                });
+            }
+        }, millis, TimeUnit.MILLISECONDS);
     }
 
     /**

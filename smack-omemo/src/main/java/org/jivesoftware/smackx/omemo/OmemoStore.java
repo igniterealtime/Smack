@@ -129,6 +129,14 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         return cached;
     }
 
+    /**
+     * Return true, if we are currently postponing deletion of preKeys for messages that are addressed to
+     * {@code userDevice}. In such case, used preKeys are not deleted immediately, but instead are queued for later
+     * deletion.
+     *
+     * @param userDevice our device
+     * @return true if prekey deletion is postponed, false if prekeys are deleted immediately
+     */
     public boolean isPostponingPreKeyDeletion(OmemoDevice userDevice) {
         synchronized (postponePreKeyDeletion) {
             Boolean postpone = postponePreKeyDeletion.get(userDevice);
@@ -140,12 +148,23 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         }
     }
 
+    /**
+     * Postpone preKey deletion for now. Used preKeys are queued for deletion at a later point in time.
+     *
+     * @param userDevice our device
+     */
     public void postponePreKeyDeletion(OmemoDevice userDevice) {
+        LOGGER.log(Level.INFO, "Postponing prekey deletion for " + userDevice);
         synchronized (postponePreKeyDeletion) {
             postponePreKeyDeletion.put(userDevice, Boolean.TRUE);
         }
     }
 
+    /**
+     * Resume immediate preKey deletion. This immediately deletes all preKeys which have been queued for deletion.
+     *
+     * @param userDevice our device
+     */
     public void resumePreKeyDeletion(OmemoDevice userDevice) {
         synchronized (postponePreKeyDeletion) {
             postponePreKeyDeletion.put(userDevice, Boolean.FALSE);
@@ -153,15 +172,28 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         }
     }
 
-    public void queuePreKeyForDeletion(OmemoDevice userDevice, int deviceId) {
+    /**
+     * Queue a used preKey for later deletion. The key is not deleted immediately, but marked as "to be deleted".
+     * Deletion takes place, once {@link #deleteQueuedPreKeys(OmemoDevice)} is called (for example via
+     * {@link #resumePreKeyDeletion(OmemoDevice)}).
+     *
+     * @param userDevice our device
+     * @param preKeyId id of the preKey which will be queued for later deletion
+     */
+    public void queuePreKeyForDeletion(OmemoDevice userDevice, int preKeyId) {
         Set<Integer> preKeyIds = preKeyDeletionQueues.get(userDevice);
         if (preKeyIds == null) {
             preKeyIds = new HashSet<>();
             preKeyDeletionQueues.put(userDevice, preKeyIds);
         }
-        preKeyIds.add(deviceId);
+        preKeyIds.add(preKeyId);
     }
 
+    /**
+     * Delete all preKeys which have been queued for deletion via {@link #queuePreKeyForDeletion(OmemoDevice, int)}.
+     *
+     * @param userDevice our device
+     */
     public void deleteQueuedPreKeys(OmemoDevice userDevice) {
         Set<Integer> queuedPreKeys = preKeyDeletionQueues.get(userDevice);
         if (queuedPreKeys == null) {
