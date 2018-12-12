@@ -63,6 +63,51 @@ public final class OmemoConfiguration {
     }
 
     /**
+     * If set to false, used preKeys will be deleted immediately during the first
+     * {@link #POSTPONE_PREKEY_DELETION_PERIOD} milliseconds.
+     */
+    private static boolean DISABLE_POSTPONE_PREKEY_DELETION = false;
+    private static long POSTPONE_PREKEY_DELETION_PERIOD = 3 * 60 * 1000;
+
+    /**
+     * Define, whether deletion of used preKeys is postponed or not.
+     * This setting must be configured prior to the call to initialization of the OMEMO stuff.
+     * @param disable disable preKey deletion postponing
+     */
+    public static void setDisablePostponePreKeyDeletion(boolean disable) {
+        DISABLE_POSTPONE_PREKEY_DELETION = disable;
+    }
+
+    /**
+     * Return true, if postponing preKey deletion is disabled.
+     * It is advised to leave this value 'false'.
+     * @return postponing disabled
+     */
+    public static boolean isDisablePostponePrekeyDeletion() {
+        return DISABLE_POSTPONE_PREKEY_DELETION;
+    }
+
+    /**
+     * Set the length of the period after connection startup after which postponed preKeys are deleted and normal
+     * deletion behaviour is resumed.
+     * @param millis period in millis
+     */
+    public static void setPostPonePreKeyDeletionPeriod(long millis) {
+        if (millis <= 0) {
+            throw new IllegalArgumentException("Deletion period MUST be greater than 0.");
+        }
+        POSTPONE_PREKEY_DELETION_PERIOD = millis;
+    }
+
+    /**
+     * Return the configured period, after which normal preKey deletion will be resumed.
+     * @return postponing period in millis
+     */
+    public static long getPostponePrekeyDeletionPeriod() {
+        return POSTPONE_PREKEY_DELETION_PERIOD;
+    }
+
+    /**
      * Get the maximum amount of messages that the client is allowed to send to a read-only device without getting a
      * response. Once the message counter of a device reaches that value, the client will stop encrypting messages for
      * the device (given that {@link #getIgnoreReadOnlyDevices()} is true).
