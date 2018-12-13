@@ -107,6 +107,8 @@ public final class OmemoManager extends Manager {
 
     private OmemoTrustCallback trustCallback;
 
+    private ScheduledFuture<?> postponingPreKeyDeletion;
+
     private BareJid ownJid;
     private Integer deviceId;
 
@@ -249,6 +251,10 @@ public final class OmemoManager extends Manager {
                 throw new IllegalStateException("No TrustCallback set.");
             }
 
+            if (!OmemoConfiguration.isDisablePostponePrekeyDeletion()) {
+                temporarilyPostponePreKeyDeletion(OmemoConfiguration.getPostponePrekeyDeletionPeriod());
+            }
+
             getOmemoService().init(new LoggedInOmemoManager(this));
             ServiceDiscoveryManager.getInstanceFor(connection()).addFeature(PEP_NODE_DEVICE_LIST_NOTIFY);
         }
@@ -282,8 +288,9 @@ public final class OmemoManager extends Manager {
      * Recommended values for {@code millis} are around 1000 * 60 * 3.
      *
      * @param millis period in milliseconds from now, in which preKeys are not deleted immediately.
+     * @return scheduled future
      */
-    public void temporarilyPostponePreKeyDeletion(long millis) {
+    public ScheduledFuture<?> temporarilyPostponePreKeyDeletion(long millis) {
         final OmemoStore<?,?,?,?,?,?,?,?,?> store = getOmemoService().getOmemoStoreBackend();
         final OmemoDevice userDevice = getOwnDevice();
 
@@ -291,8 +298,12 @@ public final class OmemoManager extends Manager {
             throw new IllegalStateException("No OmemoDevice has been determined yet. OmemoManager needs to be initialized.");
         }
 
+        if (postponingPreKeyDeletion != null) {
+            throw new IllegalStateException("PreKeyDeletion is already being postponed.");
+        }
+
         store.postponePreKeyDeletion(userDevice);
-        ScheduledFuture<?> result = schedule(new Runnable() {
+        postponingPreKeyDeletion = schedule(new Runnable() {
             @Override
             public void run() {
                 Async.go(new Runnable() {
@@ -320,6 +331,8 @@ public final class OmemoManager extends Manager {
                 });
             }
         }, millis, TimeUnit.MILLISECONDS);
+
+        return postponingPreKeyDeletion;
     }
 
     /**
