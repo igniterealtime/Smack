@@ -1511,7 +1511,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         private void drainWriterQueueToUnacknowledgedStanzas() {
             List<Element> elements = new ArrayList<>(queue.size());
             queue.drainTo(elements);
-            for (Element element : elements) {
+            for (int i = 0; i < elements.size(); i++) {
+                Element element = elements.get(i);
+                // If the unacknowledgedStanza queue is full, then bail out with a warning message. See SMACK-844.
+                if (unacknowledgedStanzas.remainingCapacity() == 0) {
+                    StreamManagementException.UnacknowledgedQueueFullException exception = StreamManagementException.UnacknowledgedQueueFullException
+                            .newWith(i, elements, unacknowledgedStanzas);
+                    LOGGER.log(Level.WARNING,
+                            "Some stanzas may be lost as not all could be drained to the unacknowledged stanzas queue", exception);
+                    return;
+                }
                 if (element instanceof Stanza) {
                     unacknowledgedStanzas.add((Stanza) element);
                 }

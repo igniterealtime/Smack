@@ -1095,6 +1095,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         if (packet instanceof IQ) {
             final IQ iq = (IQ) packet;
             if (iq.isRequestIQ()) {
+                final IQ iqRequest = iq;
                 final String key = XmppStringUtils.generateKey(iq.getChildElementName(), iq.getChildElementNamespace());
                 IQRequestHandler iqRequestHandler;
                 final IQ.Type type = iq.getType();
@@ -1160,6 +1161,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                                 // e.g. to avoid presence leaks.
                                 return;
                             }
+
+                            assert (response.getType() == IQ.Type.result || response.getType() == IQ.Type.error);
+
+                            response.setTo(iqRequest.getFrom());
+                            response.setStanzaId(iqRequest.getStanzaId());
                             try {
                                 sendStanza(response);
                             }
