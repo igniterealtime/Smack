@@ -83,6 +83,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
+import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SynchronizationPoint;
 import org.jivesoftware.smack.XMPPConnection;
@@ -560,7 +561,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
     }
 
-    private void connectUsingConfiguration() throws ConnectionException, IOException {
+    private void connectUsingConfiguration() throws ConnectionException, IOException, InterruptedException {
         List<HostAddress> failedAddresses = populateHostAddresses();
         SocketFactory socketFactory = config.getSocketFactory();
         ProxyInfo proxyInfo = config.getProxyInfo();
@@ -579,14 +580,17 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 innerloop: while (inetAddresses.hasNext()) {
                     // Create a *new* Socket before every connection attempt, i.e. connect() call, since Sockets are not
                     // re-usable after a failed connection attempt. See also SMACK-724.
-                    socket = socketFactory.createSocket();
+                    SmackFuture.SocketFuture socketFuture = new SmackFuture.SocketFuture(socketFactory);
 
                     final InetAddress inetAddress = inetAddresses.next();
                     final String inetAddressAndPort = inetAddress + " at port " + port;
+                    final InetSocketAddress inetSocketAddress = new InetSocketAddress(inetAddress, port);
                     LOGGER.finer("Trying to establish TCP connection to " + inetAddressAndPort);
+                    socketFuture.connectAsync(inetSocketAddress, timeout);
+
                     try {
-                        socket.connect(new InetSocketAddress(inetAddress, port), timeout);
-                    } catch (Exception e) {
+                        socket = socketFuture.getOrThrow();
+                    } catch (IOException e) {
                         hostAddress.setException(inetAddress, e);
                         if (inetAddresses.hasNext()) {
                             continue innerloop;
