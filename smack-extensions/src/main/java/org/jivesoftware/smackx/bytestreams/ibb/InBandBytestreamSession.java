@@ -216,18 +216,21 @@ public class InBandBytestreamSession implements BytestreamSession {
         if (this.inputStream.isClosed && this.outputStream.isClosed) {
             this.isClosed = true;
 
-            // send close request
-            Close close = new Close(this.byteStreamRequest.getSessionID());
-            close.setTo(this.remoteJID);
-            try {
-                connection.createStanzaCollectorAndSend(close).nextResultOrThrow();
-            }
-            catch (Exception e) {
-                // Sadly we are unable to use the IOException(Throwable) constructor because this
-                // constructor is only supported from Android API 9 on.
-                IOException ioException = new IOException();
-                ioException.initCause(e);
-                throw ioException;
+            // Do not send close stream IQ if on receive, otherwiese XMPPError: item-not-found - cancel
+            if (!in) {
+                // send close request
+                Close close = new Close(this.byteStreamRequest.getSessionID());
+                close.setTo(this.remoteJID);
+                try {
+                    connection.createStanzaCollectorAndSend(close).nextResultOrThrow();
+                }
+                catch (Exception e) {
+                    // Sadly we are unable to use the IOException(Throwable) constructor because this
+                    // constructor is only supported from Android API 9 on.
+                    IOException ioException = new IOException();
+                    ioException.initCause(e);
+                    throw ioException;
+                }
             }
 
             this.inputStream.cleanup();

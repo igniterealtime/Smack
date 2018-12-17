@@ -300,6 +300,19 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     }
 
     /**
+     * Use this method to clear the next incoming In-Band Bytestream request containing the given
+     * session ID.
+     * <p>
+     * This method should be used if you are awaiting an In-Band Bytestream request as a reply to
+     * another stanza (e.g. file transfer).
+     *
+     * @param sessionID to be be cleared
+     */
+    public void removeIgnoredBytestreamRequest(String sessionID) {
+        this.ignoredBytestreamRequests.remove(sessionID);
+    }
+
+    /**
      * Returns the default block size that is used for all outgoing in-band bytestreams for this
      * connection.
      * <p>

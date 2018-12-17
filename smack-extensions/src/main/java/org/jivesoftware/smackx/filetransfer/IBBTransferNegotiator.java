@@ -18,13 +18,16 @@ package org.jivesoftware.smackx.filetransfer;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Stanza;
 
+import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamListener;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession;
@@ -46,6 +49,7 @@ import org.jxmpp.jid.Jid;
  */
 public class IBBTransferNegotiator extends StreamNegotiator {
 
+    private static final Logger LOGGER = Logger.getLogger(IBBTransferNegotiator.class.getName());
     private final InBandBytestreamManager manager;
 
     /**
@@ -114,7 +118,42 @@ public class IBBTransferNegotiator extends StreamNegotiator {
         private ByteStreamRequest(InBandBytestreamManager manager, Open byteStreamRequest) {
             super(manager, byteStreamRequest);
         }
-
     }
 
+    InputStream getIbbIncomingStream(final StreamInitiation initiation) throws  InterruptedException, SmackException  {
+
+        IbbBytestreamListener listener = new IbbBytestreamListener();
+        manager.removeIgnoredBytestreamRequest(initiation.getSessionID());
+        manager.addIncomingBytestreamListener(listener);
+        return listener.getStream();
+    }
+
+    private static class IbbBytestreamListener extends InBandBytestreamListener {
+
+        InputStream inputStream = null;
+
+        public InputStream getStream() throws InterruptedException, SmackException {
+
+            int wait = 50; // wait for 10 seconds
+            do {
+                Thread.sleep(200);
+                if (wait-- < 0) {
+                    throw new SmackException("IBB fallback incoming stream wait timed out");
+                }
+            } while (inputStream == null);
+            return inputStream;
+        }
+
+        @Override
+        public void incomingBytestreamRequest(InBandBytestreamRequest request) {
+
+            try {
+                InBandBytestreamSession session = request.accept();
+                session.setCloseBothStreamsEnabled(false);
+                inputStream = session.getInputStream();
+            } catch (SmackException.NotConnectedException | InterruptedException e) {
+                LOGGER.warning("Error in InBand Bytestream Request: " + e.getMessage());
+            }
+        }
+    }
 }
