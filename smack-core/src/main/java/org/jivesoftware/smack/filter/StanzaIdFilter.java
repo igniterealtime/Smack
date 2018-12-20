@@ -41,10 +41,10 @@ public class StanzaIdFilter implements StanzaFilter {
     /**
      * Creates a new stanza ID filter using the specified stanza ID.
      *
-     * @param stanzaID the stanza ID to filter for.
+     * @param stanzaId the stanza ID to filter for.
      */
-    public StanzaIdFilter(String stanzaID) {
-        this.stanzaId = StringUtils.requireNotNullNorEmpty(stanzaID, "Stanza ID must not be null nor empty.");
+    public StanzaIdFilter(String stanzaId) {
+        this.stanzaId = StringUtils.requireNotNullNorEmpty(stanzaId, "Stanza ID must not be null nor empty.");
     }
 
     @Override

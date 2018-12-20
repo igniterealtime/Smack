@@ -43,7 +43,6 @@ import javax.crypto.NoSuchPaddingException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
@@ -62,7 +61,7 @@ import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
 import org.jivesoftware.smackx.omemo.exceptions.NoIdentityKeyException;
 import org.jivesoftware.smackx.omemo.exceptions.NoRawSessionException;
-import org.jivesoftware.smackx.omemo.exceptions.StaleDeviceException;
+import org.jivesoftware.smackx.omemo.exceptions.ReadOnlyDeviceException;
 import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.exceptions.UntrustedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.CipherAndAuthTag;
@@ -323,6 +322,8 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
             throw new AssertionError("We MUST have an identityKey for " + contactsDevice + " since we built a session." + e);
         }
 
+        // Note: We don't need to update our message counter for a ratchet update message.
+
         return builder.finish();
     }
 
@@ -386,28 +387,20 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
                 }
             }
 
-            // Ignore own stale devices
-            if (contactsDevice.getJid().equals(userDevice.getJid()) && OmemoConfiguration.getIgnoreStaleDevices()) {
+            int messageCounter = omemoStore.loadOmemoMessageCounter(userDevice, contactsDevice);
 
-                Date lastMessageDate = getOmemoStoreBackend().getDateOfLastReceivedMessage(userDevice, contactsDevice);
-                if (lastMessageDate == null) {
-                    lastMessageDate = new Date();
-                    getOmemoStoreBackend().setDateOfLastReceivedMessage(userDevice, contactsDevice, lastMessageDate);
-                }
+            // Ignore read-only devices
+            if (OmemoConfiguration.getIgnoreReadOnlyDevices()) {
 
-                Date lastPublicationDate = getOmemoStoreBackend().getDateOfLastDeviceIdPublication(userDevice, contactsDevice);
-                if (lastPublicationDate == null) {
-                    lastPublicationDate = new Date();
-                    getOmemoStoreBackend().setDateOfLastDeviceIdPublication(userDevice, contactsDevice, lastPublicationDate);
-                }
+                boolean readOnly = messageCounter >= OmemoConfiguration.getMaxReadOnlyMessageCount();
 
-                boolean stale = isStale(userDevice, contactsDevice, lastPublicationDate, OmemoConfiguration.getIgnoreStaleDevicesAfterHours());
-                stale &= isStale(userDevice, contactsDevice, lastMessageDate, OmemoConfiguration.getIgnoreStaleDevicesAfterHours());
+                if (readOnly) {
+                    LOGGER.log(Level.FINE, "Device " + contactsDevice + " seems to be read-only (We sent "
+                            + messageCounter + " messages without getting a reply back (max allowed is " +
+                            OmemoConfiguration.getMaxReadOnlyMessageCount() + "). Ignoring the device.");
+                    skippedRecipients.put(contactsDevice, new ReadOnlyDeviceException(contactsDevice));
 
-                if (stale) {
-                    LOGGER.log(Level.FINE, "Device " + contactsDevice + " seems to be stale (last message received "
-                            + lastMessageDate + ", last publication of deviceId: " + lastPublicationDate + "). Ignore it.");
-                    skippedRecipients.put(contactsDevice, new StaleDeviceException(contactsDevice, lastMessageDate, lastPublicationDate));
+                    // Skip this device and handle next device
                     continue;
                 }
             }
@@ -428,6 +421,10 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
                 LOGGER.log(Level.WARNING, "Device " + contactsDevice + " is untrusted. Message is not encrypted for it.");
                 skippedRecipients.put(contactsDevice, e);
             }
+
+            // Increment the message counter of the device
+            omemoStore.storeOmemoMessageCounter(userDevice, contactsDevice,
+                    messageCounter + 1);
         }
 
         OmemoElement element = builder.finish();
@@ -465,6 +462,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         } catch (NoIdentityKeyException e) {
             throw new AssertionError("Cannot retrieve OmemoFingerprint of sender although decryption was successful: " + e);
         }
+
+        // Reset the message counter.
+        omemoStore.storeOmemoMessageCounter(manager.getOwnDevice(), senderDevice, 0);
 
         if (omemoElement.isMessageElement()) {
             // Use symmetric message key to decrypt message payload.
@@ -1010,24 +1010,6 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
     }
 
     /**
-     * Return a copy of the contactsDeviceList, but with stale devices marked as inactive.
-     * Never mark our own device as stale.
-     * This method ignores {@link OmemoConfiguration#getIgnoreStaleDevices()}!
-     *
-     * In this case, a stale device is one of our devices, from which we haven't received an OMEMO message from
-     * for more than {@link OmemoConfiguration#IGNORE_STALE_DEVICE_AFTER_HOURS} hours.
-     *
-     * @param userDevice our OmemoDevice
-     * @param contact subjects BareJid
-     * @param contactsDeviceList subjects deviceList
-     * @return
-     */
-    private OmemoCachedDeviceList ignoreStaleDevices(OmemoDevice userDevice, BareJid contact, OmemoCachedDeviceList contactsDeviceList) {
-        int maxAgeHours = OmemoConfiguration.getIgnoreStaleDevicesAfterHours();
-        return removeStaleDevicesFromDeviceList(userDevice, contact, contactsDeviceList, maxAgeHours);
-    }
-
-    /**
      * Return a copy of the given deviceList of user contact, but with stale devices marked as inactive.
      * Never mark our own device as stale. If we haven't yet received a message from a device, store the current date
      * as last date of message receipt to allow future decisions.
@@ -1086,12 +1068,14 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
     }
 
     /**
+     * Determine, whether another one of *our* devices is stale or not.
      *
-     * @param userDevice
-     * @param subject
-     * @param lastReceipt
-     * @param maxAgeHours
-     * @return
+     * @param userDevice our omemoDevice
+     * @param subject another one of our devices
+     * @param lastReceipt date of last received message from that device
+     * @param maxAgeHours threshold
+     *
+     * @return staleness
      */
     static boolean isStale(OmemoDevice userDevice, OmemoDevice subject, Date lastReceipt, int maxAgeHours) {
         if (userDevice.equals(subject)) {

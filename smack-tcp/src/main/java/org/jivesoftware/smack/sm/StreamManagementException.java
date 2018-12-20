@@ -16,10 +16,13 @@
  */
 package org.jivesoftware.smack.sm;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.Stanza;
 
 public abstract class StreamManagementException extends SmackException {
@@ -108,6 +111,57 @@ public abstract class StreamManagementException extends SmackException {
 
         public List<Stanza> getAckedStanzas() {
             return ackedStanzas;
+        }
+    }
+
+    public static final class UnacknowledgedQueueFullException extends StreamManagementException {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        private final int overflowElementNum;
+        private final int droppedElements;
+        private final List<Element> elements;
+        private final List<Stanza> unacknowledgesStanzas;
+
+        private UnacknowledgedQueueFullException(String message, int overflowElementNum, int droppedElements, List<Element> elements,
+                List<Stanza> unacknowledgesStanzas) {
+            super(message);
+            this.overflowElementNum = overflowElementNum;
+            this.droppedElements = droppedElements;
+            this.elements = elements;
+            this.unacknowledgesStanzas = unacknowledgesStanzas;
+        }
+
+        public int getOverflowElementNum() {
+            return overflowElementNum;
+        }
+
+        public int getDroppedElements() {
+            return droppedElements;
+        }
+
+        public List<Element> getElements() {
+            return elements;
+        }
+
+        public List<Stanza> getUnacknowledgesStanzas() {
+            return unacknowledgesStanzas;
+        }
+
+        public static UnacknowledgedQueueFullException newWith(int overflowElementNum, List<Element> elements,
+                BlockingQueue<Stanza> unacknowledgedStanzas) {
+            final int unacknowledgesStanzasQueueSize = unacknowledgedStanzas.size();
+            List<Stanza> localUnacknowledgesStanzas = new ArrayList<>(unacknowledgesStanzasQueueSize);
+            localUnacknowledgesStanzas.addAll(unacknowledgedStanzas);
+            int droppedElements = elements.size() - overflowElementNum - 1;
+
+            String message = "The queue size " + unacknowledgesStanzasQueueSize + " is not able to fit another "
+                    + droppedElements + " potential stanzas type top-level stream-elements.";
+            return new UnacknowledgedQueueFullException(message, overflowElementNum, droppedElements, elements,
+                    localUnacknowledgesStanzas);
         }
     }
 }

@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,7 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.CloseableUtil;
-
+import org.jivesoftware.smack.util.stringencoder.BareJidEncoder;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
@@ -53,6 +54,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
     private final FileHierarchy hierarchy;
     private static final Logger LOGGER = Logger.getLogger(FileBasedOmemoStore.class.getName());
+    private static BareJidEncoder bareJidEncoder = new BareJidEncoder.UrlSafeEncoder();
 
     public FileBasedOmemoStore(File basePath) {
         super();
@@ -351,6 +353,24 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     public boolean containsRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice) {
         File session = hierarchy.getContactsSessionPath(userDevice, contactsDevice);
         return session.exists();
+    }
+
+    @Override
+    public void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter) {
+        File messageCounterFile = hierarchy.getDevicesMessageCounterPath(userDevice, contactsDevice);
+        writeIntegers(messageCounterFile, Collections.singleton(counter));
+    }
+
+    @Override
+    public int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+        File messageCounterFile = hierarchy.getDevicesMessageCounterPath(userDevice, contactsDevice);
+        Set<Integer> integers = readIntegers(messageCounterFile);
+
+        if (integers == null || integers.isEmpty()) {
+            return 0;
+        }
+
+        return integers.iterator().next();
     }
 
     @Override
@@ -732,6 +752,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         static final String SESSION = "session";
         static final String DEVICE_LIST_ACTIVE = "activeDevices";
         static final String DEVICE_LIST_INAVTIVE = "inactiveDevices";
+        static final String MESSAGE_COUNTER = "messageCounter";
 
         File basePath;
 
@@ -749,7 +770,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         }
 
         File getUserDirectory(BareJid bareJid) {
-            return createDirectory(getStoreDirectory(), bareJid.toString());
+            return createDirectory(getStoreDirectory(), bareJidEncoder.encode(bareJid));
         }
 
         File getUserDeviceDirectory(OmemoDevice userDevice) {
@@ -762,7 +783,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         }
 
         File getContactsDir(OmemoDevice userDevice, BareJid contact) {
-            return createDirectory(getContactsDir(userDevice), contact.toString());
+            return createDirectory(getContactsDir(userDevice), bareJidEncoder.encode(contact));
         }
 
         File getContactsDir(OmemoDevice userDevice, OmemoDevice contactsDevice) {
@@ -815,6 +836,10 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             return new File(getContactsDir(userDevice, contact), DEVICE_LIST_INAVTIVE);
         }
 
+        File getDevicesMessageCounterPath(OmemoDevice userDevice, OmemoDevice otherDevice) {
+            return new File(getContactsDir(userDevice, otherDevice), MESSAGE_COUNTER);
+        }
+
         private static File createFile(File f) throws IOException {
             File p = f.getParentFile();
             createDirectory(p);
@@ -836,5 +861,16 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             f.mkdirs();
             return f;
         }
+    }
+
+    /**
+     * Convert {@link BareJid BareJids} to Strings using the legacy {@link BareJid#toString()} method instead of the
+     * proper, url safe {@link BareJid#asUrlEncodedString()} method.
+     * While it is highly advised to use the new format, you can use this method to stay backwards compatible to data
+     * sets created by the old implementation.
+     */
+    @SuppressWarnings("deprecation")
+    public static void useLegacyBareJidEncoding() {
+        bareJidEncoder = new BareJidEncoder.LegacyEncoder();
     }
 }

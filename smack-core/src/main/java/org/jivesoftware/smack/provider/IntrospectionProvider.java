@@ -123,7 +123,9 @@ public class IntrospectionProvider{
         case "java.lang.String":
             return value;
         case "boolean":
+            // CHECKSTYLE:OFF
             return Boolean.valueOf(value);
+            // CHECKSTYLE:ON
         case "int":
             return Integer.valueOf(value);
         case "long":

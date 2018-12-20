@@ -204,7 +204,10 @@ public class MultiUserChat {
             @Override
             public void processStanza(final Stanza packet) {
                 final Presence presence = (Presence) packet;
-                final EntityFullJid from = presence.getFrom().asEntityFullJidOrThrow();
+                final EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
+                if (from == null) {
+                    return;
+                }
                 final EntityFullJid myRoomJID = myRoomJid;
                 final boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
 

@@ -99,7 +99,7 @@ public final class ServerPingWithAlarmManager extends Manager {
      * If enabled, ServerPingWithAlarmManager will call {@link PingManager#pingServerIfNecessary()}
      * for the connection of this instance every half hour.
      *
-     * @param enabled
+     * @param enabled whether or not this manager is should be enabled or not.
      */
     public void setEnabled(boolean enabled) {
         mEnabled = enabled;
@@ -157,7 +157,7 @@ public final class ServerPingWithAlarmManager extends Manager {
      * register the alarm broadcast receiver to receive this intent. The receiver will check all
      * known questions if a ping is Necessary when invoked by the alarm intent.
      *
-     * @param context
+     * @param context an Android context.
      */
     public static void onCreate(Context context) {
         sContext = context;

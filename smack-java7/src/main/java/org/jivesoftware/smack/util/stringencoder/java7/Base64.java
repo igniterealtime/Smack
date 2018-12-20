@@ -375,6 +375,7 @@ public final class Base64
      * @return the <var>destination</var> array
      * @since 1.3
      */
+    @SuppressWarnings("UnnecessaryParentheses")
     private static byte[] encode3to4(
      byte[] source, int srcOffset, int numSigBytes,
      byte[] destination, int destOffset, int options )
@@ -600,6 +601,7 @@ public final class Base64
      * @see Base64#DONT_BREAK_LINES
      * @since 2.0
      */
+    @SuppressWarnings("UnnecessaryParentheses")
     public static String encodeBytes( byte[] source, int off, int len, int options )
     {
         // Isolate options
@@ -727,6 +729,7 @@ public final class Base64
      * @return the number of decoded bytes converted
      * @since 1.3
      */
+    @SuppressWarnings("UnnecessaryParentheses")
     private static int decode4to3( byte[] source, int srcOffset, byte[] destination, int destOffset, int options )
     {
 		byte[] DECODABET = getDecodabet( options );

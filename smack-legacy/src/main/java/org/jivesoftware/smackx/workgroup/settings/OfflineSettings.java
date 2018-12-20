@@ -118,16 +118,16 @@ public class OfflineSettings extends SimpleIQ {
 
             while (!done) {
                 int eventType = parser.next();
-                if ((eventType == XmlPullParser.START_TAG) && ("redirectPage".equals(parser.getName()))) {
+                if (eventType == XmlPullParser.START_TAG && "redirectPage".equals(parser.getName())) {
                     redirectPage = parser.nextText();
                 }
-                else if ((eventType == XmlPullParser.START_TAG) && ("subject".equals(parser.getName()))) {
+                else if (eventType == XmlPullParser.START_TAG && "subject".equals(parser.getName())) {
                     subject = parser.nextText();
                 }
-                else if ((eventType == XmlPullParser.START_TAG) && ("offlineText".equals(parser.getName()))) {
+                else if (eventType == XmlPullParser.START_TAG && "offlineText".equals(parser.getName())) {
                     offlineText = parser.nextText();
                 }
-                else if ((eventType == XmlPullParser.START_TAG) && ("emailAddress".equals(parser.getName()))) {
+                else if (eventType == XmlPullParser.START_TAG && "emailAddress".equals(parser.getName())) {
                     emailAddress = parser.nextText();
                 }
                 else if (eventType == XmlPullParser.END_TAG && "offline-settings".equals(parser.getName())) {

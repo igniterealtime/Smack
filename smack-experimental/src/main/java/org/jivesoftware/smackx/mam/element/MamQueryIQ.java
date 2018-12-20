@@ -92,7 +92,7 @@ public class MamQueryIQ extends IQ {
             if (field == null) {
                 throw new IllegalArgumentException("If a data form is given it must posses a hidden form type field");
             }
-            if (!field.getValues().get(0).equals(MamElements.NAMESPACE)) {
+            if (!field.getValues().get(0).toString().equals(MamElements.NAMESPACE)) {
                 throw new IllegalArgumentException(
                         "Value of the hidden form type field must be '" + MamElements.NAMESPACE + "'");
             }

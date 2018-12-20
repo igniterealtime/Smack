@@ -10,12 +10,16 @@ list, contact list, etc.
 
 A `Roster` instance is obtained using the `Roster.getInstanceFor(XMPPConnection)` method.
 
+A detailed descriptrion of the protcol behind the Roster and Presence
+semantics can be found in [RFC
+6120](https://tools.ietf.org/html/rfc6121).
+
 Roster Entries
 --------------
 
 Every user in a roster is represented by a RosterEntry, which consists of:
 
-  * An XMPP address (e.g. jsmith@example.com).
+  * An XMPP address, aka. JID (e.g. jsmith@example.com).
   * A name you've assigned to the user (e.g. "Joe").
   * The list of groups in the roster that the entry belongs to. If the roster entry belongs to no groups, it's called an "unfiled entry".  The following code snippet prints all entries in the roster: 
 
@@ -35,11 +39,12 @@ Presence
 ![Roster](images/roster.png)
 
 Every entry in the roster has presence associated with it. The
-`Roster.getPresence(String user)` method will return a Presence object with
+`Roster.getPresence(BareJid user)` method will return a Presence object with
 the user's presence or `null` if the user is not online or you are not
-subscribed to the user's presence. _Note:_ typically, presence subscription is
-always tied to the user being on the roster, but this is not true in all
-cases.
+subscribed to the user's presence. _Note:_ Presence subscription is
+nnot tied to the user being on the roster, and vice versa: You could
+be subscriped to a remote users presence without the user in your roster, and
+a remote user can be in your roster without any presence subscription relation.
 
 A user either has a presence of online or offline. When a user is online,
 their presence may contain extended information such as what they are
@@ -74,18 +79,20 @@ roster.addRosterListener(new RosterListener() {
 });
 ```
 
+Note that in order to receive presence changed events you need to be subscribed
+to the users presence. See the following section.
+
 Adding Entries to the Roster
 ----------------------------
 
 Rosters and presence use a permissions-based model where users must give
-permission before they are added to someone else's roster. This protects a
+permission before someone else can see their presence. This protects a
 user's privacy by making sure that only approved users are able to view their
-presence information. Therefore, when you add a new roster entry it will be in
-a pending state until the other user accepts your request.
+presence information. Therefore, when you add a new roster entry, you will not
+see the presence information until the other user accepts your request.
 
-If another user requests a presence subscription so they can add you to their
-roster, you must accept or reject that request. Smack handles presence
-subscription requests in one of three ways:
+If another user requests a presence subscription, you must accept or reject
+that request. Smack handles presence subscription requests in one of three ways:
 
   * Automatically accept all presence subscription requests.
   * Automatically reject all presence subscription requests.

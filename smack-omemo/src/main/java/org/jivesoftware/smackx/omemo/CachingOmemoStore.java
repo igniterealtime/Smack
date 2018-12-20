@@ -141,6 +141,30 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
+    public void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter) {
+        getCache(userDevice).messageCounters.put(contactsDevice, counter);
+        if (persistent != null) {
+            persistent.storeOmemoMessageCounter(userDevice, contactsDevice, counter);
+        }
+    }
+
+    @Override
+    public int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+        Integer counter = getCache(userDevice).messageCounters.get(contactsDevice);
+        if (counter == null && persistent != null) {
+            counter = persistent.loadOmemoMessageCounter(userDevice, contactsDevice);
+        }
+
+        if (counter == null) {
+            counter = 0;
+        }
+
+        getCache(userDevice).messageCounters.put(contactsDevice, counter);
+
+        return counter;
+    }
+
+    @Override
     public void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice from, Date date) {
         getCache(userDevice).lastMessagesDates.put(from, date);
         if (persistent != null) {
@@ -442,5 +466,6 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
         private final HashMap<OmemoDevice, Date> lastDeviceIdPublicationDates = new HashMap<>();
         private final HashMap<BareJid, OmemoCachedDeviceList> deviceLists = new HashMap<>();
         private Date lastRenewalDate = null;
+        private final HashMap<OmemoDevice, Integer> messageCounters = new HashMap<>();
     }
 }

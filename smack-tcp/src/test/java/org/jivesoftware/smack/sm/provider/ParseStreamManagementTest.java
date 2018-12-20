@@ -68,7 +68,7 @@ public class ParseStreamManagementTest {
 
     @Test
     public void testParseEnabledInvariant() throws XmlPullParserException, IOException {
-        String enabledString = (new StreamManagement.Enabled("stream-id", false)).toXML(null).toString();
+        String enabledString = new StreamManagement.Enabled("stream-id", false).toXML(null).toString();
         XmlPullParser parser = PacketParserUtils.getParserFor(enabledString);
         StreamManagement.Enabled enabled = ParseStreamManagement.enabled(parser);
 

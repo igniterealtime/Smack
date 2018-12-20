@@ -291,6 +291,27 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
     public abstract void removeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactsDevice);
 
     /**
+     * Store the number of messages we sent to a device since we last received a message back.
+     * This counter gets reset to 0 whenever we receive a message from the contacts device.
+     *
+     * @param userDevice our omemoDevice.
+     * @param contactsDevice device of which we want to set the message counter.
+     * @param counter counter value.
+     */
+    public abstract void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter);
+
+    /**
+     * Return the current value of the message counter.
+     * This counter represents the number of message we sent to the contactsDevice without getting a reply back.
+     * The default value for this counter is 0.
+     *
+     * @param userDevice our omemoDevice
+     * @param contactsDevice device of which we want to get the message counter.
+     * @return counter value.
+     */
+    public abstract int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice);
+
+    /**
      * Set the date of the last message that was received from a device.
      *
      * @param userDevice omemoManager of our device.

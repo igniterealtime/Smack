@@ -16,13 +16,9 @@
  */
 package org.jivesoftware.smackx.nick.packet;
 
-import java.io.IOException;
-
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * A minimalistic implementation of a {@link ExtensionElement} for nicknames.
@@ -36,10 +32,10 @@ public class Nick implements ExtensionElement {
 
     public static final String ELEMENT_NAME = "nick";
 
-    private String name = null;
+    private final String name;
 
     public Nick(String name) {
-        this.name = name;
+        this.name = StringUtils.requireNotNullNorEmpty(name, "Nickname must be given");
     }
 
     /**
@@ -51,61 +47,24 @@ public class Nick implements ExtensionElement {
         return name;
     }
 
-    /**
-     * Sets the value of this nickname.
-     *
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.jivesoftware.smack.packet.PacketExtension#getElementName()
-     */
     @Override
     public String getElementName() {
         return ELEMENT_NAME;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.jivesoftware.smack.packet.PacketExtension#getNamespace()
-     */
     @Override
     public String getNamespace() {
         return NAMESPACE;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
-     */
     @Override
-    public String toXML(String enclosingNamespace) {
-        final StringBuilder buf = new StringBuilder();
+    public XmlStringBuilder toXML(String enclosingNamespace) {
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+        xml.rightAngleBracket();
 
-        buf.append('<').append(ELEMENT_NAME).append(" xmlns=\"").append(
-                NAMESPACE).append("\">");
-        buf.append(getName());
-        buf.append("</").append(ELEMENT_NAME).append('>');
+        xml.escape(getName());
 
-        return buf.toString();
-    }
-
-    public static class Provider extends ExtensionElementProvider<Nick> {
-
-        @Override
-        public Nick parse(XmlPullParser parser, int initialDepth)
-                        throws XmlPullParserException, IOException {
-            final String name = parser.nextText();
-
-            return new Nick(name);
-        }
+        xml.closeElement(this);
+        return xml;
     }
 }

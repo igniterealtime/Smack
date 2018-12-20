@@ -149,6 +149,8 @@ public final class IoTDiscoveryManager extends Manager {
 
         connection.registerIQRequestHandler(new AbstractIqRequestHandler(IoTDisowned.ELEMENT, IoTDisowned.NAMESPACE,
                         IQ.Type.set, Mode.sync) {
+
+            @SuppressWarnings("ObjectToString")
             @Override
             public IQ handleIQRequest(IQ iqRequest) {
                 if (!isRegistry(iqRequest.getFrom())) {

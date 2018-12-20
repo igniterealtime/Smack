@@ -490,7 +490,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     private static String getNextSessionID() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(SESSION_ID_PREFIX);
-        buffer.append(Math.abs(randomGenerator.nextLong()));
+        buffer.append(randomGenerator.nextInt(Integer.MAX_VALUE) + randomGenerator.nextInt(Integer.MAX_VALUE));
         return buffer.toString();
     }
 

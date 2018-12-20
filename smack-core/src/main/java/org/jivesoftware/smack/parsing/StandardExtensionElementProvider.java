@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.StandardExtensionElement;
-import org.jivesoftware.smack.packet.StandardExtensionElement.Builder;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
@@ -46,7 +45,7 @@ public class StandardExtensionElementProvider extends ExtensionElementProvider<S
         // we are parsing here.
         String name = parser.getName();
         String namespace = parser.getNamespace();
-        Builder builder = StandardExtensionElement.builder(name, namespace);
+        StandardExtensionElement.Builder builder = StandardExtensionElement.builder(name, namespace);
         final int namespaceCount = parser.getNamespaceCount(initialDepth);
         final int attributeCount = parser.getAttributeCount();
         final Map<String, String> attributes = new LinkedHashMap<>(namespaceCount + attributeCount);

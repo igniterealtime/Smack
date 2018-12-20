@@ -78,7 +78,7 @@ public class ScreenShareSession extends JingleMediaSession {
     public void initialize() {
 
         JingleSession session = getJingleSession();
-        if ((session != null) && (session.getInitiator().equals(session.getConnection().getUser()))) {
+        if (session != null && session.getInitiator().equals(session.getConnection().getUser())) {
             // If the initiator of the jingle session is us then we transmit a screen share.
             try {
                 InetAddress remote = InetAddress.getByName(getRemote().getIp());

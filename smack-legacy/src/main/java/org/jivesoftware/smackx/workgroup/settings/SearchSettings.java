@@ -87,10 +87,10 @@ public class SearchSettings extends SimpleIQ {
 
             while (!done) {
                 int eventType = parser.next();
-                if ((eventType == XmlPullParser.START_TAG) && ("forums".equals(parser.getName()))) {
+                if (eventType == XmlPullParser.START_TAG && "forums".equals(parser.getName())) {
                     forums = parser.nextText();
                 }
-                else if ((eventType == XmlPullParser.START_TAG) && ("kb".equals(parser.getName()))) {
+                else if ((eventType == XmlPullParser.START_TAG) && "kb".equals(parser.getName())) {
                     kb = parser.nextText();
                 }
                 else if (eventType == XmlPullParser.END_TAG && "search-settings".equals(parser.getName())) {

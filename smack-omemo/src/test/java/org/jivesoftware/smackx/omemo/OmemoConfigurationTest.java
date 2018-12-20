@@ -52,20 +52,6 @@ public class OmemoConfigurationTest {
             // Expected.
         }
 
-        // Ignore stale device
-        OmemoConfiguration.setIgnoreStaleDevices(false);
-        assertEquals(false, OmemoConfiguration.getIgnoreStaleDevices());
-        OmemoConfiguration.setIgnoreStaleDevices(true);
-        assertEquals(true, OmemoConfiguration.getIgnoreStaleDevices());
-        OmemoConfiguration.setIgnoreStaleDevicesAfterHours(44);
-        assertEquals(44, OmemoConfiguration.getIgnoreStaleDevicesAfterHours());
-        try {
-            OmemoConfiguration.setIgnoreStaleDevicesAfterHours(-5);
-            TestCase.fail("OmemoConfiguration.setIgnoreStaleDevicesAfterHours should not accept values <= 0.");
-        } catch (IllegalArgumentException e) {
-            // Expected
-        }
-
         // Renew signedPreKeys
         OmemoConfiguration.setRenewOldSignedPreKeys(false);
         assertEquals(false, OmemoConfiguration.getRenewOldSignedPreKeys());

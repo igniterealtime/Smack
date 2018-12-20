@@ -86,7 +86,7 @@ public class MonitorPacket extends IQ {
 
             while (!done) {
                 int eventType = parser.next();
-                if ((eventType == XmlPullParser.START_TAG) && ("isMonitor".equals(parser.getName()))) {
+                if (eventType == XmlPullParser.START_TAG && "isMonitor".equals(parser.getName())) {
                     String value = parser.nextText();
                     if ("false".equalsIgnoreCase(value)) {
                         packet.setMonitor(false);

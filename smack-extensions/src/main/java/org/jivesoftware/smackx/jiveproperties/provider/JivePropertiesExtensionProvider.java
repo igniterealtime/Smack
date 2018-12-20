@@ -92,7 +92,9 @@ public class JivePropertiesExtensionProvider extends ExtensionElementProvider<Ji
                                 value = Double.valueOf(valueText);
                             }
                             else if ("boolean".equals(type)) {
+                                // CHECKSTYLE:OFF
                                 value = Boolean.valueOf(valueText);
+                                // CHECKSTYLE:ON
                             }
                             else if ("string".equals(type)) {
                                 value = valueText;

@@ -84,7 +84,7 @@ import org.jxmpp.jid.EntityBareJid;
  *
  * @author Kirill Maximov (kir@maxkir.com)
  */
-public class VCard extends IQ {
+public final class VCard extends IQ {
     public static final String ELEMENT = "vCard";
     public static final String NAMESPACE = "vcard-temp";
 

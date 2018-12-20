@@ -79,6 +79,7 @@ public final class Thing {
 
     private String toStringCache;
 
+    @SuppressWarnings("ObjectToString")
     @Override
     public String toString() {
         if (toStringCache == null) {

@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.hoxt.provider;
 
+import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.hoxt.packet.HttpMethod;
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppReq;
 
@@ -47,13 +49,13 @@ public class HttpOverXmppReqProvider extends AbstractHttpOverXmppProvider<HttpOv
         String jingleStr = parser.getAttributeValue("", AbstractHttpOverXmppProvider.ELEMENT_JINGLE);
 
         if (sipubStr != null) {
-            builder.setSipub(Boolean.valueOf(sipubStr));
+            builder.setSipub(ParserUtils.parseXmlBoolean(sipubStr));
         }
         if (ibbStr != null) {
-            builder.setIbb(Boolean.valueOf(ibbStr));
+            builder.setIbb(ParserUtils.parseXmlBoolean(ibbStr));
         }
         if (jingleStr != null) {
-            builder.setJingle(Boolean.valueOf(jingleStr));
+            builder.setJingle(ParserUtils.parseXmlBoolean(jingleStr));
         }
 
         String maxChunkSize = parser.getAttributeValue("", ATTRIBUTE_MAX_CHUNK_SIZE);

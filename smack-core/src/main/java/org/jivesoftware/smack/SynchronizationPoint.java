@@ -55,6 +55,7 @@ public class SynchronizationPoint<E extends Exception> {
     /**
      * Initialize (or reset) this synchronization point.
      */
+    @SuppressWarnings("LockNotBeforeTry")
     public void init() {
         connectionLock.lock();
         state = State.Initial;

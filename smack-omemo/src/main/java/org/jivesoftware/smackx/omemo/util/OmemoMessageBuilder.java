@@ -172,7 +172,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         byte[] body;
         byte[] ciphertext;
 
-        body = (message.getBytes(StringUtils.UTF8));
+        body = message.getBytes(StringUtils.UTF8);
         ciphertext = cipher.doFinal(body);
 
         byte[] clearKeyWithAuthTag = new byte[messageKey.length + 16];

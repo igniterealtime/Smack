@@ -447,7 +447,7 @@ public class RTPBridge extends IQ {
 
         DiscoverInfo discoInfo = disco.discoverInfo(connection.getXMPPServiceDomain());
         for (DiscoverInfo.Identity identity : discoInfo.getIdentities()) {
-            if ((identity.getName() != null) && (identity.getName().startsWith("rtpbridge"))) {
+            if (identity.getName() != null && identity.getName().startsWith("rtpbridge")) {
                 return true;
             }
         }
