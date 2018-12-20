@@ -114,8 +114,8 @@ import org.jxmpp.jid.Jid;
  * <pre>
  * {@code
  * MamQueryArgs mamQueryArgs = MamQueryArgs.builder()
- *                                 .withJid(jid)
- *                                 .setResultPageSize(10)
+ *                                 .limitResultsToJid(jid)
+ *                                 .setResultPageSizeTo(10)
  *                                 .queryLastPage()
  *                                 .build();
  * MamQuery mamQuery = mamManager.queryArchive(mamQueryArgs);
