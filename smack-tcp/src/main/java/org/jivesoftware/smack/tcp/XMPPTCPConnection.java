@@ -387,6 +387,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         SSLSession sslSession = secureSocket != null ? secureSocket.getSession() : null;
         saslAuthentication.authenticate(username, password, config.getAuthzid(), sslSession);
 
+        // Wait for stream features after the authentication.
+        // TODO: The name of this synchronization point "maybeCompressFeaturesReceived" is not perfect. It should be
+        // renamed to "streamFeaturesAfterAuthenticationReceived".
+        maybeCompressFeaturesReceived.checkIfSuccessOrWait();
+
         // If compression is enabled then request the server to use stream compression. XEP-170
         // recommends to perform stream compression before resource binding.
         maybeEnableCompression();
@@ -859,7 +864,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         if (!config.isCompressionEnabled()) {
             return;
         }
-        maybeCompressFeaturesReceived.checkIfSuccessOrWait();
+
         Compress.Feature compression = getFeature(Compress.Feature.ELEMENT, Compress.NAMESPACE);
         if (compression == null) {
             // Server does not support compression
