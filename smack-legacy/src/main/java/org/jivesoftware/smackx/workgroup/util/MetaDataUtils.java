@@ -58,7 +58,7 @@ public class MetaDataUtils {
 
             // Keep parsing until we've gotten to end of meta-data.
             while ((eventType != XmlPullParser.END_TAG)
-                    || (!parser.getName().equals(MetaData.ELEMENT_NAME))) {
+                    || !parser.getName().equals(MetaData.ELEMENT_NAME)) {
                 String name = parser.getAttributeValue(0);
                 String value = parser.nextText();
 

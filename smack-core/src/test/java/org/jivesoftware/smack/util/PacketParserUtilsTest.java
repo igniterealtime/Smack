@@ -813,7 +813,7 @@ public class PacketParserUtilsTest {
         final String stanza = "<iq type='result' to='foo@bar.com' from='baz.com' id='42'/>";
         XmlPullParser parser = TestUtils.getParser(stanza, "iq");
         CharSequence content = PacketParserUtils.parseContent(parser);
-        assertEquals("", content);
+        assertEquals("", content.toString());
     }
 
     @Test

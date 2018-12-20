@@ -142,8 +142,8 @@ public class OccupantsInfo extends IQ {
             boolean done = false;
             while (!done) {
                 int eventType = parser.next();
-                if ((eventType == XmlPullParser.START_TAG) &&
-                        ("occupant".equals(parser.getName()))) {
+                if (eventType == XmlPullParser.START_TAG &&
+                        "occupant".equals(parser.getName())) {
                     occupantsInfo.occupants.add(parseOccupantInfo(parser));
                 } else if (eventType == XmlPullParser.END_TAG &&
                         ELEMENT_NAME.equals(parser.getName())) {
@@ -161,13 +161,13 @@ public class OccupantsInfo extends IQ {
             Date joined = null;
             while (!done) {
                 int eventType = parser.next();
-                if ((eventType == XmlPullParser.START_TAG) && ("jid".equals(parser.getName()))) {
+                if (eventType == XmlPullParser.START_TAG && "jid".equals(parser.getName())) {
                     jid = parser.nextText();
-                } else if ((eventType == XmlPullParser.START_TAG) &&
-                        ("nickname".equals(parser.getName()))) {
+                } else if (eventType == XmlPullParser.START_TAG &&
+                        "nickname".equals(parser.getName())) {
                     nickname = parser.nextText();
-                } else if ((eventType == XmlPullParser.START_TAG) &&
-                        ("joined".equals(parser.getName()))) {
+                } else if (eventType == XmlPullParser.START_TAG &&
+                        "joined".equals(parser.getName())) {
                     try {
                         synchronized (UTC_FORMAT) {
                             joined = UTC_FORMAT.parse(parser.nextText());

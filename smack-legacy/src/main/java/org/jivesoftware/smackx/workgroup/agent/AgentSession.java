@@ -276,7 +276,7 @@ public class AgentSession {
         synchronized (this.metaData) {
             List<String> oldVals = metaData.get(key);
 
-            if ((oldVals == null) || (!oldVals.get(0).equals(val))) {
+            if (oldVals == null || !oldVals.get(0).equals(val)) {
                 oldVals.set(0, val);
 
                 setStatus(presenceMode, maxChats);
@@ -635,7 +635,7 @@ public class AgentSession {
     }
 
     public Iterator<WorkgroupQueue> getQueues() {
-        return Collections.unmodifiableMap((new HashMap<>(queues))).values().iterator();
+        return Collections.unmodifiableMap(new HashMap<>(queues)).values().iterator();
     }
 
     public void addQueueUsersListener(QueueUsersListener listener) {
@@ -703,7 +703,7 @@ public class AgentSession {
     private void fireOfferRequestEvent(OfferRequestProvider.OfferRequestPacket requestPacket) {
         Offer offer = new Offer(this.connection, this, requestPacket.getUserID(),
                 requestPacket.getUserJID(), this.getWorkgroupJID(),
-                new Date((new Date()).getTime() + (requestPacket.getTimeout() * 1000)),
+                                new Date(new Date().getTime() + (requestPacket.getTimeout() * 1000)),
                 requestPacket.getSessionID(), requestPacket.getMetaData(), requestPacket.getContent());
 
         synchronized (offerListeners) {

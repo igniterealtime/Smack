@@ -18,6 +18,7 @@
 package org.jivesoftware.smack;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.KeyStore;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,6 +46,7 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.minidns.dnsname.DnsName;
+import org.minidns.util.InetAddressUtil;
 
 /**
  * Configuration to use while establishing the connection to the server.
@@ -125,6 +127,8 @@ public abstract class ConnectionConfiguration {
 
     private final Set<String> enabledSaslMechanisms;
 
+    private final boolean compressionEnabled;
+
     protected ConnectionConfiguration(Builder<?,?> builder) {
         authzid = builder.authzid;
         username = builder.username;
@@ -162,6 +166,8 @@ public abstract class ConnectionConfiguration {
         allowNullOrEmptyUsername = builder.allowEmptyOrNullUsername;
         enabledSaslMechanisms = builder.enabledSaslMechanisms;
 
+        compressionEnabled = builder.compressionEnabled;
+
         // If the enabledSaslmechanisms are set, then they must not be empty
         assert (enabledSaslMechanisms != null ? !enabledSaslMechanisms.isEmpty() : true);
 
@@ -169,6 +175,14 @@ public abstract class ConnectionConfiguration {
             throw new IllegalStateException("You can not use a custom SSL context with DNSSEC enabled");
         }
 
+    }
+
+    DnsName getHost() {
+        return host;
+    }
+
+    InetAddress getHostAddress() {
+        return hostAddress;
     }
 
     /**
@@ -440,8 +454,7 @@ public abstract class ConnectionConfiguration {
      * @return true if the connection is going to use stream compression.
      */
     public boolean isCompressionEnabled() {
-        // Compression for non-TCP connections is always disabled
-        return false;
+        return compressionEnabled;
     }
 
     /**
@@ -513,6 +526,7 @@ public abstract class ConnectionConfiguration {
         private boolean saslMechanismsSealed;
         private Set<String> enabledSaslMechanisms;
         private X509TrustManager customX509TrustManager;
+        private boolean compressionEnabled = false;
 
         protected Builder() {
             if (SmackConfiguration.DEBUG) {
@@ -639,6 +653,33 @@ public abstract class ConnectionConfiguration {
          */
         public B setHost(DnsName host) {
             this.host = host;
+            return getThis();
+        }
+
+        /**
+         * Set the host to connect to by either its fully qualified domain name (FQDN) or its IP.
+         *
+         * @param fqdnOrIp a CharSequence either representing the FQDN or the IP of the host.
+         * @return a reference to this builder.
+         * @see #setHost(DnsName)
+         * @see #setHostAddress(InetAddress)
+         * @since 4.3.2
+         */
+        public B setHostAddressByNameOrIp(CharSequence fqdnOrIp) {
+            String fqdnOrIpString = fqdnOrIp.toString();
+            if (InetAddressUtil.isIpAddress(fqdnOrIp)) {
+                InetAddress hostInetAddress;
+                try {
+                    hostInetAddress = InetAddress.getByName(fqdnOrIpString);
+                }
+                catch (UnknownHostException e) {
+                    // Should never happen.
+                    throw new AssertionError(e);
+                }
+                setHostAddress(hostInetAddress);
+            } else {
+                setHost(fqdnOrIpString);
+            }
             return getThis();
         }
 
@@ -945,6 +986,21 @@ public abstract class ConnectionConfiguration {
             this.authzid = authzid;
             return getThis();
         }
+
+        /**
+         * Sets if the connection is going to use compression (default false).
+         *
+         * Compression is only activated if the server offers compression. With compression network
+         * traffic can be reduced up to 90%. By default compression is disabled.
+         *
+         * @param compressionEnabled if the connection is going to use compression on the HTTP level.
+         * @return a reference to this object.
+         */
+        public B setCompressionEnabled(boolean compressionEnabled) {
+            this.compressionEnabled = compressionEnabled;
+            return getThis();
+        }
+
 
         public abstract C build();
 

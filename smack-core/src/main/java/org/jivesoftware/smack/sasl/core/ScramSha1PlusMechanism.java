@@ -21,7 +21,7 @@ import org.jivesoftware.smack.sasl.SASLMechanism;
 public class ScramSha1PlusMechanism extends ScramPlusMechanism {
 
     static {
-        NAME = (new ScramSha1PlusMechanism()).getName();
+        NAME = new ScramSha1PlusMechanism().getName();
     }
 
     public static final String NAME;

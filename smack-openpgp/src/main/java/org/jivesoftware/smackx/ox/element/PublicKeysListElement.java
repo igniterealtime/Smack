@@ -150,7 +150,9 @@ public final class PublicKeysListElement implements ExtensionElement {
                 return true;
             }
 
-            return hashCode() == o.hashCode();
+            PubkeyMetadataElement otherPubkeyMetadataElement = (PubkeyMetadataElement) o;
+            return this.getV4Fingerprint().equals(otherPubkeyMetadataElement.getV4Fingerprint()) &&
+                this.getDate().equals(otherPubkeyMetadataElement.getDate());
         }
     }
 }

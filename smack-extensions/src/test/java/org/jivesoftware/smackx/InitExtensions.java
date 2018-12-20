@@ -22,7 +22,7 @@ import org.jivesoftware.smack.test.util.SmackTestSuite;
 public class InitExtensions extends SmackTestSuite {
 
     static {
-        (new ExtensionsInitializer()).initialize();
+        new ExtensionsInitializer().initialize();
     }
 
 }

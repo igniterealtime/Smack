@@ -88,7 +88,7 @@ public class GenericSettings extends IQ {
 
             while (!done) {
                 int eventType = parser.next();
-                if ((eventType == XmlPullParser.START_TAG) && ("entry".equals(parser.getName()))) {
+                if (eventType == XmlPullParser.START_TAG && "entry".equals(parser.getName())) {
                     eventType = parser.next();
                     String name = parser.nextText();
                     eventType = parser.next();

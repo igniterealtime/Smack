@@ -133,11 +133,11 @@ public abstract class ValidateElement implements ExtensionElement {
 
         /**
          * Basic validate element constructor.
-         * @param dataType
+         * @param datatype
          * @see #getDatatype()
          */
-        public BasicValidateElement(String dataType) {
-            super(dataType);
+        public BasicValidateElement(String datatype) {
+            super(datatype);
         }
 
         @Override
@@ -176,11 +176,11 @@ public abstract class ValidateElement implements ExtensionElement {
 
         /**
          * Open validate element constructor.
-         * @param dataType
+         * @param datatype
          * @see #getDatatype()
          */
-        public OpenValidateElement(String dataType) {
-            super(dataType);
+        public OpenValidateElement(String datatype) {
+            super(datatype);
         }
 
         @Override
@@ -218,14 +218,14 @@ public abstract class ValidateElement implements ExtensionElement {
 
         /**
          * Range validate element constructor.
-         * @param dataType
+         * @param datatype
          * @param min the minimum allowable value. This attribute is OPTIONAL. The value depends on the datatype in use.
          * @param max the maximum allowable value. This attribute is OPTIONAL. The value depends on the datatype in use.
          * @see #getDatatype()
          *
          */
-        public RangeValidateElement(String dataType, String min, String max) {
-            super(dataType);
+        public RangeValidateElement(String datatype, String min, String max) {
+            super(datatype);
             this.min = min;
             this.max = max;
         }
@@ -283,12 +283,12 @@ public abstract class ValidateElement implements ExtensionElement {
 
         /**
          * Regex validate element.
-         * @param dataType
+         * @param datatype
          * @param regex
          * @see #getDatatype()
          */
-        public RegexValidateElement(String dataType, String regex) {
-            super(dataType);
+        public RegexValidateElement(String datatype, String regex) {
+            super(datatype);
             this.regex = regex;
         }
 

@@ -260,7 +260,7 @@ public final class FileTransferNegotiator extends Manager {
     public static String getNextStreamID() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(STREAM_INIT_PREFIX);
-        buffer.append(Math.abs(randomGenerator.nextLong()));
+        buffer.append(randomGenerator.nextInt(Integer.MAX_VALUE) + randomGenerator.nextInt(Integer.MAX_VALUE));
 
         return buffer.toString();
     }
@@ -342,10 +342,11 @@ public final class FileTransferNegotiator extends Manager {
         boolean isByteStream = false;
         boolean isIBB = false;
         for (CharSequence variable : field.getValues()) {
-            if (variable.equals(Bytestream.NAMESPACE) && !IBB_ONLY) {
+            String variableString = variable.toString();
+            if (variableString.equals(Bytestream.NAMESPACE) && !IBB_ONLY) {
                 isByteStream = true;
             }
-            else if (variable.equals(DataPacketExtension.NAMESPACE)) {
+            else if (variableString.equals(DataPacketExtension.NAMESPACE)) {
                 isIBB = true;
             }
         }

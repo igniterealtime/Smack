@@ -317,8 +317,8 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                         TransportCandidate bestRemote = getBestRemoteCandidate();
                         // State state = getState();
 
-                        if ((bestRemote != null)
-                                && ((getNegotiatorState() == JingleNegotiatorState.PENDING))) {
+                        if (bestRemote != null
+                                && getNegotiatorState() == JingleNegotiatorState.PENDING) {
                             // Accepting the remote candidate
                             if (!acceptedRemoteCandidates.contains(bestRemote)) {
                                 Jingle jout = new Jingle(JingleActionEnum.CONTENT_ACCEPT);
@@ -335,7 +335,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                                 }
                                 acceptedRemoteCandidates.add(bestRemote);
                             }
-                            if ((isEstablished()) && (getNegotiatorState() == JingleNegotiatorState.PENDING)) {
+                            if (isEstablished() && getNegotiatorState() == JingleNegotiatorState.PENDING) {
                                 setNegotiatorState(JingleNegotiatorState.SUCCEEDED);
                                 try {
                                     triggerTransportEstablished(getAcceptedLocalCandidate(), bestRemote);
@@ -409,8 +409,8 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
                         bestRemote = getBestRemoteCandidate();
                         // State state = getState();
-                        if ((bestRemote != null)
-                                && ((getNegotiatorState() == JingleNegotiatorState.PENDING))) {
+                        if (bestRemote != null
+                                && getNegotiatorState() == JingleNegotiatorState.PENDING) {
                             if (!acceptedRemoteCandidates.contains(bestRemote)) {
                                 Jingle jout = new Jingle(JingleActionEnum.CONTENT_ACCEPT);
                                 JingleContent content = parentNegotiator.getJingleContent();

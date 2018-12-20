@@ -76,10 +76,10 @@ public class SoundSettings extends SimpleIQ {
 
             while (!done) {
                 int eventType = parser.next();
-                if ((eventType == XmlPullParser.START_TAG) && ("outgoingSound".equals(parser.getName()))) {
+                if (eventType == XmlPullParser.START_TAG && "outgoingSound".equals(parser.getName())) {
                     soundSettings.setOutgoingSound(parser.nextText());
                 }
-                else if ((eventType == XmlPullParser.START_TAG) && ("incomingSound".equals(parser.getName()))) {
+                else if ((eventType == XmlPullParser.START_TAG) && "incomingSound".equals(parser.getName())) {
                     soundSettings.setIncomingSound(parser.nextText());
                 }
                 else if (eventType == XmlPullParser.END_TAG && "sound-settings".equals(parser.getName())) {

@@ -25,8 +25,6 @@ import java.util.HashMap;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.roster.PresenceEventListener;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
@@ -40,61 +38,10 @@ import org.jivesoftware.smackx.pubsub.PubSubException;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 
 import com.google.common.collect.Maps;
-import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
-import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.FullJid;
-import org.jxmpp.jid.Jid;
 
 
 public class OmemoManagerSetupHelper {
 
-    /**
-     * Synchronously subscribes presence.
-     * @param subscriber connection of user which subscribes.
-     * @param target connection of user which gets subscribed.
-     * @param targetNick nick of the subscribed user.
-     * @param targetGroups groups of the user.
-     * @throws Exception
-     */
-    public static void syncSubscribePresence(final XMPPConnection subscriber,
-                                             final XMPPConnection target,
-                                             String targetNick,
-                                             String[] targetGroups)
-            throws Exception {
-        final SimpleResultSyncPoint subscribed = new SimpleResultSyncPoint();
-
-        Roster subscriberRoster = Roster.getInstanceFor(subscriber);
-        Roster targetRoster = Roster.getInstanceFor(target);
-
-        targetRoster.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
-        subscriberRoster.addPresenceEventListener(new PresenceEventListener() {
-            @Override
-            public void presenceAvailable(FullJid address, Presence availablePresence) {
-            }
-
-            @Override
-            public void presenceUnavailable(FullJid address, Presence presence) {
-            }
-
-            @Override
-            public void presenceError(Jid address, Presence errorPresence) {
-                subscribed.signalFailure();
-            }
-
-            @Override
-            public void presenceSubscribed(BareJid address, Presence subscribedPresence) {
-                subscribed.signal();
-            }
-
-            @Override
-            public void presenceUnsubscribed(BareJid address, Presence unsubscribedPresence) {
-            }
-        });
-
-        subscriberRoster.createEntry(target.getUser().asBareJid(), targetNick, targetGroups);
-
-        subscribed.waitForResult(10 * 1000);
-    }
 
     public static void trustAllIdentities(OmemoManager alice, OmemoManager bob)
             throws InterruptedException, SmackException.NotConnectedException, SmackException.NotLoggedInException,

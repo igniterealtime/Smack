@@ -172,7 +172,7 @@ public class PayloadType {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof PayloadType)) {
             return false;
         }
         final PayloadType other = (PayloadType) obj;
@@ -244,7 +244,7 @@ public class PayloadType {
     /**
      * Audio payload type.
      */
-    public static class Audio extends PayloadType {
+    public static final class Audio extends PayloadType {
 
         private int clockRate;
 

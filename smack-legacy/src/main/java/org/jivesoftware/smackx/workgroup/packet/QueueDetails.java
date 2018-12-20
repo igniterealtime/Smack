@@ -168,8 +168,8 @@ public final class QueueDetails implements ExtensionElement {
                     }
 
                     eventType = parser.next();
-                    while ((eventType != XmlPullParser.END_TAG)
-                                || (!"user".equals(parser.getName()))) {
+                    while (eventType != XmlPullParser.END_TAG
+                                || !"user".equals(parser.getName())) {
                         if ("position".equals(parser.getName())) {
                             position = Integer.parseInt(parser.nextText());
                         }

@@ -63,8 +63,8 @@ public class MamQueryIQProviderTest {
         List<FormField> fields1 = dataForm1.getFields();
         Assert.assertEquals(fields1.get(0).getType(), FormField.Type.hidden);
         Assert.assertEquals(fields1.get(1).getType(), FormField.Type.text_single);
-        Assert.assertEquals(fields1.get(1).getValues().get(0), "Where arth thou, my Juliet?");
-        Assert.assertEquals(fields1.get(2).getValues().get(0), "{http://jabber.org/protocol/mood}mood/lonely");
+        Assert.assertEquals(fields1.get(1).getValues().get(0).toString(), "Where arth thou, my Juliet?");
+        Assert.assertEquals(fields1.get(2).getValues().get(0).toString(), "{http://jabber.org/protocol/mood}mood/lonely");
 
         // example2
         IQ iq2 = PacketParserUtils.parseStanza(exampleMamQueryIQ2);
@@ -77,7 +77,7 @@ public class MamQueryIQProviderTest {
         Assert.assertEquals(dataForm2.getType(), DataForm.Type.form);
 
         List<FormField> fields2 = dataForm2.getFields();
-        Assert.assertEquals(fields2.get(0).getValues().get(0), "urn:xmpp:mam:1");
+        Assert.assertEquals(fields2.get(0).getValues().get(0).toString(), "urn:xmpp:mam:1");
         Assert.assertTrue(fields2.get(0).getValues().size() == 1);
         Assert.assertEquals(fields2.get(1).getType(), FormField.Type.jid_single);
         Assert.assertEquals(fields2.get(2).getType(), FormField.Type.text_single);

@@ -62,7 +62,7 @@ import org.jxmpp.jid.Jid;
  * @author Alvaro Saurin
  * @author Jeff Williams
  */
-public class JingleSession extends JingleNegotiator implements MediaReceivedListener {
+public final class JingleSession extends JingleNegotiator implements MediaReceivedListener {
 
     private static final Logger LOGGER = Logger.getLogger(JingleSession.class.getName());
 
@@ -235,7 +235,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
      * Generate a unique session ID.
      */
     protected static String generateSessionId() {
-        return String.valueOf(Math.abs(randomGenerator.nextLong()));
+        return String.valueOf(randomGenerator.nextInt(Integer.MAX_VALUE) + randomGenerator.nextInt(Integer.MAX_VALUE));
     }
 
     /**
@@ -478,7 +478,7 @@ public class JingleSession extends JingleNegotiator implements MediaReceivedList
 
             // The the packet.
             // CHECKSTYLE:OFF
-            if ((getConnection() != null) && (getConnection().isConnected()))
+            if ((getConnection() != null) && getConnection().isConnected())
                 getConnection().sendStanza(jout);
             // CHECKSTYLE:ON
         }

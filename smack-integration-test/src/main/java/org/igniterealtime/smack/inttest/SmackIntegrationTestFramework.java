@@ -51,7 +51,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.debugger.ConsoleDebugger;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
-import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration.Builder;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.debugger.EnhancedDebugger;
@@ -221,7 +220,7 @@ public class SmackIntegrationTestFramework {
                     continue;
                 }
                 Class<?> retClass = method.getReturnType();
-                if (!(retClass.equals(Void.TYPE))) {
+                if (!retClass.equals(Void.TYPE)) {
                     LOGGER.warning("SmackIntegrationTest annotation on method that does not return void");
                     continue;
                 }
@@ -560,7 +559,7 @@ public class SmackIntegrationTestFramework {
             accountPassword = StringUtils.insecureRandomString(16);
         }
 
-        Builder builder = getConnectionConfigurationBuilder(config);
+        XMPPTCPConnectionConfiguration.Builder builder = getConnectionConfigurationBuilder(config);
         builder.setUsernameAndPassword(accountUsername, accountPassword)
                .setResource(middlefix + '-' + testRunResult.testRunId);
 

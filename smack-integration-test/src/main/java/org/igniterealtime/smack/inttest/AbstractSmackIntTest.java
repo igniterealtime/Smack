@@ -66,6 +66,7 @@ public abstract class AbstractSmackIntTest {
         }
     }
 
+    @SuppressWarnings("ThreadPriorityCheck")
     protected void waitUntilTrue(Condition condition) throws TimeoutException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final long deadline = System.currentTimeMillis() + timeout;
         do {

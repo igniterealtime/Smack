@@ -90,6 +90,11 @@
 			<property name="ignoreComments" value="true"/>
 		</module>
 		<module name="RegexpSinglelineJava">
+			<property name="format" value="Boolean\.valueOf\("/>
+			<property name="message" value="Usage Boolean.valueOf(), consider using ParserUtils.parseXmlBoolean() instead (if you want to parse xs:boolean values)"/>
+			<property name="ignoreComments" value="true"/>
+		</module>
+		<module name="RegexpSinglelineJava">
 			<property name="format" value="^\t+"/>
 			<property name="message" value="Indent must not use tab characters. Use space instead."/>
 		</module>

@@ -125,7 +125,10 @@ public class Range implements NamedElement {
             return false;
         }
 
-        return this.hashCode() == other.hashCode();
+        Range otherRange = (Range) other;
+        return this.getOffset() == otherRange.getOffset() &&
+            this.getLength() == otherRange.getLength() &&
+            this.getHash().equals(otherRange.getHash());
     }
 
     @Override
