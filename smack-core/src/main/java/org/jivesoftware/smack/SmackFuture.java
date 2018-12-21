@@ -16,11 +16,18 @@
  */
 package org.jivesoftware.smack;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.net.SocketFactory;
 
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.CallbackRecipient;
@@ -28,6 +35,8 @@ import org.jivesoftware.smack.util.ExceptionCallback;
 import org.jivesoftware.smack.util.SuccessCallback;
 
 public abstract class SmackFuture<V, E extends Exception> implements Future<V>, CallbackRecipient<V, E> {
+
+    private static final Logger LOGGER = Logger.getLogger(SmackFuture.class.getName());
 
     private boolean cancelled;
 
@@ -94,7 +103,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
     @Override
     public final synchronized V get() throws InterruptedException, ExecutionException {
         while (result == null && exception == null && !cancelled) {
-            wait();
+            futureWait();
         }
 
         return getOrThrowExecutionException();
@@ -102,7 +111,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
 
     public final synchronized V getOrThrow() throws E, InterruptedException {
         while (result == null && exception == null && !cancelled) {
-            wait();
+            futureWait();
         }
 
         if (exception != null) {
@@ -124,7 +133,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
         while (result != null && exception != null) {
             final long waitTimeRemaining = deadline - System.currentTimeMillis();
             if (waitTimeRemaining > 0) {
-                wait(waitTimeRemaining);
+                futureWait(waitTimeRemaining);
             }
         }
 
@@ -162,6 +171,15 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
         }
     }
 
+    protected final void futureWait() throws InterruptedException {
+        futureWait(0);
+    }
+
+    @SuppressWarnings("WaitNotInLoop")
+    protected void futureWait(long timeout) throws InterruptedException {
+        wait(timeout);
+    }
+
     public static class InternalSmackFuture<V, E extends Exception> extends SmackFuture<V, E> {
         public final synchronized void setResult(V result) {
             this.result = result;
@@ -175,6 +193,64 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
             this.notifyAll();
 
             maybeInvokeCallbacks();
+        }
+    }
+
+    public static class SocketFuture extends InternalSmackFuture<Socket, IOException> {
+        private final Socket socket;
+
+        private final Object wasInterruptedLock = new Object();
+
+        private boolean wasInterrupted;
+
+        public SocketFuture(SocketFactory socketFactory) throws IOException {
+            socket = socketFactory.createSocket();
+        }
+
+        @Override
+        protected void futureWait(long timeout) throws InterruptedException {
+            try {
+                super.futureWait(timeout);
+            } catch (InterruptedException interruptedException) {
+                synchronized (wasInterruptedLock) {
+                    wasInterrupted = true;
+                    if (!socket.isClosed()) {
+                        closeSocket();
+                    }
+                }
+                throw interruptedException;
+            }
+        }
+
+        public void connectAsync(final SocketAddress socketAddress, final int timeout) {
+            AbstractXMPPConnection.asyncGo(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        socket.connect(socketAddress, timeout);
+                    }
+                    catch (IOException e) {
+                        setException(e);
+                        return;
+                    }
+                    synchronized (wasInterruptedLock) {
+                        if (wasInterrupted) {
+                            closeSocket();
+                            return;
+                        }
+                    }
+                    setResult(socket);
+                }
+            });
+        }
+
+        private void closeSocket() {
+            try {
+                socket.close();
+            }
+            catch (IOException ioException) {
+                LOGGER.log(Level.WARNING, "Could not close socket", ioException);
+            }
         }
     }
 
