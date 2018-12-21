@@ -583,9 +583,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     SmackFuture.SocketFuture socketFuture = new SmackFuture.SocketFuture(socketFactory);
 
                     final InetAddress inetAddress = inetAddresses.next();
-                    final String inetAddressAndPort = inetAddress + " at port " + port;
                     final InetSocketAddress inetSocketAddress = new InetSocketAddress(inetAddress, port);
-                    LOGGER.finer("Trying to establish TCP connection to " + inetAddressAndPort);
+                    LOGGER.finer("Trying to establish TCP connection to " + inetSocketAddress);
                     socketFuture.connectAsync(inetSocketAddress, timeout);
 
                     try {
@@ -598,7 +597,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             break innerloop;
                         }
                     }
-                    LOGGER.finer("Established TCP connection to " + inetAddressAndPort);
+                    LOGGER.finer("Established TCP connection to " + inetSocketAddress);
                     // We found a host to connect to, return here
                     this.host = host;
                     this.port = port;
