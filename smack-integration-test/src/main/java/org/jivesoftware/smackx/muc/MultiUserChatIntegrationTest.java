@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.muc;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
 import org.jivesoftware.smack.MessageListener;
@@ -23,8 +26,12 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.muc.MultiUserChat.MucCreateConfigFormHandle;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MucNotJoinedException;
+import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
+import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
@@ -36,6 +43,7 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
 
@@ -59,6 +67,24 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
         else {
             mucService = services.get(0);
         }
+    }
+
+    @SmackIntegrationTest
+    public void mucJoinLeaveTest() throws XmppStringprepException, NotAMucServiceException, NoResponseException,
+            XMPPErrorException, NotConnectedException, InterruptedException, MucNotJoinedException {
+        EntityBareJid mucAddress = JidCreate.entityBareFrom(Localpart.from("smack-inttest-join-leave-" + randomString),
+                mucService.getDomain());
+
+        MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
+
+        muc.join(Resourcepart.from("nick-one"));
+
+        Presence reflectedLeavePresence = muc.leaveSync();
+
+        MUCUser mucUser = MUCUser.from(reflectedLeavePresence);
+        assertNotNull(mucUser);
+
+        assertTrue(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110));
     }
 
     @SmackIntegrationTest
