@@ -662,7 +662,12 @@ public class MultiUserChat {
         // If we've already joined the room, leave it before joining under a new
         // nickname.
         if (joined) {
-            leave();
+            try {
+                leaveSync();
+            }
+            catch (XMPPErrorException | NoResponseException | MucNotJoinedException e) {
+                LOGGER.log(Level.WARNING, "Could not leave MUC prior joining, assuming we are not joined", e);
+            }
         }
         enter(mucEnterConfiguration);
     }
@@ -701,6 +706,50 @@ public class MultiUserChat {
         Presence leavePresence = new Presence(Presence.Type.unavailable);
         leavePresence.setTo(myRoomJid);
         connection.sendStanza(leavePresence);
+    }
+
+    /**
+     * Leave the chat room.
+     *
+     * @return the leave presence as reflected by the MUC.
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws MucNotJoinedException
+     */
+    public synchronized Presence leaveSync()
+                    throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException, MucNotJoinedException {
+        //  Note that this method is intentionally not guarded by
+        // "if  (!joined) return" because it should be always be possible to leave the room in case the instance's
+        // state does not reflect the actual state.
+
+        // Reset occupant information first so that we are assume that we left the room even if sendStanza() would
+        // throw.
+        userHasLeft();
+
+        final EntityFullJid myRoomJid = this.myRoomJid;
+        if (myRoomJid == null) {
+            throw new MucNotJoinedException(this);
+        }
+
+        // We leave a room by sending a presence packet where the "to"
+        // field is in the form "roomName@service/nickname"
+        Presence leavePresence = new Presence(Presence.Type.unavailable);
+        leavePresence.setTo(myRoomJid);
+
+        StanzaFilter reflectedLeavePresenceFilter = new AndFilter(
+                        StanzaTypeFilter.PRESENCE,
+                        new StanzaIdFilter(leavePresence),
+                        new OrFilter(
+                                        new AndFilter(FromMatchesFilter.createFull(myRoomJid), PresenceTypeFilter.UNAVAILABLE, MUCUserStatusCodeFilter.STATUS_110_PRESENCE_TO_SELF),
+                                        new AndFilter(fromRoomFilter, PresenceTypeFilter.ERROR)
+                                    )
+                                );
+
+        Presence reflectedLeavePresence = connection.createStanzaCollectorAndSend(reflectedLeavePresenceFilter, leavePresence).nextResultOrThrow();
+
+        return reflectedLeavePresence;
     }
 
     /**
