@@ -52,6 +52,7 @@ import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MucNotJoinedException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
@@ -206,7 +207,8 @@ public final class MultiUserChatManager extends Manager {
 
                             try {
                                 muc.leave();
-                            } catch (NotConnectedException | InterruptedException e) {
+                            } catch (NotConnectedException | InterruptedException | MucNotJoinedException
+                                            | NoResponseException | XMPPErrorException e) {
                                 if (failedCallback != null) {
                                     failedCallback.autoJoinFailed(muc, e);
                                 } else {

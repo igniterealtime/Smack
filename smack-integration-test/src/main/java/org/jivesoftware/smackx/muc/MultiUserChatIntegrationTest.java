@@ -79,7 +79,7 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
 
         muc.join(Resourcepart.from("nick-one"));
 
-        Presence reflectedLeavePresence = muc.leaveSync();
+        Presence reflectedLeavePresence = muc.leave();
 
         MUCUser mucUser = MUCUser.from(reflectedLeavePresence);
         assertNotNull(mucUser);

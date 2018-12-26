@@ -450,7 +450,12 @@ public class MultiUserChat {
             return mucCreateConfigFormHandle;
         }
         // We need to leave the room since it seems that the room already existed
-        leave();
+        try {
+            leave();
+        }
+        catch (MucNotJoinedException e) {
+            LOGGER.log(Level.INFO, "Unexpected MucNotJoinedException", e);
+        }
         throw new MissingMucCreationAcknowledgeException();
     }
 
@@ -684,28 +689,19 @@ public class MultiUserChat {
 
     /**
      * Leave the chat room.
+     *
+     * @return the leave presence as reflected by the MUC.
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws XMPPErrorException
+     * @throws NoResponseException
+     * @throws MucNotJoinedException
+     * @deprecated use {@link #leave()} instead.
      */
-    public synchronized void leave() throws NotConnectedException, InterruptedException {
-        //  Note that this method is intentionally not guarded by
-        // "if  (!joined) return" because it should be always be possible to leave the room in case the instance's
-        // state does not reflect the actual state.
-
-        // Reset occupant information first so that we are assume that we left the room even if sendStanza() would
-        // throw.
-        userHasLeft();
-
-        final EntityFullJid myRoomJid = this.myRoomJid;
-        if (myRoomJid == null) {
-            return;
-        }
-
-        // We leave a room by sending a presence packet where the "to"
-        // field is in the form "roomName@service/nickname"
-        Presence leavePresence = new Presence(Presence.Type.unavailable);
-        leavePresence.setTo(myRoomJid);
-        connection.sendStanza(leavePresence);
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
+    public synchronized Presence leaveSync() throws NotConnectedException, InterruptedException, MucNotJoinedException, NoResponseException, XMPPErrorException {
+        return leave();
     }
 
     /**
@@ -718,7 +714,7 @@ public class MultiUserChat {
      * @throws NoResponseException
      * @throws MucNotJoinedException
      */
-    public synchronized Presence leaveSync()
+    public synchronized Presence leave()
                     throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException, MucNotJoinedException {
         //  Note that this method is intentionally not guarded by
         // "if  (!joined) return" because it should be always be possible to leave the room in case the instance's
