@@ -293,14 +293,10 @@ public class SmackIntegrationTestFramework {
                 }
                 catch (InvocationTargetException e) {
                     Throwable cause = e.getCause();
-                    if (cause instanceof TestNotPossibleException) {
-                        testRunResult.impossibleTestClasses.put(testClass, cause.getMessage());
-                        testRunResult.numberOfPossibleTests.addAndGet(-detectedTestMethodsCount);
-                    }
-                    else {
-                        throwFatalException(cause);
-                        LOGGER.log(Level.WARNING, "Could not construct test class", e);
-                    }
+                    throwFatalException(cause);
+
+                    testRunResult.impossibleTestClasses.put(testClass, cause.getMessage());
+                    testRunResult.numberOfPossibleTests.addAndGet(-detectedTestMethodsCount);
                     continue;
                 }
                 catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
