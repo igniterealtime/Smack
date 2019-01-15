@@ -150,10 +150,7 @@ public class ScreenShareSession extends JingleMediaSession {
     }
 
     /**
-     * Set transmit activity. If the active is true, the instance should transmit.
-     * If it is set to false, the instance should pause transmit.
-     *
-     * @param active active state
+     * {@inheritDoc}
      */
     @Override
     public void setTransmit(boolean active) {
