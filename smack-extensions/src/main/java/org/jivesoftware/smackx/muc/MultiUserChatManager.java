@@ -152,6 +152,8 @@ public final class MultiUserChatManager extends Manager {
 
     private AutoJoinFailedCallback autoJoinFailedCallback;
 
+    private AutoJoinSuccessCallback autoJoinSuccessCallback;
+
     private final ServiceDiscoveryManager serviceDiscoveryManager;
 
     private MultiUserChatManager(XMPPConnection connection) {
@@ -200,6 +202,7 @@ public final class MultiUserChatManager extends Manager {
                     @Override
                     public void run() {
                         final AutoJoinFailedCallback failedCallback = autoJoinFailedCallback;
+                        final AutoJoinSuccessCallback successCallback = autoJoinSuccessCallback;
                         for (EntityBareJid mucJid : mucs) {
                             MultiUserChat muc = getMultiUserChat(mucJid);
 
@@ -221,6 +224,9 @@ public final class MultiUserChatManager extends Manager {
                             }
                             try {
                                 muc.join(nickname);
+                                if (successCallback != null) {
+                                    successCallback.autoJoinSuccess(muc, nickname);
+                                }
                             } catch (NotAMucServiceException | NoResponseException | XMPPErrorException
                                     | NotConnectedException | InterruptedException e) {
                                 if (failedCallback != null) {
@@ -480,6 +486,21 @@ public final class MultiUserChatManager extends Manager {
             setAutoJoinOnReconnect(true);
         }
     }
+
+    /**
+     * Set a callback invoked by this manager when automatic join on reconnect success.
+     * If successCallback is not <code>null</code>, automatic rejoin will also
+     * be enabled.
+     *
+     * @param successCallback the callback
+     */
+    public void setAutoJoinSuccessCallback(AutoJoinSuccessCallback successCallback) {
+        autoJoinSuccessCallback = successCallback;
+        if (successCallback != null) {
+            setAutoJoinOnReconnect(true);
+        }
+    }
+
 
     void addJoinedRoom(EntityBareJid room) {
         joinedRooms.add(room);
