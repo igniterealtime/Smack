@@ -669,7 +669,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         sslSocket.startHandshake();
 
         if (smackTlsContext.daneVerifier != null) {
-            smackTlsContext.daneVerifier.finish(sslSocket);
+            smackTlsContext.daneVerifier.finish(sslSocket.getSession());
         }
 
         final HostnameVerifier verifier = getConfiguration().getHostnameVerifier();
