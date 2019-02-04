@@ -23,7 +23,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Message;
@@ -42,8 +41,8 @@ public class ThreadedDummyConnection extends DummyConnection {
     private volatile boolean timeout = false;
 
     @Override
-    public void sendStanza(Stanza packet) throws NotConnectedException, InterruptedException {
-        super.sendStanza(packet);
+    protected void sendStanzaInternal(Stanza packet) {
+        super.sendStanzaInternal(packet);
 
         if (packet instanceof IQ && !timeout) {
             timeout = false;

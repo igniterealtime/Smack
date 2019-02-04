@@ -738,9 +738,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
-    // TODO: This method should be final.
     @Override
-    public void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
+    public final void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
         Objects.requireNonNull(stanza, "Stanza must not be null");
         assert (stanza instanceof Message || stanza instanceof Presence || stanza instanceof IQ);
 
