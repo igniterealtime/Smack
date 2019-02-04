@@ -41,7 +41,7 @@ import org.jivesoftware.smack.packet.Stanza;
  * @see XMPPConnection#createStanzaCollector(StanzaFilter)
  * @author Matt Tucker
  */
-public class StanzaCollector {
+public class StanzaCollector implements AutoCloseable {
 
     private final StanzaFilter packetFilter;
 
@@ -92,6 +92,10 @@ public class StanzaCollector {
         cancelled = true;
         connection.removeStanzaCollector(this);
         notifyAll();
+
+        if (collectorToReset != null) {
+            collectorToReset.cancel();
+        }
     }
 
     /**
@@ -429,6 +433,11 @@ public class StanzaCollector {
             this.request = request;
             return this;
         }
+    }
+
+    @Override
+    public void close() {
+        cancel();
     }
 
 }

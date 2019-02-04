@@ -113,9 +113,7 @@ public final class FileUtils {
      */
     @SuppressWarnings("DefaultCharset")
     public static String readFileOrThrow(File file) throws IOException {
-        Reader reader = null;
-        try {
-            reader = new FileReader(file);
+        try (Reader reader = new FileReader(file)) {
             char[] buf = new char[8192];
             int len;
             StringBuilder s = new StringBuilder();
@@ -123,11 +121,6 @@ public final class FileUtils {
                 s.append(buf, 0, len);
             }
             return s.toString();
-        }
-        finally {
-            if (reader != null) {
-                reader.close();
-            }
         }
     }
 

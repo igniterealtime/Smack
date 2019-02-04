@@ -192,9 +192,9 @@ public final class IoTDataManager extends IoTManager {
             doneCollector.nextResult();
         }
         finally {
-            // Ensure that the two collectors are canceled in any case.
+            // Canceling dataCollector will also cancel the doneCollector since it is configured as dataCollector's
+            // collector to reset.
             dataCollector.cancel();
-            doneCollector.cancel();
         }
 
         int collectedCount = dataCollector.getCollectedCount();

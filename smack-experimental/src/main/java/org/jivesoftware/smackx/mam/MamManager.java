@@ -546,17 +546,15 @@ public final class MamManager extends Manager {
 
         StanzaCollector.Configuration resultCollectorConfiguration = StanzaCollector.newConfiguration()
                 .setStanzaFilter(new MamResultFilter(mamQueryIq)).setCollectorToReset(mamFinIQCollector);
-        StanzaCollector resultCollector = connection.createStanzaCollector(resultCollectorConfiguration);
 
-        try {
+        StanzaCollector cancelledResultCollector;
+        try (StanzaCollector resultCollector = connection.createStanzaCollector(resultCollectorConfiguration)) {
             connection.sendStanza(mamQueryIq);
             mamFinIQ = mamFinIQCollector.nextResultOrThrow();
-        } finally {
-            mamFinIQCollector.cancel();
-            resultCollector.cancel();
+            cancelledResultCollector = resultCollector;
         }
 
-        return new MamQueryPage(resultCollector, mamFinIQ);
+        return new MamQueryPage(cancelledResultCollector, mamFinIQ);
     }
 
     /**

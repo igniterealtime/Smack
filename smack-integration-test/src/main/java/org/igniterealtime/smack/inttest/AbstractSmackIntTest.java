@@ -55,14 +55,9 @@ public abstract class AbstractSmackIntTest {
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         StanzaCollector.Configuration configuration = StanzaCollector.newConfiguration().setStanzaFilter(
                         filter).setSize(1);
-        StanzaCollector collector = connection.createStanzaCollector(configuration);
-
-        try {
+        try (StanzaCollector collector = connection.createStanzaCollector(configuration)) {
             action.run();
             collector.nextResultOrThrow(timeout);
-        }
-        finally {
-            collector.cancel();
         }
     }
 
