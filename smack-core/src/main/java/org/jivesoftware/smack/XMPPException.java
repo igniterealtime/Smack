@@ -198,6 +198,10 @@ public abstract class XMPPException extends Exception {
 
         private final Nonza nonza;
 
+        public FailedNonzaException(Nonza failedNonza) {
+            this(failedNonza, null);
+        }
+
         public FailedNonzaException(Nonza nonza, StanzaError.Condition condition) {
             this.condition = condition;
             this.nonza = nonza;

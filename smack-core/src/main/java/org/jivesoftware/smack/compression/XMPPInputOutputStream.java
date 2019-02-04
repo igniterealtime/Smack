@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Florian Schmaus
+ * Copyright 2013-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,10 @@ public abstract class XMPPInputOutputStream {
      */
     public static void setFlushMethod(FlushMethod flushMethod) {
         XMPPInputOutputStream.flushMethod = flushMethod;
+    }
+
+    public static FlushMethod getFlushMethod() {
+        return flushMethod;
     }
 
     protected final String compressionMethod;

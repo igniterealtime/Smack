@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package org.jivesoftware.smack.packet;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class StartTls implements Nonza {
+
+    public static final StartTls INSTANCE = new StartTls();
 
     public static final String ELEMENT = "starttls";
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-tls";
@@ -49,7 +51,7 @@ public class StartTls implements Nonza {
 
     @Override
     public XmlStringBuilder toXML(String enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
         xml.rightAngleBracket();
         xml.condEmptyElement(required, "required");
         xml.closeElement(this);

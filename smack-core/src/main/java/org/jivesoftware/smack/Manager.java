@@ -17,7 +17,6 @@
 package org.jivesoftware.smack;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
@@ -54,7 +53,7 @@ public abstract class Manager {
         return connection;
     }
 
-    protected static final ScheduledFuture<?> schedule(Runnable runnable, long delay, TimeUnit unit) {
-        return AbstractXMPPConnection.SCHEDULED_EXECUTOR_SERVICE.schedule(runnable, delay, unit);
+    protected static final ScheduledAction schedule(Runnable runnable, long delay, TimeUnit unit) {
+        return AbstractXMPPConnection.SMACK_REACTOR.schedule(runnable, delay, unit);
     }
 }

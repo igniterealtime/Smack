@@ -20,9 +20,11 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.NamedElement;
 
 import org.jxmpp.util.XmppDateTime;
@@ -53,7 +55,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         halfOpenElement(e.getElementName());
     }
 
-    public XmlStringBuilder(ExtensionElement ee, String enclosingNamespace) {
+    public XmlStringBuilder(FullyQualifiedElement ee, String enclosingNamespace) {
         this(enclosingNamespace);
         prelude(ee);
     }
@@ -439,7 +441,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         return escape(text.toString());
     }
 
-    public XmlStringBuilder prelude(ExtensionElement pe) {
+    public XmlStringBuilder prelude(FullyQualifiedElement pe) {
         return prelude(pe.getElementName(), pe.getNamespace());
     }
 
@@ -583,6 +585,10 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
                 writer.write(csq.toString());
             }
         }
+    }
+
+    public Iterator<CharSequence> getCharSequenceIterator() {
+        return sb.getAsList().iterator();
     }
 
     @Override

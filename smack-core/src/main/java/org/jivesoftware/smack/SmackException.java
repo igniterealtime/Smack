@@ -94,12 +94,19 @@ public class SmackException extends Exception {
         }
 
         public static NoResponseException newWith(XMPPConnection connection,
-                        StanzaCollector collector) {
-            return newWith(connection, collector.getStanzaFilter());
+                        StanzaCollector collector, boolean stanzaCollectorCancelled) {
+            return newWith(connection, collector.getStanzaFilter(), stanzaCollectorCancelled);
         }
 
         public static NoResponseException newWith(XMPPConnection connection, StanzaFilter filter) {
+            return newWith(connection, filter, false);
+        }
+
+        public static NoResponseException newWith(XMPPConnection connection, StanzaFilter filter, boolean stanzaCollectorCancelled) {
             final StringBuilder sb = getWaitingFor(connection);
+            if (stanzaCollectorCancelled) {
+                sb.append(" StanzaCollector has been cancelled.");
+            }
             sb.append(" Waited for response using: ");
             if (filter != null) {
                 sb.append(filter.toString());
@@ -181,6 +188,12 @@ public class SmackException extends Exception {
         public NotConnectedException(XMPPConnection connection, StanzaFilter stanzaFilter) {
             super("The connection " + connection
                             + " is no longer connected while waiting for response with " + stanzaFilter);
+        }
+
+        public NotConnectedException(XMPPConnection connection, StanzaFilter stanzaFilter,
+                        Exception connectionException) {
+            super("The connection " + connection + " is no longer connected while waiting for response with "
+                            + stanzaFilter + " because of " + connectionException, connectionException);
         }
     }
 
@@ -280,6 +293,15 @@ public class SmackException extends Exception {
 
         public List<HostAddress> getFailedAddresses() {
             return failedAddresses;
+        }
+    }
+
+    public static class ConnectionUnexpectedTerminatedException extends SmackException {
+
+        private static final long serialVersionUID = 1L;
+
+        public ConnectionUnexpectedTerminatedException(Throwable wrappedThrowable) {
+            super(wrappedThrowable);
         }
     }
 

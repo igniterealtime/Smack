@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smack.debugger;
 
-import java.io.Reader;
-import java.io.Writer;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
@@ -133,21 +131,13 @@ public abstract class AbstractDebugger extends SmackDebugger {
     protected abstract void log(String logMessage, Throwable throwable);
 
     @Override
-    public Reader newConnectionReader(Reader newReader) {
-        reader.removeReaderListener(readerListener);
-        ObservableReader debugReader = new ObservableReader(newReader);
-        debugReader.addReaderListener(readerListener);
-        reader = debugReader;
-        return reader;
+    public final void outgoingStreamSink(CharSequence outgoingCharSequence) {
+        log("SENT (" + connection.getConnectionCounter() + "): " + outgoingCharSequence);
     }
 
     @Override
-    public Writer newConnectionWriter(Writer newWriter) {
-        writer.removeWriterListener(writerListener);
-        ObservableWriter debugWriter = new ObservableWriter(newWriter);
-        debugWriter.addWriterListener(writerListener);
-        writer = debugWriter;
-        return writer;
+    public final void incomingStreamSink(CharSequence incomingCharSequence) {
+        log("RECV (" + connection.getConnectionCounter() + "): " + incomingCharSequence);
     }
 
     @Override

@@ -35,7 +35,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
     private final MoodManager mm1;
     private final MoodManager mm2;
 
-    public MoodIntegrationTest(SmackIntegrationTestEnvironment environment) {
+    public MoodIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
         super(environment);
         mm1 = MoodManager.getInstanceFor(conOne);
         mm2 = MoodManager.getInstanceFor(conTwo);

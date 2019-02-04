@@ -19,6 +19,8 @@ package org.jivesoftware.smack;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Stanza;
 
@@ -55,34 +57,42 @@ public class StanzaCollectorTest {
         assertEquals("14", collector.pollResult().getStanzaId());
         assertNull(collector.pollResult());
 
-        assertNull(collector.nextResult(1000));
+        assertNull(collector.nextResult(10));
     }
 
     /**
-     * Although this doesn't guarentee anything due to the nature of threading, it can potentially
+     * Although this doesn't guarantee anything due to the nature of threading, it can potentially
      * catch problems.
+     *
+     * @throws InterruptedException if interrupted.
      */
+    @SuppressWarnings("ThreadPriorityCheck")
     @Test
-    public void verifyThreadSafety() {
-        int insertCount = 500;
+    public void verifyThreadSafety() throws InterruptedException {
+        final int insertCount = 500;
         final TestStanzaCollector collector = new TestStanzaCollector(null, new OKEverything(), insertCount);
+
+        final AtomicInteger consumer1Dequeued = new AtomicInteger();
+        final AtomicInteger consumer2Dequeued = new AtomicInteger();
+        final AtomicInteger consumer3Dequeued = new AtomicInteger();
 
         Thread consumer1 = new Thread(new Runnable() {
             @Override
             public void run() {
+                int dequeueCount = 0;
                 try {
                     while (true) {
-                        try {
-                            Thread.sleep(3);
-                        } catch (InterruptedException e) {
-                        }
-                        @SuppressWarnings("unused")
+                        Thread.yield();
                         Stanza packet = collector.nextResultBlockForever();
-//                      System.out.println(Thread.currentThread().getName() + "  packet: " + packet);
+                        if (packet != null) {
+                            dequeueCount++;
+                        }
                     }
                 }
                 catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    // Ignore as it is expected.
+                } finally {
+                    consumer1Dequeued.set(dequeueCount);
                 }
             }
         });
@@ -92,20 +102,20 @@ public class StanzaCollectorTest {
             @Override
             public void run() {
                 Stanza p;
-
+                int dequeueCount = 0;
                 do {
+                    Thread.yield();
                     try {
-                        Thread.sleep(3);
-                    } catch (InterruptedException e) {
-                    }
-                    try {
-                        p = collector.nextResult(1);
+                        p = collector.nextResult(1000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    // System.out.println(Thread.currentThread().getName() + " packet: " + p);
+                    if (p != null) {
+                        dequeueCount++;
+                    }
                 }
                 while (p != null);
+                consumer2Dequeued.set(dequeueCount);
             }
         });
         consumer2.setName("consumer 2");
@@ -114,37 +124,42 @@ public class StanzaCollectorTest {
             @Override
             public void run() {
                 Stanza p;
-
+                int dequeueCount = 0;
                 do {
-                    try {
-                        Thread.sleep(3);
-                    } catch (InterruptedException e) {
-                    }
+                    Thread.yield();
                     p = collector.pollResult();
-                    // System.out.println(Thread.currentThread().getName() + " packet: " + p);
+                    if (p != null) {
+                        dequeueCount++;
+                    }
                 } while (p != null);
+                consumer3Dequeued.set(dequeueCount);
             }
         });
         consumer3.setName("consumer 3");
-
-        consumer1.start();
-        consumer2.start();
-        consumer3.start();
 
         for (int i = 0; i < insertCount; i++) {
             collector.processStanza(new TestPacket(i));
         }
 
-        try {
-            Thread.sleep(5000);
-            consumer3.join();
-            consumer2.join();
-            consumer1.interrupt();
-        } catch (InterruptedException e) {
-        }
+        consumer1.start();
+        consumer2.start();
+        consumer3.start();
+
+        consumer3.join();
+        consumer2.join();
+        consumer1.interrupt();
+        consumer1.join();
+
         // We cannot guarantee that this is going to pass due to the possible issue of timing between consumer 1
         // and main, but the probability is extremely remote.
         assertNull(collector.pollResult());
+
+        int consumer1DequeuedLocal = consumer1Dequeued.get();
+        int consumer2DequeuedLocal = consumer2Dequeued.get();
+        int consumer3DequeuedLocal = consumer3Dequeued.get();
+        final int totalDequeued = consumer1DequeuedLocal + consumer2DequeuedLocal + consumer3DequeuedLocal;
+        assertEquals("Inserted " + insertCount + " but only " + totalDequeued + " c1: " + consumer1DequeuedLocal + " c2: " + consumer2DequeuedLocal + " c3: "
+                        + consumer3DequeuedLocal, insertCount, totalDequeued);
     }
 
     static class OKEverything implements StanzaFilter {

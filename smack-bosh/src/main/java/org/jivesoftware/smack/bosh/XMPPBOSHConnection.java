@@ -388,18 +388,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * Sends out a notification that there was an error with the connection
-     * and closes the connection.
-     *
-     * @param e the exception that causes the connection close event.
-     */
-    protected void notifyConnectionError(Exception e) {
-        // Closes the connection temporary. A reconnection is possible
-        shutdown();
-        callConnectionClosedOnErrorListener(e);
-    }
-
-    /**
      * A listener class which listen for a successfully established connection
      * and connection errors and notifies the BOSHConnection.
      *

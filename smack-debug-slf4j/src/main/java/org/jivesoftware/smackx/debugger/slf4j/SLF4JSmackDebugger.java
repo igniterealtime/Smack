@@ -17,8 +17,6 @@
 
 package org.jivesoftware.smackx.debugger.slf4j;
 
-import java.io.Reader;
-import java.io.Writer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
@@ -88,19 +86,13 @@ public class SLF4JSmackDebugger extends SmackDebugger  {
     }
 
     @Override
-    public Reader newConnectionReader(Reader newReader) {
-        reader.removeReaderListener(slf4JRawXmlListener);
-        reader = new ObservableReader(newReader);
-        reader.addReaderListener(slf4JRawXmlListener);
-        return reader;
+    public void outgoingStreamSink(CharSequence outgoingCharSequence) {
+        slf4JRawXmlListener.write(outgoingCharSequence.toString());
     }
 
     @Override
-    public Writer newConnectionWriter(Writer newWriter) {
-        writer.removeWriterListener(slf4JRawXmlListener);
-        writer = new ObservableWriter(newWriter);
-        writer.addWriterListener(slf4JRawXmlListener);
-        return writer;
+    public void incomingStreamSink(CharSequence incomingCharSequence) {
+        slf4JRawXmlListener.read(incomingCharSequence.toString());
     }
 
     @Override

@@ -25,6 +25,7 @@ import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Stanza;
@@ -474,7 +475,7 @@ public interface XMPPConnection {
      * @param namespace
      * @return a stanza extensions of the feature or <code>null</code>
      */
-    <F extends ExtensionElement> F getFeature(String element, String namespace);
+    <F extends FullyQualifiedElement> F getFeature(String element, String namespace);
 
     /**
      * Return true if the server supports the given stream feature.
@@ -565,5 +566,4 @@ public interface XMPPConnection {
      * @return the timestamp in milliseconds
      */
     long getLastStanzaReceived();
-
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017-2018 Paul Schaub
  *
  * This file is part of smack-omemo-signal-integration-test.
  *
@@ -21,6 +21,7 @@
 package org.igniterealtime.smack.inttest.smack_omemo_signal;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
@@ -44,7 +45,8 @@ public class SmackOmemoSignalIntegrationTestFramework {
     public static void main(String[] args) throws InvalidKeyException, NoSuchPaddingException,
                     InvalidAlgorithmParameterException, IllegalBlockSizeException,
                     BadPaddingException, NoSuchAlgorithmException, NoSuchProviderException, SmackException,
-                    InterruptedException, CorruptedOmemoKeyException, KeyManagementException, IOException, XMPPException {
+            InterruptedException, CorruptedOmemoKeyException, KeyManagementException, IOException, XMPPException,
+            InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         SignalOmemoService.acknowledgeLicense();
         SignalOmemoService.setup();
 

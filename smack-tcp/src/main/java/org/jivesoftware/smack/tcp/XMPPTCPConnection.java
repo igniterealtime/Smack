@@ -17,26 +17,19 @@
 package org.jivesoftware.smack.tcp;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.lang.reflect.Constructor;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.security.KeyManagementException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.Provider;
-import java.security.SecureRandom;
-import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
@@ -58,21 +51,12 @@ import java.util.logging.Logger;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.PasswordCallback;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
@@ -127,14 +111,11 @@ import org.jivesoftware.smack.sm.provider.ParseStreamManagement;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.CloseableUtil;
-import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.dns.HostAddress;
-import org.jivesoftware.smack.util.dns.SmackDaneProvider;
-import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -191,13 +172,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private final SynchronizationPoint<SmackException> compressSyncPoint = new SynchronizationPoint<>(
                     this, "stream compression");
-
-    /**
-     * A synchronization point which is successful if this connection has received the closing
-     * stream element from the remote end-point, i.e. the server.
-     */
-    private final SynchronizationPoint<Exception> closingStreamReceived = new SynchronizationPoint<>(
-                    this, "stream closing element received");
 
     /**
      * The default bundle and defer callback, used for new connections.
@@ -478,6 +452,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     /**
      * Performs an unclean disconnect and shutdown of the connection. Does not send a closing stream stanza.
      */
+    @Override
     public synchronized void instantShutdown() {
         shutdown(true);
     }
@@ -496,15 +471,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         LOGGER.finer("PacketWriter has been shut down");
 
         if (!instant) {
-            try {
-                // After we send the closing stream element, check if there was already a
-                // closing stream element sent by the server or wait with a timeout for a
-                // closing stream element to be received from the server.
-                @SuppressWarnings("unused")
-                Exception res = closingStreamReceived.checkIfSuccessOrWait();
-            } catch (InterruptedException | NoResponseException e) {
-                LOGGER.log(Level.INFO, "Exception while waiting for closing stream element from the server " + this, e);
-            }
+            waitForClosingStreamTagFromServer();
         }
 
         if (packetReader != null) {
@@ -682,117 +649,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     @SuppressWarnings("LiteralClassName")
     private void proceedTLSReceived() throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException, NoSuchProviderException, UnrecoverableKeyException, KeyManagementException, SmackException {
-        SmackDaneVerifier daneVerifier = null;
-
-        if (config.getDnssecMode() == DnssecMode.needsDnssecAndDane) {
-            SmackDaneProvider daneProvider = DNSUtil.getDaneProvider();
-            if (daneProvider == null) {
-                throw new UnsupportedOperationException("DANE enabled but no SmackDaneProvider configured");
-            }
-            daneVerifier = daneProvider.newInstance();
-            if (daneVerifier == null) {
-                throw new IllegalStateException("DANE requested but DANE provider did not return a DANE verifier");
-            }
-        }
-
-        SSLContext context = this.config.getCustomSSLContext();
-        KeyStore ks = null;
-        PasswordCallback pcb = null;
-
-        if (context == null) {
-            final String keyStoreType = config.getKeystoreType();
-            final CallbackHandler callbackHandler = config.getCallbackHandler();
-            final String keystorePath = config.getKeystorePath();
-            if ("PKCS11".equals(keyStoreType)) {
-                try {
-                    Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
-                    String pkcs11Config = "name = SmartCard\nlibrary = " + config.getPKCS11Library();
-                    ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes(StringUtils.UTF8));
-                    Provider p = (Provider) c.newInstance(config);
-                    Security.addProvider(p);
-                    ks = KeyStore.getInstance("PKCS11",p);
-                    pcb = new PasswordCallback("PKCS11 Password: ",false);
-                    callbackHandler.handle(new Callback[] {pcb});
-                    ks.load(null,pcb.getPassword());
-                }
-                catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "Exception", e);
-                    ks = null;
-                }
-            }
-            else if ("Apple".equals(keyStoreType)) {
-                ks = KeyStore.getInstance("KeychainStore","Apple");
-                ks.load(null,null);
-                // pcb = new PasswordCallback("Apple Keychain",false);
-                // pcb.setPassword(null);
-            }
-            else if (keyStoreType != null) {
-                ks = KeyStore.getInstance(keyStoreType);
-                if (callbackHandler != null && StringUtils.isNotEmpty(keystorePath)) {
-                    try {
-                        pcb = new PasswordCallback("Keystore Password: ", false);
-                        callbackHandler.handle(new Callback[] { pcb });
-                        ks.load(new FileInputStream(keystorePath), pcb.getPassword());
-                    }
-                    catch (Exception e) {
-                        LOGGER.log(Level.WARNING, "Exception", e);
-                        ks = null;
-                    }
-                } else {
-                    ks.load(null, null);
-                }
-            }
-
-            KeyManager[] kms = null;
-
-            if (ks != null) {
-                String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
-                KeyManagerFactory kmf = null;
-                try {
-                    kmf = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);
-                }
-                catch (NoSuchAlgorithmException e) {
-                    LOGGER.log(Level.FINE, "Could get the default KeyManagerFactory for the '"
-                                    + keyManagerFactoryAlgorithm + "' algorithm", e);
-                }
-                if (kmf != null) {
-                    try {
-                        if (pcb == null) {
-                            kmf.init(ks, null);
-                        }
-                        else {
-                            kmf.init(ks, pcb.getPassword());
-                            pcb.clearPassword();
-                        }
-                        kms = kmf.getKeyManagers();
-                    }
-                    catch (NullPointerException npe) {
-                        LOGGER.log(Level.WARNING, "NullPointerException", npe);
-                    }
-                }
-            }
-
-            // If the user didn't specify a SSLContext, use the default one
-            context = SSLContext.getInstance("TLS");
-
-            final SecureRandom secureRandom = new java.security.SecureRandom();
-            X509TrustManager customTrustManager = config.getCustomX509TrustManager();
-
-            if (daneVerifier != null) {
-                // User requested DANE verification.
-                daneVerifier.init(context, kms, customTrustManager, secureRandom);
-            } else {
-                TrustManager[] customTrustManagers = null;
-                if (customTrustManager != null) {
-                    customTrustManagers = new TrustManager[] { customTrustManager };
-                }
-                context.init(kms, customTrustManagers, secureRandom);
-            }
-        }
+        SmackTlsContext smackTlsContext = getSmackTlsContext();
 
         Socket plain = socket;
         // Secure the plain connection
-        socket = context.getSocketFactory().createSocket(plain,
+        socket = smackTlsContext.sslContext.getSocketFactory().createSocket(plain,
                 config.getXMPPServiceDomain().toString(), plain.getPort(), true);
 
         final SSLSocket sslSocket = (SSLSocket) socket;
@@ -807,8 +668,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // Proceed to do the handshake
         sslSocket.startHandshake();
 
-        if (daneVerifier != null) {
-            daneVerifier.finish(sslSocket);
+        if (smackTlsContext.daneVerifier != null) {
+            smackTlsContext.daneVerifier.finish(sslSocket);
         }
 
         final HostnameVerifier verifier = getConfiguration().getHostnameVerifier();
@@ -910,26 +771,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * Sends out a notification that there was an error with the connection
-     * and closes the connection. Also prints the stack trace of the given exception
-     *
-     * @param e the exception that causes the connection close event.
-     */
-    private synchronized void notifyConnectionError(Exception e) {
-        // Listeners were already notified of the exception, return right here.
-        if ((packetReader == null || packetReader.done) &&
-                (packetWriter == null || packetWriter.done())) return;
-
-        // Closes the connection temporary. A reconnection is possible
-        // Note that a connection listener of XMPPTCPConnection will drop the SM state in
-        // case the Exception is a StreamErrorException.
-        instantShutdown();
-
-        // Notify connection listeners of the error.
-        callConnectionClosedOnErrorListener(e);
-    }
-
-    /**
      * For unit testing purposes
      *
      * @param writer
@@ -975,18 +816,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws InterruptedException
      */
     void openStream() throws SmackException, InterruptedException {
-        // If possible, provide the receiving entity of the stream open tag, i.e. the server, as much information as
-        // possible. The 'to' attribute is *always* available. The 'from' attribute if set by the user and no external
-        // mechanism is used to determine the local entity (user). And the 'id' attribute is available after the first
-        // response from the server (see e.g. RFC 6120 § 9.1.1 Step 2.)
-        CharSequence to = getXMPPServiceDomain();
-        CharSequence from = null;
-        CharSequence localpart = config.getUsername();
-        if (localpart != null) {
-            from = XmppStringUtils.completeJidFrom(localpart, to);
-        }
-        String id = getStreamId();
-        sendNonza(new StreamOpen(to, from, id));
+        sendStreamOpen();
         try {
             packetReader.parser = PacketParserUtils.newXmppParser(reader);
         }
@@ -1045,12 +875,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             }
                             break;
                         case "stream":
-                            // We found an opening stream.
-                            if ("jabber:client".equals(parser.getNamespace(null))) {
-                                streamId = parser.getAttributeValue("", "id");
-                                String reportedServerDomain = parser.getAttributeValue("", "from");
-                                assert (config.getXMPPServiceDomain().equals(reportedServerDomain));
-                            }
+                            onStreamOpen(parser);
                             break;
                         case "error":
                             StreamError streamError = PacketParserUtils.parseStreamError(parser);
@@ -1061,7 +886,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             tlsHandled.reportSuccess();
                             throw new StreamErrorException(streamError);
                         case "features":
-                            parseFeatures(parser);
+                            parseFeaturesAndNotify(parser);
                             break;
                         case "proceed":
                             try {

@@ -15,7 +15,7 @@ dependencies {
 	compile project(':smack-openpgp')
 	compile project(':smack-debug')
 	compile project(path: ":smack-omemo", configuration: "testRuntime")
-	compile 'org.reflections:reflections:0.9.9-RC1'
+	compile 'org.reflections:reflections:0.9.11'
 	compile 'eu.geekplace.javapinning:java-pinning-java7:1.1.0-alpha1'
 	// Note that the junit-vintage-engine runtime dependency is not
 	// directly required, but it declares a dependency to

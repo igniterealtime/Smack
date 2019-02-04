@@ -25,7 +25,7 @@ import org.igniterealtime.smack.inttest.TestNotPossibleException;
 
 public class SessionRenegotiationIntegrationTest extends AbstractTwoUsersOmemoIntegrationTest {
 
-    public SessionRenegotiationIntegrationTest(SmackIntegrationTestEnvironment environment)
+    public SessionRenegotiationIntegrationTest(SmackIntegrationTestEnvironment<?> environment)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException, TestNotPossibleException {
         super(environment);

@@ -180,13 +180,14 @@ public final class SASLAuthentication {
      * @param password the password to send to the server.
      * @param authzid the authorization identifier (typically null).
      * @param sslSession the optional SSL/TLS session (if one was established)
+     * @return the used SASLMechanism.
      * @throws XMPPErrorException
      * @throws SASLErrorException
      * @throws IOException
      * @throws SmackException
      * @throws InterruptedException
      */
-    public void authenticate(String username, String password, EntityBareJid authzid, SSLSession sslSession)
+    public SASLMechanism authenticate(String username, String password, EntityBareJid authzid, SSLSession sslSession)
                     throws XMPPErrorException, SASLErrorException, IOException,
                     SmackException, InterruptedException {
         currentMechanism = selectMechanism(authzid);
@@ -223,6 +224,8 @@ public final class SASLAuthentication {
         if (!authenticationSuccessful) {
             throw NoResponseException.newWith(connection, "successful SASL authentication");
         }
+
+        return currentMechanism;
     }
 
     /**

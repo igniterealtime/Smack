@@ -96,6 +96,7 @@ public class PacketParserUtils {
         XML_PULL_PARSER_SUPPORTS_ROUNDTRIP = roundtrip;
     }
 
+    // TODO: Rename argument name from 'stanza' to 'element'.
     public static XmlPullParser getParserFor(String stanza) throws XmlPullParserException, IOException {
         return getParserFor(new StringReader(stanza));
     }

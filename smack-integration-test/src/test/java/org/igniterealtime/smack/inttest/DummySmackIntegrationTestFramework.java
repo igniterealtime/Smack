@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,39 @@
  */
 package org.igniterealtime.smack.inttest;
 
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
-public class DummySmackIntegrationTestFramework extends SmackIntegrationTestFramework {
+import org.jivesoftware.smack.DummyConnection;
+import org.jivesoftware.smack.DummyConnection.DummyConnectionConfiguration;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 
-    public DummySmackIntegrationTestFramework(Configuration configuration) {
-        super(configuration);
+public class DummySmackIntegrationTestFramework extends SmackIntegrationTestFramework<DummyConnection> {
+
+    static {
+        try {
+            XmppConnectionManager.addConnectionDescriptor(DummyConnection.class, DummyConnectionConfiguration.class);
+        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    public DummySmackIntegrationTestFramework(Configuration configuration) throws KeyManagementException,
+            InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+            NoSuchAlgorithmException, SmackException, IOException, XMPPException, InterruptedException {
+        super(configuration, DummyConnection.class);
+        testRunResult = new TestRunResult();
     }
 
     @Override
-    protected SmackIntegrationTestEnvironment prepareEnvironment() {
-        return new SmackIntegrationTestEnvironment(null, null, null, testRunResult.getTestRunId(), config);
+    protected SmackIntegrationTestEnvironment<DummyConnection> prepareEnvironment() {
+        DummyConnection dummyConnection = new DummyConnection();
+        connectionManager.conOne = connectionManager.conTwo = connectionManager.conThree = dummyConnection;
+        return new SmackIntegrationTestEnvironment<DummyConnection>(dummyConnection, dummyConnection, dummyConnection,
+                        testRunResult.getTestRunId(), config, null);
     }
 
-    @Override
-    protected void disconnectAndMaybeDelete(XMPPTCPConnection connection) {
-        // This method is a no-op in DummySmackIntegrationTestFramework
-    }
 }

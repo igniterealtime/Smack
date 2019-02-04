@@ -232,6 +232,19 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
         }
     }
 
+    public boolean offerAndShutdown(E e) {
+        checkNotNull(e);
+        boolean res;
+        lock.lock();
+        try {
+            res = offer(e);
+            shutdown();
+        } finally {
+            lock.unlock();
+        }
+        return res;
+    }
+
     private void putInternal(E e, boolean signalNotEmpty) throws InterruptedException {
         assert lock.isHeldByCurrentThread();
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus, Paul Schaub
+ * Copyright 2017-2018 Florian Schmaus, Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.igniterealtime.smack.inttest.TestNotPossibleException;
  */
 public abstract class AbstractOmemoIntegrationTest extends AbstractSmackIntegrationTest {
 
-    public AbstractOmemoIntegrationTest(SmackIntegrationTestEnvironment environment) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, TestNotPossibleException {
+    public AbstractOmemoIntegrationTest(SmackIntegrationTestEnvironment<?> environment) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, TestNotPossibleException {
         super(environment);
 
         // Test for server support

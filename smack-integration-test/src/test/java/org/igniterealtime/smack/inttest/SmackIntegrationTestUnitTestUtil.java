@@ -16,8 +16,13 @@
  */
 package org.igniterealtime.smack.inttest;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 
 import org.jxmpp.jid.JidTestUtil;
 
@@ -32,7 +37,12 @@ public class SmackIntegrationTestUnitTestUtil {
                         .setUsernamesAndPassword("dummy1", "dummy1pass", "dummy2", "dummy2pass", "dummy3", "dummy3pass")
                         .addEnabledTest(unitTest).build();
         // @formatter:on
-        return new DummySmackIntegrationTestFramework(configuration);
+        try {
+            return new DummySmackIntegrationTestFramework(configuration);
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | SmackException | IOException | XMPPException | InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
 }

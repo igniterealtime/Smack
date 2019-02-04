@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,15 @@
  */
 package org.igniterealtime.smack.inttest;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 public class TestNotPossible extends TestResult {
 
     public final TestNotPossibleException testNotPossibleException;
 
-    public TestNotPossible(Method testMethod, long startTime, long endTime, List<String> logMessages,
+    public TestNotPossible(SmackIntegrationTestFramework.ConcreteTest concreteTest, long startTime, long endTime, List<String> logMessages,
                     TestNotPossibleException testNotPossibleException) {
-        super(testMethod, startTime, endTime, logMessages);
+        super(concreteTest, startTime, endTime, logMessages);
         this.testNotPossibleException = testNotPossibleException;
     }
 }

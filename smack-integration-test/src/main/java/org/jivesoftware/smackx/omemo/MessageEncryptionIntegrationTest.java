@@ -34,7 +34,7 @@ import org.igniterealtime.smack.inttest.TestNotPossibleException;
  */
 public class MessageEncryptionIntegrationTest extends AbstractTwoUsersOmemoIntegrationTest {
 
-    public MessageEncryptionIntegrationTest(SmackIntegrationTestEnvironment environment)
+    public MessageEncryptionIntegrationTest(SmackIntegrationTestEnvironment<?> environment)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException, TestNotPossibleException {
         super(environment);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2018 Florian Schmaus
+ * Copyright 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class IoTDataIntegrationTest extends AbstractSmackIntegrationTest {
 
     private final IoTDataManager iotDataManagerTwo;
 
-    public IoTDataIntegrationTest(SmackIntegrationTestEnvironment environment) {
+    public IoTDataIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
         super(environment);
         iotDataManagerOne = IoTDataManager.getInstanceFor(conOne);
         iotDataManagerTwo = IoTDataManager.getInstanceFor(conTwo);

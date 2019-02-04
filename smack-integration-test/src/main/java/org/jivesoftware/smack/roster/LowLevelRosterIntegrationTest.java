@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2018 Florian Schmaus
+ * Copyright 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package org.jivesoftware.smack.roster;
 
 import java.util.concurrent.TimeoutException;
 
+import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 
 import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
@@ -30,12 +30,13 @@ import org.jxmpp.jid.FullJid;
 
 public class LowLevelRosterIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
 
-    public LowLevelRosterIntegrationTest(SmackIntegrationTestEnvironment environment) {
+    public LowLevelRosterIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
         super(environment);
     }
 
     @SmackIntegrationTest
-    public void testPresenceEventListenersOffline(final XMPPTCPConnection conOne, final XMPPTCPConnection conTwo) throws TimeoutException, Exception {
+    public void testPresenceEventListenersOffline(final AbstractXMPPConnection conOne,
+            final AbstractXMPPConnection conTwo) throws TimeoutException, Exception {
         IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
 
         final Roster rosterOne = Roster.getInstanceFor(conOne);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2018 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smack.packet;
 
 /**
@@ -33,13 +32,6 @@ package org.jivesoftware.smack.packet;
  * @see org.jivesoftware.smack.provider.ExtensionElementProvider
  * @author Matt Tucker
  */
-public interface ExtensionElement extends NamedElement {
-
-    /**
-     * Returns the root element XML namespace.
-     *
-     * @return the namespace.
-     */
-    String getNamespace();
+public interface ExtensionElement extends FullyQualifiedElement {
 
 }

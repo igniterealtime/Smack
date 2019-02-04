@@ -30,6 +30,6 @@ package org.jivesoftware.smack.packet;
  * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0360.html">XEP-0360: Nonzas (are not Stanzas)</a>
  */
-public interface Nonza extends TopLevelStreamElement, ExtensionElement {
+public interface Nonza extends TopLevelStreamElement, FullyQualifiedElement {
 
 }

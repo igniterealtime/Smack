@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2015 Florian Schmaus
+ * Copyright © 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ public class SynchronizationPoint<E extends Exception> {
     // same memory synchronization effects as synchronization block enter and leave.
     private State state;
     private E failureException;
+
+    private volatile long waitStart;
 
     /**
      * Construct a new synchronization point for the given connection.
@@ -239,6 +241,10 @@ public class SynchronizationPoint<E extends Exception> {
         }
     }
 
+    public void resetTimeout() {
+        waitStart = System.currentTimeMillis();
+    }
+
     /**
      * Wait for the condition to become something else as {@link State#RequestSent} or {@link State#Initial}.
      * {@link #reportSuccess()}, {@link #reportFailure()} and {@link #reportFailure(Exception)} will either set this
@@ -247,13 +253,23 @@ public class SynchronizationPoint<E extends Exception> {
      * @throws InterruptedException
      */
     private void waitForConditionOrTimeout() throws InterruptedException {
-        long remainingWait = TimeUnit.MILLISECONDS.toNanos(connection.getReplyTimeout());
+        waitStart = System.currentTimeMillis();
         while (state == State.RequestSent || state == State.Initial) {
+            long timeout = connection.getReplyTimeout();
+            long remainingWaitMillis = timeout - (System.currentTimeMillis() - waitStart);
+            long remainingWait = TimeUnit.MILLISECONDS.toNanos(remainingWaitMillis);
+
             if (remainingWait <= 0) {
                 state = State.NoResponse;
                 break;
             }
-            remainingWait = condition.awaitNanos(remainingWait);
+
+            try {
+                condition.awaitNanos(remainingWait);
+            } catch (InterruptedException e) {
+                state = State.Interrupted;
+                throw e;
+            }
         }
     }
 
@@ -286,5 +302,6 @@ public class SynchronizationPoint<E extends Exception> {
         NoResponse,
         Success,
         Failure,
+        Interrupted,
     }
 }

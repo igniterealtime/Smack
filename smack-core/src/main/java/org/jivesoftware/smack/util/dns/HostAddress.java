@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.util.dns;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -70,6 +71,14 @@ public class HostAddress {
         this.port = 5222;
         inetAddresses = Collections.emptyList();
         setException(e);
+    }
+
+    public HostAddress(InetSocketAddress inetSocketAddress, Exception exception) {
+        String hostString = inetSocketAddress.getHostString();
+        this.fqdn = DnsName.from(hostString);
+        this.port = inetSocketAddress.getPort();
+        inetAddresses = Collections.emptyList();
+        setException(exception);
     }
 
     public String getHost() {

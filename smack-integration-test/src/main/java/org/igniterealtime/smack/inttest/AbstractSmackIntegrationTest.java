@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  * limitations under the License.
  */
 package org.igniterealtime.smack.inttest;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.jivesoftware.smack.XMPPConnection;
 
@@ -40,10 +44,18 @@ public abstract class AbstractSmackIntegrationTest extends AbstractSmackIntTest 
      */
     protected final XMPPConnection connection;
 
-    public AbstractSmackIntegrationTest(SmackIntegrationTestEnvironment environment) {
-        super(environment.testRunId, environment.configuration);
+    protected final List<XMPPConnection> connections;
+
+    public AbstractSmackIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
+        super(environment);
         this.connection = this.conOne = environment.conOne;
         this.conTwo = environment.conTwo;
         this.conThree = environment.conThree;
+
+        final List<XMPPConnection> connectionsLocal = new ArrayList<>(3);
+        connectionsLocal.add(conOne);
+        connectionsLocal.add(conTwo);
+        connectionsLocal.add(conThree);
+        this.connections = Collections.unmodifiableList(connectionsLocal);
     }
 }

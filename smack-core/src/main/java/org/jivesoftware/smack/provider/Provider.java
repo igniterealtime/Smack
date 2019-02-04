@@ -17,6 +17,9 @@
 
 package org.jivesoftware.smack.provider;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -34,6 +37,26 @@ import org.xmlpull.v1.XmlPullParser;
  * @param <E> the type of the resulting element.
  */
 public abstract class Provider<E extends Element> {
+
+    private final Class<E> elementClass;
+
+    @SuppressWarnings("unchecked")
+    protected Provider() {
+        Type currentType = getClass().getGenericSuperclass();
+        while (!(currentType instanceof ParameterizedType)) {
+            Class<?> currentClass = (Class<?>) currentType;
+            currentType = currentClass.getGenericSuperclass();
+        }
+        ParameterizedType parameterizedGenericSuperclass = (ParameterizedType) currentType;
+        Type[] actualTypeArguments = parameterizedGenericSuperclass.getActualTypeArguments();
+        Type elementType = actualTypeArguments[0];
+
+        elementClass =  (Class<E>) elementType;
+    }
+
+    public final Class<E> getElementClass() {
+        return elementClass;
+    }
 
     public final E parse(XmlPullParser parser) throws Exception {
         // XPP3 calling convention assert: Parser should be at start tag

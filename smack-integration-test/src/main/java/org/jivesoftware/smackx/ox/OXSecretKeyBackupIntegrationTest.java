@@ -97,7 +97,7 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
      * @throws InterruptedException
      * @throws SmackException.NoResponseException
      */
-    public OXSecretKeyBackupIntegrationTest(SmackIntegrationTestEnvironment environment)
+    public OXSecretKeyBackupIntegrationTest(SmackIntegrationTestEnvironment<?> environment)
             throws XMPPException.XMPPErrorException, TestNotPossibleException, SmackException.NotConnectedException,
             InterruptedException, SmackException.NoResponseException {
         super(environment);

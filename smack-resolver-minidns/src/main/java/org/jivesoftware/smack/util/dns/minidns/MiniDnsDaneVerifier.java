@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -68,4 +69,17 @@ public class MiniDnsDaneVerifier implements SmackDaneVerifier {
         }
     }
 
+    @Override
+    public void finish(SSLSession sslSession) throws CertificateException {
+        if (VERIFIER.verify(sslSession)) {
+            // DANE verification was the only requirement according to the TLSA RR. We can return here.
+            return;
+        }
+
+        // DANE verification was successful, but according to the TLSA RR we also must perform PKIX validation.
+        if (expectingTrustManager.hasException()) {
+         // PKIX validation has failed. Throw an exception.
+            throw expectingTrustManager.getException();
+        }
+    }
 }

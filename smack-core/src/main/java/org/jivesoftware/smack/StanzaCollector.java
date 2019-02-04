@@ -17,10 +17,9 @@
 
 package org.jivesoftware.smack;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -46,7 +45,9 @@ public class StanzaCollector {
 
     private final StanzaFilter packetFilter;
 
-    private final ArrayBlockingQueue<Stanza> resultQueue;
+    private final ArrayDeque<Stanza> resultQueue;
+
+    private final int maxQueueSize;
 
     /**
      * The stanza collector which timeout for the next result will get reset once this collector collects a stanza.
@@ -57,7 +58,9 @@ public class StanzaCollector {
 
     private final Stanza request;
 
-    private volatile boolean cancelled = false;
+    private volatile boolean cancelled;
+
+    private Exception connectionException;
 
     /**
      * Creates a new stanza collector. If the stanza filter is <tt>null</tt>, then
@@ -69,7 +72,8 @@ public class StanzaCollector {
     protected StanzaCollector(XMPPConnection connection, Configuration configuration) {
         this.connection = connection;
         this.packetFilter = configuration.packetFilter;
-        this.resultQueue = new ArrayBlockingQueue<>(configuration.size);
+        this.resultQueue = new ArrayDeque<>(configuration.size);
+        this.maxQueueSize = configuration.size;
         this.collectorToReset = configuration.collectorToReset;
         this.request = configuration.request;
     }
@@ -79,12 +83,15 @@ public class StanzaCollector {
      * queued up. Once a stanza collector has been cancelled, it cannot be
      * re-enabled. Instead, a new stanza collector must be created.
      */
-    public void cancel() {
+    public synchronized void cancel() {
         // If the packet collector has already been cancelled, do nothing.
-        if (!cancelled) {
-            cancelled = true;
-            connection.removeStanzaCollector(this);
+        if (cancelled) {
+            return;
         }
+
+        cancelled = true;
+        connection.removeStanzaCollector(this);
+        notifyAll();
     }
 
     /**
@@ -119,7 +126,7 @@ public class StanzaCollector {
      *      results.
      */
     @SuppressWarnings("unchecked")
-    public <P extends Stanza> P pollResult() {
+    public synchronized <P extends Stanza> P pollResult() {
         return (P) resultQueue.poll();
     }
 
@@ -152,13 +159,20 @@ public class StanzaCollector {
      * @throws InterruptedException
      */
     @SuppressWarnings("unchecked")
-    public <P extends Stanza> P nextResultBlockForever() throws InterruptedException {
+    // TODO: Consider removing this method as it is hardly ever useful.
+    public synchronized <P extends Stanza> P nextResultBlockForever() throws InterruptedException {
         throwIfCancelled();
-        P res = null;
-        while (res == null) {
-            res = (P) resultQueue.take();
+
+        while (true) {
+            P res = (P) resultQueue.poll();
+            if (res != null) {
+                return res;
+            }
+            if (cancelled) {
+                return null;
+            }
+            wait();
         }
-        return res;
     }
 
     /**
@@ -176,13 +190,13 @@ public class StanzaCollector {
     private volatile long waitStart;
 
     /**
-     * Returns the next available packet. The method call will block (not return)
-     * until a stanza is available or the <tt>timeout</tt> has elapsed. If the
-     * timeout elapses without a result, <tt>null</tt> will be returned.
+     * Returns the next available stanza. The method call will block (not return) until a stanza is available or the
+     * <tt>timeout</tt> has elapsed or if the connection was terminated because of an error. If the timeout elapses without a
+     * result or if there was an connection error, <tt>null</tt> will be returned.
      *
      * @param <P> type of the result stanza.
      * @param timeout the timeout in milliseconds.
-     * @return the next available packet.
+     * @return the next available stanza or <code>null</code> on timeout or connection error.
      * @throws InterruptedException
      */
     @SuppressWarnings("unchecked")
@@ -191,14 +205,17 @@ public class StanzaCollector {
         P res = null;
         long remainingWait = timeout;
         waitStart = System.currentTimeMillis();
-        do {
-            res = (P) resultQueue.poll(remainingWait, TimeUnit.MILLISECONDS);
-            if (res != null) {
-                return res;
+        while (remainingWait > 0 && connectionException == null && !cancelled) {
+            synchronized (this) {
+                res = (P) resultQueue.poll();
+                if (res != null) {
+                    return res;
+                }
+                wait(remainingWait);
             }
             remainingWait = timeout - (System.currentTimeMillis() - waitStart);
-        } while (remainingWait > 0);
-        return null;
+        }
+        return res;
     }
 
     /**
@@ -263,10 +280,13 @@ public class StanzaCollector {
             cancel();
         }
         if (result == null) {
+            if (connectionException != null) {
+                throw new NotConnectedException(connection, packetFilter, connectionException);
+            }
             if (!connection.isConnected()) {
                 throw new NotConnectedException(connection, packetFilter);
             }
-            throw NoResponseException.newWith(connection, this);
+            throw NoResponseException.newWith(connection, this, cancelled);
         }
 
         XMPPErrorException.ifHasErrorThenThrow(result);
@@ -289,7 +309,7 @@ public class StanzaCollector {
 
         if (collectedCache == null) {
             collectedCache = new ArrayList<>(getCollectedCount());
-            resultQueue.drainTo(collectedCache);
+            collectedCache.addAll(resultQueue);
         }
 
         return collectedCache;
@@ -301,8 +321,13 @@ public class StanzaCollector {
      * @return the count of collected stanzas.
      * @since 4.1
      */
-    public int getCollectedCount() {
+    public synchronized int getCollectedCount() {
         return resultQueue.size();
+    }
+
+    synchronized void notifyConnectionError(Exception exception) {
+        connectionException = exception;
+        notifyAll();
     }
 
     /**
@@ -313,12 +338,14 @@ public class StanzaCollector {
      */
     protected void processStanza(Stanza packet) {
         if (packetFilter == null || packetFilter.accept(packet)) {
-            // CHECKSTYLE:OFF
-        	while (!resultQueue.offer(packet)) {
-        		// Since we know the queue is full, this poll should never actually block.
-        		resultQueue.poll();
-        	}
-            // CHECKSTYLE:ON
+            synchronized (this) {
+                if (resultQueue.size() == maxQueueSize) {
+                    Stanza rolledOverStanza = resultQueue.poll();
+                    assert rolledOverStanza != null;
+                }
+                resultQueue.add(packet);
+                notifyAll();
+            }
             if (collectorToReset != null) {
                 collectorToReset.waitStart = System.currentTimeMillis();
             }
@@ -403,4 +430,5 @@ public class StanzaCollector {
             return this;
         }
     }
+
 }

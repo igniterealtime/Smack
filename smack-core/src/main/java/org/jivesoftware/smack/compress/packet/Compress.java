@@ -46,7 +46,7 @@ public class Compress implements Nonza {
 
     @Override
     public XmlStringBuilder toXML(String enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
         xml.rightAngleBracket();
         xml.element("method", method);
         xml.closeElement(this);
