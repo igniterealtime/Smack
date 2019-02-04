@@ -31,7 +31,7 @@ public class FailureTest {
     @Test
     public void simpleFailureTest() throws SAXException, IOException {
         Failure failure = new Failure(Failure.CompressFailureError.processing_failed);
-        CharSequence xml = failure.toXML(null);
+        CharSequence xml = failure.toXML();
 
         final String expectedXml = "<failure xmlns='http://jabber.org/protocol/compress'><processing-failed/></failure>";
 
@@ -44,7 +44,7 @@ public class FailureTest {
                         .setCondition(Condition.bad_request)
                         .build();
         Failure failure = new Failure(Failure.CompressFailureError.setup_failed, stanzaError);
-        CharSequence xml = failure.toXML(null);
+        CharSequence xml = failure.toXML();
 
         final String expectedXml = "<failure xmlns='http://jabber.org/protocol/compress'>"
                         + "<setup-failed/>"

@@ -45,7 +45,7 @@ public class SignElement extends OpenPgpContentElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this).rightAngleBracket();
         addCommonXml(xml);
         xml.closeElement(this);

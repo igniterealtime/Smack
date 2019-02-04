@@ -37,7 +37,7 @@ public final class TlsFailure implements Nonza {
     }
 
     @Override
-    public String toXML(String enclosingNamespace) {
+    public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
     }
 }

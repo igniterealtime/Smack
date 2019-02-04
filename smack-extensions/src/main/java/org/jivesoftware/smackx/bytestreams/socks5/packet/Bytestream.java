@@ -232,11 +232,11 @@ public class Bytestream extends IQ {
             xml.rightAngleBracket();
             if (getToActivate() == null) {
                 for (StreamHost streamHost : getStreamHosts()) {
-                    xml.append(streamHost.toXML(null));
+                    xml.append(streamHost.toXML());
                 }
             }
             else {
-                xml.append(getToActivate().toXML(null));
+                xml.append(getToActivate().toXML());
             }
             break;
         case result:
@@ -246,7 +246,7 @@ public class Bytestream extends IQ {
             // constructions mechanisms of Bytestream
             // A result from the server can also contain stream hosts
             for (StreamHost host : streamHosts) {
-                xml.append(host.toXML(null));
+                xml.append(host.toXML());
             }
             break;
         case get:
@@ -325,7 +325,7 @@ public class Bytestream extends IQ {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.attribute("jid", getJID());
             xml.attribute("host", getAddress());
@@ -375,7 +375,7 @@ public class Bytestream extends IQ {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.attribute("jid", getJID());
             xml.closeEmptyElement();
@@ -418,7 +418,7 @@ public class Bytestream extends IQ {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.rightAngleBracket();
             xml.escape(getTarget());

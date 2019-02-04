@@ -99,7 +99,7 @@ public class Range implements NamedElement {
     }
 
     @Override
-    public CharSequence toXML(String enclosingNamespace) {
+    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder sb =  new XmlStringBuilder(this);
 
         if (offset > 0) {
@@ -133,6 +133,6 @@ public class Range implements NamedElement {
 
     @Override
     public int hashCode() {
-        return toXML(null).toString().hashCode();
+        return toXML().toString().hashCode();
     }
 }

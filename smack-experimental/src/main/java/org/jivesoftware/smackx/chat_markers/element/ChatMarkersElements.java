@@ -65,7 +65,7 @@ public class ChatMarkersElements {
         }
 
         @Override
-        public CharSequence toXML(String enclosingNamespace) {
+        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.closeEmptyElement();
             return xml;
@@ -93,7 +93,7 @@ public class ChatMarkersElements {
         }
 
         @Override
-        public final XmlStringBuilder toXML(String enclosingNamespace) {
+        public final XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.attribute("id", id);
             xml.closeEmptyElement();

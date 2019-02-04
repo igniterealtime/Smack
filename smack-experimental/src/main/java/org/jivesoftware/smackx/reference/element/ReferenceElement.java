@@ -174,7 +174,7 @@ public class ReferenceElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this)
                 .optIntAttribute(ATTR_BEGIN, begin != null ? begin : -1)
                 .optIntAttribute(ATTR_END, end != null ? end : -1)
@@ -186,7 +186,7 @@ public class ReferenceElement implements ExtensionElement {
             return xml.closeEmptyElement();
         } else {
             return xml.rightAngleBracket()
-                    .append(child.toXML(null))
+                    .append(child.toXML())
                     .closeElement(this);
         }
     }

@@ -24,7 +24,7 @@ public final class StreamClose implements Nonza {
     }
 
     @Override
-    public String toXML(String enclosingNamespace) {
+    public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         return "</" + getElementName() + '>';
     }
 

@@ -312,7 +312,7 @@ public class DataForm implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder(this);
         buf.attribute("type", getType());
         buf.rightAngleBracket();
@@ -331,10 +331,10 @@ public class DataForm implements ExtensionElement {
         }
         // Loop through all the form fields and append them to the string buffer
         for (FormField field : getFields()) {
-            buf.append(field.toXML(null));
+            buf.append(field.toXML());
         }
         for (Element element : extensionElements) {
-            buf.append(element.toXML(null));
+            buf.append(element.toXML());
         }
         buf.closeElement(this);
         return buf;
@@ -379,7 +379,7 @@ public class DataForm implements ExtensionElement {
             buf.openElement(ELEMENT);
             // Loop through all the form items and append them to the string buffer
             for (FormField field : getFields()) {
-                buf.append(field.toXML(null));
+                buf.append(field.toXML());
             }
             buf.closeElement(ELEMENT);
             return buf;
@@ -415,7 +415,7 @@ public class DataForm implements ExtensionElement {
             buf.openElement(ELEMENT);
             // Loop through all the form items and append them to the string buffer
             for (FormField field : getFields()) {
-                buf.append(field.toXML(null));
+                buf.append(field.toXML());
             }
             buf.closeElement(ELEMENT);
             return buf;

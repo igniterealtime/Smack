@@ -105,14 +105,14 @@ public class SLF4JSmackDebugger extends SmackDebugger  {
     @Override
     public void onIncomingStreamElement(TopLevelStreamElement streamElement) {
         if (SLF4JSmackDebugger.printInterpreted.get() && logger.isDebugEnabled()) {
-            logger.debug("IN {}: {}", streamElement.getClass().getName(), streamElement.toXML(null));
+            logger.debug("IN {}: {}", streamElement.getClass().getName(), streamElement.toXML());
         }
     }
 
     @Override
     public void onOutgoingStreamElement(TopLevelStreamElement streamElement) {
         if (SLF4JSmackDebugger.printInterpreted.get() && logger.isDebugEnabled()) {
-            logger.debug("OUT {}: {}", streamElement.getClass().getName(), streamElement.toXML(null));
+            logger.debug("OUT {}: {}", streamElement.getClass().getName(), streamElement.toXML());
         }
     }
 

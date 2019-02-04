@@ -41,13 +41,13 @@ public class MoodElementTest extends SmackTestSuite {
                 "</mood>";
         MoodElement moodElement = new MoodElement(new MoodElement.MoodSubjectElement(Mood.happy, null), "Yay, the mood spec has been approved!");
 
-        assertXMLEqual(xml, moodElement.toXML(null).toString());
+        assertXMLEqual(xml, moodElement.toXML().toString());
         assertFalse(moodElement.hasConcretisation());
         assertEquals(Mood.happy, moodElement.getMood());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         MoodElement parsed = MoodProvider.INSTANCE.parse(parser);
-        assertEquals(xml, parsed.toXML(null).toString());
+        assertEquals(xml, parsed.toXML().toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -67,7 +67,7 @@ public class MoodElementTest extends SmackTestSuite {
         String xml = "<mood xmlns='http://jabber.org/protocol/mood'/>";
         XmlPullParser parser = TestUtils.getParser(xml);
         MoodElement emptyParsed = MoodProvider.INSTANCE.parse(parser);
-        assertEquals(empty.toXML(null).toString(), emptyParsed.toXML(null).toString());
+        assertEquals(empty.toXML().toString(), emptyParsed.toXML().toString());
     }
 
     @Test(expected = XmlPullParserException.class)

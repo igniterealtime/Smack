@@ -288,7 +288,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
 
         String responseId;
 
-        LOGGER.fine("Packet: " + iq.toXML(null));
+        LOGGER.fine("Packet: " + iq.toXML());
 
         try {
 
@@ -718,21 +718,21 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
 
                         String sid = jin.getSid();
                         if (sid == null || !sid.equals(getSid())) {
-                            LOGGER.fine("Ignored Jingle(SID) " + sid + "|" + getSid() + " :" + iq.toXML(null));
+                            LOGGER.fine("Ignored Jingle(SID) " + sid + "|" + getSid() + " :" + iq.toXML());
                             return false;
                         }
                         Jid ini = jin.getInitiator();
                         if (!ini.equals(getInitiator())) {
-                            LOGGER.fine("Ignored Jingle(INI): " + iq.toXML(null));
+                            LOGGER.fine("Ignored Jingle(INI): " + iq.toXML());
                             return false;
                         }
                     } else {
                         // We accept some non-Jingle IQ packets: ERRORs and ACKs
                         if (iq.getType().equals(IQ.Type.set)) {
-                            LOGGER.fine("Ignored Jingle(TYPE): " + iq.toXML(null));
+                            LOGGER.fine("Ignored Jingle(TYPE): " + iq.toXML());
                             return false;
                         } else if (iq.getType().equals(IQ.Type.get)) {
-                            LOGGER.fine("Ignored Jingle(TYPE): " + iq.toXML(null));
+                            LOGGER.fine("Ignored Jingle(TYPE): " + iq.toXML());
                             return false;
                         }
                     }
@@ -1062,7 +1062,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
 
             // NO! Let the normal state machinery do all of the sending.
             // getConnection().sendStanza(perror);
-            LOGGER.severe("Error sent: " + errorPacket.toXML(null));
+            LOGGER.severe("Error sent: " + errorPacket.toXML());
         }
         return errorPacket;
     }

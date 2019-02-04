@@ -42,7 +42,7 @@ public class SecretkeyElementTest extends SmackTestSuite {
 
         SecretkeyElement element = new SecretkeyElement(key);
 
-        assertXMLEqual(expected, element.toXML(null).toString());
+        assertXMLEqual(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         SecretkeyElement parsed = SecretkeyElementProvider.TEST_INSTANCE.parse(parser);

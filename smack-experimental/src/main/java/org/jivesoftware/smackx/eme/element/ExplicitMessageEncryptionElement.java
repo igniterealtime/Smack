@@ -135,7 +135,7 @@ public class ExplicitMessageEncryptionElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("namespace", getEncryptionNamespace());
         xml.optAttribute("name", getName());

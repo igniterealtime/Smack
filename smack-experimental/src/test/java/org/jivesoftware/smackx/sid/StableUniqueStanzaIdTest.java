@@ -40,7 +40,7 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
         StanzaIdElement element = new StanzaIdElement("de305d54-75b4-431b-adb2-eb6b9e546013", "alice@wonderland.lit");
         assertEquals("de305d54-75b4-431b-adb2-eb6b9e546013", element.getId());
         assertEquals("alice@wonderland.lit", element.getBy());
-        assertXMLEqual(xml, element.toXML(null).toString());
+        assertXMLEqual(xml, element.toXML().toString());
 
         StanzaIdElement parsed = StanzaIdProvider.TEST_INSTANCE.parse(TestUtils.getParser(xml));
         assertEquals(element.getId(), parsed.getId());
@@ -52,7 +52,7 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
         String xml = "<origin-id xmlns='urn:xmpp:sid:0' id='de305d54-75b4-431b-adb2-eb6b9e546013' />";
         OriginIdElement element = new OriginIdElement("de305d54-75b4-431b-adb2-eb6b9e546013");
         assertEquals("de305d54-75b4-431b-adb2-eb6b9e546013", element.getId());
-        assertXMLEqual(xml, element.toXML(null).toString());
+        assertXMLEqual(xml, element.toXML().toString());
 
         OriginIdElement parsed = OriginIdProvider.TEST_INSTANCE.parse(TestUtils.getParser(xml));
         assertEquals(element.getId(), parsed.getId());

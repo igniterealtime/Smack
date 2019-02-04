@@ -39,7 +39,7 @@ public class SubscribeExtension extends NodeExtension {
     }
 
     @Override
-    public String toXML(String enclosingNamespace) {
+    public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         StringBuilder builder = new StringBuilder("<");
         builder.append(getElementName());
 

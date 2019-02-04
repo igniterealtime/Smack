@@ -130,7 +130,7 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
     }
 
     @Override
-    public CharSequence toXML(String enclosingNamespace) {
+    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement(this);
         xml.attribute(ATTR_CID, cid);

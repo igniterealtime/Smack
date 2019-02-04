@@ -363,13 +363,13 @@ public class Jingle extends IQ {
 
         synchronized (contents) {
             for (JingleContent content : contents) {
-                buf.append(content.toXML(null));
+                buf.append(content.toXML());
             }
          }
 
         // and the same for audio jmf info
         if (contentInfo != null) {
-            buf.append(contentInfo.toXML(null));
+            buf.append(contentInfo.toXML());
         }
 
         return buf;

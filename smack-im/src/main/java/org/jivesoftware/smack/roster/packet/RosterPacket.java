@@ -91,7 +91,7 @@ public final class RosterPacket extends IQ {
 
         synchronized (rosterItems) {
             for (Item entry : rosterItems) {
-                buf.append(entry.toXML(null));
+                buf.append(entry.toXML());
             }
         }
         return buf;
@@ -272,7 +272,7 @@ public final class RosterPacket extends IQ {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.attribute("jid", jid);
             xml.optAttribute("name", name);

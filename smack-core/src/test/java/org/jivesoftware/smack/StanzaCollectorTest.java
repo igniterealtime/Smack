@@ -182,13 +182,13 @@ public class StanzaCollectorTest {
         }
 
         @Override
-        public String toXML(String enclosingNamespace) {
+        public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             return "<packetId>" + getStanzaId() + "</packetId>";
         }
 
         @Override
         public String toString() {
-            return toXML(null);
+            return toXML().toString();
         }
     }
 }

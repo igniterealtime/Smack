@@ -64,7 +64,7 @@ public class RetrieveFormFieldsTest extends MamTest {
                         .build();
         DataForm dataForm = mamQueryArgs.getDataForm();
 
-        String dataFormResult = dataForm.toXML(null).toString();
+        String dataFormResult = dataForm.toXML().toString();
 
         assertXmlSimilar(additionalFieldsStanza, dataFormResult);
     }

@@ -42,11 +42,11 @@ public class MessageCorrectExtensionTest {
         Message initialMessage = PacketParserUtils.parseStanza(initialMessageXml);
         MessageCorrectExtension messageCorrectExtension = new MessageCorrectExtension(idInitialMessage);
 
-        Assert.assertEquals(messageCorrectExtension.toXML(null).toString(), messageCorrectionXml.toString());
+        Assert.assertEquals(messageCorrectExtension.toXML().toString(), messageCorrectionXml.toString());
 
         initialMessage.addExtension(messageCorrectExtension);
 
-        Assert.assertEquals(initialMessage.toXML(null), expectedXml.toString());
+        Assert.assertEquals(initialMessage.toXML().toString(), expectedXml.toString());
     }
 
 }

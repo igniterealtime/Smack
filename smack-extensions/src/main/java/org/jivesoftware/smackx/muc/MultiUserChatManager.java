@@ -166,7 +166,7 @@ public final class MultiUserChatManager extends Manager {
                 if (mucUser.getInvite() != null) {
                     EntityBareJid mucJid = message.getFrom().asEntityBareJidIfPossible();
                     if (mucJid == null) {
-                        LOGGER.warning("Invite to non bare JID: '" + message.toXML(null) + "'");
+                        LOGGER.warning("Invite to non bare JID: '" + message.toXML() + "'");
                         return;
                     }
                     // Fire event for invitation listeners

@@ -132,7 +132,7 @@ public final class StandardExtensionElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         if (xmlCache != null) {
             return xmlCache;
         }

@@ -74,6 +74,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
@@ -810,7 +811,7 @@ public class EnhancedDebugger extends SmackDebugger {
 
                 messagesTable.addRow(
                         new Object[] {
-                                XmlUtil.prettyFormatXml(packet.toXML(null).toString()),
+                                XmlUtil.prettyFormatXml(packet.toXML().toString()),
                                 dateFormatter.format(new Date()),
                                 packetReceivedIcon,
                                 packetTypeIcon,
@@ -881,7 +882,7 @@ public class EnhancedDebugger extends SmackDebugger {
 
                 messagesTable.addRow(
                         new Object[] {
-                                XmlUtil.prettyFormatXml(packet.toXML(null).toString()),
+                                XmlUtil.prettyFormatXml(packet.toXML().toString()),
                                 dateFormatter.format(new Date()),
                                 packetSentIcon,
                                 packetTypeIcon,
@@ -938,15 +939,14 @@ public class EnhancedDebugger extends SmackDebugger {
         }
 
         @Override
-        public String toXML(String enclosingNamespace) {
+        public String toXML(XmlEnvironment enclosingNamespace) {
             return text;
         }
 
         @Override
         public String toString() {
-            return toXML(null);
+            return toXML((XmlEnvironment) null);
         }
-
     }
 
     /**

@@ -29,6 +29,6 @@ public class SimplePayloadTest {
 
         assertEquals("element", simplePayload.getElementName());
         assertEquals("https://example.org", simplePayload.getNamespace());
-        assertEquals(xmlPayload, simplePayload.toXML(null));
+        assertEquals(xmlPayload, simplePayload.toXML().toString());
     }
 }

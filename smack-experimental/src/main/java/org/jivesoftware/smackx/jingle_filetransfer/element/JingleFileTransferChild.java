@@ -86,7 +86,7 @@ public class JingleFileTransferChild extends JingleContentDescriptionChildElemen
     }
 
     @Override
-    public CharSequence toXML(String enclosingNamespace) {
+    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder sb = new XmlStringBuilder(this);
         sb.rightAngleBracket();
 

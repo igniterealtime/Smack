@@ -29,7 +29,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 public abstract class MoodConcretisation implements ExtensionElement {
 
     @Override
-    public final XmlStringBuilder toXML(String enclosingNamespace) {
+    public final XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         return new XmlStringBuilder(this).closeEmptyElement();
     }
 

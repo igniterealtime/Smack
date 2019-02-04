@@ -151,7 +151,7 @@ public class SpoilerElement implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML(String enclosingNamespace) {
+    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.optXmlLangAttribute(getLanguage());
         if (getHint() == null) {

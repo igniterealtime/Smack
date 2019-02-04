@@ -61,7 +61,7 @@ public class AffiliationsExtension extends NodeExtension {
     }
 
     @Override
-    public CharSequence toXML(String enclosingNamespace) {
+    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         if ((items == null) || (items.size() == 0)) {
             return super.toXML(enclosingNamespace);
         }

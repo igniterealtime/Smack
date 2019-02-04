@@ -272,7 +272,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder(enclosingNamespace);
         buf.halfOpenElement(ELEMENT);
         addCommonAttributes(buf, enclosingNamespace);

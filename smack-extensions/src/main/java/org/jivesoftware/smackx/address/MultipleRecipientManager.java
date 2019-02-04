@@ -211,19 +211,19 @@ public class MultipleRecipientManager {
         if (to != null) {
             for (Jid jid : to) {
                 packet.setTo(jid);
-                connection.sendStanza(new PacketCopy(packet.toXML(null)));
+                connection.sendStanza(new PacketCopy(packet.toXML()));
             }
         }
         if (cc != null) {
             for (Jid jid : cc) {
                 packet.setTo(jid);
-                connection.sendStanza(new PacketCopy(packet.toXML(null)));
+                connection.sendStanza(new PacketCopy(packet.toXML()));
             }
         }
         if (bcc != null) {
             for (Jid jid : bcc) {
                 packet.setTo(jid);
-                connection.sendStanza(new PacketCopy(packet.toXML(null)));
+                connection.sendStanza(new PacketCopy(packet.toXML()));
             }
         }
     }
@@ -309,13 +309,13 @@ public class MultipleRecipientManager {
         }
 
         @Override
-        public CharSequence toXML(String enclosingNamespace) {
+        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             return text;
         }
 
         @Override
         public String toString() {
-            return toXML(null).toString();
+            return toXML().toString();
         }
 
     }
