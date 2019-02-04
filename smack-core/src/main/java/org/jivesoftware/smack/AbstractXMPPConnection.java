@@ -197,6 +197,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     private final Collection<StanzaCollector> collectors = new ConcurrentLinkedQueue<>();
 
+    private final Map<StanzaListener, ListenerWrapper> recvListeners = new LinkedHashMap<>();
+
     /**
      * List of PacketListeners that will be notified synchronously when a new stanza was received.
      */
@@ -329,6 +331,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     });
 
     protected static final AsyncButOrdered<AbstractXMPPConnection> ASYNC_BUT_ORDERED = new AsyncButOrdered<>();
+
+    protected final AsyncButOrdered<StanzaListener> inOrderListeners = new AsyncButOrdered<>();
 
     /**
      * The used host to establish the connection to
@@ -941,6 +945,24 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
+    public final void addStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter) {
+        if (stanzaListener == null) {
+            throw new NullPointerException("Given stanza listener must not be null");
+        }
+        ListenerWrapper wrapper = new ListenerWrapper(stanzaListener, stanzaFilter);
+        synchronized (recvListeners) {
+            recvListeners.put(stanzaListener, wrapper);
+        }
+    }
+
+    @Override
+    public final boolean removeStanzaListener(StanzaListener stanzaListener) {
+        synchronized (recvListeners) {
+            return recvListeners.remove(stanzaListener) != null;
+        }
+    }
+
+    @Override
     public void addSyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter) {
         if (packetListener == null) {
             throw new NullPointerException("Packet listener is null.");
@@ -1323,14 +1345,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // the only difference is that asyncRecvListeners is used here and that the packet listeners are started in
         // their own thread.
         final Collection<StanzaListener> listenersToNotify = new LinkedList<>();
-        synchronized (asyncRecvListeners) {
-            for (ListenerWrapper listenerWrapper : asyncRecvListeners.values()) {
-                if (listenerWrapper.filterMatches(packet)) {
-                    listenersToNotify.add(listenerWrapper.getListener());
-                }
-            }
-        }
-
+        extractMatchingListeners(packet, asyncRecvListeners, listenersToNotify);
         for (final StanzaListener listener : listenersToNotify) {
             asyncGo(new Runnable() {
                 @Override
@@ -1349,16 +1364,25 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             collector.processStanza(packet);
         }
 
-        // Notify the receive listeners interested in the packet
         listenersToNotify.clear();
-        synchronized (syncRecvListeners) {
-            for (ListenerWrapper listenerWrapper : syncRecvListeners.values()) {
-                if (listenerWrapper.filterMatches(packet)) {
-                    listenersToNotify.add(listenerWrapper.getListener());
+        extractMatchingListeners(packet, recvListeners, listenersToNotify);
+        for (StanzaListener stanzaListener : listenersToNotify) {
+            inOrderListeners.performAsyncButOrdered(stanzaListener, () -> {
+                try {
+                    stanzaListener.processStanza(packet);
                 }
-            }
+                catch (NotConnectedException e) {
+                    LOGGER.log(Level.WARNING, "Got not connected exception, aborting", e);
+                }
+                catch (Exception e) {
+                    LOGGER.log(Level.SEVERE, "Exception in packet listener", e);
+                }
+            });
         }
 
+        // Notify the receive listeners interested in the packet
+        listenersToNotify.clear();
+        extractMatchingListeners(packet, syncRecvListeners, listenersToNotify);
         // Decouple incoming stanza processing from listener invocation. Unlike async listeners, this uses a single
         // threaded executor service and therefore keeps the order.
         ASYNC_BUT_ORDERED.performAsyncButOrdered(this, new Runnable() {
@@ -1389,6 +1413,17 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 }
             }
         });
+    }
+
+    private static void extractMatchingListeners(Stanza stanza, Map<StanzaListener, ListenerWrapper> listeners,
+                    Collection<StanzaListener> listenersToNotify) {
+        synchronized (listeners) {
+            for (ListenerWrapper listenerWrapper : listeners.values()) {
+                if (listenerWrapper.filterMatches(stanza)) {
+                    listenersToNotify.add(listenerWrapper.getListener());
+                }
+            }
+        }
     }
 
     /**

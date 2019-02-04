@@ -314,6 +314,28 @@ public interface XMPPConnection {
     void removeStanzaCollector(StanzaCollector collector);
 
     /**
+     * Registers a stanza listener with this connection. The listener will be invoked when a (matching) incoming stanza
+     * is received. The stanza filter determines which stanzas will be delivered to the listener. It is guaranteed that
+     * the same listener will not be invoked concurrently and the the order of invocation will reflect the order in
+     * which the stanzas have been received. If the same stanza listener is added again with a different filter, only
+     * the new filter will be used.
+     *
+     * @param stanzaListener the stanza listener to notify of new received stanzas.
+     * @param stanzaFilter the stanza filter to use.
+     * @since 4.4
+     */
+    void addStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
+
+    /**
+     * Removes a stanza listener for received stanzas from this connection.
+     *
+     * @param stanzaListener the stanza listener to remove.
+     * @return true if the stanza listener was removed.
+     * @since 4.4
+     */
+    boolean removeStanzaListener(StanzaListener stanzaListener);
+
+    /**
      * Registers a <b>synchronous</b> stanza listener with this connection. A stanza listener will be invoked only when
      * an incoming stanza is received. A stanza filter determines which stanzas will be delivered to the listener. If
      * the same stanza listener is added again with a different filter, only the new filter will be used.
