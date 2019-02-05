@@ -4,6 +4,7 @@ android:
     - android-16
 jdk:
   - oraclejdk8
+  - openjdk8
 sudo: false
 cache:
   directories:
