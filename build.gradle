@@ -333,7 +333,6 @@ ${oneLineDesc}."""
 evaluationDependsOnChildren()
 subprojects {
 	apply plugin: 'maven'
-	apply plugin: 'osgi'
 	apply plugin: 'signing'
 	apply plugin: 'checkstyle'
 	apply plugin: 'org.kordamp.gradle.clirr'
