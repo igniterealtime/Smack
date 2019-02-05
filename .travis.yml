@@ -15,6 +15,7 @@ before_install:
   - wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip
   - unzip -q gradle-${GRADLE_VERSION}-all.zip
   - export PATH="$(pwd)/gradle-${GRADLE_VERSION}/bin:$PATH"
+  - sudo apt install graphviz
 
 install: gradle assemble --stacktrace
 script: gradle check --stacktrace
