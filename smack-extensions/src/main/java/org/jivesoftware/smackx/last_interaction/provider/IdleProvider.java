@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.last_interaction.provider;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -28,11 +29,8 @@ public class IdleProvider extends ExtensionElementProvider<IdleElement> {
 
     public static final IdleProvider TEST_INSTANCE = new IdleProvider();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public IdleElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public IdleElement parse(XmlPullParser parser, int initialDepth) throws ParseException {
         String dateString = parser.getAttributeValue(null, IdleElement.ATTR_SINCE);
         Date since = XmppDateTime.parseXEP0082Date(dateString);
         return new IdleElement(since);

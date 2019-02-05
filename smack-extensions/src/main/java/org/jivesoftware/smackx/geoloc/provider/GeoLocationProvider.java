@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.geoloc.provider;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.text.ParseException;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -32,7 +31,7 @@ public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
 
     @Override
     public GeoLocation parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
-                    ParseException, URISyntaxException {
+                    ParseException {
 
         GeoLocation.Builder builder = GeoLocation.builder();
 

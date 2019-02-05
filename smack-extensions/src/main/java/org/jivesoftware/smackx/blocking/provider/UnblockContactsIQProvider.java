@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.blocking.provider;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import org.jivesoftware.smackx.blocking.element.UnblockContactsIQ;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Unblock contact IQ provider class.
@@ -37,7 +39,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class UnblockContactsIQProvider extends IQProvider<UnblockContactsIQ> {
 
     @Override
-    public UnblockContactsIQ parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public UnblockContactsIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         List<Jid> jids = null;
 
         outerloop: while (true) {

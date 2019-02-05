@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.jingle_filetransfer.provider;
 import static org.xmlpull.v1.XmlPullParser.END_TAG;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import org.jivesoftware.smackx.hashes.element.HashElement;
@@ -31,6 +33,7 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.Range;
 
 import org.jxmpp.util.XmppDateTime;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Provider for JingleContentDescriptionFileTransfer elements.
@@ -39,7 +42,7 @@ public class JingleFileTransferProvider
         extends JingleContentDescriptionProvider<JingleFileTransfer> {
 
     @Override
-    public JingleFileTransfer parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public JingleFileTransfer parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
         ArrayList<JingleContentDescriptionChildElement> payloads = new ArrayList<>();
         boolean inRange = false;
         JingleFileTransferChild.Builder builder = JingleFileTransferChild.getBuilder();

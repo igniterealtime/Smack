@@ -16,12 +16,14 @@
  */
 package org.jivesoftware.smackx.ox.provider;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.ox.element.SecretkeyElement;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * {@link ExtensionElementProvider} implementation for the {@link SecretkeyElement}.
@@ -31,7 +33,7 @@ public class SecretkeyElementProvider extends ExtensionElementProvider<Secretkey
     public static final SecretkeyElementProvider TEST_INSTANCE = new SecretkeyElementProvider();
 
     @Override
-    public SecretkeyElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public SecretkeyElement parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         String data = parser.nextText();
         return new SecretkeyElement(data.getBytes(Charset.forName("UTF-8")));
     }

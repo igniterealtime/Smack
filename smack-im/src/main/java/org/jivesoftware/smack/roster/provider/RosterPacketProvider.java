@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2003-2007 Jive Software, 2014-2015 Florian Schmaus
+ * Copyright © 2003-2007 Jive Software, 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.jivesoftware.smack.roster.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
@@ -34,8 +33,7 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
     public static final RosterPacketProvider INSTANCE = new RosterPacketProvider();
 
     @Override
-    public RosterPacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
-                    SmackException {
+    public RosterPacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         RosterPacket roster = new RosterPacket();
         String version = parser.getAttributeValue("", "ver");
         roster.setVersion(version);

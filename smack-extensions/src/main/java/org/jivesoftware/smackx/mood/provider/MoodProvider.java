@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.mood.provider;
 import static org.xmlpull.v1.XmlPullParser.END_TAG;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +39,8 @@ public class MoodProvider extends ExtensionElementProvider<MoodElement> {
     public static final MoodProvider INSTANCE = new MoodProvider();
 
     @Override
-    public MoodElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public MoodElement parse(XmlPullParser parser, int initialDepth)
+                    throws XmlPullParserException, IOException, ParseException {
         String text = null;
         Mood mood = null;
         MoodConcretisation concretisation = null;

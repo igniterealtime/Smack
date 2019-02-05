@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.StandardExtensionElement;
@@ -35,13 +37,14 @@ import org.jivesoftware.smackx.jingle.element.UnknownJingleContentTransport;
 
 import org.jxmpp.jid.FullJid;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class JingleProvider extends IQProvider<Jingle> {
 
     private static final Logger LOGGER = Logger.getLogger(JingleProvider.class.getName());
 
     @Override
-    public Jingle parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public Jingle parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
         Jingle.Builder builder = Jingle.getBuilder();
 
         String actionString = parser.getAttributeValue("", Jingle.ACTION_ATTRIBUTE_NAME);
@@ -99,7 +102,7 @@ public class JingleProvider extends IQProvider<Jingle> {
     }
 
     public static JingleContent parseJingleContent(XmlPullParser parser, final int initialDepth)
-                    throws Exception {
+                    throws XmlPullParserException, IOException, ParseException {
         JingleContent.Builder builder = JingleContent.getBuilder();
 
         String creatorString = parser.getAttributeValue("", JingleContent.CREATOR_ATTRIBUTE_NAME);

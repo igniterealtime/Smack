@@ -19,6 +19,7 @@ package org.jivesoftware.smack.util;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -215,10 +216,11 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of a message packet.
      * @return a Message packet.
-     * @throws Exception
+     * @throws XmlPullParserException
+     * @throws IOException
+     * @throws ParseException
      */
-    public static Message parseMessage(XmlPullParser parser)
-                    throws Exception {
+    public static Message parseMessage(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
         ParserUtils.assertAtStartTag(parser);
         assert (parser.getName().equals(Message.ELEMENT));
 
@@ -500,10 +502,11 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of a presence packet.
      * @return a Presence packet.
-     * @throws Exception
+     * @throws IOException
+     * @throws XmlPullParserException
+     * @throws ParseException
      */
-    public static Presence parsePresence(XmlPullParser parser)
-                    throws Exception {
+    public static Presence parsePresence(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
         ParserUtils.assertAtStartTag(parser);
         final int initialDepth = parser.getDepth();
 
@@ -786,9 +789,11 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser.
      * @return an stream error packet.
-     * @throws Exception if an exception occurs while parsing the packet.
+     * @throws IOException
+     * @throws XmlPullParserException
+     * @throws ParseException
      */
-    public static StreamError parseStreamError(XmlPullParser parser) throws Exception {
+    public static StreamError parseStreamError(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
         final int initialDepth = parser.getDepth();
         List<ExtensionElement> extensions = new ArrayList<>();
         Map<String, String> descriptiveTexts = null;
@@ -836,10 +841,11 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser.
      * @return an error sub-packet.
-     * @throws Exception
+     * @throws IOException
+     * @throws XmlPullParserException
+     * @throws ParseException
      */
-    public static StanzaError.Builder parseError(XmlPullParser parser)
-                    throws Exception {
+    public static StanzaError.Builder parseError(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
         final int initialDepth = parser.getDepth();
         Map<String, String> descriptiveTexts = null;
         List<ExtensionElement> extensions = new ArrayList<>();
@@ -908,10 +914,12 @@ public class PacketParserUtils {
      * @param parser the XML parser, positioned at the starting element of the extension.
      *
      * @return an extension element.
-     * @throws Exception when an error occurs during parsing.
+     * @throws XmlPullParserException
+     * @throws IOException
+     * @throws ParseException
      */
     public static ExtensionElement parseExtensionElement(String elementName, String namespace,
-                    XmlPullParser parser) throws Exception {
+                    XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
         ParserUtils.assertAtStartTag(parser);
         // See if a provider is registered to handle the extension.
         ExtensionElementProvider<ExtensionElement> provider = ProviderManager.getExtensionProvider(elementName, namespace);
@@ -980,25 +988,24 @@ public class PacketParserUtils {
     }
 
     public static void addExtensionElement(Stanza packet, XmlPullParser parser)
-                    throws Exception {
+                    throws XmlPullParserException, IOException, ParseException {
         ParserUtils.assertAtStartTag(parser);
         addExtensionElement(packet, parser, parser.getName(), parser.getNamespace());
     }
 
     public static void addExtensionElement(Stanza packet, XmlPullParser parser, String elementName,
-                    String namespace) throws Exception {
+                    String namespace) throws XmlPullParserException, IOException, ParseException {
         ExtensionElement packetExtension = parseExtensionElement(elementName, namespace, parser);
         packet.addExtension(packetExtension);
     }
 
-    public static void addExtensionElement(Collection<ExtensionElement> collection,
-                    XmlPullParser parser) throws Exception {
+    public static void addExtensionElement(Collection<ExtensionElement> collection, XmlPullParser parser)
+                    throws XmlPullParserException, IOException, ParseException {
         addExtensionElement(collection, parser, parser.getName(), parser.getNamespace());
     }
 
-    public static void addExtensionElement(Collection<ExtensionElement> collection,
-                    XmlPullParser parser, String elementName, String namespace)
-                    throws Exception {
+    public static void addExtensionElement(Collection<ExtensionElement> collection, XmlPullParser parser,
+                    String elementName, String namespace) throws XmlPullParserException, IOException, ParseException {
         ExtensionElement packetExtension = parseExtensionElement(elementName, namespace, parser);
         collection.add(packetExtension);
     }

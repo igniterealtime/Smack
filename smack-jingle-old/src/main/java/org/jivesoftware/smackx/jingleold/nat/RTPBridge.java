@@ -25,7 +25,6 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaCollector;
@@ -330,7 +329,7 @@ public class RTPBridge extends IQ {
 
         @Override
         public RTPBridge parse(XmlPullParser parser, int initialDepth)
-                        throws SmackException, XmlPullParserException,
+                        throws XmlPullParserException,
                         IOException {
 
             boolean done = false;
@@ -339,7 +338,8 @@ public class RTPBridge extends IQ {
             String elementName;
 
             if (!parser.getNamespace().equals(RTPBridge.NAMESPACE))
-                throw new SmackException("Not a RTP Bridge packet");
+                // TODO: Should be SmackParseException.
+                throw new IOException("Not a RTP Bridge packet");
 
             RTPBridge iq = new RTPBridge();
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus.
+ * Copyright 2017-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,15 @@
  */
 package org.jivesoftware.smackx.ox.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.ox.element.SignElement;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * {@link org.jivesoftware.smack.provider.ExtensionElementProvider} implementation for the {@link SignElement}.
@@ -32,7 +35,7 @@ public class SignElementProvider extends OpenPgpContentElementProvider<SignEleme
     public static final SignElementProvider INSTANCE = new SignElementProvider();
 
     @Override
-    public SignElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public SignElement parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
         OpenPgpContentElementData data = parseOpenPgpContentElementData(parser, initialDepth);
 
         if (StringUtils.isNotEmpty(data.rpad)) {

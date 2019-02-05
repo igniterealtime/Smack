@@ -17,12 +17,16 @@
 
 package org.jivesoftware.smackx.disco.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
 * The DiscoverInfoProvider parses Service Discovery information packets.
@@ -32,8 +36,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class DiscoverInfoProvider extends IQProvider<DiscoverInfo> {
 
     @Override
-    public DiscoverInfo parse(XmlPullParser parser, int initialDepth)
-                    throws Exception {
+    public DiscoverInfo parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
         DiscoverInfo discoverInfo = new DiscoverInfo();
         boolean done = false;
         DiscoverInfo.Identity identity;

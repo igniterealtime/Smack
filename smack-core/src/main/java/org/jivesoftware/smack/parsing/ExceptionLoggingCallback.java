@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2015 Florian Schmaus.
+ * Copyright 2013-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class ExceptionLoggingCallback implements ParsingExceptionCallback {
     private static final Logger LOGGER = Logger.getLogger(ExceptionLoggingCallback.class.getName());
 
     @Override
-    public void handleUnparsableStanza(UnparseableStanza unparsed) throws Exception {
+    public void handleUnparsableStanza(UnparseableStanza unparsed) {
         LOGGER.log(Level.SEVERE, "Smack message parsing exception. Content: '" + unparsed.getContent() + "'", unparsed.getParsingException());
     }
 }

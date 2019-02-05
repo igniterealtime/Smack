@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.fsm;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,6 +60,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jxmpp.jid.parts.Resourcepart;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPConnection {
 
@@ -301,7 +303,8 @@ public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPCon
         }
     }
 
-    protected final void parseAndProcessElement(String element) throws Exception {
+    protected final void parseAndProcessElement(String element) throws XmlPullParserException, IOException,
+                    InterruptedException, StreamErrorException, SmackException, ParseException {
         XmlPullParser parser = PacketParserUtils.getParserFor(element);
 
         // Skip the enclosing stream open what is guaranteed to be there.

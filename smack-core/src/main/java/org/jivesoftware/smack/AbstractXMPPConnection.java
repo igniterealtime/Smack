@@ -33,6 +33,7 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -124,6 +125,7 @@ import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.util.XmppStringUtils;
 import org.minidns.dnsname.DnsName;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 
 /**
@@ -1161,7 +1163,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return successNonza;
     }
 
-    protected final void parseAndProcessNonza(XmlPullParser parser) throws SmackException {
+    protected final void parseAndProcessNonza(XmlPullParser parser) throws IOException, XmlPullParserException, ParseException {
         final String element = parser.getName();
         final String namespace = parser.getNamespace();
         final String key = XmppStringUtils.generateKey(element, namespace);
@@ -1181,18 +1183,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             return;
         }
 
-        Nonza nonza;
-        try {
-            nonza = nonzaProvider.parse(parser);
-        }
-        catch (Exception e) {
-            throw new SmackException(e);
-        }
+        Nonza nonza = nonzaProvider.parse(parser);
 
         nonzaCallback.onNonzaReceived(nonza);
     }
 
-    protected void parseAndProcessStanza(XmlPullParser parser) throws Exception {
+    protected void parseAndProcessStanza(XmlPullParser parser)
+                    throws XmlPullParserException, IOException, InterruptedException {
         ParserUtils.assertAtStartTag(parser);
         int parserDepth = parser.getDepth();
         Stanza stanza = null;
@@ -1566,7 +1563,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return this.fromMode;
     }
 
-    protected final void parseFeatures(XmlPullParser parser) throws Exception {
+    protected final void parseFeatures(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
         streamFeatures.clear();
         final int initialDepth = parser.getDepth();
         while (true) {

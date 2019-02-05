@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.xdata.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +46,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
     public static final DataFormProvider INSTANCE = new DataFormProvider();
 
     @Override
-    public DataForm parse(XmlPullParser parser, int initialDepth) throws
-                    Exception {
+    public DataForm parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
         DataForm.Type dataFormType = DataForm.Type.fromString(parser.getAttributeValue("", "type"));
         DataForm dataForm = new DataForm(dataFormType);
         outerloop: while (true) {

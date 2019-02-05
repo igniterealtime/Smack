@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.iqregister.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,12 +31,12 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.iqregister.packet.Registration;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class RegistrationProvider extends IQProvider<Registration> {
 
     @Override
-    public Registration parse(XmlPullParser parser, int initialDepth)
-                    throws Exception {
+    public Registration parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
         String instruction = null;
         Map<String, String> fields = new HashMap<>();
         List<ExtensionElement> packetExtensions = new LinkedList<>();

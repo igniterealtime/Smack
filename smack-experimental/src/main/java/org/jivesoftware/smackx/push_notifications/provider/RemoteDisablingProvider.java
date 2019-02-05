@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.push_notifications.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.push_notifications.element.PushNotificationsElements.RemoteDisablingExtension;
@@ -23,6 +25,7 @@ import org.jivesoftware.smackx.push_notifications.element.PushNotificationsEleme
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Push Notifications Remote Disabling Provider class.
@@ -34,7 +37,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class RemoteDisablingProvider extends ExtensionElementProvider<RemoteDisablingExtension> {
 
     @Override
-    public RemoteDisablingExtension parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public RemoteDisablingExtension parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         Jid userJid = null;
         String node = parser.getAttributeValue("", "node");
 

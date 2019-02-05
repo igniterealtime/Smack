@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TimeZone;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 
@@ -136,7 +135,7 @@ public class OccupantsInfo extends IQ {
     public static class Provider extends IQProvider<OccupantsInfo> {
 
         @Override
-        public OccupantsInfo parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
+        public OccupantsInfo parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
             OccupantsInfo occupantsInfo = new OccupantsInfo(parser.getAttributeValue("", "roomID"));
 
             boolean done = false;
@@ -153,7 +152,7 @@ public class OccupantsInfo extends IQ {
             return occupantsInfo;
         }
 
-        private OccupantInfo parseOccupantInfo(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
+        private OccupantInfo parseOccupantInfo(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
 
             boolean done = false;
             String jid = null;
@@ -168,13 +167,9 @@ public class OccupantsInfo extends IQ {
                     nickname = parser.nextText();
                 } else if (eventType == XmlPullParser.START_TAG &&
                         "joined".equals(parser.getName())) {
-                    try {
                         synchronized (UTC_FORMAT) {
                             joined = UTC_FORMAT.parse(parser.nextText());
                         }
-                    } catch (ParseException e) {
-                        throw new SmackException(e);
-                    }
                 } else if (eventType == XmlPullParser.END_TAG &&
                         "occupant".equals(parser.getName())) {
                     done = true;

@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.search;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -31,6 +34,7 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.DomainBareJid;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Implements the protocol currently used to search information repositories on the Jabber network. To date, the jabber:iq:search protocol
@@ -125,7 +129,7 @@ public class UserSearch extends SimpleIQ {
 
         // FIXME this provider does return two different types of IQs
         @Override
-        public IQ parse(XmlPullParser parser, int initialDepth) throws Exception {
+        public IQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
             UserSearch search = null;
             SimpleUserSearch simpleUserSearch = new SimpleUserSearch();
 
@@ -160,8 +164,7 @@ public class UserSearch extends SimpleIQ {
     }
 
     private static void buildDataForm(SimpleUserSearch search,
-                    String instructions, XmlPullParser parser)
-                    throws Exception {
+                    String instructions, XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
         DataForm dataForm = new DataForm(DataForm.Type.form);
         boolean done = false;
         dataForm.setTitle("User Search");

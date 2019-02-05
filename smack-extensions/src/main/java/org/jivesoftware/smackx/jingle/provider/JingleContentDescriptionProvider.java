@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,20 @@
  */
 package org.jivesoftware.smackx.jingle.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public abstract class JingleContentDescriptionProvider<D extends JingleContentDescription>
                 extends ExtensionElementProvider<D> {
 
     @Override
-    public abstract D parse(XmlPullParser parser, int initialDepth) throws Exception;
+    public abstract D parse(XmlPullParser parser, int initialDepth)  throws XmlPullParserException, IOException, ParseException;
 
 }

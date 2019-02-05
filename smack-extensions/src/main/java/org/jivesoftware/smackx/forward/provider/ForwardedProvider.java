@@ -16,9 +16,10 @@
  */
 package org.jivesoftware.smackx.forward.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -29,6 +30,7 @@ import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * This class implements the {@link ExtensionElementProvider} to parse
@@ -43,7 +45,7 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded> {
     private static final Logger LOGGER = Logger.getLogger(ForwardedProvider.class.getName());
 
     @Override
-    public Forwarded parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public Forwarded parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
         DelayInformation di = null;
         Stanza packet = null;
 
@@ -77,8 +79,10 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded> {
             }
         }
 
-        if (packet == null)
-            throw new SmackException("forwarded extension must contain a packet");
+        if (packet == null) {
+            // TODO: Should be SmackParseException.
+            throw new IOException("forwarded extension must contain a packet");
+        }
         return new Forwarded(di, packet);
     }
 }

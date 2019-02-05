@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
@@ -33,7 +32,7 @@ public abstract class AbstractDelayInformationProvider extends ExtensionElementP
     @Override
     public final DelayInformation parse(XmlPullParser parser,
                     int initialDepth) throws XmlPullParserException,
-                    IOException, SmackException {
+                    IOException, ParseException {
         String stampString = (parser.getAttributeValue("", "stamp"));
         String from = parser.getAttributeValue("", "from");
         String reason = null;
@@ -48,17 +47,14 @@ public abstract class AbstractDelayInformationProvider extends ExtensionElementP
                 reason = "";
                 break;
             default:
-                throw new IllegalStateException("Unexpected event: " + event);
+                // TODO: Should be SmackParseException.
+                throw new IOException("Unexpected event: " + event);
             }
         } else {
             parser.next();
         }
-        Date stamp;
-        try {
-            stamp = parseDate(stampString);
-        } catch (ParseException e) {
-            throw new SmackException(e);
-        }
+
+        Date stamp = parseDate(stampString);
         return new DelayInformation(stamp, from, reason);
     }
 

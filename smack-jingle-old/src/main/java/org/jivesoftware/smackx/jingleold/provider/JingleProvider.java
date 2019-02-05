@@ -17,7 +17,9 @@
 
 package org.jivesoftware.smackx.jingleold.provider;
 
-import org.jivesoftware.smack.SmackException;
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -31,6 +33,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
 
 import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The JingleProvider parses Jingle packets.
@@ -41,11 +44,12 @@ public class JingleProvider extends IQProvider<Jingle> {
 
     /**
      * Parse a iq/jingle element.
-     * @throws Exception
+     * @throws ParseException
+     * @throws XmlPullParserException
+     * @throws IOException
      */
     @Override
-    public Jingle parse(XmlPullParser parser, int intialDepth)
-                    throws Exception {
+    public Jingle parse(XmlPullParser parser, int intialDepth) throws IOException, XmlPullParserException, ParseException {
 
         Jingle jingle = new Jingle();
         String sid = "";
@@ -103,12 +107,14 @@ public class JingleProvider extends IQProvider<Jingle> {
                     } else if (namespace.equals(JingleTransport.Ice.NAMESPACE)) {
                         currentContent.addJingleTransport(jtpIce.parse(parser));
                     } else {
-                        throw new SmackException("Unknown transport namespace \"" + namespace + "\" in Jingle packet.");
+                        // TODO: Should be SmackParseException.
+                        throw new IOException("Unknown transport namespace \"" + namespace + "\" in Jingle packet.");
                     }
                 } else if (namespace.equals(JingleContentInfo.Audio.NAMESPACE)) {
                     jingle.setContentInfo((JingleContentInfo) jmipAudio.parse(parser));
                 } else {
-                    throw new SmackException("Unknown combination of namespace \"" + namespace + "\" and element name \""
+                    // TODO: Should be SmackParseException.
+                    throw new IOException("Unknown combination of namespace \"" + namespace + "\" and element name \""
                             + elementName + "\" in Jingle packet.");
                 }
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Paul Schaub.
+ * Copyright 2018-2019 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,9 @@ package org.jivesoftware.smackx.ox.provider;
 
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.ParseException;
 import java.util.Date;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -26,6 +28,7 @@ import org.jivesoftware.smackx.ox.element.PubkeyElement;
 
 import org.jxmpp.util.XmppDateTime;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * {@link ExtensionElementProvider} implementation for the {@link PubkeyElement}.
@@ -35,7 +38,7 @@ public class PubkeyElementProvider extends ExtensionElementProvider<PubkeyElemen
     public static final PubkeyElementProvider TEST_INSTANCE = new PubkeyElementProvider();
 
     @Override
-    public PubkeyElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public PubkeyElement parse(XmlPullParser parser, int initialDepth) throws ParseException, XmlPullParserException, IOException {
         String dateString = parser.getAttributeValue(null, PubkeyElement.ATTR_DATE);
         Date date = dateString != null ? XmppDateTime.parseXEP0082Date(dateString) : null;
         while (true) {

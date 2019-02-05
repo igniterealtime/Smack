@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class IoTSetResponseProvider extends IQProvider<IoTSetResponse> {
 
     @Override
-    public IoTSetResponse parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public IoTSetResponse parse(XmlPullParser parser, int initialDepth) {
         return new IoTSetResponse();
     }
 

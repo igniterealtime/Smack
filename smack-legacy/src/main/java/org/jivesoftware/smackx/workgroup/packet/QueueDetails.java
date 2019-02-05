@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
@@ -146,7 +145,7 @@ public final class QueueDetails implements ExtensionElement {
         @Override
         public QueueDetails parse(XmlPullParser parser,
                         int initialDepth) throws XmlPullParserException,
-                        IOException, SmackException {
+                        IOException, ParseException {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             QueueDetails queueDetails = new QueueDetails();
@@ -177,19 +176,10 @@ public final class QueueDetails implements ExtensionElement {
                             time = Integer.parseInt(parser.nextText());
                         }
                         else if ("join-time".equals(parser.getName())) {
-                            try {
                                 joinTime = dateFormat.parse(parser.nextText());
-                            } catch (ParseException e) {
-                                throw new SmackException(e);
-                            }
                         }
                         else if (parser.getName().equals("waitTime")) {
-                            Date wait;
-                            try {
-                                wait = dateFormat.parse(parser.nextText());
-                            } catch (ParseException e) {
-                                throw new SmackException(e);
-                            }
+                            Date wait = dateFormat.parse(parser.nextText());
                             LOGGER.fine(wait.toString());
                         }
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,13 @@ import org.jivesoftware.smackx.iot.provisioning.element.IoTIsFriendResponse;
 
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
+import org.jxmpp.stringprep.XmppStringprepException;
 import org.xmlpull.v1.XmlPullParser;
 
 public class IoTIsFriendResponseProvider extends IQProvider<IoTIsFriendResponse> {
 
     @Override
-    public IoTIsFriendResponse parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public IoTIsFriendResponse parse(XmlPullParser parser, int initialDepth) throws XmppStringprepException {
         Jid jid = ParserUtils.getJidAttribute(parser);
         BareJid bareJid = jid.asBareJid();
         boolean result = ParserUtils.getBooleanAttribute(parser, "result");

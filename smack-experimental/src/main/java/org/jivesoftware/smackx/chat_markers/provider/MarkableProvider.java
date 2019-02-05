@@ -33,7 +33,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class MarkableProvider extends ExtensionElementProvider<MarkableExtension> {
 
     @Override
-    public MarkableExtension parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public MarkableExtension parse(XmlPullParser parser, int initialDepth) {
         return MarkableExtension.INSTANCE;
     }
 

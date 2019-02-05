@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.pubsub.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -28,6 +31,7 @@ import org.jivesoftware.smackx.pubsub.SimplePayload;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parses an <b>item</b> element as is defined in both the {@link PubSubNamespace#basic} and
@@ -40,7 +44,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class ItemProvider extends ExtensionElementProvider<Item>  {
     @Override
     public Item parse(XmlPullParser parser, int initialDepth)
-                    throws Exception {
+                    throws XmlPullParserException, IOException, ParseException {
         String id = parser.getAttributeValue(null, "id");
         String node = parser.getAttributeValue(null, "node");
         String xmlns = parser.getNamespace();

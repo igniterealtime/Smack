@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2015 Florian Schmaus.
+ * Copyright 2013-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smack.parsing;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.UnparseableStanza;
 
@@ -30,7 +32,7 @@ import org.jivesoftware.smack.UnparseableStanza;
 public class ExceptionThrowingCallback implements ParsingExceptionCallback {
 
     @Override
-    public void handleUnparsableStanza(UnparseableStanza packetData) throws Exception {
-        throw packetData.getParsingException();
+    public void handleUnparsableStanza(UnparseableStanza packetData) throws IOException {
+        throw new IOException(packetData.getParsingException());
     }
 }

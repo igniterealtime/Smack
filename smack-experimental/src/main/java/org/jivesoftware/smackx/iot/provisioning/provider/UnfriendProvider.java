@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,13 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.iot.provisioning.element.Unfriend;
 
 import org.jxmpp.jid.BareJid;
+import org.jxmpp.stringprep.XmppStringprepException;
 import org.xmlpull.v1.XmlPullParser;
 
 public class UnfriendProvider extends ExtensionElementProvider<Unfriend> {
 
     @Override
-    public Unfriend parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public Unfriend parse(XmlPullParser parser, int initialDepth) throws XmppStringprepException {
         BareJid jid = ParserUtils.getBareJidAttribute(parser);
         return new Unfriend(jid);
     }

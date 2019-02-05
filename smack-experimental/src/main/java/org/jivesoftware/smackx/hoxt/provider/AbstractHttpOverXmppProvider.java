@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.hoxt.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -55,9 +56,11 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
      *
      * @param parser parser
      * @return HeadersExtension or null if no headers
-     * @throws Exception
+     * @throws ParseException
+     * @throws XmlPullParserException
+     * @throws IOException
      */
-    protected HeadersExtension parseHeaders(XmlPullParser parser) throws Exception {
+    protected HeadersExtension parseHeaders(XmlPullParser parser) throws IOException, XmlPullParserException, ParseException {
         HeadersExtension headersExtension = null;
         /* We are either at start of headers, start of data or end of req/res */
         if (parser.next() == XmlPullParser.START_TAG && parser.getName().equals(HeadersExtension.ELEMENT)) {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public final class TlsProceedProvider extends NonzaProvider<TlsFailure> {
     }
 
     @Override
-    public TlsFailure parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public TlsFailure parse(XmlPullParser parser, int initialDepth) {
         return TlsFailure.INSTANCE;
     }
 

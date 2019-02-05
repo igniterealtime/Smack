@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.muclight.provider;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -23,6 +24,7 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.ConfigurationsChangeExtension;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * MUC Light configurations change provider class.
@@ -33,7 +35,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class MUCLightConfigurationsChangeProvider extends ExtensionElementProvider<ConfigurationsChangeExtension> {
 
     @Override
-    public ConfigurationsChangeExtension parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public ConfigurationsChangeExtension parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         String prevVersion = null;
         String version = null;
         String roomName = null;

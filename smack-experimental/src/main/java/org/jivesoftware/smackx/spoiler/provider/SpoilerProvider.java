@@ -19,18 +19,21 @@ package org.jivesoftware.smackx.spoiler.provider;
 import static org.xmlpull.v1.XmlPullParser.END_TAG;
 import static org.xmlpull.v1.XmlPullParser.TEXT;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.spoiler.element.SpoilerElement;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class SpoilerProvider extends ExtensionElementProvider<SpoilerElement> {
 
     public static SpoilerProvider INSTANCE = new SpoilerProvider();
 
     @Override
-    public SpoilerElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public SpoilerElement parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         String lang = ParserUtils.getXmlLang(parser);
         String hint = null;
 

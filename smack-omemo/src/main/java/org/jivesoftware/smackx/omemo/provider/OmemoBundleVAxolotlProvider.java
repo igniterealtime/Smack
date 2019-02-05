@@ -27,6 +27,7 @@ import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.SIGNED_PR
 import static org.xmlpull.v1.XmlPullParser.END_TAG;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -34,6 +35,7 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VAxolotl;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Smack ExtensionProvider that parses OMEMO bundle element into OmemoBundleElement objects.
@@ -42,7 +44,7 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoBundleElement_VAxolotl> {
     @Override
-    public OmemoBundleElement_VAxolotl parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public OmemoBundleElement_VAxolotl parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         boolean stop = false;
         boolean inPreKeys = false;
 

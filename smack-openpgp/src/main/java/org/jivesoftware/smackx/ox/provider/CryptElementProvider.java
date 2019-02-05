@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus.
+ * Copyright 2017-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,13 @@
  */
 package org.jivesoftware.smackx.ox.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.jivesoftware.smackx.ox.element.CryptElement;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * {@link org.jivesoftware.smack.provider.ExtensionElementProvider} implementation for the {@link CryptElement}.
@@ -28,8 +32,7 @@ public class CryptElementProvider extends OpenPgpContentElementProvider<CryptEle
     public static final CryptElementProvider INSTANCE = new CryptElementProvider();
 
     @Override
-    public CryptElement parse(XmlPullParser parser, int initialDepth)
-            throws Exception {
+    public CryptElement parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
         OpenPgpContentElementData data = parseOpenPgpContentElementData(parser, initialDepth);
 
         return new CryptElement(data.to, data.rpad, data.timestamp, data.payload);

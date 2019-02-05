@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.compress.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.compress.packet.Failure;
@@ -25,6 +27,7 @@ import org.jivesoftware.smack.provider.NonzaProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public final class FailureProvider extends NonzaProvider<Failure> {
 
@@ -36,7 +39,7 @@ public final class FailureProvider extends NonzaProvider<Failure> {
     }
 
     @Override
-    public Failure parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public Failure parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
         Failure.CompressFailureError compressFailureError = null;
         StanzaError stanzaError = null;
 

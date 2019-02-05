@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,13 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.iot.provisioning.element.IoTIsFriend;
 
 import org.jxmpp.jid.Jid;
+import org.jxmpp.stringprep.XmppStringprepException;
 import org.xmlpull.v1.XmlPullParser;
 
 public class IoTIsFriendProvider extends IQProvider<IoTIsFriend> {
 
     @Override
-    public IoTIsFriend parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public IoTIsFriend parse(XmlPullParser parser, int initialDepth) throws XmppStringprepException {
         Jid jid = ParserUtils.getJidAttribute(parser);
         return new IoTIsFriend(jid);
     }

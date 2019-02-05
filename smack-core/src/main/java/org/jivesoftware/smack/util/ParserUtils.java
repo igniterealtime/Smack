@@ -26,8 +26,6 @@ import java.util.Locale;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.SmackException;
-
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.EntityJid;
@@ -176,10 +174,12 @@ public class ParserUtils {
         }
     }
 
-    public static int getIntegerAttributeOrThrow(XmlPullParser parser, String name, String throwMessage) throws SmackException {
+    public static int getIntegerAttributeOrThrow(XmlPullParser parser, String name, String throwMessage)
+                    throws IOException {
         Integer res = getIntegerAttribute(parser, name);
         if (res == null) {
-            throw new SmackException(throwMessage);
+            // TODO Should be SmackParseException.
+            throw new IOException(throwMessage);
         }
         return res;
     }
@@ -266,9 +266,15 @@ public class ParserUtils {
         return XmppDateTime.parseDate(dateString);
     }
 
-    public static URI getUriFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException, URISyntaxException  {
+    public static URI getUriFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException  {
         String uriString = parser.nextText();
-        return new URI(uriString);
+        try {
+            return new URI(uriString);
+        }
+        catch (URISyntaxException e) {
+            // TODO: Should be SmackParseException (or subclass of).
+            throw new IOException(e);
+        }
     }
 
     public static String getRequiredAttribute(XmlPullParser parser, String name) throws IOException {

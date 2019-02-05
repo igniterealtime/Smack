@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.ox.provider;
 import static org.xmlpull.v1.XmlPullParser.END_TAG;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -27,13 +29,14 @@ import org.jivesoftware.smackx.ox.element.PublicKeysListElement;
 import org.jxmpp.util.XmppDateTime;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public final class PublicKeysListElementProvider extends ExtensionElementProvider<PublicKeysListElement> {
 
     public static final PublicKeysListElementProvider TEST_INSTANCE = new PublicKeysListElementProvider();
 
     @Override
-    public PublicKeysListElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public PublicKeysListElement parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
 
         PublicKeysListElement.Builder builder = PublicKeysListElement.builder();
 

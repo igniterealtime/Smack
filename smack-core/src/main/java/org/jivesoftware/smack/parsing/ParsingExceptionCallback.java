@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2015 Florian Schmaus.
+ * Copyright 2013-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.jivesoftware.smack.parsing;
+
+import java.io.IOException;
 
 import org.jivesoftware.smack.UnparseableStanza;
 
@@ -37,8 +39,8 @@ public interface ParsingExceptionCallback {
      * Called when parsing a stanza caused an exception.
      *
      * @param stanzaData the raw stanza data that caused the exception
-     * @throws Exception
+     * @throws IOException
      */
-    void handleUnparsableStanza(UnparseableStanza stanzaData) throws Exception;
+    void handleUnparsableStanza(UnparseableStanza stanzaData) throws IOException;
 
 }

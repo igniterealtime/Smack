@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,7 @@ import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
 
 import org.jxmpp.jid.Jid;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * An IQProvider for agent offer requests.
@@ -48,7 +51,7 @@ public class OfferRequestProvider extends IQProvider<IQ> {
     // happen anytime soon.
 
     @Override
-    public OfferRequestPacket parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public OfferRequestPacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
         int eventType = parser.getEventType();
         String sessionID = null;
         int timeout = -1;

@@ -42,7 +42,7 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
     private static final Logger LOGGER = Logger.getLogger(IoTFieldsExtensionProvider.class.getName());
 
     @Override
-    public IoTFieldsExtension parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public IoTFieldsExtension parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException, ParseException {
         int seqNr = ParserUtils.getIntegerAttributeOrThrow(parser, "seqnr", "IoT data request <accepted/> without sequence number");
         boolean done = ParserUtils.getBooleanAttribute(parser, "done", false);
         List<NodeElement> nodes = new ArrayList<>();

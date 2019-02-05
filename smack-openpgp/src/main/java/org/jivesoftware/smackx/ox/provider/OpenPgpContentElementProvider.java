@@ -20,6 +20,7 @@ import static org.xmlpull.v1.XmlPullParser.END_TAG;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -78,10 +79,10 @@ public abstract class OpenPgpContentElementProvider<O extends OpenPgpContentElem
     }
 
     @Override
-    public abstract O parse(XmlPullParser parser, int initialDepth) throws Exception;
+    public abstract O parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException;
 
     protected static OpenPgpContentElementData parseOpenPgpContentElementData(XmlPullParser parser, int initialDepth)
-            throws Exception {
+            throws XmlPullParserException, IOException, ParseException {
         Set<Jid> to = new HashSet<>();
         Date timestamp = null;
         String rpad = null;
