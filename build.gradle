@@ -187,8 +187,8 @@ allprojects {
 
 	jacocoTestReport {
 		dependsOn test
-		sourceDirectories = project.files(sourceSets.main.allSource.srcDirs)
-		classDirectories =  project.files(sourceSets.main.output)
+		getSourceDirectories().setFrom(project.files(sourceSets.main.allSource.srcDirs))
+		getClassDirectories().setFrom(project.files(sourceSets.main.output))
 		reports {
 			xml.enabled true
 		}
@@ -578,9 +578,9 @@ coveralls {
 
 task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
 	dependsOn = projectsWithUnitTests.jacocoTestReport
-	sourceDirectories = files(projectsWithUnitTests.sourceSets.main.allSource.srcDirs)
-	classDirectories = files(projectsWithUnitTests.sourceSets.main.output)
-	executionData = files(projectsWithUnitTests.jacocoTestReport.executionData)
+	getSourceDirectories().setFrom(files(projectsWithUnitTests.sourceSets.main.allSource.srcDirs))
+	getClassDirectories().setFrom(files(projectsWithUnitTests.sourceSets.main.output))
+	getExecutionData().setFrom(files(projectsWithUnitTests.jacocoTestReport.executionData))
 	reports {
 		xml.enabled true
 		xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
