@@ -51,6 +51,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -165,6 +166,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private boolean disconnectedButResumeable = false;
 
     private SSLSocket secureSocket;
+
+    private final Semaphore readerWriterSemaphore = new Semaphore(2);
 
     /**
      * Protected access level because of unit test purposes
@@ -635,8 +638,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws XMPPException if establishing a connection to the server fails.
      * @throws SmackException if the server fails to respond back or if there is anther error.
      * @throws IOException
+     * @throws InterruptedException
      */
-    private void initConnection() throws IOException {
+    private void initConnection() throws IOException, InterruptedException {
         boolean isFirstInitialization = packetReader == null || packetWriter == null;
         compressionHandler = null;
 
@@ -647,6 +651,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             packetWriter = new PacketWriter();
             packetReader = new PacketReader();
         }
+
+        readerWriterSemaphore.acquire(2);
         // Start the writer thread. This will open an XMPP stream to the server
         packetWriter.init();
         // Start the reader thread. The startup() method will block until we
@@ -1014,7 +1020,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             Async.go(new Runnable() {
                 @Override
                 public void run() {
-                    parsePackets();
+                    try {
+                        parsePackets();
+                    } finally {
+                        XMPPTCPConnection.this.readerWriterSemaphore.release();
+                    }
                 }
             }, "Smack Reader (" + getConnectionCounter() + ")");
          }
@@ -1310,7 +1320,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             Async.go(new Runnable() {
                 @Override
                 public void run() {
-                    writePackets();
+                    try {
+                        writePackets();
+                    } finally {
+                        XMPPTCPConnection.this.readerWriterSemaphore.release();
+                    }
                 }
             }, "Smack Writer (" + getConnectionCounter() + ")");
         }
