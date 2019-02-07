@@ -84,6 +84,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
+import org.jivesoftware.smack.SmackException.SmackWrappedException;
 import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SynchronizationPoint;
@@ -936,6 +937,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // Listeners were already notified of the exception, return right here.
         if ((packetReader == null || packetReader.done) &&
                 (packetWriter == null || packetWriter.done())) return;
+
+        SmackWrappedException smackWrappedException = new SmackWrappedException(e);
+        tlsHandled.reportGenericFailure(smackWrappedException);
+        saslFeatureReceived.reportGenericFailure(smackWrappedException);
+        maybeCompressFeaturesReceived.reportGenericFailure(smackWrappedException);
+        lastFeaturesReceived.reportGenericFailure(smackWrappedException);
 
         // Closes the connection temporary. A reconnection is possible
         // Note that a connection listener of XMPPTCPConnection will drop the SM state in

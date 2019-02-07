@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2015 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.concurrent.locks.Lock;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.SmackWrappedException;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
@@ -37,6 +38,7 @@ public class SynchronizationPoint<E extends Exception> {
     // same memory synchronization effects as synchronization block enter and leave.
     private State state;
     private E failureException;
+    private SmackWrappedException smackWrappedExcpetion;
 
     /**
      * Construct a new synchronization point for the given connection.
@@ -59,6 +61,7 @@ public class SynchronizationPoint<E extends Exception> {
         connectionLock.lock();
         state = State.Initial;
         failureException = null;
+        smackWrappedExcpetion = null;
         connectionLock.unlock();
     }
 
@@ -71,7 +74,7 @@ public class SynchronizationPoint<E extends Exception> {
      * @throws InterruptedException if the connection is interrupted.
      * @return <code>null</code> if synchronization point was successful, or the failure Exception.
      */
-    public E sendAndWaitForResponse(TopLevelStreamElement request) throws NoResponseException,
+    public Exception sendAndWaitForResponse(TopLevelStreamElement request) throws NoResponseException,
                     NotConnectedException, InterruptedException {
         assert (state == State.Initial);
         connectionLock.lock();
@@ -103,15 +106,14 @@ public class SynchronizationPoint<E extends Exception> {
      * @throws NoResponseException if no response was received.
      * @throws NotConnectedException if the connection is not connected.
      * @throws InterruptedException if the connection is interrupted.
+     * @throws SmackWrappedException in case of a wrapped exception;
      */
     public void sendAndWaitForResponseOrThrow(Nonza request) throws E, NoResponseException,
-                    NotConnectedException, InterruptedException {
+                    NotConnectedException, InterruptedException, SmackWrappedException {
         sendAndWaitForResponse(request);
         switch (state) {
         case Failure:
-            if (failureException != null) {
-                throw failureException;
-            }
+            throwException();
             break;
         default:
             // Success, do nothing
@@ -123,11 +125,12 @@ public class SynchronizationPoint<E extends Exception> {
      * @throws NoResponseException if there was no response marking the synchronization point as success or failed.
      * @throws E if there was a failure
      * @throws InterruptedException if the connection is interrupted.
+     * @throws SmackWrappedException in case of a wrapped exception;
      */
-    public void checkIfSuccessOrWaitOrThrow() throws NoResponseException, E, InterruptedException {
+    public void checkIfSuccessOrWaitOrThrow() throws NoResponseException, E, InterruptedException, SmackWrappedException {
         checkIfSuccessOrWait();
         if (state == State.Failure) {
-            throw failureException;
+            throwException();
         }
     }
 
@@ -137,7 +140,7 @@ public class SynchronizationPoint<E extends Exception> {
      * @throws InterruptedException
      * @return <code>null</code> if synchronization point was successful, or the failure Exception.
      */
-    public E checkIfSuccessOrWait() throws NoResponseException, InterruptedException {
+    public Exception checkIfSuccessOrWait() throws NoResponseException, InterruptedException {
         connectionLock.lock();
         try {
             switch (state) {
@@ -145,7 +148,7 @@ public class SynchronizationPoint<E extends Exception> {
             case Success:
                 return null;
             case Failure:
-                return failureException;
+                return getException();
             default:
                 // Do nothing
                 break;
@@ -191,6 +194,24 @@ public class SynchronizationPoint<E extends Exception> {
         try {
             state = State.Failure;
             this.failureException = failureException;
+            condition.signalAll();
+        }
+        finally {
+            connectionLock.unlock();
+        }
+    }
+
+    /**
+     * Report this synchronization point as failed because of the given exception. The {@code failureException} must be set.
+     *
+     * @param exception the exception causing this synchronization point to fail.
+     */
+    public void reportGenericFailure(SmackWrappedException exception) {
+        assert exception != null;
+        connectionLock.lock();
+        try {
+            state = State.Failure;
+            this.smackWrappedExcpetion = exception;
             condition.signalAll();
         }
         finally {
@@ -256,6 +277,20 @@ public class SynchronizationPoint<E extends Exception> {
         }
     }
 
+    private Exception getException() {
+        if (failureException != null) {
+            return failureException;
+        }
+        return smackWrappedExcpetion;
+    }
+
+    private void throwException() throws E, SmackWrappedException {
+        if (failureException != null) {
+            throw failureException;
+        }
+        throw smackWrappedExcpetion;
+    }
+
     /**
      * Check for a response and throw a {@link NoResponseException} if there was none.
      * <p>
@@ -264,7 +299,7 @@ public class SynchronizationPoint<E extends Exception> {
      * @return <code>true</code> if synchronization point was successful, <code>false</code> on failure.
      * @throws NoResponseException
      */
-    private E checkForResponse() throws NoResponseException {
+    private Exception checkForResponse() throws NoResponseException {
         switch (state) {
         case Initial:
         case NoResponse:
@@ -273,7 +308,7 @@ public class SynchronizationPoint<E extends Exception> {
         case Success:
             return null;
         case Failure:
-            return failureException;
+            return getException();
         default:
             throw new AssertionError("Unknown state " + state);
         }

@@ -334,4 +334,16 @@ public class SmackException extends Exception {
             super("Resource binding was not offered by server");
         }
     }
+
+    public static class SmackWrappedException extends SmackException {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        public SmackWrappedException(Exception exception) {
+            super(exception);
+        }
+    }
 }

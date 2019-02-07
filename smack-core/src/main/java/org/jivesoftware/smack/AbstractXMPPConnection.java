@@ -235,7 +235,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * stanza is send by the server. This is set to true once the last feature stanza has been
      * parsed.
      */
-    protected final SynchronizationPoint<Exception> lastFeaturesReceived = new SynchronizationPoint<Exception>(
+    protected final SynchronizationPoint<SmackException> lastFeaturesReceived = new SynchronizationPoint<>(
                     AbstractXMPPConnection.this, "last stream features received from server");
 
     /**
@@ -550,7 +550,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // - the servers last features stanza has been parsed
         // - the timeout occurs
         LOGGER.finer("Waiting for last features to be received before continuing with resource binding");
-        lastFeaturesReceived.checkIfSuccessOrWait();
+        lastFeaturesReceived.checkIfSuccessOrWaitOrThrow();
 
 
         if (!hasFeature(Bind.ELEMENT, Bind.NAMESPACE)) {
