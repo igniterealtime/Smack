@@ -652,6 +652,14 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             packetReader = new PacketReader();
         }
 
+        int availableReaderWriterSemaphorePermits = readerWriterSemaphore.availablePermits();
+        if (availableReaderWriterSemaphorePermits < 2) {
+            Object[] logObjects = new Object[] {
+                            this,
+                            availableReaderWriterSemaphorePermits,
+            };
+            LOGGER.log(Level.FINE, "Not every reader/writer threads where terminated on connection re-initializtion of {0}. Available permits {1}", logObjects);
+        }
         readerWriterSemaphore.acquire(2);
         // Start the writer thread. This will open an XMPP stream to the server
         packetWriter.init();
