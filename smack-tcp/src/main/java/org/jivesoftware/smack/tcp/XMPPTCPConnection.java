@@ -44,6 +44,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -148,15 +149,17 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     private SSLSocket secureSocket;
 
-    /**
-     * Protected access level because of unit test purposes
-     */
-    protected PacketWriter packetWriter;
+    private final Semaphore readerWriterSemaphore = new Semaphore(2);
 
     /**
      * Protected access level because of unit test purposes
      */
-    protected PacketReader packetReader;
+    protected final PacketWriter packetWriter = new PacketWriter();
+
+    /**
+     * Protected access level because of unit test purposes
+     */
+    protected final PacketReader packetReader = new PacketReader();
 
     private final SynchronizationPoint<Exception> initialOpenStreamSend = new SynchronizationPoint<>(
                     this, "initial open stream element send to server");
@@ -464,20 +467,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // First shutdown the writer, this will result in a closing stream element getting send to
         // the server
-        if (packetWriter != null) {
-            LOGGER.finer("PacketWriter shutdown()");
-            packetWriter.shutdown(instant);
-        }
+        LOGGER.finer("PacketWriter shutdown()");
+        packetWriter.shutdown(instant);
         LOGGER.finer("PacketWriter has been shut down");
 
         if (!instant) {
             waitForClosingStreamTagFromServer();
         }
 
-        if (packetReader != null) {
-            LOGGER.finer("PacketReader shutdown()");
-                packetReader.shutdown();
-        }
+        LOGGER.finer("PacketReader shutdown()");
+        packetReader.shutdown();
         LOGGER.finer("PacketReader has been shut down");
 
         CloseableUtil.maybeClose(socket, LOGGER);
@@ -599,18 +598,23 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws XMPPException if establishing a connection to the server fails.
      * @throws SmackException if the server fails to respond back or if there is anther error.
      * @throws IOException
+     * @throws InterruptedException
      */
-    private void initConnection() throws IOException {
-        boolean isFirstInitialization = packetReader == null || packetWriter == null;
+    private void initConnection() throws IOException, InterruptedException {
         compressionHandler = null;
 
         // Set the reader and writer instance variables
         initReaderAndWriter();
 
-        if (isFirstInitialization) {
-            packetWriter = new PacketWriter();
-            packetReader = new PacketReader();
+        int availableReaderWriterSemaphorePermits = readerWriterSemaphore.availablePermits();
+        if (availableReaderWriterSemaphorePermits < 2) {
+            Object[] logObjects = new Object[] {
+                            this,
+                            availableReaderWriterSemaphorePermits,
+            };
+            LOGGER.log(Level.FINE, "Not every reader/writer threads where terminated on connection re-initializtion of {0}. Available permits {1}", logObjects);
         }
+        readerWriterSemaphore.acquire(2);
         // Start the writer thread. This will open an XMPP stream to the server
         packetWriter.init();
         // Start the reader thread. The startup() method will block until we
@@ -841,7 +845,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             Async.go(new Runnable() {
                 @Override
                 public void run() {
-                    parsePackets();
+                    try {
+                        parsePackets();
+                    } finally {
+                        XMPPTCPConnection.this.readerWriterSemaphore.release();
+                    }
                 }
             }, "Smack Reader (" + getConnectionCounter() + ")");
          }
@@ -1132,7 +1140,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             Async.go(new Runnable() {
                 @Override
                 public void run() {
-                    writePackets();
+                    try {
+                        writePackets();
+                    } finally {
+                        XMPPTCPConnection.this.readerWriterSemaphore.release();
+                    }
                 }
             }, "Smack Writer (" + getConnectionCounter() + ")");
         }
@@ -1185,11 +1197,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             instantShutdown = instant;
             queue.shutdown();
             shutdownTimestamp = System.currentTimeMillis();
-            try {
-                shutdownDone.checkIfSuccessOrWait();
-            }
-            catch (NoResponseException | InterruptedException e) {
-                LOGGER.log(Level.WARNING, "shutdownDone was not marked as successful by the writer thread", e);
+            if (shutdownDone.isNotInInitialState()) {
+                try {
+                    shutdownDone.checkIfSuccessOrWait();
+                } catch (NoResponseException | InterruptedException e) {
+                    LOGGER.log(Level.WARNING, "shutdownDone was not marked as successful by the writer thread", e);
+                }
             }
         }
 

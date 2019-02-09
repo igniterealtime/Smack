@@ -76,6 +76,7 @@ import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.SmackException.ResourceBindingNotOfferedException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredException;
+import org.jivesoftware.smack.SmackException.SmackWrappedException;
 import org.jivesoftware.smack.SmackFuture.InternalSmackFuture;
 import org.jivesoftware.smack.XMPPException.FailedNonzaException;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
@@ -276,7 +277,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * stanza is send by the server. This is set to true once the last feature stanza has been
      * parsed.
      */
-    protected final SynchronizationPoint<Exception> lastFeaturesReceived = new SynchronizationPoint<Exception>(
+    protected final SynchronizationPoint<SmackException> lastFeaturesReceived = new SynchronizationPoint<>(
                     AbstractXMPPConnection.this, "last stream features received from server");
 
     /**
@@ -612,7 +613,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // - the servers last features stanza has been parsed
         // - the timeout occurs
         LOGGER.finer("Waiting for last features to be received before continuing with resource binding");
-        lastFeaturesReceived.checkIfSuccessOrWait();
+        lastFeaturesReceived.checkIfSuccessOrWaitOrThrow();
 
 
         if (!hasFeature(Bind.ELEMENT, Bind.NAMESPACE)) {
@@ -841,7 +842,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         for (StanzaCollector collector : collectors) {
             collector.notifyConnectionError(exception);
         }
-        // TODO: We should also notify things like the SASL authentication machinery about the exception.
+        SmackWrappedException smackWrappedException = new SmackWrappedException(exception);
+        tlsHandled.reportGenericFailure(smackWrappedException);
+        saslFeatureReceived.reportGenericFailure(smackWrappedException);
+        lastFeaturesReceived.reportGenericFailure(smackWrappedException);
 
         // Closes the connection temporary. A if the connection supports stream management, then a reconnection is
         // possible. Note that a connection listener of e.g. XMPPTCPConnection will drop the SM state in

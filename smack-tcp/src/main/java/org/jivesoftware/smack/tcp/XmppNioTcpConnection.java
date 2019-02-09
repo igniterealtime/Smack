@@ -62,6 +62,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
+import org.jivesoftware.smack.SmackException.SmackWrappedException;
 import org.jivesoftware.smack.SmackReactor.ChannelSelectedCallback;
 import org.jivesoftware.smack.SmackReactor.SelectionKeyAttachment;
 import org.jivesoftware.smack.SynchronizationPoint;
@@ -920,7 +921,12 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
                     failedAddresses, this);
             connectionAttemptState.establishTcpConnection();
 
-            connectionAttemptState.tcpConnectionEstablishedSyncPoint.checkIfSuccessOrWaitOrThrow();
+            try {
+                connectionAttemptState.tcpConnectionEstablishedSyncPoint.checkIfSuccessOrWaitOrThrow();
+            } catch (SmackWrappedException e) {
+                // Should never throw SmackWrappedException.
+                throw new AssertionError(e);
+            }
 
             socketChannel = connectionAttemptState.socketChannel;
             remoteAddress = (InetSocketAddress) socketChannel.socket().getRemoteSocketAddress();
