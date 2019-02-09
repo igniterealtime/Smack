@@ -173,12 +173,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     /**
      * Protected access level because of unit test purposes
      */
-    protected PacketWriter packetWriter;
+    protected final PacketWriter packetWriter = new PacketWriter();
 
     /**
      * Protected access level because of unit test purposes
      */
-    protected PacketReader packetReader;
+    protected final PacketReader packetReader = new PacketReader();
 
     private final SynchronizationPoint<Exception> initialOpenStreamSend = new SynchronizationPoint<>(
                     this, "initial open stream element send to server");
@@ -642,16 +642,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws InterruptedException
      */
     private void initConnection() throws IOException, InterruptedException {
-        boolean isFirstInitialization = packetReader == null || packetWriter == null;
         compressionHandler = null;
 
         // Set the reader and writer instance variables
         initReaderAndWriter();
-
-        if (isFirstInitialization) {
-            packetWriter = new PacketWriter();
-            packetReader = new PacketReader();
-        }
 
         int availableReaderWriterSemaphorePermits = readerWriterSemaphore.availablePermits();
         if (availableReaderWriterSemaphorePermits < 2) {
