@@ -234,6 +234,16 @@ public class SynchronizationPoint<E extends Exception> {
         }
     }
 
+    public boolean isNotInInitialState() {
+        connectionLock.lock();
+        try {
+            return state != State.Initial;
+        }
+        finally {
+            connectionLock.unlock();
+        }
+    }
+
     /**
      * Check if this synchronization point has its request already sent.
      *

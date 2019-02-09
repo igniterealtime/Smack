@@ -492,10 +492,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // First shutdown the writer, this will result in a closing stream element getting send to
         // the server
-        if (packetWriter != null) {
-            LOGGER.finer("PacketWriter shutdown()");
-            packetWriter.shutdown(instant);
-        }
+        LOGGER.finer("PacketWriter shutdown()");
+        packetWriter.shutdown(instant);
         LOGGER.finer("PacketWriter has been shut down");
 
         if (!instant) {
@@ -510,10 +508,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
         }
 
-        if (packetReader != null) {
-            LOGGER.finer("PacketReader shutdown()");
-                packetReader.shutdown();
-        }
+        LOGGER.finer("PacketReader shutdown()");
+        packetReader.shutdown();
         LOGGER.finer("PacketReader has been shut down");
 
         try {
@@ -929,8 +925,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private synchronized void notifyConnectionError(Exception e) {
         // Listeners were already notified of the exception, return right here.
-        if ((packetReader == null || packetReader.done) &&
-                (packetWriter == null || packetWriter.done())) return;
+        if (packetReader.done && packetWriter.done()) return;
 
         SmackWrappedException smackWrappedException = new SmackWrappedException(e);
         tlsHandled.reportGenericFailure(smackWrappedException);
@@ -1386,11 +1381,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             instantShutdown = instant;
             queue.shutdown();
             shutdownTimestamp = System.currentTimeMillis();
-            try {
-                shutdownDone.checkIfSuccessOrWait();
-            }
-            catch (NoResponseException | InterruptedException e) {
-                LOGGER.log(Level.WARNING, "shutdownDone was not marked as successful by the writer thread", e);
+            if (shutdownDone.isNotInInitialState()) {
+                try {
+                    shutdownDone.checkIfSuccessOrWait();
+                } catch (NoResponseException | InterruptedException e) {
+                    LOGGER.log(Level.WARNING, "shutdownDone was not marked as successful by the writer thread", e);
+                }
             }
         }
 
