@@ -18,7 +18,6 @@ package org.jivesoftware.smack.sasl.provided;
 
 import javax.security.auth.callback.CallbackHandler;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -34,13 +33,13 @@ public class SASLExternalMechanism extends SASLMechanism {
     public static final String NAME = EXTERNAL;
 
     @Override
-    protected void authenticateInternal(CallbackHandler cbh) throws SmackException {
+    protected void authenticateInternal(CallbackHandler cbh) {
         // Do nothing. Auth will be done external to Smack and which will receive the localpart
         // after the resource binding
     }
 
     @Override
-    protected byte[] getAuthenticationText() throws SmackException {
+    protected byte[] getAuthenticationText() {
         if (authorizationId != null) {
           return toBytes(authorizationId.toString());
         }
@@ -68,7 +67,7 @@ public class SASLExternalMechanism extends SASLMechanism {
     }
 
     @Override
-    public void checkIfSuccessfulOrThrow() throws SmackException {
+    public void checkIfSuccessfulOrThrow() {
         // No check performed
     }
 

@@ -18,7 +18,6 @@ package org.jivesoftware.smack.sasl.core;
 
 import javax.security.auth.callback.CallbackHandler;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 
 /**
@@ -41,13 +40,12 @@ public class SASLAnonymous extends SASLMechanism {
     }
 
     @Override
-    protected void authenticateInternal(CallbackHandler cbh)
-                    throws SmackException {
+    protected void authenticateInternal(CallbackHandler cbh) {
         // Nothing to do here
     }
 
     @Override
-    protected byte[] getAuthenticationText() throws SmackException {
+    protected byte[] getAuthenticationText() {
         // ANONYMOUS has no initial response, return null
         return null;
     }
@@ -58,7 +56,7 @@ public class SASLAnonymous extends SASLMechanism {
     }
 
     @Override
-    public void checkIfSuccessfulOrThrow() throws SmackException {
+    public void checkIfSuccessfulOrThrow() {
         // SASL Anonymous is always successful :)
     }
 

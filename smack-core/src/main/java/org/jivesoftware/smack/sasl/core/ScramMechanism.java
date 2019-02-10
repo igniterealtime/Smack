@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2017 Florian Schmaus
+ * Copyright 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.Random;
 import javax.security.auth.callback.CallbackHandler;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.SmackSaslException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.ByteUtils;
 import org.jivesoftware.smack.util.SHA1;
@@ -79,12 +80,12 @@ public abstract class ScramMechanism extends SASLMechanism {
     private byte[] serverSignature;
 
     @Override
-    protected void authenticateInternal(CallbackHandler cbh) throws SmackException {
+    protected void authenticateInternal(CallbackHandler cbh) {
         throw new UnsupportedOperationException("CallbackHandler not (yet) supported");
     }
 
     @Override
-    protected byte[] getAuthenticationText() throws SmackException {
+    protected byte[] getAuthenticationText() {
         clientRandomAscii = getRandomAscii();
         String saslPrepedAuthcId = saslPrep(authenticationId);
         clientFirstMessageBare = "n=" + escape(saslPrepedAuthcId) + ",r=" + clientRandomAscii;
@@ -100,9 +101,9 @@ public abstract class ScramMechanism extends SASLMechanism {
     }
 
     @Override
-    public void checkIfSuccessfulOrThrow() throws SmackException {
+    public void checkIfSuccessfulOrThrow() throws SmackSaslException {
         if (state != State.VALID_SERVER_RESPONSE) {
-            throw new SmackException("SCRAM-SHA1 is missing valid server response");
+            throw new SmackSaslException("SCRAM-SHA1 is missing valid server response");
         }
     }
 
@@ -112,7 +113,7 @@ public abstract class ScramMechanism extends SASLMechanism {
     }
 
     @Override
-    protected byte[] evaluateChallenge(byte[] challenge) throws SmackException {
+    protected byte[] evaluateChallenge(byte[] challenge) throws SmackSaslException {
         String challengeString;
         try {
             // TODO: Where is it specified that this is an UTF-8 encoded string?
@@ -130,33 +131,33 @@ public abstract class ScramMechanism extends SASLMechanism {
             // Handle server random ASCII (nonce)
             String rvalue = attributes.get('r');
             if (rvalue == null) {
-                throw new SmackException("Server random ASCII is null");
+                throw new SmackSaslException("Server random ASCII is null");
             }
             if (rvalue.length() <= clientRandomAscii.length()) {
-                throw new SmackException("Server random ASCII is shorter then client random ASCII");
+                throw new SmackSaslException("Server random ASCII is shorter then client random ASCII");
             }
             String receivedClientRandomAscii = rvalue.substring(0, clientRandomAscii.length());
             if (!receivedClientRandomAscii.equals(clientRandomAscii)) {
-                throw new SmackException("Received client random ASCII does not match client random ASCII");
+                throw new SmackSaslException("Received client random ASCII does not match client random ASCII");
             }
 
             // Handle iterations
             int iterations;
             String iterationsString = attributes.get('i');
             if (iterationsString == null) {
-                throw new SmackException("Iterations attribute not set");
+                throw new SmackSaslException("Iterations attribute not set");
             }
             try {
                 iterations = Integer.parseInt(iterationsString);
             }
             catch (NumberFormatException e) {
-                throw new SmackException("Exception parsing iterations", e);
+                throw new SmackSaslException("Exception parsing iterations", e);
             }
 
             // Handle salt
             String salt = attributes.get('s');
             if (salt == null) {
-                throw new SmackException("SALT not send");
+                throw new SmackSaslException("SALT not send");
             }
 
             // Parsing and error checking is done, we can now begin to calculate the values
@@ -216,12 +217,12 @@ public abstract class ScramMechanism extends SASLMechanism {
         case RESPONSE_SENT:
             String clientCalculatedServerFinalMessage = "v=" + Base64.encodeToString(serverSignature);
             if (!clientCalculatedServerFinalMessage.equals(challengeString)) {
-                throw new SmackException("Server final message does not match calculated one");
+                throw new SmackSaslException("Server final message does not match calculated one");
             }
             state = State.VALID_SERVER_RESPONSE;
             break;
         default:
-            throw new SmackException("Invalid state");
+            throw new SmackSaslException("Invalid state");
         }
         return null;
     }
@@ -238,7 +239,7 @@ public abstract class ScramMechanism extends SASLMechanism {
         return cbName + ',' + authzidPortion + ",";
     }
 
-    private byte[] getCBindInput() throws SmackException {
+    private byte[] getCBindInput() throws SmackSaslException {
         byte[] cbindData = getChannelBindingData();
         byte[] gs2Header = toBytes(getGS2Header());
 
@@ -264,13 +265,13 @@ public abstract class ScramMechanism extends SASLMechanism {
     /**
      *
      * @return the Channel Binding data.
-     * @throws SmackException
+     * @throws SmackSaslException
      */
-    protected byte[] getChannelBindingData() throws SmackException {
+    protected byte[] getChannelBindingData() throws SmackSaslException {
         return null;
     }
 
-    private static Map<Character, String> parseAttributes(String string) throws SmackException {
+    private static Map<Character, String> parseAttributes(String string) throws SmackSaslException {
         if (string.length() == 0) {
             return Collections.emptyMap();
         }
@@ -279,11 +280,11 @@ public abstract class ScramMechanism extends SASLMechanism {
         Map<Character, String> res = new HashMap<Character, String>(keyValuePairs.length, 1);
         for (String keyValuePair : keyValuePairs) {
             if (keyValuePair.length() < 3) {
-                throw new SmackException("Invalid Key-Value pair: " + keyValuePair);
+                throw new SmackSaslException("Invalid Key-Value pair: " + keyValuePair);
             }
             char key = keyValuePair.charAt(0);
             if (keyValuePair.charAt(1) != '=') {
-                throw new SmackException("Invalid Key-Value pair: " + keyValuePair);
+                throw new SmackSaslException("Invalid Key-Value pair: " + keyValuePair);
             }
             String value = keyValuePair.substring(2);
             res.put(key, value);
@@ -362,12 +363,12 @@ public abstract class ScramMechanism extends SASLMechanism {
      * @return the HMAC-SHA1 value of the input.
      * @throws SmackException
      */
-    private byte[] hmac(byte[] key, byte[] str) throws SmackException {
+    private byte[] hmac(byte[] key, byte[] str) throws SmackSaslException {
         try {
             return scramHmac.hmac(key, str);
         }
         catch (InvalidKeyException e) {
-            throw new SmackException(getName() + " Exception", e);
+            throw new SmackSaslException(getName() + " Exception", e);
         }
     }
 
@@ -382,9 +383,9 @@ public abstract class ScramMechanism extends SASLMechanism {
      * @param salt
      * @param iterations
      * @return the result of the Hi function.
-     * @throws SmackException
+     * @throws SmackSaslException if a SASL related error occurs.
      */
-    private byte[] hi(String normalizedPassword, byte[] salt, int iterations) throws SmackException {
+    private byte[] hi(String normalizedPassword, byte[] salt, int iterations) throws SmackSaslException {
         byte[] key;
         try {
             // According to RFC 5802 § 2.2, the resulting string of the normalization is also in UTF-8.

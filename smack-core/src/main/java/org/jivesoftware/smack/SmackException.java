@@ -368,4 +368,24 @@ public class SmackException extends Exception {
             super(exception);
         }
     }
+
+    public static class SmackSaslException extends SmackException {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        public SmackSaslException(Exception exception) {
+            super(exception);
+        }
+
+        public SmackSaslException(String message) {
+            super(message);
+        }
+
+        public SmackSaslException(String message, Exception exception) {
+            super(message, exception);
+        }
+    }
 }

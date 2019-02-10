@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2017 Florian Schmaus
+ * Copyright 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.security.auth.callback.CallbackHandler;
 
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.SmackSaslException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.ByteUtils;
 import org.jivesoftware.smack.util.MD5;
@@ -60,12 +60,12 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
     private String hex_hashed_a1;
 
     @Override
-    protected void authenticateInternal(CallbackHandler cbh) throws SmackException {
+    protected void authenticateInternal(CallbackHandler cbh) {
         throw new UnsupportedOperationException("CallbackHandler not (yet) supported");
     }
 
     @Override
-    protected byte[] getAuthenticationText() throws SmackException {
+    protected byte[] getAuthenticationText() {
         // DIGEST-MD5 has no initial response, return null
         return null;
     }
@@ -92,16 +92,16 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
 
 
     @Override
-    public void checkIfSuccessfulOrThrow() throws SmackException {
+    public void checkIfSuccessfulOrThrow() throws SmackSaslException {
         if (verifyServerResponse && state != State.VALID_SERVER_RESPONSE) {
-            throw new SmackException(NAME + " no valid server response");
+            throw new SmackSaslException(NAME + " no valid server response");
         }
     }
 
     @Override
-    protected byte[] evaluateChallenge(byte[] challenge) throws SmackException {
+    protected byte[] evaluateChallenge(byte[] challenge) throws SmackSaslException {
         if (challenge.length == 0) {
-            throw new SmackException("Initial challenge has zero length");
+            throw new SmackSaslException("Initial challenge has zero length");
         }
         String challengeString;
         try {
@@ -127,14 +127,14 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
                 String value = keyValue[1];
                 if ("nonce".equals(key)) {
                     if (nonce != null) {
-                        throw new SmackException("Nonce value present multiple times");
+                        throw new SmackSaslException("Nonce value present multiple times");
                     }
                     nonce = value.replace("\"", "");
                 }
                 else if ("qop".equals(key)) {
                     value = value.replace("\"", "");
                     if (!value.equals("auth")) {
-                        throw new SmackException("Unsupported qop operation: " + value);
+                        throw new SmackSaslException("Unsupported qop operation: " + value);
                     }
                 }
             }
@@ -142,7 +142,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
                 // RFC 2831 2.1.1 about nonce "This directive is required and MUST appear exactly
                 // once; if not present, or if multiple instances are present, the client should
                 // abort the authentication exchange."
-                throw new SmackException("nonce value not present in initial challenge");
+                throw new SmackSaslException("nonce value not present in initial challenge");
             }
             // RFC 2831 2.1.2.1 defines A1, A2, KD and response-value
             byte[] a1FirstPart = MD5.bytes(authenticationId + ':' + serviceName + ':'
@@ -188,12 +188,12 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
                     }
                 }
                 if (serverResponse == null) {
-                    throw new SmackException("No server response received while performing " + NAME
+                    throw new SmackSaslException("No server response received while performing " + NAME
                                     + " authentication");
                 }
                 String expectedServerResponse = calcResponse(DigestType.ServerResponse);
                 if (!serverResponse.equals(expectedServerResponse)) {
-                    throw new SmackException("Invalid server response  while performing " + NAME
+                    throw new SmackSaslException("Invalid server response  while performing " + NAME
                                     + " authentication");
                 }
             }
