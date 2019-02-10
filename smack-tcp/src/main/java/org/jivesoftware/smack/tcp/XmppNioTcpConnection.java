@@ -1000,7 +1000,8 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
 
         @Override
         protected TransitionIntoResult transitionInto(WalkStateGraphContext walkStateGraphContext)
-                throws SmackException, FailedNonzaException, IOException, InterruptedException {
+                        throws SmackWrappedException, FailedNonzaException, IOException, InterruptedException,
+                        ConnectionUnexpectedTerminatedException, NoResponseException, NotConnectedException {
             sendAndWaitForResponse(StartTls.INSTANCE, TlsProceed.class, TlsFailure.class);
 
             SmackTlsContext smackTlsContext;
@@ -1008,7 +1009,7 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
                 smackTlsContext = getSmackTlsContext();
             } catch (KeyManagementException | UnrecoverableKeyException | NoSuchAlgorithmException
                     | CertificateException | KeyStoreException | NoSuchProviderException e) {
-                throw new SmackException(e);
+                throw new SmackWrappedException(e);
             }
 
             tlsState = new TlsState(smackTlsContext);
@@ -1028,7 +1029,7 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
             try {
                 tlsState.waitForHandshakeFinished();
             } catch (CertificateException e) {
-                throw new SmackException(e);
+                throw new SmackWrappedException(e);
             }
 
             newStreamOpenWaitForFeaturesSequence("stream features after TLS established");

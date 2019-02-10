@@ -900,7 +900,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 openStream();
                             }
                             catch (Exception e) {
-                                SmackException smackException = new SmackException(e);
+                                SmackException.SmackWrappedException smackException = new SmackException.SmackWrappedException(e);
                                 tlsHandled.reportFailure(smackException);
                                 throw e;
                             }
@@ -985,7 +985,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 if (!smEnabledSyncPoint.requestSent()) {
                                     throw new IllegalStateException("Failed element received but SM was not previously enabled");
                                 }
-                                smEnabledSyncPoint.reportFailure(new SmackException(xmppException));
+                                smEnabledSyncPoint.reportFailure(new SmackException.SmackWrappedException(xmppException));
                                 // Report success for last lastFeaturesReceived so that in case a
                                 // failed resumption, we can continue with normal resource binding.
                                 // See text of XEP-198 5. below Example 11.
