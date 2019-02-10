@@ -302,7 +302,7 @@ public final class SASLAuthentication {
         authenticationFailed(new SASLErrorException(currentMechanism.getName(), saslFailure));
     }
 
-    public void authenticationFailed(Exception exception) {
+    private void authenticationFailed(Exception exception) {
         saslException = exception;
         // Wake up the thread that is waiting in the #authenticate method
         synchronized (this) {
