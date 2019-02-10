@@ -357,6 +357,10 @@ public abstract class SmackException extends Exception {
         }
     }
 
+    /**
+     * A Smack exception wrapping another exception. Note that usage of this class is consider bad practice. This class
+     * will eventually be marked deprecated and removed.
+     */
     public static class SmackWrappedException extends SmackException {
 
         /**
@@ -373,6 +377,10 @@ public abstract class SmackException extends Exception {
         }
     }
 
+    /**
+     * A Smack exception wrapping a text message. Note that usage of this class is consider bad practice. This class
+     * will eventually be marked deprecated and removed.
+     */
     public static class SmackMessageException extends SmackException {
 
         /**
