@@ -32,6 +32,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.SmackMessageException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.StringUtils;
@@ -74,16 +77,18 @@ public class Socks5Client {
      * @throws IOException if initializing the socket failed due to a network error
      * @throws TimeoutException if connecting to SOCKS5 proxy timed out
      * @throws InterruptedException if the current thread was interrupted while waiting
-     * @throws SmackException if the connection to the SOCKS5 proxy failed
      * @throws XMPPException
+     * @throws SmackMessageException
+     * @throws NotConnectedException
+     * @throws NoResponseException
      */
     public Socket getSocket(int timeout) throws IOException, InterruptedException,
-                    TimeoutException, SmackException, XMPPException {
+                    TimeoutException, XMPPException, SmackMessageException, NotConnectedException, NoResponseException {
         // wrap connecting in future for timeout
         FutureTask<Socket> futureTask = new FutureTask<>(new Callable<Socket>() {
 
             @Override
-            public Socket call() throws IOException, SmackException {
+            public Socket call() throws IOException, SmackMessageException {
 
                 // initialize socket
                 Socket socket = new Socket();
@@ -95,7 +100,7 @@ public class Socks5Client {
                 try {
                     establish(socket);
                 }
-                catch (SmackException e) {
+                catch (SmackMessageException e) {
                     if (!socket.isClosed()) {
                         CloseableUtil.maybeClose(socket, LOGGER);
                     }
@@ -120,13 +125,13 @@ public class Socks5Client {
                 if (cause instanceof IOException) {
                     throw (IOException) cause;
                 }
-                if (cause instanceof SmackException) {
-                    throw (SmackException) cause;
+                if (cause instanceof SmackMessageException) {
+                    throw (SmackMessageException) cause;
                 }
             }
 
             // throw generic Smack exception if unexpected exception was thrown
-            throw new SmackException("Error while connecting to SOCKS5 proxy", e);
+            throw new IllegalStateException("Error while connecting to SOCKS5 proxy", e);
         }
 
     }
@@ -137,10 +142,10 @@ public class Socks5Client {
      * supported by the Socks5Client.
      *
      * @param socket connected to a SOCKS5 proxy
-     * @throws SmackException
      * @throws IOException
+     * @throws SmackMessageException
      */
-    protected void establish(Socket socket) throws SmackException, IOException {
+    protected void establish(Socket socket) throws IOException, SmackMessageException {
 
         byte[] connectionRequest;
         byte[] connectionResponse;
@@ -166,7 +171,7 @@ public class Socks5Client {
 
         // check if server responded with correct version and no-authentication method
         if (response[0] != (byte) 0x05 || response[1] != (byte) 0x00) {
-            throw new SmackException("Remote SOCKS5 server responded with unexpected version: " + response[0] + ' ' + response[1] + ". Should be 0x05 0x00.");
+            throw new SmackException.SmackMessageException("Remote SOCKS5 server responded with unexpected version: " + response[0] + ' ' + response[1] + ". Should be 0x05 0x00.");
         }
 
         // request SOCKS5 connection with given address/digest
@@ -180,7 +185,7 @@ public class Socks5Client {
         // verify response
         connectionRequest[1] = (byte) 0x00; // set expected return status to 0
         if (!Arrays.equals(connectionRequest, connectionResponse)) {
-            throw new SmackException(
+            throw new SmackException.SmackMessageException(
                             "Connection request does not equal connection response. Response: "
                                             + Arrays.toString(connectionResponse) + ". Request: "
                                             + Arrays.toString(connectionRequest));

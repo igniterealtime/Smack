@@ -431,7 +431,7 @@ public final class Socks5Proxy {
             // first byte is version should be 5
             int b = in.read();
             if (b != 5) {
-                throw new SmackException("Only SOCKS5 supported");
+                throw new SmackException.SmackMessageException("Only SOCKS5 supported");
             }
 
             // second byte number of authentication methods supported
@@ -457,7 +457,7 @@ public final class Socks5Proxy {
                 authMethodSelectionResponse[1] = (byte) 0xFF; // no acceptable methods
                 out.write(authMethodSelectionResponse);
                 out.flush();
-                throw new SmackException("Authentication method not supported");
+                throw new SmackException.SmackMessageException("Authentication method not supported");
             }
 
             authMethodSelectionResponse[1] = (byte) 0x00; // no-authentication method
@@ -476,7 +476,7 @@ public final class Socks5Proxy {
                 out.write(connectionRequest);
                 out.flush();
 
-                throw new SmackException("Connection is not allowed");
+                throw new SmackException.SmackMessageException("Connection is not allowed");
             }
 
             connectionRequest[1] = (byte) 0x00; // set return status to 0 (success)

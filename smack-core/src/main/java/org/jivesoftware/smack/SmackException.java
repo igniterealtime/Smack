@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2015 Florian Schmaus
+ * Copyright 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,11 +41,11 @@ public class SmackException extends Exception {
      *
      * @param wrappedThrowable the root cause of the exception.
      */
-    public SmackException(Throwable wrappedThrowable) {
+    protected SmackException(Throwable wrappedThrowable) {
         super(wrappedThrowable);
     }
 
-    public SmackException(String message) {
+    protected SmackException(String message) {
         super(message);
     }
 
@@ -366,6 +366,22 @@ public class SmackException extends Exception {
 
         public SmackWrappedException(Exception exception) {
             super(exception);
+        }
+
+        public SmackWrappedException(String message, Exception exception) {
+            super(message, exception);
+        }
+    }
+
+    public static class SmackMessageException extends SmackException {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        public SmackMessageException(String message) {
+            super(message);
         }
     }
 

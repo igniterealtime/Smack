@@ -911,13 +911,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             case "urn:ietf:params:xml:ns:xmpp-tls":
                                 // TLS negotiation has failed. The server will close the connection
                                 // TODO Parse failure stanza
-                                throw new SmackException("TLS negotiation has failed");
+                                throw new SmackException.SmackMessageException("TLS negotiation has failed");
                             case "http://jabber.org/protocol/compress":
                                 // Stream compression has been denied. This is a recoverable
                                 // situation. It is still possible to authenticate and
                                 // use the connection but using an uncompressed connection
                                 // TODO Parse failure stanza
-                                compressSyncPoint.reportFailure(new SmackException(
+                                compressSyncPoint.reportFailure(new SmackException.SmackMessageException(
                                                 "Could not establish compression"));
                                 break;
                             case SaslStreamElements.NAMESPACE:
@@ -957,7 +957,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             if (enabled.isResumeSet()) {
                                 smSessionId = enabled.getId();
                                 if (StringUtils.isNullOrEmpty(smSessionId)) {
-                                    SmackException xmppException = new SmackException("Stream Management 'enabled' element with resume attribute but without session id received");
+                                    SmackException xmppException = new SmackException.SmackMessageException("Stream Management 'enabled' element with resume attribute but without session id received");
                                     smEnabledSyncPoint.reportFailure(xmppException);
                                     throw xmppException;
                                 }
@@ -1069,7 +1069,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     case XmlPullParser.END_DOCUMENT:
                         // END_DOCUMENT only happens in an error case, as otherwise we would see a
                         // closing stream element before.
-                        throw new SmackException(
+                        throw new SmackException.SmackMessageException(
                                         "Parser got END_DOCUMENT event. This could happen e.g. if the server closed the connection without sending a closing stream element");
                     }
                     eventType = parser.next();

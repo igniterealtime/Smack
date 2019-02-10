@@ -76,7 +76,9 @@ public class IoTDiscoveryIntegrationTest extends AbstractSmackIntegrationTest {
         }
     }
 
-    public static ThingState registerThing(IoTDiscoveryManager iotDiscoveryManager, Thing thing) throws XMPPErrorException, InterruptedException, SmackException {
+    public static ThingState registerThing(IoTDiscoveryManager iotDiscoveryManager, Thing thing)
+                    throws XMPPErrorException, InterruptedException, SmackException.SmackMessageException,
+                    NotConnectedException, NoResponseException {
         int attempts = 0;
         while (true) {
             try {
@@ -86,7 +88,7 @@ public class IoTDiscoveryIntegrationTest extends AbstractSmackIntegrationTest {
                 iotDiscoveryManager.unregister();
             }
             if (attempts++ > 3) {
-                throw new SmackException("Could no register thing");
+                throw new SmackException.SmackMessageException("Could no register thing");
             }
         }
     }

@@ -350,7 +350,7 @@ public final class HttpFileUploadManager extends Manager {
         }
 
         if (uploadService == null) {
-            throw new SmackException("No upload service specified and also none discovered.");
+            throw new SmackException.SmackMessageException("No upload service specified and also none discovered.");
         }
 
         if (!uploadService.acceptsFileOfSize(fileSize)) {
