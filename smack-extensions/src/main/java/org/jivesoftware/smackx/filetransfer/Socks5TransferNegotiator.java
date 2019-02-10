@@ -56,10 +56,10 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
             return this.manager.establishSession(target, streamID).getOutputStream();
         }
         catch (IOException e) {
-            throw new SmackException("error establishing SOCKS5 Bytestream", e);
+            throw new SmackException.SmackWrappedException("error establishing SOCKS5 Bytestream", e);
         }
         catch (InterruptedException e) {
-            throw new SmackException("error establishing SOCKS5 Bytestream", e);
+            throw new SmackException.SmackWrappedException("error establishing SOCKS5 Bytestream", e);
         }
     }
 
@@ -109,7 +109,7 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
             return stream;
         }
         catch (IOException e) {
-            throw new SmackException("Error establishing input stream", e);
+            throw new SmackException.SmackWrappedException("Error establishing input stream", e);
         }
     }
 

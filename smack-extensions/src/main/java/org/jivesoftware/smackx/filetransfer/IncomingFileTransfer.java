@@ -198,10 +198,10 @@ public class IncomingFileTransfer extends FileTransfer {
             if (cause instanceof SmackException) {
                 throw (SmackException) cause;
             }
-            throw new SmackException("Error in execution", e);
+            throw new SmackException.SmackWrappedException("Error in execution", e);
         }
         catch (TimeoutException e) {
-            throw new SmackException("Request timed out", e);
+            throw new SmackException.SmackWrappedException("Request timed out", e);
         }
         finally {
             streamNegotiatorTask.cancel(true);

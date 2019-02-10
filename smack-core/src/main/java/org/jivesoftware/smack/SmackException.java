@@ -29,12 +29,12 @@ import org.jxmpp.jid.Jid;
  *
  * @author Florian Schmaus
  */
-public class SmackException extends Exception {
+public abstract class SmackException extends Exception {
 
     /**
      *
      */
-    private static final long serialVersionUID = 1844674365368214457L;
+    private static final long serialVersionUID = 1844674365368214458L;
 
     /**
      * Creates a new SmackException with the Throwable that was the root cause of the exception.
@@ -49,7 +49,7 @@ public class SmackException extends Exception {
         super(message);
     }
 
-    public SmackException(String message, Throwable wrappedThrowable) {
+    protected SmackException(String message, Throwable wrappedThrowable) {
         super(message, wrappedThrowable);
     }
 
