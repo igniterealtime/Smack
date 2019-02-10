@@ -818,15 +818,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @throws SmackException if the parser could not be reset.
      * @throws InterruptedException
+     * @throws XmlPullParserException
      */
-    void openStream() throws SmackException, InterruptedException {
+    void openStream() throws SmackException, InterruptedException, XmlPullParserException {
         sendStreamOpen();
-        try {
-            packetReader.parser = PacketParserUtils.newXmppParser(reader);
-        }
-        catch (XmlPullParserException e) {
-            throw new SmackException(e);
-        }
+        packetReader.parser = PacketParserUtils.newXmppParser(reader);
     }
 
     protected class PacketReader {
