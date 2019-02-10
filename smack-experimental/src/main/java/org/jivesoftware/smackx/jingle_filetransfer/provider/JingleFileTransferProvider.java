@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.hashes.provider.HashElementProvider;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildElement;
@@ -42,7 +43,7 @@ public class JingleFileTransferProvider
         extends JingleContentDescriptionProvider<JingleFileTransfer> {
 
     @Override
-    public JingleFileTransfer parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
+    public JingleFileTransfer parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
         ArrayList<JingleContentDescriptionChildElement> payloads = new ArrayList<>();
         boolean inRange = false;
         JingleFileTransferChild.Builder builder = JingleFileTransferChild.getBuilder();
@@ -59,7 +60,11 @@ public class JingleFileTransferProvider
             if (tag == START_TAG) {
                 switch (elem) {
                     case JingleFileTransferChild.ELEM_DATE:
+                    try {
                         builder.setDate(XmppDateTime.parseXEP0082Date(parser.nextText()));
+                    } catch (ParseException e) {
+                        throw new SmackParsingException.SmackTextParseException(e);
+                    }
                         break;
 
                     case JingleFileTransferChild.ELEM_DESC:

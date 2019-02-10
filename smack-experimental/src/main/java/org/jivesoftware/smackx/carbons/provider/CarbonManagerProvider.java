@@ -17,8 +17,8 @@
 package org.jivesoftware.smackx.carbons.provider;
 
 import java.io.IOException;
-import java.text.ParseException;
 
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
@@ -41,7 +41,7 @@ public class CarbonManagerProvider extends ExtensionElementProvider<CarbonExtens
     private static final ForwardedProvider FORWARDED_PROVIDER = new ForwardedProvider();
 
     @Override
-    public CarbonExtension parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
+    public CarbonExtension parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
         Direction dir = Direction.valueOf(parser.getName());
         Forwarded fwd = null;
 

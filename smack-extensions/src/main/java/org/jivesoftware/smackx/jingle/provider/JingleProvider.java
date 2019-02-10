@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 package org.jivesoftware.smackx.jingle.provider;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -44,7 +44,7 @@ public class JingleProvider extends IQProvider<Jingle> {
     private static final Logger LOGGER = Logger.getLogger(JingleProvider.class.getName());
 
     @Override
-    public Jingle parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
+    public Jingle parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
         Jingle.Builder builder = Jingle.getBuilder();
 
         String actionString = parser.getAttributeValue("", Jingle.ACTION_ATTRIBUTE_NAME);
@@ -102,7 +102,7 @@ public class JingleProvider extends IQProvider<Jingle> {
     }
 
     public static JingleContent parseJingleContent(XmlPullParser parser, final int initialDepth)
-                    throws XmlPullParserException, IOException, ParseException {
+                    throws XmlPullParserException, IOException, SmackParsingException {
         JingleContent.Builder builder = JingleContent.getBuilder();
 
         String creatorString = parser.getAttributeValue("", JingleContent.CREATOR_ATTRIBUTE_NAME);

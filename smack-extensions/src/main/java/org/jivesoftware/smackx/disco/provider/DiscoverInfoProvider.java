@@ -18,8 +18,8 @@
 package org.jivesoftware.smackx.disco.provider;
 
 import java.io.IOException;
-import java.text.ParseException;
 
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
@@ -36,7 +36,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class DiscoverInfoProvider extends IQProvider<DiscoverInfo> {
 
     @Override
-    public DiscoverInfo parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
+    public DiscoverInfo parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
         DiscoverInfo discoverInfo = new DiscoverInfo();
         boolean done = false;
         DiscoverInfo.Identity identity;

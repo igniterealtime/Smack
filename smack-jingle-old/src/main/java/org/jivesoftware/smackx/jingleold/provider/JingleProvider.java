@@ -18,8 +18,8 @@
 package org.jivesoftware.smackx.jingleold.provider;
 
 import java.io.IOException;
-import java.text.ParseException;
 
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -44,12 +44,12 @@ public class JingleProvider extends IQProvider<Jingle> {
 
     /**
      * Parse a iq/jingle element.
-     * @throws ParseException
      * @throws XmlPullParserException
      * @throws IOException
+     * @throws SmackParsingException
      */
     @Override
-    public Jingle parse(XmlPullParser parser, int intialDepth) throws IOException, XmlPullParserException, ParseException {
+    public Jingle parse(XmlPullParser parser, int intialDepth) throws IOException, XmlPullParserException, SmackParsingException {
 
         Jingle jingle = new Jingle();
         String sid = "";

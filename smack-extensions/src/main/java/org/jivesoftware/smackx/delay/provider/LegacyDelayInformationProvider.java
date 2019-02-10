@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
  */
 package org.jivesoftware.smackx.delay.provider;
 
-import java.text.ParseException;
 import java.util.Date;
 
-import org.jxmpp.util.XmppDateTime;
+import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
+import org.jivesoftware.smack.util.ParserUtils;
 
 /**
  * The DelayInformationProvider parses DelayInformation packets.
@@ -29,8 +29,8 @@ import org.jxmpp.util.XmppDateTime;
 public class LegacyDelayInformationProvider extends AbstractDelayInformationProvider {
 
     @Override
-    protected Date parseDate(String string) throws ParseException {
-        return XmppDateTime.parseDate(string);
+    protected Date parseDate(String string) throws SmackTextParseException {
+        return ParserUtils.getDateFromString(string);
     }
 
 }

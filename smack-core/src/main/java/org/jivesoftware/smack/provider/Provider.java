@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2018 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ package org.jivesoftware.smack.provider;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.ParserUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -61,7 +61,7 @@ public abstract class Provider<E extends Element> {
         return elementClass;
     }
 
-    public final E parse(XmlPullParser parser) throws IOException, XmlPullParserException, ParseException {
+    public final E parse(XmlPullParser parser) throws IOException, XmlPullParserException, SmackParsingException {
         // XPP3 calling convention assert: Parser should be at start tag
         ParserUtils.assertAtStartTag(parser);
 
@@ -73,5 +73,5 @@ public abstract class Provider<E extends Element> {
         return e;
     }
 
-    public abstract E parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException;
+    public abstract E parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException;
 }

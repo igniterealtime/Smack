@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.jivesoftware.smack.util;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,6 +42,7 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.UnparsedIQ;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -218,9 +218,9 @@ public class PacketParserUtils {
      * @return a Message packet.
      * @throws XmlPullParserException
      * @throws IOException
-     * @throws ParseException
+     * @throws SmackParsingException
      */
-    public static Message parseMessage(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
+    public static Message parseMessage(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
         assert (parser.getName().equals(Message.ELEMENT));
 
@@ -504,9 +504,9 @@ public class PacketParserUtils {
      * @return a Presence packet.
      * @throws IOException
      * @throws XmlPullParserException
-     * @throws ParseException
+     * @throws SmackParsingException
      */
-    public static Presence parsePresence(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
+    public static Presence parsePresence(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
         final int initialDepth = parser.getDepth();
 
@@ -791,9 +791,9 @@ public class PacketParserUtils {
      * @return an stream error packet.
      * @throws IOException
      * @throws XmlPullParserException
-     * @throws ParseException
+     * @throws SmackParsingException
      */
-    public static StreamError parseStreamError(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
+    public static StreamError parseStreamError(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         List<ExtensionElement> extensions = new ArrayList<>();
         Map<String, String> descriptiveTexts = null;
@@ -843,9 +843,9 @@ public class PacketParserUtils {
      * @return an error sub-packet.
      * @throws IOException
      * @throws XmlPullParserException
-     * @throws ParseException
+     * @throws SmackParsingException
      */
-    public static StanzaError.Builder parseError(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
+    public static StanzaError.Builder parseError(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         Map<String, String> descriptiveTexts = null;
         List<ExtensionElement> extensions = new ArrayList<>();
@@ -916,10 +916,10 @@ public class PacketParserUtils {
      * @return an extension element.
      * @throws XmlPullParserException
      * @throws IOException
-     * @throws ParseException
+     * @throws SmackParsingException
      */
     public static ExtensionElement parseExtensionElement(String elementName, String namespace,
-                    XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
+                    XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
         // See if a provider is registered to handle the extension.
         ExtensionElementProvider<ExtensionElement> provider = ProviderManager.getExtensionProvider(elementName, namespace);
@@ -988,24 +988,24 @@ public class PacketParserUtils {
     }
 
     public static void addExtensionElement(Stanza packet, XmlPullParser parser)
-                    throws XmlPullParserException, IOException, ParseException {
+                    throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
         addExtensionElement(packet, parser, parser.getName(), parser.getNamespace());
     }
 
     public static void addExtensionElement(Stanza packet, XmlPullParser parser, String elementName,
-                    String namespace) throws XmlPullParserException, IOException, ParseException {
+                    String namespace) throws XmlPullParserException, IOException, SmackParsingException {
         ExtensionElement packetExtension = parseExtensionElement(elementName, namespace, parser);
         packet.addExtension(packetExtension);
     }
 
     public static void addExtensionElement(Collection<ExtensionElement> collection, XmlPullParser parser)
-                    throws XmlPullParserException, IOException, ParseException {
+                    throws XmlPullParserException, IOException, SmackParsingException {
         addExtensionElement(collection, parser, parser.getName(), parser.getNamespace());
     }
 
     public static void addExtensionElement(Collection<ExtensionElement> collection, XmlPullParser parser,
-                    String elementName, String namespace) throws XmlPullParserException, IOException, ParseException {
+                    String elementName, String namespace) throws XmlPullParserException, IOException, SmackParsingException {
         ExtensionElement packetExtension = parseExtensionElement(elementName, namespace, parser);
         collection.add(packetExtension);
     }

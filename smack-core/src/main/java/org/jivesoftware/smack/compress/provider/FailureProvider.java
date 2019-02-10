@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 package org.jivesoftware.smack.compress.provider;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.compress.packet.Failure;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.NonzaProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
@@ -39,7 +39,7 @@ public final class FailureProvider extends NonzaProvider<Failure> {
     }
 
     @Override
-    public Failure parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
+    public Failure parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
         Failure.CompressFailureError compressFailureError = null;
         StanzaError stanzaError = null;
 

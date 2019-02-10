@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
@@ -43,7 +44,7 @@ public class StreamInitiationProvider extends IQProvider<StreamInitiation> {
     private static final Logger LOGGER = Logger.getLogger(StreamInitiationProvider.class.getName());
 
     @Override
-    public StreamInitiation parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
+    public StreamInitiation parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
         boolean done = false;
 
         // si

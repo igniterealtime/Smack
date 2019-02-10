@@ -20,13 +20,13 @@ import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.text.ParseException;
 import java.util.Date;
 
+import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.ox.element.PubkeyElement;
 
-import org.jxmpp.util.XmppDateTime;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -38,9 +38,9 @@ public class PubkeyElementProvider extends ExtensionElementProvider<PubkeyElemen
     public static final PubkeyElementProvider TEST_INSTANCE = new PubkeyElementProvider();
 
     @Override
-    public PubkeyElement parse(XmlPullParser parser, int initialDepth) throws ParseException, XmlPullParserException, IOException {
+    public PubkeyElement parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackTextParseException {
         String dateString = parser.getAttributeValue(null, PubkeyElement.ATTR_DATE);
-        Date date = dateString != null ? XmppDateTime.parseXEP0082Date(dateString) : null;
+        Date date = ParserUtils.getDateFromOptionalXep82String(dateString);
         while (true) {
             int tag = parser.next();
             String name = parser.getName();

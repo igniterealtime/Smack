@@ -17,13 +17,13 @@
 package org.jivesoftware.smack.provider;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -85,7 +85,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public abstract class EmbeddedExtensionProvider<PE extends ExtensionElement> extends ExtensionElementProvider<PE> {
 
     @Override
-    public final PE parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
+    public final PE parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
         final String namespace = parser.getNamespace();
         final String name = parser.getName();
         final int attributeCount = parser.getAttributeCount();

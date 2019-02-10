@@ -33,7 +33,6 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -106,6 +105,7 @@ import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.NonzaProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -1167,7 +1167,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return successNonza;
     }
 
-    protected final void parseAndProcessNonza(XmlPullParser parser) throws IOException, XmlPullParserException, ParseException {
+    protected final void parseAndProcessNonza(XmlPullParser parser) throws IOException, XmlPullParserException, SmackParsingException {
         final String element = parser.getName();
         final String namespace = parser.getNamespace();
         final String key = XmppStringUtils.generateKey(element, namespace);
@@ -1567,7 +1567,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return this.fromMode;
     }
 
-    protected final void parseFeatures(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
+    protected final void parseFeatures(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
         streamFeatures.clear();
         final int initialDepth = parser.getDepth();
         while (true) {

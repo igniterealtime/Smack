@@ -24,6 +24,8 @@ import java.util.Date;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.workgroup.agent.WorkgroupQueue;
@@ -127,7 +129,7 @@ public class QueueOverview implements ExtensionElement {
         @Override
         public QueueOverview parse(XmlPullParser parser,
                         int initialDepth) throws XmlPullParserException,
-                        IOException, ParseException {
+                        IOException, SmackTextParseException {
             int eventType = parser.getEventType();
             QueueOverview queueOverview = new QueueOverview();
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
@@ -142,7 +144,11 @@ public class QueueOverview implements ExtensionElement {
                     queueOverview.setAverageWaitTime(Integer.parseInt(parser.nextText()));
                 }
                 else if ("oldest".equals(parser.getName())) {
-                    queueOverview.setOldestEntry(dateFormat.parse(parser.nextText()));
+                    try {
+                        queueOverview.setOldestEntry(dateFormat.parse(parser.nextText()));
+                    } catch (ParseException e) {
+                        throw new SmackParsingException.SmackTextParseException(e);
+                    }
                 }
                 else if ("status".equals(parser.getName())) {
                     queueOverview.setStatus(WorkgroupQueue.Status.fromString(parser.nextText()));

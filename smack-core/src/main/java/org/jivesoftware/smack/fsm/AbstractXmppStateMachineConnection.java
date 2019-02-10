@@ -17,7 +17,6 @@
 package org.jivesoftware.smack.fsm;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,6 +50,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.StreamError;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.sasl.SASLErrorException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Challenge;
@@ -304,7 +304,7 @@ public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPCon
     }
 
     protected final void parseAndProcessElement(String element) throws XmlPullParserException, IOException,
-                    InterruptedException, StreamErrorException, SmackException, ParseException {
+                    InterruptedException, StreamErrorException, SmackException, SmackParsingException {
         XmlPullParser parser = PacketParserUtils.getParserFor(element);
 
         // Skip the enclosing stream open what is guaranteed to be there.

@@ -17,9 +17,9 @@
 package org.jivesoftware.smackx.pubsub.provider;
 
 import java.io.IOException;
-import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -44,7 +44,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class ItemProvider extends ExtensionElementProvider<Item>  {
     @Override
     public Item parse(XmlPullParser parser, int initialDepth)
-                    throws XmlPullParserException, IOException, ParseException {
+                    throws XmlPullParserException, IOException, SmackParsingException {
         String id = parser.getAttributeValue(null, "id");
         String node = parser.getAttributeValue(null, "node");
         String xmlns = parser.getNamespace();

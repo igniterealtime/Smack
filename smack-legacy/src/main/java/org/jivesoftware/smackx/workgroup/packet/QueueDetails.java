@@ -27,6 +27,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.workgroup.QueueUser;
@@ -145,7 +147,7 @@ public final class QueueDetails implements ExtensionElement {
         @Override
         public QueueDetails parse(XmlPullParser parser,
                         int initialDepth) throws XmlPullParserException,
-                        IOException, ParseException {
+                        IOException, SmackTextParseException {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             QueueDetails queueDetails = new QueueDetails();
@@ -176,10 +178,19 @@ public final class QueueDetails implements ExtensionElement {
                             time = Integer.parseInt(parser.nextText());
                         }
                         else if ("join-time".equals(parser.getName())) {
-                                joinTime = dateFormat.parse(parser.nextText());
+                                try {
+                                    joinTime = dateFormat.parse(parser.nextText());
+                                } catch (ParseException e) {
+                                    throw new SmackParsingException.SmackTextParseException(e);
+                                }
                         }
                         else if (parser.getName().equals("waitTime")) {
-                            Date wait = dateFormat.parse(parser.nextText());
+                            Date wait;
+                            try {
+                                wait = dateFormat.parse(parser.nextText());
+                            } catch (ParseException e) {
+                                throw new SmackParsingException.SmackTextParseException(e);
+                            }
                             LOGGER.fine(wait.toString());
                         }
 

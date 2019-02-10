@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.mood.provider;
 
 import java.io.IOException;
-import java.text.ParseException;
 
 import org.jivesoftware.smackx.mood.element.MoodConcretisation;
 
@@ -34,7 +33,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public abstract class SimpleMoodConcretisationProvider<C extends MoodConcretisation> extends MoodConcretisationProvider<C> {
 
     @Override
-    public C parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException, ParseException {
+    public C parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException {
         // Since the elements name and namespace is known, we can just return an instance of the MoodConcretisation.
         return simpleExtension();
     }

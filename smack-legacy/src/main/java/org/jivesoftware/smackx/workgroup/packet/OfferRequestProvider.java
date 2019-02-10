@@ -18,12 +18,12 @@
 package org.jivesoftware.smackx.workgroup.packet;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -51,7 +51,7 @@ public class OfferRequestProvider extends IQProvider<IQ> {
     // happen anytime soon.
 
     @Override
-    public OfferRequestPacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
+    public OfferRequestPacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
         int eventType = parser.getEventType();
         String sessionID = null;
         int timeout = -1;

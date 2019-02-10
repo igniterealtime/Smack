@@ -17,11 +17,11 @@
 package org.jivesoftware.smackx.forward.provider;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
@@ -45,7 +45,7 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded> {
     private static final Logger LOGGER = Logger.getLogger(ForwardedProvider.class.getName());
 
     @Override
-    public Forwarded parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, ParseException {
+    public Forwarded parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
         DelayInformation di = null;
         Stanza packet = null;
 
