@@ -97,8 +97,12 @@ allprojects {
 			':smack-omemo-signal',
 			':smack-omemo-signal-integration-test',
 		].collect{ project(it) }
-		androidBootClasspath = getAndroidRuntimeJar()
-		androidJavadocOffline = getAndroidJavadocOffline()
+		// Lazily evaluate the Android bootClasspath and offline
+		// Javadoc using a closure, so that targets which do not
+		// require it are still able to succeed without an Android
+		// SDK.
+		androidBootClasspath = { getAndroidRuntimeJar() }
+		androidJavadocOffline = { getAndroidJavadocOffline() }
 		junitVersion = '5.2.0'
 	}
 	group = 'org.igniterealtime.smack'
