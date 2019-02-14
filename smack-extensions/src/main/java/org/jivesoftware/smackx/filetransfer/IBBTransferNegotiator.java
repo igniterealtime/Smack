@@ -51,6 +51,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
 
     private static final Logger LOGGER = Logger.getLogger(IBBTransferNegotiator.class.getName());
     private final InBandBytestreamManager manager;
+    private static XMPPConnection mConnection;
 
     /**
      * The default constructor for the In-Band Bytestream Negotiator.
@@ -59,6 +60,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
      */
     protected IBBTransferNegotiator(XMPPConnection connection) {
         super(connection);
+        mConnection = connection;
         this.manager = InBandBytestreamManager.getByteStreamManager(connection);
     }
 
@@ -138,7 +140,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
             do {
                 Thread.sleep(200);
                 if (wait-- < 0) {
-                    throw new SmackException("IBB fallback incoming stream wait timed out");
+                    throw NoResponseException.newWith(mConnection, "IBB fallback incoming stream wait timed out");
                 }
             } while (inputStream == null);
             return inputStream;

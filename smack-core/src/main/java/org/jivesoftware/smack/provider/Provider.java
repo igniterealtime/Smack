@@ -54,6 +54,9 @@ public abstract class Provider<E extends Element> {
         Type[] actualTypeArguments = parameterizedGenericSuperclass.getActualTypeArguments();
         Type elementType = actualTypeArguments[0];
 
+        if (!(elementType instanceof Class))
+            elementType = elementType.getClass();
+
         elementClass =  (Class<E>) elementType;
     }
 
