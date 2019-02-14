@@ -233,7 +233,7 @@ public class XmppConnectionManager<DC extends AbstractXMPPConnection> {
         if (sinttestConfiguration.isAccountRegistrationPossible()) {
             int unsuccessfullyDeletedAccountsCount = connections.size() - successfullyDeletedAccountsCount;
             if (unsuccessfullyDeletedAccountsCount == 0) {
-                LOGGER.info("Successsfully deleted all created accounts ✔");
+                LOGGER.info("Successfully deleted all created accounts ✔");
             } else {
                 LOGGER.warning("Could not delete all created accounts, " + unsuccessfullyDeletedAccountsCount + " remainaing");
             }
