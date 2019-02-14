@@ -25,7 +25,7 @@ public abstract class AbstractChatIntegrationTest extends AbstractSmackIntegrati
     protected final ChatManager chatManagerTwo;
     protected final ChatManager chatManagerThree;
 
-    protected AbstractChatIntegrationTest(SmackIntegrationTestEnvironment environment) {
+    protected AbstractChatIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
         super(environment);
         chatManagerOne = ChatManager.getInstanceFor(conOne);
         chatManagerTwo = ChatManager.getInstanceFor(conTwo);

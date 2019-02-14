@@ -39,7 +39,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MUCLightBlockingIQProvider extends IQProvider<MUCLightBlockingIQ> {
 
     @Override
-    public MUCLightBlockingIQ parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public MUCLightBlockingIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         HashMap<Jid, Boolean> rooms = null;
         HashMap<Jid, Boolean> users = null;
 

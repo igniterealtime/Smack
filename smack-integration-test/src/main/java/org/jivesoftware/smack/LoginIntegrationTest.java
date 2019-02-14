@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,6 @@ import java.security.NoSuchAlgorithmException;
 
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.sasl.SASLErrorException;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
@@ -35,7 +33,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 
 public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
 
-    public LoginIntegrationTest(SmackIntegrationTestEnvironment environment) {
+    public LoginIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
         super(environment);
     }
 
@@ -54,14 +52,13 @@ public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
     public void testInvalidLogin() throws SmackException, IOException, XMPPException,
                     InterruptedException, KeyManagementException, NoSuchAlgorithmException {
         final String nonExistentUserString = StringUtils.insecureRandomString(24);
-        XMPPTCPConnectionConfiguration conf = getConnectionConfiguration().setUsernameAndPassword(
-                        nonExistentUserString, "invalidPassword").build();
+        final String invalidPassword = "invalidPassword";
 
-        XMPPTCPConnection connection = new XMPPTCPConnection(conf);
+        AbstractXMPPConnection connection = getUnconnectedConnection();
         connection.connect();
 
         try {
-            connection.login();
+            connection.login(nonExistentUserString, invalidPassword);
             fail("Exception expected");
         }
         catch (SASLErrorException e) {

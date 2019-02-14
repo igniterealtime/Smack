@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 public class CollectionUtil {
 
@@ -30,4 +33,20 @@ public class CollectionUtil {
         return collection;
     }
 
+    public static <T, C extends Collection<T>> List<T> removeUntil(C collection, Predicate<T> predicate) {
+        List<T> removedElements = new ArrayList<>(collection.size());
+        for (Iterator<T> it = collection.iterator(); it.hasNext();) {
+            T t = it.next();
+            if (predicate.test(t)) {
+                break;
+            }
+            removedElements.add(t);
+            it.remove();
+        }
+        return removedElements;
+    }
+
+    public interface Predicate<T> {
+        boolean test(T t);
+    }
 }

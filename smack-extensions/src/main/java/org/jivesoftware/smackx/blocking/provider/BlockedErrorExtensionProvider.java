@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class BlockedErrorExtensionProvider extends ExtensionElementProvider<BlockedErrorExtension> {
 
     @Override
-    public BlockedErrorExtension parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public BlockedErrorExtension parse(XmlPullParser parser, int initialDepth) {
         return new BlockedErrorExtension();
     }
 

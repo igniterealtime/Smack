@@ -71,7 +71,7 @@ public class MUCAdmin extends IQ {
 
         synchronized (items) {
             for (MUCItem item : items) {
-                xml.append(item.toXML(null));
+                xml.append(item.toXML());
             }
         }
 

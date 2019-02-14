@@ -42,7 +42,7 @@ public class OmemoDeviceListVAxolotlElementTest extends SmackTestSuite {
         ids.add(9876);
 
         OmemoDeviceListElement_VAxolotl element = new OmemoDeviceListElement_VAxolotl(ids);
-        String xml = element.toXML(null).toString();
+        String xml = element.toXML().toString();
 
         XmlPullParser parser = TestUtils.getParser(xml);
         OmemoDeviceListElement_VAxolotl parsed = new OmemoDeviceListVAxolotlProvider().parse(parser);

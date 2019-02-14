@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2003-2007 Jive Software, 2014 Florian Schmaus
+ * Copyright © 2003-2007 Jive Software, 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.jivesoftware.smack.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Bind;
 
 import org.jxmpp.jid.EntityFullJid;
@@ -30,8 +29,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class BindIQProvider extends IQProvider<Bind> {
 
     @Override
-    public Bind parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
-                    SmackException {
+    public Bind parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         String name;
         Bind bind = null;
         outerloop: while (true) {

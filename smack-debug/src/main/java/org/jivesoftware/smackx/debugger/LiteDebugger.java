@@ -304,21 +304,13 @@ public class LiteDebugger extends SmackDebugger {
     }
 
     @Override
-    public Reader newConnectionReader(Reader newReader) {
-        ((ObservableReader) reader).removeReaderListener(readerListener);
-        ObservableReader debugReader = new ObservableReader(newReader);
-        debugReader.addReaderListener(readerListener);
-        reader = debugReader;
-        return reader;
+    public void outgoingStreamSink(CharSequence outgoingCharSequence) {
+        writerListener.write(outgoingCharSequence.toString());
     }
 
     @Override
-    public Writer newConnectionWriter(Writer newWriter) {
-        ((ObservableWriter) writer).removeWriterListener(writerListener);
-        ObservableWriter debugWriter = new ObservableWriter(newWriter);
-        debugWriter.addWriterListener(writerListener);
-        writer = debugWriter;
-        return writer;
+    public void incomingStreamSink(CharSequence incomingCharSequence) {
+        readerListener.read(incomingCharSequence.toString());
     }
 
     @Override
@@ -331,8 +323,8 @@ public class LiteDebugger extends SmackDebugger {
 
     @Override
     public void onIncomingStreamElement(TopLevelStreamElement streamElement) {
-        interpretedText1.append(streamElement.toXML(null).toString());
-        interpretedText2.append(streamElement.toXML(null).toString());
+        interpretedText1.append(streamElement.toXML().toString());
+        interpretedText2.append(streamElement.toXML().toString());
         interpretedText1.append(NEWLINE);
         interpretedText2.append(NEWLINE);
     }

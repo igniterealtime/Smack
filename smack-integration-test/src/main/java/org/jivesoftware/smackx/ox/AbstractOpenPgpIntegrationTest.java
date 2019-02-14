@@ -41,7 +41,7 @@ public abstract class AbstractOpenPgpIntegrationTest extends AbstractSmackIntegr
     protected final PepManager bobPepManager;
     protected final PepManager chloePepManager;
 
-    protected AbstractOpenPgpIntegrationTest(SmackIntegrationTestEnvironment environment)
+    protected AbstractOpenPgpIntegrationTest(SmackIntegrationTestEnvironment<?> environment)
             throws XMPPException.XMPPErrorException, TestNotPossibleException, SmackException.NotConnectedException,
             InterruptedException, SmackException.NoResponseException {
         super(environment);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.jivesoftware.smackx.csi.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.csi.packet.ClientStateIndication;
@@ -30,7 +29,7 @@ public class ClientStateIndicationFeatureProvider extends ExtensionElementProvid
 
     @Override
     public ClientStateIndication.Feature parse(XmlPullParser parser, int initialDepth)
-                    throws XmlPullParserException, IOException, SmackException {
+                    throws XmlPullParserException, IOException {
         return ClientStateIndication.Feature.INSTANCE;
     }
 

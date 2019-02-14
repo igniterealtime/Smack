@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2018 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,16 @@
 
 package org.jivesoftware.smack.provider;
 
+import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.ParserUtils;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Smack provider are the parsers used to deserialize raw XMPP into the according Java {@link Element}s.
@@ -35,7 +41,27 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public abstract class Provider<E extends Element> {
 
-    public final E parse(XmlPullParser parser) throws Exception {
+    private final Class<E> elementClass;
+
+    @SuppressWarnings("unchecked")
+    protected Provider() {
+        Type currentType = getClass().getGenericSuperclass();
+        while (!(currentType instanceof ParameterizedType)) {
+            Class<?> currentClass = (Class<?>) currentType;
+            currentType = currentClass.getGenericSuperclass();
+        }
+        ParameterizedType parameterizedGenericSuperclass = (ParameterizedType) currentType;
+        Type[] actualTypeArguments = parameterizedGenericSuperclass.getActualTypeArguments();
+        Type elementType = actualTypeArguments[0];
+
+        elementClass =  (Class<E>) elementType;
+    }
+
+    public final Class<E> getElementClass() {
+        return elementClass;
+    }
+
+    public final E parse(XmlPullParser parser) throws IOException, XmlPullParserException, SmackParsingException {
         // XPP3 calling convention assert: Parser should be at start tag
         ParserUtils.assertAtStartTag(parser);
 
@@ -47,5 +73,5 @@ public abstract class Provider<E extends Element> {
         return e;
     }
 
-    public abstract E parse(XmlPullParser parser, int initialDepth) throws Exception;
+    public abstract E parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException;
 }

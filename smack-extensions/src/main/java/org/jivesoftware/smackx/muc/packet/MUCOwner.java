@@ -93,7 +93,7 @@ public class MUCOwner extends IQ {
 
         synchronized (items) {
             for (MUCItem item : items) {
-                xml.append(item.toXML(null));
+                xml.append(item.toXML());
             }
         }
         xml.optElement(getDestroy());

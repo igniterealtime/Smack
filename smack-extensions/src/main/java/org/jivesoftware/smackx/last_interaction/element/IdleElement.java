@@ -93,7 +93,7 @@ public class IdleElement implements ExtensionElement {
      * {@inheritDoc}
      */
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         return new XmlStringBuilder(this)
                 .attribute(ATTR_SINCE, since)
                 .closeEmptyElement();

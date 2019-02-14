@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class JingleIBBTransportProvider extends JingleContentTransportProvider<JingleIBBTransport> {
     @Override
-    public JingleIBBTransport parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public JingleIBBTransport parse(XmlPullParser parser, int initialDepth) {
         String blockSizeString = parser.getAttributeValue(null, JingleIBBTransport.ATTR_BLOCK_SIZE);
         String sid = parser.getAttributeValue(null, JingleIBBTransport.ATTR_SID);
 

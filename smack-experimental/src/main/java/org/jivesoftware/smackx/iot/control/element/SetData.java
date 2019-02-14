@@ -82,7 +82,7 @@ public abstract class SetData implements NamedElement {
      * @return the stanza extension as XML.
      */
     @Override
-    public final XmlStringBuilder toXML(String enclosingNamespace) {
+    public final XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("name", name);
         xml.attribute("value", value);

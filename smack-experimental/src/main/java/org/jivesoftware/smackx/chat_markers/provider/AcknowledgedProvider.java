@@ -33,7 +33,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class AcknowledgedProvider extends ExtensionElementProvider<AcknowledgedExtension> {
 
     @Override
-    public AcknowledgedExtension parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public AcknowledgedExtension parse(XmlPullParser parser, int initialDepth) {
         String id = parser.getAttributeValue("", "id");
         return new AcknowledgedExtension(id);
     }

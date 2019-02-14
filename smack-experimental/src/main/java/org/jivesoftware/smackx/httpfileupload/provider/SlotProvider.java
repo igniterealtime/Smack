@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017 Grigory Fedorov, Florian Schmaus
+ * Copyright © 2017 Grigory Fedorov, 2017-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -42,7 +41,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class SlotProvider extends IQProvider<Slot> {
 
     @Override
-    public Slot parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
+    public Slot parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         final String namespace = parser.getNamespace();
 
         final UploadService.Version version = HttpFileUploadManager.namespaceToVersion(namespace);

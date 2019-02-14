@@ -64,7 +64,7 @@ public final class PublicKeysListElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this).rightAngleBracket();
         for (PubkeyMetadataElement metadataElement : metadata.values()) {
             xml.element(metadataElement);
@@ -124,7 +124,7 @@ public final class PublicKeysListElement implements ExtensionElement {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this)
                     .attribute(ATTR_V4_FINGERPRINT, getV4Fingerprint())
                     .attribute(ATTR_DATE, date).closeEmptyElement();

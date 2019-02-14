@@ -64,7 +64,7 @@ public class MetaData implements ExtensionElement {
     }
 
     @Override
-    public String toXML(String enclosingNamespace) {
+    public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         return MetaDataUtils.serializeMetaData(this.getMetaData());
     }
 }

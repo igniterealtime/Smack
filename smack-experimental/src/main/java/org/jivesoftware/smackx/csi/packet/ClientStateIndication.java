@@ -45,7 +45,7 @@ public class ClientStateIndication {
         }
 
         @Override
-        public String toXML(String enclosingNamespace) {
+        public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
         }
     }
@@ -68,7 +68,7 @@ public class ClientStateIndication {
         }
 
         @Override
-        public String toXML(String enclosingNamespace) {
+        public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
         }
     }
@@ -86,7 +86,7 @@ public class ClientStateIndication {
         }
 
         @Override
-        public String toXML(String enclosingNamespace) {
+        public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
         }
 

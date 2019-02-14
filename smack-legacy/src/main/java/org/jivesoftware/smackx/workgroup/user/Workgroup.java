@@ -587,11 +587,11 @@ public class Workgroup {
             buf.append("<queue-notifications/>");
             // Add the user unique identification if the session is anonymous
             if (connection.isAnonymous()) {
-                buf.append(new UserID(userID).toXML(null));
+                buf.append(new UserID(userID).toXML());
             }
 
             // Append data form text
-            buf.append(form.toXML(null));
+            buf.append(form.toXML());
 
             return buf;
         }

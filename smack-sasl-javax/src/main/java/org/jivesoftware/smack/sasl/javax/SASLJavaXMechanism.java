@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslClient;
 import javax.security.sasl.SaslException;
 
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.SmackSaslException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 
 public abstract class SASLJavaXMechanism extends SASLMechanism {
@@ -42,15 +42,15 @@ public abstract class SASLJavaXMechanism extends SASLMechanism {
     public abstract String getName();
 
     @Override
-    public final void checkIfSuccessfulOrThrow() throws SmackException {
+    public final void checkIfSuccessfulOrThrow() throws SmackSaslException {
         if (!sc.isComplete()) {
-            throw new SmackException(getName() + " was not completed");
+            throw new SmackSaslException(getName() + " was not completed");
         }
     }
 
     @Override
     protected void authenticateInternal()
-                    throws SmackException {
+                    throws SmackJavaxSaslException {
         String[] mechanisms = { getName() };
         Map<String, String> props = getSaslProps();
         String authzid = null;
@@ -100,38 +100,38 @@ public abstract class SASLJavaXMechanism extends SASLMechanism {
                             });
         }
         catch (SaslException e) {
-            throw new SmackException(e);
+            throw new SmackJavaxSaslException(e);
         }
     }
 
     @Override
     protected void authenticateInternal(CallbackHandler cbh)
-                    throws SmackException {
+                    throws SmackJavaxSaslException {
         String[] mechanisms = { getName() };
         Map<String, String> props = getSaslProps();
         try {
             sc = Sasl.createSaslClient(mechanisms, null, "xmpp", host, props, cbh);
         }
         catch (SaslException e) {
-            throw new SmackException(e);
+            throw new SmackJavaxSaslException(e);
         }
     }
 
     @Override
-    protected byte[] getAuthenticationText() throws SmackException {
+    protected byte[] getAuthenticationText() throws SmackJavaxSaslException {
         if (sc.hasInitialResponse()) {
             try {
                 return sc.evaluateChallenge(new byte[0]);
             }
             catch (SaslException e) {
-                throw new SmackException(e);
+                throw new SmackJavaxSaslException(e);
             }
         }
         return null;
     }
 
     @Override
-    protected byte[] evaluateChallenge(byte[] challenge) throws SmackException {
+    protected byte[] evaluateChallenge(byte[] challenge) throws SmackJavaxSaslException {
         try {
             if (challenge != null) {
                 return sc.evaluateChallenge(challenge);
@@ -141,7 +141,7 @@ public abstract class SASLJavaXMechanism extends SASLMechanism {
             }
         }
         catch (SaslException e) {
-            throw new SmackException(e);
+            throw new SmackJavaxSaslException(e);
         }
     }
 

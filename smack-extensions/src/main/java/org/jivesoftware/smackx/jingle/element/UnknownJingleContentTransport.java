@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus.
+ * Copyright 2017-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingle.element;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public final class UnknownJingleContentTransport extends JingleContentTransport {
@@ -41,8 +42,8 @@ public final class UnknownJingleContentTransport extends JingleContentTransport 
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
-        return standardExtensionElement.toXML(null);
+    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
+        return standardExtensionElement.toXML(enclosingXmlEnvironment);
     }
 
     @Override

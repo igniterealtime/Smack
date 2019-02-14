@@ -19,8 +19,6 @@ package org.jivesoftware.smackx.iqprivate.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.SmackException;
-
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -45,7 +43,6 @@ public interface PrivateDataProvider {
      * @return a new PrivateData instance.
      * @throws XmlPullParserException
      * @throws IOException
-     * @throws SmackException
      */
-    PrivateData parsePrivateData(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException;
+    PrivateData parsePrivateData(XmlPullParser parser) throws XmlPullParserException, IOException;
 }

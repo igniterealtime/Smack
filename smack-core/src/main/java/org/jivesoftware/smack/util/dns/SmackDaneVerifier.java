@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.security.cert.CertificateException;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.X509TrustManager;
 
 /**
@@ -31,5 +31,5 @@ import javax.net.ssl.X509TrustManager;
 public interface SmackDaneVerifier {
     void init(SSLContext context, KeyManager[] km, X509TrustManager tm, SecureRandom random) throws KeyManagementException;
 
-    void finish(SSLSocket socket) throws CertificateException;
+    void finish(SSLSession sslSession)  throws CertificateException;
 }

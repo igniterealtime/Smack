@@ -33,7 +33,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class ReceivedProvider extends ExtensionElementProvider<ReceivedExtension> {
 
     @Override
-    public ReceivedExtension parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public ReceivedExtension parse(XmlPullParser parser, int initialDepth) {
         String id = parser.getAttributeValue("", "id");
         return new ReceivedExtension(id);
     }

@@ -83,7 +83,7 @@ public abstract class ValidateElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder(this);
         buf.optAttribute("datatype", datatype);
         buf.rightAngleBracket();
@@ -346,7 +346,7 @@ public abstract class ValidateElement implements ExtensionElement {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder buf = new XmlStringBuilder(this);
             buf.optLongAttribute("min", getMin());
             buf.optLongAttribute("max", getMax());

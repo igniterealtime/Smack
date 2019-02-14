@@ -503,25 +503,30 @@ public abstract class Stanza implements TopLevelStreamElement {
      * Add to, from, id and 'xml:lang' attributes
      *
      * @param xml the {@link XmlStringBuilder}.
-     * @param enclosingNamespace the enclosing XML namespace.
-     * @return the set namespace for this stanza.
+     * @param enclosingXmlEnvironment the enclosing XML namespace.
+     * @return the XML environment for this stanza.
      */
-    protected String addCommonAttributes(XmlStringBuilder xml, String enclosingNamespace) {
-        String namespace;
-        if (enclosingNamespace == null || !enclosingNamespace.equals(StreamOpen.CLIENT_NAMESPACE)
-                || !enclosingNamespace.equals(StreamOpen.SERVER_NAMESPACE)) {
-            namespace = StreamOpen.CLIENT_NAMESPACE;
-        } else {
-            namespace = enclosingNamespace;
+    protected XmlEnvironment addCommonAttributes(XmlStringBuilder xml, XmlEnvironment enclosingXmlEnvironment) {
+        String language = getLanguage();
+        String namespace = StreamOpen.CLIENT_NAMESPACE;
+        if (enclosingXmlEnvironment != null) {
+            String effectiveEnclosingNamespace = enclosingXmlEnvironment.getEffectiveNamespaceOrUse(namespace);
+            switch (effectiveEnclosingNamespace) {
+            case StreamOpen.CLIENT_NAMESPACE:
+            case StreamOpen.SERVER_NAMESPACE:
+                break;
+            default:
+                namespace = effectiveEnclosingNamespace;
+            }
         }
 
         xml.xmlnsAttribute(namespace);
         xml.optAttribute("to", getTo());
         xml.optAttribute("from", getFrom());
         xml.optAttribute("id", getStanzaId());
-        xml.xmllangAttribute(getLanguage());
+        xml.xmllangAttribute(language);
 
-        return namespace;
+        return new XmlEnvironment(namespace, language);
     }
 
     protected void logCommonAttributes(StringBuilder sb) {
@@ -541,10 +546,10 @@ public abstract class Stanza implements TopLevelStreamElement {
      *
      * @param xml the XmlStringBuilder to append the error to.
      */
-    protected void appendErrorIfExists(XmlStringBuilder xml, String enclosingNamespace) {
+    protected void appendErrorIfExists(XmlStringBuilder xml, XmlEnvironment enclosingXmlEnvironment) {
         StanzaError error = getError();
         if (error != null) {
-            xml.append(error.toXML(enclosingNamespace));
+            xml.append(error.toXML(enclosingXmlEnvironment));
         }
     }
 }

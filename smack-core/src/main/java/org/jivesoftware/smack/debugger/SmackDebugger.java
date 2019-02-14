@@ -17,13 +17,18 @@
 
 package org.jivesoftware.smack.debugger;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
+import org.jivesoftware.smack.util.ObservableReader;
+import org.jivesoftware.smack.util.ObservableWriter;
 
 import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.xml.splitter.XmlPrettyPrinter;
+import org.jxmpp.xml.splitter.XmppXmlSplitter;
 
 /**
  * Interface that allows for implementing classes to debug XML traffic. That is a GUI window that
@@ -37,6 +42,9 @@ import org.jxmpp.jid.EntityFullJid;
 public abstract class SmackDebugger {
 
     protected final XMPPConnection connection;
+
+    private XmppXmlSplitter outgoingStreamSplitterForPrettyPrinting;
+    private XmppXmlSplitter incomingStreamSplitterForPrettyPrinting;
 
     protected SmackDebugger(XMPPConnection connection) {
         this.connection = connection;
@@ -53,6 +61,21 @@ public abstract class SmackDebugger {
     public abstract void userHasLogged(EntityFullJid user);
 
     /**
+     * Note that the sequence of characters may be pretty printed.
+     *
+     * @param outgoingCharSequence the outgoing character sequence.
+     */
+    public abstract void outgoingStreamSink(CharSequence outgoingCharSequence);
+
+    public void onOutgoingElementCompleted() {
+    }
+
+    public abstract void incomingStreamSink(CharSequence incomingCharSequence);
+
+    public void onIncomingElementCompleted() {
+    }
+
+    /**
      * Returns a new special Reader that wraps the new connection Reader. The connection
      * has been secured so the connection is using a new reader and writer. The debugger
      * needs to wrap the new reader and writer to keep being notified of the connection
@@ -61,7 +84,23 @@ public abstract class SmackDebugger {
      * @param reader connection reader.
      * @return a new special Reader that wraps the new connection Reader.
      */
-    public abstract Reader newConnectionReader(Reader reader);
+    public final Reader newConnectionReader(Reader reader) {
+        XmlPrettyPrinter xmlPrettyPrinter = XmlPrettyPrinter.builder()
+                        .setPrettyWriter((sb) -> incomingStreamSink(sb))
+                        .build();
+        incomingStreamSplitterForPrettyPrinting = new XmppXmlSplitter(xmlPrettyPrinter);
+
+        ObservableReader observableReader = new ObservableReader(reader);
+        observableReader.addReaderListener((readString) -> {
+            try {
+                incomingStreamSplitterForPrettyPrinting.append(readString);
+            }
+            catch (IOException e) {
+                throw new AssertionError(e);
+            }
+        });
+        return observableReader;
+    }
 
     /**
      * Returns a new special Writer that wraps the new connection Writer. The connection
@@ -72,7 +111,23 @@ public abstract class SmackDebugger {
      * @param writer connection writer.
      * @return a new special Writer that wraps the new connection Writer.
      */
-    public abstract Writer newConnectionWriter(Writer writer);
+    public final Writer newConnectionWriter(Writer writer) {
+        XmlPrettyPrinter xmlPrettyPrinter = XmlPrettyPrinter.builder()
+                        .setPrettyWriter((sb) -> outgoingStreamSink(sb))
+                        .build();
+        outgoingStreamSplitterForPrettyPrinting = new XmppXmlSplitter(xmlPrettyPrinter);
+
+        ObservableWriter observableWriter = new ObservableWriter(writer);
+        observableWriter.addWriterListener((writtenString) -> {
+            try {
+                outgoingStreamSplitterForPrettyPrinting.append(writtenString);
+            }
+            catch (IOException e) {
+                throw new AssertionError(e);
+            }
+        });
+        return observableWriter;
+    }
 
     /**
      * Used by the connection to notify about an incoming top level stream element.

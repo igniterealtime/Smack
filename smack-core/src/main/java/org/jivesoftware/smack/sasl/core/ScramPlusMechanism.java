@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.security.cert.CertificateEncodingException;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.SmackSaslException;
 import org.jivesoftware.smack.util.TLSUtils;
 
 /**
@@ -48,13 +48,13 @@ public abstract class ScramPlusMechanism extends ScramMechanism {
     }
 
     @Override
-    protected byte[] getChannelBindingData() throws SmackException {
+    protected byte[] getChannelBindingData() throws SmackSaslException {
         byte[] cbData;
         try {
             cbData = TLSUtils.getChannelBindingTlsServerEndPoint(sslSession);
         }
         catch (SSLPeerUnverifiedException | CertificateEncodingException | NoSuchAlgorithmException e) {
-            throw new SmackException(e);
+            throw new SmackSaslException(e);
         }
         return cbData;
     }

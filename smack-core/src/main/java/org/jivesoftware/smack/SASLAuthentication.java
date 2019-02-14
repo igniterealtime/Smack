@@ -32,6 +32,8 @@ import javax.net.ssl.SSLSession;
 import javax.security.auth.callback.CallbackHandler;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.SmackSaslException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.sasl.SASLErrorException;
@@ -180,15 +182,18 @@ public final class SASLAuthentication {
      * @param password the password to send to the server.
      * @param authzid the authorization identifier (typically null).
      * @param sslSession the optional SSL/TLS session (if one was established)
+     * @return the used SASLMechanism.
      * @throws XMPPErrorException
      * @throws SASLErrorException
      * @throws IOException
-     * @throws SmackException
      * @throws InterruptedException
+     * @throws SmackSaslException
+     * @throws NotConnectedException
+     * @throws NoResponseException
      */
-    public void authenticate(String username, String password, EntityBareJid authzid, SSLSession sslSession)
+    public SASLMechanism authenticate(String username, String password, EntityBareJid authzid, SSLSession sslSession)
                     throws XMPPErrorException, SASLErrorException, IOException,
-                    SmackException, InterruptedException {
+                    InterruptedException, SmackSaslException, NotConnectedException, NoResponseException {
         currentMechanism = selectMechanism(authzid);
         final CallbackHandler callbackHandler = configuration.getCallbackHandler();
         final String host = connection.getHost();
@@ -211,10 +216,12 @@ public final class SASLAuthentication {
         }
 
         if (saslException != null) {
-            if (saslException instanceof SmackException) {
-                throw (SmackException) saslException;
+            if (saslException instanceof SmackSaslException) {
+                throw (SmackSaslException) saslException;
             } else if (saslException instanceof SASLErrorException) {
                 throw (SASLErrorException) saslException;
+            } else if (saslException instanceof NotConnectedException) {
+                throw (NotConnectedException) saslException;
             } else {
                 throw new IllegalStateException("Unexpected exception type" , saslException);
             }
@@ -223,6 +230,8 @@ public final class SASLAuthentication {
         if (!authenticationSuccessful) {
             throw NoResponseException.newWith(connection, "successful SASL authentication");
         }
+
+        return currentMechanism;
     }
 
     /**
@@ -245,13 +254,14 @@ public final class SASLAuthentication {
      *
      * @param challenge a base64 encoded string representing the challenge.
      * @param finalChallenge true if this is the last challenge send by the server within the success stanza
-     * @throws SmackException
+     * @throws SmackSaslException
+     * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public void challengeReceived(String challenge, boolean finalChallenge) throws SmackException, InterruptedException {
+    public void challengeReceived(String challenge, boolean finalChallenge) throws SmackSaslException, NotConnectedException, InterruptedException {
         try {
             currentMechanism.challengeReceived(challenge, finalChallenge);
-        } catch (InterruptedException | SmackException e) {
+        } catch (InterruptedException | SmackSaslException | NotConnectedException e) {
             authenticationFailed(e);
             throw e;
         }
@@ -292,7 +302,7 @@ public final class SASLAuthentication {
         authenticationFailed(new SASLErrorException(currentMechanism.getName(), saslFailure));
     }
 
-    public void authenticationFailed(Exception exception) {
+    private void authenticationFailed(Exception exception) {
         saslException = exception;
         // Wake up the thread that is waiting in the #authenticate method
         synchronized (this) {
@@ -322,7 +332,7 @@ public final class SASLAuthentication {
         return lastUsedMech.getName();
     }
 
-    private SASLMechanism selectMechanism(EntityBareJid authzid) throws SmackException {
+    private SASLMechanism selectMechanism(EntityBareJid authzid) throws SmackException.SmackSaslException {
         Iterator<SASLMechanism> it = REGISTERED_MECHANISMS.iterator();
         final List<String> serverMechanisms = getServerMechanisms();
         if (serverMechanisms.isEmpty()) {
@@ -354,7 +364,7 @@ public final class SASLAuthentication {
 
         synchronized (BLACKLISTED_MECHANISMS) {
             // @formatter:off
-            throw new SmackException(
+            throw new SmackException.SmackSaslException(
                             "No supported and enabled SASL Mechanism provided by server. " +
                             "Server announced mechanisms: " + serverMechanisms + ". " +
                             "Registered SASL mechanisms with Smack: " + REGISTERED_MECHANISMS + ". " +

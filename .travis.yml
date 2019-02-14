@@ -4,16 +4,18 @@ android:
     - android-16
 jdk:
   - oraclejdk8
+  - openjdk8
 sudo: false
 cache:
   directories:
   - $HOME/.m2
 
 before_install:
-  - export GRADLE_VERSION=4.6
+  - export GRADLE_VERSION=5.1.1
   - wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip
   - unzip -q gradle-${GRADLE_VERSION}-all.zip
   - export PATH="$(pwd)/gradle-${GRADLE_VERSION}/bin:$PATH"
+  - sudo apt install graphviz
 
 install: gradle assemble --stacktrace
 script: gradle check --stacktrace

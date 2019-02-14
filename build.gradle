@@ -14,7 +14,7 @@ buildscript {
 }
 
 plugins {
-    id 'ru.vyarus.animalsniffer' version '1.4.5'
+    id 'ru.vyarus.animalsniffer' version '1.4.6'
 	id 'net.ltgt.errorprone' version '0.6'
 }
 
@@ -97,12 +97,16 @@ allprojects {
 			':smack-omemo-signal',
 			':smack-omemo-signal-integration-test',
 		].collect{ project(it) }
-		androidBootClasspath = getAndroidRuntimeJar()
-		androidJavadocOffline = getAndroidJavadocOffline()
+		// Lazily evaluate the Android bootClasspath and offline
+		// Javadoc using a closure, so that targets which do not
+		// require it are still able to succeed without an Android
+		// SDK.
+		androidBootClasspath = { getAndroidRuntimeJar() }
+		androidJavadocOffline = { getAndroidJavadocOffline() }
 		junitVersion = '5.2.0'
 	}
 	group = 'org.igniterealtime.smack'
-	sourceCompatibility = 1.7
+	sourceCompatibility = JavaVersion.VERSION_1_8
 	targetCompatibility = sourceCompatibility
 	version = shortVersion
 	if (isSnapshot) {
@@ -182,13 +186,13 @@ allprojects {
 	}
 
 	jacoco {
-		toolVersion = "0.8.1"
+		toolVersion = "0.8.3"
 	}
 
 	jacocoTestReport {
 		dependsOn test
-		sourceDirectories = project.files(sourceSets.main.allSource.srcDirs)
-		classDirectories =  project.files(sourceSets.main.output)
+		getSourceDirectories().setFrom(project.files(sourceSets.main.allSource.srcDirs))
+		getClassDirectories().setFrom(project.files(sourceSets.main.output))
 		reports {
 			xml.enabled true
 		}
@@ -245,7 +249,14 @@ gradle.taskGraph.whenReady { taskGraph ->
 	}
 }
 
-task javadocAll(type: Javadoc) {
+task copyAllJavadocDocFiles(type: Copy) {
+	from javadocAllProjects.collect { project ->
+		"${project.projectDir}/src/javadoc" }
+	into javadocAllDir
+	include '**/doc-files/*.*'
+}
+
+task javadocAll(type: Javadoc, dependsOn: copyAllJavadocDocFiles) {
 	source javadocAllProjects.collect {project ->
 		project.sourceSets.main.allJava }
 	destinationDir = javadocAllDir
@@ -326,7 +337,6 @@ ${oneLineDesc}."""
 evaluationDependsOnChildren()
 subprojects {
 	apply plugin: 'maven'
-	apply plugin: 'osgi'
 	apply plugin: 'signing'
 	apply plugin: 'checkstyle'
 	apply plugin: 'org.kordamp.gradle.clirr'
@@ -449,12 +459,39 @@ subprojects {
 		enabled false
 		semver false
 	}
+
+	// Work around https://github.com/gradle/gradle/issues/4046
+	javadoc.dependsOn('copyJavadocDocFiles')
+	task copyJavadocDocFiles(type: Copy) {
+		from('src/javadoc')
+		into 'build/docs/javadoc'
+		include '**/doc-files/*.*'
+	}
+
+	// If this subproject has a Makefile then make copyJavadocDocFiles
+	// and the root project's javadocAll task dependend on
+	// generateFiles.
+	if (file("$projectDir/Makefile").exists()) {
+		copyJavadocDocFiles.dependsOn('generateFiles')
+		rootProject.copyAllJavadocDocFiles.dependsOn("${project.name}:generateFiles")
+		task generateFiles(type: Exec) {
+			workingDir projectDir
+			commandLine 'make'
+		}
+
+		clean.dependsOn('cleanGeneratedFiles')
+		rootProject.clean.dependsOn("${project.name}:cleanGeneratedFiles")
+		task cleanGeneratedFiles(type: Exec) {
+			workingDir projectDir
+			commandLine 'make', 'clean'
+		}
+	}
 }
 
 configure (androidProjects + androidBootClasspathProjects) {
 	apply plugin: 'ru.vyarus.animalsniffer'
 	dependencies {
-		signature "net.sf.androidscents.signature:android-api-level-${smackMinAndroidSdk}:2.3.1_r2@signature"
+		signature "net.sf.androidscents.signature:android-api-level-${smackMinAndroidSdk}:4.4.2_r4@signature"
 	}
 	animalsniffer {
 		sourceSets = [sourceSets.main]
@@ -545,9 +582,9 @@ coveralls {
 
 task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
 	dependsOn = projectsWithUnitTests.jacocoTestReport
-	sourceDirectories = files(projectsWithUnitTests.sourceSets.main.allSource.srcDirs)
-	classDirectories = files(projectsWithUnitTests.sourceSets.main.output)
-	executionData = files(projectsWithUnitTests.jacocoTestReport.executionData)
+	getSourceDirectories().setFrom(files(projectsWithUnitTests.sourceSets.main.allSource.srcDirs))
+	getClassDirectories().setFrom(files(projectsWithUnitTests.sourceSets.main.output))
+	getExecutionData().setFrom(files(projectsWithUnitTests.jacocoTestReport.executionData))
 	reports {
 		xml.enabled true
 		xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")

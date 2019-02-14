@@ -32,39 +32,39 @@ public class JingleReasonTest extends SmackTestSuite {
     @Test
     public void parserTest() {
         assertEquals("<reason><success/></reason>",
-                JingleReason.Success.toXML(null).toString());
+                JingleReason.Success.toXML().toString());
         assertEquals("<reason><busy/></reason>",
-                JingleReason.Busy.toXML(null).toString());
+                JingleReason.Busy.toXML().toString());
         assertEquals("<reason><cancel/></reason>",
-                JingleReason.Cancel.toXML(null).toString());
+                JingleReason.Cancel.toXML().toString());
         assertEquals("<reason><connectivity-error/></reason>",
-                JingleReason.ConnectivityError.toXML(null).toString());
+                JingleReason.ConnectivityError.toXML().toString());
         assertEquals("<reason><decline/></reason>",
-                JingleReason.Decline.toXML(null).toString());
+                JingleReason.Decline.toXML().toString());
         assertEquals("<reason><expired/></reason>",
-                JingleReason.Expired.toXML(null).toString());
+                JingleReason.Expired.toXML().toString());
         assertEquals("<reason><unsupported-transports/></reason>",
-                JingleReason.UnsupportedTransports.toXML(null).toString());
+                JingleReason.UnsupportedTransports.toXML().toString());
         assertEquals("<reason><failed-transport/></reason>",
-                JingleReason.FailedTransport.toXML(null).toString());
+                JingleReason.FailedTransport.toXML().toString());
         assertEquals("<reason><general-error/></reason>",
-                JingleReason.GeneralError.toXML(null).toString());
+                JingleReason.GeneralError.toXML().toString());
         assertEquals("<reason><gone/></reason>",
-                JingleReason.Gone.toXML(null).toString());
+                JingleReason.Gone.toXML().toString());
         assertEquals("<reason><media-error/></reason>",
-                JingleReason.MediaError.toXML(null).toString());
+                JingleReason.MediaError.toXML().toString());
         assertEquals("<reason><security-error/></reason>",
-                JingleReason.SecurityError.toXML(null).toString());
+                JingleReason.SecurityError.toXML().toString());
         assertEquals("<reason><unsupported-applications/></reason>",
-                JingleReason.UnsupportedApplications.toXML(null).toString());
+                JingleReason.UnsupportedApplications.toXML().toString());
         assertEquals("<reason><timeout/></reason>",
-                JingleReason.Timeout.toXML(null).toString());
+                JingleReason.Timeout.toXML().toString());
         assertEquals("<reason><failed-application/></reason>",
-                JingleReason.FailedApplication.toXML(null).toString());
+                JingleReason.FailedApplication.toXML().toString());
         assertEquals("<reason><incompatible-parameters/></reason>",
-                JingleReason.IncompatibleParameters.toXML(null).toString());
+                JingleReason.IncompatibleParameters.toXML().toString());
         assertEquals("<reason><alternative-session><sid>1234</sid></alternative-session></reason>",
-                JingleReason.AlternativeSession("1234").toXML(null).toString());
+                JingleReason.AlternativeSession("1234").toXML().toString());
     }
 
     @Test(expected = NullPointerException.class)

@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.privacy.provider;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -41,7 +40,7 @@ public class PrivacyProvider extends IQProvider<Privacy> {
 
     @Override
     public Privacy parse(XmlPullParser parser, int initialDepth)
-                    throws XmlPullParserException, IOException, SmackException {
+                    throws XmlPullParserException, IOException {
         Privacy privacy = new Privacy();
         boolean done = false;
         while (!done) {
@@ -80,7 +79,7 @@ public class PrivacyProvider extends IQProvider<Privacy> {
     }
 
     // Parse the list complex type
-    private static void parseList(XmlPullParser parser, Privacy privacy) throws XmlPullParserException, IOException, SmackException {
+    private static void parseList(XmlPullParser parser, Privacy privacy) throws XmlPullParserException, IOException {
         boolean done = false;
         String listName = parser.getAttributeValue("", "name");
         ArrayList<PrivacyItem> items = new ArrayList<>();
@@ -105,7 +104,7 @@ public class PrivacyProvider extends IQProvider<Privacy> {
     }
 
     // Parse the list complex type
-    private static PrivacyItem parseItem(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
+    private static PrivacyItem parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
     // CHECKSTYLE:ON
         // Retrieves the required attributes
         String actionValue = parser.getAttributeValue("", "action");
@@ -128,7 +127,8 @@ public class PrivacyProvider extends IQProvider<Privacy> {
             allow = false;
             break;
         default:
-            throw new SmackException("Unknown action value '" + actionValue + "'");
+            // TODO: Should be SmackParsingException.
+            throw new IOException("Unknown action value '" + actionValue + "'");
         }
 
         PrivacyItem item;

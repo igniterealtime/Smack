@@ -32,7 +32,7 @@ public abstract class AbstractJsonPacketExtension implements ExtensionElement {
     }
 
     @Override
-    public final XmlStringBuilder toXML(String enclosingNamespace) {
+    public final XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         xml.append(json);

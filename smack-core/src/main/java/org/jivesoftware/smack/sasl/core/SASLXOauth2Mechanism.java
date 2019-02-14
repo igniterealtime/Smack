@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2016 Florian Schmaus
+ * Copyright 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.jivesoftware.smack.sasl.core;
 
 import javax.security.auth.callback.CallbackHandler;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 
 /**
@@ -65,12 +64,12 @@ public class SASLXOauth2Mechanism extends SASLMechanism {
     public static final String NAME = "X-OAUTH2";
 
     @Override
-    protected void authenticateInternal(CallbackHandler cbh) throws SmackException {
+    protected void authenticateInternal(CallbackHandler cbh) {
         throw new UnsupportedOperationException("CallbackHandler not (yet) supported");
     }
 
     @Override
-    protected byte[] getAuthenticationText() throws SmackException {
+    protected byte[] getAuthenticationText() {
         // Note that base64 encoding is done in SASLMechanism for the bytes return by getAuthenticationText().
         return toBytes('\u0000' + authenticationId + '\u0000' + password);
     }
@@ -92,7 +91,7 @@ public class SASLXOauth2Mechanism extends SASLMechanism {
     }
 
     @Override
-    public void checkIfSuccessfulOrThrow() throws SmackException {
+    public void checkIfSuccessfulOrThrow() {
         // No check performed
     }
 }

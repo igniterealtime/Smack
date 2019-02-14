@@ -117,7 +117,7 @@ public class STUN extends SimpleIQ {
 
         @Override
         public STUN parse(XmlPullParser parser, int initialDepth)
-                        throws SmackException, XmlPullParserException,
+                        throws XmlPullParserException,
                         IOException {
 
             boolean done = false;
@@ -126,7 +126,7 @@ public class STUN extends SimpleIQ {
             String elementName;
 
             if (!parser.getNamespace().equals(NAMESPACE))
-                throw new SmackException("Not a STUN packet");
+                throw new IOException("Not a STUN packet");
 
             STUN iq = new STUN();
 

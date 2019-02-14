@@ -25,13 +25,19 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.compress.provider.CompressedProvider;
+import org.jivesoftware.smack.compress.provider.FailureProvider;
 import org.jivesoftware.smack.compression.Java7ZlibInputOutputStream;
+import org.jivesoftware.smack.compression.XmppCompressionManager;
+import org.jivesoftware.smack.compression.zlib.ZlibXmppCompressionFactory;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.Message.Body;
 import org.jivesoftware.smack.provider.BindIQProvider;
 import org.jivesoftware.smack.provider.BodyElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.provider.TlsFailureProvider;
+import org.jivesoftware.smack.provider.TlsProceedProvider;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
 import org.jivesoftware.smack.sasl.core.SASLXOauth2Mechanism;
 import org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism;
@@ -97,6 +103,8 @@ public final class SmackInitialization {
         // Add the Java7 compression handler first, since it's preferred
         SmackConfiguration.compressionHandlers.add(new Java7ZlibInputOutputStream());
 
+        XmppCompressionManager.registerXmppCompressionFactory(ZlibXmppCompressionFactory.INSTANCE);
+
         // Use try block since we may not have permission to get a system
         // property (for example, when an applet).
         try {
@@ -117,6 +125,11 @@ public final class SmackInitialization {
 
         ProviderManager.addIQProvider(Bind.ELEMENT, Bind.NAMESPACE, new BindIQProvider());
         ProviderManager.addExtensionProvider(Body.ELEMENT, Body.NAMESPACE, new BodyElementProvider());
+
+        ProviderManager.addNonzaProvider(TlsProceedProvider.INSTANCE);
+        ProviderManager.addNonzaProvider(TlsFailureProvider.INSTANCE);
+        ProviderManager.addNonzaProvider(CompressedProvider.INSTANCE);
+        ProviderManager.addNonzaProvider(FailureProvider.INSTANCE);
 
         SmackConfiguration.smackInitialized = true;
     }

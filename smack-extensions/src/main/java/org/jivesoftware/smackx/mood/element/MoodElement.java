@@ -106,7 +106,7 @@ public class MoodElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
 
         if (mood == null && text == null) {
@@ -167,7 +167,7 @@ public class MoodElement implements ExtensionElement {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
 
             if (concretisation == null) {
@@ -175,7 +175,7 @@ public class MoodElement implements ExtensionElement {
             }
 
             return xml.openElement(getElementName())
-                    .append(concretisation.toXML(null))
+                    .append(concretisation.toXML())
                     .closeElement(getElementName());
         }
 

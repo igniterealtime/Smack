@@ -38,7 +38,7 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
         }
 
         @Override
-        public final XmlStringBuilder toXML(String enclosingNamespace) {
+        public final XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
             xml.attribute(ATTR_CID, getCandidateId());
@@ -53,12 +53,12 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
             }
 
             JingleS5BCandidateTransportInfo otherCandidateTransportInfo = (JingleS5BCandidateTransportInfo) other;
-            return toXML(null).equals(otherCandidateTransportInfo.toXML(null));
+            return toXML().toString().equals(otherCandidateTransportInfo.toXML().toString());
         }
 
         @Override
         public final int hashCode() {
-            return getCandidateId().hashCode();
+            return getCandidateId().toString().hashCode();
         }
     }
 
@@ -102,7 +102,7 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
             xml.closeEmptyElement();
@@ -116,7 +116,7 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
 
         @Override
         public int hashCode() {
-            return toXML(null).toString().hashCode();
+            return toXML().toString().hashCode();
         }
     }
 
@@ -134,7 +134,7 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
         }
 
         @Override
-        public CharSequence toXML(String enclosingNamespace) {
+        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
             xml.closeEmptyElement();
@@ -148,7 +148,7 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
 
         @Override
         public int hashCode() {
-            return toXML(null).toString().hashCode();
+            return toXML().toString().hashCode();
         }
     }
 }

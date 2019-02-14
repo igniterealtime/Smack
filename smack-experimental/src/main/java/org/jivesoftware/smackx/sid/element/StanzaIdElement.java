@@ -72,7 +72,7 @@ public class StanzaIdElement extends StableAndUniqueIdElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         return new XmlStringBuilder(this)
                 .attribute(ATTR_ID, getId())
                 .attribute(ATTR_BY, getBy())

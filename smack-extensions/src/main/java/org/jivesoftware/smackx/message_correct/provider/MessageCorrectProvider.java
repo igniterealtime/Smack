@@ -16,15 +16,11 @@
  */
 package org.jivesoftware.smackx.message_correct.provider;
 
-import java.io.IOException;
-
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * A ExtensionElementProvider for the MessageCorrectExtension. As
@@ -35,8 +31,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MessageCorrectProvider extends ExtensionElementProvider<MessageCorrectExtension> {
 
     @Override
-    public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth)
-            throws XmlPullParserException, IOException, SmackException {
+    public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth) {
         String idMessageToReplace = parser.getAttributeValue("", MessageCorrectExtension.ID_TAG);
         return new MessageCorrectExtension(idMessageToReplace);
     }

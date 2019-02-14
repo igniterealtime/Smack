@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class ChatStateExtensionProvider extends ExtensionElementProvider<ChatStateExtension> {
 
     @Override
-    public ChatStateExtension parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public ChatStateExtension parse(XmlPullParser parser, int initialDepth) {
         String chatStateString = parser.getName();
         ChatState state = ChatState.valueOf(chatStateString);
 

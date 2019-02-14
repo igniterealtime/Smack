@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -433,7 +434,7 @@ public class FormField implements NamedElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder(this);
         // Add attributes
         buf.optAttribute("label", getLabel());
@@ -449,7 +450,7 @@ public class FormField implements NamedElement {
         }
         // Loop through all the values and append them to the string buffer
         for (Option option : getOptions()) {
-            buf.append(option.toXML(null));
+            buf.append(option.toXML());
         }
         buf.optElement(validateElement);
         buf.closeElement(this);
@@ -467,12 +468,12 @@ public class FormField implements NamedElement {
 
         FormField other = (FormField) obj;
 
-        return toXML(null).equals(other.toXML(null));
+        return toXML().toString().equals(other.toXML().toString());
     }
 
     @Override
     public int hashCode() {
-        return toXML(null).hashCode();
+        return toXML().toString().hashCode();
     }
 
     /**
@@ -525,7 +526,7 @@ public class FormField implements NamedElement {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             // Add attribute
             xml.optAttribute("label", getLabel());

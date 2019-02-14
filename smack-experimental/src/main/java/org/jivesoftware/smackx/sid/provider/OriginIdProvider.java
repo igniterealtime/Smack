@@ -26,7 +26,7 @@ public class OriginIdProvider extends ExtensionElementProvider<OriginIdElement> 
     public static final OriginIdProvider TEST_INSTANCE = new OriginIdProvider();
 
     @Override
-    public OriginIdElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public OriginIdElement parse(XmlPullParser parser, int initialDepth) {
         return new OriginIdElement(parser.getAttributeValue(null, OriginIdElement.ATTR_ID));
     }
 }

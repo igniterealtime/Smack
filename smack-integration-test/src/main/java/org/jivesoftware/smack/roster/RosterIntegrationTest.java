@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2018 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
     private final Roster rosterOne;
     private final Roster rosterTwo;
 
-    public RosterIntegrationTest(SmackIntegrationTestEnvironment environment) {
+    public RosterIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
         super(environment);
         rosterOne = Roster.getInstanceFor(conOne);
         rosterTwo = Roster.getInstanceFor(conTwo);

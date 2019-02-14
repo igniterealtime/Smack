@@ -302,7 +302,7 @@ public class StringUtils {
         return randomString(length, SECURE_RANDOM.get());
     }
 
-    private static String randomString(final int length, Random random) {
+    public static String randomString(final int length, Random random) {
         if (length < 1) {
             return null;
         }

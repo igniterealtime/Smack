@@ -76,10 +76,10 @@ public class EventElement implements EmbeddedPacketExtension {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
-        xml.append(ext.toXML(null));
+        xml.append(ext.toXML());
         xml.closeElement(this);
         return xml;
     }

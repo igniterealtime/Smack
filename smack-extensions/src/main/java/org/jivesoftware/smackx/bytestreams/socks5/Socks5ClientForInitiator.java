@@ -24,6 +24,7 @@ import java.util.concurrent.TimeoutException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.SmackMessageException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -73,7 +74,7 @@ public class Socks5ClientForInitiator extends Socks5Client {
 
     @Override
     public Socket getSocket(int timeout) throws IOException, InterruptedException,
-                    TimeoutException, XMPPException, SmackException {
+                    TimeoutException, XMPPException, SmackMessageException, NotConnectedException, NoResponseException {
         Socket socket;
 
         // check if stream host is the local SOCKS5 proxy
@@ -81,7 +82,7 @@ public class Socks5ClientForInitiator extends Socks5Client {
             Socks5Proxy socks5Server = Socks5Proxy.getSocks5Proxy();
             socket = socks5Server.getSocket(this.digest);
             if (socket == null) {
-                throw new SmackException("target is not connected to SOCKS5 proxy");
+                throw new SmackException.SmackMessageException("target is not connected to SOCKS5 proxy");
             }
         }
         else {
@@ -111,7 +112,6 @@ public class Socks5ClientForInitiator extends Socks5Client {
      * @throws NoResponseException
      * @throws NotConnectedException
      * @throws InterruptedException
-     * @throws SmackException if there was no response from the server.
      */
     private void activate() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Bytestream activate = createStreamHostActivation();

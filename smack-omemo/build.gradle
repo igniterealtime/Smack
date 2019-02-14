@@ -1,9 +1,3 @@
-// Although the osgi plugin is already applied by the root project's
-// subprojects closure, we need to re-apply it here so that the
-// manifest is a OsgiManifest. Possible caused by
-// evaluationDependsOnChildren in the root project.
-apply plugin: 'osgi'
-
 dependencies {
 	compile project(":smack-im")
 	compile project(":smack-extensions")

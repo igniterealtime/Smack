@@ -18,7 +18,6 @@ package org.jivesoftware.smackx.jingleold.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
@@ -67,12 +66,11 @@ public abstract class JingleDescriptionProvider extends ExtensionElementProvider
      * @param parser
      *            the input to parse
      * @return a description element
-     * @throws SmackException
      * @throws IOException
      * @throws XmlPullParserException
      */
     @Override
-    public JingleDescription parse(XmlPullParser parser, int initialDepth) throws SmackException, XmlPullParserException, IOException {
+    public JingleDescription parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         boolean done = false;
         JingleDescription desc = getInstance();
 
@@ -84,7 +82,8 @@ public abstract class JingleDescriptionProvider extends ExtensionElementProvider
                 if (name.equals(PayloadType.NODENAME)) {
                     desc.addPayloadType(parsePayload(parser));
                 } else {
-                    throw new SmackException("Unknow element \"" + name + "\" in content.");
+                    // TODO: Should be SmackParseException.
+                    throw new IOException("Unknow element \"" + name + "\" in content.");
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 if (name.equals(JingleDescription.NODENAME)) {

@@ -39,7 +39,7 @@ public abstract class AbstractTwoUsersOmemoIntegrationTest extends AbstractOmemo
 
     protected OmemoManager alice, bob;
 
-    public AbstractTwoUsersOmemoIntegrationTest(SmackIntegrationTestEnvironment environment)
+    public AbstractTwoUsersOmemoIntegrationTest(SmackIntegrationTestEnvironment<?> environment)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException, TestNotPossibleException {
         super(environment);

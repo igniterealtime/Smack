@@ -26,7 +26,7 @@ import org.jxmpp.jid.EntityBareJid;
 
 public class OutgoingMessageListenerIntegrationTest extends AbstractChatIntegrationTest {
 
-    public OutgoingMessageListenerIntegrationTest(SmackIntegrationTestEnvironment environment) {
+    public OutgoingMessageListenerIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
         super(environment);
     }
 

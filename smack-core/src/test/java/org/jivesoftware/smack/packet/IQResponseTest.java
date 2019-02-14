@@ -75,7 +75,7 @@ public class IQResponseTest {
         assertNotNull(result.getStanzaId());
         assertEquals(request.getStanzaId(), result.getStanzaId());
         assertEquals(request.getFrom(), result.getTo());
-        assertEquals(error.build().toXML(), result.getError().toXML());
+        assertEquals(error.build().toXML().toString(), result.getError().toXML().toString());
         // TODO this test was never valid
         // assertEquals(CHILD_ELEMENT, result.getChildElementXML());
     }

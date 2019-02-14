@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -237,7 +236,7 @@ public final class PrivateDataManager extends Manager {
 
         @Override
         public PrivateDataIQ parse(XmlPullParser parser, int initialDepth)
-                        throws XmlPullParserException, IOException, SmackException {
+                        throws XmlPullParserException, IOException {
             PrivateData privateData = null;
             boolean done = false;
             while (!done) {

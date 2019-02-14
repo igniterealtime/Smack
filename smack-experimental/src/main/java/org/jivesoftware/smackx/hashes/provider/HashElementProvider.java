@@ -16,12 +16,15 @@
  */
 package org.jivesoftware.smackx.hashes.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.hashes.HashManager;
 import org.jivesoftware.smackx.hashes.element.HashElement;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Provider for HashElements.
@@ -29,7 +32,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class HashElementProvider extends ExtensionElementProvider<HashElement> {
 
     @Override
-    public HashElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public HashElement parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         String algo = parser.getAttributeValue(null, HashElement.ATTR_ALGO);
         String hashB64 = parser.nextText();
         return new HashElement(HashManager.ALGORITHM.valueOfName(algo), hashB64);

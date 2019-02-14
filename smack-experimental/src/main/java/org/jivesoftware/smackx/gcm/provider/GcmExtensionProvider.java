@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@
 package org.jivesoftware.smackx.gcm.provider;
 
 import org.jivesoftware.smackx.gcm.packet.GcmPacketExtension;
-import org.jivesoftware.smackx.json.packet.AbstractJsonPacketExtension;
 import org.jivesoftware.smackx.json.provider.AbstractJsonExtensionProvider;
 
-public class GcmExtensionProvider extends AbstractJsonExtensionProvider {
+public class GcmExtensionProvider extends AbstractJsonExtensionProvider<GcmPacketExtension> {
 
     @Override
-    public AbstractJsonPacketExtension from(String json) {
+    public GcmPacketExtension from(String json) {
         return new GcmPacketExtension(json);
     }
 }

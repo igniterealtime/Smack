@@ -47,7 +47,7 @@ public class StreamManagement {
         }
 
         @Override
-        public CharSequence toXML(String enclosingNamespace) {
+        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             xml.closeEmptyElement();
             return xml;
@@ -113,7 +113,7 @@ public class StreamManagement {
         }
 
         @Override
-        public CharSequence toXML(String enclosingNamespace) {
+        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             maybeAddResumeAttributeTo(xml);
             maybeAddMaxAttributeTo(xml);
@@ -174,7 +174,7 @@ public class StreamManagement {
         }
 
         @Override
-        public CharSequence toXML(String enclosingNamespace) {
+        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             xml.optAttribute("id", id);
             maybeAddResumeAttributeTo(xml);
@@ -220,7 +220,7 @@ public class StreamManagement {
         }
 
         @Override
-        public CharSequence toXML(String enclosingNamespace) {
+        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             if (condition == null && textElements.isEmpty()) {
                 xml.closeEmptyElement();
@@ -273,7 +273,7 @@ public class StreamManagement {
         }
 
         @Override
-        public final XmlStringBuilder toXML(String enclosingNamespace) {
+        public final XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             xml.attribute("h", Long.toString(handledCount));
             xml.attribute("previd", previd);
@@ -322,7 +322,7 @@ public class StreamManagement {
         }
 
         @Override
-        public CharSequence toXML(String enclosingNamespace) {
+        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             xml.attribute("h", Long.toString(handledCount));
             xml.closeEmptyElement();
@@ -348,7 +348,7 @@ public class StreamManagement {
         }
 
         @Override
-        public CharSequence toXML(String enclosingNamespace) {
+        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
         }
 

@@ -1,9 +1,3 @@
-// Although the osgi plugin is already applied by the root project's
-// subprojects closure, we need to re-apply it here so that the
-// manifest is a OsgiManifest. Possible caused by
-// evaluationDependsOnChildren in the root project.
-apply plugin: 'osgi'
-
 description = """\
 Smack for Java7 (or higher).
 This is a pseudo-artifact that pulls all the required dependencies to
@@ -18,10 +12,4 @@ dependencies {
 
 javadoc {
 	enabled = false
-}
-
-jar {
-	manifest {
-		instruction 'Import-Package', '!sun.security.*, *'
-	}
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.iqlast.packet;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 
@@ -103,21 +102,18 @@ public class LastActivity extends IQ {
     public static class Provider extends IQProvider<LastActivity> {
 
         @Override
-        public LastActivity parse(XmlPullParser parser, int initialDepth) throws SmackException, XmlPullParserException {
+        public LastActivity parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
             LastActivity lastActivity = new LastActivity();
             String seconds = parser.getAttributeValue("", "seconds");
             if (seconds != null) {
                 try {
                     lastActivity.setLastActivity(Long.parseLong(seconds));
                 } catch (NumberFormatException e) {
-                    throw new SmackException("Could not parse last activity number", e);
+                    // TODO: Should be SmackParseException (or a SmackParseNumberException subclass of).
+                    throw new IOException("Could not parse last activity number", e);
                 }
             }
-            try {
-                lastActivity.setMessage(parser.nextText());
-            } catch (IOException e) {
-                throw new SmackException(e);
-            }
+            lastActivity.setMessage(parser.nextText());
             return lastActivity;
         }
     }

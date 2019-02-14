@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class ChatTest extends AbstractSmackIntegrationTest {
     private boolean invoked;
 
     @SuppressWarnings("deprecation")
-    public ChatTest(SmackIntegrationTestEnvironment environment) {
+    public ChatTest(SmackIntegrationTestEnvironment<?> environment) {
         super(environment);
         chatManagerOne = org.jivesoftware.smack.chat.ChatManager.getInstanceFor(conOne);
     }

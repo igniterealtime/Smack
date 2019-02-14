@@ -51,7 +51,7 @@ public class PublishItem<T extends Item> extends NodeExtension {
     }
 
     @Override
-    public String toXML(String enclosingNamespace) {
+    public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         StringBuilder builder = new StringBuilder("<");
         builder.append(getElementName());
         builder.append(" node='");
@@ -59,7 +59,7 @@ public class PublishItem<T extends Item> extends NodeExtension {
         builder.append("'>");
 
         for (Item item : items) {
-            builder.append(item.toXML(null));
+            builder.append(item.toXML());
         }
         builder.append("</publish>");
 

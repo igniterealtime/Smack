@@ -195,7 +195,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             done = true;
             String errorMessage = "Timeout reached for the connection to "
                     + getHost() + ":" + getPort() + ".";
-            throw new SmackException(errorMessage);
+            throw new SmackException.SmackMessageException(errorMessage);
         }
     }
 
@@ -385,18 +385,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         };
         readerConsumer.setDaemon(true);
         readerConsumer.start();
-    }
-
-    /**
-     * Sends out a notification that there was an error with the connection
-     * and closes the connection.
-     *
-     * @param e the exception that causes the connection close event.
-     */
-    protected void notifyConnectionError(Exception e) {
-        // Closes the connection temporary. A reconnection is possible
-        shutdown();
-        callConnectionClosedOnErrorListener(e);
     }
 
     /**

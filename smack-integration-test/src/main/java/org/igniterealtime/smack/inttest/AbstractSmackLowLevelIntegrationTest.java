@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2017 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,22 @@
  */
 package org.igniterealtime.smack.inttest;
 
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 import org.jxmpp.jid.DomainBareJid;
 
 public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmackIntTest {
 
-    private final SmackIntegrationTestEnvironment environment;
+    private final SmackIntegrationTestEnvironment<?> environment;
 
     /**
      * The configuration
@@ -35,33 +40,36 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
 
     protected final DomainBareJid service;
 
-    public AbstractSmackLowLevelIntegrationTest(SmackIntegrationTestEnvironment environment) {
-        super(environment.testRunId, environment.configuration);
+    protected AbstractSmackLowLevelIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
+        super(environment);
         this.environment = environment;
         this.configuration = environment.configuration;
         this.service = configuration.service;
     }
 
-    public final XMPPTCPConnectionConfiguration.Builder getConnectionConfiguration() throws KeyManagementException, NoSuchAlgorithmException {
-        XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
-        if (configuration.tlsContext != null) {
-            builder.setCustomSSLContext(configuration.tlsContext);
-        }
-        builder.setSecurityMode(configuration.securityMode);
-        builder.setXmppDomain(service);
-        return builder;
+    protected AbstractXMPPConnection getConnectedConnection() throws InterruptedException, XMPPException, SmackException, IOException {
+        AbstractXMPPConnection connection = getUnconnectedConnection();
+        connection.connect().login();
+        return connection;
     }
 
-    protected void performCheck(ConnectionCallback callback) throws Exception {
-        XMPPTCPConnection connection = SmackIntegrationTestFramework.getConnectedConnection(environment, -1);
-        try {
-            callback.connectionCallback(connection);
-        } finally {
-            IntTestUtil.disconnectAndMaybeDelete(connection, configuration);
-        }
+    protected AbstractXMPPConnection getUnconnectedConnection()
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return environment.connectionManager.constructConnection();
     }
 
-    public interface ConnectionCallback {
-        void connectionCallback(XMPPTCPConnection connection) throws Exception;
+    protected List<AbstractXMPPConnection> getUnconnectedConnections(int count)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        List<AbstractXMPPConnection> connections = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            AbstractXMPPConnection connection = getUnconnectedConnection();
+            connections.add(connection);
+        }
+        return connections;
     }
+
+    protected void recycle(AbstractXMPPConnection connection) {
+        environment.connectionManager.recycle(connection);
+    }
+
 }

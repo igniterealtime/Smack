@@ -69,7 +69,7 @@ public class Destroy implements NamedElement, Serializable {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.optAttribute("jid", getJid());
         xml.rightAngleBracket();

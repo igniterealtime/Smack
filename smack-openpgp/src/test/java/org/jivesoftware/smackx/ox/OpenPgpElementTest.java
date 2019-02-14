@@ -70,7 +70,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
 
         OpenPgpElement element = new OpenPgpElement("BASE64_OPENPGP_MESSAGE");
 
-        assertXMLEqual(expected, element.toXML(null).toString());
+        assertXMLEqual(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         OpenPgpElement parsed = OpenPgpElementProvider.TEST_INSTANCE.parse(parser);
@@ -102,7 +102,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
         payload.add(new Message.Body("en", "Hello World!"));
         SignElement element = new SignElement(recipients, testDate, payload);
 
-        assertXMLEqual(expected, element.toXML(null).toString());
+        assertXMLEqual(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         SignElement parsed = (SignElement) OpenPgpContentElementProvider.parseOpenPgpContentElement(parser);
@@ -132,7 +132,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
                 testDate,
                 payload);
 
-        assertXMLEqual(expected, element.toXML(null).toString());
+        assertXMLEqual(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         CryptElement parsed = (CryptElement) OpenPgpContentElementProvider.parseOpenPgpContentElement(parser);
@@ -162,7 +162,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
                 "f0rm1l4n4-mT8y33j!Y%fRSrcd^ZE4Q7VDt1L%WEgR!kv",
                 testDate, payload);
 
-        assertXMLEqual(expected, element.toXML(null).toString());
+        assertXMLEqual(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         SigncryptElement parsed = (SigncryptElement) OpenPgpContentElementProvider.parseOpenPgpContentElement(parser);

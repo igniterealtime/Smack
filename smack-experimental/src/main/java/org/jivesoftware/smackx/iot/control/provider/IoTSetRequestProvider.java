@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.iot.control.provider;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +30,12 @@ import org.jivesoftware.smackx.iot.control.element.SetIntData;
 import org.jivesoftware.smackx.iot.control.element.SetLongData;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class IoTSetRequestProvider extends IQProvider<IoTSetRequest> {
 
     @Override
-    public IoTSetRequest parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public IoTSetRequest parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
         List<SetData> data = new ArrayList<>(4);
         outerloop: while (true) {
             final int eventType = parser.next();

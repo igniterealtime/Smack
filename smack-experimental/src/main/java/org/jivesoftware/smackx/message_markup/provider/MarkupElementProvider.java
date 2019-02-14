@@ -19,12 +19,12 @@ package org.jivesoftware.smackx.message_markup.provider;
 import static org.xmlpull.v1.XmlPullParser.END_TAG;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.message_markup.element.BlockQuoteElement;
@@ -34,11 +34,12 @@ import org.jivesoftware.smackx.message_markup.element.MarkupElement;
 import org.jivesoftware.smackx.message_markup.element.SpanElement;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class MarkupElementProvider extends ExtensionElementProvider<MarkupElement> {
 
     @Override
-    public MarkupElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public MarkupElement parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException {
 
         MarkupElement.Builder markup = MarkupElement.getBuilder();
 
@@ -117,7 +118,8 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
                         case ListElement.ELEMENT:
                             MarkupElement.Builder.ListBuilder listBuilder = markup.beginList();
                             if (lis.size() > 0 && lis.get(0).getStart() != listStart) {
-                                throw new SmackException("Error while parsing incoming MessageMarkup ListElement: " +
+                                // TODO: Should be SmackParseException.
+                                throw new IOException("Error while parsing incoming MessageMarkup ListElement: " +
                                         "'start' attribute of first 'li' element must equal 'start' attribute of list.");
                             }
                             for (int i = 0; i < lis.size(); i++) {

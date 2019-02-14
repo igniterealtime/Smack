@@ -74,6 +74,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.ObservableReader;
 import org.jivesoftware.smack.util.ObservableWriter;
 import org.jivesoftware.smack.util.ReaderListener;
@@ -709,21 +710,13 @@ public class EnhancedDebugger extends SmackDebugger {
     }
 
     @Override
-    public Reader newConnectionReader(Reader newReader) {
-        ((ObservableReader) reader).removeReaderListener(readerListener);
-        ObservableReader debugReader = new ObservableReader(newReader);
-        debugReader.addReaderListener(readerListener);
-        reader = debugReader;
-        return reader;
+    public final void outgoingStreamSink(CharSequence outgoingCharSequence) {
+        writerListener.write(outgoingCharSequence.toString());
     }
 
     @Override
-    public Writer newConnectionWriter(Writer newWriter) {
-        ((ObservableWriter) writer).removeWriterListener(writerListener);
-        ObservableWriter debugWriter = new ObservableWriter(newWriter);
-        debugWriter.addWriterListener(writerListener);
-        writer = debugWriter;
-        return writer;
+    public final void incomingStreamSink(CharSequence incomingCharSequence) {
+        readerListener.read(incomingCharSequence.toString());
     }
 
     @Override
@@ -818,7 +811,7 @@ public class EnhancedDebugger extends SmackDebugger {
 
                 messagesTable.addRow(
                         new Object[] {
-                                XmlUtil.prettyFormatXml(packet.toXML(null).toString()),
+                                XmlUtil.prettyFormatXml(packet.toXML().toString()),
                                 dateFormatter.format(new Date()),
                                 packetReceivedIcon,
                                 packetTypeIcon,
@@ -889,7 +882,7 @@ public class EnhancedDebugger extends SmackDebugger {
 
                 messagesTable.addRow(
                         new Object[] {
-                                XmlUtil.prettyFormatXml(packet.toXML(null).toString()),
+                                XmlUtil.prettyFormatXml(packet.toXML().toString()),
                                 dateFormatter.format(new Date()),
                                 packetSentIcon,
                                 packetTypeIcon,
@@ -946,15 +939,14 @@ public class EnhancedDebugger extends SmackDebugger {
         }
 
         @Override
-        public String toXML(String enclosingNamespace) {
+        public String toXML(XmlEnvironment enclosingNamespace) {
             return text;
         }
 
         @Override
         public String toString() {
-            return toXML(null);
+            return toXML((XmlEnvironment) null);
         }
-
     }
 
     /**

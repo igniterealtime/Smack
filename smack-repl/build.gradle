@@ -37,3 +37,8 @@ task printClasspath(dependsOn: assemble) {
         println sourceSets.main.runtimeClasspath.asPath
     }
 }
+
+task printXmppNioTcpConnectionStateGraph(type: JavaExec) {
+	classpath sourceSets.main.runtimeClasspath
+	main 'org.igniterealtime.smack.smackrepl.StateGraph'
+}

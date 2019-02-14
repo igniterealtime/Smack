@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus.
+ * Copyright 2018-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack.parsing;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.UnparseableStanza;
@@ -32,7 +33,7 @@ public class ExceptionThrowingCallbackWithHint extends ExceptionThrowingCallback
     private static final Logger LOGGER = Logger.getLogger(ExceptionThrowingCallbackWithHint.class.getName());
 
     @Override
-    public void handleUnparsableStanza(UnparseableStanza packetData) throws Exception {
+    public void handleUnparsableStanza(UnparseableStanza packetData) throws IOException {
         LOGGER.warning("Parsing exception encountered."
                         + " This exception will be re-thrown, leading to a disconnect."
                         + " You can change this behavior by setting a different ParsingExceptionCallback using setParsingExceptionCallback()."

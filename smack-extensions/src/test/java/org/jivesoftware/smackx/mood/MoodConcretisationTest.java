@@ -60,11 +60,11 @@ public class MoodConcretisationTest extends SmackTestSuite {
                         new EcstaticMoodConcretisation()),
                 "Yay, the mood spec has been approved!");
 
-        assertXMLEqual(xml, element.toXML(null).toString());
+        assertXMLEqual(xml, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         MoodElement parsed = MoodProvider.INSTANCE.parse(parser);
-        assertXMLEqual(xml, parsed.toXML(null).toString());
+        assertXMLEqual(xml, parsed.toXML().toString());
 
         assertTrue(parsed.hasConcretisation());
         assertTrue(parsed.hasText());

@@ -137,7 +137,7 @@ public class DataPacketExtension implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = getIQChildElementBuilder(new IQChildElementXmlStringBuilder(this));
         xml.closeElement(this);
         return xml;

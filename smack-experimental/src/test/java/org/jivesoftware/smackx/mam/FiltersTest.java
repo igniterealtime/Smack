@@ -58,7 +58,7 @@ public class FiltersTest extends MamTest {
         List<String> values = new ArrayList<>();
         values.add(XmppDateTime.formatXEP0082Date(date));
 
-        assertEquals(getMamXMemberWith(fields, values), dataForm.toXML(null).toString());
+        assertEquals(getMamXMemberWith(fields, values), dataForm.toXML().toString());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class FiltersTest extends MamTest {
         List<String> values = new ArrayList<>();
         values.add(XmppDateTime.formatXEP0082Date(date));
 
-        assertEquals(getMamXMemberWith(fields, values), dataForm.toXML(null).toString());
+        assertEquals(getMamXMemberWith(fields, values), dataForm.toXML().toString());
     }
 
     @Test
@@ -88,7 +88,7 @@ public class FiltersTest extends MamTest {
         List<CharSequence> values = new ArrayList<>();
         values.add(jid);
 
-        assertEquals(getMamXMemberWith(fields, values), dataForm.toXML(null).toString());
+        assertEquals(getMamXMemberWith(fields, values), dataForm.toXML().toString());
     }
 
 }

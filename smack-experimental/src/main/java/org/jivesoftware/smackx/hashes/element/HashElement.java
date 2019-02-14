@@ -93,7 +93,7 @@ public class HashElement implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML(String enclosingNamespace) {
+    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder sb = new XmlStringBuilder(this);
         sb.attribute(ATTR_ALGO, algorithm.toString());
         sb.rightAngleBracket();
@@ -120,6 +120,6 @@ public class HashElement implements ExtensionElement {
 
     @Override
     public int hashCode() {
-        return toXML(null).toString().hashCode();
+        return toXML().toString().hashCode();
     }
 }

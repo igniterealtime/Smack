@@ -86,7 +86,7 @@ public class DefaultExtensionElement implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML(String enclosingNamespace) {
+    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder();
         buf.halfOpenElement(elementName).xmlnsAttribute(namespace).rightAngleBracket();
         for (String name : getNames()) {

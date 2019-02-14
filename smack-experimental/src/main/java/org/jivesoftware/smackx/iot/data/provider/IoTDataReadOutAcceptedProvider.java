@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.iot.data.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -26,7 +28,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class IoTDataReadOutAcceptedProvider extends IQProvider<IoTDataReadOutAccepted> {
 
     @Override
-    public IoTDataReadOutAccepted parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public IoTDataReadOutAccepted parse(XmlPullParser parser, int initialDepth) throws IOException {
         int seqNr = ParserUtils.getIntegerAttributeOrThrow(parser, "seqnr", "IoT data request <accepted/> without sequence number");
         boolean queued = ParserUtils.getBooleanAttribute(parser, "queued", false);
         return new IoTDataReadOutAccepted(seqNr, queued);

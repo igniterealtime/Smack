@@ -107,10 +107,10 @@ public class OfferRevokeProvider extends IQProvider<IQ> {
                 buf.append("<reason>").append(reason).append("</reason>");
             }
             if (sessionID != null) {
-                buf.append(new SessionID(sessionID).toXML(null));
+                buf.append(new SessionID(sessionID).toXML());
             }
             if (userID != null) {
-                buf.append(new UserID(userID).toXML(null));
+                buf.append(new UserID(userID).toXML());
             }
             return buf;
         }

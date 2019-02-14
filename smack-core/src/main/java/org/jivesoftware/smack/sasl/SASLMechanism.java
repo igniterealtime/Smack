@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014-2018 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import javax.net.ssl.SSLSession;
 import javax.security.auth.callback.CallbackHandler;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.SmackSaslException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.AuthMechanism;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Response;
@@ -139,13 +139,13 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param password the password for this account.
      * @param authzid the optional authorization identity.
      * @param sslSession the optional SSL/TLS session (if one was established)
-     * @throws SmackException If a network error occurs while authenticating.
+     * @throws SmackSaslException if a SASL related error occurs.
      * @throws NotConnectedException
      * @throws InterruptedException
      */
     public final void authenticate(String username, String host, DomainBareJid serviceName, String password,
                     EntityBareJid authzid, SSLSession sslSession)
-                    throws SmackException, NotConnectedException, InterruptedException {
+                    throws SmackSaslException, NotConnectedException, InterruptedException {
         this.authenticationId = username;
         this.host = host;
         this.serviceName = serviceName;
@@ -157,10 +157,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         authenticate();
     }
 
-    /**
-     * @throws SmackException
-     */
-    protected void authenticateInternal() throws SmackException {
+    protected void authenticateInternal() throws SmackSaslException {
     }
 
     /**
@@ -172,12 +169,12 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param cbh      the CallbackHandler to obtain user information.
      * @param authzid the optional authorization identity.
      * @param sslSession the optional SSL/TLS session (if one was established)
-     * @throws SmackException
+     * @throws SmackSaslException if a SASL related error occurs.
      * @throws NotConnectedException
      * @throws InterruptedException
      */
     public void authenticate(String host, DomainBareJid serviceName, CallbackHandler cbh, EntityBareJid authzid, SSLSession sslSession)
-                    throws SmackException, NotConnectedException, InterruptedException {
+                    throws SmackSaslException, NotConnectedException, InterruptedException {
         this.host = host;
         this.serviceName = serviceName;
         this.authorizationId = authzid;
@@ -187,9 +184,9 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
         authenticate();
     }
 
-    protected abstract void authenticateInternal(CallbackHandler cbh) throws SmackException;
+    protected abstract void authenticateInternal(CallbackHandler cbh) throws SmackSaslException;
 
-    private void authenticate() throws SmackException, NotConnectedException, InterruptedException {
+    private void authenticate() throws SmackSaslException, NotConnectedException, InterruptedException {
         byte[] authenticationBytes = getAuthenticationText();
         String authenticationText;
         // Some SASL mechanisms do return an empty array (e.g. EXTERNAL from javax), so check that
@@ -213,9 +210,9 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * empty array here.
      *
      * @return the initial response or null
-     * @throws SmackException
+     * @throws SmackSaslException
      */
-    protected abstract byte[] getAuthenticationText() throws SmackException;
+    protected abstract byte[] getAuthenticationText() throws SmackSaslException;
 
     /**
      * The server is challenging the SASL mechanism for the stanza he just sent. Send a
@@ -223,10 +220,11 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      *
      * @param challengeString a base64 encoded string representing the challenge.
      * @param finalChallenge true if this is the last challenge send by the server within the success stanza
-     * @throws SmackException exception
+     * @throws SmackSaslException if a SASL related error occurs.
      * @throws InterruptedException if the connection is interrupted
+     * @throws NotConnectedException
      */
-    public final void challengeReceived(String challengeString, boolean finalChallenge) throws SmackException, InterruptedException {
+    public final void challengeReceived(String challengeString, boolean finalChallenge) throws SmackSaslException, InterruptedException, NotConnectedException {
         byte[] challenge = Base64.decode((challengeString != null && challengeString.equals("=")) ? "" : challengeString);
         byte[] response = evaluateChallenge(challenge);
         if (finalChallenge) {
@@ -251,9 +249,9 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param challenge challenge to evaluate.
      *
      * @return null.
-     * @throws SmackException in case of an error.
+     * @throws SmackSaslException If a SASL related error occurs.
      */
-    protected byte[] evaluateChallenge(byte[] challenge) throws SmackException {
+    protected byte[] evaluateChallenge(byte[] challenge) throws SmackSaslException {
         return null;
     }
 
@@ -278,7 +276,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      */
     public abstract int getPriority();
 
-    public abstract void checkIfSuccessfulOrThrow() throws SmackException;
+    public abstract void checkIfSuccessfulOrThrow() throws SmackSaslException;
 
     public SASLMechanism instanceForAuthentication(XMPPConnection connection, ConnectionConfiguration connectionConfiguration) {
         SASLMechanism saslMechansim = newInstance();

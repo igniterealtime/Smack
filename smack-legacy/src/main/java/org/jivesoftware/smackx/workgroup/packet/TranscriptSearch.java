@@ -17,11 +17,15 @@
 
 package org.jivesoftware.smackx.workgroup.packet;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.SimpleIQ;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * IQ stanza for retrieving the transcript search form, submitting the completed search form
@@ -53,7 +57,7 @@ public class TranscriptSearch extends SimpleIQ {
     public static class Provider extends IQProvider<TranscriptSearch> {
 
         @Override
-        public TranscriptSearch parse(XmlPullParser parser, int initialDepth) throws Exception {
+        public TranscriptSearch parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
             TranscriptSearch answer = new TranscriptSearch();
 
             boolean done = false;

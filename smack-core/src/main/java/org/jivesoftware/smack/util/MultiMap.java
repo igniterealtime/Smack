@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2015 Florian Schmaus
+ * Copyright © 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -168,6 +168,33 @@ public class MultiMap<K,V> {
             map.remove(key);
         }
         return res;
+    }
+
+    /**
+     * Remove the given number of values for a given key. May return less values then requested.
+     *
+     * @param key the key to remove from.
+     * @param num the number of values to remove.
+     * @return a list of the removed values.
+     * @since 4.4.0
+     */
+    public List<V> remove(K key, int num) {
+        List<V> values = map.get(key);
+        if (values == null) {
+            return Collections.emptyList();
+        }
+
+        final int resultSize = values.size() > num ? num : values.size();
+        final List<V> result = new ArrayList<>(resultSize);
+        for (int i = 0; i < resultSize; i++) {
+            result.add(values.get(0));
+        }
+
+        if (values.isEmpty()) {
+            map.remove(key);
+        }
+
+        return result;
     }
 
     public void putAll(Map<? extends K, ? extends V> map) {

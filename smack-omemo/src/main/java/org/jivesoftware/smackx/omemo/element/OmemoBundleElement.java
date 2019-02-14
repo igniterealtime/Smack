@@ -186,7 +186,7 @@ public abstract class OmemoBundleElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder sb = new XmlStringBuilder(this, enclosingNamespace).rightAngleBracket();
 
         sb.halfOpenElement(SIGNED_PRE_KEY_PUB).attribute(SIGNED_PRE_KEY_ID, signedPreKeyId).rightAngleBracket()
@@ -227,11 +227,11 @@ public abstract class OmemoBundleElement implements ExtensionElement {
         }
 
         OmemoBundleElement otherOmemoBundleElement = (OmemoBundleElement) other;
-        return toXML(null).equals(otherOmemoBundleElement.toXML(null));
+        return toXML().toString().equals(otherOmemoBundleElement.toXML().toString());
     }
 
     @Override
     public int hashCode() {
-        return this.toXML(null).hashCode();
+        return toXML().toString().hashCode();
     }
 }
