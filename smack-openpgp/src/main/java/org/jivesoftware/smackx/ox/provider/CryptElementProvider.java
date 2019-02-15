@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.ox.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smackx.ox.element.CryptElement;
 
@@ -32,7 +33,7 @@ public class CryptElementProvider extends OpenPgpContentElementProvider<CryptEle
     public static final CryptElementProvider INSTANCE = new CryptElementProvider();
 
     @Override
-    public CryptElement parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
+    public CryptElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         OpenPgpContentElementData data = parseOpenPgpContentElementData(parser, initialDepth);
 
         return new CryptElement(data.to, data.rpad, data.timestamp, data.payload);

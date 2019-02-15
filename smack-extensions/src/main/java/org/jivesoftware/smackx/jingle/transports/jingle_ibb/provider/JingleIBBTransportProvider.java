@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.transports.jingle_ibb.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
 import org.jivesoftware.smackx.jingle.transports.jingle_ibb.element.JingleIBBTransport;
 
@@ -26,7 +27,7 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class JingleIBBTransportProvider extends JingleContentTransportProvider<JingleIBBTransport> {
     @Override
-    public JingleIBBTransport parse(XmlPullParser parser, int initialDepth) {
+    public JingleIBBTransport parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
         String blockSizeString = parser.getAttributeValue(null, JingleIBBTransport.ATTR_BLOCK_SIZE);
         String sid = parser.getAttributeValue(null, JingleIBBTransport.ATTR_SID);
 

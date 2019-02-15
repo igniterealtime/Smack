@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.commands.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -42,7 +43,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class AdHocCommandDataProvider extends IQProvider<AdHocCommandData> {
 
     @Override
-    public AdHocCommandData parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
+    public AdHocCommandData parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         boolean done = false;
         AdHocCommandData adHocCommandData = new AdHocCommandData();
         DataFormProvider dataFormProvider = new DataFormProvider();
@@ -127,42 +128,42 @@ public class AdHocCommandDataProvider extends IQProvider<AdHocCommandData> {
 
     public static class BadActionError extends ExtensionElementProvider<AdHocCommandData.SpecificError> {
         @Override
-        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth)  {
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)  {
             return new AdHocCommandData.SpecificError(AdHocCommand.SpecificErrorCondition.badAction);
         }
     }
 
     public static class MalformedActionError extends ExtensionElementProvider<AdHocCommandData.SpecificError> {
         @Override
-        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth)  {
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)  {
             return new AdHocCommandData.SpecificError(AdHocCommand.SpecificErrorCondition.malformedAction);
         }
     }
 
     public static class BadLocaleError extends ExtensionElementProvider<AdHocCommandData.SpecificError> {
         @Override
-        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth)  {
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)  {
             return new AdHocCommandData.SpecificError(AdHocCommand.SpecificErrorCondition.badLocale);
         }
     }
 
     public static class BadPayloadError extends ExtensionElementProvider<AdHocCommandData.SpecificError> {
         @Override
-        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth)  {
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)  {
             return new AdHocCommandData.SpecificError(AdHocCommand.SpecificErrorCondition.badPayload);
         }
     }
 
     public static class BadSessionIDError extends ExtensionElementProvider<AdHocCommandData.SpecificError> {
         @Override
-        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth)  {
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)  {
             return new AdHocCommandData.SpecificError(AdHocCommand.SpecificErrorCondition.badSessionid);
         }
     }
 
     public static class SessionExpiredError extends ExtensionElementProvider<AdHocCommandData.SpecificError> {
         @Override
-        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth)  {
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)  {
             return new AdHocCommandData.SpecificError(AdHocCommand.SpecificErrorCondition.sessionExpired);
         }
     }

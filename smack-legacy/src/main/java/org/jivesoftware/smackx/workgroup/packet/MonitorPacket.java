@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.workgroup.packet;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -78,7 +79,7 @@ public class MonitorPacket extends IQ {
     public static class InternalProvider extends IQProvider<MonitorPacket> {
 
         @Override
-        public MonitorPacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+        public MonitorPacket parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             MonitorPacket packet = new MonitorPacket();
 
             boolean done = false;

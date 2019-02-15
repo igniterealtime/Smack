@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -105,7 +106,7 @@ public class AgentWorkgroups extends IQ {
     public static class Provider extends IQProvider<AgentWorkgroups> {
 
         @Override
-        public AgentWorkgroups parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+        public AgentWorkgroups parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             final Jid agentJID = ParserUtils.getJidAttribute(parser);
             List<String> workgroups = new ArrayList<>();
 

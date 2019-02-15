@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.delay.provider;
 import java.io.IOException;
 import java.util.Date;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
@@ -31,7 +32,7 @@ public abstract class AbstractDelayInformationProvider extends ExtensionElementP
 
     @Override
     public final DelayInformation parse(XmlPullParser parser,
-                    int initialDepth) throws XmlPullParserException,
+                    int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
                     IOException, SmackTextParseException {
         String stampString = (parser.getAttributeValue("", "stamp"));
         String from = parser.getAttributeValue("", "from");

@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.iot.provisioning.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.jivesoftware.smackx.iot.provisioning.element.ClearCacheResponse;
@@ -25,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class ClearCacheResponseProvider extends IQProvider<ClearCacheResponse> {
 
     @Override
-    public ClearCacheResponse parse(XmlPullParser parser, int initialDepth) {
+    public ClearCacheResponse parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
         return new ClearCacheResponse();
     }
 

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingleold.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -49,7 +50,7 @@ public class JingleProvider extends IQProvider<Jingle> {
      * @throws SmackParsingException
      */
     @Override
-    public Jingle parse(XmlPullParser parser, int intialDepth) throws IOException, XmlPullParserException, SmackParsingException {
+    public Jingle parse(XmlPullParser parser, int intialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException, SmackParsingException {
 
         Jingle jingle = new Jingle();
         String sid = "";

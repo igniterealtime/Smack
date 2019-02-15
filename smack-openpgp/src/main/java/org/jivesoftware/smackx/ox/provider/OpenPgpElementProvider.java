@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.ox.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.ox.element.OpenPgpElement;
 
@@ -32,7 +33,7 @@ public class OpenPgpElementProvider extends ExtensionElementProvider<OpenPgpElem
     public static final OpenPgpElementProvider TEST_INSTANCE = new OpenPgpElementProvider();
 
     @Override
-    public OpenPgpElement parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public OpenPgpElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String base64EncodedOpenPgpMessage = parser.nextText();
         return new OpenPgpElement(base64EncodedOpenPgpMessage);
     }

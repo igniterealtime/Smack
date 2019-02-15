@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -102,7 +103,7 @@ public class Macros extends IQ {
     public static class InternalProvider extends IQProvider<Macros> {
 
         @Override
-        public Macros parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+        public Macros parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             Macros macroGroup = new Macros();
 
             boolean done = false;

@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.workgroup.packet;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -107,7 +108,7 @@ public class AgentInfo extends IQ {
     public static class Provider extends IQProvider<AgentInfo> {
 
         @Override
-        public AgentInfo parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+        public AgentInfo parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             AgentInfo answer = new AgentInfo();
 
             boolean done = false;

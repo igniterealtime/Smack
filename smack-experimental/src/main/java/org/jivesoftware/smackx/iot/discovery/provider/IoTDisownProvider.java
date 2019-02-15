@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.iot.discovery.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -30,7 +31,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class IoTDisownProvider extends IQProvider<IoTDisown> {
 
     @Override
-    public IoTDisown parse(XmlPullParser parser, int initialDepth) throws XmppStringprepException {
+    public IoTDisown parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmppStringprepException {
         Jid jid = ParserUtils.getJidAttribute(parser);
         NodeInfo nodeInfo = NodeInfoParser.parse(parser);
         return new IoTDisown(jid, nodeInfo);

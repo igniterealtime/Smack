@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -36,7 +37,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class RegistrationProvider extends IQProvider<Registration> {
 
     @Override
-    public Registration parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
+    public Registration parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         String instruction = null;
         Map<String, String> fields = new HashMap<>();
         List<ExtensionElement> packetExtensions = new LinkedList<>();
@@ -63,7 +64,7 @@ public class RegistrationProvider extends IQProvider<Registration> {
                 }
                 // Otherwise, it must be a packet extension.
                 else {
-                    PacketParserUtils.addExtensionElement(packetExtensions, parser);
+                    PacketParserUtils.addExtensionElement(packetExtensions, parser, xmlEnvironment);
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {

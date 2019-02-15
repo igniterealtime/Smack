@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.test.util.TestUtils;
@@ -79,7 +80,7 @@ public class ParsingExceptionTest {
         public static final String NAMESPACE = "http://smack.jivesoftware.org/exception";
 
         @Override
-        public ExtensionElement parse(XmlPullParser parser, int initialDepth) throws IOException {
+        public ExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException {
             throw new IOException("Test Exception");
         }
 

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -237,7 +238,7 @@ public class AgentStatus implements ExtensionElement {
     public static class Provider extends ExtensionElementProvider<AgentStatus> {
 
         @Override
-        public AgentStatus parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+        public AgentStatus parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             AgentStatus agentStatus = new AgentStatus();
 
             agentStatus.workgroupJID = ParserUtils.getBareJidAttribute(parser);

@@ -16,7 +16,10 @@
  */
 package org.jivesoftware.smack.packet;
 
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
+
+import org.xmlpull.v1.XmlPullParser;
 
 public class XmlEnvironment {
 
@@ -43,7 +46,7 @@ public class XmlEnvironment {
         this(builder.namespace, builder.language, builder.next);
     }
 
-    private XmlEnvironment(String namespace, String language, XmlEnvironment next) {
+    public XmlEnvironment(String namespace, String language, XmlEnvironment next) {
         this.namespace = namespace;
         this.language = language;
         this.next = next;
@@ -101,6 +104,16 @@ public class XmlEnvironment {
 
         effectiveLanguageDetermined = true;
         return effectiveLanguage;
+    }
+
+    public static XmlEnvironment from(XmlPullParser parser) {
+        return from(parser, null);
+    }
+
+    public static XmlEnvironment from(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) {
+        String namespace = parser.getNamespace();
+        String xmlLang = ParserUtils.getXmlLang(parser);
+        return new XmlEnvironment(namespace, xmlLang, outerXmlEnvironment);
     }
 
     public static Builder builder() {

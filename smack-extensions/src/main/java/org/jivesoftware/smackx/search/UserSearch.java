@@ -24,6 +24,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.SimpleIQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -129,7 +130,7 @@ public class UserSearch extends SimpleIQ {
 
         // FIXME this provider does return two different types of IQs
         @Override
-        public IQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
+        public IQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
             UserSearch search = null;
             SimpleUserSearch simpleUserSearch = new SimpleUserSearch();
 
@@ -137,7 +138,7 @@ public class UserSearch extends SimpleIQ {
             while (!done) {
                 int eventType = parser.next();
                 if (eventType == XmlPullParser.START_TAG && parser.getName().equals("instructions")) {
-                    buildDataForm(simpleUserSearch, parser.nextText(), parser);
+                    buildDataForm(simpleUserSearch, parser.nextText(), parser, xmlEnvironment);
                     return simpleUserSearch;
                 }
                 else if (eventType == XmlPullParser.START_TAG && parser.getName().equals("item")) {
@@ -147,7 +148,7 @@ public class UserSearch extends SimpleIQ {
                 else if (eventType == XmlPullParser.START_TAG && parser.getNamespace().equals("jabber:x:data")) {
                     // Otherwise, it must be a packet extension.
                     search = new UserSearch();
-                    PacketParserUtils.addExtensionElement(search, parser);
+                    PacketParserUtils.addExtensionElement(search, parser, xmlEnvironment);
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals("query")) {
@@ -164,7 +165,7 @@ public class UserSearch extends SimpleIQ {
     }
 
     private static void buildDataForm(SimpleUserSearch search,
-                    String instructions, XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
+                    String instructions, XmlPullParser parser, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         DataForm dataForm = new DataForm(DataForm.Type.form);
         boolean done = false;
         dataForm.setTitle("User Search");
@@ -199,7 +200,7 @@ public class UserSearch extends SimpleIQ {
                 }
             }
             else if (eventType == XmlPullParser.START_TAG && parser.getNamespace().equals("jabber:x:data")) {
-                PacketParserUtils.addExtensionElement(search, parser);
+                PacketParserUtils.addExtensionElement(search, parser, xmlEnvironment);
                 done = true;
             }
         }

@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.eme.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
@@ -25,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class ExplicitMessageEncryptionProvider extends ExtensionElementProvider<ExplicitMessageEncryptionElement> {
 
     @Override
-    public ExplicitMessageEncryptionElement parse(XmlPullParser parser, int initialDepth) {
+    public ExplicitMessageEncryptionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
         String namespace = parser.getAttributeValue(null, "namespace");
         String name = parser.getAttributeValue(null, "name");
         return new ExplicitMessageEncryptionElement(namespace, name);

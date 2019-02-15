@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.iqlast.packet;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.jxmpp.jid.Jid;
@@ -102,7 +103,7 @@ public class LastActivity extends IQ {
     public static class Provider extends IQProvider<LastActivity> {
 
         @Override
-        public LastActivity parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+        public LastActivity parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             LastActivity lastActivity = new LastActivity();
             String seconds = parser.getAttributeValue("", "seconds");
             if (seconds != null) {

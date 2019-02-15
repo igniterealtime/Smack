@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.compress.provider;
 
 import org.jivesoftware.smack.compress.packet.Compressed;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.NonzaProvider;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -29,7 +30,7 @@ public final class CompressedProvider extends NonzaProvider<Compressed> {
     }
 
     @Override
-    public Compressed parse(XmlPullParser parser, int initialDepth) {
+    public Compressed parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
         return Compressed.INSTANCE;
     }
 

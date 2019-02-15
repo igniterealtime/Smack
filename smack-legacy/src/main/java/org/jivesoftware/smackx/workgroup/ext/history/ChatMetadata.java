@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
@@ -84,7 +85,7 @@ public class ChatMetadata extends IQ {
     public static class Provider extends IQProvider<ChatMetadata> {
 
         @Override
-        public ChatMetadata parse(XmlPullParser parser, int initialDepth)
+        public ChatMetadata parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                         throws XmlPullParserException, IOException {
             final ChatMetadata chatM = new ChatMetadata();
 

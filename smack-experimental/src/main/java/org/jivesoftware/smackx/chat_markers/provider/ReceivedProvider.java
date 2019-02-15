@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.chat_markers.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.ReceivedExtension;
@@ -33,7 +34,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class ReceivedProvider extends ExtensionElementProvider<ReceivedExtension> {
 
     @Override
-    public ReceivedExtension parse(XmlPullParser parser, int initialDepth) {
+    public ReceivedExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
         String id = parser.getAttributeValue("", "id");
         return new ReceivedExtension(id);
     }

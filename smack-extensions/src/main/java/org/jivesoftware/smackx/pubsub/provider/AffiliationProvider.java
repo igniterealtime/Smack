@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.pubsub.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -36,7 +37,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class AffiliationProvider extends ExtensionElementProvider<Affiliation> {
 
     @Override
-    public Affiliation parse(XmlPullParser parser, int initialDepth) throws IOException {
+    public Affiliation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException {
         String node = parser.getAttributeValue(null, "node");
         BareJid jid = ParserUtils.getBareJidAttribute(parser);
         String namespaceString = parser.getNamespace();

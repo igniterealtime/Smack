@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.message_correct.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
@@ -31,7 +32,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class MessageCorrectProvider extends ExtensionElementProvider<MessageCorrectExtension> {
 
     @Override
-    public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth) {
+    public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
         String idMessageToReplace = parser.getAttributeValue("", MessageCorrectExtension.ID_TAG);
         return new MessageCorrectExtension(idMessageToReplace);
     }

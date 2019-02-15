@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.address.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -38,7 +39,7 @@ public class MultipleAddressesProvider extends ExtensionElementProvider<Multiple
 
     @Override
     public MultipleAddresses parse(XmlPullParser parser,
-                    int initialDepth) throws XmlPullParserException,
+                    int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
                     IOException {
         MultipleAddresses multipleAddresses = new MultipleAddresses();
         outerloop: while (true) {

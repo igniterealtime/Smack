@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.last_interaction.provider;
 import java.text.ParseException;
 import java.util.Date;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -32,7 +33,7 @@ public class IdleProvider extends ExtensionElementProvider<IdleElement> {
     public static final IdleProvider TEST_INSTANCE = new IdleProvider();
 
     @Override
-    public IdleElement parse(XmlPullParser parser, int initialDepth) throws SmackTextParseException {
+    public IdleElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws SmackTextParseException {
         String dateString = parser.getAttributeValue(null, IdleElement.ATTR_SINCE);
         Date since;
         try {

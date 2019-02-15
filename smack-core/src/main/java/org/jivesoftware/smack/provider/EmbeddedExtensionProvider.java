@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
@@ -85,7 +86,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public abstract class EmbeddedExtensionProvider<PE extends ExtensionElement> extends ExtensionElementProvider<PE> {
 
     @Override
-    public final PE parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
+    public final PE parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         final String namespace = parser.getNamespace();
         final String name = parser.getName();
         final int attributeCount = parser.getAttributeCount();
@@ -101,7 +102,7 @@ public abstract class EmbeddedExtensionProvider<PE extends ExtensionElement> ext
             event = parser.next();
 
             if (event == XmlPullParser.START_TAG)
-                PacketParserUtils.addExtensionElement(extensions, parser);
+                PacketParserUtils.addExtensionElement(extensions, parser, xmlEnvironment);
         }
         while (!(event == XmlPullParser.END_TAG && parser.getDepth() == initialDepth));
 

@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.iot.provisioning.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -29,7 +30,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class IoTIsFriendResponseProvider extends IQProvider<IoTIsFriendResponse> {
 
     @Override
-    public IoTIsFriendResponse parse(XmlPullParser parser, int initialDepth) throws XmppStringprepException {
+    public IoTIsFriendResponse parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmppStringprepException {
         Jid jid = ParserUtils.getJidAttribute(parser);
         BareJid bareJid = jid.asBareJid();
         boolean result = ParserUtils.getBooleanAttribute(parser, "result");

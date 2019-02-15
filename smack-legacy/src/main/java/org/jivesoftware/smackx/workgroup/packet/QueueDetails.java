@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -146,7 +147,7 @@ public final class QueueDetails implements ExtensionElement {
 
         @Override
         public QueueDetails parse(XmlPullParser parser,
-                        int initialDepth) throws XmlPullParserException,
+                        int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
                         IOException, SmackTextParseException {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);

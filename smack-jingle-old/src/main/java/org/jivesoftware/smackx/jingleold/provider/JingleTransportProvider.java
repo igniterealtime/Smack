@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.jingleold.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.jingleold.nat.ICECandidate;
@@ -53,7 +54,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
      * @throws XmlPullParserException
      */
     @Override
-    public JingleTransport parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException  {
+    public JingleTransport parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException  {
         boolean done = false;
         JingleTransport trans = getInstance();
 

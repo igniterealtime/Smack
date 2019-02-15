@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.iqversion.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.jivesoftware.smackx.iqversion.packet.Version;
@@ -30,7 +31,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class VersionProvider extends IQProvider<Version> {
 
     @Override
-    public Version parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public Version parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String name = null, version = null, os = null;
 
         outerloop: while (true) {

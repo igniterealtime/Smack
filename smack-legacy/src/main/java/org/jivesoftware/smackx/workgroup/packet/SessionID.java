@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.workgroup.packet;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -71,7 +72,7 @@ public class SessionID implements ExtensionElement {
     public static class Provider extends ExtensionElementProvider<SessionID> {
 
         @Override
-        public SessionID parse(XmlPullParser parser, int initialDepth)
+        public SessionID parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                         throws XmlPullParserException, IOException {
             String sessionID = parser.getAttributeValue("", "id");
 

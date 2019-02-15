@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.ParserUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -39,7 +40,7 @@ public class IntrospectionProvider{
 
         @SuppressWarnings("unchecked")
         @Override
-        public I parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+        public I parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             try {
                 return (I) parseWithIntrospection(elementClass, parser, initialDepth);
             }
@@ -60,7 +61,7 @@ public class IntrospectionProvider{
 
         @SuppressWarnings("unchecked")
         @Override
-        public PE parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+        public PE parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             try {
                 return (PE) parseWithIntrospection(elementClass, parser, initialDepth);
             }

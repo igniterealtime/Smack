@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.workgroup.packet;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -35,7 +36,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class OfferRevokeProvider extends IQProvider<IQ> {
 
     @Override
-    public OfferRevokePacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public OfferRevokePacket parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         // The parser will be positioned on the opening IQ tag, so get the JID attribute.
         Jid userJID = ParserUtils.getJidAttribute(parser);
         // Default the userID to the JID.

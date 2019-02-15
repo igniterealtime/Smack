@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -39,7 +40,7 @@ public class MoodProvider extends ExtensionElementProvider<MoodElement> {
     public static final MoodProvider INSTANCE = new MoodProvider();
 
     @Override
-    public MoodElement parse(XmlPullParser parser, int initialDepth)
+    public MoodElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException, SmackParsingException {
         String text = null;
         Mood mood = null;

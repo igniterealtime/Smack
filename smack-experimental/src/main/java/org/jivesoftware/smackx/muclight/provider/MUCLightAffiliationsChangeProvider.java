@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muclight.provider;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.muclight.MUCLightAffiliation;
@@ -38,7 +39,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MUCLightAffiliationsChangeProvider extends ExtensionElementProvider<AffiliationsChangeExtension> {
 
     @Override
-    public AffiliationsChangeExtension parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public AffiliationsChangeExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         HashMap<Jid, MUCLightAffiliation> affiliations = new HashMap<>();
         String prevVersion = null;
         String version = null;

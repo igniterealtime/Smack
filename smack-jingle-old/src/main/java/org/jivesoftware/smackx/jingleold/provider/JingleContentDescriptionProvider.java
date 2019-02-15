@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.jingleold.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
@@ -70,7 +71,7 @@ public abstract class JingleContentDescriptionProvider extends ExtensionElementP
      */
     @Override
     public JingleContentDescription parse(XmlPullParser parser,
-                    int initialDepth) throws XmlPullParserException,
+                    int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
                     IOException {
         boolean done = false;
         JingleContentDescription desc = getInstance();

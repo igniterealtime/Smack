@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muc.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.jivesoftware.smackx.muc.packet.MUCAdmin;
@@ -34,7 +35,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MUCAdminProvider extends IQProvider<MUCAdmin> {
 
     @Override
-    public MUCAdmin parse(XmlPullParser parser, int initialDepth)
+    public MUCAdmin parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException {
         MUCAdmin mucAdmin = new MUCAdmin();
         boolean done = false;

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightBlockingIQ;
@@ -39,7 +40,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MUCLightBlockingIQProvider extends IQProvider<MUCLightBlockingIQ> {
 
     @Override
-    public MUCLightBlockingIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public MUCLightBlockingIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         HashMap<Jid, Boolean> rooms = null;
         HashMap<Jid, Boolean> users = null;
 

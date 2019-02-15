@@ -328,7 +328,7 @@ public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPCon
                     }
                     break;
                 case "error":
-                    StreamError streamError = PacketParserUtils.parseStreamError(parser);
+                    StreamError streamError = PacketParserUtils.parseStreamError(parser, null);
                     saslFeatureReceived.reportFailure(new StreamErrorException(streamError));
                     throw new StreamErrorException(streamError);
                 case "features":

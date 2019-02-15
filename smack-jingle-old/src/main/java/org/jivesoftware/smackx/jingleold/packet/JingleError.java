@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.jingleold.packet;
 import java.util.Locale;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.jingleold.media.ContentInfo;
@@ -142,7 +143,7 @@ public class JingleError implements ExtensionElement {
             * Parse a JingleDescription.Audio extension.
             */
            @Override
-           public ExtensionElement parse(XmlPullParser parser, int initialDepth) {
+           public ExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
                ExtensionElement result = null;
 
                if (audioInfo != null) {

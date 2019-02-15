@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -45,7 +46,7 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded> {
     private static final Logger LOGGER = Logger.getLogger(ForwardedProvider.class.getName());
 
     @Override
-    public Forwarded parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
+    public Forwarded parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         DelayInformation di = null;
         Stanza packet = null;
 
@@ -58,7 +59,7 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded> {
                 switch (name) {
                 case DelayInformation.ELEMENT:
                     if (DelayInformation.NAMESPACE.equals(namespace)) {
-                        di = DelayInformationProvider.INSTANCE.parse(parser, parser.getDepth());
+                        di = DelayInformationProvider.INSTANCE.parse(parser, parser.getDepth(), null);
                     } else {
                         LOGGER.warning("Namespace '" + namespace + "' does not match expected namespace '"
                                         + DelayInformation.NAMESPACE + "'");

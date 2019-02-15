@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -199,7 +200,7 @@ public class OfflineMessageRequest extends IQ {
 
         @Override
         public OfflineMessageRequest parse(XmlPullParser parser,
-                        int initialDepth) throws XmlPullParserException,
+                        int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
                         IOException {
             OfflineMessageRequest request = new OfflineMessageRequest();
             boolean done = false;

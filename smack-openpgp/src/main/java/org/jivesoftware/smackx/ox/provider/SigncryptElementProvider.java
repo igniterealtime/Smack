@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.ox.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smackx.ox.element.SigncryptElement;
 
@@ -32,7 +33,7 @@ public class SigncryptElementProvider extends OpenPgpContentElementProvider<Sign
     public static final SigncryptElementProvider INSTANCE = new SigncryptElementProvider();
 
     @Override
-    public SigncryptElement parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
+    public SigncryptElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         OpenPgpContentElementData data = parseOpenPgpContentElementData(parser, initialDepth);
         return new SigncryptElement(data.to, data.rpad, data.timestamp, data.payload);
     }

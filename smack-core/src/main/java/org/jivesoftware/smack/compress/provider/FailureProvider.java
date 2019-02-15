@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.compress.packet.Failure;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.NonzaProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -39,9 +40,10 @@ public final class FailureProvider extends NonzaProvider<Failure> {
     }
 
     @Override
-    public Failure parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
+    public Failure parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         Failure.CompressFailureError compressFailureError = null;
         StanzaError stanzaError = null;
+        XmlEnvironment failureXmlEnvironment = XmlEnvironment.from(parser, xmlEnvironment);
 
         outerloop: while (true) {
             int eventType = parser.next();
@@ -60,7 +62,7 @@ public final class FailureProvider extends NonzaProvider<Failure> {
                 case StreamOpen.SERVER_NAMESPACE:
                     switch (name) {
                         case StanzaError.ERROR:
-                            StanzaError.Builder stanzaErrorBuilder = PacketParserUtils.parseError(parser);
+                            StanzaError.Builder stanzaErrorBuilder = PacketParserUtils.parseError(parser, failureXmlEnvironment);
                             stanzaError = stanzaErrorBuilder.build();
                             break;
                         default:

@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.roster.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.roster.packet.RosterVer;
 
@@ -24,7 +25,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class RosterVerStreamFeatureProvider extends ExtensionElementProvider<RosterVer> {
 
     @Override
-    public RosterVer parse(XmlPullParser parser, int initialDepth) {
+    public RosterVer parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
         return RosterVer.INSTANCE;
     }
 

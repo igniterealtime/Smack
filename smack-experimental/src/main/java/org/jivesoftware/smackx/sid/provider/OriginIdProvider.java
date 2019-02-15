@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.sid.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 
@@ -26,7 +27,7 @@ public class OriginIdProvider extends ExtensionElementProvider<OriginIdElement> 
     public static final OriginIdProvider TEST_INSTANCE = new OriginIdProvider();
 
     @Override
-    public OriginIdElement parse(XmlPullParser parser, int initialDepth) {
+    public OriginIdElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
         return new OriginIdElement(parser.getAttributeValue(null, OriginIdElement.ATTR_ID));
     }
 }

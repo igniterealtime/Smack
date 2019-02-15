@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -121,7 +122,7 @@ public class AgentStatusRequest extends IQ {
     public static class Provider extends IQProvider<AgentStatusRequest> {
 
         @Override
-        public AgentStatusRequest parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+        public AgentStatusRequest parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             AgentStatusRequest statusRequest = new AgentStatusRequest();
 
             boolean done = false;

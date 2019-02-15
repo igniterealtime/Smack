@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.hashes.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.hashes.HashManager;
@@ -32,7 +33,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class HashElementProvider extends ExtensionElementProvider<HashElement> {
 
     @Override
-    public HashElement parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public HashElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String algo = parser.getAttributeValue(null, HashElement.ATTR_ALGO);
         String hashB64 = parser.nextText();
         return new HashElement(HashManager.ALGORITHM.valueOfName(algo), hashB64);

@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.jingle.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
@@ -29,6 +30,6 @@ public abstract class JingleContentTransportProvider<T extends JingleContentTran
                 extends ExtensionElementProvider<T> {
 
     @Override
-    public abstract T parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException;
+    public abstract T parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException;
 
 }

@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.mam.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -40,7 +41,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MamFinIQProvider extends IQProvider<MamFinIQ> {
 
     @Override
-    public MamFinIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
+    public MamFinIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         String queryId = parser.getAttributeValue("", "queryid");
         boolean complete = ParserUtils.getBooleanAttribute(parser, "complete", false);
         boolean stable = ParserUtils.getBooleanAttribute(parser, "stable", true);

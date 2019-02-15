@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.attention.packet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -87,7 +88,7 @@ s     */
     public static class Provider extends ExtensionElementProvider<AttentionExtension> {
 
         @Override
-        public AttentionExtension parse(XmlPullParser parser, int initialDepth) {
+        public AttentionExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
             return new AttentionExtension();
         }
     }

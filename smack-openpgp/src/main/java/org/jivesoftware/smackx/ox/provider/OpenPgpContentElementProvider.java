@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -79,7 +80,7 @@ public abstract class OpenPgpContentElementProvider<O extends OpenPgpContentElem
     }
 
     @Override
-    public abstract O parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException;
+    public abstract O parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException;
 
     protected static OpenPgpContentElementData parseOpenPgpContentElementData(XmlPullParser parser, int initialDepth)
             throws XmlPullParserException, IOException, SmackParsingException {

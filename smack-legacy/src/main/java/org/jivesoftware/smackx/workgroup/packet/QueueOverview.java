@@ -128,7 +128,7 @@ public class QueueOverview implements ExtensionElement {
 
         @Override
         public QueueOverview parse(XmlPullParser parser,
-                        int initialDepth) throws XmlPullParserException,
+                        int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
                         IOException, SmackTextParseException {
             int eventType = parser.getEventType();
             QueueOverview queueOverview = new QueueOverview();

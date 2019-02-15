@@ -21,6 +21,7 @@ import static org.jivesoftware.smack.util.PacketParserUtils.parseElementText;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.ParserUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -29,7 +30,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class BodyElementProvider extends ExtensionElementProvider<Message.Body> {
 
     @Override
-    public Message.Body parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public Message.Body parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String xmlLang = ParserUtils.getXmlLang(parser);
         String body = parseElementText(parser);
 

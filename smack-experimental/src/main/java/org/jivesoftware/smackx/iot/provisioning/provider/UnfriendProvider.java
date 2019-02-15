@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.iot.provisioning.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -28,7 +29,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class UnfriendProvider extends ExtensionElementProvider<Unfriend> {
 
     @Override
-    public Unfriend parse(XmlPullParser parser, int initialDepth) throws XmppStringprepException {
+    public Unfriend parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmppStringprepException {
         BareJid jid = ParserUtils.getBareJidAttribute(parser);
         return new Unfriend(jid);
     }

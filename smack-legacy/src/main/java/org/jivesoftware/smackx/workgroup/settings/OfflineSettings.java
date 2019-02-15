@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.workgroup.settings;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.SimpleIQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -107,7 +108,7 @@ public class OfflineSettings extends SimpleIQ {
     public static class InternalProvider extends IQProvider<OfflineSettings> {
 
         @Override
-        public OfflineSettings parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+        public OfflineSettings parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             OfflineSettings offlineSettings = new OfflineSettings();
 
             boolean done = false;

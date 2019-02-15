@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement_VAxolotl;
@@ -41,7 +42,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class OmemoDeviceListVAxolotlProvider extends ExtensionElementProvider<OmemoDeviceListElement_VAxolotl> {
 
     @Override
-    public OmemoDeviceListElement_VAxolotl parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public OmemoDeviceListElement_VAxolotl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         Set<Integer> deviceListIds = new HashSet<>();
         boolean stop = false;
         while (!stop) {

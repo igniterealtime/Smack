@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.mood.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.mood.element.MoodConcretisation;
 
@@ -27,5 +28,5 @@ import org.xmlpull.v1.XmlPullParserException;
 public abstract class MoodConcretisationProvider<C extends MoodConcretisation> extends ExtensionElementProvider<C> {
 
     @Override
-    public abstract C parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException;
+    public abstract C parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException;
 }

@@ -30,6 +30,7 @@ import static org.xmlpull.v1.XmlPullParser.START_TAG;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VAxolotl;
@@ -44,7 +45,7 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoBundleElement_VAxolotl> {
     @Override
-    public OmemoBundleElement_VAxolotl parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public OmemoBundleElement_VAxolotl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         boolean stop = false;
         boolean inPreKeys = false;
 

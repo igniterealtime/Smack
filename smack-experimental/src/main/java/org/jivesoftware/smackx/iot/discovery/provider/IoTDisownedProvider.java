@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.iot.discovery.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.jivesoftware.smackx.iot.discovery.element.IoTDisowned;
@@ -27,7 +28,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class IoTDisownedProvider extends IQProvider<IoTDisowned> {
 
     @Override
-    public IoTDisowned parse(XmlPullParser parser, int initialDepth) {
+    public IoTDisowned parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
         NodeInfo nodeInfo = NodeInfoParser.parse(parser);
         return new IoTDisowned(nodeInfo);
     }

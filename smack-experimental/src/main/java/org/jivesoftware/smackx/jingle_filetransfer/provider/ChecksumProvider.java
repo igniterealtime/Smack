@@ -21,6 +21,7 @@ import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smackx.hashes.element.HashElement;
@@ -38,7 +39,7 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class ChecksumProvider extends ExtensionElementProvider<Checksum> {
     @Override
-    public Checksum parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
+    public Checksum parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         JingleContent.Creator creator = null;
         String creatorString = parser.getAttributeValue(null, Checksum.ATTR_CREATOR);
         if (creatorString != null) {

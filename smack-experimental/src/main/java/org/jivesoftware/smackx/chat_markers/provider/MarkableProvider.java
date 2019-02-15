@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.chat_markers.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.MarkableExtension;
@@ -33,7 +34,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class MarkableProvider extends ExtensionElementProvider<MarkableExtension> {
 
     @Override
-    public MarkableExtension parse(XmlPullParser parser, int initialDepth) {
+    public MarkableExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
         return MarkableExtension.INSTANCE;
     }
 

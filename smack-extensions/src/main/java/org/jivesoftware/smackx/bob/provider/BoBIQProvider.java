@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.bob.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -38,7 +39,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class BoBIQProvider extends IQProvider<BoBIQ> {
 
     @Override
-    public BoBIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public BoBIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String cid = parser.getAttributeValue("", "cid");
         BoBHash bobHash = BoBHash.fromCid(cid);
 

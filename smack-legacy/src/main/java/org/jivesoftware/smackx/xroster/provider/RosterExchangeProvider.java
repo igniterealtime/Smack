@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.xroster.provider;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -47,7 +48,7 @@ public class RosterExchangeProvider extends ExtensionElementProvider<RosterExcha
      * @throws XmlPullParserException
      */
     @Override
-    public RosterExchange parse(XmlPullParser parser, int initialDepth)
+    public RosterExchange parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException {
         // CHECKSTYLE:OFF
         RosterExchange rosterExchange = new RosterExchange();

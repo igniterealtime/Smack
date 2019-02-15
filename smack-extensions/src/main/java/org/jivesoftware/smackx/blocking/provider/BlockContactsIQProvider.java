@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -39,7 +40,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class BlockContactsIQProvider extends IQProvider<BlockContactsIQ> {
 
     @Override
-    public BlockContactsIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public BlockContactsIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         List<Jid> jids = new ArrayList<>();
 
         outerloop: while (true) {

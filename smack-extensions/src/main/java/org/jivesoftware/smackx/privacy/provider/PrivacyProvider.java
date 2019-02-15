@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.privacy.provider;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -39,7 +40,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class PrivacyProvider extends IQProvider<Privacy> {
 
     @Override
-    public Privacy parse(XmlPullParser parser, int initialDepth)
+    public Privacy parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException {
         Privacy privacy = new Privacy();
         boolean done = false;

@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -35,7 +36,7 @@ public class ReferenceProvider extends ExtensionElementProvider<ReferenceElement
     public static final ReferenceProvider TEST_PROVIDER = new ReferenceProvider();
 
     @Override
-    public ReferenceElement parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
+    public ReferenceElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         Integer begin = ParserUtils.getIntegerAttribute(parser, ReferenceElement.ATTR_BEGIN);
         Integer end =   ParserUtils.getIntegerAttribute(parser, ReferenceElement.ATTR_END);
         String typeString = parser.getAttributeValue(null, ReferenceElement.ATTR_TYPE);

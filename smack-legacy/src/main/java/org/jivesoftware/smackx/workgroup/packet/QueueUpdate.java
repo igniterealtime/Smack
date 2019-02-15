@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.workgroup.packet;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -97,7 +98,7 @@ public class QueueUpdate implements ExtensionElement {
     public static class Provider extends ExtensionElementProvider<QueueUpdate> {
 
         @Override
-        public QueueUpdate parse(XmlPullParser parser, int initialDepth)
+        public QueueUpdate parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                         throws XmlPullParserException, IOException {
             boolean done = false;
             int position = -1;

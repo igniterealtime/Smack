@@ -19,6 +19,7 @@ package org.jivesoftware.smack.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.Bind;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -29,7 +30,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class BindIQProvider extends IQProvider<Bind> {
 
     @Override
-    public Bind parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public Bind parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String name;
         Bind bind = null;
         outerloop: while (true) {

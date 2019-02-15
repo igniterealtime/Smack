@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muclight.provider;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.jivesoftware.smackx.muclight.MUCLightAffiliation;
@@ -39,7 +40,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MUCLightInfoIQProvider extends IQProvider<MUCLightInfoIQ> {
 
     @Override
-    public MUCLightInfoIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public MUCLightInfoIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String version = null;
         String roomName = null;
         String subject = null;

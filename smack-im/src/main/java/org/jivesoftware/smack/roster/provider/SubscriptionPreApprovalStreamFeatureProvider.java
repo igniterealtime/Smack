@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.roster.provider;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.roster.packet.SubscriptionPreApproval;
 
@@ -24,7 +25,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class SubscriptionPreApprovalStreamFeatureProvider extends ExtensionElementProvider<SubscriptionPreApproval> {
 
     @Override
-    public SubscriptionPreApproval parse(XmlPullParser parser, int initialDepth) {
+    public SubscriptionPreApproval parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
         return SubscriptionPreApproval.INSTANCE;
     }
 

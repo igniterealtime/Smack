@@ -104,6 +104,7 @@ import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -225,6 +226,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     private final Map<StanzaListener, InterceptorWrapper> interceptors =
             new HashMap<>();
+
+    private XmlEnvironment incomingStreamXmlEnvironment;
 
     final Map<String, NonzaCallback> nonzaCallbacks = new HashMap<>();
 
@@ -1187,7 +1190,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             return;
         }
 
-        Nonza nonza = nonzaProvider.parse(parser);
+        Nonza nonza = nonzaProvider.parse(parser, incomingStreamXmlEnvironment);
 
         nonzaCallback.onNonzaReceived(nonza);
     }
@@ -1198,7 +1201,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         int parserDepth = parser.getDepth();
         Stanza stanza = null;
         try {
-            stanza = PacketParserUtils.parseStanza(parser);
+            stanza = PacketParserUtils.parseStanza(parser, incomingStreamXmlEnvironment);
         }
         catch (Exception e) {
             CharSequence content = PacketParserUtils.parseContentDepth(parser,
@@ -1596,7 +1599,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 default:
                     ExtensionElementProvider<ExtensionElement> provider = ProviderManager.getStreamFeatureProvider(name, namespace);
                     if (provider != null) {
-                        streamFeature = provider.parse(parser);
+                        streamFeature = provider.parse(parser, incomingStreamXmlEnvironment);
                     }
                     break;
                 }
@@ -1844,6 +1847,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // We found an opening stream.
         if ("jabber:client".equals(parser.getNamespace(null))) {
             streamId = parser.getAttributeValue("", "id");
+            incomingStreamXmlEnvironment = XmlEnvironment.from(parser);
+
             String reportedServerDomain = parser.getAttributeValue("", "from");
             assert (config.getXMPPServiceDomain().equals(reportedServerDomain));
         }

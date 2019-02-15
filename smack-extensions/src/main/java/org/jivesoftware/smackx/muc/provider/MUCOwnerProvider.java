@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muc.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -36,7 +37,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MUCOwnerProvider extends IQProvider<MUCOwner> {
 
     @Override
-    public MUCOwner parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackParsingException {
+    public MUCOwner parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         MUCOwner mucOwner = new MUCOwner();
         boolean done = false;
         while (!done) {
@@ -50,7 +51,7 @@ public class MUCOwnerProvider extends IQProvider<MUCOwner> {
                 }
                 // Otherwise, it must be a packet extension.
                 else {
-                    PacketParserUtils.addExtensionElement(mucOwner, parser);
+                    PacketParserUtils.addExtensionElement(mucOwner, parser, xmlEnvironment);
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {

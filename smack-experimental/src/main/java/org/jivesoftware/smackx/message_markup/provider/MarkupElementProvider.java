@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.message_markup.element.BlockQuoteElement;
@@ -39,7 +40,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MarkupElementProvider extends ExtensionElementProvider<MarkupElement> {
 
     @Override
-    public MarkupElement parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException {
+    public MarkupElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException {
 
         MarkupElement.Builder markup = MarkupElement.getBuilder();
 

@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -44,7 +45,7 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
     private static final Logger LOGGER = Logger.getLogger(IoTFieldsExtensionProvider.class.getName());
 
     @Override
-    public IoTFieldsExtension parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException, SmackTextParseException {
+    public IoTFieldsExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException, SmackTextParseException {
         int seqNr = ParserUtils.getIntegerAttributeOrThrow(parser, "seqnr", "IoT data request <accepted/> without sequence number");
         boolean done = ParserUtils.getBooleanAttribute(parser, "done", false);
         List<NodeElement> nodes = new ArrayList<>();

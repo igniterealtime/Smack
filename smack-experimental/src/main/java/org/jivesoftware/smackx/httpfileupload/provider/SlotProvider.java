@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -41,7 +42,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class SlotProvider extends IQProvider<Slot> {
 
     @Override
-    public Slot parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public Slot parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         final String namespace = parser.getNamespace();
 
         final UploadService.Version version = HttpFileUploadManager.namespaceToVersion(namespace);
