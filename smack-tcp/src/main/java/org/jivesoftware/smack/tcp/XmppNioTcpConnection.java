@@ -86,6 +86,7 @@ import org.jivesoftware.smack.sasl.SASLErrorException;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.CollectionUtil;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.UTF8;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -101,6 +102,8 @@ import org.jxmpp.xml.splitter.XmlPrettyPrinter;
 import org.jxmpp.xml.splitter.XmlPrinter;
 import org.jxmpp.xml.splitter.XmppElementCallback;
 import org.jxmpp.xml.splitter.XmppXmlSplitter;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Represents and manages a client connection to an XMPP server via TCP.
@@ -244,6 +247,15 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
 
             this.streamOpen = streamOpen.toString();
             this.streamClose = streamClose.toString();
+
+            XmlPullParser streamOpenParser;
+            try {
+                streamOpenParser = PacketParserUtils.getParserFor(this.streamOpen);
+            } catch (XmlPullParserException | IOException e) {
+                // Should never happen.
+                throw new AssertionError(e);
+            }
+            onStreamOpen(streamOpenParser);
         }
 
         @Override
