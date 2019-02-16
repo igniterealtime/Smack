@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2009 Jive Software,  2018 Florian Schmaus.
+ * Copyright 2009 Jive Software, 2018-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,7 +123,9 @@ import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 import org.minidns.dnsname.DnsName;
 import org.xmlpull.v1.XmlPullParser;
@@ -1849,8 +1851,24 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             streamId = parser.getAttributeValue("", "id");
             incomingStreamXmlEnvironment = XmlEnvironment.from(parser);
 
-            String reportedServerDomain = parser.getAttributeValue("", "from");
-            assert (config.getXMPPServiceDomain().equals(reportedServerDomain));
+            String reportedServerDomainString = parser.getAttributeValue("", "from");
+            if (reportedServerDomainString == null) {
+                // RFC 6120 § 4.7.1. makes no explicit statement whether or not 'from' in the stream open from the server
+                // in c2s connections is required or not.
+                return;
+            }
+            DomainBareJid reportedServerDomain;
+            try {
+                reportedServerDomain = JidCreate.domainBareFrom(reportedServerDomainString);
+                DomainBareJid configuredXmppServiceDomain = config.getXMPPServiceDomain();
+                if (!configuredXmppServiceDomain.equals(reportedServerDomain)) {
+                    LOGGER.warning("Domain reported by server '" + reportedServerDomain
+                            + "' does not match configured domain '" + configuredXmppServiceDomain + "'");
+                }
+            } catch (XmppStringprepException e) {
+                LOGGER.log(Level.WARNING, "XMPP service domain '" + reportedServerDomainString
+                        + "' as reported by server could not be transformed to a valid JID", e);
+            }
         }
     }
 
