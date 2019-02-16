@@ -53,7 +53,7 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
         try {
             dirContext = new InitialDirContext();
         } catch (Exception e) {
-            // Ignore.
+            LOGGER.log(Level.SEVERE, "Could not construct InitialDirContext", e);
         }
 
         // Try to set this DNS resolver as primary one
