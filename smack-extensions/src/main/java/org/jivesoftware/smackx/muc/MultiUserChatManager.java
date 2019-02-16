@@ -384,28 +384,6 @@ public final class MultiUserChatManager extends Manager {
     }
 
     /**
-     * Returns a List of HostedRooms where each HostedRoom has the XMPP address of the room and the room's name.
-     * Once discovered the rooms hosted by a chat service it is possible to discover more detailed room information or
-     * join the room.
-     *
-     * @param serviceName the service that is hosting the rooms to discover.
-     * @return a collection of HostedRooms.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws NotAMucServiceException
-     * @deprecated use {@link #getRoomsHostedBy(DomainBareJid)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.4.
-    public List<HostedRoom> getHostedRooms(DomainBareJid serviceName) throws NoResponseException, XMPPErrorException,
-                    NotConnectedException, InterruptedException, NotAMucServiceException {
-        Map<EntityBareJid, HostedRoom> hostedRooms = getRoomsHostedBy(serviceName);
-        return new ArrayList<>(hostedRooms.values());
-    }
-
-    /**
      * Returns a Map of HostedRooms where each HostedRoom has the XMPP address of the room and the room's name.
      * Once discovered the rooms hosted by a chat service it is possible to discover more detailed room information or
      * join the room.

@@ -123,19 +123,6 @@ public abstract class XMPPException extends Exception {
         }
 
         /**
-         * Returns the XMPPError associated with this exception, or <tt>null</tt> if there isn't
-         * one.
-         *
-         * @return the XMPPError associated with this exception.
-         * @deprecated use {@link #getStanzaError()} instead.
-         */
-        @Deprecated
-        // TODO Remove in Smack 4.4.
-        public StanzaError getXMPPError() {
-            return error;
-        }
-
-        /**
          * Returns the stanza error extension element associated with this exception.
          *
          * @return the stanza error extension element associated with this exception.
