@@ -179,7 +179,7 @@ public interface XMPPConnection {
      * @param stanza the stanza to send.
      * @return {@code true} if the stanza was successfully scheduled to be send, {@code false} otherwise.
      * @throws NotConnectedException if the connection is not connected.
-     * @since 4.4
+     * @since 4.4.0
      */
     boolean trySendStanza(Stanza stanza) throws NotConnectedException;
 
@@ -200,7 +200,7 @@ public interface XMPPConnection {
      * @return {@code true} if the stanza was successfully scheduled to be send, {@code false} otherwise.
      * @throws NotConnectedException if the connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @since 4.4
+     * @since 4.4.0
      */
     boolean trySendStanza(Stanza stanza, long timeout, TimeUnit unit)  throws NotConnectedException, InterruptedException;
 
@@ -322,7 +322,7 @@ public interface XMPPConnection {
      *
      * @param stanzaListener the stanza listener to notify of new received stanzas.
      * @param stanzaFilter the stanza filter to use.
-     * @since 4.4
+     * @since 4.4.0
      */
     void addStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
 
@@ -331,7 +331,7 @@ public interface XMPPConnection {
      *
      * @param stanzaListener the stanza listener to remove.
      * @return true if the stanza listener was removed.
-     * @since 4.4
+     * @since 4.4.0
      */
     boolean removeStanzaListener(StanzaListener stanzaListener);
 
