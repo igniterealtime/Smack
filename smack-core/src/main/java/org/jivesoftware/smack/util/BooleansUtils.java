@@ -27,4 +27,13 @@ public class BooleansUtils {
         return false;
     }
 
+    public static int numberOf(boolean[] array, boolean target) {
+        int res = 0;
+        for (boolean b : array) {
+            if (b == target) {
+                res++;
+            }
+        }
+        return res;
+    }
 }

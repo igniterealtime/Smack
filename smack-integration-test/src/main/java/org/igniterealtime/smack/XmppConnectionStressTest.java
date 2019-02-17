@@ -216,7 +216,7 @@ public class XmppConnectionStressTest {
         } while (!acquired && System.currentTimeMillis() < waitStart + replyTimeoutMillis);
 
         if (!acquired && receiveExceptions.isEmpty() && sendExceptions.isEmpty()) {
-            throw new StressTestFailedException.NotAllMessagesReceivedException(receiveMarkers);
+            throw new StressTestFailedException.NotAllMessagesReceivedException(receiveMarkers, connections);
         }
 
         if (!receiveExceptions.isEmpty() || !sendExceptions.isEmpty()) {
@@ -241,9 +241,52 @@ public class XmppConnectionStressTest {
 
             public final Map<XMPPConnection, Map<EntityFullJid, boolean[]>> receiveMarkers;
 
-            private NotAllMessagesReceivedException(Map<XMPPConnection, Map<EntityFullJid, boolean[]>> receiveMarkers) {
-                super("Did not receive all messages");
+            private NotAllMessagesReceivedException(Map<XMPPConnection, Map<EntityFullJid, boolean[]>> receiveMarkers, List<? extends XMPPConnection> connections) {
+                super("Did not receive all messages\n" + markersToString(receiveMarkers, connections).toString());
                 this.receiveMarkers = receiveMarkers;
+            }
+
+            public static StringBuilder markersToString(Map<XMPPConnection, Map<EntityFullJid, boolean[]>> receiveMarkers, List<? extends XMPPConnection> connections) {
+                StringBuilder sb = new StringBuilder();
+                final int connectionCount = connections.size();
+
+                Map<EntityFullJid, Integer> connectionIds = new HashMap<>(connectionCount);
+                for (int i = 0; i < connectionCount; i++) {
+                    XMPPConnection connection = connections.get(i);
+                    EntityFullJid connectionAddress = connection.getUser();
+                    connectionIds.put(connectionAddress, i);
+                }
+
+                for (Map.Entry<XMPPConnection, Map<EntityFullJid, boolean[]>> entry : receiveMarkers.entrySet()) {
+                    XMPPConnection connection = entry.getKey();
+                    Map<EntityFullJid, boolean[]> receiveMarkersOfThisConnection = entry.getValue();
+                    Integer markerToConnectionId = connectionIds.get(connection.getUser());
+
+                    for (Map.Entry<EntityFullJid, boolean[]> receiveMarkerOfThisConnection : receiveMarkersOfThisConnection.entrySet()) {
+                        boolean[] marker = receiveMarkerOfThisConnection.getValue();
+                        int numberOfFalseMarkers = BooleansUtils.numberOf(marker, false);
+                        if (numberOfFalseMarkers == 0) {
+                            continue;
+                        }
+
+                        EntityFullJid markerFromAddress = receiveMarkerOfThisConnection.getKey();
+                        Integer markerFromConnectionId = connectionIds.get(markerFromAddress);
+                        sb.append(markerToConnectionId)
+                        .append(" is missing ").append(numberOfFalseMarkers)
+                        .append(" messages from ").append(markerFromConnectionId)
+                        .append(" :");
+                        for (int i = 0; i < marker.length; i++) {
+                            if (marker[i]) {
+                                continue;
+                            }
+                            sb.append(i).append(", ");
+                        }
+                        sb.setLength(sb.length() - 2);
+                        sb.append('\n');
+                    }
+                }
+
+                return sb;
             }
         }
 
