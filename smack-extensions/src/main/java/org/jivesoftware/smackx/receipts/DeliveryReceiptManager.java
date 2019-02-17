@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Georg Lukas, 2015 Florian Schmaus
+ * Copyright 2013-2014 Georg Lukas, 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,8 +74,16 @@ import org.jxmpp.jid.Jid;
  */
 public final class DeliveryReceiptManager extends Manager {
 
-    private static final StanzaFilter MESSAGES_WITH_DELIVERY_RECEIPT_REQUEST = new AndFilter(StanzaTypeFilter.MESSAGE,
-                    new StanzaExtensionFilter(new DeliveryReceiptRequest()));
+    /**
+     * Filters all non-error messages with receipt requests.
+     * See <a href="https://xmpp.org/extensions/xep-0184.html#when">XEP-0184 § 5.</a> "A sender could request receipts
+     * on any non-error content message (chat, groupchat, headline, or normal)…"
+     */
+    private static final StanzaFilter NON_ERROR_GROUPCHAT_MESSAGES_WITH_DELIVERY_RECEIPT_REQUEST = new AndFilter(
+            StanzaTypeFilter.MESSAGE,
+            new StanzaExtensionFilter(new DeliveryReceiptRequest()),
+            new NotFilter(MessageTypeFilter.ERROR));
+
     private static final StanzaFilter MESSAGES_WITH_DELIVERY_RECEIPT = new AndFilter(StanzaTypeFilter.MESSAGE,
                     new StanzaExtensionFilter(DeliveryReceipt.ELEMENT, DeliveryReceipt.NAMESPACE));
 
@@ -175,7 +183,7 @@ public final class DeliveryReceiptManager extends Manager {
                 }
                 connection.sendStanza(ack);
             }
-        }, MESSAGES_WITH_DELIVERY_RECEIPT_REQUEST);
+        }, NON_ERROR_GROUPCHAT_MESSAGES_WITH_DELIVERY_RECEIPT_REQUEST);
     }
 
     /**
