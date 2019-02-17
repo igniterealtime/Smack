@@ -58,7 +58,9 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
         // items do not need payload, to prevent payload-required error responses when
         // publishing the item.
         config.setDeliverPayloads(false);
-        config.setPersistentItems(true);
+        // Set persistent_items to 'false' (was previously 'true') as workaround for ejabberd issue #2799
+        // (https://github.com/processone/ejabberd/issues/2799).
+        config.setPersistentItems(false);
         Node node = pubSubManagerOne.createNode(nodename, config);
         try {
             LeafNode leafNode = (LeafNode) node;
