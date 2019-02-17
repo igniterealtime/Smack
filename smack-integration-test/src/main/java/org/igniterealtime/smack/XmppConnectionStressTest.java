@@ -33,6 +33,7 @@ import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Async;
+import org.jivesoftware.smack.util.BooleansUtils;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -171,10 +172,8 @@ public class XmppConnectionStressTest {
                     }
 
                     for (boolean[] markers : myReceiveMarkers.values()) {
-                        for (boolean b : markers) {
-                            if (!b) {
-                                return;
-                            }
+                        if (BooleansUtils.contains(markers, false)) {
+                            return;
                         }
                     }
                     // All markers set to true, this means we received all messages.
