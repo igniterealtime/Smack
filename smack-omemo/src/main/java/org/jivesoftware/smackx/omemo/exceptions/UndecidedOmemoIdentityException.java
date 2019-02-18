@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.omemo.exceptions;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 
@@ -45,7 +46,7 @@ public class UndecidedOmemoIdentityException extends Exception {
      *
      * @return undecided devices
      */
-    public HashSet<OmemoDevice> getUndecidedDevices() {
+    public Set<OmemoDevice> getUndecidedDevices() {
         return this.devices;
     }
 
