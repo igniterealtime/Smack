@@ -113,6 +113,15 @@ allprojects {
 		version += '-SNAPSHOT'
 	}
 
+	test {
+		// Enable full stacktraces of failed tests. Especially handy
+		// for environments like Travis.
+		testLogging {
+			events "failed"
+			exceptionFormat "full"
+		}
+	}
+
 	ext.sharedManifest = manifest {
 		attributes('Implementation-Version': version,
 				   'Implementation-GitRevision': ext.gitCommit,
