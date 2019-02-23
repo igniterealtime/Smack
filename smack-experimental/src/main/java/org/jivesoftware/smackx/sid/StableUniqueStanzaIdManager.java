@@ -49,7 +49,8 @@ public final class StableUniqueStanzaIdManager extends Manager {
     private static final StanzaListener ADD_ORIGIN_ID_INTERCEPTOR = new StanzaListener() {
         @Override
         public void processStanza(Stanza stanza) {
-            OriginIdElement.addOriginId((Message) stanza);
+            Message message = (Message) stanza;
+            OriginIdElement.addOriginId(message);
         }
     };
 
