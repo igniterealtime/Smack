@@ -46,7 +46,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
             ToTypeFilter.ENTITY_FULL_OR_BARE_JID);
 
     // Listener for outgoing stanzas that adds origin-ids to outgoing stanzas.
-    private final StanzaListener stanzaListener = new StanzaListener() {
+    private static final StanzaListener ADD_ORIGIN_ID_INTERCEPTOR = new StanzaListener() {
         @Override
         public void processStanza(Stanza stanza) {
             OriginIdElement.addOriginId((Message) stanza);
@@ -92,7 +92,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
     public synchronized void enable() {
         ServiceDiscoveryManager.getInstanceFor(connection()).addFeature(NAMESPACE);
         StanzaFilter filter = new AndFilter(OUTGOING_FILTER, new NotFilter(OUTGOING_FILTER));
-        connection().addStanzaInterceptor(stanzaListener, filter);
+        connection().addStanzaInterceptor(ADD_ORIGIN_ID_INTERCEPTOR, filter);
     }
 
     /**
@@ -100,7 +100,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
      */
     public synchronized void disable() {
         ServiceDiscoveryManager.getInstanceFor(connection()).removeFeature(NAMESPACE);
-        connection().removeStanzaInterceptor(stanzaListener);
+        connection().removeStanzaInterceptor(ADD_ORIGIN_ID_INTERCEPTOR);
     }
 
     /**
