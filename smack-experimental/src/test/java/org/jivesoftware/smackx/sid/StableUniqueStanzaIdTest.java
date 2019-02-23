@@ -25,6 +25,7 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 import org.jivesoftware.smackx.sid.element.StanzaIdElement;
 import org.jivesoftware.smackx.sid.provider.OriginIdProvider;
@@ -80,5 +81,18 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
         message.addExtension(stanzaId);
         assertTrue(StanzaIdElement.hasStanzaId(message));
         assertEquals(stanzaId, StanzaIdElement.getStanzaId(message));
+    }
+
+    @Test
+    public void testMultipleUssidExtensions() throws Exception {
+        String message = "<message xmlns='jabber:client' from='e4aec989-3e20-4846-83bf-f50df89b5d07@muclight.example.com/user1@example.com' to='user1@example.com' id='6b71fe3a-3cb2-489c-9c8e-b6879761d15e' type='groupchat'>" +
+                          "<body>Test message</body>" +
+                          "<markable xmlns='urn:xmpp:chat-markers:0'/>" +
+                          "<stanza-id by='e4aec989-3e20-4846-83bf-f50df89b5d07@muclight.example.com' id='B0KK24ETVC81' xmlns='urn:xmpp:sid:0'/>" +
+                          "<stanza-id by='user1@example.com' id='B0KK24EV89G1' xmlns='urn:xmpp:sid:0'/>" +
+                        "</message>";
+        Message messageStanza = PacketParserUtils.parseStanza(message);
+
+        assertTrue(StanzaIdElement.hasStanzaId(messageStanza));
     }
 }
