@@ -43,7 +43,7 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
         assertEquals("alice@wonderland.lit", element.getBy());
         assertXMLEqual(xml, element.toXML(null).toString());
 
-        StanzaIdElement parsed = StanzaIdProvider.TEST_INSTANCE.parse(TestUtils.getParser(xml));
+        StanzaIdElement parsed = StanzaIdProvider.INSTANCE.parse(TestUtils.getParser(xml));
         assertEquals(element.getId(), parsed.getId());
         assertEquals(element.getBy(), parsed.getBy());
     }
@@ -55,7 +55,7 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
         assertEquals("de305d54-75b4-431b-adb2-eb6b9e546013", element.getId());
         assertXMLEqual(xml, element.toXML(null).toString());
 
-        OriginIdElement parsed = OriginIdProvider.TEST_INSTANCE.parse(TestUtils.getParser(xml));
+        OriginIdElement parsed = OriginIdProvider.INSTANCE.parse(TestUtils.getParser(xml));
         assertEquals(element.getId(), parsed.getId());
     }
 

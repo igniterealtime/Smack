@@ -23,7 +23,11 @@ import org.xmlpull.v1.XmlPullParser;
 
 public class StanzaIdProvider extends ExtensionElementProvider<StanzaIdElement> {
 
-    public static StanzaIdProvider TEST_INSTANCE = new StanzaIdProvider();
+    public static final StanzaIdProvider INSTANCE = new StanzaIdProvider();
+
+    // TODO: Remove in Smack 4.4.
+    @Deprecated
+    public static final StanzaIdProvider TEST_INSTANCE = INSTANCE;
 
     @Override
     public StanzaIdElement parse(XmlPullParser parser, int initialDepth) throws Exception {
