@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.hoxt.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.hoxt.packet.Base64BinaryChunk;
@@ -34,7 +35,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class Base64BinaryChunkProvider extends ExtensionElementProvider<Base64BinaryChunk> {
 
     @Override
-    public Base64BinaryChunk parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public Base64BinaryChunk parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String streamId = parser.getAttributeValue("", Base64BinaryChunk.ATTRIBUTE_STREAM_ID);
         String nrString = parser.getAttributeValue("", Base64BinaryChunk.ATTRIBUTE_NR);
         String lastString = parser.getAttributeValue("", Base64BinaryChunk.ATTRIBUTE_LAST);

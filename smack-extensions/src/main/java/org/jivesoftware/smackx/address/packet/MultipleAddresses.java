@@ -118,12 +118,12 @@ public class MultipleAddresses implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder(this);
         buf.rightAngleBracket();
         // Loop through all the addresses and append them to the string buffer
         for (Address address : addresses) {
-            buf.append(address.toXML(null));
+            buf.append(address.toXML());
         }
         buf.closeElement(this);
         return buf;
@@ -194,7 +194,7 @@ public class MultipleAddresses implements ExtensionElement {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder buf = new XmlStringBuilder();
             buf.halfOpenElement(this).attribute("type", type);
             buf.optAttribute("jid", jid);

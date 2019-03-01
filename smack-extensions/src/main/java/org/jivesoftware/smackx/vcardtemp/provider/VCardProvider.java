@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.vcardtemp.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -69,8 +69,7 @@ public class VCardProvider extends IQProvider<VCard> {
     // @formatter:on
 
     @Override
-    public VCard parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
-                    SmackException {
+    public VCard parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         VCard vCard = new VCard();
         String name = null;
 

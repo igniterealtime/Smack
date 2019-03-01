@@ -16,12 +16,16 @@
  */
 package org.jivesoftware.smackx.httpfileupload.provider;
 
+import java.io.IOException;
+
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError;
 import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError_V0_2;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Provider for File Too Large error extension.
@@ -32,7 +36,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class FileTooLargeErrorProvider extends ExtensionElementProvider<FileTooLargeError> {
 
     @Override
-    public FileTooLargeError parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public FileTooLargeError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         final String namespace = parser.getNamespace();
         Long maxFileSize = null;
 

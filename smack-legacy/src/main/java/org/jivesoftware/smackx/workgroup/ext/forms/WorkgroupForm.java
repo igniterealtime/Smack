@@ -17,11 +17,16 @@
 
 package org.jivesoftware.smackx.workgroup.ext.forms;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.SimpleIQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class WorkgroupForm extends SimpleIQ {
 
@@ -47,8 +52,7 @@ public class WorkgroupForm extends SimpleIQ {
     public static class InternalProvider extends IQProvider<WorkgroupForm> {
 
         @Override
-        public WorkgroupForm parse(XmlPullParser parser, int initialDepth)
-                        throws Exception {
+        public WorkgroupForm parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
             WorkgroupForm answer = new WorkgroupForm();
 
             boolean done = false;
@@ -56,7 +60,7 @@ public class WorkgroupForm extends SimpleIQ {
                 int eventType = parser.next();
                 if (eventType == XmlPullParser.START_TAG) {
                     // Parse the packet extension
-                    PacketParserUtils.addExtensionElement(answer, parser);
+                    PacketParserUtils.addExtensionElement(answer, parser, xmlEnvironment);
                 }
                 else if (eventType == XmlPullParser.END_TAG) {
                     if (parser.getName().equals(ELEMENT_NAME)) {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.igniterealtime.smack.inttest.DummySmackIntegrationTestFramework;
 import org.igniterealtime.smack.inttest.FailedTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.TestRunResult;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -52,9 +54,19 @@ public class SmackIntegrationTestFrameworkUnitTest {
     private static boolean beforeClassInvoked;
     private static boolean afterClassInvoked;
 
+    @BeforeClass
+    public static void prepareSinttestUnitTest() {
+        SmackIntegrationTestFramework.SINTTEST_UNIT_TEST = true;
+    }
+
+    @AfterClass
+    public static void disallowSinntestUnitTest() {
+        SmackIntegrationTestFramework.SINTTEST_UNIT_TEST = false;
+    }
+
     @Test
     public void throwsRuntimeExceptionsTest() throws KeyManagementException, NoSuchAlgorithmException, SmackException,
-                    IOException, XMPPException, InterruptedException {
+                    IOException, XMPPException, InterruptedException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         expectedException.expect(RuntimeException.class);
         expectedException.expectMessage(ThrowsRuntimeExceptionDummyTest.RUNTIME_EXCEPTION_MESSAGE);
         DummySmackIntegrationTestFramework sinttest = getFrameworkForUnitTest(ThrowsRuntimeExceptionDummyTest.class);
@@ -63,7 +75,7 @@ public class SmackIntegrationTestFrameworkUnitTest {
 
     public static class ThrowsRuntimeExceptionDummyTest extends AbstractSmackIntegrationTest {
 
-        public ThrowsRuntimeExceptionDummyTest(SmackIntegrationTestEnvironment environment) {
+        public ThrowsRuntimeExceptionDummyTest(SmackIntegrationTestEnvironment<?> environment) {
             super(environment);
         }
 
@@ -77,7 +89,8 @@ public class SmackIntegrationTestFrameworkUnitTest {
 
     @Test
     public void logsNonFatalExceptionTest() throws KeyManagementException, NoSuchAlgorithmException, SmackException,
-                    IOException, XMPPException, InterruptedException {
+            IOException, XMPPException, InterruptedException, InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
         DummySmackIntegrationTestFramework sinttest = getFrameworkForUnitTest(ThrowsNonFatalExceptionDummyTest.class);
         TestRunResult testRunResult = sinttest.run();
         List<FailedTest> failedTests = testRunResult.getFailedTests();
@@ -93,7 +106,7 @@ public class SmackIntegrationTestFrameworkUnitTest {
 
         public static final String DESCRIPTIVE_TEXT = "I'm not fatal";
 
-        public ThrowsNonFatalExceptionDummyTest(SmackIntegrationTestEnvironment environment) {
+        public ThrowsNonFatalExceptionDummyTest(SmackIntegrationTestEnvironment<?> environment) {
             super(environment);
         }
 
@@ -107,7 +120,8 @@ public class SmackIntegrationTestFrameworkUnitTest {
 
     @Test
     public void testInvoking() throws KeyManagementException, NoSuchAlgorithmException, SmackException, IOException,
-                    XMPPException, InterruptedException {
+            XMPPException, InterruptedException, InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
         beforeClassInvoked = false;
         afterClassInvoked = false;
 
@@ -120,7 +134,7 @@ public class SmackIntegrationTestFrameworkUnitTest {
 
     public static class BeforeAfterClassTest extends AbstractSmackIntegrationTest {
 
-        public BeforeAfterClassTest(SmackIntegrationTestEnvironment environment) {
+        public BeforeAfterClassTest(SmackIntegrationTestEnvironment<?> environment) {
             super(environment);
         }
 

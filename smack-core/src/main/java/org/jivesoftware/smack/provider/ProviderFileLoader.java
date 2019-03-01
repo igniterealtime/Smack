@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.CloseableUtil;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -54,10 +53,10 @@ public class ProviderFileLoader implements ProviderLoader {
     @SuppressWarnings("unchecked")
     public ProviderFileLoader(InputStream providerStream, ClassLoader classLoader) {
         // Load processing providers.
-        try {
+        try (InputStream is = providerStream) {
             XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-            parser.setInput(providerStream, "UTF-8");
+            parser.setInput(is, "UTF-8");
             int eventType = parser.getEventType();
             do {
                 if (eventType == XmlPullParser.START_TAG) {
@@ -140,9 +139,6 @@ public class ProviderFileLoader implements ProviderLoader {
         catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Unknown error occurred while parsing provider file", e);
             exceptions.add(e);
-        }
-        finally {
-            CloseableUtil.maybeClose(providerStream, LOGGER);
         }
     }
 

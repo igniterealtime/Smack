@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class IoTDiscoveryIntegrationTest extends AbstractSmackIntegrationTest {
     private final IoTDiscoveryManager discoveryManagerOne;
     private final IoTDiscoveryManager discoveryManagerTwo;
 
-    public IoTDiscoveryIntegrationTest(SmackIntegrationTestEnvironment environment) throws NoResponseException,
+    public IoTDiscoveryIntegrationTest(SmackIntegrationTestEnvironment<?> environment) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException, TestNotPossibleException {
         super(environment);
         discoveryManagerOne = IoTDiscoveryManager.getInstanceFor(conOne);
@@ -76,7 +76,9 @@ public class IoTDiscoveryIntegrationTest extends AbstractSmackIntegrationTest {
         }
     }
 
-    public static ThingState registerThing(IoTDiscoveryManager iotDiscoveryManager, Thing thing) throws XMPPErrorException, InterruptedException, SmackException {
+    public static ThingState registerThing(IoTDiscoveryManager iotDiscoveryManager, Thing thing)
+                    throws XMPPErrorException, InterruptedException, SmackException.SmackMessageException,
+                    NotConnectedException, NoResponseException {
         int attempts = 0;
         while (true) {
             try {
@@ -86,7 +88,7 @@ public class IoTDiscoveryIntegrationTest extends AbstractSmackIntegrationTest {
                 iotDiscoveryManager.unregister();
             }
             if (attempts++ > 3) {
-                throw new SmackException("Could no register thing");
+                throw new SmackException.SmackMessageException("Could no register thing");
             }
         }
     }

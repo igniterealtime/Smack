@@ -26,6 +26,7 @@ import org.jivesoftware.smack.XMPPException;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
+import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -38,7 +39,7 @@ public abstract class AbstractTwoUsersOmemoIntegrationTest extends AbstractOmemo
 
     protected OmemoManager alice, bob;
 
-    public AbstractTwoUsersOmemoIntegrationTest(SmackIntegrationTestEnvironment environment)
+    public AbstractTwoUsersOmemoIntegrationTest(SmackIntegrationTestEnvironment<?> environment)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException, TestNotPossibleException {
         super(environment);
@@ -53,8 +54,7 @@ public abstract class AbstractTwoUsersOmemoIntegrationTest extends AbstractOmemo
         assertFalse(alice.getDeviceId().equals(bob.getDeviceId()));
 
         // Subscribe presences
-        OmemoManagerSetupHelper.syncSubscribePresence(alice.getConnection(), bob.getConnection(), "bob", null);
-        OmemoManagerSetupHelper.syncSubscribePresence(bob.getConnection(), alice.getConnection(), "alice", null);
+        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(alice.getConnection(), bob.getConnection(), timeout);
 
         OmemoManagerSetupHelper.trustAllIdentitiesWithTests(alice, bob);    // Alice trusts Bob's devices
         OmemoManagerSetupHelper.trustAllIdentitiesWithTests(bob, alice);    // Bob trusts Alice' and Mallory's devices

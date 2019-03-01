@@ -16,7 +16,10 @@
  */
 package org.jivesoftware.smackx.carbons.provider;
 
-import org.jivesoftware.smack.SmackException;
+import java.io.IOException;
+
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
@@ -25,6 +28,7 @@ import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * This class implements the {@link ExtensionElementProvider} to parse
@@ -38,8 +42,7 @@ public class CarbonManagerProvider extends ExtensionElementProvider<CarbonExtens
     private static final ForwardedProvider FORWARDED_PROVIDER = new ForwardedProvider();
 
     @Override
-    public CarbonExtension parse(XmlPullParser parser, int initialDepth)
-                    throws Exception {
+    public CarbonExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         Direction dir = Direction.valueOf(parser.getName());
         Forwarded fwd = null;
 
@@ -52,8 +55,10 @@ public class CarbonManagerProvider extends ExtensionElementProvider<CarbonExtens
             else if (eventType == XmlPullParser.END_TAG && dir == Direction.valueOf(parser.getName()))
                 done = true;
         }
-        if (fwd == null)
-            throw new SmackException("sent/received must contain exactly one <forwarded> tag");
+        if (fwd == null) {
+            // TODO: Should be SmackParseException.
+            throw new IOException("sent/received must contain exactly one <forwarded> tag");
+        }
         return new CarbonExtension(dir, fwd);
     }
 }

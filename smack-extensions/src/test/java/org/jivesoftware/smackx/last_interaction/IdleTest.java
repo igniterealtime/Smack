@@ -44,7 +44,7 @@ public class IdleTest extends SmackTestSuite {
         assertEquals(date, parsed.getSince());
 
         IdleElement element = new IdleElement(date);
-        assertXMLEqual("<idle xmlns='urn:xmpp:idle:1' since='1969-07-21T02:56:15.000+00:00'/>", element.toXML(null).toString());
+        assertXMLEqual("<idle xmlns='urn:xmpp:idle:1' since='1969-07-21T02:56:15.000+00:00'/>", element.toXML().toString());
     }
 
     @Test

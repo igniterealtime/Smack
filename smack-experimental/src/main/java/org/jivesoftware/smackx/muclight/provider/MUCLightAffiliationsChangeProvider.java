@@ -16,8 +16,10 @@
  */
 package org.jivesoftware.smackx.muclight.provider;
 
+import java.io.IOException;
 import java.util.HashMap;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.muclight.MUCLightAffiliation;
@@ -26,6 +28,7 @@ import org.jivesoftware.smackx.muclight.element.MUCLightElements.AffiliationsCha
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * MUC Light Affiliations Change Provider class.
@@ -36,7 +39,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class MUCLightAffiliationsChangeProvider extends ExtensionElementProvider<AffiliationsChangeExtension> {
 
     @Override
-    public AffiliationsChangeExtension parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public AffiliationsChangeExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         HashMap<Jid, MUCLightAffiliation> affiliations = new HashMap<>();
         String prevVersion = null;
         String version = null;

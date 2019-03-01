@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2015 Florian Schmaus
+ * Copyright 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.json.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
@@ -27,14 +27,14 @@ import org.jivesoftware.smackx.json.packet.AbstractJsonPacketExtension;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-public abstract class AbstractJsonExtensionProvider extends ExtensionElementProvider<AbstractJsonPacketExtension> {
+public abstract class AbstractJsonExtensionProvider<J extends AbstractJsonPacketExtension> extends ExtensionElementProvider<J> {
 
     @Override
-    public AbstractJsonPacketExtension parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException,
-                    IOException, SmackException {
+    public J parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+                    IOException {
         String json = PacketParserUtils.parseElementText(parser);
         return from(json);
     }
 
-    public abstract AbstractJsonPacketExtension from(String json);
+    public abstract J from(String json);
 }

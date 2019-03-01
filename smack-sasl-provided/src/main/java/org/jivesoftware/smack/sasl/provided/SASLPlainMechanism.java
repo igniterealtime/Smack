@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.jivesoftware.smack.sasl.provided;
 
 import javax.security.auth.callback.CallbackHandler;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.ByteUtils;
 
@@ -27,12 +26,12 @@ public class SASLPlainMechanism extends SASLMechanism {
     public static final String NAME = PLAIN;
 
     @Override
-    protected void authenticateInternal(CallbackHandler cbh) throws SmackException {
+    protected void authenticateInternal(CallbackHandler cbh) {
         throw new UnsupportedOperationException("CallbackHandler not (yet) supported");
     }
 
     @Override
-    protected byte[] getAuthenticationText() throws SmackException {
+    protected byte[] getAuthenticationText() {
         // concatenate and encode username (authcid) and password
         String authzid;
         if (authorizationId == null) {
@@ -62,7 +61,7 @@ public class SASLPlainMechanism extends SASLMechanism {
     }
 
     @Override
-    public void checkIfSuccessfulOrThrow() throws SmackException {
+    public void checkIfSuccessfulOrThrow() {
         // No check performed
     }
 

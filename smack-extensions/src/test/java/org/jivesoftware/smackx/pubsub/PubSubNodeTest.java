@@ -61,7 +61,7 @@ public class PubSubNodeTest extends SmackTestSuite {
         assertEquals("http://jabber.org/protocol/pubsub#owner", request.getChildElementNamespace());
         assertEquals("pubsub", request.getChildElementName());
 
-        XmlPullParser parser = TestUtils.getIQParser(request.toXML(null).toString());
+        XmlPullParser parser = TestUtils.getIQParser(request.toXML().toString());
         PubSub pubsubResult = (PubSub) PacketParserUtils.parseIQ(parser);
         SubscriptionsExtension subElem = pubsubResult.getExtension(PubSubElementType.SUBSCRIPTIONS_OWNER);
         List<Subscription> subscriptions = subElem.getSubscriptions();

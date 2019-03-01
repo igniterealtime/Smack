@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.workgroup.packet;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -60,7 +61,7 @@ public class UserID implements ExtensionElement {
     }
 
     @Override
-    public String toXML(String enclosingNamespace) {
+    public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         StringBuilder buf = new StringBuilder();
 
         buf.append('<').append(ELEMENT_NAME).append(" xmlns=\"").append(NAMESPACE).append("\" ");
@@ -73,7 +74,7 @@ public class UserID implements ExtensionElement {
     public static class Provider extends ExtensionElementProvider<UserID> {
 
         @Override
-        public UserID parse(XmlPullParser parser, int initialDepth)
+        public UserID parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                         throws XmlPullParserException, IOException {
             Jid userID = ParserUtils.getJidAttribute(parser, "id");
 

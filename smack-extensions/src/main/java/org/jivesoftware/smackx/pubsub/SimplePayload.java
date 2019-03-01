@@ -93,12 +93,12 @@ public class SimplePayload implements ExtensionElement {
     }
 
     @Override
-    public String toXML(String enclosingNamespace) {
+    public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         return payload;
     }
 
     @Override
     public String toString() {
-        return getClass().getName() + "payload [" + toXML(null) + "]";
+        return getClass().getName() + "payload [" + toXML() + "]";
     }
 }

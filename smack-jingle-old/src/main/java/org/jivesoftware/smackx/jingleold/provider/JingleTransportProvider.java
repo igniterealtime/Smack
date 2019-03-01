@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.jingleold.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.jingleold.nat.ICECandidate;
@@ -52,10 +52,9 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
      * @return a transport element.
      * @throws IOException
      * @throws XmlPullParserException
-     * @throws SmackException
      */
     @Override
-    public JingleTransport parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException  {
+    public JingleTransport parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException  {
         boolean done = false;
         JingleTransport trans = getInstance();
 
@@ -69,7 +68,8 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
                     if (jtc != null) trans.addCandidate(jtc);
                 }
                 else {
-                    throw new SmackException("Unknown tag \"" + name + "\" in transport element.");
+                    // TODO: Should be SmackParseException.
+                    throw new IOException("Unknown tag \"" + name + "\" in transport element.");
                 }
             }
             else if (eventType == XmlPullParser.END_TAG) {

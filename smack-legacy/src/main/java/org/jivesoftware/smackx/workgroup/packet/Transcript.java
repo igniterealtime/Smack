@@ -83,7 +83,7 @@ public class Transcript extends IQ {
                 .append("\">");
 
         for (Stanza packet : packets) {
-            buf.append(packet.toXML(null));
+            buf.append(packet.toXML());
         }
 
         return buf;

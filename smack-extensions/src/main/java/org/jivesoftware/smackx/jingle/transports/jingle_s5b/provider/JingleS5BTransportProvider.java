@@ -27,6 +27,9 @@ import static org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.Jing
 import static org.xmlpull.v1.XmlPullParser.END_TAG;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
+import java.io.IOException;
+
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport;
@@ -35,6 +38,7 @@ import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTr
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo.JingleS5BCandidateTransportInfo;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Provider for JingleSocks5BytestreamTransport elements.
@@ -42,7 +46,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class JingleS5BTransportProvider extends JingleContentTransportProvider<JingleS5BTransport> {
 
     @Override
-    public JingleS5BTransport parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public JingleS5BTransport parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         JingleS5BTransport.Builder builder = JingleS5BTransport.getBuilder();
 
         String streamId = parser.getAttributeValue(null, JingleS5BTransport.ATTR_SID);

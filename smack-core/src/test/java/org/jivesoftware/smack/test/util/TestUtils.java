@@ -21,6 +21,7 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -80,15 +81,15 @@ public final class TestUtils {
 
     public static <EE extends ExtensionElement> EE parseExtensionElement(String elementString)
                     throws Exception {
-        return parseExtensionElement(getParser(elementString));
+        return parseExtensionElement(getParser(elementString), null);
     }
 
     @SuppressWarnings("unchecked")
-    public static <EE extends ExtensionElement> EE parseExtensionElement(XmlPullParser parser)
+    public static <EE extends ExtensionElement> EE parseExtensionElement(XmlPullParser parser, XmlEnvironment outerXmlEnvironment)
                     throws Exception {
         ParserUtils.assertAtStartTag(parser);
         final String elementName = parser.getName();
         final String namespace = parser.getNamespace();
-        return (EE) PacketParserUtils.parseExtensionElement(elementName, namespace, parser);
+        return (EE) PacketParserUtils.parseExtensionElement(elementName, namespace, parser, outerXmlEnvironment);
     }
 }

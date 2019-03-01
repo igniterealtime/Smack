@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2017-2019 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.ox.element.CryptElement;
 import org.jivesoftware.smackx.ox.element.EncryptedOpenPgpContentElement;
 import org.jivesoftware.smackx.ox.element.OpenPgpContentElement;
@@ -40,7 +43,6 @@ import org.jivesoftware.smackx.ox.element.SigncryptElement;
 
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.util.XmppDateTime;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -78,10 +80,10 @@ public abstract class OpenPgpContentElementProvider<O extends OpenPgpContentElem
     }
 
     @Override
-    public abstract O parse(XmlPullParser parser, int initialDepth) throws Exception;
+    public abstract O parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException;
 
     protected static OpenPgpContentElementData parseOpenPgpContentElementData(XmlPullParser parser, int initialDepth)
-            throws Exception {
+            throws XmlPullParserException, IOException, SmackParsingException {
         Set<Jid> to = new HashSet<>();
         Date timestamp = null;
         String rpad = null;
@@ -96,7 +98,7 @@ public abstract class OpenPgpContentElementProvider<O extends OpenPgpContentElem
 
                         case OpenPgpContentElement.ELEM_TIME:
                             String stamp = parser.getAttributeValue("", OpenPgpContentElement.ATTR_STAMP);
-                            timestamp = XmppDateTime.parseDate(stamp);
+                            timestamp = ParserUtils.getDateFromXep82String(stamp);
                             break;
 
                         case OpenPgpContentElement.ELEM_TO:

@@ -50,7 +50,7 @@ public class NodeElement implements NamedElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         nodeInfo.appendTo(xml);
         xml.rightAngleBracket();

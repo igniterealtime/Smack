@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -140,21 +139,23 @@ public class MultipleRecipientManager {
      * @param connection the connection to use to send the reply.
      * @param original   the previously received stanza that was sent to multiple recipients.
      * @param reply      the new message to send as a reply.
-     * @throws SmackException
      * @throws XMPPErrorException
      * @throws InterruptedException
+     * @throws NotConnectedException
+     * @throws FeatureNotSupportedException
+     * @throws NoResponseException
      */
     public static void reply(XMPPConnection connection, Message original, Message reply)
-            throws SmackException, XMPPErrorException, InterruptedException {
+            throws XMPPErrorException, InterruptedException, NotConnectedException, NoResponseException, FeatureNotSupportedException {
         MultipleRecipientInfo info = getMultipleRecipientInfo(original);
         if (info == null) {
-            throw new SmackException("Original message does not contain multiple recipient info");
+            throw new IllegalArgumentException("Original message does not contain multiple recipient info");
         }
         if (info.shouldNotReply()) {
-            throw new SmackException("Original message should not be replied");
+            throw new IllegalArgumentException("Original message should not be replied");
         }
         if (info.getReplyRoom() != null) {
-            throw new SmackException("Reply should be sent through a room");
+            throw new IllegalArgumentException("Reply should be sent through a room");
         }
         // Any <thread/> element from the initial message MUST be copied into the reply.
         if (original.getThread() != null) {
@@ -211,19 +212,19 @@ public class MultipleRecipientManager {
         if (to != null) {
             for (Jid jid : to) {
                 packet.setTo(jid);
-                connection.sendStanza(new PacketCopy(packet.toXML(null)));
+                connection.sendStanza(new PacketCopy(packet.toXML()));
             }
         }
         if (cc != null) {
             for (Jid jid : cc) {
                 packet.setTo(jid);
-                connection.sendStanza(new PacketCopy(packet.toXML(null)));
+                connection.sendStanza(new PacketCopy(packet.toXML()));
             }
         }
         if (bcc != null) {
             for (Jid jid : bcc) {
                 packet.setTo(jid);
-                connection.sendStanza(new PacketCopy(packet.toXML(null)));
+                connection.sendStanza(new PacketCopy(packet.toXML()));
             }
         }
     }
@@ -309,13 +310,13 @@ public class MultipleRecipientManager {
         }
 
         @Override
-        public CharSequence toXML(String enclosingNamespace) {
+        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             return text;
         }
 
         @Override
         public String toString() {
-            return toXML(null).toString();
+            return toXML().toString();
         }
 
     }

@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -137,7 +136,7 @@ public class JivePropertiesExtension implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML(String enclosingNamespace) {
+    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         // Loop through all properties and write them out.
@@ -177,11 +176,10 @@ public class JivePropertiesExtension implements ExtensionElement {
             // a binary format, which won't work well inside of XML. Therefore, we base-64
             // encode the binary data before adding it.
             else {
-                ByteArrayOutputStream byteStream = null;
-                ObjectOutputStream out = null;
-                try {
-                    byteStream = new ByteArrayOutputStream();
-                    out = new ObjectOutputStream(byteStream);
+                try (
+                    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                    ObjectOutputStream out = new ObjectOutputStream(byteStream);
+                    ) {
                     out.writeObject(value);
                     type = "java-object";
                     valueStr = Base64.encodeToString(byteStream.toByteArray());
@@ -190,10 +188,6 @@ public class JivePropertiesExtension implements ExtensionElement {
                     LOGGER.log(Level.SEVERE, "Error encoding java object", e);
                     type = "java-object";
                     valueStr = "Serializing error: " + e.getMessage();
-                }
-                finally {
-                    CloseableUtil.maybeClose(out, LOGGER);
-                    CloseableUtil.maybeClose(byteStream, LOGGER);
                 }
             }
             xml.attribute("type", type);

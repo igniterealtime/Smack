@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.jivesoftware.smackx.iot.control.element;
+
+import org.jivesoftware.smack.util.ParserUtils;
 
 public class SetBoolData extends SetData {
 
@@ -31,7 +33,7 @@ public class SetBoolData extends SetData {
 
     public Boolean getBooleanValue() {
         if (booleanCache != null) {
-            booleanCache = Boolean.valueOf(getValue());
+            booleanCache = ParserUtils.parseXmlBoolean(getValue());
         }
         return booleanCache;
     }

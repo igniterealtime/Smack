@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.bytestreams.socks5.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -36,7 +37,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class BytestreamsProvider extends IQProvider<Bytestream> {
 
     @Override
-    public Bytestream parse(XmlPullParser parser, int initialDepth)
+    public Bytestream parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException {
         boolean done = false;
 

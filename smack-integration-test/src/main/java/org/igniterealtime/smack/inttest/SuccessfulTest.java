@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
  */
 package org.igniterealtime.smack.inttest;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 public class SuccessfulTest extends TestResult {
 
-    public SuccessfulTest(Method testMethod, long startTime, long endTime, List<String> logMessages) {
-        super(testMethod, startTime, endTime, logMessages);
+    public SuccessfulTest(SmackIntegrationTestFramework.ConcreteTest concreteTest, long startTime, long endTime, List<String> logMessages) {
+        super(concreteTest, startTime, endTime, logMessages);
     }
 
 }

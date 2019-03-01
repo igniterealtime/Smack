@@ -92,6 +92,6 @@ public class JingleIBBTransport extends JingleContentTransport {
 
     @Override
     public int hashCode() {
-        return this.toXML(null).toString().hashCode();
+        return this.toXML().toString().hashCode();
     }
 }

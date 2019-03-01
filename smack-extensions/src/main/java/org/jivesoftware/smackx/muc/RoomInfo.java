@@ -152,7 +152,7 @@ public class RoomInfo {
         if (!identities.isEmpty()) {
             this.name = identities.get(0).getName();
         } else {
-            LOGGER.warning("DiscoverInfo does not contain any Identity: " + info.toXML(null));
+            LOGGER.warning("DiscoverInfo does not contain any Identity: " + info.toXML());
             this.name = "";
         }
         String subject = "";
@@ -207,7 +207,8 @@ public class RoomInfo {
 
             FormField subjectmodField = form.getField("muc#roominfo_subjectmod");
             if (subjectmodField != null && !subjectmodField.getValues().isEmpty()) {
-                subjectmod = Boolean.valueOf(subjectmodField.getFirstValue());
+                String firstValue = subjectmodField.getFirstValue();
+                subjectmod = ("true".equals(firstValue) || "1".equals(firstValue));
             }
 
             FormField urlField = form.getField("muc#roominfo_logs");

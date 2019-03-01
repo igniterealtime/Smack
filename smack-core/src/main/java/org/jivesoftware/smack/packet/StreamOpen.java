@@ -96,14 +96,16 @@ public class StreamOpen implements Nonza {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder();
         xml.halfOpenElement(getElementName());
+
+        String namespace = CLIENT_NAMESPACE;
         // We always want to state 'xmlns' for stream open tags.
-        if (enclosingNamespace == null) {
-            enclosingNamespace = CLIENT_NAMESPACE;
+        if (enclosingXmlEnvironment != null) {
+            namespace = enclosingXmlEnvironment.getEffectiveNamespaceOrUse(CLIENT_NAMESPACE);
         }
-        xml.attribute("xmlns", enclosingNamespace);
+        xml.attribute("xmlns", namespace);
 
         xml.attribute("to", to);
         xml.attribute("xmlns:stream", "http://etherx.jabber.org/streams");

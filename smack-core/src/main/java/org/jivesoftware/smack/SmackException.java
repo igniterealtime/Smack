@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2015 Florian Schmaus
+ * Copyright 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,27 +29,27 @@ import org.jxmpp.jid.Jid;
  *
  * @author Florian Schmaus
  */
-public class SmackException extends Exception {
+public abstract class SmackException extends Exception {
 
     /**
      *
      */
-    private static final long serialVersionUID = 1844674365368214457L;
+    private static final long serialVersionUID = 1844674365368214458L;
 
     /**
      * Creates a new SmackException with the Throwable that was the root cause of the exception.
      *
      * @param wrappedThrowable the root cause of the exception.
      */
-    public SmackException(Throwable wrappedThrowable) {
+    protected SmackException(Throwable wrappedThrowable) {
         super(wrappedThrowable);
     }
 
-    public SmackException(String message) {
+    protected SmackException(String message) {
         super(message);
     }
 
-    public SmackException(String message, Throwable wrappedThrowable) {
+    protected SmackException(String message, Throwable wrappedThrowable) {
         super(message, wrappedThrowable);
     }
 
@@ -94,12 +94,19 @@ public class SmackException extends Exception {
         }
 
         public static NoResponseException newWith(XMPPConnection connection,
-                        StanzaCollector collector) {
-            return newWith(connection, collector.getStanzaFilter());
+                        StanzaCollector collector, boolean stanzaCollectorCancelled) {
+            return newWith(connection, collector.getStanzaFilter(), stanzaCollectorCancelled);
         }
 
         public static NoResponseException newWith(XMPPConnection connection, StanzaFilter filter) {
+            return newWith(connection, filter, false);
+        }
+
+        public static NoResponseException newWith(XMPPConnection connection, StanzaFilter filter, boolean stanzaCollectorCancelled) {
             final StringBuilder sb = getWaitingFor(connection);
+            if (stanzaCollectorCancelled) {
+                sb.append(" StanzaCollector has been cancelled.");
+            }
             sb.append(" Waited for response using: ");
             if (filter != null) {
                 sb.append(filter.toString());
@@ -181,6 +188,12 @@ public class SmackException extends Exception {
         public NotConnectedException(XMPPConnection connection, StanzaFilter stanzaFilter) {
             super("The connection " + connection
                             + " is no longer connected while waiting for response with " + stanzaFilter);
+        }
+
+        public NotConnectedException(XMPPConnection connection, StanzaFilter stanzaFilter,
+                        Exception connectionException) {
+            super("The connection " + connection + " is no longer connected while waiting for response with "
+                            + stanzaFilter + " because of " + connectionException, connectionException);
         }
     }
 
@@ -283,6 +296,15 @@ public class SmackException extends Exception {
         }
     }
 
+    public static class ConnectionUnexpectedTerminatedException extends SmackException {
+
+        private static final long serialVersionUID = 1L;
+
+        public ConnectionUnexpectedTerminatedException(Throwable wrappedThrowable) {
+            super(wrappedThrowable);
+        }
+    }
+
     public static class FeatureNotSupportedException extends SmackException {
 
         /**
@@ -332,6 +354,62 @@ public class SmackException extends Exception {
 
         public ResourceBindingNotOfferedException() {
             super("Resource binding was not offered by server");
+        }
+    }
+
+    /**
+     * A Smack exception wrapping another exception. Note that usage of this class is consider bad practice. This class
+     * will eventually be marked deprecated and removed.
+     */
+    public static class SmackWrappedException extends SmackException {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        public SmackWrappedException(Exception exception) {
+            super(exception);
+        }
+
+        public SmackWrappedException(String message, Exception exception) {
+            super(message, exception);
+        }
+    }
+
+    /**
+     * A Smack exception wrapping a text message. Note that usage of this class is consider bad practice. This class
+     * will eventually be marked deprecated and removed.
+     */
+    public static class SmackMessageException extends SmackException {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        public SmackMessageException(String message) {
+            super(message);
+        }
+    }
+
+    public static class SmackSaslException extends SmackException {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        public SmackSaslException(Exception exception) {
+            super(exception);
+        }
+
+        public SmackSaslException(String message) {
+            super(message);
+        }
+
+        public SmackSaslException(String message, Exception exception) {
+            super(message, exception);
         }
     }
 }

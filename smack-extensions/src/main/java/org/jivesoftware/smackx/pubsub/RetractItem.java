@@ -54,7 +54,7 @@ public class RetractItem implements ExtensionElement {
     }
 
     @Override
-    public String toXML(String enclosingNamespace) {
+    public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         return "<retract id='" + id + "'/>";
     }
 }

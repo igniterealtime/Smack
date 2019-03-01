@@ -42,7 +42,7 @@ public class XHTMLExtensionProviderTest {
         parser.next();
 
         XHTMLExtensionProvider provider = new XHTMLExtensionProvider();
-        ExtensionElement extension = provider.parse(parser, parser.getDepth());
+        ExtensionElement extension = provider.parse(parser, parser.getDepth(), null);
 
         assertThat(extension, instanceOf(XHTMLExtension.class));
         XHTMLExtension attachmentsInfo = (XHTMLExtension) extension;

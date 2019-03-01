@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
@@ -39,7 +40,7 @@ public class StandardExtensionElementProvider extends ExtensionElementProvider<S
     public static StandardExtensionElementProvider INSTANCE = new StandardExtensionElementProvider();
 
     @Override
-    public StandardExtensionElement parse(final XmlPullParser parser, final int initialDepth)
+    public StandardExtensionElement parse(final XmlPullParser parser, final int initialDepth, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException {
         // Unlike most (all?) other providers, we don't know the name and namespace of the element
         // we are parsing here.
@@ -79,7 +80,7 @@ public class StandardExtensionElementProvider extends ExtensionElementProvider<S
             int event = parser.next();
             switch (event) {
             case XmlPullParser.START_TAG:
-                builder.addElement(parse(parser, parser.getDepth()));
+                builder.addElement(parse(parser, parser.getDepth(), xmlEnvironment));
                 break;
             case XmlPullParser.TEXT:
                 builder.setText(parser.getText());

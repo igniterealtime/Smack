@@ -68,11 +68,11 @@ public class MarkupElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this).rightAngleBracket();
 
         for (MarkupChildElement child : getChildElements()) {
-            xml.append(child.toXML(null));
+            xml.append(child.toXML());
         }
 
         xml.closeElement(this);

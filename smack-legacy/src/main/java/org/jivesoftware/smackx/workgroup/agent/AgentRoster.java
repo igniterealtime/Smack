@@ -299,7 +299,7 @@ public class AgentRoster {
             EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
             if (from == null) {
                 // TODO Check if we need to ignore these presences or this is a server bug?
-                LOGGER.warning("Presence with non full JID from: " + presence.toXML(null));
+                LOGGER.warning("Presence with non full JID from: " + presence.toXML());
                 return;
             }
             Jid key = getPresenceMapKey(from);

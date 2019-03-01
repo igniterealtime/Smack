@@ -52,7 +52,7 @@ public abstract class IoTDataField implements NamedElement {
     }
 
     @Override
-    public final XmlStringBuilder toXML(String enclosingNamespace) {
+    public final XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("name", name).attribute("value", getValueString());
         // TODO handle 'unit' attribute as special case if <numeric/> is implemented.

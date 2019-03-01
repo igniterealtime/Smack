@@ -41,10 +41,10 @@ public class HashElementTest extends SmackTestSuite {
         String message = "Hello World!";
         HashElement element = HashManager.calculateHashElement(SHA_256, StringUtils.toUtf8Bytes(message));
         String expected = "<hash xmlns='urn:xmpp:hashes:2' algo='sha-256'>f4OxZX/x/FO5LcGBSKHWXfwtSx+j1ncoSt3SABJtkGk=</hash>";
-        assertEquals(expected, element.toXML(null).toString());
+        assertEquals(expected, element.toXML().toString());
 
         HashElement parsed = new HashElementProvider().parse(TestUtils.getParser(expected));
-        assertEquals(expected, parsed.toXML(null).toString());
+        assertEquals(expected, parsed.toXML().toString());
         assertEquals(SHA_256, parsed.getAlgorithm());
         assertEquals("f4OxZX/x/FO5LcGBSKHWXfwtSx+j1ncoSt3SABJtkGk=", parsed.getHashB64());
         assertArrayEquals(HashManager.sha_256(message), parsed.getHash());

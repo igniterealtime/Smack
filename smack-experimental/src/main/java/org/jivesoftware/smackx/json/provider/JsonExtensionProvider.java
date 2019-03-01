@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright 2014-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
  */
 package org.jivesoftware.smackx.json.provider;
 
-import org.jivesoftware.smackx.json.packet.AbstractJsonPacketExtension;
 import org.jivesoftware.smackx.json.packet.JsonPacketExtension;
 
-public class JsonExtensionProvider extends AbstractJsonExtensionProvider {
+public class JsonExtensionProvider extends AbstractJsonExtensionProvider<JsonPacketExtension> {
 
     @Override
-    public AbstractJsonPacketExtension from(String json) {
+    public JsonPacketExtension from(String json) {
         return new JsonPacketExtension(json);
     }
 }

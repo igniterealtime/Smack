@@ -114,8 +114,8 @@ import org.jxmpp.jid.Jid;
  * <pre>
  * {@code
  * MamQueryArgs mamQueryArgs = MamQueryArgs.builder()
- *                                 .withJid(jid)
- *                                 .setResultPageSize(10)
+ *                                 .limitResultsToJid(jid)
+ *                                 .setResultPageSizeTo(10)
  *                                 .queryLastPage()
  *                                 .build();
  * MamQuery mamQuery = mamManager.queryArchive(mamQueryArgs);
@@ -546,17 +546,15 @@ public final class MamManager extends Manager {
 
         StanzaCollector.Configuration resultCollectorConfiguration = StanzaCollector.newConfiguration()
                 .setStanzaFilter(new MamResultFilter(mamQueryIq)).setCollectorToReset(mamFinIQCollector);
-        StanzaCollector resultCollector = connection.createStanzaCollector(resultCollectorConfiguration);
 
-        try {
+        StanzaCollector cancelledResultCollector;
+        try (StanzaCollector resultCollector = connection.createStanzaCollector(resultCollectorConfiguration)) {
             connection.sendStanza(mamQueryIq);
             mamFinIQ = mamFinIQCollector.nextResultOrThrow();
-        } finally {
-            mamFinIQCollector.cancel();
-            resultCollector.cancel();
+            cancelledResultCollector = resultCollector;
         }
 
-        return new MamQueryPage(resultCollector, mamFinIQ);
+        return new MamQueryPage(cancelledResultCollector, mamFinIQ);
     }
 
     /**
@@ -633,7 +631,7 @@ public final class MamManager extends Manager {
         public List<Message> pagePrevious(int count) throws NoResponseException, XMPPErrorException,
                         NotConnectedException, NotLoggedInException, InterruptedException {
             RSMSet previousResultRsmSet = getPreviousRsmSet();
-            RSMSet requestRsmSet = new RSMSet(count, previousResultRsmSet.getLast(), RSMSet.PageDirection.before);
+            RSMSet requestRsmSet = new RSMSet(count, previousResultRsmSet.getFirst(), RSMSet.PageDirection.before);
             return page(requestRsmSet);
         }
 

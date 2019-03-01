@@ -32,7 +32,7 @@ public class FileTooLargeErrorCreateTest {
         FileTooLargeError fileTooLargeError = new FileTooLargeError(20000);
 
         Assert.assertEquals(20000, fileTooLargeError.getMaxFileSize());
-        Assert.assertEquals(fileTooLargeErrorExtensionExample, fileTooLargeError.toXML(null).toString());
+        Assert.assertEquals(fileTooLargeErrorExtensionExample, fileTooLargeError.toXML().toString());
 
     }
 

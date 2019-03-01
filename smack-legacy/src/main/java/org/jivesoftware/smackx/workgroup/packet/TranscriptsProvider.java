@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -46,7 +47,7 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
     }
 
     @Override
-    public Transcripts parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public Transcripts parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         Jid userID = ParserUtils.getJidAttribute(parser, "userID");
         List<Transcripts.TranscriptSummary> summaries = new ArrayList<>();
 

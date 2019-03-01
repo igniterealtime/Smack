@@ -16,11 +16,13 @@
  */
 package org.jivesoftware.smackx.forward.provider;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
@@ -29,6 +31,7 @@ import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * This class implements the {@link ExtensionElementProvider} to parse
@@ -43,7 +46,7 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded> {
     private static final Logger LOGGER = Logger.getLogger(ForwardedProvider.class.getName());
 
     @Override
-    public Forwarded parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public Forwarded parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         DelayInformation di = null;
         Stanza packet = null;
 
@@ -56,7 +59,7 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded> {
                 switch (name) {
                 case DelayInformation.ELEMENT:
                     if (DelayInformation.NAMESPACE.equals(namespace)) {
-                        di = DelayInformationProvider.INSTANCE.parse(parser, parser.getDepth());
+                        di = DelayInformationProvider.INSTANCE.parse(parser, parser.getDepth(), null);
                     } else {
                         LOGGER.warning("Namespace '" + namespace + "' does not match expected namespace '"
                                         + DelayInformation.NAMESPACE + "'");
@@ -77,8 +80,10 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded> {
             }
         }
 
-        if (packet == null)
-            throw new SmackException("forwarded extension must contain a packet");
+        if (packet == null) {
+            // TODO: Should be SmackParseException.
+            throw new IOException("forwarded extension must contain a packet");
+        }
         return new Forwarded(di, packet);
     }
 }

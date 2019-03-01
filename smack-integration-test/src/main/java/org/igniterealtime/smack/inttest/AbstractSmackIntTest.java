@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,24 +45,19 @@ public abstract class AbstractSmackIntTest {
 
     protected final Configuration sinttestConfiguration;
 
-    protected AbstractSmackIntTest(String testRunId, Configuration configuration) {
-        this.testRunId = testRunId;
-        this.sinttestConfiguration = configuration;
-        this.timeout = configuration.replyTimeout;
+    protected AbstractSmackIntTest(SmackIntegrationTestEnvironment<?> environment) {
+        this.testRunId = environment.testRunId;
+        this.sinttestConfiguration = environment.configuration;
+        this.timeout = environment.configuration.replyTimeout;
     }
 
     protected void performActionAndWaitUntilStanzaReceived(Runnable action, XMPPConnection connection, StanzaFilter filter)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         StanzaCollector.Configuration configuration = StanzaCollector.newConfiguration().setStanzaFilter(
                         filter).setSize(1);
-        StanzaCollector collector = connection.createStanzaCollector(configuration);
-
-        try {
+        try (StanzaCollector collector = connection.createStanzaCollector(configuration)) {
             action.run();
             collector.nextResultOrThrow(timeout);
-        }
-        finally {
-            collector.cancel();
         }
     }
 

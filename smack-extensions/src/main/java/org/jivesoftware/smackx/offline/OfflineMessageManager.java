@@ -165,8 +165,7 @@ public class OfflineMessageManager {
             }
         });
         int pendingNodes = nodes.size();
-        StanzaCollector messageCollector = connection.createStanzaCollector(messageFilter);
-        try {
+        try (StanzaCollector messageCollector = connection.createStanzaCollector(messageFilter)) {
             connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
             // Collect the received offline messages
             Message message;
@@ -180,10 +179,6 @@ public class OfflineMessageManager {
                                     "Did not receive all expected offline messages. " + pendingNodes + " are missing.");
                 }
             } while (message != null && pendingNodes > 0);
-        }
-        finally {
-            // Stop queuing offline messages
-            messageCollector.cancel();
         }
         return messages;
     }
@@ -206,10 +201,9 @@ public class OfflineMessageManager {
 
         StanzaCollector resultCollector = connection.createStanzaCollectorAndSend(request);
         StanzaCollector.Configuration messageCollectorConfiguration = StanzaCollector.newConfiguration().setStanzaFilter(PACKET_FILTER).setCollectorToReset(resultCollector);
-        StanzaCollector messageCollector = connection.createStanzaCollector(messageCollectorConfiguration);
 
         List<Message> messages;
-        try {
+        try (StanzaCollector messageCollector = connection.createStanzaCollector(messageCollectorConfiguration)) {
             resultCollector.nextResultOrThrow();
             // Be extra safe, cancel the message collector right here so that it does not collector
             // other messages that eventually match (although I've no idea how this could happen in
@@ -220,11 +214,6 @@ public class OfflineMessageManager {
             while ((message = messageCollector.pollResult()) != null) {
                 messages.add(message);
             }
-        }
-        finally {
-            // Ensure that the message collector is canceled even if nextResultOrThrow threw. It
-            // doesn't matter if we cancel the message collector twice
-            messageCollector.cancel();
         }
         return messages;
     }

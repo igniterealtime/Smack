@@ -479,10 +479,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
-        XmlStringBuilder buf = new XmlStringBuilder(enclosingNamespace);
+    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
+        XmlStringBuilder buf = new XmlStringBuilder(enclosingXmlEnvironment);
         buf.halfOpenElement(ELEMENT);
-        enclosingNamespace = addCommonAttributes(buf, enclosingNamespace);
+        enclosingXmlEnvironment = addCommonAttributes(buf, enclosingXmlEnvironment);
         buf.optAttribute("type", type);
         buf.rightAngleBracket();
 
@@ -496,16 +496,16 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             // Skip the default language
             if (subject.equals(defaultSubject))
                 continue;
-            buf.append(subject.toXML(null));
+            buf.append(subject.toXML());
         }
         buf.optElement("thread", thread);
         // Append the error subpacket if the message type is an error.
         if (type == Type.error) {
-            appendErrorIfExists(buf, enclosingNamespace);
+            appendErrorIfExists(buf, enclosingXmlEnvironment);
         }
 
         // Add extension elements, if any are defined.
-        buf.append(getExtensions(), enclosingNamespace);
+        buf.append(getExtensions(), enclosingXmlEnvironment);
 
         buf.closeElement(ELEMENT);
         return buf;
@@ -600,7 +600,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(getElementName()).optXmlLangAttribute(getLanguage()).rightAngleBracket();
             xml.escape(subject);
@@ -708,8 +708,8 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+        public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
+            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingXmlEnvironment);
             xml.optXmlLangAttribute(getLanguage()).rightAngleBracket();
             xml.escape(message);
             xml.closeElement(getElementName());

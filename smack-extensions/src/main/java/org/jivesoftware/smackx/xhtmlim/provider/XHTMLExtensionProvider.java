@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.xhtmlim.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
@@ -35,7 +36,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class XHTMLExtensionProvider extends ExtensionElementProvider<XHTMLExtension> {
 
     @Override
-    public XHTMLExtension parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException {
+    public XHTMLExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException {
         XHTMLExtension xhtmlExtension = new XHTMLExtension();
 
         while (true) {

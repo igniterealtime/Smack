@@ -1,8 +1,3 @@
-// Note that this is also declared in the main build.gradle for
-// subprojects, but since evaluationDependsOnChildren is enabled we
-// need to declare it here too
-apply plugin: 'osgi'
-
 description = """\
 Smack core components."""
 
@@ -47,9 +42,3 @@ task createVersionResource(type: CreateFileTask) {
 }
 
 compileJava.dependsOn(createVersionResource)
-
-jar {
-  manifest {
-    instruction 'DynamicImport-Package', '*'
-  }
-}

@@ -73,7 +73,7 @@ public class PubkeyElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this)
                 .optAttribute(ATTR_DATE, date)
                 .rightAngleBracket()
@@ -110,7 +110,7 @@ public class PubkeyElement implements ExtensionElement {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this)
                     .rightAngleBracket()
                     .append(new String(b64Data, Charset.forName("UTF-8")))

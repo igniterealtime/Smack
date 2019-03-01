@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -71,8 +70,7 @@ public class RosterVersioningTest {
         DirectoryRosterStore store = DirectoryRosterStore.init(tmpFolder.newFolder("store"));
         populateStore(store);
 
-        ConnectionConfiguration.Builder<?, ?> builder = DummyConnection.getDummyConfigurationBuilder();
-        connection = new DummyConnection(builder.build());
+        connection = new DummyConnection();
         connection.connect();
         connection.login();
         rosterListener = new TestRosterListener();

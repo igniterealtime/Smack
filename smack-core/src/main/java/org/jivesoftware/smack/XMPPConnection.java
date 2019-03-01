@@ -25,6 +25,7 @@ import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Stanza;
@@ -178,7 +179,7 @@ public interface XMPPConnection {
      * @param stanza the stanza to send.
      * @return {@code true} if the stanza was successfully scheduled to be send, {@code false} otherwise.
      * @throws NotConnectedException if the connection is not connected.
-     * @since 4.4
+     * @since 4.4.0
      */
     boolean trySendStanza(Stanza stanza) throws NotConnectedException;
 
@@ -199,7 +200,7 @@ public interface XMPPConnection {
      * @return {@code true} if the stanza was successfully scheduled to be send, {@code false} otherwise.
      * @throws NotConnectedException if the connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @since 4.4
+     * @since 4.4.0
      */
     boolean trySendStanza(Stanza stanza, long timeout, TimeUnit unit)  throws NotConnectedException, InterruptedException;
 
@@ -311,6 +312,28 @@ public interface XMPPConnection {
      * @param collector a stanza collectors which was created for this connection.
      */
     void removeStanzaCollector(StanzaCollector collector);
+
+    /**
+     * Registers a stanza listener with this connection. The listener will be invoked when a (matching) incoming stanza
+     * is received. The stanza filter determines which stanzas will be delivered to the listener. It is guaranteed that
+     * the same listener will not be invoked concurrently and the the order of invocation will reflect the order in
+     * which the stanzas have been received. If the same stanza listener is added again with a different filter, only
+     * the new filter will be used.
+     *
+     * @param stanzaListener the stanza listener to notify of new received stanzas.
+     * @param stanzaFilter the stanza filter to use.
+     * @since 4.4.0
+     */
+    void addStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
+
+    /**
+     * Removes a stanza listener for received stanzas from this connection.
+     *
+     * @param stanzaListener the stanza listener to remove.
+     * @return true if the stanza listener was removed.
+     * @since 4.4.0
+     */
+    boolean removeStanzaListener(StanzaListener stanzaListener);
 
     /**
      * Registers a <b>synchronous</b> stanza listener with this connection. A stanza listener will be invoked only when
@@ -474,7 +497,7 @@ public interface XMPPConnection {
      * @param namespace
      * @return a stanza extensions of the feature or <code>null</code>
      */
-    <F extends ExtensionElement> F getFeature(String element, String namespace);
+    <F extends FullyQualifiedElement> F getFeature(String element, String namespace);
 
     /**
      * Return true if the server supports the given stream feature.
@@ -565,5 +588,4 @@ public interface XMPPConnection {
      * @return the timestamp in milliseconds
      */
     long getLastStanzaReceived();
-
 }

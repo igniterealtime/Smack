@@ -36,6 +36,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.SmackMessageException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
@@ -409,12 +410,15 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @return the Socket to send/receive data to/from the user
      * @throws IOException if the bytestream could not be established
      * @throws InterruptedException if the current thread was interrupted while waiting
-     * @throws SmackException if the target does not support SOCKS5.
      * @throws XMPPException
+     * @throws NotConnectedException
+     * @throws NoResponseException
+     * @throws SmackMessageException
+     * @throws FeatureNotSupportedException
      */
     @Override
     public Socks5BytestreamSession establishSession(Jid targetJID, String sessionID)
-                    throws IOException, InterruptedException, SmackException, XMPPException {
+                    throws IOException, InterruptedException, XMPPException, NoResponseException, NotConnectedException, SmackMessageException, FeatureNotSupportedException {
         XMPPConnection connection = connection();
         XMPPErrorException discoveryException = null;
         // check if target supports SOCKS5 Bytestream
@@ -439,7 +443,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
             if (discoveryException != null) {
                 throw discoveryException;
             } else {
-                throw new SmackException("no SOCKS5 proxies available");
+                throw new SmackException.SmackMessageException("no SOCKS5 proxies available");
             }
         }
 
@@ -480,7 +484,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
             StreamHost usedStreamHost = initiation.getStreamHost(streamHostUsed.getJID());
 
             if (usedStreamHost == null) {
-                throw new SmackException("Remote user responded with unknown host");
+                throw new SmackException.SmackMessageException("Remote user responded with unknown host");
             }
 
             // build SOCKS5 client

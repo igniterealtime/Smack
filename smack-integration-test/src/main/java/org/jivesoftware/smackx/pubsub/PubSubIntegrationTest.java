@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2018 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
 
     private final PubSubManager pubSubManagerOne;
 
-    public PubSubIntegrationTest(SmackIntegrationTestEnvironment environment)
+    public PubSubIntegrationTest(SmackIntegrationTestEnvironment<?> environment)
                     throws TestNotPossibleException, NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
         super(environment);
@@ -58,7 +58,9 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
         // items do not need payload, to prevent payload-required error responses when
         // publishing the item.
         config.setDeliverPayloads(false);
-        config.setPersistentItems(true);
+        // Set persistent_items to 'false' (was previously 'true') as workaround for ejabberd issue #2799
+        // (https://github.com/processone/ejabberd/issues/2799).
+        config.setPersistentItems(false);
         Node node = pubSubManagerOne.createNode(nodename, config);
         try {
             LeafNode leafNode = (LeafNode) node;

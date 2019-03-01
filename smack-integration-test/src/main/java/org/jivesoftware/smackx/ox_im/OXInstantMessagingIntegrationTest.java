@@ -87,7 +87,7 @@ public class OXInstantMessagingIntegrationTest extends AbstractOpenPgpIntegratio
      * @throws TestNotPossibleException if the test is not possible due to lacking server support for PEP.
      * @throws SmackException.NoResponseException
      */
-    public OXInstantMessagingIntegrationTest(SmackIntegrationTestEnvironment environment)
+    public OXInstantMessagingIntegrationTest(SmackIntegrationTestEnvironment<?> environment)
             throws XMPPException.XMPPErrorException, InterruptedException, SmackException.NotConnectedException,
             TestNotPossibleException, SmackException.NoResponseException {
         super(environment);

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.amp.provider;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.amp.AMPDeliverCondition;
@@ -42,7 +43,7 @@ public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension>
      * @throws XmlPullParserException
      */
     @Override
-    public AMPExtension parse(XmlPullParser parser, int initialDepth)
+    public AMPExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException {
         final String from = parser.getAttributeValue(null, "from");
         final String to = parser.getAttributeValue(null, "to");

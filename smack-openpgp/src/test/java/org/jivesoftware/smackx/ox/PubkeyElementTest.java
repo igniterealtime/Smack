@@ -48,7 +48,7 @@ public class PubkeyElementTest extends SmackTestSuite {
         byte[] key = "BASE64_OPENPGP_PUBLIC_KEY".getBytes(Charset.forName("UTF-8"));
         PubkeyElement element = new PubkeyElement(new PubkeyElement.PubkeyDataElement(key), date);
 
-        assertXMLEqual(expected, element.toXML(null).toString());
+        assertXMLEqual(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         PubkeyElement parsed = PubkeyElementProvider.TEST_INSTANCE.parse(parser);

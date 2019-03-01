@@ -16,7 +16,11 @@
  */
 package org.jivesoftware.smackx.pubsub.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
@@ -24,6 +28,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parses the root PubSub stanza extensions of the {@link IQ} stanza and returns
@@ -33,8 +38,7 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public class PubSubProvider extends IQProvider<PubSub> {
     @Override
-    public PubSub parse(XmlPullParser parser, int initialDepth)
-                    throws Exception {
+    public PubSub parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         String namespace = parser.getNamespace();
         PubSubNamespace pubSubNamespace = PubSubNamespace.valueOfFromXmlns(namespace);
         PubSub pubsub = new PubSub(pubSubNamespace);
@@ -43,7 +47,7 @@ public class PubSubProvider extends IQProvider<PubSub> {
             int eventType = parser.next();
             switch (eventType) {
             case XmlPullParser.START_TAG:
-                PacketParserUtils.addExtensionElement(pubsub, parser);
+                PacketParserUtils.addExtensionElement(pubsub, parser, xmlEnvironment);
                 break;
             case XmlPullParser.END_TAG:
                 if (parser.getDepth() == initialDepth) {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smackx.iot.discovery.provider;
 
-import org.jivesoftware.smack.SmackException;
+import java.io.IOException;
+
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -31,10 +33,11 @@ import org.xmlpull.v1.XmlPullParser;
 public class IoTRemoveProvider extends IQProvider<IoTRemove> {
 
     @Override
-    public IoTRemove parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public IoTRemove parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException {
         Jid jid = ParserUtils.getJidAttribute(parser);
         if (jid.hasResource()) {
-            throw new SmackException("JID must be without resourcepart");
+            // TODO: Should be SmackParseException.
+            throw new IOException("JID must be without resourcepart");
         }
         BareJid bareJid = jid.asBareJid();
         NodeInfo nodeInfo = NodeInfoParser.parse(parser);

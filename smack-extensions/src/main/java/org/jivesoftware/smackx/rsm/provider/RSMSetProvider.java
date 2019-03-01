@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.rsm.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -31,7 +32,7 @@ public class RSMSetProvider extends ExtensionElementProvider<RSMSet> {
     public static final RSMSetProvider INSTANCE = new RSMSetProvider();
 
     @Override
-    public RSMSet parse(XmlPullParser parser, int initialDepth)
+    public RSMSet parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException {
         String after = null;
         String before = null;

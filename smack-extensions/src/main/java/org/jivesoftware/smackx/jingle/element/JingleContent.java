@@ -132,7 +132,7 @@ public final class JingleContent implements NamedElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute(CREATOR_ATTRIBUTE_NAME, creator);
         xml.optAttribute(DISPOSITION_ATTRIBUTE_NAME, disposition);

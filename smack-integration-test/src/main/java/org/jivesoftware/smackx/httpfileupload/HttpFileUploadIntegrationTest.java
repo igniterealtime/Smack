@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class HttpFileUploadIntegrationTest extends AbstractSmackIntegrationTest 
 
     private final HttpFileUploadManager hfumOne;
 
-    public HttpFileUploadIntegrationTest(SmackIntegrationTestEnvironment environment) throws XMPPErrorException,
+    public HttpFileUploadIntegrationTest(SmackIntegrationTestEnvironment<?> environment) throws XMPPErrorException,
                     NotConnectedException, NoResponseException, InterruptedException, TestNotPossibleException {
         super(environment);
         hfumOne = HttpFileUploadManager.getInstanceFor(conOne);

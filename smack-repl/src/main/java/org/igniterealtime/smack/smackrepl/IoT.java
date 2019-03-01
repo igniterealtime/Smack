@@ -126,7 +126,7 @@ public class IoT {
                 throw new IllegalStateException("Unexpected number of values returned: " + values.size());
             }
             IoTFieldsExtension field = values.get(0);
-            printStatus("DATA READ-OUT SUCCESS: " + field.toXML(null));
+            printStatus("DATA READ-OUT SUCCESS: " + field.toXML());
             printStatus("IoT SCENARIO FINISHED SUCCESSFULLY");
         }
     };

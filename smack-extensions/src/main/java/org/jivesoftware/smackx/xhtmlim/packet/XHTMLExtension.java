@@ -81,7 +81,7 @@ public class XHTMLExtension implements ExtensionElement {
      *
      */
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         // Loop through all the bodies and append them to the string buffer

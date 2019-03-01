@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2015-2018 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -214,17 +214,8 @@ public class StanzaError extends AbstractError implements ExtensionElement {
         return StreamOpen.CLIENT_NAMESPACE;
     }
 
-    /**
-     * Returns the error as XML.
-     *
-     * @return the error as XML.
-     */
-    public XmlStringBuilder toXML() {
-        return toXML(null);
-    }
-
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
         xml.attribute("type", type.toString());
         xml.optAttribute("by", errorGenerator);
@@ -385,11 +376,6 @@ public class StanzaError extends AbstractError implements ExtensionElement {
         }
 
         public static Condition fromString(String string) {
-            // Backwards compatibility for older implementations still using RFC 3920. RFC 6120
-            // changed 'xml-not-well-formed' to 'not-well-formed'.
-            if ("xml-not-well-formed".equals(string)) {
-                string = "not-well-formed";
-            }
             string = string.replace('-', '_');
             Condition condition = null;
             try {

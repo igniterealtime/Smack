@@ -25,7 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmppElementUtil;
 
 import org.jxmpp.util.XmppStringUtils;
 
@@ -113,6 +115,7 @@ public final class ProviderManager {
     private static final Map<String, ExtensionElementProvider<ExtensionElement>> extensionProviders = new ConcurrentHashMap<String, ExtensionElementProvider<ExtensionElement>>();
     private static final Map<String, IQProvider<IQ>> iqProviders = new ConcurrentHashMap<String, IQProvider<IQ>>();
     private static final Map<String, ExtensionElementProvider<ExtensionElement>> streamFeatureProviders = new ConcurrentHashMap<String, ExtensionElementProvider<ExtensionElement>>();
+    private static final Map<String, NonzaProvider<? extends Nonza>> nonzaProviders = new ConcurrentHashMap<>();
 
     static {
         // Ensure that Smack is initialized by calling getVersion, so that user
@@ -307,6 +310,31 @@ public final class ProviderManager {
     public static void removeStreamFeatureProvider(String elementName, String namespace) {
         String key = getKey(elementName, namespace);
         streamFeatureProviders.remove(key);
+    }
+
+    public static NonzaProvider<? extends Nonza> getNonzaProvider(String elementName, String namespace) {
+        String key = getKey(elementName, namespace);
+        return getNonzaProvider(key);
+    }
+
+    public static NonzaProvider<? extends Nonza> getNonzaProvider(String key) {
+        return nonzaProviders.get(key);
+    }
+
+    public static void addNonzaProvider(NonzaProvider<? extends Nonza> nonzaProvider) {
+        Class<? extends Nonza> nonzaClass = nonzaProvider.getElementClass();
+        String key = XmppElementUtil.getKeyFor(nonzaClass);
+        nonzaProviders.put(key, nonzaProvider);
+    }
+
+    public static void removeNonzaProvider(Class<? extends Nonza> nonzaClass) {
+        String key = XmppElementUtil.getKeyFor(nonzaClass);
+        nonzaProviders.remove(key);
+    }
+
+    public static void removeNonzaProvider(String elementName, String namespace) {
+        String key = getKey(elementName, namespace);
+        nonzaProviders.remove(key);
     }
 
     private static String getKey(String elementName, String namespace) {

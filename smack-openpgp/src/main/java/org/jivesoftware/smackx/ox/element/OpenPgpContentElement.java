@@ -183,7 +183,7 @@ public abstract class OpenPgpContentElement implements ExtensionElement {
      * @return InputStream over xml.
      */
     public InputStream toInputStream() {
-        byte[] encoded = toXML(null).toString().getBytes(Charset.forName("UTF-8"));
+        byte[] encoded = toXML().toString().getBytes(Charset.forName("UTF-8"));
         return new ByteArrayInputStream(encoded);
     }
 }

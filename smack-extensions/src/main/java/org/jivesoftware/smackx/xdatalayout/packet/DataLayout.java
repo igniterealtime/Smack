@@ -91,7 +91,7 @@ public class DataLayout implements ExtensionElement {
      * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
      */
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder(this);
         buf.optAttribute("label", getLabel());
         buf.rightAngleBracket();
@@ -109,7 +109,7 @@ public class DataLayout implements ExtensionElement {
      */
     private static void walkList(XmlStringBuilder buf, List<DataFormLayoutElement> pageLayout) {
         for (DataFormLayoutElement object : pageLayout) {
-            buf.append(object.toXML(null));
+            buf.append(object.toXML());
         }
     }
 
@@ -127,7 +127,7 @@ public class DataLayout implements ExtensionElement {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder buf = new XmlStringBuilder(this);
             buf.attribute("var", getVar());
             buf.closeEmptyElement();
@@ -187,7 +187,7 @@ public class DataLayout implements ExtensionElement {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder buf = new XmlStringBuilder(this);
             buf.optAttribute("label", getLabel());
             buf.rightAngleBracket();
@@ -218,7 +218,7 @@ public class DataLayout implements ExtensionElement {
         public static final String ELEMENT = "reportedref";
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder buf = new XmlStringBuilder(this);
             buf.closeEmptyElement();
             return buf;
@@ -244,7 +244,7 @@ public class DataLayout implements ExtensionElement {
         }
 
         @Override
-        public XmlStringBuilder toXML(String enclosingNamespace) {
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder buf = new XmlStringBuilder();
             buf.element(ELEMENT, getText());
             return buf;

@@ -491,9 +491,7 @@ public final class VCard extends IQ {
     }
 
     private static byte[] getFileBytes(File file) throws IOException {
-        BufferedInputStream bis = null;
-        try {
-            bis = new BufferedInputStream(new FileInputStream(file));
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
             int bytes = (int) file.length();
             byte[] buffer = new byte[bytes];
             int readBytes = bis.read(buffer);
@@ -501,11 +499,6 @@ public final class VCard extends IQ {
                 throw new IOException("Entire file not read");
             }
             return buffer;
-        }
-        finally {
-            if (bis != null) {
-                bis.close();
-            }
         }
     }
 

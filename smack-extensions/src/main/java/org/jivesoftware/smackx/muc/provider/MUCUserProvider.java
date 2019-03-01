@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muc.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 
@@ -46,7 +47,7 @@ public class MUCUserProvider extends ExtensionElementProvider<MUCUser> {
      * @throws XmlPullParserException
      */
     @Override
-    public MUCUser parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public MUCUser parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         MUCUser mucUser = new MUCUser();
         outerloop: while (true) {
             switch (parser.next()) {

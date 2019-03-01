@@ -46,7 +46,7 @@ public class Checksum implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML(String enclosingNamespace) {
+    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder sb = new XmlStringBuilder(this);
         sb.optAttribute(ATTR_CREATOR, creator);
         sb.optAttribute(ATTR_NAME, name);

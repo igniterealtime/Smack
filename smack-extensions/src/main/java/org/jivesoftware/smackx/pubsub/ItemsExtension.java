@@ -149,7 +149,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
     }
 
     @Override
-    public CharSequence toXML(String enclosingNamespace) {
+    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         if ((items == null) || (items.size() == 0)) {
             return super.toXML(enclosingNamespace);
         }
@@ -169,7 +169,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
             else {
                 builder.append("'>");
                 for (NamedElement item : items) {
-                    builder.append(item.toXML(null));
+                    builder.append(item.toXML());
                 }
             }
 
@@ -182,7 +182,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 
     @Override
     public String toString() {
-        return getClass().getName() + "Content [" + toXML(null) + "]";
+        return getClass().getName() + "Content [" + toXML() + "]";
     }
 
 }

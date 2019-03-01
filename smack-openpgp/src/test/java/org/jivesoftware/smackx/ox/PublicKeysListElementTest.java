@@ -62,7 +62,7 @@ public class PublicKeysListElementTest extends SmackTestSuite {
                 .addMetadata(child2)
                 .build();
 
-        assertXMLEqual(expected, element.toXML(null).toString());
+        assertXMLEqual(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         PublicKeysListElement parsed = PublicKeysListElementProvider.TEST_INSTANCE.parse(parser);

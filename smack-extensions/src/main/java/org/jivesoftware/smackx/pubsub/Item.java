@@ -147,7 +147,7 @@ public class Item extends NodeExtension {
     }
 
     @Override
-    public XmlStringBuilder toXML(String enclosingNamespace) {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = getCommonXml();
 
         xml.closeEmptyElement();
@@ -166,7 +166,7 @@ public class Item extends NodeExtension {
 
     @Override
     public String toString() {
-        return getClass().getName() + " | Content [" + toXML(null) + "]";
+        return getClass().getName() + " | Content [" + toXML() + "]";
     }
 
 }

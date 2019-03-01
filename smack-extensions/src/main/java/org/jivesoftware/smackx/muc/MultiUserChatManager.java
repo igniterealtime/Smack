@@ -52,6 +52,7 @@ import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MucNotJoinedException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
@@ -165,7 +166,7 @@ public final class MultiUserChatManager extends Manager {
                 if (mucUser.getInvite() != null) {
                     EntityBareJid mucJid = message.getFrom().asEntityBareJidIfPossible();
                     if (mucJid == null) {
-                        LOGGER.warning("Invite to non bare JID: '" + message.toXML(null) + "'");
+                        LOGGER.warning("Invite to non bare JID: '" + message.toXML() + "'");
                         return;
                     }
                     // Fire event for invitation listeners
@@ -206,7 +207,8 @@ public final class MultiUserChatManager extends Manager {
 
                             try {
                                 muc.leave();
-                            } catch (NotConnectedException | InterruptedException e) {
+                            } catch (NotConnectedException | InterruptedException | MucNotJoinedException
+                                            | NoResponseException | XMPPErrorException e) {
                                 if (failedCallback != null) {
                                     failedCallback.autoJoinFailed(muc, e);
                                 } else {
@@ -379,28 +381,6 @@ public final class MultiUserChatManager extends Manager {
                     XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(domainBareJid,
                         MUCInitialPresence.NAMESPACE);
-    }
-
-    /**
-     * Returns a List of HostedRooms where each HostedRoom has the XMPP address of the room and the room's name.
-     * Once discovered the rooms hosted by a chat service it is possible to discover more detailed room information or
-     * join the room.
-     *
-     * @param serviceName the service that is hosting the rooms to discover.
-     * @return a collection of HostedRooms.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws NotAMucServiceException
-     * @deprecated use {@link #getRoomsHostedBy(DomainBareJid)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.4.
-    public List<HostedRoom> getHostedRooms(DomainBareJid serviceName) throws NoResponseException, XMPPErrorException,
-                    NotConnectedException, InterruptedException, NotAMucServiceException {
-        Map<EntityBareJid, HostedRoom> hostedRooms = getRoomsHostedBy(serviceName);
-        return new ArrayList<>(hostedRooms.values());
     }
 
     /**

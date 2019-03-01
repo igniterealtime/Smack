@@ -160,7 +160,7 @@ public class JingleContent implements ExtensionElement {
      * @return a string with the XML representation
      */
     @Override
-    public String toXML(String enclosingNamespace) {
+    public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         StringBuilder buf = new StringBuilder();
 
         synchronized (transports) {
@@ -171,12 +171,12 @@ public class JingleContent implements ExtensionElement {
 
             // Add the description.
             if (description != null) {
-                buf.append(description.toXML(null));
+                buf.append(description.toXML());
             }
 
             // Add all of the transports.
             for (JingleTransport transport : transports) {
-                buf.append(transport.toXML(null));
+                buf.append(transport.toXML());
             }
             buf.append("</").append(getElementName()).append('>');
         }

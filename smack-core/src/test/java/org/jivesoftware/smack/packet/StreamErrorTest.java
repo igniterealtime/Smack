@@ -104,4 +104,22 @@ public class StreamErrorTest {
         assertNotNull(appSpecificElement);
     }
 
+    @Test
+    public void testStreamErrorXmlNotWellFormed() {
+        StreamError error = null;
+        final String xml =
+                // Usually the stream:stream element has more attributes (to, version, ...)
+                // We omit those, since they are not relevant for testing
+                "<stream:stream from='im.example.com' id='++TR84Sm6A3hnt3Q065SnAbbk3Y=' xmlns:stream='http://etherx.jabber.org/streams'>" +
+                        "<stream:error><xml-not-well-formed xmlns='urn:ietf:params:xml:ns:xmpp-streams'/></stream:error>" +
+                        "</stream:stream>";
+        try {
+            XmlPullParser parser = PacketParserUtils.getParserFor(xml, "error");
+            error = PacketParserUtils.parseStreamError(parser);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+        assertNotNull(error);
+        assertEquals(Condition.not_well_formed, error.getCondition());
+    }
 }

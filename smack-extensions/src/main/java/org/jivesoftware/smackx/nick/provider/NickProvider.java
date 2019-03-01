@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.nick.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 
 import org.jivesoftware.smackx.nick.packet.Nick;
@@ -28,7 +29,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class NickProvider extends ExtensionElementProvider<Nick> {
 
     @Override
-    public Nick parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public Nick parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String name = parser.nextText();
 
         return new Nick(name);

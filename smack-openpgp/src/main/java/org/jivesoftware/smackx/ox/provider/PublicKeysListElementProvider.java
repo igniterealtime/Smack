@@ -19,21 +19,25 @@ package org.jivesoftware.smackx.ox.provider;
 import static org.xmlpull.v1.XmlPullParser.END_TAG;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
+import java.io.IOException;
 import java.util.Date;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.ox.element.PublicKeysListElement;
 
-import org.jxmpp.util.XmppDateTime;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public final class PublicKeysListElementProvider extends ExtensionElementProvider<PublicKeysListElement> {
 
     public static final PublicKeysListElementProvider TEST_INSTANCE = new PublicKeysListElementProvider();
 
     @Override
-    public PublicKeysListElement parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public PublicKeysListElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackTextParseException {
 
         PublicKeysListElement.Builder builder = PublicKeysListElement.builder();
 
@@ -51,7 +55,7 @@ public final class PublicKeysListElementProvider extends ExtensionElementProvide
                         String dt = parser.getAttributeValue(null,
                                 PublicKeysListElement.PubkeyMetadataElement.ATTR_DATE);
                         OpenPgpV4Fingerprint fingerprint = new OpenPgpV4Fingerprint(finger);
-                        Date date = XmppDateTime.parseXEP0082Date(dt);
+                        Date date = ParserUtils.getDateFromXep82String(dt);
                         builder.addMetadata(new PublicKeysListElement.PubkeyMetadataElement(fingerprint, date));
                     }
                     break;

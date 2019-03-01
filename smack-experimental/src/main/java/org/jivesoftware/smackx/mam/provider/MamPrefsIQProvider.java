@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
@@ -41,7 +42,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class MamPrefsIQProvider extends IQProvider<MamPrefsIQ> {
 
     @Override
-    public MamPrefsIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException {
+    public MamPrefsIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String iqType = parser.getAttributeValue("", "type");
         String defaultBehaviorString = parser.getAttributeValue("", "default");
         DefaultBehavior defaultBehavior = null;

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2018 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package org.jivesoftware.smack.provider;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.ParserUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -40,14 +40,14 @@ public class IntrospectionProvider{
 
         @SuppressWarnings("unchecked")
         @Override
-        public I parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
-                        SmackException {
+        public I parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             try {
                 return (I) parseWithIntrospection(elementClass, parser, initialDepth);
             }
             catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
                             | IllegalArgumentException | InvocationTargetException | ClassNotFoundException e) {
-                throw new SmackException(e);
+                // TODO: Should probably be SmackParsingException (once it exists).
+                throw new IOException(e);
             }
         }
     }
@@ -61,14 +61,14 @@ public class IntrospectionProvider{
 
         @SuppressWarnings("unchecked")
         @Override
-        public PE parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException,
-                        SmackException {
+        public PE parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             try {
                 return (PE) parseWithIntrospection(elementClass, parser, initialDepth);
             }
             catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
                             | IllegalArgumentException | InvocationTargetException | ClassNotFoundException e) {
-                throw new SmackException(e);
+                // TODO: Should probably be SmackParsingException (once it exists).
+                throw new IOException(e);
             }
         }
     }
@@ -123,7 +123,9 @@ public class IntrospectionProvider{
         case "java.lang.String":
             return value;
         case "boolean":
+            // CHECKSTYLE:OFF
             return Boolean.valueOf(value);
+            // CHECKSTYLE:ON
         case "int":
             return Integer.valueOf(value);
         case "long":

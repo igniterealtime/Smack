@@ -19,8 +19,12 @@ package org.jivesoftware.smackx.jingle_filetransfer.provider;
 import static org.xmlpull.v1.XmlPullParser.END_TAG;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.hashes.provider.HashElementProvider;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildElement;
@@ -31,6 +35,7 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.Range;
 
 import org.jxmpp.util.XmppDateTime;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Provider for JingleContentDescriptionFileTransfer elements.
@@ -39,7 +44,7 @@ public class JingleFileTransferProvider
         extends JingleContentDescriptionProvider<JingleFileTransfer> {
 
     @Override
-    public JingleFileTransfer parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public JingleFileTransfer parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         ArrayList<JingleContentDescriptionChildElement> payloads = new ArrayList<>();
         boolean inRange = false;
         JingleFileTransferChild.Builder builder = JingleFileTransferChild.getBuilder();
@@ -56,7 +61,11 @@ public class JingleFileTransferProvider
             if (tag == START_TAG) {
                 switch (elem) {
                     case JingleFileTransferChild.ELEM_DATE:
+                    try {
                         builder.setDate(XmppDateTime.parseXEP0082Date(parser.nextText()));
+                    } catch (ParseException e) {
+                        throw new SmackParsingException.SmackTextParseException(e);
+                    }
                         break;
 
                     case JingleFileTransferChild.ELEM_DESC:
