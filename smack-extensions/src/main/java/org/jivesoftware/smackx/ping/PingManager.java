@@ -454,7 +454,7 @@ public final class PingManager extends Manager {
                     int deltaInSeconds = (int)  ((now - lastStanzaReceived) / 1000);
                     // If the delta is smaller then the ping interval, we have got an valid stanza in time
                     // So not error notification needed
-                    if (deltaInSeconds < pingInterval){
+                    if (deltaInSeconds < pingInterval) {
                         maybeSchedulePingServerTask(deltaInSeconds);
                         return;
                     }
