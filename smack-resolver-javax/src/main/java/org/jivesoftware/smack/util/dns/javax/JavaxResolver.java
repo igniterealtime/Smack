@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2018 Florian Schmaus
+ * Copyright 2013-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ import org.minidns.dnsname.DnsName;
 
 /**
  * A DNS resolver (mostly for SRV records), which makes use of the API provided in the javax.* namespace.
+ * Note that using JavaxResovler requires applications using newer Java versions (at least 11) to declare a dependency on the "sun.jdk" module.
  *
  * @author Florian Schmaus
  *
