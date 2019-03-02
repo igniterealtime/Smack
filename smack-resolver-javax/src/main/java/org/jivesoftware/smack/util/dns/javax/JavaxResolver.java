@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2019 Florian Schmaus
+ * Copyright 2013-2018 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jivesoftware.smack.util.dns.javax;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -51,7 +52,9 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
 
     static {
         try {
-            dirContext = new InitialDirContext();
+            Hashtable<String, String> env = new Hashtable<>();
+            env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
+            dirContext = new InitialDirContext(env);
         } catch (NamingException e) {
             LOGGER.log(Level.SEVERE, "Could not construct InitialDirContext", e);
         }
