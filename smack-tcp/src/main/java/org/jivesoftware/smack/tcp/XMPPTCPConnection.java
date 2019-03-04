@@ -478,9 +478,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         shutdown(false);
     }
 
-    /**
-     * Performs an unclean disconnect and shutdown of the connection. Does not send a closing stream stanza.
-     */
+    @Override
     public synchronized void instantShutdown() {
         shutdown(true);
     }
