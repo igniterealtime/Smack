@@ -93,13 +93,24 @@ public class SmackException extends Exception {
             return new NoResponseException(sb.toString());
         }
 
+        @Deprecated
+        // TODO: Remove in Smack 4.4.
         public static NoResponseException newWith(XMPPConnection connection,
                         StanzaCollector collector) {
             return newWith(connection, collector.getStanzaFilter());
         }
 
+        public static NoResponseException newWith(long timeout,
+                        StanzaCollector collector) {
+            return newWith(timeout, collector.getStanzaFilter());
+        }
+
         public static NoResponseException newWith(XMPPConnection connection, StanzaFilter filter) {
-            final StringBuilder sb = getWaitingFor(connection);
+            return newWith(connection.getReplyTimeout(), filter);
+        }
+
+        public static NoResponseException newWith(long timeout, StanzaFilter filter) {
+            final StringBuilder sb = getWaitingFor(timeout);
             sb.append(" Waited for response using: ");
             if (filter != null) {
                 sb.append(filter.toString());
@@ -112,7 +123,10 @@ public class SmackException extends Exception {
         }
 
         private static StringBuilder getWaitingFor(XMPPConnection connection) {
-            final long replyTimeout = connection.getReplyTimeout();
+            return getWaitingFor(connection.getReplyTimeout());
+        }
+
+        private static StringBuilder getWaitingFor(final long replyTimeout) {
             final StringBuilder sb = new StringBuilder(256);
             sb.append("No response received within reply timeout. Timeout was "
                             + replyTimeout + "ms (~"

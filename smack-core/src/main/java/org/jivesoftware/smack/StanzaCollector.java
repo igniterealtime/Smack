@@ -262,7 +262,7 @@ public class StanzaCollector {
             if (!connection.isConnected()) {
                 throw new NotConnectedException(connection, packetFilter);
             }
-            throw NoResponseException.newWith(connection, this);
+            throw NoResponseException.newWith(timeout, this);
         }
 
         XMPPErrorException.ifHasErrorThenThrow(result);
