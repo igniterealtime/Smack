@@ -921,23 +921,46 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @param e the exception that causes the connection close event.
      */
-    private synchronized void notifyConnectionError(Exception e) {
-        // Listeners were already notified of the exception, return right here.
-        if (packetReader.done && packetWriter.done()) return;
+    private synchronized void notifyConnectionError(final Exception e) {
+        ASYNC_BUT_ORDERED.performAsyncButOrdered(this, new Runnable() {
+            @Override
+            public void run() {
+                // Listeners were already notified of the exception, return right here.
+                if (packetReader.done || packetWriter.done()) return;
 
-        SmackWrappedException smackWrappedException = new SmackWrappedException(e);
-        tlsHandled.reportGenericFailure(smackWrappedException);
-        saslFeatureReceived.reportGenericFailure(smackWrappedException);
-        maybeCompressFeaturesReceived.reportGenericFailure(smackWrappedException);
-        lastFeaturesReceived.reportGenericFailure(smackWrappedException);
+                // Report the failure outside the synchronized block, so that a thread waiting within a synchronized
+                // function like connect() throws the wrapped exception.
+                SmackWrappedException smackWrappedException = new SmackWrappedException(e);
+                tlsHandled.reportGenericFailure(smackWrappedException);
+                saslFeatureReceived.reportGenericFailure(smackWrappedException);
+                maybeCompressFeaturesReceived.reportGenericFailure(smackWrappedException);
+                lastFeaturesReceived.reportGenericFailure(smackWrappedException);
 
-        // Closes the connection temporary. A reconnection is possible
-        // Note that a connection listener of XMPPTCPConnection will drop the SM state in
-        // case the Exception is a StreamErrorException.
-        instantShutdown();
+                synchronized (XMPPTCPConnection.this) {
+                    // Within this synchronized block, either *both* reader and writer threads must be terminated, or
+                    // none.
+                    assert ((packetReader.done && packetWriter.done())
+                            || (!packetReader.done && !packetWriter.done()));
 
-        // Notify connection listeners of the error.
-        callConnectionClosedOnErrorListener(e);
+                    // Closes the connection temporary. A reconnection is possible
+                    // Note that a connection listener of XMPPTCPConnection will drop the SM state in
+                    // case the Exception is a StreamErrorException.
+                    instantShutdown();
+
+                    // Wait for reader and writer threads to be terminated.
+                    readerWriterSemaphore.acquireUninterruptibly(2);
+                    readerWriterSemaphore.release(2);
+                }
+
+                Async.go(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Notify connection listeners of the error.
+                        callConnectionClosedOnErrorListener(e);
+                    }
+                }, XMPPTCPConnection.this + " callConnectionClosedOnErrorListener()");
+            }
+        });
     }
 
     /**
@@ -1248,7 +1271,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 LOGGER.info(XMPPTCPConnection.this
                                                 + " received closing </stream> element."
                                                 + " Server wants to terminate the connection, calling disconnect()");
-                                disconnect();
+                                ASYNC_BUT_ORDERED.performAsyncButOrdered(XMPPTCPConnection.this, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        disconnect();
+                                    }});
                             }
                         }
                         break;

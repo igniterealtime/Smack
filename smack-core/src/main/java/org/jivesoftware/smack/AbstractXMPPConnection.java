@@ -297,7 +297,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     });
 
-    private static final AsyncButOrdered<AbstractXMPPConnection> ASYNC_BUT_ORDERED = new AsyncButOrdered<>();
+    protected static final AsyncButOrdered<AbstractXMPPConnection> ASYNC_BUT_ORDERED = new AsyncButOrdered<>();
 
     /**
      * The used host to establish the connection to
