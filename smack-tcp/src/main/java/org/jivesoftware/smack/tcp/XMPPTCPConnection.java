@@ -973,14 +973,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void afterFeaturesReceived() throws NotConnectedException, InterruptedException {
+    protected void afterFeaturesReceived() throws NotConnectedException, InterruptedException, SecurityRequiredByServerException {
         StartTls startTlsFeature = getFeature(StartTls.ELEMENT, StartTls.NAMESPACE);
         if (startTlsFeature != null) {
             if (startTlsFeature.required() && config.getSecurityMode() == SecurityMode.disabled) {
-                SmackException smackException = new SecurityRequiredByServerException();
+                SecurityRequiredByServerException smackException = new SecurityRequiredByServerException();
                 tlsHandled.reportFailure(smackException);
-                notifyConnectionError(smackException);
-                return;
+                throw smackException;
             }
 
             if (config.getSecurityMode() != ConnectionConfiguration.SecurityMode.disabled) {
