@@ -57,6 +57,7 @@ import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceExceptio
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
@@ -386,7 +387,7 @@ public final class MultiUserChatManager extends Manager {
      * @see <a href="http://xmpp.org/extensions/xep-0045.html#disco-service-features">XEP-45 § 6.2 Discovering the Features Supported by a MUC Service</a>
      * @since 4.2
      */
-    public boolean providesMucService(DomainBareJid domainBareJid) throws NoResponseException,
+    public boolean providesMucService(BareJid domainBareJid) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
         return serviceDiscoveryManager.supportsFeature(domainBareJid,
                         MUCInitialPresence.NAMESPACE);

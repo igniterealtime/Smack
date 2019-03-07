@@ -329,7 +329,7 @@ public class MultiUserChat {
                     XMPPErrorException, InterruptedException, NotAMucServiceException {
         final DomainBareJid mucService = room.asDomainBareJid();
         if (!KNOWN_MUC_SERVICES.containsKey(mucService)) {
-            if (multiUserChatManager.providesMucService(mucService)) {
+            if (multiUserChatManager.providesMucService(mucService) || multiUserChatManager.providesMucService(room)) {
                 KNOWN_MUC_SERVICES.put(mucService, null);
             } else {
                 throw new NotAMucServiceException(this);
