@@ -132,7 +132,7 @@ public class RoomInfo {
      */
     private final Form form;
 
-    RoomInfo(DiscoverInfo info) {
+    public RoomInfo(DiscoverInfo info) {
         final Jid from = info.getFrom();
         if (from != null) {
             this.room = info.getFrom().asEntityBareJidIfPossible();
