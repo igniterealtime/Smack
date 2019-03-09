@@ -80,7 +80,7 @@ public final class MultiUserChatManager extends Manager {
     private static final String DISCO_NODE = MUCInitialPresence.NAMESPACE + "#rooms";
 
     private static final Logger LOGGER = Logger.getLogger(MultiUserChatManager.class.getName());
-    final private ServiceDiscoveryManager serviceDiscoveryManager;
+
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
@@ -152,7 +152,6 @@ public final class MultiUserChatManager extends Manager {
 
     private MultiUserChatManager(XMPPConnection connection) {
         super(connection);
-        serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
         // Listens for all messages that include a MUCUser extension and fire the invitation
         // listeners if the message includes an invitation.
         StanzaListener invitationPacketListener = new StanzaListener() {
