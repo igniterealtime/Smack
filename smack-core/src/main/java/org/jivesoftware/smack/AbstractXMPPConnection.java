@@ -381,6 +381,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public abstract boolean isUsingCompression();
 
+    protected void initState() {
+        saslFeatureReceived.init();
+        lastFeaturesReceived.init();
+        tlsHandled.init();
+    }
+
     /**
      * Establishes a connection to the XMPP server. It basically
      * creates and maintains a connection to the server.
@@ -399,10 +405,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         throwAlreadyConnectedExceptionIfAppropriate();
 
         // Reset the connection state
+        initState();
         saslAuthentication.init();
-        saslFeatureReceived.init();
-        lastFeaturesReceived.init();
-        tlsHandled.init();
         streamId = null;
 
         try {

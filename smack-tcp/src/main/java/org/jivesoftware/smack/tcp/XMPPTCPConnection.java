@@ -534,6 +534,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         reader = null;
         writer = null;
 
+        initState();
+    }
+
+    @Override
+    protected void initState() {
+        super.initState();
         maybeCompressFeaturesReceived.init();
         compressSyncPoint.init();
         smResumedSyncPoint.init();
