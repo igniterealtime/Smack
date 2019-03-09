@@ -81,6 +81,7 @@ public final class MultiUserChatManager extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(MultiUserChatManager.class.getName());
     final private ServiceDiscoveryManager serviceDiscoveryManager;
+    
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
