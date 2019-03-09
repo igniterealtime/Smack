@@ -80,20 +80,22 @@ public final class MultiUserChatManager extends Manager {
     private static final String DISCO_NODE = MUCInitialPresence.NAMESPACE + "#rooms";
 
     private static final Logger LOGGER = Logger.getLogger(MultiUserChatManager.class.getName());
-
+    private static ServiceDiscoveryManager serviceDiscoveryManager;
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
             public void connectionCreated(final XMPPConnection connection) {
+            	//Setting the service DiscoveryManager only once on creating a connection
+            	serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
                 // Set on every established connection that this client supports the Multi-User
                 // Chat protocol. This information will be used when another client tries to
                 // discover whether this client supports MUC or not.
-                ServiceDiscoveryManager.getInstanceFor(connection).addFeature(MUCInitialPresence.NAMESPACE);
+                serviceDiscoveryManager.addFeature(MUCInitialPresence.NAMESPACE);
 
                 // Set the NodeInformationProvider that will provide information about the
                 // joined rooms whenever a disco request is received
                 final WeakReference<XMPPConnection> weakRefConnection = new WeakReference<XMPPConnection>(connection);
-                ServiceDiscoveryManager.getInstanceFor(connection).setNodeInformationProvider(DISCO_NODE,
+                serviceDiscoveryManager.setNodeInformationProvider(DISCO_NODE,
                                 new AbstractNodeInformationProvider() {
                                     @Override
                                     public List<DiscoverItems.Item> getNodeItems() {
@@ -274,7 +276,7 @@ public final class MultiUserChatManager extends Manager {
      * @throws InterruptedException
      */
     public boolean isServiceEnabled(Jid user) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(user, MUCInitialPresence.NAMESPACE);
+        return serviceDiscoveryManager.supportsFeature(user, MUCInitialPresence.NAMESPACE);
     }
 
     /**
@@ -301,7 +303,7 @@ public final class MultiUserChatManager extends Manager {
     public List<EntityBareJid> getJoinedRooms(EntityJid user) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
         // Send the disco packet to the user
-        DiscoverItems result = ServiceDiscoveryManager.getInstanceFor(connection()).discoverItems(user, DISCO_NODE);
+        DiscoverItems result = serviceDiscoveryManager.discoverItems(user, DISCO_NODE);
         List<DiscoverItems.Item> items = result.getItems();
         List<EntityBareJid> answer = new ArrayList<>(items.size());
         // Collect the entityID for each returned item
@@ -328,7 +330,7 @@ public final class MultiUserChatManager extends Manager {
      * @throws InterruptedException
      */
     public RoomInfo getRoomInfo(EntityBareJid room) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(connection()).discoverInfo(room);
+        DiscoverInfo info = serviceDiscoveryManager.discoverInfo(room);
         return new RoomInfo(info);
     }
 
@@ -342,8 +344,7 @@ public final class MultiUserChatManager extends Manager {
      * @throws InterruptedException
      */
     public List<DomainBareJid> getMucServiceDomains() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
-        return sdm.findServices(MUCInitialPresence.NAMESPACE, false, false);
+        return serviceDiscoveryManager.findServices(MUCInitialPresence.NAMESPACE, false, false);
     }
 
     /**
@@ -376,7 +377,7 @@ public final class MultiUserChatManager extends Manager {
      */
     public boolean providesMucService(DomainBareJid domainBareJid) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(domainBareJid,
+        return serviceDiscoveryManager.supportsFeature(domainBareJid,
                         MUCInitialPresence.NAMESPACE);
     }
 
@@ -398,8 +399,7 @@ public final class MultiUserChatManager extends Manager {
         if (!providesMucService(serviceName)) {
             throw new NotAMucServiceException(serviceName);
         }
-        ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection());
-        DiscoverItems discoverItems = discoManager.discoverItems(serviceName);
+        DiscoverItems discoverItems = serviceDiscoveryManager.discoverItems(serviceName);
         List<DiscoverItems.Item> items = discoverItems.getItems();
         List<HostedRoom> answer = new ArrayList<HostedRoom>(items.size());
         for (DiscoverItems.Item item : items) {
