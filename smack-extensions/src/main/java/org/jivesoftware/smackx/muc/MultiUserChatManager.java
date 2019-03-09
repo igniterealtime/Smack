@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.muc;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,6 +45,7 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Async;
+import org.jivesoftware.smack.util.CleaningWeakReferenceMap;
 
 import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -144,7 +144,7 @@ public final class MultiUserChatManager extends Manager {
      * those instances to get garbage collected. Note that MultiUserChat instances can not get garbage collected while
      * the user is joined, because then the MUC will have PacketListeners added to the XMPPConnection.
      */
-    private final Map<EntityBareJid, WeakReference<MultiUserChat>> multiUserChats = new HashMap<>();
+    private final Map<EntityBareJid, WeakReference<MultiUserChat>> multiUserChats = new CleaningWeakReferenceMap<>();
 
     private boolean autoJoinOnReconnect;
 
