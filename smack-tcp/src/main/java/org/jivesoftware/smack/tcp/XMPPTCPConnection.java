@@ -527,6 +527,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             // Reset the stream management session id to null, since if the stream is cleanly closed, i.e. sending a closing
             // stream tag, there is no longer a stream to resume.
             smSessionId = null;
+            // Note that we deliberately do not reset authenticatedConnectionInitiallyEstablishedTimestamp here, so that the
+            // information is available in the connectionClosedOnError() listeners.
         }
         authenticated = false;
         connected = false;

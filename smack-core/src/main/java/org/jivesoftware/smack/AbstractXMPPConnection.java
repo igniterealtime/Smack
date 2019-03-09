@@ -314,6 +314,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected boolean authenticated = false;
 
+    // TODO: Migrate to ZonedDateTime once Smack's minimum required Android SDK level is 26 (8.0, Oreo) or higher.
+    protected long authenticatedConnectionInitiallyEstablishedTimestamp;
+
     /**
      * Flag that indicates if the user was authenticated with the server when the connection
      * to the server was closed (abruptly or not).
@@ -590,6 +593,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected void afterSuccessfulLogin(final boolean resumed) throws NotConnectedException, InterruptedException {
+        if (!resumed) {
+            authenticatedConnectionInitiallyEstablishedTimestamp = System.currentTimeMillis();
+        }
         // Indicate that we're now authenticated.
         this.authenticated = true;
 
@@ -1727,6 +1733,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public long getLastStanzaReceived() {
         return lastStanzaReceived;
+    }
+
+    /**
+     * Get the timestamp when the connection was the first time authenticated, i.e., when the first successful login was
+     * performed. Note that this value is not reset on disconnect, so it represents the timestamp from the last
+     * authenticated connection. The value is also not reset on stream resumption.
+     *
+     * @return the timestamp or {@code null}.
+     * @since 4.3.3
+     */
+    public final long getAuthenticatedConnectionInitiallyEstablishedTimestamp() {
+        return authenticatedConnectionInitiallyEstablishedTimestamp;
     }
 
     /**
