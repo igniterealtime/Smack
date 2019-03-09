@@ -80,8 +80,7 @@ public final class MultiUserChatManager extends Manager {
     private static final String DISCO_NODE = MUCInitialPresence.NAMESPACE + "#rooms";
 
     private static final Logger LOGGER = Logger.getLogger(MultiUserChatManager.class.getName());
-    final private ServiceDiscoveryManager serviceDiscoveryManager;
-    
+    private final ServiceDiscoveryManager serviceDiscoveryManager;
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
