@@ -647,6 +647,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     proxyInfo.getProxySocketConnection().connect(socket, host, port, timeout);
                 } catch (IOException e) {
                     hostAddress.setException(e);
+                    failedAddresses.add(hostAddress);
                     continue;
                 }
                 LOGGER.finer("Established TCP connection to " + hostAndPort);
