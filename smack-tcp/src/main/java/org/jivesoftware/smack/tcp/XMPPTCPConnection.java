@@ -258,6 +258,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private final Collection<StanzaListener> stanzaAcknowledgedListeners = new ConcurrentLinkedQueue<>();
 
     /**
+     * These listeners are invoked for every stanza that got dropped.
+     * <p>
+     * We use a {@link ConcurrentLinkedQueue} here in order to allow the listeners to remove
+     * themselves after they have been invoked.
+     * </p>
+     */
+    private final Collection<StanzaListener> stanzaDroppedListeners = new ConcurrentLinkedQueue<>();
+
+    /**
      * This listeners are invoked for a acknowledged stanza that has the given stanza ID. They will
      * only be invoked once and automatically removed after that.
      */
@@ -421,9 +430,24 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
             }
         }
-        // (Re-)send the stanzas *after* we tried to enable SM
-        for (Stanza stanza : previouslyUnackedStanzas) {
-            sendStanzaInternal(stanza);
+        // Inform client about failed resumption if possible, resend stanzas otherwise
+        // Process the stanzas synchronously so a client can re-queue them for transmission
+        // before it is informed about connection success
+        if (!stanzaDroppedListeners.isEmpty()) {
+            for (Stanza stanza : previouslyUnackedStanzas) {
+                for (StanzaListener listener : stanzaDroppedListeners) {
+                    try {
+                        listener.processStanza(stanza);
+                    }
+                    catch (InterruptedException | NotConnectedException | NotLoggedInException e) {
+                        LOGGER.log(Level.FINER, "StanzaDroppedListener received exception", e);
+                    }
+                }
+            }
+        } else {
+            for (Stanza stanza : previouslyUnackedStanzas) {
+                sendStanzaInternal(stanza);
+            }
         }
 
         afterSuccessfulLogin(false);
@@ -452,9 +476,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         shutdown(false);
     }
 
-    /**
-     * Performs an unclean disconnect and shutdown of the connection. Does not send a closing stream stanza.
-     */
     @Override
     public synchronized void instantShutdown() {
         shutdown(true);
@@ -492,6 +513,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             // Reset the stream management session id to null, since if the stream is cleanly closed, i.e. sending a closing
             // stream tag, there is no longer a stream to resume.
             smSessionId = null;
+            // Note that we deliberately do not reset authenticatedConnectionInitiallyEstablishedTimestamp here, so that the
+            // information is available in the connectionClosedOnError() listeners.
         }
         authenticated = false;
         connected = false;
@@ -499,6 +522,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         reader = null;
         writer = null;
 
+        initState();
+
+        // Wait for reader and writer threads to be terminated.
+        readerWriterSemaphore.acquireUninterruptibly(2);
+        readerWriterSemaphore.release(2);
+    }
+
+    @Override
+    protected void initState() {
+        super.initState();
         maybeCompressFeaturesReceived.init();
         compressSyncPoint.init();
         smResumedSyncPoint.init();
@@ -784,14 +817,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    protected void afterFeaturesReceived() throws NotConnectedException, InterruptedException {
+    protected void afterFeaturesReceived() throws NotConnectedException, InterruptedException, SecurityRequiredByServerException {
         StartTls startTlsFeature = getFeature(StartTls.ELEMENT, StartTls.NAMESPACE);
         if (startTlsFeature != null) {
             if (startTlsFeature.required() && config.getSecurityMode() == SecurityMode.disabled) {
-                SmackException smackException = new SecurityRequiredByServerException();
+                SecurityRequiredByServerException smackException = new SecurityRequiredByServerException();
                 tlsHandled.reportFailure(smackException);
-                notifyConnectionError(smackException);
-                return;
+                throw smackException;
             }
 
             if (config.getSecurityMode() != ConnectionConfiguration.SecurityMode.disabled) {
@@ -1062,7 +1094,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 LOGGER.info(XMPPTCPConnection.this
                                                 + " received closing </stream> element."
                                                 + " Server wants to terminate the connection, calling disconnect()");
-                                disconnect();
+                                ASYNC_BUT_ORDERED.performAsyncButOrdered(XMPPTCPConnection.this, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        disconnect();
+                                    }});
                             }
                         }
                         break;
@@ -1565,6 +1601,32 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     public void removeAllStanzaAcknowledgedListeners() {
         stanzaAcknowledgedListeners.clear();
+    }
+
+    /**
+     * Add a Stanza dropped listener.
+     * <p>
+     * Those listeners will be invoked every time a Stanza has been dropped due to a failed SM resume. They will not get
+     * automatically removed. If at least one StanzaDroppedListener is configured, no attempt will be made to retransmit
+     * the Stanzas.
+     * </p>
+     *
+     * @param listener the listener to add.
+     * @since 4.3.3
+     */
+    public void addStanzaDroppedListener(StanzaListener listener) {
+        stanzaDroppedListeners.add(listener);
+    }
+
+    /**
+     * Remove the given Stanza dropped listener.
+     *
+     * @param listener the listener.
+     * @return true if the listener was removed.
+     * @since 4.3.3
+     */
+    public boolean removeStanzaDroppedListener(StanzaListener listener) {
+        return stanzaDroppedListeners.remove(listener);
     }
 
     /**

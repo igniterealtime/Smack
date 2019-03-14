@@ -27,7 +27,6 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.NotFilter;
-import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ToTypeFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -46,13 +45,12 @@ public final class StableUniqueStanzaIdManager extends Manager {
             MessageTypeFilter.NORMAL_OR_CHAT_OR_HEADLINE,
             ToTypeFilter.ENTITY_FULL_OR_BARE_JID);
 
-    private static final StanzaFilter ORIGIN_ID_FILTER = new StanzaExtensionFilter(OriginIdElement.ELEMENT, NAMESPACE);
-
     // Listener for outgoing stanzas that adds origin-ids to outgoing stanzas.
-    private final StanzaListener stanzaListener = new StanzaListener() {
+    private static final StanzaListener ADD_ORIGIN_ID_INTERCEPTOR = new StanzaListener() {
         @Override
         public void processStanza(Stanza stanza) {
-            OriginIdElement.addOriginId((Message) stanza);
+            Message message = (Message) stanza;
+            OriginIdElement.addOriginId(message);
         }
     };
 
@@ -95,7 +93,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
     public synchronized void enable() {
         ServiceDiscoveryManager.getInstanceFor(connection()).addFeature(NAMESPACE);
         StanzaFilter filter = new AndFilter(OUTGOING_FILTER, new NotFilter(OUTGOING_FILTER));
-        connection().addStanzaInterceptor(stanzaListener, filter);
+        connection().addStanzaInterceptor(ADD_ORIGIN_ID_INTERCEPTOR, filter);
     }
 
     /**
@@ -103,7 +101,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
      */
     public synchronized void disable() {
         ServiceDiscoveryManager.getInstanceFor(connection()).removeFeature(NAMESPACE);
-        connection().removeStanzaInterceptor(stanzaListener);
+        connection().removeStanzaInterceptor(ADD_ORIGIN_ID_INTERCEPTOR);
     }
 
     /**

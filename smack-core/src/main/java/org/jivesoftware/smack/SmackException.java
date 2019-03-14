@@ -93,17 +93,24 @@ public abstract class SmackException extends Exception {
             return new NoResponseException(sb.toString());
         }
 
-        public static NoResponseException newWith(XMPPConnection connection,
+        @Deprecated
+        // TODO: Remove in Smack 4.4.
+        public static NoResponseException newWith(long timeout,
+                StanzaCollector collector) {
+            return newWith(timeout, collector.getStanzaFilter(), false);
+        }
+
+        public static NoResponseException newWith(long timeout,
                         StanzaCollector collector, boolean stanzaCollectorCancelled) {
-            return newWith(connection, collector.getStanzaFilter(), stanzaCollectorCancelled);
+            return newWith(timeout, collector.getStanzaFilter(), stanzaCollectorCancelled);
         }
 
         public static NoResponseException newWith(XMPPConnection connection, StanzaFilter filter) {
-            return newWith(connection, filter, false);
+            return newWith(connection.getReplyTimeout(), filter, false);
         }
 
-        public static NoResponseException newWith(XMPPConnection connection, StanzaFilter filter, boolean stanzaCollectorCancelled) {
-            final StringBuilder sb = getWaitingFor(connection);
+        public static NoResponseException newWith(long timeout, StanzaFilter filter, boolean stanzaCollectorCancelled) {
+            final StringBuilder sb = getWaitingFor(timeout);
             if (stanzaCollectorCancelled) {
                 sb.append(" StanzaCollector has been cancelled.");
             }
@@ -119,7 +126,10 @@ public abstract class SmackException extends Exception {
         }
 
         private static StringBuilder getWaitingFor(XMPPConnection connection) {
-            final long replyTimeout = connection.getReplyTimeout();
+            return getWaitingFor(connection.getReplyTimeout());
+        }
+
+        private static StringBuilder getWaitingFor(final long replyTimeout) {
             final StringBuilder sb = new StringBuilder(256);
             sb.append("No response received within reply timeout. Timeout was "
                             + replyTimeout + "ms (~"

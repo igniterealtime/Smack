@@ -266,6 +266,11 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             client = null;
         }
 
+        instantShutdown();
+    }
+
+    @Override
+    public void instantShutdown() {
         setWasAuthenticated();
         sessionID = null;
         done = true;

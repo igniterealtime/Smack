@@ -111,6 +111,7 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.NonzaProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
+import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -357,6 +358,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected boolean authenticated = false;
 
+    // TODO: Migrate to ZonedDateTime once Smack's minimum required Android SDK level is 26 (8.0, Oreo) or higher.
+    protected long authenticatedConnectionInitiallyEstablishedTimestamp;
+
     /**
      * Flag that indicates if the user was authenticated with the server when the connection
      * to the server was closed (abruptly or not).
@@ -449,6 +453,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public abstract boolean isUsingCompression();
 
+    protected void initState() {
+        saslFeatureReceived.init();
+        lastFeaturesReceived.init();
+        tlsHandled.init();
+    }
+
     /**
      * Establishes a connection to the XMPP server. It basically
      * creates and maintains a connection to the server.
@@ -467,21 +477,23 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         throwAlreadyConnectedExceptionIfAppropriate();
 
         // Reset the connection state
+        initState();
         saslAuthentication.init();
-        saslFeatureReceived.init();
-        lastFeaturesReceived.init();
-        tlsHandled.init();
         streamId = null;
 
-        // Perform the actual connection to the XMPP service
-        connectInternal();
+        try {
+            // Perform the actual connection to the XMPP service
+            connectInternal();
 
-        // If TLS is required but the server doesn't offer it, disconnect
-        // from the server and throw an error. First check if we've already negotiated TLS
-        // and are secure, however (features get parsed a second time after TLS is established).
-        if (!isSecureConnection() && getConfiguration().getSecurityMode() == SecurityMode.required) {
-            shutdown();
-            throw new SecurityRequiredByClientException();
+            // If TLS is required but the server doesn't offer it, disconnect
+            // from the server and throw an error. First check if we've already negotiated TLS
+            // and are secure, however (features get parsed a second time after TLS is established).
+            if (!isSecureConnection() && getConfiguration().getSecurityMode() == SecurityMode.required) {
+                throw new SecurityRequiredByClientException();
+            }
+        } catch (SmackException | IOException | XMPPException | InterruptedException e) {
+            instantShutdown();
+            throw e;
         }
 
         // Make note of the fact that we're now connected.
@@ -652,6 +664,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected void afterSuccessfulLogin(final boolean resumed) throws NotConnectedException, InterruptedException {
+        if (!resumed) {
+            authenticatedConnectionInitiallyEstablishedTimestamp = System.currentTimeMillis();
+        }
         // Indicate that we're now authenticated.
         this.authenticated = true;
 
@@ -834,36 +849,46 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      *
      * @param exception the exception that causes the connection close event.
      */
-    protected final synchronized void notifyConnectionError(Exception exception) {
+    protected final void notifyConnectionError(final Exception exception) {
         if (!isConnected()) {
             LOGGER.log(Level.INFO, "Connection was already disconnected when attempting to handle " + exception,
                             exception);
             return;
         }
 
-        currentConnectionException = exception;
-        notifyAll();
+        ASYNC_BUT_ORDERED.performAsyncButOrdered(this, () -> {
+            currentConnectionException = exception;
+            synchronized (AbstractXMPPConnection.this) {
+                notifyAll();
+            }
 
-        for (StanzaCollector collector : collectors) {
-            collector.notifyConnectionError(exception);
-        }
-        SmackWrappedException smackWrappedException = new SmackWrappedException(exception);
-        tlsHandled.reportGenericFailure(smackWrappedException);
-        saslFeatureReceived.reportGenericFailure(smackWrappedException);
-        lastFeaturesReceived.reportGenericFailure(smackWrappedException);
+            for (StanzaCollector collector : collectors) {
+                collector.notifyConnectionError(exception);
+            }
+            SmackWrappedException smackWrappedException = new SmackWrappedException(exception);
+            tlsHandled.reportGenericFailure(smackWrappedException);
+            saslFeatureReceived.reportGenericFailure(smackWrappedException);
+            lastFeaturesReceived.reportGenericFailure(smackWrappedException);
+            // TODO From XMPPTCPConnection. Was called in Smack 4.3 where notifyConnectionError() was part of
+            // XMPPTCPConnection. Create delegation method?
+            // maybeCompressFeaturesReceived.reportGenericFailure(smackWrappedException);
 
-        // Closes the connection temporary. A if the connection supports stream management, then a reconnection is
-        // possible. Note that a connection listener of e.g. XMPPTCPConnection will drop the SM state in
-        // case the Exception is a StreamErrorException.
-        instantShutdown();
+            // Closes the connection temporary. A if the connection supports stream management, then a reconnection is
+            // possible. Note that a connection listener of e.g. XMPPTCPConnection will drop the SM state in
+            // case the Exception is a StreamErrorException.
+            instantShutdown();
 
-        callConnectionClosedOnErrorListener(exception);
+            Async.go(() -> {
+                // Notify connection listeners of the error.
+                callConnectionClosedOnErrorListener(exception);
+            }, AbstractXMPPConnection.this + " callConnectionClosedOnErrorListener()");
+        });
     }
 
-    protected void instantShutdown() {
-        // Default implementation simply calls shutdown(), subclasses may override this.
-        shutdown();
-    }
+    /**
+     * Performs an unclean disconnect and shutdown of the connection. Does not send a closing stream stanza.
+     */
+    public abstract void instantShutdown();
 
     /**
      * Shuts the current connection down.
@@ -1809,6 +1834,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public long getLastStanzaReceived() {
         return lastStanzaReceived;
+    }
+
+    /**
+     * Get the timestamp when the connection was the first time authenticated, i.e., when the first successful login was
+     * performed. Note that this value is not reset on disconnect, so it represents the timestamp from the last
+     * authenticated connection. The value is also not reset on stream resumption.
+     *
+     * @return the timestamp or {@code null}.
+     * @since 4.3.3
+     */
+    public final long getAuthenticatedConnectionInitiallyEstablishedTimestamp() {
+        return authenticatedConnectionInitiallyEstablishedTimestamp;
     }
 
     /**

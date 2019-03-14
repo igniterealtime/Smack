@@ -18,6 +18,7 @@ package org.jivesoftware.smack.util.dns.javax;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -40,6 +41,7 @@ import org.minidns.dnsname.DnsName;
 
 /**
  * A DNS resolver (mostly for SRV records), which makes use of the API provided in the javax.* namespace.
+ * Note that using JavaxResovler requires applications using newer Java versions (at least 11) to declare a dependency on the "sun.jdk" module.
  *
  * @author Florian Schmaus
  *
@@ -51,7 +53,9 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
 
     static {
         try {
-            dirContext = new InitialDirContext();
+            Hashtable<String, String> env = new Hashtable<>();
+            env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
+            dirContext = new InitialDirContext(env);
         } catch (NamingException e) {
             LOGGER.log(Level.SEVERE, "Could not construct InitialDirContext", e);
         }

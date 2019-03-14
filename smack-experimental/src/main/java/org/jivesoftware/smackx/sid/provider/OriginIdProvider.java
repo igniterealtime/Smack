@@ -24,7 +24,11 @@ import org.xmlpull.v1.XmlPullParser;
 
 public class OriginIdProvider extends ExtensionElementProvider<OriginIdElement> {
 
-    public static final OriginIdProvider TEST_INSTANCE = new OriginIdProvider();
+    public static final OriginIdProvider INSTANCE = new OriginIdProvider();
+
+    // TODO: Remove in Smack 4.4.
+    @Deprecated
+    public static final OriginIdProvider TEST_INSTANCE = INSTANCE;
 
     @Override
     public OriginIdElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {

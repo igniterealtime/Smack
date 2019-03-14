@@ -290,7 +290,7 @@ public class StanzaCollector implements AutoCloseable {
             if (!connection.isConnected()) {
                 throw new NotConnectedException(connection, packetFilter);
             }
-            throw NoResponseException.newWith(connection, this, cancelled);
+            throw NoResponseException.newWith(timeout, this, cancelled);
         }
 
         XMPPErrorException.ifHasErrorThenThrow(result);

@@ -101,6 +101,11 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     @Override
+    public void instantShutdown() {
+        shutdown();
+    }
+
+    @Override
     public boolean isSecureConnection() {
         return false;
     }
@@ -226,4 +231,5 @@ public class DummyConnection extends AbstractXMPPConnection {
             }
         }
     }
+
 }
