@@ -5,7 +5,9 @@ allprojects {
 		// When using dynamic versions for those, do *not* use [1.0,
 		// 2.0), since this will also pull in 2.0-alpha1. Instead use
 		// [1.0, 1.0.99].
-		// See also https://issues.apache.org/jira/browse/MNG-6232
+		// See also:
+		// - https://issues.apache.org/jira/browse/MNG-6232
+		// - https://issues.igniterealtime.org/browse/SMACK-858
 		jxmppVersion = '[0.6, 0.6.999]'
 		miniDnsVersion = '[0.3, 0.3.999]'
 		smackMinAndroidSdk = 9
