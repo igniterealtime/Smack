@@ -82,7 +82,7 @@ public final class MultiUserChatManager extends Manager {
     private static final String DISCO_NODE = MUCInitialPresence.NAMESPACE + "#rooms";
 
     private static final Logger LOGGER = Logger.getLogger(MultiUserChatManager.class.getName());
-    private final ServiceDiscoveryManager serviceDiscoveryManager;
+
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
@@ -151,6 +151,8 @@ public final class MultiUserChatManager extends Manager {
     private boolean autoJoinOnReconnect;
 
     private AutoJoinFailedCallback autoJoinFailedCallback;
+
+    private final ServiceDiscoveryManager serviceDiscoveryManager;
 
     private MultiUserChatManager(XMPPConnection connection) {
         super(connection);
