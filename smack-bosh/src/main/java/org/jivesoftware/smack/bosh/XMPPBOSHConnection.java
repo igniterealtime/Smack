@@ -458,7 +458,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
          * @param event the BOSH client response which includes the received packet.
          */
         @Override
-        public void responseReceived(BOSHMessageEvent event) {
+        public synchronized void responseReceived(BOSHMessageEvent event) {
             AbstractBody body = event.getBody();
             if (body != null) {
                 try {
