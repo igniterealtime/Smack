@@ -953,7 +953,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @param e the exception that causes the connection close event.
      */
-    private synchronized void notifyConnectionError(final Exception e) {
+    private void notifyConnectionError(final Exception e) {
         ASYNC_BUT_ORDERED.performAsyncButOrdered(this, new Runnable() {
             @Override
             public void run() {
