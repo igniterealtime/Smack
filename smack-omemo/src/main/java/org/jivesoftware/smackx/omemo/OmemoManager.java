@@ -30,13 +30,13 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.ScheduledAction;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
@@ -107,7 +107,7 @@ public final class OmemoManager extends Manager {
 
     private OmemoTrustCallback trustCallback;
 
-    private ScheduledFuture<?> postponingPreKeyDeletion;
+    private ScheduledAction postponingPreKeyDeletion;
 
     private BareJid ownJid;
     private Integer deviceId;
@@ -290,7 +290,7 @@ public final class OmemoManager extends Manager {
      * @param millis period in milliseconds from now, in which preKeys are not deleted immediately.
      * @return scheduled future
      */
-    public ScheduledFuture<?> temporarilyPostponePreKeyDeletion(long millis) {
+    private ScheduledAction temporarilyPostponePreKeyDeletion(long millis) {
         final OmemoStore<?,?,?,?,?,?,?,?,?> store = getOmemoService().getOmemoStoreBackend();
         final OmemoDevice userDevice = getOwnDevice();
 
