@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Paul Schaub.
+ * Copyright 2018 Paul Schaub, 2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,6 @@ package org.jivesoftware.smackx.mood;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Message;
-
-import org.jivesoftware.smackx.mood.element.MoodElement;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
@@ -28,7 +25,6 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.junit.AfterClass;
-import org.jxmpp.jid.BareJid;
 
 public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
 
@@ -47,18 +43,20 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
 
         final SimpleResultSyncPoint moodReceived = new SimpleResultSyncPoint();
 
-        mm2.addMoodListener(new MoodListener() {
-            @Override
-            public void onMoodUpdated(BareJid jid, Message message, MoodElement moodElement) {
-                if (moodElement.getMood() == Mood.satisfied) {
-                    moodReceived.signal();
-                }
+        final MoodListener moodListener = (jid, message, moodElement) -> {
+            if (moodElement.getMood() == Mood.satisfied) {
+                moodReceived.signal();
             }
-        });
+        };
+        mm2.addMoodListener(moodListener);
 
-        mm1.setMood(Mood.satisfied);
+        try {
+            mm1.setMood(Mood.satisfied);
 
-        moodReceived.waitForResult(timeout);
+            moodReceived.waitForResult(timeout);
+        } finally {
+            mm2.removeMoodListener(moodListener);
+        }
     }
 
     @AfterClass
