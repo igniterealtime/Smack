@@ -561,6 +561,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         writer = null;
 
         initState();
+
+        // Wait for reader and writer threads to be terminated.
+        readerWriterSemaphore.acquireUninterruptibly(2);
+        readerWriterSemaphore.release(2);
     }
 
     @Override
@@ -978,10 +982,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     // Note that a connection listener of XMPPTCPConnection will drop the SM state in
                     // case the Exception is a StreamErrorException.
                     instantShutdown();
-
-                    // Wait for reader and writer threads to be terminated.
-                    readerWriterSemaphore.acquireUninterruptibly(2);
-                    readerWriterSemaphore.release(2);
                 }
 
                 Async.go(new Runnable() {
