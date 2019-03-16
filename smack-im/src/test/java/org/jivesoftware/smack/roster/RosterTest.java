@@ -164,7 +164,7 @@ public class RosterTest extends InitSmackIm {
             }
         };
         serverSimulator.start();
-        roster.createEntry(contactJID, contactName, contactGroup);
+        roster.createItemAndRequestSubscription(contactJID, contactName, contactGroup);
         serverSimulator.join();
 
         // Check if an error occurred within the simulator
@@ -430,7 +430,7 @@ public class RosterTest extends InitSmackIm {
             }
         };
         serverSimulator.start();
-        roster.createEntry(contactJID, contactName, contactGroup);
+        roster.createItemAndRequestSubscription(contactJID, contactName, contactGroup);
         serverSimulator.join();
 
         // Check if an error occurred within the simulator

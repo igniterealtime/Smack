@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2017 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -629,14 +629,40 @@ public final class Roster extends Manager {
      * @throws NotLoggedInException If not logged in.
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @deprecated use {@link #createItemAndRequestSubscription(BareJid, String, String[])} instead.
      */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
     public void createEntry(BareJid user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        createItemAndRequestSubscription(user, name, groups);
+    }
+
+    /**
+     * Creates a new roster item. The server will asynchronously update the roster with the subscription status.
+     * <p>
+     * There will be no presence subscription request. Consider using
+     * {@link #createItemAndRequestSubscription(BareJid, String, String[])} if you also want to request a presence
+     * subscription from the contact.
+     * </p>
+     *
+     * @param jid the XMPP address of the contact (e.g. johndoe@jabber.org)
+     * @param name the nickname of the user.
+     * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the the roster entry won't
+     *        belong to a group.
+     * @throws NoResponseException if there was no response from the server.
+     * @throws XMPPErrorException if an XMPP exception occurs.
+     * @throws NotLoggedInException If not logged in.
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.4.0
+     */
+    public void createItem(BareJid jid, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
 
         // Create and send roster entry creation packet.
         RosterPacket rosterPacket = new RosterPacket();
         rosterPacket.setType(IQ.Type.set);
-        RosterPacket.Item item = new RosterPacket.Item(user, name);
+        RosterPacket.Item item = new RosterPacket.Item(jid, name);
         if (groups != null) {
             for (String group : groups) {
                 if (group != null && group.trim().length() > 0) {
@@ -646,8 +672,27 @@ public final class Roster extends Manager {
         }
         rosterPacket.addRosterItem(item);
         connection.createStanzaCollectorAndSend(rosterPacket).nextResultOrThrow();
+    }
 
-        sendSubscriptionRequest(user);
+    /**
+     * Creates a new roster entry and presence subscription. The server will asynchronously
+     * update the roster with the subscription status.
+     *
+     * @param jid the XMPP address of the contact (e.g. johndoe@jabber.org)
+     * @param name   the nickname of the user.
+     * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
+     *               the roster entry won't belong to a group.
+     * @throws NoResponseException if there was no response from the server.
+     * @throws XMPPErrorException if an XMPP exception occurs.
+     * @throws NotLoggedInException If not logged in.
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @since 4.4.0
+     */
+    public void createItemAndRequestSubscription(BareJid jid, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        createItem(jid, name, groups);
+
+        sendSubscriptionRequest(jid);
     }
 
     /**
@@ -668,7 +713,7 @@ public final class Roster extends Manager {
      */
     public void preApproveAndCreateEntry(BareJid user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, FeatureNotSupportedException {
         preApprove(user);
-        createEntry(user, name, groups);
+        createItemAndRequestSubscription(user, name, groups);
     }
 
     /**

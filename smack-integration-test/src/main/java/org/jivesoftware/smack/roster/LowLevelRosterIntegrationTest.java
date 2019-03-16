@@ -42,9 +42,8 @@ public class LowLevelRosterIntegrationTest extends AbstractSmackLowLevelIntegrat
         final Roster rosterOne = Roster.getInstanceFor(conOne);
         final Roster rosterTwo = Roster.getInstanceFor(conTwo);
 
-        // TODO create Roster.createEntry() with boolean flag for subscribe or not.
-        rosterOne.createEntry(conTwo.getUser().asBareJid(), "Con Two", null);
-        rosterTwo.createEntry(conOne.getUser().asBareJid(), "Con One", null);
+        rosterOne.createItem(conTwo.getUser().asBareJid(), "Con Two", null);
+        rosterTwo.createItem(conOne.getUser().asBareJid(), "Con One", null);
 
         // TODO Change timeout form '5000' to something configurable.
         final long timeout = 5000;

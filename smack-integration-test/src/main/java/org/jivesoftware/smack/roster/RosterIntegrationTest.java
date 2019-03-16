@@ -99,7 +99,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         });
 
         try {
-            rosterOne.createEntry(conTwo.getUser().asBareJid(), conTwosRosterName, null);
+            rosterOne.createItemAndRequestSubscription(conTwo.getUser().asBareJid(), conTwosRosterName, null);
 
             assertTrue(addedAndSubscribed.waitForResult(2 * connection.getReplyTimeout()));
         }
