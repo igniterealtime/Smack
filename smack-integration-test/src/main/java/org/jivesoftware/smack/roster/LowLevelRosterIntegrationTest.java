@@ -45,8 +45,6 @@ public class LowLevelRosterIntegrationTest extends AbstractSmackLowLevelIntegrat
         rosterOne.createItem(conTwo.getUser().asBareJid(), "Con Two", null);
         rosterTwo.createItem(conOne.getUser().asBareJid(), "Con One", null);
 
-        // TODO Change timeout form '5000' to something configurable.
-        final long timeout = 5000;
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
         final SimpleResultSyncPoint offlineTriggered = new SimpleResultSyncPoint();
