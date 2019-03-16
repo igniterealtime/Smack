@@ -858,9 +858,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         ASYNC_BUT_ORDERED.performAsyncButOrdered(this, () -> {
             currentConnectionException = exception;
-            synchronized (AbstractXMPPConnection.this) {
-                notifyAll();
-            }
 
             for (StanzaCollector collector : collectors) {
                 collector.notifyConnectionError(exception);
@@ -873,10 +870,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             // XMPPTCPConnection. Create delegation method?
             // maybeCompressFeaturesReceived.reportGenericFailure(smackWrappedException);
 
-            // Closes the connection temporary. A if the connection supports stream management, then a reconnection is
-            // possible. Note that a connection listener of e.g. XMPPTCPConnection will drop the SM state in
-            // case the Exception is a StreamErrorException.
-            instantShutdown();
+            synchronized (AbstractXMPPConnection.this) {
+                notifyAll();
+
+                // Closes the connection temporary. A if the connection supports stream management, then a reconnection is
+                // possible. Note that a connection listener of e.g. XMPPTCPConnection will drop the SM state in
+                // case the Exception is a StreamErrorException.
+                instantShutdown();
+            }
 
             Async.go(() -> {
                 // Notify connection listeners of the error.
