@@ -115,7 +115,8 @@ class HTTPProxySocketConnection implements ProxySocketConnection {
         int code = Integer.parseInt(m.group(1));
 
         if (code != HttpURLConnection.HTTP_OK) {
-            throw new ProxyException(ProxyInfo.ProxyType.HTTP);
+            throw new ProxyException(ProxyInfo.ProxyType.HTTP,
+                "Error code in proxy response: " + code);
         }
     }
 
