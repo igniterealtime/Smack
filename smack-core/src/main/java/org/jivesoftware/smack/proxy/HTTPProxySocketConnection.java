@@ -58,7 +58,7 @@ class HTTPProxySocketConnection implements ProxySocketConnection {
             proxyLine = "\r\nProxy-Authorization: Basic " + Base64.encode(username + ":" + password);
         }
         socket.getOutputStream().write((hostport + " HTTP/1.1\r\nHost: "
-            + hostport + proxyLine + "\r\n\r\n").getBytes("UTF-8"));
+            + host + ":" + port + proxyLine + "\r\n\r\n").getBytes("UTF-8"));
 
         InputStream in = socket.getInputStream();
         StringBuilder got = new StringBuilder(100);
