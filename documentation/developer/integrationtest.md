@@ -80,6 +80,7 @@ debugger=console
 ### Where to place the properties file
 
 The framework will first load the properties file from `~/.config/smack-integration-test/properties`
+
 Overview of the components
 --------------------------
 
