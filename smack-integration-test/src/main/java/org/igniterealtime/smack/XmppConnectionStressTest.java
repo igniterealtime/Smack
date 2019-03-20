@@ -299,9 +299,31 @@ public class XmppConnectionStressTest {
 
             private ErrorsWhileSendingOrReceivingException(Map<XMPPConnection, Exception> sendExceptions,
                     Map<XMPPConnection, Exception> receiveExceptions) {
-                super("Exceptions while sending and/or receiving");
+                super(createMessageFrom(sendExceptions, receiveExceptions));
                 this.sendExceptions = sendExceptions;
                 this.receiveExceptions = receiveExceptions;
+            }
+
+            private static String createMessageFrom(Map<XMPPConnection, Exception> sendExceptions,
+                            Map<XMPPConnection, Exception> receiveExceptions) {
+                StringBuilder sb = new StringBuilder(1024);
+                sb.append("Exceptions while sending and/or receiving.");
+
+                if (!sendExceptions.isEmpty()) {
+                    sb.append(" Send exxceptions: ");
+                    for (Map.Entry<XMPPConnection, Exception> entry : sendExceptions.entrySet()) {
+                        sb.append(entry.getKey()).append(": ").append(entry.getValue()).append(';');
+                    }
+                }
+
+                if (!receiveExceptions.isEmpty()) {
+                    sb.append(" Receive exceptions: ");
+                    for (Map.Entry<XMPPConnection, Exception> entry : receiveExceptions.entrySet()) {
+                        sb.append(entry.getKey()).append(": ").append(entry.getValue());
+                    }
+                }
+
+                return sb.toString();
             }
         }
     }
