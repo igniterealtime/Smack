@@ -447,6 +447,19 @@ public final class PingManager extends Manager {
         pingFuture.onError(new ExceptionCallback<Exception>() {
             @Override
             public void processException(Exception exception) {
+                long lastStanzaReceived = connection.getLastStanzaReceived();
+                if (lastStanzaReceived > 0) {
+                    long now = System.currentTimeMillis();
+                    // Delta since the last stanza was received
+                    int deltaInSeconds = (int)  ((now - lastStanzaReceived) / 1000);
+                    // If the delta is smaller then the ping interval, we have got an valid stanza in time
+                    // So not error notification needed
+                    if (deltaInSeconds < pingInterval) {
+                        maybeSchedulePingServerTask(deltaInSeconds);
+                        return;
+                    }
+                }
+
                 for (PingFailedListener l : pingFailedListeners) {
                     l.pingFailed();
                 }
