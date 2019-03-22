@@ -22,6 +22,7 @@ import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.StringReader;
 import java.io.Writer;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -157,7 +158,12 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             if (config.isProxyEnabled()) {
                 cfgBuilder.setProxy(config.getProxyAddress(), config.getProxyPort());
             }
+
             cfgBuilder.setCompressionEnabled(config.isCompressionEnabled());
+
+            for (Map.Entry<String, String> h : config.getHttpHeaders().entrySet()) {
+                cfgBuilder.addHttpHeader(h.getKey(), h.getValue());
+            }
 
             client = BOSHClient.create(cfgBuilder.build());
 

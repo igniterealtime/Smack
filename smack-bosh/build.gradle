@@ -4,5 +4,7 @@ This API is considered beta quality."""
 
 dependencies {
 	compile project(':smack-core')
-	compile 'org.igniterealtime.jbosh:jbosh:[0.9,0.10)'
+	// See https://issues.igniterealtime.org/browse/SMACK-858 and
+	// comment in version.gradle why the specify the version this way.
+	compile 'org.igniterealtime.jbosh:jbosh:[0.9.1,0.9.999]'
 }
