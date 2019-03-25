@@ -64,6 +64,11 @@ public class DummyConnection extends AbstractXMPPConnection {
         this(getDummyConfigurationBuilder().build());
     }
 
+    public DummyConnection(CharSequence username, String password, String serviceName) throws XmppStringprepException {
+        this(getDummyConfigurationBuilder().setUsernameAndPassword(username, password).setXmppDomain(
+                                        JidCreate.domainBareFrom(serviceName)).build());
+    }
+
     private EntityFullJid getUserJid() {
         try {
             return JidCreate.entityFullFrom(config.getUsername()
