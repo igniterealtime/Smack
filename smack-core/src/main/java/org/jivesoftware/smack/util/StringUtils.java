@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2018 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 package org.jivesoftware.smack.util;
 
 import java.io.UnsupportedEncodingException;
-import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
@@ -254,18 +253,6 @@ public class StringUtils {
     }
 
     /**
-     * Pseudo-random number generator object for use with randomString().
-     * The Random class is not considered to be cryptographically secure, so
-     * only use these random Strings for low to medium security applications.
-     */
-    private static final ThreadLocal<Random> randGen = new ThreadLocal<Random>() {
-        @Override
-        protected Random initialValue() {
-            return new Random();
-        }
-    };
-
-    /**
      * Array of numbers and letters of mixed case. Numbers appear in the list
      * twice so that there is a more equal chance that a number will be picked.
      * We can use the array to get a random number or letter by picking a random
@@ -288,18 +275,11 @@ public class StringUtils {
      * @return a random String of numbers and letters of the specified length.
      */
     public static String insecureRandomString(int length) {
-        return randomString(length, randGen.get());
+        return randomString(length, RandomUtil.RANDOM.get());
     }
 
-    private static final ThreadLocal<SecureRandom> SECURE_RANDOM = new ThreadLocal<SecureRandom>() {
-        @Override
-        protected SecureRandom initialValue() {
-            return new SecureRandom();
-        }
-    };
-
     public static String randomString(final int length) {
-        return randomString(length, SECURE_RANDOM.get());
+        return randomString(length, RandomUtil.SECURE_RANDOM.get());
     }
 
     public static String randomString(final int length, Random random) {
