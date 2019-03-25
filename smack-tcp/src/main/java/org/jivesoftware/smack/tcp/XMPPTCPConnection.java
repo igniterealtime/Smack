@@ -1063,6 +1063,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     protected class PacketReader {
 
+        private final String threadName = "Smack Reader (" + getConnectionCounter() + ')';
+
         XmlPullParser parser;
 
         private volatile boolean done;
@@ -1077,13 +1079,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             Async.go(new Runnable() {
                 @Override
                 public void run() {
+                    LOGGER.finer(threadName + " start");
                     try {
                         parsePackets();
                     } finally {
+                        LOGGER.finer(threadName + " exit");
                         XMPPTCPConnection.this.readerWriterSemaphore.release();
                     }
                 }
-            }, "Smack Reader (" + getConnectionCounter() + ")");
+            }, threadName);
          }
 
         /**
@@ -1336,6 +1340,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     protected class PacketWriter {
         public static final int QUEUE_SIZE = XMPPTCPConnection.QUEUE_SIZE;
 
+        private final String threadName = "Smack Writer (" + getConnectionCounter() + ')';
+
         private final ArrayBlockingQueueWithShutdown<Element> queue = new ArrayBlockingQueueWithShutdown<>(
                         QUEUE_SIZE, true);
 
@@ -1381,13 +1387,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             Async.go(new Runnable() {
                 @Override
                 public void run() {
+                    LOGGER.finer(threadName + " start");
                     try {
                         writePackets();
                     } finally {
+                        LOGGER.finer(threadName + " exit");
                         XMPPTCPConnection.this.readerWriterSemaphore.release();
                     }
                 }
-            }, "Smack Writer (" + getConnectionCounter() + ")");
+            }, threadName);
         }
 
         private boolean done() {
