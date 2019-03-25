@@ -283,8 +283,8 @@ public class StringUtils {
     }
 
     public static String randomString(final int length, Random random) {
-        if (length < 1) {
-            return null;
+        if (length == 0) {
+            return "";
         }
 
         byte[] randomBytes = new byte[length];

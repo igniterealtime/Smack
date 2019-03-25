@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,13 +88,7 @@ public class StringUtilsTest  {
 
     @Test
     public void testRandomString() {
-        // Boundary test
-        String result = StringUtils.randomString(-1);
-        assertNull(result);
-
-        // Zero length string test
-        result = StringUtils.randomString(0);
-        assertNull(result);
+        String result;
 
         // Test various lengths - make sure the same length is returned
         result = StringUtils.randomString(4);
@@ -103,5 +97,18 @@ public class StringUtilsTest  {
         assertTrue(result.length() == 16);
         result = StringUtils.randomString(128);
         assertTrue(result.length() == 128);
+    }
+
+    @Test(expected = NegativeArraySizeException.class)
+    public void testNegativeArraySizeException() {
+        // Boundary test
+        StringUtils.randomString(-1);
+    }
+
+    @Test
+    public void testZeroLengthRandomString() {
+        // Zero length string test
+        String result = StringUtils.randomString(0);
+        assertEquals("", result);
     }
 }
