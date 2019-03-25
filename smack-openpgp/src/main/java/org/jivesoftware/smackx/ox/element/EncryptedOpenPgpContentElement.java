@@ -38,14 +38,14 @@ public abstract class EncryptedOpenPgpContentElement extends OpenPgpContentEleme
 
     private final String rpad;
 
-    protected EncryptedOpenPgpContentElement(Set<Jid> to, String rpad, Date timestamp, List<ExtensionElement> payload) {
+    protected EncryptedOpenPgpContentElement(Set<? extends Jid> to, String rpad, Date timestamp, List<ExtensionElement> payload) {
         super(Objects.requireNonNullNorEmpty(
                 to, "Encrypted OpenPGP content elements must have at least one 'to' attribute."),
                 timestamp, payload);
         this.rpad = Objects.requireNonNull(rpad);
     }
 
-    protected EncryptedOpenPgpContentElement(Set<Jid> to, List<ExtensionElement> payload) {
+    protected EncryptedOpenPgpContentElement(Set<? extends Jid> to, List<ExtensionElement> payload) {
         super(Objects.requireNonNullNorEmpty(
                 to, "Encrypted OpenPGP content elements must have at least one 'to' attribute."),
                 new Date(), payload);

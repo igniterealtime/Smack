@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2017-2019 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,11 +35,11 @@ public class SigncryptElement extends EncryptedOpenPgpContentElement {
 
     public static final String ELEMENT = "signcrypt";
 
-    public SigncryptElement(Set<Jid> to, String rpad, Date timestamp, List<ExtensionElement> payload) {
+    public SigncryptElement(Set<? extends Jid> to, String rpad, Date timestamp, List<ExtensionElement> payload) {
         super(to, rpad, timestamp, payload);
     }
 
-    public SigncryptElement(Set<Jid> to, List<ExtensionElement> payload) {
+    public SigncryptElement(Set<? extends Jid> to, List<ExtensionElement> payload) {
         super(to, payload);
     }
 

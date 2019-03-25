@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2017-2019 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ public class CryptElement extends EncryptedOpenPgpContentElement {
 
     public static final String ELEMENT = "crypt";
 
-    public CryptElement(Set<Jid> to, String rpad, Date timestamp, List<ExtensionElement> payload) {
+    public CryptElement(Set<? extends Jid> to, String rpad, Date timestamp, List<ExtensionElement> payload) {
         super(to, rpad, timestamp, payload);
     }
 
-    public CryptElement(Set<Jid> to, List<ExtensionElement> payload) {
+    public CryptElement(Set<? extends Jid> to, List<ExtensionElement> payload) {
         super(to, payload);
     }
 

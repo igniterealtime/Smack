@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2017-2019 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,13 +48,13 @@ public abstract class OpenPgpContentElement implements ExtensionElement {
     public static final String ATTR_STAMP = "stamp";
     public static final String ELEM_PAYLOAD = "payload";
 
-    private final Set<Jid> to;
+    private final Set<? extends Jid> to;
     private final Date timestamp;
     private final MultiMap<String, ExtensionElement> payload;
 
     private String timestampString;
 
-    protected OpenPgpContentElement(Set<Jid> to, Date timestamp, List<ExtensionElement> payload) {
+    protected OpenPgpContentElement(Set<? extends Jid> to, Date timestamp, List<ExtensionElement> payload) {
         this.to = to;
         this.timestamp = Objects.requireNonNull(timestamp);
         this.payload = new MultiMap<>();
@@ -68,7 +68,7 @@ public abstract class OpenPgpContentElement implements ExtensionElement {
      *
      * @return recipients.
      */
-    public final Set<Jid> getTo() {
+    public final Set<? extends Jid> getTo() {
         return to;
     }
 
