@@ -508,10 +508,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     private void shutdown(boolean instant) {
-        if (disconnectedButResumeable) {
-            return;
-        }
-
         // First shutdown the writer, this will result in a closing stream element getting send to
         // the server
         LOGGER.finer("PacketWriter shutdown()");
@@ -534,13 +530,25 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         packetReader.shutdown();
         LOGGER.finer("PacketReader has been shut down");
 
-        try {
+        final Socket socket = this.socket;
+        if (socket != null && socket.isConnected()) {
+            try {
                 socket.close();
-        } catch (Exception e) {
+            } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "shutdown", e);
+            }
         }
 
         setWasAuthenticated();
+
+        // Wait for reader and writer threads to be terminated.
+        readerWriterSemaphore.acquireUninterruptibly(2);
+        readerWriterSemaphore.release(2);
+
+        if (disconnectedButResumeable) {
+            return;
+        }
+
         // If we are able to resume the stream, then don't set
         // connected/authenticated/usingTLS to false since we like behave like we are still
         // connected (e.g. sendStanza should not throw a NotConnectedException).
@@ -561,10 +569,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         writer = null;
 
         initState();
-
-        // Wait for reader and writer threads to be terminated.
-        readerWriterSemaphore.acquireUninterruptibly(2);
-        readerWriterSemaphore.release(2);
     }
 
     @Override
