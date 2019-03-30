@@ -39,7 +39,7 @@ import org.jxmpp.jid.Jid;
 /**
  * Implementation of XEP-0172.
  *
- * @author Miguel Hincapie 2018
+ * @author Miguel Hincapie
  * @see <a href="http://xmpp.org/extensions/xep-0172.html">XEP-0172: User Nickname</a>
  */
 public final class NickManager extends Manager {
