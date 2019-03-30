@@ -241,7 +241,7 @@ public final class ChatMarkersManager extends Manager {
             throw new IllegalStateException("To attribute must not be null");
         }
 
-        if (message.getStanzaId() == null) {
+        if (!message.hasStanzaIdSet()) {
             message.setStanzaId();
         }
 
