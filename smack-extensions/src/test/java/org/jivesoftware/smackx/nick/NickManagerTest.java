@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smackx.InitExtensions;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
