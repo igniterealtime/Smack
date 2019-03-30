@@ -66,8 +66,10 @@ public final class NickManager extends Manager {
                 asyncButOrdered.performAsyncButOrdered(message, new Runnable() {
                     @Override
                     public void run() {
-                        for (NickListener listener : nickListeners) {
-                            listener.newNickMessage(message);
+                        synchronized (nickListeners) {
+                            for (NickListener listener : nickListeners) {
+                                listener.newNickMessage(message);
+                            }
                         }
                     }
                 });
