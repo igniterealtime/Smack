@@ -113,7 +113,7 @@ public final class NickManager extends Manager {
      * @param nickName the new nickName.
      * @return instance of Message stanza.
      */
-    private Message createNickMessage(EntityBareJid to, String nickName) {
+    private static Message createNickMessage(EntityBareJid to, String nickName) {
         Message message = new Message();
         message.setTo(to);
         message.setType(Message.Type.chat);
