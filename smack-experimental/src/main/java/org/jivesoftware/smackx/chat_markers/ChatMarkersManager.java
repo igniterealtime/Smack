@@ -146,13 +146,7 @@ public final class ChatMarkersManager extends Manager {
                 // Note that this listener is used together with a PossibleFromTypeFilter.ENTITY_BARE_JID filter, hence
                 // every message is guaranteed to have a from address which is representable as bare JID.
                 EntityBareJid bareFrom = message.getFrom().asEntityBareJidOrThrow();
-                Chat tempChat = null;
-                try {
-                    tempChat = chatManager.chatWith(bareFrom);
-                } catch (Exception e) {
-
-                }
-                final Chat chat = tempChat;
+                final Chat chat = chatManager.chatWith(bareFrom);
 
                 asyncButOrdered.performAsyncButOrdered(chat, new Runnable() {
                     @Override
