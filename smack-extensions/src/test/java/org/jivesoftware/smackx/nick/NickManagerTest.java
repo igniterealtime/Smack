@@ -16,12 +16,16 @@
  */
 package org.jivesoftware.smackx.nick;
 
+import org.jivesoftware.smack.DummyConnection;
+import org.jivesoftware.smackx.InitExtensions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
 
-public class NickManagerTest {
+
+public class NickManagerTest extends InitExtensions {
 
     @Before
     public void setUp() {
@@ -32,7 +36,11 @@ public class NickManagerTest {
     }
 
     @Test
-    public void getInstanceFor() {
+    public void getInstanceFor() throws Exception {
+        DummyConnection dummyConnection = new DummyConnection();
+        dummyConnection.connect();
+        NickManager nickManager = NickManager.getInstanceFor(dummyConnection);
+        assertNotNull(nickManager);
     }
 
     @Test
