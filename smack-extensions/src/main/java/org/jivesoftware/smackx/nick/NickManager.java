@@ -33,6 +33,7 @@ import org.jivesoftware.smackx.nick.filter.NickFilter;
 import org.jivesoftware.smackx.nick.packet.Nick;
 
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.Jid;
 
 
 /**
@@ -49,7 +50,7 @@ public final class NickManager extends Manager {
 
     private final Set<NickListener> nickListeners = new HashSet<>();
 
-    private final AsyncButOrdered<Message> asyncButOrdered = new AsyncButOrdered<>();
+    private final AsyncButOrdered<Jid> asyncButOrdered = new AsyncButOrdered<>();
 
     private NickManager(XMPPConnection connection) {
         super(connection);
@@ -63,16 +64,19 @@ public final class NickManager extends Manager {
                     SmackException.NotLoggedInException {
                 final Message message = (Message) packet;
 
-                asyncButOrdered.performAsyncButOrdered(message, new Runnable() {
-                    @Override
-                    public void run() {
-                        synchronized (nickListeners) {
-                            for (NickListener listener : nickListeners) {
-                                listener.newNickMessage(message);
+                Jid from = message.getFrom();
+                if (from != null) {
+                    asyncButOrdered.performAsyncButOrdered(from, new Runnable() {
+                        @Override
+                        public void run() {
+                            synchronized (nickListeners) {
+                                for (NickListener listener : nickListeners) {
+                                    listener.newNickMessage(message);
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
 
             }
         }, INCOMING_MESSAGE_FILTER);
