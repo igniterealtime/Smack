@@ -16,13 +16,14 @@
  */
 package org.jivesoftware.smackx.nick;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smackx.InitExtensions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
 
 
 public class NickManagerTest extends InitExtensions {
