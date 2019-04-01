@@ -371,7 +371,7 @@ public final class Roster extends Manager {
      * @return the user presences
      */
     private Map<Resourcepart, Presence> getPresencesInternal(BareJid entity) {
-        Map<Resourcepart, Presence> entityPresences = presenceMap.get(entity);
+        Map<Resourcepart, Presence> entityPresences = entity == null ? null : presenceMap.get(entity);
         if (entityPresences == null) {
             entityPresences = nonRosterPresenceMap.lookup(entity);
         }
