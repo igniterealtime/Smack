@@ -786,33 +786,6 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
     }
 
     /**
-     * Build OMEMO sessions with all devices of the contact, we haven't had sessions with before.
-     * This method returns a set of OmemoDevices. This set contains all devices, with which we either had sessions
-     * before, plus those devices with which we just built sessions.
-     *
-     * @param connection authenticated XMPP connection.
-     * @param userDevice our OmemoDevice
-     * @param contact the BareJid of the contact with whom we want to build sessions with.
-     * @return set of devices with a session.
-     * @throws SmackException.NotConnectedException
-     * @throws InterruptedException
-     * @throws SmackException.NoResponseException
-     */
-    private Set<OmemoDevice> buildMissingSessionsWithContact(XMPPConnection connection,
-                                                             OmemoDevice userDevice,
-                                                             BareJid contact)
-            throws SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
-
-        OmemoCachedDeviceList contactsDeviceIds = getOmemoStoreBackend().loadCachedDeviceList(userDevice, contact);
-        Set<OmemoDevice> contactsDevices = new HashSet<>();
-        for (int deviceId : contactsDeviceIds.getActiveDevices()) {
-            contactsDevices.add(new OmemoDevice(contact, deviceId));
-        }
-
-        return buildMissingSessionsWithDevices(connection, userDevice, contactsDevices);
-    }
-
-    /**
      * Build sessions with all devices from the set, we don't have a session with yet.
      * Return the set of all devices we have a session with afterwards.
      * @param connection authenticated XMPP connection
@@ -854,34 +827,6 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
     }
 
     /**
-     * Build OMEMO sessions with all devices of the contacts, we haven't had sessions with before.
-     * This method returns a set of OmemoDevices. This set contains all devices, with which we either had sessions
-     * before, plus those devices with which we just built sessions.
-     *
-     * @param connection authenticated XMPP connection.
-     * @param userDevice our OmemoDevice
-     * @param contacts set of BareJids of contacts, we want to build sessions with.
-     * @return set of devices, we have sessions with.
-     * @throws SmackException.NotConnectedException
-     * @throws InterruptedException
-     * @throws SmackException.NoResponseException
-     */
-    private Set<OmemoDevice> buildMissingSessionsWithContacts(XMPPConnection connection,
-                                                              OmemoDevice userDevice,
-                                                              Set<BareJid> contacts)
-            throws SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
-
-        Set<OmemoDevice> devicesWithSessions = new HashSet<>();
-
-        for (BareJid contact : contacts) {
-            Set<OmemoDevice> devices = buildMissingSessionsWithContact(connection, userDevice, contact);
-            devicesWithSessions.addAll(devices);
-        }
-
-        return devicesWithSessions;
-    }
-
-    /**
      * Return a set of all devices from the provided set, which trust level is undecided.
      * A device is also considered undecided, if its fingerprint cannot be loaded.
      *
@@ -911,37 +856,6 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         }
 
         return undecidedDevices;
-    }
-
-    /**
-     * Return a set of all devices from the provided set, which are untrusted.
-     * A device is also considered untrusted, if its fingerprint cannot be loaded.
-     *
-     * @param userDevice our own OmemoDevice
-     * @param trustCallback OmemoTrustCallback to query trust decisions from
-     * @param devices set of OmemoDevices
-     * @return set of OmemoDevices from devices, which contains all devices which are untrusted
-     */
-    private Set<OmemoDevice> getUntrustedDeviced(OmemoDevice userDevice, OmemoTrustCallback trustCallback, Set<OmemoDevice> devices) {
-        Set<OmemoDevice> untrustedDevices = new HashSet<>();
-
-        for (OmemoDevice device : devices) {
-
-            OmemoFingerprint fingerprint;
-            try {
-                fingerprint = getOmemoStoreBackend().getFingerprint(userDevice, device);
-            } catch (CorruptedOmemoKeyException | NoIdentityKeyException e) {
-                // TODO: Best solution?
-                untrustedDevices.add(device);
-                continue;
-            }
-
-            if (trustCallback.getTrust(device, fingerprint) == TrustState.untrusted) {
-                untrustedDevices.add(device);
-            }
-        }
-
-        return untrustedDevices;
     }
 
     /**
