@@ -58,6 +58,5 @@ public final class OmemoConstants {
         public static final String KEYTYPE = "AES";
         public static final int KEYLENGTH = 128;
         public static final String CIPHERMODE = "AES/GCM/NoPadding";
-        public static final String PROVIDER = "BC";
     }
 }

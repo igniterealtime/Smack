@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017 Paul Schaub, 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,9 @@ package org.jivesoftware.smackx.omemo.internal;
 
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.CIPHERMODE;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.PROVIDER;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
@@ -50,13 +48,13 @@ public class CipherAndAuthTag {
 
         Cipher cipher;
         try {
-            cipher = Cipher.getInstance(CIPHERMODE, PROVIDER);
+            cipher = Cipher.getInstance(CIPHERMODE);
             SecretKeySpec keySpec = new SecretKeySpec(key, KEYTYPE);
             IvParameterSpec ivSpec = new IvParameterSpec(iv);
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
         } catch (NoSuchAlgorithmException | java.security.InvalidKeyException |
                 InvalidAlgorithmParameterException |
-                NoSuchPaddingException | NoSuchProviderException e) {
+                NoSuchPaddingException e) {
             throw new CryptoFailedException(e);
         }
 

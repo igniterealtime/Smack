@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017 Paul Schaub, 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -308,7 +307,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         try {
             builder = new OmemoMessageBuilder<>(userDevice, gullibleTrustCallback, getOmemoRatchet(manager),
                     messageKey, iv, null);
-        } catch (InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException | BadPaddingException | UnsupportedEncodingException | NoSuchProviderException | IllegalBlockSizeException e) {
+        } catch (InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException | BadPaddingException | UnsupportedEncodingException | IllegalBlockSizeException e) {
             throw new CryptoFailedException(e);
         }
 
@@ -370,7 +369,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         try {
             builder = new OmemoMessageBuilder<>(
                     userDevice, manager.getTrustCallback(), getOmemoRatchet(managerGuard.get()), messageKey, iv, message);
-        } catch (UnsupportedEncodingException | BadPaddingException | IllegalBlockSizeException | NoSuchProviderException |
+        } catch (UnsupportedEncodingException | BadPaddingException | IllegalBlockSizeException |
                 NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchAlgorithmException e) {
             throw new CryptoFailedException(e);
         }

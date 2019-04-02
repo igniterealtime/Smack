@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017 Paul Schaub, 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.omemo.util;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.CIPHERMODE;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYLENGTH;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.PROVIDER;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
@@ -96,7 +95,6 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws NoSuchAlgorithmException
      * @throws IllegalBlockSizeException
      * @throws UnsupportedEncodingException
-     * @throws NoSuchProviderException
      * @throws InvalidAlgorithmParameterException
      */
     public OmemoMessageBuilder(OmemoDevice userDevice,
@@ -107,7 +105,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
                                String message)
             throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException,
             IllegalBlockSizeException,
-            UnsupportedEncodingException, NoSuchProviderException, InvalidAlgorithmParameterException {
+            UnsupportedEncodingException, InvalidAlgorithmParameterException {
         this.userDevice = userDevice;
         this.trustCallback = callback;
         this.ratchet = ratchet;
@@ -130,7 +128,6 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws NoSuchAlgorithmException
      * @throws IllegalBlockSizeException
      * @throws UnsupportedEncodingException
-     * @throws NoSuchProviderException
      * @throws InvalidAlgorithmParameterException
      */
     public OmemoMessageBuilder(OmemoDevice userDevice,
@@ -138,7 +135,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
                                OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> ratchet,
                                String message)
             throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException,
-            UnsupportedEncodingException, NoSuchProviderException, InvalidAlgorithmParameterException {
+            UnsupportedEncodingException, InvalidAlgorithmParameterException {
         this(userDevice, callback, ratchet, generateKey(KEYTYPE, KEYLENGTH), generateIv(), message);
     }
 
@@ -150,7 +147,6 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param message plaintext message
      * @throws NoSuchPaddingException
-     * @throws NoSuchAlgorithmException
      * @throws NoSuchProviderException
      * @throws InvalidAlgorithmParameterException
      * @throws InvalidKeyException
@@ -158,7 +154,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    private void setMessage(String message) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, UnsupportedEncodingException, BadPaddingException, IllegalBlockSizeException {
+    private void setMessage(String message) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, UnsupportedEncodingException, BadPaddingException, IllegalBlockSizeException {
         if (message == null) {
             return;
         }
@@ -166,7 +162,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         // Encrypt message body
         SecretKey secretKey = new SecretKeySpec(messageKey, KEYTYPE);
         IvParameterSpec ivSpec = new IvParameterSpec(initializationVector);
-        Cipher cipher = Cipher.getInstance(CIPHERMODE, PROVIDER);
+        Cipher cipher = Cipher.getInstance(CIPHERMODE);
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
 
         byte[] body;
