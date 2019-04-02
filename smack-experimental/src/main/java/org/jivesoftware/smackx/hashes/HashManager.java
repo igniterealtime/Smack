@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017 Paul Schaub
+ * Copyright © 2017 Paul Schaub, 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_512;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,7 +60,6 @@ public final class HashManager extends Manager {
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
-    public static final String PROVIDER = "BC";
 
     public static final String PREFIX_NS_ALGO = "urn:xmpp:hash-function-text-names:";
 
@@ -224,52 +222,52 @@ public final class HashManager extends Manager {
         try {
             switch (algorithm) {
                 case MD5:
-                    md = MessageDigest.getInstance("MD5", PROVIDER);
+                    md = MessageDigest.getInstance("MD5");
                     break;
                 case SHA_1:
-                    md = MessageDigest.getInstance("SHA-1", PROVIDER);
+                    md = MessageDigest.getInstance("SHA-1");
                     break;
                 case SHA_224:
-                    md = MessageDigest.getInstance("SHA-224", PROVIDER);
+                    md = MessageDigest.getInstance("SHA-224");
                     break;
                 case SHA_256:
-                    md = MessageDigest.getInstance("SHA-256", PROVIDER);
+                    md = MessageDigest.getInstance("SHA-256");
                     break;
                 case SHA_384:
-                    md = MessageDigest.getInstance("SHA-384", PROVIDER);
+                    md = MessageDigest.getInstance("SHA-384");
                     break;
                 case SHA_512:
-                    md = MessageDigest.getInstance("SHA-512", PROVIDER);
+                    md = MessageDigest.getInstance("SHA-512");
                     break;
                 case SHA3_224:
-                    md = MessageDigest.getInstance("SHA3-224", PROVIDER);
+                    md = MessageDigest.getInstance("SHA3-224");
                     break;
                 case SHA3_256:
-                    md = MessageDigest.getInstance("SHA3-256", PROVIDER);
+                    md = MessageDigest.getInstance("SHA3-256");
                     break;
                 case SHA3_384:
-                    md = MessageDigest.getInstance("SHA3-384", PROVIDER);
+                    md = MessageDigest.getInstance("SHA3-384");
                     break;
                 case SHA3_512:
-                    md = MessageDigest.getInstance("SHA3-512", PROVIDER);
+                    md = MessageDigest.getInstance("SHA3-512");
                     break;
                 case BLAKE2B160:
-                    md = MessageDigest.getInstance("BLAKE2b-160", PROVIDER);
+                    md = MessageDigest.getInstance("BLAKE2b-160");
                     break;
                 case BLAKE2B256:
-                    md = MessageDigest.getInstance("BLAKE2b-256", PROVIDER);
+                    md = MessageDigest.getInstance("BLAKE2b-256");
                     break;
                 case BLAKE2B384:
-                    md = MessageDigest.getInstance("BLAKE2b-384", PROVIDER);
+                    md = MessageDigest.getInstance("BLAKE2b-384");
                     break;
                 case BLAKE2B512:
-                    md = MessageDigest.getInstance("BLAKE2b-512", PROVIDER);
+                    md = MessageDigest.getInstance("BLAKE2b-512");
                     break;
                 default:
                     throw new AssertionError("Invalid enum value: " + algorithm);
             }
             return md;
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new AssertionError(e);
         }
     }
