@@ -10,6 +10,7 @@ allprojects {
 		// - https://issues.igniterealtime.org/browse/SMACK-858
 		jxmppVersion = '0.7.0-alpha5'
 		miniDnsVersion = '0.4.0-alpha3'
+		bouncyCastleVersion = '1.61'
 		smackMinAndroidSdk = 19
 	}
 }
