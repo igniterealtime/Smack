@@ -1516,7 +1516,29 @@ public final class Roster extends Manager {
             final Presence presence = (Presence) packet;
             final Jid from = presence.getFrom();
 
-            final BareJid key = from != null ? from.asBareJid() : null;
+            final BareJid key;
+            if (from != null) {
+                key = from.asBareJid();
+            } else {
+                XMPPConnection connection = connection();
+                if (connection == null) {
+                    LOGGER.finest("Connection was null while trying to handle exotic presence stanza: " + presence);
+                    return;
+                }
+                // Assume the presence come "from the users account on the server" since no from was set (RFC 6120 §
+                // 8.1.2.1 4.). Note that getUser() may return null, but should never return null in this case as where
+                // connected.
+                EntityFullJid myJid = connection.getUser();
+                if (myJid == null) {
+                    LOGGER.info(
+                            "Connection had no local address in Roster's presence listener."
+                            + " Possibly we received a presence without from before being authenticated."
+                            + " Presence: " + presence);
+                    return;
+                }
+                LOGGER.info("Exotic presence stanza without from received: " + presence);
+                key = myJid.asBareJid();
+            }
 
             asyncButOrdered.performAsyncButOrdered(key, new Runnable() {
                 @Override

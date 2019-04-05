@@ -482,10 +482,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     private void shutdown(boolean instant) {
-        if (disconnectedButResumeable) {
-            return;
-        }
-
         // First shutdown the writer, this will result in a closing stream element getting send to
         // the server
         LOGGER.finer("PacketWriter shutdown()");
@@ -503,6 +499,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         CloseableUtil.maybeClose(socket, LOGGER);
 
         setWasAuthenticated();
+
+        // Wait for reader and writer threads to be terminated.
+        readerWriterSemaphore.acquireUninterruptibly(2);
+        readerWriterSemaphore.release(2);
+
+        if (disconnectedButResumeable) {
+            return;
+        }
+
         // If we are able to resume the stream, then don't set
         // connected/authenticated/usingTLS to false since we like behave like we are still
         // connected (e.g. sendStanza should not throw a NotConnectedException).
@@ -523,10 +528,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         writer = null;
 
         initState();
-
-        // Wait for reader and writer threads to be terminated.
-        readerWriterSemaphore.acquireUninterruptibly(2);
-        readerWriterSemaphore.release(2);
     }
 
     @Override
@@ -860,6 +861,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     protected class PacketReader {
 
+        private final String threadName = "Smack Reader (" + getConnectionCounter() + ')';
+
         XmlPullParser parser;
 
         private volatile boolean done;
@@ -874,13 +877,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             Async.go(new Runnable() {
                 @Override
                 public void run() {
+                    LOGGER.finer(threadName + " start");
                     try {
                         parsePackets();
                     } finally {
+                        LOGGER.finer(threadName + " exit");
                         XMPPTCPConnection.this.readerWriterSemaphore.release();
                     }
                 }
-            }, "Smack Reader (" + getConnectionCounter() + ")");
+            }, threadName);
          }
 
         /**
@@ -1128,6 +1133,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     protected class PacketWriter {
         public static final int QUEUE_SIZE = XMPPTCPConnection.QUEUE_SIZE;
 
+        private final String threadName = "Smack Writer (" + getConnectionCounter() + ')';
+
         private final ArrayBlockingQueueWithShutdown<Element> queue = new ArrayBlockingQueueWithShutdown<>(
                         QUEUE_SIZE, true);
 
@@ -1173,13 +1180,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             Async.go(new Runnable() {
                 @Override
                 public void run() {
+                    LOGGER.finer(threadName + " start");
                     try {
                         writePackets();
                     } finally {
+                        LOGGER.finer(threadName + " exit");
                         XMPPTCPConnection.this.readerWriterSemaphore.release();
                     }
                 }
-            }, "Smack Writer (" + getConnectionCounter() + ")");
+            }, threadName);
         }
 
         private boolean done() {
