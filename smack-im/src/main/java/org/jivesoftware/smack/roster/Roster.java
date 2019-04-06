@@ -560,7 +560,8 @@ public final class Roster extends Manager {
     }
 
     /**
-     * Add a roster loaded listener.
+     * Add a roster loaded listener. Roster loaded listeners are invoked once the {@link Roster}
+     * was successfully loaded.
      *
      * @param rosterLoadedListener the listener to add.
      * @return true if the listener was not already added.
@@ -587,6 +588,20 @@ public final class Roster extends Manager {
         }
     }
 
+    /**
+     * Add a {@link PresenceEventListener}. Such a listener will be fired whenever certain
+     * presence events happen.<p>
+     * Among those events are:
+     * <ul>
+     * <li> 'available' presence received
+     * <li> 'unavailable' presence received
+     * <li> 'error' presence received
+     * <li> 'subscribed' presence received
+     * <li> 'unsubscribed' presence received
+     * </ul>
+     * @param presenceEventListener listener to add.
+     * @return true if the listener was not already added.
+     */
     public boolean addPresenceEventListener(PresenceEventListener presenceEventListener) {
         return presenceEventListeners.add(presenceEventListener);
     }
