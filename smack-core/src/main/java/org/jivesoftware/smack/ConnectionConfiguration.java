@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2017-2018 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2017-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,9 +49,29 @@ import org.minidns.dnsname.DnsName;
 import org.minidns.util.InetAddressUtil;
 
 /**
- * Configuration to use while establishing the connection to the server.
+ * The connection configuration used for XMPP client-to-server connections. A well configured XMPP service will
+ * typically only require you to provide two parameters: The XMPP address, also known as the JID, of the user and the
+ * password. All other configuration parameters could ideally be determined automatically by Smack. Hence it is often
+ * enough to call {@link Builder#setXmppAddressAndPassword(CharSequence, String)}.
+ * <p>
+ * Technically there are typically at least two parameters required: Some kind of credentials for authentication. And
+ * the XMPP service domain. The credentials often consists of a username and password use for the SASL authentication.
+ * But there are also other authentication mechanisms, like client side certificates, which do not require a particular
+ * username and password.
+ * </p>
+ * <p>
+ * There are some misconceptions about XMPP client-to-server parameters: The first is that the username used for
+ * authentication will be equal to the localpart of the bound XMPP address after authentication. While this is usually
+ * true, it is not required. Technically the username used for authentication and the resulting XMPP address are
+ * completely independent from each other. The second common misconception steers from the terms "XMPP host" and "XMPP
+ * service domain": An XMPP service host is a system which hosts one or multiple XMPP domains. The "XMPP service domain"
+ * will be usually the domainpart of the bound JID. This domain is used to verify the remote endpoint, typically using
+ * TLS. This third misconception is that the XMPP service domain is required to become the domainpart of the bound JID.
+ * Again, while this is very common to be true, it is not strictly required.
+ * </p>
  *
  * @author Gaston Dombiak
+ * @author Florian Schmaus
  */
 public abstract class ConnectionConfiguration {
 
