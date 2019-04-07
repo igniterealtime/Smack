@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2018 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,6 +59,7 @@ import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -304,7 +305,7 @@ public final class MultiUserChatManager extends Manager {
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public List<EntityBareJid> getJoinedRooms(EntityJid user) throws NoResponseException, XMPPErrorException,
+    public List<EntityBareJid> getJoinedRooms(EntityFullJid user) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
         // Send the disco packet to the user
         DiscoverItems result = serviceDiscoveryManager.discoverItems(user, DISCO_NODE);
