@@ -555,6 +555,39 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
+         * Convenience method to configure the username, password and XMPP service domain.
+         *
+         * @param jid the XMPP address of the user.
+         * @param password the password of the user.
+         * @return a reference to this builder.
+         * @throws XmppStringprepException in case the XMPP address is not valid.
+         * @see #setXmppAddressAndPassword(EntityBareJid, String)
+         * @since 4.4.0
+         */
+        public B setXmppAddressAndPassword(CharSequence jid, String password) throws XmppStringprepException {
+            return setXmppAddressAndPassword(JidCreate.entityBareFrom(jid), password);
+        }
+
+        /**
+         * Convenience method to configure the username, password and XMPP service domain. The localpart of the provided
+         * JID is used as username and the domanipart is used as XMPP service domain.
+         * <p>
+         * Please note that this does and can not configure the client XMPP address. XMPP services are not required to
+         * assign bound JIDs where the localpart matches the username and the domainpart matches the verified domainpart.
+         * Although most services will follow that pattern.
+         * </p>
+         *
+         * @param jid
+         * @param password
+         * @return a reference to this builder.
+         * @since 4.4.0
+         */
+        public B setXmppAddressAndPassword(EntityBareJid jid, String password) {
+            setUsernameAndPassword(jid.getLocalpart(), password);
+            return setXmppDomain(jid.asDomainBareJid());
+        }
+
+        /**
          * Set the XMPP entities username and password.
          * <p>
          * The username is usually the localpart of the clients JID. But some SASL mechanisms or services may require a different

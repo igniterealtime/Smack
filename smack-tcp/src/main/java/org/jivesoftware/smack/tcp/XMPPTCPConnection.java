@@ -121,7 +121,6 @@ import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -319,7 +318,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * @throws XmppStringprepException
      */
     public XMPPTCPConnection(CharSequence jid, String password) throws XmppStringprepException {
-        this(XmppStringUtils.parseLocalpart(jid.toString()), password, XmppStringUtils.parseDomain(jid.toString()));
+        this(XMPPTCPConnectionConfiguration.builder().setXmppAddressAndPassword(jid, password).build());
     }
 
     /**
