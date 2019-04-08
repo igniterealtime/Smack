@@ -43,4 +43,8 @@ public class RandomUtil {
     public static int nextSecureRandomInt(int bound) {
         return SECURE_RANDOM.get().nextInt(bound);
     }
+
+    public static int nextSecureRandomInt() {
+        return SECURE_RANDOM.get().nextInt();
+    }
 }

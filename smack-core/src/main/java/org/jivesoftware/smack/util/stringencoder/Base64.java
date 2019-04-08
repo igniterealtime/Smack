@@ -39,16 +39,15 @@ public class Base64 {
     }
 
     public static final String encodeToString(byte[] input) {
-        byte[] bytes = encode(input);
-        try {
-            return new String(bytes, StringUtils.USASCII);
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
+        return base64encoder.encodeToString(input);
     }
 
     public static final String encodeToString(byte[] input, int offset, int len) {
         return encodeToString(slice(input, offset, len));
+    }
+
+    public static final String encodeToStringWithoutPadding(byte[] input) {
+        return base64encoder.encodeToStringWithoutPadding(input);
     }
 
     public static final byte[] encode(byte[] input) {
@@ -102,6 +101,8 @@ public class Base64 {
         byte[] decode(String string);
 
         String encodeToString(byte[] input);
+
+        String encodeToStringWithoutPadding(byte[] input);
 
         byte[] encode(byte[] input);
     }

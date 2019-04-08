@@ -27,10 +27,13 @@ public final class Java7Base64Encoder implements org.jivesoftware.smack.util.str
     private static final Java7Base64Encoder instance = new Java7Base64Encoder();
 
     private final Base64.Encoder encoder;
+    private final Base64.Encoder encoderWithoutPadding;
+
     private final Base64.Decoder decoder;
 
     private Java7Base64Encoder() {
         encoder = Base64.getEncoder();
+        encoderWithoutPadding = encoder.withoutPadding();
         decoder = Base64.getDecoder();
     }
 
@@ -46,6 +49,11 @@ public final class Java7Base64Encoder implements org.jivesoftware.smack.util.str
     @Override
     public String encodeToString(byte[] input) {
         return encoder.encodeToString(input);
+    }
+
+    @Override
+    public String encodeToStringWithoutPadding(byte[] input) {
+        return encoderWithoutPadding.encodeToString(input);
     }
 
     @Override

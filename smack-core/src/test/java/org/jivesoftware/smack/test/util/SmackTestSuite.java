@@ -40,6 +40,11 @@ public class SmackTestSuite {
             }
 
             @Override
+            public String encodeToStringWithoutPadding(byte[] input) {
+                return Base64.getEncoder().withoutPadding().encodeToString(input);
+            }
+
+            @Override
             public byte[] encode(byte[] input) {
                 return Base64.getEncoder().encode(input);
             }

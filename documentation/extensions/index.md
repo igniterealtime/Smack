@@ -103,6 +103,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | [OMEMO Multi End Message and Object Encryption](omemo.md) | [XEP-0384](https://xmpp.org/extensions/xep-0384.html)  | n/a       | Encrypt messages using OMEMO encryption (currently only with smack-omemo-signal -> GPLv3). |
 | [Consistent Color Generation](consistent_colors.md)       | [XEP-0392](https://xmpp.org/extensions/xep-0392.html)  | 0.4.0     | Generate consistent colors for identifiers like usernames to provide a consistent user experience. |
 | [Message Markup](messagemarkup.md)                        | [XEP-0394](https://xmpp.org/extensions/xep-0394.html)  | 0.1.0     | Style message bodies while keeping body and markup information separated. |
+| DNS Queries over XMPP (DoX)                               | [XEP-0418](https://xmpp.org/extensions/xep-0418.html)  | 0.1.0     | Send DNS queries and responses over XMPP. |
 
 Unofficial XMPP Extensions
 --------------------------

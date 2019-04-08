@@ -47,6 +47,11 @@ public final class AndroidBase64Encoder implements org.jivesoftware.smack.util.s
     }
 
     @Override
+    public String encodeToStringWithoutPadding(byte[] input) {
+        return Base64.encodeToString(input, BASE64_ENCODER_FLAGS | Base64.NO_PADDING);
+    }
+
+    @Override
     public byte[] encode(byte[] input) {
         return Base64.encode(input, BASE64_ENCODER_FLAGS);
     }
