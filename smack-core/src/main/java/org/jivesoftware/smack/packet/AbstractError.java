@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.jivesoftware.smack.util.ExceptionUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketUtil;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -148,6 +149,17 @@ public class AbstractError {
             }
             descriptiveTexts.put("en", descriptiveEnText);
             return getThis();
+        }
+
+        public B setDescriptiveEnText(String descriptiveEnText, Exception exception) {
+            StringBuilder sb = new StringBuilder(512);
+            sb.append(descriptiveEnText)
+                .append('\n');
+
+            String stacktrace = ExceptionUtil.getStackTrace(exception);
+            sb.append(stacktrace);
+
+            return setDescriptiveEnText(sb.toString());
         }
 
         public B setTextNamespace(String textNamespace) {
