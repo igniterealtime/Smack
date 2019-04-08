@@ -105,6 +105,16 @@ public abstract class IQ extends Stanza {
         }
     }
 
+    /**
+     * Return true if this IQ is a request, i.e. an IQ of type {@link Type#result} or {@link Type#error}.
+     *
+     * @return true if IQ type is 'result' or 'error', false otherwise.
+     * @since 4.4
+     */
+    public boolean isResponseIQ() {
+        return !isRequestIQ();
+    }
+
     public final String getChildElementName() {
         return childElementName;
     }
