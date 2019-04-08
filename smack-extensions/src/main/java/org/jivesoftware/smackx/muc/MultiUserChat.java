@@ -151,6 +151,7 @@ public class MultiUserChat {
 
     private String subject;
     private EntityFullJid myRoomJid;
+    private RoomInfo roomInfo;
     private boolean joined = false;
     private StanzaCollector messageCollector;
 
@@ -328,13 +329,15 @@ public class MultiUserChat {
     private Presence enter(MucEnterConfiguration conf) throws NotConnectedException, NoResponseException,
                     XMPPErrorException, InterruptedException, NotAMucServiceException {
         final DomainBareJid mucService = room.asDomainBareJid();
+        DiscoverInfo discoInfo = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(room);
         if (!KNOWN_MUC_SERVICES.containsKey(mucService)) {
-            if (multiUserChatManager.providesMucService(mucService) || multiUserChatManager.providesMucService(room)) {
+            if (discoInfo.containsFeature(MUCInitialPresence.NAMESPACE)) {
                 KNOWN_MUC_SERVICES.put(mucService, null);
             } else {
                 throw new NotAMucServiceException(this);
             }
         }
+        roomInfo = new RoomInfo(discoInfo);
         // We enter a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
         Presence joinPresence = conf.getJoinPresence(this);
@@ -1040,6 +1043,16 @@ public class MultiUserChat {
      */
     public void removePresenceInterceptor(PresenceListener presenceInterceptor) {
         presenceInterceptors.remove(presenceInterceptor);
+    }
+
+    /**
+     * Returns the {@link RoomInfo} associated with this room.
+     *
+     * The room info is obtained on join and updated whenever the room sends a configuration change
+     * event.
+     */
+    public RoomInfo getRoomInfo() {
+        return roomInfo;
     }
 
     /**
