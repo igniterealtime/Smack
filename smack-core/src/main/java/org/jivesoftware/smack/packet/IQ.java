@@ -297,7 +297,7 @@ public abstract class IQ extends Stanza {
      * @return a new {@link Type#error IQ.Type.error} IQ based on the originating IQ.
      */
     public static ErrorIQ createErrorResponse(final IQ request, final StanzaError.Builder error) {
-        if (!(request.getType() == Type.get || request.getType() == Type.set)) {
+        if (!request.isRequestIQ()) {
             throw new IllegalArgumentException(
                     "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
         }
