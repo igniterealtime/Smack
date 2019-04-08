@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,18 +42,12 @@ public final class AndroidBase64Encoder implements org.jivesoftware.smack.util.s
     }
 
     @Override
-    public byte[] decode(byte[] input, int offset, int len) {
-        return Base64.decode(input, offset, len, 0);
+    public String encodeToString(byte[] input) {
+        return Base64.encodeToString(input, BASE64_ENCODER_FLAGS);
     }
 
     @Override
-    public String encodeToString(byte[] input, int offset, int len) {
-        return Base64.encodeToString(input, offset, len, BASE64_ENCODER_FLAGS);
+    public byte[] encode(byte[] input) {
+        return Base64.encode(input, BASE64_ENCODER_FLAGS);
     }
-
-    @Override
-    public byte[] encode(byte[] input, int offset, int len) {
-        return Base64.encode(input, offset, len, BASE64_ENCODER_FLAGS);
-    }
-
 }

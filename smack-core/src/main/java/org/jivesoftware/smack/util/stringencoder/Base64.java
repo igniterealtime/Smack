@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2015 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,20 +48,15 @@ public class Base64 {
     }
 
     public static final String encodeToString(byte[] input, int offset, int len) {
-        byte[] bytes = encode(input, offset, len);
-        try {
-            return new String(bytes, StringUtils.USASCII);
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
+        return encodeToString(slice(input, offset, len));
     }
 
     public static final byte[] encode(byte[] input) {
-        return encode(input, 0, input.length);
+        return base64encoder.encode(input);
     }
 
     public static final byte[] encode(byte[] input, int offset, int len) {
-        return base64encoder.encode(input, offset, len);
+        return encode(slice(input, offset, len));
     }
 
     public static final String decodeToString(String string) {
@@ -73,34 +68,41 @@ public class Base64 {
         }
     }
 
-    public static final String decodeToString(byte[] input, int offset, int len) {
-        byte[] bytes = decode(input, offset, len);
+    // TODO: We really should not mask the IllegalArgumentException. But some unit test depend on this behavior, like
+    // ibb.packet.DataPacketExtension.shouldReturnNullIfDataIsInvalid().
+    public static final byte[] decode(String string) {
         try {
-            return new String(bytes, StringUtils.UTF8);
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 not supported", e);
+            return base64encoder.decode(string);
+        } catch (IllegalArgumentException e) {
+            return null;
         }
     }
 
-    public static final byte[] decode(String string) {
-        return base64encoder.decode(string);
-    }
-
     public static final byte[] decode(byte[] input) {
-        return base64encoder.decode(input, 0, input.length);
+        String string;
+        try {
+            string = new String(input, StringUtils.USASCII);
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
+        return decode(string);
     }
 
-    public static final byte[] decode(byte[] input, int offset, int len) {
-        return base64encoder.decode(input, offset, len);
+    private static byte[] slice(byte[] input, int offset, int len) {
+        if (offset == 0 && len == input.length) {
+            return input;
+        }
+
+        byte[] res = new byte[len];
+        System.arraycopy(input, offset, res, 0, len);
+        return res;
     }
 
     public interface Encoder {
         byte[] decode(String string);
 
-        byte[] decode(byte[] input, int offset, int len);
+        String encodeToString(byte[] input);
 
-        String encodeToString(byte[] input, int offset, int len);
-
-        byte[] encode(byte[] input, int offset, int len);
+        byte[] encode(byte[] input);
     }
 }

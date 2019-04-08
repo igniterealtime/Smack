@@ -16,9 +16,7 @@
  */
 package org.jivesoftware.smack.util.stringencoder.java7;
 
-import java.io.UnsupportedEncodingException;
-
-import org.jivesoftware.smack.util.StringUtils;
+import java.util.Base64;
 
 /**
  * A Base 64 encoding implementation.
@@ -28,10 +26,12 @@ public final class Java7Base64Encoder implements org.jivesoftware.smack.util.str
 
     private static final Java7Base64Encoder instance = new Java7Base64Encoder();
 
-    private static final int BASE64_ENCODER_FLAGS =  Base64.DONT_BREAK_LINES;
+    private final Base64.Encoder encoder;
+    private final Base64.Decoder decoder;
 
     private Java7Base64Encoder() {
-        // Use getInstance()
+        encoder = Base64.getEncoder();
+        decoder = Base64.getDecoder();
     }
 
     public static Java7Base64Encoder getInstance() {
@@ -40,27 +40,16 @@ public final class Java7Base64Encoder implements org.jivesoftware.smack.util.str
 
     @Override
     public byte[] decode(String string) {
-        return Base64.decode(string);
+        return decoder.decode(string);
     }
 
     @Override
-    public byte[] decode(byte[] input, int offset, int len) {
-        return Base64.decode(input, offset, len, 0);
+    public String encodeToString(byte[] input) {
+        return encoder.encodeToString(input);
     }
 
     @Override
-    public String encodeToString(byte[] input, int offset, int len) {
-        return Base64.encodeBytes(input, offset, len, BASE64_ENCODER_FLAGS);
+    public byte[] encode(byte[] input) {
+        return encoder.encode(input);
     }
-
-    @Override
-    public byte[] encode(byte[] input, int offset, int len) {
-        String string = encodeToString(input, offset, len);
-        try {
-            return string.getBytes(StringUtils.USASCII);
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
-    }
-
 }

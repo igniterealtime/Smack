@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,9 @@
  */
 package org.jivesoftware.smack.test.util;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64.Encoder;
-
-import net.iharder.Base64;
 
 /**
  * The SmackTestSuite takes care of initializing Smack for the unit tests. For example the Base64
@@ -35,53 +31,19 @@ public class SmackTestSuite {
 
             @Override
             public byte[] decode(String string) {
-                try {
-                    return Base64.decode(string);
-                }
-                catch (IllegalArgumentException e) {
-                    // Expected by e.g. the unit test.
-                    // " Base64-encoded string must have at least four characters, but length specified was 1",
-                    // should not cause an exception, but instead null should be returned. Maybe
-                    // this should be changed in a later Smack release, so that the actual exception
-                    // is handled.
-                    return null;
-                }
-                catch (IOException e) {
-                    throw new IllegalStateException(e);
-                }
+                return Base64.getDecoder().decode(string);
             }
 
             @Override
-            public byte[] decode(byte[] input, int offset, int len) {
-                try {
-                    return Base64.decode(input, offset, len, 0);
-                }
-                catch (IllegalArgumentException e) {
-                    // Expected by e.g. the unit test.
-                    // " Base64-encoded string must have at least four characters, but length specified was 1",
-                    // should not cause an exception, but instead null should be returned. Maybe
-                    // this should be changed in a later Smack release, so that the actual exception
-                    // is handled.
-                    return null;
-                } catch (IOException e) {
-                    throw new IllegalStateException(e);
-                }
+            public String encodeToString(byte[] input) {
+                return Base64.getEncoder().encodeToString(input);
             }
 
             @Override
-            public String encodeToString(byte[] input, int offset, int len) {
-                return Base64.encodeBytes(input, offset, len);
+            public byte[] encode(byte[] input) {
+                return Base64.getEncoder().encode(input);
             }
 
-            @Override
-            public byte[] encode(byte[] input, int offset, int len) {
-                String string = encodeToString(input, offset, len);
-                try {
-                    return string.getBytes(StringUtils.USASCII);
-                } catch (UnsupportedEncodingException e) {
-                    throw new AssertionError(e);
-                }
-            }
         });
     }
 }
