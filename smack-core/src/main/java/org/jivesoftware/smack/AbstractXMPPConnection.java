@@ -1353,7 +1353,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                                 return;
                             }
 
-                            assert (response.getType() == IQ.Type.result || response.getType() == IQ.Type.error);
+                            assert response.isResponseIQ();
 
                             response.setTo(iqRequest.getFrom());
                             response.setStanzaId(iqRequest.getStanzaId());
