@@ -16,12 +16,11 @@
  */
 package org.jivesoftware.smack.debugger;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.util.ExceptionUtil;
 
 /**
  * Very simple debugger that prints to the console (stdout) the sent and received stanzas. Use
@@ -55,12 +54,8 @@ public class ConsoleDebugger extends AbstractDebugger {
 
     @Override
     protected void log(String logMessage, Throwable throwable) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        // CHECKSTYLE:OFF
-        throwable.printStackTrace(pw);
-        // CHECKSTYLE:ON
-        log(logMessage + sw);
+        String stacktrace = ExceptionUtil.getStackTrace(throwable);
+        log(logMessage + '\n' + stacktrace);
     }
 
     public static final class Factory implements SmackDebuggerFactory {
