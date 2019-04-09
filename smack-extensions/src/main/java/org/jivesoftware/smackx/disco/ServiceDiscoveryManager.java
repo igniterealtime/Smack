@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2018 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2018-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -271,8 +271,8 @@ public final class ServiceDiscoveryManager extends Manager {
      */
     public Set<DiscoverInfo.Identity> getIdentities() {
         Set<Identity> res = new HashSet<>(identities);
-        // Add the default identity that must exist
-        res.add(defaultIdentity);
+        // Add the main identity that must exist
+        res.add(identity);
         return Collections.unmodifiableSet(res);
     }
 
