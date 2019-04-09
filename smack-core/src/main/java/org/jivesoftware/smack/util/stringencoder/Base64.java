@@ -54,10 +54,6 @@ public class Base64 {
         return base64encoder.encode(input);
     }
 
-    public static final byte[] encode(byte[] input, int offset, int len) {
-        return encode(slice(input, offset, len));
-    }
-
     public static final String decodeToString(String string) {
         byte[] bytes = decode(string);
         try {
