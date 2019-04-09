@@ -97,6 +97,11 @@ public final class DnsOverXmppManager extends Manager {
                 return errorResponse;
             }
 
+            if (query.id != response.id) {
+                // The ID may not match because the resolver returned a cached result.
+                response = response.asBuilder().setId(query.id).build();
+            }
+
             DnsIq dnsIqResult = new DnsIq(response);
             dnsIqResult.setType(IQ.Type.result);
             return dnsIqResult;
