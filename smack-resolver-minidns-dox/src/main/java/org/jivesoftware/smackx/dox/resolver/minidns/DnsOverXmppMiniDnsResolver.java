@@ -24,22 +24,30 @@ import org.minidns.DnsClient;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.dnsmessage.Question;
 import org.minidns.dnsqueryresult.DnsQueryResult;
+import org.minidns.dnssec.DnssecClient;
+import org.minidns.dnssec.DnssecQueryResult;
 
-public class DnsOverXmppMiniDnsResolver implements DnsOverXmppResolver {
+public final class DnsOverXmppMiniDnsResolver implements DnsOverXmppResolver {
 
-    public static final DnsOverXmppMiniDnsResolver INSTANCE = new DnsOverXmppMiniDnsResolver(new DnsClient());
+    public static final DnsOverXmppMiniDnsResolver INSTANCE = new DnsOverXmppMiniDnsResolver();
 
-    private final DnsClient dnsClient;
+    private final DnsClient dnsClient = new DnsClient();
+    private final DnssecClient dnssecClient = new DnssecClient();
 
-    public DnsOverXmppMiniDnsResolver(DnsClient dnsClient) {
-        this.dnsClient = dnsClient;
+    private DnsOverXmppMiniDnsResolver() {
     }
 
     @Override
     public DnsMessage resolve(DnsMessage query) throws IOException {
         Question question = query.getQuestion();
 
-        DnsQueryResult dnsQueryResult = dnsClient.query(question);
+        final DnsQueryResult dnsQueryResult;
+        if (query.isDnssecOk()) {
+            DnssecQueryResult dnssecQueryResult = dnssecClient.queryDnssec(question);
+            dnsQueryResult = dnssecQueryResult.dnsQueryResult;
+        } else {
+            dnsQueryResult = dnsClient.query(question);
+        }
 
         return dnsQueryResult.response;
     }
