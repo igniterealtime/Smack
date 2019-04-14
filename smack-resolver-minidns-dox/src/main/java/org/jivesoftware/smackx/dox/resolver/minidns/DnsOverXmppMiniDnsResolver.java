@@ -29,12 +29,14 @@ import org.minidns.dnssec.DnssecQueryResult;
 
 public final class DnsOverXmppMiniDnsResolver implements DnsOverXmppResolver {
 
-    public static final DnsOverXmppMiniDnsResolver INSTANCE = new DnsOverXmppMiniDnsResolver();
+    public static final DnsOverXmppMiniDnsResolver INSTANCE = new DnsOverXmppMiniDnsResolver(new DnsClient(), new DnssecClient());
 
-    private final DnsClient dnsClient = new DnsClient();
-    private final DnssecClient dnssecClient = new DnssecClient();
+    private final DnsClient dnsClient;
+    private final DnssecClient dnssecClient;
 
-    private DnsOverXmppMiniDnsResolver() {
+    DnsOverXmppMiniDnsResolver(DnsClient dnsClient, DnssecClient dnssecClient) {
+        this.dnsClient = dnsClient;
+        this.dnssecClient = dnssecClient;
     }
 
     @Override
