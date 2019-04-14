@@ -61,7 +61,7 @@ public final class SpoilerManager extends Manager {
      * @param connection xmpp connection
      * @return SpoilerManager
      */
-    public static SpoilerManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized SpoilerManager getInstanceFor(XMPPConnection connection) {
         SpoilerManager manager = INSTANCES.get(connection);
         if (manager == null) {
             manager = new SpoilerManager(connection);

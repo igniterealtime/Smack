@@ -78,7 +78,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
      * @param connection xmpp-connection
      * @return manager instance for the connection
      */
-    public static StableUniqueStanzaIdManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized StableUniqueStanzaIdManager getInstanceFor(XMPPConnection connection) {
         StableUniqueStanzaIdManager manager = INSTANCES.get(connection);
         if (manager == null) {
             manager = new StableUniqueStanzaIdManager(connection);

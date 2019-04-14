@@ -38,7 +38,7 @@ public final class JingleIBBTransportManager extends JingleTransportManager<Jing
         JingleContentProviderManager.addJingleContentTransportProvider(getNamespace(), new JingleIBBTransportProvider());
     }
 
-    public static JingleIBBTransportManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized JingleIBBTransportManager getInstanceFor(XMPPConnection connection) {
         JingleIBBTransportManager manager = INSTANCES.get(connection);
         if (manager == null) {
             manager = new JingleIBBTransportManager(connection);
