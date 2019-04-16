@@ -70,6 +70,27 @@ import org.jxmpp.jid.EntityFullJid;
  * disconnected and then connected again. Listeners of the XMPPConnection will be retained across
  * connections.
  * </p>
+ * <h2>Incoming Stanza Listeners</h2>
+ * Most callbacks (listeners, handlers, …) than you can add to a connection come in three different variants:
+ * <ul>
+ * <li>standard</li>
+ * <li>async (asynchronous)</li>
+ * <li>sync (synchronous)</li>
+ * </ul>
+ * <p>
+ * Standard callbacks are invoked concurrently, but it is ensured that the same callback is never run concurrently.
+ * The callback's identity is used as key for that. The events delivered to the callback preserve the order of the
+ * causing events of the connection.
+ * </p>
+ * <p>
+ * Asynchronous callbacks are run decoupled from the connections main event loop. Hence a callback triggered by
+ * stanza B may (appear to) invoked before a callback triggered by stanza A, even though stanza A arrived before B.
+ * </p>
+ * <p>
+ * Synchronous callbacks are run synchronous to the main event loop of a connection. Hence they are invoked in the
+ * exact order of how events happen there, most importantly the arrival order of incoming stanzas. You should only
+ * use synchronous callbacks in rare situations.
+ * </p>
  *
  * @author Matt Tucker
  * @author Guenther Niess
