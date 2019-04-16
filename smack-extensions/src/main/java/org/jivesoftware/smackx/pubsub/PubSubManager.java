@@ -88,7 +88,9 @@ public final class PubSubManager extends Manager {
      * @param connection
      * @return the default PubSub manager.
      */
-    public static PubSubManager getInstance(XMPPConnection connection) {
+    // CHECKSTYLE:OFF:RegexpSingleline
+    public static PubSubManager getInstanceFor(XMPPConnection connection) {
+    // CHECKSTYLE:ON:RegexpSingleline
         DomainBareJid pubSubService = null;
         if (connection.isAuthenticated()) {
             try {
@@ -110,7 +112,7 @@ public final class PubSubManager extends Manager {
                 throw new RuntimeException(e);
             }
         }
-        return getInstance(connection, pubSubService);
+        return getInstanceFor(connection, pubSubService);
     }
 
     /**
@@ -121,7 +123,9 @@ public final class PubSubManager extends Manager {
      * @param pubSubService the PubSub service, may be <code>null</code>.
      * @return a PubSub manager for the connection and service.
      */
-    public static PubSubManager getInstance(XMPPConnection connection, BareJid pubSubService) {
+    // CHECKSTYLE:OFF:RegexpSingleline
+    public static PubSubManager getInstanceFor(XMPPConnection connection, BareJid pubSubService) {
+    // CHECKSTYLE:ON:RegexpSingleline
         if (pubSubService != null && connection.isAuthenticated() && connection.getUser().asBareJid().equals(pubSubService)) {
             // PEP service.
             pubSubService = null;
@@ -145,6 +149,28 @@ public final class PubSubManager extends Manager {
         }
 
         return pubSubManager;
+    }
+
+    /**
+     * Deprecated.
+     *
+     * @deprecated use {@link #getInstanceFor(XMPPConnection)} instead.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
+    public static PubSubManager getInstance(XMPPConnection connection) {
+        return getInstanceFor(connection);
+    }
+
+    /**
+     * Deprecated.
+     *
+     * @deprecated use {@link #getInstanceFor(XMPPConnection, BareJid)} instead.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
+    public static PubSubManager getInstance(XMPPConnection connection, BareJid pubSubService) {
+        return getInstanceFor(connection, pubSubService);
     }
 
     /**

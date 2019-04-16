@@ -556,7 +556,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
             XMPPException.XMPPErrorException, PubSubException.NotALeafNodeException,
             PubSubException.NotAPubSubNodeException {
 
-        PubSubManager pm = PubSubManager.getInstance(connection, contactsDevice.getJid());
+        PubSubManager pm = PubSubManager.getInstanceFor(connection, contactsDevice.getJid());
         LeafNode node = pm.getLeafNode(contactsDevice.getBundleNodeName());
 
         if (node == null) {
@@ -584,7 +584,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
     static void publishBundle(XMPPConnection connection, OmemoDevice userDevice, OmemoBundleElement bundle)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException {
-        PubSubManager pm = PubSubManager.getInstance(connection, connection.getUser().asBareJid());
+        PubSubManager pm = PubSubManager.getInstanceFor(connection, connection.getUser().asBareJid());
         pm.tryToPublishAndPossibleAutoCreate(userDevice.getBundleNodeName(), new PayloadItem<>(bundle));
     }
 
@@ -606,7 +606,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
             SmackException.NotConnectedException, XMPPException.XMPPErrorException,
             PubSubException.NotAPubSubNodeException {
 
-        PubSubManager pm = PubSubManager.getInstance(connection, contact);
+        PubSubManager pm = PubSubManager.getInstanceFor(connection, contact);
         String nodeName = OmemoConstants.PEP_NODE_DEVICE_LIST;
         LeafNode node = pm.getLeafNode(nodeName);
 
@@ -636,7 +636,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
             throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
             SmackException.NoResponseException {
 
-        PubSubManager.getInstance(connection, connection.getUser().asBareJid())
+        PubSubManager.getInstanceFor(connection, connection.getUser().asBareJid())
                 .tryToPublishAndPossibleAutoCreate(OmemoConstants.PEP_NODE_DEVICE_LIST, new PayloadItem<>(deviceList));
     }
 

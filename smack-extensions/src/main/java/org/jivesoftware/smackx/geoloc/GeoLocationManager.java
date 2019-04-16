@@ -124,7 +124,7 @@ public final class GeoLocationManager extends Manager {
 
     private LeafNode getNode()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {
-        return PubSubManager.getInstance(connection()).getOrCreateLeafNode(GeoLocation.NAMESPACE);
+        return PubSubManager.getInstanceFor(connection()).getOrCreateLeafNode(GeoLocation.NAMESPACE);
     }
 
 }

@@ -147,7 +147,7 @@ public final class MoodManager extends Manager {
             throws SmackException.NotLoggedInException, InterruptedException, PubSubException.NotALeafNodeException,
             XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException {
         if (pubSubManager == null) {
-            pubSubManager = PubSubManager.getInstance(getAuthenticatedConnectionOrThrow(), connection().getUser().asBareJid());
+            pubSubManager = PubSubManager.getInstanceFor(getAuthenticatedConnectionOrThrow(), connection().getUser().asBareJid());
         }
 
         LeafNode node = pubSubManager.getOrCreateLeafNode(MOOD_NODE);

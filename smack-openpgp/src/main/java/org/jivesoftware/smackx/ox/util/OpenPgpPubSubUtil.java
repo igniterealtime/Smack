@@ -204,7 +204,7 @@ public class OpenPgpPubSubUtil {
     public static PublicKeysListElement fetchPubkeysList(XMPPConnection connection, BareJid contact)
             throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException,
             PubSubException.NotALeafNodeException, SmackException.NotConnectedException, PubSubException.NotAPubSubNodeException {
-        PubSubManager pm = PubSubManager.getInstance(connection, contact);
+        PubSubManager pm = PubSubManager.getInstanceFor(connection, contact);
 
         LeafNode node = getLeafNode(pm, PEP_NODE_PUBLIC_KEYS);
         List<PayloadItem<PublicKeysListElement>> list = node.getItems(1);
@@ -274,7 +274,7 @@ public class OpenPgpPubSubUtil {
     public static PubkeyElement fetchPubkey(XMPPConnection connection, BareJid contact, OpenPgpV4Fingerprint v4_fingerprint)
             throws InterruptedException, XMPPException.XMPPErrorException, PubSubException.NotAPubSubNodeException,
             PubSubException.NotALeafNodeException, SmackException.NotConnectedException, SmackException.NoResponseException {
-        PubSubManager pm = PubSubManager.getInstance(connection, contact);
+        PubSubManager pm = PubSubManager.getInstanceFor(connection, contact);
         String nodeName = PEP_NODE_PUBLIC_KEY(v4_fingerprint);
 
         LeafNode node = getLeafNode(pm, nodeName);

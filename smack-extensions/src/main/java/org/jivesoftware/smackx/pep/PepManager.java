@@ -120,7 +120,7 @@ public final class PepManager extends Manager {
         // TODO Add filter to check if from supports PubSub as per xep163 2 2.4
         connection.addSyncStanzaListener(packetListener, FROM_BARE_JID_WITH_EVENT_EXTENSION_FILTER);
 
-        pepPubSubManager = PubSubManager.getInstance(connection, null);
+        pepPubSubManager = PubSubManager.getInstanceFor(connection, null);
     }
 
     public PubSubManager getPepPubSubManager() {
