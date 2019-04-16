@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2018 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2018-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -227,7 +227,7 @@ public final class ServiceDiscoveryManager extends Manager {
     /**
      * Returns the type of client that will be returned when asked for the client identity in a
      * disco request. The valid types are defined by the category client. Follow this link to learn
-     * the possible types: <a href="http://xmpp.org/registrar/disco-categories.html#client">Jabber::Registrar</a>.
+     * the possible types: <a href="https://xmpp.org/registrar/disco-categories.html">XMPP Registry for Service Discovery Identities</a>
      *
      * @return the type of client that will be returned when asked for the client identity in a
      *          disco request.
@@ -271,8 +271,8 @@ public final class ServiceDiscoveryManager extends Manager {
      */
     public Set<DiscoverInfo.Identity> getIdentities() {
         Set<Identity> res = new HashSet<>(identities);
-        // Add the default identity that must exist
-        res.add(defaultIdentity);
+        // Add the main identity that must exist
+        res.add(identity);
         return Collections.unmodifiableSet(res);
     }
 

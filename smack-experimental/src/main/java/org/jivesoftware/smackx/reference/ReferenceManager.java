@@ -51,7 +51,7 @@ public final class ReferenceManager extends Manager {
      * @param connection xmpp connection
      * @return reference manager instance
      */
-    public static ReferenceManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized ReferenceManager getInstanceFor(XMPPConnection connection) {
         ReferenceManager manager = INSTANCES.get(connection);
         if (manager == null) {
             manager = new ReferenceManager(connection);

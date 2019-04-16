@@ -102,7 +102,7 @@ public final class MoodManager extends Manager {
         });
     }
 
-    public static MoodManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized MoodManager getInstanceFor(XMPPConnection connection) {
         MoodManager manager = INSTANCES.get(connection);
         if (manager == null) {
             manager = new MoodManager(connection);

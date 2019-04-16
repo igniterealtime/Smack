@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2017-2019 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -189,7 +189,7 @@ public final class OpenPgpManager extends Manager {
      * @param connection xmpp connection.
      * @return instance of the manager.
      */
-    public static OpenPgpManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized OpenPgpManager getInstanceFor(XMPPConnection connection) {
         OpenPgpManager manager = INSTANCES.get(connection);
         if (manager == null) {
             manager = new OpenPgpManager(connection);

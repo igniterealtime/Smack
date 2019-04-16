@@ -365,4 +365,19 @@ public final class SmackConfiguration {
     public static void setUnknownIqRequestReplyMode(UnknownIqRequestReplyMode unknownIqRequestReplyMode) {
         SmackConfiguration.unknownIqRequestReplyMode = Objects.requireNonNull(unknownIqRequestReplyMode, "Must set mode");
     }
+
+    private static final int defaultConcurrencyLevelLimit;
+
+    static {
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        if (availableProcessors < 8) {
+            defaultConcurrencyLevelLimit = 8;
+        } else {
+            defaultConcurrencyLevelLimit = (int) (availableProcessors * 1.1);
+        }
+    }
+
+    public static int getDefaultConcurrencyLevelLimit() {
+        return defaultConcurrencyLevelLimit;
+    }
 }

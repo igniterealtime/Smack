@@ -48,7 +48,7 @@ public final class JingleTransportMethodManager extends Manager {
         super(connection);
     }
 
-    public static JingleTransportMethodManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized JingleTransportMethodManager getInstanceFor(XMPPConnection connection) {
         JingleTransportMethodManager manager = INSTANCES.get(connection);
         if (manager == null) {
             manager = new JingleTransportMethodManager(connection);

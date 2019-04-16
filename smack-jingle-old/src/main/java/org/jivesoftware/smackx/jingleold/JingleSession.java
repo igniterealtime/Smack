@@ -620,7 +620,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      *            A XMPP connection
      * @return a Jingle session
      */
-    public static JingleSession getInstanceFor(XMPPConnection con) {
+    public static synchronized JingleSession getInstanceFor(XMPPConnection con) {
         if (con == null) {
             throw new IllegalArgumentException("XMPPConnection cannot be null");
         }

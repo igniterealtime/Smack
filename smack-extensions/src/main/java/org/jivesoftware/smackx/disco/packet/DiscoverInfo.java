@@ -263,7 +263,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
      * Represents the identity of a given XMPP entity. An entity may have many identities but all
      * the identities SHOULD have the same name.<p>
      *
-     * Refer to <a href="http://www.jabber.org/registrar/disco-categories.html">Jabber::Registrar</a>
+     * Refer to <a href="https://xmpp.org/registrar/disco-categories.html">XMPP Registry for Service Discovery Identities</a>
      * in order to get the official registry of values for the <i>category</i> and <i>type</i>
      * attributes.
      *
@@ -327,7 +327,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
         /**
          * Returns the entity's category. To get the official registry of values for the
-         * 'category' attribute refer to <a href="http://www.jabber.org/registrar/disco-categories.html">Jabber::Registrar</a>
+         * 'category' attribute refer to <a href="https://xmpp.org/registrar/disco-categories.html">XMPP Registry for Service Discovery Identities</a>.
          *
          * @return the entity's category.
          */
@@ -346,7 +346,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
         /**
          * Returns the entity's type. To get the official registry of values for the
-         * 'type' attribute refer to <a href="http://www.jabber.org/registrar/disco-categories.html">Jabber::Registrar</a>
+         * 'type' attribute refer to <a href="https://xmpp.org/registrar/disco-categories.html">XMPP Registry for Service Discovery Identities</a>.
          *
          * @return the entity's type.
          */

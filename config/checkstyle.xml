@@ -6,6 +6,11 @@
 	<module name="SuppressionFilter">
 		<property name="file" value="config/suppressions.xml"/>
 	</module>
+	<module name="SuppressWithPlainTextCommentFilter">
+		<property name="offCommentFormat" value="CHECKSTYLE\:OFF\:(\w+)"/>
+		<property name="onCommentFormat" value="CHECKSTYLE\:ON\:(\w+)"/>
+		<property name="checkFormat" value="$1"/>
+	</module>
 	<module name="Header">
 		<property name="headerFile" value="config/${checkstyleLicenseHeader}.txt"/>
 		<property name="ignoreLines" value="3"/>
@@ -60,6 +65,14 @@
 	<module name="RegexpSingleline">
 		<property name="format" value="^\s*//[^\s]"/>
 		<property name="message" value="Comment start ('//') followed by non-space character. You would not continue after a punctuation without a space, would you?"/>
+	</module>
+	<!-- Check for synchronized keyword on Manager's static
+	     getInstanceFor() method. Note that if XMPPConnection is every
+	     replaced with something else, then we need to change it here
+	     too. -->
+	<module name="RegexpSingleline">
+		<property name="format" value="^\s*public(?!.*synchronized).*getInstanceFor\(XMPPConnection.*$"/>
+		<property name="message" value="getInstanceFor() should be synchronized"/>
 	</module>
 	<module name="JavadocPackage"/>
 	<module name="TreeWalker">

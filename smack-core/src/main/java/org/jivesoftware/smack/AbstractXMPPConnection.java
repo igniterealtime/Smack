@@ -41,6 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -342,6 +343,17 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected static final AsyncButOrdered<AbstractXMPPConnection> ASYNC_BUT_ORDERED = new AsyncButOrdered<>();
 
     protected final AsyncButOrdered<StanzaListener> inOrderListeners = new AsyncButOrdered<>();
+
+    /**
+     * An executor which uses {@link #asyncGoLimited(Runnable)} to limit the number of asynchronously processed runnables
+     * per connection.
+     */
+    private final Executor limitedExcutor = new Executor() {
+        @Override
+        public void execute(Runnable runnable) {
+            asyncGoLimited(runnable);
+        }
+    };
 
     /**
      * The used host to establish the connection to
@@ -1336,7 +1348,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         executorService = ASYNC_BUT_ORDERED.asExecutorFor(this);
                         break;
                     case async:
-                        executorService = CACHED_EXECUTOR_SERVICE;
+                        executorService = limitedExcutor;
                         break;
                     }
                     final IQRequestHandler finalIqRequestHandler = iqRequestHandler;
@@ -1379,7 +1391,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         final Collection<StanzaListener> listenersToNotify = new LinkedList<>();
         extractMatchingListeners(packet, asyncRecvListeners, listenersToNotify);
         for (final StanzaListener listener : listenersToNotify) {
-            asyncGo(new Runnable() {
+            asyncGoLimited(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -1873,6 +1885,75 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         EntityFullJid localEndpoint = getUser();
         String localEndpointString = (localEndpoint == null ?  "not-authenticated" : localEndpoint.toString());
         return getClass().getSimpleName() + '[' + localEndpointString + "] (" + getConnectionCounter() + ')';
+    }
+
+    /**
+     * A queue of deferred runnables that where not executed immediately because {@link #currentAsyncRunnables} reached
+     * {@link #maxAsyncRunnables}. Note that we use a {@code LinkedList} in order to avoid space blowups in case the
+     * list ever becomes very big and shrinks again.
+     */
+    private final Queue<Runnable> deferredAsyncRunnables = new LinkedList<>();
+
+    private int deferredAsyncRunnablesCount;
+
+    private int deferredAsyncRunnablesCountPrevious;
+
+    private int maxAsyncRunnables = SmackConfiguration.getDefaultConcurrencyLevelLimit();
+
+    private int currentAsyncRunnables;
+
+    protected void asyncGoLimited(final Runnable runnable) {
+        Runnable wrappedRunnable = new Runnable() {
+            @Override
+            public void run() {
+                runnable.run();
+
+                synchronized (deferredAsyncRunnables) {
+                    Runnable defferredRunnable = deferredAsyncRunnables.poll();
+                    if (defferredRunnable == null) {
+                        currentAsyncRunnables--;
+                    } else {
+                        deferredAsyncRunnablesCount--;
+                        asyncGo(defferredRunnable);
+                    }
+                }
+            }
+        };
+
+        synchronized (deferredAsyncRunnables) {
+            if (currentAsyncRunnables < maxAsyncRunnables) {
+                currentAsyncRunnables++;
+                asyncGo(wrappedRunnable);
+            } else {
+                deferredAsyncRunnablesCount++;
+                deferredAsyncRunnables.add(wrappedRunnable);
+            }
+
+            final int HIGH_WATERMARK = 100;
+            final int INFORM_WATERMARK = 20;
+
+            final int deferredAsyncRunnablesCount = this.deferredAsyncRunnablesCount;
+
+            if (deferredAsyncRunnablesCount >= HIGH_WATERMARK
+                    && deferredAsyncRunnablesCountPrevious < HIGH_WATERMARK) {
+                LOGGER.log(Level.WARNING, "High watermark of " + HIGH_WATERMARK + " simultaneous executing runnables reached");
+            } else if (deferredAsyncRunnablesCount >= INFORM_WATERMARK
+                    && deferredAsyncRunnablesCountPrevious < INFORM_WATERMARK) {
+                LOGGER.log(Level.INFO, INFORM_WATERMARK + " simultaneous executing runnables reached");
+            }
+
+            deferredAsyncRunnablesCountPrevious = deferredAsyncRunnablesCount;
+        }
+    }
+
+    public void setMaxAsyncOperations(int maxAsyncOperations) {
+        if (maxAsyncOperations < 1) {
+            throw new IllegalArgumentException("Max async operations must be greater than 0");
+        }
+
+        synchronized (deferredAsyncRunnables) {
+            maxAsyncRunnables = maxAsyncOperations;
+        }
     }
 
     protected static void asyncGo(Runnable runnable) {

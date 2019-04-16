@@ -135,7 +135,7 @@ public final class OXInstantMessagingManager extends Manager {
      * @param connection XMPP connection
      * @return manager instance
      */
-    public static OXInstantMessagingManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized OXInstantMessagingManager getInstanceFor(XMPPConnection connection) {
         OXInstantMessagingManager manager = INSTANCES.get(connection);
 
         if (manager == null) {

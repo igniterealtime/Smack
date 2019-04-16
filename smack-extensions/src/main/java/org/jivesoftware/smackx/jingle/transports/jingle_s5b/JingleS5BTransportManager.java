@@ -63,7 +63,7 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
         JingleContentProviderManager.addJingleContentTransportProvider(getNamespace(), new JingleS5BTransportProvider());
     }
 
-    public static JingleS5BTransportManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized JingleS5BTransportManager getInstanceFor(XMPPConnection connection) {
         JingleS5BTransportManager manager = INSTANCES.get(connection);
         if (manager == null) {
             manager = new JingleS5BTransportManager(connection);

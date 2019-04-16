@@ -178,7 +178,9 @@ public final class MamManager extends Manager {
      * @param connection the XMPP connection to get the archive for.
      * @return the instance of MamManager.
      */
+    // CHECKSTYLE:OFF:RegexpSingleline
     public static MamManager getInstanceFor(XMPPConnection connection) {
+    // CHECKSTYLE:ON:RegexpSingleline
         return getInstanceFor(connection, (Jid) null);
     }
 

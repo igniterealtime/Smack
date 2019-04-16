@@ -55,6 +55,16 @@ public class AsyncButOrdered<K> {
 
     private final Map<K, Boolean> threadActiveMap = new WeakHashMap<>();
 
+    private final Executor executor;
+
+    public AsyncButOrdered() {
+        this(null);
+    }
+
+    public AsyncButOrdered(Executor executor) {
+        this.executor = executor;
+    }
+
     /**
      * Invoke the given {@link Runnable} asynchronous but ordered in respect to the given key.
      *
@@ -86,7 +96,11 @@ public class AsyncButOrdered<K> {
             if (newHandler) {
                 Handler handler = new Handler(keyQueue, key);
                 threadActiveMap.put(key, true);
-                AbstractXMPPConnection.asyncGo(handler);
+                if (executor == null) {
+                    AbstractXMPPConnection.asyncGo(handler);
+                } else {
+                    executor.execute(handler);
+                }
             }
         }
 

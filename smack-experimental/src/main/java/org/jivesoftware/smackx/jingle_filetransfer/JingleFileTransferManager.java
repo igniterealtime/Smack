@@ -32,7 +32,7 @@ public final class JingleFileTransferManager extends Manager {
         super(connection);
     }
 
-    public static JingleFileTransferManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized JingleFileTransferManager getInstanceFor(XMPPConnection connection) {
         JingleFileTransferManager manager = INSTANCES.get(connection);
         if (manager == null) {
             manager = new JingleFileTransferManager(connection);
