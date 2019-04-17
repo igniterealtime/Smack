@@ -240,6 +240,10 @@ public class XmppConnectionManager<DC extends AbstractXMPPConnection> {
         }
 
         connections.clear();
+
+        if (accountRegistrationConnection != null) {
+            accountRegistrationConnection.disconnect();
+        }
     }
 
 
