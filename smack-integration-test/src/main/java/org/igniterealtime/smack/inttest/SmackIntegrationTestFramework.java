@@ -174,7 +174,7 @@ public class SmackIntegrationTestFramework<DC extends AbstractXMPPConnection> {
         // TODO print effective configuration
 
         String[] testPackages;
-        if (config.testPackages == null) {
+        if (config.testPackages == null || config.testPackages.isEmpty()) {
             testPackages = new String[] { "org.jivesoftware.smackx", "org.jivesoftware.smack" };
         }
         else {
