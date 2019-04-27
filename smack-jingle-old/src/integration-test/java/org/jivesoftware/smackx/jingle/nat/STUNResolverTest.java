@@ -150,22 +150,22 @@ public class STUNResolverTest extends SmackTestCase {
 
             for (Candidate candidate : cc.getSortedCandidates()) {
                 short nicNum = 0;
-				try {
-					Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces();
-					short tempNic = 0;
-					NetworkInterface nic = NetworkInterface.getByInetAddress(candidate.getAddress().getInetAddress());
-					while(nics.hasMoreElements()) {
-						NetworkInterface checkNIC = nics.nextElement();
-						if (checkNIC.equals(nic)) {
-							nicNum = tempNic;
-							break;
-						}
-						i++;
-					}
-				} catch (SocketException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+                try {
+                    Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces();
+                    short tempNic = 0;
+                    NetworkInterface nic = NetworkInterface.getByInetAddress(candidate.getAddress().getInetAddress());
+                    while(nics.hasMoreElements()) {
+                        NetworkInterface checkNIC = nics.nextElement();
+                        if (checkNIC.equals(nic)) {
+                            nicNum = tempNic;
+                            break;
+                        }
+                        i++;
+                    }
+                } catch (SocketException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
 
                 try {
                     TransportCandidate transportCandidate = new ICECandidate(candidate.getAddress().getInetAddress()

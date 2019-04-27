@@ -156,7 +156,7 @@ public final class ChatManager extends Manager{
                 Chat chat;
                 if (message.getThread() == null) {
                     // CHECKSTYLE:OFF
-                	chat = getUserChat(message.getFrom());
+                    chat = getUserChat(message.getFrom());
                     // CHECKSTYLE:ON
                 }
                 else {

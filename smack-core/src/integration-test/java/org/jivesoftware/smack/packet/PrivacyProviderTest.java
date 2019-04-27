@@ -37,97 +37,97 @@ public class PrivacyProviderTest extends SmackTestCase {
         super(arg0);
     }
 
-	public static void main(String args[]) {
-		try {
-			new PrivacyProviderTest(null).testFull();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
+    public static void main(String args[]) {
+        try {
+            new PrivacyProviderTest(null).testFull();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
 
     /**
      * Check the parser with an xml with all kind of stanzas.
-     * To create the xml string based from an xml file, replace:\n with:	"\n  + "
+     * To create the xml string based from an xml file, replace:\n with:    "\n  + "
      */
     public void testFull() {
         // Make the XML to test
-    	String xml = ""
-    		  + "  <iq type='result' id='getlist2' to='romeo@example.net/orchard'>	"
-    		  + "  <query xmlns='jabber:iq:privacy'>	"
-    		  + "    <active name='testFilter'/>	"
-    		  + "    <default name='testSubscription'/>	"
-    		  + "    <list name='testFilter'>	"
-    		  + "      <item type='jid'	"
-    		  + "            value='tybalt@example.com'	"
-    		  + "            action='deny'	"
-    		  + "            order='1'/>	"
-    		  + "      <item action='allow' order='2'>	"
-    		  + "        <message/>	"
-    		  + "		<presence-in/>	"
-    		  + "		<presence-out/>	"
-    		  + "		<iq/>	"
-    		  + "		</item>	"
-    		  + "    </list>	"
-    		  + "    <list name='testSubscription'>	"
-    		  + "      <item type='subscription'	"
-    		  + "            value='both'	"
-    		  + "            action='allow'	"
-    		  + "            order='10'/>	"
-    		  + "      <item type='subscription'	"
-    		  + "            value='to'	"
-    		  + "            action='allow'	"
-    		  + "            order='11'/>	"
-    		  + "      <item type='subscription'	"
-    		  + "            value='from'	"
-    		  + "            action='allow'	"
-    		  + "            order='12'/>	"
-    		  + "      <item type='subscription'	"
-    		  + "            value='none'	"
-    		  + "            action='deny'	"
-    		  + "            order='5'>	"
-    		  + "        <message/>	"
-    		  + "      </item>	"
-    		  + "      <item action='deny' order='15'/>	"
-    		  + "    </list>	"
-    		  + "    <list name='testJID'>	"
-    		  + "      <item type='jid'	"
-    		  + "            value='juliet@example.com'	"
-    		  + "            action='allow'	"
-    		  + "            order='6'/>	"
-    		  + "      <item type='jid'	"
-    		  + "            value='benvolio@example.org/palm'	"
-    		  + "            action='deny'	"
-    		  + "            order='7'/>	"
-    		  + "      <item type='jid'	"
-    		  + "            action='allow'	"
-    		  + "            order='42'/>	"
-    		  + "      <item action='deny' order='666'/>	"
-    		  + "    </list>	"
-    		  + "    <list name='testGroup'>	"
-    		  + "	      <item type='group'	"
-    		  + "            value='Enemies'	"
-    		  + "            action='deny'	"
-    		  + "            order='4'>	"
-    		  + "		   <message/>	"
-    		  + "		</item>	"
-    		  + "      <item action='deny' order='666'/>	"
-    		  + "    </list>	"
-    		  + "    <list name='testEmpty'/>	"
-    		  + "  </query>	"
-    		  + "  <error type='cancel'>	"
-    		  + "    <item-not-found	"
-    		  + "        xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>	"
-    		  + "  </error>	"
-    		  + "</iq>	";
+        String xml = ""
+              + "  <iq type='result' id='getlist2' to='romeo@example.net/orchard'>    "
+              + "  <query xmlns='jabber:iq:privacy'>    "
+              + "    <active name='testFilter'/>    "
+              + "    <default name='testSubscription'/>    "
+              + "    <list name='testFilter'>    "
+              + "      <item type='jid'    "
+              + "            value='tybalt@example.com'    "
+              + "            action='deny'    "
+              + "            order='1'/>    "
+              + "      <item action='allow' order='2'>    "
+              + "        <message/>    "
+              + "        <presence-in/>    "
+              + "        <presence-out/>    "
+              + "        <iq/>    "
+              + "        </item>    "
+              + "    </list>    "
+              + "    <list name='testSubscription'>    "
+              + "      <item type='subscription'    "
+              + "            value='both'    "
+              + "            action='allow'    "
+              + "            order='10'/>    "
+              + "      <item type='subscription'    "
+              + "            value='to'    "
+              + "            action='allow'    "
+              + "            order='11'/>    "
+              + "      <item type='subscription'    "
+              + "            value='from'    "
+              + "            action='allow'    "
+              + "            order='12'/>    "
+              + "      <item type='subscription'    "
+              + "            value='none'    "
+              + "            action='deny'    "
+              + "            order='5'>    "
+              + "        <message/>    "
+              + "      </item>    "
+              + "      <item action='deny' order='15'/>    "
+              + "    </list>    "
+              + "    <list name='testJID'>    "
+              + "      <item type='jid'    "
+              + "            value='juliet@example.com'    "
+              + "            action='allow'    "
+              + "            order='6'/>    "
+              + "      <item type='jid'    "
+              + "            value='benvolio@example.org/palm'    "
+              + "            action='deny'    "
+              + "            order='7'/>    "
+              + "      <item type='jid'    "
+              + "            action='allow'    "
+              + "            order='42'/>    "
+              + "      <item action='deny' order='666'/>    "
+              + "    </list>    "
+              + "    <list name='testGroup'>    "
+              + "          <item type='group'    "
+              + "            value='Enemies'    "
+              + "            action='deny'    "
+              + "            order='4'>    "
+              + "           <message/>    "
+              + "        </item>    "
+              + "      <item action='deny' order='666'/>    "
+              + "    </list>    "
+              + "    <list name='testEmpty'/>    "
+              + "  </query>    "
+              + "  <error type='cancel'>    "
+              + "    <item-not-found    "
+              + "        xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>    "
+              + "  </error>    "
+              + "</iq>    ";
 
         try {
-        	// Create the xml parser
-        	XmlPullParser parser = getParserFromXML(xml);
-        	// Create a packet from the xml
-        	Privacy packet = (Privacy) (new PrivacyProvider()).parse(parser);
+            // Create the xml parser
+            XmlPullParser parser = getParserFromXML(xml);
+            // Create a packet from the xml
+            Privacy packet = (Privacy) (new PrivacyProvider()).parse(parser);
 
-        	// check if it exist
+            // check if it exist
             assertNotNull(packet);
             // assertEquals(xml, packet.getChildElementXML());
 
@@ -298,26 +298,26 @@ public class PrivacyProviderTest extends SmackTestCase {
     /**
      * Check the parser with an xml with empty lists. It includes the active,
      * default and special list.
-     * To create the xml string based from an xml file, replace:\n with:	"\n  + "
+     * To create the xml string based from an xml file, replace:\n with:    "\n  + "
      */
     public void testEmptyLists() {
         // Make the XML to test
-    	String xml = ""
-    		  + "  <iq type='result' id='getlist1' to='romeo@example.net/orchard'>	"
-    		  + "  <query xmlns='jabber:iq:privacy'>	"
-    		  + "    <active/>	"
-    		  + "    <default name='public'/>	"
-    		  + "    <list name='public'/>	"
-    		  + "    <list name='private'/>	"
-    		  + "    <list name='special'/>	"
-    		  + "  </query>	"
-    		  + " </iq>	";
+        String xml = ""
+              + "  <iq type='result' id='getlist1' to='romeo@example.net/orchard'>    "
+              + "  <query xmlns='jabber:iq:privacy'>    "
+              + "    <active/>    "
+              + "    <default name='public'/>    "
+              + "    <list name='public'/>    "
+              + "    <list name='private'/>    "
+              + "    <list name='special'/>    "
+              + "  </query>    "
+              + " </iq>    ";
 
         try {
-        	// Create the xml parser
-        	XmlPullParser parser = getParserFromXML(xml);
-        	// Create a packet from the xml
-        	Privacy packet = (Privacy) (new PrivacyProvider()).parse(parser);
+            // Create the xml parser
+            XmlPullParser parser = getParserFromXML(xml);
+            // Create a packet from the xml
+            Privacy packet = (Privacy) (new PrivacyProvider()).parse(parser);
 
             assertNotNull(packet);
             assertNotNull(packet.getChildElementXML());
@@ -340,23 +340,23 @@ public class PrivacyProviderTest extends SmackTestCase {
     /**
      * Check the parser with an xml with empty lists. It includes the active,
      * default and special list.
-     * To create the xml string based from an xml file, replace:\n with:	"\n  + "
+     * To create the xml string based from an xml file, replace:\n with:    "\n  + "
      */
     public void testDeclineLists() {
         // Make the XML to test
-    	String xml = ""
-    		  + "  <iq type='result' id='getlist1' to='romeo@example.net/orchard'>	"
-    		  + "  <query xmlns='jabber:iq:privacy'>	"
-    		  + "    <active/>	"
-    		  + "    <default/>	"
-    		  + "  </query>	"
-    		  + " </iq>	";
+        String xml = ""
+              + "  <iq type='result' id='getlist1' to='romeo@example.net/orchard'>    "
+              + "  <query xmlns='jabber:iq:privacy'>    "
+              + "    <active/>    "
+              + "    <default/>    "
+              + "  </query>    "
+              + " </iq>    ";
 
         try {
-        	// Create the xml parser
-        	XmlPullParser parser = getParserFromXML(xml);
-        	// Create a packet from the xml
-        	Privacy packet = (Privacy) (new PrivacyProvider()).parse(parser);
+            // Create the xml parser
+            XmlPullParser parser = getParserFromXML(xml);
+            // Create a packet from the xml
+            Privacy packet = (Privacy) (new PrivacyProvider()).parse(parser);
 
             assertNotNull(packet);
 
@@ -372,10 +372,10 @@ public class PrivacyProviderTest extends SmackTestCase {
     }
 
     private XmlPullParser getParserFromXML(String xml) throws XmlPullParserException {
-    	XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-    	parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-    	parser.setInput(new StringReader(xml));
-    	return parser;
+        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        parser.setInput(new StringReader(xml));
+        return parser;
     }
 
     protected int getMaxConnections() {

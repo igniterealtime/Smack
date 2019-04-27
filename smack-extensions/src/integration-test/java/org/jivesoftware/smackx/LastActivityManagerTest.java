@@ -25,133 +25,133 @@ import org.jivesoftware.smackx.packet.LastActivity;
 
 public class LastActivityManagerTest extends SmackTestCase {
 
-	/**
-	 * This is a test to check if a LastActivity request for idle time is
-	 * answered and correct.
-	 */
-	public void testOnline() {
-		TCPConnection conn0 = getConnection(0);
-		TCPConnection conn1 = getConnection(1);
+    /**
+     * This is a test to check if a LastActivity request for idle time is
+     * answered and correct.
+     */
+    public void testOnline() {
+        TCPConnection conn0 = getConnection(0);
+        TCPConnection conn1 = getConnection(1);
 
-		// Send a message as the last activity action from connection 1 to
-		// connection 0
-		conn1.sendStanza(new Message(getBareJID(0)));
+        // Send a message as the last activity action from connection 1 to
+        // connection 0
+        conn1.sendStanza(new Message(getBareJID(0)));
 
-		// Wait 1 seconds to have some idle time
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			fail("Thread sleep interrupted");
-		}
+        // Wait 1 seconds to have some idle time
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            fail("Thread sleep interrupted");
+        }
 
-		LastActivity lastActivity = null;
-		try {
-			lastActivity = LastActivityManager.getLastActivity(conn0, getFullJID(1));
-		} catch (XMPPException e) {
-			e.printStackTrace();
-			fail("An error occurred requesting the Last Activity");
-		}
+        LastActivity lastActivity = null;
+        try {
+            lastActivity = LastActivityManager.getLastActivity(conn0, getFullJID(1));
+        } catch (XMPPException e) {
+            e.printStackTrace();
+            fail("An error occurred requesting the Last Activity");
+        }
 
-		// Asserts that the last activity packet was received
-		assertNotNull("No last activity packet", lastActivity);
-		// Asserts that there is at least a 1 second of idle time
+        // Asserts that the last activity packet was received
+        assertNotNull("No last activity packet", lastActivity);
+        // Asserts that there is at least a 1 second of idle time
         assertTrue(
                 "The last activity idle time is less than expected: " + lastActivity.getIdleTime(),
                 lastActivity.getIdleTime() >= 1);
     }
 
-	/**
-	 * This is a test to check if a denied LastActivity response is handled correctly.
-	 */
-	public void testOnlinePermisionDenied() {
-		TCPConnection conn0 = getConnection(0);
-		TCPConnection conn2 = getConnection(2);
+    /**
+     * This is a test to check if a denied LastActivity response is handled correctly.
+     */
+    public void testOnlinePermisionDenied() {
+        TCPConnection conn0 = getConnection(0);
+        TCPConnection conn2 = getConnection(2);
 
-		// Send a message as the last activity action from connection 2 to
-		// connection 0
-		conn2.sendStanza(new Message(getBareJID(0)));
+        // Send a message as the last activity action from connection 2 to
+        // connection 0
+        conn2.sendStanza(new Message(getBareJID(0)));
 
-		// Wait 1 seconds to have some idle time
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			fail("Thread sleep interrupted");
-		}
+        // Wait 1 seconds to have some idle time
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            fail("Thread sleep interrupted");
+        }
 
-		try {
-			LastActivityManager.getLastActivity(conn0, getFullJID(2));
+        try {
+            LastActivityManager.getLastActivity(conn0, getFullJID(2));
             fail("No error was received from the server. User was able to get info of other user not in his roster.");
         } catch (XMPPException e) {
             assertNotNull("No error was returned from the server", e.getStanzaError());
             assertEquals("Forbidden error was not returned from the server", 403,
                     e.getStanzaError().getCode());
         }
-	}
+    }
 
-	/**
-	 * This is a test to check if a LastActivity request for last logged out
-	 * lapsed time is answered and correct
-	 */
-	public void testLastLoggedOut() {
-		TCPConnection conn0 = getConnection(0);
+    /**
+     * This is a test to check if a LastActivity request for last logged out
+     * lapsed time is answered and correct
+     */
+    public void testLastLoggedOut() {
+        TCPConnection conn0 = getConnection(0);
 
-		LastActivity lastActivity = null;
-		try {
-			lastActivity = LastActivityManager.getLastActivity(conn0, getBareJID(1));
-		} catch (XMPPException e) {
-			e.printStackTrace();
-			fail("An error occurred requesting the Last Activity");
-		}
+        LastActivity lastActivity = null;
+        try {
+            lastActivity = LastActivityManager.getLastActivity(conn0, getBareJID(1));
+        } catch (XMPPException e) {
+            e.printStackTrace();
+            fail("An error occurred requesting the Last Activity");
+        }
 
-		assertNotNull("No last activity packet", lastActivity);
+        assertNotNull("No last activity packet", lastActivity);
         assertTrue("The last activity idle time should be 0 since the user is logged in: " +
                 lastActivity.getIdleTime(), lastActivity.getIdleTime() == 0);
     }
 
-	/**
-	 * This is a test to check if a LastActivity request for server uptime
-	 * is answered and correct
-	 */
-	public void testServerUptime() {
-		TCPConnection conn0 = getConnection(0);
+    /**
+     * This is a test to check if a LastActivity request for server uptime
+     * is answered and correct
+     */
+    public void testServerUptime() {
+        TCPConnection conn0 = getConnection(0);
 
-		LastActivity lastActivity = null;
-		try {
-			lastActivity = LastActivityManager.getLastActivity(conn0, getHost());
-		} catch (XMPPException e) {
-			if (e.getStanzaError().getCode() == 403) {
-				//The test can not be done since the host do not allow this kind of request
-				return;
-			}
-			e.printStackTrace();
-			fail("An error occurred requesting the Last Activity");
-		}
+        LastActivity lastActivity = null;
+        try {
+            lastActivity = LastActivityManager.getLastActivity(conn0, getHost());
+        } catch (XMPPException e) {
+            if (e.getStanzaError().getCode() == 403) {
+                //The test can not be done since the host do not allow this kind of request
+                return;
+            }
+            e.printStackTrace();
+            fail("An error occurred requesting the Last Activity");
+        }
 
-		assertNotNull("No last activity packet", lastActivity);
+        assertNotNull("No last activity packet", lastActivity);
         assertTrue("The last activity idle time should be greater than 0 : " +
                 lastActivity.getIdleTime(), lastActivity.getIdleTime() > 0);
     }
 
-	public LastActivityManagerTest(String name) {
-		super(name);
-	}
+    public LastActivityManagerTest(String name) {
+        super(name);
+    }
 
-	@Override
-	protected int getMaxConnections() {
-		return 3;
-	}
+    @Override
+    protected int getMaxConnections() {
+        return 3;
+    }
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		try {
-			getConnection(0).getRoster().createEntry(getBareJID(1), "User1", null);
-			Thread.sleep(300);
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        try {
+            getConnection(0).getRoster().createEntry(getBareJID(1), "User1", null);
+            Thread.sleep(300);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
 
 }

@@ -26,15 +26,15 @@ import org.jivesoftware.smackx.pubsub.test.SingleUserTestCase;
  */
 public class TestAPI extends SingleUserTestCase
 {
-	public void testGetNonexistentNode()
-	{
-		try
-		{
-			getManager().getNode("" + System.currentTimeMillis());
-			assertTrue(false);
-		}
-		catch (XMPPException e)
-		{
-		}
-	}
+    public void testGetNonexistentNode()
+    {
+        try
+        {
+            getManager().getNode("" + System.currentTimeMillis());
+            assertTrue(false);
+        }
+        catch (XMPPException e)
+        {
+        }
+    }
 }

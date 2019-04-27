@@ -296,47 +296,47 @@ public abstract class SmackTestCase extends TestCase {
 
     protected void connectAndLogin(int connectionIndex) throws XMPPException
     {
-    	String password = usernamePrefix + (connectionIndex + 1);
+        String password = usernamePrefix + (connectionIndex + 1);
 
-    	if (passwordPrefix != null)
-    		password = (samePassword ? passwordPrefix : passwordPrefix + (connectionIndex + 1));
+        if (passwordPrefix != null)
+            password = (samePassword ? passwordPrefix : passwordPrefix + (connectionIndex + 1));
 
-    	TCPConnection con = getConnection(connectionIndex);
+        TCPConnection con = getConnection(connectionIndex);
 
-    	if (!con.isConnected())
-    		con.connect();
-    	try {
-    	    con.login(usernamePrefix + (connectionIndex + 1), password, "Smack");
-    	} catch (XMPPException e) {
-    	    createAccount(connectionIndex, usernamePrefix + (connectionIndex + 1), password);
+        if (!con.isConnected())
+            con.connect();
+        try {
             con.login(usernamePrefix + (connectionIndex + 1), password, "Smack");
-    	}
+        } catch (XMPPException e) {
+            createAccount(connectionIndex, usernamePrefix + (connectionIndex + 1), password);
+            con.login(usernamePrefix + (connectionIndex + 1), password, "Smack");
+        }
     }
 
     protected void disconnect(int connectionIndex) throws XMPPException
     {
-    	getConnection(connectionIndex).disconnect();
+        getConnection(connectionIndex).disconnect();
     }
 
     private void createAccount(int connectionIdx, String username, String password)
-	{
+    {
         // Create the test account
         try {
             getConnection(connectionIdx).getAccountManager().createAccount(username, password);
             createdUserIdx.add(connectionIdx);
         } catch (XMPPException e) {
-        	e.printStackTrace();
-        	fail(e.getMessage());
+            e.printStackTrace();
+            fail(e.getMessage());
         }
-	}
+    }
 
-	protected void tearDown() throws Exception {
+    protected void tearDown() throws Exception {
         super.tearDown();
 
         for (int i = 0; i < getMaxConnections(); i++)
-		{
-        	if (createdUserIdx.contains(i))
-        	{
+        {
+            if (createdUserIdx.contains(i))
+            {
                 try {
                     // If not connected, connect so that we can delete the account.
                     if (!getConnection(i).isConnected()) {
@@ -353,7 +353,7 @@ public abstract class SmackTestCase extends TestCase {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-        	}
+            }
             if (getConnection(i).isConnected()) {
                 // Close the connection
                 getConnection(i).disconnect();

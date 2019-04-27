@@ -204,4 +204,7 @@
 			<property name="separateLineBetweenGroups" value="true"/>
 		</module>
 	</module>
+	<module name="FileTabCharacter">
+		<property name="eachLine" value="true"/>
+	</module>
 </module>

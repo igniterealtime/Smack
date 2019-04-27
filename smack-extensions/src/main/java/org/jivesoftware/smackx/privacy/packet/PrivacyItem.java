@@ -132,8 +132,8 @@ public class PrivacyItem {
      */
     public boolean isAllow() {
     // CHECKSTYLE:OFF
-		return allow;
-	}
+        return allow;
+    }
     // CHECKSTYLE:ON
 
     /**
@@ -143,8 +143,8 @@ public class PrivacyItem {
      */
     public boolean isFilterIQ() {
     // CHECKSTYLE:OFF
-		return filterIQ;
-	}
+        return filterIQ;
+    }
     // CHECKSTYLE:ON
 
     /**
@@ -155,8 +155,8 @@ public class PrivacyItem {
     public void setFilterIQ(boolean filterIQ) {
     // CHECKSTYLE:OFF
 
-		this.filterIQ = filterIQ;
-	}
+        this.filterIQ = filterIQ;
+    }
     // CHECKSTYLE:ON
 
     /**
@@ -166,8 +166,8 @@ public class PrivacyItem {
      */
     public boolean isFilterMessage() {
         // CHECKSTYLE:OFF
-		return filterMessage;
-	}
+        return filterMessage;
+    }
     // CHECKSTYLE:ON
 
     /**
@@ -177,8 +177,8 @@ public class PrivacyItem {
      */
     public void setFilterMessage(boolean filterMessage) {
         // CHECKSTYLE:OFF
-		this.filterMessage = filterMessage;
-	}
+        this.filterMessage = filterMessage;
+    }
     // CHECKSTYLE:ON
 
     /**
@@ -188,8 +188,8 @@ public class PrivacyItem {
      */
     public boolean isFilterPresenceIn() {
         // CHECKSTYLE:OFF
-		return filterPresenceIn;
-	}
+        return filterPresenceIn;
+    }
     // CHECKSTYLE:ON
 
     /**
@@ -199,8 +199,8 @@ public class PrivacyItem {
      */
     public void setFilterPresenceIn(boolean filterPresenceIn) {
         // CHECKSTYLE:OFF
-		this.filterPresenceIn = filterPresenceIn;
-	}
+        this.filterPresenceIn = filterPresenceIn;
+    }
     // CHECKSTYLE:ON
 
     /**
@@ -210,8 +210,8 @@ public class PrivacyItem {
      */
     public boolean isFilterPresenceOut() {
         // CHECKSTYLE:OFF
-		return filterPresenceOut;
-	}
+        return filterPresenceOut;
+    }
     // CHECKSTYLE:ON
 
     /**
@@ -221,8 +221,8 @@ public class PrivacyItem {
      */
     public void setFilterPresenceOut(boolean filterPresenceOut) {
         // CHECKSTYLE:OFF
-		this.filterPresenceOut = filterPresenceOut;
-	}
+        this.filterPresenceOut = filterPresenceOut;
+    }
     // CHECKSTYLE:ON
 
     /**
@@ -236,8 +236,8 @@ public class PrivacyItem {
      */
     public long getOrder() {
         // CHECKSTYLE:OFF
-		return order;
-	}
+        return order;
+    }
     // CHECKSTYLE:ON
 
     /**
@@ -249,7 +249,7 @@ public class PrivacyItem {
     public Type getType() {
         return type;
     // CHECKSTYLE:OFF
-	}
+    }
     // CHECKSTYLE:ON
 
     /**
@@ -266,7 +266,7 @@ public class PrivacyItem {
     public String getValue() {
         return value;
         // CHECKSTYLE:OFF
-	}
+    }
     // CHECKSTYLE:ON
 
     /**
@@ -279,22 +279,22 @@ public class PrivacyItem {
      */
     public boolean isFilterEverything() {
         // CHECKSTYLE:OFF
-		return !(this.isFilterIQ() || this.isFilterMessage() || this.isFilterPresenceIn()
-				|| this.isFilterPresenceOut());
-	}
+        return !(this.isFilterIQ() || this.isFilterMessage() || this.isFilterPresenceIn()
+                || this.isFilterPresenceOut());
+    }
 
-	/**
-	 * Answer an xml representation of the receiver according to the RFC 3921.
-	 *
-	 * @return the text xml representation.
+    /**
+     * Answer an xml representation of the receiver according to the RFC 3921.
+     *
+     * @return the text xml representation.
      */
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<item");
         if (this.isAllow()) {
-        	buf.append(" action=\"allow\"");
+            buf.append(" action=\"allow\"");
         } else {
-        	buf.append(" action=\"deny\"");
+            buf.append(" action=\"deny\"");
         }
         buf.append(" order=\"").append(getOrder()).append('"');
         if (getType() != null) {
@@ -304,22 +304,22 @@ public class PrivacyItem {
             buf.append(" value=\"").append(getValue()).append('"');
         }
         if (isFilterEverything()) {
-        	buf.append("/>");
+            buf.append("/>");
         } else {
-        	buf.append('>');
-        	if (this.isFilterIQ()) {
-            	buf.append("<iq/>");
+            buf.append('>');
+            if (this.isFilterIQ()) {
+                buf.append("<iq/>");
             }
-        	if (this.isFilterMessage()) {
-            	buf.append("<message/>");
+            if (this.isFilterMessage()) {
+                buf.append("<message/>");
             }
-        	if (this.isFilterPresenceIn()) {
-            	buf.append("<presence-in/>");
+            if (this.isFilterPresenceIn()) {
+                buf.append("<presence-in/>");
             }
-        	if (this.isFilterPresenceOut()) {
-            	buf.append("<presence-out/>");
+            if (this.isFilterPresenceOut()) {
+                buf.append("<presence-out/>");
             }
-        	buf.append("</item>");
+            buf.append("</item>");
         }
         // CHECKSTYLE:ON
         return buf.toString();

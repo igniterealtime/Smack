@@ -27,20 +27,20 @@ import org.jivesoftware.smackx.pubsub.PubSubManager;
  */
 public class SingleUserTestCase extends PubSubTestCase
 {
-	protected PubSubManager getManager()
-	{
-		return getManager(0);
-	}
+    protected PubSubManager getManager()
+    {
+        return getManager(0);
+    }
 
-	protected LeafNode getPubnode(boolean persistItems, boolean deliverPayload) throws XMPPException
-	{
-		return getRandomPubnode(getManager(), persistItems, deliverPayload);
-	}
+    protected LeafNode getPubnode(boolean persistItems, boolean deliverPayload) throws XMPPException
+    {
+        return getRandomPubnode(getManager(), persistItems, deliverPayload);
+    }
 
-	@Override
-	protected int getMaxConnections()
-	{
-		return 1;
-	}
+    @Override
+    protected int getMaxConnections()
+    {
+        return 1;
+    }
 
 }

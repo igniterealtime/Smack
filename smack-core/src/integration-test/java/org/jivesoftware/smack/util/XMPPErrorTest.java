@@ -34,13 +34,13 @@ public class XMPPErrorTest extends SmackTestCase {
      * Check the creation of a new xmppError locally.
     */
     public void testLocalErrorCreation() {
-    	XMPPError error = new XMPPError(XMPPError.Condition.item_not_found);
+        XMPPError error = new XMPPError(XMPPError.Condition.item_not_found);
         error.toXML();
 
-    	assertEquals(error.getCondition(), "item-not-found");
-    	assertEquals(error.getCode(), 404);
-    	assertEquals(error.getType(), XMPPError.Type.CANCEL);
-    	assertNull(error.getMessage());
+        assertEquals(error.getCondition(), "item-not-found");
+        assertEquals(error.getCode(), 404);
+        assertEquals(error.getType(), XMPPError.Type.CANCEL);
+        assertNull(error.getMessage());
     }
 
     /**
@@ -76,14 +76,14 @@ public class XMPPErrorTest extends SmackTestCase {
     */
     public void test404() {
         // Make the XML to test
-    	String xml = "<error code='404' type='cancel'>" +
-    			"<item-not-found xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
-    			"</error></iq>";
+        String xml = "<error code='404' type='cancel'>" +
+                "<item-not-found xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
+                "</error></iq>";
         try {
-        	// Create the xml parser
-        	XmlPullParser parser = getParserFromXML(xml);
-        	// Create a packet from the xml
-        	XMPPError packet = parseError(parser);
+            // Create the xml parser
+            XmlPullParser parser = getParserFromXML(xml);
+            // Create a packet from the xml
+            XMPPError packet = parseError(parser);
 
             assertNotNull(packet);
         } catch (Exception e) {
@@ -97,14 +97,14 @@ public class XMPPErrorTest extends SmackTestCase {
     */
     public void testCancel() {
         // Make the XML to test
-    	String xml = "<error type='cancel'>" +
-    			"<conflict xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
-    			"</error>";
+        String xml = "<error type='cancel'>" +
+                "<conflict xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
+                "</error>";
         try {
-        	// Create the xml parser
-        	XmlPullParser parser = getParserFromXML(xml);
-        	// Create a packet from the xml
-        	XMPPError error = parseError(parser);
+            // Create the xml parser
+            XmlPullParser parser = getParserFromXML(xml);
+            // Create a packet from the xml
+            XMPPError error = parseError(parser);
 
             assertNotNull(error);
         } catch (Exception e) {
@@ -114,20 +114,20 @@ public class XMPPErrorTest extends SmackTestCase {
     }
 
    public void testMessageAndApplicationDefinedError() {
-	   String xml = "<error type='modify' code='404'>" +
-	   		"<undefined-condition xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
-	   		"<text xml:lang='en' xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'>" +
-	   		"Some special application diagnostic information..." +
-	   		"</text>" +
-	   		"<special-application-condition xmlns='application-ns'/>" +
-	   		"</error>";
+       String xml = "<error type='modify' code='404'>" +
+               "<undefined-condition xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
+               "<text xml:lang='en' xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'>" +
+               "Some special application diagnostic information..." +
+               "</text>" +
+               "<special-application-condition xmlns='application-ns'/>" +
+               "</error>";
        try {
-       	// Create the xml parser
-       	XmlPullParser parser = getParserFromXML(xml);
-       	// Create a packet from the xml
-       	XMPPError error = parseError(parser);
+           // Create the xml parser
+           XmlPullParser parser = getParserFromXML(xml);
+           // Create a packet from the xml
+           XMPPError error = parseError(parser);
 
-       	String sendingXML = error.toXML();
+           String sendingXML = error.toXML();
 
        assertNotNull(error);
        assertNotNull(sendingXML);
@@ -141,17 +141,17 @@ public class XMPPErrorTest extends SmackTestCase {
     */
     public void testCancelWithMessage() {
         // Make the XML to test
-    	String xml = "<error type='cancel'>" +
-    			"<conflict xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
-    			"<text xmlns='urn:ietf:params:xml:ns:xmpp-stanzas' xml:lang='langcode'>" +
-    			"Some special application diagnostic information!" +
-    			"</text>" +
-    			"</error>";
+        String xml = "<error type='cancel'>" +
+                "<conflict xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
+                "<text xmlns='urn:ietf:params:xml:ns:xmpp-stanzas' xml:lang='langcode'>" +
+                "Some special application diagnostic information!" +
+                "</text>" +
+                "</error>";
         try {
-        	// Create the xml parser
-        	XmlPullParser parser = getParserFromXML(xml);
-        	// Create a packet from the xml
-        	XMPPError error = parseError(parser);
+            // Create the xml parser
+            XmlPullParser parser = getParserFromXML(xml);
+            // Create a packet from the xml
+            XMPPError error = parseError(parser);
 
             assertNotNull(error);
         } catch (Exception e) {
@@ -165,18 +165,18 @@ public class XMPPErrorTest extends SmackTestCase {
     */
     public void testCancelWithMessageAndApplicationError() {
         // Make the XML to test
-    	String xml = "<error type='cancel' code='10'>" +
-    			"<conflict xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
-    			"<text xml:lang='en' xmlns='urn:ietf:params:xml:ns:xmpp-streams'>" +
-    			"Some special application diagnostic information!" +
-    			"</text>" +
-    			"<application-defined-error xmlns='application-ns'/>" +
-    			"</error>";
+        String xml = "<error type='cancel' code='10'>" +
+                "<conflict xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" +
+                "<text xml:lang='en' xmlns='urn:ietf:params:xml:ns:xmpp-streams'>" +
+                "Some special application diagnostic information!" +
+                "</text>" +
+                "<application-defined-error xmlns='application-ns'/>" +
+                "</error>";
         try {
-        	// Create the xml parser
-        	XmlPullParser parser = getParserFromXML(xml);
-        	// Create a packet from the xml
-        	XMPPError error = parseError(parser);
+            // Create the xml parser
+            XmlPullParser parser = getParserFromXML(xml);
+            // Create a packet from the xml
+            XMPPError error = parseError(parser);
 
             assertNotNull(error);
         } catch (Exception e) {
@@ -186,15 +186,15 @@ public class XMPPErrorTest extends SmackTestCase {
     }
 
     private XMPPError parseError(XmlPullParser parser) throws Exception {
-    	parser.next();
-    	return PacketParserUtils.parseError(parser);
+        parser.next();
+        return PacketParserUtils.parseError(parser);
     }
 
     private XmlPullParser getParserFromXML(String xml) throws XmlPullParserException {
-    	XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-    	parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-    	parser.setInput(new StringReader(xml));
-    	return parser;
+        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        parser.setInput(new StringReader(xml));
+        return parser;
     }
 
     protected int getMaxConnections() {

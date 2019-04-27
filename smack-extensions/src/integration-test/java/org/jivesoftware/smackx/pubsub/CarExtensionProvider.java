@@ -28,26 +28,26 @@ import org.xmlpull.v1.XmlPullParser;
 public class CarExtensionProvider extends PacketExtensionProvider
 {
 
-	public PacketExtension parse(XmlPullParser parser, int initialDepth) throws Exception
-	{
-		String color = null;
-		int numTires = 0;
+    public PacketExtension parse(XmlPullParser parser, int initialDepth) throws Exception
+    {
+        String color = null;
+        int numTires = 0;
 
-		for (int i=0; i<2; i++)
-		{
-			while (parser.next() != XmlPullParser.START_TAG);
+        for (int i=0; i<2; i++)
+        {
+            while (parser.next() != XmlPullParser.START_TAG);
 
-			if (parser.getName().equals("paint"))
-			{
-				color = parser.getAttributeValue(0);
-			}
-			else
-			{
-				numTires = Integer.parseInt(parser.getAttributeValue(0));
-			}
-		}
-		while (parser.next() != XmlPullParser.END_TAG);
-		return new CarExtension(color, numTires);
-	}
+            if (parser.getName().equals("paint"))
+            {
+                color = parser.getAttributeValue(0);
+            }
+            else
+            {
+                numTires = Integer.parseInt(parser.getAttributeValue(0));
+            }
+        }
+        while (parser.next() != XmlPullParser.END_TAG);
+        return new CarExtension(color, numTires);
+    }
 
 }

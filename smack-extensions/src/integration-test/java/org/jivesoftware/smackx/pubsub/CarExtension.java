@@ -25,39 +25,39 @@ import org.jivesoftware.smack.packet.PacketExtension;
  */
 class CarExtension implements PacketExtension
 {
-	private String color;
-	private int numTires;
+    private String color;
+    private int numTires;
 
-	public CarExtension(String col, int num)
-	{
-		color = col;
-		numTires = num;
-	}
+    public CarExtension(String col, int num)
+    {
+        color = col;
+        numTires = num;
+    }
 
-	public String getColor()
-	{
-		return color;
-	}
+    public String getColor()
+    {
+        return color;
+    }
 
-	public int getNumTires()
-	{
-		return numTires;
-	}
+    public int getNumTires()
+    {
+        return numTires;
+    }
 
-	public String getElementName()
-	{
-		return "car";
-	}
+    public String getElementName()
+    {
+        return "car";
+    }
 
-	public String getNamespace()
-	{
-		return "pubsub:test:vehicle";
-	}
+    public String getNamespace()
+    {
+        return "pubsub:test:vehicle";
+    }
 
-	public String toXML()
-	{
-		return "<" + getElementName() + " xmlns='" + getNamespace() + "'><paint color='" +
-			getColor() + "'/><tires num='" + getNumTires() + "'/></" + getElementName() + ">";
-	}
+    public String toXML()
+    {
+        return "<" + getElementName() + " xmlns='" + getNamespace() + "'><paint color='" +
+            getColor() + "'/><tires num='" + getNumTires() + "'/></" + getElementName() + ">";
+    }
 
 }

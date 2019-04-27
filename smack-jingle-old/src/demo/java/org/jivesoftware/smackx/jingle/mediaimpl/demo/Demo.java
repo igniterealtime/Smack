@@ -40,8 +40,8 @@ import java.util.List;
  */
 public class Demo extends JFrame {
 
-	private static final long serialVersionUID = -6584021277434403855L;
-	private JingleTransportManager transportManager = null;
+    private static final long serialVersionUID = -6584021277434403855L;
+    private JingleTransportManager transportManager = null;
     private XMPPConnection xmppConnection = null;
 
     private String server = null;
@@ -115,9 +115,9 @@ public class Demo extends JFrame {
         jPanel.add(jid);
 
         jPanel.add(new JButton(new AbstractAction("Call") {
-			private static final long serialVersionUID = 4308448034795312815L;
+            private static final long serialVersionUID = 4308448034795312815L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 if (outgoing != null) return;
                 try {
                     outgoing = jm.createOutgoingJingleSession(jid.getText());
@@ -130,9 +130,9 @@ public class Demo extends JFrame {
         }));
 
         jPanel.add(new JButton(new AbstractAction("Hangup") {
-			private static final long serialVersionUID = -4508007389146723587L;
+            private static final long serialVersionUID = -4508007389146723587L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 if (outgoing != null)
                     try {
                         outgoing.terminate();

@@ -215,14 +215,14 @@ public class PrivacyTest extends SmackTestCase {
      * Check when a client denies the use of a default list.
      */
     public void testDenyDefaultList() {
-    	try {
-    		PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(getConnection(0));
-    		PrivacyClient client = new PrivacyClient(privacyManager);
-    		privacyManager.addListener(client);
+        try {
+            PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(getConnection(0));
+            PrivacyClient client = new PrivacyClient(privacyManager);
+            privacyManager.addListener(client);
 
-    		privacyManager.declineDefaultList();
+            privacyManager.declineDefaultList();
 
-    		Thread.sleep(500);
+            Thread.sleep(500);
 
             try {
                 // The list should not exist and an error will be raised
@@ -231,11 +231,11 @@ public class PrivacyTest extends SmackTestCase {
                 assertEquals(404, xmppException.getStanzaError().getCode());
             }
 
-	    	assertEquals(null, null);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            fail(e.getMessage());
-	        }
+            assertEquals(null, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail(e.getMessage());
+            }
     }
 
     /**
@@ -269,73 +269,73 @@ public class PrivacyTest extends SmackTestCase {
      * Check when a client set a new default list.
      */
     public void testCreateDefaultList() {
-    	try {
-    		String listName = "testCreateDefaultList";
+        try {
+            String listName = "testCreateDefaultList";
 
-    		PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(getConnection(0));
-    		PrivacyClient client = new PrivacyClient(privacyManager);
-    		privacyManager.addListener(client);
+            PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(getConnection(0));
+            PrivacyClient client = new PrivacyClient(privacyManager);
+            privacyManager.addListener(client);
 
-    		// Add the list that will be set as the Default
-    		ArrayList<PrivacyItem> items = new ArrayList<PrivacyItem>();
-    		PrivacyItem item = new PrivacyItem(PrivacyItem.Type.jid.name(), true, 1);
-        	item.setValue(getConnection(0).getUser());
-    		items.add(item);
-    		privacyManager.createPrivacyList(listName, items);
+            // Add the list that will be set as the Default
+            ArrayList<PrivacyItem> items = new ArrayList<PrivacyItem>();
+            PrivacyItem item = new PrivacyItem(PrivacyItem.Type.jid.name(), true, 1);
+            item.setValue(getConnection(0).getUser());
+            items.add(item);
+            privacyManager.createPrivacyList(listName, items);
 
-    		Thread.sleep(500);
+            Thread.sleep(500);
 
-    		// Set the Default list
-    		privacyManager.setDefaultListName(listName);
+            // Set the Default list
+            privacyManager.setDefaultListName(listName);
 
-	    	Thread.sleep(500);
+            Thread.sleep(500);
 
-	    	// Assert the list composition.
-	    	assertEquals(listName, privacyManager.getDefaultList().toString());
-	    	List<PrivacyItem> privacyItems = privacyManager.getPrivacyList(listName).getItems();
-	    	assertEquals(1, privacyItems.size());
+            // Assert the list composition.
+            assertEquals(listName, privacyManager.getDefaultList().toString());
+            List<PrivacyItem> privacyItems = privacyManager.getPrivacyList(listName).getItems();
+            assertEquals(1, privacyItems.size());
 
-	    	// Assert the privacy item composition
-	    	PrivacyItem receivedItem = privacyItems.get(0);
-	    	assertEquals(1, receivedItem.getOrder());
-	    	assertEquals(PrivacyItem.Type.jid, receivedItem.getType());
-	    	assertEquals(true, receivedItem.isAllow());
+            // Assert the privacy item composition
+            PrivacyItem receivedItem = privacyItems.get(0);
+            assertEquals(1, receivedItem.getOrder());
+            assertEquals(PrivacyItem.Type.jid, receivedItem.getType());
+            assertEquals(true, receivedItem.isAllow());
 
             privacyManager.deletePrivacyList(listName);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            fail(e.getMessage());
-	        }
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail(e.getMessage());
+            }
     }
 
     /**
      * Check when a client add a new list and then remove it.
      */
     public void testRemoveList() {
-    	try {
-    		String listName = "testRemoveList";
+        try {
+            String listName = "testRemoveList";
 
-    		PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(getConnection(0));
-    		PrivacyClient client = new PrivacyClient(privacyManager);
-    		privacyManager.addListener(client);
+            PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(getConnection(0));
+            PrivacyClient client = new PrivacyClient(privacyManager);
+            privacyManager.addListener(client);
 
-    		// Add the list that will be set as the Default
-    		ArrayList<PrivacyItem> items = new ArrayList<PrivacyItem>();
-    		PrivacyItem item = new PrivacyItem(PrivacyItem.Type.jid.name(), true, 1);
-        	item.setValue(getConnection(0).getUser());
-    		items.add(item);
-    		privacyManager.createPrivacyList(listName, items);
+            // Add the list that will be set as the Default
+            ArrayList<PrivacyItem> items = new ArrayList<PrivacyItem>();
+            PrivacyItem item = new PrivacyItem(PrivacyItem.Type.jid.name(), true, 1);
+            item.setValue(getConnection(0).getUser());
+            items.add(item);
+            privacyManager.createPrivacyList(listName, items);
 
-    		Thread.sleep(500);
+            Thread.sleep(500);
 
-    		// Set the Default list
-    		privacyManager.setDefaultListName(listName);
+            // Set the Default list
+            privacyManager.setDefaultListName(listName);
 
-	    	Thread.sleep(500);
+            Thread.sleep(500);
 
-	    	privacyManager.deletePrivacyList(listName);
+            privacyManager.deletePrivacyList(listName);
 
-	    	Thread.sleep(500);
+            Thread.sleep(500);
 
             try {
                 // The list should not exist and an error will be raised
@@ -353,133 +353,133 @@ public class PrivacyTest extends SmackTestCase {
      * Check different types of privacy items.
      */
     public void testPrivacyItems() {
-    	try {
-    		String listName = "testPrivacyItems";
-    		String user = "tybalt@example.com";
-    		String groupName = "enemies";
+        try {
+            String listName = "testPrivacyItems";
+            String user = "tybalt@example.com";
+            String groupName = "enemies";
 
-    		PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(getConnection(0));
-    		PrivacyClient client = new PrivacyClient(privacyManager);
-    		privacyManager.addListener(client);
+            PrivacyListManager privacyManager = PrivacyListManager.getInstanceFor(getConnection(0));
+            PrivacyClient client = new PrivacyClient(privacyManager);
+            privacyManager.addListener(client);
 
-    		PrivacyItem[] originalPrivacyItems = new PrivacyItem[12];
-    		int i=0;
+            PrivacyItem[] originalPrivacyItems = new PrivacyItem[12];
+            int i=0;
 
-    		// Items to test JID
-    		PrivacyItem item = new PrivacyItem(PrivacyItem.Type.jid.name(), true, i);
-        	item.setValue(i + "_" + user);
-        	originalPrivacyItems[i] = item;
-        	i = i + 1;
+            // Items to test JID
+            PrivacyItem item = new PrivacyItem(PrivacyItem.Type.jid.name(), true, i);
+            item.setValue(i + "_" + user);
+            originalPrivacyItems[i] = item;
+            i = i + 1;
 
-    		item = new PrivacyItem(PrivacyItem.Type.jid.name(), false, i);
-        	item.setValue(i + "_" + user);
-        	originalPrivacyItems[i] = item;
-        	i = i + 1;
+            item = new PrivacyItem(PrivacyItem.Type.jid.name(), false, i);
+            item.setValue(i + "_" + user);
+            originalPrivacyItems[i] = item;
+            i = i + 1;
 
-        	// Items to test suscription
-    		item = new PrivacyItem(PrivacyItem.Type.subscription.name(), true, i);
-        	item.setValue(PrivacyRule.SUBSCRIPTION_BOTH);
-        	originalPrivacyItems[i] = item;
-        	i = i + 1;
+            // Items to test suscription
+            item = new PrivacyItem(PrivacyItem.Type.subscription.name(), true, i);
+            item.setValue(PrivacyRule.SUBSCRIPTION_BOTH);
+            originalPrivacyItems[i] = item;
+            i = i + 1;
 
-    		item = new PrivacyItem(PrivacyItem.Type.subscription.name(), false, i);
-        	item.setValue(PrivacyRule.SUBSCRIPTION_FROM);
-        	originalPrivacyItems[i] = item;
-        	i = i + 1;
+            item = new PrivacyItem(PrivacyItem.Type.subscription.name(), false, i);
+            item.setValue(PrivacyRule.SUBSCRIPTION_FROM);
+            originalPrivacyItems[i] = item;
+            i = i + 1;
 
-    		item = new PrivacyItem(PrivacyItem.Type.subscription.name(), true, i);
-        	item.setValue(PrivacyRule.SUBSCRIPTION_TO);
-        	originalPrivacyItems[i] = item;
-        	i = i + 1;
+            item = new PrivacyItem(PrivacyItem.Type.subscription.name(), true, i);
+            item.setValue(PrivacyRule.SUBSCRIPTION_TO);
+            originalPrivacyItems[i] = item;
+            i = i + 1;
 
-    		item = new PrivacyItem(PrivacyItem.Type.subscription.name(), false, i);
-        	item.setValue(PrivacyRule.SUBSCRIPTION_NONE);
-        	originalPrivacyItems[i] = item;
-        	i = i + 1;
+            item = new PrivacyItem(PrivacyItem.Type.subscription.name(), false, i);
+            item.setValue(PrivacyRule.SUBSCRIPTION_NONE);
+            originalPrivacyItems[i] = item;
+            i = i + 1;
 
-        	// Items to test Group
-        	item = new PrivacyItem(PrivacyItem.Type.group.name(), false, i);
-        	item.setValue(groupName);
-        	originalPrivacyItems[i] = item;
-        	i = i + 1;
+            // Items to test Group
+            item = new PrivacyItem(PrivacyItem.Type.group.name(), false, i);
+            item.setValue(groupName);
+            originalPrivacyItems[i] = item;
+            i = i + 1;
 
-        	// Items to test messages
-        	item = new PrivacyItem(PrivacyItem.Type.group.name(), false, i);
-        	item.setValue(groupName);
-        	item.setFilterMessage(true);
-        	originalPrivacyItems[i] = item;
-        	i = i + 1;
+            // Items to test messages
+            item = new PrivacyItem(PrivacyItem.Type.group.name(), false, i);
+            item.setValue(groupName);
+            item.setFilterMessage(true);
+            originalPrivacyItems[i] = item;
+            i = i + 1;
 
-        	// Items to test presence notifications
-        	item = new PrivacyItem(PrivacyItem.Type.group.name(), false, i);
-        	item.setValue(groupName);
-        	item.setFilterMessage(true);
-        	originalPrivacyItems[i] = item;
-        	i = i + 1;
+            // Items to test presence notifications
+            item = new PrivacyItem(PrivacyItem.Type.group.name(), false, i);
+            item.setValue(groupName);
+            item.setFilterMessage(true);
+            originalPrivacyItems[i] = item;
+            i = i + 1;
 
-        	item = new PrivacyItem(null, false, i);
-        	item.setFilterPresence_in(true);
-        	originalPrivacyItems[i] = item;
-        	i = i + 1;
+            item = new PrivacyItem(null, false, i);
+            item.setFilterPresence_in(true);
+            originalPrivacyItems[i] = item;
+            i = i + 1;
 
-    		item = new PrivacyItem(PrivacyItem.Type.subscription.name(), false, i);
-        	item.setValue(PrivacyRule.SUBSCRIPTION_TO);
-        	item.setFilterPresence_out(true);
-        	originalPrivacyItems[i] = item;
-        	i = i + 1;
+            item = new PrivacyItem(PrivacyItem.Type.subscription.name(), false, i);
+            item.setValue(PrivacyRule.SUBSCRIPTION_TO);
+            item.setFilterPresence_out(true);
+            originalPrivacyItems[i] = item;
+            i = i + 1;
 
-        	item = new PrivacyItem(PrivacyItem.Type.jid.name(), false, i);
-        	item.setValue(i + "_" + user);
-        	item.setFilterPresence_out(true);
-        	item.setFilterPresence_in(true);
-        	item.setFilterMessage(true);
-        	originalPrivacyItems[i] = item;
+            item = new PrivacyItem(PrivacyItem.Type.jid.name(), false, i);
+            item.setValue(i + "_" + user);
+            item.setFilterPresence_out(true);
+            item.setFilterPresence_in(true);
+            item.setFilterMessage(true);
+            originalPrivacyItems[i] = item;
 
-        	// Set the new privacy list
-    		privacyManager.createPrivacyList(listName, Arrays.asList(originalPrivacyItems));
+            // Set the new privacy list
+            privacyManager.createPrivacyList(listName, Arrays.asList(originalPrivacyItems));
 
-    		Thread.sleep(500);
+            Thread.sleep(500);
 
-	    	// Assert the server list composition.
-	    	List<PrivacyItem> privacyItems = privacyManager.getPrivacyList(listName).getItems();
-	    	assertEquals(originalPrivacyItems.length, privacyItems.size());
+            // Assert the server list composition.
+            List<PrivacyItem> privacyItems = privacyManager.getPrivacyList(listName).getItems();
+            assertEquals(originalPrivacyItems.length, privacyItems.size());
 
-	    	// Assert the local and server privacy item composition
-	    	PrivacyItem originalItem;
-	    	PrivacyItem receivedItem;
-	    	int index;
-	    	for (int j = 0; j < originalPrivacyItems.length; j++) {
-	    		// Look for the same server and original items
-	    		receivedItem = privacyItems.get(j);
-	    		index = 0;
-	    		while ((index < originalPrivacyItems.length)
-	    				&& (originalPrivacyItems[index].getOrder() != receivedItem.getOrder())) {
-	    			index++;
-				}
-	    		originalItem = originalPrivacyItems[index];
+            // Assert the local and server privacy item composition
+            PrivacyItem originalItem;
+            PrivacyItem receivedItem;
+            int index;
+            for (int j = 0; j < originalPrivacyItems.length; j++) {
+                // Look for the same server and original items
+                receivedItem = privacyItems.get(j);
+                index = 0;
+                while ((index < originalPrivacyItems.length)
+                        && (originalPrivacyItems[index].getOrder() != receivedItem.getOrder())) {
+                    index++;
+                }
+                originalItem = originalPrivacyItems[index];
 
-	    		// Assert the items
-	    		assertEquals(originalItem.getOrder(), receivedItem.getOrder());
-		    	assertEquals(originalItem.getType(), receivedItem.getType());
-		    	assertEquals(originalItem.isAllow(), receivedItem.isAllow());
-		    	assertEquals(originalItem.getValue(), receivedItem.getValue());
-		    	assertEquals(originalItem.isFilterEverything(), receivedItem.isFilterEverything());
-		    	assertEquals(originalItem.isFilterIQ(), receivedItem.isFilterIQ());
-		    	assertEquals(originalItem.isFilterMessage(), receivedItem.isFilterMessage());
-		    	assertEquals(originalItem.isFilterPresence_in(), receivedItem.isFilterPresence_in());
-		    	assertEquals(originalItem.isFilterPresence_out(), receivedItem.isFilterPresence_out());
-		    	}
+                // Assert the items
+                assertEquals(originalItem.getOrder(), receivedItem.getOrder());
+                assertEquals(originalItem.getType(), receivedItem.getType());
+                assertEquals(originalItem.isAllow(), receivedItem.isAllow());
+                assertEquals(originalItem.getValue(), receivedItem.getValue());
+                assertEquals(originalItem.isFilterEverything(), receivedItem.isFilterEverything());
+                assertEquals(originalItem.isFilterIQ(), receivedItem.isFilterIQ());
+                assertEquals(originalItem.isFilterMessage(), receivedItem.isFilterMessage());
+                assertEquals(originalItem.isFilterPresence_in(), receivedItem.isFilterPresence_in());
+                assertEquals(originalItem.isFilterPresence_out(), receivedItem.isFilterPresence_out());
+                }
 
             privacyManager.deletePrivacyList(listName);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            fail(e.getMessage());
-	        }
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail(e.getMessage());
+            }
     }
 
-	protected int getMaxConnections() {
-		return 1;
-	}
+    protected int getMaxConnections() {
+        return 1;
+    }
 
     /**
      * This class supports automated tests about privacy communication from the

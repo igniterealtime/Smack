@@ -39,282 +39,282 @@ import org.jivesoftware.smackx.pubsub.listener.NodeConfigListener;
 public class TestEvents extends SmackTestCase
 {
 
-	public TestEvents(String str)
-	{
-		super(str);
-	}
+    public TestEvents(String str)
+    {
+        super(str);
+    }
 
-	@Override
-	protected int getMaxConnections()
-	{
-		return 2;
-	}
+    @Override
+    protected int getMaxConnections()
+    {
+        return 2;
+    }
 
-	private String getService()
-	{
-		return "pubsub." + getXMPPServiceDomain();
-	}
+    private String getService()
+    {
+        return "pubsub." + getXMPPServiceDomain();
+    }
 
-	public void testCreateAndGetNode() throws Exception
-	{
-		String nodeId = "MyTestNode";
-		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+    public void testCreateAndGetNode() throws Exception
+    {
+        String nodeId = "MyTestNode";
+        PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 
-		LeafNode creatorNode = null;
-		try
-		{
-			creatorNode = (LeafNode)creatorMgr.getNode(nodeId);
-		}
-		catch (XMPPException e)
-		{
-			if (e.getStanzaError().getType() == Type.CANCEL && e.getXMPPError().getCondition().equals("item-not-found"))
-				creatorNode = creatorMgr.createNode(nodeId);
-			else
-				throw e;
-		}
+        LeafNode creatorNode = null;
+        try
+        {
+            creatorNode = (LeafNode)creatorMgr.getNode(nodeId);
+        }
+        catch (XMPPException e)
+        {
+            if (e.getStanzaError().getType() == Type.CANCEL && e.getXMPPError().getCondition().equals("item-not-found"))
+                creatorNode = creatorMgr.createNode(nodeId);
+            else
+                throw e;
+        }
 
-		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
-		LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
+        PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
+        LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
 
-		assertNotNull(subNode);
-	}
+        assertNotNull(subNode);
+    }
 
-	public void testConfigureAndNotify() throws Exception
-	{
-		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
-		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+    public void testConfigureAndNotify() throws Exception
+    {
+        // Setup event source
+        String nodeId = "TestNode" + System.currentTimeMillis();
+        PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 
-		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, false, true);
+        LeafNode creatorNode = getPubnode(creatorMgr, nodeId, false, true);
 
-		BlockingQueue<NodeConfigCoordinator> queue = new ArrayBlockingQueue<NodeConfigCoordinator>(3);
+        BlockingQueue<NodeConfigCoordinator> queue = new ArrayBlockingQueue<NodeConfigCoordinator>(3);
 
-		// Setup event receiver
-		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
-		LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
+        // Setup event receiver
+        PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
+        LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
 
-		NodeConfigListener sub1Handler = new NodeConfigCoordinator(queue, "sub1");
-		subNode.subscribe(getConnection(1).getUser());
-		subNode.addConfigurationListener(sub1Handler);
+        NodeConfigListener sub1Handler = new NodeConfigCoordinator(queue, "sub1");
+        subNode.subscribe(getConnection(1).getUser());
+        subNode.addConfigurationListener(sub1Handler);
 
-		ConfigureForm currentConfig = creatorNode.getNodeConfiguration();
-		ConfigureForm form = new ConfigureForm(currentConfig.createAnswerForm());
-		form.setPersistentItems(true);
-		form.setDeliverPayloads(false);
-		form.setNotifyConfig(true);
-		creatorNode.sendConfigurationForm(form);
+        ConfigureForm currentConfig = creatorNode.getNodeConfiguration();
+        ConfigureForm form = new ConfigureForm(currentConfig.createAnswerForm());
+        form.setPersistentItems(true);
+        form.setDeliverPayloads(false);
+        form.setNotifyConfig(true);
+        creatorNode.sendConfigurationForm(form);
 
-   		ConfigurationEvent event = queue.poll(5, TimeUnit.SECONDS).event;
-   		assertEquals(nodeId, event.getNode());
-   		assertNull(event.getConfiguration());
+           ConfigurationEvent event = queue.poll(5, TimeUnit.SECONDS).event;
+           assertEquals(nodeId, event.getNode());
+           assertNull(event.getConfiguration());
 
-		currentConfig = creatorNode.getNodeConfiguration();
-		form = new ConfigureForm(currentConfig.createAnswerForm());
-		form.setDeliverPayloads(true);
-		creatorNode.sendConfigurationForm(form);
+        currentConfig = creatorNode.getNodeConfiguration();
+        form = new ConfigureForm(currentConfig.createAnswerForm());
+        form.setDeliverPayloads(true);
+        creatorNode.sendConfigurationForm(form);
 
-   		event = queue.poll(5, TimeUnit.SECONDS).event;
-   		assertEquals(nodeId, event.getNode());
-   		assertNotNull(event.getConfiguration());
-   		assertTrue(event.getConfiguration().isPersistItems());
-   		assertTrue(event.getConfiguration().isDeliverPayloads());
-	}
+           event = queue.poll(5, TimeUnit.SECONDS).event;
+           assertEquals(nodeId, event.getNode());
+           assertNotNull(event.getConfiguration());
+           assertTrue(event.getConfiguration().isPersistItems());
+           assertTrue(event.getConfiguration().isDeliverPayloads());
+    }
 
-	public void testSendAndReceiveNoPayload() throws Exception
-	{
-		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
-		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
-		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
+    public void testSendAndReceiveNoPayload() throws Exception
+    {
+        // Setup event source
+        String nodeId = "TestNode" + System.currentTimeMillis();
+        PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+        LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
 
-		BlockingQueue<ItemEventCoordinator<Item>> queue = new ArrayBlockingQueue<ItemEventCoordinator<Item>>(3);
+        BlockingQueue<ItemEventCoordinator<Item>> queue = new ArrayBlockingQueue<ItemEventCoordinator<Item>>(3);
 
-		// Setup event receiver
-		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
-		LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
+        // Setup event receiver
+        PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
+        LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
 
-		ItemEventCoordinator<Item> sub1Handler = new ItemEventCoordinator<Item>(queue, "sub1");
-		subNode.addItemEventListener(sub1Handler);
-		Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
+        ItemEventCoordinator<Item> sub1Handler = new ItemEventCoordinator<Item>(queue, "sub1");
+        subNode.addItemEventListener(sub1Handler);
+        Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
 
         // Send event
         String itemId = String.valueOf(System.currentTimeMillis());
         creatorNode.send(new Item(itemId));
 
-		ItemEventCoordinator<Item> coord = queue.poll(5, TimeUnit.SECONDS);
-    	assertEquals(1, coord.events.getItems().size());
-    	assertEquals(itemId, coord.events.getItems().iterator().next().getId());
-	}
+        ItemEventCoordinator<Item> coord = queue.poll(5, TimeUnit.SECONDS);
+        assertEquals(1, coord.events.getItems().size());
+        assertEquals(itemId, coord.events.getItems().iterator().next().getId());
+    }
 
-	public void testPublishAndReceiveNoPayload() throws Exception
-	{
-		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
-		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
-		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
+    public void testPublishAndReceiveNoPayload() throws Exception
+    {
+        // Setup event source
+        String nodeId = "TestNode" + System.currentTimeMillis();
+        PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+        LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
 
-		BlockingQueue<ItemEventCoordinator<Item>> queue = new ArrayBlockingQueue<ItemEventCoordinator<Item>>(3);
+        BlockingQueue<ItemEventCoordinator<Item>> queue = new ArrayBlockingQueue<ItemEventCoordinator<Item>>(3);
 
-		// Setup event receiver
-		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
-		LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
+        // Setup event receiver
+        PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
+        LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
 
-		ItemEventCoordinator<Item> sub1Handler = new ItemEventCoordinator<Item>(queue, "sub1");
-		subNode.addItemEventListener(sub1Handler);
-		Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
+        ItemEventCoordinator<Item> sub1Handler = new ItemEventCoordinator<Item>(queue, "sub1");
+        subNode.addItemEventListener(sub1Handler);
+        Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
 
         // Send event
         String itemId = String.valueOf(System.currentTimeMillis());
         creatorNode.publish(new Item(itemId));
 
-   		ItemEventCoordinator<Item> coord = queue.poll(5, TimeUnit.SECONDS);
-       	assertEquals(1, coord.events.getItems().size());
-       	assertEquals(itemId, coord.events.getItems().get(0).getId());
-	}
+           ItemEventCoordinator<Item> coord = queue.poll(5, TimeUnit.SECONDS);
+           assertEquals(1, coord.events.getItems().size());
+           assertEquals(itemId, coord.events.getItems().get(0).getId());
+    }
 
-	public void testSendAndReceiveSimplePayload() throws Exception
-	{
-		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
-		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
-		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, true);
+    public void testSendAndReceiveSimplePayload() throws Exception
+    {
+        // Setup event source
+        String nodeId = "TestNode" + System.currentTimeMillis();
+        PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+        LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, true);
 
-		BlockingQueue<ItemEventCoordinator<PayloadItem<SimplePayload>>> queue = new ArrayBlockingQueue<ItemEventCoordinator<PayloadItem<SimplePayload>>>(3);
+        BlockingQueue<ItemEventCoordinator<PayloadItem<SimplePayload>>> queue = new ArrayBlockingQueue<ItemEventCoordinator<PayloadItem<SimplePayload>>>(3);
 
-		// Setup event receiver
-		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
-		LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
+        // Setup event receiver
+        PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
+        LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
 
-		ItemEventCoordinator<PayloadItem<SimplePayload>> sub1Handler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "sub1");
-		subNode.addItemEventListener(sub1Handler);
-		Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
+        ItemEventCoordinator<PayloadItem<SimplePayload>> sub1Handler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "sub1");
+        subNode.addItemEventListener(sub1Handler);
+        Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
 
         // Send event
         String itemId = String.valueOf(System.currentTimeMillis());
         String payloadString = "<book xmlns=\"pubsub:test:book\"><author>Sir Arthur Conan Doyle</author></book>";
         creatorNode.send(new PayloadItem<SimplePayload>(itemId, new SimplePayload("book", "pubsub:test:book", payloadString)));
 
-   		ItemEventCoordinator<PayloadItem<SimplePayload>> coord = queue.poll(5, TimeUnit.SECONDS);
-       	assertEquals(1, coord.events.getItems().size());
-       	PayloadItem<SimplePayload> item = coord.events.getItems().get(0);
-       	assertEquals(itemId, item.getId());
-       	assertTrue(item.getPayload() instanceof SimplePayload);
-       	assertEquals(payloadString, item.getPayload().toXML());
-       	assertEquals("book", item.getPayload().getElementName());
-	}
+           ItemEventCoordinator<PayloadItem<SimplePayload>> coord = queue.poll(5, TimeUnit.SECONDS);
+           assertEquals(1, coord.events.getItems().size());
+           PayloadItem<SimplePayload> item = coord.events.getItems().get(0);
+           assertEquals(itemId, item.getId());
+           assertTrue(item.getPayload() instanceof SimplePayload);
+           assertEquals(payloadString, item.getPayload().toXML());
+           assertEquals("book", item.getPayload().getElementName());
+    }
 
-	/*
-	 * For this test, the following extension needs to be added to the meta-inf/smack.providers file
-	 *
-	 * 	 <extensionProvider>
-	 *     	<elementName>car</elementName>
-	 *      <namespace>pubsub:test:vehicle</namespace>
-	 *      <className>org.jivesoftware.smackx.pubsub.CarExtensionProvider</className>
-	 *   </extensionProvider>
-	 */
-	/*
-	public void testSendAndReceiveCarPayload() throws Exception
-	{
-		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
-		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
-		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, true);
+    /*
+     * For this test, the following extension needs to be added to the meta-inf/smack.providers file
+     *
+     *      <extensionProvider>
+     *         <elementName>car</elementName>
+     *      <namespace>pubsub:test:vehicle</namespace>
+     *      <className>org.jivesoftware.smackx.pubsub.CarExtensionProvider</className>
+     *   </extensionProvider>
+     */
+    /*
+    public void testSendAndReceiveCarPayload() throws Exception
+    {
+        // Setup event source
+        String nodeId = "TestNode" + System.currentTimeMillis();
+        PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+        LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, true);
 
-		BlockingQueue<ItemEventCoordinator<PayloadItem<CarExtension>>> queue = new ArrayBlockingQueue<ItemEventCoordinator<PayloadItem<CarExtension>>>(3);
+        BlockingQueue<ItemEventCoordinator<PayloadItem<CarExtension>>> queue = new ArrayBlockingQueue<ItemEventCoordinator<PayloadItem<CarExtension>>>(3);
 
-		// Setup event receiver
-		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
-		Node subNode = subMgr.getNode(nodeId);
+        // Setup event receiver
+        PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
+        Node subNode = subMgr.getNode(nodeId);
 
-		ItemEventCoordinator<PayloadItem<CarExtension>> sub1Handler = new ItemEventCoordinator<PayloadItem<CarExtension>>(queue, "sub1");
-		subNode.addItemEventListener(sub1Handler);
-		Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
+        ItemEventCoordinator<PayloadItem<CarExtension>> sub1Handler = new ItemEventCoordinator<PayloadItem<CarExtension>>(queue, "sub1");
+        subNode.addItemEventListener(sub1Handler);
+        Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
 
         // Send event
         String itemId = String.valueOf(System.currentTimeMillis());
         String payloadString = "<car xmlns='pubsub:test:vehicle'><paint color='green'/><tires num='4'/></car>";
         creatorNode.send(new PayloadItem(itemId, new SimplePayload("car", "pubsub:test:vehicle", payloadString)));
 
-   		ItemEventCoordinator<PayloadItem<CarExtension>> coord = queue.take();
-       	assertEquals(1, coord.events.getItems().size());
-       	PayloadItem item = coord.events.getItems().get(0);
-       	assertEquals(itemId, item.getId());
-       	assertTrue(item.getPayload() instanceof CarExtension);
+           ItemEventCoordinator<PayloadItem<CarExtension>> coord = queue.take();
+           assertEquals(1, coord.events.getItems().size());
+           PayloadItem item = coord.events.getItems().get(0);
+           assertEquals(itemId, item.getId());
+           assertTrue(item.getPayload() instanceof CarExtension);
 
-       	CarExtension car = (CarExtension)item.getPayload();
-       	assertEquals("green", car.getColor());
-       	assertEquals(4, car.getNumTires());
-	}
+           CarExtension car = (CarExtension)item.getPayload();
+           assertEquals("green", car.getColor());
+           assertEquals(4, car.getNumTires());
+    }
 */
 
-	public void testSendAndReceiveMultipleSubs() throws Exception
-	{
-		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
-		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
-		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
+    public void testSendAndReceiveMultipleSubs() throws Exception
+    {
+        // Setup event source
+        String nodeId = "TestNode" + System.currentTimeMillis();
+        PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+        LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
 
-		BlockingQueue<ItemEventCoordinator<Item>> queue = new ArrayBlockingQueue<ItemEventCoordinator<Item>>(3);
+        BlockingQueue<ItemEventCoordinator<Item>> queue = new ArrayBlockingQueue<ItemEventCoordinator<Item>>(3);
 
-		// Setup event receiver
-		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
-		LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
+        // Setup event receiver
+        PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
+        LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
 
-		ItemEventCoordinator<Item> sub1Handler = new ItemEventCoordinator<Item>(queue, "sub1");
-		subNode.addItemEventListener(sub1Handler);
-		Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
+        ItemEventCoordinator<Item> sub1Handler = new ItemEventCoordinator<Item>(queue, "sub1");
+        subNode.addItemEventListener(sub1Handler);
+        Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
 
-		ItemEventCoordinator<Item> sub2Handler = new ItemEventCoordinator<Item>(queue, "sub2");
-		subNode.addItemEventListener(sub2Handler);
-		Subscription sub2 = subNode.subscribe(getConnection(1).getUser());
+        ItemEventCoordinator<Item> sub2Handler = new ItemEventCoordinator<Item>(queue, "sub2");
+        subNode.addItemEventListener(sub2Handler);
+        Subscription sub2 = subNode.subscribe(getConnection(1).getUser());
 
-		// Send event
+        // Send event
         String itemId = String.valueOf(System.currentTimeMillis());
         creatorNode.send(new Item(itemId));
 
         for(int i=0; i<2; i++)
         {
-    		ItemEventCoordinator<Item> coord = queue.poll(10, TimeUnit.SECONDS);
+            ItemEventCoordinator<Item> coord = queue.poll(10, TimeUnit.SECONDS);
 
-    		if (coord == null)
-    		    fail();
-        	assertEquals(1, coord.events.getItems().size());
-        	assertEquals(itemId, coord.events.getItems().iterator().next().getId());
+            if (coord == null)
+                fail();
+            assertEquals(1, coord.events.getItems().size());
+            assertEquals(itemId, coord.events.getItems().iterator().next().getId());
 
-        	if (coord.id.equals("sub1") || coord.id.equals("sub2"))
-        	{
-        		assertEquals(2, coord.events.getSubscriptions().size());
-        	}
+            if (coord.id.equals("sub1") || coord.id.equals("sub2"))
+            {
+                assertEquals(2, coord.events.getSubscriptions().size());
+            }
         }
-	}
+    }
 
-	public void testSendAndReceiveMultipleItems() throws Exception
-	{
-		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
-		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+    public void testSendAndReceiveMultipleItems() throws Exception
+    {
+        // Setup event source
+        String nodeId = "TestNode" + System.currentTimeMillis();
+        PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 
-		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, true);
+        LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, true);
 
-		BlockingQueue<ItemEventCoordinator<PayloadItem<SimplePayload>>> queue = new ArrayBlockingQueue<ItemEventCoordinator<PayloadItem<SimplePayload>>>(3);
-		ItemEventCoordinator<PayloadItem<SimplePayload>> creatorHandler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "creator");
-		creatorNode.addItemEventListener(creatorHandler);
-		creatorNode.subscribe(getConnection(0).getUser());
+        BlockingQueue<ItemEventCoordinator<PayloadItem<SimplePayload>>> queue = new ArrayBlockingQueue<ItemEventCoordinator<PayloadItem<SimplePayload>>>(3);
+        ItemEventCoordinator<PayloadItem<SimplePayload>> creatorHandler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "creator");
+        creatorNode.addItemEventListener(creatorHandler);
+        creatorNode.subscribe(getConnection(0).getUser());
 
-		// Setup event receiver
-		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
-		LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
+        // Setup event receiver
+        PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
+        LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
 
-		ItemEventCoordinator<PayloadItem<SimplePayload>> sub1Handler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "sub1");
-		subNode.addItemEventListener(sub1Handler);
-		Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
+        ItemEventCoordinator<PayloadItem<SimplePayload>> sub1Handler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "sub1");
+        subNode.addItemEventListener(sub1Handler);
+        Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
 
-		ItemEventCoordinator<PayloadItem<SimplePayload>> sub2Handler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "sub2");
-		subNode.addItemEventListener(sub2Handler);
-		Subscription sub2 = subNode.subscribe(getConnection(1).getUser());
+        ItemEventCoordinator<PayloadItem<SimplePayload>> sub2Handler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "sub2");
+        subNode.addItemEventListener(sub2Handler);
+        Subscription sub2 = subNode.subscribe(getConnection(1).getUser());
 
-		assertEquals(Subscription.State.subscribed, sub1.getState());
-		assertEquals(Subscription.State.subscribed, sub2.getState());
+        assertEquals(Subscription.State.subscribed, sub1.getState());
+        assertEquals(Subscription.State.subscribed, sub2.getState());
 
         // Send event
         String itemId = String.valueOf(System.currentTimeMillis());
@@ -328,32 +328,32 @@ public class TestEvents extends SmackTestCase
 
         for(int i=0; i<3; i++)
         {
-    		ItemEventCoordinator<PayloadItem<SimplePayload>> coord = queue.poll(5, TimeUnit.SECONDS);
-        	if (coord == creatorHandler)
-        		assertEquals(1, coord.events.getSubscriptions().size());
-        	else
-        		assertEquals(2, coord.events.getSubscriptions().size());
-        	List<PayloadItem<SimplePayload>> itemResults = coord.events.getItems();
-        	assertEquals(3, itemResults.size());
+            ItemEventCoordinator<PayloadItem<SimplePayload>> coord = queue.poll(5, TimeUnit.SECONDS);
+            if (coord == creatorHandler)
+                assertEquals(1, coord.events.getSubscriptions().size());
+            else
+                assertEquals(2, coord.events.getSubscriptions().size());
+            List<PayloadItem<SimplePayload>> itemResults = coord.events.getItems();
+            assertEquals(3, itemResults.size());
 
-//        	assertEquals(ids[0], itemResults.get(0).getId());
-//    		assertEquals("<a xmlns='pubsub:test' href='1'/>", itemResults.get(0).getPayload().toXML().replace('\"', '\''));
-//    		assertEquals(ids[1], itemResults.get(1).getId());
-//    		assertEquals("<a xmlns='pubsub:test' href='2'/>", itemResults.get(1).getPayload().toXML().replace('\"', '\''));
-//    		assertEquals(ids[21], itemResults.get(2).getId());
-//    		assertEquals("<a xmlns='pubsub:test' href='3'/>", itemResults.get(3).getPayload().toXML().replace('\"', '\''));
+//            assertEquals(ids[0], itemResults.get(0).getId());
+//            assertEquals("<a xmlns='pubsub:test' href='1'/>", itemResults.get(0).getPayload().toXML().replace('\"', '\''));
+//            assertEquals(ids[1], itemResults.get(1).getId());
+//            assertEquals("<a xmlns='pubsub:test' href='2'/>", itemResults.get(1).getPayload().toXML().replace('\"', '\''));
+//            assertEquals(ids[21], itemResults.get(2).getId());
+//            assertEquals("<a xmlns='pubsub:test' href='3'/>", itemResults.get(3).getPayload().toXML().replace('\"', '\''));
         }
-	}
+    }
 
-	public void testSendAndReceiveDelayed() throws Exception
-	{
-		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
-		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+    public void testSendAndReceiveDelayed() throws Exception
+    {
+        // Setup event source
+        String nodeId = "TestNode" + System.currentTimeMillis();
+        PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 
-		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
+        LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
 
-		// Send event
+        // Send event
         String itemId = String.valueOf("DelayId-" + System.currentTimeMillis());
         String payloadString = "<book xmlns='pubsub:test:book'><author>Sir Arthur Conan Doyle</author></book>";
         creatorNode.send(new PayloadItem<SimplePayload>(itemId, new SimplePayload("book", "pubsub:test:book", payloadString)));
@@ -362,38 +362,38 @@ public class TestEvents extends SmackTestCase
 
         BlockingQueue<ItemEventCoordinator<PayloadItem<SimplePayload>>> queue = new ArrayBlockingQueue<ItemEventCoordinator<PayloadItem<SimplePayload>>>(3);
 
-		// Setup event receiver
-		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
-		LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
+        // Setup event receiver
+        PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
+        LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
 
-		ItemEventCoordinator<PayloadItem<SimplePayload>> sub1Handler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "sub1");
-		subNode.addItemEventListener(sub1Handler);
-		Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
+        ItemEventCoordinator<PayloadItem<SimplePayload>> sub1Handler = new ItemEventCoordinator<PayloadItem<SimplePayload>>(queue, "sub1");
+        subNode.addItemEventListener(sub1Handler);
+        Subscription sub1 = subNode.subscribe(getConnection(1).getUser());
 
-		ItemEventCoordinator<PayloadItem<SimplePayload>> coord = queue.poll(5, TimeUnit.SECONDS);
-   		assertTrue(coord.events.isDelayed());
-   		assertNotNull(coord.events.getPublishedDate());
-	}
+        ItemEventCoordinator<PayloadItem<SimplePayload>> coord = queue.poll(5, TimeUnit.SECONDS);
+           assertTrue(coord.events.isDelayed());
+           assertNotNull(coord.events.getPublishedDate());
+    }
 
-	public void testDeleteItemAndNotify() throws Exception
-	{
-		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
-		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+    public void testDeleteItemAndNotify() throws Exception
+    {
+        // Setup event source
+        String nodeId = "TestNode" + System.currentTimeMillis();
+        PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 
-		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
+        LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
 
-		BlockingQueue<ItemDeleteCoordinator> queue = new ArrayBlockingQueue<ItemDeleteCoordinator>(3);
+        BlockingQueue<ItemDeleteCoordinator> queue = new ArrayBlockingQueue<ItemDeleteCoordinator>(3);
 
-		// Setup event receiver
-		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
-		LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
+        // Setup event receiver
+        PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
+        LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
 
-		ItemDeleteCoordinator sub1Handler = new ItemDeleteCoordinator(queue, "sub1");
-		subNode.addItemDeleteListener(sub1Handler);
-		subNode.subscribe(getConnection(1).getUser());
+        ItemDeleteCoordinator sub1Handler = new ItemDeleteCoordinator(queue, "sub1");
+        subNode.addItemDeleteListener(sub1Handler);
+        subNode.subscribe(getConnection(1).getUser());
 
-		// Send event
+        // Send event
         String itemId = String.valueOf(System.currentTimeMillis());
 
         Collection<Item> items = new ArrayList<Item>(3);
@@ -407,37 +407,37 @@ public class TestEvents extends SmackTestCase
 
         creatorNode.deleteItem(id1);
 
-   		ItemDeleteCoordinator coord = queue.poll(5, TimeUnit.SECONDS);
-   		assertEquals(1, coord.event.getItemIds().size());
-   		assertEquals(id1, coord.event.getItemIds().get(0));
+           ItemDeleteCoordinator coord = queue.poll(5, TimeUnit.SECONDS);
+           assertEquals(1, coord.event.getItemIds().size());
+           assertEquals(id1, coord.event.getItemIds().get(0));
 
-   		creatorNode.deleteItem(Arrays.asList(id2, id3));
+           creatorNode.deleteItem(Arrays.asList(id2, id3));
 
-   		coord = queue.poll(5, TimeUnit.SECONDS);
-   		assertEquals(2, coord.event.getItemIds().size());
-   		assertTrue(coord.event.getItemIds().contains(id2));
-   		assertTrue(coord.event.getItemIds().contains(id3));
-	}
+           coord = queue.poll(5, TimeUnit.SECONDS);
+           assertEquals(2, coord.event.getItemIds().size());
+           assertTrue(coord.event.getItemIds().contains(id2));
+           assertTrue(coord.event.getItemIds().contains(id3));
+    }
 
-	public void testPurgeAndNotify() throws Exception
-	{
-		// Setup event source
-		String nodeId = "TestNode" + System.currentTimeMillis();
-		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+    public void testPurgeAndNotify() throws Exception
+    {
+        // Setup event source
+        String nodeId = "TestNode" + System.currentTimeMillis();
+        PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
 
-		LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
+        LeafNode creatorNode = getPubnode(creatorMgr, nodeId, true, false);
 
-		BlockingQueue<ItemDeleteCoordinator> queue = new ArrayBlockingQueue<ItemDeleteCoordinator>(3);
+        BlockingQueue<ItemDeleteCoordinator> queue = new ArrayBlockingQueue<ItemDeleteCoordinator>(3);
 
-		// Setup event receiver
-		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
-		LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
+        // Setup event receiver
+        PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
+        LeafNode subNode = (LeafNode)subMgr.getNode(nodeId);
 
-		ItemDeleteCoordinator sub1Handler = new ItemDeleteCoordinator(queue, "sub1");
-		subNode.addItemDeleteListener(sub1Handler);
-		subNode.subscribe(getConnection(1).getUser());
+        ItemDeleteCoordinator sub1Handler = new ItemDeleteCoordinator(queue, "sub1");
+        subNode.addItemDeleteListener(sub1Handler);
+        subNode.subscribe(getConnection(1).getUser());
 
-		// Send event
+        // Send event
         String itemId = String.valueOf(System.currentTimeMillis());
 
         Collection<Item> items = new ArrayList<Item>(3);
@@ -451,148 +451,148 @@ public class TestEvents extends SmackTestCase
 
         creatorNode.deleteAllItems();
 
-   		ItemDeleteCoordinator coord = queue.poll(5, TimeUnit.SECONDS);
-   		assertNull(nodeId, coord.event);
-	}
+           ItemDeleteCoordinator coord = queue.poll(5, TimeUnit.SECONDS);
+           assertNull(nodeId, coord.event);
+    }
 
-	public void testListenerMultipleNodes() throws Exception
-	{
-		// Setup event source
-		String nodeId1 = "Node-1-" + System.currentTimeMillis();
-		PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
-		String nodeId2 = "Node-2-" + System.currentTimeMillis();
+    public void testListenerMultipleNodes() throws Exception
+    {
+        // Setup event source
+        String nodeId1 = "Node-1-" + System.currentTimeMillis();
+        PubSubManager creatorMgr = new PubSubManager(getConnection(0), getService());
+        String nodeId2 = "Node-2-" + System.currentTimeMillis();
 
-		LeafNode creatorNode1 = getPubnode(creatorMgr, nodeId1, true, false);
-		LeafNode creatorNode2 = getPubnode(creatorMgr, nodeId2, true, false);
+        LeafNode creatorNode1 = getPubnode(creatorMgr, nodeId1, true, false);
+        LeafNode creatorNode2 = getPubnode(creatorMgr, nodeId2, true, false);
 
-		BlockingQueue<ItemEventCoordinator<Item>> queue = new ArrayBlockingQueue<ItemEventCoordinator<Item>>(3);
+        BlockingQueue<ItemEventCoordinator<Item>> queue = new ArrayBlockingQueue<ItemEventCoordinator<Item>>(3);
 
-		PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
-		LeafNode subNode1 = (LeafNode)subMgr.getNode(nodeId1);
-		LeafNode subNode2 = (LeafNode)subMgr.getNode(nodeId2);
+        PubSubManager subMgr = new PubSubManager(getConnection(1), getService());
+        LeafNode subNode1 = (LeafNode)subMgr.getNode(nodeId1);
+        LeafNode subNode2 = (LeafNode)subMgr.getNode(nodeId2);
 
-		subNode1.addItemEventListener(new ItemEventCoordinator<Item>(queue, "sub1"));
-		subNode2.addItemEventListener(new ItemEventCoordinator<Item>(queue, "sub2"));
+        subNode1.addItemEventListener(new ItemEventCoordinator<Item>(queue, "sub1"));
+        subNode2.addItemEventListener(new ItemEventCoordinator<Item>(queue, "sub2"));
 
-		subNode1.subscribe(getConnection(1).getUser());
-		subNode2.subscribe(getConnection(1).getUser());
+        subNode1.subscribe(getConnection(1).getUser());
+        subNode2.subscribe(getConnection(1).getUser());
 
-		creatorNode1.send(new Item("item1"));
-		creatorNode2.send(new Item("item2"));
-		boolean check1 = false;
-		boolean check2 = false;
+        creatorNode1.send(new Item("item1"));
+        creatorNode2.send(new Item("item2"));
+        boolean check1 = false;
+        boolean check2 = false;
 
-		for (int i=0; i<2; i++)
-		{
-			ItemEventCoordinator<Item> event = queue.poll(5, TimeUnit.SECONDS);
+        for (int i=0; i<2; i++)
+        {
+            ItemEventCoordinator<Item> event = queue.poll(5, TimeUnit.SECONDS);
 
-			if (event.id.equals("sub1"))
-			{
-				assertEquals(event.events.getNodeId(), nodeId1);
-				check1 = true;
-			}
-			else
-			{
-				assertEquals(event.events.getNodeId(), nodeId2);
-				check2 = true;
-			}
-		}
-		assertTrue(check1);
-		assertTrue(check2);
-	}
+            if (event.id.equals("sub1"))
+            {
+                assertEquals(event.events.getNodeId(), nodeId1);
+                check1 = true;
+            }
+            else
+            {
+                assertEquals(event.events.getNodeId(), nodeId2);
+                check2 = true;
+            }
+        }
+        assertTrue(check1);
+        assertTrue(check2);
+    }
 
-	class ItemEventCoordinator <T extends Item> implements ItemEventListener<T>
-	{
-		private BlockingQueue<ItemEventCoordinator<T>> theQueue;
-		private ItemPublishEvent<T> events;
-		private String id;
+    class ItemEventCoordinator <T extends Item> implements ItemEventListener<T>
+    {
+        private BlockingQueue<ItemEventCoordinator<T>> theQueue;
+        private ItemPublishEvent<T> events;
+        private String id;
 
-		ItemEventCoordinator(BlockingQueue<ItemEventCoordinator<T>> queue, String id)
-		{
-			theQueue = queue;
-			this.id = id;
-		}
+        ItemEventCoordinator(BlockingQueue<ItemEventCoordinator<T>> queue, String id)
+        {
+            theQueue = queue;
+            this.id = id;
+        }
 
-		public void handlePublishedItems(ItemPublishEvent<T> items)
-		{
-			events = items;
-			theQueue.add(this);
-		}
+        public void handlePublishedItems(ItemPublishEvent<T> items)
+        {
+            events = items;
+            theQueue.add(this);
+        }
 
-		@Override
-		public String toString()
-		{
-			return "ItemEventCoordinator: " + id;
-		}
+        @Override
+        public String toString()
+        {
+            return "ItemEventCoordinator: " + id;
+        }
 
-	}
+    }
 
-	class NodeConfigCoordinator implements NodeConfigListener
-	{
-		private BlockingQueue<NodeConfigCoordinator> theQueue;
-		private String id;
-		private ConfigurationEvent event;
+    class NodeConfigCoordinator implements NodeConfigListener
+    {
+        private BlockingQueue<NodeConfigCoordinator> theQueue;
+        private String id;
+        private ConfigurationEvent event;
 
-		NodeConfigCoordinator(BlockingQueue<NodeConfigCoordinator> queue, String id)
-		{
-			theQueue = queue;
-			this.id = id;
-		}
+        NodeConfigCoordinator(BlockingQueue<NodeConfigCoordinator> queue, String id)
+        {
+            theQueue = queue;
+            this.id = id;
+        }
 
-		public void handleNodeConfiguration(ConfigurationEvent config)
-		{
-			event = config;
-			theQueue.add(this);
-		}
+        public void handleNodeConfiguration(ConfigurationEvent config)
+        {
+            event = config;
+            theQueue.add(this);
+        }
 
-		@Override
-		public String toString()
-		{
-			return "NodeConfigCoordinator: " + id;
-		}
+        @Override
+        public String toString()
+        {
+            return "NodeConfigCoordinator: " + id;
+        }
 
-	}
+    }
 
-	class ItemDeleteCoordinator implements ItemDeleteListener
-	{
-		private BlockingQueue<ItemDeleteCoordinator> theQueue;
-		private String id;
-		private ItemDeleteEvent event;
+    class ItemDeleteCoordinator implements ItemDeleteListener
+    {
+        private BlockingQueue<ItemDeleteCoordinator> theQueue;
+        private String id;
+        private ItemDeleteEvent event;
 
-		ItemDeleteCoordinator(BlockingQueue<ItemDeleteCoordinator> queue, String id)
-		{
-			theQueue = queue;
-			this.id = id;
-		}
+        ItemDeleteCoordinator(BlockingQueue<ItemDeleteCoordinator> queue, String id)
+        {
+            theQueue = queue;
+            this.id = id;
+        }
 
-		public void handleDeletedItems(ItemDeleteEvent delEvent)
-		{
-			event = delEvent;
-			theQueue.add(this);
-		}
+        public void handleDeletedItems(ItemDeleteEvent delEvent)
+        {
+            event = delEvent;
+            theQueue.add(this);
+        }
 
 
-		public void handlePurge()
-		{
-			event = null;
-			theQueue.add(this);
-		}
+        public void handlePurge()
+        {
+            event = null;
+            theQueue.add(this);
+        }
 
-		@Override
-		public String toString()
-		{
-			return "ItemDeleteCoordinator: " + id;
-		}
-	}
+        @Override
+        public String toString()
+        {
+            return "ItemDeleteCoordinator: " + id;
+        }
+    }
 
-	private static LeafNode getPubnode(PubSubManager manager, String id, boolean persistItems, boolean deliverPayload)
-		throws XMPPException
-	{
-		ConfigureForm form = new ConfigureForm(FormType.submit);
-		form.setPersistentItems(persistItems);
-		form.setDeliverPayloads(deliverPayload);
-		form.setAccessModel(AccessModel.open);
-		return (LeafNode)manager.createNode(id, form);
-	}
+    private static LeafNode getPubnode(PubSubManager manager, String id, boolean persistItems, boolean deliverPayload)
+        throws XMPPException
+    {
+        ConfigureForm form = new ConfigureForm(FormType.submit);
+        form.setPersistentItems(persistItems);
+        form.setDeliverPayloads(deliverPayload);
+        form.setAccessModel(AccessModel.open);
+        return (LeafNode)manager.createNode(id, form);
+    }
 
 }
