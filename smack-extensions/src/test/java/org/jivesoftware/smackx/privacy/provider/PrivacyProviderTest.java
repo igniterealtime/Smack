@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2012 Florian Schmaus
+ * Copyright 2012-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,9 +40,9 @@ public class PrivacyProviderTest extends InitExtensions {
         "<iq type='result' id='getlist2' to='romeo@example.net/orchard'>"
           + "<query xmlns='jabber:iq:privacy'>"
           + "<list name='public'>"
-          + "<item type='jid'"
-          + "value='tybalt@example.com'"
-          + "action='deny'"
+          + "<item type='jid' "
+          + "value='tybalt@example.com' "
+          + "action='deny' "
           + "order='1'/>"
           + "<item action='allow' order='2'/>"
           + "</list>"
@@ -73,9 +73,9 @@ public class PrivacyProviderTest extends InitExtensions {
         "<iq type='result' id='getlist2' to='romeo@example.net/orchard'>"
           + "<query xmlns='jabber:iq:privacy'>"
           + "<list name='public'>"
-          + "<item type='jid'"
-          + "value='tybalt@example.com'"
-          + "action='deny'"
+          + "<item type='jid' "
+          + "value='tybalt@example.com' "
+          + "action='deny' "
           + "order='1'/>"
           + "<item action='allow' order='2'>"
             + "<message/>"
