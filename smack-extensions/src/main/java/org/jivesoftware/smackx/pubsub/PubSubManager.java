@@ -88,9 +88,9 @@ public final class PubSubManager extends Manager {
      * @param connection
      * @return the default PubSub manager.
      */
-    // CHECKSTYLE:OFF:RegexpSingleline
-    public static PubSubManager getInstanceFor(XMPPConnection connection) {
-    // CHECKSTYLE:ON:RegexpSingleline
+    //CHECKSTYLE:OFF:RegexpSingleline
+    public static synchronized PubSubManager getInstanceFor(XMPPConnection connection) {
+	// CHECKSTYLE:ON:RegexpSingleline
         DomainBareJid pubSubService = null;
         if (connection.isAuthenticated()) {
             try {
@@ -124,7 +124,7 @@ public final class PubSubManager extends Manager {
      * @return a PubSub manager for the connection and service.
      */
     // CHECKSTYLE:OFF:RegexpSingleline
-    public static PubSubManager getInstanceFor(XMPPConnection connection, BareJid pubSubService) {
+    public static synchronized PubSubManager getInstanceFor(XMPPConnection connection, BareJid pubSubService) {
     // CHECKSTYLE:ON:RegexpSingleline
         if (pubSubService != null && connection.isAuthenticated() && connection.getUser().asBareJid().equals(pubSubService)) {
             // PEP service.

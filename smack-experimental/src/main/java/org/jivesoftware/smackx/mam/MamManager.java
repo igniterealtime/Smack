@@ -179,7 +179,7 @@ public final class MamManager extends Manager {
      * @return the instance of MamManager.
      */
     // CHECKSTYLE:OFF:RegexpSingleline
-    public static MamManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized MamManager getInstanceFor(XMPPConnection connection) {
     // CHECKSTYLE:ON:RegexpSingleline
         return getInstanceFor(connection, (Jid) null);
     }
