@@ -56,12 +56,12 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | [SI File Transfer](filetransfer.md)         | [XEP-0096](https://xmpp.org/extensions/xep-0096.html)  | n/a       | Transfer files between two users over XMPP. |
 | User Mood                                   | [XEP-0107](https://xmpp.org/extensions/xep-0107.html)  | 1.2.1     | Communicate the users current mood. |
 | [Entity Capabilities](caps.md)              | [XEP-0115](https://xmpp.org/extensions/xep-0115.html)  | n/a       | Broadcasting and dynamic discovery of entity capabilities. |
-| [Jingle](jingle.html)                       | [XEP-0116](https://xmpp.org/extensions/xep-0166.html)  | n/a       | Initiate and manage sessions between two XMPP entities. |
 | Data Forms Validation                       | [XEP-0122](https://xmpp.org/extensions/xep-0122.html)  | n/a       | Enables an application to specify additional validation guidelines . |
 | Service Administration                      | [XEP-0133](https://xmpp.org/extensions/xep-0133.html)  | n/a       | Recommended best practices for service-level administration of servers and components using Ad-Hoc Commands. |
 | Stream Compression                          | [XEP-0138](https://xmpp.org/extensions/xep-0138.html)  | n/a       | Support for optional compression of the XMPP stream.
 | Data Forms Layout                           | [XEP-0141](https://xmpp.org/extensions/xep-0141.html)  | n/a       | Enables an application to specify form layouts. |
 | Personal Eventing Protocol                  | [XEP-0163](https://xmpp.org/extensions/xep-0163.html)  | n/a       | Using the XMPP publish-subscribe protocol to broadcast state change events associated with an XMPP account. |
+| [Jingle](jingle.html)                       | [XEP-0166](https://xmpp.org/extensions/xep-0166.html)  | n/a       | Initiate and manage sessions between two XMPP entities. |
 | Message Delivery Receipts                   | [XEP-0184](https://xmpp.org/extensions/xep-0184.html)  | n/a       | Extension for message delivery receipts. The sender can request notification that the message has been delivered. |
 | [Blocking Command](blockingcommand.md)      | [XEP-0191](https://xmpp.org/extensions/xep-0191.html)  | n/a       | Communications blocking that is intended to be simpler than privacy lists (XEP-0016). |
 | XMPP Ping                                   | [XEP-0199](https://xmpp.org/extensions/xep-0199.html)  | n/a       | Sending application-level pings over XML streams.
