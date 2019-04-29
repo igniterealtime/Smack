@@ -35,7 +35,7 @@ public class MamResultProviderTest {
 
     private static final String exampleMamResultXml = "<result xmlns='urn:xmpp:mam:1' queryid='f27' id='28482-98726-73623'>"
             + "<forwarded xmlns='urn:xmpp:forward:0'>" + "<delay xmlns='urn:xmpp:delay' stamp='2010-07-10T23:08:25Z'/>"
-            + "<message xmlns='jabber:client'" + "to='juliet@capulet.lit/balcony'" + "from='romeo@montague.lit/orchard'"
+            + "<message xmlns='jabber:client' to='juliet@capulet.lit/balcony' from='romeo@montague.lit/orchard' "
             + "type='chat'>"
             + "<body>Call me but love, and I'll be new baptized; Henceforth I never will be Romeo.</body>"
             + "</message>" + "</forwarded>" + "</result>";
