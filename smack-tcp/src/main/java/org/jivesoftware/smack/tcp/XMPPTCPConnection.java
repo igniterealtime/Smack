@@ -160,9 +160,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     protected final PacketReader packetReader = new PacketReader();
 
-    private final SynchronizationPoint<Exception> initialOpenStreamSend = new SynchronizationPoint<>(
-                    this, "initial open stream element send to server");
-
     /**
      *
      */
@@ -536,7 +533,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         compressSyncPoint.init();
         smResumedSyncPoint.init();
         smEnabledSyncPoint.init();
-        initialOpenStreamSend.init();
     }
 
     @Override
@@ -898,8 +894,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          * Parse top-level packets in order to process them further.
          */
         private void parsePackets() {
+            boolean initialStreamOpenSend = false;
             try {
-                initialOpenStreamSend.checkIfSuccessOrWait();
+                openStream();
+                initialStreamOpenSend = true;
                 int eventType = parser.getEventType();
                 while (!done) {
                     switch (eventType) {
@@ -1119,8 +1117,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             catch (Exception e) {
                 closingStreamReceived.reportFailure(e);
                 // The exception can be ignored if the the connection is 'done'
-                // or if the it was caused because the socket got closed
-                if (!(done || packetWriter.queue.isShutdown())) {
+                // or if the it was caused because the socket got closed. It can not be ignored if it
+                // happened before (or while) the initial stream opened was send.
+                if (!(done || packetWriter.queue.isShutdown()) || !initialStreamOpenSend) {
                     // Close the connection and notify connection listeners of the
                     // error.
                     notifyConnectionError(e);
@@ -1275,8 +1274,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         private void writePackets() {
             Exception writerException = null;
             try {
-                openStream();
-                initialOpenStreamSend.reportSuccess();
                 // Write out packets from the queue.
                 while (!done()) {
                     Element element = nextStreamElement();

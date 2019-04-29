@@ -16,13 +16,16 @@
  */
 package org.jivesoftware.smack.tcp;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicReference;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketWriter;
@@ -45,19 +48,24 @@ public class PacketWriterTest {
      * @throws NotConnectedException
      * @throws XmppStringprepException
      */
-    @SuppressWarnings("javadoc")
     @Test
     public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException, NotConnectedException, XmppStringprepException {
         XMPPTCPConnection connection = new XMPPTCPConnection("user", "pass", "example.org");
         final PacketWriter pw = connection.packetWriter;
-        connection.setWriter(new BlockingStringWriter());
+        BlockingStringWriter blockingStringWriter = new BlockingStringWriter();
+        connection.setWriter(blockingStringWriter);
         connection.packetWriter.init();
 
-        for (int i = 0; i < XMPPTCPConnection.PacketWriter.QUEUE_SIZE; i++) {
+        // Now insert QUEUE_SIZE + 1 stanzas into the outgoing queue to make sure that the queue is filled until its
+        // full capacity. The +1 is because the writer thread will dequeue one stanza and try to write it into the
+        // blocking writer.
+        for (int i = 0; i < XMPPTCPConnection.PacketWriter.QUEUE_SIZE + 1; i++) {
             pw.sendStreamElement(new Message());
         }
 
         final CyclicBarrier barrier = new CyclicBarrier(2);
+        final AtomicReference<Exception> unexpectedThreadExceptionReference = new AtomicReference<>();
+        final AtomicReference<Exception> expectedThreadExceptionReference = new AtomicReference<>();
         shutdown = false;
         prematureUnblocked = false;
         Thread t = new Thread(new Runnable() {
@@ -71,12 +79,19 @@ public class PacketWriterTest {
                         prematureUnblocked = true;
                     }
                 }
-                catch (Exception e) {
+                catch (SmackException.NotConnectedException e) {
+                    // This is the exception we expect.
+                    expectedThreadExceptionReference.set(e);
                 }
+                catch (BrokenBarrierException | InterruptedException e) {
+                    unexpectedThreadExceptionReference.set(e);
+                }
+
                 try {
                     barrier.await();
                 }
                 catch (InterruptedException | BrokenBarrierException e) {
+                    unexpectedThreadExceptionReference.set(e);
                 }
             }
         });
@@ -90,27 +105,54 @@ public class PacketWriterTest {
 
         // Set to true for testing purposes, so that shutdown() won't wait packet writer
         pw.shutdownDone.reportSuccess();
-        // Shutdown the packetwriter
+        // Shutdown the packetwriter, this will also interrupt the writer thread, which is what we hope to happen in the
+        // thread created above.
         pw.shutdown(false);
         shutdown = true;
         barrier.await();
-        if (prematureUnblocked) {
-            fail("Should not unblock before the thread got shutdown");
+
+        t.join(60000);
+
+        Exception unexpectedThreadException = unexpectedThreadExceptionReference.get();
+        try {
+            if (prematureUnblocked) {
+                String failureMessage = "Should not unblock before the thread got shutdown.";
+                if (unexpectedThreadException != null) {
+                    failureMessage += " Unexpected thread exception thrown: " + unexpectedThreadException;
+                }
+                fail(failureMessage);
+            }
+            else if (unexpectedThreadException != null) {
+                fail("Unexpected thread exception: " + unexpectedThreadException);
+            }
+
+            assertNotNull("Did not encounter expected exception on sendStreamElement()", expectedThreadExceptionReference.get());
         }
-        synchronized (t) {
-            t.notify();
+        finally {
+            blockingStringWriter.unblock();
         }
     }
 
     public static class BlockingStringWriter extends Writer {
+        private boolean blocked = true;
+
         @Override
-        @SuppressWarnings("WaitNotInLoop")
         public void write(char[] cbuf, int off, int len) throws IOException {
-            try {
-                wait();
+            synchronized (this) {
+                while (blocked) {
+                    try {
+                        wait();
+                    }
+                    catch (InterruptedException e) {
+                        throw new AssertionError(e);
+                    }
+                }
             }
-            catch (InterruptedException e) {
-            }
+        }
+
+        public synchronized void unblock() {
+            blocked = false;
+            notify();
         }
 
         @Override
