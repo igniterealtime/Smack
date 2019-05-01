@@ -589,4 +589,11 @@
           <className>org.jivesoftware.smackx.mood.provider.MoodProvider</className>
         </extensionProvider>
 
+    <!-- XEP-0118: User Tune -->
+    <extensionProvider>
+        <elementName>tune</elementName>
+        <namespace>http://jabber.org/protocol/tune</namespace>
+        <className>org.jivesoftware.smackx.usertune.provider.UserTuneProvider</className>
+    </extensionProvider>
+    
 </smackProviders>
