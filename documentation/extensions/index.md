@@ -56,6 +56,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | [SI File Transfer](filetransfer.md)         | [XEP-0096](https://xmpp.org/extensions/xep-0096.html)  | n/a       | Transfer files between two users over XMPP. |
 | User Mood                                   | [XEP-0107](https://xmpp.org/extensions/xep-0107.html)  | 1.2.1     | Communicate the users current mood. |
 | [Entity Capabilities](caps.md)              | [XEP-0115](https://xmpp.org/extensions/xep-0115.html)  | n/a       | Broadcasting and dynamic discovery of entity capabilities. |
+| User Tune                                   | [XEP-0118](https://xmpp.org/extensions/xep-0118.html)  | n/a       | Defines a payload format for communicating information about music to which a user is listening. |
 | Data Forms Validation                       | [XEP-0122](https://xmpp.org/extensions/xep-0122.html)  | n/a       | Enables an application to specify additional validation guidelines . |
 | Service Administration                      | [XEP-0133](https://xmpp.org/extensions/xep-0133.html)  | n/a       | Recommended best practices for service-level administration of servers and components using Ad-Hoc Commands. |
 | Stream Compression                          | [XEP-0138](https://xmpp.org/extensions/xep-0138.html)  | n/a       | Support for optional compression of the XMPP stream.
