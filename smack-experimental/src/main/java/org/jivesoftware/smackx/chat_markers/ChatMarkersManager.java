@@ -37,11 +37,13 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.filter.NotFilter;
+import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.PossibleFromTypeFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements;
 import org.jivesoftware.smackx.chat_markers.filter.ChatMarkersFilter;
 import org.jivesoftware.smackx.chat_markers.filter.EligibleForChatMarkerFilter;
@@ -73,14 +75,14 @@ public final class ChatMarkersManager extends Manager {
 
     // @FORMATTER:OFF
     private static final StanzaFilter INCOMING_MESSAGE_FILTER = new AndFilter(
-            MessageTypeFilter.NORMAL_OR_CHAT,
+            new OrFilter(MessageTypeFilter.NORMAL_OR_CHAT, MessageTypeFilter.GROUPCHAT),
             new StanzaExtensionFilter(ChatMarkersElements.NAMESPACE),
             PossibleFromTypeFilter.ENTITY_BARE_JID,
             EligibleForChatMarkerFilter.INSTANCE
     );
 
     private static final StanzaFilter OUTGOING_MESSAGE_FILTER = new AndFilter(
-            MessageTypeFilter.NORMAL_OR_CHAT,
+            new OrFilter(MessageTypeFilter.NORMAL_OR_CHAT, MessageTypeFilter.GROUPCHAT),
             MessageWithBodiesFilter.INSTANCE,
             new NotFilter(ChatMarkersFilter.INSTANCE),
             EligibleForChatMarkerFilter.INSTANCE
@@ -144,7 +146,6 @@ public final class ChatMarkersManager extends Manager {
                 // Note that this listener is used together with a PossibleFromTypeFilter.ENTITY_BARE_JID filter, hence
                 // every message is guaranteed to have a from address which is representable as bare JID.
                 EntityBareJid bareFrom = message.getFrom().asEntityBareJidOrThrow();
-
                 final Chat chat = chatManager.chatWith(bareFrom);
 
                 asyncButOrdered.performAsyncButOrdered(chat, new Runnable() {
@@ -217,5 +218,46 @@ public final class ChatMarkersManager extends Manager {
             enabled = false;
         }
         return res;
+    }
+
+    /**
+     * Send a message stanza to the recipient defined in the <tt>To</tt> getter from the <tt>Message</tt>.
+     *
+     * @param message          instance of {@link Message} with a To previous defined.
+     * @param chatMarkersState one of the values given in {@link ChatMarkersState}.
+     * @param messageId        id of the message to be updated.
+     * @throws NotConnectedException if the connection is not connected.
+     * @throws InterruptedException  if the connection is interrupted.
+     * @throws IllegalStateException if one of the params don't match the rules.
+     */
+    public void markMessage(Message message, ChatMarkersState chatMarkersState, String messageId)
+            throws
+            NotConnectedException,
+            InterruptedException,
+            IllegalStateException {
+        Objects.requireNonNull(message, "Message must not be null");
+
+        if (message.getTo() == null) {
+            throw new IllegalStateException("To attribute must not be null");
+        }
+
+        if (!message.hasStanzaIdSet()) {
+            message.setStanzaId();
+        }
+
+        switch (chatMarkersState) {
+            case received:
+                message.addExtension(new ChatMarkersElements.ReceivedExtension(messageId));
+                break;
+            case displayed:
+                message.addExtension(new ChatMarkersElements.DisplayedExtension(messageId));
+                break;
+            case acknowledged:
+                message.addExtension(new ChatMarkersElements.AcknowledgedExtension(messageId));
+                break;
+            default:
+                throw new IllegalStateException("markable is automatically set in outgoing messages.");
+        }
+        connection().sendStanza(message);
     }
 }
